@@ -1,5 +1,5 @@
 ;;; grep+.el --- Extensions to standard library `grep.el'.
-;; 
+;;
 ;; Filename: grep+.el
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
@@ -7,21 +7,21 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:27:41 2012 (-0800)
+;; Last-Updated: Wed Jul  3 21:44:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 635
+;;     Update #: 655
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `compile', `compile+', `compile-', `fit-frame',
 ;;   `frame-fns', `grep', `misc-fns', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;;  Extensions to standard library `grep.el':
@@ -66,7 +66,7 @@
 ;;
 ;;  `grep-mode-font-lock-keywords', `grep-regexp-alist'
 ;;    - Mouse-over the whole line.
-;;  
+;;
 ;;
 ;;
 ;;  ***** NOTE: The following minor mode defined in `grep.el'
@@ -82,9 +82,12 @@
 ;;  `grep', `grep-default-command' - Use `grepp-default-regexp-fn'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
+;; 2013/07/03 dadams
+;;     grepp-default-regexp-fn: Added arg TAG-DEFAULT (so it is computed only once).
+;;     grep: Call grepp-default-regexp-fn only once, and pass value to grepp-default-regexp-fn.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -133,24 +136,24 @@
 ;;     Added: grep-default-regexp-fn, grep-default-command.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'compile+ nil t) ;; (no error if not found) - to pick up enhancements for grep too.
@@ -217,13 +220,14 @@ first of these that references a defined function:
 
 
 ;;; REPLACE ORIGINAL in `grep.el'
-;;; Use `grepp-default-regexp-fn' to define `tag-default'.
 ;;;
-(defun grep-default-command ()
-  (let ((tag-default   (shell-quote-argument (or (funcall (grepp-default-regexp-fn)) "")))
+;;; Added argument TAG-DEFAULT, passed from `grep'.
+;;;
+(defun grep-default-command (tag-default)
+  (let ((quoted-tag-def  (shell-quote-argument (or tag-default  "")))
 	;; Regexp to match single shell arguments.
-        (sh-arg-re     "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
-        (grep-default  (or (car grep-history) grep-command)))
+        (sh-arg-re       "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
+        (grep-default    (or (car grep-history) grep-command)))
     ;; In the default command, find the arg that specifies the pattern.
     (when (or (string-match
                (concat "[^ ]+\\s +\\(?:-[^ ]+\\s +\\)*" sh-arg-re "\\(\\s +\\(\\S +\\)\\)?")
@@ -233,28 +237,29 @@ first of these that references a defined function:
       ;; But first, maybe replace the file name pattern.
       (condition-case nil
           (unless (or (not (stringp buffer-file-name))
-                      (when (match-beginning 2)
-                        (save-match-data
-                          (string-match (wildcard-to-regexp (file-name-nondirectory
-                                                             (match-string 3 grep-default)))
-                                        (file-name-nondirectory buffer-file-name)))))
+                      (and (match-beginning 2)
+                           (save-match-data
+                             (string-match (wildcard-to-regexp (file-name-nondirectory
+                                                                (match-string 3 grep-default)))
+                                           (file-name-nondirectory buffer-file-name)))))
             (setq grep-default  (concat (substring grep-default 0 (match-beginning 2)) " *."
                                         (file-name-extension buffer-file-name))))
 	;; In case wildcard-to-regexp gets an error from invalid data.
 	(error nil))
       ;; Replace the pattern with the default tag.
-      (replace-match tag-default t t grep-default 1))))
+      (replace-match quoted-tag-def t t grep-default 1))))
 
 
 
 ;;; REPLACE ORIGINAL in `grep.el'
-;;; Use `grepp-default-regexp-fn' to define default search string.
+;;;
+;;; Use `grepp-default-regexp-fn' to define default search string (aka "tag default").
 ;;;
 ;;;###autoload
 (defun grep (command-args &optional highlight-regexp)
   "Run `grep', with user-specified args, and collect output in a buffer.
 COMMAND-ARGS are the user-specified arguments.
-While `grep' runs asynchronously, you can use 
+While `grep' runs asynchronously, you can use
 \\[next-error] (M-x next-error), or \\<grep-mode-map>\\[compile-goto-error]
 in output buffer `*grep*', to go to the lines where `grep' found matches.
 
@@ -282,37 +287,37 @@ If specified, optional second arg HIGHLIGHT-REGEXP is the regexp to
 temporarily highlight in visited source lines."
   (interactive
    (progn
-     (unless (and grep-command (or (not grep-use-null-device) (eq grep-use-null-device t)))
-       (grep-compute-defaults))
-     (let ((default  (grep-default-command)))
+     (unless (and grep-command  (memq grep-use-null-device '(t nil))) (grep-compute-defaults))
+     (let* ((tag-default  (funcall (grepp-default-regexp-fn)))
+            (default-cmd  (grep-default-command tag-default)))
        (list
         (if nil ;;$$$$$$ UNCOMMENT if you prefer: (fboundp 'read-shell-command)
             (read-shell-command "grep <pattern> <files> :  "
                                 (if current-prefix-arg
-                                    default
+                                    default-cmd
                                   (concat
                                    grep-command
                                    (if (and transient-mark-mode mark-active
                                             (not (eq (region-beginning) (region-end))))
                                        ;; $$$$$ Would it be better to use `shell-quote-argument' on the region?
                                        (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
-                                     (and (grepp-default-regexp-fn) (funcall (grepp-default-regexp-fn))))
+                                     tag-default)
                                    " "))
                                 'grep-history
-                                (if current-prefix-arg nil default))
+                                (if current-prefix-arg nil default-cmd))
           (read-from-minibuffer
            "grep <pattern> <files> :  "
            (if current-prefix-arg
-               default
+               default-cmd
              (concat grep-command
                      (if (and transient-mark-mode mark-active
                               (not (eq (region-beginning) (region-end))))
                          ;; $$$$$ Would it be better to use `shell-quote-argument' on the region?
                          (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
-                       (and (grepp-default-regexp-fn) (funcall (grepp-default-regexp-fn))))
+                       tag-default)
                      " "))
            nil nil 'grep-history
-           (if current-prefix-arg nil default)))))))
+           (if current-prefix-arg nil default-cmd)))))))
 
   ;; Setting process-setup-function makes exit-message-function work
   ;; even when async processes aren't supported.
@@ -364,7 +369,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 (defun grepp-remove-comments (&optional read-regexp-p)
   "Remove lines that are completely commented out.
 With a prefix argument, you are prompted for the regexp used to match
- commented lines.  The default value is 
+ commented lines.  The default value is
  `grepp-default-comment-line-regexp'.
 With no prefix argument, this default value is used as the regexp.
 
