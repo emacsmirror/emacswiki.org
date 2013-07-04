@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 19 09:00:31 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:38:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6448
+;;     Update #: 6453
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -368,7 +368,7 @@
   ;; icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
-  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-string-match-p
+  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp, icicle-string-match-p
 (require 'icicles-cmd1)
   ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd,
   ;; icicle-bookmark-help-string, icicle-bookmark-propertize-candidate, icicle-buffer-list,
@@ -743,7 +743,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep  pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (icicle-read-regexp "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -765,7 +765,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep  pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (icicle-read-regexp "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -840,7 +840,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep  pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (icicle-read-regexp "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -862,7 +862,7 @@ at point, or if none then the visited file."
     (lambda (file) (bmkp-find-file-other-window file 'MUST-EXIST)) ; Function to perform the action
     "Find file: " nil nil t nil (and icompletep  pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
-     ((regexp                                  (read-string "Regexp for tags: ")) ; Pre bindings
+     ((regexp                                  (icicle-read-regexp "Regexp for tags: ")) ; Pre bindings
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
@@ -5363,7 +5363,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
           (beg+end  (icicle-region-or-buffer-limits))
           (beg1     (car beg+end))
           (end1     (cadr beg+end))
-          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+          (elt      (icicle-read-regexp "XML element (name regexp, no markup): ")))
      `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
   (let ((nxml-sexp-element-flag  t))
     (icicle-search-thing
@@ -5394,7 +5394,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
           (beg+end  (icicle-region-or-buffer-limits))
           (beg1     (car beg+end))
           (end1     (cadr beg+end))
-          (elt      (read-string "XML element (name regexp, no markup): " nil 'regexp-history)))
+          (elt      (icicle-read-regexp "XML element (name regexp, no markup): ")))
      `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,elt)))
   (let ((nxml-sexp-element-flag  t))
     (icicle-search-thing
