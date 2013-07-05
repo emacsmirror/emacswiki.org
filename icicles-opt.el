@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 22 10:21:53 2013 (-0700)
+;; Last-Updated: Thu Jul  4 20:34:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5643
+;;     Update #: 5711
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -795,13 +795,20 @@ that is, `M-|', but it does affect `C-|'."
           :value-type (function :tag "Alternative action (function)"))
   :group 'Icicles-Miscellaneous)
 
-(defcustom icicle-alternative-sort-comparer ; Toggle with `C-M-,'.
-  'icicle-historical-alphabetic-p
+(defcustom icicle-alternative-sort-comparer 'icicle-historical-alphabetic-p ; Toggle with `C-M-,'.
   "*An alternative sort function, in place of `icicle-sort-comparer'.
 You can swap this with `icicle-sort-comparer' at any time by using
 `icicle-toggle-alternative-sorting' (\\<minibuffer-local-completion-map>\
 `\\[icicle-toggle-alternative-sorting]' in the minibuffer)."
-  :type '(choice (const :tag "None" nil) function) :group 'Icicles-Completions-Display)
+  :type '(choice
+          (const    :tag "None (do not sort)" nil)
+          (function :tag "Sorting Predicate" :value icicle-case-string-less-p)
+          (list     :tag "Sorting Multi-Predicate"
+           (repeat (function :tag "Component Predicate"))
+           (choice
+            (const    :tag "None" nil)
+            (function :tag "Final Predicate" :value icicle-case-string-less-p))))
+  :group 'Icicles-Completions-Display)
 
 ;; Must be before `icicle-dot-string'.
 (defconst icicle-anychar-regexp (let ((strg  (copy-sequence "\\(.\\|[\n]\\)")))
@@ -1052,7 +1059,9 @@ This option has no effect prior to Emacs 21 (no library `recentf.el')."
 If nil, then this does nothing.  If a regexp, then show only
 candidates that match it (and match the user input).
 See also `icicle-buffer-no-match-regexp'."
-  :type '(choice (const :tag "None" nil) regexp)
+  :type '(choice
+          (const :tag "None" nil)
+          (regexp :value "^[^ ]"))
   :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 (defcustom icicle-buffer-no-match-regexp nil
@@ -1060,7 +1069,8 @@ See also `icicle-buffer-no-match-regexp'."
 If nil, then this does nothing.  If a regexp, then show only
 candidates that do not match it.
 See also `icicle-buffer-match-regexp'."
-  :type '(choice (const :tag "None" nil) regexp)
+  :type '(choice (const :tag "None" nil)
+          (regexp :value "^[ ]"))
   :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 (defcustom icicle-buffer-predicate nil
@@ -1075,7 +1085,9 @@ are associated with files:
 This predicate is applied after matching against user input.  It thus
 corresponds to `icicle-must-pass-after-match-predicate', not to
 `icicle-must-pass-predicate'."
-  :type '(choice (const :tag "None" nil) function)
+  :type '(choice
+          (const :tag "None" nil)
+          (function :value (lambda (bufname) (buffer-file-name (get-buffer bufname)))))
   :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 (defcustom icicle-buffer-prefix-arg-filtering 'use-default
@@ -1085,9 +1097,9 @@ This filtering is in addition to removing the names of minibuffers.
 If the value is `use-default' then use the default Icicles behavior
 \(see the doc).
 
-Otherwise, it is a list of conditions that are applied, in order until
-one matches, to filter out buffers.  If none match then no filtering
-is done.
+Otherwise, it is a list of conditions that are applied, in order,
+until one matches, to filter out buffers.  If none match then no
+filtering is done.
 
 Each condition is a list of two items: (PREF-ARG-TEST BUF-TEST).
 
@@ -1138,13 +1150,15 @@ provides the same behavior as value `use-default' (but it is slower):
           (with-current-buffer bf
             (not (eq major-mode 'dired-mode)))))))"
   :type '(choice
-          (const :tag "Use the default Icicles behavior" 'use-default)
+          (const  :tag "Use the default Icicles behavior" use-default)
           (repeat :tag "Conditions tested in order, to filter buffer-name candidates"
            (list
-            (function :tag "Predicate to test raw prefix arg")
+            (function  :tag "Predicate to test raw prefix arg"
+             :value (lambda (cpa) (and (consp cpa) (> (prefix-numeric-value cpa) 16)))) ; C-u C-u C-u
             (choice
-             (const :tag "No filtering - include all buffer names" nil)
-             (function :tag "Predicate to filter out a buffer name")))))
+             (const    :tag "No filtering - include all buffer names" nil)
+             (function :tag "Predicate to filter out a buffer name"
+              :value (lambda (bf) (get-buffer-window bf 0))))))) ; Visible
   :group 'Icicles-Buffers)
 
 (defcustom icicle-buffer-require-match-flag nil
@@ -1182,7 +1196,9 @@ candidate buffers."
   "*A sort function for buffer names, or nil.
 Examples of sort functions are `icicle-buffer-sort-*...*-last' and
 `string<'.  If nil, then buffer names are not sorted."
-  :type '(choice (const :tag "None" nil) function)
+  :type '(choice
+          (const :tag "None" nil)
+          (function :value icicle-buffer-sort-*...*-last))
   :group 'Icicles-Buffers :group 'Icicles-Completions-Display)
 
 (defcustom icicle-buffers-ido-like-flag nil
@@ -1373,9 +1389,11 @@ For example, this list element says to replace completion function
 `foo' by completion function `my-foo': (foo 'my-foo).  And this one
 says to try completing with function `mine' before `foo' or `bar':
 \((foo bar) 'mine)."
-  :type '(repeat (list (choice
-                        (symbol :tag "OLD to replace")
-                        (repeat :tag "OLD to insert before" sexp))
+  :type '(repeat (list
+                  (choice
+                   (symbol :tag "OLD to replace")
+                   (repeat :tag "OLD to insert before"
+                    (sexp :value pcomplete-completions-at-point)))
                   (sexp :tag "NEW (must eval to completion function)")))
   :group 'Icicles-Miscellaneous)
 
@@ -1658,8 +1676,7 @@ before you enter Icicle mode."
             (list
              (choice
               (restricted-sexp :tag "Key"
-               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
-               :value [ignore])
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x)))) :value [ignore])
               (restricted-sexp :tag "Command to remap"
                ;; Use `symbolp' instead of `commandp', in case the library defining the
                ;; command is not loaded.
@@ -1741,8 +1758,7 @@ before you enter Icicle mode."
             (list
              (choice
               (restricted-sexp :tag "Key"
-               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
-               :value [ignore])
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x)))) :value [ignore])
               (restricted-sexp :tag "Command to remap"
                ;; Use `symbolp' instead of `commandp', in case the library defining the
                ;; command is not loaded.
@@ -1871,6 +1887,7 @@ Example selectable menu-item element:
  (foo menu-item \"Foo\"   foo-command
        :visible (not buffer-read-only))"
   :type  '(repeat
+           ;; $$$$$$ Perhaps should provide default :value for each choice.
            (choice
             ;; These could be combined, but it's better for users to see separate choices.
             (restricted-sexp
@@ -2109,10 +2126,8 @@ default value is `t', which is closest to what vanilla Emacs does."
           (const :tag "Add default value to prompt (do not insert in minibuffer)"  t)
           (const :tag "Insert default value.  Leave cursor at beginning"           insert-start)
           (const :tag "Insert default value.  Leave cursor at end"                 insert-end)
-          (const :tag "Insert default value, select it, leave cursor at beginning"
-           preselect-start)
-          (const :tag "Insert default value, select it, leave cursor at end"
-           preselect-end))
+          (const :tag "Insert default value, select it, leave cursor at beginning" preselect-start)
+          (const :tag "Insert default value, select it, leave cursor at end"       preselect-end))
   :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-define-alias-commands-flag t
@@ -2245,7 +2260,9 @@ as compressed files."
 If nil, then this does nothing.  If a regexp, then show only
 candidates that match it (and match the user input).
 See also `icicle-file-no-match-regexp'."
-  :type '(choice (const :tag "None" nil) regexp)
+  :type '(choice
+          (const :tag "None" nil)
+          (regexp :value "^[^.]"))
   :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-file-no-match-regexp nil
@@ -2253,7 +2270,9 @@ See also `icicle-file-no-match-regexp'."
 If nil, then this does nothing.  If a regexp, then show only
 candidates that do not match it.
 See also `icicle-file-match-regexp'."
-  :type '(choice (const :tag "None" nil) regexp)
+  :type '(choice
+          (const :tag "None" nil)
+          (regexp :value "^[.]"))
   :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-file-predicate nil
@@ -2269,7 +2288,9 @@ with more than 5000 bytes:
 This predicate is applied after matching against user input.  It thus
 corresponds to `icicle-must-pass-after-match-predicate', not to
 `icicle-must-pass-predicate'."
-  :type '(choice (const :tag "None" nil) function)
+  :type '(choice
+          (const :tag "None" nil)
+          (function :value file-readable-p))
   :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-file-require-match-flag nil
@@ -2294,11 +2315,12 @@ You probably do not want to set this globally, but you can."
 
 (defcustom icicle-file-sort nil
   "*A sort function for file names, or nil.
-
 Examples of sort functions are `icicle-dirs-last-p',
 `icicle-last-accessed-first-p', and `icicle-last-modified-first-p'.
 If nil, then file names are not sorted."
-  :type '(choice (const :tag "None" nil) function)
+  :type '(choice
+          (const :tag "None" nil)
+          (function :value icicle-dirs-first-p))
   :group 'Icicles-Files :group 'Icicles-Completions-Display)
 
 (defcustom icicle-files-ido-like-flag nil
@@ -2947,7 +2969,9 @@ resets `icicle-max-candidates' to nil, meaning no truncation.
 If the value is an integer and you use Do Re Mi (library `doremi.el')
 then you can use multi-command `icicle-increment-option' anytime to
 change the option value incrementally."
-  :type '(choice (const :tag "None" nil) integer)
+  :type '(choice
+          (const :tag "None" nil)
+          (integer :value 200))
   :group 'Icicles-Completions-Display :group 'Icicles-Matching
   :group 'Icicles-Buffers :group 'Icicles-Files)
 
@@ -3020,8 +3044,7 @@ before you enter Icicle mode."
             (list
              (choice
               (restricted-sexp :tag "Key"
-               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
-               :value [ignore])
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x)))) :value [ignore])
               (restricted-sexp :tag "Command to remap"
                ;; Use `symbolp' instead of `commandp', in case the library defining the
                ;; command is not loaded.
@@ -3202,7 +3225,10 @@ A value of nil means no limit.
 If the value is an integer and you use Do Re Mi (library `doremi.el')
 then you can use multi-command `icicle-increment-option' anytime to
 change the option value incrementally."
-  :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
+  :type '(choice
+          (const :tag "No Limit" nil)
+          (integer :value 5000))
+  :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-pp-eval-expression-print-level nil
   "*Value for `print-level' while printing value in `pp-eval-expression'.
@@ -3211,7 +3237,10 @@ A value of nil means no limit.
 If the value is an integer and you use Do Re Mi (library `doremi.el')
 then you can use multi-command `icicle-increment-option' anytime to
 change the option value incrementally."
-  :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
+  :type '(choice
+          (const :tag "No Limit" nil)
+          (integer :value 8))
+  :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-prefix-complete-keys '([?\t]  [tab]  [(control ?i)]) ; `C-i' is `TAB'.
   "*Key sequences to use for `icicle-prefix-complete'.
@@ -3481,7 +3510,7 @@ then you can use multi-command `icicle-increment-option' anytime to
 change the option value incrementally."
   :type '(choice
           (const    :tag "Highlight all search hits (no limit)" t)
-          (integer  :tag "Max number of search hits to highlight"))
+          (integer  :tag "Max number of search hits to highlight" :value 100000))
   :group 'Icicles-Searching)
 
 (defcustom icicle-search-hook nil
@@ -3752,12 +3781,12 @@ have the suffix `-cp' (for \"component predicate\") instead of `-p'."
   ;; `bmkp-sort-comparer' says about `bmkp-reverse-multi-sort-order'.
   :type '(choice
           (const    :tag "None (do not sort)" nil)
-          (function :tag "Sorting Predicate")
+          (function :tag "Sorting Predicate" :value icicle-case-string-less-p)
           (list     :tag "Sorting Multi-Predicate"
            (repeat (function :tag "Component Predicate"))
            (choice
             (const    :tag "None" nil)
-            (function :tag "Final Predicate"))))
+            (function :tag "Final Predicate" :value icicle-case-string-less-p))))
   :group 'Icicles-Matching :group 'Icicles-Completions-Display)
 
 (defcustom icicle-buffer-configs
@@ -3780,12 +3809,19 @@ The form is (CONFIG...), where CONFIG is a list of these items:
 A configuration describes which buffer names are displayed during
 completion and their order."
   :type '(repeat (list
-                  string                ; Configuration name
-                  (choice (const :tag "None" nil) (string :tag "Match regexp"))
-                  (choice (const :tag "None" nil) (string :tag "No-match regexp"))
-                  (choice (const :tag "None" nil) (function :tag "Predicate")) ; Predicate
-                  (choice (const :tag "None" nil) (repeat (string :tag "Extra buffer")))
-                  (choice (const :tag "None" nil) (function :tag "Sort function"))))
+                  (string :tag "Configuration name") ; Configuration name
+                  (choice (const :tag "None" nil) (regexp :tag "Match regexp" :value "^[^ ]"))
+                  (choice (const :tag "None" nil) (regexp :tag "No-match regexp" :value "^[ ]"))
+                  (choice
+                   (const :tag "None" nil)
+                   (function :tag "Predicate"
+                    :value (lambda (bufname) (buffer-file-name (get-buffer bufname)))))
+                  (choice
+                   (const :tag "None" nil)
+                   (repeat :tag "Extra buffers" (string :tag "Extra buffer" :value "*scratch*")))
+                  (choice
+                   (const :tag "None" nil)
+                   (function :tag "Sort function" :value icicle-buffer-sort-*...*-last))))
   :group 'Icicles-Buffers)
 
 (defun icicle-buffer-sort-*...*-last (buf1 buf2)
@@ -3810,6 +3846,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
 
  COMPARER compares two items.  It must be acceptable as a value of
  `icicle-sort-comparer'."
+    ;; $$$$$$ Provide default :value for choices?
     :type '(alist
             :key-type (choice :tag "Sort order" string symbol)
             :value-type (choice
@@ -3836,6 +3873,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
 
  COMPARER compares two items.  It must be acceptable as a value of
  `icicle-sort-comparer'."
+    ;; $$$$$$ Provide default :value for choices?
     :type '(repeat
             (cons
              (choice :tag "Sort order" string symbol)
@@ -3853,7 +3891,8 @@ Each alist element has the form (SORT-ORDER . COMPARER):
   "*Regexp to match special completion candidates, or nil to do nothing.
 The candidates are highlighted in buffer `*Completions*' using face
 `icicle-special-candidate'."
-  :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
+  :type '(choice (const :tag "None" nil) regexp) ; $$$$$$ Default :value?
+  :group 'Icicles-Completions-Display)
 
 (defcustom icicle-S-TAB-completion-methods-alist ; Cycle with `M-('.
   `(("apropos" . string-match)
@@ -4102,7 +4141,7 @@ then you can use multi-command `icicle-increment-option' anytime to
 change the option value incrementally."
   :type '(choice
 	  (const   :tag "To mid-window" nil)
-	  (integer :tag "On this line number (negative: from bottom)" -4))
+	  (integer :tag "On this line number (negative: from bottom)" :value -4))
   :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-test-for-remote-files-flag t ; Toggle with `C-^'.
@@ -4186,11 +4225,13 @@ reverses the meaning of `icicle-default-thing-insertion'."
   :type
   '(cons
     (choice
-     (repeat (function :tag "Function to grab some text at point and insert it in minibuffer"))
+     (repeat
+      (function :tag "Function to grab some text at point and insert it in minibuffer"
+       :value word-at-point))
      (const :tag "No alternative text-grabbing functions" nil))
     (choice
      (const :tag "No function to successively grab more text" nil)
-     (function :tag "Function to advance point one text thing")))
+     (function :tag "Function to advance point one text thing" :value forward-word)))
   :group 'Icicles-Miscellaneous)
 
 ;; Must be before `icicle-top-level-key-bindings'.
@@ -4527,7 +4568,7 @@ evaluating CONDITION is nil.
 
 In Customize, to specify a key sequence, choose `Key' in the `Value
 Menu', then enter a key description such as that returned by `C-h k'.
-For convenience, you can use insert each key in the key description by
+For convenience, you can insert each key in the key description by
 hitting `C-q' then the key.  For example, to enter the key description
 `C-c M-k' you can use `C-q C-c C-q M-k'.
 
@@ -4549,8 +4590,7 @@ See also option `icicle-functions-to-redefine'."
             (list
              (choice
               (restricted-sexp :tag "Key"
-               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
-               :value [ignore])
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x)))) :value [ignore])
               (restricted-sexp :tag "Command to remap"
                ;; Use `symbolp' instead of `commandp', in case the library defining the
                ;; command is not loaded.
@@ -4953,7 +4993,7 @@ or nil, which means the Unicode chars that have been read previously."
     :type '(choice
             (const    :tag "All Unicode chars"      icicle-ucs-names)
             (const    :tag "Previously used chars"  nil)
-            (function :tag "Invoke function"        icicle-ucs-names))
+            (function :tag "Invoke function" :value icicle-ucs-names))
     :group 'Icicles-Matching))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
