@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 08:49:50 2013 (-0700)
+;; Last-Updated: Thu Jul  4 20:34:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10074
+;;     Update #: 10095
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6691,6 +6691,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/07/04 dadams
+;;     icicle-buffer-prefix-arg-filtering: Typo: Removed ' from const value.
+;;     icicle-search-highlight-threshold, icicle(-alternative)-sort-comparer,
+;;       icicle(-no)-buffer-match-regexp, icicle-buffer-predicate, icicle-buffer-prefix-arg-filtering,
+;;       icicle-buffer-sort, icicle-comint-dynamic-complete-replacements, icicle-file-no-match-regexp,
+;;       icicle-file-predicate, icicle-file-sort, icicle-max-candidates, icicle-buffer-configs,
+;;       icicle-pp-eval-expression-print-(length|level), icicle-recenter,
+;;       icicle-thing-at-point-functions, icicle-zap-to-char-candidates:
+;;         Added :value.
+;;     icicle-alternative-sort-comparer: Corrected - needs same :type as icicle-sort-comparer.
 ;; 2013/06/22 dadams
 ;;     Renamed and reversed: *-remove-Completions-when-* to icicle-keep-Completions-for-sole-dir-flag.
 ;; 2013/06/20 dadams
