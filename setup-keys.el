@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sun Apr 21 11:24:49 2013 (-0700)
+;; Last-Updated: Fri Jul  5 09:33:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1184
+;;     Update #: 1199
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -17,11 +17,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `doremi', `doremi-cmd',
-;;   `doremi-frm', `eyedropper', `faces', `faces+', `fit-frame',
-;;   `frame-cmds', `frame-fns', `help+20', `hexrgb', `highlight',
-;;   `info', `info+', `isearch+', `iso-transl', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `naked', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `doremi-frm', `easymenu', `eyedropper', `faces', `faces+',
+;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `hexrgb',
+;;   `highlight', `info', `info+', `isearch+', `iso-transl',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
+;;   `mouse+', `mwheel', `naked', `pp', `pp+', `replace+', `ring',
 ;;   `second-sel', `simple+', `strings', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
 ;;   `widget'.
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/05 dadams
+;;     Bind move-frame-to-screen-top-left to C-S-home.
 ;; 2013/04/21 dadams
 ;;     Bind zoom-in/out to C-x +, C-x -, C-x =, C-x 0.
 ;; 2013/03/06 dadams
@@ -427,6 +429,7 @@
     (global-set-key [(control shift ?v)]    'move-frame-to-screen-bottom)        ; `C-S-v'
     (global-set-key [(control shift prior)] 'move-frame-to-screen-left)          ; `C-S-prior'
     (global-set-key [(control shift next)]  'move-frame-to-screen-right)         ; `C-S-next'
+    (global-set-key [(control shift home)]  'move-frame-to-screen-top-left)      ; `C-S-home'
     (global-set-key [(control meta up)]     'shrink-frame)                       ; `C-M-up'
     (global-set-key [(control meta down)]   'enlarge-frame)                      ; `C-M-down'
     (global-set-key [(control meta left)]   'shrink-frame-horizontally)          ; `C-M-left'
