@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Jun  8 11:49:15 2013 (-0700)
+;; Last-Updated: Thu Jul  4 19:16:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2837
+;;     Update #: 2839
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -261,6 +261,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/04 dadams
+;;     show-hide-show-function: Use function-item instead of const for jump-to-frame-config-register.
 ;; 2013/05/15 dadams
 ;;     Added error symbols font-too-small and font-size.
 ;;     enlarged-font-name: Signal font-too-small error.
@@ -540,7 +542,7 @@ The new name is the name of the current buffer."
 (defcustom show-hide-show-function 'jump-to-frame-config-register
   "*Function to show stuff that is hidden or iconified by `show-hide'.
 Candidates include `jump-to-frame-config-register' and `show-buffer-menu'."
-  :type '(choice (const :tag "Restore frame configuration" jump-to-frame-config-register)
+  :type '(choice (function-item :tag "Restore frame configuration" jump-to-frame-config-register)
                  (function :tag "Another function"))
   :group 'Frame-Commands)
 
