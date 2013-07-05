@@ -190,7 +190,7 @@ And so..
      (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 
   ;; Emacs23 style font setting.
-  (set-face-attribute 'default nil :font (font-candidate '("Consolas-10:weight=normal" "DejaVu Sans Mono-10:weight=normal")))
+  (set-face-attribute 'default nil :font (font-candidate '"Consolas-10:weight=normal" "DejaVu Sans Mono-10:weight=normal"))
 
 Version using [[https://github.com/magnars/dash.el dash.el]] (call it the same way as above):
 
