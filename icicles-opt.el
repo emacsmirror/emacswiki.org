@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 20:34:50 2013 (-0700)
+;; Last-Updated: Fri Jul  5 16:08:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5711
+;;     Update #: 5718
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4295,6 +4295,7 @@ toggle Icicle mode off and then back on."
     ("\C-x "                       icicle-command-abbrev               t) ; `C-x SPC'
     ("\C-x5o"                      icicle-select-frame                 t) ; `C-x 5 o'
     ("\C-h\C-o"                    icicle-describe-option-of-type      t) ; `C-h C-o'
+    ([C-M-insert]                 icicle-in-out-minibuffer            t) ; `C-M-insert'
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            '(([S-f4]               icicle-kmacro                       t))) ; `S-f4'
     (abort-recursive-edit          icicle-abort-recursive-edit         t) ; `C-]'
