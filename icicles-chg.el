@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 20:34:57 2013 (-0700)
+;; Last-Updated: Fri Jul  5 16:09:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10095
+;;     Update #: 10100
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3847,6 +3847,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/07/05 dadams
+;;     Added: icicle-in-out-minibuffer.
 ;; 2013/07/04 dadams
 ;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/06/22 dadams
@@ -6691,6 +6693,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/07/05 dadams
+;;     icicle-top-level-key-bindings: Bind C-M-insert to icicle-in-out-minibuffer.
 ;; 2013/07/04 dadams
 ;;     icicle-buffer-prefix-arg-filtering: Typo: Removed ' from const value.
 ;;     icicle-search-highlight-threshold, icicle(-alternative)-sort-comparer,
