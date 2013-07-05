@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Jul  4 19:16:09 2013 (-0700)
+;; Last-Updated: Fri Jul  5 09:29:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2839
+;;     Update #: 2857
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -110,9 +110,9 @@
 ;;    `move-frame-down', `move-frame-left', `move-frame-right',
 ;;    `move-frame-to-screen-bottom', `move-frame-to-screen-left',
 ;;    `move-frame-to-screen-right', `move-frame-to-screen-top',
-;;    `move-frame-up', `other-window-or-frame', `remove-window',
-;;    `remove-windows-on', `rename-frame',
-;;    `rename-non-minibuffer-frame', `restore-frame',
+;;    `move-frame-to-screen-top-left', `move-frame-up',
+;;    `other-window-or-frame', `remove-window', `remove-windows-on',
+;;    `rename-frame', `rename-non-minibuffer-frame', `restore-frame',
 ;;    `restore-frame-horizontally', `restore-frame-vertically',
 ;;    `save-frame-config',
 ;;    `set-all-frame-alist-parameters-from-frame',
@@ -161,6 +161,7 @@
 ;;   (global-set-key [(control shift ?v)]           'move-frame-to-screen-bottom)   ; like `C-v'
 ;;   (global-set-key [(control shift prior)]        'move-frame-to-screen-left)     ; like `C-prior'
 ;;   (global-set-key [(control shift next)]         'move-frame-to-screen-right)    ; like `C-next'
+;;   (global-set-key [(control shift home)]         'move-frame-to-screen-top-left)
 ;;   (global-set-key [(control meta down)]          'enlarge-frame)
 ;;   (global-set-key [(control meta right)]         'enlarge-frame-horizontally)
 ;;   (global-set-key [(control meta up)]            'shrink-frame)
@@ -261,6 +262,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/05 dadams
+;;     Added: move-frame-to-screen-top-left.
+;;     move-frame-to-screen-*: Read FRAME name in interactive spec.
 ;; 2013/07/04 dadams
 ;;     show-hide-show-function: Use function-item instead of const for jump-to-frame-config-register.
 ;; 2013/05/15 dadams
@@ -1435,7 +1439,8 @@ INCR is the increment to use when changing the position."
 With a prefix arg, offset it that many char heights from the top."
   (interactive (list (if current-prefix-arg
                          (* (frame-char-height) (prefix-numeric-value current-prefix-arg))
-                       0)))
+                       0)
+                     (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
   (modify-frame-parameters frame `((top . ,arg))))
 
 ;;;###autoload
@@ -1444,7 +1449,8 @@ With a prefix arg, offset it that many char heights from the top."
 With a prefix arg, offset it that many char heights from the bottom."
   (interactive (list (if current-prefix-arg
                          (* (frame-char-height) (prefix-numeric-value current-prefix-arg))
-                       0)))
+                       0)
+                     (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
   (let* ((borders       (* 2 (cdr (assq 'border-width (frame-parameters frame)))))
          (avail-height  (- (/ (- (available-screen-pixel-height) borders
                                  (frame-extra-pixels-height frame)
@@ -1463,7 +1469,8 @@ With a prefix arg, offset it that many char heights from the bottom."
 With a prefix arg, offset it that many char widths from the left."
   (interactive (list (if current-prefix-arg
                          (* (frame-char-width) (prefix-numeric-value current-prefix-arg))
-                       0)))
+                       0)
+                     (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
   (modify-frame-parameters frame `((left . ,arg))))
 
 ;;;###autoload
@@ -1472,10 +1479,24 @@ With a prefix arg, offset it that many char widths from the left."
 With a prefix arg, offset it that many char widths from the right."
   (interactive (list (if current-prefix-arg
                          (* (frame-char-width) (prefix-numeric-value current-prefix-arg))
-                       0)))
+                       0)
+                     (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
   (modify-frame-parameters
-   frame                  ; Hard-code 7 here - what does it depend on?
+   frame                                ; Hard-code 7 here - what does it depend on?
    `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7 arg))))))
+
+;;;###autoload
+(defun move-frame-to-screen-top-left (arg &optional frame) ; Suggested binding: `C-S-home'.
+  "Move FRAME (default: selected-frame) to the top and left of the screen.
+With a prefix arg, offset it that many char widths from the edges.
+
+Note: You can use this command to move an off-screen (thus not
+visible) frame back onto the screen."
+  (interactive (list (if current-prefix-arg
+                         (* (frame-char-width) (prefix-numeric-value current-prefix-arg))
+                       0)
+                     (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
+  (modify-frame-parameters frame '((top . ,arg) (left . ,arg))))
 
 
 ;; This does not work 100% well.  For instance, set frame font to
