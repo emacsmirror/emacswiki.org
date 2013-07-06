@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jul  5 16:46:00 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:39:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19179
+;;     Update #: 19170
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -109,8 +109,8 @@
 ;;    `icicle-help-on-previous-prefix-candidate',
 ;;    `icicle-help-string-completion',
 ;;    `icicle-help-string-non-completion', `icicle-history',
-;;    `icicle-in-out-minibuffer', `icicle-insert-completion',
-;;    `icicle-insert-dot-command', (+)`icicle-insert-history-element',
+;;    `icicle-insert-completion', `icicle-insert-dot-command',
+;;    (+)`icicle-insert-history-element',
 ;;    `icicle-insert-key-description',
 ;;    `icicle-insert-list-join-string',
 ;;    `icicle-insert-newline-in-minibuffer',
@@ -4372,32 +4372,6 @@ value of this condition: nil or non-nil."
       (insert newcand)
       (setq icicle-completion-candidates      (list newcand)
             icicle-last-completion-candidate  newcand))))
-
-;; This is really top-level too.  Put it here because it is used only when the minibuffer is active.
-(defun icicle-in-out-minibuffer (&optional arg) ; Bound to `C-M-insert' in Icicle mode.
-  "Switch between minibuffer and window selected before using minibuffer.
-This nselects the window and gives its frame the input focus.
-With a prefix arg you are prompted for a window to select."
-  (interactive "P")
-  (let ((mini-win  (active-minibuffer-window)))
-    (if (not mini-win)                  ; No-op if not active.
-        (message "No active minibuffer")
-      (cond ((eq (selected-window) mini-win)
-             (if arg
-                 (let ((enable-recursive-minibuffers  t)
-                       (win-alist                     (icicle-make-window-alist 'ALL-P)))
-                   (icicle-select-window-by-name (completing-read "Select Window: " win-alist nil t)
-                                                 win-alist))
-               (if (not (window-live-p icicle-orig-window))
-                   (message "Cannot switch to original window%s"
-                            (if icicle-orig-window (format ", `%s'" icicle-orig-window) ""))
-                 (select-window icicle-orig-window)
-                 (icicle-msg-maybe-in-minibuffer "Focus is now in `%s'" icicle-orig-window)
-                 (select-frame-set-input-focus (window-frame icicle-orig-window)))))
-            (t
-             (select-window mini-win)
-             (icicle-msg-maybe-in-minibuffer "Focus is now in MINIBUFFER")
-             (select-frame-set-input-focus (window-frame mini-win)))))))
 
 (defun icicle-switch-to-Completions-buf () ; Bound to `C-insert' in minibuffer.
   "Select the completion list window.
