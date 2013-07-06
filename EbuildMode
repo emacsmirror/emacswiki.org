@@ -1,1 +1,4 @@
-#REDIRECT GentooSyntax
+EbuildMode is for editing Gentoo Linux ebuilds and eclasses.  It is maintained by the Gentoo project and is installable from Portage using the "emerge app-emacs/ebuild-mode" command (or "emerge app-xemacs/gentoo-syntax" for XEmacs).  If you wish to obtain EbuildMode without using Gentoo Linux the source can be downloaded from: [http://gentoo.osuosl.org/distfiles/ebuild-mode-1.22.tar.xz http://gentoo.osuosl.org/distfiles/ebuild-mode-1.22.tar.xz].  You can use the autoloads and auto-mode-alist [http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo-x86/app-emacs/ebuild-mode/files/50ebuild-mode-gentoo.el configuration] from Portage for your .emacs configuration.
+
+----
+CategoryModes
