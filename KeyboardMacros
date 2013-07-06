@@ -9,11 +9,11 @@ Did you note that a "''keyboard''" macro can record nearly any user actions -- '
 : '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using ##defmacro##. 
 
 Here is how to ''define'' a keyboard macro:
-* `<code>C-x (</code>' -- start defining a keyboard macro
-* `<code>C-x )</code>' -- stop defining the keyboard macro
+* `<code>C-x (</code>' or <code><f3></code>-- start defining a keyboard macro
+* `<code>C-x )</code>' or <code><f4></code>-- stop defining the keyboard macro
 
 And here is how to ''execute'' a keyboard macro you've defined:
-* `C-x e' -- execute the keyboard macro
+* `C-x e' or <code><f4></code> -- execute the keyboard macro
 
 Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
 * `C-u 37 C-x e'
