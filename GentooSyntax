@@ -1,6 +1,1 @@
-GentooSyntax is for editing Gentoo Linux ebuilds, eselect modules and eclasses.  It is maintained by the Gentoo project and is installable from Portage using the "emerge app-emacs/gentoo-syntax" command (or "emerge app-xemacs/gentoo-syntax" for XEmacs).  If you wish to obtain GentooSyntax without using Gentoo Linux the source can be downloaded from: [http://gentoo.osuosl.org/distfiles/gentoo-syntax-1.20.tar.bz2 http://gentoo.osuosl.org/distfiles/gentoo-syntax-1.20.tar.bz2].  You can use the autoloads and auto-mode-alist [http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo-x86/app-emacs/gentoo-syntax/files/50gentoo-syntax-gentoo.el configuration] from Portage for your .emacs configuration.
-
-Formerly, the Gentoo package was called app-emacs/ebuild-mode. It was renamed to gentoo-syntax since its scope is broader than ebuilds.
-
-----
-CategoryModes
+#REDIRECT EbuildMode
