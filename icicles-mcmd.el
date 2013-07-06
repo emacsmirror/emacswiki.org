@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 08:39:15 2013 (-0700)
+;; Last-Updated: Fri Jul  5 16:53:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19170
+;;     Update #: 19183
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4373,6 +4373,18 @@ value of this condition: nil or non-nil."
       (setq icicle-completion-candidates      (list newcand)
             icicle-last-completion-candidate  newcand))))
 
+;; This is really a top-level command.  Keep here because it is used only when the minibuffer is active.
+(defun icicle-switch-to/from-minibuffer () ; Bound to `pause' in Icicle mode.
+  "Switch to minibuffer or previous buffer, in other window.
+If current buffer is the minibuffer, then switch to the buffer that
+was previously current.  Otherwise, switch to the minibuffer."
+  (interactive)
+  (unless (active-minibuffer-window) (icicle-user-error "Minibuffer is not active"))
+  (if (eq (selected-window) (active-minibuffer-window))
+      (switch-to-buffer-other-window icicle-pre-minibuffer-buffer)
+    (select-window (active-minibuffer-window))))
+
+
 (defun icicle-switch-to-Completions-buf () ; Bound to `C-insert' in minibuffer.
   "Select the completion list window.
 The cursor is placed on the first occurrence of the current minibuffer
@@ -4477,17 +4489,6 @@ Return the name as a string."           ; See also `choose-completion' and `mous
     (unless beg (icicle-user-error "No completion here"))
     ;; $$$$ (buffer-substring-no-properties beg end)))
     (buffer-substring beg end)))
-
-(defun icicle-switch-to/from-minibuffer () ; Bound to `pause' in Icicle mode.
-  "Switch to minibuffer or previous buffer, in other window.
-If current buffer is the minibuffer, then switch to the buffer that
-was previously current.  Otherwise, switch to the minibuffer."
-  (interactive)
-  (unless (active-minibuffer-window) (icicle-user-error "Minibuffer is not active"))
-  (if (eq (selected-window) (active-minibuffer-window))
-      (switch-to-buffer-other-window icicle-pre-minibuffer-buffer)
-    (select-window (active-minibuffer-window))))
-
 
 ;; Replaces `previous-completion' (defined in `simple.el').
 ;;
