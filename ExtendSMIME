@@ -2,7 +2,7 @@ S/MIME support in Gnus is somewhat limited.  ExtendSMIME redefines some Gnus
 functions and adds new ones to include proper support for
 * multiple recipients (smime-encrypt-region enhanced),
 * retrieval  and caching of certificates from LDAP servers
-  (smime-cert-by-ldap-1 redefined, including a bug fix),
+  (smime-cert-by-ldap-1 redefined, including a bug fix and negative caching),
 * extraction and caching of certificates from signed messages
   (smime-verify-region enhanced),
 * and (via jl-encrypt.el) automatic insertion of MML tags into messages if
@@ -17,7 +17,7 @@ certificate is verified successfully then the contained certificate is
 stored for each of its e-mail addresses.
 
 Signed versions of jl-smime.el and jl-encrypt.el are available
-[http://www.informationelle-selbstbestimmung-im-internet.de/emacs/ over there].
+[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
 
 For basic setup information concerning S/MIME in GNU Emacs (Gnus, in
 fact), I recommend that you read Info node
@@ -28,9 +28,10 @@ and the Wiki entry GnusSMIME.
 In general, I recommend GnuPG over S/MIME (which is the default for Gnus).
 Unless you are in a restricted setting, say in a university or corporate
 setting, the trust model regarding certificate authorities is broken.
-You may want to recall the recent certificate authority failures concerning
-[https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model DigiNotar]
-and [http://www.h-online.com/news/item/Trustwave-issued-a-man-in-the-middle-certificate-1429982.html Trustwave].
+You may want to recall some certificate authority failures such as
+[http://www.h-online.com/security/news/item/SSL-meltdown-a-cyber-war-attack-1214104.html Comodo (2011)],
+[https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model DigiNotar (2011)],
+and [http://www.h-online.com/news/item/Trustwave-issued-a-man-in-the-middle-certificate-1429982.html Trustwave (2012)].
 Although the impact of those failures appears to be restricted to SSL
 certificates, I don't see any reason why S/MIME certificates should be more
 trustworthy.
@@ -38,24 +39,47 @@ trustworthy.
 ==Installation==
 Put Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
-    (load "jl-smime")
+(load "jl-smime")
 }}}
-In general, no further configuration should be necessary.
+Customizable variables are `jl-smime-permit-ldap' and
+`jl-smime-negative-cache-dir'.  You may want to read their documentation.
 
-Note that jl-smime.el contains the following:
+I'm using the following code after (load "jl-smime") in my setup:
 {{{
-;; I'm searching for S/MIME certificates via LDAP at DFN-Verein.
+;; Allow automatic LDAP queries for certificates within my domain.
+(setq jl-smime-permit-ldap "@\\(.+\\.\\)?uni-muenster\\.de$")
+
+;; I'm searching for S/MIME certificates via LDAPS at DFN-Verein.
+;; Note that ldap.el in Emacs requires a minor workaround to perform
+;; encrypted connections via LDAPS.  In fact, ldapsearch is being invoked
+;; to use unencrypted plaintext LDAP communication with the parameter "-h".
+;; Maybe I'm doing something wrong but I only got LDAPS to work with the
+;; parameter "-H ldaps://ldap.pca.dfn.de".  To get rid of the default
+;; parameter -h, I'm passing the empty string as hostname, setting
+;; smime-ldap-host-list to '("").  Finally, ldapsearch aborts the
+;; connection if it is not told where to find the CA certificate for the
+;; LDAPS server (which is a Good Thing).
+;; I created ~/.ldaprc with a single line pointing to that CA certificate:
+;; TLS_CACERT /path/to/server/cert
 (require 'ldap)
+(setq smime-ldap-host-list '(""))
 (setq ldap-default-base "O=DFN-Verein,C=DE"
       ; -x: no SASL authentication, -tt: store result in file
-      ldap-ldapsearch-args '("-x" "-tt")
+      ; -H: connect to specified URI.
+      ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")
       )
 
 ;; Cache S/MIME passphrase for 600 seconds.  (Default is 16.)
 (require 'password-cache)
 (setq password-cache-expiry 600)
 }}}
-You may want to adjust those settings.
+
+For the record: Previously, I used plaintext LDAP with the following
+differences to the above setup:
+{{{
+(setq ldap-ldapsearch-args '("-x" "-tt"))
+(setq smime-ldap-host-list '("ldap.pca.dfn.de"))
+}}}
 
 ----
 CategoryGnus SigningMail EncryptingMail
