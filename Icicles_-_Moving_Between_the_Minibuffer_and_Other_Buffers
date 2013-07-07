@@ -22,6 +22,11 @@ completion actions.  It can be handy to interrupt this to perform
 some normal editing or search, and then resume multi-command
 actions.
 
+For example, when using `g' (`icicle-Info-goto-node') in [[Info]], if
+you use `C-RET' to show a matching candidate node, you can `pause'
+to visit it, search it using `C-s', and then `pause' back to the
+minibuffer to continue browsing other node candidates.
+
 Another use for this feature is to select text in the original
 buffer and then insert it in the minibuffer.
 See also [[Icicles - Inserting Text from Cursor]] for another way to do that.
