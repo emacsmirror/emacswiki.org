@@ -1,6 +1,6 @@
 The term "'''[::completion]'''" can mean different things in Emacs:
 
-'''1. Input completion --''' Completion of your input in the [[minibuffer]].
+'''1. Input completion --''' Completion of your input in the [[minibuffer]].  (See also [[Manual:Minibuffer Completion]] (lisp) in the manual.)
 
 * Input completion is built in. Use it with `M-x', `C-x b', `C-x C-f', and with many other commands that prompt for input. There are various kinds of input completion, including these:
 
