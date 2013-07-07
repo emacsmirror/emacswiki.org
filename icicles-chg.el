@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 20:34:57 2013 (-0700)
+;; Last-Updated: Sat Jul  6 20:13:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10095
+;;     Update #: 10102
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3847,6 +3847,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/07/06 dadams
+;;     icicle-switch-to/from-minibuffer:
+;;       Added minibuffer messages.
+;;       Message, not error, if minibuffer not active.
 ;; 2013/07/04 dadams
 ;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/06/22 dadams
