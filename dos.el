@@ -23,8 +23,9 @@
 ;;; Commentary:
 ;;
 ;; Major mode for editing Dos scripts (batch files). Provides syntax
-;; highlighting and imenu/outline support. The syntax groups for
-;; highlighting are:
+;; highlighting, a basic template, access to help pages for Dos commands,
+;; imenu/outline navigation, and the ability to run scripts from within Emacs.
+;; The syntax groups for highlighting are:
 ;;
 ;; Face                          Example
 ;; dos-label-face                :LABEL
