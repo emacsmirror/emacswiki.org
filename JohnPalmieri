@@ -1,4 +1,5 @@
 * http://www.math.washington.edu/~palmieri/Emacs
+(This URL is now defunct. You can try the [http://web.archive.org/web/20060205175757/http://www.math.washington.edu/~palmieri/ web.archive.org], and John's code is also available from [https://github.com/jhpalmieri?tab=repositories github].)
 
 * HighlightingCompletion is a variant on completion in Emacs. When typing in the minibuffer (for example), whenever the text can be completed, the completion is added to the minibuffer provisionally--it is more a visual cue as to what would be inserted if you hit the TAB key than anything else. 
 
@@ -7,6 +8,7 @@
 * UltraTexMode is a major mode for typing TeX documents; one of its main features is dynamic completion on TeX commands. It has a few other nice bells and whistles. (This includes the lightning completion package, by the way.) 
 
 * LaTeXSymbols provides commands in XEmacs to open up windows with tables of various sorts of symbols. [http://www.math.washington.edu/~palmieri/Emacs/Doc/symbols.html Here is an example of this]. 
+
 
 ----
 CategoryHomepage
