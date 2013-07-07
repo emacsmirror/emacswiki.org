@@ -7,3 +7,6 @@ Advanced libraries such as [[Icicles]] and [EmacsWiki:id=Anything Anything/Helm]
 ==Customised completing-read functionality==
 
 * Lisp:auto-completing-read.el provides variants of `completing-read' and `ido-completing-read' designed to minimise the number of keystrokes needed to select an option by automatically completing as much as possible, and automatically selecting when only one option remains.
+
+----
+CategoryCompletion
