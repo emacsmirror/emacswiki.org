@@ -269,10 +269,37 @@
 ;; 
 ;; - [[http://www.pement.org/emacs_tabs.htm][Understanding GNU Emacs and tabs]]
 ;; - [[http://kb.iu.edu/data/abde.html][In Emacs how can I change tab sizes?]]
+;; *** How do I add a variable to the auto-indent tab offset?
+;; You can add the variable by using =M-x customize-group
+;; auto-indent-mode= and then add the variable to
+;; `auto-indent-known-indent-levels'.  Another way is to use lisp:
+;; 
+;; 
+;;   (add-to-list 'auto-indent-known-indent-levels 'c-basic-offset)
+;; 
+;; 
+;; *** How do I change the auto-indent default offset?
+;; You can change auto-indent's default offset by:
+;; 
+;; 
+;;   (setq auto-indent-assign-indent-level 4) ; Changes the indent level to
+;;                                           ; 4 spaces instead of 2.
+;; 
+;; 
+;; *** How do I turn of auto-indent assignment?
+;; When auto-indent finds a tab-size variable, it assigns the indentation
+;; level to the globally defined `auto-indent-assign-indent-level'.  If
+;; you do not want this to happen you can turn it off by
+;; 
+;;   (setq auto-indent-assign-indent-level-variables nil)
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 6-Jul-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Updated documentation for a better description of assigning the indent
+;;    level across modes.
 ;; 15-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Made the indentation selective.  Should fix Issue #15.
