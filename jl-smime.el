@@ -2,9 +2,17 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2011, 2012 Jens Lechtenbörger
+;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
 
-;; Version: $Id: jl-smime.el,v 1.2 2012/05/01 07:50:43 lechten Exp lechten $
+;; Version: $Id: jl-smime.el,v 1.6 2013/06/29 10:00:10 lechten Exp $
+;; Changelog:
+;; 2012/03/09, Version 1.1, initial release
+;; 2012/05/01, Version 1.2, extract certificate from signed message to file
+;; 2013/06/29, Version 2.1:
+;;    - compatibility with jl-encrypt.el 3.1
+;;    - customizable LDAP search for missing certificates upon send
+;;    - moved customization for other packages from code to comments
+
 ;; Compatibility: Should work with GNU Emacs 23.1 and later
 
 ;; This program is free software; you can redistribute it and/or
@@ -37,8 +45,9 @@
 ;; In general, I recommend GnuPG over S/MIME (which is the default for Gnus).
 ;; Unless you are in a restricted setting, say in a university or corporate
 ;; setting, the trust model regarding certificate authorities is broken.
-;; You may want to recall the recent certificate authority failures concerning
-;; DigiNotar and Trustwave:
+;; You may want to recall some certificate authority failures such as
+;; Comodo (2011), DigiNotar (2011), and Trustwave (2012):
+;; http://www.h-online.com/security/news/item/SSL-meltdown-a-cyber-war-attack-1214104.html
 ;; https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model
 ;; http://www.h-online.com/news/item/Trustwave-issued-a-man-in-the-middle-certificate-1429982.html
 ;; Although the impact of those failures appears to be restricted to SSL
@@ -53,7 +62,8 @@
 ;; functions and adds new ones to include proper support for
 ;; * multiple recipients (smime-encrypt-region enhanced),
 ;; * retrieval  and caching of certificates from LDAP servers
-;;   (smime-cert-by-ldap-1 redefined, including a bug fix),
+;;   (smime-cert-by-ldap-1 redefined, including a bug fix and negative
+;;   caching),
 ;; * extraction and caching of certificates from signed messages
 ;;   (smime-verify-region enhanced),
 ;; * and (via jl-encrypt.el) automatic insertion of MML tags into messages if
@@ -62,8 +72,9 @@
 ;; The general idea of ExtendSMIME is to store available certificates in
 ;; files under smime-certificate-directory.  The file names under which a
 ;; certificate is stored are its e-mail addresses.
-;; A certificate file is written in two cases:  First, if a certificate is
-;; received on demand via LDAP.  Second, if a signed message containing a
+;; A certificate file is written in two cases: First, if a certificate is
+;; received on demand via LDAP (note that LDAP searches can be customized via
+;; jl-smime-permit-ldap).  Second, if a signed message containing a
 ;; certificate is verified successfully then the contained certificate is
 ;; stored for each of its e-mail addresses.
 
@@ -75,11 +86,45 @@
 ;; Install:
 ;; Place this file as well as jl-encrypt.el into your load-path,
 ;; and add the following to ~/.emacs:
-
+;;
 ;;     (load "jl-smime")
-
-;; You may want to check the subsequent comments to understand the rationale
-;; of my modifications and of my additions to standard message behavior.
+;;
+;; Customizable variables are jl-smime-permit-ldap and
+;; jl-smime-negative-cache-dir.  You may want to read their documentation.
+;;
+;; I'm using the following code after (load "jl-smime") in my setup:
+;;
+;; ;; Allow automatic LDAP queries for certificates within my domain.
+;; (setq jl-smime-permit-ldap "@\\(.+\\.\\)?uni-muenster\\.de$")
+;;
+;; ;; I'm searching for S/MIME certificates via LDAPS at DFN-Verein.
+;; ;; Note that ldap.el in Emacs requires a minor workaround to perform
+;; ;; encrypted connections via LDAPS.  In fact, ldapsearch is being invoked
+;; ;; to use unencrypted plaintext LDAP communication with the parameter "-h".
+;; ;; Maybe I'm doing something wrong but I only got LDAPS to work with the
+;; ;; parameter "-H ldaps://ldap.pca.dfn.de".  To get rid of the default
+;; ;; parameter -h, I'm passing the empty string as hostname, setting
+;; ;; smime-ldap-host-list to '("").  Finally, ldapsearch aborts the
+;; ;; connection if it is not told where to find the CA certificate for the
+;; ;; LDAPS server (which is a Good Thing).
+;; ;; I created ~/.ldaprc with a single line pointing to that CA certificate:
+;; ;; TLS_CACERT /path/to/server/cert
+;; (require 'ldap)
+;; (setq smime-ldap-host-list '(""))
+;; (setq ldap-default-base "O=DFN-Verein,C=DE"
+;;       ; -x: no SASL authentication, -tt: store result in file
+;;       ; -H: connect to specified URI.
+;;       ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")
+;;       )
+;;
+;; ;; Cache S/MIME passphrase for 600 seconds.  (Default is 16.)
+;; (require 'password-cache)
+;; (setq password-cache-expiry 600)
+;;
+;; For the record: Previously, I used plaintext LDAP with the following
+;; differences to the above setup:
+;; (setq ldap-ldapsearch-args '("-x" "-tt"))
+;; (setq smime-ldap-host-list '("ldap.pca.dfn.de"))
 
 ;; This file is *NOT* part of GNU Emacs.
 
@@ -88,34 +133,81 @@
 (require 'mml-smime)
 (require 'jl-encrypt)
 
-;; S/MIME does not have an encrypt-to option like GnuPG in gpg.conf.
-;; To compensate for this lack, add From header to recipients.
-(add-to-list 'jl-recipient-headers "from")
+(defgroup jl-smime nil
+  "Customization options for jl-smime.el which extend jl-encrypt.el"
+  :group 'jl-encrypt)
 
-;; I'm searching for S/MIME certificates via LDAP at DFN-Verein.
-(require 'ldap)
-(setq ldap-default-base "O=DFN-Verein,C=DE"
-      ; -x: no SASL authentication, -tt: store result in file
-      ldap-ldapsearch-args '("-x" "-tt")
-      )
+(defcustom jl-smime-permit-ldap nil
+  "Control when LDAP queries should look for missing certificates.
+If this variable is nil (the default), LDAP queries are only
+performed by standard Gnus message behavior (e.g., if you insert
+an S/MIME encryption tag via `C-c RET c s').
+Otherwise, this variable must be a regular expression matching
+e-mail addresses.  Whenever an S/MIME certificate is missing for
+an e-mail address that (a) matches this regular expression
+and (b) is not recorded under `jl-smime-negative-cache-dir', an
+LDAP query for a certificate is performed.
+Note that such an LDAP query tells the LDAP server and—if you do
+not use encrypted LDAPS communication—*every* party controlling
+any node or link between you and that server to whom you are
+about to send an e-mail.  Such information leakage may or may not
+be tolerable in your situation.
+At work I'm using \"@\\(.+\\.\\)?uni-muenster\\.de$\" to check for
+certificates for all addresses under \"uni-muenster.de\"."
+  :group 'jl-smime
+  :type '(choice (const nil) (regexp)))
 
-;; Cache S/MIME passphrase for 600 seconds.  (Default is 16.)
-(require 'password-cache)
-(setq password-cache-expiry 600)
+(defun jl-smime-mkcachedir ()
+  "Internal function to compute default name of negative cache directory."
+  (let ((result (file-name-as-directory
+		 (concat
+		  (file-name-as-directory smime-certificate-directory)
+		  "negative-cache"))))
+    (if (not (file-directory-p result))
+	(make-directory result t))
+    result))
+
+(defcustom jl-smime-negative-cache-dir (jl-smime-mkcachedir)
+  "Directory to record e-mail addresses for which LDAP failed.
+LDAP queries are used to search for missing S/MIME certificates.
+If a query fails, its e-mail address is recorded under this
+directory.  As long as an e-mail address is recorded there,
+jl-smime will not initiate further LDAP queries for that e-mail
+address.  An e-mail address will be removed from the negative
+cache if jl-smime observes its certificate (e.g., if you receive
+a signed e-mail containing the certificate or if
+`smime-cert-by-ldap-1' retrieves the certificate, possibly when
+you perform `C-c RET c s').
+Essentially, this negative caching is meant to limit the amount
+of information leakage explained under `jl-smime-permit-ldap'."
+  :group 'jl-smime
+  :type '(string))
 
 ;;
 ;; No configuration options beyond this point.  Just code.
 ;;
 
+;; S/MIME does not have an encrypt-to option like GnuPG in gpg.conf.
+;; Compensate for this lack:
+(setq jl-encrypt-ignore-from nil)
+
+(add-to-list 'jl-method-table
+	     '("smime" (("test" jl-certfile-available-p)
+			("doit" jl-secure-message-smime)
+			("ask" "S/MIME certificates available \
+for all recipients.  Really proceed *without* encryption? "))))
+
 ;;
-;; First, some redefinitions.
+;; Some redefinitions.
 ;;
 
-;; Redefine smime-cert-by-ldap-1 to work around a bug and to store
-;; retrieved certificates in files.
+;; Redefine smime-cert-by-ldap-1 to work around a bug and to either store
+;; retrieved certificate in file or create negative cache file.
+(require 'cl)
 (defun smime-cert-by-ldap-1 (mail host)
   "Get certificate for MAIL from the ldap server at HOST."
-  (let ((ldapresult
+  (let ((certdir (file-name-as-directory smime-certificate-directory))
+	(ldapresult
 	 ;; JL: ldapresult contains lots of nil elements.
 	 ;; These seem to be unexpected in the let body below.
 	 ;; Hence, the following line is necessary...
@@ -157,10 +249,13 @@
 	    (insert (substring cert i len) "\n"))
 	  (insert "-----END CERTIFICATE-----\n")
 	  ;; JL: Store retrieved cert...
-	  (write-file (concat smime-certificate-directory mail) t)
+	  (write-file (concat certdir mail) t)
+	  (jl-smime-del-negcache mail)
 	  )
       (kill-buffer retbuf)
-      (setq retbuf nil))
+      (setq retbuf nil)
+      ;; JL: Create negative cache file
+      (jl-smime-add-negcache mail))
     retbuf))
 
 ;; Redefine smime-encrypt-region to handle multiple recipients/certfiles.
@@ -207,7 +302,7 @@ Returns non-nil on success.
 Any details (stdout and stderr) are left in the buffer specified by
 `smime-details-buffer'.
 If signature verification is successful, the signing certificate is
-written into a file under smime-certificate-directory."
+written into a file under `smime-certificate-directory'."
   (smime-new-details-buffer)
   (let ((CAs (append (if smime-CA-file
 			 (list "-CAfile"
@@ -243,13 +338,68 @@ written into a file under smime-certificate-directory."
 ;;
 ;; New functions to make the above work.
 ;;
+
+(defun jl-certfile-available-p (recipient)
+  "Check whether certificate file is available for RECIPIENT.
+This tests whether `smime-certificate-directory' contains a
+certificate file whose name equals the e-mail address of
+RECIPIENT (which is in the format of
+`mail-extract-address-components') or its lower-case variant."
+  (let ((certdir (file-name-as-directory smime-certificate-directory))
+	(email (downcase recipient)))
+    (if (jl-smime-certfile-exists-p recipient)
+	t
+      (if (jl-smime-ldap-permitted-p email)
+	  (smime-cert-by-ldap email))
+      (file-exists-p (concat certdir email)))))
+
+(defun jl-smime-certfile-exists-p (recipient)
+  "Check whether certificate file for RECIPIENT exists."
+  (let ((email (downcase recipient)))
+    (or
+     (file-exists-p (concat certdir recipient))
+     (file-exists-p (concat certdir email)))))
+
+(defun jl-smime-isnegcached-p (email)
+  "Check whether EMAIL is present in negative cache."
+  (file-exists-p (concat jl-smime-negative-cache-dir email)))
+
+(defun jl-smime-ldap-permitted-p (email)
+  "Check whether LDAP query for EMAIL is permitted.
+An LDAP query is permitted if (a) no negative cache file for
+email exists, (b) `jl-smime-permit-ldap' is not nil but a regular
+expression, and (c) email matches `jl-smime-permit-ldap'."
+  (and (not (jl-smime-isnegcached-p email))
+       (stringp jl-smime-permit-ldap)
+       (string-match-p jl-smime-permit-ldap email)))
+
+(defun jl-smime-add-negcache (email)
+  "Create negative cache file for EMAIL."
+  (let ((cachename (concat jl-smime-negative-cache-dir email)))
+    (write-region "" nil cachename)
+    (message "Created negative cache file for %s" email)))
+
+(defun jl-smime-del-negcache (email)
+  "Remove negative cache file for EMAIL if it exists."
+  (let ((cachename (concat jl-smime-negative-cache-dir email)))
+    (when (file-exists-p cachename)
+      (delete-file cachename)
+      (message "Deleted negative cache file for %s" email))))
+
+(defun jl-secure-message-smime ()
+  "Invoke MML function to add appropriate secure tag for S/MIME.
+Creation of signatures is controlled by `jl-do-not-sign-p'."
+  (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
+
 (defun jl-fetch-certs-possibly-from-ldap (addresses)
   "Return list of certificate file names for given ADDRESSES.
 First, check for existing file; then retrieve file via LDAP."
     (if (= (length addresses) 0)
       nil
-    (let* ((email (cadar addresses))
-	  (certfile (concat smime-certificate-directory email)))
+    (let* ((email (car addresses))
+	   (certdir (file-name-as-directory smime-certificate-directory))
+	   (certfile (concat certdir email))
+	   )
       (unless (file-readable-p certfile)
 	(message "Trying to get certificate via LDAP: %s" email)
 	(smime-cert-by-ldap email))
@@ -261,7 +411,7 @@ First, check for existing file; then retrieve file via LDAP."
 (defun jl-rename-certfile (tmpfile)
   "Extract e-mail addresses from TMPFILE and copy TMPFILE once per address.
 TMPFILE must contain a certificate.  For each e-mail address, TMPFILE is
-copied to smime-certificate-directory with the e-mail address as filename.
+copied to `smime-certificate-directory' with the e-mail address as filename.
 Afterwards, TMPFILE is deleted."
   (unless (file-readable-p tmpfile)
     (error "Certfile not available: %s" tmpfile))
@@ -269,10 +419,13 @@ Afterwards, TMPFILE is deleted."
   (with-current-buffer smime-details-buffer
     (when (call-process smime-openssl-program nil smime-details-buffer nil
 			"x509" "-in" tmpfile "-email" "-noout")
-      (let ((addresses (mapcar 'downcase (smime-buffer-as-string-region
+      (let ((certdir (file-name-as-directory smime-certificate-directory))
+	    (addresses (mapcar 'downcase (smime-buffer-as-string-region
 					  (point-min) (point-max)))))
 	(dolist (address addresses t)
-	  (copy-file tmpfile (concat smime-certificate-directory address) t))
+	  (copy-file tmpfile (concat certdir address) t)
+	  (message "Wrote certificate for %s" address)
+	  (jl-smime-del-negcache address))
 	(delete-file tmpfile)
 	t))))
 ;;; jl-smime.el ends here
