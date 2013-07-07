@@ -18,6 +18,12 @@ The HTML documentation is going to be more readable the web.archive.org link abo
 
 [[LighteningCompletionDocumentation]]
 
+[new] In fact John's code is now on !GitHub:
+
+https://github.com/jhpalmieri
+
+Lightening Completion is part of the [https://github.com/jhpalmieri/ultratex ultratex] repository.
+
 ----
 
 In your .emacs file, you need the following line:
