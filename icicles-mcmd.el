@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jul  5 16:53:06 2013 (-0700)
+;; Last-Updated: Sat Jul  6 20:15:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19183
+;;     Update #: 19204
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4374,16 +4374,22 @@ value of this condition: nil or non-nil."
             icicle-last-completion-candidate  newcand))))
 
 ;; This is really a top-level command.  Keep here because it is used only when the minibuffer is active.
+;;
+;; $$$$$$ Gets thrown off if user clicks in another frame.  Presumably more than one Emacs bug involved
+;;        here, with frame focus, input focus, minibuffer msgs, etc.  See also Emacs bug #14810.
 (defun icicle-switch-to/from-minibuffer () ; Bound to `pause' in Icicle mode.
   "Switch to minibuffer or previous buffer, in other window.
 If current buffer is the minibuffer, then switch to the buffer that
 was previously current.  Otherwise, switch to the minibuffer."
   (interactive)
-  (unless (active-minibuffer-window) (icicle-user-error "Minibuffer is not active"))
-  (if (eq (selected-window) (active-minibuffer-window))
-      (switch-to-buffer-other-window icicle-pre-minibuffer-buffer)
-    (select-window (active-minibuffer-window))))
-
+  (cond ((not (active-minibuffer-window))
+         (icicle-msg-maybe-in-minibuffer "Cannot switch buffer: minibuffer is not active"))
+        ((eq (selected-window) (active-minibuffer-window))
+         (switch-to-buffer-other-window icicle-pre-minibuffer-buffer)
+         (icicle-msg-maybe-in-minibuffer "Input in `%s' now" icicle-pre-minibuffer-buffer))
+        (t
+         (select-window (active-minibuffer-window))
+         (icicle-msg-maybe-in-minibuffer "Input in MINIBUFFER now"))))
 
 (defun icicle-switch-to-Completions-buf () ; Bound to `C-insert' in minibuffer.
   "Select the completion list window.
