@@ -1,0 +1,1081 @@
+This is a HTML source code copy and paste from the documentation cached at [http://web.archive.org/web/20060214044920/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html web.archive.org]. It's not very readable in the Wiki, but you can always copy the HTML source from this page and view that in a web browser, and it seemed best to have at least one other copy of this somewhere.
+
+---
+
+<h1> 1. Overview </h1>
+<!--docid::SEC1::-->
+<p>
+
+As you are probably aware, Emacs does various sorts of completion, if
+you ask it to.  For instance, if you hit <kbd>C-x C-f</kbd> to find a file,
+then (once you are in the minibuffer) if you hit the <kbd>TAB</kbd> key, Emacs
+completes the file name if there is a unique completion.  Lightning
+completion offers an improvement to this, an improvement in several
+ways:
+</p><p>
+
+</p><ul>
+<li>
+Once lightning completion is initiated, it remains active until a
+completion is found, or until turned off.  If I have three files,
+<tt>`alphabet'</tt>, <tt>`alpo'</tt>, and <tt>`bozo'</tt>, and I initiate completion
+on file names, if I hit <kbd>a</kbd>, then <samp>`alp'</samp> is inserted; hitting
+<kbd>h</kbd> would then produce <samp>`alphabet'</samp>, and hitting <kbd>o</kbd> would
+produce <samp>`alpo'</samp>.  Similarly, hitting <kbd>b</kbd> at the start, instead
+of <kbd>a</kbd>, would have produced <samp>`bozo'</samp>.  This sort of completion,
+in which completion is always on--you don't have to keep hitting the
+<kbd>SPC</kbd> or <kbd>TAB</kbd> key to complete--is called "dynamic"
+completion.
+<p>
+
+</p></li><li>
+Lightning completion takes effect only if Emacs is idle for a length of
+time specified by the variable <code>lc-complete-idle-time-default</code>, the
+default value of which is 0.5 seconds.  So in the above example, you can
+type "alph" or "alpha" or "alphab"; then if you wait for half a second,
+Emacs will automatically complete it for you.  This is a new feature of
+lightning completion; if you are used to the old version, you can set
+this delay to be 0.  If you are a slow typist and you don't want Emacs
+completing unless you take a very deliberate pause, you can set it to
+something like 2.
+<p>
+
+</p></li><li>
+Lightning completion can be initiated anywhere, not just in the
+minibuffer.  If I'm writing email to someone, and I want to include the
+path name for some file, I type the first few letters of the path, then
+run the function <code>completing-insert-file-name</code>, and I'm in
+lightning completion mode.  There are similar function calls for
+completion on buffer names, lisp objects, lisp functions, lisp
+variables, and the contents of the kill ring.
+</li></ul>
+<p>
+
+Some remarks:
+</p><ol>
+<li>
+Dynamic completion, like any completion, has a nice side-effect: you can
+use long (and hence descriptive) file names, variable names, function
+names, whatever, because you hardly ever have to type the whole thing
+in.  So I don't mind that my directory structure in my account is deep
+and the directories have long names--I can find the file
+<tt>`~/tex/work/papers/hovey-strickland/axiomatic.tex'</tt> with 6
+keystrokes: one each for "t", "w", "p", "h", and "a", and then
+<kbd>RET</kbd>. (One also gets in the habit of trying to arrange it so that
+each of one's files in any given directory starts with a different
+letter.)
+<p>
+
+</p></li><li>
+If you mainly use lightning completion with file names and if you edit
+the same files over and over again, you will quickly learn exactly which
+characters you have to type to find each file.  In this case, you might
+want to set <code>lc-complete-idle-time-default</code> to be close to zero.
+If you don't want to bother learning this, and if you are worried that
+lightning completion will make you watch the screen all the time to see
+what has been completed and what hasn't, then you should set
+<code>lc-complete-idle-time-default</code> to be a larger number, so that
+completions only occur after a good pause.
+<p>
+
+</p></li><li>
+Lightning completion is also one of the main ingredients to
+Ultra-TeX mode, a major mode for typing TeX documents.  Most
+TeX commands start with a backslash, so in that mode, hitting "\"
+starts lightning completion on TeX commands.  The Ultra-TeX
+package is available from
+<a href="/web/20060512105648/http://www.math.washington.edu/~palmieri/Emacs/ultratex.html">http://www.math.washington.edu/~palmieri/Emacs/ultratex.html</a>.
+<p>
+
+</p></li><li>
+This package should be compatible with GNU Emacs 19, GNU Emacs 20, and
+XEmacs ("should be compatible" means that I've at least tried it out a
+bit with each one of these, without running into problems).  I mostly
+use GNU Emacs 20, so I know it works there.  I expect it to work pretty
+well with XEmacs, too, but I don't use GNU Emacs 19 anymore, and I don't
+test this package very vigorously there.
+<p>
+
+</p></li><li>
+Dynamic completion is an acquired taste.  It can be rather off-putting
+at the start, especially with a short
+<code>lc-complete-idle-time-default</code>, but once you get used to it, it's
+just wonderful.
+</li></ol>
+<p>
+
+In the following sections, I describe what functions to call to start
+lightning completion, which keys do what once completion is engaged, how
+to automate things a bit (e.g., so that <code>find-file</code> automatically
+uses lightning completion on file names), and how to install all of
+this.
+
+----
+
+<a name="SEC2" href="/web/20050910055034/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC2">Completion functions</a></h1>
+
+<p>
+<a name="IDX1"></a>
+<a name="IDX2"></a>
+<a name="IDX3"></a>
+<a name="IDX4"></a>
+<a name="IDX5"></a>
+<a name="IDX6"></a>
+<a name="IDX7"></a>
+<a name="IDX8"></a>
+<a name="IDX9"></a>
+<a name="IDX10"></a>
+<a name="IDX11"></a>
+<a name="IDX12"></a>
+
+
+</p><p>
+The file <tt>`light.el'</tt> defines several functions that do lightning
+completion:
+
+
+
+</p><ul>
+<li>
+
+<code>completing-insert-file-name</code> completes on file names.
+</li><li>
+
+<code>completing-insert-buffer-name</code> completes on buffer names.
+</li><li>
+
+<code>completing-insert-lisp-object</code> completes on lisp objects. 
+</li><li>
+
+<code>completing-insert-lisp-function</code> completes on lisp functions. 
+</li><li>
+
+<code>completing-insert-lisp-variable</code> completes on lisp variables. 
+</li><li>
+
+<code>completing-insert-kill</code> completes on the contents of the kill
+ring. 
+</li><li>
+
+<code>completing-insert-buffer-contents</code> completes on the contents of
+the current buffer, or with a prefix argument on the contents of any
+specified buffer.  See section <a href="/web/20050910055034/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC11">Buffer completion</a>.
+</li><li>
+
+<code>completing-insert-according-to-mode</code> makes a guess as to
+what sort of completion it should do; if it can't figure it out, it
+completes on lisp objects.  (This one is mainly useful in the
+minibuffer.)
+</li></ul>
+
+<p>
+(These functions all call the function <code>completing-insert</code>, which
+I'm too lazy to document.  The casual user won't want to call it
+directly, anyway, and the more serious user can figure it out for
+herself.)
+
+
+</p><p>
+For example, if I'm typing an info page for lightning completion, and I
+want to insert the string <samp>`completing-insert-kill'</samp>, I run
+<code>completing-insert-lisp-function</code>, and then use lightning
+completion to produce the function name, avoiding typing the
+whole thing in (and also avoiding typos).  In detail: once I start 
+<code>completing-insert-lisp-function</code>, the following happens:
+
+
+
+</p><ul>
+<li>
+
+I type the letters <kbd>c</kbd>, <kbd>o</kbd>, <kbd>m</kbd>, <kbd>p</kbd>, and
+Emacs inserts <samp>`comp'</samp>.
+</li><li>
+
+I type <kbd>l</kbd> and pause, and Emacs inserts <samp>`let'</samp> (so I have
+<samp>`complet'</samp> so far). 
+</li><li>
+
+I type <kbd>i</kbd> and <kbd>n</kbd> and pause, and Emacs inserts <samp>`ing-'</samp> (so
+I have <samp>`completing-'</samp> so far). 
+</li><li>
+
+I type <kbd>i</kbd> and pause, and Emacs inserts <samp>`insert'</samp> (so I have
+<samp>`completing-insert'</samp> so far). 
+</li><li>
+
+I type <kbd>-</kbd>, and Emacs inserts <samp>`-'</samp> (so I have
+<samp>`completing-insert-'</samp> so far).
+</li><li>
+
+I type <kbd>k</kbd> and pause, and Emacs inserts <samp>`kill'</samp> (so I have
+<samp>`completing-insert-kill'</samp>, and completion stops).
+</li></ul>
+
+<p>
+There are user customizable variables (in the customization group
+"lightning-completion") related to these functions.  If the variable
+<code>lc-ctrl-x-c-is-completion</code> is non-nil, then <kbd>C-x c</kbd> is the
+prefix key for these commands.  This is one of the few global key
+bindings available, probably because it is too close to <kbd>C-x C-c</kbd>.
+So be warned, if you use these key bindings, you may occasionally hit
+<kbd>C-x C-c</kbd> instead of <kbd>C-x c</kbd>.  Anyway, enabling this options
+provides the following key bindings:
+
+
+</p><dl compact="">
+
+<dt><kbd>C-x c F</kbd>
+</dt><dd>
+runs <code>completing-insert-file-name</code>.
+
+</dd><dt><kbd>C-x c b</kbd>
+</dt><dd>
+runs <code>completing-insert-buffer-name</code>.
+
+</dd><dt><kbd>C-x c o</kbd>
+</dt><dd>
+runs <code>completing-insert-lisp-object</code>.
+
+</dd><dt><kbd>C-x c f</kbd>
+</dt><dd>
+runs <code>completing-insert-lisp-function</code>.
+
+</dd><dt><kbd>C-x c v</kbd>
+</dt><dd>
+runs <code>completing-insert-lisp-variable</code>.
+
+</dd><dt><kbd>C-x c k</kbd>
+</dt><dd>
+runs <code>completing-insert-kill</code>.
+
+</dd><dt><kbd>C-x c y</kbd>
+</dt><dd>
+runs <code>completing-insert-buffer-contents</code>.
+
+</dd><dt><kbd>C-x c u</kbd>
+</dt><dd>
+runs <code>completing-insert-according-to-mode</code>.
+
+</dd></dl>
+
+<p>
+Note that if one plans on using lightning completion only occasionally,
+and always from the minibuffer, one might be able to get away with only
+using the function <code>completing-insert-according-to-mode</code>.  There is
+a customizable variable <code>lc-ctrl-backslash-completes-a-la-mode</code>.
+If it is non-nil, then <kbd>C-\</kbd> runs
+<code>completing-insert-according-to-mode</code>.
+
+
+</p>
+
+----
+
+3. Key bindings </h1>
+<!--docid::SEC3::-->
+<p>
+
+<a name="IDX13"></a>
+<a name="IDX14"></a>
+<a name="IDX15"></a>
+</p><p>
+
+While in lightning completion, the behavior of each key is modified.
+Here is a description of what each key does; these functions are loosely
+based on the behavior of standard completion in Emacs.  I have also
+included examples; for all of the examples, suppose that you are
+completing on file names, and you have files <tt>`albatross'</tt>,
+<tt>`alpo'</tt>, <tt>`alphabet'</tt>, and <tt>`alphabet-soup'</tt>.
+</p><p>
+
+There is a customizable variable <code>lc-complete-idle-time-default</code>,
+the default value of which is 0.5.  In lightning completion mode, after
+this number of seconds of idle time, Emacs tries to complete.
+</p><p>
+
+</p><ul>
+<li>
+<kbd>a-z, A-Z, 0-9</kbd>, etc.: After the delay, you get an error if there is
+no valid completion based on that character.  If there are valid
+completions, then Emacs inserts the characters in common with all the
+valid completions.  If there is a unique such completion, then Emacs
+inserts that completion, and completion stops.  (Example: if you have
+<samp>`alp'</samp> and you hit <kbd>x</kbd>, you get an error
+(but you're still in lightning completion mode); if you hit <kbd>h</kbd>,
+then <samp>`habet'</samp> is inserted, resulting in <samp>`alphabet'</samp> (and you're
+still in lightning completion mode).  If you then hit <kbd>-</kbd>, then
+<samp>`-soup'</samp> is inserted, and completion stops.)
+<p>
+
+When there are no valid completions, the value of the customizable
+variable <code>lc-clean-up</code> is relevant.  If it is nil, then Emacs beeps
+and warns you that there are no valid completions.  If it is non-nil,
+then in addition, Emacs deletes the offending characters.  (Example: if
+you have <samp>`alp'</samp> and you hit <kbd>x</kbd>, then <samp>`x'</samp> is inserted.  If
+<code>lc-clean-up</code> is nil, then Emacs beeps.  If <code>lc-clean-up</code> is
+non-nil, then Emacs beeps and deletes the <samp>`x'</samp>.  If you have
+<samp>`al'</samp> and you type <kbd>phx</kbd>, if <code>lc-clean-up</code> is non-nil, then
+the <samp>`x'</samp> is deleted and <samp>`abet'</samp> is inserted.)
+</p><p>
+
+</p></li><li>
+<kbd>SPC</kbd>: If you have a valid completion, this key ends lightning
+completion, keeping the current completion; otherwise, if there is a
+valid completion based on the current string together with " ", then a
+space is inserted.  Otherwise, <kbd>SPC</kbd> acts like the <kbd>TAB</kbd> key.
+(Example: if you have <samp>`alp'</samp> and you hit <kbd>h</kbd>, resulting in
+<samp>`alphabet'</samp>, then hitting <kbd>SPC</kbd> would end completion and do
+nothing else.  If you also have a file <tt>`al jolson'</tt>, then
+typing <samp>`al'</samp> followed by <kbd>SPC</kbd> produces <samp>`al jolson'</samp>.
+Typing <samp>`alp'</samp> followed by <kbd>SPC</kbd> is just like typing <samp>`alp'</samp>
+and hitting <kbd>TAB</kbd>.)
+<p>
+
+</p></li><li>
+<kbd>RET</kbd>: This key exits lightning completion, regardless of whether
+you have a valid completion, and inserts a new line or exits the
+minibuffer, whichever is appropriate.  (Example: if you are using have
+<samp>`alp'</samp> and you hit <kbd>RET</kbd>, this ends completion and either
+inserts a new line or exits the minibuffer.)  (This is actually an
+example of the behavior of "Other control characters," described
+below.)
+<p>
+
+</p></li><li>
+<kbd>DEL</kbd>: This deletes the last thing that was typed along with
+anything inserted automatically as a result.  (Example: if you had
+<samp>`alp'</samp> and you hit <kbd>h</kbd>, resulting in <samp>`alphabet'</samp>, then
+hitting <kbd>DEL</kbd> would delete <samp>`habet'</samp>---the characters that were
+just inserted.)
+<p>
+
+</p></li><li>
+<kbd>C-f</kbd>: Hitting this key repeatedly cycles through the possible
+completions, in some order or other.  (Example: if you have <samp>`a'</samp>,
+then hitting <kbd>C-f</kbd> once will give <samp>`albatross'</samp>; hitting it again
+will give <samp>`alpo'</samp>, etc.)
+<p>
+
+</p></li><li>
+<kbd>C-b</kbd>: This works like <kbd>C-f</kbd>, but it cycles through the choices
+in the reverse order.
+<p>
+
+</p></li><li>
+<kbd>TAB</kbd>: Hitting this key completes as far as possible.  If there are
+several choices, then it opens up a new buffer in another window,
+called <code>*Completions*</code>, in which all of the valid completions are
+displayed.  That buffer is buried once completion ends.  (Example, if I
+have <samp>`alp'</samp> and I hit <kbd>TAB</kbd>, then a new buffer opens up,
+containing <samp>`alpo'</samp>, <samp>`alphabet'</samp>, and <samp>`alphabet-soup'</samp>.  If I
+then hit <kbd>h</kbd> and then <kbd>TAB</kbd>, the <code>*Completions*</code> buffer
+then displays <samp>`alphabet'</samp> and <samp>`alphabet-soup'</samp>.)  You can select
+a completion by clicking on it with <kbd>mouse-2</kbd>.
+<p>
+
+</p></li><li>
+<kbd>M-v</kbd>: Hitting this key opens up a new buffer in another window,
+called <code>*Completions*</code>, just as with the <kbd>TAB</kbd> key, but also
+moves the point to that window.  You can then move from one completion
+choice to another with the arrow keys, and you can select a completion
+with <kbd>RET</kbd> or with <kbd>mouse-2</kbd>.
+<p>
+
+</p></li><li>
+<kbd>C-c</kbd>: Hitting this key exits lightning completion mode (useful if
+you've had enough of this completion nonsense, and you just want to type
+in the file name yourself; also useful if you want to type in the name
+of a file that doesn't exist).
+<p>
+
+</p></li><li>
+<kbd>C-q</kbd>: This key quotes the next character (useful if you have a file
+name containing a control character like <kbd>C-c</kbd> or <kbd>TAB</kbd>, for
+instance).
+<p>
+
+</p></li><li>
+<kbd>C-h</kbd>: Hitting this key displays a very brief help message in the
+minibuffer. 
+<p>
+
+</p></li><li>
+Other control characters: Hitting any other control character (or other
+non-printing character) has two effects: completion stops, and that
+character then has its normal effect.  So <kbd>C-g</kbd> stops completion and
+beeps, <kbd>C-e</kbd> stops completion and moves you to the end of the line,
+etc.
+</li></ul>
+<p>
+
+Many of these keys can be customized (in the customization group
+<code>lightning-completion-keys</code>).
+</p>
+
+----
+
+4. Lightning completion </h1>
+<!--docid::SEC4::-->
+<p>
+
+Suppose you want to find a file, and you want to use lightning
+completion on file names.  One way to accomplish this is to run
+<code>find-file</code> (by hitting <kbd>C-x C-f</kbd>, say), then once in the
+minibuffer, either running <code>completing-insert-according-to-mode</code> or
+<code>completing-insert-file-name</code> (by hitting <kbd>C-x c F</kbd>, say, if
+you have turned on the option <code>lc-ctrl-x-c-is-completion</code>
+(see section <a href="/web/20060828043343/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a>)).
+</p><p>
+
+Another way to accomplish this is to have lightning completion
+potentially active whenever you enter the minibuffer, and to specify
+when "potentially active" should mean "active".
+</p>
+
+ 4.1 Enabling automatic lightning completion </h2>
+<!--docid::SEC5::-->
+<p>
+
+<a name="IDX16"></a>
+<a name="IDX17"></a>
+<a name="IDX18"></a>
+<a name="IDX19"></a>
+<a name="IDX20"></a>
+<a name="IDX21"></a>
+<a name="IDX22"></a>
+</p><p>
+
+To use lightning completion automatically in the minibuffer (in
+various circumstances), you should turn on the option 
+<code>toggle-lightning-completion</code>, either by customization or by
+setting the variable <code>toggle-lightning-completion</code> to t.
+Once you've done this, then the variable
+<code>lightning-completion-list</code> specifies in which contexts lightning
+completion should be active; the possible contexts 
+are:
+</p><dl compact="">
+<dt><code>file names</code>
+</dt><dd><p>
+
+</p></dd><dt><code>commands</code>
+</dt><dd><p>
+
+</p></dd><dt><code>lisp functions</code>
+</dt><dd><p>
+
+</p></dd><dt><code>lisp variables</code>
+</dt><dd><p>
+
+</p></dd><dt><code>lisp objects</code>
+</dt><dd><p>
+
+</p></dd><dt><code>user variables</code>
+</dt><dd><p>
+
+</p></dd><dt><code>buffer names</code>
+</dt><dd><p>
+
+</p></dd><dt><code>info menu items</code>
+</dt><dd><p>
+
+</p></dd><dt><code>query-replace</code>
+</dt><dd>Enable lightning completion on buffer contents when using
+<code>query-replace</code>.  This may not work very well, but I'm working on
+it...
+<p>
+
+</p></dd><dt><code>miscellaneous</code>
+</dt><dd>Enable lightning completion on everything else.
+<p>
+
+</p></dd></dl>
+<p>
+
+The easiest way to specify which contexts you want to enable is to
+customize the variable <code>lightning-completion-list</code> (in the
+customization group <code>lightning-completion</code>).  For each context, you
+can turn lightning completion on (with the default delay time) or off,
+or you can also specify a number.  If the number is negative, lightning
+completion is off; otherwise, lightning completion is on, with that
+number for the delay time for that context.  (You can instead use the
+<code>lightnify</code> function to turn completion on or off, if you prefer.
+This function is a bit obsolete; in particular, it does not allow you to
+set a different delay time for each context.)
+</p><p>
+
+I suppose I should explain the effect of the "miscellaneous" context.
+Basically, if in some situation you can complete in the minibuffer by
+hitting the <kbd>TAB</kbd> key, then enabling miscellaneous completion
+means that lightning completion will be on in that situation.  For
+example, in the news-reader Gnus, if you hit <kbd>j</kbd> (to run
+<code>gnus-group-jump-to-group</code>), then you will be thrown into lightning
+completion mode, completing on newsgroup names (you will see the message
+"Completing something...").
+
+ 4.2 Settings for lightning completion </h2>
+<!--docid::SEC6::-->
+<p>
+
+<a name="IDX23"></a>
+<a name="IDX24"></a>
+<a name="IDX25"></a>
+<a name="IDX26"></a>
+</p><p>
+
+Lightning completion doesn't always work the way you want it, so there
+are some ways of partially disabling it.
+</p><p>
+
+For example, lightning completion doesn't work terribly well with
+recursive minibuffers, so there is a customizable variable
+<code>lc-dark-recursive-minibufs</code>.  If this is nil, then lightning
+completion proceeds unhindered.  If this has a numerical value <var>N</var>,
+then lightning completion is disabled when the recursion depth is larger
+than <var>N</var>.  If this has some other non-nil value, then it is treated
+as if it had value 1 (disabling lightning completion in any recursive
+situation).
+</p><p>
+
+You might also want to, say, enable lightning completion on file names,
+but disable it for particular commands.  To do this, customize the
+variable <code>lc-dark-commands</code>, which is a list of functions.  For
+example, if you want to disable lightning completion when using
+<code>insert-file</code>, then add <code>insert-file</code> to this list.
+If you want two versions of a command like <code>insert-file</code>, only one
+of which uses lightning completion, then make an alias to
+<code>insert-file</code>, and disable lightning completion on that function: 
+</p><p>
+
+<table><tbody><tr><td>&nbsp;</td><td class="example"><pre>(defalias 'insert-file-dark 'insert-file)
+</pre></td></tr></tbody></table></p><p>
+
+and add <code>insert-file-dark</code> to <code>lc-dark-commands</code>.  I
+personally have functions like <code>dired-create-directory</code>,
+<code>dired-do-symlink</code>, and <code>query-replace-regexp</code> in my list of
+dark commands.
+
+----
+
+<h1> 5. Installation and customization </h1>
+<!--docid::SEC7::-->
+<p>
+
+<a name="IDX27"></a>
+<a name="IDX28"></a>
+</p><p>
+
+Once you've unpacked the archive, you need to make sure that the file
+<tt>`light.el'</tt> is in your emacs load-path.  Then put
+</p><p>
+
+<table><tbody><tr><td>&nbsp;</td><td class="example"><pre>(require 'light)
+</pre></td></tr></tbody></table></p><p>
+
+in your <tt>`.emacs'</tt> file.  Restart emacs; then you can set all of the
+lightning completion options via customization: run
+</p><p>
+
+<table><tbody><tr><td>&nbsp;</td><td class="example"><pre>M-x customize-group lightning-completion
+</pre></td></tr></tbody></table></p>
+
+ 5.1 Customizable options </h2>
+<!--docid::SEC8::-->
+<p>
+
+<a name="IDX29"></a>
+<a name="IDX30"></a>
+<a name="IDX31"></a>
+</p><p>
+
+Here is a list of the customizable options for lightning completion,
+with pointers to relevant sections of this documentation.  Use this
+command:
+</p><p>
+
+<table><tbody><tr><td>&nbsp;</td><td class="example"><pre>M-x customize-group lightning-completion
+</pre></td></tr></tbody></table></p><p>
+
+to customize any of these options.
+</p><p>
+
+</p><dl compact="">
+<dt><code>lc-complete-idle-time-default</code>
+</dt><dd>Default value: 0.5.  Effect: when in lightning completion mode, after
+this much idle time (in seconds) has elapsed, try to complete.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_1.html#SEC1">1. Overview</a>, See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>toggle-lightning-completion</code>
+</dt><dd>Default value: off.  Effect: toggle whether lightning completion is
+potentially active in the minibuffer.  If on, you should customize
+<code>lightning-completion-list</code> to specify contexts in which to use
+lightning completion.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#SEC5">4.1 Enabling automatic lightning completion</a>.
+<p>
+
+</p></dd><dt><code>lightning-completion-list</code>
+</dt><dd>Default value: all off.  Effect: toggle lightning completion in, and
+specify the idle-time for, specific contexts: files, functions,
+commands, variables, user variables, lisp objects, info menu items,
+buffer names, query replace, miscellany.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#SEC5">4.1 Enabling automatic lightning completion</a>.
+<p>
+
+</p></dd><dt><code>lc-clean-up</code>
+</dt><dd>Default value: nil.  Effect: If on, when there is no valid completion,
+remove the invalid characters.  If off, just give warning when no valid
+completion.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-ignored-file-extensions</code>
+</dt><dd>Default value: equal to <code>completion-ignored-extensions</code>.
+Description: a list of strings like ".dvi" and ".o"; files ending in
+these strings are ignored when doing lightning completion on file names.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC10">6.1 Ignoring some files</a>.
+<p>
+
+</p></dd><dt><code>lc-dark-commands</code>
+</dt><dd>Default value: nil.  Description: list of commands for which lightning
+completion is disabled.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#SEC6">4.2 Settings for lightning completion</a>.
+<p>
+
+</p></dd><dt><code>lc-dark-recursive-minibufs</code>
+</dt><dd>Default value: nil.  Effect: If a number <var>N</var>, then don't use
+lightning completion when recursion-depth is bigger than <var>N</var>.  If
+nil, then no restrictions on when to use lightning completion.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#SEC6">4.2 Settings for lightning completion</a>.
+<p>
+
+</p></dd><dt><code>lc-override-flag</code>
+</dt><dd>Default value: nil.  Effect: If non-nil, override other local maps when
+using lightning completion.  You may want to turn this on if using
+outline mode or some other minor mode which uses C-c as prefix.  This
+may not be necessary, though.
+<p>
+
+</p></dd><dt><code>lc-keep-key</code>
+</dt><dd>Default value: <kbd>SPC</kbd>.  Description: Key to keep current completion
+in lightning completion mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-del-key</code>
+</dt><dd>Default value: <kbd>DEL</kbd>.  Description: Key to delete last
+completion unit in lightning completion mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-stop-key</code>
+</dt><dd>Default value: <kbd>C-c</kbd>.  Description: Key to exit lightning completion
+mode. 
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-quote-key</code>
+</dt><dd>Default value: <kbd>C-q</kbd>.  Description: Key to quote next character in 
+lightning completion mode. 
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-help-key</code>
+</dt><dd>Default value: <kbd>C-h</kbd>.  Description: Help key in lightning completion
+mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-cycle-key</code>
+</dt><dd>Default value: <kbd>C-f</kbd>.  Description: Key to cycle to next completion
+in lightning completion mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-back-cycle-key</code>
+</dt><dd>Default value: <kbd>C-b</kbd>.  Description: Key to cycle to previous
+completion in lightning completion mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-display-key</code>
+</dt><dd>Default value: <kbd>TAB</kbd>.  Description: Key to display all completions
+in lightning completion mode.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#SEC3">3. Key bindings</a>.
+<p>
+
+</p></dd><dt><code>lc-ctrl-x-c-is-completion</code>
+</dt><dd>Default value: nil.  Effect: if on, <kbd>C-x c</kbd> is the prefix key for
+the various lightning completion commands.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a>.
+<p>
+
+</p></dd><dt><code>lc-ctrl-backslash-completes-a-la-mode</code>
+</dt><dd>Default value: nil.  Effect: if on, <kbd>C-\</kbd> runs the function
+<code>completing-insert-according-to-mode</code>.
+See section <a href="/web/20060512124107/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a>.
+
+----
+
+<a name="SEC9" href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC9">Miscellany</a></h1>
+
+
+<ul>
+<li><a href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC10">Ignoring some files</a>: Don't to complete on certain file names
+</li><li><a href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC11">Buffer completion</a>: An application of lightning completion
+</li><li><a href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC12">HTML mode completion</a>: Another example
+</li></ul>
+
+
+
+<h2><a name="SEC10" href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC10">Ignoring some files</a></h2>
+
+<p>
+<a name="IDX32"></a>
+<a name="IDX33"></a>
+<a name="IDX34"></a>
+<a name="IDX35"></a>
+
+
+</p><p>
+If you are using this package to complete on file names, then you should
+be aware of the lisp variable <code>completion-ignored-extensions</code>.
+(Lightning completion on file names is based on a completion mode
+already present in Emacs, and this variable comes from that mode.)
+
+
+</p><p>
+Here is its documentation: "Completion ignores filenames ending in
+any string in this list.  This variable does not affect lists of
+possible completions, but does affect the commands that actually do
+completions."
+
+
+</p><p>
+Lightning completion mode uses a similar variable, called
+<code>lc-ignored-file-extensions</code>, whose default value is equal to
+<code>completion-ignored-extensions</code>.
+
+
+</p><p>
+I use LaTeX, and when I start with a file <tt>`bozo.tex'</tt>, then 
+LaTeX produces a number of auxiliary files: <tt>`bozo.aux'</tt>,
+<tt>`bozo.dvi'</tt>, <tt>`bozo.log'</tt>, and possibly <tt>`bozo.bbl'</tt>,
+<tt>`bozo.blg'</tt>, <tt>`bozo.toc'</tt>, <tt>`bozo.lof'</tt>, etc.  When I am
+editing such a file, I edit the file <tt>`bozo.tex'</tt> frequently, and I
+almost never touch the others.  So I make sure that
+<code>lc-ignored-file-extensions</code> contains the strings ".toc"
+".log" ".aux" ".lof" ".blg" ".bbl" ".dvi".  The easiest way
+to do this is to customize this variable.
+
+
+</p><p>
+In case you haven't been paying attention: suppose I have added ".aux" to
+<code>lc-ignored-file-extensions</code>, and I want to find the file
+<tt>`bozo.aux'</tt>, with lightning completion enabled.  One way to do this
+is to type <samp>`bozo.aux'</samp> quickly enough that emacs is never idle for
+half a second.  Another option is to hit <kbd>C-c</kbd> right at the start,
+to turn off lightning completion; then just type in <samp>`bozo.aux'</samp> at
+one's leisure.  Another way to do this is to use lightning completion to
+get <samp>`bozo.tex'</samp> and ending completion there (if this is the only
+file that starts <samp>`bozo'</samp> that doesn't end in an ignored extension,
+completion will end automatically at this point; otherwise, hit
+<kbd>SPC</kbd>).  Then delete <samp>`tex'</samp> and type in <samp>`aux'</samp>.  There are
+other ways of doing this, no doubt, but I'll let you figure them out.
+
+
+
+
+</p><h2><a name="SEC11" href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC11">Buffer completion</a></h2>
+
+<p>
+<a name="IDX36"></a>
+<a name="IDX37"></a>
+<a name="IDX38"></a>
+<a name="IDX39"></a>
+
+
+</p><p>
+Buffer completion is an example of a use of lightning completion: it
+lets you complete on reasonably balanced substrings of a buffer.  The
+main function is
+
+
+
+</p><pre>(completing-insert-buffer-contents BUF)
+</pre>
+
+<p>
+where <var>BUF</var> is interactively the current buffer or, with a prefix
+argument, a buffer specified by the user.
+
+
+</p><p>
+In other words, if I want to repeat something I said somewhere else in
+this buffer, I call the function
+<code>completing-insert-buffer-contents</code>.  At that point, I enter
+lightning completion mode on the contents of this buffer.  If I want to
+repeat something I said in a different buffer, I hit <kbd>C-u</kbd> and then
+call <code>completing-insert-buffer-contents</code>.  Emacs prompts me for a
+buffer name, and then does lightning completion on the contents of that
+other buffer.  This is useful if you're too lazy to switch buffers, find
+the material you want to copy, mark it, kill it, and yank it.
+
+
+</p><p>
+The <tt>`dabbrev'</tt> package (included as part of the standard GNU Emacs
+distribution) does some similar things, so you might want to look at
+that, too.  I won't advocate the use of one package over the other--I
+think each has its uses.
+
+
+
+
+</p><h2><a name="SEC12" href="/web/20050906005249/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC12">HTML mode completion</a></h2>
+
+<p>
+<a name="IDX40"></a>
+<a name="IDX41"></a>
+<a name="IDX42"></a>
+
+
+</p><p>
+Here is another example of how to use lightning completion: you can
+automatically complete on HTML tags when in html mode.  I have the
+following lines in my <tt>`.emacs'</tt> file.  The first line binds the <kbd>&lt;</kbd>
+key to the function <code>html-lightning-tag</code> (you could use a different
+key, if you wanted, but since HTML tags all start with this character,
+it seems to make sense).  The next lines define this function--it does
+lightning completion on HTML tags.  And the remaining lines (starting
+with <samp>`(defvar html-light-alist'</samp>) define the list of HTML tags on
+which to complete.  A typical line is <samp>`("&lt;h3&gt;&lt;/h3&gt;" -5)'</samp>; the first
+entry is the tag, and the second entry is the number of characters from
+the end by which the point should be offset (i.e., Emacs inserts the
+string <samp>`"&lt;h3&gt;&lt;/h3&gt;"'</samp> and then moves forward -5 characters).  (This
+whole business is intended to be used with the version of
+<code>html-mode</code> that is contained in the file <tt>`sgml-mode.el'</tt>, part
+of (for example) the standard GNU Emacs distribution.
+
+
+
+</p><pre>(define-key html-mode-map "&lt;" 'html-lightning-tag)
+
+(defun html-lightning-tag nil
+  "Lightning complete control sequence."
+  (interactive)
+  (insert "&lt;")
+  (completing-insert html-light-alist nil 1 'point-adjust-hook
+		     "html tags"))
+
+(defvar html-light-alist
+  '(
+    ("&lt;a href=\"\"&gt;&lt;/a&gt;" -6)
+    ("&lt;h1&gt;&lt;/h1&gt;" -5)
+    ("&lt;h2&gt;&lt;/h2&gt;" -5)
+    ("&lt;h3&gt;&lt;/h3&gt;" -5)
+    ("&lt;h4&gt;&lt;/h4&gt;" -5)
+    ("&lt;h-5&gt;&lt;/h-5&gt;" -5)
+    ("&lt;h6&gt;&lt;/h6&gt;" -5)
+    ("&lt;hr&gt;
+
+" 0)
+    ("&lt;!--   --&gt;" -5)    
+    ("&lt;img src=\"\" alt=\"\"&gt;" -9)
+    ("&lt;ol&gt;
+&lt;li&gt; 
+&lt;/ol&gt;" -6)
+    ("&lt;ul&gt;
+&lt;li&gt; 
+&lt;/ul&gt;" -6)
+    ("&lt;li&gt; " 0)
+    ("&lt;dl&gt;
+&lt;dt&gt; 
+&lt;dd&gt; 
+&lt;/dl&gt;" -12)
+    ("&lt;dt&gt; 
+&lt;dd&gt; " -6)
+    ("&lt;p&gt;
+" 0)
+    ("&lt;table&gt;
+&lt;tr&gt;
+&lt;th&gt; &lt;/th&gt;
+&lt;/tr&gt;
+&lt;/table&gt;" -20)
+    ("&lt;th&gt; &lt;/th&gt;" -5)
+    ("&lt;tr&gt;
+&lt;td&gt; &lt;/td&gt;
+&lt;/tr&gt;" -11)
+    ("&lt;td&gt; &lt;/td&gt;" -5)
+    ("&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt; &lt;/title&gt;
+&lt;/head&gt;
+&lt;body lang=\"EN\"&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;" -32)
+    ("&lt;address&gt;John H. Palmieri, Department of Mathematics, University
+of Washington, palmieri@math.washington.edu&lt;/address&gt;
+" 0)
+    ("&lt;address&gt;&lt;/address&gt;
+" -11)
+    ("&lt;cite&gt;&lt;/cite&gt;" -7)
+    ("&lt;kbd&gt;&lt;/kbd&gt;" -6)
+    ("&lt;dfn&gt;&lt;/dfn&gt;" -6)
+    ("&lt;em&gt;&lt;/em&gt;" -5)
+    ("&lt;samp&gt;&lt;/samp&gt;" -7)
+    ("&lt;small&gt;&lt;/small&gt;" -8)
+    ("&lt;strong&gt;&lt;/strong&gt;" -9)
+    ("&lt;sub&gt;&lt;/sub&gt;" -6)
+    ("&lt;sup&gt;&lt;/sup&gt;" -6)
+    ("&lt;tt&gt;&lt;/tt&gt;" -5)
+    ("&lt;var&gt;&lt;/var&gt;" -6)
+    ("&lt;code&gt;&lt;/code&gt;" -7)
+    ("&lt;blockquote&gt;
+
+&lt;/blockquote&gt;
+" -15)
+    ("&lt;math&gt;
+
+&lt;/math&gt;
+" -9)
+    ("&lt;pre&gt;
+
+&lt;/pre&gt;
+" -8)
+    ("&lt;br&gt;
+
+" 0))
+  "Alist of html tags for use with lightning completion")
+
+----
+
+ Function Index </h1>
+<!--docid::SEC13::-->
+<p>
+
+<table><tbody><tr><th valign="top">Jump to: &nbsp; </th><td><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_7.html#fn_C" style="text-decoration:none"><b>C</b></a>
+ &nbsp; 
+<a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_7.html#fn_L" style="text-decoration:none"><b>L</b></a>
+ &nbsp; 
+</td></tr></tbody></table><br></p><p></p>
+<table border="0">
+<tbody><tr><td></td><th align="LEFT">Index Entry</th><th align="LEFT"> Section</th></tr>
+<tr><td colspan="3"> <hr></td></tr>
+<tr><th><a name="fn_C"></a>C</th><td></td><td></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX7"><code>completing-insert-according-to-mode</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX6"><code>completing-insert-buffer-contents</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX39"><code>completing-insert-buffer-contents</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#SEC11">6.2 Buffer completion</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX2"><code>completing-insert-buffer-name</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX1"><code>completing-insert-file-name</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX5"><code>completing-insert-kill</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX4"><code>completing-insert-lisp-function</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX3"><code>completing-insert-lisp-object</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#SEC2">2. Completion functions</a></td></tr>
+<tr><td colspan="3"> <hr></td></tr>
+<tr><th><a name="fn_L"></a>L</th><td></td><td></td></tr>
+<tr><td></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX22"><code>lightnify</code></a></td><td valign="top"><a href="/web/20060512105435/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#SEC5">4.1 Enabling automatic lightning completion</a></td></tr>
+<tr><td colspan="3"> 
+
+----
+
+<a name="SEC14" href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_toc.html#TOC14">Concept Index</a></h1>
+
+<p>
+Jump to:
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_b">b</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_c">c</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_d">d</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_e">e</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_f">f</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_h">h</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_i">i</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_k">k</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_l">l</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_o">o</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_r">r</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_s">s</a>
+-
+<a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_8.html#cindex_t">t</a>
+</p><p>
+</p><h2><a name="cindex_b">b</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX36">Buffer completion</a>
+</li></dir>
+<h2><a name="cindex_c">c</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX12">C-\ completes a la mode</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX11">C-x c is completion</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX8">Completion functions</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX37">Completion on buffer contents</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX41">Completion on HTML tags</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX35">completion-ignored-extensions</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX18">Contexts for lightning completion</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_5.html#IDX29">Customizable options</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_5.html#IDX28">Customization</a>
+</li></dir>
+<h2><a name="cindex_d">d</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX25">Disabling lightning completion for particular commands</a>
+</li></dir>
+<h2><a name="cindex_e">e</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX16">Enabling lightning completion</a>
+</li></dir>
+<h2><a name="cindex_f">f</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX10">Functions for completion</a>
+</li></dir>
+<h2><a name="cindex_h">h</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX40">HTML tags</a>
+</li></dir>
+<h2><a name="cindex_i">i</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX33">Ignored file extensions</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX32">Ignoring some files</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_5.html#IDX27">Installation</a>
+</li></dir>
+<h2><a name="cindex_k">k</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#IDX14">Key bindings</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#IDX13">Keys in completion</a>
+</li></dir>
+<h2><a name="cindex_l">l</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX26">lc-dark-commands</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX34">lc-ignored-file-extensions</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_3.html#IDX15">Light mode keys</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX24">Lightning completion and recursive minibuffers</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_2.html#IDX9">Lightning completion functions</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX38">Lightning completion on buffer contents</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_6.html#IDX42">Lightning completion on HTML tags</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX21">Lightning completion--contexts</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX20">Lightning completion--enabling</a>
+</li><li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_5.html#IDX30">List of customizable options</a>
+</li></dir>
+<h2><a name="cindex_o">o</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_5.html#IDX31">Options</a>
+</li></dir>
+<h2><a name="cindex_r">r</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX23">Recursive minibuffers</a>
+</li></dir>
+<h2><a name="cindex_s">s</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX19">Situations for lightning completion</a>
+</li></dir>
+<h2><a name="cindex_t">t</a></h2>
+<dir>
+<li><a href="/web/20050905150843/http://www.math.washington.edu/~palmieri/Emacs/Doc/light_4.html#IDX17">Toggling lightning completion</a>
