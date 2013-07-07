@@ -1,3 +1,4 @@
+[[ja:EmacsClient-ja]]
 EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
 
 Since the release of GnuEmacs 22.1 both EmacsClient and GnuClient also work on "Windows"
