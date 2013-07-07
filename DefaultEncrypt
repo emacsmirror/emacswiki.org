@@ -9,20 +9,23 @@ DefaultEncrypt aims for automatic insertion of MML secure tags into messages
 if public keys (either GnuPG public keys or S/MIME certificates) for
 all recipients are available.  In addition, before a message is sent,
 the user is asked if plaintext should really be sent unencryptedly when
-public keys for all recipients are available.
+public keys for all recipients are available.  Moreover, a consistency
+check aims to avoid unsafe usage of Bcc headers.
 This works by rebinding the standard keys for message sending
-(`C-c C-c') and `C-c C-s') as well as by adding a check
+(`C-c C-c'} and `C-c C-s') as well as by adding a check
 to `gnus-message-setup-hook'.
+If you are really interested in S/MIME then I suggest that you take a look
+at ExtendSMIME in addition to this file.
 
 A signed version of jl-encrypt.el is available
-[http://www.informationelle-selbstbestimmung-im-internet.de/emacs/ over there].
+[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
 
 ==Installation==
 Put Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
-    (require 'jl-encrypt)
+(require 'jl-encrypt)
 }}}
-In general, no further configuration should be necessary.
+If you share my preferences, no further configuration should be necessary.
 
 ==Sanity check==
 Without any further configuration, send a GnuPG encrypted e-mail to
@@ -33,9 +36,9 @@ encrypt).  If you own a GnuPG public for the To e-mail address then you
 will be asked whether you really want to send that e-mail as plaintext.
 Answering `no' will insert an MML secure tag for you.  Press `C-c C-c'
 again, and an encrypted e-mail will be sent.  If you receive that e-mail
-with garbled attachments read the comment for `jl-gpg-without-mime'.
+with garbled attachments read the comment for `jl-encrypt-gpg-without-mime'.
 
-==Comment for `jl-gpg-without-mime'==
+==Comment for `jl-encrypt-gpg-without-mime'==
 Control whether MML encryption should use MIME Security with OpenPGP.
 RFC 3156 specifies how OpenPGP (and, thus, GnuPG) and MIME work together.
 In Gnus, `mml-secure-message-encrypt-pgpmime' follows that standard.
@@ -56,17 +59,31 @@ yourself.  Complain to your IT department if you receive garbled
 attachments.  Then set this variable to non-nil, while they are setting
 up a reasonable SMTP server.
 
-==Configuration for signatures==
-The variable `jl-encrypt-without-signature' (default value t) controls
-whether MML encryption tags should also produce signatures.
-Set to nil to produce an MML tag that signs in addition to encryption.
-In general, I'm not interested in signing my e-mails.  In contrast, I
-believe that 
-[http://www.cypherpunks.ca/otr/ off-the-record communication]
-aims for the correct set of security goals:
-Confidentiality with perfect forward secrecy, integrity,
-and repudiability.
-Unfortunately, that's not an option for e-mail.
+If you are signing all your e-mails with GnuPG you probably also
+want to set `mml-default-sign-method' to "pgp" (instead of
+"pgpmime").
+
+==Configuration==
+Customizable variables are `jl-encrypt-insert-signature',
+`jl-encrypt-gpg-without-mime', `jl-encrypt-recipient-headers',
+`jl-encrypt-ignore-from', and `jl-encrypt-safe-bcc-list'.
+
+In addition, as explained in the following `mml-default-encrypt-method' and
+`mml-default-sign-method' influence whether to prefer S/MIME or GnuPG in
+certain situations, and the value of `gnus-message-replysignencrypted' may
+be changed by this code.
+
+If `jl-encrypt-insert-signature' is nil (the default),
+`gnus-message-replysignencrypted' will be set to nil to avoid signatures
+for reply messages.  You may manually add MML sign tags any time, of
+course, but the whole point of this file is to create MML tag automatically
+(e.g., by customizing `jl-encrypt-insert-signature').
+
+If GnuPG and S/MIME keys are both available for the given recipients and no
+MML tag is present, `mml-default-encrypt-method' determines what method to
+prefer.  If `jl-encrypt-insert-signature' is set to `always',
+`mml-default-sign-method' determines what method to prefer upon message
+creation.
 
 ----
 CategoryGnus SigningMail EncryptingMail
