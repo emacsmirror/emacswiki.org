@@ -27,7 +27,7 @@ The [[minibuffer]] is typically used to read user input (data) to control progra
 * ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
 * [[Synonyms]] -- Input completion for thesaurus lookup.
 * Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
-* CompletingRead in EmacsLisp functions -- enabling users to select from a collection of completable options.
+* CompletingRead -- EmacsLisp function `completing-read' and similar.
 
 See also:
 
