@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  3 08:19:51 2013 (-0700)
+;; Last-Updated: Sat Jul  6 20:20:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27818
+;;     Update #: 27822
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3158,6 +3158,11 @@
 ;;  completion actions.  It can be handy to interrupt this to perform
 ;;  some normal editing or search, and then resume multi-command
 ;;  actions.
+;;
+;;  For example, when using `g' (`icicle-Info-goto-node') in Info, if
+;;  you use `C-RET' to show a matching candidate node, you can `pause'
+;;  to visit it, search it using `C-s', and then `pause' back to the
+;;  minibuffer to continue browsing other node candidates.
 ;;
 ;;  Another use for this feature is to select text in the original
 ;;  buffer and then insert it in the minibuffer.  See also
