@@ -1,0 +1,9 @@
+The `completing-read' function (see [[Manual:Minibuffer Completion]] (lisp) in the manual) enables you to prompt the user to select from a collection of options, using minibuffer completion to narrow and select the desired option.
+
+The [InteractivelyDoThings Ido] library provides an analogous `ido-completing-read' which does the same thing using the ido interface.
+
+Advanced libraries such as [[Icicles]] and [EmacsWiki:id=Anything Anything/Helm] also provide their own completion interfaces.
+
+==Customised completing-read functionality==
+
+* AutoCompletingRead provides variants of `completing-read' and `ido-completing-read' designed to minimise the number of keystrokes needed to select an option by automatically completing as much as possible, and automatically selecting when only one option remains.
