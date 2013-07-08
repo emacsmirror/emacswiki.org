@@ -94,6 +94,7 @@ MS Tips and Tricks:
 * WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
+* SshWithNTEmacs - Use cygwin SSH within Emacs
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
 * w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
