@@ -90,7 +90,7 @@
          (2 font-lock-variable-name-face))
        '("%\\(\\w+\\)%?"
          (1 font-lock-variable-name-face))
-       '("!\\(\\w+\\)!?"  ; delayed-expansion !variable!
+       '("!\\(\\w+\\)!?" ; delayed-expansion !variable!
          (1 font-lock-variable-name-face))
        '("[ =][-/]+\\(\\w+\\)"
          (1 font-lock-type-face append))
@@ -173,7 +173,7 @@ Start a new script from `dos-template'. Read help pages for Dos commands with
 \\{dos-mode-map}"
   (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'font-lock-defaults)
-       '(dos-font-lock-keywords nil t))  ; case-insensitive keywords
+       '(dos-font-lock-keywords nil t)) ; case-insensitive keywords
   (set (make-local-variable 'imenu-generic-expression) '((nil "^:[^:].*" 0)))
   (set (make-local-variable 'outline-regexp) ":[^:]")
   (set-syntax-table dos-mode-syntax-table))
