@@ -107,7 +107,7 @@
     ["Template" dos-template :help "Insert template"]
     "--"
     ["Help (Command)" dos-cmd-help :help "Show help page for Dos command"]
-    ["Help (Mode)" dos-mode-help :help "Show Dos Mode version"]))
+    ["Help (Mode)" dos-mode-help :help "Show help page for Emacs Dos Mode"]))
 
 (defvar dos-mode-map
   (let ((map (make-sparse-keymap)))
