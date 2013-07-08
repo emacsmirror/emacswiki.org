@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  7 20:46:31 2013 (-0700)
+;; Last-Updated: Mon Jul  8 08:04:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6462
+;;     Update #: 6463
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7581,6 +7581,12 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
     (let ((this-key  (this-command-keys))) (substring this-key 0 (1- (length this-key)))))
 
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
+  ;;
+  ;; Note: Elements of `icicle-complete-keys-alist' are conses with a symbol car.  The symbol name
+  ;;       is propertized with a face.  This property remains for the symbol name, because interned.
+  ;;       This means that if you change which face is to be used then that will not be reflected in
+  ;;       the same Emacs session.  (But if the face itself has its properties changed (e.g. customized)
+  ;;       then the change will be reflected in the same session.)
   (defun icicle-complete-keys-1 (prefix) ; PREFIX is a free var in `icicle-complete-keys-action'.
     "Complete a key sequence for prefix key PREFIX (a vector)."
     ;; `icicle-orig-extra-cands' is free in `icicle-complete-keys-action'.
