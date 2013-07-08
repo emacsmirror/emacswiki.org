@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  6 20:20:36 2013 (-0700)
+;; Last-Updated: Sun Jul  7 21:28:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27822
+;;     Update #: 27831
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -278,7 +278,7 @@
 ;;    (@> "Completing Keys By Name")
 ;;    (@> "Completing Prefix Keys")
 ;;    (@> "Navigate the Key-Binding Hierarchy")
-;;    (@> "Local Bindings Are Highlighted")
+;;    (@> "Local Bindings and Menu Items Are Highlighted")
 ;;    (@> "Completing Keys By Just Hitting Them")
 ;;    (@> "Key and Command Help")
 ;;    (@> "`S-TAB' Is a Multi-Command")
@@ -4554,7 +4554,7 @@
 ;;      by RGB distance from a base color (colors)
 ;;   22 by key name, prefix keys first (keys)- see (@> "Completing Prefix Keys")
 ;;   22 by key name, local bindings first (keys)- see
-;;      (@> "Local Bindings Are Highlighted")
+;;      (@> "Local Bindings and Menu Items Are Highlighted")
 ;;   22 by command name (commands)
 ;;    - by abbrev frequency (commands) - see
 ;;      (@> "Multi `M-x' Turns Every Command into a Multi-Command")
@@ -4570,7 +4570,7 @@
 ;;    - in book order (Info) - see
 ;;      (@file :file-name "icicles-doc2.el" :to "Icicles Completion for Info")
 ;;    - special candidates first - see
-;;      (@> "Local Bindings Are Highlighted"),
+;;      (@> "Local Bindings and Menu Items Are Highlighted"),
 ;;      (@file :file-name "icicles-doc2.el" :to "Candidates with Text Properties"),
 ;;      (@file :file-name "icicles-doc2.el" :to "Icicles OO: Object-Action Interaction")
 ;;    - proxy candidates first - see (> "*Completions* Display")
@@ -6451,8 +6451,8 @@
 ;;  you're completing a key sequence, even if you have not yet hit any
 ;;  keys.  This lets you see all key sequences that are available in a
 ;;  given context.  For example, in Dired, keys special to that mode
-;;  are included (and are highlighted as local bindings - see (@>
-;;  "Local Bindings Are Highlighted")).
+;;  are included (and are highlighted as local bindings - see
+;;  (@> "Local Bindings and Menu Items Are Highlighted")).
 ;;
 ;;  When completing a key sequence, you can type part of a command
 ;;  name, then hit `S-TAB' to apropos-complete against the command
@@ -6527,10 +6527,11 @@
 ;;  This feature means that you can navigate the key-binding hierachy
 ;;  just as you would navigate the file-system hierarchy (using, say,
 ;;  `C-x C-f') or the menu-bar hierarchy (using library `lacarte.el').
-;;  (In fact, since menu-bar bindings are also key bindings, you can
+;;
+;;  In fact, since menu-bar bindings are also key bindings, you can
 ;;  also use key completion to navigate the menu-bar hierarchy - just
 ;;  complete the prefix key `menu-bar'!  Start with `S-TAB', choose
-;;  `menu-bar  =  ...', then choose a menu, and so on.)
+;;  `menu-bar  =  ...', then choose a menu, and so on.
 ;;
 ;;  Icicles key completion thus provides a general browser for key
 ;;  bindings, which you can also use to learn about keys and their
@@ -6552,16 +6553,26 @@
 ;;
 ;;  * Cycle to candidate `..'.
 ;;
-;;(@* "Local Bindings Are Highlighted")
-;;  ** Local Bindings Are Highlighted **
+;;(@* "Local Bindings and Menu Items Are Highlighted")
+;;  ** Local Bindings and Menu Items Are Highlighted **
 ;;
 ;;  Sometimes it helps to know which key sequences are local bindings,
 ;;  that is, bindings that are specific to the current mode.  For
 ;;  example, Dired mode defines keys specific to Dired buffer, such as
-;;  `* %', `% g', and `!'.  To help you distinguish local key bindings
-;;  from others (global and minor-mode bindings), local bindings are
-;;  highlighted in buffer `*Completions*' using face
-;;  `icicle-special-candidate'.
+;;  `* %', `% g', and `!'.
+;;
+;;  To help you distinguish local key bindings from others (global and
+;;  minor-mode bindings), local bindings are highlighted in buffer
+;;  `*Completions*' using face `icicle-special-candidate'.  Otherwise,
+;;  the key portion of a candidate (left side of `KEY  =  COMMAND') is
+;;  highlighted with face `icicle-candidate-part'. 
+;;
+;;  However, to make menu items stand out, they are highlighted with
+;;  face `icicle-key-complete-menu-local' for menus specific to the
+;;  current mode, and face `icicle-key-complete-menu' for other menu
+;;  items.  By default, these are the same as faces
+;;  `icicle-special-candidate' and `icicle-candidate-part',
+;;  respectively, except that they are also boxed.
 ;;
 ;;(@* "Completing Keys By Just Hitting Them")
 ;;  ** Completing Keys By Just Hitting Them **
