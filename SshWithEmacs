@@ -1,4 +1,4 @@
-SSH is a secure networking protocol, that one can use in Emacs (with TrampMode) or apply in their work in Emacs (like when using VersionControl over SSH).
+SSH is a secure networking protocol, that one can use in Emacs (with TrampMode) or apply in their work in Emacs (like when using VersionControl over SSH). For some Windows-specific suggestions, see also SshWithNTEmacs.
 
 == Questions == 
 
