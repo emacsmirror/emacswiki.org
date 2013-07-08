@@ -1920,6 +1920,16 @@ are candidates that match user option
 '''`icicle-special-candidate-regexp''''.
 
 ----
+[:icicle-key-complete-menu]
+[:icicle-key-complete-menu-local]
+==== Faces icicle-key-complete-menu-local and icicle-key-complete-menu ====
+
+Faces '''`icicle-key-complete-menu-local'''' and
+'''`icicle-key-complete-menu'''' highlight menu items during [[Icicles - Key Completion|key
+completion]].  The former is for local menu items (i.e., specific
+to the current mode).  The latter is for non-local menu items.
+
+----
 [:icicle-proxy-candidate']
 ==== Option icicle-add-proxy-candidates-flag, Face icicle-proxy-candidate ====
 
