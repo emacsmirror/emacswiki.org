@@ -23,9 +23,9 @@
 ;;; Commentary:
 ;;
 ;; Major mode for editing Dos scripts (batch files). Provides syntax
-;; highlighting, a basic template, access to help pages for Dos commands,
-;; imenu/outline navigation, and the ability to run scripts from within Emacs.
-;; The syntax groups for highlighting are:
+;; highlighting, a basic template, access to Dos help pages, imenu/outline
+;; navigation, and the ability to run scripts from within Emacs. The syntax
+;; groups for highlighting are:
 ;;
 ;; Face                          Example
 ;; dos-label-face                :LABEL
@@ -163,7 +163,12 @@
 
 ;;;###autoload
 (define-derived-mode dos-mode prog-mode "Dos"
-  "Major mode for editing Dos scripts."
+  "Major mode for editing Dos scripts.\n
+The `dos-mode-help' command shows this page.\n
+Start a new script from `dos-template'. Read help pages for Dos commands with
+`dos-cmd-help'. Navigate between sections using `imenu'. Run script using
+`dos-run' and `dos-run-args'.\n
+\\{dos-mode-map}"
   :group 'languages
   (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'font-lock-defaults)
