@@ -22,8 +22,9 @@ Workarounds:
 Update:
 It was suggested somewhere that one could remove the test for the terminal using a pty in bash and I tried this on the cygwin source for bash-4.2, i.e., I edited jobs.c to remove the test (on line 3703).  This removes the error message, but still does not allow seem to allow any job control.  I hope someone is working on this.  
 
-To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command.
+To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command. 
 
+A similar trick was useful in running SshWithNTEmacs.
 
 (I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]])
 
