@@ -171,7 +171,6 @@ Start a new script from `dos-template'. Read help pages for Dos commands with
 `dos-cmd-help'. Navigate between sections using `imenu'. Run script using
 `dos-run' and `dos-run-args'.\n
 \\{dos-mode-map}"
-  :group 'languages
   (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'font-lock-defaults)
        '(dos-font-lock-keywords nil t))  ; case-insensitive keywords
