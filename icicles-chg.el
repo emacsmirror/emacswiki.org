@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul  6 20:13:14 2013 (-0700)
+;; Last-Updated: Sun Jul  7 21:08:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10102
+;;     Update #: 10106
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -917,6 +917,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/07/07 dadams
+;;     icicle-add-key+cmd: Use face icicle-key-complete-menu(-local) for menu items.
 ;; 2013/07/04 dadams
 ;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/06/19 dadams
@@ -1621,6 +1623,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2013/07/07 dadams
+;;     Added: icicle-key-complete-menu, icicle-key-complete-menu-local.
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/01/18 dadams
