@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 08:38:15 2013 (-0700)
+;; Last-Updated: Sun Jul  7 20:46:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6453
+;;     Update #: 6462
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7652,8 +7652,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                           (icicle-completing-keys-p                nil)
                           (icicle-sort-orders-alist                icicle-orig-sort-orders-alist)
                           (icicle-sort-comparer                    'icicle-case-string-less-p)
-                          (icicle-alternative-sort-comparer
-                           'icicle-historical-alphabetic-p)
+                          (icicle-alternative-sort-comparer        'icicle-historical-alphabetic-p)
                           (icicle-show-Completions-initially-flag
                            icicle-orig-show-initially-flag))
                       (call-interactively binding nil icicle-this-cmd-keys)))))
@@ -7680,103 +7679,115 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
   ;; `icicle-keys+cmds-w-prefix'.
   (defun icicle-add-key+cmd (event binding)
     "Add completion for EVENT and BINDING to `icicle-complete-keys-alist'."
-    (cond
-      ;; (menu-item ITEM-STRING): non-selectable item - skip it.
-      ((and (eq 'menu-item (car-safe binding))  (null (cdr-safe (cdr-safe binding))))
-       (setq binding  nil))             ; So `keymapp' test, below, fails.
+    (let ((bndg   binding)
+          (mitem  nil))
+      (cond
+        ;; (menu-item ITEM-STRING): non-selectable item - skip it.
+        ((and (eq 'menu-item (car-safe bndg))  (null (cdr-safe (cdr-safe bndg))))
+         (setq bndg  nil))              ; So `keymapp' test, below, fails.
 
-      ;; (ITEM-STRING): non-selectable item - skip it.
-      ((and (stringp (car-safe binding))  (null (cdr-safe binding)))
-       (setq binding  nil))             ; So `keymapp' test, below, fails.
+        ;; (ITEM-STRING): non-selectable item - skip it.
+        ((and (stringp (car-safe bndg))  (null (cdr-safe bndg)))
+         (setq bndg  nil))              ; So `keymapp' test, below, fails.
 
-      ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES)
-      ((eq 'menu-item (car-safe binding))
-       (let ((enable-condition  (memq ':enable (cdr-safe (cdr-safe (cdr-safe binding))))))
-         (if (or (not enable-condition)
-                 (condition-case nil    ; Don't enable if we can't check the condition.
-                     (eval (cadr enable-condition))
-                   (error nil)))
-             (setq binding  (car-safe (cdr-safe (cdr-safe binding))))
-           (setq binding  nil))))
+        ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES)
+        ((eq 'menu-item (car-safe bndg))
+         (let ((enable-condition  (memq ':enable (cdr-safe (cdr-safe (cdr-safe bndg))))))
+           (if (or (not enable-condition)
+                   (condition-case nil  ; Don't enable if we can't check the condition.
+                       (eval (cadr enable-condition))
+                     (error nil)))
+               (setq mitem  (car-safe (cdr-safe bndg))
+                     bndg   (car-safe (cdr-safe (cdr-safe bndg))))
+             (setq bndg  nil))))
 
-      ;; (ITEM-STRING . REAL-BINDING) or
-      ;; (ITEM-STRING [HELP-STRING] . REAL-BINDING) or
-      ;; (ITEM-STRING [HELP-STRING] (KEYBD-SHORTCUTS) . REAL-BINDING)
-      ((stringp (car-safe binding))
-       (setq binding  (cdr binding))
-       ;; Skip HELP-STRING
-       (when (stringp (car-safe binding)) (setq binding  (cdr binding)))
-       ;; Skip (KEYBD-SHORTCUTS): cached key-equivalence data for menu items.
-       (when (and (consp binding)  (consp (car binding))) (setq binding  (cdr binding)))))
+        ;; (ITEM-STRING . REAL-BINDING) or
+        ;; (ITEM-STRING [HELP-STRING] . REAL-BINDING) or
+        ;; (ITEM-STRING [HELP-STRING] (KEYBD-SHORTCUTS) . REAL-BINDING)
+        ((stringp (car-safe bndg))
+         (setq mitem  (car bndg)
+               bndg   (cdr bndg))
+         ;; Skip HELP-STRING
+         (when (stringp (car-safe bndg)) (setq bndg  (cdr bndg)))
+         ;; Skip (KEYBD-SHORTCUTS): cached key-equivalence data for menu items.
+         (when (and (consp bndg)  (consp (car bndg))) (setq bndg  (cdr bndg)))))
 
-    ;; `icicle-key-prefix-2' and `icicle-active-map' are free here, bound in
-    ;; `icicle-keys+cmds-w-prefix'.
-    (cond ((and (eq binding 'self-insert-command) ; Insert `self-insert-command' char ranges.
-                icicle-complete-keys-self-insert-ranges
-                (consp event)           ; Emacs 23+ uses char ranges.
-                (fboundp 'characterp)
-                (characterp (car event)))
-           (let ((chr1  (car event))
-                 (chr2  (cdr event)))
-             (loop for range in icicle-complete-keys-self-insert-ranges do
-                   (loop for char from (max chr1 (car range)) to (min chr2  (cdr range)) do
-                         (let* ((key-desc   (propertize
-                                             (single-key-description
-                                              char (not icicle-key-descriptions-use-<>-flag))
-                                             'face 'icicle-candidate-part))
-                                (name.char  (rassq char (ucs-names)))
-                                (candidate  (and (or (not name.char)  (not (string= "" (car name.char))))
-                                                 ;; $$$$$$  (and (not (string= "" (car name.char)))
-                                                 ;;              ;; $$$$$$ Maybe make this optional?
-                                                 ;;              (not (string-match
-                                                 ;;                    "\\`VARIATION SELECTOR"
-                                                 ;;                    (car name.char)))))
-                                                 (intern (concat key-desc
-                                                                 (if name.char
-                                                                     (concat "  =  " (car name.char))
-                                                                   "  =  self-insert-command"))))))
-                           (when candidate
-                             (push (cons candidate (cons (vector char) 'self-insert-command))
-                                   icicle-complete-keys-alist)
-                             (when (eq icicle-active-map (current-local-map))
-                               (put candidate 'icicle-special-candidate t))))))))
-          ((and
-            ;; Include BINDING if key (EVENT) is on `icicle-key-prefix-2'.
-            ;; Do not include a shadowed binding to a command.  Always include binding if it's a keymap,
-            ;; because the same prefix key can be bound to different keymaps without any of those keymaps
-            ;; shadowing all of the bindings in another of them.
-            (or (keymapp binding)
-                (and (commandp binding)
-                     (equal binding (key-binding (vconcat icicle-key-prefix-2 (vector event)) nil 'NO-REMAP))
-                     (not (eq binding 'icicle-complete-keys))))
-            ;; Include BINDING if it is not `self-insert-command' or user has OK'd use of such.
-            (or (not (eq binding 'self-insert-command)) ; Command, keymap.
-                (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
-                     (char-valid-p event))))
-           (when (and (if (fboundp 'characterp) (characterp event) (char-valid-p event)) ; `ESC' -> `M-'.
-                      (eq event meta-prefix-char)
-                      (keymapp binding))
-             (map-keymap (lambda (key bndg)
-                           (when (if (fboundp 'characterp) (characterp key) (char-valid-p key))
-                             (icicle-add-key+cmd (event-apply-modifier key 'meta 27 "M-") bndg)))
-                         binding))
-           (when (and (functionp binding)  (commandp binding)) ; Follow remapped command to target command.
-             (setq binding  (key-binding (vconcat icicle-key-prefix-2 (vector event)))))
-           (let* ((key-desc   (propertize (single-key-description
-                                           event
-                                           (not icicle-key-descriptions-use-<>-flag))
-                                          'face 'icicle-candidate-part))
-                  (candidate  (intern (concat key-desc "  =  " (if (keymapp binding)
-                                                                   "..."
-                                                                 (prin1-to-string binding))))))
-             ;; Skip keys bound to `undefined'.
-             (unless (string= "undefined" (prin1-to-string binding))
-               (push (cons candidate (cons (vector event) binding)) icicle-complete-keys-alist))
-             (when (eq icicle-active-map (current-local-map))
-               (put candidate 'icicle-special-candidate t))))
-          ((and (integerp event)  (generic-char-p event) ; Insert generic char (Emacs 22).
-                (eq 'self-insert-command binding))
-           (ignore))))                  ; Placeholder for future use.
+      ;; `icicle-key-prefix-2' and `icicle-active-map' are free here, bound in
+      ;; `icicle-keys+cmds-w-prefix'.
+      (cond ((and (eq bndg 'self-insert-command) ; Insert `self-insert-command' char ranges.
+                  icicle-complete-keys-self-insert-ranges
+                  (consp event)         ; Emacs 23+ uses char ranges.
+                  (fboundp 'characterp)
+                  (characterp (car event)))
+             (let ((chr1  (car event))
+                   (chr2  (cdr event)))
+               (loop for range in icicle-complete-keys-self-insert-ranges do
+                     (loop for char from (max chr1 (car range)) to (min chr2  (cdr range)) do
+                           (let* ((key-desc
+                                   (propertize
+                                    (single-key-description
+                                     char (not icicle-key-descriptions-use-<>-flag))
+                                    'face 'icicle-candidate-part))
+                                  (name.char  (rassq char (ucs-names)))
+                                  (candidate  (and (or (not name.char)  (not (string= "" (car name.char))))
+                                                   ;; $$$$$$  (and (not (string= "" (car name.char)))
+                                                   ;;              ;; $$$$$$ Maybe make this optional?
+                                                   ;;              (not (string-match
+                                                   ;;                    "\\`VARIATION SELECTOR"
+                                                   ;;                    (car name.char)))))
+                                                   (intern (concat key-desc
+                                                                   (if name.char
+                                                                       (concat "  =  " (car name.char))
+                                                                     "  =  self-insert-command"))))))
+                             (when candidate
+                               (push (cons candidate (cons (vector char) 'self-insert-command))
+                                     icicle-complete-keys-alist)
+                               (when (eq icicle-active-map (current-local-map))
+                                 (put candidate 'icicle-special-candidate t))))))))
+            ((and
+              ;; Include BINDING if key (EVENT) is on `icicle-key-prefix-2'.
+              ;; Do not include a shadowed bndg to a command.  Always include bndg if it's a keymap,
+              ;; because the same prefix key can be bound to different keymaps without any of those keymaps
+              ;; shadowing all of the bndgs in another of them.
+              (or (keymapp bndg)
+                  (and (commandp bndg)
+                       (equal bndg (key-binding (vconcat icicle-key-prefix-2 (vector event)) nil 'NO-REMAP))
+                       (not (eq bndg 'icicle-complete-keys))))
+              ;; Include BINDING if it is not `self-insert-command' or user has OK'd use of such.
+              (or (not (eq bndg 'self-insert-command)) ; Command, keymap.
+                  (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
+                       (char-valid-p event))))
+             (when (and (if (fboundp 'characterp) (characterp event) (char-valid-p event)) ; `ESC' -> `M-'.
+                        (eq event meta-prefix-char)
+                        (keymapp bndg))
+               (map-keymap (lambda (key bndg)
+                             (when (if (fboundp 'characterp) (characterp key) (char-valid-p key))
+                               (icicle-add-key+cmd (event-apply-modifier key 'meta 27 "M-") bndg)))
+                           bndg))
+             (when (and (functionp bndg)  (commandp bndg)) ; Follow remapped command to target command.
+               (setq bndg  (key-binding (vconcat icicle-key-prefix-2 (vector event)))))
+
+             (let* ((key-desc   (if (and (stringp mitem)  (keymapp bndg))
+                                    (propertize mitem 'face 'icicle-key-complete-menu) ; Menu item.
+                                  (propertize (single-key-description
+                                               event
+                                               (not icicle-key-descriptions-use-<>-flag))
+                                              'face 'icicle-candidate-part)))
+                    (candidate  (intern (concat key-desc "  =  " (if (keymapp bndg)
+                                                                     "..."
+                                                                   (if (stringp mitem)
+                                                                       mitem
+                                                                     (prin1-to-string bndg)))))))
+               ;; Skip keys bound to `undefined'.
+               (unless (string= "undefined" (prin1-to-string bndg))
+                 (push (cons candidate (cons (vector event) bndg)) icicle-complete-keys-alist))
+               (when (eq icicle-active-map (current-local-map))
+                 (if (and (stringp mitem)  (keymapp bndg))
+                     (put candidate 'icicle-special-candidate '(face icicle-key-complete-menu-local))
+                   (put candidate 'icicle-special-candidate t)))))
+            ((and (integerp event)  (generic-char-p event) ; Insert generic char (Emacs 22).
+                  (eq 'self-insert-command bndg))
+             (ignore)))))               ; Placeholder for future use.
 
 ;;;   ;; $$$$$$ No longer used.  Was used in `icicle-complete-keys-1'.
 ;;;   (defun icicle-read-single-key-description (string need-vector &optional angles)
