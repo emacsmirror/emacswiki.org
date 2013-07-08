@@ -59,8 +59,7 @@
 
 ;; 2  User variables
 
-(defface dos-label-face
-  '((t :weight bold))
+(defface dos-label-face '((t :weight bold))
   "Font Lock mode face used to highlight Dos labels."
   :group 'dos)
 
