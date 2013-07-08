@@ -1,0 +1,66 @@
+It is possible but awkward to use cygwin SSH to access a Linux machine from within NTEmacs. This page gives some suggestions on how to get by without resorting to a cygwin Emacs. (I guess life might be easier using plink instead of ssh, but the server in my office doesn't seem to like it).
+
+== SSH from a shell window ==
+The Cygwin !OpenSSH client can be used to start an SSH session from the command line, and works fine when run from a DOS command prompt. However when run within an Emacs shell window it likes to give errors:
+
+  Microsoft Windows [Version 6.1.7601]
+  Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+  
+  c:\Program Files\Emacs\emacs-24.3\bin>ssh my_server
+  ssh my_server
+  Pseudo-terminal will not be allocated because stdin is not a terminal.
+  ssh_askpass: exec(/usr/sbin/ssh-askpass): No such file or directory
+  Permission denied, please try again.
+  ssh_askpass: exec(/usr/sbin/ssh-askpass): No such file or directory
+  Permission denied, please try again.
+  ssh_askpass: exec(/usr/sbin/ssh-askpass): No such file or directory
+  Permission denied (publickey,gssapi-with-mic,password).
+
+=== fakecygpty ===
+As noted in the Cygwin archives[http://cygwin.com/ml/cygwin/2001-11/msg00631.html], an NTEmacs build doesn't know how to present itself as a cygwin tty device when running cygwin commands. As a possible workaround, someone smart has come up with '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c]. When compiled from within cygwin according to the instructions, you get a nice little shim program which does present the expected tty interface. The command to run then becomes
+
+  c:\Program Files\Emacs\emacs-24.3\bin>fakecygpty ssh my_server
+
+which works nicely for me!
+
+=== Xming ===
+
+X forwarding with Xming[http://sourceforge.net/projects/xming] can be used as usual to fire up graphical applications on the remote host. The DISPLAY environment variable may need some modification however:
+
+  (setenv "DISPLAY" "localhost:0.0")
+  ...
+  c:\Program Files\Emacs\emacs-24.3\bin>fakecygpty ssh -X my_server
+
+=== Convenience wrappers ===
+Since "fakecygpty ssh" is a bit of an awkward command, these helper functions may be useful:
+
+  (defun ssh (hostname &optional flags)
+    "Start an SSH session in a shell window."
+    (interactive "MSSH to host: ")
+    (let ((buf (concat "*SSH:" hostname "*")))
+      (if (and (get-buffer buf) (get-buffer-process buf))
+          (switch-to-buffer-other-window buf)
+        (async-shell-command (concat "fakecygpty ssh " flags (when flags " ") hostname) buf))))
+  
+  (defun sshx (hostname)
+    "Start an SSH session with X11 forwarding in a shell window."
+    (interactive "MSSH to host (X11): ")
+    (ssh hostname "-X"))
+
+== Tramp using cygwin SSH ==
+
+If fakecygpty works from the shell, it should also work via tramp if you call "fakecygpty ssh" instead of just "ssh". This lisp snippet can be used to make a copy of the "sshx" method with the appropriate substitution:
+
+  (eval-after-load "tramp"
+    '(progn
+       (add-to-list 'tramp-methods
+                    (mapcar
+                     (lambda (x)
+                       (cond
+                        ((equal x "sshx") "cygssh")
+                        ((eq (car x) 'tramp-login-program) (list 'tramp-login-program "fakecygpty ssh"))
+                        (t x)))
+                     (assoc "sshx" tramp-methods)))
+       (setq tramp-default-method "cygssh")))
+
+<code>C-x d /myserver:</code> should then throw up a well-behaved password prompt followed by a dired buffer pointing at your home directory.
