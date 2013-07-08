@@ -1,6 +1,8 @@
 == A "ready-to-use" Emacs setup for JavaScript coders ==
 * https://github.com/azer/emacs.js - github home
 * [[http://www.youtube.com/watch?v=4iSfLy8qfbM&feature=youtu.be|screencast]]
+* [[https://github.com/azer/emacs-guide]] - Emacs guide for Javascript-coders, based on using emacs.js
+** It's a work-in-progress with a lot of headers that lack content, but it forms some better usage-docs that what appears in the emacs.js home
 
 == Included packages (partial list) ==
 * npm.el
