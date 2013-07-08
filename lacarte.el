@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 16:25:13 2013 (-0700)
+;; Last-Updated: Mon Jul  8 14:26:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 807
+;;     Update #: 811
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -264,6 +264,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/07/08 dadams
+;;     lacarte-get-overall-menu-item-alist: Protect using (lookup-key @@@ [menu-bar]).
 ;; 2013/07/04 dadams
 ;;     lacarte-get-a-menu-item-alist-1:
 ;;       After recursing on nested keymap, set SCAN to its cdr.  Thx to Michael Heerdegen.
@@ -546,12 +548,15 @@ As a side effect, this function modifies
   (unless maps (setq maps  '(local global minor)))
   (let ((alist  (apply #'nconc
                        (and (memq 'local maps)   (current-local-map)
+                            (lookup-key (current-local-map) [menu-bar])
                             (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
                        (and (memq 'global maps)  (current-global-map)
+                            (lookup-key (current-global-map) [menu-bar])
                             (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
                        (and (memq 'minor maps)
                             (mapcar (lambda (map)
-                                      (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
+                                      (when (lookup-key map [menu-bar])
+                                        (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar]))))
                                     (current-minor-mode-maps))))))
     (setq lacarte-menu-items-alist  ())
     (if nil;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
