@@ -189,8 +189,8 @@ items.  By default, these are the same as faces
 `icicle-special-candidate' and `icicle-candidate-part',
 respectively, except that they are also boxed.
 
-(There are no menu items shown in the screenshots above.)
-
+Here is a screenshot:
+[[image:IciclesKeyCompletionsMenus]]
 
 
 
