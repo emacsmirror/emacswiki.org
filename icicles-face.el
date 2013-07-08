@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  7 21:04:12 2013 (-0700)
+;; Last-Updated: Sun Jul  7 21:25:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 709
+;;     Update #: 711
 ;; URL: http://www.emacswiki.org/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -393,8 +393,8 @@ a given set of candidates is governed by option
           :box (:line-width 1 :color "#FA6CC847FFFF"))) ; a light magenta box
         (t (:background "#EF84FFEAF427" ; a light green.
             :box (:line-width 1 :color "#34F393F434F3")))) ; a green box
-    "*Face used to highlight global keymap menu items when completing keys.
-Global keys that are not menu items are highlighted with face
+    "*Face used to highlight non-local menu items when completing keys.
+Non-local keys that are not menu items are highlighted with face
 `icicle-candidate-part'.  Menu items for the current mode (i.e., local
 keymap) are highlighted with face `icicle-key-complete-menu-local'."
     :group 'Icicles-Searching :group 'faces)
@@ -405,9 +405,9 @@ keymap) are highlighted with face `icicle-key-complete-menu-local'."
           :box (:line-width 1 :color "#E1E1EAEAFFFF"))) ; a light blue box
         (t (:background "#EF47FFFFC847" ; a light yellow.
             :box (:line-width 1 :color "#AC4AAC4A0000")))) ; a dark yellow box
-    "*Face used to highlight local keymap menu items when completing keys.
+    "*Face used to highlight local menu items when completing keys.
 Local keys that are not menu items are highlighted with face
-`icicle-special-candidate'.  Global menu items (i.e., not for the
+`icicle-special-candidate'.  Non-local menu items (i.e., not for the
 current mode) are highlighted with face `icicle-key-complete-menu'."
     :group 'Icicles-Searching :group 'faces))
 
