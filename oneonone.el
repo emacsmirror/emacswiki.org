@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Jun  5 08:59:53 2013 (-0700)
+;; Last-Updated: Mon Jul  8 10:59:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2738
+;;     Update #: 2767
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -165,15 +165,17 @@
 ;;  User options `1on1-color-minibuffer-frame-on-setup-increment' and
 ;;  `1on1-color-minibuffer-frame-on-exit-increment' determine how much
 ;;  to change the color of the minibuffer frame when the minibuffer is
-;;  entered and exitted.  They are hue increments, and should be
-;;  opposite in sign.  They should cancel each other out, so that the
-;;  color returns to what it was initially at any given
-;;  recursive-minibuffer depth.  However, because of the way HSV and
-;;  RGB color-component conversion works, the best cancellation does
-;;  not occur when these have the same absolute value.  And, how much
-;;  their absolute values should differ depends on that magnitude.
-;;  It's best to just set one of these to an increment you like, and
-;;  then fiddle with the other until they more or less cancel.
+;;  entered and exited.  They are hue increments, and should be
+;;  opposite in sign.
+;;
+;;  They should cancel each other out, so that the color returns to
+;;  what it was initially at any given minibuffer depth.  However,
+;;  because of the way HSV and RGB color-component conversion works,
+;;  the best cancellation does not necessarily occur when these
+;;  options have the same absolute value.  And how much their absolute
+;;  values should differ depends on that magnitude.  It is best to
+;;  just set one of these to an increment you like, and then fiddle
+;;  with the other until they more or less cancel.
 ;;
 ;;
 ;;  Commands defined here:
@@ -280,6 +282,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/08 dadams
+;;     1on1-color-minibuffer-frame-on-exit-increment: Set default value to 0.10.
+;;     1on1-color-minibuffer-frame-on-exit:
+;;       If level is 2 then set to 1on1-active-minibuffer-frame-background.
+;;     1on1-setup-minibuffer-frame-coloring: Do not redefine abort-recursive-edit.
+;;     y-or-n-p: Do not handle (> minibuffer-depth 0) case differently.
 ;; 2013/06/05 dadams
 ;;     *-frame-font: Changed sizes other than pixels to *, to work around an Emacs 20 bug with
 ;;                   x-list-fonts' on Windows 7.  See:
@@ -709,7 +717,7 @@ take effect."
   :type 'boolean :group 'One-On-One)
 
 ;;;###autoload
-(defcustom 1on1-color-minibuffer-frame-on-exit-increment 0.05
+(defcustom 1on1-color-minibuffer-frame-on-exit-increment 0.10
   "*Increment to change minibuffer-frame hue when minibuffer is exited.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-setup-increment.'"
@@ -1623,11 +1631,14 @@ Use this when reducing the minibuffer recursion depth."
   (when 1on1-minibuffer-frame
     (save-window-excursion
       (select-frame 1on1-minibuffer-frame)
-      (if (< (minibuffer-depth) 2)
-          (set-background-color 1on1-inactive-minibuffer-frame-background)
-        (set-background-color (hexrgb-increment-hue ; Change bg hue slightly.
-                               (frame-parameter nil 'background-color)
-                               1on1-color-minibuffer-frame-on-exit-increment))))))
+      (cond ((= (minibuffer-depth) 2)
+             (set-background-color 1on1-active-minibuffer-frame-background))
+            ((< (minibuffer-depth) 2)
+             (set-background-color 1on1-inactive-minibuffer-frame-background))
+            (t
+             (set-background-color (hexrgb-increment-hue ; Change bg hue slightly.
+                                    (frame-parameter nil 'background-color)
+                                    1on1-color-minibuffer-frame-on-exit-increment)))))))
 
 (defun 1on1-color-isearch-minibuffer-frame ()
   "Use `1on1-isearch-minibuffer-frame-background' for minibuffer."
@@ -1648,7 +1659,7 @@ Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
 
 (defun 1on1-setup-minibuffer-frame-coloring ()
   "Redefine some built-in functions so they color the minibuffer frame.
-Functions redefined: `y-or-n-p', `top-level', `abort-recursive-exit'."
+Functions redefined: `y-or-n-p', `top-level'."
 
   (or (fboundp '1on1-ORIG-y-or-n-p)
       (fset '1on1-ORIG-y-or-n-p (symbol-function 'y-or-n-p)))
@@ -1662,11 +1673,9 @@ Takes one argument, which is the string to display to ask the question.
 It should end in a space; `y-or-n-p' adds `(y or n) ' to it.
 No confirmation of answer is requested; a single character is enough.
 Also accepts SPC to mean yes, or DEL to mean no."
-    (if (> (minibuffer-depth) 0)
-        (1on1-ORIG-y-or-n-p prompt)     ; Don't do anything special if in minibuffer.
-      (1on1-color-minibuffer-frame-on-setup)
-      (prog1 (1on1-ORIG-y-or-n-p prompt)
-        (1on1-color-minibuffer-frame-on-exit))))
+    (1on1-color-minibuffer-frame-on-setup)
+    (prog1 (1on1-ORIG-y-or-n-p prompt)
+      (1on1-color-minibuffer-frame-on-exit)))
 
 
   (or (fboundp '1on1-ORIG-top-level)
@@ -1682,17 +1691,22 @@ Also accepts SPC to mean yes, or DEL to mean no."
     (1on1-ORIG-top-level))
 
 
-  (or (fboundp '1on1-ORIG-abort-recursive-edit)
-      (fset '1on1-ORIG-abort-recursive-edit (symbol-function 'abort-recursive-edit)))
+;;; $$$$$ Do not do this.  `1on1-color-minibuffer-frame-on-exit' will be called anyway,
+;;;       by `minibuffer-exit-hook'.
 
-  ;; REPLACES ORIGINAL (built-in function):
-  ;; Resets color of minibuffer frame to "inactive" color.
-  ;;
-  (defun abort-recursive-edit ()
-    "Abort command that requested this recursive edit or minibuffer input."
-    (interactive)
-    (1on1-color-minibuffer-frame-on-exit)
-    (1on1-ORIG-abort-recursive-edit)))
+;;;   (or (fboundp '1on1-ORIG-abort-recursive-edit)
+;;;       (fset '1on1-ORIG-abort-recursive-edit (symbol-function 'abort-recursive-edit)))
+
+;;;   ;; REPLACES ORIGINAL (built-in function):
+;;;   ;; Resets color of minibuffer frame to "inactive" color.
+;;;   ;;
+;;;   (defun abort-recursive-edit ()
+;;;     "Abort command that requested this recursive edit or minibuffer input."
+;;;     (interactive)
+;;;     (1on1-color-minibuffer-frame-on-exit)
+;;;     (1on1-ORIG-abort-recursive-edit))
+
+  )
 
 (defun 1on1-setup-mode-line ()
   "Set up mode-line faces."
