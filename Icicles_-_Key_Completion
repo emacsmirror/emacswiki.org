@@ -132,12 +132,15 @@ Choosing a completion candidate such as `##C-x  =  ...##' effectively navigates 
 
 What about navigating back up the hierarchy, say from the `C-x 5' keys to the `C-x' keys, or from the `C-x' keys to the keys with no prefix?  The special completion candidate '''`##..##'''' does that.  By default, it is always the first candidate in the `*Completions*' list.  It is of course not available unless you are completing a prefix; that is, it is not available at the top level.
 
-The screenshots above are all at the top level (in buffer `##*Buffer List*##'). The following screenshot is for the prefix key `ESC' -- it is what you see after choosing `##ESC  =  ...##' at the top level. Notice the special candidate '''`##..##'''', which is listed first and highlighted (using face `icicle-multi-command-completion'). (The fact that you see a candidate `##ESC  =  ...##' here too means that `##ESC ESC##' is a prefix key at the top level.) 
+The screenshots above are all at the top level (in buffer `##*Buffer List*##'). The following screenshot is for the prefix key `ESC' -- it is what you see after choosing `##ESC  =  ...##' at the top level. Notice the special candidate '''`##..##'''', which is listed first and highlighted (using face 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-multi-command-completion|icicle-multi-command-completion]]</tt>''''). (The fact that you see a candidate `##ESC  =  ...##' here too means that `##ESC ESC##' is a prefix key at the top level.) 
 
 [[image:IciclesKeyCompletionsDotDot]]
 
-This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte'''). (In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!  Start with `S-TAB', choose
-`##menu-bar  =  ...##', then choose a menu, and so on.) 
+This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte''').
+
+In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!  Start with `S-TAB', choose
+`##menu-bar  =  ...##', then choose a menu, and so on. 
 
 '''Icicles''' key completion thus provides a general ''browser for key bindings'', which you can also use to learn about keys and their associated comands, without necessarily executing them -- see [[#KeyCommandHelp|Key and Command Help]], below.
 
@@ -163,15 +166,30 @@ This feature means that you can navigate the key-binding hierachy just as you wo
 
 
 [:HighlightLocalBindings]
-=== Local Bindings Are Highlighted ===
+[:HighlightMenuItems]
+=== Local Bindings and Menu Items Are Highlighted ===
 
 Sometimes it helps to know which key sequences are [[local key binding|local bindings]],
 that is, bindings that are specific to the current mode.  For
 example, DiredMode defines keys specific to Dired buffer, such as
-`##* %##', `##% g##', and `##!##'.  To help you distinguish local key bindings
+`##* %##', `##% g##', and `##!##'.
+
+To help you distinguish local key bindings
 from others ([[global key binding|global]] and [[minor-mode key binding|minor-mode]] bindings), local bindings are
 highlighted in buffer `*Completions*' using face
-`icicle-special-candidate'. See the screenshots above.
+'''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate|icicle-special-candidate]]</tt>''''.  Otherwise,
+the key portion of a candidate (left side of `##KEY  =  COMMAND##') is
+highlighted with face '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-part|icicle-candidate-part]]</tt>''''. 
+
+However, to make menu items stand out, they are highlighted with
+face '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-menu-local|icicle-key-complete-menu-local]]</tt>''''
+for menus specific to the
+current mode, and face '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-menu|icicle-key-complete-menu]]</tt>'''' for other menu
+items.  By default, these are the same as faces
+`icicle-special-candidate' and `icicle-candidate-part',
+respectively, except that they are also boxed.
+
+See the screenshots above.
 
 
 
