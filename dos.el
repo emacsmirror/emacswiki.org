@@ -39,6 +39,8 @@
 ;;
 ;; Usage:
 ;;
+;; See documentation of function `dos-mode'.
+;;
 ;; Separate package `dos-indent' (Matthew Fidler) provides rudimentary
 ;; indentation, see http://www.emacswiki.org/emacs/dos-indent.el.
 ;;
