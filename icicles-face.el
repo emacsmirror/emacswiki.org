@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 14:02:51 2013 (-0800)
+;; Last-Updated: Sun Jul  7 21:04:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 686
+;;     Update #: 709
 ;; URL: http://www.emacswiki.org/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -47,7 +47,8 @@
 ;;    `icicle-historical-candidate',
 ;;    `icicle-historical-candidate-other',
 ;;    `icicle-input-completion-fail',
-;;    `icicle-input-completion-fail-lax',
+;;    `icicle-input-completion-fail-lax', `icicle-key-complete-menu',
+;;    `icicle-key-complete-menu-local',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
 ;;    `icicle-msg-emphasis', `icicle-multi-command-completion',
@@ -381,6 +382,34 @@ a given set of candidates is governed by option
       (t (:foreground "Black" :background "#FFFFB8C4BB87")))
   "*Face for highlighting failed part of input during lax completion."
   :group 'Icicles-Minibuffer-Display :group 'faces)
+
+;; By default, these two faces have the same backgrounds as faces
+;; `icicle-candidate-part' and `icicle-special-candidate', respectively.  They differ
+;; only in being boxed as well.
+(when (fboundp 'map-keymap)             ; Emacs 22+.
+  (defface icicle-key-complete-menu
+      '((((background dark))
+         (:background "#451700143197"   ; a very dark magenta
+          :box (:line-width 1 :color "#FA6CC847FFFF"))) ; a light magenta box
+        (t (:background "#EF84FFEAF427" ; a light green.
+            :box (:line-width 1 :color "#34F393F434F3")))) ; a green box
+    "*Face used to highlight global keymap menu items when completing keys.
+Global keys that are not menu items are highlighted with face
+`icicle-candidate-part'.  Menu items for the current mode (i.e., local
+keymap) are highlighted with face `icicle-key-complete-menu-local'."
+    :group 'Icicles-Searching :group 'faces)
+
+  (defface icicle-key-complete-menu-local
+      '((((background dark))
+         (:background "#176900004E0A"   ; a dark blue
+          :box (:line-width 1 :color "#E1E1EAEAFFFF"))) ; a light blue box
+        (t (:background "#EF47FFFFC847" ; a light yellow.
+            :box (:line-width 1 :color "#AC4AAC4A0000")))) ; a dark yellow box
+    "*Face used to highlight local keymap menu items when completing keys.
+Local keys that are not menu items are highlighted with face
+`icicle-special-candidate'.  Global menu items (i.e., not for the
+current mode) are highlighted with face `icicle-key-complete-menu'."
+    :group 'Icicles-Searching :group 'faces))
 
 (defface icicle-match-highlight-Completions
     '((((background dark)) (:foreground "#1F1FA21CA21C")) ; a very dark cyan
