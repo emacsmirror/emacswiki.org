@@ -135,7 +135,7 @@ I used the <code>(setq scroll-conservatively 10000)</code> solution, and it work
 I am using Adam Spiers' smooth-scrolling.el, but with the defadvices changed to <code>before</code> rather than <code>after</code>, and adding 1 to <code>smooth-scroll-margin</code> everywhere in <code>smooth-scroll-up/down</code>. This provides the advantage that if you scroll up from the very top of a window (or down from the very bottom, and you can be in these situations if changing windows), the script will gracefully scroll the window just enough to put point outside the margin again. Also, as stated just above, <code>(setq auto-window-vscroll nil)</code> is needed in some situations. -- KGB
 
 [new:Zarza:2010-10-10 13:49 UTC]
-None of these solutions worked for me. Cursor jumped even during non-scrolling-moves. I noticed a short hard-drive activity when the cursor got stuck. My value for ‘auto-save-interval’ was set to 50 chars. So now I’m using: 
+None of these solutions worked for me. Cursor jumped even during non-scrolling-moves. I noticed a short hard-drive activity when the cursor got stuck. My value for âauto-save-intervalâ was set to 50 chars. So now Iâm using: 
 <pre>
 ; Autosave every 500 typed characters
 (setq auto-save-interval 500)
@@ -147,6 +147,12 @@ None of these solutions worked for me. Cursor jumped even during non-scrolling-m
 [new:AmitPatel:2013-05-14 15:48 UTC]
 [[Zarza]]'s solution is the only one that worked for me. Thank you! I turned off auto save interval altogether.
 
+[new:2013-07-08:2013-07-08 08:36 UTC]
+For GNU Emacs 24.3.1 I have normal scrolling, and with the "C key" pressed, you have smooth scrolling (1 line up/down), it works well, should be the visible/easy solution?
+<pre>
+(global-set-key (kbd "<C-mouse-4>") 'scroll-down-line)
+(global-set-key (kbd "<C-mouse-5>") 'scroll-up-line)
+</pre>
 ----
 CategoryDisplay
 CategoryMouse
