@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  3 08:52:41 2013 (-0700)
+;; Last-Updated: Sun Jul  7 21:32:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29366
+;;     Update #: 29371
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -156,7 +156,7 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Keys By Name")
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Prefix Keys")
 ;;    (@file :file-name "icicles-doc1.el" :to "Navigate the Key-Binding Hierarchy")
-;;    (@file :file-name "icicles-doc1.el" :to "Local Bindings Are Highlighted")
+;;    (@file :file-name "icicles-doc1.el" :to "Local Bindings and Menu Items Are Highlighted")
 ;;    (@file :file-name "icicles-doc1.el" :to "Completing Keys By Just Hitting Them")
 ;;    (@file :file-name "icicles-doc1.el" :to "Key and Command Help")
 ;;    (@file :file-name "icicles-doc1.el" :to "`S-TAB' Is a Multi-Command")
@@ -5841,6 +5841,11 @@
 ;;    `*Completions*', that are considered "special".  Generally,
 ;;    these are candidates that match user option
 ;;    `icicle-special-candidate-regexp'.
+;;
+;;  * Faces `icicle-key-complete-menu-local' and
+;;    `icicle-key-complete-menu' highlight menu items during key
+;;    completion.  The former is for local menu items (i.e., specific
+;;    to the current mode).  The latter is for non-local menu items.
 ;;
 ;;  * Similarly, face `icicle-proxy-candidate' highlights proxy
 ;;    candidates.  These are placeholders for real candidates.
