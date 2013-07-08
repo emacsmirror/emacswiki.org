@@ -546,6 +546,9 @@ FWIW, here is my Windows shortcut target for launching Emacs via Cygwin, and hav
 
 If your cygwin bash profile manages your ssh-agent for you, then this approach makes TRAMP via the sshx method pretty seamless.
 
+[new]
+And yet another take on the same problem, after trying all of the above: SshWithNTEmacs. If anyone else is struggling, I suggest we take the conversation over to there. -- JeremyMoore
+
 === Tramp on emacs, ssh and cygwin/X ===
 
 Tramp-mode can be made to operate within the cygwin/X environment as an alternative to NTEmacs. In this approach, emacs is installed as a cygwin package and can be run in the cmd bash shell, rxvt, or under X-windows. In order for tramp-mode to function, the following should be added to your .emacs file:
