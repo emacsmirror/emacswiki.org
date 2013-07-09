@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Tue Jul  9 14:19:58 2013 (-0700)
+;; Last-Updated: Tue Jul  9 16:17:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 875
+;;     Update #: 885
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -235,15 +235,7 @@
 ;;  candidates using `C-down' or `C-next', instead of `[down]' or
 ;;  `[next]'.  The documentation appears in buffer `*Help*'.
 ;;
-;;  In sum, if you use La Carte, you will want to use it with Icicles
-;;  - enjoy!
-;;
-;;
-;;  To Do?
-;;  ------
-;;
-;;  1. Provide sorting by menu-bar order, instead of alphabetically.
-;;  2. Maybe use tmm-get-keybind?
+;;  In sum, if you use La Carte, you will want to use it with Icicles!
  
 ;;(@> "Index")
 ;;
@@ -271,6 +263,7 @@
 ;;              lacarte-get-a-menu-item-alist-pre-22.
 ;;       lacarte-get-a-menu-item-alist-1: defalias to one of lacarte-get-a-menu-item-alist-*22*.
 ;;     lacarte-execute(-menu)-command: Run menu-bar-update-hook.
+;;     lacarte-get-overall-menu-item-alist: Simplified.
 ;;     lacarte-get-a-menu-item-alist-pre-22: Set composite-name to nil when should not add item.
 ;;                                           Removed handling of nested keymap (irrelevant for pre-22).
 ;; 2013/07/08 dadams
@@ -410,15 +403,6 @@ Used by `lacarte-execute-menu-command'.  A typical use would be to
 remove the `&' characters used in MS Windows menus to define keyboard
 accelerators.  See `lacarte-remove-w32-keybd-accelerators'."
   :type '(choice (const :tag "None" nil) function) :group 'lacarte)
-
-;; $$$ NOT YET IMPLEMENTED
-;; (defcustom lacarte-sort-menu-bar-order-flag nil
-;;   "*Non-nil means that `lacarte-execute-menu-command' uses menu-bar order.
-;; Nil means use alphabetic order.
-;; The order is what is used for completion.
-;; Note: Using a non-nil value imposes an extra sorting operation, which
-;;       slows down the creation of the completion-candidates list."
-;;   :type 'boolean :group 'lacarte)
  
 ;;; Internal Variables -------------------------------------
 
@@ -553,25 +537,18 @@ Optional argument MAPS is a list specifying which keymaps to use: it
 can contain the symbols `local', `global', and `minor', mean the
 current local map, current global map, and all current minor maps.
 
-As a side effect, this function modifies
-`lacarte-get-a-menu-item-alist' and then resets it to ()"
+As a side effect, this function modifies `lacarte-menu-items-alist'
+temporarily, then resets it to ()."
   (unless maps (setq maps  '(local global minor)))
-  (let ((alist  (apply #'nconc
-                       (and (memq 'local maps)   (current-local-map)
-                            (lookup-key (current-local-map) [menu-bar])
-                            (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
-                       (and (memq 'global maps)  (current-global-map)
-                            (lookup-key (current-global-map) [menu-bar])
-                            (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
-                       (and (memq 'minor maps)
-                            (mapcar (lambda (map)
-                                      (when (lookup-key map [menu-bar])
-                                        (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar]))))
-                                    (current-minor-mode-maps))))))
-    (setq lacarte-menu-items-alist  ())
-    (if nil ;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
-        (setq alist  (sort alist SOME-PREDICATE))
-      alist)))
+  (let* ((lacarte-menu-items-alist  lacarte-menu-items-alist)
+         (alist
+          (lacarte-get-a-menu-item-alist ; This modifies `lacarte-menu-items-alist'.
+           (lookup-key
+            (cons 'keymap (append (and (memq 'local maps)  (current-local-map))
+                                  (apply #'append (and (memq 'minor maps)  (current-minor-mode-maps)))
+                                  (and (memq 'global maps)  (current-global-map))))
+            [menu-bar]))))
+    alist))
 
 (defun lacarte-get-a-menu-item-alist (keymap)
   "Alist of pairs (MENU-ITEM . COMMAND) defined by KEYMAP.
