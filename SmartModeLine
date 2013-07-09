@@ -1,0 +1,18 @@
+smart-mode-line.el is a ModeLineConfiguration package which makes the ModeLine sexy and super powered. 
+
+What super powers? Well... smart truncation of directories and minor modes, of course! Not to mention prefixes, full/fixed/flexible width, easy customization, and being super sexy. 
+
+https://github.com/Bruce-Connor/control-pianobar/blob/gh-pages/sml/sml-small.png
+
+The primary focus of these features is to convey *as much information* as possible in the most *space efficient* way possible. 
+
+For more details on these features, see it's github page:
+https://github.com/Bruce-Connor/smart-mode-line/
+
+=== Download ===
+The latest version is always available on Melpa and on the github page. Direct link here: https://github.com/Bruce-Connor/smart-mode-line/blob/master/smart-mode-line.el
+
+----
+ModeLineConfiguration
+CategoryModeLine
+CategoryModeLineConfiguration
