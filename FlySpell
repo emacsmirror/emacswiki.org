@@ -59,6 +59,9 @@ care of this.
 Thanks for pointing me to the flyspell-generic-check-word-predicate
 variable. -- MattLundin
 
+[new]
+I am interested in a working solution to ignore spellchecking URLs and email addresses. The answer at http://superuser.com/a/345461/40407 seems to be relevant to making a solution with flyspell-generic-check-word-predicate, though not specificly for URLs  and email addresses. MattLundin, did you come up with something?
+
 == Change dictionaries ==
 [new]
 As I often need to switch between English and German I use this function:
