@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jul  9 17:02:13 2013 (-0700)
+;; Last-Updated: Tue Jul  9 20:02:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3589
+;;     Update #: 3594
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -126,6 +126,7 @@
 ;;; Change Log:
 ;;
 ;; 2013/07/09 dadams
+;;     menu-bar-edit-fill-menu: Added :enable (not buffer-read-only).
 ;;     fill-paragraph-ala-mode: Corrected definition and added missing interactive spec.
 ;; 2013/07/02 dadams
 ;;     Added to commentary: mention load order.
@@ -862,7 +863,7 @@ submenu of the \"Help\" menu."))
     :enable (not buffer-read-only))
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
-  (cons "Fill" menu-bar-edit-fill-menu) 'props)
+  `(menu-item "Fill" ,menu-bar-edit-fill-menu :enable (not buffer-read-only)) 'props)
 
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
