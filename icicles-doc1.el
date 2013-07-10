@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  7 21:28:00 2013 (-0700)
+;; Last-Updated: Tue Jul  9 19:16:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27831
+;;     Update #: 27836
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6531,7 +6531,9 @@
 ;;  In fact, since menu-bar bindings are also key bindings, you can
 ;;  also use key completion to navigate the menu-bar hierarchy - just
 ;;  complete the prefix key `menu-bar'!  Start with `S-TAB', choose
-;;  `menu-bar  =  ...', then choose a menu, and so on.
+;;  `menu-bar = ...', then choose a menu, and so on.  But menu-bar
+;;  menu completion is handy enough that it has its own Icicle mode
+;;  key binding, by default: `S-f10'.
 ;;
 ;;  Icicles key completion thus provides a general browser for key
 ;;  bindings, which you can also use to learn about keys and their
