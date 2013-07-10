@@ -1,7 +1,9 @@
-Official site: [https://github.com/haskell/haskell-mode]
+Haskell-mode is the package of Haskell functionality for Emacs.
 
-Haskell-mode 2.8 has different setup from earlier versions. Make sure to read the README and check it against your .emacs.
+* [http://haskell.github.io/haskell-mode/ Home page] 
+* [https://github.com/haskell/haskell-mode Github repository]
 
+Some helpful notes for EmacsWiki regulars:
 
-The Haskell wiki has an interesting note on using mmm-mode (from MultipleModes) so that you can write your scholarly paper while still hacking.
-[[http://haskell.org/haskellwiki/Literate_programming#Multi-mode_support_in_Emacs]]
+* [http://www.haskell.org/haskellwiki/Emacs  Additional possibly-out-of-date tidbits by users on the Haskell wiki]
+* [http://haskell.org/haskellwiki/Literate_programming#Multi-mode_support_in_Emacs Using mmm-mode] (from MultipleModes) so that you can write your scholarly paper while still hacking
