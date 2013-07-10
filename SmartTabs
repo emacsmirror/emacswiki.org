@@ -1,5 +1,5 @@
 [[de:SmartTabsDE]]
-''This is about indenting with tabs and aligning with spaces. For Sébastien Rocca-Serra's ##smart-tab## command, see [[TabCompletion#SmartTab|TabCompletion]].''
+''Note: This is about indenting with tabs and aligning with spaces. For Sébastien Rocca-Serra's ##smart-tab## command, see [[TabCompletion#SmartTab|TabCompletion]].''
 
 : [[image:TabsSpacesBoth]]
 : ''Tabs and spaces are often [TabsAreEvil misunderstood]. (Original comic by [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski].)''
@@ -19,16 +19,55 @@ The approach can be summed up in two points:
 
 This page provides code which improves on Emacs' auto-indenting, so that whenever you press the ##<tab>## key, the appropriate amount of tabs and spaces is inserted automatically. You can still use all spaces if you prefer, of course; the code merely ensures that ''if'' you enable tabs (maybe when maintaining legacy code), the tab size does not matter.
 
-[:Implementations]
-== Code ==
 
-: ''This has been packaged and is available as a minor mode; see [[#Packaging|below]]''
+[:Packaging]
+== Packaging ==
+This code is now available as an Emacs minor mode through the [[MELPA|MELPA]] package ##smart-tabs-mode## and can be installed through the Emacs package manager. You can add MELPA to your package archive list with:
 
-Add the code below to <tt>[InitFile .emacs]</tt> to make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]). Then, to indent ''and'' align, just press '##<tab>##' as usual.
+    (add-to-list 'package-archives ("melpa" . "http://melpa.milkbox.net/packages/"))
+
+The source code is available at [[http://github.com/jcsalomon/smarttabs|GitHub]]; see the file <tt>smart-tabs-mode.el</tt>.  Bug reports, code contributions, etc., are all welcome. —JCSalomon
+
+
+== Setup ==
+If you installed Smart Tabs Mode through Emacs' package manager, the only thing that you need to do is tell it which languages you wish to use for. This can be accomplished with the `smart-tabs-insinuate` function. Just pass this function the symbols identifying the languages that you want it to be enabled for and the appropriate hooks will be setup automatically. For example, to enable ##smart-tabs-mode## automatically for C and Javascript, you would add the following to your config:
+
+    (smart-tabs-insinuate 'c 'javascript)
+
+That's it! To view the list of available languages, enable the minor mode with ##M-x smart-tabs-mode## and then run ##M-x describe-variable RET smart-tabs-insinuate-alist RET##. You will see an alist of the languages supported as well as the hooks that will get added if you decide to turn it on.
+
+== Use ==
+To make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]) just press '##<tab>##' as usual.
 
 [:Retab]
 You can retab the whole file by pressing '##C-x h C-M-\##'. ([[TabCompletion#SmartTab|TabCompletion]] provides a way to do this with fewer keystrokes.)
 
+
+[:Toggling]
+=== Toggling ===
+
+Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current, buffer-local value. To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
+
+''What you probably want to do:'' Disable tabs globally (spaces only) and reactivate them for modes with smart tabs handling. For CC Mode:
+
+    (setq-default indent-tabs-mode nil)
+
+    (add-hook 'c-mode-common-hook
+              (lambda () (setq indent-tabs-mode t)))
+
+See GuessStyle for a package which attempts to determine the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
+
+
+=== Whitespace Cleanup ===
+
+If you use ##whitespace-cleanup## either manually or as a before-save-hook, you have to disable a few items in ##whitespace-style##. To do this run ##M-x customize-variable RET whitespace-style RET## and remove the entries for "Indentation SPACEs" and "SPACEs after TAB".
+
+
+== Code ==
+
+''Note: This code does not need to be placed in your config file, this is legacy code here for the [[#SimpleAlgorithm|explanation]] of how the code works.
+
+[:Implementations]
 [:CImplementations]
 === C-like languages ===
 
@@ -126,23 +165,6 @@ For VhdlMode, add
     (smart-tabs-advice vhdl-indent-line vhdl-basic-offset)
     (setq vhdl-indent-tabs-mode t)
 
-[:Toggling]
-=== Toggling ===
-
-Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current, buffer-local value. To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
-
-''What you probably want to do:'' Disable tabs globally (spaces only) and reactivate them for modes with smart tabs handling. For CC Mode:
-
-    (setq-default indent-tabs-mode nil)
-
-    (add-hook 'c-mode-common-hook
-              (lambda () (setq indent-tabs-mode t)))
-
-See GuessStyle for a package which attempts to determine the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
-
-[:Packaging]
-== Packaging ==
-This code is now available as an Emacs minor mode on [[http://github.com/jcsalomon/smarttabs|GitHub]]; see the file <tt>smart-tabs-mode.el</tt>.  Bug reports, code contributions, etc., are all welcome. —JCSalomon
 
 [:SimpleAlgorithm]
 == Code explanation ==
