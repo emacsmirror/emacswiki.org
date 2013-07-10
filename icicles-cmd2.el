@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  8 08:04:22 2013 (-0700)
+;; Last-Updated: Tue Jul  9 16:33:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6463
+;;     Update #: 6473
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -63,8 +63,9 @@
 ;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
-;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
-;;    (+)`icicle-doc', (+)`icicle-exchange-point-and-mark',
+;;    (+)`icicle-complete-keys', (+)`icicle-complete-menu-bar',
+;;    `icicle-complete-thesaurus-entry', (+)`icicle-doc',
+;;    (+)`icicle-exchange-point-and-mark',
 ;;    (+)`icicle-find-file-all-tags',
 ;;    (+)`icicle-find-file-all-tags-other-window',
 ;;    (+)`icicle-find-file-all-tags-regexp',
@@ -7575,6 +7576,33 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
               ("turned OFF")))
            (icicle-hist-cands-no-highlight          '("..")))
       (icicle-complete-keys-1 (icicle-this-command-keys-prefix))))
+
+  (defun icicle-complete-menu-bar ()    ; Bound to `S-f10'.
+    "Complete a menu-bar menu.
+This is just a restriction of `\\[icicle-complete-keys]' to menu-bar
+menus and submenus.  See multi-command `icicle-complete-keys' for more
+information."
+    (interactive)
+    (let* ((icicle-transform-function               'icicle-remove-duplicates)
+           (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
+           (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
+           (icicle-show-Completions-initially-flag  t)
+           (icicle-candidate-action-fn              'icicle-complete-keys-action)
+           (enable-recursive-minibuffers            t)
+           ;; $$$$$$ (icicle-orig-buff-key-complete           (current-buffer))
+           ;; $$$$$$ (icicle-orig-win-key-complete            (selected-window))
+           (icicle-orig-buff                        (current-buffer))
+           (icicle-orig-window                      (selected-window))
+           (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
+           (icicle-sort-comparer                    'icicle-local-keys-first-p)
+           (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
+           (icicle-sort-orders-alist
+            '(("by key name, local bindings first" . icicle-local-keys-first-p)
+              ("by key name, prefix keys first" . icicle-prefix-keys-first-p)
+              ("by command name" . icicle-command-names-alphabetic-p)
+              ("turned OFF")))
+           (icicle-hist-cands-no-highlight          '("..")))
+      (icicle-complete-keys-1 [menu-bar])))
 
   (defun icicle-this-command-keys-prefix ()
     "Return the prefix of the currently invoked key sequence."
