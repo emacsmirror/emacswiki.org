@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jul  4 20:34:50 2013 (-0700)
+;; Last-Updated: Tue Jul  9 16:37:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5711
+;;     Update #: 5720
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4549,6 +4549,7 @@ toggle Icicle mode off and then back on."
     (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
     (eval-expression     icicle-pp-eval-expression    (fboundp 'command-remapping)) ; `M-:'
     (pp-eval-expression  icicle-pp-eval-expression    (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
+    ([S-f10]             icicle-complete-menu-bar     (fboundp 'icicle-complete-menu-bar)) ; `S-f10'
     ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
     ("\e\M-x"            lacarte-execute-command ; `ESC M-x'
      (fboundp 'lacarte-execute-command))
