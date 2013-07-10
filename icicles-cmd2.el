@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jul  9 16:33:43 2013 (-0700)
+;; Last-Updated: Tue Jul  9 20:44:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6473
+;;     Update #: 6481
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7479,6 +7479,9 @@ This command requires library `expand-region.el'."
     "Complete a key sequence for the currently invoked prefix key.
 Input-candidate completion and cycling are available.
 
+By default, key completion is case insensitive.  As always, you can
+use `C-A' to toggle case sensitivity.
+
 You can navigate the key-binding hierarchy (prefix-key hierarchy),
 just as would navigate a file-system hierarchy (to complete directory
 and file names) or a menu hierarchy (to complete submenu and menu-item
@@ -7556,7 +7559,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.  This is an Icicles command - see command
 `icicle-mode'."
     (interactive)
-    (let* ((icicle-transform-function               'icicle-remove-duplicates)
+    (let* ((completion-ignore-case                  t) ; Not case-sensitive, by default.
+           (icicle-transform-function               'icicle-remove-duplicates)
            (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
            (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
@@ -7583,7 +7587,8 @@ This is just a restriction of `\\[icicle-complete-keys]' to menu-bar
 menus and submenus.  See multi-command `icicle-complete-keys' for more
 information."
     (interactive)
-    (let* ((icicle-transform-function               'icicle-remove-duplicates)
+    (let* ((completion-ignore-case                  t) ; Not case-sensitive, by default.
+           (icicle-transform-function               'icicle-remove-duplicates)
            (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
            (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
@@ -7780,9 +7785,9 @@ information."
                                  (put candidate 'icicle-special-candidate t))))))))
             ((and
               ;; Include BINDING if key (EVENT) is on `icicle-key-prefix-2'.
-              ;; Do not include a shadowed bndg to a command.  Always include bndg if it's a keymap,
+              ;; Do not include a shadowed binding to a command.  Always include binding if it's a keymap,
               ;; because the same prefix key can be bound to different keymaps without any of those keymaps
-              ;; shadowing all of the bndgs in another of them.
+              ;; shadowing all of the bindings in another of them.
               (or (keymapp bndg)
                   (and (commandp bndg)
                        (equal bndg (key-binding (vconcat icicle-key-prefix-2 (vector event)) nil 'NO-REMAP))
@@ -7804,14 +7809,12 @@ information."
              (let* ((key-desc   (if (and (stringp mitem)  (keymapp bndg))
                                     (propertize mitem 'face 'icicle-key-complete-menu) ; Menu item.
                                   (propertize (single-key-description
-                                               event
+                                               (if (stringp mitem) mitem event)
                                                (not icicle-key-descriptions-use-<>-flag))
                                               'face 'icicle-candidate-part)))
                     (candidate  (intern (concat key-desc "  =  " (if (keymapp bndg)
                                                                      "..."
-                                                                   (if (stringp mitem)
-                                                                       mitem
-                                                                     (prin1-to-string bndg)))))))
+                                                                   (prin1-to-string bndg))))))
                ;; Skip keys bound to `undefined'.
                (unless (string= "undefined" (prin1-to-string bndg))
                  (push (cons candidate (cons (vector event) bndg)) icicle-complete-keys-alist))
