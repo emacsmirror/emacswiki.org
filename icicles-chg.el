@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jul  7 21:08:45 2013 (-0700)
+;; Last-Updated: Tue Jul  9 17:07:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10106
+;;     Update #: 10109
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -917,6 +917,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/07/09 dadams
+;;     Added: icicle-complete-menu-bar.
 ;; 2013/07/07 dadams
 ;;     icicle-add-key+cmd: Use face icicle-key-complete-menu(-local) for menu items.
 ;; 2013/07/04 dadams
@@ -6699,6 +6701,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/07/09 dadams
+;;     icicle-top-level-key-bindings: Bind S-f10 to icicle-complete-menu-bar (new).
 ;; 2013/07/04 dadams
 ;;     icicle-buffer-prefix-arg-filtering: Typo: Removed ' from const value.
 ;;     icicle-search-highlight-threshold, icicle(-alternative)-sort-comparer,
