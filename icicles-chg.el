@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul  9 17:07:31 2013 (-0700)
+;; Last-Updated: Tue Jul  9 20:48:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10109
+;;     Update #: 10112
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -919,6 +919,8 @@
 ;;
 ;; 2013/07/09 dadams
 ;;     Added: icicle-complete-menu-bar.
+;;     icicle-add-key+cmd: Corrected menu-item description: Always use MITEM if available.
+;;     icicle-complete-(keys|menu-bar): Made case-insensitive by default.
 ;; 2013/07/07 dadams
 ;;     icicle-add-key+cmd: Use face icicle-key-complete-menu(-local) for menu items.
 ;; 2013/07/04 dadams
