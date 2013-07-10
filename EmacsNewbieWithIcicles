@@ -153,6 +153,8 @@ I call this "'''key completion'''". Why "completion"? Because you can use `S-TAB
 
 The same is true for any key-sequence prefix. Remember `C-h k', `C-h f', `C-h b', `C-h m', and `C-h l', mentioned above? (Not really? :-/)  Well, all Emacs help commands are bound to key sequences that start with the prefix `C-h' (likewise, `f1', the universal help key), so just use `C-h S-TAB' (or `##f1 S-TAB##') to see them all (and use them). Vanilla Emacs itself offers a similar functionality here, if you use `C-h C-h' (or `##f1 f1##'). But what is only a special feature for just one part of vanilla Emacs is available generally with '''Icicles''', for any prefix key, not just `C-h' (`f1').
 
+Key completion means ''menu completion'' also.  Every menu item reachable from the [[menu bar]] can be accessed by completing the pseudo key '''`menu-bar'''' and drilling down through the menu hierarchy.  As a shortcut, you can use '''`S-f10'''' (Shift key + function-key F10) to start menu completion.
+
 For more about this, including screenshots, see [[Icicles - Key Completion]]. [Note: '''Icicles''' key completion is not available for Emacs versions prior to 22.]
 
 
