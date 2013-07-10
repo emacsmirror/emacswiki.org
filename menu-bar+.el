@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jul  2 13:12:30 2013 (-0700)
+;; Last-Updated: Tue Jul  9 17:02:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3574
+;;     Update #: 3589
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -75,18 +75,15 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `describe-menubar', `menu-bar-create-directory',
-;;    `menu-bar-next-tag-other-window', `menu-bar-select-frame' (Emacs
-;;    20), `menu-bar-word-search-backward' (Emacs 22+),
+;;    `describe-menubar', `fill-paragraph-ala-mode',
+;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
+;;    `menu-bar-select-frame' (Emacs 20),
+;;    `menu-bar-word-search-backward' (Emacs 22+),
 ;;    `menu-bar-word-search-forward' (Emacs 22+),
 ;;    `nonincremental-repeat-search-backward' (Emacs 22+),
 ;;    `nonincremental-repeat-search-forward' (Emacs 22+),
 ;;    `nonincremental-repeat-word-search-backward' (Emacs < 22),
 ;;    `nonincremental-repeat-word-search-forward' (Emacs < 22),
-;;
-;;  Non-interactive functions defined here:
-;;
-;;    `fill-paragraph-ala-mode'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -128,6 +125,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/09 dadams
+;;     fill-paragraph-ala-mode: Corrected definition and added missing interactive spec.
 ;; 2013/07/02 dadams
 ;;     Added to commentary: mention load order.
 ;; 2013/06/16 dadams
@@ -903,10 +902,15 @@ submenu of the \"Help\" menu."))
 Normally, this fills a paragraph according to the current major mode.
 For example, in C Mode, `M-q' is normally bound to `c-fill-paragraph',
 and in Lisp Mode, `M-q' is normally bound to `lisp-fill-paragraph'.
-ARG means justify as well as fill."
-  (let ((map (current-local-map)))
-    (or (and map (funcall (lookup-key map "\M-q") arg))
-        (funcall (lookup-key (current-global-map) "\M-q") arg)
+A prefix argument means justify as well as fill."
+  (interactive "P")
+  (let (map cmd)
+    (or (and (setq map  (current-local-map))
+             (setq cmd  (lookup-key map "\M-q"))
+             (funcall cmd arg))
+        (and (setq map  (current-global-map))
+             (setq cmd  (lookup-key map "\M-q"))
+             (funcall cmd arg))
         (fill-paragraph arg))))
 
 ;; `Edit' > `Region' submenu.
