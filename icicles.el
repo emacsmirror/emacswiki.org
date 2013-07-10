@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Sun Jul  7 21:02:49 2013 (-0700)
+;; Last-Updated: Tue Jul  9 16:32:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23413
+;;     Update #: 23414
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -214,8 +214,9 @@
 ;;    `icicle-comint-replace-by-expanded-filename',
 ;;    `icicle-comint-search', `icicle-command-abbrev',
 ;;    `icicle-compilation-search', `icicle-complete-keys',
-;;    `icicle-complete-thesaurus-entry', `icicle-completing-yank',
-;;    `icicle-customize-apropos', `icicle-customize-apropos-faces',
+;;    `icicle-complete-menu-bar', `icicle-complete-thesaurus-entry',
+;;    `icicle-completing-yank', `icicle-customize-apropos',
+;;    `icicle-customize-apropos-faces',
 ;;    `icicle-customize-apropos-groups',
 ;;    `icicle-customize-apropos-options',
 ;;    `icicle-customize-apropos-options-of-type',
