@@ -140,7 +140,8 @@ The screenshots above are all at the top level (in buffer `##*Buffer List*##'). 
 This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte''').
 
 In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!  Start with `S-TAB', choose
-`##menu-bar  =  ...##', then choose a menu, and so on. 
+`##menu-bar  =  ...##', then choose a menu, and so on.  But menu-bar
+menu completion is handy enough that it has its own ''Icicle'' mode key binding, by default: '''`S-f10''''.
 
 '''Icicles''' key completion thus provides a general ''browser for key bindings'', which you can also use to learn about keys and their associated comands, without necessarily executing them -- see [[#KeyCommandHelp|Key and Command Help]], below.
 
