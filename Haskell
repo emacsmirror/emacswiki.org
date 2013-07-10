@@ -1,16 +1,1 @@
-Haskell is a general purpose,  polymorphicly typed, lazy, purely FunctionalProgramming language.
-It is named after the logician Haskell Curry.
-
-Visit http://haskell.org/ for more information.
-
-See also:
-* DaRcs
-* HaskellMode
-* FlymakeHaskell
-
-[new:AlexSchroeder:2005-06-26 11:10 UTC]
-Is this page linked from anywhere?  Do we need it on this wiki?
-It seems to me that we can just link to haskell.org on the one or two pages where it might be pertinent...
-
-[new]
--SteenManniche: I found haskell-mode from here. So let's keep it.
+#REDIRECT HaskellMode
