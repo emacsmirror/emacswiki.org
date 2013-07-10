@@ -7,3 +7,9 @@ Some helpful notes for EmacsWiki regulars:
 
 * [http://www.haskell.org/haskellwiki/Emacs  Additional possibly-out-of-date tidbits by users on the Haskell wiki]
 * [http://haskell.org/haskellwiki/Literate_programming#Multi-mode_support_in_Emacs Using mmm-mode] (from MultipleModes) so that you can write your scholarly paper while still hacking
+
+Related modes:
+
+* DaRcs
+* HaskellMode
+* FlymakeHaskell
