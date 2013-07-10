@@ -23,7 +23,6 @@ Wiki modes to edit pages on a local wiki:
 * EmacsWikiMode by JohnWiegley -- the successor of WikiMode and with more features built-in. (*abandoned*)
 * WikiMode by AlexSchroeder -- edit local wiki files and export them to HTML. (*abandoned*)
 * The original wiki-mode [http://www.s.netic.de/fg/wiki-mode/wiki.el] by FrankGerhardt. (*abandoned*)
-* FileWiki by AlexSchroeder -- vapor ware... (*abandoned*) -- use OrgMode instead!
 * OrgMode -- a wiki + outline + planner + todo lists all in one file.
 * WikipediaMode -- for MediaWiki syntax.
 
