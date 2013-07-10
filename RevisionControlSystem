@@ -80,7 +80,7 @@ Like [[WDired]], it would be handy if you could hand edit the contents of log vi
 == Related Information ==
 * [http://www.gnu.org/software/rcs/ GNU RCS Home Page]
 * [http://dmoz.org/Computers/Software/Configuration_Management/Tools/Revision_Control_System/ dmoz: Revision Control System]
-* [http://agave.garden.org/~aaronh/rcs/ Resources on Using GNU RCS by Aaron Hawley]
+* [http://users.ninthfloor.org/~ashawley/rcs/ Resources on Using GNU RCS by Aaron Hawley]
 * [http://www.cs.purdue.edu/homes/trinkle/RCS/ Win32 Port]
 * [http://obsidianrook.com/devnotes/joys-of-rcs.html The Joys of RCS] - a nice writeup about version control/emacs/rcs.
 
