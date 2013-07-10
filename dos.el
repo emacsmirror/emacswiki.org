@@ -69,10 +69,10 @@
   (eval-when-compile
     (let ((COMMANDS
            '("at" "attrib" "cd" "cls" "color" "copy" "date" "del" "dir" "doskey"
-             "echo" "endlocal" "erase" "fc" "find" "md" "mkdir" "more" "move"
-             "net" "path" "pause" "popd" "prompt" "pushd" "rd" "ren" "rename"
-             "rmdir" "set" "setlocal" "shift" "sort" "time" "title" "type"
-             "xcopy"))
+             "echo" "endlocal" "erase" "fc" "find" "findstr" "md" "mkdir" "more"
+             "move" "net" "path" "pause" "popd" "prompt" "pushd" "rd" "ren"
+             "rename" "rmdir" "set" "setlocal" "shift" "sort" "time" "title"
+             "type" "xcopy"))
           (CONTROLFLOW
            '("call" "cmd" "defined" "do" "else" "equ" "exist" "exit" "for" "geq"
              "goto" "gtr" "if" "in" "leq" "lss" "neq" "not" "start"))
