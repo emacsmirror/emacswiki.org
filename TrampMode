@@ -493,7 +493,7 @@ vbscript way to launch emacs from a shortcut (don't need to be in cygwin prompt 
 
 # tramp away!
 
-One fair warning is that it may not work with every env. I have an office notebook that won’t work with the above method. However, that is because it also won’t work even if I start emacs from cygwin command prompt. It must be that particular cygwin installation that is causing the problem. YMMV -- WeyHan
+One fair warning is that it may not work with every env. I have an office notebook that wonÃ¢ÂÂt work with the above method. However, that is because it also wonÃ¢ÂÂt work even if I start emacs from cygwin command prompt. It must be that particular cygwin installation that is causing the problem. YMMV -- WeyHan
 
 [new:DrewAdams:2004-12-25 18:58 UTC]
 Could both recipes be made clearer? What is meant by "you have to create your keys and stuff" and "put them in memory"? What is puttygen and how to use it? How to start paegant and load keys? -- DrewAdams
@@ -786,7 +786,7 @@ This is a similar advice for DVC mode (thanks to folks at ru_emacs):
 }}}
 
 [new]
-'''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen Schäfer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
+'''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen SchÃÂ¤fer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
 
 === I want to completely turn off backups for Tramp. ===
 
@@ -902,7 +902,7 @@ Fixed to make this question Windows/Cygwin-specific - in GNU Emacs 24.2, I can v
 
 One of the neat things about using TRAMP via a remote shell, is that emacs will then automatically invoke other remote shell commands directly on that server. e.g. When viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc...
 
-== Using tramp to quickly edit files as root ==
+=== Using tramp to quickly edit files as root ===
 
 I find the following shortcuts to be highly useful for quickly editing files as root; esp via emacsclient (i.e. as an alternative to sudo vi)
 
@@ -988,6 +988,28 @@ I fixed Stefan's example to make sudo work with local and remote files with the 
      (global-set-key (kbd "C-c o s") 'sudo-reopen-file)))
 }}}
 --- Chris Allen
+
+=== Using sudo to edit the current file ===
+A simple version of the ones above.  Designed to allow you to reopen an existing file with sudo, without needing to navigate to it or loose your place in the file.  Also works on local or remote files.
+{{{
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+(require 'tramp)
+(defun sudo-edit-current-file ()
+  (interactive)
+  (let ((position (point)))
+    (find-alternate-file
+     (if (file-remote-p (buffer-file-name))
+         (let ((vec (tramp-dissect-file-name (buffer-file-name))))
+           (tramp-make-tramp-file-name
+            "sudo"
+            (tramp-file-name-user vec)
+            (tramp-file-name-host vec)
+            (tramp-file-name-localname vec)))
+       (concat "/sudo:root@localhost:" (buffer-file-name))))
+    (goto-char position)))
+}}}
+--- Russell Sim
+
 
 ----
 CategoryExternalUtilities
