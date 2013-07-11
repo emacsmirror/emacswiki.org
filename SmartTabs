@@ -30,7 +30,7 @@ The source code is available at [[http://github.com/jcsalomon/smarttabs|GitHub]]
 
 
 == Setup ==
-If you installed Smart Tabs Mode through Emacs' package manager, the only thing that you need to do is tell it which languages you wish to use for. This can be accomplished with the `smart-tabs-insinuate` function. Just pass this function the symbols identifying the languages that you want it to be enabled for and the appropriate hooks will be setup automatically. For example, to enable ##smart-tabs-mode## automatically for C and Javascript, you would add the following to your config:
+If you installed Smart Tabs Mode through Emacs' package manager, the only thing that you need to do is tell it which languages you wish to use it for. This can be accomplished with the ##smart-tabs-insinuate## function. Just pass this function the symbols identifying the languages that you want it to be enabled for and the appropriate hooks will be setup automatically. For example, to enable ##smart-tabs-mode## automatically for C and Javascript, you would add the following to your config:
 
     (smart-tabs-insinuate 'c 'javascript)
 
