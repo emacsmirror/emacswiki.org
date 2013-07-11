@@ -68,11 +68,12 @@
 (defvar dos-font-lock-keywords
   (eval-when-compile
     (let ((COMMANDS
-           '("at" "attrib" "cd" "cls" "color" "copy" "date" "del" "dir" "doskey"
-             "echo" "endlocal" "erase" "fc" "find" "findstr" "md" "mkdir" "more"
-             "move" "net" "path" "pause" "popd" "prompt" "pushd" "rd" "ren"
-             "rename" "rmdir" "set" "setlocal" "shift" "sort" "time" "title"
-             "type" "xcopy"))
+           '("assoc" "at" "attrib" "cd" "cls" "color" "copy" "date" "del" "dir"
+             "doskey" "echo" "endlocal" "erase" "fc" "find" "findstr" "format"
+             "ftype" "label" "md" "mkdir" "more" "move" "net" "path" "pause"
+             "popd" "prompt" "pushd" "rd" "ren" "rename" "replace" "rmdir" "set"
+             "setlocal" "shift" "sort" "subst" "time" "title" "tree" "type"
+             "ver" "vol" "xcopy"))
           (CONTROLFLOW
            '("call" "cmd" "defined" "do" "else" "equ" "exist" "exit" "for" "geq"
              "goto" "gtr" "if" "in" "leq" "lss" "neq" "not" "start"))
