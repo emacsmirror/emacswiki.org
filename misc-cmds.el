@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Jun 10 11:21:53 2013 (-0700)
+;; Last-Updated: Fri Jul 12 12:19:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3080
+;;     Update #: 3084
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,15 +34,15 @@
 ;;    `clear-search-histories', `count-chars-in-region',
 ;;    `delete-lines', `end-of-line+', `end-of-visual-line+.',
 ;;    `forward-char-same-line', `forward-overlay',
-;;    `goto-previous-mark', `indirect-buffer',
-;;    `kill-buffer-and-its-windows', `list-colors-nearest',
-;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `old-rename-buffer',
-;;    `recenter-top-bottom', `recenter-top-bottom-1',
-;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
-;;    `region-to-file', `resolve-file-name',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `view-X11-colors'.
+;;    `goto-previous-mark', `indent-rigidly-tab-stops',
+;;    `indirect-buffer', `kill-buffer-and-its-windows',
+;;    `list-colors-nearest', `list-colors-nearest-color-at',
+;;    `mark-buffer-after-point', `mark-buffer-before-point',
+;;    `old-rename-buffer', `recenter-top-bottom',
+;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
+;;    `region-length', `region-to-buffer', `region-to-file',
+;;    `resolve-file-name', `revert-buffer-no-confirm',
+;;    `selection-length', `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -80,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/12 dadams
+;;     Added: indent-rigidly-tab-stops.
 ;; 2013/06/10 dadams
 ;;     kill-buffer-and-its-windows: wrap delete-window with condition-case.
 ;; 2012/12/24 dadams
@@ -439,6 +441,18 @@ Interactively, N is the prefix arg."
         ((save-excursion (skip-chars-backward " \t") (bolp)) ; At indentation.
          (forward-line 0))
         (t (back-to-indentation))))
+
+;;;###autoload
+(defun indent-rigidly-tab-stops (start end nth)
+  "Indent the region rigidly according to the NTH tab stop.
+`tab-stop-list' defines the available tab stops.  NTH is the numeric
+prefix arg.  One means indent rigidly the amount given by the first
+tab stop.  If NTH is negative then indent negatively (outdent)."
+  (interactive "r\np")
+  (unless (zerop nth)
+    (let ((tabstop  (nth (mod (1- (abs nth)) (length tab-stop-list))
+                         tab-stop-list)))
+      (indent-rigidly start end (if (natnump nth) tabstop (- tabstop))))))
 
 ;;;###autoload
 (defun recenter-top-bottom (&optional arg)
