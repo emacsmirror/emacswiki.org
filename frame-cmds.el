@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jul  5 09:29:23 2013 (-0700)
+;; Last-Updated: Fri Jul 12 09:33:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2857
+;;     Update #: 2875
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -262,6 +262,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/12 dadams
+;;     set-frame-alist-parameter-from-frame: Use lax completion, so do not limit to known parameters.
+;;     frame-parameter-names: Updated for Emacs 24.
 ;; 2013/07/05 dadams
 ;;     Added: move-frame-to-screen-top-left.
 ;;     move-frame-to-screen-*: Read FRAME name in interactive spec.
@@ -1583,8 +1586,8 @@ whose value is an alist of frame parameters."
          (enable-recursive-minibuffers  t))
      (list (intern (completing-read "Frame alist to change (variable): "
                                     (frame-alist-var-names) nil t nil nil 'default-frame-alist t))
-           (intern (completing-read "Parameter to set:"
-                                    (frame-parameter-names) nil t nil nil 'left t))
+           (intern (completing-read "Parameter to set:" ; Lax completion - not just known parameters.
+                                    (frame-parameter-names) nil nil nil nil 'left t))
            (get-a-frame (read-frame "Frame to copy parameter value from: " nil t)))))
   (unless (boundp alist)
     (error "Not a defined Emacs variable: `%s'" alist))
@@ -1665,23 +1668,67 @@ The CDR is nil."
 
 (defun frame-parameter-names ()
   "Return an alist of all available frame-parameter names.
+These are the documented, out-of-the-box (predefined) parameters.
 The CAR of each list item is a string parameter name.
 The CDR is nil."
-  (let ((params  '(("display") ("title") ("name") ("left") ("top") ("icon-left") ("icon-top")
-                   ("user-position") ("height") ("width") ("window-id") ("minibuffer")
-                   ("buffer-predicate") ("buffer-list") ("font") ("auto-raise") ("auto-lower")
-                   ("vertical-scroll-bars") ("horizontal-scroll-bars") ("scroll-bar-width")
-                   ("icon-type") ("icon-name") ("foreground-color") ("background-color")
-                   ("background-mode") ("mouse-color") ("cursor-color") ("border-color")
-                   ("display-type") ("cursor-type") ("border-width") ("internal-border-width")
-                   ("unsplittable") ("visibility") ("menu-bar-lines"))))
+  (let ((params  '(("auto-lower")
+                   ("auto-raise")
+                   ("background-color")
+                   ("background-mode")
+                   ("border-color")
+                   ("border-width")
+                   ("buffer-list")
+                   ("buffer-predicate")
+                   ("cursor-color")
+                   ("cursor-type")
+                   ("display")
+                   ("display-type")
+                   ("font")
+                   ("foreground-color")
+                   ("height")
+                   ("horizontal-scroll-bars")
+                   ("icon-left")
+                   ("icon-name")
+                   ("icon-top")
+                   ("icon-type")
+                   ("internal-border-width")
+                   ("left")
+                   ("menu-bar-lines")
+                   ("minibuffer")
+                   ("mouse-color")
+                   ("name")
+                   ("scroll-bar-width")
+                   ("title")
+                   ("top")
+                   ("unsplittable")
+                   ("user-position")
+                   ("vertical-scroll-bars")
+                   ("visibility")
+                   ("width")
+                   ("window-id"))))
     (when (> emacs-major-version 20)
-      (setq params  (nconc params '("fullscreen" "outer-window-id" "tty-color-mode" "left-fringe"
-                                    "right-fringe" "tool-bar-lines" "screen-gamma" "line-spacing"
-                                    "wait-for-wm" "scroll-bar-foreground" "scroll-bar-background"))))
-    (when (> emacs-major-version 21) (setq params  (nconc params '("user-size"))))
+      (setq params  (nconc params '(("fullscreen")
+                                    ("left-fringe")
+                                    ("line-spacing")
+                                    ("outer-window-id")
+                                    ("right-fringe")
+                                    ("screen-gamma")
+                                    ("scroll-bar-background")
+                                    ("scroll-bar-foreground")
+                                    ("tool-bar-lines")
+                                    ("tty-color-mode")
+                                    ("wait-for-wm")))))
+    (when (> emacs-major-version 21)
+      (setq params  (nconc params '(("user-size")))))
     (when (> emacs-major-version 22)
-      (setq params  (nconc params '("display-environment-variable" "term-environment-variable"))))
+      (setq params  (nconc params '(("alpha")
+                                    ("display-environment-variable")
+                                    ("font-backend")
+                                    ("sticky")
+                                    ("term-environment-variable")))))
+    (when (> emacs-major-version 23)
+      (setq params  (nconc params '(("explicit-name")
+                                    ("tool-bar-position")))))
     params))
 
 ;;;###autoload
