@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jul  4 08:37:18 2013 (-0700)
+;; Last-Updated: Fri Jul 12 00:16:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6464
+;;     Update #: 6466
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6692,11 +6692,10 @@ Non-interactively:
          nil
          'MSG))
   (unless name/prefix (setq name/prefix  ""))
-  (lexical-let* ((ul                             url)
-                 (bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
-                                                     'bmkp-make-w3m-record
-                                                   (lambda () (bmkp-make-url-browse-record ul))))
-                 bmk failure)
+  (let ((bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
+                                            'bmkp-make-w3m-record
+                                          `(lambda () (bmkp-make-url-browse-record ',url))))
+        bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
                                    (cdr (bookmark-make-record))  nil  no-update-p  (not msg-p)))
