@@ -43,6 +43,29 @@ This patch enables to align multibyte characters. -- [[Sugawara]]
      		    ;; beg = beginning of current field
 
 
+In the new version in ELPA, this patch works:
+
+    --- csv-mode.el.orig	2013-07-12 12:43:16.474712308 +0200
+    +++ csv-mode.el	2013-07-12 12:55:33.382366430 +0200
+    @@ -979,7 +979,7 @@
+                     x)
+                 (while (not (eolp))
+                   (csv-end-of-field)
+    -              (setq x (- (point) beg))    ; Field width.
+    +              (setq x (string-width (buffer-substring beg (point))))    ; Field width.
+                   (if w
+                       (if (> x (car w)) (setcar w x))
+                     (setq w (list x)
+    @@ -1033,7 +1033,7 @@
+                            (left-padding 0) (right-padding 0)
+                            (field-width
+                             ;; FIXME: Don't assume length=string-width!
+    -                        (progn (csv-end-of-field) (- (point) beg)))
+    +                        (progn (csv-end-of-field) (string-width (buffer-substring beg (point)))))
+                            (column-width (pop w))
+                            (x (- column-width field-width))) ; Required padding.
+                       (set-marker end (point)) ; End of current field.
+    
 
 ----
 CategoryFinancial
