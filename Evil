@@ -226,6 +226,13 @@ The first thing I missed of Vim were the tabs. With elscreen.el and its dependen
     (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
     (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
 
-
+=== Integration with company-mode ===
+The `evil-repeat` has some issue with with company-mode,  see [https://github.com/company-mode/company-mode/issues/15 the issue report].
+    (mapc #'evil-declare-change-repeat
+      '(company-complete-common
+        company-select-next
+        company-select-previous
+        company-complete-selection
+        )) 
 ----
 CategoryKeys CategoryEmulation
