@@ -9,5 +9,6 @@ Also note that ansi-term remaps your default `C-x' key to `C-c'.
 
 In Emacs 22, try prefixing actions that aren't recognized by their standard key commands with `C-x'.  For example, `M-x' becomes `C-x M-x'.
 
+For more configuration options see AnsiTermHints
 ----
 CategoryExternalUtilities
