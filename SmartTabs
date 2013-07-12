@@ -30,11 +30,11 @@ The source code is available at [[http://github.com/jcsalomon/smarttabs|GitHub]]
 
 
 == Setup ==
-If you installed Smart Tabs Mode through Emacs' package manager, the only thing that you need to do is tell it which languages you wish to use it for. This can be accomplished with the ##smart-tabs-insinuate## function. Just pass this function the symbols identifying the languages that you want it to be enabled for and the appropriate hooks will be setup automatically. For example, to enable ##smart-tabs-mode## automatically for C and Javascript, you would add the following to your config:
+If you installed Smart Tabs Mode through Emacs' package manager, the only thing that you need to do is tell it which languages you wish to use it for. This can be accomplished with the ##smart-tabs-insinuate## function. Just pass this function the symbols identifying the languages that you want it to be enabled for and the appropriate hooks will be set up automatically. For example, to enable ##smart-tabs-mode## automatically for C and Javascript, you would add the following to your config:
 
     (smart-tabs-insinuate 'c 'javascript)
 
-That's it! To view the list of available languages, enable the minor mode with ##M-x smart-tabs-mode## and then run ##M-x describe-variable RET smart-tabs-insinuate-alist RET##. You will see an alist of the languages supported as well as the hooks that will get added if you decide to turn it on.
+That's it! To view the list of available languages, enable the minor mode with '##M-x smart-tabs-mode##' and then run '##M-x describe-variable RET smart-tabs-insinuate-alist RET##'. You will see an alist of the languages supported as well as the hooks that will get added if you decide to turn it on.
 
 == Use ==
 To make Emacs insert the proper amount of tabs and spaces automatically, provided ##indent-tabs-mode## is not disabled (see [[#Toggling|toggling]]) just press '##<tab>##' as usual.
@@ -60,7 +60,7 @@ See GuessStyle for a package which attempts to determine the proper values for #
 
 === Whitespace Cleanup ===
 
-If you use ##whitespace-cleanup## either manually or as a before-save-hook, you have to disable a few items in ##whitespace-style##. To do this run ##M-x customize-variable RET whitespace-style RET## and remove the entries for "Indentation SPACEs" and "SPACEs after TAB".
+If you use ##whitespace-cleanup## either manually or as a before-save-hook, you have to disable a few items in ##whitespace-style##. To do this run '##M-x customize-variable RET whitespace-style RET##' and remove the entries for "Indentation SPACEs" and "SPACEs after TAB".
 
 
 == Code ==
