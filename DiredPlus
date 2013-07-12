@@ -10,7 +10,10 @@ Here are some of the things '''Dired+''' does:
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
 * Provides alternative main Dired commands you can bind to `C-x d' and `C-x 4 d' (`diredp-dired-files' and `*-other-window').  They do the same thing as usual except when given a non-positive prefix arg.  In that case, you can enter any number of files or dirs, and a Dired buffer is created for just those files and dirs. (And on MS Windows, you can use wildcards in those names -- see [[#w32-browser|If You Use Emacs on MS Windows]].)
+
 * Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
+
+* Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
 
 * Provides global commands `diredp-dired-union' (and `*-other-window') to create a Dired buffer that is the ''union'' of selected existing Dired buffers.  That is, the new Dired buffer contains all of the files and subdirs listed in the Dired buffers you choose.  The selected Dired listings are included in the order you choose
 them, and each entry is listed only once in the new Dired buffer.  The
