@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jun  8 10:13:26 2013 (-0700)
+;; Last-Updated: Fri Jul 12 01:11:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6423
+;;     Update #: 6434
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -17,10 +17,14 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
-;;   `dired-aux', `dired-x', `ffap', `misc-fns', `pp', `pp+',
-;;   `subr-21', `thingatpt', `thingatpt+', `w32-browser'.
+;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `dired', `dired+', `dired-aux',
+;;   `dired-x', `ffap', `fit-frame', `frame-fns', `help+20', `info',
+;;   `info+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -304,6 +308,7 @@
 ;;    `diredp-unmark-files-tagged-not-all',
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
+;;    `diredp-up-directory-reuse-dir-buffer',
 ;;    `diredp-upcase-this-file', `diredp-w32-drives',
 ;;    `diredp-w32-drives-mode', `toggle-diredp-find-file-reuse-dir'.
 ;;
@@ -428,6 +433,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/11 dadams
+;;     Added: diredp-up-directory-reuse-dir-buffer.
+;;     diredp-make-find-file-keys(-not)-reuse-dirs: Added diredp-up-directory-reuse-dir-buffer.
 ;; 2013/02/06 dadams
 ;;     dired-mark-pop-up: goto point-min, so show start of file list.  Thx to Michael Heerdegen.
 ;; 2013/01/28 dadams
@@ -5177,6 +5185,9 @@ Unlike `dired-find-alternate-file' this does not use
 ;;;###autoload
 (defun diredp-toggle-find-file-reuse-dir (force-p) ; Not bound
   "Toggle whether Dired `find-file' commands reuse directories.
+This applies also to `dired-w32-browser' commands and
+`dired-up-directory'.
+
 A prefix arg specifies directly whether or not to reuse.
  If its numeric value is non-negative then reuse; else do not reuse.
 
@@ -5195,6 +5206,8 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 
 (defun diredp-make-find-file-keys-reuse-dirs ()
   "Make find-file keys reuse Dired buffers."
+  (substitute-key-definition 'dired-up-directory 'diredp-up-directory-reuse-dir-buffer
+   dired-mode-map)
   (substitute-key-definition 'dired-find-file 'diredp-find-file-reuse-dir-buffer dired-mode-map)
   (substitute-key-definition 'diredp-mouse-find-file
                              'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
@@ -5207,6 +5220,8 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 
 (defun diredp-make-find-file-keys-not-reuse-dirs ()
   "Make find-file keys not reuse Dired buffers (i.e. act normally)."
+  (substitute-key-definition 'diredp-up-directory-reuse-dir-buffer 'dired-up-directory
+   dired-mode-map)
   (substitute-key-definition 'diredp-find-file-reuse-dir-buffer 'dired-find-file dired-mode-map)
   (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer
                              'diredp-mouse-find-file dired-mode-map)
@@ -5793,6 +5808,8 @@ Add text property `dired-filename' to the file name."
 Find the parent directory either in this buffer or another buffer.
 Creates a buffer if necessary.
 
+With a prefix arg, Dired the parent directory in another window.
+
 On MS Windows, if you already at the root directory, invoke
 `diredp-w32-drives' to visit a navigable list of Windows drives."
   (interactive "P")
@@ -5802,6 +5819,21 @@ On MS Windows, if you already at the root directory, invoke
         ;; Only try dired-goto-subdir if buffer has more than one dir.
         (and (cdr dired-subdir-alist)  (dired-goto-subdir up))
         (progn (if other-window (dired-other-window up) (dired up))
+               (dired-goto-file dir))
+        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
+
+;;;###autoload
+(defun diredp-up-directory-reuse-dir-buffer (&optional other-window) ; Not bound
+  "Like `dired-up-directory', but reuse Dired buffers.
+With a prefix arg, Dired the parent directory in another window.  But
+in this case there is no buffer reuse."
+  (interactive "P")
+  (let* ((dir  (dired-current-directory))
+         (up   (file-name-directory (directory-file-name dir))))
+    (or (dired-goto-file (directory-file-name dir))
+        ;; Only try dired-goto-subdir if buffer has more than one dir.
+        (and (cdr dired-subdir-alist)  (dired-goto-subdir up))
+        (progn (if other-window (find-alternate-file-other-window up) (find-alternate-file up))
                (dired-goto-file dir))
         (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
 
