@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul  2 13:07:07 2013 (-0700)
+;; Last-Updated: Fri Jul 12 00:15:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15385
+;;     Update #: 15386
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/07/11 dadams
+;;     bmkp-url-target-set: Use let* with backquote lambda instead of lexical-let*.
 ;; 2013/07/02 dadams
 ;;     bmkp-snippet-bookmark-p: Typo: bmkp-snippet-to-kill-ring -> bmkp-jump-snippet.
 ;;     bmkp-bookmark-description: Include snippet text in bookmark description (help).
