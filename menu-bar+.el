@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jul  9 20:02:55 2013 (-0700)
+;; Last-Updated: Fri Jul 12 09:35:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3594
+;;     Update #: 3596
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -525,7 +525,8 @@ submenu of the \"Help\" menu."))
 
 (when (featurep 'frame-cmds)
   (define-key menu-bar-frames-menu [set-all-params-from-frame]
-    '(menu-item "Set All Frame Parameters from Frame" set-all-frame-alist-parameters-from-frame
+    '(menu-item "Set All Frame Parameters from Frame..."
+      set-all-frame-alist-parameters-from-frame
       :help "Set frame parameters of a frame to their current values in frame"))
   (define-key menu-bar-frames-menu [set-params-from-frame]
     '(menu-item "Set Frame Parameter from Frame..." set-frame-alist-parameter-from-frame
