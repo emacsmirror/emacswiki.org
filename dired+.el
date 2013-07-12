@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Jul 12 01:11:53 2013 (-0700)
+;; Last-Updated: Fri Jul 12 15:28:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6434
+;;     Update #: 6474
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -136,6 +136,25 @@
 ;;  mark some files and subdirs in a hierarchy of Dired buffers, use
 ;;  `M-+ C-}' to save their names persistently, then later use `C-{'
 ;;  to retrieve them, and `C-M-<' (in Dired) to open Dired on them.
+;;
+;;
+;;  Wraparound Navigation
+;;  ---------------------
+;;
+;;  In vanilla Dired, `dired-next-marked-file' (`M-}' or `* C-n') and
+;;  `dired-previous-marked-file' (`M-{' or `* C-p') wrap around when
+;;  you get to the end or the beginning of the Dired buffer.  Handy.
+;;
+;;  But the other navigation commands do not wrap around.  In Dired+
+;;  they do, provided option `diredp-wrap-around-flag' is non-nil,
+;;  which it is by default.  This means the following commands:
+;;
+;;    `diredp-next-line'     - `n', `C-n', `down', `SPC'
+;;    `diredp-previous-line' - `p', `C-p', `up'
+;;    `diredp-next-dirline'  - `>'
+;;    `diredp-prev-dirline'  - `<'
+;;    `diredp-next-subdir'   - `C-M-n'
+;;    `diredp-prev-subdir'   - `C-M-p'
 ;;
 ;;
 ;;  Inserted Subdirs, Multiple Dired Buffers, Files from Anywhere,...
@@ -291,10 +310,12 @@
 ;;    `diredp-mouse-unmark', `diredp-mouse-upcase',
 ;;    `diredp-mouse-view-file',
 ;;    `diredp-multiple-w32-browser-recursive',
-;;    `diredp-nb-marked-in-mode-name', `diredp-omit-marked',
+;;    `diredp-nb-marked-in-mode-name', `diredp-next-dirline',
+;;    `diredp-next-line', `diredp-next-subdir', `diredp-omit-marked',
 ;;    `diredp-omit-unmarked', `diredp-paste-add-tags-this-file',
-;;    `diredp-paste-replace-tags-this-file', `diredp-print-this-file',
-;;    `diredp-relsymlink-this-file',
+;;    `diredp-paste-replace-tags-this-file', `diredp-prev-dirline',
+;;    `diredp-previous-line', `diredp-prev-subdir',
+;;    `diredp-print-this-file', `diredp-relsymlink-this-file',
 ;;    `diredp-remove-all-tags-this-file', `diredp-rename-this-file',
 ;;    `diredp-send-bug-report',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
@@ -308,14 +329,14 @@
 ;;    `diredp-unmark-files-tagged-not-all',
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
-;;    `diredp-up-directory-reuse-dir-buffer',
+;;    `diredp-up-directory', `diredp-up-directory-reuse-dir-buffer',
 ;;    `diredp-upcase-this-file', `diredp-w32-drives',
 ;;    `diredp-w32-drives-mode', `toggle-diredp-find-file-reuse-dir'.
 ;;
 ;;  User options defined here:
 ;;
 ;;    `diff-switches', `diredp-prompt-for-bookmark-prefix-flag',
-;;    `diredp-w32-local-drives'.
+;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -392,7 +413,6 @@
 ;;
 ;;  `dired-revert'            - Reset `mode-line-process' to nil.
 ;;  `dired-switches-escape-p' - Made compatible with Emacs 20, 21.
-;;  `dired-up-directory'      - On Windows, go up to list of drives.
 ;;
 ;;  The following functions are included here with NO CHANGES to their
 ;;  definitions.  They are here only to take advantage of the new
@@ -433,6 +453,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/12 dadams
+;;     Added: diredp-wrap-around-flag, diredp-(next|previous)-(subdir|(dir)line). 
+;;     Renamed dired-up-directory to diredp-up-directory.
+;;     Replaced vanilla commands by these new commands everywhere.
 ;; 2013/07/11 dadams
 ;;     Added: diredp-up-directory-reuse-dir-buffer.
 ;;     diredp-make-find-file-keys(-not)-reuse-dirs: Added diredp-up-directory-reuse-dir-buffer.
@@ -1005,6 +1029,11 @@ rather than FUN itself, to `minibuffer-setup-hook'."
   "*A string or list of strings specifying switches to be passed to diff."
   :type '(choice string (repeat string))
   :group 'dired :group 'diff)
+
+;;;###autoload
+(defcustom diredp-wrap-around-flag t
+  "Non-nil means Dired \"next\" commands wrap around to buffer beginning."
+  :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
@@ -2227,15 +2256,15 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-subdir-menu [tree-up]
   '(menu-item "Tree Up" dired-tree-up :help "Go to first subdirectory header up the tree"))
 (define-key diredp-menu-bar-subdir-menu [up]
-  '(menu-item "Up Directory" dired-up-directory :help "Dired the parent directory"))
+  '(menu-item "Up Directory" diredp-up-directory :help "Dired the parent directory"))
 (define-key diredp-menu-bar-subdir-menu [prev-subdir]
-  '(menu-item "Prev Subdir" dired-prev-subdir :help "Go to previous subdirectory header line"))
+  '(menu-item "Prev Subdir" diredp-prev-subdir :help "Go to previous subdirectory header line"))
 (define-key diredp-menu-bar-subdir-menu [next-subdir]
-  '(menu-item "Next Subdir" dired-next-subdir :help "Go to next subdirectory header line"))
+  '(menu-item "Next Subdir" diredp-next-subdir :help "Go to next subdirectory header line"))
 (define-key diredp-menu-bar-subdir-menu [prev-dirline]
-  '(menu-item "Prev Dirline" dired-prev-dirline :help "Move to previous directory-file line"))
+  '(menu-item "Prev Dirline" diredp-prev-dirline :help "Move to previous directory-file line"))
 (define-key diredp-menu-bar-subdir-menu [next-dirline]
-  '(menu-item "Next Dirline" dired-next-dirline :help "Move to next directory-file line"))
+  '(menu-item "Next Dirline" diredp-next-dirline :help "Move to next directory-file line"))
 (define-key diredp-menu-bar-subdir-menu [insert]
   '(menu-item "This Subdir" dired-maybe-insert-subdir
     :help "Move to subdirectory line or listing"))
@@ -2305,6 +2334,17 @@ If HDR is non-nil, insert a header line with the directory name."
 
 
 ;;; Non-menu Dired bindings.
+
+
+;; Navigation
+(substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
+(substitute-key-definition 'dired-next-line 'diredp-next-line dired-mode-map)
+(substitute-key-definition 'dired-previous-line 'diredp-previous-line dired-mode-map)
+(substitute-key-definition 'dired-next-dirline 'diredp-next-dirline dired-mode-map)
+(substitute-key-definition 'dired-prev-dirline 'diredp-prev-dirline dired-mode-map)
+(substitute-key-definition 'dired-next-subdir 'diredp-next-subdir dired-mode-map)
+(substitute-key-definition 'dired-prev-subdir 'diredp-prev-subdir dired-mode-map)
+
 
 (define-key dired-mode-map [S-down-mouse-1] 'ignore) ; (normally `mouse-set-font')
 ;; `diredp-mouse-mark-region-files' provides Windows-Explorer behavior
@@ -4551,7 +4591,7 @@ You need library `bookmark+.el' to use this command."
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-tag (bmkp-read-tags-completing) prefix))
                                 1 'tag t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-untag (tags &optional prefix arg) ; `T > -'
@@ -4616,7 +4656,7 @@ You need library `bookmark+.el' to use this command."
       (unless btgs (error "File has no tags to remove"))
       (dired-map-over-marks-check
        #'(lambda () (diredp-untag (bmkp-read-tags-completing btgs) prefix)) 1 'untag t)))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-remove-all-tags (&optional prefix arg) ; `T > 0'
@@ -4673,7 +4713,7 @@ You need library `bookmark+.el' to use this command."
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-remove-all-tags prefix))
                                 1 'remove-all-tags t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-paste-add-tags (&optional prefix arg) ; `T > p', `T > C-y'
@@ -4732,7 +4772,7 @@ You need library `bookmark+.el' to use this command."
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-paste-add-tags prefix))
                                 1 'paste-add-tags t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-paste-replace-tags (&optional prefix arg) ; `T > q'
@@ -4791,7 +4831,7 @@ You need library `bookmark+.el' to use this command."
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-paste-replace-tags prefix))
                                 1 'paste-replace-tags t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-set-tag-value (tag value &optional prefix arg) ; `T > v'
@@ -4857,7 +4897,7 @@ You need library `bookmark+.el' to use this command."
                                                                    (read (read-string "Value: "))
                                                                    prefix))
                                 1 'set-tag-value t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-do-bookmark (&optional prefix arg) ; Bound to `M-b'
@@ -4895,7 +4935,7 @@ A prefix argument ARG specifies files to use instead of those marked.
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil 'NO-MSG-P))
                                 nil 'bookmark t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 (defun diredp-bookmark (&optional prefix file no-msg-p)
   "Bookmark the file or directory FILE.
@@ -5186,7 +5226,7 @@ Unlike `dired-find-alternate-file' this does not use
 (defun diredp-toggle-find-file-reuse-dir (force-p) ; Not bound
   "Toggle whether Dired `find-file' commands reuse directories.
 This applies also to `dired-w32-browser' commands and
-`dired-up-directory'.
+`diredp-up-directory'.
 
 A prefix arg specifies directly whether or not to reuse.
  If its numeric value is non-negative then reuse; else do not reuse.
@@ -5206,7 +5246,7 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 
 (defun diredp-make-find-file-keys-reuse-dirs ()
   "Make find-file keys reuse Dired buffers."
-  (substitute-key-definition 'dired-up-directory 'diredp-up-directory-reuse-dir-buffer
+  (substitute-key-definition 'diredp-up-directory 'diredp-up-directory-reuse-dir-buffer
    dired-mode-map)
   (substitute-key-definition 'dired-find-file 'diredp-find-file-reuse-dir-buffer dired-mode-map)
   (substitute-key-definition 'diredp-mouse-find-file
@@ -5220,7 +5260,7 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 
 (defun diredp-make-find-file-keys-not-reuse-dirs ()
   "Make find-file keys not reuse Dired buffers (i.e. act normally)."
-  (substitute-key-definition 'diredp-up-directory-reuse-dir-buffer 'dired-up-directory
+  (substitute-key-definition 'diredp-up-directory-reuse-dir-buffer 'diredp-up-directory
    dired-mode-map)
   (substitute-key-definition 'diredp-find-file-reuse-dir-buffer 'dired-find-file dired-mode-map)
   (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer
@@ -5425,8 +5465,8 @@ specified by option `diredp-w32-local-drives', which you can
 customize.
 
 Note: When you are in Dired at the root of a drive (e.g. directory
-      `c:/'), command `dired-up-directory' invokes this command.
-      So you can use `\\[dired-up-directory]' to go up to the list of drives."
+      `C:/'), command `diredp-up-directory' invokes this command.
+      So you can use `\\[diredp-up-directory]' to go up to the list of drives."
     (interactive "P")
     (require 'widget)
     (let ((drive              (copy-sequence diredp-w32-local-drives))
@@ -5798,12 +5838,8 @@ Add text property `dired-filename' to the file name."
     (old-dired-revert arg noconfirm)))
 
 
-;; REPLACE ORIGINAL in `dired.el'.
-;;
-;; If at root on a Windows drive, go up to a list of available drives.
-;;
 ;;;###autoload
-(defun dired-up-directory (&optional other-window) ; Bound to `^'
+(defun diredp-up-directory (&optional other-window) ; Bound to `^'
   "Run Dired on parent directory of current directory.
 Find the parent directory either in this buffer or another buffer.
 Creates a buffer if necessary.
@@ -5824,7 +5860,7 @@ On MS Windows, if you already at the root directory, invoke
 
 ;;;###autoload
 (defun diredp-up-directory-reuse-dir-buffer (&optional other-window) ; Not bound
-  "Like `dired-up-directory', but reuse Dired buffers.
+  "Like `diredp-up-directory', but reuse Dired buffers.
 With a prefix arg, Dired the parent directory in another window.  But
 in this case there is no buffer reuse."
   (interactive "P")
@@ -5836,6 +5872,109 @@ in this case there is no buffer reuse."
         (progn (if other-window (find-alternate-file-other-window up) (find-alternate-file up))
                (dired-goto-file dir))
         (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
+
+;;;###autoload
+(defun diredp-next-line (arg)           ; Bound to `SPC', `n', `C-n', `down'
+  "Move down lines then position at filename.
+Optional prefix ARG says how many lines to move; default is one line.
+
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer end (buffer beginning, if ARG is negative).
+Otherwise, just move to the buffer limit."
+  (interactive "p")
+  (let ((line-move-visual  nil)
+        (goal-column       nil)
+        (no-more           (or (not (condition-case nil ; Use `condition-case' because
+                                        (line-move arg) ; Emacs < 22 has no NO-ERROR arg.
+                                      (error nil)))
+                               (eobp))))
+    (when (and diredp-wrap-around-flag  no-more)
+      (let ((diredp-wrap-around-flag  nil))
+        (goto-char (if (< arg 0) (point-max) (point-min)))
+        (diredp-next-line arg)))
+    ;; We never want to move point into an invisible line.
+    (while (and (invisible-p (point))
+                (not (if (and arg (< arg 0)) (bobp) (eobp))))
+      (forward-char (if (and arg (< arg 0)) -1 1)))
+    (dired-move-to-filename)))
+
+;;;###autoload
+(defun diredp-previous-line (arg)       ; Bound to `p', `C-p', `up'
+  "Move up lines then position at filename.
+Optional prefix ARG says how many lines to move; default is one line.
+
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, just move to the buffer limit."
+  (interactive "p")
+  (diredp-next-line (- (or arg 1))))
+  
+;;;###autoload
+(defun diredp-next-dirline (arg &optional opoint) ; Bound to `>'
+  "Goto ARGth next directory file line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is nil, return
+nil."
+  (interactive "p")
+  (or opoint (setq opoint (point)))
+  (if (if (> arg 0)
+	  (re-search-forward dired-re-dir nil t arg)
+	(beginning-of-line)
+	(re-search-backward dired-re-dir nil t (- arg)))
+      (dired-move-to-filename)		; user may type `i' or `f'
+    (if diredp-wrap-around-flag
+        (let ((diredp-wrap-around-flag  nil))
+          (goto-char (if (< arg 0) (point-max) (point-min)))
+          (diredp-next-dirline arg opoint))
+      (goto-char opoint)
+      (error "No more subdirectories"))))
+
+;;;###autoload
+(defun diredp-prev-dirline (arg)        ; Bound to `<'
+  "Goto ARGth previous directory file line."
+  (interactive "p")
+  (diredp-next-dirline (- arg)))
+
+;;;###autoload
+(defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip) ; Bound to `C-M-n'
+  "Go to the next subdirectory, regardless of level.
+If ARG = 0 then go to this directory's header line.
+
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer end (buffer beginning, if ARG is negative).
+Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is nil, return
+nil.
+
+Non-nil NO-SKIP means do not move to end of header line, and return
+the position moved to so far."
+  (interactive "p")
+  (let ((this-dir  (dired-current-directory))
+	pos index)
+    ;; `nth' with negative arg does not return nil but the first element
+    (setq index  (if diredp-wrap-around-flag
+                     (mod (- (dired-subdir-index this-dir) arg) (length dired-subdir-alist))
+                   (- (dired-subdir-index this-dir) arg))
+          pos    (and (>= index 0)  (dired-get-subdir-min (nth index dired-subdir-alist))))
+    (if pos
+	(progn (goto-char pos)
+               (or no-skip  (skip-chars-forward "^\n\r"))
+               (point))
+      (if no-error-if-not-found
+          nil				; Return nil if not found
+        (error "%s directory" (if (> arg 0) "Last" "First"))))))
+
+;;;###autoload
+(defun diredp-prev-subdir (arg &optional no-error-if-not-found no-skip) ; Bound to `C-M-p'
+  "Go to the previous subdirectory, regardless of level.
+When called interactively and not on a subdir line, go to this subdir's line.
+Otherwise, this is a mirror image of `diredp-next-subdir'."
+  ;;(interactive "p")
+  (interactive (list (if current-prefix-arg
+                         (prefix-numeric-value current-prefix-arg)
+                       ;; If on subdir start already then do not stay there.
+                       (if (dired-get-subdir) 1 0))))
+  (diredp-next-subdir (- arg) no-error-if-not-found no-skip))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -6414,7 +6553,7 @@ You need library `bookmark+.el' to use this command."
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (diredp-copy-tags-this-file prefix 'MSG))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-describe-file (&optional internal-form-p) ; Bound to `C-h RET', `C-h C-RET'
@@ -6974,7 +7113,7 @@ and \\[dired-unmark] on a subdir to remove the marks in this subdir."
       (save-excursion (dired-mark-subdir-files))
     (let ((buffer-read-only  nil))
       (dired-repeat-over-lines 1 #'(lambda () (delete-char 1) (insert dired-marker-char)))
-      (dired-previous-line 1))))
+      (diredp-previous-line 1))))
 
 ;;;###autoload
 (defun diredp-mouse-unmark (event)      ; Not bound
@@ -6985,7 +7124,7 @@ If looking at a subdir, unmark all its files except `.' and `..'."
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
   (let ((dired-marker-char  ?\040)) (dired-mark nil))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;; This can be bound to [C-down-mouse-1] to give behavior similar to Windows Explorer.
 ;;; However, Emacs generally uses [C-down-mouse-1] for `mouse-buffer-menu'.
@@ -7049,7 +7188,7 @@ If on a subdir headerline, mark all its files except `.' and `..'."
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
   (let ((dired-marker-char  dired-del-marker)) (dired-mark 1))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-mouse-do-copy (event)     ; Not bound
@@ -7100,7 +7239,7 @@ This normally preserves the last-modified date when copying."
                                                             (point)) 1)
                                 1
                                 'USE-TRASH-CAN) ; This arg is for Emacs 24+ only.
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-mouse-do-shell-command (event) ; Not bound
@@ -7179,7 +7318,7 @@ Uses the shell command coming from variables `lpr-command' and
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'dired-compress 1 'compress t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-mouse-do-byte-compile (event) ; Not bound
@@ -7190,7 +7329,7 @@ Uses the shell command coming from variables `lpr-command' and
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'dired-byte-compile 1 'byte-compile t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-mouse-do-load (event)     ; Not bound
@@ -7201,7 +7340,7 @@ Uses the shell command coming from variables `lpr-command' and
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-map-over-marks-check #'dired-load 1 'load t))
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 ;;;###autoload
 (defun diredp-mouse-do-chmod (event)    ; Not bound
@@ -7212,7 +7351,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
   (dired-do-chxxx "Mode" "chmod" 'chmod 1)
-  (dired-previous-line 1))
+  (diredp-previous-line 1))
 
 (unless (memq system-type '(windows-nt ms-dos))
   (defun diredp-mouse-do-chgrp (event)  ; Not bound
@@ -7222,7 +7361,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
       (select-window (posn-window mouse-pos))
       (goto-char (posn-point mouse-pos)))
     (dired-do-chxxx "Group" "chgrp" 'chgrp 1)
-    (dired-previous-line 1)))
+    (diredp-previous-line 1)))
 
 (unless (memq system-type '(windows-nt ms-dos))
   (defun diredp-mouse-do-chown (event)  ; Not bound
@@ -7232,7 +7371,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
       (select-window (posn-window mouse-pos))
       (goto-char (posn-point mouse-pos)))
     (dired-do-chxxx "Owner" dired-chown-program 'chown 1)
-    (dired-previous-line 1)))
+    (diredp-previous-line 1)))
 
 
 ;;; Dired+ Help
