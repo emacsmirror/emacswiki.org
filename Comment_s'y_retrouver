@@ -1,0 +1,48 @@
+[[fr:Comment_s'y_retrouver]]
+[[es:CómoNavegar]]
+Le plus cool, à propos d'Emacs Wiki, est que tout le monde peut contribuer. Cependant, avant d'éditer une page, vous devriez apprendre à naviguer sur le site.
+
+== Catégories ==
+
+Les pages du Wiki sont organisées en '''catégories'''. La page SiteMap liste toutes les catégories -- Elles apparaissent comme lien vers leur pages de descriptions de catégories respectives.
+
+Lorsque vous créerez une page wiki, pensez à indiquer un ou plusieurs nom de catégorie en bas de page, cette page nouvellement créer sera ensuite automatiquement référence depuis ses différentes catégories. Note: Les noms des catégories visualisés depuis la page SiteMap sont des noms "raccourcis" -- par exemple, CategoryKeys sera nommé [[CategoryKeys|Keys]]. Il vous faudra utiliser le nom complet dans votre future page wiki pour qu'un lien vers la page se place correctement dans sa/ses catégorie(s) correspondante(s).
+
+La plupart des catégories contiennent des information sur Emacs ou sur les bibliothèques de contribution. Une catégorie contient cependant des informations sur le site lui-même: '''CategoryEmacsWikiSite'''.
+
+== Navigation par les en-tête et les bas de page ==
+
+Certains liens de la page CategoryEmacsWikiSite sont répétés dans l'en-tête et le bas-de-page de ''toutes'' les page Wiki:
+
+* SiteMap -- La page principale pour naviguer sur Emacs-Wiki, avec les liens vers les pages de catégories.
+* HowTo -- ''Comment utiliser Emacs Wiki'' -- mais aussi: comment contribuer.
+* [[Search]]  --  ''Chercher'' sur le wiki, de différentes manières.
+* ElispArea -- Publier et récupérer du code source EmacsLisp, afin d'améliorer et personnaliser Emacs.
+* RecentChanges -- Les changements récents sur le wiki.
+* [[News]] -- Un web log (blog) chronologique sur la vie du wiki.
+* [[Problems]] -- Les problèmes que les gens rencontrent avec le wiki.
+* [[Suggestions]] -- Vos suggestions et autres propositions d'améliorations pour le wiki.
+
+En bas de chaque page, vous trouverez un lien '''Edit this page'''. N'hésitez pas à rajouter du contenu or re-travailler les pages. Avant tout, merci de consulter la page HowToEdit pour comprendre le fonctionnement.
+
+== Lier vers une page, et liens inverses ==
+
+Sur ce site, créer de nouvelles pages et créer des liens entre pages est très facile. Cliquer ensuite sur un mot ou une phrase permet d'accéder à une page donnant plus d'informations sur ce mot ou cette phrase. Les liens peuvent apparaitre dans des listes, dans des paragraphes, en bas ou en haut de page.
+
+L'inverse est tout aussi aisé. Les relations entre les mots -- ou les phrases -- avec leurs pages respective vous permettront de trouver les pages qui font référence à la page courante. Pour cela, cliquer sur le titre en haut d'une page afin de trouver les autres pages qui mentionne le sujet de la page actuelle. Dans le cas d'une page de catégorie, cliquer sur le titre de la page vous mènera vers une page listant toutes les pages appartenant à cette catégorie. Consulter WikiOrganization pour de plus amples informations.
+
+== La communauté Wiki ==
+
+* WikiNode -- Sites amis: site sur les éditeurs de texte en général, Vim.
+* NearMap -- Les Wikis du coins (Meatball, Community)
+* InterMap -- Les Wikis hors-voisinage, mais utile pour InterLinks.
+
+== Avancé ==
+
+* EmacsWikiAppearance -- Les fonctionnalités pour personnaliser l'expérience utilisateur sur EmacsWiki.
+* [[CSS]] -- Changer le look du wiki avec des feuilles de style personnalisées.
+* [[Mozilla]] -- Utiliser mozex et Emacs, faire une recherche rapide sur le wiki.
+* RssFeeds -- Inclure un flux RSS de votre blog sur votre page de ce wiki.
+
+----
+HowTo
