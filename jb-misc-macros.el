@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-05 01:38:24
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-06-05 01:38:24
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/jb-misc-macros
@@ -89,11 +89,19 @@
 ;;; Require
 (require 'macro-utils)
 (require 'anaphora)
+(require 'combinators)
 
 ;;; Code:
 
 (defsubst lastcar (lst)
   (car (last lst)))
+
+(defun jb-get-matching-buffers (regex)
+  "Return list of buffers with names matching REGEX."
+  (loop for buf in (buffer-list)
+        for name = (buffer-name buf)
+        if (string-match regex name)
+        collect buf))
 
 ;; Note: the cut macro in combinators.el does a similar job to the following function,
 ;; but cut doesn't allow reordering the args.
@@ -129,18 +137,18 @@ If TESTFUNC is supplied it should be a function that takes a single argument (th
 and will be used as the stopping criterion. In this case evaluation will stop when TESTFUNC returns non-nil, but the
 return value of the macro will still be the return value of INITFORM or NEXTFORM.
 If BINDINGS are supplied then these will be placed in a let form wrapping the code, thus allowing for some persistence of state
-between successive evaluations of NEXTFORM."
+between successive evaluations of NEXTFORM.
+Note: you can set INITFORM to nil if you only want to evaluate a single form repeatedly."
   (once-only (initform)
-             (let ((retval (gensym)))
-               `(let* (,@bindings ,retval)
-                  (or (and ,testfunc
-                           (or (and (funcall ,testfunc ,initform) ,initform)
-                               (while (not (funcall ,testfunc (setq ,retval ,nextform))))
-                               ,retval))
-                      ,initform
-                      (and 
-                       (while (not (setq ,retval ,nextform)))
-                       ,retval))))))
+    (let ((retval (gensym)))
+      `(let* (,@bindings ,retval)
+         (or (and ,testfunc
+                  (or (and (funcall ,testfunc ,initform) ,initform)
+                      (while (not (funcall ,testfunc (setq ,retval ,nextform))))
+                      ,retval))
+             ,initform
+             (while (not (setq ,retval ,nextform)))
+             ,retval)))))
 
 ;; This might be better as an inline function.
 (defmacro jb-list-subset (indices list)
