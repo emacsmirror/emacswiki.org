@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 1.2
-;; Last-Updated: 2013-07-13 03:06:00
+;; Version: 1.3
+;; Last-Updated: 2013-07-13 22:35:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
 ;; Keywords: convenience
@@ -131,7 +131,7 @@ Enter a global keybinding for this command: ")
                       (lambda (x) (not (key-binding x))))))
         executing-kbd-macro)
     (global-set-key exitkey 'exit-recursive-edit)
-    (message "Press %s to finish" exitkey)
+    (message "Press %s to finish" (key-description exitkey))
     (dflet ((end-kbd-macro (x y) (exit-recursive-edit)))
       (let ((kmacro-call-repeat-key nil))
         (recursive-edit)))))
@@ -297,7 +297,7 @@ or a symbol corresponding to a named keyboard macro."
     (jb-untilnext nil (jb-read-key-menu prompts forms
                                         (concat "Choose action to perform"
                                                 (if t " when condition is non-nil:\n" ":\n"))
-                                        nil keys) t)))
+                                        nil keys))))
 
 ;;;###autoload
 (defalias 'kbd-macro-query 'kmacro-decision
