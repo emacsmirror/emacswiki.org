@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Jul 12 15:28:09 2013 (-0700)
+;; Last-Updated: Sat Jul 13 11:56:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6474
+;;     Update #: 6499
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -453,6 +453,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/13 dadams
+;;     dired-insert-directory:
+;;       Update wrt Emacs 24.4: Do dired-insert-set-properties last, with saved CONTENT-POINT.
+;;     dired-insert-set-properties: Updated for Emacs 24.4, for dired-hide-details-mode.
+;;     Add frame-fitting to dired-hide-details-mode-hook.
+;;     dired-mouse-find-file(-other-window): Error msg if click off a file name.
 ;; 2013/07/12 dadams
 ;;     Added: diredp-wrap-around-flag, diredp-(next|previous)-(subdir|(dir)line). 
 ;;     Renamed dired-up-directory to diredp-up-directory.
@@ -1458,21 +1464,22 @@ If HDR is non-nil, insert a header line with the directory name."
         ;; Note: adjust `dired-build-subdir-alist' if you change this.
         (setq dir  (replace-regexp-in-string "\\\\" "\\\\" dir nil t)
               dir  (replace-regexp-in-string "\n" "\\n" dir nil t)))
-      (dired-insert-set-properties opoint (point))
       ;; If we used `--dired' and it worked, the lines are already indented.  Else indent them.
       (unless (save-excursion (goto-char opoint) (looking-at "  "))
         (let ((indent-tabs-mode  nil)) (indent-rigidly opoint (point) 2)))
       ;; Insert text at the beginning to standardize things.
-      (save-excursion
-        (goto-char opoint)
-        (when (and (or hdr  wildcard)  (not (and (looking-at "^  \\(.*\\):$")
-                                                 (file-name-absolute-p (match-string 1)))))
-          ;; `dired-build-subdir-alist' will replace the name by its expansion, so it does not
-          ;; matter whether what we insert here is fully expanded, but it should be absolute.
-          (insert "  " (directory-file-name (file-name-directory dir)) ":\n"))
-        (when wildcard
-          ;; Insert "wildcard" line where "total" line would be for a full dir.
-          (insert "  wildcard " (file-name-nondirectory dir) "\n"))))))
+      (let ((content-point opoint))
+        (save-excursion
+          (goto-char opoint)
+          (when (and (or hdr  wildcard)  (not (and (looking-at "^  \\(.*\\):$")
+                                                   (file-name-absolute-p (match-string 1)))))
+            ;; `dired-build-subdir-alist' will replace the name by its expansion, so it does not
+            ;; matter whether what we insert here is fully expanded, but it should be absolute.
+            (insert "  " (directory-file-name (file-name-directory dir)) ":\n"))
+          (when wildcard
+            ;; Insert "wildcard" line where "total" line would be for a full dir.
+            (insert "  wildcard " (file-name-nondirectory dir) "\n")))
+        (dired-insert-set-properties content-point (point))))))
 
 
 ;;; Stuff from `image-dired.el'.
@@ -5810,21 +5817,40 @@ the variable `window-min-height'."
 ;; 2. Add text property `dired-filename' to only the file name.
 ;;
 (defun dired-insert-set-properties (beg end)
-  "Highlight entire dired line upon mouseover.
-Add text property `dired-filename' to the file name."
+  "Add various text properties to the lines in the region.
+Highlight entire line upon mouseover.
+Add text property `dired-filename' to the file name.
+Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
   (let ((inhibit-field-text-motion  t)) ; Just in case.
     (save-excursion
       (goto-char beg)
       (while (< (point) end)
         (condition-case nil
-            (when (dired-move-to-filename)
-              (add-text-properties (line-beginning-position) (line-end-position)
-                                   '(mouse-face highlight
-                                     help-echo "mouse-2: visit this file in other window"))
-              (put-text-property (point) (save-excursion (dired-move-to-end-of-filename) (point))
-                                 'dired-filename t))
+            (cond ((dired-move-to-filename)
+                   (add-text-properties (line-beginning-position) (line-end-position)
+                                        '(mouse-face highlight
+                                          help-echo "mouse-2: visit this file in other window"))
+                   (put-text-property (point) (save-excursion (dired-move-to-end-of-filename)
+                                                              (point))
+                                      'dired-filename t)
+                   (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+                     (put-text-property (+ (line-beginning-position) 1) (1- (point))
+                                        'invisible 'dired-hide-details-detail)
+                     (dired-move-to-end-of-filename)
+                     (when (< (+ (point) 4) (line-end-position))
+                       (put-text-property (+ (point) 4) (line-end-position)
+                                          'invisible 'dired-hide-details-link))))
+                  ((fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+                   (put-text-property (line-beginning-position) (1+ (line-end-position))
+                                      'invisible 'dired-hide-details-information)))
           (error nil))
         (forward-line 1)))))
+
+
+(when (and (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+           (fboundp 'fit-frame-if-one-window)) ; In `autofit-frame.el'
+  (add-hook 'dired-hide-details-mode-hook
+            (lambda () (when (get-buffer-window (current-buffer)) (fit-frame-if-one-window)))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -6997,6 +7023,7 @@ With non-nil prefix arg, mark them instead."
     (with-current-buffer (window-buffer (posn-window (event-end event)))
       (save-excursion (goto-char (posn-point (event-end event)))
                       (setq file  (dired-get-filename nil t))))
+    (unless (stringp file) (error "No file here"))
     (select-window (posn-window (event-end event)))
     (find-file-other-window (file-name-sans-versions file t))))
 
@@ -7010,6 +7037,7 @@ With non-nil prefix arg, mark them instead."
     (with-current-buffer (window-buffer (posn-window (event-end event)))
       (save-excursion (goto-char (posn-point (event-end event)))
                       (setq file  (dired-get-filename nil t))))
+    (unless (stringp file) (error "No file here"))
     (select-window (posn-window (event-end event)))
     (find-file (file-name-sans-versions file t))))
 
