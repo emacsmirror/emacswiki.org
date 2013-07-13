@@ -36,6 +36,24 @@ In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command defini
 
 I bind it to `##<F5>##' (since that's the MS Windows key for syncing things). -- DrewAdams
 
+[new]
+I am using that command, bind to `##<f5>##` too. It also check if the buffer has been modified before reverting it. You must provide the universal parameter in order to force the reload. 
+
+ (global-set-key
+  (kbd "<f5>")
+  (lambda (&optional force-reverting)
+    "Interactive call to revert-buffer. Ignoring the auto-save
+ file and not requesting for confirmation. When the current buffer
+ is modified, the command refuses to revert it, unless you specify
+ the optional argument: force-reverting to true."
+    (interactive "P")
+    ;;(message "force-reverting value is %s" force-reverting)
+    (if (or force-reverting (not (buffer-modified-p)))
+        (revert-buffer :ignore-auto :noconfirm)
+      (error "The buffer has been modified"))))
+
+-- YvesBaumes
+
 == Revert all buffers that are visiting a file ==
 
 This is a little function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
