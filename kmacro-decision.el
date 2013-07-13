@@ -6,17 +6,17 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.9
-;; Last-Updated: 2013-05-15 05:04:08
+;; Version: 1.2
+;; Last-Updated: 2013-07-13 03:06:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs 24.3.1
-;; Package-Requires: ((el-x "1.0"))
+;; Package-Requires: ((el-x "1.0") (jb-misc-macros "0.2"))
 ;;
 ;; Features that might be required by this library:
 ;;
-;; el-x
+;; el-x jb-misc-macros
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -118,6 +118,24 @@
   :type '(repeat string)
   :group 'kmacro)
 
+(defun kmacro-decision-recursive-edit nil
+  "Enter recursive edit, binding `end-kbd-macro' to `exit-recursive-edit' and setting `kmacro-call-repeat-key' to nil.
+Also temporarily disable any currently running keyboard macro."
+  (let ((exitkey (or (car (where-is-internal 'exit-recursive-edit))
+                     (jb-untilnext
+                      (read-key-sequence
+                       "There is currently no keybinding for the `exit-recursive-edit' command!
+
+Enter a global keybinding for this command: ")
+                      (read-key-sequence "That key is already used! Try another: ")
+                      (lambda (x) (not (key-binding x))))))
+        executing-kbd-macro)
+    (global-set-key exitkey 'exit-recursive-edit)
+    (message "Press %s to finish" exitkey)
+    (dflet ((end-kbd-macro (x y) (exit-recursive-edit)))
+      (let ((kmacro-call-repeat-key nil))
+        (recursive-edit)))))
+
 ;;;###autoload
 (defun kmacro-decision nil
   "Prompt for an action to perform, or conditional branch to add to a query point in a keyboard macro.
@@ -148,40 +166,28 @@ is reached."
         ;; otherwise prompt the user for a choice
         (let ((val (kmacro-decision-menu))
               (editfunc ;; Function for creating and returning a macro
-               (lambda nil
+               (lambda (save)
                  ;; Need to ensure final macro in kmacro-ring is replaced at the end
                  (let* ((last-macro (copy-list (last kmacro-ring)))
-                        (exitkey
-                         (or (car (where-is-internal 'exit-recursive-edit))
-                             (untilnext
-                              (read-key-sequence
-                               "There is currently no keybinding for the `exit-recursive-edit' command!
-
-Enter a global keybinding for this command: ")
-                              (read-key-sequence "That key is already used! Try another: ")
-                              (lambda (x) (not (key-binding x)))))))
-                   (global-set-key exitkey 'exit-recursive-edit)
+                        symbol)
                    (kmacro-start-macro nil) ;start recording macro
-                   ;; If end-kbd-macro is called just quit recursive-edit
-                   (message "Press %s to finish" exitkey)
-                   (dflet ((end-kbd-macro (x y) (exit-recursive-edit))
-                           (kmacro-call-repeat-key nil))
-                          (recursive-edit))
+                   (kmacro-decision-recursive-edit)
                    (end-kbd-macro nil #'kmacro-loop-setup-function) ;stop recording macro
                    (if (or (not last-kbd-macro)
                            (and last-kbd-macro (= (length last-kbd-macro) 0)))
                        (message "Ignore empty macro")
                      ;; prompt the user to name the macro
-                     (call-interactively 'kmacro-decision-name-last-macro))
+                     (if (or save (y-or-n-p "Save as named macro"))
+                         (setq symbol (call-interactively 'kmacro-decision-name-last-macro))))
                    ;; pop the calling macro back
                    (kmacro-pop-ring1)
                    ;; put last-macro back (if there was one)
                    (if last-macro
                        (nconc kmacro-ring last-macro))
-                   (intern name)))))
+                   symbol))))
           (cond ((eq val 'quit) (setq quit-flag t))
-                ((eq val 'continue) nil)
-                ((eq val 'edit) (funcall editfunc))
+                ((eq val 'continue) (message nil))
+                ((eq val 'edit) (funcall editfunc nil))
                 ((eq val 'branch)
                  (let* ((condition (read-from-minibuffer
                                     "Condition: " nil nil nil nil
@@ -191,24 +197,25 @@ Enter a global keybinding for this command: ")
                         (revertmacro " (setq executing-kbd-macro calling-kbd-macro) (message nil))")
                         (actioncode
                          (concat
-                          (cond ((eq action 'quit) "(keyboard-quit)")
-                                ((eq action 'continue) "t")
-                                ((eq action 'edit)
-                                 (concat resetmacro "(funcall '"
-                                         (prin1-to-string (funcall editfunc))
-                                         ")" revertmacro))
-                                ((eq action 'form)
-                                 (concat resetmacro 
-                                         (read-from-minibuffer
-                                          "Elisp: " nil read-expression-map nil
-                                          'read-expression-history)
-                                         revertmacro))
-                                ((eq action 'command)
-                                 (concat resetmacro "(call-interactively '"
-                                         (symbol-name (read-command "Command : ")) ")"
-                                         revertmacro))
-                                ((symbolp action)
-                                 (concat resetmacro "(funcall '" (symbol-name action) ")" revertmacro)))
+                          (case action
+                            (quit "(keyboard-quit)")
+                            (continue "t")
+                            (edit (aif (funcall editfunc t)
+                                      (concat resetmacro "(funcall '"
+                                              (prin1-to-string it) ")" revertmacro)))
+                            (useredit "(kmacro-decision-recursive-edit)")
+                            (form
+                             (concat resetmacro 
+                                     (read-from-minibuffer
+                                      "Elisp: " nil read-expression-map nil
+                                      'read-expression-history)
+                                     revertmacro))
+                            (command
+                             (concat resetmacro "(call-interactively '"
+                                     (symbol-name (read-command "Command : ")) ")"
+                                     revertmacro))
+                            (t (if (symbolp action)
+                                   (concat resetmacro "(funcall '" (symbol-name action) ")" revertmacro))))
                           (unless (or (member action '(quit continue))
                                       (y-or-n-p "Continue with macro after performing this action?"))
                             " (keyboard-quit)")))
@@ -239,35 +246,34 @@ Enter a global keybinding for this command: ")
 
 ;;;###autoload
 (defun kmacro-decision-name-last-macro (symbol)
-  "Like the builtin `kmacro-name-last-macro' but with better prompt for interactive use.
+  "Like the builtin `kmacro-name-last-macro' but with better prompt for interactive use, and it returns the symbol.
 
 Assign a name to the last keyboard macro defined.
 Argument SYMBOL is the name to define.
 The symbol's function definition becomes the keyboard macro string.
 Such a \"function\" cannot be called from Lisp, but it is a valid editor command."
-  (interactive (let ((usednames (mapcar 'symbol-name (kmacro-decision-named-macros)))
-                     defaultname)
-                 (setq defaultname
-                       (untilnext "kbd-macro-1"
-                                  (progn (setq num (1+ num))
-                                         (concat "kbd-macro-" (number-to-string num)))
-                                  (lambda (x) (not (member x usednames)))
-                                  (num 1)))
-                 (list (intern
-                        (untilnext
-                         (read-string "Name for last kbd macro: " defaultname)
-                         (read-string "Symbol already used! Choose another name: " defaultname)
-                         '(lambda (x) (and (not (string-equal x ""))
-                                           (let ((sym (intern-soft x)))
-                                             (or (not sym)
-                                                 (and (fboundp sym)
-                                                      (or (get sym 'kmacro)
-                                                          (stringp (symbol-function sym))
-                                                          (vectorp (symbol-function sym)))
-                                                      (y-or-n-p "Overwrite existing kbd macro with this name?")))))))))))
+  (interactive (let* ((usednames (mapcar 'symbol-name (kmacro-decision-named-macros)))
+                      (defaultname (jb-untilnext "kbd-macro-1"
+                                                 (progn (setq num (1+ num))
+                                                        (concat "kbd-macro-" (number-to-string num)))
+                                                 (lambda (x) (not (member x usednames)))
+                                                 (num 1)))
+                      (newname (jb-untilnext
+                                (read-string "Name for last kbd macro: " defaultname)
+                                (read-string "Symbol already used! Choose another name: " defaultname)
+                                '(lambda (x) (and (not (string-equal x ""))
+                                                  (let ((sym (intern-soft x)))
+                                                    (or (not sym)
+                                                        (and (fboundp sym)
+                                                             (or (get sym 'kmacro)
+                                                                 (stringp (symbol-function sym))
+                                                                 (vectorp (symbol-function sym)))
+                                                             (y-or-n-p "Overwrite existing kbd macro with this name?")))))))))
+                 (list (intern newname))))
   (or last-kbd-macro (error "No keyboard macro defined"))
   (fset symbol (kmacro-lambda-form (kmacro-ring-head)))
-  (put symbol 'kmacro t))
+  (put symbol 'kmacro t)
+  symbol)
 
 (defun* kmacro-decision-menu (&optional withcond)
   "Prompt the user for an action to perform at a query point in a keyboard macro.
@@ -279,15 +285,19 @@ or a symbol corresponding to a named keyboard macro."
          (nmacros (1- (length kmacros)))
          (prompts (append (list "Recenter window about cursor"
                                 "Continue executing macro"
-                                "Recursive edit (C-M-c to finish)")
-                          (if withcond '("Eval elisp" "Execute command") '("Add conditional branch"))
+                                "Recursive edit now (C-M-c to finish)")
+                          (if withcond '("Recursive edit when called" "Eval elisp" "Execute command")
+                            '("Add conditional branch"))
                           (mapcar (lambda (k) (format "%s" k)) kmacros)))
-         (keys (append (list (kbd "C-l") (kbd "SPC") (kbd "RET")) (if withcond '("e" "x") '("?"))))
+         (keys (append (list (kbd "C-l") (kbd "SPC") (kbd "RET"))
+                       (if withcond '("r" "e" "x") '("?"))))
          (forms (append '((recenter-top-bottom) 'continue 'edit)
-                        (if withcond '('form 'command) '('branch))
+                        (if withcond '('useredit 'form 'command) '('branch))
                         kmacros)))
-    (jb-read-key-menu prompts forms (concat "Choose action to perform"
-                                            (if t " when condition is non-nil:\n" ":\n")) nil keys)))
+    (jb-untilnext nil (jb-read-key-menu prompts forms
+                                        (concat "Choose action to perform"
+                                                (if t " when condition is non-nil:\n" ":\n"))
+                                        nil keys) t)))
 
 ;;;###autoload
 (defalias 'kbd-macro-query 'kmacro-decision
