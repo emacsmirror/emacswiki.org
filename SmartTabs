@@ -58,6 +58,17 @@ Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Typ
 See GuessStyle for a package which attempts to determine the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
 
 
+=== Adding Language Support ===
+
+Support for other languages can be added by using the ##smart-tabs-add-language-support## macro. All you need to do is pass in the unique symbol to identify the language, the name of the mode hook and a list of cons cells containing ##(indent-line-function . offset-variable)##. For example, if C++ mode was not provided by default it could be added as follows:
+
+    (smart-tabs-add-language-support c++ c++-mode-hook
+      ((c-indent-line . c-basic-offset)
+       (c-indent-region . c-basic-offset)))
+
+''Note: All language support must be added before the call to ##smart-tabs-insinuate##.''
+
+
 === Whitespace Cleanup ===
 
 If you use ##whitespace-cleanup## either manually or as a before-save-hook, you have to disable a few items in ##whitespace-style##. To do this run '##M-x customize-variable RET whitespace-style RET##' and remove the entries for "Indentation SPACEs" and "SPACEs after TAB".
