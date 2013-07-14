@@ -48,6 +48,30 @@ Usually additions to <code>compilation-error-regexp-alist</code> (etc) can only 
 [new]
 a <code>(require 'compile) </code>, just beffor the <code> (add-hook ... </code> works fine
 
+[new]
+<b>The problem</b>
+* <code>M-x compile</code> should trigger a *compilation* buffer with errors found by jslint... but it doesn't.
 
+<b>A solution</b>
+* Download jslint4java : https://code.google.com/p/jslint4java/
+* Put the following code in the .emacs
+
+    (require 'compile)
+    (defun jslint-errors ()
+      (make-local-variable 'compilation-error-regexp-alist)
+      (setq compilation-error-regexp-alist
+            '("^jslint:\\([_[:alnum:]-/]*.js\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\):.*$"
+              1 2 3)); "1" means that the file name is matched by the first
+              ; subexpression : \\([_[:alnum:]-/]*.js\\). See
+              ; compilation-error-regexp-alist for the meaning of "2 3".
+    
+      (make-local-variable 'compile-command)
+      (let ((jslint4java "~/path/to/jslint4java-2.0.4.jar ")
+            (java "/path/to/java -jar "))
+        (setq compile-command (concat java jslint4java buffer-file-name))))
+    (add-hook 'js-mode-hook 'jslint-errors)
+
+<b>Improvements</b>
+* Using absolute path may be avoidable... But counting on .bashrc or .bash_profile (ex : alias...) will not help because Emacs invokes the compile command in a non-interactive, non-login shell. See : http://procrastiblog.com/2007/07/09/changing-your-path-in-emacs-compilation-mode/
 ----
 CompilationMode
