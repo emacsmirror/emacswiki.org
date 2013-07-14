@@ -453,5 +453,8 @@ I guess it worked most of the time, but at the same time it was very /brittle/ a
 
 The DuckDuckGo search also uses JavaScript to quietly add //site:www.emacswiki.org// to the search terms. Without JavaScript, this will also look weird. -- AlexSchroeder
 
+== Changing a link not allowed ==
+
+I have written the last entry under http://www.emacswiki.org/cgi-bin/wiki/EmacsMuse#toc18 but it is outdated. I wanted to change the two links but I was not allowed. So how do I change them?
 ----
 CategoryEmacsWikiSite
