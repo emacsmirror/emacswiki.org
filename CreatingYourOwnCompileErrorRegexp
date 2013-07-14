@@ -74,6 +74,6 @@ a <code>(require 'compile) </code>, just beffor the <code> (add-hook ... </code>
 <b>Improvements</b>
 * Using absolute path may be avoidable... But counting on .bashrc or .bash_profile (ex : alias...) will not help because Emacs invokes the compile command in a non-interactive, non-login shell. See : http://procrastiblog.com/2007/07/09/changing-your-path-in-emacs-compilation-mode/
 
---Notio
+-- Notio
 ----
 CompilationMode
