@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Fri Dec 28 10:06:53 2012 (-0800)
+;; Last-Updated: Sat Jul 13 19:28:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 190
+;;     Update #: 193
 ;; URL: http://www.emacswiki.org/ls-lisp+.el
 ;; Doc URL: http://emacswiki.org/LsLisp
 ;; Keywords: internal, extensions, local, files, dired
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/13 dadams
+;;     insert-directory: Add mouse-face to file count text starting at bol, not +2.
 ;; 2010/11/23 dadams
 ;;     ls-lisp-insert-directory: Finish last fix - second call to ls-lisp-format.
 ;; 2010/11/16 dadams
@@ -217,16 +219,14 @@ that work are: A a c i r S s t u U X g G B C R n and F partly."
               (define-key map "\r" 'dired-describe-listed-directory)
               (when available (end-of-line) (insert " available " available))
               (add-text-properties
-               (save-excursion (beginning-of-line) (+ 2 (point)))
+               (save-excursion (beginning-of-line) (line-beginning-position))
                (1- (match-beginning 1))
                `(mouse-face highlight keymap ,map
                  help-echo "Files shown / total files in directory \
 \[RET, mouse-2: more info]"))
-              (add-text-properties
-               (match-beginning 1)
-               (save-excursion (end-of-line) (point))
-               `(mouse-face highlight keymap ,map
-                 help-echo "Kbytes used in directory, Kbytes \
+              (add-text-properties (match-beginning 1) (line-end-position)
+                                   `(mouse-face highlight keymap ,map
+                                     help-echo "Kbytes used in directory, Kbytes \
 available on disk [RET, mouse-2: more info]")))))))))
 
 
