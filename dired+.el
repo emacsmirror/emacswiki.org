@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jul 13 11:56:37 2013 (-0700)
+;; Last-Updated: Sat Jul 13 18:29:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6499
+;;     Update #: 6522
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -454,8 +454,10 @@
 ;;; Change Log:
 ;;
 ;; 2013/07/13 dadams
+;;     diredp-font-lock-keywords-1:
+;;       Ensure diredp-dir-priv is not used for directory header of d:/... (Windows drive name).
 ;;     dired-insert-directory:
-;;       Update wrt Emacs 24.4: Do dired-insert-set-properties last, with saved CONTENT-POINT.
+;;       Update wrt Emacs 24.4: Do dired-insert-set-properties last; use saved CONTENT-POINT.
 ;;     dired-insert-set-properties: Updated for Emacs 24.4, for dired-hide-details-mode.
 ;;     Add frame-fitting to dired-hide-details-mode-hook.
 ;;     dired-mouse-find-file(-other-window): Error msg if click off a file name.
@@ -1475,7 +1477,8 @@ If HDR is non-nil, insert a header line with the directory name."
                                                    (file-name-absolute-p (match-string 1)))))
             ;; `dired-build-subdir-alist' will replace the name by its expansion, so it does not
             ;; matter whether what we insert here is fully expanded, but it should be absolute.
-            (insert "  " (directory-file-name (file-name-directory dir)) ":\n"))
+            (insert "  " (directory-file-name (file-name-directory dir)) ":\n")
+            (setq content-point (point)))
           (when wildcard
             ;; Insert "wildcard" line where "total" line would be for a full dir.
             (insert "  wildcard " (file-name-nondirectory dir) "\n")))
@@ -2731,7 +2734,7 @@ In particular, inode number, number of hard links, and file size."
    '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]? \\)" 1 diredp-number)
 
    ;; Directory names
-   (list "^..\\([0-9]* \\)*d"
+   (list "^..\\([0-9]* \\)*d[^:]"       ; Exclude d:/..., Windows drive letter in a dir heading.
          (list dired-move-to-filename-regexp nil nil)
          (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
    '("^..\\([0-9]* \\)*.........\\(x\\)" 2 diredp-exec-priv) ;o x
