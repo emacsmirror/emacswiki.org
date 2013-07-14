@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Jun  8 11:00:10 2013 (-0700)
+;; Last-Updated: Sat Jul 13 19:24:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 691
+;;     Update #: 707
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -65,6 +65,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/13 dadams
+;;     insert-directory: Add mouse-face to file count text starting at bol, not +2.
+;;     update-dired-files-count: Do nothing if the files-count line should be hidden.
 ;; 2012/05/01 dadams
 ;;     minibuffer-with-setup-hook:
 ;;       Define only for Emacs 22 and 23.1.
@@ -628,12 +631,11 @@ normally equivalent short `-D' option is just passed on to
                   (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
                   (define-key map "\r" 'dired-describe-listed-directory)
                   (when available (end-of-line) (insert " available " available))
-                  (add-text-properties
-                   (save-excursion (beginning-of-line) (+ 2 (point)))
-                   (1- (match-beginning 1))
-                   `(mouse-face highlight keymap ,map
-                     help-echo "Files shown / total files in directory \
-\[RET, mouse-2: more info]"))
+                  (add-text-properties (line-beginning-position)
+                                       (1- (match-beginning 1))
+                                       `(mouse-face highlight keymap ,map
+                                         help-echo "Files shown / total files in \
+directory \[RET, mouse-2: more info]"))
                   (add-text-properties (match-beginning 1) (line-end-position)
                                        `(mouse-face highlight keymap ,map
                                          help-echo "Kbytes used in directory, Kbytes \
@@ -668,27 +670,30 @@ and `..'."
            (str-num-files  (number-to-string num-files)))
       (save-excursion
         (goto-char (point-min))
-        (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
-          (let ((buffer-read-only  nil)
-                (map               (make-sparse-keymap)))
-            (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
-            (define-key map "\r" 'dired-describe-listed-directory)
-            (replace-match str-num-files nil nil nil 1)
-            (replace-match (if (zerop num-files)
-                               str-num-files
-                             (number-to-string (- (length (directory-files
-                                                           default-directory
-                                                           nil nil t))
-                                                  2)))
-                           nil nil nil 2)
-            ;; Ignore any error, e.g. from `dired-details.el' hiding text.
-            (condition-case nil
-                (add-text-properties
-                 (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)
-                 `(mouse-face highlight keymap ,map
-                   help-echo "Files shown / total files in directory \
+        ;; No-op if the line should be hidden.
+        (unless (eq (get-text-property (line-beginning-position 2) 'invisible)
+                    'dired-hide-details-information)
+          (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
+            (let ((buffer-read-only  nil)
+                  (map               (make-sparse-keymap)))
+              (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
+              (define-key map "\r" 'dired-describe-listed-directory)
+              (replace-match str-num-files nil nil nil 1)
+              (replace-match (if (zerop num-files)
+                                 str-num-files
+                               (number-to-string (- (length (directory-files
+                                                             default-directory
+                                                             nil nil t))
+                                                    2)))
+                             nil nil nil 2)
+              ;; Ignore any error, e.g. from `dired-details.el' hiding text.
+              (condition-case nil
+                  (add-text-properties
+                   (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)
+                   `(mouse-face highlight keymap ,map
+                     help-echo "Files shown / total files in directory \
 \[RET, mouse-2: more info]"))
-              (error nil)))
+                (error nil))))
           (set-buffer-modified-p nil))))))
 
 ;;;###autoload
