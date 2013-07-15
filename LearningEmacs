@@ -22,6 +22,8 @@ Try the EmacsTutorial, or read one of the BooksAboutEmacs.
 
 * OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
 
+* [http://www.youtube.com/playlist?list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr .Emacs] -- A series of video tutorials, starting from the basics.
+
 Most people learn best by doing and not just by reading over a list of
 [[command]]s and trying to memorize them.  Get yourself a text file
 to play around with. Make a backup copy if you're nervous about
@@ -76,4 +78,3 @@ life.  `M-x' should become your command line in Emacs.
 
 ----
 CategoryHelp CategoryDotEmacs
-
