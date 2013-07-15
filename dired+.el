@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jul 15 09:43:01 2013 (-0700)
+;; Last-Updated: Mon Jul 15 10:17:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6572
+;;     Update #: 6584
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -458,6 +458,7 @@
 ;; 2013/07/15 dadams
 ;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
 ;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
+;;     diredp-menu-bar-mark-menu, diredp-dired-plus-description: Added dired-mark-omitted.
 ;;     diredp-shell-command-this-file: Corrected: provide file list to dired-do-shell-command.
 ;; 2013/07/13 dadams
 ;;     diredp-font-lock-keywords-1:
@@ -2187,6 +2188,10 @@ If HDR is non-nil, insert a header line with the directory name."
   (define-key diredp-menu-bar-mark-menu [mark-sexp] ; In `dired-x.el'.
     '(menu-item "Mark If..." dired-mark-sexp
       :help "Mark files for which specified condition is true")))
+(when (fboundp 'dired-mark-omitted)     ; In `dired-x.el'.
+  (define-key diredp-menu-bar-mark-menu [mark-omitted]
+    '(menu-item "Mark Omitted..." dired-mark-omitted
+      :help "Mark all omitted files and subdirectories")))
 (define-key diredp-menu-bar-mark-menu [mark-extension]
   '(menu-item "Mark Extension..." diredp-mark/unmark-extension
     :help "Mark all files with specified extension"))
@@ -7605,7 +7610,13 @@ Marking
 * \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
 * \\[dired-unmark-all-marks]\t\t- Unmark all
 * \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
-* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+"
+
+    (and (fboundp 'dired-mark-omitted) ; In `dired-x.el'
+         "* \\[dired-mark-omitted]\t\t- Mark omitted
+")
+
+    "* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
 * \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
 * \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
 * \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
@@ -7682,8 +7693,9 @@ Marked (or next prefix arg) files & subdirs here
          "* \\[dired-do-isearch]\t- Isearch
 * \\[dired-do-isearch-regexp]\t- Regexp isearch
 ")
+
     (and (fboundp 'dired-do-async-shell-command)
-         "* \\[dired-do-async-shell-command]\t- Run shell command asynchronously
+         "* \\[dired-do-async-shell-command]\t\t- Run shell command asynchronously
 ")
 
     "* \\[dired-do-shell-command]\t\t- Run shell command
@@ -7742,9 +7754,13 @@ Marked files here and below (in marked subdirs)
 * \\[diredp-do-search-recursive]\t\t\t- Search
 * \\[diredp-do-query-replace-regexp-recursive]\t\t\t- Query-replace
 * \\[diredp-do-isearch-recursive]\t\t- Isearch
-* \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch"
+* \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch
+"
+
     (and (fboundp 'diredp-do-async-shell-command-recursive) ; Emacs 23+
-         "* \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously")
+         "* \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously
+")
+
     "* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
 * \\[diredp-marked-recursive-other-window]\t\t- Dired
 * \\[diredp-list-marked-recursive]\t\t\t- List
