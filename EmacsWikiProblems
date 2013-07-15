@@ -455,6 +455,15 @@ The DuckDuckGo search also uses JavaScript to quietly add //site:www.emacswiki.o
 
 == Changing a link not allowed ==
 
-I have written the last entry under http://www.emacswiki.org/cgi-bin/wiki/EmacsMuse#toc18 but it is outdated. I wanted to change the two links but I was not allowed. So how do I change them? Hans Ekbrand
+I have written the last entry under http://www.emacswiki.org/cgi-bin/wiki/EmacsMuse#toc18 but it is outdated. I wanted to change the two links but I was not allowed. So how do I change them? -- Hans Ekbrand
+
+[new]
+The error message says:
+
+: Regular expression "\s(https?:\S+\s+https?:\S+)" matched "http://dev.nozav.org/, http://perso.ens-lsh.fr/jbarnier" on this page. Reason: two consecutive bare links (http:... http://...) usually mean spam. See BannedRegexps for more information.
+
+This is an anti-spam measure.
+I will replace the comma with the word "and" and see whether that fixes it. -- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite
