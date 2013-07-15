@@ -1,5 +1,9 @@
 It is sometimes annoying to use multiple shells from within emacs. One must create a shell, rename it, create another, etc.
 
+== Native Eshell ==
+
+Eshell itself can open a specific new buffer when invoked as (eshell 'N) where N is a positive integer. When invoked as (eshell 'Z) where Z is not a positive integer, it will open the next sequential free shell number.
+
 == Shell-switcher ==
 
 [https://github.com/DamienCassou/shell-switcher shell-switcher] is an emacs minor mode to easily switch between shell buffers (like with alt+tab). It works with eshell and any other shell.
