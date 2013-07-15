@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:25:05 2012 (-0800)
+;; Last-Updated: Sun Jul 14 20:32:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 769
+;;     Update #: 774
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -50,6 +50,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/14 dadams
+;;     Removed require of fit-frame.el.
 ;; 2011/08/19 dadams
 ;;     lisp-indentation-hack:
 ;;       Added icicle-with-selected-window, icicle-condition-case-no-debug.
@@ -148,7 +150,7 @@
 (require 'header2 nil t) ;; (no error if not found): auto-update-file-header
 (require 'misc-fns nil t) ;; (no error if not found): notify-user-of-mode
 (require 'strings nil t) ;; (no error if not found): erase-nonempty-inactive-minibuffer
-(require 'fit-frame nil t) ;; (no error if not found): fit-frame
+;; $$$$$(require 'fit-frame nil t) ;; (no error if not found): fit-frame
 (require 'paren nil t) ;; (no error if not found):
                        ;; show-paren-match-face, show-paren-mode
 (require 'oneonone nil t) ;; (no error if not found):
