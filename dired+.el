@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jul 15 10:17:14 2013 (-0700)
+;; Last-Updated: Mon Jul 15 15:40:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6584
+;;     Update #: 6605
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -459,6 +459,9 @@
 ;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
 ;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
 ;;     diredp-menu-bar-mark-menu, diredp-dired-plus-description: Added dired-mark-omitted.
+;;     diredp-menu-bar-subdir-menu: Added dired-omit-mode, dired-hide-details-mode.
+;;     diredp-menu-bar-regexp-menu: Added image-dired-mark-tagged-files.
+;;     diredp-menu-bar-subdir-menu: Added dired-hide-details-mode.
 ;;     diredp-shell-command-this-file: Corrected: provide file list to dired-do-shell-command.
 ;; 2013/07/13 dadams
 ;;     diredp-font-lock-keywords-1:
@@ -2126,12 +2129,16 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Copy to..." dired-do-copy-regexp :help "Copy marked files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [flag]
   '(menu-item "Flag..." dired-flag-files-regexp :help "Flag files matching regexp for deletion"))
-(define-key diredp-menu-bar-regexp-menu [mark]
-  '(menu-item "Mark..." dired-mark-files-regexp
-    :help "Mark files matching regexp for future operations"))
+(when (fboundp 'image-dired-mark-tagged-files)
+  (define-key diredp-menu-bar-regexp-menu [image-dired-mark-tagged-files]
+    '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
+      :help "Mark image files whose image tags match regexp")))
 (define-key diredp-menu-bar-regexp-menu [mark-cont]
   '(menu-item "Mark Containing..." dired-mark-files-containing-regexp
     :help "Mark files whose contents matches regexp"))
+(define-key diredp-menu-bar-regexp-menu [mark]
+  '(menu-item "Mark..." dired-mark-files-regexp
+    :help "Mark files matching regexp for future operations"))
 
 
 ;; "Mark" menu.
@@ -2277,8 +2284,16 @@ If HDR is non-nil, insert a header line with the directory name."
 (defvar diredp-menu-bar-subdir-menu (make-sparse-keymap "Dir"))
 (define-key dired-mode-map [menu-bar subdir]
   (cons "Dir" diredp-menu-bar-subdir-menu))
+(when (fboundp 'dired-omit-mode)
+  (define-key diredp-menu-bar-subdir-menu [dired-omit-mode]
+    '(menu-item "Hide/Show Uninteresting (Omit Mode)" dired-omit-mode
+      :help "Toggle omission of uninteresting files (Omit mode)")))
+(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+  (define-key diredp-menu-bar-subdir-menu [hide-details]
+    '(menu-item "Hide/Show Details" dired-hide-details-mode
+      :help "Hide or show less important fields of directory listing")))
 (define-key diredp-menu-bar-subdir-menu [hide-all]
-  '(menu-item "Hide/Show All" dired-hide-all
+  '(menu-item "Hide/Show All Subdirs" dired-hide-all
     :help "Hide all subdirectories, leave only header lines"))
 (define-key diredp-menu-bar-subdir-menu [hide-subdir]
   '(menu-item "Hide/Show Subdir" dired-hide-subdir
