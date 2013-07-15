@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Jul 13 18:29:53 2013 (-0700)
+;; Last-Updated: Mon Jul 15 09:43:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6522
+;;     Update #: 6572
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -234,6 +234,7 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `diredp-async-shell-command-this-file',
 ;;    `diredp-bookmark-this-file', `diredp-byte-compile-this-file',
 ;;    `diredp-capitalize', `diredp-capitalize-recursive',
 ;;    `diredp-capitalize-this-file', `diredp-chgrp-this-file',
@@ -247,7 +248,8 @@
 ;;    `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
-;;    `diredp-dired-union-other-window', `diredp-do-bookmark',
+;;    `diredp-dired-union-other-window',
+;;    `diredp-do-async-shell-command-recursive', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
 ;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
@@ -453,6 +455,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/15 dadams
+;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
+;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
+;;     diredp-shell-command-this-file: Corrected: provide file list to dired-do-shell-command.
 ;; 2013/07/13 dadams
 ;;     diredp-font-lock-keywords-1:
 ;;       Ensure diredp-dir-priv is not used for directory header of d:/... (Windows drive name).
@@ -1567,6 +1573,9 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-immediate-menu [compile]
   '(menu-item "Byte Compile" diredp-byte-compile-this-file
     :help "Byte-compile this Emacs Lisp file"))
+(define-key diredp-menu-bar-immediate-menu [diredp-async-shell-command-this-file]
+  '(menu-item "Asynchronous Shell Command..." diredp-async-shell-command-this-file
+    :help "Run a shell command asynchronously on file at cursor"))
 (define-key diredp-menu-bar-immediate-menu [command]
   '(menu-item "Shell Command..." diredp-shell-command-this-file
     :help "Run a shell command on file at cursor"))
@@ -1787,9 +1796,13 @@ If HDR is non-nil, insert a header line with the directory name."
   '(menu-item "Load" dired-do-load :help "Load marked Emacs Lisp files"))
 (define-key diredp-menu-bar-operate-menu [compile]
   '(menu-item "Byte Compile" dired-do-byte-compile :help "Byte-compile marked Emacs Lisp files"))
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (define-key diredp-menu-bar-operate-menu [async-command]
+    '(menu-item "Asynchronous Shell Command..." dired-do-async-shell-command
+      :help "Run a shell command asynchronously on each marked file")))
 (define-key diredp-menu-bar-operate-menu [command]
   '(menu-item "Shell Command..." dired-do-shell-command
-    :help "Run a shell command on each of marked files"))
+    :help "Run a shell command on each marked file"))
 (define-key diredp-menu-bar-operate-menu [compress]
   '(menu-item "Compress/Uncompress" dired-do-compress :help "Compress/uncompress marked files"))
 (define-key diredp-menu-bar-operate-menu [print]
@@ -1943,6 +1956,10 @@ If HDR is non-nil, insert a header line with the directory name."
       :help "Run `grep' on the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [separator-search] '("--")) ; ----------------
 
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-async-shell-command-recursive]
+    '(menu-item "Asynchronous Shell Command..." diredp-do-async-shell-command-recursive
+      :help "Run shell command asynchronously on marked files, including in marked subdirs")))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-shell-command-recursive]
     '(menu-item "Shell Command..." diredp-do-shell-command-recursive
       :help "Run shell command on the marked files, including those in marked subdirs"))
@@ -2473,6 +2490,8 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-recursive-map "%c"          'diredp-capitalize-recursive)            ; `% c'
 (define-key diredp-recursive-map "%l"          'diredp-downcase-recursive)              ; `% l'
 (define-key diredp-recursive-map "%u"          'diredp-upcase-recursive)                ; `% u'
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (define-key diredp-recursive-map "&"         'diredp-do-async-shell-command-recursive)) ; `&'
 (define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
@@ -3479,16 +3498,42 @@ Dired buffer and all subdirs, recursively."
    (progn (diredp-get-confirmation-recursive)
           (let* ((prompt  "! on *: ")
                  (cmd     (minibuffer-with-setup-hook
-                              (lambda ()
-                                (set (make-local-variable 'minibuffer-default-add-function)
-                                     'minibuffer-default-add-dired-shell-commands))
-                            (let ((dired-no-confirm  t))
-                              (if (functionp 'dired-guess-shell-command)
-                                  ;; Guess cmd based only on files marked in current (top) dir.
-                                  (dired-guess-shell-command prompt (dired-get-marked-files t))
-                                (read-shell-command prompt nil nil))))))
+                           (lambda ()
+                             (set (make-local-variable 'minibuffer-default-add-function)
+                                  'minibuffer-default-add-dired-shell-commands))
+                           (let ((dired-no-confirm  t))
+                             (if (functionp 'dired-guess-shell-command)
+                                 ;; Guess cmd based only on files marked in current (top) dir.
+                                 (dired-guess-shell-command prompt (dired-get-marked-files t))
+                               (read-shell-command prompt nil nil))))))
             (list cmd current-prefix-arg))))
   (dired-do-shell-command command nil (diredp-get-files ignore-marks-p)))
+
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (defun diredp-do-async-shell-command-recursive (command &optional ignore-marks-p)
+                                        ; Bound to `M-+ &'
+    "Run async shell COMMAND on marked files, including in marked subdirs.
+Like `dired-do-async-shell-command', but act recursively on subdirs.
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
+    (interactive
+     (progn (diredp-get-confirmation-recursive)
+            (let* ((prompt  "! on *: ")
+                   (cmd     (minibuffer-with-setup-hook
+                             (lambda ()
+                               (set (make-local-variable 'minibuffer-default-add-function)
+                                    'minibuffer-default-add-dired-shell-commands))
+                             (let ((dired-no-confirm  t))
+                               (if (functionp 'dired-guess-shell-command)
+                                   ;; Guess cmd based only on files marked in current (top) dir.
+                                   (dired-guess-shell-command prompt (dired-get-marked-files t))
+                                 (read-shell-command prompt nil nil))))))
+              (list cmd current-prefix-arg))))
+    (dired-do-async-shell-command command nil (diredp-get-files ignore-marks-p))))
 
 ;;;###autoload
 (defun diredp-do-symlink-recursive (&optional ignore-marks-p) ; Bound to `M-+ S'
@@ -6453,11 +6498,24 @@ Makes the first char of the name uppercase and the others lowercase."
   (interactive) (dired-do-compress 1))
 
 ;;;###autoload
-(defun diredp-shell-command-this-file (command) ; Not bound
+(defun diredp-async-shell-command-this-file (command filelist) ; Not bound
+  "Run a shell COMMAND asynchronously on the file on the Dired cursor line.
+Like `diredp-shell-command-this-file', but adds `&' at the end of
+COMMAND to execute it asynchronously.  The command output appears in
+buffer `*Async Shell Command*'."
+  (interactive
+   (list (dired-read-shell-command (concat "& on " "%s: ") 1 (list (dired-get-filename t)))
+         (list (dired-get-filename t))))
+  (unless (string-match "&[ \t]*\\'" command) (setq command  (concat command " &")))
+  (dired-do-shell-command command 1 filelist))
+
+;;;###autoload
+(defun diredp-shell-command-this-file (command filelist) ; Not bound
   "In Dired, run a shell COMMAND on the file on the cursor line."
   (interactive
-   (list (dired-read-shell-command (concat "! on " "%s: ") 1 (list (dired-get-filename t)))))
-  (dired-do-shell-command command 1))
+   (list (dired-read-shell-command (concat "! on " "%s: ") 1 (list (dired-get-filename t)))
+         (list (dired-get-filename t))))
+  (dired-do-shell-command command 1 filelist))
 
 ;;;###autoload
 (defun diredp-bookmark-this-file (&optional prefix) ; Bound to `C-B' (`C-S-b')
@@ -6960,6 +7018,8 @@ With non-nil prefix arg, mark them instead."
                                ["Hardlink to..." diredp-hardlink-this-file]
                                "--"     ; ------------------------------------------------------
                                ["Shell Command..." diredp-shell-command-this-file]
+                               ["Asynchronous Shell Command..."
+                                diredp-async-shell-command-this-file]
                                ["Print..." diredp-print-this-file]
                                ["Grep" diredp-grep-this-file]
                                ["Compress/Uncompress" diredp-compress-this-file]
@@ -7491,7 +7551,7 @@ General
          "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
 ")
 
-"
+    "
 * \\[diredp-marked-other-window]\t\t\t\t- Open Dired on marked
 * \\[diredp-fileset]\t\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
@@ -7613,7 +7673,7 @@ Marked (or next prefix arg) files & subdirs here
 "
 
     (if (fboundp 'dired-do-query-replace-regexp) ; Emacs 22+
-         "* \\[dired-do-query-replace-regexp]\t\t- Query-replace
+        "* \\[dired-do-query-replace-regexp]\t\t- Query-replace
 "
       "* \\[dired-do-query-replace]\t\t- Query-replace
 ")
@@ -7621,6 +7681,9 @@ Marked (or next prefix arg) files & subdirs here
     (and (fboundp 'dired-do-isearch)
          "* \\[dired-do-isearch]\t- Isearch
 * \\[dired-do-isearch-regexp]\t- Regexp isearch
+")
+    (and (fboundp 'dired-do-async-shell-command)
+         "* \\[dired-do-async-shell-command]\t- Run shell command asynchronously
 ")
 
     "* \\[dired-do-shell-command]\t\t- Run shell command
@@ -7633,7 +7696,7 @@ Marked (or next prefix arg) files & subdirs here
 * \\[diredp-omit-unmarked]\t- Omit unmarked
 "
 
-    (and (fboundp 'diredp-do-tag) ; In `bookmark+-1.el'.
+    (and (fboundp 'diredp-do-tag)       ; In `bookmark+-1.el'.
          "
 * \\[diredp-do-tag]\t\t- Add some tags to marked
 * \\[diredp-do-untag]\t\t- Remove some tags from marked
@@ -7653,7 +7716,7 @@ Marked (or next prefix arg) files & subdirs here
 * \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 ")
 
-    (and (fboundp 'diredp-do-bookmark) ; In `bookmark+-1.el'.
+    (and (fboundp 'diredp-do-bookmark)  ; In `bookmark+-1.el'.
          "
 * \\[diredp-do-bookmark]\t\t- Bookmark
 * \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
@@ -7679,8 +7742,10 @@ Marked files here and below (in marked subdirs)
 * \\[diredp-do-search-recursive]\t\t\t- Search
 * \\[diredp-do-query-replace-regexp-recursive]\t\t\t- Query-replace
 * \\[diredp-do-isearch-recursive]\t\t- Isearch
-* \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch
-* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
+* \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch"
+    (and (fboundp 'diredp-do-async-shell-command-recursive) ; Emacs 23+
+         "* \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously")
+    "* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
 * \\[diredp-marked-recursive-other-window]\t\t- Dired
 * \\[diredp-list-marked-recursive]\t\t\t- List
 
