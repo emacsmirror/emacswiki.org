@@ -52,7 +52,7 @@ In the background the Freenode server maitains an *access list* for the channel.
 
 !ChanServ will reply with a list of people who have some sort of power on the channel. These are the important flags:
 
-* Anybody with the +t flag may change the *topic* (although topic lock is almsot always off)
+* Anybody with the +t flag may change the *topic* (although topic lock is almost always off)
 * Anybody with the +o flag is a potential *operator*
 
 The most powerful flag is the *founder* flag (+F).  Currently (2013 Apr 25) [[delYsid]], [[johnw]] and [[kensanata]] have it.
