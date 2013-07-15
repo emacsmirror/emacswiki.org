@@ -44,6 +44,16 @@ I found that I had to use AlexSchroeder 's config (-swiss) to get aspell to work
 
 Without both of the "english" entries, I kept getting errors about not being able to find wordlists. -- RyanDavis
 
+---
+
+Another thing to try: edit /usr/local/etc/aspell.conf and change the line starting with "dict-dir" to
+
+{{{
+dict-dir /Library/Application Support/cocoAspell/aspell6-en-6.0-0
+}}}
+
+Once I did that, CocoAspell worked fine with flyspell-mode.
+
 == Other Languages ==
 
 The following is the setup if you have English and German installed and want to use the Swiss dictionary.
