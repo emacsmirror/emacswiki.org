@@ -462,7 +462,7 @@ The error message says:
 ##Regular expression "\s(https?:\S+\s+https?:\S+)" matched "http://dev.nozav.org/, http://perso.ens-lsh.fr/jbarnier" on this page. Reason: two consecutive bare links (http:... http://...) usually mean spam. See BannedRegexps for more information.##
 
 This is an anti-spam measure.
-I will replace the comma with the word "and" and see whether that fixes it. -- AlexSchroeder
+Replacing the comma with the word "and" fixed it. Now the two links are no longer adjacent to each other and no longer match the regular expression. -- AlexSchroeder
 
 ----
 CategoryEmacsWikiSite
