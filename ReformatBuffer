@@ -4,7 +4,7 @@ C-x h C-M-<nowiki>\</nowiki>
 
  
     C-x h runs the command mark-whole-buffer
-    M-C-\ runs the command indent-region
+    C-M-\ runs the command indent-region
 
 You can also insert something like:
 
