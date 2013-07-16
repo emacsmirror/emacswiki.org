@@ -4,3 +4,15 @@ The typing-practice package runs solely in the minibuffer, so your boss thinks y
 
 Download it at: http://alfredfazio.ws/doku.php?id=packages:typing-practice (link seems broken currently)
 or at: [https://raw.github.com/mebubo/dotfiles/master/.emacs.d/site-lisp/typing-practice.el github]
+
+[new]
+I prefer not to see a cursor while training, so i use this advice:
+{{{
+(defadvice practice-typing (around no-cursor activate)
+  "Do not show cursor at minibuffer during typing practice."
+  (let ((minibuffer-setup-hook
+         (cons (lambda () (setq cursor-type nil))
+               minibuffer-setup-hook)))
+    ad-do-it))
+}}}
+-- AlexKost
