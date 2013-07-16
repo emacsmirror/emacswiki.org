@@ -228,7 +228,12 @@ Is this a real bug? or is there any better solution? -- SeungcheolJung
 ::: Thanks, I confirmed it and released new version in which the problem is fixed. -- [[irie]]
 
 
+[new]
+: I can actually reproduce the problem with foreground colour. The problem seems to be that when you apply a colour theme, changing properties of `default' face, the foreground colour of the frame is no longer used for drawing text, and instead the colour from the `default' face is used. So, essentially, there's no way to set foreground colour of tooltip text using `pos-tip-show'.
 
+: I have looked at tooltip.el, and it seems that it not only sets frame parameters passed to `x-show-tip', but also face property of the text to display. I used the same approach, and seems to have fixed the issue. However, I also had problem with showing the first tooltip after launching Emacs that seemed to be related with pos-tip using `make-face' to create a temporary face for use inside `pos-tip-show'. I have replaced that with passing a list of face attributes to `propertize', but I have no idea if I haven't just broken backwards compatibility.
+
+: Any idea how should I contribute back those patches%%/%%get them reviewed by someone with more experience in programming Emacs libraries? They are currently available at https://github.com/pitkali/pos-tip/tree/fix/fg-color-and-themes (forked from emacsmirror repository). -- pitkali
 
 ----
 CategoryWindows CategoryFrames
