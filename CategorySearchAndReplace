@@ -38,6 +38,7 @@ Vanilla:
 
 * ReplaceRegexp -- Query-replace, evaluating a Lisp sexpr for the replacement text.
 * IncrementalSearchAndReplace -- Query-replace using the last `isearch' string (Emacs 22).
+* IbufferMode -- Operate on multiple buffers, including query replace (Emacs 22).
 
 Additional:
 
