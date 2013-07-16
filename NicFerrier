@@ -50,7 +50,11 @@ My current MUA is [[http://github.com/nicferrier/emacs-maildir|Emacs Maildir]]
 === Building Emacs from source ==
 I mostly always build Emacs from source (though I think the emacs-snapshot packages are great) so I use this [[EmacsSnapshotAndDebian|page]] to track what I need to do.
 
-I keep a [[https://github.com/nicferrier/emacs|git mirror]] of the Emacs sources irregularly up to date.
+Here is how to get a git clone of Emacs these days:
+
+{{{
+git clone --origin mirror --depth 1 git://github.com/emacsmirror/emacs -b emacs-24
+}}}
 
 == Elnode: an asynchronous HTTP server for Emacs ==
 // ... or node.js for Emacs //
