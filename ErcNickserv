@@ -177,8 +177,11 @@ Erc has builtin support for channels that require identification before they let
 
 (setq erc-autojoin-timing 'ident)
 
-The customise form is currently broken in the shipped file, so you unfortunately cannot
-use customise here.
+or M-x customize-variable  RET erc-autojoin-timing RET
+
+The customise form is broken in some releases: If you try to customise it and
+the entry is labelled with '''(mismatch)''' then you have to use the setq form above
+in your init file.
 
 ----
 [[ERC]]
