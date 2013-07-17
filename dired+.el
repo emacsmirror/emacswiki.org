@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jul 17 11:31:50 2013 (-0700)
+;; Last-Updated: Wed Jul 17 15:18:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6631
+;;     Update #: 6671
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -242,10 +242,10 @@
 ;;    `diredp-compress-this-file',
 ;;    `diredp-copy-filename-as-kill-recursive',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
-;;    `diredp-delete-this-file', `diredp-describe-file',
-;;    `diredp-describe-mode', `diredp-dired-files',
-;;    `diredp-dired-files-other-window', `diredp-dired-for-files',
-;;    `diredp-dired-for-files-other-window',
+;;    `diredp-decrypt-this-file', `diredp-delete-this-file',
+;;    `diredp-describe-file', `diredp-describe-mode',
+;;    `diredp-dired-files', `diredp-dired-files-other-window',
+;;    `diredp-dired-for-files', `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
 ;;    `diredp-dired-union-other-window',
@@ -270,7 +270,8 @@
 ;;    `diredp-do-symlink-recursive', `diredp-do-tag',
 ;;    `diredp-do-touch-recursive', `diredp-do-untag',
 ;;    `diredp-do-verify-recursive', `diredp-downcase-recursive',
-;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
+;;    `diredp-downcase-this-file', `diredp-ediff',
+;;    `diredp-encrypt-this-file', `diredp-fileset',
 ;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
@@ -323,17 +324,19 @@
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked-recursive',
 ;;    `diredp-set-tag-value-this-file',
-;;    `diredp-shell-command-this-file', `diredp-symlink-this-file',
-;;    `diredp-tag-this-file', `diredp-toggle-find-file-reuse-dir',
-;;    `diredp-touch-this-file', `diredp-toggle-marks-in-region',
+;;    `diredp-shell-command-this-file', `diredp-sign-this-file',
+;;    `diredp-symlink-this-file', `diredp-tag-this-file',
+;;    `diredp-toggle-find-file-reuse-dir', `diredp-touch-this-file',
+;;    `diredp-toggle-marks-in-region',
 ;;    `diredp-unmark-files-tagged-all',
 ;;    `diredp-unmark-files-tagged-none',
 ;;    `diredp-unmark-files-tagged-not-all',
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
 ;;    `diredp-up-directory', `diredp-up-directory-reuse-dir-buffer',
-;;    `diredp-upcase-this-file', `diredp-w32-drives',
-;;    `diredp-w32-drives-mode', `toggle-diredp-find-file-reuse-dir'.
+;;    `diredp-upcase-this-file', `diredp-verify-this-file',
+;;    `diredp-w32-drives', `diredp-w32-drives-mode',
+;;    `toggle-diredp-find-file-reuse-dir'.
 ;;
 ;;  User options defined here:
 ;;
@@ -375,6 +378,7 @@
 ;;    `diredp-menu-bar-images-menu.',
 ;;    `diredp-menu-bar-immediate-menu',
 ;;    `diredp-menu-bar-immediate-bookmarks-menu',
+;;    `diredp-menu-bar-immediate-encryption-menu',
 ;;    `diredp-menu-bar-mark-menu', `diredp-menu-bar-operate-menu',
 ;;    `diredp-menu-bar-operate-bookmarks-menu',
 ;;    `diredp-menu-bar-recursive-marked-menu',
@@ -458,8 +462,11 @@
 ;;; Change Log:
 ;;
 ;; 2013/07/17 dadams
-;;     Added: diredp-menu-bar-encryption-menu, diredp-menu-bar-images-menu.
-;;     Moved encryption and image-dired items to those new menus from Multiple menu.
+;;     Added: diredp-menu-bar-encryption-menu, diredp-menu-bar-images-menu,
+;;            diredp-menu-bar-immediate-encryption-menu,
+;;            diredp-(decrypt|verify|sign|encrypt)-this-file.
+;;     Added diredp-(decrypt|verify|sign|encrypt)-this-file to *-immediate-encryption-menu.
+;;     Moved encryption and image-dired items to the new Multiple submenus from Multiple menu.
 ;; 2013/07/15 dadams
 ;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
 ;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
@@ -1698,6 +1705,49 @@ If HDR is non-nil, insert a header line with the directory name."
     :help "Edit file at cursor in a different window"))
 (define-key diredp-menu-bar-immediate-menu [find-file]
   '(menu-item "Open" dired-find-file :help "Edit file at cursor"))
+
+
+;; `Single' > `Encryption' menu.
+;;
+(when (fboundp 'epa-dired-do-encrypt)   ; Emacs 23+
+  (defvar diredp-menu-bar-immediate-encryption-menu (make-sparse-keymap "Encryption"))
+  (define-key diredp-menu-bar-immediate-menu [encryption]
+    (cons "Encryption" diredp-menu-bar-immediate-encryption-menu))
+
+  (define-key diredp-menu-bar-immediate-encryption-menu [diredp-decrypt-this-file]
+    '(menu-item "Decrypt..." (lambda ()
+                               (interactive)
+                               (epa-decrypt-file (expand-file-name (dired-get-filename
+                                                                    nil 'NO-ERROR-P))))
+      :help "Decrypt this file"))
+  (define-key diredp-menu-bar-immediate-encryption-menu [diredp-verify-this-file]
+    '(menu-item "Verify..." (lambda ()
+                              (interactive)
+                              (epa-verify-file (expand-file-name (dired-get-filename
+                                                                  nil 'NO-ERROR-P))))
+      :help "Verify this file"))
+  (define-key diredp-menu-bar-immediate-encryption-menu [diredp-sign-this-file]
+    '(menu-item "Sign..." (lambda ()
+                            (interactive)
+                            (epa-sign-file (expand-file-name (dired-get-filename
+                                                              nil 'NO-ERROR-P))
+                                           (epa-select-keys (epg-make-context)
+                                                            "Select keys for signing.
+If no one is selected, default secret key is used.  "
+                                                            nil t)))
+      :help "Encrypt this file"))
+  (define-key diredp-menu-bar-immediate-encryption-menu [diredp-encrypt-this-file]
+    '(menu-item "Encrypt..." (lambda ()
+                               (interactive)
+                               (epa-encrypt-file (expand-file-name (dired-get-filename
+                                                                    nil 'NO-ERROR-P))
+                                                 (epa-select-keys
+                                                  (epg-make-context)
+                                                  "Select recipients for encryption.
+If no one is selected, symmetric encryption will be performed.  "
+                                                  nil t)))
+      :help "Sign this file")))
+
 
 ;; `Single' > `Bookmarks' menu.
 ;;
@@ -6533,6 +6583,27 @@ Makes the first char of the name uppercase and the others lowercase."
   "In Dired, rename the file on the cursor line."
   (interactive)
   (let ((use-file-dialog  nil)) (dired-do-rename 1)))
+
+(when (fboundp 'epa-dired-do-encrypt)   ; Emacs 23+
+  (defun diredp-decrypt-this-file ()
+    "In Dired, decrypt the file on the cursor line."
+    (interactive)
+    (let ((use-file-dialog  nil)) (epa-dired-do-decrypt 1)))
+
+  (defun diredp-encrypt-this-file ()
+    "In Dired, encrypt the file on the cursor line."
+    (interactive)
+    (let ((use-file-dialog  nil)) (epa-dired-do-encrypt 1)))
+
+  (defun diredp-verify-this-file ()
+    "In Dired, verify the file on the cursor line."
+    (interactive)
+    (let ((use-file-dialog  nil)) (epa-dired-do-verify 1)))
+
+  (defun diredp-sign-this-file ()
+    "In Dired, sign the file on the cursor line."
+    (interactive)
+    (let ((use-file-dialog  nil)) (epa-dired-do-sign 1))))
 
 ;;;###autoload
 (defun diredp-copy-this-file ()         ; Not bound
