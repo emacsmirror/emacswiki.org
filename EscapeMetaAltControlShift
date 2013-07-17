@@ -15,8 +15,8 @@ The file <i>etc/JOKES</i> in the Emacs distribution
 contains a large number of these,
 as well as a generous assortment
 of other classical editor jokes.
-(Press C-h F to view the Emacs FAQ,
-then C-x C-f to look for the file
+(Press `C-h C-f' to view the Emacs FAQ,
+then `C-x C-f' to look for the file
 <i>etc/JOKES</i> in the same directory as
 the FAQ file. You'll also find
 some other funny files there.)
