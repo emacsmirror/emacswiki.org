@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jul 17 11:22:59 2013 (-0700)
+;; Last-Updated: Wed Jul 17 11:31:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6622
+;;     Update #: 6631
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -372,6 +372,7 @@
 ;;    `diredp-file-line-overlay', `diredp-files-within-dirs-done',
 ;;    `diredp-font-lock-keywords-1', `diredp-loaded-p',
 ;;    `diredp-menu-bar-encryption-menu',
+;;    `diredp-menu-bar-images-menu.',
 ;;    `diredp-menu-bar-immediate-menu',
 ;;    `diredp-menu-bar-immediate-bookmarks-menu',
 ;;    `diredp-menu-bar-mark-menu', `diredp-menu-bar-operate-menu',
@@ -457,7 +458,8 @@
 ;;; Change Log:
 ;;
 ;; 2013/07/17 dadams
-;;     Added: diredp-menu-bar-encryption-menu.  Moved encryption items to it from Multiple.
+;;     Added: diredp-menu-bar-encryption-menu, diredp-menu-bar-images-menu.
+;;     Moved encryption and image-dired items to those new menus from Multiple menu.
 ;; 2013/07/15 dadams
 ;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
 ;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
@@ -1893,6 +1895,34 @@ If HDR is non-nil, insert a header line with the directory name."
   (define-key diredp-menu-bar-operate-menu [find-files]
     '(menu-item "Open" dired-do-find-marked-files ; In `dired-x.el'.
       :help "Open each marked file for editing")))
+
+
+;; `Multiple' > `Images' menu.
+;;
+(when (fboundp 'image-dired-display-thumbs) ; Emacs 22+
+  (defvar diredp-menu-bar-images-menu (make-sparse-keymap "Images"))
+  (define-key diredp-menu-bar-operate-menu [images]
+    (cons "Images" diredp-menu-bar-images-menu))
+
+  ;; Remove the items from `Multiple' menu.
+  (define-key diredp-menu-bar-operate-menu [image-dired-delete-tag] nil)
+  (define-key diredp-menu-bar-operate-menu [image-dired-tag-files] nil)
+  (define-key diredp-menu-bar-operate-menu [image-dired-dired-comment-files] nil)
+  (define-key diredp-menu-bar-operate-menu [image-dired-display-thumbs] nil)
+
+  ;; Add them to `Multiple' > `Images' menu.
+  (define-key diredp-menu-bar-images-menu [image-dired-delete-tag]
+    '(menu-item "Delete Image Tag..." image-dired-delete-tag
+      :help "Delete image tag for marked files"))
+  (define-key diredp-menu-bar-images-menu [image-dired-tag-files]
+    '(menu-item "Add Image Tags..." image-dired-tag-files
+      :help "Add image tags to marked files"))
+  (define-key diredp-menu-bar-images-menu [image-dired-dired-comment-files]
+    '(menu-item "Add Image Comment..." image-dired-dired-comment-files
+      :help "Add image comment to marked files"))
+  (define-key diredp-menu-bar-images-menu [image-dired-display-thumbs]
+    '(menu-item "Display Image Thumbnails" image-dired-display-thumbs
+      :help "Display image thumbnails for marked image files")))
 
 
 ;; `Multiple' > `Encryption' menu.
