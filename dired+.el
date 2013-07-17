@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jul 15 15:40:17 2013 (-0700)
+;; Last-Updated: Wed Jul 17 11:22:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6605
+;;     Update #: 6622
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -371,6 +371,7 @@
 ;;
 ;;    `diredp-file-line-overlay', `diredp-files-within-dirs-done',
 ;;    `diredp-font-lock-keywords-1', `diredp-loaded-p',
+;;    `diredp-menu-bar-encryption-menu',
 ;;    `diredp-menu-bar-immediate-menu',
 ;;    `diredp-menu-bar-immediate-bookmarks-menu',
 ;;    `diredp-menu-bar-mark-menu', `diredp-menu-bar-operate-menu',
@@ -455,6 +456,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/17 dadams
+;;     Added: diredp-menu-bar-encryption-menu.  Moved encryption items to it from Multiple.
 ;; 2013/07/15 dadams
 ;;     Added: diredp-async-shell-command-this-file, diredp-do-async-shell-command-recursive.
 ;;            Added them to menus.  Bind diredp-do-async-shell-command-recursive to M-+ &.
@@ -1891,6 +1894,33 @@ If HDR is non-nil, insert a header line with the directory name."
     '(menu-item "Open" dired-do-find-marked-files ; In `dired-x.el'.
       :help "Open each marked file for editing")))
 
+
+;; `Multiple' > `Encryption' menu.
+;;
+(when (fboundp 'epa-dired-do-encrypt)   ; Emacs 23+
+  (defvar diredp-menu-bar-encryption-menu (make-sparse-keymap "Encryption"))
+  (define-key diredp-menu-bar-operate-menu [encryption]
+    (cons "Encryption" diredp-menu-bar-encryption-menu))
+
+  ;; Remove the items from `Multiple' menu.
+  (define-key diredp-menu-bar-operate-menu [epa-dired-do-decrypt] nil)
+  (define-key diredp-menu-bar-operate-menu [epa-dired-do-verify] nil)
+  (define-key diredp-menu-bar-operate-menu [epa-dired-do-sign] nil)
+  (define-key diredp-menu-bar-operate-menu [epa-dired-do-encrypt] nil)
+
+  ;; Add them to `Multiple' > `Encryption' menu.
+  (define-key diredp-menu-bar-encryption-menu [epa-dired-do-decrypt]
+    '(menu-item "Decrypt..." epa-dired-do-decrypt :help "Decrypt the marked files"))
+  (define-key diredp-menu-bar-encryption-menu [epa-dired-do-verify]
+    '(menu-item "Verify..." epa-dired-do-verify :help "Verify the marked files"))
+  (define-key diredp-menu-bar-encryption-menu [epa-dired-do-sign]
+    '(menu-item "Sign..." epa-dired-do-sign :help "Sign the marked files"))
+  (define-key diredp-menu-bar-encryption-menu [epa-dired-do-encrypt]
+    '(menu-item "Encrypt..." epa-dired-do-encrypt :help "Encrypt the marked files")))
+
+
+;; `Multiple' > `Marked Here and Below' menu.
+;;
 (defvar diredp-menu-bar-recursive-marked-menu (make-sparse-keymap "Marked Here and Below"))
 (define-key diredp-menu-bar-operate-menu [recursive-marked]
   (cons "Marked Here and Below" diredp-menu-bar-recursive-marked-menu))
@@ -2107,6 +2137,7 @@ If HDR is non-nil, insert a header line with the directory name."
 (defvar diredp-menu-bar-regexp-menu (make-sparse-keymap "Regexp"))
 (define-key dired-mode-map [menu-bar regexp]
   (cons "Regexp" diredp-menu-bar-regexp-menu))
+
 (define-key diredp-menu-bar-regexp-menu [hardlink]
   '(menu-item "Hardlink to..." dired-do-hardlink-regexp
     :help "Make hard links for files matching regexp"))
