@@ -7,6 +7,35 @@ services, so that there will be no conflicts between users trying to
 have the same nick at the same time.  Nickserv is the service which
 keeps track of the nicknames.
 
+== The easy way: ==
+
+Customise (M-x customize-variable RET) the following:
+
+; erc-modules: Make sure the ''services'' item is checked.
+; erc-nick: A list of nicks to try, in order. If erc runs out of these, it will try adding the usual ` style characters to make an acceptable nick.
+; erc-nickserv-passwords: Your passwords, one for each network.
+; erc-prompt-for-nickserv-password: Whether to ask you for a nickserv password. Turn it off if you set the previous variable
+
+=== Updating emacs 23 for freenode service changes ===
+
+Note that emacs23 has some old nickserv identification data - freenode in particular has changed the way its
+nickserv operates since the last emac23 release. emacs24 has a current entry. To fix this for 23:
+
+M-x customize-variable RET erc-nickserv-alist RET
+
+Then modify the freenode entry (^B indicates control character B - enter it with C-q C-b):
+<pre>
+[INS] [DEL] Nickserv data:
+            Network name: freenode
+            Choice: [Value Menu] Nickserv's nick!user@host: NickServ!NickServ@services.
+            Choice: [Value Menu] Identify request sent by Nickserv: ^B/msg\s-NickServ\s-identify\s-<password>^B
+            Identify to: NickServ
+            Identify keyword: identify
+            Use current nick in identify message?: [Toggle]  off (nil)
+            Command to use (optional): [Value Menu] No special command necessary
+            Detect Success: [Value Menu] Pattern to match: You are now identified for ^B\S-+^B\.
+</pre>
+
 == Identifying yourself to Nickserv ==
 
 There are two ways to identify.  The default is to wait until Nickserv requests that you identify.  If
@@ -143,16 +172,13 @@ To successfully enable auto-identify in GRNET, the Greek IRC network, you will h
 Without this entry in 'erc-nickserv-alist', the 'erc-nickserv-identify-autodetect' function will fail to identify the GRNET NickServ service and your 'erc-nickserv-passwords' will be ignored.
 
 == Problems with autojoin channels requiring registered identification to join==
-I could not get to join #python with auto join lists on #freenode. It seemed that the login/identify was done after the autojoin was processed so any groups not requiring a registered nick were fine, but any others failed to join. The solution was this:
 
-<pre>
-(defun rgr/start-erc ()
-  (load "~/.emacs.d/.erc-auth.el") ; erc-password
-  (setq erc-prompt-for-nickserv-password nil)
-  (erc :server "irc.freenode.net" :nick "rgr" :password erc-password)
-  (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#erc" "#python"))))
-</pre>
+Erc has builtin support for channels that require identification before they let you join:
 
-email: rileyrg AT gmail DOT com
+(setq erc-autojoin-timing 'ident)
+
+The customise form is currently broken in the shipped file, so you unfortunately cannot
+use customise here.
+
 ----
 [[ERC]]
