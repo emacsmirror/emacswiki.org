@@ -7,6 +7,7 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
+;; Package-Requires: ((frame-fns "21.1") (misc-fns "21.0"))
 ;; Last-Updated: Fri Jul 12 09:33:54 2013 (-0700)
 ;;           By: dradams
 ;;     Update #: 2875
