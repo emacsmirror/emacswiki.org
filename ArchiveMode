@@ -6,7 +6,15 @@ New archive types can be added to <code>archive-mode</code> without too much tro
 
 * [[http://user42.tuxfamily.org/arc-lzh-exe/index.html arc-lzh-exe.el]] -- adds support for lzh self-extracting executables (viewing only)
 
+[new]
+Note about file extraction to the file system:
 
+* <code>archive-mode</code>  cannot extract a file in an archive *to the file system* (with the timestamp in the archive), only *to a buffer* for viewing (and when you save the buffer to the file system you obviously do not get the correct timestamp from the archive). 
+
+[new:halloleo:2013-07-18 02:00 UTC]
+Question to the topic above: Does anybody know of an arc-mode replacement, which enables extraction to the file system?
+
+[new]
 Note about archive-mode for emacs within the cygwin environment:
 * Diagnostics: Only an empty directory is shown by emacs within cygwin for a non-empty zip-file.
 * Cause: The zip file has been stored in a MS-DOS path that was mounted under cygwin in <b>text-mode</b>. The zip-file contains carry return-linefeed sequences that are truncated to linefeed only in the cygwin text file system. This invalidates the offsets in the central directory at the end of the zip-file. Thus the directory entries are not found.
