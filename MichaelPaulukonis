@@ -27,19 +27,36 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * [[CSS]]
 ** look into darkstrap
 ** look into variant on [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css wikipedia css] -- I like how the layout works, just not the stark-white fluorscently-lit colors (it's like a website at walmart)
-* look at DropBox notes -- implement, test, and update page
-** I've been using DropBox for years, and Emacs, and never investigate the full potential
-** I believe I saw something about TODOs in Emacs and dropbox in the soi-distant past....
-** my notes @ http://www.xradiograph.com/Programming/DropBox
-** and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
 * whee! [[CategoryGames|games!]] I didn't know most of these existed. As if I'd have the time....
 * do git from w/in Emacs?
 ** get list of pages, incl. GitCommitMode
 ** Magit
 * look at EmacsScreencasts
-* re-org my init-file(s)
+
+=== DropBox ===
+* look at DropBox notes -- implement, test, and update page
+* I've been using DropBox for years, and Emacs, and never investigate the full potential
+* I believe I saw something about TODOs in Emacs and dropbox in the soi-distant past....
+* my notes @ http://www.xradiograph.com/Programming/DropBox
+* and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
+
+=== deftheme ===
+* DefTheme
+* notes on how I can't get the cyberpunk theme to auto-load from .emacs
+** in both instances?
+** or only one?
+** will other themes auto-load?
+
+=== re-org(ing) my init-file(s) ===
 ** https://github.com/ghoseb/dotemacs and https://github.com/overtone/emacs-live
 ** http://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html
+** IN-PROGRESS as of 2013.07
+** see https://github.com/MichaelPaulukonis/dot-emacs
+
+=== tetris ===
+* I wanted to tweak tetris. But most things appear to be untweakable without tweaking all over the place. tsk tsk.
+* so, see https://github.com/MichaelPaulukonis/tetris.el - which as of 2013.07.18 is the original version with no tweaks.
+* http://gaming.stackexchange.com/questions/31390/is-it-possible-to-change-the-keyboard-controls-in-emacs-tetris
 
 === OrgMode ===
 * learning and using....
@@ -48,7 +65,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * writing
 ** http://www.xradiograph.com/Emacs/OrgMode
 ** http://www.xradiograph.com/Emacs/Journal
-
 
 === pmwiki-mode ===
 * hoping to work on pmwiki-mode
@@ -64,8 +80,8 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** and it's influenced how I ''want'' to work with org-mode (which may not be how I ''should'' work with org-mode)
 
 === emacs-wiki work ===
-* working on documentation withing CategoryJavaScript
-
+* working on documentation within CategoryJavaScript
+** see my random blog notes on [http://www.xradiograph.com/interference/tag/emacs-js/|emacs.js]
 
 === Gravatar from Emacs ===
 
