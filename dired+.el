@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jul 17 15:18:56 2013 (-0700)
+;; Last-Updated: Thu Jul 18 10:18:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6671
+;;     Update #: 6674
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -461,6 +461,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/18 dadams
+;;     diredp-next-line: Protect visible-p with fboundp for Emacs 20.
 ;; 2013/07/17 dadams
 ;;     Added: diredp-menu-bar-encryption-menu, diredp-menu-bar-images-menu,
 ;;            diredp-menu-bar-immediate-encryption-menu,
@@ -6098,7 +6100,8 @@ Otherwise, just move to the buffer limit."
         (goto-char (if (< arg 0) (point-max) (point-min)))
         (diredp-next-line arg)))
     ;; We never want to move point into an invisible line.
-    (while (and (invisible-p (point))
+    (while (and (fboundp 'invisible-p)  ; Emacs 22+
+                (invisible-p (point))
                 (not (if (and arg (< arg 0)) (bobp) (eobp))))
       (forward-char (if (and arg (< arg 0)) -1 1)))
     (dired-move-to-filename)))
