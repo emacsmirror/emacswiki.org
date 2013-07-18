@@ -45,6 +45,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * StickyModifiers -- How to do without [[chord]]ing
 * KeyChord -- Map pairs of simultaneously pressed keys to commands
 * [[Accelerate]] -- Change the behaviour of a command when its key is auto-repeated
+* Lisp:speedkey.el -- Create a set of keybindings easily, with a help text
 * Binding <code><return></code> to `RET' -- If your version of Emacs does not bind <code><return></code> to anything, do this:  -- AlexSchroeder
 
              (global-set-key (kbd "<return>") (kbd "RET"))
