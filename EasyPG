@@ -2,7 +2,7 @@
 
 Homepage:
 
-* http://epg.sourceforge.jp/ (epa-file.el part of GNU emacs.  See http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el for source.) 
+* http://epg.sourceforge.jp/ (epa-file.el part of GNU emacs.  See http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el for source.)
 
 == Files ==
 
@@ -70,7 +70,7 @@ http://www.nabble.com/gnupg-interface-td17242718.html
 1. Install the latest GnuPG 1.x along with 2.x and let epg-gpg-program
    to point the executable, or
 
-2. Use other pinentry-program which interact through the windowing system 
+2. Use other pinentry-program which interact through the windowing system
 ----
 [new]
 I generally don't mind the graphical password prompt when I'm at my desk, but when logged into a remote terminal with multi-tty this can be darn inconvenient (I have to VNC into my desktop just to enter the password!)
@@ -131,17 +131,24 @@ Note also there's a bug in pinentry in GnuPG2, if you run Arch Linux you could i
 [new]
 I have removed 'gpg-agent'. Of course, it totally solved the problem with the GUI dialog. In Ubuntu, 'gpg-agent' is used by default as a replacement for 'ssh-agent'. When 'gpg-agent' is deleted, 'ssh-agent' is used. So, no visible losses. --[[DmitriMinaev]]
 
-== Problems Decrypting == 
+----
+[new]
+There's another, more straightforward solution, which should yield the desired result with both gpg1 and gpg2, and doesn't require you to disable the GPG agent.
+Add the following line to ~/.gnupg/gpg-agent.conf:
+
+    pinentry-program /usr/bin/pinentry-curses
+
+== Problems Decrypting ==
 
 With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a *.gpg file, but when I try to reopen it in emacs, I get the following:  'File exists, but cannot be read'.  I am able to decrypt it fine outside of emacs with gpg -d
-Running 'M-x epa-decrypt-file RET FILENAME' on the same file gives the following error:  
+Running 'M-x epa-decrypt-file RET FILENAME' on the same file gives the following error:
 'Decrypting test4.gpg...0% (0/674)
 epg-decrypt-file: Wrong type argument: listp, exit
 '
 
  Any thoughts or comments would be much appreciated!!
 
-You can use public key to save(encrypt) a *.gpg file, and only use private key to (re)open(or decrypt) it. If you are the public key's owner, you can use command 
+You can use public key to save(encrypt) a *.gpg file, and only use private key to (re)open(or decrypt) it. If you are the public key's owner, you can use command
 
    gpg -o [fn] --export-private-keys -a
 
@@ -160,7 +167,7 @@ Another way to test if emacs can find it would be to do M-x epa-list-keys
 ----
 
 With Emacs 23 epa-list-keys was working correctly but trying to open a gpg file gave me the error: 'File exists, but cannot be read'
-Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again. 
+Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again.
 
  -goibhniu
 
@@ -177,14 +184,14 @@ To fix, you can either set epg-gpg-program to the full path (e.g. /sw/bin/gpg2) 
 == Problems Encrypting Mails ==
 I found a problem when I use [[Wanderlust]] Version 201107150352 with EasyPG 0.0.16(is this the last one?). I changed Wanderlust throught the emacs customization to put a default "Bcc" pointing to my own mail so I have copies of whatever I send.
 
-    ; In ~/.emacs says: 
+    ; In ~/.emacs says:
     '(wl-bcc "My name <my-mail@the-server.com>
 
-When I try to send an encrypted mail, for example to myself, it's says something like 
+When I try to send an encrypted mail, for example to myself, it's says something like
 
     "No public key for my-mail@the-server.com,my-mail@the-server.com; skip it?".
 
-To solve this problem, you must download the source code of epg, and edit epa-mail.el. 
+To solve this problem, you must download the source code of epg, and edit epa-mail.el.
 In the implementation of the function epa-mail-encrypt:
 
     ;;;###autoload
@@ -231,7 +238,7 @@ A working customization code (April 2011, using Debian, Emacs 23, No Gnus 0.16 (
        gnus-message-replysign t
        gnus-message-replysignencrypted t
        gnus-treat-x-pgp-sig t
- 
+
 ;;       mm-sign-option 'guided
 ;;       mm-encrypt-option 'guided
        mm-verify-option 'always
