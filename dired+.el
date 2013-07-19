@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 21.2
-;; Last-Updated: Thu Jul 18 10:18:00 2013 (-0700)
+;; Version: 2013-07-19
+;; Last-Updated: Fri Jul 19 09:40:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6674
+;;     Update #: 6686
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -461,6 +461,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/19 dadams
+;;     diredp-next-line: Added bobpp test for negative ARG.
+;;                       Emacs 20 line-move returns nil, so use (progn ... t).
 ;; 2013/07/18 dadams
 ;;     diredp-next-line: Protect visible-p with fboundp for Emacs 20.
 ;; 2013/07/17 dadams
@@ -6091,10 +6094,10 @@ Otherwise, just move to the buffer limit."
   (interactive "p")
   (let ((line-move-visual  nil)
         (goal-column       nil)
-        (no-more           (or (not (condition-case nil ; Use `condition-case' because
-                                        (line-move arg) ; Emacs < 22 has no NO-ERROR arg.
-                                      (error nil)))
-                               (eobp))))
+        ;; Use `condition-case' and `(progn... t)' because Emacs < 22 `line-move' has no
+        ;; NO-ERROR arg and it always returns nil.
+        (no-more           (or (not (condition-case nil (progn (line-move arg) t) (error nil)))
+                               (if (< arg 0) (bobp) (eobp)))))
     (when (and diredp-wrap-around-flag  no-more)
       (let ((diredp-wrap-around-flag  nil))
         (goto-char (if (< arg 0) (point-max) (point-min)))
@@ -6106,6 +6109,7 @@ Otherwise, just move to the buffer limit."
       (forward-char (if (and arg (< arg 0)) -1 1)))
     (dired-move-to-filename)))
 
+;; In Emacs < 22, `C-p' does not wrap around, because it never moves to the first header line.
 ;;;###autoload
 (defun diredp-previous-line (arg)       ; Bound to `p', `C-p', `up'
   "Move up lines then position at filename.
