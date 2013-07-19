@@ -1,5 +1,5 @@
 ;;; crosshairs.el --- Highlight the current line and column.
-;; 
+;;
 ;; Filename: crosshairs.el
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
@@ -7,23 +7,23 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:26:47 2012 (-0800)
+;; Last-Updated: Fri Jul 19 08:24:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 474
+;;     Update #: 476
 ;; URL: http://www.emacswiki.org/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; Package-Requires: ((col-highlight "22.0") (hl-line+ "20120823") (vline "1.10"))
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `col-highlight', `hl-line', `hl-line+', `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;  This library highlights the current line and the current column.
 ;;  It combines the features of libraries `hl-line.el', `hl-line+.el',
 ;;  and `col-highlight.el', which let you highlight the line or column
@@ -88,7 +88,7 @@
 ;;   or (global-set-key [(control ?+)] 'crosshairs-flash)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/12/25 dadams
@@ -127,7 +127,7 @@
 ;;       If both are already on or off, reflect that as the crosshair state.
 ;;     crosshairs-toggle-when-idle:
 ;;       crosshairs-highlight-when-idle-p, not col-highlight-when-idle-p.
-;;     crosshairs-flash: 
+;;     crosshairs-flash:
 ;;       Save/restore global-hl-line-mode.
 ;;       Clear and rehighlight column initially.  Maybe highlight twice (bug).
 ;;       Don't use highlight modes to unhighlight - just unhighlight.
@@ -135,24 +135,24 @@
 ;;     Removed semi-support for Emacs 20.
 ;; 2006/09/08 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
