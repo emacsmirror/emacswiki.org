@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Jul 12 09:35:37 2013 (-0700)
+;; Last-Updated: Sat Jul 20 08:15:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3596
+;;     Update #: 3597
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -96,7 +96,7 @@
 ;;    `menu-bar-edit-fill-menu', `menu-bar-edit-region-menu',
 ;;    `menu-bar-edit-sort-menu', `menu-bar-emacs-lisp-manual-menu',
 ;;    `menu-bar-emacs-manual-menu', `menu-bar-frames-menu',
-;;    `menu-bar-i-search-menu' (Emacs < 22), `menu-bar-print-menu',
+;;    `menu-bar-i-search-menu' (Emacs < 22),
 ;;    `menu-bar-search-replace-menu', `menu-bar-search-tags-menu',
 ;;    `menu-bar-whereami-menu', `yank-menu'.
 ;;
