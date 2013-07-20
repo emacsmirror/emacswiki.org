@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.6.1
-;; Created: Wed Oct 26 01:22:14 2011
+;; Version: 0.6.2
+;; Created: Sat Jul 20 15:13:17 2013
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -303,6 +303,8 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2013/07/20 version 0.6.2 yamaguchi
+;;     Some bug fixes and minor changes
 ;; 2011/10/26 version 0.6.1 yamaguchi
 ;;     Some bug fixes and add `latex-math-preview-set-conversion-command'.
 ;; 2011/10/22 version 0.6.0 yamaguchi
@@ -453,7 +455,7 @@ If the value is nil then the colors automatically set from emacs settings.")
 (defvar latex-math-preview-match-expression
   '(
     ;; \[...\]
-    (0 . "\\\\\\[\\(.\\|\n\\)*?\\\\]")
+    (1 . "[^\\\\]\\(\\\\\\[\\(.\\|\n\\)*?\\\\]\\)")
 
     ;; \(...\)
     (0 . "\\\\(\\(.\\|\n\\)*?\\\\)")
@@ -965,7 +967,7 @@ This variable must not be set.")
     (while t
       (let ((val (read-from-minibuffer
 		  (concat prompt " [RGB] (default " (mapconcat 'identity default-val " ") "): "))))
-	(if (= (length val) 0) (setq val default-val) (setq val (split-string val " ")))
+	(setq val (if (= (length val) 0) default-val (split-string val " ")))
 	(catch :invalid-color
 	  (when (= (length val) 3)
 	    (dolist (s val)
@@ -1057,7 +1059,7 @@ a list created by splitting COMMAND by \"-\" as a command name."
     (catch :no-output
       (dolist (conv convert-list)
 	(setq product (funcall (intern (concat "latex-math-preview-execute-" (symbol-name conv))) product))
-	(if (not product) (throw :no-output nil))))
+	(unless product (throw :no-output nil))))
     product))
 
 (defun latex-math-preview-completing-read-convert-command-sequence ()
@@ -1112,22 +1114,25 @@ a list created by splitting COMMAND by \"-\" as a command name."
 ;;-----------------------------------------------------------------------------
 ;; Search usepackage
 
-(defvar latex-math-preview-usepackage-cache nil)
+(defvar latex-math-preview-usepackage-cache nil
+  "List of usepackage. If the value is t we do not set usepackage.
+If the value is nil this cache has not been set yet.")
 (make-variable-buffer-local 'latex-math-preview-usepackage-cache)
 
+;; [TODO] The name of function `latex-math-preview-search-header-usepackage' is not suitable
+;; because for not only usepackage but also definitions of commands.
 (defun latex-math-preview-search-header-usepackage ()
   "Return list of \\usepackage which is used in current buffer."
   (save-excursion
-    (let (cmds beg-doc tmp-str)
+    (goto-char (point-min))
+    (let ((beg-doc (if (search-forward "\\begin{document}" nil t) (point) (point-max)))
+	  cmds)
       (goto-char (point-min))
-      (if (search-forward "\\begin{document}" nil t)
-	  (setq beg-doc (point)) (setq beg-doc (point-max)))
-      (goto-char (point-min))
-      (while (re-search-forward "\\\\usepackage[^}]*}" beg-doc t)
-	(setq tmp-str (match-string-no-properties 0))
-	(save-excursion 
-	  (if (not (re-search-backward "\\(^\\|[^\\\\]\\)%" (line-beginning-position) t))
-	      (add-to-list 'cmds tmp-str))))
+      (while (re-search-forward "\\(\\\\usepackage[^}]*}\\)\\|\\(\\\\DeclareMathOperator{.*}$\\)\\|\\(\\\\providecommand{.*}$\\)" beg-doc t)
+	(let ((tmp-str (match-string-no-properties 0)))
+	  (save-excursion 
+	    (when (not (re-search-backward "\\(^\\|[^\\\\]\\)%" (line-beginning-position) t))
+	      (add-to-list 'cmds tmp-str)))))
       (nreverse cmds))))
 
 (defun latex-math-preview-search-header-usepackage-other-file (filename)
@@ -1140,16 +1145,18 @@ a list created by splitting COMMAND by \"-\" as a command name."
     nil))
 
 (defun latex-math-preview-get-header-usepackage ()
-  "Return cache of usepackage and create cache data if needed"
-  (when (and (not latex-math-preview-usepackage-cache) (string-match "\\.tex$" (buffer-file-name)))
-    (let (cache)
-      (setq cache (latex-math-preview-search-header-usepackage))
-      (if (and (not cache)
-	       (let ((filename (buffer-file-name (current-buffer))))
-		 (and filename (string-match "\\.tex" (buffer-file-name (current-buffer))))))
-	  (setq cache (latex-math-preview-search-header-usepackage-other-file
-		       (read-file-name "Main TeX file: " nil default-directory))))
-      (if (listp latex-math-preview-usepackage-cache)
+  "Return cache of usepackage and create cache data if needed.
+If current buffer has no usepackage line and the corresponding file exists
+then this function ask you main tex file having usepackage lines.
+If current buffer is not a file we are not asked."
+  (when (not latex-math-preview-usepackage-cache)
+    (let ((cache (latex-math-preview-search-header-usepackage)))
+      (when (and (not cache)
+		 (let ((filename (buffer-file-name (current-buffer))))
+		   (and filename (string-match "\\.tex" filename))))
+	(setq cache (latex-math-preview-search-header-usepackage-other-file
+		     (read-file-name "Main TeX file: " nil default-directory))))
+      (if (listp cache)
 	  (progn
 	    (setq latex-math-preview-usepackage-cache nil)
 	    (dolist (line cache)
@@ -1163,7 +1170,7 @@ a list created by splitting COMMAND by \"-\" as a command name."
 		(when filtered-line
 		  (setq latex-math-preview-usepackage-cache
 			(append latex-math-preview-usepackage-cache (list filtered-line)))))))
-	(setq latex-math-preview-usepackage-cachet t))))
+	(setq latex-math-preview-usepackage-cache t))))
   (if (listp latex-math-preview-usepackage-cache) latex-math-preview-usepackage-cache nil))
 
 (defvar latex-math-preview-edit-usepackage-buffer "*latex-math-preview: usepackage cache*")
@@ -1274,8 +1281,8 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
   (thing-at-point 'latex-math))
 
 (defun latex-math-preview-clear-working-directory ()
-  (if (not latex-math-preview-not-delete-tmpfile)
-      (latex-math-preview-clear-tmp-directory latex-math-preview-working-directory))
+  (when (not latex-math-preview-not-delete-tmpfile)
+    (latex-math-preview-clear-tmp-directory latex-math-preview-working-directory))
   (setq latex-math-preview-working-directory nil))
 
 (defun latex-math-preview-create-temporary-tex-filename ()
@@ -1321,21 +1328,21 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
 
 (defun latex-math-preview-clear-tmp-directory (dir)
   "Delete temporary directory and files contained in it."
-  (if (file-directory-p dir)
-      (progn
-	(let ((directories))
-	  (dolist (file (directory-files dir))
-	    (let ((path (concat dir "/" file)))
-	      (cond ((and (file-directory-p path) (not (string-match "^\\.+$" file)))
-		     (add-to-list 'directories file))
-		    ((file-regular-p path)
-		     (condition-case nil (delete-file path)
-		       (message "Can not delete '%s'" path))))))
-	  (dolist (del-dir directories)
-	    (message del-dir)
-	    (latex-math-preview-clear-tmp-directory (concat dir "/" del-dir))))
-	(condition-case nil (delete-directory dir)
-	  (message "Can not delete '%s'" dir)))))
+  (when (file-directory-p dir)
+    (progn
+      (let ((directories))
+	(dolist (file (directory-files dir))
+	  (let ((path (concat dir "/" file)))
+	    (cond ((and (file-directory-p path) (not (string-match "^\\.+$" file)))
+		   (add-to-list 'directories file))
+		  ((file-regular-p path)
+		   (condition-case nil (delete-file path)
+		     (message "Can not delete '%s'" path))))))
+	(dolist (del-dir directories)
+	  (message del-dir)
+	  (latex-math-preview-clear-tmp-directory (concat dir "/" del-dir))))
+      (condition-case nil (delete-directory dir)
+	(message "Can not delete '%s'" dir)))))
 
 ;;-----------------------------------------------------------------------------
 ;; view png in a buffer
@@ -1362,9 +1369,10 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
       (insert-image-file image)
       (goto-char (point-min))
       (setq buffer-read-only t)))
-  (pop-to-buffer latex-math-preview-expression-buffer-name)
-  (if (and latex-math-preview-display-whole-image (not (pos-visible-in-window-p (point-max))))
-      (with-current-buffer latex-math-preview-expression-buffer-name (delete-other-windows))))
+  (save-selected-window
+    (pop-to-buffer latex-math-preview-expression-buffer-name))
+  (when (and latex-math-preview-display-whole-image (not (pos-visible-in-window-p (point-max))))
+    (with-current-buffer latex-math-preview-expression-buffer-name (delete-other-windows))))
 
 (defun latex-math-preview-get-dvipng-color-option ()
   "Get string for dvipng options '-bg' and '-fg'."
@@ -1753,10 +1761,10 @@ Return maximum size of images and maximum length of strings and images"
 	 (len (length symbol-datasets))
 	 (sign (if (< num 0) -1 1)))
     (while (< num 0) (setq num (+ num len)))
-    (if page
-	(let ((dataset (car (nth (% (+ page num) len) symbol-datasets))))
-	  (latex-math-preview-quit-window)
-	  (latex-math-preview-create-buffer-for-insertion dataset sign)))))
+    (when page
+      (let ((dataset (car (nth (% (+ page num) len) symbol-datasets))))
+	(latex-math-preview-quit-window)
+	(latex-math-preview-create-buffer-for-insertion dataset sign)))))
 
 (defun latex-math-preview-previous-candidates-for-insertion (num)
   "Previous page of candidates buffer for insertion."
@@ -1987,29 +1995,28 @@ Return maximum size of images and maximum length of strings and images"
 	    (setq beg (point))
 	    (if (and (search-forward "\\end{frame}" nil t) (< start-point (point)))
 		(setq end (point))))
-	  (if (not (and beg end))
-	      (progn
-		(goto-char start-point)
-		(when (search-backward-regexp "\\\\frame[^a-z]" nil t)
-		  (setq beg (point))
-		  (catch :finish-search
-		    (let ((count 0))
-		      (when (search-forward "{" nil t)
+	  (when (not (and beg end))
+	    (goto-char start-point)
+	    (when (search-backward-regexp "\\\\frame[^a-z]" nil t)
+	      (setq beg (point))
+	      (catch :finish-search
+		(let ((count 0))
+		  (when (search-forward "{" nil t)
+		    (forward-char)
+		    (while (not (eobp))
+		      (skip-chars-forward "^{}")
+		      (cond
+		       ((looking-at "{")
 			(forward-char)
-			(while (not (eobp))
-			  (skip-chars-forward "^{}")
-			  (cond
-			   ((looking-at "{")
-			    (forward-char)
-			    (setq count (1+ count)))
-			   ((looking-at "}")
-			    (forward-char)
-			    (if (= 0 count)
-				(progn
-				  (setq end (point))
-				  (throw :finish-search t))
-			      (setq count (1- count))))
-			   (t (throw :finish-search t)))))))))))))
+			(setq count (1+ count)))
+		       ((looking-at "}")
+			(forward-char)
+			(if (= 0 count)
+			    (progn
+			      (setq end (point))
+			      (throw :finish-search t))
+			  (setq count (1- count))))
+		       (t (throw :finish-search t))))))))))))
     (if (and beg end) (buffer-substring-no-properties beg end) nil)))
 
 (defun latex-math-preview-search-beamer-preamble ()
