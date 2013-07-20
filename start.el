@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jul  2 13:49:44 2013 (-0700)
+;; Last-Updated: Sat Jul 20 14:43:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2973
+;;     Update #: 2980
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,8 +82,10 @@
 ;;
 ;; Change Log:
 ;;
+;; 2013/07/20 dadams
+;;     Do not (softf)-require dired-details+.el if (fboundp 'dired-hide-details-mode) - Emacs 24.4.
 ;; 2013/07/02 dadams
-;; Load bookmark+.el (and bm.el and tabbar.el, though not necessary) after `menu-bar+.el.
+;;     Load bookmark+.el (and bm.el and tabbar.el, though not necessary) after `menu-bar+.el.
 ;; 2013/06/06 dadams
 ;;     Added autoload for auto-update-file-header.
 ;; 2013/02/21 dadams
@@ -666,7 +668,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (eq system-type 'windows-nt) (require 'w32-browser nil t)) ; Even if `dired+.el' not loaded.
 (when (require 'dired-sort-menu nil t)
   (require 'dired-sort-menu+ nil t))    ; Menu/dialogue for dired sort options
-(require 'dired-details+ nil t)         ; Make file details hideable in dired
+(unless (fboundp 'dired-hide-details-mode)
+  (require 'dired-details+ nil t))      ; Enhancements to `dired-details.el'.
 (require 'savehist-20+ nil t)           ; Save your history lists.
 (eval-after-load "faces" '(require 'faces+ nil t)) ; Extensions to `faces.el'.
 (autoload 'menu-bar-read-lispref "info+" "Access the Emacs Lisp manual via `Info'." t)
