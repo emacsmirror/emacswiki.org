@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version:
-;; Last-Updated: Sat Jul 13 09:48:33 2013 (-0700)
+;; Last-Updated: Sat Jul 20 10:09:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 202
+;;     Update #: 212
 ;; URL: http://www.emacswiki.org/dired-details+.el
 ;; Doc URL: http://www.emacswiki.org/DiredDetails
 ;; Keywords: dired, frames
@@ -25,6 +25,16 @@
 ;;; Commentary:
 ;;
 ;;  This enhances the functionality of library `dired-details.el'.
+;;
+;;
+;;    NOTE: If you use Emacs 24.4 or later then you DO NOT NEED this
+;;    library or library `dired-details.el'.  Instead, use
+;;    `dired-hide-details-mode'.  Library `dired+.el' enhances
+;;    `dired-hide-details-mode' to give it the save features as
+;;    `dired-details+.el' provides.  Just use `(require 'dired+.el)'.
+;;
+;;
+;;  `dired-details+.el' enhances `dired-details.el' in these ways:
 ;;
 ;;  1. It shrink-wraps Dired's frame whenever you show or hide
 ;;     details.  For this enhancement, you will need library
@@ -51,12 +61,6 @@
 ;;                             non-nil, then use the last state.
 ;;
 ;;
-;;  I have submitted these enhancements to Rob Giardina, the author of
-;;  `dired-details.el', for inclusion in that library.  If they (or
-;;  similar) are added to that library, then I'll remove this library.
-;;  In any case, this feature has been added to Emacs, starting with
-;;  Emacs 22.2, I think.
-;;
 ;;  Put this in your initialization file (~/.emacs):
 ;;
 ;;   (require 'dired-details+)
@@ -71,6 +75,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/19 dadams
+;;     Mention in Commentary that you do not need dired-details(+).el for Emacs
+;;       24.4 or later.
 ;; 2013/07/13 dadams
 ;;     If dired-hide-details-mode is defined, bind that to (, like vanilla Emacs.
 ;; 2011/01/04 dadams
