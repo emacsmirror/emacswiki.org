@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013-07-19
-;; Last-Updated: Fri Jul 19 09:40:36 2013 (-0700)
+;; Last-Updated: Sat Jul 20 12:05:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6686
+;;     Update #: 6910
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -17,8 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `dired', `dired+', `dired-aux',
 ;;   `dired-x', `ffap', `fit-frame', `frame-fns', `help+20', `info',
 ;;   `info+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
@@ -255,6 +255,7 @@
 ;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
 ;;    `diredp-do-chgrp-recursive', `diredp-do-chown-recursive',
 ;;    `diredp-do-copy-recursive', `diredp-do-decrypt-recursive',
+;;    `diredp-do-display-images' (Emacs 22+),
 ;;    `diredp-do-encrypt-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
@@ -336,11 +337,14 @@
 ;;    `diredp-up-directory', `diredp-up-directory-reuse-dir-buffer',
 ;;    `diredp-upcase-this-file', `diredp-verify-this-file',
 ;;    `diredp-w32-drives', `diredp-w32-drives-mode',
+;;    `global-dired-hide-details-mode' (Emacs 24.4+),
 ;;    `toggle-diredp-find-file-reuse-dir'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `diff-switches', `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diff-switches', `diredp-hide-details-initially-flag' (Emacs
+;;    24.4+), `diredp-hide-details-propagate-flag' (Emacs 24.4+),
+;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -353,14 +357,18 @@
 ;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
-;;    `diredp-dired-union-interactive-spec',
-;;    `diredp-do-chxxx-recursive', `diredp-do-create-files-recursive',
-;;    `diredp-do-grep-1', `diredp-ensure-mode',
-;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
-;;    `diredp-files-within', `diredp-files-within-1',
+;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
+;;    (Emacs 22+), `diredp-do-chxxx-recursive',
+;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
+;;    `diredp-ensure-mode', `diredp-fewer-than-2-files-p',
+;;    `diredp-find-a-file-read-args', `diredp-files-within',
+;;    `diredp-files-within-1',
+;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
-;;    `diredp-get-files-for-dir', `diredp-internal-do-deletions',
-;;    `diredp-list-files', `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-get-files-for-dir', `diredp-hide-details-if-dired'
+;;    (Emacs 24.4+), `diredp-hide/show-details' (Emacs 24.4+),
+;;    `diredp-internal-do-deletions', `diredp-list-files',
+;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
@@ -373,8 +381,9 @@
 ;;  Variables defined here:
 ;;
 ;;    `diredp-file-line-overlay', `diredp-files-within-dirs-done',
-;;    `diredp-font-lock-keywords-1', `diredp-loaded-p',
-;;    `diredp-menu-bar-encryption-menu',
+;;    `diredp-font-lock-keywords-1', `diredp-hide-details-last-state'
+;;    (Emacs 24.4+), `diredp-hide-details-toggled' (Emacs 24.4+),
+;;    `diredp-loaded-p', `diredp-menu-bar-encryption-menu',
 ;;    `diredp-menu-bar-images-menu.',
 ;;    `diredp-menu-bar-immediate-menu',
 ;;    `diredp-menu-bar-immediate-bookmarks-menu',
@@ -403,6 +412,10 @@
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
 ;;  `dired-goto-file'         - Fix Emacs bug #7126.
 ;;                              Remove `/' from dir before compare.
+;;  `dired-hide-details-mode' - Respect new user options:
+;;                              * `diredp-hide-details-initially-flag'
+;;                              * `diredp-hide-details-propagate-flag'
+;;                              (Emacs 24.4+)
 ;;  `dired-insert-directory'  - Compute WILDCARD arg for
 ;;                              `insert-directory' for individual file
 ;;                              (don't just use nil). (Emacs 23+, and
@@ -462,8 +475,18 @@
 ;;; Change Log:
 ;;
 ;; 2013/07/19 dadams
-;;     diredp-next-line: Added bobpp test for negative ARG.
+;;     Added redefinition of dired-hide-details-mode.
+;;     Added: diredp-hide-details-propagate-flag, diredp-hide-details-initially-flag,
+;;            diredp-hide-details-last-state, diredp-hide-details-toggled,
+;;            diredp-hide-details-if-dired, global-dired-hide-details-mode,
+;;            diredp-fit-frame-unless-buffer-narrowed, diredp-hide/show-details,
+;;            diredp-do-display-images, diredp-display-image.
+;;     On dired-after-readin-hook: diredp-hide/show-details.
+;;     On dired-hide-details-mode-hook: diredp-fit-frame-unless-buffer-narrowed.
+;;     diredp-maplist: Use diredp-maplist, not maplist, in recursive call.
+;;     diredp-next-line: Added bobp test for negative ARG.
 ;;                       Emacs 20 line-move returns nil, so use (progn ... t).
+;;     Soft-require autofit-frame.el.
 ;; 2013/07/18 dadams
 ;;     diredp-next-line: Protect visible-p with fboundp for Emacs 20.
 ;; 2013/07/17 dadams
@@ -997,6 +1020,7 @@
 ;; (require 'ediff-util) ;; ediff-read-file-name
 
 (require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
+(require 'autofit-frame nil t) ;; (no error if not found) fit-frame-if-one-window
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
 (when (memq system-type '(windows-nt ms-dos))
   ;; (no error if not found):
@@ -1046,6 +1070,8 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar dired-subdir-switches)
 (defvar dired-touch-program) ; Emacs 22+
 (defvar dired-use-ls-dired) ; Emacs 22+
+(defvar diredp-hide-details-initially-flag) ; Here, Emacs 24.4+
+(defvar diredp-hide-details-propagate-flag) ; Here, Emacs 24.4+
 (defvar filesets-data)
 (defvar grep-use-null-device)
 (defvar image-dired-line-up-method)     ; In `image-dired.el'
@@ -1065,10 +1091,16 @@ rather than FUN itself, to `minibuffer-setup-hook'."
   :type '(choice string (repeat string))
   :group 'dired :group 'diff)
 
-;;;###autoload
-(defcustom diredp-wrap-around-flag t
-  "Non-nil means Dired \"next\" commands wrap around to buffer beginning."
-  :type 'boolean :group 'Dired-Plus)
+(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+  (defcustom diredp-hide-details-initially-flag t
+    "*Non-nil means hide details in Dired from the outset."
+    :type 'boolean :group 'Dired-Plus)
+
+  (defcustom diredp-hide-details-propagate-flag t
+    "*Non-nil means display the next Dired buffer the same way as the last.
+The last `dired-hide-details-mode' value set is used by the next Dired
+buffer created."
+    :type 'boolean :group 'Dired-Plus))
 
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
@@ -1084,6 +1116,20 @@ name and DESCRIPTION describes DRIVE."
           :key-type   (string        :tag "Drive name")
           :value-type (group (string :tag "Drive description")))
   :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-wrap-around-flag t
+  "*Non-nil means Dired \"next\" commands wrap around to buffer beginning."
+  :type 'boolean :group 'Dired-Plus)
+
+(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+  (defvar diredp-hide-details-last-state diredp-hide-details-initially-flag
+    "Last `dired-hide-details-mode' value.
+Initialized to the value of option `diredp-hide-details-initially-flag'.")
+
+  (defvar diredp-hide-details-toggled nil
+    "Non-nil means you have already toggled hiding details in this buffer.")
+  (make-variable-buffer-local 'diredp-hide-details-toggled))
 
 ;; Same value as the default value of `icicle-re-no-dot'.
 (defvar diredp-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
@@ -1512,9 +1558,9 @@ If HDR is non-nil, insert a header line with the directory name."
         (dired-insert-set-properties content-point (point))))))
 
 
-;;; Stuff from `image-dired.el'.
+;;; Image stuff.
 
-(when (fboundp 'image-dired-get-thumbnail-image) ; Emacs 22+
+(when (fboundp 'image-dired-get-thumbnail-image) ; Emacs 22+, `image-dired.el'.
   (defun image-dired-dired-insert-marked-thumbs () ; Not bound
     "Insert thumbnails before file names of marked files in the dired buffer."
     (interactive)
@@ -1534,6 +1580,36 @@ If HDR is non-nil, insert a header line with the directory name."
          (overlay-put overlay 'thumb-file thumb-file)))
      nil)
     (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t)))
+
+(when (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
+  (defun diredp-do-display-images (&optional arg)
+    "Display the marked image files.
+A prefix argument ARG specifies files to use instead of those marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any files are marked).
+ More than one `C-u' means use all files in the Dired buffer, as if
+ they were all marked."
+    (interactive (progn (diredp-ensure-mode) (list current-prefix-arg)))
+    (dired-map-over-marks-check #'diredp-display-image arg 'display\ image
+                                (diredp-fewer-than-2-files-p arg)))
+
+  (defun diredp-display-image ()
+    (let ((file     (dired-get-filename 'LOCAL 'NO-ERROR))
+          (failure  nil))
+      (save-excursion
+        (if (let ((inhibit-changing-match-data  t))
+              (string-match
+               (image-file-name-regexp)
+               file 0))
+            (condition-case err
+                (let ((find-file-run-dired  nil)) (find-file-other-window file))
+              (error (setq failure  (error-message-string err))))
+          (dired-log (format "Not an image file: `%s'" file))
+          (setq failure  t)))
+      (and failure                      ; Return nil for success.
+           (prog1 file                  ; Return file name for failure.
+             (unless (eq t failure)
+               (dired-log "Cannot display image file `%s':\n%s\n" file failure)  t))))))
  
 ;;; Key Bindings.
 
@@ -3579,7 +3655,7 @@ Non-interactively:
 (defun diredp-maplist (function list)
   "Map FUNCTION over LIST and its cdrs.
 A simple, recursive version of the classic `maplist'."
-  (and list  (cons (funcall function list) (maplist function (cdr list)))))
+  (and list  (cons (funcall function list) (diredp-maplist function (cdr list)))))
 
 
 
@@ -5770,7 +5846,7 @@ Info node
            ;; insertion message so that the user sees the `Mark set' message.
            (push-mark opoint)
            (when (and (get-buffer-window (current-buffer)) ; Fit one-window frame.
-                      (fboundp 'fit-frame-if-one-window))
+                      (fboundp 'fit-frame-if-one-window)) ; In `autofit-frame.el'.
              (fit-frame-if-one-window))))))
 
 (defun diredp-this-subdir ()
@@ -6031,10 +6107,57 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
         (forward-line 1)))))
 
 
-(when (and (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
-           (fboundp 'fit-frame-if-one-window)) ; In `autofit-frame.el'
-  (add-hook 'dired-hide-details-mode-hook
-            (lambda () (when (get-buffer-window (current-buffer)) (fit-frame-if-one-window)))))
+;; `dired-hide-details-mode' enhancements.
+(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+
+  (defun diredp-hide-details-if-dired ()
+    "In Dired mode hide details.  Outside Dired, do nothing."
+    (when (derived-mode-p 'dired-mode) (dired-hide-details-mode 1)))
+
+  ;; Use `eval' of list so file byte-compiled in Emacs 20 will be OK in later versions.
+  (eval '(define-globalized-minor-mode global-dired-hide-details-mode
+          dired-hide-details-mode diredp-hide-details-if-dired))
+
+  (eval '(define-minor-mode dired-hide-details-mode
+          "Hide details in Dired mode."
+          (and diredp-hide-details-propagate-flag  diredp-hide-details-last-state)
+          :group 'dired
+          (unless (derived-mode-p 'dired-mode) (error "Not a Dired buffer"))
+          (dired-hide-details-update-invisibility-spec)
+          (setq diredp-hide-details-toggled  t)
+          (when diredp-hide-details-propagate-flag
+            (setq diredp-hide-details-last-state  dired-hide-details-mode))
+          (if dired-hide-details-mode
+              (add-hook 'wdired-mode-hook 'dired-hide-details-update-invisibility-spec nil t)
+            (remove-hook 'wdired-mode-hook 'dired-hide-details-update-invisibility-spec t))))
+
+  (defun diredp-hide/show-details ()
+    "Hide/show details according to user options.
+If `diredp-hide-details-propagate-flag' is non-nil and details have
+never been hidden in the buffer, then hide/show according to your last
+hide/show choice in any other Dired buffer or, if no last choice,
+according to option `diredp-hide-details-initially-flag'."
+    (unless (or diredp-hide-details-toggled ; No op if hide/show already set.
+                (buffer-narrowed-p))    ; No-op when showing just newly copied file etc.
+      (cond (diredp-hide-details-propagate-flag
+             (dired-hide-details-mode (if diredp-hide-details-last-state 1 -1)))
+            (diredp-hide-details-initially-flag
+             (dired-hide-details-mode 1)))))
+
+  (add-hook 'dired-after-readin-hook #'diredp-hide/show-details)
+
+  (defun diredp-fit-frame-unless-buffer-narrowed ()
+    "Fit frame unless Dired buffer is narrowed.
+Requires library `autofit-frame.el'."
+    (when (and (get-buffer-window (current-buffer))  (not (buffer-narrowed-p)))
+      (fit-frame-if-one-window)))
+
+  ;; Fit frame only if not narrowed.  Put it on this hook because `dired-hide-details-mode' is
+  ;; invoked from `dired-after-readin-hook' via `diredp-hide/show-details', even for an update
+  ;; such as copying a file, where buffer is narrowed when invoked.
+  (when (fboundp 'fit-frame-if-one-window) ; In `autofit-frame.el'.
+    (add-hook 'dired-hide-details-mode-hook #'diredp-fit-frame-unless-buffer-narrowed)))
+
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
