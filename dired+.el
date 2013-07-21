@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013-07-19
-;; Last-Updated: Sat Jul 20 12:05:11 2013 (-0700)
+;; Last-Updated: Sun Jul 21 15:09:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6910
+;;     Update #: 6965
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -279,9 +279,16 @@
 ;;    `diredp-find-file-reuse-dir-buffer',
 ;;    `diredp-flag-region-files-for-deletion',
 ;;    `diredp-grep-this-file', `diredp-hardlink-this-file',
+;;    `diredp-image-dired-comment-file',
 ;;    `diredp-image-dired-comment-files-recursive',
+;;    `diredp-image-dired-copy-with-exif-file-name',
+;;    `diredp-image-dired-create-thumb',
+;;    `diredp-image-dired-delete-tag',
 ;;    `diredp-image-dired-delete-tag-recursive',
+;;    `diredp-image-dired-display-thumb',
 ;;    `diredp-image-dired-display-thumbs-recursive',
+;;    `diredp-image-dired-edit-comment-and-tags',
+;;    `diredp-image-dired-tag-file',
 ;;    `diredp-image-dired-tag-files-recursive',
 ;;    `diredp-insert-as-subdir', `diredp-insert-subdirs',
 ;;    `diredp-insert-subdirs-recursive',
@@ -474,6 +481,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/21 dadams
+;;     Added: diredp-image-dired-(comment-file|copy-with-exif-file-name|(create|display)-thumb|
+;;                                delete-tag|edit-comment-and-tags|tag-file).
+;;     diredp-find-a-file-read-args: Removed #' from lambda.
 ;; 2013/07/19 dadams
 ;;     Added redefinition of dired-hide-details-mode.
 ;;     Added: diredp-hide-details-propagate-flag, diredp-hide-details-initially-flag,
@@ -1065,17 +1076,29 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 ;; Quiet the byte-compiler.
 (defvar bmkp-copied-tags)               ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'
+(defvar bookmark-default-file)          ; In `bookmark.el'
 (defvar dired-keep-marker-hardlink)     ; In `dired-x.el'
 (defvar dired-switches-alist)
 (defvar dired-subdir-switches)
 (defvar dired-touch-program) ; Emacs 22+
 (defvar dired-use-ls-dired) ; Emacs 22+
 (defvar diredp-hide-details-initially-flag) ; Here, Emacs 24.4+
+(defvar diredp-hide-details-last-state) ; Here, Emacs 24.4+
 (defvar diredp-hide-details-propagate-flag) ; Here, Emacs 24.4+
+(defvar diredp-hide-details-toggled)    ; Here, Emacs 24.4+
+(defvar diredp-menu-bar-immediate-bookmarks-menu) ; Here, if Bookmark+ is available
 (defvar filesets-data)
 (defvar grep-use-null-device)
+(defvar icicle-file-sort)               ; In `icicles-opt.el'
+(defvar icicle-sort-comparer)           ; In `icicles-opt.el'
 (defvar image-dired-line-up-method)     ; In `image-dired.el'
+(defvar image-dired-main-image-directory) ; In `image-dired.el'
 (defvar image-dired-thumbnail-buffer)   ; In `image-dired.el'
+(defvar image-dired-widget-list)        ; In `image-dired.el'
+(defvar minibuffer-default-add-function) ; In `simple.el', Emacs 23+
+(defvar mouse3-dired-function)          ; In `mouse3.el'
+(defvar w32-browser-wait-time)          ; In `w32-browser.el'
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1561,6 +1584,8 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;; Image stuff.
 
 (when (fboundp 'image-dired-get-thumbnail-image) ; Emacs 22+, `image-dired.el'.
+
+  ;; Similar to `image-dired-dired-toggle-marked-thumbs'.
   (defun image-dired-dired-insert-marked-thumbs () ; Not bound
     "Insert thumbnails before file names of marked files in the dired buffer."
     (interactive)
@@ -1579,7 +1604,127 @@ If HDR is non-nil, insert a header line with the directory name."
          (overlay-put overlay 'image-file image-file)
          (overlay-put overlay 'thumb-file thumb-file)))
      nil)
-    (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t)))
+    (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t))
+
+  ;; Corresponds to `image-dired-dired-comment-files'.
+  (defun diredp-image-dired-comment-file ()
+    "Add comment to this image file."
+    (interactive)
+    (image-dired-write-comments (cons (dired-get-filename) (image-dired-read-comment))))
+
+  ;; Corresponds to `image-dired-tag-files'.
+  (defun diredp-image-dired-tag-file ()
+    "Tag this image file."
+    (interactive)
+    (image-dired-write-tags (cons (dired-get-filename)
+                                  (read-string "Tags to add (use `;' to separate): "))))
+
+  ;; Corresponds to `image-dired-delete-tag'.
+  (defun diredp-image-dired-delete-tag ()
+    "Remove tag from  this image file."
+    (interactive)
+    (image-dired-remove-tag (list (dired-get-filename)) (read-string "Tag to remove: ")))
+
+  ;; Corresponds to `image-dired-display-thumbs'.
+  (defun diredp-image-dired-display-thumb (&optional append)
+    "Pop to thumbnail of this image file, in `image-dired-thumbnail-buffer'.
+If a thumbnail image does not yet exist for this file, create it.
+With a prefix arg, append the thumbnail to the thumbnails buffer,
+instead of clearing the buffer first."
+    (interactive "P")
+    (let* ((dired-buf   (current-buffer))
+           (curr-file   (dired-get-filename))
+           (thumb-name  (image-dired-thumb-name curr-file)))
+      (with-current-buffer (image-dired-create-thumbnail-buffer)
+        (let ((inhibit-read-only  t))
+          (if (not append) (erase-buffer) (goto-char (point-max)))
+          (if (and (not (file-exists-p thumb-name))
+                   (not (zerop (image-dired-create-thumb curr-file thumb-name))))
+              (message "Cannot create thumbnail image for file `%s'" curr-file)
+            (image-dired-insert-thumbnail thumb-name curr-file dired-buf)))
+        (cond ((eq 'dynamic image-dired-line-up-method)     (image-dired-line-up-dynamic))
+              ((eq 'fixed image-dired-line-up-method)       (image-dired-line-up))
+              ((eq 'interactive image-dired-line-up-method) (image-dired-line-up-interactive))
+              ((eq 'none image-dired-line-up-method)        nil)
+              (t                                            (image-dired-line-up-dynamic))))
+      (pop-to-buffer image-dired-thumbnail-buffer)))
+
+  ;; Corresponds to `image-dired-copy-with-exif-file-name'.
+  (defun diredp-image-dired-copy-with-exif-file-name ()
+    "Copy this image file to your main image directory.
+Uses `image-dired-get-exif-file-name' to name the new file."
+    (interactive)
+    (let* ((curr-file  (dired-get-filename))
+           (new-name   (format "%s/%s" (file-name-as-directory
+                                        (expand-file-name image-dired-main-image-directory))
+                               (image-dired-get-exif-file-name curr-file))))
+      (message "Copying `%s' to `%s'..." curr-file new-name)
+      (copy-file curr-file new-name)
+      (message "Copying `%s' to `%s'...done" curr-file new-name)))
+
+  ;; Corresponds to `image-dired-dired-edit-comment-and-tags'.
+  (defun diredp-image-dired-edit-comment-and-tags ()
+    "Edit comment and tags for this image file."
+    (interactive)
+    (setq image-dired-widget-list  ())
+    (let ((file  (dired-get-filename)))
+      (switch-to-buffer "*Image-Dired Edit Meta Data*")
+      (kill-all-local-variables)
+      (make-local-variable 'widget-example-repeat)
+      (let ((inhibit-read-only  t))
+        (erase-buffer)
+        (remove-overlays)
+        (widget-insert
+         "\nEdit comment and tags for the image.  Separate multiple tags
+with a comma (`,').  Move forward among fields using `TAB' or `RET'.
+Move backward using `S-TAB'.  Click `Save' to save your edits or
+`Cancel' to abandon them.\n\n")
+        (let* ((thumb-file  (image-dired-thumb-name file))
+               (img         (create-image thumb-file))
+               comment-widget  tag-widget)
+          (insert-image img)
+          (widget-insert "\n\nComment: ")
+          (setq comment-widget  (widget-create 'editable-field :size 60 :format "%v "
+                                               :value (or (image-dired-get-comment file)  "")))
+          (widget-insert "\nTags:    ")
+          (setq tag-widget  (widget-create 'editable-field :size 60 :format "%v "
+                                           :value (or (mapconcat #'identity
+                                                                 (image-dired-list-tags file)
+                                                                 ",")
+                                                      "")))
+          ;; Save info in widgets to use when the user saves the form.
+          (setq image-dired-widget-list  (append image-dired-widget-list
+                                                 (list (list file comment-widget tag-widget))))
+          (widget-insert "\n\n")))
+      (widget-insert "\n")
+      (widget-create 'push-button :notify (lambda (&rest _ignore)
+                                            (image-dired-save-information-from-widgets)
+                                            (bury-buffer)
+                                            (message "Done"))
+                     "Save")
+      (widget-insert " ")
+      (widget-create 'push-button :notify (lambda (&rest _ignore)
+                                            (bury-buffer)
+                                            (message "Operation canceled"))
+                     "Cancel")
+      (widget-insert "\n")
+      (use-local-map widget-keymap)
+      (widget-setup)
+      (widget-forward 1)))              ; Jump to the first widget.
+
+  ;; Corresponds to `image-dired-create-thumbs'.
+  (defun diredp-image-dired-create-thumb (&optional arg)
+    "Create thumbnail image for this file.
+With a prefix arg, replace any existing thumbnail for the file."
+    (interactive "P")
+    (let* ((curr-file   (dired-get-filename))
+           (thumb-name  (image-dired-thumb-name curr-file)))
+      (when arg (clear-image-cache))
+      (when (or arg  (not (file-exists-p thumb-name)))
+        (unless (zerop (image-dired-create-thumb curr-file (image-dired-thumb-name curr-file)))
+          (error "Thumbnail could not be created")))))
+  )
+
 
 (when (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
   (defun diredp-do-display-images (&optional arg)
@@ -1856,8 +2001,7 @@ If no one is selected, symmetric encryption will be performed.  "
     '(menu-item "Remove Tags..." diredp-untag-this-file
       :help "Remove some tags from the file at cursor (`C-u': remove all tags)"))
   (define-key diredp-menu-bar-immediate-bookmarks-menu [diredp-tag-this-file]
-    '(menu-item "Add Tags..." diredp-tag-this-file :help "Add some tags to the file at cursor")))
-(when (require 'bookmark+ nil t)
+    '(menu-item "Add Tags..." diredp-tag-this-file :help "Add some tags to the file at cursor"))
   (define-key diredp-menu-bar-immediate-bookmarks-menu [diredp-bookmark-this-file]
     '(menu-item "Bookmark..." diredp-bookmark-this-file :help "Bookmark the file at cursor")))
 
@@ -5435,8 +5579,8 @@ As a side effect, killed dired buffers for DIR are removed from
 
   (defun diredp-find-a-file-read-args (prompt mustmatch) ; Not bound
     (list (lexical-let ((find-file-default  (abbreviate-file-name (dired-get-file-for-visit))))
-            (minibuffer-with-setup-hook #'(lambda ()
-                                            (setq minibuffer-default  find-file-default))
+            (minibuffer-with-setup-hook (lambda ()
+                                          (setq minibuffer-default  find-file-default))
                                         (read-file-name prompt nil default-directory mustmatch)))
           t)))
 
