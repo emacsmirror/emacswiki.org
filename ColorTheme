@@ -1,11 +1,11 @@
 [[zh:é¢è²ä¸»é¢]]
 
+Emacs 24+ comes with a different system for color themes - see  DefTheme for details
+
 Color theme is an Emacs-Lisp package with more than 50 color themes
 for your use.  For questions about color-theme, see
 '''ColorThemeQuestions'''.  
 
-Emacs 24+ comes with a different system for color themes.
-http://batsov.com/articles/2012/02/19/color-theming-in-emacs-reloaded/
 The ColorTheme package has not been updated in several years, though it still works.
 
 In order not to clean up this page, please visit ColorTheme webpage
