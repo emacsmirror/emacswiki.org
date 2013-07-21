@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Jul 20 19:07:32 2013 (-0700)
+;; Last-Updated: Sat Jul 20 20:17:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3648
+;;     Update #: 3659
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -130,6 +130,7 @@
 ;;     menu-bar-search-menu: Added: multi-occur(-in-matching-buffers).
 ;;     Renamed Grep to Files Regexp (grep).  Renamed Occurrences to This Buffer Regexp.
 ;;     Remove String from search menu item names.
+;;     Moved submenus Go To, Bookmarks, and Tags up in Search menu.
 ;; 2013/07/09 dadams
 ;;     menu-bar-edit-fill-menu: Added :enable (not buffer-read-only).
 ;;     fill-paragraph-ala-mode: Corrected definition and added missing interactive spec.
@@ -1046,16 +1047,8 @@ RET C-w") '%$>disabled@!^))
         :help "Incremental Search finds partial matches while you type the search \
 string.\nIt is most convenient from the keyboard.  Try it!")))
   ;;--------------------
-  (define-key menu-bar-search-menu [separator-search-multiple] '("--")))
+  (define-key menu-bar-search-menu [separator-search-reminder] '("--")))
 
-(unless (< emacs-major-version 21)
-  (define-key menu-bar-search-menu [goto] (cons "Go To" menu-bar-goto-menu)))
-(define-key menu-bar-search-menu [bookmark]
-  '(menu-item "Bookmarks" menu-bar-bookmark-map
-    :help "Record buffer positions (\"bookmarks\"), and jump between them"))
-(defvar menu-bar-search-tags-menu (make-sparse-keymap "Tags"))
-(defalias 'menu-bar-search-tags-menu (symbol-value 'menu-bar-search-tags-menu))
-(define-key menu-bar-search-menu [tags] (cons "Tags" menu-bar-search-tags-menu))
 (when (fboundp 'multi-occur-in-matching-buffers) ; Emacs 22+
   (define-key menu-bar-search-menu [multi-occur-in-matching-buffers]
     '(menu-item "Buffers Regexp for Bufname Regexp..." multi-occur-in-matching-buffers
@@ -1069,6 +1062,22 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-search-menu [grep]
   '(menu-item "Files Regexp (`grep')..." grep
     :help "Regexp search files using `grep' and collect output for navigating to matches"))
+
+;;--------------------
+(define-key menu-bar-search-menu [separator-search-multiple] '("--"))
+
+(defvar menu-bar-search-tags-menu (make-sparse-keymap "Tags"))
+(defalias 'menu-bar-search-tags-menu (symbol-value 'menu-bar-search-tags-menu))
+(define-key menu-bar-search-menu [tags] (cons "Tags" menu-bar-search-tags-menu))
+
+(define-key menu-bar-search-menu [bookmark]
+  '(menu-item "Bookmarks" menu-bar-bookmark-map
+    :help "Record buffer positions (\"bookmarks\"), and jump between them"))
+
+(unless (< emacs-major-version 21)
+  (define-key menu-bar-search-menu [goto] (cons "Go To" menu-bar-goto-menu)))
+
+
 (defvar menu-bar-search-replace-menu (make-sparse-keymap "Replace"))
 (defalias 'menu-bar-search-replace-menu (symbol-value 'menu-bar-search-replace-menu))
 (define-key menu-bar-search-menu [replace] (cons "Replace" menu-bar-search-replace-menu))
