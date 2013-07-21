@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Jul 20 08:15:38 2013 (-0700)
+;; Last-Updated: Sat Jul 20 19:07:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3597
+;;     Update #: 3648
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -125,6 +125,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/20 dadams
+;;     menu-bar-tools-menu: Removed grep, since it is on Search menu.
+;;     menu-bar-search-menu: Added: multi-occur(-in-matching-buffers).
+;;     Renamed Grep to Files Regexp (grep).  Renamed Occurrences to This Buffer Regexp.
+;;     Remove String from search menu item names.
 ;; 2013/07/09 dadams
 ;;     menu-bar-edit-fill-menu: Added :enable (not buffer-read-only).
 ;;     fill-paragraph-ala-mode: Corrected definition and added missing interactive spec.
@@ -744,6 +749,9 @@ submenu of the \"Help\" menu."))
     (kill-buffer (current-buffer))))    ; <-- original defn.
 
 
+;; Remove search stuff from `Tools' menu, since we moved it to `Search' menu.
+(define-key menu-bar-tools-menu [grep] nil)
+
 ;; `Ediff' submenu of `Tools' menu.
 (when (fboundp 'vc-ediff)
   (define-key menu-bar-tools-menu [compare]
@@ -1048,12 +1056,19 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (defvar menu-bar-search-tags-menu (make-sparse-keymap "Tags"))
 (defalias 'menu-bar-search-tags-menu (symbol-value 'menu-bar-search-tags-menu))
 (define-key menu-bar-search-menu [tags] (cons "Tags" menu-bar-search-tags-menu))
+(when (fboundp 'multi-occur-in-matching-buffers) ; Emacs 22+
+  (define-key menu-bar-search-menu [multi-occur-in-matching-buffers]
+    '(menu-item "Buffers Regexp for Bufname Regexp..." multi-occur-in-matching-buffers
+      :help "Regexp search buffers whose names match another regexp"))
+  (define-key menu-bar-search-menu [multi-occur]
+    '(menu-item "Buffers Regexp..." multi-occur
+      :help "Regexp search buffers and collect output for navigating to matches")))
 (define-key menu-bar-search-menu [occur]
-  '(menu-item "Occurrences..." occur
-    :help "Show lines in buffer that contain a match for regular expression"))
+  '(menu-item "This Buffer Regexp..." occur
+    :help "Regexp search this buffer and collect output for navigating to matches"))
 (define-key menu-bar-search-menu [grep]
-  '(menu-item "Grep..." grep
-    :help "Run `grep' and collect output for navigating to match lines"))
+  '(menu-item "Files Regexp (`grep')..." grep
+    :help "Regexp search files using `grep' and collect output for navigating to matches"))
 (defvar menu-bar-search-replace-menu (make-sparse-keymap "Replace"))
 (defalias 'menu-bar-search-replace-menu (symbol-value 'menu-bar-search-replace-menu))
 (define-key menu-bar-search-menu [replace] (cons "Replace" menu-bar-search-replace-menu))
@@ -1062,17 +1077,17 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   (defvar menu-bar-i-search-menu
     (make-sparse-keymap "Incremental Search"))
   (define-key menu-bar-i-search-menu [isearch-backward-regexp]
-    '(menu-item "        Backward..." isearch-backward-regexp
+    '(menu-item "     Backward..." isearch-backward-regexp
       :help "Search backwards for a regular expression as you type it"))
   (define-key menu-bar-i-search-menu [isearch-forward-regexp]
     '(menu-item "Regexp Forward..." isearch-forward-regexp
       :help "Search forward for a regular expression as you type it"))
   (define-key menu-bar-i-search-menu [isearch-backward]
-    '(menu-item "        Backward..." isearch-backward
-      :help "Search backwards for a string as you type it"))
+    '(menu-item "     Backward..." isearch-backward
+      :help "Search backwards for a literal string as you type it"))
   (define-key menu-bar-i-search-menu [isearch-forward]
-    '(menu-item "String Forward..." isearch-forward
-      :help "Search forward for a string as you type it"))
+    '(menu-item "Forward..." isearch-forward
+      :help "Search forward for a literal string as you type it"))
   (define-key menu-bar-search-menu [i-search]
     (list 'menu-item "Incremental Search" menu-bar-i-search-menu))
   ;;--------------------
@@ -1092,17 +1107,17 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Search forward again for the same word"))
   (define-key menu-bar-search-menu [word-search-fwd]
     '(menu-item "Word Forward..." word-search-forward
-      :help "Search forward, ignoring differences in puncuation"))
+      :help "Search forward, ignoring differences in punctuation"))
   ;;--------------------
   (define-key menu-bar-search-menu [separator-search-re] '("--"))
   (define-key menu-bar-search-menu [repeat-regexp-back]
-    '(menu-item "               Again" nonincremental-repeat-re-search-backward
+    '(menu-item "             Again" nonincremental-repeat-re-search-backward
       :help "Search forward again for the same regular expression"))
   (define-key menu-bar-search-menu [re-search-backward]
-    '(menu-item "       Backward..." nonincremental-re-search-backward
+    '(menu-item "     Backward..." nonincremental-re-search-backward
       :help "Search backward for a regular expression"))
   (define-key menu-bar-search-menu [repeat-regexp-fwd]
-    '(menu-item "               Again" nonincremental-repeat-re-search-forward
+    '(menu-item "             Again" nonincremental-repeat-re-search-forward
       :help "Search forward again for the same regular expression"))
   (define-key menu-bar-search-menu [re-search-forward]
     '(menu-item "Regexp Forward..." nonincremental-re-search-forward
@@ -1110,22 +1125,22 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   ;;--------------------
   (define-key menu-bar-search-menu [separator-search] '("--"))
   (define-key menu-bar-search-menu [repeat-search-back]
-    '(menu-item "               Again" nonincremental-repeat-search-backward
+    '(menu-item "             Again" nonincremental-repeat-search-backward
       :help "Repeat last search backward"
       :enable (or (not (boundp 'menu-bar-last-search-type))
                (and (eq menu-bar-last-search-type 'string) search-ring)
                (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))))
   (define-key menu-bar-search-menu [search-backward]
-    '(menu-item "String Backward..." nonincremental-search-backward
+    '(menu-item "Backward..." nonincremental-search-backward
       :help "Search backward for a string"))
   (define-key menu-bar-search-menu [repeat-search-fwd]
-    '(menu-item "               Again" nonincremental-repeat-search-forward
+    '(menu-item "             Again" nonincremental-repeat-search-forward
       :help "Repeat last search forward"
       :enable (or (not (boundp 'menu-bar-last-search-type))
                (and (eq menu-bar-last-search-type 'string) search-ring)
                (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))))
   (define-key menu-bar-search-menu [search-forward]
-    '(menu-item "String Forward..." nonincremental-search-forward
+    '(menu-item "Forward..." nonincremental-search-forward
       :help "Search forward for a string")))
 
 (unless (< emacs-major-version 22)
@@ -1170,10 +1185,10 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       (word-search-backward word)))
 
   (define-key menu-bar-search-menu [repeat-search-back]
-    '(menu-item "       Backwards" nonincremental-repeat-search-backward
+    '(menu-item "     Backward" nonincremental-repeat-search-backward
       :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
                (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
-      :help "Repeat last search backwards"))
+      :help "Repeat last search backward"))
   (define-key menu-bar-search-menu [repeat-search-fwd]
     '(menu-item "Repeat Forward" nonincremental-repeat-search-forward
       :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
@@ -1188,16 +1203,16 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     '(menu-item "Word Forward..." menu-bar-word-search-forward
       :help "Search forward, ignoring differences in punctuation"))
   (define-key menu-bar-search-menu [re-search-backward]
-    '(menu-item "       Backward..." nonincremental-re-search-backward
+    '(menu-item "     Backward..." nonincremental-re-search-backward
       :help "Search backward for a regular expression"))
   (define-key menu-bar-search-menu [re-search-forward]
     '(menu-item "Regexp Forward..." nonincremental-re-search-forward
       :help "Search forward for a regular expression"))
   (define-key menu-bar-search-menu [search-backward]
-    '(menu-item "       Backward..." nonincremental-search-backward
+    '(menu-item "     Backward..." nonincremental-search-backward
       :help "Search backward for a string"))
   (define-key menu-bar-search-menu [search-forward]
-    '(menu-item "String Forward..." nonincremental-search-forward
+    '(menu-item "Forward..." nonincremental-search-forward
       :help "Search forward for a string")))
 
 
@@ -1241,7 +1256,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     :help "Replace things after cursor that match regexp"
     :enable (not buffer-read-only)))
 (define-key menu-bar-search-replace-menu [replace-string]
-  '(menu-item "Global String..." replace-string :help "Replace string, with no confirmation"
+  '(menu-item "Global..." replace-string :help "Replace string, with no confirmation"
     :enable (not buffer-read-only)))
 ;;--------------------
 (define-key menu-bar-search-replace-menu [separator-search-replace-global] '("--"))
@@ -1260,10 +1275,10 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 
 (define-key menu-bar-search-replace-menu [query-replace]
 ;;   (if (fboundp 'query-replace-w-options) ; Bind it in `replace+.el' now, not here.
-;;       '(menu-item "Query String" query-replace-w-options
+;;       '(menu-item "Query" query-replace-w-options
 ;;         :help "Replace string interactively, ask about each occurrence"
 ;;         :enable (not buffer-read-only))
-  '(menu-item "Query String" query-replace
+  '(menu-item "Query" query-replace
     :help "Replace string interactively, ask about each occurrence"
     :enable (not buffer-read-only)))
 
