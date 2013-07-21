@@ -19,6 +19,7 @@ To install: download zjl-hl.el, and region-list-edit.el(bellow), then add these 
 http://www.emacswiki.org/emacs/region-list-edit.el
 This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
 
+The above two el is updated at July 2013
 
 [new:DrewAdams:2010-05-30 08:12 UTC]
 Welcome to the wiki. -- DrewAdams
