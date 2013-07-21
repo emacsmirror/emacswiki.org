@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul 12 00:16:32 2013 (-0700)
+;; Last-Updated: Sun Jul 21 16:51:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6466
+;;     Update #: 6467
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2797,7 +2797,7 @@ default, \"Saving bookmarks to file `%s'...\".  The string must
 contain a `%s' construct, so that it can be passed along with FILE to
 `format'.  At the end, \"done\" is appended to the message."
   (let ((msg  (or alt-msg "Saving bookmarks to file `%s'..." file)))
-    (message (or alt-msg "Saving bookmarks to file `%s'...") file)
+    (message msg file)
     (with-current-buffer (find-file-noselect file)
       (goto-char (point-min))
       (delete-region (point-min) (point-max))
