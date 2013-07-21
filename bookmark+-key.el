@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Sun Jun 30 16:58:43 2013 (-0700)
+;; Last-Updated: Sat Jul 20 19:53:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 613
+;;     Update #: 656
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -524,87 +524,8 @@
 
 ;;; Vanilla Emacs `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).
 
-(define-key-after menu-bar-bookmark-map [separator-set] '("--") 'jump) ;----------------------------
-(define-key-after menu-bar-bookmark-map [set]
-  '(menu-item "Set Bookmark..." (lambda () (interactive) (call-interactively #'bookmark-set))
-    :help "Set a bookmark at point" :keys "C-x p m")
-  'separator-set)
-(define-key-after menu-bar-bookmark-map [bmkp-autofile-set]
-  '(menu-item "Set Autofile Bookmark..." bmkp-autofile-set
-    :help "Set and automatically name a bookmark for a given file")
-  'set)
-(define-key-after menu-bar-bookmark-map [bmkp-file-target-set]
-  '(menu-item "Set Bookmark for File..." bmkp-file-target-set
-    :help "Set a bookmark with a given name for a given file")
-  'bmkp-autofile-set)
-(define-key-after menu-bar-bookmark-map [bmkp-url-target-set]
-  '(menu-item "Set Bookmark for URL..." bmkp-url-target-set
-    :help "Set a bookmark for a given URL")
-  'bmkp-file-target-set)
-(define-key-after menu-bar-bookmark-map [bmkp-set-desktop-bookmark]
-  '(menu-item "Set Bookmark for Desktop" bmkp-set-desktop-bookmark
-    :help "Save the current desktop as a bookmark")
-  'bmkp-url-target-set)
-(define-key-after menu-bar-bookmark-map [bmkp-set-bookmark-file-bookmark]
-  '(menu-item "Set Bookmark for Bookmark File..." bmkp-set-bookmark-file-bookmark
-    :help "Set a bookmark that loads a bookmark file when jumped to")
-  'bmkp-set-desktop-bookmark)
-(define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-set]
-  '(menu-item "Set Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
-    :help "Set an autonamed bookmark at point"
-    :visible (not (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
-                   'noerror)))
-  'bmkp-set-bookmark-file-bookmark)
-
-(define-key-after menu-bar-bookmark-map [separator-delete] '("--") ;--------------------------------
-                  'bmkp-toggle-autoname-bookmark-set)
-(define-key-after menu-bar-bookmark-map [bmkp-delete-all-temporary-bookmarks]
-  '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
-    :help "Delete the temporary bookmarks, (`X') whether visible here or not")
-  'separator-delete)
-
-;;; $$$$$$ NOTE: Here and below, the definitions with logically correct `:enable' filters are
-;;;              commented out.  This is because evaluation of these filters is too slow, especially
-;;;              in older Emacs versions.  If you want to try some or all of the definitions with the
-;;;              `:enable' conditions, just uncomment them and comment out or remove the corresponding
-;;;              definitions without such conditions.
-
-;;;;; (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
-;;;;;   '(menu-item "Delete All Autonamed Bookmarks Here..."
-;;;;;     bmkp-delete-all-autonamed-for-this-buffer
-;;;;;     :help "Delete all autonamed bookmarks for the current buffer"
-;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-autonamed-this-buffer-alist-only)))
-;;;;;   'bmkp-delete-all-temporary-bookmarks)
-(define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
-  '(menu-item "Delete All Autonamed Bookmarks Here..."
-    bmkp-delete-all-autonamed-for-this-buffer
-    :help "Delete all autonamed bookmarks for the current buffer")
-  'bmkp-delete-all-temporary-bookmarks)
-(define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
-  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
-    :help "Delete the autonamed bookmark at point"
-    :visible (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
-              'noerror))
-  'bmkp-toggle-autonamed-bookmark-set/delete)
-;;;;; (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
-;;;;;   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
-;;;;;     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
-;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-buffer-alist-only)))
-;;;;;   'bmkp-delete-all-autonamed-for-this-buffer)
-(define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
-  '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
-    :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer")
-  'bmkp-delete-all-autonamed-for-this-buffer)
-(define-key-after menu-bar-bookmark-map [delete]
-  '(menu-item "Delete Bookmark..." bookmark-delete :help "Delete the bookmark you choose by name")
-  'bmkp-delete-bookmarks)
-(define-key-after menu-bar-bookmark-map [bmkp-purge-notags-autofiles]
-  '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
-    :help "Delete all autofile bookmarks that have no tags")
-  'delete)
-
 (define-key-after menu-bar-bookmark-map [separator-edit] '("--") ;-------------------------------------
-                  'bmkp-purge-notags-autofiles)
+                  'jump)
 ;; Remove this predefined item - we use `bmkp-edit-bookmark-name-and-location' instead.
 (define-key menu-bar-bookmark-map [rename] nil)
 
@@ -652,14 +573,10 @@
     :help "List the functions defined in `bmkp-bmenu-commands-file'"
     :enable (and bmkp-bmenu-commands-file (file-readable-p bmkp-bmenu-commands-file)))
   'bmkp-choose-navlist-from-bookmark-list)
-(define-key-after menu-bar-bookmark-map [bmkp-make-function-bookmark]
-  '(menu-item "New Function Bookmark..." bmkp-make-function-bookmark
-    :help "Create a bookmark that will invoke FUNCTION when \"jumped\" to")
-  'bmkp-list-defuns-in-commands-file)
 
 (define-key-after menu-bar-bookmark-map [insert]
   '(menu-item "Insert Bookmark Contents..." bookmark-insert :help "Insert bookmarked text")
-  'bmkp-make-function-bookmark)
+  'bmkp-choose-navlist-from-bookmark-list)
 (define-key-after menu-bar-bookmark-map [locate]
   '(menu-item "Insert Bookmark Location..." bookmark-locate ; Alias for `bookmark-insert-location'.
     :help "Insert a bookmark's file or buffer name")
@@ -705,62 +622,150 @@
 
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmarks]
     '(menu-item "Unhighlight All" bmkp-unlight-bookmarks
-      :help "Unhighlight all bookmarks (everywhere)."))
+      :help "Unhighlight all bookmarks (everywhere)"))
   (define-key bmkp-highlight-menu [bmkp-unlight-this-buffer]
     '(menu-item "Unhighlight All in Buffer" bmkp-unlight-this-buffer
-      :help "Unhighlight all bookmarks in this buffer."))
+      :help "Unhighlight all bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-unlight-non-autonamed-this-buffer]
     '(menu-item "Unhighlight All Non-Autonamed in Buffer" bmkp-unlight-non-autonamed-this-buffer
-      :help "Unhighlight all non-autonamed bookmarks in this buffer."))
+      :help "Unhighlight all non-autonamed bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-unlight-autonamed-this-buffer]
     '(menu-item "Unhighlight All Autonamed in Buffer" bmkp-unlight-autonamed-this-buffer
-      :help "Unhighlight all autonamed bookmarks in this buffer."))
+      :help "Unhighlight all autonamed bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmark]
     '(menu-item "Unhighlight One..." bmkp-unlight-bookmark
-      :help "Unhighlight a bookmark."))
+      :help "Unhighlight a bookmark"))
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-this-buffer]
     '(menu-item "Unhighlight One in Buffer..." bmkp-unlight-bookmark-this-buffer
-      :help "Unhighlight a bookmark in this buffer."))
+      :help "Unhighlight a bookmark in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-here]
     '(menu-item "Unhighlight This One" bmkp-unlight-bookmark-here
-      :help "Unhighlight a bookmark at point or on its line."))
+      :help "Unhighlight a bookmark at point or on its line"))
 
   (define-key bmkp-highlight-menu [separator-1] '("--")) ;------------------------------------------
   (define-key bmkp-highlight-menu [bmkp-light-bookmarks-in-region]
     '(menu-item "Highlight All in Region" bmkp-light-bookmarks-in-region
-      :help "Highlight all bookmarks in the region."))
+      :help "Highlight all bookmarks in the region"))
   (define-key bmkp-highlight-menu [bmkp-light-this-buffer]
     '(menu-item "Highlight All in Buffer" bmkp-light-this-buffer
-      :help "Highlight all bookmarks in this buffer."))
+      :help "Highlight all bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-light-non-autonamed-this-buffer]
     '(menu-item "Highlight All Non-Autonamed in Buffer" bmkp-light-non-autonamed-this-buffer
-      :help "Highlight all non-autonamed bookmarks in this buffer."))
+      :help "Highlight all non-autonamed bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-light-autonamed-this-buffer]
     '(menu-item "Highlight All Autonamed in Buffer" bmkp-light-autonamed-this-buffer
-      :help "Highlight all autonamed bookmarks in this buffer."))
+      :help "Highlight all autonamed bookmarks in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-light-navlist-bookmarks]
     '(menu-item "Highlight All in Navigation List" bmkp-light-navlist-bookmarks
-      :help "Highlight all bookmarks in the navigation list."))
+      :help "Highlight all bookmarks in the navigation list"))
   (define-key bmkp-highlight-menu [bmkp-light-bookmark-this-buffer]
     '(menu-item "Highlight One in Buffer..." bmkp-light-bookmark-this-buffer
-      :help "Highlight a bookmark in this buffer."))
+      :help "Highlight a bookmark in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-light-bookmark]
     '(menu-item "Highlight One..." bmkp-light-bookmark
-      :help "Highlight a bookmark."))
+      :help "Highlight a bookmark"))
 
   (define-key bmkp-highlight-menu [separator-0] '("--")) ;------------------------------------------
   (define-key bmkp-highlight-menu [bmkp-next-lighted-this-buffer]
     '(menu-item "Next in Buffer" bmkp-next-lighted-this-buffer
-      :help "Cycle to the next highlighted bookmark in this buffer."))
+      :help "Cycle to the next highlighted bookmark in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-previous-lighted-this-buffer]
     '(menu-item "Previous in Buffer" bmkp-previous-lighted-this-buffer
-      :help "Cycle to the previous highlighted bookmark in this buffer."))
+      :help "Cycle to the previous highlighted bookmark in this buffer"))
   (define-key bmkp-highlight-menu [bmkp-bookmarks-lighted-at-point]
     '(menu-item "List Highlighted at Point" bmkp-bookmarks-lighted-at-point
-      :help "List the bookmarks at point that are highlighted."))
+      :help "List the bookmarks at point that are highlighted"))
   (define-key bmkp-highlight-menu [bmkp-set-lighting-for-bookmark]
     '(menu-item "Set Highlighting for One..." bmkp-set-lighting-for-bookmark
-      :help "Set individual highlighting for a bookmark.")))
+      :help "Set individual highlighting for a bookmark")))
+
+
+;; `bmkp-delete-menu' of vanilla `Bookmarks' menu: `Delete'
+
+(defvar bmkp-delete-menu (make-sparse-keymap)
+  "`Delete' submenu for menu-bar `Bookmarks' menu.")
+(define-key menu-bar-bookmark-map [delete-menu] (cons "Delete" bmkp-delete-menu))
+
+(define-key bmkp-delete-menu [bmkp-delete-all-temporary-bookmarks]
+  '(menu-item "Delete All Temporaries..." bmkp-delete-all-temporary-bookmarks
+    :help "Delete the temporary bookmarks, (`X') whether visible here or not"))
+
+;;; $$$$$$ NOTE: Here and below, the definitions with logically correct `:enable' filters are
+;;;              commented out.  This is because evaluation of these filters is too slow, especially
+;;;              in older Emacs versions.  If you want to try some or all of the definitions with the
+;;;              `:enable' conditions, just uncomment them and comment out or remove the corresponding
+;;;              definitions without such conditions.
+
+;;;;; (define-key bmkp-delete-menu [bmkp-delete-all-autonamed-for-this-buffer]
+;;;;;   '(menu-item "Delete All Autonamed Bookmarks Here..."
+;;;;;     bmkp-delete-all-autonamed-for-this-buffer
+;;;;;     :help "Delete all autonamed bookmarks for the current buffer"
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-autonamed-this-buffer-alist-only))))
+(define-key bmkp-delete-menu [bmkp-delete-all-autonamed-for-this-buffer]
+  '(menu-item "Delete All Autonamed Bookmarks Here..."
+    bmkp-delete-all-autonamed-for-this-buffer
+    :help "Delete all autonamed bookmarks for the current buffer"))
+(define-key bmkp-delete-menu [bmkp-toggle-autoname-bookmark-delete]
+  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
+    :help "Delete the autonamed bookmark at point"
+    :visible (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
+              'noerror)))
+;;;;; (define-key bmkp-delete-menu [bmkp-delete-bookmarks]
+;;;;;   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
+;;;;;     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
+;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-buffer-alist-only))))
+(define-key bmkp-delete-menu [bmkp-delete-bookmarks]
+  '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
+    :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"))
+(define-key bmkp-delete-menu [delete]
+  '(menu-item "Delete Bookmark..." bookmark-delete :help "Delete the bookmark you choose by name"))
+(define-key bmkp-delete-menu [bmkp-purge-notags-autofiles]
+  '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
+    :help "Delete all autofile bookmarks that have no tags"))
+
+;; Remove vanilla `bookmark-delete' entry from main `Bookmarks' menu.
+(define-key menu-bar-bookmark-map [delete] nil)
+
+
+;; `bmkp-set-bookmark-menu' of vanilla `Bookmarks' menu: `New/Update'
+(defvar bmkp-set-bookmark-menu (make-sparse-keymap)
+  "`New/Update' submenu for menu-bar `Bookmarks' menu.")
+(define-key menu-bar-bookmark-map [set-bookmark] (cons "New/Update" bmkp-set-bookmark-menu))
+
+(defun bmkp-menu-bar-set-bookmark ()
+  "Set a bookmark, prompting for the name."
+  (interactive)
+  (call-interactively #'bookmark-set))
+  
+(define-key bmkp-set-bookmark-menu [bmkp-make-function-bookmark]
+  '(menu-item "Function Bookmark..." bmkp-make-function-bookmark
+    :help "Create a bookmark that will invoke a function when \"jumped\" to"))
+(define-key bmkp-set-bookmark-menu [bmkp-toggle-autoname-bookmark-set]
+  '(menu-item "Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
+    :help "Set an autonamed bookmark at point"
+    :visible (not (bmkp-get-bookmark-in-alist (funcall bmkp-autoname-bookmark-function (point))
+                                              'NOERROR))))
+(define-key bmkp-set-bookmark-menu [bmkp-set-bookmark-file-bookmark]
+  '(menu-item "Bookmark-File Bookmark..." bmkp-set-bookmark-file-bookmark
+    :help "Set a bookmark that loads a bookmark file when jumped to"))
+(define-key bmkp-set-bookmark-menu [bmkp-set-desktop-bookmark]
+  '(menu-item "Desktop Bookmark" bmkp-set-desktop-bookmark
+    :help "Save the current desktop as a bookmark"))
+(define-key bmkp-set-bookmark-menu [bmkp-url-target-set]
+  '(menu-item "URL Bookmark..." bmkp-url-target-set
+    :help "Set a bookmark for a given URL"))
+(define-key bmkp-set-bookmark-menu [bmkp-file-target-set]
+  '(menu-item "File Bookmark..." bmkp-file-target-set
+    :help "Set a bookmark with a given name for a given file"))
+(define-key bmkp-set-bookmark-menu [bmkp-autofile-set]
+  '(menu-item "Autofile Bookmark..." bmkp-autofile-set
+    :help "Set and automatically name a bookmark for a given file"))
+(define-key bmkp-set-bookmark-menu [bmkp-menu-bar-set-bookmark]
+  '(menu-item "Ordinary Bookmark..." bmkp-menu-bar-set-bookmark
+    :help "Set a bookmark at point" :keys "C-x p m"))
+
+;; Remove vanilla `bookmark-set' from main `Bookmarks' menu.
+(define-key menu-bar-bookmark-map [set] nil)
 
 
 ;; `bmkp-options-menu' of vanilla `Bookmarks' menu: `Toggle Option'
