@@ -32,3 +32,19 @@ Hi, I violated the social rules of the wiki and for that I apologise. Even thoug
 
 -- PuercoPop 2013-07-21 07:59 UTC
 
+
+----
+
+I added back a ##Package-Requires##, for the time being.
+
+But there should be no need for it, I think.  It is especially not good to have to specify a specific version for the required library, since the `require' is not version-dependent and the version number is insignificant in this case anyway.  MELPA is being overly precise, where that precision is meaningless and misleading.  Precision without accuracy is wrong.  The Lisp `require' specifies the proper dependency: feature `frame-fns' is required; nothing more, no specific version.
+
+It's also not clear to me what you mean by "required by MELPA".  Does it mean you cannot download the file from MELPA without it?  I think not.  It might mean that ##package.el## won't "install" it for you automatically.  If that's the only problem then I don't see it as a hindrance.
+
+Better that users should just
+put the libraries in their `load-path' than that the file should have to advertise a phony version dependency.  The library is for people, not just to satisfy some tools that might be overly rigid.  If an Emacs user cannot download a Lisp file and put it in `load-path' then s?he probably should not be using the file.  Seriously.
+
+Don't get me wrong.  I do not want to put extra obstacles in a user's way.  But I'm not crazy about specifying version info that is meaningless just because some tool doesn't know any better.
+
+-- DrewAdams 2013-07-21 09:14 UTC
+
