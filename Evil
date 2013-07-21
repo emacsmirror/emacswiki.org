@@ -1,6 +1,6 @@
 [[image/right:EvilLogo]]
 
-'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. It's [http://gitorious.org/evil/pages/Home home page].
+'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [http://gitorious.org/evil/pages/Home home page].
 
 Current stable version: **1.0.1**
 
@@ -178,7 +178,7 @@ In Emacs, C-g is somewhat analogous to what C-c was in Vim.  And since C-c is mo
 
 Emacs defines C-c as a useful global prefix key.  In order to use it, you may define a Key Translation as described in the Key Translation section.  Emacs does not apply Key Translation twice so if you define a Key Translation from cc to C-c, cc will not escape but access the global prefix key for C-c as desired.
 
-Another way is to use keychords.el as a basis for an escape key sequence. For example, this Elisp defines ,, as an escape key (very convenient for bépo layout, rather not for qwerty…):
+Another way is to use keychords.el as a basis for an escape key sequence. For example, this Elisp defines ,, as an escape key (very convenient for bÃ©po layout, rather not for qwertyâ¦):
 
    (key-chord-define evil-normal-state-map ",," 'evil-force-normal-state)
    (key-chord-define evil-visual-state-map ",," 'evil-change-to-previous-state)
