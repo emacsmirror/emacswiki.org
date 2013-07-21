@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Apr  8 08:21:28 2013 (-0700)
+;; Last-Updated: Sat Jul 20 18:09:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1598
+;;     Update #: 1600
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -17,12 +17,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `faces', `faces+', `fit-frame',
-;;   `frame-cmds', `frame-fns', `help+20', `highlight', `info',
-;;   `info+', `isearch+', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `easymenu', `faces', `faces+',
+;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `highlight',
+;;   `info', `info+', `isearch+', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -662,8 +662,8 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
 
 (when (boundp 'menu-bar-search-replace-menu) ; In `menu-bar+.el'.
   (define-key menu-bar-search-replace-menu [query-replace]
-    '(menu-item "Query String" query-replace-w-options
-      :help "Replace string interactively asking about each occurrence"
+    '(menu-item "Query" query-replace-w-options
+      :help "Replace text interactively asking about each occurrence"
       :enable (not buffer-read-only))))
 
 (define-key-after menu-bar-options-menu [replace-w-completion-flag]
