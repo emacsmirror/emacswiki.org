@@ -188,7 +188,7 @@
   "Delete a region todo from regions-list, the start and end node of todo, is included"
   (interactive)
 
-  (setq todo (cons (if (markerp (car todo));;if marks, then keep marks
+  (setq todo (cons (if (markerp (car todo));;if is marker, then keep as marker
                        (copy-marker (1- (car todo)))
                      (1- (car todo)))
                    (if (markerp (cdr todo))
@@ -355,7 +355,6 @@
 ;;(region-list-edit-delete region-list-edit-example '(1 . 14))
 ;;start is in node,end is between nodes
 ;;(region-list-edit-delete region-list-edit-example '(5 . 19))
-
 
 ;;((1 . 1))
 ;;()=nil
