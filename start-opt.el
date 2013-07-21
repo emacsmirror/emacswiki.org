@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:26:31 2012 (-0800)
+;; Last-Updated: Sat Jul 20 18:52:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1946
+;;     Update #: 1952
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -17,12 +17,12 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `chistory',
-;;   `doremi', `doremi-cmd', `doremi-frm', `eyedropper', `faces',
-;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `header2',
-;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
-;;   `iso-transl', `lib-requires', `loadhist', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `naked', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
+;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
+;;   `header2', `help+20', `hexrgb', `highlight', `info', `info+',
+;;   `isearch+', `iso-transl', `lib-requires', `loadhist',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
+;;   `mouse+', `mwheel', `naked', `pp', `pp+', `replace+', `ring',
 ;;   `second-sel', `setup-keys', `simple+', `strings', `thingatpt',
 ;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget', `wimpy-del'.
@@ -531,7 +531,7 @@
       (define-key Buffer-menu-mode-map "E" 'Buffer-menu-moccur))
     (when (fboundp 'occur-by-moccur)
       (global-set-key "\C-x\C-o" 'occur-by-moccur)) ; was `delete-blank-lines'
-    (when (fboundp 'moccur) (global-set-key "\C-c\C-x\C-o" 'moccur))
+    (when (fboundp 'moccur) (global-set-key "\C-c\C-x\C-o" 'moccur))      
     (when (fboundp 'grep-buffers) (global-set-key "\C-cg" 'grep-buffers))
     (when (fboundp 'search-buffers) (global-set-key "\C-c\C-o" 'search-buffers))))
 
