@@ -7,9 +7,10 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jul 12 09:33:54 2013 (-0700)
+;; Package-Requires: ((frame-fns "21.1"))
+;; Last-Updated: Sun Jul 21 01:50:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2875
+;;     Update #: 2879
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -262,6 +263,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/21 dadams
+;;     Added Package-Requires to header, at least temporarily, but should not need to specify version.
 ;; 2013/07/12 dadams
 ;;     set-frame-alist-parameter-from-frame: Use lax completion, so do not limit to known parameters.
 ;;     frame-parameter-names: Updated for Emacs 24.
