@@ -48,3 +48,10 @@ Don't get me wrong.  I do not want to put extra obstacles in a user's way.  But 
 
 -- DrewAdams 2013-07-21 09:14 UTC
 
+
+----
+
+I meant that it won't download frame-fns when I install frame-cmds. You are right it appears you can not put a package as a dependency requirement without an specific version. I don't see it as a mayor hindrance but as small one that could be automated away. Although I agree that being forced to put a version sucks. It could easily default version "0" if there was no version, after all any version is higher than 0.
+
+-- PuercoPop 2013-07-21 10:44 UTC
+
