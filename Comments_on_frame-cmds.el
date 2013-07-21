@@ -23,3 +23,12 @@ Thx.
 
 -- DrewAdams 2013-07-21 06:27 UTC
 
+
+----
+
+Hi, I violated the social rules of the wiki and for that I apologise. Even though in retrospect it seems clear to me that it is disrespectful to change the file without contacting the author first (and against what I was told to do), I want to state that it was out an intent of helping the community by fixing menial tasks that I edited the file.
+    With that said I want to say the following. Package requires is required by MELPA. You can see for yourself [https://github.com/milkypostman/melpa/issues/898#issuecomment-21196594 here]. I run into the missing frame-fns issue after installing frame-cmds from melpa. It would help more people in the future if the depencies where automatically installed. Would you please add back the frame-fns requirement?
+    Once again sorry for disruptive behaviour, I will be more careful on the future.
+
+-- PuercoPop 2013-07-21 07:59 UTC
+
