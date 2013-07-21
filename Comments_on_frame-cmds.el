@@ -55,3 +55,22 @@ I meant that it won't download frame-fns when I install frame-cmds. You are righ
 
 -- PuercoPop 2013-07-21 10:44 UTC
 
+
+----
+
+No, it should not default ''anything'' about the version.  If a version is not specified then any version at all should suffice.  If none is specified and there are multiple versions available in the MELPA repository then any of them could be downloaded, i.e., no guarantee of which you get.  And in principle, if no specific version is specified as required then any version should be OK.
+
+But I'm glad you clarified that `Package-Requires' is NOT at all required by MELPA, just as I thought.  Just download the separate libraries you need -- end of story.
+
+The reduction in your convenience by the source-code header not including `Package-Requires' in a case like this is offset by the increase in clarity and accuracy: ##frame-cmds.el## should NOT be specifying that it needs some particular version of ##frame-fns.el##, because it does not.
+
+What happens if I change the version number of ##frame-fns.el## but forget to also update the `Package-Requires' of ##frame-cmds.el##?  Your nifty automatic download is then broken.  Such an oversight is easy to make -- `Package-Requires' is not used by Lisp and is irrelevant to someone who has the necessary libraries in `load-path', as s?he should.  
+
+Using `Package-Requires' to specify dependencies, redundantly and inaccurately  (because overly specific) is just wrong.  The Lisp '''''code''''' deals with library dependencies, using software mechanisms that are rigorous (`require', `load-library', `autoload').  Automating package handling based on header comments is a less robust approach generally, and in the case of `Package-Requires', which mandates a version number, it is just plain wrong.
+
+Users of Lisp libraries need to learn a minimum of information about `load-path', library dependencies (e.g. `require'), etc.  And in the case of my libraries they are additionally helped by the header section ##Features that might be required by this library"".  That should be more than enough.
+
+For complex, multi-file libraries such as '''[[Icicles]]''' and '''[[Bookmark+]]''' I try to ensure that ##package.el## and [[MELPA]] do the right thing, by providing proper `autoload' cookies or sexps.  But for a simple file like <tt>[[frame-cmds.el]]</tt> I think users should be able to take care of downloading and "installing" what's needed.
+
+-- DrewAdams 2013-07-21 17:58 UTC
+
