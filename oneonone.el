@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Jul  8 10:59:13 2013 (-0700)
+;; Last-Updated: Sun Jul 21 17:00:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2767
+;;     Update #: 2771
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -1142,8 +1142,9 @@ take effect.")
 
 (defvar 1on1-default-frame-size '(80 . 35)
   "Default frame size.
-A cons whose car is the frame width in pixels
-and whose cdr is the frame height in pixels.
+
+A cons whose car is the frame width in characters and whose cdr is the
+frame height in characters.
 
 This is used only to define the standard value of
 `1on1-default-frame-alist'.  Customize that variable, not this one.
@@ -1273,8 +1274,8 @@ it to take effect.")
 
 (defvar 1on1-default-special-frame-size '(80 . 20)
   "Default size of special display frames.
-A cons whose car is the frame width in pixels
-and whose cdr is the frame height in pixels.
+A cons whose car is the frame width in characters and whose cdr is the
+frame height in characters.
 
 This is used only to define the standard value of
 `1on1-special-display-frame-alist'.  Customize that variable, not this
