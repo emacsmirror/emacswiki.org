@@ -74,3 +74,10 @@ For complex, multi-file libraries such as '''[[Icicles]]''' and '''[[Bookmark+]]
 
 -- DrewAdams 2013-07-21 17:58 UTC
 
+
+----
+
+By default I meant the author should be able to not specify a version. The tools should accommodate to the programer not the other way around. Although it is unfortunate that most of the time is the other way around. If you don't update the version file it doesn't break, because the version is meant as a minimum required version. I agree with the principle and that package.el has a design flaw. Btw, I have been negligent in thanking you for making my Emacs experience a little bit better. Thank you for writing frame-cmds.el.
+
+-- PuercoPop 2013-07-22 19:20 UTC
+
