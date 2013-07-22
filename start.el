@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Jul 20 14:43:27 2013 (-0700)
+;; Last-Updated: Sun Jul 21 17:02:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2980
+;;     Update #: 2981
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -83,7 +83,7 @@
 ;; Change Log:
 ;;
 ;; 2013/07/20 dadams
-;;     Do not (softf)-require dired-details+.el if (fboundp 'dired-hide-details-mode) - Emacs 24.4.
+;;     Do not (soft)-require dired-details+.el if (fboundp 'dired-hide-details-mode) - Emacs 24.4.
 ;; 2013/07/02 dadams
 ;;     Load bookmark+.el (and bm.el and tabbar.el, though not necessary) after `menu-bar+.el.
 ;; 2013/06/06 dadams
