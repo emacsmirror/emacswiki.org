@@ -96,8 +96,6 @@ The code is loosely based on code on the AutoPairs page:
 Here's a '''[http://img8.imageshack.us/img8/9479/openparen.gif short video demonstration]'''
 of %%ParEdit%% working with %%ElDoc%% and %%Show-Paren%% minor modes along with the electric ##RETURN## function defined above.
 
-Off-topic question: what font are you using? It looks like Monaco, but it has a different "a". Thanks.
-
 Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video: 
 
   (add-hook 'emacs-lisp-mode-hook
