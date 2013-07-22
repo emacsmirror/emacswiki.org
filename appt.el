@@ -9,9 +9,10 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 20.1
-;; Last-Updated: Fri Dec 28 12:50:18 2012 (-0800)
+;; Package-Requires: ()
+;; Last-Updated: Mon Jul 22 10:36:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 685
+;;     Update #: 686
 ;; URL: http://www.emacswiki.org/appt.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
@@ -19,8 +20,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cal-dst', `cal-julian', `cal-menu',
 ;;   `cal-persia', `calendar', `calendar+', `cl', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `diary-lib', `dired',
@@ -32,10 +33,10 @@
 ;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
 ;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `second-sel', `solar', `strings', `subr-21', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
+;;   `solar', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
