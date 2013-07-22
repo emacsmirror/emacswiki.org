@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
 ;; Package-Requires: ((frame-fns "21.1"))
-;; Last-Updated: Sun Jul 21 01:50:31 2013 (-0700)
+;; Last-Updated: Sun Jul 21 16:57:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2879
+;;     Update #: 2885
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -928,10 +928,8 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
 ;;;###autoload
 (defun rename-frame (&optional old-name new-name all-named)
   "Rename a frame named OLD-NAME to NEW-NAME.
-Prefix arg ALL-NAMED non-nil means rename all frames named FRAME to NEWNAME.
-
+Prefix arg non-nil means rename all frames named OLD-NAME to NEWNAME.
 OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
-
 NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'."
   (interactive
    (list (read-frame (concat "Rename " (and current-prefix-arg  "all ")
@@ -955,8 +953,7 @@ NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'."
 (defun rename-non-minibuffer-frame (&optional old-name new-name all-named)
   "Unless OLD-NAME names the minibuffer frame, use `rename-frame'
 to rename a frame named OLD-NAME to NEW-NAME.
-
-Prefix arg ALL-NAMED non-nil => Rename all frames named FRAME to NEWNAME.
+Prefix arg non-nil means rename all frames named OLD-NAME to NEW-NAME.
 OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
 NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'."
   (interactive
