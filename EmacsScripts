@@ -1,3 +1,11 @@
+Since version 22, the emacs executable accepts the --script argument, so the following shebang line can be used for Elisp scripts:
+
+   #!emacs --script
+
+The rest of this article describes the legacy methods.
+
+== Legacy method ==
+
 JohnSwaby presented an idea on the emacs-devel MailingList on how to
 use ":;" as an alternative to "#!" to start Emacs scripts.[http://article.gmane.org/gmane.emacs.devel/7707/match=]
 
