@@ -152,7 +152,7 @@ Other options include:
 To install using the <tt>--cocoa</tt> switch, one simply uses:
 <pre>
 brew install --cocoa emacs
-ln -s /usr/local/Cellar/emacs/24.2/Emacs.app /Applications/Emacs.app
+ln -s /opt/boxen/homebrew/Cellar/emacs/24.3/Emacs.app /Applications
 </pre>
 
 After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
