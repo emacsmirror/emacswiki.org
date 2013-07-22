@@ -7,9 +7,10 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:23:34 2012 (-0800)
+;; Package-Requires: ()
+;; Last-Updated: Mon Jul 22 10:38:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 51
+;;     Update #: 52
 ;; URL: http://www.emacswiki.org/apropos+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
