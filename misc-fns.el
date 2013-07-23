@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:13:34 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:42:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 599
+;;     Update #: 603
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -75,7 +76,7 @@
 ;; 2007/09/22 dadams
 ;;     NOTE: If you upgrade this library, and you use any of these libraries, then
 ;;           you MUST upgrade them also: buff-menu+.el, compile+.el, dired+.el,
-;;           start-opt.el. 
+;;           start-opt.el.
 ;;     undefine-keys-bound-to, undefine-keys-bound-to: Removed optional OLD-MAP arg.
 ;;     undefine-keys-bound-to: Redefined using where-is-internal and lookup-key.
 ;;     buffer-modifying-cmds: Added lots more, some from Emacs 22.
@@ -369,7 +370,7 @@ Uses symbol property `derived-mode-parent' to trace backwards."
       (push parent modes)
       (setq parent  (get parent 'derived-mode-parent)))
     modes))
-  
+
 
 
 ;;;$ FILES --------------------------------------------------------------------
@@ -393,7 +394,7 @@ Optional arg KILL-BUF-AFTER non-nil means kill buffer after saving it."
   (append
    (and (or (not (boundp 'kill-read-only-ok)) kill-read-only-ok)
         '(backward-kill-paragraph backward-kill-sentence backward-kill-sexp
-          backward-kill-word clipboard-kill-region comint-kill-input comment-kill 
+          backward-kill-word clipboard-kill-region comint-kill-input comment-kill
           kill-backward-up-list kill-comment kill-line kill-paragraph
           kill-rectangle kill-region kill-region-wimpy kill-sentence kill-sexp
           kill-whole-line kill-word mouse-kill))
@@ -419,7 +420,7 @@ Optional arg KILL-BUF-AFTER non-nil means kill buffer after saving it."
      indent-rigidly insert-abbrevs insert-buffer insert-file insert-file-literally
      insert-kbd-macro insert-pair insert-parentheses insert-register
      insert-zippyism join-line justify-current-line just-one-space keep-lines
-     lisp-complete-symbol lisp-fill-paragraph lisp-indent-line morse-region 
+     lisp-complete-symbol lisp-fill-paragraph lisp-indent-line morse-region
      newline newline-and-indent open-line open-rectangle query-replace
      query-replace-regexp quoted-insert reindent-then-newline-and-indent
      replace-regexp replace-string repunctuate-sentences reverse-region rot13-region
