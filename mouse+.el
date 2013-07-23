@@ -1,28 +1,29 @@
 ;;; mouse+.el --- Extensions to `mouse.el'.
-;; 
+;;
 ;; Filename: mouse+.el
 ;; Description: Extensions to `mouse.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:15:00 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:43:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 551
+;;     Update #: 554
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `mouse', `second-sel'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Extensions to `mouse.el'.
 ;;
 ;;  Command `mouse-flash-position' highlights the character after the
@@ -92,9 +93,9 @@
 ;;   (global-set-key [down-mouse-2]        'mouse-flash-position-or-M-x)
 ;;   (global-set-key [S-down-mouse-2]      'mouse-scan-lines-or-M-:)
 ;;   (global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2011/12/19 dadams
@@ -113,7 +114,7 @@
 ;; 2008/05/02 dadams
 ;;     (put 'mouse-yank-secondary 'delete-selection 'yank)
 ;; 2007/01/27 dadams
-;;     Added: mouse-scan-lines(-overlay), mouse-scan-lines-or-M-:, 
+;;     Added: mouse-scan-lines(-overlay), mouse-scan-lines-or-M-:,
 ;; 2006/11/04 dadams
 ;;     Added: mouse-M-:.
 ;;     mouse-flash-position-or-M-x: Use switch-to-buffer.  Skip minibuffers.
@@ -130,7 +131,7 @@
 ;;     Added: mouse-yank-secondary.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -147,7 +148,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 
@@ -440,7 +441,7 @@ If the click is in the echo area, then:
                 (set-buffer Messages-buf)
                 (goto-char (point-max))
                 (display-buffer (current-buffer)))))
-        
+
         ;; Give temporary modes such as isearch a chance to turn off.
         (run-hooks 'mouse-leave-buffer-hook)
         (mouse-drag-track start-event t)))))
@@ -479,7 +480,7 @@ If command `yank-secondary' is defined (see library `second-sel.el'),
 
 
 
-;; REPLACES ORIGINAL in `mouse.el': 
+;; REPLACES ORIGINAL in `mouse.el':
 ;; Iconify *Completions* frame after choosing completion.
 ;; Free variable COMPLETION-REFERENCE-BUFFER is defined in `simple.el'.
 ;  ;;;###autoload
