@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
-;; Version: 21.1
-;; Last-Updated: Sun Mar 17 14:38:02 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:30:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 4855
+;;     Update #: 4857
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
