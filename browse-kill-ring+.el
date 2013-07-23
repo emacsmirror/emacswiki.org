@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
-;; Version: 21.0
+;; Version: 0
 ;; Package-Requires: ((browse-kill-ring "0"))
-;; Last-Updated: Mon Jul 22 15:09:30 2013 (-0700)
+;; Last-Updated: Tue Jul 23 15:32:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 965
+;;     Update #: 966
 ;; URL: http://www.emacswiki.org/browse-kill-ring+.el
 ;; Doc URL: http://www.emacswiki.org/BrowseKillRing
 ;; Keywords: convenience
