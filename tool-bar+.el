@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:30:09 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:04:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 220
+;;     Update #: 240
 ;; URL: http://www.emacswiki.org/tool-bar%2b.el
 ;; Doc URL: http://emacswiki.org/ToolBar
 ;; Keywords: tool-bar, convenience, mouse, button, frame
@@ -65,6 +66,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/23 dadams
+;;     Remove make-variable-frame-local for tool-bar-here-mode, since deprecated.
+;;     tool-bar-here-mode: Add tool-bar-here-mode as frame parameter.
+;;     tool-bar-pop-up-mode:
+;;       Test frame param tool-bar-here-mode, not frame-local var tool-bar-here-mode.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies (for commands).
 ;; 2008/04/24 dadams
@@ -104,14 +110,18 @@
 
 ;;;###autoload
 (define-minor-mode tool-bar-here-mode
-  "Toggle use of the tool bar on this frame only.
+    "Toggle use of the tool bar on this frame only.
 With numeric ARG, display the tool bar if and only if ARG is positive.
 
 See `tool-bar-add-item' and `tool-bar-add-item-from-menu' for
 conveniently adding tool bar items."
   :init-value nil :global t :group 'mouse :group 'frames
+
+  ;; Emacs 24 allows this, but we want things to work also for Emacs 22-23:
+  ;; :variable (frame-parameter nil 'tool-bar-here-mode)
+
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 tool-bar+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
@@ -124,15 +134,13 @@ Don't forget to mention your Emacs and library versions."))
   (and (display-images-p)
        (let ((lines (if tool-bar-here-mode 1 0)))
          ;; Alter existing frame...
-         (modify-frame-parameters (selected-frame) (list (cons 'tool-bar-lines lines))))
+         (modify-frame-parameters (selected-frame)
+                                  `((tool-bar-lines . ,lines)
+                                    (tool-bar-here-mode . ,tool-bar-here-mode))))
        (if (and tool-bar-here-mode
                 (display-graphic-p)
                 (= 1 (length (default-value 'tool-bar-map)))) ; not yet set up
            (tool-bar-setup))))
-
-(make-variable-frame-local 'tool-bar-here-mode)
-
-
  
 ;;; Pop-Up Tool Bar Mode ------------------------
 
@@ -141,8 +149,12 @@ Don't forget to mention your Emacs and library versions."))
 (define-key global-map [menu-bar pop-up-tool-bar]
   '(menu-item
     "Buttons" show-tool-bar-for-one-command
-    :visible (and tool-bar-pop-up-mode (not tool-bar-mode) (not tool-bar-here-mode))
-    :enable  (and tool-bar-pop-up-mode (not tool-bar-mode) (not tool-bar-here-mode))
+    :visible (and tool-bar-pop-up-mode
+              (not tool-bar-mode)
+              (not (frame-parameter nil 'tool-bar-here-mode)))
+    :enable  (and tool-bar-pop-up-mode
+              (not tool-bar-mode)
+              (not (frame-parameter nil 'tool-bar-here-mode)))
     :help "Use tool bar for one command"))
 
 (add-to-list 'menu-bar-final-items 'pop-up-tool-bar 'append)
@@ -160,7 +172,7 @@ Note: Command `tool-bar-pop-up-mode' functions as a toggle only
       `tool-bar-pop-up-mode' turns them both off and turns
       `tool-bar-pop-up-mode' on."
   :init-value nil :global t :group 'mouse :group 'frames
-  (when (or tool-bar-mode tool-bar-here-mode)
+  (when (or tool-bar-mode (frame-parameter nil 'tool-bar-here-mode))
     (setq tool-bar-pop-up-mode t)
     (tool-bar-mode -99)
     (tool-bar-here-mode -99)))
