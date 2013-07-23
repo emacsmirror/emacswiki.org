@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
-;; Version: 23.1
-;; Last-Updated: Sat May 11 14:33:07 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:34:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 269
+;;     Update #: 274
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
