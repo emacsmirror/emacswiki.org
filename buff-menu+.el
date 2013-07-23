@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
-;; Version: 21.0
-;; Last-Updated: Sat Apr 20 09:28:08 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:32:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2839
+;;     Update #: 2841
 ;; URL: http://www.emacswiki.org/buff-menu+.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
