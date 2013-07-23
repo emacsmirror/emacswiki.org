@@ -6,34 +6,19 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 13:11:46 1996
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:32:17 2012 (-0800)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 15:35:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 842
+;;     Update #: 847
 ;; URL: http://www.emacswiki.org/calendar+.el
 ;; Keywords: calendar, mouse, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cal-dst', `cal-julian', `cal-menu',
-;;   `cal-persia', `calendar', `calendar+', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `diary-lib', `dired',
-;;   `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
-;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
-;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `second-sel', `solar', `strings', `subr-21', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `cal-dst', `cal-julian', `cal-menu', `cal-persia', `calendar',
+;;   `calendar+', `cl', `diary-lib', `easymenu', `faces',
+;;   `lisp-float-type', `misc-fns', `solar'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -437,7 +422,6 @@
 (require 'solar nil t) ;; (no error if not found): solar-sunrise-sunset
 (require 'misc-fns nil t) ;; (no error if not found):
                           ;; make-transient-mark-mode-buffer-local
-(require 'icicles nil t) ;; (no error if not found): completing-read
 
 (autoload 'filter-visible-calendar-holidays "holidays")
 
