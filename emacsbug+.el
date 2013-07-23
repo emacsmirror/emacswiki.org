@@ -6,17 +6,18 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2013, Drew Adams, all rights reserved.
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
-;; Version:
-;; Last-Updated: Sun Jan 20 20:10:51 2013 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:59:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 361
+;;     Update #: 363
 ;; URL: http://www.emacswiki.org/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `emacsbug', `sendmail'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
