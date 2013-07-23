@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:38:07 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((start "0"))
+;; Last-Updated: Tue Jul 23 15:57:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2175
+;;     Update #: 2178
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,13 +35,13 @@
 ;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
 ;;   `finder-inf', `fit-frame', `font-lock', `font-lock-menus',
 ;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `header2',
-;;   `help+20', `hexrgb', `hide-comnt', `highlight', `icicles',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `icomplete', `icomplete+', `image-dired', `imenu', `imenu+',
-;;   `info', `info+', `isearch+', `iso-transl', `kmacro', `lacarte',
-;;   `levenshtein', `lib-requires', `lisp-mnt', `loadhist',
-;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
+;;   `icomplete+', `image-dired', `imenu', `imenu+', `info', `info+',
+;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mouse3',
 ;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
