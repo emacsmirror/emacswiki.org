@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:35:06 2012 (-0800)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 15:44:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 628
+;;     Update #: 632
 ;; URL: http://www.emacswiki.org/diff+20.el
 ;; Doc URL: http://www.emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
@@ -112,8 +112,6 @@
 
 (require 'compile) ;; compile-internal, compilation-finish-function
 (require 'diff) ;; diff-old-temp-file, diff-new-temp-file, diff-command
-
-;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
