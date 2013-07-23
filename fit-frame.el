@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
-;; Version: 22.0
-;; Last-Updated: Sun Jun 30 14:34:20 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:07:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1361
+;;     Update #: 1364
 ;; URL: http://www.emacswiki.org/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
