@@ -301,6 +301,33 @@ Here is my take on switching to mail back and forth, as the above approaches fai
 
 You may use it with my mail-bug (client-agnostic mail notification) package : https://github.com/xaccrocheur/mail-bug
 ----
+
+We can also use registers for storing the window configurations and jump to the gnus buffers and back.
+<pre>
+(defun switch-to-gnus ()
+  (interactive)
+  (let ((bufname (buffer-name)))
+    (if (or
+         (string-equal "*Group*" bufname)
+         (string-equal "*BBDB*" bufname)
+         (string-match "\*Summary" bufname)
+         (string-match "\*Article" bufname))
+        (progn
+          (window-configuration-to-register 1)
+          (if (get-register 2)
+              (jump-to-register 2)))
+      (progn
+        (window-configuration-to-register 2)
+        (if (get-register 1)
+            (jump-to-register 1)
+          (switch-to-buffer "*Group*"))
+        )
+      )
+    ))
+
+(global-set-key [f5] 'switch-to-gnus)
+</pre>
+---
 CategoryGnus
 CategoryKeys
 CategoryMail
