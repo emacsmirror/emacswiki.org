@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Apr 22 08:42:10 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:11:43 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;;; Last-Updated: Tue Jul 23 16:38:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 186
+;;     Update #: 189
 ;; URL: http://www.emacswiki.org/macros+.el
 ;; Keywords: abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -101,8 +102,6 @@
 ;; for prior versions, because it wouldn't allow doing
 ;; (eval-after-load "macros" '(progn (require 'macros+)))
 (when (>= emacs-major-version 20) (require 'macros))
-
-;; (require 'icicles nil t) ;; (no error if not found): completing-read
 
 (require 'thingatpt nil t);; (no error if not found): symbol-at-point
 
