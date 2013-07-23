@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:53:15 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:18:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 118
+;;     Update #: 120
 ;; URL: http://www.emacswiki.org/help-macro+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
