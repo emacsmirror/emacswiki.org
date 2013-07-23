@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
-;; Version: 21.0
-;; Last-Updated: Sat Jun  8 12:53:28 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:31:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 181
 ;; URL: http://www.emacswiki.org/help-mode+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
