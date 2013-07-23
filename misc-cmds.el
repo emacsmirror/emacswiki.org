@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
-;; Version: 21.1
-;; Last-Updated: Fri Jul 12 12:19:41 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:41:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3084
+;;     Update #: 3086
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
