@@ -1,29 +1,30 @@
 ;;; col-highlight.el --- Highlight the current column.
-;; 
+;;
 ;; Filename: col-highlight.el
 ;; Description: Highlight the current column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
-;; Version: 22.0
-;; Last-Updated: Tue Dec 25 21:31:23 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((vline "0"))
+;; Last-Updated: Tue Jul 23 14:33:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 373
+;;     Update #: 378
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; Package-Requires: ((vline "1.10"))
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 ;;  This library highlights the current column.  When you move the
 ;;  cursor, the highlighting follows (tracks the cursor), as long as
 ;;  the highlighting stays on.
@@ -122,7 +123,7 @@
 ;;    `vline-show'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/12/25 dadams
@@ -146,26 +147,26 @@
 ;;     Removed semi-support for Emacs 20.
 ;; 2006/09/08 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'vline)
