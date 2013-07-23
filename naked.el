@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
-;; Version: 21.0
-;; Last-Updated: Tue Feb 26 13:02:38 2013 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:45:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 170
+;;     Update #: 172
 ;; URL: http://www.emacswiki.org/naked.el
 ;; Doc URL: http://www.emacswiki.org/NaKeD
 ;; Keywords: lisp, key, print, format, help
