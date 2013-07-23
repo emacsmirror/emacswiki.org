@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2013-07-19
-;; Last-Updated: Sun Jul 21 18:01:09 2013 (-0700)
+;; Version: 2013.07.23
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:45:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7061
+;;     Update #: 7074
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1032,8 +1033,6 @@
 (require 'dired-aux) ;; dired-bunch-files, dired-do-chxxx, dired-do-create-files,
                      ;; dired-mark-read-string, dired-read-shell-command,
                      ;; dired-run-shell-command, dired-shell-stuff-it
-;; (require 'ediff-util) ;; ediff-read-file-name
-
 (require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
 (require 'autofit-frame nil t) ;; (no error if not found) fit-frame-if-one-window
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
@@ -1041,12 +1040,6 @@
   ;; (no error if not found):
   (require 'w32-browser nil t));; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
                                ;; dired-multiple-w32-browser
-;;; (when (< emacs-major-version 21)
-;;;   (require 'mkhtml nil t)) ;; (no error if not found): mkhtml-dired-files
-
-;; Don't require Icicles, else get recursive requires.
-;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
-
 (when (< emacs-major-version 21) (require 'subr-21)) ;; replace-regexp-in-string
 
 ;; Provide macro for code byte-compiled using Emacs < 22.
@@ -1827,7 +1820,7 @@ A prefix argument ARG specifies files to use instead of those marked.
   '(menu-item "Print..." diredp-print-this-file
     :help "Print file at cursor, supplying print command"))
 
-(when (fboundp 'mkhtml-dired-files)
+(when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key diredp-menu-bar-immediate-menu [mkhtml-dired-files]
     '(menu-item "Create HTML" mkhtml-dired-files
       :help "Create an HTML file corresponding to file at cursor")))
@@ -2103,7 +2096,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (unless (require 'bookmark+ nil t)
   (define-key diredp-menu-bar-immediate-menu [diredp-bookmark-this-file]
     '(menu-item "Bookmark..." diredp-bookmark-this-file :help "Bookmark the file at cursor")))
-(when (fboundp 'mkhtml-dired-files)
+(when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key diredp-menu-bar-operate-menu [mkhtml-dired-files]
     '(menu-item "Create HTML" mkhtml-dired-files
       :help "Create HTML files corresponding to marked files")))
@@ -2763,7 +2756,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map [(control meta shift ?b)]                    ; `C-M-B' (aka `C-M-S-b')
   'diredp-do-bookmark-in-bookmark-file)
 (define-key dired-mode-map "\M-g"    'diredp-do-grep)                               ; `M-g'
-(when (fboundp 'mkhtml-dired-files)
+(when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
 (substitute-key-definition 'describe-mode 'diredp-describe-mode                    ; `h', `C-h m'
@@ -5739,7 +5732,7 @@ Try to guess a useful default value for FILE2, as follows:
 * Else use the file at point."
   (interactive
    (progn (require 'ediff)
-          (list (ediff-read-file-name   ; In `ediff.el'.
+          (list (ediff-read-file-name   ; In `ediff-util.el'.
                  (format "Compare %s with" (dired-get-filename t))
                  (dired-current-directory)
                  (let* ((file           (dired-get-filename))
@@ -7588,7 +7581,7 @@ which are options for `diff'."
                                           (if default (concat "(default " default ") ") ""))
                                   (dired-current-directory) default t)))
       (setq switches  (and current-prefix-arg
-                           (if (fboundp 'icicle-read-string-completing)
+                           (if (fboundp 'icicle-read-string-completing) ; In `icicles-fn.el'
                                (icicle-read-string-completing
                                 "Options for diff: "
                                 (if (stringp diff-switches)
@@ -7610,7 +7603,7 @@ The backup file is the first file given to `diff'.
 With prefix arg, prompt for SWITCHES which are the options for `diff'."
   (interactive "e")
   (let ((switches   (and current-prefix-arg
-                         (if (fboundp 'icicle-read-string-completing)
+                         (if (fboundp 'icicle-read-string-completing) ; In `icicles-fn.el'
                              (icicle-read-string-completing
                               "Options for diff: "
                               (if (stringp diff-switches)
@@ -7944,7 +7937,8 @@ For just the latter, use \\<dired-mode-map>`\\[diredp-dired-plus-help]'."
         (diredp-dired-plus-help-link)))))
 
 (when (and (> emacs-major-version 21)
-           (require 'help-mode nil t) (get 'help-xref 'button-category-symbol)) ; `button.el'
+           (require 'help-mode nil t)
+           (get 'help-xref 'button-category-symbol)) ; `button.el'
   (define-button-type 'diredp-help-button
       :supertype 'help-xref
       'help-function #'(lambda () (browse-url "http://www.emacswiki.org/cgi-bin/wiki/DiredPlus"))
@@ -7956,7 +7950,8 @@ Internet access)")))
   "Add Web link for Dired+ help, and reminder about sending bug report."
   ;; Don't bother to do this for Emacs 21.3.  Its `help-insert-xref-button' is different.
   (when (and (> emacs-major-version 21)
-             (require 'help-mode nil t) (fboundp 'help-insert-xref-button)) ; `help-mode.el'.
+             (require 'help-mode nil t)
+             (fboundp 'help-insert-xref-button)) ; `help-mode.el'.
     (let ((buffer-read-only  nil))
       (help-insert-xref-button "[Dired+ Help on the Web]" 'diredp-help-button)
       (insert (substitute-command-keys
