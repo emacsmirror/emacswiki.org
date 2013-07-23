@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
-;; Version: 21.0
-;; Last-Updated: Sat Jul 13 19:24:33 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:04:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 707
+;;     Update #: 710
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
