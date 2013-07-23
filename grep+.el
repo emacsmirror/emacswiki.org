@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
-;; Version: 22.0
-;; Last-Updated: Wed Jul  3 21:44:08 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:03:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 655
+;;     Update #: 640
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -226,8 +227,8 @@ first of these that references a defined function:
 (defun grep-default-command (tag-default)
   (let ((quoted-tag-def  (shell-quote-argument (or tag-default  "")))
 	;; Regexp to match single shell arguments.
-        (sh-arg-re       "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
-        (grep-default    (or (car grep-history) grep-command)))
+        (sh-arg-re     "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
+        (grep-default  (or (car grep-history) grep-command)))
     ;; In the default command, find the arg that specifies the pattern.
     (when (or (string-match
                (concat "[^ ]+\\s +\\(?:-[^ ]+\\s +\\)*" sh-arg-re "\\(\\s +\\(\\S +\\)\\)?")
