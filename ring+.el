@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
-;; Version: 21.0
-;; Last-Updated: Thu Jun  6 11:11:40 2013 (-0700)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 16:52:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 223
+;;     Update #: 225
 ;; URL: http://www.emacswiki.org/ring%2b.el
 ;; Doc URL: http://emacswiki.org/RingPlus
 ;; Keywords: extensions, lisp, emacs-lisp
