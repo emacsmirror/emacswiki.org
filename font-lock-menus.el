@@ -1,5 +1,5 @@
 ;;; font-lock-menus.el --- Font-lock menus: enhanced `font-menus.el'
-;; 
+;;
 ;; Filename: font-lock-menus.el
 ;; Description: Font-lock menus.  `font-menus.el' fixed for Emacs 24+.
 ;; Author: Francis J. Wright, Simon Marshal, Drew Adams
@@ -7,23 +7,24 @@
 ;; Copyright (C) 2000 Francis J. Wright
 ;; Copyright (C) 2012-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
-;; Version: 24
-;; Last-Updated: Fri Dec 28 09:46:31 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:12:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 202
+;;     Update #: 205
 ;; URL: http://www.emacswiki.org/font-lock-menus.el
-;; Doc URL: 
+;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;; Font-lock menus.  `font-menus.el', enhanced, & fixed for Emacs 24+.
 ;;
 ;; This is library `font-menus.el', by Francis J. Wright, modified so
@@ -75,9 +76,9 @@
 ;; <simon@gnu.ai.mit.edu> and revised to use easymenu and run as a
 ;; stand-alone package by Francis J. Wright.  (It would be better put
 ;; back into font-lock.el!)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/11/13 dadams
@@ -98,24 +99,24 @@
 ;;     Created from font-menus.el.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (eval-when-compile (require 'easymenu)
