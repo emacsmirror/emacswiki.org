@@ -1,27 +1,28 @@
 ;;; faces+.el --- Extensions to `faces.el'.
-;; 
+;;
 ;; Filename: faces+.el
 ;; Description: Extensions to `faces.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:41:04 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:02:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 294
+;;     Update #: 297
 ;; URL: http://www.emacswiki.org/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `faces', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Extensions to `faces.el'.
 ;;
 ;;
@@ -45,7 +46,7 @@
 ;;  (eval-after-load "faces" '(require 'faces+))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/08/21 dadams
@@ -84,9 +85,9 @@
 ;;     2. Updated to corrspond with version Emacs 19.34.1.
 ;; 1996/07/15 dadams
 ;;     Added redefinition of make-face.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -103,7 +104,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'faces)
@@ -142,9 +143,9 @@ Prompts with arg PROMPT (a string)."
 ;;
 (if (< emacs-major-version 21)
     (defun make-face (name &optional no-resources)
-      "Define a new face named NAME, on all frames.  
+      "Define a new face named NAME, on all frames.
 You can modify the font, color, etc of this face with the `set-face-*'
-functions.  
+functions.
 
 If NO-RESOURCES is non-nil, then we ignore X resources
 and always make a face whose attributes are all nil.
