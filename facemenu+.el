@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
-;; Version:
-;; Last-Updated: Sat Jun  8 10:31:32 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:01:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1842
+;;     Update #: 1844
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
