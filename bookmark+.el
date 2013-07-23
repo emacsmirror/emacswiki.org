@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2013.04.13
-;; Last-Updated: Sun Apr 14 16:47:42 2013 (-0700)
+;; Version: 2013.07.23
+;; Last-Updated: Tue Jul 23 15:30:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15009
+;;     Update #: 15017
 ;; URL: http://www.emacswiki.org/bookmark+.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -18,9 +18,13 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `dired', `dired-aux', `dired-x', `ffap',
-;;   `pp', `pp+', `thingatpt', `thingatpt+'.
+;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `cl',
+;;   `dired', `dired-aux', `dired-x', `ffap', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp', `pp+',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
