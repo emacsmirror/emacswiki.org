@@ -1,27 +1,28 @@
 ;;; hl-spotlight.el --- Extension of hl-line.el to spotlight current few lines.
-;; 
+;;
 ;; Filename: hl-spotlight.el
 ;; Description: Extension of hl-line.el to spotlight current few lines.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2009-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
-;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:57:12 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:30:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 467
+;;     Update #: 471
 ;; URL: http://www.emacswiki.org/hl-spotlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `hl-line'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
+;;
+;;; Commentary:
 ;;
 ;;  This library extends standard library `hl-line.el'.  It provides
 ;;  local and global modes to highlight several lines surrounding
@@ -74,7 +75,7 @@
 ;;    `hl-spotlight-old-state', `hl-spotlight-scan-timer'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
@@ -90,24 +91,24 @@
 ;;            global-hl-spotlight-mode.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'hl-line) ;; global-hl-line-highlight, global-hl-line-mode,
