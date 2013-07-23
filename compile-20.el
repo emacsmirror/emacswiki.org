@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep  2 13:39:51 1999
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:33:21 2012 (-0800)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 15:38:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 189
+;;     Update #: 192
 ;; URL: http://www.emacswiki.org/compile-20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
