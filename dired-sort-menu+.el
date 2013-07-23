@@ -1,27 +1,28 @@
 ;;; dired-sort-menu+.el --- Extensions to `dired-sort-menu.el'
-;; 
+;;
 ;; Filename: dired-sort-menu+.el
 ;; Description: Extensions to `dired-sort-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
-;; Version: 20
-;; Last-Updated: Fri Dec 28 09:36:16 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((dired-sort-menu "0"))
+;; Last-Updated: Tue Jul 23 15:49:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 99
+;;     Update #: 103
 ;; URL: http://www.emacswiki.org/dired-sort-menu+.el
 ;; Doc URL: http://emacswiki.org/DiredSortMenu
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `dired', `dired-sort-menu', `easymenu', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
+;;
+;;; Commentary:
 ;;
 ;;    Extensions to `dired-sort-menu.el'
 ;;
@@ -42,7 +43,7 @@
 ;;   3. `handle-delete-frame' is protected against nil `buffer-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2011/06/18 dadams
@@ -60,7 +61,7 @@
 ;;       dired-sort-menu-toggle-dirs-first to "/".
 ;; 2005/07-26 dadams
 ;;     Protected ls-lisp-var-p with fboundp.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -79,7 +80,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'dired-sort-menu)              ; dired-sort-menu
