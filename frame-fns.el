@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:15:50 1996
-;; Version: 21.1
-;; Last-Updated: Sat Jun  8 11:55:38 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:14:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 221
+;;     Update #: 223
 ;; URL: http://www.emacswiki.org/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
