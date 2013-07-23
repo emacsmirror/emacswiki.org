@@ -42,6 +42,7 @@ From the webpage:
 ** [[JdeeAndMaven2Pom]]: same, for Maven 2
 ** JdeeMaven: still another version for Maven
 ** [https://bitbucket.org/espenhw/jde-mvn/wiki/Home jde-mve] seems to be the newest Maven/JDEE integration
+** [http://ignatyev-dev.blogspot.com/2013/07/gradle-projects-in-jdee.html Gradle2Jdee]: generating Jdee project "prj.el" from Gradle project
 ** JdeeDecompile: Integrate with [http://www.varaneckas.com/jad JAD], a decompiler
 * Problem searchers
 ** JdeeFlymake: on-the-fly syntax checker
