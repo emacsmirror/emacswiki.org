@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
-;; Version:
-;; Last-Updated: Sat Jul 20 10:09:49 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((dired-details "0"))
+;; Last-Updated: Tue Jul 23 15:48:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 222
 ;; URL: http://www.emacswiki.org/dired-details+.el
 ;; Doc URL: http://www.emacswiki.org/DiredDetails
 ;; Keywords: dired, frames
@@ -75,6 +76,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/22 dadams
+;;     Hard-require, not soft-require, dired-details.el.
 ;; 2013/07/19 dadams
 ;;     Mention in Commentary that you do not need dired-details(+).el for Emacs
 ;;       24.4 or later.
@@ -138,11 +141,18 @@
   "*This string will be shown in place of file details and symbolic links."
   :group 'dired-details :group 'dired :type 'string)
 
-(require 'dired-details nil t) ;; (no error if not found): dired-details-hide,
-                               ;; dired-details-install, dired-details-show
+(require 'dired-details) ;; dired-details-hide, dired-details-initially-hide,
+                         ;; dired-details-install, dired-details-show,
+                         ;; dired-details-state
 (require 'autofit-frame nil t) ;; (no error if not found): fit-frame-if-one-window
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Quiet the byte-compiler.
+(defvar dired-details-state)
+(defvar dired-details-initially-hide)
+
+;;;;;;;;;;;;;;;;
 
 
 ;;;###autoload
