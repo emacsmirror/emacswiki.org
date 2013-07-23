@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
-;; Version: 22.0
-;; Last-Updated: Fri Apr 19 22:56:29 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:06:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 134
+;;     Update #: 136
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
