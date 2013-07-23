@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:26:27 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((compile- "0"))
+;; Last-Updated: Tue Jul 23 14:33:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 910
+;;     Update #: 914
 ;; URL: http://www.emacswiki.org/compile+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
