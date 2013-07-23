@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
-;; Version: 22.0
-;; Last-Updated: Sat Jun  8 08:07:19 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:31:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 481
+;;     Update #: 484
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
