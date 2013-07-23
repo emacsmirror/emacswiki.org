@@ -6,11 +6,12 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
-;; Version: 21.0
+;; Version: 0
+;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Mon Jul 22 10:31:54 2013 (-0700)
+;; Last-Updated: Tue Jul 23 16:13:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2886
+;;     Update #: 2888
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
