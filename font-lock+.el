@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 25 15:21:07 2007
-;; Version: 22.0
-;; Last-Updated: Sat Jun  8 11:23:09 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:09:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 154
+;;     Update #: 160
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
