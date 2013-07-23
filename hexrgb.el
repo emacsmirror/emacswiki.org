@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
-;; Version: 21.0
-;; Last-Updated: Fri Jan 18 09:01:51 2013 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:19:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 953
+;;     Update #: 956
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -482,7 +483,7 @@ Returns a list of HSV components of value 0.0 to 1.0, inclusive."
                  (arith-error nil))
                ;; Must be a number, not a NaN.  The standard test for a NaN is (not (= N N)),
                ;; but an Emacs 20 bug makes (= N N) return t for a NaN also.
-               (or (< emacs-major-version 21) (= saturation saturation)))                
+               (or (< emacs-major-version 21) (= saturation saturation)))
           (if (hexrgb-approx-equal 0.0 saturation)
               (setq hue         0.0
                     saturation  0.0)    ; Again, no color; only value.
@@ -640,7 +641,7 @@ The output list is as for `x-color-values'."
           green  (hexrgb-hex-to-int (substring color ndigits (* 2 ndigits)))
           blue   (hexrgb-hex-to-int (substring color (* 2 ndigits) (* 3 ndigits))))
     (list red green blue)))
-    
+
 ;; Like `doremi-increment-color-component', but for hue only, and with 0-1 range and NB-DIGITS.
 (defun hexrgb-increment-hue (color increment &optional nb-digits)
   "Increase hue component of COLOR by INCREMENT.
