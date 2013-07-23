@@ -1,26 +1,27 @@
 ;;; mouse3.el --- Customizable behavior for `mouse-3'.
-;; 
+;;
 ;; Filename: mouse3.el
 ;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
-;; Version: 
-;; Last-Updated: Fri Dec 28 10:15:24 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:44:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1454
+;;     Update #: 1457
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `naked'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;; This library lets you customize the behavior of `mouse-3' in
@@ -270,7 +271,7 @@
 ;;   `mouse3-dired-unmark-region-files', `mouse3-dired-use-menu',
 ;;   `mouse3-dired-use-toggle-marks', `mouse3-kill/delete-region',
 ;;   `mouse3-region-popup-menu'.
-;;   
+;;
 ;; Non-interactive functions defined here:
 ;;
 ;;   `mouse3-dired-add-region-menu',
@@ -305,7 +306,7 @@
 ;;                           define second `mouse-3' click behavior.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/06/18 dadams
@@ -362,24 +363,24 @@
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'naked nil t) ;; (no error if not found): naked-key-description
@@ -793,7 +794,7 @@ restore it by yanking."
        (copy-rect-to-register menu-item "Copy Rectangle to Register" copy-rectangle-to-register))
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for copying the mouse selection.")
-    
+
 ;;;###autoload
 (defconst mouse3-region-popup-register-submenu
     '(to-register-menu
@@ -875,7 +876,7 @@ restore it by yanking."
        (copy-rectangle-to-register   menu-item "Copy to Register" copy-rectangle-to-register))
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for operations on the rectangle selected by the mouse.")
-        
+
 ;;;###autoload
 (defconst mouse3-region-popup-change-text-submenu
     '(change-text-menu
