@@ -81,3 +81,10 @@ By default I meant the author should be able to not specify a version. The tools
 
 -- PuercoPop 2013-07-22 19:20 UTC
 
+
+----
+
+Thanks to you to for bringing this to my attention. I've been in contact with the folks at MELPA about it.
+
+-- DrewAdams 2013-07-23 00:15 UTC
+
