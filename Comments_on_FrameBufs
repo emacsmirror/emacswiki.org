@@ -1,0 +1,4 @@
+The wiki community needs to provide a walk-through for a current version of Emacs, which is complicated by buff-menu.el being hard-wired into the executable during the build process such that Emacs (once built from source) no longer uses buff-menu.el -- as such, replacing buff-menu.el with an older version (which is required to use frame-bufs.el) is not possible.  The workaround is to build Emacs from source, but delete the contents of buff-menu.el prior to building.  Thereafter, it is possible to use an older version of buff-menu.el and put a provide statement at the bottom and then require it when loading Emacs.
+
+-- lawlist 2013-07-23 23:40 UTC
+
