@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
-;; Version: 22.0
-;; Last-Updated: Sat Mar  9 13:13:43 2013 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:53:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 556
+;;     Update #: 558
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
