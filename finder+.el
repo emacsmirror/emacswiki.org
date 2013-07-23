@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:43:49 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:06:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 114
+;;     Update #: 118
 ;; URL: http://www.emacswiki.org/finder+.el
 ;; Doc URL: http://emacswiki.org/FinderMode
 ;; Keywords: help
@@ -34,7 +35,7 @@
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for command.
 ;; 2010/08/28 dadams
-;;     finder-exit, finder-mode: Redefine only for Emacs < 23. 
+;;     finder-exit, finder-mode: Redefine only for Emacs < 23.
 ;; 2010/02/28 dadams
 ;;     finder-commentary: Delete any trailing blank lines.
 ;; 2009/05/02 dadams
