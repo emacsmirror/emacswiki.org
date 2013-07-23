@@ -8,10 +8,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2009-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
-;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:19:20 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:06:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 147
+;;     Update #: 149
 ;; URL: http://www.emacswiki.org/pretty-lambdada.el
 ;; Doc URL: http://www.emacswiki.org/PrettyLambda
 ;; Keywords: convenience display
