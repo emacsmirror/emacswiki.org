@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 22 15:07:30 2000
-;; Version: 21.0
+;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 10:38:03 2013 (-0700)
+;; Last-Updated: Tue Jul 23 15:19:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 52
+;;     Update #: 54
 ;; URL: http://www.emacswiki.org/apropos+.el
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
