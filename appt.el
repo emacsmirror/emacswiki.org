@@ -8,35 +8,20 @@
 ;; Copyright (C) 1989, 1990, 1994, 1998 Free Software Foundation, Inc.
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
-;; Version: 20.1
-;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 10:36:20 2013 (-0700)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 15:17:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 686
+;;     Update #: 688
 ;; URL: http://www.emacswiki.org/appt.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cal-dst', `cal-julian', `cal-menu',
-;;   `cal-persia', `calendar', `calendar+', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `diary-lib', `dired',
-;;   `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
-;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
-;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
-;;   `solar', `strings', `subr-21', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `avoid', `cal-dst', `cal-julian', `cal-menu', `cal-persia',
+;;   `calendar', `calendar+', `cl', `diary-lib', `easymenu', `faces',
+;;   `frame-cmds', `frame-fns', `lisp-float-type', `misc-fns',
+;;   `solar', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
