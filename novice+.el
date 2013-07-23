@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:16:14 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;;; Last-Updated: Tue Jul 23 16:46:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 148
+;;     Update #: 152
 ;; URL: http://www.emacswiki.org/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -84,16 +85,12 @@
 ;; (eval-after-load "novice" '(progn (require 'novice+)))
 (when (>= emacs-major-version 20) (require 'novice))
 
-;; (require 'icicles nil t) ;; (no error if not found): completing-read
-
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
            (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
   (tap-define-aliases-wo-prefix)
   (tap-put-thing-at-point-props))
-
-;;; Variable USER-INIT-FILE is free here (defined in `files.el').
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
