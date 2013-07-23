@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
-;; Version: 21.1
-;; Last-Updated: Thu Jun  6 11:10:23 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:55:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1613
+;;     Update #: 1616
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -17,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `mwheel', `ring', `ring+'.
+;;   `mwheel', `ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -193,7 +194,8 @@
 ;;; Code:
 
 (require 'ring)
-(unless (fboundp 'ring-member) (require 'ring+))
+(unless (fboundp 'ring-member)          ; Emacs 23
+  (require 'ring+))
   ;; ring-convert-sequence-to-ring, ring-insert+extend, ring-member, ring-next, ring-previous
 (require 'mwheel nil t) ; (no error if not found): mwheel-event-button
 
