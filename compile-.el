@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:28:19 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:32:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 113
+;;     Update #: 116
 ;; URL: http://www.emacswiki.org/compile-.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
@@ -18,7 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `avoid', `fit-frame', `frame-fns'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
