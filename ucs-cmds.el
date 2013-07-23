@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
-;; Version: 23.0
-;; Last-Updated: Fri Dec 28 10:31:07 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:13:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 173
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -117,7 +118,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `ucsc-make-commands.'.
+;;    `ucsc-make-commands'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -240,7 +241,7 @@ command creation."
     (error "No such Unicode character: `%s'" character))
   (let ((create-cmd-p  (< count 0)))
     (setq count  (abs count))
-    (if (commandp 'insert-char)         ; Deal with the renaming this way.
+    (if (commandp 'insert-char)         ; Emacs 24.  Handle the renaming this way.
         (insert-char character count inherit)
       (ucs-insert character count inherit))
     (when create-cmd-p
