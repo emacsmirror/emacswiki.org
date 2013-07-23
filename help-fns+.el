@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
-;; Version: 22.1
-;; Last-Updated: Mon Jul  1 10:00:18 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:39:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1626
+;;     Update #: 1630
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -125,7 +126,7 @@
 ;;     describe-variable for Emacs 24+:
 ;;       Update for vanilla Emacs 24.4.  Update for Emacs bug #14754: fill printed value so no long lines.
 ;; 2013/06/16 dadams
-;;     describe-(variable|option(-of-type)): Fixed for brain-dead variable-at-point, which returns 0 for no var.
+;;     describe-(variable|option(-of-type)): Fixed for dumb variable-at-point, which returns 0 for no var.
 ;; 2013/04/29 dadams
 ;;     describe-(function|command|variable|option|option-of-type):
 ;;       Provide default only if symbol is of the right type.  Put default in prompt.
