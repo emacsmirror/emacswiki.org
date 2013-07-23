@@ -1,30 +1,31 @@
 ;;; doremi-mac.el --- A macro for defining Do Re Mi commands.
-;; 
+;;
 ;; Filename: doremi-mac.el
 ;; Description: A macro for defining Do Re Mi commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 14 16:45:30 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:37:04 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:54:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 214
+;;     Update #: 217
 ;; URL: http://www.emacswiki.org/doremi-mac.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;;  A macro for defining Do Re Mi commands.
-;; 
+;;
 ;;  Defines a Do Re Mi command and adds it to a `Do Re Mi' menu-bar
 ;;  menu.  See library `doremi.el'.
 ;;
@@ -36,7 +37,7 @@
 ;;  Macro defined here:
 ;;
 ;;    `define-doremi'.
-;; 
+;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
 ;;
@@ -63,7 +64,7 @@
 ;;
 ;;  2. Command `doremi-set-bg+' cycles through
 ;;     (x-defined-colors), setting the background color.
-;;     
+;;
 ;;     (define-doremi set-bg+
 ;;       ;; Doc string
 ;;       "Set background color, choosing from a list of all colors."
@@ -82,18 +83,18 @@
 ;;       (lambda () (frame-set-background-mode (selected-frame))))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
+;;
 ;; 2006/01/06 dadams
 ;;     Corrected :group.
 ;; 2004/09/26 dadams
 ;;     Renamed do-re-mi* to doremi*.
 ;;     Prefixed everything here with doremi-.
 ;;     Wrapped eval-and-compile around menu definition.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -110,7 +111,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,8 +194,8 @@ INCREMENT, provided interactively by the prefix argument."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  
-(provide 'doremi-mac)     
+
+(provide 'doremi-mac)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; doremi-mac.el ends here
