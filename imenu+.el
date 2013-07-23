@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:04:26 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:29:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 886
+;;     Update #: 889
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -118,7 +119,7 @@
 ;;       Moved Emacs 22 macro stuff to imenu-lisp-macro-defn-regexp.
 ;;     (emacs-)lisp-imenu-generic-expression:
 ;;       Updated Emacs 20 index to accomodate parens for icicle-define*.
-;;     Added: imenu-emacs-(face|option)-defn-regexp, 
+;;     Added: imenu-emacs-(face|option)-defn-regexp,
 ;;     Removed: imenu-lisp-struct-defn-regexp.
 ;;     Renamed: imenu-lisp-type-defn-regexp to imenu-lisp-other-defn-regexp.
 ;; 2005/05/17 dadams
