@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
-;; Version: 22.0
-;; Last-Updated: Fri Jul 19 08:24:58 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
+;; Last-Updated: Tue Jul 23 14:32:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 476
+;;     Update #: 480
 ;; URL: http://www.emacswiki.org/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
