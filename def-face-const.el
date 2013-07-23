@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 09:08:55 1999
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:34:23 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:42:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 91
+;;     Update #: 93
 ;; URL: http://www.emacswiki.org/def-face-const.el
 ;; Doc URL: http://emacswiki.org/DefineFaceConstant
 ;; Keywords: faces
