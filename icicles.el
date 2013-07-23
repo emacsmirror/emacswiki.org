@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.04.23
-;; Last-Updated: Tue Jul  9 16:32:19 2013 (-0700)
+;; Version: 2013.07.23
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:27:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23414
+;;     Update #: 23424
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -19,8 +20,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
 ;;   `cus-start', `dired', `dired+', `dired-aux', `dired-x',
 ;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
