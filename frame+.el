@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
-;; Version: 21.0
-;; Last-Updated: Sat Jun  8 11:24:53 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:12:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 258
+;;     Update #: 260
 ;; URL: http://www.emacswiki.org/frame+.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: frames
