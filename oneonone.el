@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
-;; Version: 21.1
-;; Last-Updated: Sun Jul 21 17:00:31 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((hexrgb "0"))
+;; Last-Updated: Tue Jul 23 16:47:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2771
+;;     Update #: 2774
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
