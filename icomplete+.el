@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
-;; Version: 21.0
-;; Last-Updated: Thu Jan 31 21:50:56 2013 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:28:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1608
+;;     Update #: 1610
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
