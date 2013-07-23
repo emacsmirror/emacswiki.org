@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
-;; Version: 21.1
-;; Last-Updated: Sat Jun  8 09:25:35 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:41:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1521
+;;     Update #: 1523
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
