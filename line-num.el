@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989, Hewlett-Packard, all rights reserved.
 ;; Created: Wed Mar 31 16:18:24 1999
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:06:21 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;;; Last-Updated: Tue Jul 23 16:34:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 214
+;;     Update #: 216
 ;; URL: http://www.emacswiki.org/line-num.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: local
