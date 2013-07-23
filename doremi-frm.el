@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
-;; Version: 22.0
-;; Last-Updated: Thu Jun  6 10:59:05 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
+;; Last-Updated: Tue Jul 23 15:53:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2993
+;;     Update #: 2999
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -19,7 +20,7 @@
 ;;
 ;;   `avoid', `doremi', `eyedropper', `faces', `faces+',
 ;;   `frame-cmds', `frame-fns', `hexrgb', `misc-fns', `mwheel',
-;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+'.
+;;   `ring', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -571,7 +572,8 @@
                   ;; hexrgb-increment-blue, hexrgb-increment-green, hexrgb-increment-red,
                   ;; hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv
 (require 'ring)
-(unless (fboundp 'ring-member) (require 'ring+)) ;; ring-insert, ring-member, ring-next
+(unless (fboundp 'ring-member)          ; Emacs 23
+  (require 'ring+)) ;; ring-insert, ring-member, ring-next
 (require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons, get-a-frame
 (require 'faces+) ;; face-background-20+, face-foreground-20+, Emacs 20: read-face-name
 (if (fboundp 'defvaralias) ;; Emacs 22
