@@ -1,5 +1,5 @@
 ;;; fuzzy-match.el --- fuzzy matching
-;; 
+;;
 ;; Filename: fuzzy-match.el
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall <s i m o n  AT  g n u . o r g>
@@ -8,14 +8,15 @@
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
-;; Last-Updated: Fri Dec 28 09:17:04 2012 (-0800)
+;; Package-Requires: ()
+;; Last-Updated: Mon Jul 22 11:01:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 181
 ;; URL: http://www.emacswiki.org/fuzzy-match.el
 ;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
@@ -25,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;; Purpose:
-;; 
+;;
 ;; Fuzzy-match is a package of functions to provide non-exact comparison
 ;; between strings.  Since I am no expert on such things, and certain criteria
 ;; for non-exact comparison had to be dropped for reasons of efficiency (e.g.,
@@ -41,11 +42,11 @@
 ;; `FM-matchiness' (and corresponding `FM-closeness'), `FM-all-fuzzy-matches'
 ;; (and corresponding `FM-all-close-matches'), and `FM-fuzzy-sort'.  These can
 ;; be thought to mirror `string-match', `all-completions' and `sort'.
-;; 
+;;
 ;; The function `FM-matchiness' returns an integer which is the number of
 ;; matching characters from STRING1 in STRING2.  What denotes "the number of
 ;; matching characters" is arbitrary.
-;; 
+;;
 ;; The fuzziness between two strings, STRING1 and STRING2, is calculated by
 ;; finding the position in STRING2 of a prefix of STRING1.  The first character
 ;; of STRING1 is found in STRING2.  If we find it, we continue matching
@@ -73,9 +74,9 @@
 ;; c                    ly              0               0               0
 ;;
 ;;      => 4
-;; 
+;;
 ;; (FM-matchiness "begining-of-l" "beginning-of-l"):
-;; 
+;;
 ;; STRING1              STRING2         MATCH LENGTH    OFFSET          FUZZ
 ;; begining-of-l        beginning-of-l  5               0               5
 ;; ing-of-l             ning-of-l       8               1               8
@@ -148,7 +149,7 @@
 ;; To use, put in your package that uses these functions:
 ;;
 ;; (require 'fuzzy-match)
-;; 
+;;
 ;; To use the interactive package, put the following in your ~/.emacs file:
 ;;
 ;; (autoload 'lisp-spell-symbol "fuzzy-match"
@@ -167,7 +168,7 @@
 ;;  input completion: http://www.emacswiki.org/cgi-bin/wiki/Icicles.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2011/01/04 dadams
@@ -198,19 +199,19 @@
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;; Bizarre, but FM-strstr-intern and FM-matchiness-intern are quickest when
