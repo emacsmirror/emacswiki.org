@@ -1,28 +1,29 @@
 ;;; eyedropper.el --- Pick foreground and background colors at cursor or pointer.
-;; 
+;;
 ;; Filename: eyedropper.el
 ;; Description: Pick foreground and background colors at cursor or pointer.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 23 08:07:15 2006
-;; Version: 20
-;; Last-Updated: Fri Dec 28 09:39:34 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((hexrgb "0"))
+;; Last-Updated: Tue Jul 23 16:00:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 176
+;;     Update #: 180
 ;; URL: http://www.emacswiki.org/eyedropper.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `hexrgb'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 ;;  Use the commands defined here to examine or save the background or
 ;;  foreground color at the text cursor or the mouse pointer.
 ;;
@@ -54,11 +55,11 @@
 ;;    Add this to your initialization file (~/.emacs or ~/_emacs):
 ;;
 ;;      (require 'eyedropper) ; Load this library.
-;; 
+;;
 ;;    You will also need my library `hexrgb.el'; it is loaded
 ;;    automatically by `eyedropper.el'.  Get it here:
 ;;    http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el.
-;; 
+;;
 ;;  Commands defined here:
 ;;
 ;;    `background-color', `eyedrop-background-at-mouse',
@@ -80,7 +81,7 @@
 ;;    `eyedrop-picked-foreground'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/08/12 dadams
@@ -100,26 +101,26 @@
 ;;     eyedrop-(back|fore)ground-at-point: Use eyedrop-face-at-point also.
 ;; 2006/06/23 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'hexrgb) ;; hexrgb-hex-to-rgb, hexrgb-rgb-to-hsv
