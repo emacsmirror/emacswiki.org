@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:36:32 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((doremi "0"))
+;; Last-Updated: Tue Jul 23 15:52:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 336
+;;     Update #: 340
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -17,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `doremi', `mwheel', `ring', `ring+'.
+;;   `doremi', `mwheel', `ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -421,7 +422,7 @@ WINDOW is selected.  WINDOW defaults to the selected window."
                     (window-width))
             (window-width) nil t))
   (when (member (car unread-command-events)
-                (append doremi-up-keys   doremi-boost-up-keys 
+                (append doremi-up-keys   doremi-boost-up-keys
                         doremi-down-keys doremi-boost-down-keys))
     (doremi-window-height+ increment window)))
 
