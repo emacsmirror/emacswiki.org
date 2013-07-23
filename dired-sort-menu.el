@@ -5,7 +5,10 @@
 ;; Author: Francis J. Wright <F.J.Wright@maths.qmw.ac.uk>
 ;; Maintainer: Francis J. Wright <F.J.Wright@maths.qmw.ac.uk>
 ;; Time-stamp: <26 July 2001>
+;; Version: 2001.07.26
+;; Package-Requires: ()
 ;; URL: http://centaur.maths.qmw.ac.uk/Emacs/
+;; URL: https://sites.google.com/site/fjwcentaur/emacs/files/dired-sort-menu.el
 ;; Keywords: dired, sort, menu, dialogue
 
 ;; $Id: dired-sort-menu.el,v 1.26 2001-07-26 21:22:48+01 fjw Exp $
