@@ -1,26 +1,27 @@
 ;;; wide-n.el --- Cycle among buffer restrictions
-;; 
+;;
 ;; Filename: wide-n.el
 ;; Description: Cycle among buffer restrictions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 13:27:07 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:06:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 344
+;;     Update #: 347
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;;    This library modifies commands `narrow-to-region',
@@ -39,7 +40,7 @@
 ;;    as follows:
 ;;
 ;;    * A plain prefix arg (`C-u') widens the buffer completely.
-;; 
+;;
 ;;    * A zero numeric prefix arg (e.g `C-0') widens completely
 ;;      and resets (empties) the list of restrictions.
 ;;
@@ -79,7 +80,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-repeat', 
+;;    `wide-n', `wide-n-repeat',
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -99,7 +100,7 @@
 ;;    `narrow-to-defun', `narrow-to-page'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2011/04/09 dadams
@@ -130,26 +131,26 @@
 ;;     Use narrow-map if defined.
 ;; 2010/04/18 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 
