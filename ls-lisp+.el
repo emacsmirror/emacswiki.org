@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
-;; Version: 20.0
-;; Last-Updated: Sat Jul 13 19:28:48 2013 (-0700)
+;; Version: 
+;; Package-Requires: ((files+ "0"))
+;; Last-Updated: Tue Jul 23 16:35:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 195
 ;; URL: http://www.emacswiki.org/ls-lisp+.el
 ;; Doc URL: http://emacswiki.org/LsLisp
 ;; Keywords: internal, extensions, local, files, dired
