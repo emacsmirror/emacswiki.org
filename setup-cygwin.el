@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
-;; Version: 21.0
-;; Last-Updated: Wed Jun  5 16:49:44 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((cygwin-mount "0"))
+;; Last-Updated: Tue Jul 23 16:54:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 137
+;;     Update #: 139
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
