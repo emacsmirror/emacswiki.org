@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 16 14:11:36 2008 (-0700)
-;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:27:02 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:32:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 42
+;;     Update #: 47
 ;; URL: http://www.emacswiki.org/filesets+.el
 ;; Doc URL: http://www.emacswiki.org/FileSets
 ;; Keywords:
@@ -43,7 +44,7 @@
 ;;
 ;;   `filesets-menu-path'   - value should be ("file")
 ;;   `filesets-menu-before' - value should be "Open File..."
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
