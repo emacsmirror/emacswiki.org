@@ -9,11 +9,11 @@
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
-;; Version: 21.0
+;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 10:34:15 2013 (-0700)
+;; Last-Updated: Tue Jul 23 16:16:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1838
+;;     Update #: 1841
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
