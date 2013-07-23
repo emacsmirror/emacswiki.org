@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Oct 04 10:54:38 2007
-;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:26:10 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 14:06:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 165
+;;     Update #: 167
 ;; URL: http://www.emacswiki.org/bindings+.el
 ;; Doc URL: http://emacswiki.org/ModeLineMinorModeMenu
 ;; Keywords: 
