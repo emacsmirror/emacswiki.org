@@ -133,13 +133,15 @@ gnus will be started if it is not already running."
   (interactive "P")
   (unless gnus-newsrc-alist (gnus))
   (let* ((groups (mapcar 'car (cdr gnus-newsrc-alist)))
-         (group (ido-completing-read "Group: " groups nil t)))
+         (group (ido-completing-read "Group: " (append (list gnus-group-buffer) groups) nil t)))
     (if (member group groups)
         (gnus-group-read-group (if prefix
                                    (if (numberp ido-gnus-num-articles) t
                                      gnus-large-newsgroup)
                                  ido-gnus-num-articles)
-                               (not ido-gnus-show-article) group))))
+                               (not ido-gnus-show-article) group)
+      (if (equal group gnus-group-buffer)
+          (switch-to-buffer gnus-group-buffer)))))
 
 ;;;###autoload
 (defun ido-gnus-select-server (prefix)
@@ -151,11 +153,12 @@ gnus will be started if it is not already running."
   (unless (get-buffer gnus-server-buffer) (gnus-enter-server-buffer))
   (let* ((srvs (mapcar (lambda (x) (concat (symbol-name (caar x)) ":" (cadar x)))
                        gnus-opened-servers))
-         (srv (ido-completing-read "Server: " srvs nil t)))
+         (srv (ido-completing-read "Server: " (append (list gnus-server-buffer) srvs) nil t)))
     (if (member srv srvs)
         (with-current-buffer gnus-server-buffer
-          (gnus-server-read-server srv)))))
-
+          (gnus-server-read-server srv))
+      (if (equal srv gnus-server-buffer)
+          (switch-to-buffer gnus-server-buffer)))))
 
 
 (provide 'ido-gnus)
