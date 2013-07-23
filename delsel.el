@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:34:42 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:43:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 353
+;;     Update #: 355
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
