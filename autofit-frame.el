@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:24:24 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((fit-frame "0"))
+;; Last-Updated: Tue Jul 23 15:21:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 691
+;;     Update #: 701
 ;; URL: http://www.emacswiki.org/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
