@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
-;; Version: 21.0
-;; Last-Updated: Tue May 28 22:25:41 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:21:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3179
+;;     Update #: 3181
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -17,10 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `faces', `faces+', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `apropos', `apropos+', `avoid', `easymenu', `faces', `faces+',
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
