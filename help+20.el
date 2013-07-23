@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:51:40 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:17:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2200
+;;     Update #: 2204
 ;; URL: http://www.emacswiki.org/help+20.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -169,7 +170,7 @@
 ;; 2007/12/06 dadams
 ;;     describe-option-of-type:
 ;;       If nil type, all defcustom vars are candidates.  Use custom-variable-p, if available.
-;;       Specific error if no such custom type.  
+;;       Specific error if no such custom type.
 ;;     describe-option: Use both custom-variable-p and user-variable-p.
 ;; 2007/12/04 dadams
 ;;     Added: describe-option-of-type, help-remove-duplicates, help-var-is-of-type-p.
@@ -854,7 +855,7 @@ impossible to know which concrete types a value must match."
                   (save-match-data (string-match type (format "%s" (format "%S" var-type))))
                 (equal var-type type))
           (throw 'help-type-matches t))))
-    nil))  
+    nil))
 
 (defun help-var-inherits-type-p (variable types)
   "VARIABLE's type matches or is a subtype of a member of list TYPES."
@@ -1070,7 +1071,7 @@ or `.el' to the specified name LIBRARY (like calling `load' instead of
 If the optional third arg PATH is specified, that list of directories
 is used instead of `load-path'.
 
-When called from a program, the file name is normaly returned as a
+When called from a program, the file name is normally returned as a
 string.  When run interactively, the argument INTERACTIVE-CALL is t,
 and the file name is displayed in the echo area."
   (interactive (list (if (fboundp 'icicle-read-string-completing)
