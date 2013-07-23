@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:32:59 2012 (-0800)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 15:37:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 937
+;;     Update #: 941
 ;; URL: http://www.emacswiki.org/compile+20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
@@ -18,10 +18,10 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `compile', `compile-20',
-;;   `faces', `faces+', `fit-frame', `font-lock', `frame-fns',
-;;   `help+20', `highlight', `info', `info+', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `easymenu', `faces', `faces+', `fit-frame', `font-lock',
+;;   `frame-fns', `help+20', `highlight', `info', `info+',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -403,7 +403,7 @@ files to search are used as the last time."
                                                  (char-to-string (upcase char)) "]")
                                        (char-to-string char)))
                                    grep-pattern "")))
-  
+
   ;; Setting process-setup-function makes exit-message-function work
   ;; even when async processes aren't supported.
   (let* ((compilation-process-setup-function  'grep-process-setup)
@@ -823,7 +823,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
 (defun remove-grep-comments (&optional read-regexp-p)
   "Remove lines that are completely commented out.
 With a prefix argument, you are prompted for the regexp used to match
- commented lines.  The default value is 
+ commented lines.  The default value is
  `grep-default-comment-line-regexp'.
 With no prefix argument, this default value is used as the regexp.
 
