@@ -1,38 +1,39 @@
 ;;; lib-requires.el --- Commands to list Emacs Lisp library dependencies.
-;; 
+;;
 ;; Filename: lib-requires.el
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:05:57 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:33:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 747
+;;     Update #: 750
 ;; URL: http://www.emacswiki.org/lib-requires.el
 ;; Doc URL: http://emacswiki.org/LibraryDependencies
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `loadhist'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;;  Commands to list Emacs Lisp library dependencies.
 ;;
 ;;  This library extends some of the functionality in GNU Emacs
 ;;  library `load-hist.el'.
-;; 
+;;
 ;;
 ;;  User options (variables) defined here:
 ;;
 ;;    `libreq-file-header'.
-;; 
+;;
 ;;
 ;;  Functions defined here:
 ;;
@@ -41,7 +42,7 @@
 ;;    `libreq-requires-tree'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
 ;; 2012/02/08 dadams
@@ -99,7 +100,7 @@
 ;;  feedback about the original version of `libreq-requires-tree'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -116,7 +117,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'loadhist)
