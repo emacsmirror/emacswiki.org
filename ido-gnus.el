@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-21 12:26:18
-;; Version: 0.2
-;; Last-Updated: 2013-06-22 19:43:00
+;; Version: 0.3
+;; Last-Updated: 2013-07-23 16:30:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/ido-gnus
 ;; Keywords: comm
