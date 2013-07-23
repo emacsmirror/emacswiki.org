@@ -7,9 +7,10 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 12:34:22 2012 (-0800)
+;; Package-Requires: ((browse-kill-ring "0"))
+;; Last-Updated: Mon Jul 22 15:09:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 963
+;;     Update #: 965
 ;; URL: http://www.emacswiki.org/browse-kill-ring+.el
 ;; Doc URL: http://www.emacswiki.org/BrowseKillRing
 ;; Keywords: convenience
