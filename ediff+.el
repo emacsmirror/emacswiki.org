@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
-;; Version: 20
-;; Last-Updated: Fri Dec 28 09:37:52 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:56:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 121
+;;     Update #: 123
 ;; URL: http://www.emacswiki.org/ediff+.el
 ;; Doc URL: http://emacswiki.org/EdiffMode
 ;; Keywords: comparing, merging, patching, version control
