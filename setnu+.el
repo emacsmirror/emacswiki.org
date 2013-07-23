@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:21:22 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;;; Last-Updated: Tue Jul 23 16:54:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 172
+;;     Update #: 174
 ;; URL: http://www.emacswiki.org/setnu%2b.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: lines
