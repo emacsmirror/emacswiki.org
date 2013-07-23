@@ -8,10 +8,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
-;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:43:05 2012 (-0800)
+;; Version: 0
+;; Package-Requires: (("find-dired-" "0"))
+;; Last-Updated: Tue Jul 23 16:05:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 617
+;;     Update #: 620
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -19,11 +20,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
-;;   `dired-aux', `dired-x', `ffap', `find-dired', `find-dired-',
-;;   `misc-fns', `pp', `pp+', `subr-21', `thingatpt', `thingatpt+',
-;;   `w32-browser'.
+;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `dired', `dired+', `dired-aux',
+;;   `dired-x', `ffap', `find-dired', `find-dired-', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp', `pp+',
+;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
