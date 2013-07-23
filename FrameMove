@@ -20,6 +20,9 @@ Currently, when focus shifts to a new frame - the point does not change inside t
 
 Download from Lisp:framemove.el
 
+If you get errors due to remove-if-not not being defined, you might need some common-lisp stuff:
+    (require 'cl)
+
 ----
 
 [new:DrewAdams:2010-02-20 17:44 UTC]
