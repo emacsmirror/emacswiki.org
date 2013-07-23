@@ -1,25 +1,26 @@
 ;;; cursor-chg.el --- Change cursor dynamically, depending on the context.
-;; 
+;;
 ;; Filename: cursor-chg.el
 ;; Description: Change cursor dynamically, depending on the context.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 29 11:23:06 2006
-;; Version: 20.1
-;; Last-Updated: Fri Dec 28 09:33:41 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:40:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 203
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/cursor-chg.el
 ;; Keywords: cursor, accessibility
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary:
 ;;
 ;;  This library provides three kinds of changes to the text cursor:
@@ -44,7 +45,7 @@
 ;;    (require 'cursor-chg)  ; Load this library
 ;;    (change-cursor-mode 1) ; On for overwrite/read-only/input mode
 ;;    (toggle-cursor-type-when-idle 1) ; On when idle
-;; 
+;;
 ;;  Note: Library `oneonone.el' provides the same functionality as
 ;;  library `cursor-chg.el', and more.  If you use library
 ;;  `oneonone.el', then do NOT also use library `cursor-chg.el'.
@@ -54,7 +55,7 @@
 ;;  idle-cursor change enabled.  If you use Emacs 20, then consider
 ;;  using `toggle-cursor-type-when-idle' to disable idle-cursor change
 ;;  while you use `query-replace'.
-;; 
+;;
 ;;  User options defined here:
 ;;
 ;;    `curchg-change-cursor-on-input-method-flag',
@@ -107,26 +108,28 @@
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
+;; Quite the byte-compiler.
+(defvar change-cursor-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
