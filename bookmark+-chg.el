@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 20 20:21:09 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:46:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15389
+;;     Update #: 15391
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/07/24 dadams
+;;     bmkp-new-bookmark-default-names, bookmark-make-record-default:
+;;       Test using (region-beginning|end), not mark function (C code and simpler).
 ;; 2013/07/11 dadams
 ;;     bmkp-url-target-set: Use let* with backquote lambda instead of lexical-let*.
 ;; 2013/07/02 dadams
