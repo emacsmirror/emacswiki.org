@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Version: 22.0
-;; Last-Updated: Tue Jul  9 20:48:08 2013 (-0700)
+;; Last-Updated: Tue Jul 23 19:25:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10112
+;;     Update #: 10118
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/07/23 dadams
+;;     icicle-buffer-multi-complete, icicle-describe-opt-of-type-complete:
+;;       Use regexp-quote before concat ^ to front of string.
 ;; 2013/07/04 dadams
 ;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/07/02 dadams
@@ -917,6 +919,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/07/23 dadams
+;;     icicle-Info-multi-read-node-name: Use regexp-quote before concat ^ to front of string.
 ;; 2013/07/09 dadams
 ;;     Added: icicle-complete-menu-bar.
 ;;     icicle-add-key+cmd: Corrected menu-item description: Always use MITEM if available.
