@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:44:30 2013 (-0700)
+;; Last-Updated: Tue Jul 23 19:31:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1457
+;;     Update #: 1462
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -309,6 +309,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/23 dadams
+;;     mouse3-dired-this-file-(un)marked-p: Use regexp-quote before concat ^ to front of string.
 ;; 2012/06/18 dadams
 ;;     mouse3-region-popup-menu: Use format-mode-line on mode-name.
 ;; 2011/12/19 dadams
@@ -1433,7 +1435,7 @@ Optional arg MARK-CHAR is the type of mark to check.
   (and (dired-get-filename t t)
        (save-excursion (beginning-of-line)
                        (if mark-char
-                           (looking-at (concat "^" (char-to-string mark-char)))
+                           (looking-at (concat "^" (regexp-quote (char-to-string mark-char))))
                          (not (looking-at "^ "))))))
 
 (defun mouse3-dired-this-file-unmarked-p (&optional mark-char) ; Same as `diredp-this-file-unmarked-p'.
@@ -1445,7 +1447,7 @@ Optional arg MARK-CHAR is the type of mark to check.
   (and (dired-get-filename t t)
        (save-excursion (beginning-of-line)
                        (if mark-char
-                           (not (looking-at (concat "^" (char-to-string mark-char))))
+                           (not (looking-at (concat "^" (regexp-quote (char-to-string mark-char)))))
                          (looking-at "^ ")))))
 
 ;;;###autoload
