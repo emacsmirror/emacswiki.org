@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
-;; Version: 20
-;; Last-Updated: Sun Apr 21 11:52:37 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((frame-cmds "0"))
+;; Last-Updated: Tue Jul 23 17:12:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 289
+;;     Update #: 292
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
