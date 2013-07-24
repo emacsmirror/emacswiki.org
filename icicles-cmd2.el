@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Jul 24 07:54:58 2013 (-0700)
+;; Last-Updated: Wed Jul 24 09:40:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6489
+;;     Update #: 6491
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5244,7 +5244,9 @@ command again."
              (prog1 (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
                                              (symbol-name icicle-last-thing-type)))))
          (point)
-         (if mark-active (min (region-beginning) (region-end)) (point-min))))
+         (if (and mark-active  (not (eq (region-beginning) (region-end))))
+             (min (region-beginning) (region-end))
+           (point-min))))
   (if (interactive-p)
       (icicle-with-comments-hidden start end (icicle-next-visible-thing thing start end 'BACKWARD))
     (icicle-next-visible-thing thing start end 'BACKWARD)))
@@ -5281,7 +5283,9 @@ the bounds of THING.  Return nil if no such THING is found."
              (prog1 (intern (completing-read "Thing (type): " (icicle-things-alist) nil nil nil nil
                                              (symbol-name icicle-last-thing-type)))))
          (point)
-         (if mark-active (max (region-beginning) (region-end)) (point-max))))
+         (if (and mark-active  (not (eq (region-beginning) (region-end))))
+             (max (region-beginning) (region-end))
+           (point-max))))
   (setq icicle-last-thing-type  thing)
   (unless start (setq start  (point)))
   (unless end   (setq end    (if backward (point-min) (point-max))))
