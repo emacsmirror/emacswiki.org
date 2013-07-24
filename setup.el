@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
-;; Version: 21.0
-;; Last-Updated: Sun Jul 14 20:32:47 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:56:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 774
+;;     Update #: 776
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
