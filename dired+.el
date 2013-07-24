@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:45:54 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:51:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7074
+;;     Update #: 7085
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -380,9 +380,10 @@
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
-;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
-;;    `diredp-read-bookmark-file-args', `diredp-remove-if-not',
-;;    `diredp-set-tag-value', `diredp-string-match-p', `diredp-tag',
+;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
+;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
+;;    `diredp-remove-if-not', `diredp-set-tag-value',
+;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
 ;;
@@ -482,6 +483,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     Added: diredp-nonempty-region-p.  Use everywhere, in place of its definition.
 ;; 2013/07/21 dadams
 ;;     Added: diredp-image-dired-(comment-file|copy-with-exif-name|(create|display)-thumb|
 ;;                                delete-tag|edit-comment-and-tags|tag-file),
@@ -1313,6 +1316,10 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   (defun diredp-string-match-p (regexp string &optional start)
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
+
+(defun diredp-nonempty-region-p ()
+  "Return non-nil if region is active and non-empty."
+  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
 
 (unless (fboundp 'derived-mode-p)       ; Emacs 20, 21.
   (defun derived-mode-p (&rest modes)
@@ -2501,11 +2508,10 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Flag auto-save files for deletion"))
 (define-key diredp-menu-bar-mark-menu [flag-region]
   '(menu-item "Flag Region" diredp-flag-region-files-for-deletion
-    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
+    :enable (diredp-nonempty-region-p)
     :help "Flag all files in the region (selection) for deletion"))
 (when (< emacs-major-version 21)
-  (put 'diredp-flag-region-files-for-deletion
-       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
+  (put 'diredp-flag-region-files-for-deletion 'menu-enable '(diredp-nonempty-region-p)))
 (define-key diredp-menu-bar-mark-menu [deletion]
   '(menu-item "Flag" dired-flag-file-deletion :help "Flag current line's file for deletion"))
 (define-key diredp-menu-bar-mark-menu [separator-flag] '("--")) ; ------------------------------
@@ -2553,11 +2559,10 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Mark Executables" dired-mark-executables :help "Mark all executable files"))
 (define-key diredp-menu-bar-mark-menu [mark-region]
   '(menu-item "Mark Region" diredp-mark-region-files
-    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
+    :enable (diredp-nonempty-region-p)
     :help "Mark all of the files in the region (selection)"))
 (when (< emacs-major-version 21)
-  (put 'diredp-mark-region-files
-       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
+  (put 'diredp-mark-region-files 'menu-enable '(diredp-nonempty-region-p)))
 (define-key diredp-menu-bar-mark-menu [mark]
   '(menu-item "Mark" dired-mark :help "Mark current line's file for future operations"))
 (define-key diredp-menu-bar-mark-menu [separator-unmark] '("--")) ; ----------------------------
@@ -2569,11 +2574,10 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Remove a specific mark (or all marks) from every file"))
 (define-key diredp-menu-bar-mark-menu [unmark-region]
   '(menu-item "Unmark Region" diredp-unmark-region-files
-    :enable (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
+    :enable (diredp-nonempty-region-p)
     :help "Unmark all files in the region (selection)"))
 (when (< emacs-major-version 21)
-  (put 'diredp-unmark-region-files
-       'menu-enable '(and transient-mark-mode  mark-active  (not (eq (mark) (point))))))
+  (put 'diredp-unmark-region-files 'menu-enable '(diredp-nonempty-region-p)))
 (define-key diredp-menu-bar-mark-menu [unmark]
   '(menu-item "Unmark" dired-unmark :help "Unmark or unflag current line's file"))
 
@@ -7320,10 +7324,9 @@ With non-nil prefix arg, mark them instead."
 (defun diredp-mouse-3-menu (event)      ; Bound to `mouse-3'
   "Dired pop-up `mouse-3' menu, for files in selection or current line."
   (interactive "e")
-  (if (not (and (fboundp 'mouse3-dired-use-menu)
-                transient-mark-mode mark-active (not (eq (mark) (point)))))
+  (if (not (and (fboundp 'mouse3-dired-use-menu)  (diredp-nonempty-region-p)))
       ;; No `mouse3.el' or no region.
-      (if (and transient-mark-mode  mark-active  (not (eq (mark) (point))))
+      (if (diredp-nonempty-region-p)
           ;; Region
           (let ((reg-choice  (x-popup-menu
                               event
