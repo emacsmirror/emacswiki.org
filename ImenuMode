@@ -64,22 +64,30 @@ You can control the order of Imenu menu items by customizing [[option]] '''`imen
 
 
 
-
+[:IcicleImenu]
 [:ImenuBrowser]
-== Imenu Browser ==
+== Icicles - Imenu for Multiple Buffers, Files, or Bookmarks ==
 
-'''[[Icicles]]''' command '''`icicle-imenu'''' turns any Imenu-supported buffer into an Imenu browser.  Use it to navigate among the various Imenu entries.  No need for a separate window such as SpeedBar. See [[Icicles - Search Commands, Overview]].
+'''[[Icicles]]''' command '''`icicle-imenu'''' lets you browse the definitions in any set of Imenu-supported buffers, files, or bookmark destinations at the same time.  Use it to navigate among Imenu entries anywhere.
 
-Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu submenu '''Functions''') that match the regexp `kill':
+This screenshot shows `icicle-imenu' finding function definitions that match `kill':
 
 [[image:IciclesImenuScreenshot]]
 
-So much for navigating by cycling among defined terms. Most of the time, however, you just want to go directly to a definition; you aren't interested in browsing among multiple definitions. Since `icicle-imenu' is an '''Icicles''' command, you can also use completion against any parts of a definition (just type a [[regexp]], such as a substring). 
+There are more specific '''Icicles''' commands that browse only definitions of a specific type:
 
-This is quite handy. You can also use simple completion with the vanilla Emacs command `imenu', but with `icicle-imenu' you can type any part of a defined term -- in fact, any part of the line that defines it, and go to the definition in the buffer immediately. 
+* `icicle-imenu-command' -- [[command]] definitions
+* `icicle-imenu-non-interactive-function' -- non-[[command]] Lisp fn defs
+* `icicle-imenu-macro' -- [[macro]] definitions
+* `icicle-imenu-user-option' -- [[user option]] definitions
+* `icicle-imenu-variable' -- [[variable]] definitions
+* `icicle-imenu-face' -- [[face]] definitions
+* `icicle-imenu-key-explicit-map', `icicle-imenu-key-implicit-map'
+  -- key bindings
 
-Using `icicle-imenu' you can also combine ''semantic'' search with the purely syntactic search of Imenu. In EmacsLispMode, if you supply a prefix argument to `icicle-imenu', you can selectively find only [[command]]s or only non-interactive functions.
+There are also '''Icicles''' commands that let you match not only the name of the defined term (function etc.) but all parts of its definition.  These have the same names as the commands above, but with the suffix `-full'.
 
+See [[Icicles - Search Commands, Overview]].
 
 
 
