@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:32:41 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:08:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 231
+;;     Update #: 234
 ;; URL: http://www.emacswiki.org/w32-browser.el
 ;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
@@ -157,7 +158,7 @@ If file is a directory or no application is associated with file, then
         (sleep-for w32-browser-wait-time)
         (setq files (cdr files)))))
 
-  (defun w32explore (file)   
+  (defun w32explore (file)
     "Open Windows Explorer to FILE (a file or a folder)."
     (interactive "fFile: ")
     (let ((w32file (subst-char-in-string ?/ ?\\ (expand-file-name file))))
@@ -165,12 +166,12 @@ If file is a directory or no application is associated with file, then
           (w32-shell-execute "explore" w32file "/e,/select,")
         (w32-shell-execute "open" "explorer" (concat "/e,/select," w32file)))))
 
-  (defun dired-w32explore ()   
+  (defun dired-w32explore ()
     "Open Windows Explorer to current file or folder."
     (interactive)
     (w32explore (dired-get-filename nil t)))
 
-  (defun dired-mouse-w32explore (event)   
+  (defun dired-mouse-w32explore (event)
     "Open Windows Explorer to file or folder under mouse."
     (interactive "e")
     (let (file)
@@ -183,7 +184,7 @@ If file is a directory or no application is associated with file, then
 
 ;;; This doesn't work, nor do other variants.
 ;;; Apparently, /select can specify only one file, and only one /select can be used.
-;;;   (defun dired-multiple-w32explore ()   
+;;;   (defun dired-multiple-w32explore ()
 ;;;     "Open Windows Explorer to current directory, with marked files selected."
 ;;;     (interactive)
 ;;;     (let ((files (dired-get-marked-files)))
