@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
-;; Version: 21.1
-;; Last-Updated: Fri Jul  5 09:33:00 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 16:55:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1199
+;;     Update #: 1213
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -736,14 +737,16 @@
   (global-set-key [M-pause] 'next-buffer))                                     ; `M-pause'
 
 ;; `iso-transl.el' is needed to use an ISO prefix key (e.g. `C-x 8'. [f12]).
-(require 'iso-transl)                   ; Defines `key-translation-map'.
+;; It defines `key-translation-map'.
+(require 'iso-transl)
 ;;;@@@Emacs20 ;; This lets users do `[f12] C-h]' for help on ISO chars.
 ;;;@@@Emacs20 (autoload 'help-iso-prefix "help+"
 ;;;@@@Emacs20   "Show commands bound to ISO (pseudo-)prefix key sequences." t)
 
-;; Make [f12] key be a synonym for `C-x 8'. (Use [f12] as a compose key.)
-(define-key key-translation-map [f12] ; See `iso-transl.el'.                   ; `f12'
+  ;; Make [f12] key be a synonym for `C-x 8'. (Use [f12] as a compose key.)
+(define-key key-translation-map [f12]   ; See `iso-transl.el'.                   ; `f12'
   (lookup-key key-translation-map "\C-x8"))
+
 ;; Make [f12] key be a synonym for `C-x 8' for isearch too.
 ;; This lets you search for accented chars using [f12].
 (define-key isearch-mode-map [f12] nil)
