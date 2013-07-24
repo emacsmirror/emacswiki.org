@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
-;; Version: 1.0
-;; Last-Updated: Sat Dec 29 15:02:30 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:02:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2511
+;;     Update #: 2517
 ;; URL: http://www.emacswiki.org/synonyms.el
 ;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
@@ -501,7 +502,7 @@
 ;; 2006/03/14 dadams
 ;;     synonyms-file-(read|writ)able-p: Make sure also not a directory.
 ;; 2006/03/12 dadams
-;;     synonyms-ensure-synonyms-read-from-cache, synonyms-define-synonyms-file: 
+;;     synonyms-ensure-synonyms-read-from-cache, synonyms-define-synonyms-file:
 ;;       Set synonyms(-cache)-file to expanded version.
 ;; 2006/03/01 dadams
 ;;     Updated Commentary to mention Icicles completion of synonyms.
@@ -514,10 +515,10 @@
 ;; 2006/01/18 dadams
 ;;     Added dictionary definition lookup:
 ;;       Added: synonyms-dictionary(-alternate)-url, synonyms-definition*.
-;;       Bound synonyms-definition-*. 
+;;       Bound synonyms-definition-*.
 ;; 2006/01/14 dadams
 ;;     Bug fixes -
-;;     Make sure file name is expanded (thanks to Nikos Apostolakis): 
+;;     Make sure file name is expanded (thanks to Nikos Apostolakis):
 ;;       synonyms-search-(entries|synonyms): Expand file name.
 ;;       synonyms-define-*-file: Set variable after expanding file name.
 ;;       synonyms-format-entry, synonyms-history-*, synonyms-add-history-links:
@@ -593,8 +594,9 @@
   (tap-define-aliases-wo-prefix)
   (tap-put-thing-at-point-props))
 
-;; Note: You might get byte-compiler warnings that variables `appendp'
-;;       and `morep' are free: .  This is OK.
+;; Quiet the byte-compiler.
+(defvar appendp)                        ; Here.
+(defvar morep)                          ; Here.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1181,7 +1183,7 @@ in STRING.
 This is an ugly hack made necessary because of bugs in Emacs C code."
   (when (and synonyms-use-cygwin-flag
              (or (= emacs-major-version 20) (not (string-match " " string))))
-    (setq string  (replace-regexp-in-string "[\\]" "\\\\" string nil t)))  
+    (setq string  (replace-regexp-in-string "[\\]" "\\\\" string nil t)))
   string)
 
 (defun synonyms-format-synonyms (search-text morep)
@@ -1332,7 +1334,7 @@ A prefix argument has the same meaning as for command `synonyms'."
   (let* ((num-arg  (prefix-numeric-value arg))
          (morep    (eq synonyms-match-more-flag (atom arg)))
          (appendp  (eq synonyms-append-result-flag (and (wholenump num-arg) (/= 16 num-arg)))))
-    
+
     ;; Visit last.  If *Synonyms* has appended search results, go to the previous one, from (point).
     (if (not (get-buffer "*Synonyms*"))
         (synonyms-action (car synonyms-history))
