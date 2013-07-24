@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:39:49 2013 (-0700)
+;; Last-Updated: Wed Jul 24 09:34:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3661
+;;     Update #: 3702
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -90,6 +90,10 @@
 ;;
 ;;    `menu-bar-make-toggle-any-version'.
 ;;
+;;  Non-interactive functions defined here:
+;;
+;;    `menu-barp-nonempty-region-p'.
+;;
 ;;  Variables defined here:
 ;;
 ;;    `menu-bar-apropos-menu', `menu-bar-describe-menu',
@@ -126,6 +130,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     Added: menu-barp-nonempty-region-p.
+;;       Use it everywhere where appropriate, e.g., instead of just mark-active.
+;;     menu-bar-edit-region-menu, menu-bar-edit-sort-menu:
+;;       Removed :enable from items, since on menu itself.
+;; @@@@@@@@@@@@@@@@@@
 ;; 2013/07/20 dadams
 ;;     menu-bar-tools-menu: Removed grep, since it is on Search menu.
 ;;     menu-bar-search-menu: Added: multi-occur(-in-matching-buffers).
@@ -401,6 +411,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 
+
+(defun menu-barp-nonempty-region-p ()
+  "Return non-nil if region is active and non-empty."
+  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
 
 (when (> emacs-major-version 23)
   (defcustom menu-barp-select-buffer-function (lambda (buffer &optional other-window norecord)
@@ -778,12 +792,12 @@ submenu of the \"Help\" menu."))
 (define-key-after menu-bar-edit-menu [cut]
   '(menu-item "Cut" kill-region
     :help "Cut (kill) text in nonempty region between mark and current position"
-    :enable (and (not buffer-read-only) mark-active (> (region-end) (region-beginning))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p)))
   'separator-edit-cut)
 (define-key-after menu-bar-edit-menu [copy]
   '(menu-item "Copy" menu-bar-kill-ring-save
     :help "Copy text in nonempty region between mark and current position"
-    :enable (and mark-active (> (region-end) (region-beginning)))
+    :enable (menu-barp-nonempty-region-p)
     :keys "\\[kill-ring-save]")
   'cut)
 
@@ -792,46 +806,42 @@ submenu of the \"Help\" menu."))
 (define-key-after menu-bar-edit-menu [paste]
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
-    :enable
-    (and (not buffer-read-only)
-     (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
-      (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
+    :enable (and (not buffer-read-only)
+             (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
+              (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
   'copy)
 (when (fboundp 'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
     '(menu-item "Paste Secondary" secondary-dwim
       :help "Paste (yank) secondary selection."
-      :enable
-      (and (not buffer-read-only)
-       (fboundp 'x-get-selection)
-       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
-           (x-get-selection 'SECONDARY)
-         (error nil)))
+      :enable (and (not buffer-read-only)
+               (fboundp 'x-get-selection)
+               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
+                   (x-get-selection 'SECONDARY)
+                 (error nil)))
       :keys "\\[secondary-dwim]")
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
     '(menu-item "Move Secondary to Region" primary-to-secondary
       :help "Make the region in the current buffer into the secondary selection."
-      :enable mark-active :keys "C-1 \\[secondary-dwim]")
+      :enable (menu-barp-nonempty-region-p) :keys "C-1 \\[secondary-dwim]")
     'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
     '(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
-      :enable
-      (and (fboundp 'x-get-selection)
-       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
-           (x-get-selection 'SECONDARY)
-         (error nil)))
+      :enable (and (fboundp 'x-get-selection)
+               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
+                   (x-get-selection 'SECONDARY)
+                 (error nil)))
       :keys "C-- \\[secondary-dwim]")
     'primary-to-secondary)
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
     '(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
-      :enable
-      (and (fboundp 'x-get-selection)
-       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
-           (x-get-selection 'SECONDARY)
-         (error nil)))
+      :enable (and (fboundp 'x-get-selection)
+               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
+                   (x-get-selection 'SECONDARY)
+                 (error nil)))
       :keys "C-0 \\[secondary-dwim]")
     'secondary-swap-region))
 
@@ -844,8 +854,8 @@ submenu of the \"Help\" menu."))
   (if (fboundp 'secondary-to-primary) 'secondary-to-primary 'paste))
 (define-key-after menu-bar-edit-menu [clear]
   '(menu-item "Clear" delete-region
-    :help "Delete the text in nonempty region between mark and current position"
-    :enable (and  (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))
+    :help "Delete the text in region between mark and current position"
+    :enable (and  (not buffer-read-only)  (menu-barp-nonempty-region-p)
              (not (mouse-region-match))))
   'select-paste)
 (define-key-after menu-bar-edit-menu [mark-whole-buffer]
@@ -874,36 +884,37 @@ submenu of the \"Help\" menu."))
     :enable (not buffer-read-only))
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
-  `(menu-item "Fill" ,menu-bar-edit-fill-menu :enable (not buffer-read-only)) 'props)
+  `(menu-item "Fill" ,menu-bar-edit-fill-menu
+    :help "Fill text" :enable (not buffer-read-only)) 'props)
 
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
 (define-key-after menu-bar-edit-menu [region]
   '(menu-item "Edit Region" menu-bar-edit-region-menu
     :help "Edit the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p)))
   'fill)
 (defvar menu-bar-edit-sort-menu (make-sparse-keymap "Sort Region"))
 (defalias 'menu-bar-edit-sort-menu (symbol-value 'menu-bar-edit-sort-menu))
 (define-key-after menu-bar-edit-menu [sort]
   '(menu-item "Sort Region" menu-bar-edit-sort-menu
     :help "Sort the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p)))
   'region)
 
 ;; `Edit' > `Fill' submenu.
 (define-key menu-bar-edit-fill-menu [fill-nonuniform-para]
   '(menu-item "Fill Non-Uniform ¶s" fill-nonuniform-paragraphs
     :help "Fill paragraphs in nonempty region, allowing varying indentation"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p))))
 (define-key menu-bar-edit-fill-menu [fill-indiv-para]
   '(menu-item "Fill Uniform ¶s" fill-individual-paragraphs
     :help "Fill paragraphs of uniform indentation within nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p))))
 (define-key menu-bar-edit-fill-menu [fill-region]
   '(menu-item "Fill ¶s" fill-region
     :help "Fill text in the nonempty region to fit between left and right margin"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p))))
 (define-key menu-bar-edit-fill-menu [fill-para]
   '(menu-item "Fill ¶" fill-paragraph-ala-mode
     :help "Fill the paragraph, doing what `M-q' does (if bound)"
@@ -929,89 +940,61 @@ A prefix argument means justify as well as fill."
 (when (fboundp 'unaccent-region)
   (define-key menu-bar-edit-region-menu [unaccent-region]
     '(menu-item "Unaccent" unaccent-region ; Defined in `unaccent'.
-      :help "Replace accented chars in the nonempty region by unaccented chars"
-      :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))))
+      :help "Replace accented chars in the region by unaccented chars")))
 (define-key menu-bar-edit-region-menu [capitalize-region]
   '(menu-item "Capitalize" capitalize-region
-    :help "Capitalize (initial caps) words in the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Capitalize (initial caps) words in the region"))
 (define-key menu-bar-edit-region-menu [downcase-region]
-  '(menu-item "Downcase" downcase-region :help "Make words in the nonempty region lower-case"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Downcase" downcase-region :help "Make words in the region lower-case"))
 (define-key menu-bar-edit-region-menu [upcase-region]
-  '(menu-item "Upcase" upcase-region :help "Make words in the nonempty region upper-case"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Upcase" upcase-region :help "Make words in the region upper-case"))
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-chars] '("--"))
 (define-key menu-bar-edit-region-menu [untabifyn]
-  '(menu-item "Untabify" untabify
-    :help "Convert all tabs in the nonempty region to multiple spaces"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Untabify" untabify :help "Convert all tabs in the region to multiple spaces"))
 (define-key menu-bar-edit-region-menu [tabify-region]
   '(menu-item "Tabify" tabify
-    :help "Convert multiple spaces in the nonempty region to tabs when possible"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Convert multiple spaces in the region to tabs when possible"))
 (define-key menu-bar-edit-region-menu [comment-region]
-  '(menu-item "(Un)Comment" comment-region
-    :help "Comment or uncomment each line in the nonempty region"
-    :enable (and comment-start  (not buffer-read-only)  mark-active
-             (> (region-end) (region-beginning)))))
+  '(menu-item "(Un)Comment" comment-region :help "Comment or uncomment each line in the region"))
 (define-key menu-bar-edit-region-menu [center-region]
   '(menu-item "Center" center-region
-    :help "Center each nonblank line that starts in the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Center each nonblank line that starts in the region"))
 (define-key menu-bar-edit-region-menu [indent-rigidly-region]
-  '(menu-item "Rigid Indent" indent-rigidly
-    :help "Indent each line that starts in the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Rigid Indent" indent-rigidly :help "Indent each line that starts in the region"))
 (define-key menu-bar-edit-region-menu [indent-region]
   '(menu-item "Column/Mode Indent" indent-region
-    :help "Indent each nonblank line in the nonempty region"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Indent each nonblank line in the region"))
 
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-indent] '("--"))
 (define-key menu-bar-edit-region-menu [abbrevs-region]
   '(menu-item "Expand Abbrevs..." expand-region-abbrevs
-    :help "Expand each abbrev in the nonempty region (with confirmation)"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Expand each abbrev in the region (with confirmation)"))
 (define-key menu-bar-edit-region-menu [macro-region]
   '(menu-item "Exec Keyboard Macro" apply-macro-to-region-lines ; In `macros+.el'.
-    :help "Run keyboard macro at start of each line in the nonempty region"
-    :enable (and last-kbd-macro mark-active  (not buffer-read-only)
-             (> (region-end) (region-beginning)))))
+    :help "Run keyboard macro at start of each line in the region"))
 
 ;; `Edit' > `Sort' submenu.
 (define-key menu-bar-edit-sort-menu [sort-regexp-fields]
-  '(menu-item "Regexp Fields..." sort-regexp-fields
-    :help "Sort the nonempty region lexicographically"
-    :enable (and last-kbd-macro  (not buffer-read-only)  mark-active
-             (> (region-end) (region-beginning)))))
+  '(menu-item "Regexp Fields..." sort-regexp-fields :help "Sort the region lexicographically"))
 (define-key menu-bar-edit-sort-menu [sort-pages]
-  '(menu-item "Pages" sort-pages :help "Sort pages in the nonempty region alphabetically"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Pages" sort-pages :help "Sort pages in the region alphabetically"))
 (define-key menu-bar-edit-sort-menu [sort-paragraphs]
-  '(menu-item "Paragraphs" sort-paragraphs
-    :help "Sort paragraphs in the nonempty region alphabetically"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Paragraphs" sort-paragraphs :help "Sort paragraphs in the region alphabetically"))
 (define-key menu-bar-edit-sort-menu [sort-numeric-fields]
   '(menu-item "Numeric Field" sort-numeric-fields
-    :help "Sort lines in the nonempty region numerically by the Nth field"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Sort lines in the region numerically by the Nth field"))
 (define-key menu-bar-edit-sort-menu [sort-fields]
   '(menu-item "Field" sort-fields
-    :help "Sort lines in the nonempty region lexicographically by the Nth field"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Sort lines in the region lexicographically by the Nth field"))
 (define-key menu-bar-edit-sort-menu [sort-columns]
   '(menu-item "Columns" sort-columns
-    :help "Sort lines in the nonempty region alphabetically, by a certain range of columns"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+    :help "Sort lines in the region alphabetically, by a certain range of columns"))
 (define-key menu-bar-edit-sort-menu [sort-lines]
-  '(menu-item "Lines" sort-lines :help "Sort lines in the nonempty region alphabetically"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Lines" sort-lines :help "Sort lines in the region alphabetically"))
 (define-key menu-bar-edit-sort-menu [reverse-region]
-  '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"
-    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
+  '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"))
 
 ;;; `Search' menu.
 (when (< emacs-major-version 22)
@@ -1150,8 +1133,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
                (and (eq menu-bar-last-search-type 'string) search-ring)
                (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))))
   (define-key menu-bar-search-menu [search-forward]
-    '(menu-item "Forward..." nonincremental-search-forward
-      :help "Search forward for a string")))
+    '(menu-item "Forward..." nonincremental-search-forward :help "Search forward for a string")))
 
 (unless (< emacs-major-version 22)
   (defun nonincremental-repeat-search-forward ()
@@ -1222,8 +1204,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     '(menu-item "     Backward..." nonincremental-search-backward
       :help "Search backward for a string"))
   (define-key menu-bar-search-menu [search-forward]
-    '(menu-item "Forward..." nonincremental-search-forward
-      :help "Search forward for a string")))
+    '(menu-item "Forward..." nonincremental-search-forward :help "Search forward for a string")))
 
 
 ;;; `Search' > `Tags' submenu.
