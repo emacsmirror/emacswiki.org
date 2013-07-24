@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:40:55 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:11:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 195
 ;; URL: http://www.emacswiki.org/window%2b.el
 ;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
