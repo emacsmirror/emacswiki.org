@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:41:22 2013 (-0700)
+;; Last-Updated: Wed Jul 24 10:06:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3086
+;;     Update #: 3094
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -81,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     goto-longest-line, resolve-file-name: Region test ensures nonempty too.
 ;; 2013/07/12 dadams
 ;;     Added: indent-rigidly-tab-stops.
 ;; 2013/06/10 dadams
@@ -609,13 +611,12 @@ To search only from the current line forward, not throughout the
 buffer, you can use `C-SPC' to set the mark, then use this
 \(repeatedly)."
   (interactive
-   (if (or (not mark-active) (null (mark)))
+   (if (or (not mark-active)  (not (< (region-beginning) (region-end))))
        (list (point-min) (point-max))
      (if (< (point) (mark))
          (list (point) (mark))
        (list (mark) (point)))))
-  (when (and (not mark-active) (= beg end))
-    (error "The buffer is empty"))
+  (when (and (not mark-active) (= beg end)) (error "The buffer is empty"))
   (when (and mark-active (> (point) (mark))) (exchange-point-and-mark))
   (when (< end beg) (setq end (prog1 beg (setq beg end))))
   (when (eq this-command last-command)
@@ -1037,8 +1038,8 @@ just the REGION? "
 
 (defun resolve-file-name (bounds &optional killp)
   "Replace the file name at/near point by its absolute, true file name.
-If the region is active, replace its content instead, treating it as a
-file name.
+If the region is active and nonempty, replace its content instead,
+treating it as a file name.
 
 If library `thingatpt+.el' is available then use the file name
 *nearest* point.  Otherwise, use the file name *at* point.
@@ -1047,7 +1048,8 @@ With a prefix arg, add both the original file name and the true name
 to the kill ring.  Otherwise, add neither to the kill ring.  (If the
 region was active then its content was already added to the ring.)"
   (interactive
-   (let* ((regionp   (and transient-mark-mode mark-active))
+   (let* ((regionp   (and transient-mark-mode  mark-active
+                          (< (region-beginning) (region-end))))
           (thg+bnds  (and (not regionp)
                           (require 'thingatpt+ nil t)
                           (tap-define-aliases-wo-prefix) ; Defined in `thingatpt+.el'.
@@ -1073,7 +1075,8 @@ region was active then its content was already added to the ring.)"
            (true-file  (concat true-dir relfile)))
       (unless (equal file true-file)
         (cond (killp
-               (if (and transient-mark-mode mark-active)
+               (if (and transient-mark-mode  mark-active
+                        (< (region-beginning) (region-end)))
                    (delete-region (car bounds) (cdr bounds)) ; Don't add it twice.
                  (kill-region (car bounds) (cdr bounds)))
                (insert (kill-new true-file)))
