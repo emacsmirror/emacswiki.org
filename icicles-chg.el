@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jul 24 07:55:44 2013 (-0700)
+;; Last-Updated: Wed Jul 24 09:51:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10119
+;;     Update #: 10129
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -921,6 +921,7 @@
 ;;
 ;; 2013/07/24 dadams
 ;;     icicle-exchange-point-and-mark: Use region-(beginning|end), not mark function - simpler.
+;;     icicle-next-visible-thing(-and-bounds): Use buffer limit if region is empty.
 ;; 2013/07/23 dadams
 ;;     icicle-Info-multi-read-node-name: Use regexp-quote before concat ^ to front of string.
 ;; 2013/07/09 dadams
@@ -3861,6 +3862,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/07/24 dadams
+;;     icicle-resolve-file-name, icicle-mouse-candidate-set-save(-more|-selected-1),
+;;       icicle-regexp-quote-input:
+;;         Use better nonempty region test.
 ;; 2013/07/06 dadams
 ;;     icicle-switch-to/from-minibuffer:
 ;;       Added minibuffer messages.
