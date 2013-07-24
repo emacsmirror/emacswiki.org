@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:33:05 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:08:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 185
+;;     Update #: 187
 ;; URL: http://www.emacswiki.org/w32browser-dlgopen.el
 ;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: files, extensions, convenience, dialog
