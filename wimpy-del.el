@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) Bard Bloom, June 1989
 ;; Created: Wed Nov 22 14:57:17 1995
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:34:40 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:10:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 175
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
