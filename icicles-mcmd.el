@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Version: 22.0
-;; Last-Updated: Sat Jul  6 20:15:05 2013 (-0700)
+;; Last-Updated: Wed Jul 24 09:48:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19204
+;;     Update #: 19211
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4669,8 +4668,8 @@ This is the similar to `beginning-of-line', but:
 ;;
 (defun icicle-resolve-file-name (bounds &optional killp) ; Bound to `C-x C-f' in minibuffer.
   "Replace the file name at/near point by its absolute, true file name.
-If the region is active, replace its content instead, treating it as a
-file name.
+If the region is active and nonempty, replace its content instead,
+treating it as a file name.
 
 If library `thingatpt+.el' is available then use the file name
 *nearest* point.  Otherwise, use the file name *at* point.
@@ -4679,7 +4678,7 @@ With a prefix arg, add both the original file name and the true name
 to the kill ring.  Otherwise, add neither to the kill ring.  (If the
 region was active then its content was already added to the ring.)"
   (interactive
-   (let* ((regionp   (and transient-mark-mode  mark-active))
+   (let* ((regionp   (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
           (thg+bnds  (and (not regionp)
                           (require 'thingatpt+ nil t)
                           (tap-define-aliases-wo-prefix) ; Dispense with `tap-' prefix.
@@ -4703,7 +4702,7 @@ region was active then its content was already added to the ring.)"
            (true-file  (concat true-dir relfile)))
       (unless (equal file true-file)
         (cond (killp
-               (if (and transient-mark-mode  mark-active)
+               (if (and transient-mark-mode  mark-active  (> (region-end) (region-beginning)))
                    (delete-region (car bounds) (cdr bounds)) ; Don't add it twice.
                  (kill-region (car bounds) (cdr bounds)))
                (insert (kill-new true-file)))
@@ -6717,7 +6716,7 @@ If the region is active in `*Completions*', then
   (if (and (get-buffer "*Completions*")
            (save-current-buffer
              (set-buffer (get-buffer "*Completions*"))
-             (and mark-active  (mark) (/= (point) (mark)))))
+             (and mark-active  (> (region-end) (region-beginning)))))
       (icicle-candidate-set-save-selected arg)
     (icicle-candidate-set-save arg)))
 
@@ -6730,7 +6729,7 @@ If the region is active in `*Completions*', then
   (if (and (get-buffer "*Completions*")
            (save-current-buffer
              (set-buffer (get-buffer "*Completions*"))
-             (and mark-active  (mark)  (/= (point) (mark)))))
+             (and mark-active  (> (region-end) (region-beginning)))))
       (icicle-candidate-set-save-more-selected arg)
     (icicle-candidate-set-save-more arg)))
 
@@ -6879,7 +6878,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
           (icicle-orig-buff  (current-buffer)))
       (when (get-buffer-window "*Completions*" 0) ; Do nothing if not displayed.
         (with-current-buffer "*Completions*"
-          (when (and mark-active  (mark)  (/= (point) (mark))  icicle-completion-candidates)
+          (when (and mark-active  (> (region-end) (region-beginning))  icicle-completion-candidates)
             (let ((bob  (icicle-start-of-candidates-in-Completions))
                   (eob  (point-max))
                   (beg  (region-beginning))
@@ -8148,11 +8147,11 @@ Use this if you want to literally match all of what is currently in
 the minibuffer or selected text there, but you also want to use that
 literal text as part of a regexp for apropos completion.
 Bound to `M-%' in the minibuffer."
-  (interactive (if (and mark-active  (mark))
+  (interactive (if (and mark-active  (> (region-end) (region-beginning)))
                    (list (region-beginning) (region-end))
                  (list (point-max) (point-max))))
   (icicle-barf-if-outside-Completions-and-minibuffer)
-  (let ((regionp  (and mark-active  (mark)  (/= (point) (mark))))
+  (let ((regionp  (and mark-active  (> (region-end) (region-beginning))))
         quoted-part)
     (save-excursion
       (save-restriction
