@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
-;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:29:54 2013 (-0700)
+;; Package-Requires: ((hide-comnts "0"))
+;; Last-Updated: Wed Jul 24 08:19:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 889
+;;     Update #: 903
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -73,6 +73,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     Require hide-comnt.el for Emacs 21+.
 ;; 2012/10/24 dadams
 ;;     imenup-toggle-case-sensitive-sorting: Improve message in case not currently sorting by name.
 ;; 2012/10/23 dadams
@@ -169,6 +171,7 @@
 (eval-when-compile (require 'cl)) ;; case
 
 (require 'imenu)
+(when (> emacs-major-version 20) (require 'hide-comnt))
 
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
@@ -460,7 +463,7 @@ Report an error if the list is empty unless NOERROR is supplied and
 non-nil.
 
 If `ignore-comments-flag' is defined and non-nil, then respect it,
-ignoring hidden comments.
+ignoring definitions inside comments.
 
 See `imenu--index-alist' for the format of the index alist."
   (or (and imenu--index-alist
@@ -470,8 +473,7 @@ See `imenu--index-alist' for the format of the index alist."
       (progn (setq imenu--index-alist  (save-excursion
                                          (save-restriction
                                            (widen)
-                                           (if (and (> emacs-major-version 20)
-                                                    (require 'hide-comnt nil t))
+                                           (if (featurep 'hide-comnt) ; Emacs 21+
                                                (let ((search-invisible  nil))
                                                  (with-comments-hidden
                                                      (point-min) (point-max)
