@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Version: 22.0
-;; Last-Updated: Tue Jul  9 20:44:12 2013 (-0700)
+;; Last-Updated: Tue Jul 23 19:25:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6481
+;;     Update #: 6485
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2607,7 +2606,7 @@ the name."
 ;;;;                                    (icicle-transform-multi-completion strg)))
 ;;;;                    (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
 ;;;;                                      node-pat
-;;;;                                    (concat "^" node-pat)))
+;;;;                                    (concat "^" (regexp-quote node-pat))))
 ;;;;                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
 ;;;;                                    (icicle-transform-multi-completion strg)))
 ;;;;                    (nodes         (mapcar #'car Info-read-node-completion-table))
@@ -2665,7 +2664,7 @@ This is used as the value of `minibuffer-completion-table'."
                                         (icicle-transform-multi-completion strg)))
                         (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
                                           node-pat
-                                        (concat "^" node-pat)))
+                                        (concat "^" (regexp-quote node-pat))))
                         (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                         (icicle-transform-multi-completion strg)))
                         (nodes        (mapcar #'car Info-read-node-completion-table))
@@ -2712,7 +2711,7 @@ This is used as the value of `minibuffer-completion-table'."
                                       (icicle-transform-multi-completion strg)))
                       (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
                                         node-pat
-                                      (concat "^" node-pat)))
+                                      (concat "^" (regexp-quote node-pat))))
                       (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                       (icicle-transform-multi-completion strg)))
                       (nodes        (mapcar #'car Info-read-node-completion-table))
