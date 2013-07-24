@@ -7,7 +7,6 @@ Use Emacs extensively @ work , home, phone where ever i could.  Read my mail's, 
 Want to try compiling ffmpeg with emacs and run ffmpeg-play-video interactive.  Small time experimenter with elisp and common lisp at times. Love the way ifile is written, Hang out at times on #emacs as sriram. 
 
 Debian user, have 3 machines running on debian right now, Mzombie, fulcrum1 and fulcrum2. 
-<<<<<<< you
 
 '''ELisp Socket Code'''
 
@@ -39,25 +38,4 @@ Debian user, have 3 machines running on debian right now, Mzombie, fulcrum1 and 
 (sleep-for 10)
 (listen-stop)
 </code>
-||||||| ancestor
-=======
 
-
-
-
-
-
-[new:DrewAdams:2013-07-24 17:11 UTC]
-Welcome to the wiki. -- DrewAdams
-
-
-
-
-
-
-
-
-
-----
-CategoryHomepage
->>>>>>> other
