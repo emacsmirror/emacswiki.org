@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:01:00 2013 (-0700)
+;; Last-Updated: Wed Jul 24 09:06:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1844
+;;     Update #: 1858
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -146,7 +146,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `facemenup-copy-tree' (Emacs 20-21), `facemenup-face-bg',
-;;    `facemenup-face-fg', `facemenup-set-face-attribute-at--1',
+;;    `facemenup-face-fg', `facemenup-nonempty-region-p',
+;;    `facemenup-set-face-attribute-at--1',
 ;;    `facemenup-set-face-from-list'.
 ;;
 ;;  Internal variables defined here:
@@ -193,6 +194,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     Added: facemenup-nonempty-region-p.
+;;     Paste Text Properties to Region menu: use hlt-copied-props and facemenup-nonempty-region-p.
+;;     Use facemenup-nonempty-region-p instead of just mark-active, everywhere.
 ;; 2012/11/13 dadams
 ;;     Handle font-lock-menus.el (like font-menus.el), which replaces font-menus-da.el.
 ;; 2012/08/26 dadams
@@ -357,6 +362,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+(defun facemenup-nonempty-region-p ()
+  "Return non-nil if region is active and non-empty."
+  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
+
 ;;;###autoload
 (defcustom facemenup-palette-update-while-editing-flag t
   "*Non-nil means update the face whose color you're editing in the palette.
@@ -417,7 +427,7 @@ palette using `x'."
        "--"
        ["Copy Text Properties" hlt-copy-props t]
        ["Paste Text Properties to Region" hlt-yank-props
-        (and mark-active  (not buffer-read-only))]
+        (and (facemenup-nonempty-region-p)  (not buffer-read-only)  hlt-copied-props)]
        "--"
        ["Highlighter Pen" hlt-highlighter-mouse t]
        ["Eraser" hlt-eraser-mouse t])
@@ -488,13 +498,17 @@ argument VECP, this copies vectors as well as conses."
     '(menu-item "Remove Face Properties" facemenu-remove-face-props)))
 ;; Disable them if no active region.  Mention `from Region' in name.  This is for Emacs bug #9162.
 (define-key facemenu-menu [ra]
-  '(menu-item "Remove Text Properties from Region" facemenu-remove-all :enable mark-active))
+  '(menu-item "Remove Text Properties from Region" facemenu-remove-all
+    :enable (facemenup-nonempty-region-p)))
 (define-key facemenu-menu [rm]
-  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props :enable mark-active))
+  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props
+    :enable (facemenup-nonempty-region-p)))
 (define-key facemenu-mouse-menu [ra]
-  '(menu-item "Remove Text Properties from Region" facemenu-remove-all :enable mark-active))
+  '(menu-item "Remove Text Properties from Region" facemenu-remove-all
+    :enable (facemenup-nonempty-region-p)))
 (define-key facemenu-mouse-menu [rm]
-  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props :enable mark-active))
+  '(menu-item "Remove Face Properties from Region" facemenu-remove-face-props
+    :enable (facemenup-nonempty-region-p)))
 
 ;; Add a separator before "Describe Properties": it and the items that
 ;; follow it do not apply to the region like the items before them do.
@@ -1308,8 +1322,8 @@ FACE is determined as follows:
                   (if (and current-prefix-arg  (atom current-prefix-arg))
                       (let ((deactivate-mark  nil)) (list-faces-display))
                     (read-face-name "Use face")))
-           (and mark-active  (atom current-prefix-arg)  (region-beginning))
-           (and mark-active  (atom current-prefix-arg)  (region-end))))
+           (and (facemenup-nonempty-region-p)  (atom current-prefix-arg)  (region-beginning))
+           (and (facemenup-nonempty-region-p)  (atom current-prefix-arg)  (region-end))))
     (unless (and (interactive-p)  current-prefix-arg  (atom current-prefix-arg))
       (facemenu-add-new-face face)
       (facemenu-add-face face start end)))
@@ -1427,8 +1441,9 @@ Also, close the *Faces* display."
           (buffer  (cadr face+buffer)))
       (save-excursion (set-buffer buffer)
                       (facemenu-add-new-face face)
-                      (facemenu-add-face face (and mark-active  (region-beginning))
-                                         (and mark-active  (region-end)))
+                      (facemenu-add-face face
+                                         (and (facemenup-nonempty-region-p)  (region-beginning))
+                                         (and (facemenup-nonempty-region-p)  (region-end)))
                       (setq mark-active  nil)))
     (let ((win  (get-buffer-window "*Faces*"))) (when win (delete-window win))))
 
