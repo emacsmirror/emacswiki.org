@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Version: 22.0
-;; Last-Updated: Thu Jul  4 08:18:02 2013 (-0700)
+;; Last-Updated: Tue Jul 23 19:27:40 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14000
+;;     Update #: 14003
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5998,9 +5997,8 @@ those functions are not defined then return nil."
 
 (defun icicle-prefix-any-candidates-p (input)
   "Return non-nil if current partial INPUT has prefix completions."
-  (setq input  (regexp-quote input)
-        input  (concat "^" input))
-  (icicle-apropos-any-candidates-p input))     
+  (setq input  (concat "^" (regexp-quote input)))
+  (icicle-apropos-any-candidates-p input))
 
 (defun icicle-prefix-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has prefix completions."
