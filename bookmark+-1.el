@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul 21 17:39:02 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:44:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6468
+;;     Update #: 6473
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1965,7 +1965,7 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
          (ctime    (current-time))
 
          ;; Begin `let*' dependencies.
-         (regionp  (and transient-mark-mode  mark-active  (not (eq (mark) (point)))))
+         (regionp  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
          (beg      (if regionp (region-beginning) (or position  (point))))
          (end      (if regionp (region-end) (point)))
          (fcs      (and (not no-context)  (if regionp
@@ -3147,7 +3147,7 @@ of names described above for Emacs 23+."
         val)
     (unless (and (< emacs-major-version 23)  defs) ; Just use FIRST-DEF for Emacs < 23.
       ;; If region is active, first default is its text, with buffer name prepended.
-      (when (and transient-mark-mode mark-active  (not (eq (mark) (point))))
+      (when (and transient-mark-mode  mark-active  (> (region-end) (region-beginning)))
         (let* ((regname  (concat (buffer-name) ": " (buffer-substring (region-beginning) (region-end))))
                (defname  (bmkp-replace-regexp-in-string
                           "\n" " "
