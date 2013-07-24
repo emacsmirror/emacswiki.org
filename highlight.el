@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:21:17 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:53:46 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3181
+;;     Update #: 3183
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -549,6 +549,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/07/24 dadams
+;;     hlt-yank-props: Use region-(beginning|end), not mark function - simpler and C code.
 ;; 2013/05/28 dadams
 ;;     Require easymenu.el.
 ;;     hlt-highlighter, hlt-eraser: Wrap with with-current-buffer.  Thx to Michael Heerdegen.
@@ -1466,7 +1468,7 @@ NOTE: If the list of copied text properties is empty, then yanking
       provides an easy way to UNpropertize text."
   (interactive "r\nP\np")
   ;; Do nothing if no active region.
-  (unless (or (and transient-mark-mode mark-active (not (eq (mark) (point))))
+  (unless (or (and transient-mark-mode  mark-active  (> (region-end) (region-beginning)))
               (not msgp))
     (error "No region to paste properties to"))
   (let ((read-only                           buffer-read-only)
