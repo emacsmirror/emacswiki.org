@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.99
+;; Version: 0.100
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -293,9 +293,58 @@
 ;; 
 ;;   (setq auto-indent-assign-indent-level-variables nil)
 ;; 
+;; 
+;; ** Why is auto-indent-mode changing tabs to spaces
+;; I prefer tabs instead of spaces.  You may prefer the other way.  The
+;; options to change this are:
+;; 
+;; 
+;;   (setq auto-indent-mode-untabify-on-yank-or-paste nil)
+;; 
+;; 
+;; to keep tabs upon paste.
+;; 
+;; 
+;;   (setq auto-indent-untabify-on-visit-file nil) ; Already disabled
+;; 
+;; 
+;; 
+;; To keep tabs upon visiting a file.
+;; 
+;; 
+;;   (setq auto-indent-untabify-on-save-file nil)
+;; 
+;; 
+;; to turn off changing tabs to spaces on file save.
+;; 
+;; 
+;;   (setq auto-indent-backward-delete-char-behavior nil) ; Just delete one character.
+;; 
+;; 
+;; So that backspace doesn't change tabs to spaces.
+;; ** Argh -- Auto-indent is messing with my indentation.  What can I do?
+;; If you do not like the default indentation style of a particular
+;; mode, sometimes you may adjust the indetation by hand.  Then you
+;; press the return button and all your hard work is erased.  This can
+;; be quite frustrating.  
+;; 
+;; What is happening, is that auto-indent is fixing the current line's
+;; indentation and then indenting the next line on pressing enter.  This
+;; can be turned off customizing the `auto-indent-newline-function' to
+;; 
+;; 
+;;   (setq auto-indent-newline-function 'newline-and-indent) 
+;; 
+;; 
+;; This will insert a newline and then indent.  Not reindent according
+;; to the major mode's conventions.
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 24-Jul-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Updated FAQ for readme.org
 ;; 6-Jul-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Updated documentation for a better description of assigning the indent
