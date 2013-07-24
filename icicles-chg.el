@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Jul 23 19:25:57 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:55:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10118
+;;     Update #: 10119
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -919,6 +919,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/07/24 dadams
+;;     icicle-exchange-point-and-mark: Use region-(beginning|end), not mark function - simpler.
 ;; 2013/07/23 dadams
 ;;     icicle-Info-multi-read-node-name: Use regexp-quote before concat ^ to front of string.
 ;; 2013/07/09 dadams
