@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:28:22 2012 (-0800)
+;; Version: 0
+;; Last-Updated: Tue Jul 23 17:05:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2094
+;;     Update #: 2105
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -1606,7 +1606,7 @@ prompt for the function or variable to find, instead."
                       (call-interactively
                        (if (y-or-n-p "Find function? (n means find variable) ")
                            'find-function
-                         'find-variable)))                   
+                         'find-variable)))
                      (var (find-variable var))
                      ((and (fboundp 'help-C-file-name) ; Emacs 22
                            fn  (subrp (symbol-function fn)))
