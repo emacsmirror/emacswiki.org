@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
-;; Version: 21.1
-;; Last-Updated: Sun Jul 21 17:02:19 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:00:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2981
+;;     Update #: 2984
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -32,21 +33,21 @@
 ;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
 ;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
-;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
-;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
-;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
-;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
-;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-keys', `simple+', `speedbar',
-;;   `start', `strings', `subr-21', `swiss-move', `synonyms',
-;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `header2', `help+20', `hexrgb', `highlight', `icomplete',
+;;   `icomplete+', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `iso-transl', `lacarte', `lib-requires', `lisp-mnt', `loadhist',
+;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
+;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
+;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
+;;   `setup-keys', `simple+', `speedbar', `start', `strings',
+;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
