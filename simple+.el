@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:25:49 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ((strings "0"))
+;;; Last-Updated: Tue Jul 23 16:58:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 456
+;;     Update #: 459
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
