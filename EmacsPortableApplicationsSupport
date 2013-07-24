@@ -1,0 +1,275 @@
+This was original part of EmacsPortableApp
+
+== Applications Support ==
+=== Adding Paths (Windows Only) ===
+Most of the specific applications work by adding paths and changing
+environmental variables.  This is controlled by <tt>App/ini/paths.ini</tt>.
+!EmacsPortableApp looks at the following sections
+==== General Paths ====
+==== Local Paths [local] ====
+Local paths are paths that emacs checks that are locally available.
+They are specified by NAME=Local Path Snippet.  An example of this is:
+<pre>
+[local]
+git=msysgit\msysgit\bin
+git2=msysgit\bin
+gitmsys=msysgit\msysgit\mingw\bin
+gitmsys2=msysgit\mingw\bin
+</pre>
+
+In this example <tt>git</tt> The following paths are checked:
+# <tt>c:\msysgit\msysgit\bin</tt>
+* The root is set to <tt>c:\</tt>
+# <tt>%!ProgramFiles%\msysgit\msysgit\bin</tt>
+* The root is set to <tt>%!ProgramFiles%</tt>
+
+If they exist they are added to the path environment before starting
+emacs.  If the directory in fact /exists/, then two additional ini
+sections are checked, <tt>[local.git.path]</tt> and <tt>[local.git.set]</tt>.  
+
+For the <tt>git</tt> local setup, there are two sections.  The first
+<tt>local.git.path</tt> is specified as follows:
+
+<pre>
+[local.git.path]
+git_install_root=msysgit\msysgit
+</pre>
+
+Then each key is added to the environment putting the root location
+before the right handed value.  In this case, the environmental
+variable is set to <tt>c:\msysgit\msysgit</tt> or
+<tt>%!ProgramFiles%\msysgit\msysgit</tt> depending on which path was found.   
+
+The other type of section that is used is the <tt>[local.git.set]</tt>.  In
+the case of <tt>git</tt> this section is defined as:
+
+<pre>
+  [local.git.set]
+  PLINK_PROTOCOL=ssh
+</pre>
+
+Therefore, if <tt>git</tt> is found then the environmental variable
+<tt>PLINK_PROTOCOL</tt> is set to <tt>ssh</tt>.
+
+==== Portable Paths [portable] ====
+The portable paths are set in the same way as the local paths with the
+exception of the places they check for the existence of paths.  The
+<tt>portable</tt> section checks for paths in <tt>USB:\</tt>, and <tt>USB:\!PortableApps\</tt>.
+==== Relative Paths [exedir] ====
+The <tt>exedir</tt> section checks for paths relative to the portable
+application. 
+==== Info Paths ====
+Emacs uses Info for most everything.  You can add <tt>info</tt> paths that
+Emacs doesn't know about by a similar manner as the general paths,
+above. 
+==== Unix Manual Paths ====
+=== Java-based Apps ===
+!EmacsPortable supports [http://plantuml.sourceforge.net/download.html PlantUML], [http://www.mathtoweb.com/cgi-bin/mathtoweb_home.pl MathToWeb] and [http://ditaa.sourceforge.net/ ditaa] for [http://orgmode.org org-mode] assuming that
+[http://portableapps.com/apps/utilities/java_portable_launcher JavaPortable] is installed.
+
+
+[http://plantuml.sourceforge.net/download.html PlantUML] requires <tt>dot</tt> from !GraphViz.  Therefore, !GraphVizPortable
+would need to be installed for [http://plantuml.sourceforge.net/download.html PlantUML] to work. 
+
+=== Imagemagick ===
+Imagemagick is used for many Emacs Applications.  !EmacsPortableApp
+attempts to detect a portable version of !EmacsPortableApp or see if
+Imagemagick is installed on the computer.
+
+A portable version of Imagemagic is found [ftp://ftp.imagemagick.org/pub/!ImageMagick/binaries/!ImageMagick-6.7.9-3-Q16-windows.zip at ftp.imagemagick.org]
+By extracting the portable version in the <tt>!PortableApps</tt> or
+<tt>!LiberKey\!MyApps</tt> !EmacsPortable.App will add this to the path.  This
+assumes the Imagemagick directory is <tt>!ImageMagick-6.7.9-3</tt>
+=== Python based Apps ===
+By installing [http://www.portablepython.com Python Portable] into your <tt>!PortableApps</tt> Directory,
+python is available to Emacs.  This is useful for installing Bazaar,
+which Emacs uses as its version control.
+=== Version control Software ===
+==== Bazaar ====
+I have created a portable Bazaar.  !EmacsPortable.App will recognize
+bazaar version
+==== Subversion in Windows ====
+Not quite portable, but you can get the binaries [http://www.visualsvn.com/downloads/ here].
+
+Running in subversion from within !EmacsPortable.App /is/ portable,
+though.  Emacs will set the <tt>%!AppData%</tt> Environment variable to
+<tt>Data/!AppData</tt> and set <tt>%ALLUSERSPROFILE%</tt> to <tt>Data/!AppData</tt>
+
+==== Git ====
+!EmacsPortable.App picks up both Git portable and locally installed
+installations.  Because of emacs version control, if Git is not
+installed locally, Emacs is slowed down substantially.
+=== SumatraPDF Portable ===
+Using AUC!TeX inverse-search and forward search is supported with
+[http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  There should be no set-up, !EmacsPortable.App with
+setup both Emacs and [http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  
+=== GPG for encryption ===
+!EmacsPortableApp looks for the gpg package that is installed with
+Mozilla Thunderbird.  First install Thunderbird Portable:
+
+http://portableapps.com/support/thunderbird_portable
+
+Then install gpg from here
+
+http://portableapps.com/support/thunderbird_portable#encryption
+
+=== MikTeX Portable ===
+If you extract !MikTeX portable to <tt>!PortableApps/!MikTexPortable/</tt>,
+!EmacsPortable.App will be recognized and used.
+=== Unix Ports ===
+==== Cygwin ====
+==== MSYS ====
+Supports MSYS portable.
+==== GnuWin32 ====
+==== EzWin ====
+=== PuTTY ===
+==== PuTTY and magit ====
+Since magit and !OpenSSH does not work correctly in windows, you can
+use !PuTTY to connect to your host via plink.  Note that you must
+connect to the host first via !PuTTY or you will get one of the
+following error messages:
+
+<pre>
+The server's host key is not cached in the registry. You
+ have no guarantee that the server is the computer you
+ think it is.
+ The server's rsa2 key fingerprint is:
+ ssh-rsa 2048 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+ Connection abandoned.
+ fatal: The remote end hung up unexpectedly
+</pre>
+
+or
+
+<pre>
+WARNING - POTENTIAL SECURITY BREACH!
+ The server's host key does not match the one PuTTY has
+ cached in the registry. This means that either the
+ server administrator has changed the host key, or you
+ have actually connected to another computer pretending
+ to be the server.
+ The new rsa2 key fingerprint is:
+ ssh-rsa 2048 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+ Connection abandoned.
+ fatal: The remote end hung up unexpectedly
+</pre>
+
+
+The information about setting up GIT to use putty are located here.
+
+http://sitaramc.github.com/gitolite/contrib_putty.html
+
+This is done automatically when running TRAMP.
+
+Therefore, if you want to use magit for github, you need open
+puttyportable and attempt to open <tt>git@github.com</tt> so it can cache the
+host id.
+==== PuTTY and Tramp ====
+From Jeremy Engilsh there is a tutorial on how to get TRAMP to work
+with windows 2K.  This is adapted from [http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf that tutorial].
+
+!EmacsPortable.App will download and setup the appropriate files for
+!PuTTY portable, if you need them.  In addition to putty.exe, you will
+need:
+* puttygen.exe
+* pageant.exe
+* plink.exe
+
+
+# Generate a Key
+
+Use Puttygen to generate a key.  Puttygen should be in the
+!PuttyPortable application.
+
+[[./Other/img/!PuTTYKeyGenerator0.png]]
+[[./Other/img/!PuTTYKeyGenerator1.png]]
+
+# Save the public key
+
+This is under File->Save Private Key
+
+# Export the key to an open ssh key.
+
+This is under Conversions->Export !OpenSSH Key
+
+# Copy the key to the server.
+
+This can be done with a secure file transfer like !FileZilla.
+
+Or, if ssh is working for you, you can use the following shell
+command
+
+<pre>
+scp key user@host:~/
+</pre>
+
+# Log into the host and add to authorized keys
+
+<pre>
+ssh example.server.com
+mkdir ~./ssh
+chmod 700 ~/.ssh
+cat ~/key >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+rm ~/key
+</pre>
+
+# Let !EmacsPortable.App know about the key
+
+Use !EmacsOptions.exe to select the !PuTTy key.  If you want it to be
+portable keep the key on the USB drive *OR* in the executable
+directory.
+
+# Run !EmacsPortable.App. 
+
+!EmacsPortable.App will start <tt>pageant.exe</tt> if it is not already
+running and set up tramp to use plink.  This is done by the
+site-start.
+
+
+==== PuTTYPortable ====
+To use the settings of !PuTTYPortable, you have to have a !PuTTYPortable
+session open.
+==== PuTTY and Proxy settings ====
+!PuTTY currently stores proxy settings in the registry. If
+!EmacsPortable.App is started up AND !PuTTY Pageant has not started up,
+then:
+* !EmacsPortable.App will run Paegeant Portable
+* Just after launching emacs, !EmacsPortable.App will write the Proxy
+settings to the registry
+* When you exit !PuttyPortable, these settings will be saved.
+
+Therefore, you do not need to always manually edit proxy settings, and
+plink should work most of the time.
+==== PuTTY and R ====
+R can connect to remote sessions using ssh.el.  When you use !PuTTY to
+connect you will need to set the following option:
+
+{{{
+  (setq ssh-program "plink")
+}}}
+
+=== Bleeding edge emacs (Not supported yet) ===
+These are notes to use the bleeding edge emacs.
+
+Goto the App directory, and under a command prompt that has bzr
+installed, type
+
+<pre>
+    bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
+</pre>
+
+
+If that has already been performed, to update just type:
+
+<pre>
+  bzr pull
+</pre>
+
+If you are behind a firewall you may wish to use git to get the latest
+sources.  Note that only the Bazaar repo is the official 
+
+
+<pre>
+    git clone http://git.savannah.gnu.org/r/emacs.git emacs-git
+</pre>
