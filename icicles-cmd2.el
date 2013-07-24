@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jul 23 19:25:03 2013 (-0700)
+;; Last-Updated: Wed Jul 24 07:54:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6485
+;;     Update #: 6489
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3496,8 +3496,8 @@ then customize option `icicle-top-level-key-bindings'."
         ((not (featurep 'bookmark+))
          (icicle-user-error "You must load library `Bookmark+' to use a prefix arg"))
         ((atom arg)
-         (unless (and transient-mark-mode mark-active  (not (eq (mark) (point))))
-           (icicle-user-error "Cannot bookmark inactive region: you must activate it first"))
+         (unless (and transient-mark-mode  mark-active  (> (region-end) (region-beginning)))
+           (icicle-user-error "Cannot bookmark empty or inactive region"))
          (icicle-bookmark-cmd (and (natnump (prefix-numeric-value arg))  9)))
         (t
          (bookmark-maybe-load-default-file)
@@ -6358,7 +6358,7 @@ See also these type-specific Icicles Imenu multi-commands:
 In addition, there are commands like each of the Imenu commands
 mentioned above, but with the suffix `-full'.  These commands use
 \"full\" definitions as completion candidates, rather than using only
-whatever the buffer's Imenu regexps matches.
+whatever the buffer's Imenu regexp matches.
 
 A \"full\" candidate is obtained by first matching the Imenu regexp,
 then moving forward one sexp from the match beginning.  For a Lisp
