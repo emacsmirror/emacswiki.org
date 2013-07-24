@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
-;; Version: 21.0
-;; Last-Updated: Thu Jun  6 11:05:41 2013 (-0700)
+;; Version: 0
+;; Package-Requires: ((frame-cmds "0"))
+;; Last-Updated: Tue Jul 23 17:05:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1521
+;;     Update #: 1523
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
