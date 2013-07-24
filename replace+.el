@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:51:10 2013 (-0700)
+;; Last-Updated: Wed Jul 24 10:00:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1602
+;;     Update #: 1620
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -134,6 +134,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/24 dadams
+;;     query-replace(-w-options|regexp), replace-(string|regexp): Region test includes being nonempty.
 ;; 2013/04/08 dadams
 ;;     read-regexp: Not needed for Emacs 24.3 or later.
 ;; 2013/03/28 dadams
@@ -732,8 +734,8 @@ replacement."
                          (t " STRING")))
           (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP " kind))))
      (list (nth 0 common) (nth 1 common) (nth 2 common)
-           (and transient-mark-mode mark-active  (region-beginning))
-           (and transient-mark-mode mark-active  (region-end)))))
+           (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-beginning))
+           (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-end)))))
   (let ((kind  (cond ((and prefix (natnump (prefix-numeric-value prefix))) 'WORD)
                      (prefix 'REGEXP)
                      (t 'STRING))))
@@ -763,14 +765,17 @@ replacement."
      (let ((common
             (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word")
                                              (and transient-mark-mode  mark-active
+                                                  (> (region-end) (region-beginning))
                                                   (not search/replace-region-as-default-flag)
                                                   " in region"))
                                      nil)))
        (list (nth 0 common) (nth 1 common) (nth 2 common)
              ;; These are done separately here, so that `command-history' will record these expressions
              ;; rather than the values they had this time.
-             (and transient-mark-mode  mark-active  (region-beginning))
-             (and transient-mark-mode  mark-active  (region-end)))))))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-beginning))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-end)))))))
 
 
 
@@ -785,12 +790,15 @@ replacement."
      (let ((common
             (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word") " regexp"
                                              (and transient-mark-mode  mark-active
+                                                  (> (region-end) (region-beginning))
                                                   (not search/replace-region-as-default-flag)
                                                   " in region"))
                                      t)))
        (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (region-beginning))
-             (and transient-mark-mode  mark-active  (region-end)))))))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-beginning))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-end)))))))
 
 
 
@@ -805,12 +813,15 @@ replacement."
      (let ((common
             (query-replace-read-args (concat "Replace" (and current-prefix-arg  " word") " string"
                                              (and transient-mark-mode  mark-active
+                                                  (> (region-end) (region-beginning))
                                                   (not search/replace-region-as-default-flag)
                                                   " in region"))
                                      nil)))
        (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (region-beginning))
-             (and transient-mark-mode  mark-active  (region-end)))))))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-beginning))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-end)))))))
 
 
 
@@ -825,12 +836,15 @@ replacement."
      (let ((common
             (query-replace-read-args (concat "Replace" (and current-prefix-arg " word") " regexp"
                                              (and transient-mark-mode  mark-active
+                                                  (> (region-end) (region-beginning))
                                                   (not search/replace-region-as-default-flag)
                                                   " in region"))
                                      t)))
        (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (region-beginning))
-             (and transient-mark-mode  mark-active  (region-end)))))))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-beginning))
+             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                  (region-end)))))))
 
 
 
