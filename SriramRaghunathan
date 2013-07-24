@@ -10,7 +10,7 @@ Debian user, have 3 machines running on debian right now, Mzombie, fulcrum1 and 
 
 '''ELisp Socket Code'''
 
-<code>
+<pre>
 ;;; Simple Tcp Sock 
 
 (defvar listen-port 80)
@@ -37,7 +37,7 @@ Debian user, have 3 machines running on debian right now, Mzombie, fulcrum1 and 
 (listen-start)
 (sleep-for 10)
 (listen-stop)
-</code>
+</pre>
 
 
 
