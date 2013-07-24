@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
-;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:33:27 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 17:09:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 263
+;;     Update #: 266
 ;; URL: http://www.emacswiki.org/wid-edit%2b.el
 ;; Doc URL: http://emacswiki.org/UseCustomizeForKeyBindings
 ;; Keywords: widget, color
@@ -174,7 +175,7 @@ Return nil if color validates, or WIDGET otherwise."
          (old-color (overlay-get ovly 'face))
          (new-color (widget-apply widget :sample-face-get)))
     (unless (equal old-color new-color) (widgetp-remove-Completions))
-    (overlay-put ovly 'face new-color))  
+    (overlay-put ovly 'face new-color))
   (widget-default-notify widget child event))
 
 
