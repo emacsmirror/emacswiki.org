@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
-;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:27:18 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;;; Last-Updated: Tue Jul 23 17:01:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 548
+;;     Update #: 550
 ;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
