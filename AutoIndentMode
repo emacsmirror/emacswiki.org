@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.99
+* <b>Version </b> --  0.100
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -297,6 +297,52 @@ you do not want this to happen you can turn it off by
   (setq auto-indent-assign-indent-level-variables nil)
 }}}
 
+=== Why is auto-indent-mode changing tabs to spaces ===
+I prefer tabs instead of spaces.  You may prefer the other way.  The
+options to change this are:
+
+{{{
+  (setq auto-indent-mode-untabify-on-yank-or-paste nil)
+}}}
+
+to keep tabs upon paste.
+
+{{{
+  (setq auto-indent-untabify-on-visit-file nil) ; Already disabled
+}}}
+
+
+To keep tabs upon visiting a file.
+
+{{{
+  (setq auto-indent-untabify-on-save-file nil)
+}}}
+
+to turn off changing tabs to spaces on file save.
+
+{{{
+  (setq auto-indent-backward-delete-char-behavior nil) ; Just delete one character.
+}}}
+
+So that backspace doesn't change tabs to spaces.
+=== Argh -- Auto-indent is messing with my indentation.  What can I do? ===
+If you do not like the default indentation style of a particular
+mode, sometimes you may adjust the indetation by hand.  Then you
+press the return button and all your hard work is erased.  This can
+be quite frustrating.  
+
+What is happening, is that auto-indent is fixing the current line's
+indentation and then indenting the next line on pressing enter.  This
+can be turned off customizing the <tt>auto-indent-newline-function</tt> to
+
+{{{
+  (setq auto-indent-newline-function 'newline-and-indent) 
+}}}
+
+This will insert a newline and then indent.  Not reindent according
+to the major mode's conventions.
+
+
 == Functions ==
 === Interactive Functions ===
 
@@ -307,10 +353,7 @@ you do not want this to happen you can turn it off by
 === Internal Variables ===
 == History ==
 
-6-Jul-2013    Matthew L. Fidler  
-Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
-Updated documentation for a better description of assigning the indent
-level across modes.
+* <b>24-Jul-2013 </b> --   Updated FAQ for readme.org 6-Jul-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Updated documentation for a better description of assigning the indent level across modes. (Matthew L. Fidler)
 * <b>15-May-2013 </b> --   Made the indentation selective. Should fix Issue #15. 9-May-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Changed the AI indicator to be used at all times. That way it doesn't interfere with the diminish package. I believe that is the standard way to take off mode lines. (Matthew L. Fidler)
 * <b>18-Mar-2013 </b> --   Should fix issue #14 (Matthew L. Fidler)
 * <b>18-Mar-2013 </b> --   Add bug fix for Issue #13 (Matthew L. Fidler)
