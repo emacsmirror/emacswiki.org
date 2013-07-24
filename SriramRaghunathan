@@ -7,6 +7,40 @@ Use Emacs extensively @ work , home, phone where ever i could.  Read my mail's, 
 Want to try compiling ffmpeg with emacs and run ffmpeg-play-video interactive.  Small time experimenter with elisp and common lisp at times. Love the way ifile is written, Hang out at times on #emacs as sriram. 
 
 Debian user, have 3 machines running on debian right now, Mzombie, fulcrum1 and fulcrum2. 
+<<<<<<< you
+
+'''ELisp Socket Code'''
+
+<code>
+;;; Simple Tcp Sock 
+
+(defvar listen-port 80)
+(defvar listen-address "127.0.0.1")
+
+(defun listen-start nil
+  "Listen Start"
+  (interactive)
+  (make-network-process :name "listen" :buffer "*listen*" :family 'ipv4 :host listen-address :service listen-port :filter 'listen-filter :sentinel 'listen-sentinel))
+
+(defun listen-filter(proc string)
+  "Listen filter "
+  (message string))
+
+(defun listen-sentinel (proc msg)
+  (when (string= msg "connection broken by remote peer\n")
+    (message (format "client %s has quit" proc))))
+
+(defun listen-stop nil 
+  "Stop Emacs listen"
+  (interactive)
+  (delete-process "listen"))
+
+(listen-start)
+(sleep-for 10)
+(listen-stop)
+</code>
+||||||| ancestor
+=======
 
 
 
@@ -26,3 +60,4 @@ Welcome to the wiki. -- DrewAdams
 
 ----
 CategoryHomepage
+>>>>>>> other
