@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Version: 22.0
-;; Last-Updated: Thu Jul  4 08:22:35 2013 (-0700)
+;; Last-Updated: Tue Jul 23 19:22:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25872
+;;     Update #: 25876
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2787,7 +2786,7 @@ This is used as the value of `minibuffer-completion-table'."
     (setq result
           (lexical-let ((ops-re  (if (memq icicle-current-completion-mode '(nil apropos))
                                      ops
-                                   (concat "^" ops))))
+                                   (concat "^" (regexp-quote ops)))))
             (icicle-remove-if-not
              (lambda (opt+typ)          ; FREE here: OPS-RE, MODE, TP.
                (and (string-match ops-re (symbol-name (car opt+typ)))
@@ -5823,7 +5822,7 @@ Each element has the form (FNAME . FRAME), where FNAME names FRAME.
 See `icicle-make-frame-alist' for more about FNAME."
   (interactive (let* ((alist    (icicle-make-frame-alist))
                       (default  (car (rassoc (selected-frame) alist)))
-                      (input    (completing-read "Select Frame: " alist nil t nil
+                      (input    (completing-read "Select frame: " alist nil t nil
                                                  'frame-name-history default)))
                  (list (if (= (length input) 0) default input)
                        alist)))
@@ -5886,7 +5885,7 @@ WINDOW.  See `icicle-make-window-alist' for more about WNAME.
 If `crosshairs.el' is loaded, then the target position is highlighted."
   (interactive (let* ((alist    (icicle-make-window-alist current-prefix-arg))
                       (default  (car (rassoc (selected-window) alist)))
-                      (input    (completing-read "Select Window: " alist nil t nil nil default)))
+                      (input    (completing-read "Select window: " alist nil t nil nil default)))
                  (list (if (= (length input) 0) default input) alist)))
   (unless window-alist
     (setq window-alist  (or (and (boundp 'icicle-window-alist)  icicle-window-alist)
@@ -6269,7 +6268,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                  (icicle-transform-multi-completion strg)))
                  (name-pat     (if (memq icicle-current-completion-mode '(nil apropos))
                                    name-pat
-                                 (concat "^" name-pat)))
+                                 (concat "^" (regexp-quote name-pat))))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
                  (bufs         (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
