@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.101
+* <b>Version </b> --  0.102
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -375,6 +375,7 @@ to the major mode's conventions.
 === Internal Variables ===
 == History ==
 
+* <b>25-Jul-2013 </b> --   Push again. (Matthew L. Fidler)
 * <b>25-Jul-2013 </b> --   Fix issue #20. Add tabify region and buffer options. (Matthew L. Fidler)
 * <b>24-Jul-2013 </b> --   Updated FAQ for readme.org 6-Jul-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Updated documentation for a better description of assigning the indent level across modes. (Matthew L. Fidler)
 * <b>15-May-2013 </b> --   Made the indentation selective. Should fix Issue #15. 9-May-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Changed the AI indicator to be used at all times. That way it doesn't interfere with the diminish package. I believe that is the standard way to take off mode lines. (Matthew L. Fidler)
