@@ -1,3 +1,7 @@
+== Parent ==
+This is a child-page of GuileEmacs
+
+== List ==
 * Compact buffers after GC. (Perhaps using [http://permalink.gmane.org/gmane.emacs.diffs/115317])
 * Undo list truncation
 * Shrink regexp cache after GC
@@ -23,10 +27,11 @@
 * profiler.c is broken (maybe remove in favor of gprof + guile's profiler)
 * remove unexec support code
 
-User-visible issues:
+== User-visible issues ==
 
 wip-bdw-gc branch:
 # Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
 # There seem to be memory leaks, or another reason which causes the GC to exhaust the heap, usually resulting in a segfault.
 
+== comments ==
 Other than the above issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.) -- TaylanUB
