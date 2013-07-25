@@ -1,6 +1,30 @@
 Click on the header to list some pages related to game playing on Emacs.
 
-Add-on games:
+== Builtin games/amusements ==
+
+* <tt>5x5</tt> - fill in all the squares
+* <tt>animate</tt> - make text dance
+* <tt>blackbox</tt> - find objects by firing beams into a black box
+* DecipherMode - help for cracking a simple alphabetic substitution cipher
+* DissociatedPress -- fun with gibberish
+* EmacsDoctor - psychological help from a Rogerian analyst, for when it's all getting too much for you
+* <tt>dunnet</tt> - text-mode dungeon adventure game
+* <tt>gomoku</tt> - five-in-a-row against the computer
+* <tt>hanoi</tt> - computer solving the towers of hanoi game
+* <tt>lm</tt> - neural net robot that learns landmarks
+* <tt>life</tt> - John Conway's game of life
+* <tt>meese</tt> - stop impressionable young minds of America from seeing the <code>etc/sex.6</code> man page
+* MorseCode - convert text to and from morse code
+* <tt>mpuz</tt> - multiplication puzzle (hidden digits)
+* <tt>pong</tt> - two-player computerized ping-pong
+* <tt>snake</tt> - guide a snake around the screen, eat to grow
+* <tt>solitaire</tt> - balls on an 8x8 cross shaped grid
+* <tt>studlify-region</tt> - convert text to stUdlY caps
+* TetrisMode - arrange falling blocks
+* <tt>yow</tt> - random Zippy quote
+* ZoneMode - crazy screen effects when idle
+
+== Add-on games ==
 
 * [[Alienmangel]] -- a graphical action/adventure-game inspired by Rodent's revenge
 * BefungeMode -- interpreter for the funny Befunge programming language
@@ -36,31 +60,11 @@ Add-on games:
 * [http://www.gwenhael.net/emstar/ Emstar] - another implementation of dstar ([http://github.com/cycojesus/emstar/tree/master github repository])
 * [[Conx]] -- like the built-in DissociatedPress
 
-Builtin games/amusements:
 
-* <tt>5x5</tt> - fill in all the squares
-* <tt>animate</tt> - make text dance
-* <tt>blackbox</tt> - find objects by firing beams into a black box
-* DecipherMode - help for cracking a simple alphabetic substitution cipher
-* DissociatedPress -- fun with gibberish
-* EmacsDoctor - psychological help from a Rogerian analyst, for when it's all getting too much for you
-* <tt>dunnet</tt> - text-mode dungeon adventure game
-* <tt>gomoku</tt> - five-in-a-row against the computer
-* <tt>hanoi</tt> - computer solving the towers of hanoi game
-* <tt>lm</tt> - neural net robot that learns landmarks
-* <tt>life</tt> - John Conway's game of life
-* <tt>meese</tt> - stop impressionable young minds of America from seeing the <code>etc/sex.6</code> man page
-* MorseCode - convert text to and from morse code
-* <tt>mpuz</tt> - multiplication puzzle (hidden digits)
-* <tt>pong</tt> - two-player computerized ping-pong
-* <tt>snake</tt> - guide a snake around the screen, eat to grow
-* <tt>solitaire</tt> - balls on an 8x8 cross shaped grid
-* <tt>studlify-region</tt> - convert text to stUdlY caps
-* TetrisMode - arrange falling blocks
-* <tt>yow</tt> - random Zippy quote
-* ZoneMode - crazy screen effects when idle
-
-Other modes for games related things:
+== Other modes for games related things ==
 
 * AntMode -- edit ant brain files for Ant Wars
 * WmlMode -- edit Wesnoth Markup Language (WML) files for Battle of Wesnoth
+
+----
+CategoryGames
