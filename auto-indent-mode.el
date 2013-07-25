@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.100
+;; Version: 0.101
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -322,6 +322,28 @@
 ;; 
 ;; 
 ;; So that backspace doesn't change tabs to spaces.
+;; 
+;; If you wish to be more extreme you can also change spaces to tabs by:
+;; 
+;; 
+;;   (setq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
+;; 
+;; 
+;; to keep tabs upon paste.
+;; 
+;; 
+;;   (setq auto-indent-untabify-on-visit-file 'tabify) ; I would suggest
+;;                                           ; leaving this off.
+;; 
+;; 
+;; 
+;; To keep tabs upon visiting a file.
+;; 
+;; 
+;;   (setq auto-indent-untabify-on-save-file 'tabify)
+;; 
+;; 
+;; 
 ;; ** Argh -- Auto-indent is messing with my indentation.  What can I do?
 ;; If you do not like the default indentation style of a particular
 ;; mode, sometimes you may adjust the indetation by hand.  Then you
@@ -342,6 +364,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 25-Jul-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Fix issue #20.  Add tabify region and buffer options.
 ;; 24-Jul-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Updated FAQ for readme.org
@@ -1069,9 +1094,11 @@ The test for presence of the car of ELT-CONS is done with `equal'."
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-mode-untabify-on-yank-or-paste 't
+(defcustom auto-indent-mode-untabify-on-yank-or-paste t
   "Untabify pasted or yanked region."
-  :type 'boolean
+  :type '(choice (const :tag "Do not tabify or untabify" nil)
+                 (const :tag "Untabify region on paste" t)
+                 (const :tag "Tabify region on paste" tabify))
   :group 'auto-indent)
 
 (defcustom auto-indent-on-visit-file nil
@@ -1086,7 +1113,9 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 
 (defcustom auto-indent-untabify-on-visit-file nil
   "Automatically convert tabs into spaces when visiting a file."
-  :type 'boolean
+  :type '(choice (const :tag "Do not tabify or untabify file" nil)
+                 (const :tag "Untabify file on visit" t)
+                 (const :tag "Tabify region on visit" tabify))
   :group 'auto-indent)
 
 (defcustom auto-indent-delete-trailing-whitespace-on-visit-file nil
@@ -1096,7 +1125,9 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 
 (defcustom auto-indent-untabify-on-save-file t
   "Change tabs to spaces on file-save."
-  :type 'boolean
+  :type '(choice (const :tag "Do not tabify or untabify file" nil)
+                 (const :tag "Untabify file on visit" t)
+                 (const :tag "Tabify region on visit" tabify))
   :group 'auto-indent)
 
 (defcustom auto-indent-delete-trailing-whitespace-on-save-file nil
@@ -1763,8 +1794,11 @@ mode."
                 (indent-region p1 p2))
             (save-restriction
               (narrow-to-region p1 p2)
-              (if auto-indent-mode-untabify-on-yank-or-paste
-                  (untabify (point-min) (point-max))))))))))
+              (cond
+               ((eq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
+                (tabify (point-min) (point-max)))
+               (auto-indent-mode-untabify-on-yank-or-paste
+                (untabify (point-min) (point-max)))))))))))
 
 (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
   "`auto-indent-mode' advice for moving to the beginning of the line."
@@ -1854,9 +1888,12 @@ buffer."
              (and save auto-indent-on-save-file)
              (and (not save) auto-indent-on-visit-file))
         (indent-region (point-min) (point-max) nil))
-      (when (or
-             (and (not save) auto-indent-untabify-on-visit-file)
-             (and save auto-indent-untabify-on-save-file))
+      (cond
+       ((or (and (not save) (eq auto-indent-untabify-on-visit-file 'tabify))
+            (and save (eq auto-indent-untabify-on-save-file 'tabify)))
+        (tabify (point-min) (point-max)))
+       ((or (and (not save) auto-indent-untabify-on-visit-file)
+            (and save auto-indent-untabify-on-save-file)))
         (untabify (point-min) (point-max))))))
 
 (defun auto-indent-file-when-save ()
