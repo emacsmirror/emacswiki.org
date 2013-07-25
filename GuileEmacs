@@ -1,3 +1,4 @@
+== Overview ==
 [[zh:Guile_Emacs]]
 Guile Emacs is a variant of Emacs which is integrating the
 [[Guile]] extension language in addition to EmacsLisp so to
@@ -5,6 +6,7 @@ provide a better programming environment for both Emacs
 users and Guile users.  Guile is in fact [[Scheme]], a much simpler and cleaner
 dialect of Lisp than CommonLisp.
 
+== History ==
 Some original work was by KeisukeNishida and was based on Emacs 20.7 and Guile 1.5.  The last work on this project was 2000-06-01.  The goal was to support both Guile and EmacsLisp.  You can find more information on [http://sourceforge.net/projects/gemacs/ its Sourceforge page], or in the project's [http://sourceware.org/ml/guile-emacs/ mailing list archive].
 
 Matthias Neubauer and Michael Sperber studied the possibility of automatically translating Emacs Lisp Code into Scheme.  See DownWithEmacsLisp.
@@ -41,6 +43,7 @@ On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode
 * [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00291.html Re: Emacs and Guile]
 
 
+== Current State ==
 As of 2013-03, the latest state of "guilemacs" as some call it, can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress has slowed since the end of GoogleSummerOfCode, but there are still signs of life, and commits being made. Contributions are very welcome; it seems to be almost there. It compiles and runs ERC, Gnus, etc. all fine, behaving indistinguishable from a normal Emacs build, but not entirely without issues; see GuileEmacsTodo.
 
 As of 2013-05, a GoogleSummerOfCode 2013 project for the continuation of the effort so far has been announced, with BT Templeton as the author again:
@@ -48,6 +51,7 @@ As of 2013-05, a GoogleSummerOfCode 2013 project for the continuation of the eff
 * [http://www.google-melange.com/gsoc/proposal/review/google/gsoc2013/bpt/35002 The GSoC project]
 * [https://lists.gnu.org/archive/html/guile-user/2013-05/msg00081.html The announcement of the GSoC project on guile-user.]
 * [https://lists.gnu.org/archive/html/emacs-devel/2013-05/msg00622.html The announcement of the GSoC project on emacs-devel.]
+
 
 == See Also ==
 GuileEmacsTodo
