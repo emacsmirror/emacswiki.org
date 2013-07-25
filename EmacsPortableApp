@@ -14,6 +14,7 @@ favorite mono-spaced font
 * The fonts you use should be free, so you are not copying fonts
 that should not be copied
 * Currently no support under Linux
+
 == Window Only Features:* ==
 * Psuedo-Daemon
 * Finding support applications and dictionaries
@@ -22,12 +23,15 @@ that should not be copied
 hasn't released a new launcher.
 
 In windows, this distribution also allows concurrent versions of emacs
-to be run, with different startup options. 
+to be run, with different startup options.
+
 == Download ==
 === Download for Emacs 24 ===
 The following downloads are available:
-* [http://code.google.com/p/emacs-portable-app/downloads/detail?name=!EmacsInstall-24.3-ep13.03.22.exe Emacs 24.3]
-=== Using Pre-releases ===
+* [http://code.google.com/p/emacs-portable-app/downloads/detail?name=EmacsInstall-24.3-ep13.03.22.exe Emacs 24.3]
+* See http://code.google.com/p/emacs-portable-app/downloads/list for all available downloads
+
+== Using Pre-releases ==
 Under windows, you can do a net-install by using !EmacsOptions.  This
 net install can be performed in two ways:
 # Select the option for a network-based install
@@ -35,6 +39,8 @@ net install can be performed in two ways:
 directory and run it.  This allows you to distribute the network
 install file anywhere and allow other people to download/build
 their own !EmacsPortable.App.
+
+
 == Options ==
 === Associations ===
 !EmacsPortable.App handles file associations in the following ways:
