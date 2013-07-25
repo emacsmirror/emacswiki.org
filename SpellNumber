@@ -206,8 +206,8 @@ Also, it was used:
 
 == American and British Numbers ==
 
-For numbers in english above million, see the URLs:
-
+For numbers in English above million, see the URLs:
+: http://www.howtospellnumbers.com - We have created this website in order to help people spell numbers correctly in English
 : http://www.m-w.com/mw/table/number.htm
 : http://db.uwaterloo.ca/~alopez-o/math-faq/mathtext/node25.html
 : (or http://db.uwaterloo.ca/~alopez-o/math-faq/node54.html)
@@ -303,9 +303,6 @@ To accommodate these variations, use the variables:
 
 The default value for both variables above is ##t##, that is, ##" and "## and ##", "##
 are spelled.
-
-[new]
-We have created this website in order to help people spell numbers correctly in English - http://www.howtospellnumbers.com
 
 
 == Acknowledgments ==
