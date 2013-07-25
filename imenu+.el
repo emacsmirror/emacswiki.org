@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ((hide-comnts "0"))
-;; Last-Updated: Wed Jul 24 08:19:04 2013 (-0700)
+;; Last-Updated: Thu Jul 25 08:46:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 903
+;;     Update #: 915
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -73,6 +73,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/25 dadams
+;;     Require hide-comnt.el for Emacs 20 also - see comment in code for require.
 ;; 2013/07/24 dadams
 ;;     Require hide-comnt.el for Emacs 21+.
 ;; 2012/10/24 dadams
@@ -171,7 +173,10 @@
 (eval-when-compile (require 'cl)) ;; case
 
 (require 'imenu)
-(when (> emacs-major-version 20) (require 'hide-comnt))
+
+;; Even though the commands of `hide-comnt.el' are not usable in Emacs 20, require it even for
+;; Emacs 20, in case a user byte-compiles `imenu+.el' in Emacs 20 for use in later Emacs versions.
+(require 'hide-comnt)
 
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
