@@ -11,7 +11,8 @@ Click on the header to list some pages related to game playing on Emacs.
 * <tt>dunnet</tt> - text-mode dungeon adventure game
 * <tt>gomoku</tt> - five-in-a-row against the computer
 * <tt>hanoi</tt> - computer solving the towers of hanoi game
-* <tt>lm</tt> - neural net robot that learns landmarks
+* <tt>landmark</tt> - neural net robot that learns landmarks;  in Emacs 24 it is invoked with <tt>landmark</tt>; in previous version it is invoked with <tt>lm</tt>
+** http://www.gnu.org/software/emacs/news/NEWS.24.2
 * <tt>life</tt> - John Conway's game of life
 * <tt>meese</tt> - stop impressionable young minds of America from seeing the <code>etc/sex.6</code> man page
 * MorseCode - convert text to and from morse code
