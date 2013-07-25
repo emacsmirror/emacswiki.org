@@ -21,6 +21,7 @@
 * '''DONE''' Use libguile hash functions
 * Use libguile hash tables
 * profiler.c is broken (maybe remove in favor of gprof + guile's profiler)
+* remove unexec support code
 
 User-visible issues:
 
