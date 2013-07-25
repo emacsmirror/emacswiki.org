@@ -8,13 +8,13 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:06:31 2013 (-0700)
+;; Last-Updated: Thu Jul 25 08:43:40 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 51
+;;     Update #: 54
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -43,6 +43,13 @@
 ;;  Put this in your init file (`~/.emacs'):
 ;;
 ;;   (require 'hide-comnt)
+;;
+;;
+;;  Note for Emacs 20: The commands and option defined here do nothing
+;;  in Emacs 20.  Nevertheless, the library can be byte-compiled in
+;;  Emacs 20 and `imenu+.elc' can be loaded in later Emacs versions
+;;  and used there.  This is the only real use of this library for
+;;  Emacs 20: it provides macro `with-comments-hidden'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
