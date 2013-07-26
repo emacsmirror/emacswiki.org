@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-21 12:26:18
-;; Version: 0.3
-;; Last-Updated: 2013-07-23 16:30:00
+;; Version: 0.4
+;; Last-Updated: 2013-07-26 16:30:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/ido-gnus
 ;; Keywords: comm
@@ -133,33 +133,47 @@ gnus will be started if it is not already running."
   (interactive "P")
   (unless gnus-newsrc-alist (gnus))
   (let* ((groups (mapcar 'car (cdr gnus-newsrc-alist)))
-         (group (ido-completing-read "Group: " (append (list gnus-group-buffer) groups) nil t)))
+         (group (ido-completing-read "Group: " groups nil t)))
     (if (member group groups)
         (gnus-group-read-group (if prefix
                                    (if (numberp ido-gnus-num-articles) t
                                      gnus-large-newsgroup)
                                  ido-gnus-num-articles)
-                               (not ido-gnus-show-article) group)
-      (if (equal group gnus-group-buffer)
-          (switch-to-buffer gnus-group-buffer)))))
+                               (not ido-gnus-show-article) group))))
 
 ;;;###autoload
-(defun ido-gnus-select-server (prefix)
+(defun ido-gnus-select-server nil
   "Select a gnus server to visit using ido.
 
 gnus will be started if it is not already running."
-  (interactive "P")
+  (interactive)
   (unless gnus-newsrc-alist (gnus))
   (unless (get-buffer gnus-server-buffer) (gnus-enter-server-buffer))
   (let* ((srvs (mapcar (lambda (x) (concat (symbol-name (caar x)) ":" (cadar x)))
                        gnus-opened-servers))
-         (srv (ido-completing-read "Server: " (append (list gnus-server-buffer) srvs) nil t)))
+         (srv (ido-completing-read "Server: " srvs nil t)))
     (if (member srv srvs)
         (with-current-buffer gnus-server-buffer
-          (gnus-server-read-server srv))
-      (if (equal srv gnus-server-buffer)
-          (switch-to-buffer gnus-server-buffer)))))
+          (gnus-server-read-server srv)))))
 
+;;;###autoload
+(defun ido-gnus-select (prefix)
+  "Select a gnus group/server"
+  (interactive "P")
+  (unless gnus-newsrc-alist (gnus))
+  (let* ((gnusbuffers (loop for buf in (buffer-list)
+                            for mode = (with-current-buffer buf major-mode)
+                            if (memq mode (list 'gnus-article-mode 'gnus-summary-mode))
+                            collect (buffer-name buf)))
+         (items (append '("Group buffer" "Other groups" "Server buffer" "Other servers") gnusbuffers))
+         (item (ido-completing-read "Open: " items nil t)))
+    (cond ((equal item "Other groups") (ido-gnus-select-group prefix))
+          ((equal item "Group buffer") (switch-to-buffer gnus-group-buffer))
+          ((equal item "Other servers") (ido-gnus-select-server))
+          ((equal item "Server buffer")
+           (unless (get-buffer gnus-server-buffer) (gnus-enter-server-buffer))
+           (switch-to-buffer gnus-server-buffer))
+          (t (switch-to-buffer item)))))
 
 (provide 'ido-gnus)
 
