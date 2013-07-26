@@ -1,15 +1,15 @@
-htmlfontify.el can make an html view of any buffer in Emacs. 
-Emacs has a command (browse-url-of-file) to send any html file to the selected web browser.
+<code>htmlfontify.el</code> can make an html view of any buffer in Emacs. 
+Emacs has a command (<code>browse-url-of-file</code>) to send any html file to the selected web browser.
 
 Adding these two things together you suddenly have a way to get a snapshot of the buffer's view in your web browser.
 And - finally - if you can print from your web browser, then this gives a simple way to preview and print (with colors) from Emacs.
 
-I implemented this in hfyview.el.
+I implemented this in <code>hfyview.el.</code>
 Beside printing a buffer it can print a window or frame, see the example at
 http://ourcomments.org/Emacs/nXhtml/doc/htmlfontify-example.html.
 If you want to it can also add a Quick Print entry in the File menu.
 
-To easily distribute htmlfontify.el+hfyview.el I have put them in [NxhtmlMode nXthml].
+To easily distribute <code>htmlfontify.el + hfyview.el</code> I have put them in [NxhtmlMode nXthml].
 
 [new]
 [question]
@@ -19,45 +19,17 @@ How does bundling something in with an unrelated package that many people don't 
 It makes it easy for me ...;-)
 And actually for you since doing it this way I can find time to keep it updated all the time.
 Please look at the reposity for [NxhtmlMode nXhtml].
-You will find hfyview.el in the util subdir.
+You will find <code>hfyview.el</code> in the util subdir.
 (But actually I think it is less trouble to just install nXhtml.)
 
 [new]
 Note:
 This was originally written for MS Windows because I could not find an easy way to print there, 
-but it is OS independent. From the beginning this was implemented using htmlize.el and htmlize-view.el.
-I switched to htmlfontify.el instead because htmlfontify could take care of a bit more cases
+but it is OS independent. From the beginning this was implemented using <code>htmlize.el</code> and <code>htmlize-view.el</code>.
+I switched to <code>htmlfontify.el</code> instead because htmlfontify could take care of a bit more cases
 and because htmlfontify will hopefully also soon be part of Emacs. (Here on %%EmacsWiki%% there is an old version for MS Windows called Lisp:w32-winprint.el)
 
-== Some Feedback ==
-
-[new]
-[argyrodes] This module works great. I loaded the library and printed my perl code in color as easy as never before. 
-No more saving ps buffer, open ghostview etc. At the begining I was worried about to loose the ps-printing entries
-but I realized that this module doesn't print blindly but stops in the printer menu, so I can choose also my ps-printers 
-or print to pdf with pdf-writer.
-So Thanks for this easy-printing-colorfull module.
-
-[new]
-Just a note: I have been reading everything I have been able to find about printing under MS Windows before. Nothing worked for me before. (I do not know why, it may be something about the way the printers are setup on the network where I tested.)
-
-[new]
-w32-print no longer exists.  I believe that hfyview from nxhtml works, though.
-
-[new]
-I just found this and already love it; mostly for now being able to copy code for pasting into e-mails. I have couple of questions/requests:
-
-# I use [http://www.emacswiki.org/LineNumbers#toc5 nlinum]. Any chance the generated can html can show the line numbers? 
-
-# The formatted html does not look quite the same as my buffer, here's a screenshot of how it looks in my Emacs and in browsers
-
-::: http://i.imgur.com/u4eAxyj.png
-
-The important differences for me are that the browser has slightly smaller size and (I think) the small amount of space between lines is lost. I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
-
-# Is it possible to extend styles so that changes to a basic style like <code>body</code> affects other styles like <code>span.constant</code>?
-
-----
-*See also:* PrintingFromEmacs,
+== See also ==
+PrintingFromEmacs,
 CategoryWThirtyTwo,
 PrintingPackage
