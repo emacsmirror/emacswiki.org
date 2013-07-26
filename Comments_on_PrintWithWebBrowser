@@ -1,0 +1,29 @@
+
+[new]
+[argyrodes] This module works great. I loaded the library and printed my perl code in color as easy as never before. 
+No more saving ps buffer, open ghostview etc. At the begining I was worried about to loose the ps-printing entries
+but I realized that this module doesn't print blindly but stops in the printer menu, so I can choose also my ps-printers 
+or print to pdf with pdf-writer.
+So Thanks for this easy-printing-colorfull module.
+
+[new]
+Just a note: I have been reading everything I have been able to find about printing under MS Windows before. Nothing worked for me before. (I do not know why, it may be something about the way the printers are setup on the network where I tested.)
+
+[new]
+w32-print no longer exists.  I believe that hfyview from nxhtml works, though.
+
+[new]
+I just found this and already love it; mostly for now being able to copy code for pasting into e-mails. I have couple of questions/requests:
+
+# I use [http://www.emacswiki.org/LineNumbers#toc5 nlinum]. Any chance the generated can html can show the line numbers? 
+
+# The formatted html does not look quite the same as my buffer, here's a screenshot of how it looks in my Emacs and in browsers
+
+::: http://i.imgur.com/u4eAxyj.png
+
+The important differences for me are that the browser has slightly smaller size and (I think) the small amount of space between lines is lost. I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
+
+# Is it possible to extend styles so that changes to a basic style like <code>body</code> affects other styles like <code>span.constant</code>?
+
+-- MichaelPaulukonis 2013-07-26 18:48 UTC
+
