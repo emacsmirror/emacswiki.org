@@ -141,7 +141,7 @@ Can't find any notes on this, yet, other than what I blatantly stole from [[NicF
 == Navigation to places I want to remember ==
 * wiki work
 ** EmacsWikiContent - list of some TODOs for the wiki
-** [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with CategoryNeedsAttention]]
+** [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with <code>CategoryNeedsAttention</code>]]
 * EmacsWikiSuggestions
 * CategoryEmacsWikiSite
 * [[News]]
