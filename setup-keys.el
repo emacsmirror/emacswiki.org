@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:55:53 2013 (-0700)
+;; Last-Updated: Thu Jul 25 16:59:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1213
+;;     Update #: 1216
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/25 dadams
+;;     Invoke find-function-setup-keys.
 ;; 2013/07/05 dadams
 ;;     Bind move-frame-to-screen-top-left to C-S-home.
 ;; 2013/04/21 dadams
@@ -668,6 +670,7 @@
 
 (eval-after-load "find-func+"           ; Emacs 22+
   '(define-key ctl-x-4-map "l" 'find-library-other-window))                    ; `C-x 4 l'
+(find-function-setup-keys)  ;; C-x F, C-x 4 F, C-x 5 F, C-x K, C-x V, C-x 4 V, C-x 5 V
 
 ;; [f1] function key.
 (eval-after-load "help+"
