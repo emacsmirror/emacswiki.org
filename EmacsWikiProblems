@@ -9,6 +9,31 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 --------
+== How to do a search for CateogoryNeedsAttention without invoking the category ==
+Say we have the following markup:
+
+* <code>[[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]</code>
+** Note that spaces have been added to the text as "Category-space-Needs-space-Attention" but that's no nevery-you-mind as it has no effect.
+* [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]
+
+The page with that markup gets a big ol' "THIS PAGE NEEDS ATTENTION" banner atop itself.
+Which is attention-getting.
+But innaccurate.
+
+How can we do a search for that term, or even link to the category page, without invoking the markup?
+
+I attempted to do the markup as follows:
+
+<code>[[https://duckduckgo.com/?q=%22Category+NeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]</code>
+
+But that particular search fails to find anything but the Category-NeedsAttention page itself.
+
+
+== Can markup be used in headers? <code>I have failed to do so.</code> ==
+Is this documented somewhere?
+
+Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a header, without actually invoking it.
+
 
 == No more `Article' link on `Comments on...' pages ==
 
