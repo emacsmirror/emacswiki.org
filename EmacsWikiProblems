@@ -28,11 +28,15 @@ I attempted to do the markup as follows:
 
 But that particular search fails to find anything but the Category-NeedsAttention page itself.
 
+Also of Note: CNA markup does not appear in the page preview. It only appears after save. So twiddling with tricks to avoid its appearance can only be tested by a number of frivolous edit-save cycles.
+
 
 == Can markup be used in headers? <code>I have failed to do so.</code> ==
 Is this documented somewhere?
 
 Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a header, without actually invoking it.
+
+Interestingly, the markup in this particular header renders properly in the TOC
 
 
 == No more `Article' link on `Comments on...' pages ==
