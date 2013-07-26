@@ -1,4 +1,6 @@
-**Links to getting this package are broken, and I see no google results. It appears this package is defunct/deprecated.**
+**This package is defunct / unmaintained.**
+
+Google lead me to some code on github https://github.com/hjanetzek/ca2, not updated since 2009.
 
 Ca2+ is an in-buffer completion mode based on CompanyMode. Sources for dabbrev, filenames, yasnippet, elisp, gtags and semantic are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with semantic), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Ca2+ is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+]. After checkout add ca2+ to your loadpath and load ca2+init. have a look in ca2+init.el and ca2+.el for config options and keybinding configuration. A small video that shows some features of the semantic-context source can be found [http://staff.get-e.org/~jeffdameth/ca2+promo.htm here]. I am not sure if I will develop the  ca2+ui further as it seems that there is some progress going on with completion-ui and company-mode for which I will try to make the semantic-context source available. 
 
