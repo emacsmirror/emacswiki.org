@@ -1,3 +1,15 @@
+== Variations ==
+
+* An answer to the Stack Overflow question [http://stackoverflow.com/questions/350345/how-can-i-have-a-portable-emacs "How can I have a portable Emacs?"] points out that ''the "normal" Emacs distribution for Windows is precompiled and just runs without having to do any install. Just get one of the *.zip files from the usual place, unpack it onto a USB disk, and you can use it directly. (The actual binary is inside the "bin/" directory.)''
+* http://esnm.sourceforge.net/download.html
+** this appears to be by Matthew Fiddler, as well
+* http://theblackdragon.wordpress.com/2006/05/12/portable-emacs/
+* http://pigpog.com/2007/10/22/portable-emacs-onna-stick/
+* http://code.google.com/p/clt-dotemacs/wiki/EmacsPortable
+
+
+Everything below here refers to one particular implementation.
+
 == Introduction ==
 !EmacsPortable.App attempts to make a portable version of Emacs that
 runs off a USB drive under either Windows, Linux, or Mac OSX.
@@ -30,6 +42,10 @@ to be run, with different startup options.
 The following downloads are available:
 * [http://code.google.com/p/emacs-portable-app/downloads/detail?name=EmacsInstall-24.3-ep13.03.22.exe Emacs 24.3]
 * See http://code.google.com/p/emacs-portable-app/downloads/list for all available downloads
+
+=== source ??? ===
+* https://github.com/mlf176f2/EmacsPortable.App
+** "mlf176f2" appears to be Matthew L Fiddler, who created/edited the bulk of this page, but lacks an EmacsWiki user-page
 
 == Using Pre-releases ==
 Under windows, you can do a net-install by using !EmacsOptions.  This
@@ -383,3 +399,8 @@ You can build an installer with the command <tt>build-nsi</tt> inside emacs.
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
+
+----
+* CategoryNeedsAttention
+* CategoryWThirtyTwo
+* CategoryPorts
