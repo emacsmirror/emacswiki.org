@@ -23,6 +23,7 @@ EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoun
 For help on using other people's Emacs Lisp, see InstallingPackages.
 
 * LearnEmacsLisp as a way of LearningEmacs.
+* [[http://bzg.fr/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]]
 * ElispCookbook has useful short examples.
 * An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]]
 * CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
