@@ -1,4 +1,4 @@
-This projects aims at creating an emacs frontend to Eclim, see http://eclim.sourceforge.net. With the help of eclim we can provide emacs-users with a tight eclipse integration. The ultimate goal of the project is to simplify java development with emacs and bring the best features from eclipse to emacs.
+This projects aims at creating an emacs frontend to Eclim, see http://eclim.sourceforge.net for the backend and http://github.com/senny/emacs-eclim for the actual emacs interface. With the help of eclim we can provide emacs-users with a tight eclipse integration. The ultimate goal of the project is to simplify java development with emacs and bring the best features from eclipse to emacs.
 
 == Features ==
 * manage your eclipse projects
