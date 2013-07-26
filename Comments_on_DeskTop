@@ -1,0 +1,4 @@
+When I use the save-desktop-mode, the current buffer when I open emacs (the first buffer that is active when I open emacs) is always in read-only mode, and I should to write "M-S-: (setq read-only-mode nil)" in order to shut down it. How can I avoid that?
+
+-- Peregring-lk 2013-07-26 07:52 UTC
+
