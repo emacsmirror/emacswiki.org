@@ -64,8 +64,7 @@ The following libraries complete text in place (in a buffer other than the minib
 * AutoCompletePlus -- Enhancement of AutoComplete.
 * AutoJavaComplete -- A Java Complete based on AutoComplete.
 * DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
-* CaMode -- Ca2+ is based on CompanyMode, similar sources to AutoComplete, but with features you've never seen before :)
-Sources for dabbrev, filenames, yasnippet, elisp, gtags and Semantic/CEDET are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with Semantic/CEDET), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Code is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+] 
+* CaMode -- Defunct / unmaintained. Ca2+ is based on CompanyMode, similar sources to AutoComplete.
 
 
 
