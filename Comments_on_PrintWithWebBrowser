@@ -1,4 +1,3 @@
-
 [new]
 [argyrodes] This module works great. I loaded the library and printed my perl code in color as easy as never before. 
 No more saving ps buffer, open ghostview etc. At the begining I was worried about to loose the ps-printing entries
@@ -24,6 +23,3 @@ I just found this and already love it; mostly for now being able to copy code fo
 The important differences for me are that the browser has slightly smaller size and (I think) the small amount of space between lines is lost. I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
 
 # Is it possible to extend styles so that changes to a basic style like <code>body</code> affects other styles like <code>span.constant</code>?
-
--- MichaelPaulukonis 2013-07-26 18:48 UTC
-
