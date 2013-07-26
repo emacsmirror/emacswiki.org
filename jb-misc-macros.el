@@ -96,11 +96,18 @@
 (defsubst lastcar (lst)
   (car (last lst)))
 
-(defun jb-get-matching-buffers (regex)
+(defun jb-get-matching-name-buffers (regex)
   "Return list of buffers with names matching REGEX."
   (loop for buf in (buffer-list)
         for name = (buffer-name buf)
         if (string-match regex name)
+        collect buf))
+
+(defun jb-get-matching-mode-buffers (regex)
+  "Return list of buffers with mode names matching REGEX."
+  (loop for buf in (buffer-list)
+        for modename = (symbol-name (with-current-buffer buf major-mode))
+        if (string-match regex modename)
         collect buf))
 
 ;; Note: the cut macro in combinators.el does a similar job to the following function,
