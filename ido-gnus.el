@@ -50,7 +50,8 @@
 ;;    Select a gnus group to visit using ido.
 ;;  `ido-gnus-select-server'
 ;;    Select a gnus server to visit using ido.
-;;
+;;  `ido-gnus-select'
+;;    Select a gnus group/server or existing gnus buffer using ido.
 ;;; Customizable Options:
 ;;
 ;; Below is a customizable option list:
@@ -158,7 +159,7 @@ gnus will be started if it is not already running."
 
 ;;;###autoload
 (defun ido-gnus-select (prefix)
-  "Select a gnus group/server"
+  "Select a gnus group/server or existing gnus buffer using ido."
   (interactive "P")
   (unless gnus-newsrc-alist (gnus))
   (let* ((gnusbuffers (loop for buf in (buffer-list)
