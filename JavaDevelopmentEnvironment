@@ -2,7 +2,7 @@
 
 The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
 
-Development of JDEE is by all appearances very slow (or nearly dead). JDEE 2.4.1 was released in May, 2013 but included no new features.  Bug reports, patches, volunteers are very welcome! There was extensive discussion in April/May 2013 about a next generation JDEE (possible fork). Fortunately, there are signs of development for Java in [[CEDET]].
+Development of JDEE is by all appearances very slow (or nearly dead). JDEE 2.4.1 was released in May, 2013 but included no new features.  Bug reports, patches, volunteers are very welcome! There was extensive discussion in April/May 2013 about a next generation JDEE (possible fork). Fortunately, there are signs of development for Java in [[CEDET]]. For an other alternative see [[EmacsEclim]] which provides Eclipse-like features for Java development.
 
 Project site: http://jdee.sourceforge.net/
 
