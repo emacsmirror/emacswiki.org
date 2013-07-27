@@ -30,6 +30,8 @@ Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
 
 [https://github.com/aki2o/auto-complete-nxml Auto Complete on nXML-mode]
 
+[https://github.com/aki2o/emacs-plsense Auto Complete for Perl]
+
 Other extensions are found in [[AutoCompleteSources]].
 
 == Development Version Notes ==
@@ -569,7 +571,7 @@ Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim 
 </pre>
 --Lucas Pandolfo
 [new]
-Is it possible to add some additional information in the popup menus that doesn't get inserted when the text is completed? I would like to have the additional type information semantic provides for C/C++ code in the popup menu、like 
+Is it possible to add some additional information in the popup menus that doesn't get inserted when the text is completed? I would like to have the additional type information semantic provides for C/C++ code in the popup menuãlike 
 
 <pre>
 | l : long[] |
