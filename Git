@@ -84,7 +84,7 @@ git.el will look into your git configuration for committer name and email addres
 
 === How to use Git with VC ===
 
-See [http://snarfed.org/emacs-vc-git-tweaks snarfed.org/emacs-vc-git-tweaks) for elisp that adds direct `git add` and `git reset` support.
+See [http://snarfed.org/emacs-vc-git-tweaks snarfed.org/emacs-vc-git-tweaks] for elisp that adds direct `git add` and `git reset` support.
 
 Question: I would like to do everything from within Emacs (without having to
 resort to the command-line).  I was able to create a new repository with
