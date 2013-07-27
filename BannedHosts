@@ -157,6 +157,7 @@ broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
 ^192\.74\.229\.1 # for spamming WThirtyTwoFontifiedRegionToClipboard
 ^112\.111\.1(6[0-9]|7[0-5])\. # 112.111.160.0 - 112.111.175.255
 newemailcenter # spamming SiteMap Discussion
+^ks4002859.ip-198-100-149\.net # 2013-07-27 SiteMap Discussion
 ^SOL-FTTB\.113\.114\.119\.46\.sovam\.net\.ua
 ^46\.119\.116\.228 # 1013-06-05 SiteMap Discussion
 ^araxinfo\.com # 2013-05-08 IciclesDiscussion
