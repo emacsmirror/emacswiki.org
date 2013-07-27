@@ -1,5 +1,7 @@
 This projects aims at creating an emacs frontend to Eclim, see http://eclim.sourceforge.net for the backend and http://github.com/senny/emacs-eclim for the actual emacs interface. With the help of eclim we can provide emacs-users with a tight eclipse integration. The ultimate goal of the project is to simplify java development with emacs and bring the best features from eclipse to emacs.
 
+[[http://www.skybert.net/emacs/java/|Here's a detailed description with screenshots]] showing what Eclim is capable of.
+
 == Features ==
 * manage your eclipse projects
 * Java
@@ -23,5 +25,4 @@ I can't seem to get imports to work, and can't find any resolution to these erro
 The project is living on github at http://github.com/senny/emacs-eclim. Since the active development has just started lately we are glad for every contribution. Feel free to fork the project and send me a pull-request when you got some new features implemented or some bugs fixed.
 
 ----
-See also [[http://www.skybert.net/emacs/java/|Description of what ECLIM can do]]
 CategoryJava
