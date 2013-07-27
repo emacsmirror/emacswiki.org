@@ -84,6 +84,8 @@ git.el will look into your git configuration for committer name and email addres
 
 === How to use Git with VC ===
 
+See [http://snarfed.org/emacs-vc-git-tweaks snarfed.org/emacs-vc-git-tweaks) for elisp that adds direct `git add` and `git reset` support.
+
 Question: I would like to do everything from within Emacs (without having to
 resort to the command-line).  I was able to create a new repository with
 `vc-create-repo', but don't know how to add all the files in the
@@ -91,7 +93,7 @@ directory with `vc-next-action' -- something akin to (eventually
 calling the backend command) ##git add .## -- without having to add each
 file separately.  Any tips?
 
-Answer: With vc-git.el 2007-11-29 or later, you can do
+Older answer: With vc-git.el 2007-11-29 or later, you can do
 
 * `C-x v d' to see the (empty) directory; then
 * `v t' to toggle visibility of "modified" files; then
