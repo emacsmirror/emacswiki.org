@@ -1,0 +1,143 @@
+= Введение в Dired =
+
+[http://www.youtube.com/watch?v=_HW1sEc7RLU&list=PL-4HTis7w5LL6bpVpJrV_9m3mA2p2eSnn Просмотреть как playlist]
+
+/Ниже: краткое содержание видео и ссылки на YouTube, конкретные эпизоды./
+
+* Что такое Dired?
+
+** _Часть 1_
+   [http://youtu.be/_HW1sEc7RLU Как отркыть нужную директорию?]
+
+*** Открыть директорию
+    <code>M-x dired</code>
+    <code>C-x d</code>
+
+*** Открыть директорию используя поиск в истории
+    <code>M-n</code>
+    <code>M-p</code>
+
+*** Открыть директорию используя поиск по регулярному выражению
+    <code>M-r</code>
+    <code>M-s</code>
+
+*** Создать закладку и отркыть директорию на закладке
+    <code>C-x r m</code>
+    <code>C-x r b</code>
+
+*** Открыть директорию используя [[Tramp]] 
+    <code>/sudo::/path/to/directory</code>
+** _Часть 2_
+   [http://youtu.be/DlA6NmxQ4Hk Навигация по Dired буфферу]
+*** Перемещение к родительской / дочерней директории
+    <code>^</code>
+    <code>RET</code>
+    <code>a</code>
+    <code>n</code>
+    <code>p</code>
+
+*** Перемещение между под-директориями одной директории
+    <code><</code>
+    <code>></code>
+    
+*** Перемещение к файлу по имени
+    <code>j</code>
+    
+*** Перемещение используя поиск по подстроке
+    <code>C-s</code>
+    <code>C-r</code>
+
+*** Сортировка по дате и имени файлов
+    <code>s</code>
+
+*** Вставка под-директорий
+    <code>i</code>
+    <code>C-u i</code>
+
+*** Скрытие неинтересных файлов
+    <code>k</code>
+    <code>C-u k</code>
+    <code>l</code>
+    <code>$</code>
+
+*** Копирование путей к файлам
+    <code>w</code>
+    <code>C-u w</code>
+    <code>C-u 0 w</code>
+
+** _Часть 3_
+   [http://youtu.be/Ys09kiOqyDQ Выделение, копирование, удаление]
+*** Метки
+    <code>m</code>
+    <code>u</code>
+    <code>U</code>
+    <code>* *</code>
+    <code>* /</code>
+    <code>* @</code>
+    <code>* C-n</code>
+    <code>* C-p</code>
+
+*** Инверсия выделения
+    <code>t</code>
+    <code>% m</code>
+    <code>% g</code>
+    <code>C-/</code>
+
+*** Режим свободного редактирования
+    <code>C-x C-q</code>
+    <code>C-c C-c</code>
+
+** _Часть 4_
+   [http://youtu.be/UNl1eoFsbc8 Поиск]
+*** Поиск родительской директории
+    <code>M-x dired-jump</code>
+
+*** Поиск по имени файла
+    <code>M-x find-dired</code>
+    <code>M-x find-name-dired</code>
+
+*** Поиск по содержанию файла
+    <code>M-x find-grep</code>
+    <code>M-x find-grep-dired</code>
+
+*** Интерактивный поикс
+    <code>Q</code>
+    <code>A</code>
+    <code>M-,</code>
+
+** _Часть 5_
+   [http://www.youtube.com/watch?v=JVXzat5Xb6I Расширение и дополнение]
+   [http://youtu.be/2gKCODWMpLc]
+
+*** Не надо!
+    Для Эмакса, и в том числе для Диред написано множество всевозможных
+    расширений и дополнений. Начните поиск с [[Dired]].
+    Обязательно загляните в  [[ELPA]] и [http://melpa.milkbox.net/ MELPA]. Спросите на [http://stackoverflow.com/ StackOverflow.com] -
+    там есть довольно много людей использующих Эмакс в повседневной работе,
+    разработчики и разработчики дополнений.
+    Кроме того, иногда сразу тяжело придумать самый хороший способ решить
+    задачу - иногда вам просто нужно поставить вопрос по-другому.
+
+*** Но если очень хочется
+    Эмакс Лисп:
+# Документация.
+# Доступные инструменты.
+## *scratch* буффер.
+## IELM интерактивный интерпретатор.
+## *Backtrace* буффер и команды отладчика.
+## Пошаговая отладка.
+## Компиляция в байткод.
+# Пример.
+
+** _Часть 6_
+   [http://youtu.be/DUMnf_QMHB0 Удаленная разработка]
+   [http://youtu.be/h4laamlsYoM]
+
+*** Взаимодействие с Tramp
+    Протоколы:
+    <code>/ssh:</code>
+    <code>/sudo:</code>
+
+*** Как "перепрыгнуть" (hop) через несколько авторизаций
+    Комбинация протоколов:
+    <code>/ssh:user@server|sudo:user@server:/path</code>
