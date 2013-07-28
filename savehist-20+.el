@@ -59,6 +59,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/28 dadams
+;;     savehist-printable: Do not allow string if it has text properties.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defgroup, defcustom, and commands.
 ;; 2010/04/27 dadams
@@ -466,24 +468,23 @@ trimming of history lists to `history-length' items."
 
 (defun savehist-printable (value)
   "Return non-nil if VALUE is printable."
-  (cond
-   ;; Quick response for oft-encountered types known to be printable.
-   ((stringp value))
-   ((numberp value))
-   ((symbolp value))
-   (t
-    ;; For others, check explicitly.
-    (with-temp-buffer
-      (condition-case nil
-	  (let ((print-readably t) (print-level nil))
-	  ;; Print the value into a buffer...
-	  (prin1 value (current-buffer))
-	  ;; ...and attempt to read it.
-	  (read (point-min-marker))
-	  ;; The attempt worked: the object is printable.
-	  t)
-	;; The attempt failed: the object is not printable.
-	(error nil))))))
+  (cond ((numberp value))
+        ((symbolp value))
+        ((and (stringp value)           ; String with no text properties.
+              (if (fboundp 'equal-including-properties) ; Emacs 22+.
+                  (equal-including-properties value
+                                              (substring-no-properties value))
+                (and (null (text-properties-at 0 value))
+                     (= 0 (next-property-change 0 value))))))
+        (t (with-temp-buffer
+             (condition-case nil
+                 (let ((print-readably  t)
+                       (print-level     nil))
+                   (prin1 value (current-buffer)) ; Print and try to read back.
+                   (read (point-min-marker))
+                   t)
+               (error nil))))))         ; Could not print and read back.  
+
 
 ;; ;; DADAMS, 2007-07-22: Emacs 20 has a bug that puts
 ;; ;;   `M-x cancel-debug-on-entry RET' into `command-history' as
