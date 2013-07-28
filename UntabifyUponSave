@@ -99,5 +99,9 @@ Edit: I've been using Joost's 'nothing-fancy' hook as above, but as of v24, this
                       nil ))
 
 --TimMeadowcroft 
+
+I tried Joosts hook just a moment ago, without noticing Tims update. I suggest updating Joosts example with nil return, or change to using the before-save-hook rather than write-file-hooks.
+
+--Lukas
 ----
 CategoryIndentation
