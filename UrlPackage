@@ -66,6 +66,20 @@ See also Lisp:http-post-simple.el.
 [new:Geoff:2008-12-14 16:35 UTC]
 NB In the my-url-http-post function above, I had better luck using w3m-url-encode-string rather than url-hexify-string. - Geoff
 
+=== Example of sending GET request ===
+
+GET is similar, but does not use the `url-request-data` parameter, so the query string should be sent in concatenated to the URL you're GETting.
+
+{{{
+    (defvar fb-url "https://www.googleapis.com/freebase/v1/search")
+
+    (defun fbquery (type str)
+      (let ((url-request-method "GET")
+            (arg-stuff (concat "?query=" (url-hexify-string str)
+                         "&filter=" (url-hexify-string type))))
+        (url-retrieve (concat fb-url arg-stuff)
+                      (lambda (status) (switch-to-buffer (current-buffer))))))
+}}}
 === Accepting HTTP Cookies ===
 
 When you retrieve pages from websites, url-cookie's default behavior is to set
