@@ -356,35 +356,8 @@ The website says: "Nearly all the JDEE problems that I have seen are caused by f
 
 
 == Comments ==
+moved to the [EmacsWiki:Comments_on_JavaDevelopmentEnvironment Talk page]
 
-[new]
-I'm happy to see that somebody is investigating the current status of JDE!
-Thanks, DanielClemente. -- AlexSchroeder
-
-JDEE development continues (slowly) on the trunk of the sourceforge repository (http://jdee.svn.sourceforge.net/viewvc/jdee/trunk/jdee/), you are more likely to find something that works with current emacs there. Please submit patches to the sourceforge jdee mailing list to help move things forward. -- LenTrigg
-
-*Stupid Question Time* Really, I am not as helpless as this message is going to make me sound. I just upgraded to 23.1.50.1 (Ubuntu 9.4 incase that makes any difference) and have been beating my head against getting JDEE to install. I have CEDET 1.0pre7 (from cvs), elib 1.0 (built on the local system with 23), and I even got ecb to work (2.41 (or 2.40...the internal version numbers are not consistent with the messages) from cvs) by commenting out the jde. 
-
-I got the svn of jdee and put version 2.40 in the load path and went to town. Sort of.
-
-So, what is the problem? When processing efc.el (eieio foundation classes), the byte-compiling of the definition of efc-coll-add craps out. The error is all about wrong number of arguments and includes three lines of character codes. By looking at the backtrace it appears that the problem is in processing the string passed to error. That is, 
-<pre>
-(error "Tried to add an item of type %s to a list of items of type %s" (typep item) (oref this elem-type))
-</pre>
-is being processed. When the (typep item) is passed to byte-optimize-form (and on down to byte-optimize-form-walker and compiler-macroexpand) things go badly awry. I have not hacked elisp for many a moon so I am lost, lost, lost. Any hints would be greatly appreciated. It took me most of a day to get this much information and I don't have a lot of time to go deeper, though I really want jdee to work with 23.
--- drbcladd
-
-The problem seems to be a typo, looks like whoever wrote that error message intended to write 
-<pre>
-(type-of item)
-</pre>
-, not 
-<pre>
-(typep item)
-</pre>
-. The former would naturally fit the error's description and would, in fact require only one parameter (typep requires two).
-This said, it complied for me with the above *fix*.
--- wvxvw
 ----
 CategoryProgrammerUtils
 CategoryModes
