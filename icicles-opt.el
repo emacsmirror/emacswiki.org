@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Version: 22.0
-;; Last-Updated: Tue Jul  9 16:37:04 2013 (-0700)
+;; Last-Updated: Mon Jul 29 13:47:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5720
+;;     Update #: 5723
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1006,13 +1005,9 @@ List elements are strings."
 
 (defcustom icicle-buffer-ignore-space-prefix-flag t
   "*Non-nil means ignore buffer-name completions that start with a space.
-However, apart from minibuffer names such as \" *Minibuf-0*\", such
-candidates are not ignored when your input also starts with a space or
-when there are no buffers whose names do not start with a space.
-
-Note: This option is provided mainly for use (binding) in
-`icicle-define-command' and `icicle-define-file-command'.
-You probably do not want to set this globally, but you can.
+This is mainly for use (binding) in `icicle-define-command' and
+`icicle-define-file-command'.  You probably do not want to set this
+globally, but you can.
 
 You can toggle this option from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]' (except during Icicles searching).  \
