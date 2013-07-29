@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jul 24 09:51:34 2013 (-0700)
+;; Last-Updated: Mon Jul 29 11:27:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10129
+;;     Update #: 10130
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/07/29 dadams
+;;     icicle-comint-dynamic-simple-complete: Bind enable-recursive-minibuffers to t.
 ;; 2013/07/23 dadams
 ;;     icicle-buffer-multi-complete, icicle-describe-opt-of-type-complete:
 ;;       Use regexp-quote before concat ^ to front of string.
