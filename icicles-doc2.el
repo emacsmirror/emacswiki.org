@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 22.0
-;; Last-Updated: Sun Jul  7 21:32:16 2013 (-0700)
+;; Last-Updated: Mon Jul 29 13:55:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29371
+;;     Update #: 29376
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5406,16 +5405,9 @@
 ;;
 ;;  * Non-`nil' user option `icicle-buffer-ignore-space-prefix-flag'
 ;;    means to ignore buffer-name completion candidates that start
-;;    with a space.
-;;
-;;    However, apart from minibuffer names such as " *Minibuf-0*",
-;;    such candidates are not ignored if your input also starts with a
-;;    space or if the names of all buffers start with a space.  This
-;;    option is provided mainly for binding when using
-;;    `icicle-define-command' (`icicle-buffer' does this).
-;;
-;;    You can toggle `icicle-buffer-ignore-space-prefix-flag' using
-;;    `M-_' in the minibuffer (except during `icicle-search').
+;;    with a space.  You can toggle
+;;    `icicle-buffer-ignore-space-prefix-flag' using `M-_' in the
+;;    minibuffer (except during `icicle-search').
 ;;
 ;;  * Non-`nil' user option `icicle-test-for-remote-files-flag' means
 ;;    that Icicles tests for remote file names; `nil' means that it
