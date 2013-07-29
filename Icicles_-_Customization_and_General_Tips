@@ -1324,13 +1324,6 @@ behavior.  To apropos-complete and exit the minibuffer, use
 
 Non-`nil' user option '''`icicle-buffer-ignore-space-prefix-flag'''' means to
 ignore [[buffer]]-name completion candidates that start with a space.
-
-However, apart from minibuffer names such as "## *Minibuf-0*##",
-such candidates are ''not'' ignored if your 
-input also starts with a space or if the names of all internal buffers start
-with a space).  This option is provided mainly for binding when using
-`icicle-define-command' (`icicle-buffer' does this).
-
 You can ''toggle'' `icicle-buffer-ignore-space-prefix-flag' using '''`##M-_##'''' in the minibuffer (except during `icicle-search').
 
 
