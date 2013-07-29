@@ -53,7 +53,7 @@ Here are a few tricks to get the most out of Emacs macros:
 
 * Don't bother trying to figure out how to produce the desired result using the fewest keystrokes.  Use undo (<code>C-/</code>) to backtrack if you make mistaken edits.
 
-* When writing macros to be applied to successive lines, begin your macro by moving to the beginning or end of the line (<code>C-a</code> or <code>C-e</code>) rather than counting on being at any specific position within the line when the macro is invoked.  Command repeation (e.g. preceeding <code>C-f</code> command with escape and the number of repeations) can be used to go to specific columns, or incremental search can be used, in conjunction with narrowing if necessary.
+* When writing macros to be applied to successive lines, begin your macro by moving to the beginning or end of the line (<code>C-a</code> or <code>C-e</code>) rather than counting on being at any specific position within the line when the macro is invoked.  Command repetition (e.g. preceeding <code>C-f</code> command with escape and the number of repetitions) can be used to go to specific columns, or incremental search can be used, in conjunction with narrowing if necessary.
 
 * Use <code>RET</code> to exit incremental searches done within the macro.  <code>C-g</code> will abort the macro collection and <code>C-f C-b</code> will fail if you happen to be positioned at the end of the buffer.
 
