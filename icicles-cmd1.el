@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Jul 23 19:22:23 2013 (-0700)
+;; Last-Updated: Mon Jul 29 11:03:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25876
+;;     Update #: 25882
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -871,7 +871,7 @@ Completion is dependent on the value of `shell-completion-execonly',
 plus those that effect file completion.
 See `icicle-shell-dynamic-complete-as-command'.
 
-Returns t if successful.
+Return t if successful.
 
 Uses Icicles completion."
   (interactive)
@@ -944,11 +944,11 @@ Inserts completion characters at point by completing STUB from the
 strings in CANDIDATES.  Uses Icicles completion if completion is
 ambiguous.
 
-Returns nil if no completion was inserted.
-Returns `sole' if completed with the only completion match.
-Returns `shortest' if completed with the shortest of the completion matches.
-Returns `partial' if completed as far as possible with the completion matches.
-Returns `listed' if a completion listing was shown.
+Return nil if no completion was inserted.
+Return `sole' if completed with the only completion match.
+Return `shortest' if completed with the shortest match.
+Return `partial' if completed as far as possible.
+Return `listed' if a completion listing was shown.
 
 See also `icicle-comint-dynamic-complete-filename'."
   (let* ((completion-ignore-case  (memq system-type '(ms-dos windows-nt cygwin)))
@@ -972,13 +972,14 @@ See also `icicle-comint-dynamic-complete-filename'."
              (insert suffix)
              'sole))
           (t                            ; There's no unique completion.
-           (let ((completion  (try-completion stub candidates)))
+           (let ((completion                    (try-completion stub candidates))
+                 (enable-recursive-minibuffers  t))
              ;; Insert the longest substring.
              (insert (substring completion (length stub)))
              (cond ((and comint-completion-recexact  comint-completion-addsuffix
                          (string-equal stub completion)
                          (member completion completions))
-                    (insert suffix)     ; User wants shortest match.
+                    (insert suffix)     ; Not unique but user wants shortest match.
                     (unless minibuffer-p (message "Completed shortest"))
                     'shortest)
                    ((or comint-completion-autolist  (string-equal stub completion))
@@ -1273,7 +1274,7 @@ Vanilla `dabbrev--abbrev-at-point' raises an error if no match."
   "In a mail buffer, complete the user name or mail address before point.
 Completes up to the preceding newline, colon or comma, or the value of
 START-POS.
-Returns non-nil if there is a valid completion, else return nil.
+Return non-nil if there is a valid completion, else return nil.
 You can control completion behaviour using `bbdb-completion-list'
 \(`bbdb-completion-type' in older BBDB versions).
 
@@ -3617,7 +3618,7 @@ If there is only one candidate, then FINAL-ACTION-FN is called
 immediately.  The candidate is not available to act on (e.g. using
 \\<minibuffer-local-completion-map>`\\[icicle-candidate-alt-action]').
 
-Returns:
+Return:
  The result of executing FINAL-ACTION-FN, if that arg is non-nil.
  Otherwise, `icicle-explore-final-choice-full'.
 
@@ -5641,7 +5642,7 @@ See `icicle-explore', argument DEFINE-CANDIDATES-FN."
 
 (defun icicle-find-tag-define-candidates-1 (regexp show-file-p)
   "Helper function for `icicle-find-tag-define-candidates'.
-Returns completion alist of tag information for tags matching REGEXP.
+Return completion alist of tag information for tags matching REGEXP.
 Include file name (label) if SHOW-FILE-P is non-nil.
 
 If SHOW-FILE-P is nil, then alist items look like this:
