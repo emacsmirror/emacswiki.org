@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.102
+;; Version: 0.103
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -364,6 +364,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 29-Jul-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Should fix Issue #21.
 ;; 25-Jul-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Push again.
@@ -1267,7 +1270,7 @@ You should also set the function `kill-whole-line' to do what you
 want."
   :type '(choice (const :tag "Default" nil)
                  (const :tag "Next whole line" whole-line)
-                 (const :tag "merge lines on first call, subsequent kill whole lines" subsequent-whole-line)
+                 (const :tag "merge lines on first call, subsequent kill whole lines" subsequent-whole-lines)
                  (const :tag "Next whole line after any blank lines" blanks))
   :group 'auto-indent)
 
@@ -2145,7 +2148,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                           (save-excursion
                             (beginning-of-line)
                             (insert " ")))))
-                   ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
+                   ((eq auto-indent-kill-line-at-eol 'subsequent-whole-lines)
                     (let (auto-indent-kill-line-at-eol)
                       (if (memq last-command (list 'kill-region this-command))
                           (progn
