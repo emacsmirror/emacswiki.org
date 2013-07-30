@@ -18,4 +18,4 @@ See also the ColorTheme package for bundled collection of color themes.
 
 Now that Package.el (elpa) has matured somewhat, the best place to find themes is via M-x package-list-packages. 
 
-Here's a few I'd recommend trying out (C-s to isearch in the package list.): tron, soothe, purple-haze, subatomic, zen-burn, twilight, deep-thought.
+Here's a few I'd recommend trying out (C-s to isearch in the package list.): tron, soothe, purple-haze, solarized, subatomic, zen-burn, twilight, deep-thought.
