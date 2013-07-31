@@ -75,6 +75,10 @@ strings, or define your own function with another name and then write
 <code>(setq tabbar-buffer-groups-function 'your-function-name)</code>. Either
 way works.
 
+On my machine, <code>(setq tabbar-buffer-groups-function (lambda () ...</code> strangely has no effect, requiring <code>(defun tabbar-groups-function () ...</code> instead. If you're using Homebrew Emacs on Mac OS X, this might work for you.
+
+--mcandre
+
 Here's a example of tab group function that define all tabs to be one of two
 possible groups: “emacs” and “user”.
 
