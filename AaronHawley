@@ -1,6 +1,6 @@
 Aaron uses Emacs.  He is [http://member.fsf.org FSF Member] number 490, joined on 2003-01-01.
 
-* web: http://www.burlingtontelecom.net/~ashawley/
+* web: http://users.ninthfloor.org/~ashawley/
 * mail: aaron dot s dot hawley at gmail dot com
 * irc: [::ashawley]
 * affero: http://rate.affero.net/ashawley/FSF
@@ -10,17 +10,17 @@ The article EmacsGrepAndUnix paints the complex but salient point of how intelle
 
 == Personal history in text editing ==
 
-Around 1990, I started using a word processor for grade school papers.  My family had installed the proprietary screen editor !WordPerfect (WP) version 5 for MS-DOS on our Tandy.  I became quite accomplished at using both !WordPefect's commands (WP commands are available from FunctionKeys), and the confused command line interface and file system of DOS.  The painful experience gave me little transferable knowledge, but influenced my preference for computer interfaces that were non-graphical, text-only, and keyboard-supporting.
+Around 1990, I started using a word processor for grade school papers.  My family had installed !WordPerfect (WP) version 5 for MS-DOS, a proprietary screen editor, on our Tandy computer.  I became quite accomplished at using both !WordPefect's commands (WP commands were available from FunctionKeys), and the confused command line interface and file system of DOS.  The painful experience gave me little transferable knowledge, but influenced my preference for computer interfaces that were non-graphical, keyboard-rich and text-only.
 
-My self-introduction to text editing began in the late 1990s while working on HTML files for Web publishing.  I used non-free editors that ran on Windows 95, including the Windows-native Notepad and the FreeWare, notepad-like !MetaPad.  My first editing and command line experience on Unix happened alongside meeting another non-free editor, PICO, maintained and distributed by the University of Washington.  Confusingly, PICO and its sister mailer, PINE, were "OpenSource" in the source-available sense, but had not been FreeSoftware since around 1996.  (Update, later versions called ALPINE are free software.)  My interest in hacking and hacker culture was budding in 1998.  About this time, I discovered and read the book /OpenSources/, which includes the essay ''TheGnuProject'' by RichardStallman.
+My self-introduction to text editing began in the late 1990s while working on HTML files for Web publishing.  I used non-free editors that ran on Windows 95, including the Windows-native Notepad and a notepad-like alternative called !MetaPad available as FreeWare.  My first editing and command line experience on unix happened alongside meeting another non-free editor, PICO, maintained and distributed by the University of Washington.  Confusingly, PICO and its sister mailer, PINE, were "OpenSource" in the source-available sense, but had not been FreeSoftware since around 1996.  (Update: later versions of PICO with the ALPINE message system were free software.)  My interest in hacking and hacker culture was budding in 1998.  About this time, I discovered and read the book /OpenSources/, which includes the essay ''TheGnuProject'' by RichardStallman.
 
-By the year 2000, I had "found religion":  I was motivated to accomplish my work on computers with little to no mouse input and instead using as many keyboard commands and shell commands as possible.  However, I wouldn't identify with any dominant Unix editor.  I had used Vi and Vim (See ViAndEmacs) at this time but only to learn that I hated them.  Ironically, my first experiences with using Emacs at the time left me unsatisfied.  Either Emacs's sheer magnitude or reputation as a monolith had inspired only fear, bewilderment, ignorance and self-doubt and kept me from adopting Emacs as an everyday editor.
+By the year 2000, I had "found religion":  I was motivated to accomplish my work on computers with little to no mouse input and instead using as many keyboard commands and shell commands as possible.  However, I wouldn't identify with any dominant unix editor.  I had used Vi and Vim (See ViAndEmacs) at this time but only to learn that I hated them.  My first experiences with using Emacs at the time left me unsatisfied.  Either Emacs's sheer magnitude or reputation as a monolith had inspired only fear, bewilderment, ignorance and self-doubt and kept me from adopting Emacs as an everyday editor.
 
-My computer science studies at university involved a lot of C++ programming.  Unfortunately, it was introduced with Microsoft's VisualStudio development environment.  Later programming courses, around 2001, did introduce me to using [[XEmacs]] to program in C and C++.  At that time, XEmacs was poorly pieced together for a beginner to use and was installed on a poorly administrated lab of Solaris (Sun Microsystems) machines.  However, the greater injustice was the early introduction of "visual" programming environments in my studies rather than a unix or GNU environment with Emacs at the center.  The "visual" environment hobbled my brain and made me hesitant to use one of the [[Emacsen]].
+My computer science studies at university involved a lot of C++ programming.  Unfortunately, it was introduced with Microsoft's Visual Studio development environment.  Later programming courses, around 2001, did introduce me to using [[XEmacs]] to program in C and C++.  At that time, XEmacs was poorly pieced together for a beginner to use and was available to me on a poorly administrated lab of Solaris (Sun Microsystems) machines.  The greater injustice was the early introduction of "visual" programming environments in my studies rather than a unix or GNU environment with Emacs.  The "visual" environment hobbled my brain and made me hesitant to use one of the [[Emacsen]].
 
-My first EmacsOnAIX and EmacsOnGnuSlashLinux experiences also happened at around that time.  But not until 2003 did I begin to grasp the scope of Emacs's usefulness.  Emacs was integrated with many other software packages and had "front-ends" for what were now familiar Unix tools and utilities.  These included VersionControl, `grep', `find', and CompilationMode.  Useful features of Emacs were also influential in my becoming addicted to Emacs.  These included IncrementalSearch, RegularExpression searching, InfoMode, indentation, multiple window and multiple file support.  I began to increasingly move away from editing in PICO or !GnuNano and instead incorporated GnuEmacs into my everyday computer experience.  I also began learning EmacsLisp.  I was using Emacs for system programming and documentation work, but used it heavily for programming in HTML and PHP to develop Web sites.
+My first EmacsOnAIX and EmacsOnGnuSlashLinux experiences also happened at around that time.  But not until 2003 did I begin to grasp the scope of Emacs's greatness.  Emacs was integrated with many other software packages and had "front-ends" for what were now familiar unix tools and utilities.  These included VersionControl, `grep', `find', and CompilationMode.  Native features of Emacs were also influential in my becoming addicted to Emacs.  These included IncrementalSearch, RegularExpression searching, InfoMode, indentation, multiple window and multiple file support.  I began to increasingly move away from editing in PICO or !GnuNano and instead incorporated GnuEmacs into my everyday computer experience.  I also began learning EmacsLisp.  I was using Emacs for system programming and documentation work, but used it heavily for programming in HTML and PHP to develop Web sites.
 
-In 2005, I became a user of the EmacsSnapshotAndDebian packages.  In 2007, I began using Emacs from CVS on Fedora.  I enjoy FunctionalProgramming (Lisp, [[Scheme]], ML) and contribute to FreeSoftware and FreeDocumentation.  I've contributed to the EmacsWiki since 2004.  Since 2003, I've posted pseudo-anonymously to WikiPedia, contributing to articles on computer science and FreeSoftware topics.  However, I've found the community at ThisWiki to be most satisfying to cooperate with.
+In 2005, I became a user of the EmacsSnapshotAndDebian packages.  In 2007, I began using Emacs from CVS on Fedora.  I enjoy FunctionalProgramming (Lisp, [[Scheme]], ML) and contribute to FreeSoftware and FreeDocumentation.  I've contributed to the EmacsWiki since 2004.  Since 2003, I've edited WikiPedia, contributing to articles on computer science and FreeSoftware topics.
 
 == Contributions ==
 
@@ -34,12 +34,14 @@ This allows you to see where the ''action'' is on EmacsWiki and where improvemen
 
 Various Elisp source code and contributions.
 
-* AutoInsertForTexinfo -- Insert a skeleton [[Texinfo]] file.
 * Lisp:bmi.el -- Calculate your body mass index.
 * CalendarWeekNumbers -- Display ISO week numbers in CalendarMode.
 * CheckBufferCompiled -- Compare buffer modification with timestamp of last compilation.
+* CopyAboveWhileSame -- Copy the previous 2 lines until a difference.
 * DuplicateLines -- Delete duplicate lines keeping the first occurrence.
+* KillMatchingLines -- Delete matching lines and add them to the kill ring.
 * LispInteractionMode#elisp-transcript -- Generate a transcript of the output of a buffer filled with EmacsLisp expressions.
+* InsertFileName -- Insert file name at point.
 * InsertingTodaysDate -- Use CalendarMode to insert the current date in the proper format for your locale.
 * LevenshteinDistance -- Determine the edit distance between two strings.
 * FindLongLines#next-long-line -- Move to the next long line greater than `fill-column'.
@@ -50,6 +52,7 @@ Various Elisp source code and contributions.
 * RandomizeWords -- Randomly order the words in a region.
 * SortWords -- Sort the the words in a region.
 * SearchAtPoint#isearch-current-symbol -- Use IncrementalSearch to find the word or symbol at point.
+* SentenceFragments -- Navigate by sentence fragments, not just entire sentences.
 * [[Reference Sheet by Aaron Hawley]] -- All the Emacs commands fit to print
 * RotateText -- Rewrote implementation of swapping between words at point.
 * RotateWordCapitalization -- Swapping capitalization of words at point.
