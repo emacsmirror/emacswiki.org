@@ -1,6 +1,6 @@
 Lisp:tail.el is a small interface for the unix tool tail.
 
-(Alternatively, those with emacs 22 or later can use M-x auto-revert-tail-mode)
+<b>Note:</b> Emacs 22 and later includes auto-revert-tail-mode and do not require the Unix tail utility.  To enable in a buffer, use <code>M-x auto-revert-tail-mode</code>.
 
 == Configuration ==
 
@@ -22,9 +22,9 @@ http://www.knittig.de/img/tailel.png
 == Old Sources ==
 
 Not guaranteed to work.
-http://www.grassouille.org/code/sources/tail.el
-http://inferno.cs.univ-paris8.fr/~drieu/hacks/sources/tail.el
-http://www.drieu.org/code/sources/tail.el
+ - http://www.grassouille.org/code/sources/tail.el
+ - http://inferno.cs.univ-paris8.fr/~drieu/hacks/sources/tail.el
+ - http://www.drieu.org/code/sources/tail.el
 
 ----
 CategoryExternalUtilities
