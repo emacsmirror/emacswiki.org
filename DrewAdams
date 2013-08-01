@@ -29,6 +29,9 @@ right away''." -- DanMurphy, inventor of TECO, [http://tenex.opost.com/anhc-31-4
 See EmacsHistory for info on the various Emacs incarnations mentioned here, and [http://www.jwz.org/doc/emacs-timeline.html] for the Emacs family tree.
 
 
+
+
+[:WheresTheGlue]
 == Where's the Glue? ==
 
 [new]
@@ -49,6 +52,11 @@ This free/open software development model (combine individually useful changes, 
 * character streams as both input and output (what one program outputs, another can input)
 * pipes (glue programs together: outputs to inputs)
 
+
+
+
+[:WhyFunctionalProgrammingMatters]
+[:JohnHughes]
 The same question, applied to functional programming:
 
 : What makes (pure, lazy, higher-order) functional programming so ''modular'' --  so propitious to the ''combination'' of small programs? 
