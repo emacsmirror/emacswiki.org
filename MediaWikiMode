@@ -2,6 +2,10 @@ Lisp:mediawiki.el
 
 I took the mediawiki mode from [http://meta.wikimedia.org/w/index.php?title=Mediawiki.el&oldid=1296149 an old copy on wikipedia.org] and refactored the code to use internal Emacs url-http libraries.  I also added customization and a site alist so that you can easily toggle between different mediawiki sites. Finally, I added a page ring so that by using M-p and M-n in any mediawiki.el buffer, you can go forwards and backwards.
 
+Disclaimer:
+
+MediaWikiMode didn't support solve CAPTCHA that is a condition to save revisions of articles from new users. If you are a new user in any wiki you can lost all your work when using this mode. For more information about new users see https://en.wikipedia.org/wiki/Wikipedia:AUTOCONFIRMED#Autoconfirmed_users.
+
 Usage:
 
 * Add Lisp:mediawiki.el to your path.
