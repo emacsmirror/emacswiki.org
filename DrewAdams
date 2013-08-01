@@ -35,7 +35,7 @@ See EmacsHistory for info on the various Emacs incarnations mentioned here, and 
 == Where's the Glue? ==
 
 [new]
-|| || || ||  || '''EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.''' -- [[RMS]], ''EMACS: The Extensible, Customizable Display Editor'', <tt>http://www.gnu.org/software/emacs/emacs-paper.html </tt> || ||  ||  || ||
+|| '''EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.''' -- [[RMS]], ''EMACS: The Extensible, Customizable Display Editor'', <tt>http://www.gnu.org/software/emacs/emacs-paper.html </tt> ||
 [new]
 
 That's not a bad summary of what free/open software development is all about, IMO:
@@ -141,9 +141,7 @@ Coming back to free/open software development -- By analogy, what is the "glue" 
 
 
 [new]
-<pre>
-
-</pre>
+&nbsp;
 [new]
 
 == I Use Emacs ==
@@ -173,11 +171,14 @@ And Emacs has improved greatly over the years. I still use Emacs 20, as well as 
 
 
 
-[new]
-<pre>
 
-</pre>
+
+
+
 [new]
+&nbsp;
+[new]
+
 == My Emacs Lisp Stuff ==
 
 === My EmacsWiki Elisp Libraries: ===
@@ -272,11 +273,19 @@ Here are some screenshots of my Emacs.
 * DrewsEmacsShowWspace -- Highlighting of trailing whitespace
 * [[Shrink-Wrapping Frames]] -- Buffer Menu frame, showing shrink-wrapping of [[frame]] to fit [[buffer]]
 
-[new]
-<pre>
 
-</pre>
+
+
+
+
+
+
+
+
 [new]
+&nbsp;
+[new]
+
 == My Contributions to EmacsWiki, Chronologically ==
 
 
