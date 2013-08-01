@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Jul 29 11:03:53 2013 (-0700)
+;; Last-Updated: Thu Aug  1 07:56:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25882
+;;     Update #: 25884
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -810,6 +810,7 @@ See `icicle-comint-dynamic-complete-filename'."
                (let* ((icicle-show-Completions-initially-flag      t)
                       (icicle-incremental-completion-p             'display)
                       (icicle-top-level-when-sole-completion-flag  t)
+                      (enable-recursive-minibuffers                t)
                       (choice
                        (save-excursion
                          (save-window-excursion (read-file-name "Complete: " directory nil t)))))
@@ -844,6 +845,7 @@ See `icicle-comint-dynamic-complete-filename'."
                         (let* ((icicle-show-Completions-initially-flag      t)
                                (icicle-incremental-completion-p             'display)
                                (icicle-top-level-when-sole-completion-flag  t)
+                               (enable-recursive-minibuffers                t)
                                (choice
                                 (save-excursion
                                   (save-window-excursion
