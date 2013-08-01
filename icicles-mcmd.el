@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jul 24 09:48:22 2013 (-0700)
+;; Last-Updated: Thu Aug  1 13:41:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19211
+;;     Update #: 19216
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -679,7 +679,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
                 (insert dir)
                 (setq choice     (concat dir choice)
                       base-size  0))))
-          (choose-completion-string choice buffer base-size))
+          (icicle-choose-completion-string choice buffer base-size))
         icicle-candidate-nb))
 
   (defun icicle-choose-completion ()    ; Emacs < 23.2.
@@ -709,7 +709,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
                   icicle-extra-candidates-dir-insert-p)
         (setq base-size  0))
       (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
-      (choose-completion-string choice buffer base-size))))
+      (icicle-choose-completion-string choice buffer base-size))))
 
 
 ;; REPLACE ORIGINAL `mouse-choose-completion' in `mouse.el',
@@ -762,7 +762,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
             (insert dir)
             (setq choice     (concat dir choice)
                   base-size  0))))
-      (choose-completion-string choice buffer base-size))
+      (icicle-choose-completion-string choice buffer base-size))
     icicle-candidate-nb))
 
 (defun icicle-nb-of-cand-at-Completions-pos (position)
