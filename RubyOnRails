@@ -185,7 +185,7 @@ See HamlMode.
 
 == web-mode.el ==
 
-web-mode.el , a major mode for editing html templates, handle erb files. The mode is available http://web-mode.org]
+web-mode.el , a major mode for editing html templates, handles erb files. The mode is available http://web-mode.org
 
 == Tab-Key in Terminal-Mode
 [new]
