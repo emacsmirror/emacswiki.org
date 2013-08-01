@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Aug  1 07:59:26 2013 (-0700)
+;; Last-Updated: Thu Aug  1 13:41:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10132
+;;     Update #: 10137
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1772,6 +1772,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/08/01 dadams
+;;     icicle-choose-completion-string: Do not display obnoxious vanilla Emacs obsolescence warning.
 ;; 2013/07/04 dadams
 ;;     Added: icicle-find-tag-default-as-regexp, icicle-read-regexp.
 ;; 2013/06/21 dadams
@@ -3866,6 +3868,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/08/01 dadams
+;;     icicle-choose-completion: Use icicle-choose-completion-string, not choose-completion-string.
 ;; 2013/07/24 dadams
 ;;     icicle-resolve-file-name, icicle-mouse-candidate-set-save(-more|-selected-1),
 ;;       icicle-regexp-quote-input:
