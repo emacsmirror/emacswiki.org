@@ -54,6 +54,8 @@ Here is a translation to/from Emacs-speak:
 
 合併視窗 (把視窗最大化)： C-x 1。
 
+关闭当前视窗(切换到最后使用视窗中): C-x 0。
+
 切換視窗 (在分割視窗後)： C-x o。
 
 切換暫存 (如果你同時編輯很多檔案): C-x b.
