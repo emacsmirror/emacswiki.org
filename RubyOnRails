@@ -183,6 +183,10 @@ See the README of these packages for more info on how to set them up, or send me
 
 See HamlMode.
 
+== web-mode.el ==
+
+web-mode.el , a major mode for editing html templates, handle erb files. The mode is available http://web-mode.org]
+
 == Tab-Key in Terminal-Mode
 [new]
 When using the emacs-rails plugin with snippets (tab-expansion), it works nicely in the normal GUI, but in terminal mode the tab-key triggers the indentation but snippets don't work. Does anyone have any tips for how to fix this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
