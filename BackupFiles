@@ -23,6 +23,18 @@ How backups are operated in Emacs is configurable to some degree:
           find -name "*~" -print0 | xargs -0 rm
           find -name "*~" -exec rm {} \;
 
+== Hiding backup files (MS Windows) ==
+
+When viewing a source code directory in Windows Explorer, the littering by backup files can quickly become distracting. With the subsequent code new backup files will be hidden.
+
+{{{
+(when (eq system-type 'windows-nt)
+  (defadvice backup-buffer (after my-backup-make-hidden activate)
+    (let ((backup-file-name (make-backup-file-name (buffer-file-name))))
+      (when (file-exists-p backup-file-name)
+	(call-process "attrib.exe" nil nil nil "+I" "+H" backup-file-name)))))
+}}}
+
 ----
 See also AutoSave, BackupDirectory and BackupEachSave.
 ----
