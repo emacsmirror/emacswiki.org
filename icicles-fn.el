@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Jul 23 19:27:40 2013 (-0700)
+;; Last-Updated: Thu Aug  1 13:43:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14003
+;;     Update #: 14006
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -570,7 +570,8 @@ If BUFFER is the minibuffer, then exit the minibuffer, unless one of
    - `completion-no-auto-exit' is non-nil
    - this is just a `lisp-complete-symbol' completion."
          (unless (consp base-position)  ; Older code may pass BASE-SIZE instead of BASE-POSITION.  Ignore it.
-           (message "Obsolete BASE-SIZE argument passed to `choose-completion-string'")
+           ;; No, do not display this message.
+           ;; (message "Obsolete BASE-SIZE argument passed to `choose-completion-string'")
            (setq base-position  nil))
          (let* ((buffer  (or buffer completion-reference-buffer))
                 (mini-p  (minibufferp buffer)))
