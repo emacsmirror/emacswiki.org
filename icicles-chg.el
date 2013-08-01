@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jul 29 11:27:53 2013 (-0700)
+;; Last-Updated: Thu Aug  1 07:59:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10130
+;;     Update #: 10132
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/08/01 dadams
+;;     icicle-comint-dynamic-complete-as-filename: Bind enable-recursive-minibuffers to t.
 ;; 2013/07/29 dadams
 ;;     icicle-comint-dynamic-simple-complete: Bind enable-recursive-minibuffers to t.
 ;; 2013/07/23 dadams
