@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Aug  1 07:56:45 2013 (-0700)
+;; Last-Updated: Fri Aug  2 15:16:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25884
+;;     Update #: 25904
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -286,6 +286,7 @@
 ;;    `icicle-describe-opt-of-type-complete',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
 ;;    `icicle-file-of-content-apropos-complete-match',
+;;    `icicle-find-file-or-expand-dir',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
@@ -7351,13 +7352,12 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
-                                          icicle-all-candidates-action))
-                     (or (and init-pref-arg        (not current-prefix-arg))
-                         (and (not init-pref-arg)  current-prefix-arg))
-                   init-pref-arg))
-           (fn   (if r-o 'find-file-read-only 'find-file)))
-      (funcall fn file 'WILDCARDS)))
+    (let ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                         icicle-all-candidates-action))
+                    (or (and init-pref-arg        (not current-prefix-arg))
+                        (and (not init-pref-arg)  current-prefix-arg))
+                  init-pref-arg)))
+      (icicle-find-file-or-expand-dir file #'icicle-find-file-no-search r-o nil)))
   (concat "File or directory" (and init-pref-arg  " (read-only)") ": ") ; `read-file-name' args
   nil (if (and (eq major-mode 'dired-mode)  (fboundp 'dired-get-file-for-visit)) ; Emacs 22+.
           (condition-case nil           ; E.g. error because not on file line (ignore)
@@ -7380,13 +7380,12 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-file-command icicle-find-file-no-search-other-window
   "Same as `icicle-find-file-no-search', except uses another window." ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
-                                          icicle-all-candidates-action))
-                     (or (and init-pref-arg        (not current-prefix-arg))
-                         (and (not init-pref-arg)  current-prefix-arg))
-                   init-pref-arg))
-           (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-      (funcall fn file 'WILDCARDS)))
+    (let ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                         icicle-all-candidates-action))
+                    (or (and init-pref-arg        (not current-prefix-arg))
+                        (and (not init-pref-arg)  current-prefix-arg))
+                  init-pref-arg)))
+      (icicle-find-file-or-expand-dir file #'icicle-find-file-no-search-other-window r-o 'OTHER-WINDOW-P)))
   (concat "File or directory" (and init-pref-arg  " (read-only)") ": ") ; `read-file-name' args
   nil (if (and (eq major-mode 'dired-mode)  (fboundp 'dired-get-file-for-visit)) ; Emacs 22+.
           (condition-case nil           ; E.g. error because not on file line (ignore)
@@ -7403,6 +7402,28 @@ Ido-like behavior."                     ; Doc string
   (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
   (icicle-unbind-file-candidate-keys))  ; Last code
+
+(defun icicle-find-file-or-expand-dir (file-or-dir command read-only-p other-window-p)
+  "Helper for Icicles commands that find files using `read-file-name'.
+FILE-OR-DIR is the target file or directory name.
+COMMAND is the Icicles file-finding command (a symbol).
+Non-nil READ-ONLY-P means visit the file in read-only mode.
+Non-nil OTHER-WINDOW-P means visit the file in another window.
+
+If `icicle-find-file-expand-directory-flag' is non-nil and FILE-OR-DIR
+is a directory name then, instead of visiting the directory using
+Dired, COMMAND is restarted, but this time in directory FILENAME.
+That is, you descend into directory FILE-OR-DIR."
+  (if (and icicle-find-file-expand-directory-flag
+           (icicle-file-directory-p file-or-dir)
+           (> emacs-major-version 20))  ; Emacs 20 BUG: `default-directory' gets changed.
+      (let ((default-directory                       file-or-dir)
+            (icicle-show-Completions-initially-flag  t))
+        (call-interactively command))
+    (let ((fn  (if read-only-p
+                   (if other-window-p #'find-file-read-only-other-window #'find-file-read-only)
+                 (if other-window-p #'find-file-other-window #'find-file))))
+      (funcall fn file-or-dir 'WILDCARDS))))
 
 
 (put 'icicle-find-file-read-only 'icicle-Completions-window-max-height 200)
@@ -7533,7 +7554,6 @@ can use the following keys:
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                              icicle-all-candidates-action))
                         current-prefix-arg))
-             (fn         (if r-o 'find-file-read-only 'find-file))
              (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
              ;; If FILE uses wildcards then there are multiple files to visit.
              (wildfiles  (file-expand-wildcards fil2)))
@@ -7547,7 +7567,8 @@ can use the following keys:
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
                 (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
-        (funcall fn file 'WILDCARDS)    ; Visit properly (mode, vars, handlers, hooks).
+        ;; Visit properly (mode, vars, handlers, hooks).
+        (icicle-find-file-or-expand-dir file #'icicle-find-file-of-content r-o nil)
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
         (dolist (fil  wildfiles)
@@ -7602,7 +7623,6 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                              icicle-all-candidates-action))
                         current-prefix-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window))
              (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
              ;; If FILE uses wildcards then there are multiple files to visit.
              (wildfiles  (file-expand-wildcards fil2)))
@@ -7616,7 +7636,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
                 (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
-        (funcall fn file 'WILDCARDS)    ; Visit properly (mode, vars, handlers, hooks).
+        ;; Visit properly (mode, vars, handlers, hooks).
+        (icicle-find-file-or-expand-dir file #'icicle-find-file-of-content-other-window r-o 'OTHER-WINDOW-P)
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
         (dolist (fil  wildfiles)
