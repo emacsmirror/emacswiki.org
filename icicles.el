@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug  2 11:18:31 2013 (-0700)
+;; Last-Updated: Fri Aug  2 15:53:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23425
+;;     Update #: 23436
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -377,12 +377,14 @@
 ;;    `icicle-shell-dynamic-complete-filename', `icicle-show-faces',
 ;;    `icicle-show-only-faces', `icicle-skip-this-command',
 ;;    `icicle-string-list', `icicle-synonyms', `icicle-tag-a-file',
-;;    `icicle-tags-search', `icicle-toggle-~-for-home-dir',
+;;    `icicle-tags-search', `icicle-switch-to/from-minibuffer',
+;;    `icicle-toggle-.', `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets', `icicle-toggle-annotation',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
-;;    `icicle-toggle-expand-to-common-match'
+;;    `icicle-toggle-expand-directory',
+;;    `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-hiding-non-matching-lines',
 ;;    `icicle-toggle-highlight-all-current',
@@ -405,8 +407,9 @@
 ;;    `icicle-toggle-search-whole-word',
 ;;    `icicle-toggle-show-multi-completion', `icicle-toggle-sorting',
 ;;    `icicle-toggle-transforming',
-;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
-;;    `icicle-vardoc', `icicle-visit-marked-file-of-content',
+;;    `icicle-toggle-WYSIWYG-Completions', `icicle-top-level',
+;;    `icicle-untag-a-file', `icicle-vardoc',
+;;    `icicle-visit-marked-file-of-content',
 ;;    `icicle-visit-marked-file-of-content-other-window',
 ;;    `icicle-where-is', `icicle-widget-file-complete',
 ;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
@@ -415,7 +418,9 @@
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
-;;    `toggle-icicle-fuzzy-completion',
+;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
+;;    `toggle-icicle-expand-directory',
+;;    `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-hiding-common-match',
 ;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
@@ -427,10 +432,12 @@
 ;;    `toggle-icicle-include-recent-files',
 ;;    `toggle-icicle-incremental-completion',
 ;;    `toggle-icicle-literal-replacement',
+;;    `toggle-icicle-network-drives-as-remote',
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
 ;;    `toggle-icicle-remote-file-testing',
 ;;    `toggle-icicle-search-cleanup',
 ;;    `toggle-icicle-search-complementing-domain',
+;;    `toggle-icicle-search-replace-common-match',
 ;;    `toggle-icicle-search-replace-whole',
 ;;    `toggle-icicle-search-whole-word',
 ;;    `toggle-icicle-show-multi-completion', `toggle-icicle-sorting',
@@ -654,7 +661,6 @@
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
 ;;    `toggle-icicle-expand-to-common-match',
-;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-hiding-common-match',
 ;;    `toggle-icicle-hiding-non-matching-lines',
 ;;    `toggle-icicle-highlight-all-current',
@@ -764,6 +770,7 @@
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
+;;    `icicle-find-file-expand-directory-flag',
 ;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
@@ -1004,7 +1011,8 @@
 ;;    `icicle-file-type-less-p', `icicle-file-writable-p',
 ;;    `icicle-filesets-files-under', `icicle-files-within',
 ;;    `icicle-files-within-1', `icicle-filter-alist',
-;;    `icicle-filter-wo-input', `icicle-find-first-tag-action',
+;;    `icicle-filter-wo-input', `icicle-find-file-or-expand-dir',
+;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-default-as-regexp',
 ;;    `icicle-find-tag-define-candidates',
