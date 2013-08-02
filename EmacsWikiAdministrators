@@ -41,28 +41,31 @@ The powers of an administrator:
 # Change the list of sites connected via NearLinks by modifying the NearMap page
 # Run maintenance at any time.
 
-== Banning Hosts ==
+== Rollback Spam and Vandalism ==
 
-To ban a host or IP number you need to edit BannedHosts. There's a special admin link to facilitate this, however. Here's a suggested workflow:
+Here's a suggested workflow:
 
 # bookmark a link to [http://www.emacswiki.org/emacs/?action=rc;days=7;all=0;rollback=1;showedit=1 RecentChanges including minor edits and rollbacks]
-
 # click on the _history_ link of suspicious edits
 # click the appropriate *Rollback* button
-# click the _Administration_ link at the bottom of the confirmation page
-# click the new _Ban contributors_ link
+
+Next, consider what just happened:
+
+If spammers added *links*, you will be presented with a list of these URLs and a text input field where you can provide a regular expression matching anything obvious such as "viagra". Click on the *Ban!* button to add this regular expression to the BannedContent page.
+
+If vandals made other changes to the page, you might have to ban their host name or IP number. Click on the _Ban contributors_ link and click the appropriate *Ban!* button. This will add an appropriate regular expression to the BannedHosts page.
+
+== Banning Hosts ==
+
+You can always ban host names or IP numbers. The easiest way to do that is to visit a page that has recently been vandalized. Let us assume that somebody has already rolled back the change (as described above) but no change was made to the [[BannedHosts]] page. There is a special admin link to facilitate this, however. Here's a suggested workflow:
+
+# click the _Administration_ link at the bottom of the page that has been vandalized recently
+# click the _Ban contributors_ link
 # click the appropriate *Ban!* button
  
 The "Ban contributors" page lists IP numbers, host names and usernames used. The IP numbers and host names that aren't banned have a nice, big *Ban!* button next to them. Clicking the button adds a new entry to BannedHosts.
 
-Note that these entries are probably useless against spammers that keep changing their IP number.
-That's what the next section is about: banning whole ranges.
-
-== Banning Ranges ==
-
-Whois can tell you whether you should bother banning just one IP, or an entire range.  I use http://network-tools.com/ when working on a system that does not provide whois.
-
-So when you notice spammers, first look up their whois info.  Find the part showing the range and name of the company, then ban the entire range.  Document it here on this page and add a timestamp.  We will remove the bans after a few days, hoping that the spammers moved on.
+Note that these entries are probably useless against spammers that keep changing their IP numbers. You have to write a regular expression to catch them all by hand, unfortunately.
 
 ----
 CategoryEmacsWikiSite
