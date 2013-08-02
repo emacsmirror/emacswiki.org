@@ -1,0 +1,27 @@
+== How can I read data from Emacs region? ==
+
+If you have a emacs region like
+
+<pre>
+1375430410.563040 1804289383
+1375430410.563070 846930886
+1375430410.563076 1681692777
+1375430410.563081 1714636915
+1375430410.563086 1957747793
+1375430410.563090 424238335
+1375430410.563095 719885386
+1375430410.563099 1649760492
+1375430410.563103 596516649
+1375430410.563108 1189641421
+</pre>
+
+You can send this data to ess using [https://github.com/cinsk/emacs-scripts/blob/master/snippets/_ess.el R-table-region] command
+
+You can access the table using ".Last.value".
+
+* It uses mkfifo(1) internally, so it may not work in Windows.
+* It uses R functions so it may not work in other inferior process (e.g. S or something).
+
+
+----
+EmacsSpeaksStatistics
