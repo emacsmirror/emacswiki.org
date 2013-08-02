@@ -1,3 +1,7 @@
+[new]
+Other than the above issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.) -- TaylanUB
+
+[new]
 >Find beta testers for non-GNU platforms
 
 I volunteer for Windows7 64 bit.
