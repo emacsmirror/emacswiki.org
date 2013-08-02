@@ -5,8 +5,8 @@
 ;; Author: Harley Gorrell <harley@mahalito.net>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Created: 2003-03-17 18:50:12 Harley Gorrell
-;; Version: 2.0
-;; Last-Updated: 2013-06-24 19:04:00
+;; Version: 2.1
+;; Last-Updated: 2013-08-02 19:04:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
@@ -202,6 +202,9 @@
     map)
   "The local keymap for `syslog-mode'.")
 
+(defvar syslog-number-suffix-start 1
+  "The first number used as rotation suffix.")
+
 (defun syslog-get-basename-and-number (filename)
   "Return the basename and number suffix of a log file in FILEPATH.
 Return results in a cons cell '(basename . number) where basename is a string,
@@ -209,7 +212,7 @@ and number is a number."
   (let* ((res (string-match "\\(.*?\\)\\.\\([0-9]+\\)\\(\\.t?gz\\)?" filename))
          (basename (if res (match-string 1 filename) filename))
          (str (and res (match-string 2 filename)))
-         (num (or (and str (string-to-number str)) 0)))
+         (num (or (and str (string-to-number str)) (1- syslog-number-suffix-start))))
     (cons basename num)))
 
 (defun syslog-open-files (filename num)
@@ -252,11 +255,13 @@ one if ARG is non-nil."
          (basename (car pair))
          (curver (cdr pair))
          (nextver (if arg (1- curver) (1+ curver)))
-         (nextfile (if (> nextver 0)
+         (nextfile (if (> nextver (1- syslog-number-suffix-start))
                        (concat basename "." (number-to-string nextver))
                      basename)))
     (cond ((file-readable-p nextfile)
            (find-file nextfile))
+          ((file-readable-p (concat nextfile ".bz2"))
+           (find-file (concat nextfile ".bz2")))
           ((file-readable-p (concat nextfile ".gz"))
            (find-file (concat nextfile ".gz")))
           ((file-readable-p (concat nextfile ".tgz"))
