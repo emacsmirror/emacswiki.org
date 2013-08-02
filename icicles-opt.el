@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Jul 29 13:51:41 2013 (-0700)
+;; Last-Updated: Fri Aug  2 10:55:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5724
+;;     Update #: 5732
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1507,7 +1507,6 @@ value incrementally."
     (,(icicle-kbd "C-|")       icicle-all-candidates-alt-action t)                    ; `C-|'
     (,(icicle-kbd "M-!")       icicle-all-candidates-list-action t)                   ; `M-!'
     (,(icicle-kbd "M-|")       icicle-all-candidates-list-alt-action t)               ; `M-|'
-    (,(icicle-kbd "C-M-/")     icicle-prefix-complete t)          ; (for `dabbrev.el')  `C-M-/'
     (,(icicle-kbd "M-h")       icicle-history t)                                      ; `M-h'
     (,(icicle-kbd "M-pause")   icicle-keep-only-past-inputs t) ; `M-pause'
     (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t)       ; `C-pause'
@@ -4309,6 +4308,8 @@ toggle Icicle mode off and then back on."
     (customize-face                icicle-customize-face               t)
     (customize-face-other-window   icicle-customize-face-other-window  t)
     (dabbrev-completion            icicle-dabbrev-completion           (< emacs-major-version 24))
+    ;; Overrides previous for `C-M-/', but not for any other keys.
+    ([?\C-\M-/]                    icicle-dispatch-C-M-/               t) ; `C-M-/'
     (delete-window                 icicle-delete-window                t) ; `C-x 0'
     (delete-windows-for            icicle-delete-window                t) ; `C-x 0' (`frame-cmds.el')
     (dired                         icicle-dired                        t) ; `C-x d'
