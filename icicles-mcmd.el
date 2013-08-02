@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug  2 11:17:54 2013 (-0700)
+;; Last-Updated: Fri Aug  2 15:45:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19231
+;;     Update #: 19238
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -205,6 +205,7 @@
 ;;    `icicle-toggle-angle-brackets', `icicle-toggle-annotation',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
+;;    `icicle-toggle-expand-directory',
 ;;    `icicle-toggle-expand-to-common-match',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-hiding-non-matching-lines',
@@ -241,6 +242,7 @@
 ;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
+;;    `toggle-icicle-expand-directory',
 ;;    `toggle-icicle-expand-to-common-match',
 ;;    `toggle-icicle-hiding-common-match',
 ;;    `toggle-icicle-hiding-non-matching-lines',
@@ -2140,6 +2142,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Showing candidate annotations           \\[icicle-toggle-annotation]\t%S
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
+     Expansion of directory candidates       \\[icicle-toggle-expand-directory]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S"
              (if icicle-highlight-historical-candidates-flag 'yes 'no)
              (if icicle-highlight-saved-candidates-flag 'yes 'no)
@@ -2180,6 +2183,7 @@ These are the main Icicles actions and their minibuffer key bindings:
              (if icicle-show-annotations-flag 'yes 'no)
              (if icicle-add-proxy-candidates-flag 'yes 'no)
              (if completion-ignored-extensions 'yes 'no)
+             (if icicle-find-file-expand-directory-flag 'yes 'no)
              (if icicle-test-for-remote-files-flag 'yes 'no))
 
      (and (memq system-type '(ms-dos windows-nt cygwin)) ; MS Windows only.
@@ -7840,6 +7844,19 @@ Bound to \\<minibuffer-local-completion-map>\
                         (2  "2 - SOLE MATCH")
                         (3  "3 - PREFIX OR SOLE MATCH")
                         (t  "4 - ALWAYS"))
+                      'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+(defalias 'toggle-icicle-expand-directory 'icicle-toggle-expand-directory)
+(defun icicle-toggle-expand-directory () ; Bound to `C-x /' in minibuffer.
+  "Toggle the value of `icicle-find-file-expand-directory-flag'.
+Bound to `C-x /' in the minibuffer."
+  (interactive)
+  (setq icicle-find-file-expand-directory-flag  (not icicle-find-file-expand-directory-flag))
+  (icicle-msg-maybe-in-minibuffer
+   "Expanding directory candidates when you act on them is now %s"
+   (icicle-propertize (if icicle-find-file-expand-directory-flag "ON" "OFF")
                       'face 'icicle-msg-emphasis)))
 
 (defun icicle-dispatch-C-^ ()           ; Bound to `C-^' in minibuffer.
