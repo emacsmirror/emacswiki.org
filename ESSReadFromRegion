@@ -17,11 +17,24 @@ If you have a emacs region like
 
 You can send this data to ess using [https://github.com/cinsk/emacs-scripts/blob/master/snippets/_ess.el R-table-region] command
 
-You can access the table using ".Last.value".
+<pre>
+> read.table(fifo("/tmp/fifo19214sOj"), )
+           V1         V2
+1  1375430411 1804289383
+2  1375430411  846930886
+3  1375430411 1681692777
+4  1375430411 1714636915
+5  1375430411 1957747793
+6  1375430411  424238335
+7  1375430411  719885386
+8  1375430411 1649760492
+9  1375430411  596516649
+10 1375430411 1189641421
+> d <- .Last.value    # You can access the table using ".Last.value".
+</pre>
 
 * It uses mkfifo(1) internally, so it may not work in Windows.
 * It uses R functions so it may not work in other inferior process (e.g. S or something).
-
 
 ----
 EmacsSpeaksStatistics
