@@ -5,13 +5,6 @@ Hi Drew, is there a package repository that I can add to for Emacs 24.1+ so that
 
 ----
 
-Hi Drew, is there a package repository that I can add to for Emacs 24.1+ so that I can install this and other .el modules you have on the Emacs Wiki via list-packages, thanks.
-
--- Anonymous 2013-08-01 18:25 UTC
-
-
-----
-
 Hi Anonymous. Sorry, I don't know what you mean.
 You can add packages to [[MELPA]], if you're looking for an [[ELPA]] repository.  Some of my code has already been added there, and I or someone else will probably add more  there in the future.  I have recently updated the file headers of my code to include ##Package-Requires##, with this in view.
 
