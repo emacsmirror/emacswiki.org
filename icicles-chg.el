@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug  2 11:25:27 2013 (-0700)
+;; Last-Updated: Fri Aug  2 15:50:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10147
+;;     Update #: 10160
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/08/02 dadams
+;;     Added: icicle-find-file-or-expand-dir.
+;;     icicle-find-file(of-content|-no-search)(-other-window), : Use icicle-find-file-or-expand-dir.
 ;; 2013/08/01 dadams
 ;;     icicle-comint-dynamic-complete-as-filename: Bind enable-recursive-minibuffers to t.
 ;; 2013/07/29 dadams
@@ -3869,8 +3872,10 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2013/08/02 dadams
-;;     Added: icicle-complete-current-candidate-as-input, icicle-dispatch-C-M-/.
+;;     Added: icicle-complete-current-candidate-as-input, icicle-dispatch-C-M-/,
+;;            icicle-toggle-expand-directory.
 ;;     icicle-change-sort-order: Bind icicle-show-Completions-initially-flag to t.
+;;     icicle-help-string-completion: Added entry for icicle-toggle-expand-directory.
 ;; 2013/08/01 dadams
 ;;     icicle-choose-completion: Use icicle-choose-completion-string, not choose-completion-string.
 ;; 2013/07/24 dadams
@@ -6726,6 +6731,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
 ;; 2013/08/02 dadams
+;;     Added: icicle-find-file-expand-directory-flag.
+;;     icicle-Completions-toggle-submenu, icicle-completion-key-bindings:
+;;       Added binding for icicle-toggle-expand-directory.
 ;;     icicle-top-level-key-bindings: Bind C-M-/ to icicle-dispatch-C-M-/.
 ;;     icicle-completion-key-bindings: Do not bind C-M-/ (overridden by icicle-mode binding anyway).
 ;; 2013/07/09 dadams
