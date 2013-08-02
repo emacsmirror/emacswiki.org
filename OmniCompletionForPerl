@@ -1,0 +1,22 @@
+By using "plsense.el", you can get the following information on Perl buffer.
+
+=== optimized completion ===
+
+[[image:PlSenseScreenShot1]]
+
+=== optimized help ===
+
+[[image:PlSenseScreenShot2]]
+
+=== method definition ===
+
+[[image:PlSenseScreenShot3]]
+
+=== plsense.el ===
+
+For detail, see https://github.com/aki2o/emacs-plsense
+
+Enjoy!!!
+
+
+
