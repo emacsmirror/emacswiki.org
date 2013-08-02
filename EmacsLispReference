@@ -11,7 +11,7 @@ The best way is to simply use the manual within Emacs.  Then you can simply use 
 For GNU Emacs:
 
 * http://www.gnu.org/manual/manual.html
-* http://www.gnu.org/software/emacs/elisp-manual/
+* http://www.gnu.org/software/emacs/manual/elisp.html
 * Available in print from the GnuPress.
 
 To get the manual into Emacs on Debian GNU/Linux or when you can't see an Elisp section after doing M-x info, or if you get the error "Info file elisp does not exist", then you need to:
