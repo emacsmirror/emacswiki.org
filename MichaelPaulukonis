@@ -35,6 +35,11 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * look at EmacsScreencasts
 * look at GuileEmacs
 * look at EmacsPortableApp
+* opening and closing frames.
+** seriously. Why have you been missing out this whole time?!?!?
+** <code>C-x 5 2</code> new frame
+** CategoryFrames
+** [[Frame]]
 
 === DropBox ===
 * look at DropBox notes -- implement, test, and update page
