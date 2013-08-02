@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Aug  2 10:55:06 2013 (-0700)
+;; Last-Updated: Fri Aug  2 15:28:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5732
+;;     Update #: 5738
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -106,6 +106,7 @@
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
 ;;    `icicle-file-sort', `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
+;;    `icicle-find-file-expand-directory-flag',
 ;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
@@ -473,6 +474,8 @@
        (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
        (remote-file-testing menu-item "Toggle Remote File Handling  (`C-^')"
         icicle-toggle-remote-file-testing)
+       (expanding-directories menu-item "Toggle Expanding Directories  (`C-x /')"
+        icicle-toggle-expand-directory)
        (ignored-files menu-item "Toggle Ignored File Extensions  (`C-.')"
         icicle-toggle-ignored-extensions)
        (ignoring-space-prefix menu-item "Toggle Ignoring Space Prefix"
@@ -1621,6 +1624,7 @@ value incrementally."
     (,(icicle-kbd "M-r")       icicle-roundup t)                                      ; `M-r'
     (,(icicle-kbd "C-x .")     icicle-dispatch-C-x. t)                                ; `C-x .'
     (,(icicle-kbd "C-x :")     icicle-toggle-network-drives-as-remote t)              ; `C-x :'
+    (,(icicle-kbd "C-x /")     icicle-toggle-expand-directory t)                      ; `C-x /'
     (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t)                            ; `C-x C-a'
     (,(icicle-kbd "C-x t")   icicle-cycle-image-file-thumbnail
      (fboundp 'icicle-cycle-image-file-thumbnail))                                    ; `C-x t'
@@ -2234,17 +2238,6 @@ are the same.  You can use \\<minibuffer-local-completion-map>\
 List elements are strings."
   :type '(repeat string) :group 'Icicles-Files :group 'Icicles-Matching)
 
-(defcustom icicle-find-file-of-content-skip-hook nil
-  "*Hook run by `icicle-find-file-of-content' on each matching file name.
-Also run by `icicle-buffer' on the names of files that are included
-from the set of recent files or from the Emacs file cache.
-
-If any function returns non-nil then the file content is not searched.
-Use this to skip visiting and trying to search non-text files, such as
-PDFs and images, or files that might be time-consuming to access, such
-as compressed files."
-  :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
-
 (defcustom icicle-file-match-regexp nil
   "*nil or a regexp that file-name completion candidates must match.
 If nil, then this does nothing.  If a regexp, then show only
@@ -2338,6 +2331,26 @@ and you must load library `filesets.el'.
 Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Matching)
+
+(defcustom icicle-find-file-expand-directory-flag nil
+  "*Non-nil means that acting on a directory candidate descends into it.
+That is, instead of opening Dired on the directory, the current set of
+completion candidates are replaced by the contents of the directory.
+
+You can toggle this option at any time from the minibuffer using
+`\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-directory]'."
+  :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
+
+(defcustom icicle-find-file-of-content-skip-hook nil
+  "*Hook run by `icicle-find-file-of-content' on each matching file name.
+Also run by `icicle-buffer' on the names of files that are included
+from the set of recent files or from the Emacs file cache.
+
+If any function returns non-nil then the file content is not searched.
+Use this to skip visiting and trying to search non-text files, such as
+PDFs and images, or files that might be time-consuming to access, such
+as compressed files."
+  :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-functions-to-redefine
   `(bbdb-complete-name                  ; For older BBDB versions such as 2.35
