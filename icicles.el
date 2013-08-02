@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:27:51 2013 (-0700)
+;; Last-Updated: Fri Aug  2 11:18:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23424
+;;     Update #: 23425
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -494,7 +494,9 @@
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
 ;;    `icicle-change-sort-order', `icicle-choose-completion',
-;;    `icicle-clear-current-history', `icicle-completing-read+insert',
+;;    `icicle-clear-current-history',
+;;    `icicle-complete-current-candidate-as-input',
+;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
 ;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
