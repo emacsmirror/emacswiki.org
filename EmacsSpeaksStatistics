@@ -49,3 +49,5 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 * [[EssSmartUnderscore|Smarter Ess Underscore behavior]] 
 
 * [[ESSRParser|Format your code with R parser]]
+
+* [[ESSReadFromRegion|Read Table from Emacs Region]]
