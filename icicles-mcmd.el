@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Aug  1 13:41:53 2013 (-0700)
+;; Last-Updated: Fri Aug  2 11:17:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19216
+;;     Update #: 19231
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -77,7 +77,9 @@
 ;;    `icicle-candidate-set-union',
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
-;;    `icicle-choose-completion', `icicle-completing-read+insert',
+;;    `icicle-choose-completion',
+;;    `icicle-complete-current-candidate-as-input',
+;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
 ;;    `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
@@ -86,9 +88,9 @@
 ;;    `icicle-delete-char', `icicle-delete-windows-on',
 ;;    `icicle-describe-file', `icicle-digit-argument',
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
-;;    `icicle-dispatch-C-x.', `icicle-dispatch-M-_',
-;;    `icicle-dispatch-M-comma', `icicle-dispatch-M-q',
-;;    `icicle-doremi-candidate-width-factor+',
+;;    `icicle-dispatch-C-M-/', `icicle-dispatch-C-x.',
+;;    `icicle-dispatch-M-_', `icicle-dispatch-M-comma',
+;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
 ;;    `icicle-doremi-increment-max-candidates+',
 ;;    `icicle-doremi-increment-swank-prefix-length+',
 ;;    `icicle-doremi-increment-swank-timeout+',
@@ -1095,6 +1097,35 @@ See description of `kill-region-wimpy'."
     (interactive "r")
     (icicle-call-then-update-Completions #'kill-region-wimpy beg end)))
 
+(defun icicle-complete-current-candidate-as-input ()
+  "Complete the current candidate as if it were your input pattern.
+Use this to descend into a directory candidate, replacing the current
+set of candidates by the contents of that directory.
+
+If not completing file names or the current candidate does not name a
+directory, then this just makes the candidate the sole candidate."
+  (interactive)
+  (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (when (eq (current-buffer) (get-buffer "*Completions*")) (icicle-insert-completion))
+  (setq icicle-cycling-p  nil)
+  (end-of-line)
+  (funcall (or icicle-last-completion-command  (if (eq icicle-current-completion-mode 'prefix)
+                                                   #'icicle-prefix-complete
+                                                 #'icicle-apropos-complete))))
+
+(defun icicle-dispatch-C-M-/ ()
+  "Do the right thing for `C-M-/'.
+If the minibuffer is active then invoke
+ `icicle-complete-current-candidate-as-input'.
+Otherwise, invoke `icicle-dabbrev-completion' (or
+ `dabbrev-completion')."
+  (interactive)
+  (call-interactively (if (active-minibuffer-window)
+                          #'icicle-complete-current-candidate-as-input
+                        (if (fboundp 'icicle-dabbrev-completion)
+                            'icicle-dabbrev-completion
+                          'dabbrev-completion))))
+        
 (defun icicle-make-directory (dir)   ; Bound to `C-c +' in minibuffer, for file-name completion.
   "Create a directory."
   (interactive
@@ -1818,8 +1849,9 @@ order instead, updating `icicle-alternative-sort-comparer'."
              next-order)
         (cond (use-completion-p
                (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p   nil)
-                                       (enable-recursive-minibuffers            t)
-                                       (icicle-must-pass-after-match-predicate  nil))
+                                       (icicle-must-pass-after-match-predicate  nil)
+                                       (icicle-show-Completions-initially-flag  t)
+                                       (enable-recursive-minibuffers            t))
                                    (save-selected-window
                                      (completing-read
                                       (format "New %ssort order: " (if alternativep "alternative " ""))
@@ -7811,7 +7843,7 @@ Bound to \\<minibuffer-local-completion-map>\
                       'face 'icicle-msg-emphasis)))
 
 (defun icicle-dispatch-C-^ ()           ; Bound to `C-^' in minibuffer.
-  "Do the right thing for `C-^'
+  "Do the right thing for `C-^'.
 When Icicles searching, call `icicle-toggle-highlight-all-current'.
 Otherwise, call `icicle-toggle-remote-file-testing'.
 Bound to `C-^' in the minibuffer."
