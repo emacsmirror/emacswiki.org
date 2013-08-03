@@ -21,8 +21,7 @@ read file names.
 
 You do not need to use these '''Icicles''' commands to get the benefits
 of '''Icicles''' enhancements to `completing-read' and `read-file-name'.
-What these commands offer are additional benefits, which you might
-or might not appreciate.
+What these commands offer are additional benefits.
 
 
 
@@ -84,13 +83,16 @@ following keys dynamically in the minibuffer keymaps, so you can
 use them while to perform various operations on the fly when you
 input a file name.  These minibuffer bindings are also available for [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] commands.
 
+[:icicle-up-directory]
 * '''`C-backspace'''' (`icicle-up-directory') to navigate up the directory hierarchy.  It removes the last directory component (and any partial file name) from your minibuffer input.  (For Emacs versions before Emacs 22, this feature is available only for completion of absolute file names.)
 
+[:icicle-make-directory]
 * '''`##C-c +##'''' (`icicle-make-directory') to create a directory on the
 fly.
 
 * '''`S-delete'''' to delete the file named by the current completion candidate.
 
+[:icicle-all-candidates-list-alt-action]
 * '''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to open [[Dired]] on
 the currently matching file names.  That is, it opens a special
 Dired buffer that contains ''only'' the matching files.  You are
@@ -103,6 +105,7 @@ bookmarked file or directory.  This is available only if you use
 library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-command]], so you can
 actually visit any number of file bookmarks.  When finished, you
 can continue with non-bookmark file-name completion.
+
 
 * '''`##C-x a +##'''' or '''`C-x a -'''' to add or remove tags for a file.  These
 are [[http://delicious.com|delicious]]-style tags -- any labels you like.  If there is not
@@ -358,6 +361,41 @@ to visit marked files and subdirectories whose content matches a [[regexp]].
 `icicle-find-file-no-search', which does not search file content.)
 
 See also [[Icicles - Searching Named Containers]].
+
+
+
+
+
+
+
+
+
+
+
+[:CyclingIntoSubdirectories]
+==== Cycling into Subdirectories ====
+
+The '''Icicles''' commands that use `read-file-name' to read a file or
+directory name visit the files or directories you choose.  If you
+act on a directory-name completion candidate (e.g. using `RET' or
+`C-RET') it is visited using [[Dired]].  And cycling moves past a
+directory candidate to the next candidate, the name of a sibling
+file or directory.
+
+But sometimes you want not to visit a candidate directory but to
+descend into it, to access its own files or subdirectories using
+completion.  To do that, you can do either of the following to
+expand a directory candidate:
+
+* `C-M-/'
+* `C-e TAB' (or `S-TAB')
+
+If you prefer, you can have '''Icicles''' cycle into subdirectories
+whenever you act on them, by setting [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-expand-directory-flag|icicle-find-file-expand-directory-flag]]</tt>''' to non-`nil'.  The effect
+of `RET' and `C-RET' is then the same as `C-M-/' --- directory
+candidates are never visited using Dired.  You can toggle this
+option using `C-x /'.
+
 
 
 
