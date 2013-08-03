@@ -1,3 +1,4 @@
+[[ru:1]]
 CoffeeMode allows Emacs users to submit a BREW request to an RFC2324-compliant coffee device (Hyper Text Coffee Pot Control Protocol, or HTCPCP).
 
 It prompts the user for the different additives, then issues a HTCPCP BREW request to the coffee device.
