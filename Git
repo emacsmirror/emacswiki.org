@@ -33,7 +33,7 @@ highlighting the search term, etc.) The default colours are terrible but can all
 
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
 
-*git-gutter-plus* allows reverting, staging, and committing Git hunks straight from the buffer. ([https://github.com/nonsequitur/git-gutter-plus Homepage])
+*git-gutter+* allows reverting, staging, and committing Git hunks straight from the buffer. ([https://github.com/nonsequitur/git-gutter-plus Homepage])
 
 *DVC* is a generic Emacs interface to DistributedVersionControl systems, including git.
 
