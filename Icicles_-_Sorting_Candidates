@@ -180,7 +180,8 @@ It can help you choose, however, to know which of the predefined '''Icicles''' s
 
 || '''Sort Order''' || '''Sort Function Used''' ||
 || by previous use alphabetically || `icicle-historical-alphabetic-p' ||
-|| by last use || `icicle-most-recent-first-p' ||
+|| by last use as input || `icicle-latest-input-first-p' ||
+|| by last use || `icicle-latest-use-first-p' ||
 
 The reason these sorts are slower is that they check the current minibuffer history, to see whether, and where, each candidate is located in the history list. If you, like I, have very long history lists, then this can take a while. I use histories of virtually unlimited length -- I let SaveHist (<tt>[[savehist-20+.el]]</tt>) save all of my histories from one Emacs session to the next.
 
