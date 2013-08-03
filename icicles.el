@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug  2 15:53:32 2013 (-0700)
+;; Last-Updated: Sat Aug  3 10:18:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23436
+;;     Update #: 23444
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -613,7 +613,8 @@
 ;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type.',
 ;;    `icicle-sort-by-last-file-access-time',
 ;;    `icicle-sort-by-last-file-modification-time',
-;;    `icicle-sort-by-last-use-as-input',
+;;    `icicle-sort-by-last-use', `icicle-sort-by-last-use-as-input',
+;;    `icicle-sort-by-last-use\,-dirs-first',
 ;;    `icicle-sort-by-previous-use-alphabetically',
 ;;    `icicle-sort-by-2nd-parts-alphabetically',
 ;;    `icicle-sort-case-insensitive',
@@ -987,7 +988,8 @@
 ;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-ding',
 ;;    `icicle-dired-read-shell-command',
-;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
+;;    `icicle-dir-prefix-wo-wildcards',
+;;    `icicle-dirs-and-latest-use-first-p', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
@@ -1070,8 +1072,10 @@
 ;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
 ;;    `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
-;;    `icicle-kmacro-action', `icicle-last-accessed-first-p',
-;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
+;;    `icicle-kmacro-action', `icicle-latest-access-first-p',
+;;    `icicle-latest-input-first-p',
+;;    `icicle-latest-modification-first-p',
+;;    `icicle-latest-use-first-p', `icicle-levenshtein-match',
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-completion-at-point',
@@ -1095,7 +1099,7 @@
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-minibuffer-setup',
-;;    `icicle-mode-line-name-less-p', `icicle-most-recent-first-p',
+;;    `icicle-mode-line-name-less-p',
 ;;    `icicle-mouse-candidate-action-1',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
