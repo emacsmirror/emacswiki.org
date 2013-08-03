@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Aug  1 13:43:17 2013 (-0700)
+;; Last-Updated: Sat Aug  3 10:10:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14006
+;;     Update #: 14042
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -77,7 +77,8 @@
 ;;    `icicle-delete-count', `icicle-delete-dups',
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
-;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
+;;    `icicle-dir-prefix-wo-wildcards',
+;;    `icicle-dirs-and-latest-use-first-p', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
@@ -118,8 +119,10 @@
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string',
 ;;    `icicle-join-nth-parts', `icicle-key-description',
-;;    `icicle-kill-a-buffer', `icicle-last-accessed-first-p',
-;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
+;;    `icicle-kill-a-buffer', `icicle-latest-access-first-p',
+;;    `icicle-latest-input-first-p',
+;;    `icicle-latest-modification-first-p',
+;;    `icicle-latest-use-first-p', `icicle-levenshtein-match',
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
@@ -133,8 +136,7 @@
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
-;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
-;;    `icicle-ms-windows-NET-USE',
+;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-next-candidate', `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-ORIG-choose-completion-string',
@@ -4636,25 +4638,31 @@ the function to the candidate and use the result as the help."
                                           (let ((prop  (or (get-text-property 0 'icicle-mode-line-help
                                                                               candidate)
                                                            (get-text-property 0 'help-echo candidate))))
-                                            (if (functionp prop) (funcall prop candidate) prop))))
+                                            (and prop
+                                                 (icicle-propertize
+                                                  (if (functionp prop) (funcall prop candidate) prop)
+                                                  'face 'icicle-mode-line-help)))))
                                     ((and cand
                                           (symbolp cand) ; Symbol.
-                                          (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
-                                                ((get cand 'help-echo)) ; General help prop.
-                                                ((fboundp cand) ; Function.
-                                                 (or (documentation cand t) ; Functon's doc string.
-                                                     (if (string-match ; Easy-menu item.
-                                                          "^menu-function-[0-9]+$" (symbol-name cand))
-                                                         (format "%s" (symbol-function cand))
-                                                       (format "Command `%s'" cand))))
-                                                ((facep cand) (face-documentation cand)) ; Face.
-                                                (t (documentation-property ; Variable.
-                                                    cand 'variable-documentation t)))))
+                                          (let ((doc2
+                                                 (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
+                                                       ((get cand 'help-echo)) ; General help prop.
+                                                       ((fboundp cand) ; Function.
+                                                        (or (documentation cand t) ; Functon's doc string.
+                                                            (if (string-match ; Easy-menu item.
+                                                                 "^menu-function-[0-9]+$" (symbol-name cand))
+                                                                (format "%s" (symbol-function cand))
+                                                              (format "Command `%s'" cand))))
+                                                       ((facep cand) (face-documentation cand)) ; Face.
+                                                       (t (documentation-property ; Variable.
+                                                           cand 'variable-documentation t)))))
+                                            (and doc2
+                                                 (icicle-propertize doc2  'face 'icicle-mode-line-help)))))
                                     ((and (consp cand)  (eq (car cand) 'lambda)) ; Lambda form.
-                                     (format "%s" cand))
+                                     (icicle-propertize (format "%s" cand) 'face 'icicle-mode-line-help))
                                     ((and (stringp cand) ; Prefix key, `..'.
                                           (member cand '("Prefix key" "GO UP")))
-                                     cand)
+                                     (icicle-propertize cand 'face 'icicle-mode-line-help))
                                     ((stringp candidate) ; String without help property.
                                      (cond ((and (or (icicle-file-name-input-p) ; File name.
                                                      icicle-abs-file-candidates)
@@ -4672,7 +4680,6 @@ the function to the candidate and use the result as the help."
                                            (t nil)))))) ; Punt.
            (doc-line1  (and (stringp doc)  (string-match ".+$" doc)  (match-string 0 doc))))
       (when doc-line1
-        (put-text-property 0 (length doc-line1) 'face 'icicle-mode-line-help doc-line1)
         (icicle-show-in-mode-line
          doc-line1
          (cond ((get-buffer-window "*Completions*" 'visible) "*Completions*")
@@ -4685,27 +4692,38 @@ Non-nil NO-BYTES-P means do not include the number of bytes.
 Non-nil NO-FILE-P means do not include the buffer's file name."
   (with-current-buffer buffer
     (let* ((mode   (format "Mode: %s"
-                           (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)))
+                           (icicle-propertize
+                            (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)
+                            'face 'icicle-mode-line-help)))
            (bytes  (format "Bytes: %s"
-                           (let ((size  (buffer-size)))
-                             (if (> size most-positive-fixnum) (format "> %d" most-positive-fixnum) size))))
+                           (icicle-propertize (let ((size  (buffer-size)))
+                                                (if (> size most-positive-fixnum)
+                                                    (format "> %d" most-positive-fixnum)
+                                                  size))
+                                              'face 'icicle-mode-line-help)))
            (file   (or (buffer-file-name)
                        (and (eq major-mode 'dired-mode)  default-directory))))
       (cond ((and no-bytes-p  no-file-p)  mode)
             ((or no-file-p  (not file))   (concat mode ", " bytes))
             (t
-             (setq file  (format "File: %s" (icicle-abbreviate-or-expand-file-name file)))
+             (setq file  (format "File: %s" (icicle-propertize (icicle-abbreviate-or-expand-file-name file)
+                                                               'face 'icicle-mode-line-help)))
              (if no-bytes-p (concat mode ", " file) (concat mode ", " bytes ", " file)))))))
 
 (defun icicle-help-line-file (file)
   "Simple help string for FILE."
   (let ((attrs  (file-attributes file)))
-    (and attrs  (format "Bytes: %s, Saved: %s, Access: %s"
+    (and attrs  (format "Bytes: %s, Saved: %s, Access: %s, Perm: %s"
                         (let ((size  (nth 7 attrs)))
-                          (if (> size most-positive-fixnum)
-                              (format "> %d" most-positive-fixnum)
-                            size))
-                        (format-time-string  "%c" (nth 5 attrs)) (nth 8 attrs))))) ; "%Y-%m-%d %H"
+                          (icicle-propertize (if (> size most-positive-fixnum)
+                                                 (format "> %d" most-positive-fixnum)
+                                               size)
+                                             'face 'icicle-mode-line-help))
+                        (icicle-propertize (format-time-string  "%c" (nth 5 attrs)) ; "%Y-%m-%d %H"
+                                           'face 'icicle-mode-line-help)
+                        (icicle-propertize (format-time-string  "%c" (nth 4 attrs)) ; "%Y-%m-%d %H"
+                                           'face 'icicle-mode-line-help)
+                        (icicle-propertize (nth 8 attrs) 'face 'icicle-mode-line-help)))))
 
 (defun icicle-show-in-mode-line (text &optional buffer)
   "Display TEXT in BUFFER's mode line.
@@ -7078,8 +7096,8 @@ inputs, followed by matching candidates that have not yet been used."
                     (icicle-file-name-directory-w-default (or icicle-last-input  icicle-current-input)))))
     (if (not (consp hist))
         (icicle-case-string-less-p s1 s2)
-      (when dir (setq s1  (expand-file-name s1 dir)
-                      s2  (expand-file-name s2 dir)))
+      (when dir (setq s1  (abbreviate-file-name (expand-file-name s1 dir))
+                      s2  (abbreviate-file-name (expand-file-name s2 dir))))
       (let ((s1-previous-p  (member s1 hist))
             (s2-previous-p  (member s2 hist)))
         (or (and (not s1-previous-p)  (not s2-previous-p)  (icicle-case-string-less-p s1 s2))
@@ -7087,7 +7105,7 @@ inputs, followed by matching candidates that have not yet been used."
             (and s1-previous-p  s2-previous-p  (icicle-case-string-less-p s1 s2)))))))
 
 ;; $$ Alternative definition, but it doesn't seem any faster, and is slightly less clear.
-;; (defun icicle-most-recent-first-p (s1 s2)
+;; (defun icicle-latest-input-first-p (s1 s2)
 ;;   "Non-nil means S1 was used more recently than S2.
 ;; Also:
 ;;  S1 < S2 if S1 was used previously but S2 was not.
@@ -7103,13 +7121,14 @@ inputs, followed by matching candidates that have not yet been used."
 ;;         (s2-in-hist nil))
 ;;     (if (not (consp hist))
 ;;         (icicle-case-string-less-p s1 s2)
-;;       (when dir (setq s1  (expand-file-name s1 dir)  s2  (expand-file-name s2 dir)))
+;;       (when dir (setq s1  (abbreviate-file-name (expand-file-name s1 dir))
+;;                       s2  (abbreviate-file-name (expand-file-name s2 dir))))
 ;;       (while (and hist  (not (setq s1-in-hist  (equal s1 (car hist)))))
 ;;         (when (setq s2-in-hist  (equal s2 (car hist))) (setq hist  nil))
 ;;         (setq hist  (cdr hist)))
 ;;       (or (and hist  s1-in-hist) (and (not s2-in-hist)  (icicle-case-string-less-p s1 s2))))))
 
-(defun icicle-most-recent-first-p (s1 s2)
+(defun icicle-latest-input-first-p (s1 s2)
   "Non-nil means S1 was used as input more recently than S2.
 Also:
  S1 < S2 if S1 was used as input previously but S2 was not.
@@ -7125,8 +7144,8 @@ Also:
         (s2-tail  ()))
     (if (not (consp hist))
         (icicle-case-string-less-p s1 s2)
-      (when dir (setq s1  (expand-file-name s1 dir)
-                      s2  (expand-file-name s2 dir)))
+      (when dir (setq s1  (abbreviate-file-name (expand-file-name s1 dir))
+                      s2  (abbreviate-file-name (expand-file-name s2 dir))))
       (setq s1-tail  (member s1 hist)
             s2-tail  (member s2 hist))
       (cond ((and s1-tail  s2-tail)  (>= (length s1-tail) (length s2-tail)))
@@ -7193,7 +7212,7 @@ Buffers not associated with files or processes are sorted last."
 A directory has a lower file type than a non-directory.
 The type of a non-directory is its extension.  Extensions are compared
  alphabetically.
-If not doing file-name completion, then this is the same as
+If not doing file-name completion then this is the same as
 `icicle-case-string-less-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
@@ -7209,11 +7228,30 @@ If not doing file-name completion, then this is the same as
     (icicle-case-string-less-p s1 s2)))
 
 
+(put 'icicle-dirs-and-latest-use-first-p 'icicle-file-name-sort-predicate t)
+;; This predicate is used for file-name completion.
+(defun icicle-dirs-and-latest-use-first-p (s1 s2)
+  "Non-nil means S1 is a dir and S2 not, or S1 used more recently than S2.
+\"Use\" here refers, first, to use as your input, second, to access.
+
+If both S1 and S2 are the same type (dir or file) then:
+ S1 < S2 if S1 was used as input previously but S2 was not.
+ S1 < S2 if neither was used as input previously and:
+  and S1 was accessed more recently than S2."
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
+      (let ((s1-dir-p  (icicle-file-directory-p s1))
+            (s2-dir-p  (icicle-file-directory-p s2)))
+        (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
+                (not (or s1-dir-p s2-dir-p)))
+            (icicle-latest-use-first-p s1 s2) ; Compare same type using last use.
+          s1-dir-p))                    ; Directories come before files.
+    (icicle-latest-use-first-p s1 s2)))
+
 (put 'icicle-dirs-first-p 'icicle-file-name-sort-predicate t)
 ;; This predicate is used for file-name completion.
 (defun icicle-dirs-first-p (s1 s2)
   "Non-nil means S1 is a dir and S2 a file, or S1 < S2 (alphabet).
-If not doing file-name completion, then this is the same as
+If not doing file-name completion then this is the same as
 `icicle-case-string-less-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
@@ -7229,7 +7267,7 @@ If not doing file-name completion, then this is the same as
 ;; This predicate is used for file-name completion.
 (defun icicle-dirs-last-p (s1 s2)
   "Non-nil means S1 is a file and S2 a dir, or S1 < S2 (alphabet).
-If not doing file-name completion, then this is the same as
+If not doing file-name completion then this is the same as
 `icicle-case-string-less-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
@@ -7265,11 +7303,44 @@ Alphabetical comparison is done using `icicle-case-string-less-p'."
                     (s2-1st                     (icicle-transform-multi-completion s2))))))))
 
 
-(put 'icicle-last-accessed-first-p 'icicle-file-name-sort-predicate t)
+(put 'icicle-latest-use-first-p 'icicle-file-name-sort-predicate t)
 ;; This predicate is used for file-name completion.
-(defun icicle-last-accessed-first-p (s1 s2)
+(defun icicle-latest-use-first-p (s1 s2)
+  "Non-nil means S1 was used more recently than S2.
+\"Use\" here refers, first, to use as your input, second, to access.
+S1 < S2 if S1 was used as input previously but S2 was not.
+S1 < S2 if neither was used as input previously
+ and S1 was accessed more recently than S2.
+
+If not doing file-name completion then this is the same as
+`icicle-latest-input-first-p'."
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
+      ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
+      ;; And, starting in Emacs 22, histories do not contain duplicates anyway.
+      (let ((hist     (and (symbolp minibuffer-history-variable)  (boundp minibuffer-history-variable)
+                           (symbol-value minibuffer-history-variable)))
+            (dir      (and (icicle-file-name-input-p)
+                           (icicle-file-name-directory-w-default (or icicle-last-input
+                                                                     icicle-current-input))))
+            (s1-tail  ())
+            (s2-tail  ()))
+        (if (not (consp hist))
+            (icicle-latest-access-first-p s1 s2)
+          (when dir (setq s1  (abbreviate-file-name (expand-file-name s1 dir))
+                          s2  (abbreviate-file-name (expand-file-name s2 dir))))
+          (setq s1-tail  (member s1 hist)
+                s2-tail  (member s2 hist))
+          (cond ((and s1-tail  s2-tail)  (>= (length s1-tail) (length s2-tail)))
+                (s1-tail                 t)
+                (s2-tail                 nil)
+                (t                       (icicle-latest-access-first-p s1 s2)))))
+    (icicle-latest-input-first-p s1 s2)))
+
+(put 'icicle-latest-access-first-p 'icicle-file-name-sort-predicate t)
+;; This predicate is used for file-name completion.
+(defun icicle-latest-access-first-p (s1 s2)
   "Non-nil means file S1 was last accessed after S2 was.
-If not doing file-name completion, then this is the same as
+If not doing file-name completion then this is the same as
 `icicle-case-string-less-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((acc-date1  (nth 4 (file-attributes s1)))
@@ -7280,11 +7351,11 @@ If not doing file-name completion, then this is the same as
     (icicle-case-string-less-p s1 s2)))
 
 
-(put 'icicle-last-modified-first-p 'icicle-file-name-sort-predicate t)
+(put 'icicle-latest-modification-first-p 'icicle-file-name-sort-predicate t)
 ;; This predicate is used for file-name completion.
-(defun icicle-last-modified-first-p (s1 s2)
+(defun icicle-latest-modification-first-p (s1 s2)
   "Non-nil means file S1 was last modified after S2 was.
-If not doing file-name completion, then this is the same as
+If not doing file-name completion then this is the same as
 `icicle-case-string-less-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((mod-date1  (nth 5 (file-attributes s1)))
