@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Jul 23 16:24:14 2013 (-0700)
+;; Last-Updated: Sat Aug  3 13:43:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27837
+;;     Update #: 27863
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4522,7 +4522,8 @@
 ;;    Sort Order                      Sort Function Used
 ;;    ----------                      ------------------
 ;;    by previous use alphabetically  `icicle-historical-alphabetic-p'
-;;    by last use                     `icicle-most-recent-first-p'
+;;    by last use as input            `icicle-latest-input-first-p'
+;;    by last use                     `icicle-latest-use-first-p'
 ;;
 ;;  The reason these sorts are slower is that they check the current
 ;;  minibuffer history, to see whether, and where, each candidate is
@@ -7849,15 +7850,13 @@
 ;;
 ;;  You do not need to use these Icicles commands to get the benefits
 ;;  of Icicles enhancements to `completing-read' and `read-file-name'.
-;;  What these commands offer are additional benefits, which you might
-;;  or might not appreciate.
+;;  What these commands offer are additional benefits.
 ;;
 ;;(@* "Function `read-file-name'")
 ;;  ** Function `read-file-name' **
 ;;
-;;  Function `read-file-name' uses relative file-name completion.
-
-;;  It is specialized for file-name input with completion.  It knows
+;;  Function `read-file-name' uses relative file-name completion.  It
+;;  is specialized for file-name input with completion.  It knows
 ;;  about files and file names for your current platform.  It knows
 ;;  about Emacs remote file name syntax (Tramp, Ange FTP).  And
 ;;  starting with Emacs 23, `TAB' also completes environment variables
@@ -7972,6 +7971,7 @@
 ;;    the currently matching file names.  That is, it opens a special
 ;;    Dired buffer that contains only the matching files.  You are
 ;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
+;;
 ;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
 ;;    bookmarked file or directory.  This is available only if you use
 ;;    library `Bookmark+' (`bookmark+.el').  It is a multi-command, so
@@ -8134,6 +8134,31 @@
 ;;  `icicle-find-file-no-search', which does not search file content.)
 ;;
 ;;  See also (@> "Chapter & Verse: Searching Named Containers").
+;;
+;;(@* "Cycling into Subdirectories")
+;;  *** Cycling into Subdirectories ***
+;;
+;;  The Icicles commands that use `read-file-name' to read a file or
+;;  directory name visit the files or directories you choose.  If you
+;;  act on a directory-name completion candidate (e.g. using `RET' or
+;;  `C-RET') it is visited using Dired.  And cycling moves past a
+;;  directory candidate to the next candidate, the name of a sibling
+;;  file or directory.
+;;
+;;  But sometimes you want not to visit a candidate directory but to
+;;  descend into it, to access its own files or subdirectories using
+;;  completion.  To do that, you can do either of the following to
+;;  expand a directory candidate:
+;;
+;;  * `C-M-/'
+;;  * `C-e TAB' (or `S-TAB')
+;;
+;;  If you prefer, you can have Icicles cycle into subdirectories
+;;  whenever you act on them, by setting option
+;;  `icicle-find-file-expand-directory-flag' to non-`nil'.  The effect
+;;  of `RET' and `C-RET' is then the same as `C-M-/' - directory
+;;  candidates are never visited using Dired.  You can toggle this
+;;  option using `C-x /'.
 ;;
 ;;(@* "Visit Recent Files or Files for Emacs Tags")
 ;;  *** Visit Recent Files or Files for Emacs Tags ***
