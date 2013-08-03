@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug  2 15:50:12 2013 (-0700)
+;; Last-Updated: Sat Aug  3 13:33:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10160
+;;     Update #: 10181
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/08/03 dadams
+;;     Applied renamings: icicle-*-first-p.
 ;; 2013/08/02 dadams
 ;;     Added: icicle-find-file-or-expand-dir.
 ;;     icicle-find-file(of-content|-no-search)(-other-window), : Use icicle-find-file-or-expand-dir.
@@ -1775,6 +1777,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/08/03 dadams
+;;     Added: icicle-dirs-and-latest-use-first-p, icicle-latest-use-first-p.
+;;     Renamed: icicle-last-(accessed|modified)-first-p to icicle-latest-(access|modification)-first-p,
+;;              icicle-most-recent-first-p to icicle-latest-input-first-p.
+;;     icicle-show-help-in-mode-line, icicle-help-line-(buffer|file):
+;;       Propertize only the values, not their headings too.
+;;     icicle-help-line-file: Add access time.
+;;     icicle-historical-alphabetic-p, icicle-latest-input-first-p: Apply abbreviate-file-name.
 ;; 2013/08/01 dadams
 ;;     icicle-choose-completion-string: Do not display obnoxious vanilla Emacs obsolescence warning.
 ;; 2013/07/04 dadams
@@ -3871,6 +3881,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/08/03 dadams
+;;     Added: icicle-sort-by-last-use, icicle-sort-by-last-use\,-dirs-first.
+;;     Applied renamings: icicle-*-first-p.
 ;; 2013/08/02 dadams
 ;;     Added: icicle-complete-current-candidate-as-input, icicle-dispatch-C-M-/,
 ;;            icicle-toggle-expand-directory.
@@ -6730,6 +6743,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/08/03 dadams
+;;     icicle-file-sort: Updated doc string per renamings.
 ;; 2013/08/02 dadams
 ;;     Added: icicle-find-file-expand-directory-flag.
 ;;     icicle-Completions-toggle-submenu, icicle-completion-key-bindings:
