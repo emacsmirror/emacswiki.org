@@ -13,11 +13,11 @@ This page contains some tips about [[completion|completing]] file and directory 
 
 '''See Also:'''
 
+* [[Icicles - File-Name Input]] for more information about this topic.
+
 * [[Icicles - Customization and General Tips]] for
 general tips about using '''Icicles'''.  Many of those tips apply also
 to file-name and directory-name completion.
-
-* [[Icicles - File-Name Input]]
 
 
 
@@ -32,14 +32,6 @@ provided as possible values for [[user option]] '''`<tt>[[Icicles - Customizatio
 non-directories by file type (extension) alphabetically.  For
 non-file-name input these all act like `icicle-case-string-less-p'. 
 
-
-
-----
-[:DotDotSlashAndTilde]
-==== `..', `/', and `~/' ====
-
-You can use '''`##..##'''' during [[completion]] to access a parent directory,
-and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.
 
 
 ----
@@ -144,7 +136,7 @@ likely to appear in file-name completions.  See [[Icicles - Special Characters i
 [:FFAP]
 ==== FFAP: Find File At Point ====
 
-You can use library FindFileAtPoint (`##ffap.el##'), if you like, with '''Icicles''', to
+You can use library FindFileAtPoint (`##ffap.el##') with '''Icicles''', if you like, to
 pick up the file, directory, or URL name under the [[cursor]].  All
 '''Icicles''' features are available during file-name and URL
 completion.  If you like `##ffap.el##', you might also like to try
@@ -205,8 +197,38 @@ kill any file [[buffer]]s that were searched but whose files did not
 ultimately choose.  Keeping them is essentially caching them.
 
 
+----
+[:DotDotSlashAndTilde]
+==== `..', `C-backspace', `/', and `~/' ====
+
+You can use '''`##..##'''' or '''`C-backspace'''' during file-name [[completion]] to access a parent directory.  
+You can use '''`##/##'''' and '''`##~/##'''' to shadow any input to the left of these patterns.
 
 
+----
+[:MoveDownFileHierarchy]
+[:ExpandDirectoryCandidate]
+==== `C-M-/' and `C-e TAB' ====
+
+You can move up and down the file hierarchy as usual, by editing
+the directory portion of your input or by using shortcuts like
+`C-backspace' (see previous).  You can move down the hierarchy
+by doing either of the following when the current completion
+candidate is a directory:
+
+* '''`C-M-/''''
+* `C-e' followed by `TAB' or `S-TAB'
+
+
+----
+[:CycleIntoSubdirectories]
+==== Option `icicle-find-file-expand-directory-flag' ====
+
+If [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-expand-directory-flag|icicle-find-file-expand-directory-flag]]</tt>'''' is non-`nil'
+then just choosing a directory candidate (e.g., using `RET' or
+`C-RET') cycles into it.  That is, it acts like `C-M-/', instead
+of opening the candidate directory in [[Dired]].  You can toggle
+this option using '''`C-x /''''.
 
 
 
