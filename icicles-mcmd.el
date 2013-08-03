@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug  2 15:45:21 2013 (-0700)
+;; Last-Updated: Sat Aug  3 10:18:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19238
+;;     Update #: 19251
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -190,7 +190,8 @@
 ;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type',
 ;;    `icicle-sort-by-last-file-access-time',
 ;;    `icicle-sort-by-last-file-modification-time',
-;;    `icicle-sort-by-last-use-as-input',
+;;    `icicle-sort-by-last-use', `icicle-sort-by-last-use-as-input',
+;;    `icicle-sort-by-last-use\,-dirs-first',
 ;;    `icicle-sort-by-previous-use-alphabetically',
 ;;    `icicle-sort-by-2nd-parts-alphabetically',
 ;;    `icicle-sort-case-insensitive',
@@ -1458,13 +1459,18 @@ Otherwise, sorting is alphabetical.  Ignore letter case if
 After that, sort alphabetically by the first parts.  Ignore letter
 case if `completion-ignore-case' or `case-fold-search' is non-nil.")
 
+(icicle-define-sort-command "by last use" ; `icicle-sort-by-last-use'
+    icicle-latest-use-first-p
+  "Sort file-name completion candidates in order of last use.
+\"Use\" here refers, first, to use as your input, second, to access.")
+
 (icicle-define-sort-command "by last file access time"
-    icicle-last-accessed-first-p        ; `icicle-sort-by-last-file-access-time'
+    icicle-latest-access-first-p        ; `icicle-sort-by-last-file-access-time'
   "Sort file-name completion candidates in order of last access.
 If not doing file-name completion, then sort alphabetically.")
 
 (icicle-define-sort-command "by last file modification time"
-    icicle-last-modified-first-p        ; `icicle-sort-by-last-file-modification-time'
+    icicle-latest-modification-first-p  ; `icicle-sort-by-last-file-modification-time'
   "Sort file-name completion candidates in order of last modification.
 If not doing file-name completion, then sort alphabetically.")
 
@@ -1475,6 +1481,12 @@ Directories sort first, alphabetically.
 Then sort by file type (extension), alphabetically.
 Sort names that have the same extension alphabetically.
 If not doing file-name completion, sort candidates alphabetically.")
+
+(icicle-define-sort-command "by last use, dirs first" ; `icicle-sort-by-last-use\,-dirs-first'
+    icicle-dirs-and-latest-use-first-p
+  "Sort file-name completion candidates by last use, directories first.
+If not doing file-name completion, then sort only by last use.
+\"Use\" here refers, first, to use as your input, second, to access.")
 
 (icicle-define-sort-command "by directories first" ; `icicle-sort-by-directories-first'
     icicle-dirs-first-p
@@ -1487,7 +1499,7 @@ If not doing file-name completion, then sort alphabetically.")
 If not doing file-name completion, then sort alphabetically.")
 
 (icicle-define-sort-command "by last use as input" ; `icicle-sort-by-last-use-as-input'
-    icicle-most-recent-first-p
+    icicle-latest-input-first-p
   "Sort completion candidates in order of last use as minibuffer input.")
 
 (icicle-define-sort-command "by previous use alphabetically"
@@ -7210,7 +7222,7 @@ See also `\\[icicle-history]' (`icicle-history')."
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (if (and recent-first  (interactive-p)  icicle-inhibit-sort-p)
       (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
-    (let ((icicle-sort-comparer  (if recent-first 'icicle-most-recent-first-p icicle-sort-comparer)))
+    (let ((icicle-sort-comparer  (if recent-first 'icicle-latest-input-first-p icicle-sort-comparer)))
       (when (or recent-first  (eq icicle-last-completion-command 'icicle-keep-only-past-inputs))
         (icicle-complete-again-update 'no-display))
       (if (null icicle-completion-candidates)
