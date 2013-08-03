@@ -848,6 +848,22 @@ keys swapped are those defined by these user options:
 
 
 
+
+----
+[:icicle-find-file-expand-directory-flag]
+==== Option icicle-find-file-expand-directory-flag ====
+
+Non-`nil' option '''`icicle-find-file-expand-directory-flag''''
+prevents choosing a directory-name candidate during file-name
+completion (e.g., using `RET' or `C-RET') from opening [[Dired]] on
+the directory.  Instead, '''Icicles''' cycles into the directory,
+presenting its contents as completion candidates.  That is, it
+makes `RET' act like `C-M-/'.  You can toggle this option using
+'''`C-x /''''.
+
+
+
+
 ----
 [:icicle-TAB-S-TAB-only-completes-flag]
 ==== Option icicle-TAB/S-TAB-only-completes-flag ====
