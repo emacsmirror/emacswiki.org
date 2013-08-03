@@ -210,12 +210,78 @@ Just change them to this ones:
                                     (split-string recipients "[, \t\n]+"))))
 
 ----
+[new]
+Customized the function epa-mail-encrypt (EasyPG version 23.1; Emacs 23.4.1) to encrypt a body of the Gnus message (compatible with the mymail-crypt Chrome extension):
+{{{
+(require 'epa-mail)
+
+(defun epa-mail-encrypt-message ()
+  "Encrypt the current mail message."
+  (interactive)
+  (save-excursion
+    (let ((verbose current-prefix-arg)
+          (context (epg-make-context epa-protocol)))
+
+      (goto-char (point-min))
+      (save-restriction
+        (setq recipients
+              (mail-strip-quoted-names
+               (mapconcat #'identity
+                          (nconc (mail-fetch-field "to" nil nil t)
+                                 (mail-fetch-field "cc" nil nil t)
+                                 (mail-fetch-field "bcc" nil nil t))
+                          ","))))
+      (if recipients
+          (setq recipients (delete ""
+                                   (split-string recipients "[, \t\n]+"))))
+      (setq epa-last-coding-system-specified
+            (or coding-system-for-write
+                (epa--select-safe-coding-system (point) (point-max))))
+      (let ((recipient-keys
+             (if verbose
+                 (epa-select-keys
+                  context "Select recipients for encryption."
+                  recipients)
+               (if recipients
+                   (mapcar
+                    (lambda (recipient)
+                      (setq recipient-key
+                            (epa-mail--find-usable-key
+                             (epg-list-keys
+                              (epg-make-context epa-protocol)
+                              (concat "<" recipient ">"))
+                             'encrypt))
+                      (unless (or recipient-key
+                                  (y-or-n-p
+                                   (format
+                                    "No public key for %s; skip it? "
+                                    recipient)))
+                        (error "No public key for %s" recipient))
+                      recipient-key)
+                    recipients)))))
+        (print recipient-keys)
+        (message-goto-body)
+        (epa-encrypt-region (point) (point-max) recipient-keys nil nil)))))
+
+;; run as the last when the message buffer has been initialized
+(add-hook
+ 'message-setup-hook
+ (lambda ()
+   (define-key message-mode-map "\C-c\C-mcb" 'epa-mail-encrypt-message)))
+
+}}}
+
+----
 
 == Documentation ==
 
 Being difficult to find it online I decided to extract and publish the EasyPG Assistant User's Manual found within the package of Emacs 23.1.
 
-You can find the manual here: http://virgo977virgo.blogspot.com/2009/09/easypg-assistant-users-manual-from.html
+You can find the manual here: 
+
+- http://virgo977virgo.blogspot.com/2009/09/easypg-assistant-users-manual-from.html
+
+- http://www.gnu.org/software/emacs/manual/epa.html
 
 == Gnus ==
 
