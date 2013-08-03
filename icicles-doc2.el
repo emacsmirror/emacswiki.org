@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Jul 29 13:55:12 2013 (-0700)
+;; Last-Updated: Sat Aug  3 14:11:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29376
+;;     Update #: 29390
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3268,7 +3268,7 @@
 ;;  of the marked file names in the current directory and in marked
 ;;  subdirectories, recursively - see (@> "Save Marked Names Here and Below").
 ;;
-;;  Even if you do not use `Dired+', with Icicles you can easily save
+;;  Even if you do not use `Dired+' with Icicles you can easily save
 ;;  file names from multiple directories in the same set.  And you can
 ;;  include directory names as well, for use later with commands that
 ;;  operate on directories.
@@ -5040,6 +5040,14 @@
 ;;    `icicle-apropos-cycle-previous-keys',
 ;;    `icicle-modal-cycle-down-keys', `icicle-modal-cycle-up-keys'.)
 ;;
+;;  * Non-`nil' option `icicle-find-file-expand-directory-flag'
+;;    prevents choosing a directory-name candidate during file-name
+;;    completion (e.g., using `RET' or `C-RET') from opening Dired on
+;;    the directory.  Instead, Icicles cycles into the directory,
+;;    presenting its contents as completion candidates.  That is, it
+;;    makes `RET' act like `C-M-/'.  You can toggle this option using
+;;    `C-x /'.
+;;
 ;;  * Non-`nil' option `icicle-TAB/S-TAB-only-completes-flag' inhibits
 ;;    `TAB' and `S-TAB' (actually the keys that are the values of
 ;;    options `icicle-prefix-complete-keys' and
@@ -6205,10 +6213,10 @@
 ;;
 ;;  See Also:
 ;;
+;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere") for more information about this topic.
 ;;  * (@> "Customization and General Tips") for general tips about
 ;;    using Icicles.  Many of those tips apply also to file-name and
 ;;    directory-name completion.
-;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
 ;;
 ;;
 ;;  Tips:
@@ -6223,9 +6231,6 @@
 ;;    non-directories by file type (extension) alphabetically.  For
 ;;    non-file-name input these all act like
 ;;    `icicle-case-string-less-p'.
-;;
-;;  * You can use `..' during completion to access a parent directory,
-;;    and you can use `/' and `~/' to shadow input to the left.  
 ;;
 ;;  * By default, files on MS Windows mapped network drives are
 ;;    treated by Icicles as remote files, because they can sometimes
@@ -6306,11 +6311,11 @@
 ;;    likely to appear in file-name completions.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
 ;;
-;;  * You can use library `ffap.el', if you like, with Icicles, to
-;;    pick up the file, directory, or URL name under the cursor.  All
+;;  * You can use library `ffap.el' with Icicles, if you like, to pick
+;;    up the file, directory, or URL name under the cursor.  All
 ;;    Icicles features are available during file-name and URL
 ;;    completion.  If you like `ffap.el', you might also like to try
-;;    my extension library `ffap-.el'.   See also
+;;    my extension library `ffap-.el'.  See also
 ;;    (@file :file-name "icicles-doc1.el" :to "Inserting Text Found Near the Cursor").
 ;;
 ;;  * Many Icicles commands that target file or directory names look
@@ -6357,6 +6362,25 @@
 ;;    controls whether to keep or kill any file buffers that were
 ;;    searched but whose files did not ultimately choose.  Keeping
 ;;    them is essentially caching them.
+;;
+;;  * You can use `..' or `C-backspace' during file-name completion to
+;;    access a parent directory.  You can use `/' and `~/' to shadow
+;;    any input to the left of these patterns.
+;;
+;;  * You can move up and down the file hierarchy as usual, by editing
+;;    the directory portion of your input or by using shortcuts like
+;;    `C-backspace' (see previous).  You can move down the hierarchy
+;;    by doing either of the following when the current completion
+;;    candidate is a directory:
+;;
+;;    - `C-M-/'
+;;    - `C-e' followed by `TAB' or `S-TAB'
+;;
+;;  * If option `icicle-find-file-expand-directory-flag' is non-`nil'
+;;    then just choosing a directory candidate (e.g., using `RET' or
+;;    `C-RET') cycles into it.  That is, it acts like `C-M-/', instead
+;;    of opening the candidate directory in Dired.  You can toggle
+;;    this option using `C-x /'.
  
 ;;(@* "Key Bindings")
 ;;
