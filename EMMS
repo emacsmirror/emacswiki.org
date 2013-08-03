@@ -279,6 +279,196 @@ Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
 
 </pre>
 
+
+=== Youtube, Vk.com and read tags from the stream===
+Inspired by /sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
+
+github.com/snoopcatt/vksearch/blob/master/vksearch
+
+github.com/renard/emms/blob/master/lisp/emms-stream-info.el
+
+I'm not a programmer, can you help me refactor this piece of code?
+
+
+1. Adding youtube link from w3m-buffer
+
+<pre>
+
+(defun w3m-open-link-or-image-in-chromium ()
+  "Open the current link or image in Firefox."
+  (interactive)
+  (let ((url (or (w3m-anchor) (w3m-image))))
+   (if (string-match "youtube" url) 
+       (let ((track (emms-track 'url url)))
+	  (emms-track-set track 'info-title (substring  (shell-command-to-string (concat "youtube-dl -e " url)) 0 -1))
+	  (with-current-emms-playlist
+	  (emms-playlist-insert-track track)))
+ (browse-url-generic url))))
+
+(define-key w3m-mode-map "z" 'w3m-open-link-or-image-in-chromium)
+
+</pre>
+
+2. Searching in youtube and displaying in w3m-buffer
+
+<pre>
+(defun emms-youtube-walk (node)
+      (when (listp node)
+	(let* ((title (car (nthcdr 2 (car (xml-get-children node 'title)))))
+	       (group (car (xml-get-children node 'media:group)))
+	       (description  (car (nthcdr 2 (car (xml-get-children group 'media:description)))))
+	       (url (xml-get-attribute (car (xml-get-children group 'media:player)) 'url))
+	       (thumbnail (xml-get-attribute (car (xml-get-children group 'media:thumbnail)) 'url)))
+	  (insert (concat "<li><a href=\"" url "\"><img src=\""thumbnail"\" ></a><b>"title"</b></li>"))
+	  )))
+
+
+(defun emms-add-youtube (search)
+(interactive "sYoutube Search:")
+(let* (
+       (link (concat "https://gdata.youtube.com/feeds/api/videos?q='" search "'&max-results=50&orderby=relevance&format=5&prettyprint=true&v=2&fields=entry(title,media:group(media:player,media:description,media:thumbnail[@yt:name='hqdefault'](@url)))"))
+)
+(url-retrieve  link 
+	       (lambda (s) 
+		 (beginning-of-buffer) 
+		 (search-forward "<" ) 
+		 (beginning-of-line) 
+		 (setq feed (xml-get-children (car (xml-parse-region (point) (point-max))) 'entry))
+		 (erase-buffer)
+		 (insert (concat "<html><head><title>Youtube Client "  "</title></head><body><ol>"))
+		 (mapc 'emms-youtube-walk feed)
+		 (insert "</ol></body></html>")
+		 (let ((filename (concat (make-temp-file "w3m-") ".html")))
+		   (unwind-protect
+		       (progn
+			 (write-region (point-min) (point-max) filename)
+			 (kill-buffer (current-buffer))
+;			 (w3m-copy-buffer nil nil nil t)
+			 (w3m-find-file filename))
+		     (delete-file filename)))
+))))
+</pre>
+
+
+3. Creating new player 
+
+<pre>
+(define-emms-simple-player youtube '(url)
+   "www.youtube.com\\|rtmp://" "~/apps/w3myou.sh" )
+(push 'emms-player-youtube emms-player-list)
+</pre>
+
+<pre>
+~/apps/w3myou.sh
+
+mplayer -quiet -really-quiet  -cookies -cookies-file /tmp/cookie.txt $(youtube-dl -g --max-quality 720p --cookies /tmp/cookie.txt $1)
+
+</pre>
+
+4. Searchin in Vk.com and adding to emms playlist buffer
+
+<pre>
+
+(defun emms-add-vk (search)
+(interactive "sVk Search:")
+(let* (
+       (link (concat "https://api.vk.com/method/audio.search.xml?q=" search "&sort=2&auto_complete=1&lyrics=0&count=300&offset=0&access_token=3a582f82cd975ace6015cd56e3e6eb3fff57961dccec60850a6272915f547132d616ae4ea0330a19725b9"))
+)
+(url-retrieve  link 
+	       (lambda (s) 
+		 (beginning-of-buffer) 
+		 (search-forward "<" ) 
+		 (beginning-of-line) 
+		 (setq feed (xml-get-children (car (xml-parse-region (point) (point-max))) 'audio))
+		 (mapc 'emms-vk-walk feed)
+		 (kill-buffer (current-buffer))
+))))
+
+
+(defun emms-vk-walk (node)
+      (when (listp node)
+	(let* ((artist (decode-coding-string   (car (nthcdr 2 (car (xml-get-children node 'artist)))) 'utf-8))
+	       (title (decode-coding-string (car (nthcdr 2 (car (xml-get-children node 'title)))) 'utf-8))
+	       (url (car (nthcdr 2 (car (xml-get-children node 'url)))))
+	       (track (emms-track 'url url)))
+	  (emms-track-set track 'info-artist artist)
+	  (emms-track-set track 'info-title (car  (split-string title "\n")))
+	  (with-current-emms-playlist
+	  (emms-playlist-insert-track track)
+	  ))))
+
+</pre>
+
+5. Info from streaming audio (only for mplayer)
+
+<pre>
+
+(setq  emms-player-mplayer-parameters '("-slave" "-quiet")
+ emms-player-mplayer-playlist-parameters '("-slave" "-quiet" "-playlist"))
+
+(defun mplayer-stream-start-listening ()
+  "This emms-player-started-hook checks if the current track is a
+url and the process playing it is mplayer. If it is then the
+output filter mplayer-steam-filter is added to the process"
+(let ((type (emms-track-type (emms-playlist-current-selected-track))))
+ (if (or (eq  type 'url) (eq  type 'streamlist))
+      (let ((process (get-process emms-player-simple-process-name)))
+        (if (string= (car (process-command process)) "mplayer")
+            (set-process-filter process 'mplayer-stream-filter))
+        ))
+  ))
+
+(add-hook 'emms-player-started-hook 'mplayer-stream-start-listening)
+(defvar emms-mplayer-info-coding-system 'cp1251)
+(defmacro emms-mplayer-info-defreg (symname regexp)
+  "Set SYMNAME to be the match for REGEXP."
+  `(if (string-match ,regexp string)
+	(progn 
+	  (setq ,symname (decode-coding-string (match-string 1 string) emms-mplayer-info-coding-system))
+	  (if (> (length ,symname) 40)
+	      (setq ,symname (concat (substring ,symname 0 37) "..."))))
+      ))
+
+
+(defun mplayer-stream-filter (proc string)
+  "Checks mplayer output for ICY Info data. If any is found then the StreamTitle
+option is extracted and written to the track's 'info-title property. Because
+emms-info-track-description -- the function that creates the track name -- needs a
+title *and* an artist 'info-artist is set to the stream title (the one you see in
+emms-streams)."
+  (let ((name "")
+	(Title "")
+	(Artist "")
+	(Album "")
+	(genre "")
+	(bitrate "")
+	(nowplaying "")
+	(track (emms-playlist-current-selected-track))
+)
+	(emms-mplayer-info-defreg name "^Name[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg genre "^Genre[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg bitrate "^Bitrate[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg nowplaying "^ICY Info: StreamTitle='\\(.*\\)'")
+	(emms-mplayer-info-defreg Artist "Artist:[ ]*\\(.*\\)\\b[ ]*$\\|^author:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(emms-mplayer-info-defreg Album "Album:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(emms-mplayer-info-defreg Title "Title:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(if (> (length (concat nowplaying Title)) 0)
+	(emms-track-set track 'info-title (concat nowplaying Title)))
+	(if (> (length (concat name Album)) 0)
+	(emms-track-set track 'info-album (concat name Album)))
+	(if (> (length Artist) 0)
+	(emms-track-set track 'info-artist Artist))
+	(if (not (or (emms-track-get track 'info-artist)
+		     (emms-track-get track 'info-album)
+		     (emms-track-get track 'info-title)))
+	    (emms-track-set track 'info-album
+			    (if (listp (emms-track-get track 'metadata))
+				(car (emms-track-get track 'metadata))
+			      "")))
+	(emms-track-updated track)
+))
+</pre>
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]
