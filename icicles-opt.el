@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Aug  2 15:28:36 2013 (-0700)
+;; Last-Updated: Sat Aug  3 07:25:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5738
+;;     Update #: 5740
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2298,8 +2298,8 @@ You probably do not want to set this globally, but you can."
 
 (defcustom icicle-file-sort nil
   "*A sort function for file names, or nil.
-Examples of sort functions are `icicle-dirs-last-p',
-`icicle-last-accessed-first-p', and `icicle-last-modified-first-p'.
+Examples of sort functions are `icicle-dirs-first-p',
+`icicle-latest-access-first-p', and `icicle-latest-modification-first-p'.
 If nil, then file names are not sorted."
   :type '(choice
           (const :tag "None" nil)
