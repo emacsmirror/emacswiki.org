@@ -50,6 +50,7 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 * SrSpeedbar -- Displays information about the current buffer, allowing you to better navigate your sources.
 * CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
 * ToggleTest -- Quickly toggle between Test files and Test Subject (Source) files
+* Tree: Multi-directory find, grep, tags generation
 
 == Extension Libraries ==
 
