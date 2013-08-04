@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug  3 13:33:07 2013 (-0700)
+;; Last-Updated: Sat Aug  3 19:21:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10181
+;;     Update #: 10182
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2013/08/03 dadams
+;;     icicle-kmacro-action: Fixed numeric prefix arg for count.
 ;;     Applied renamings: icicle-*-first-p.
 ;; 2013/08/02 dadams
 ;;     Added: icicle-find-file-or-expand-dir.
