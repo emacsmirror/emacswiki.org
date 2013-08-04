@@ -2,3 +2,18 @@ Could there please be a link to this page from page Administration?  Thx -- Drew
 
 -- DrewAdams 2013-08-04 22:29 UTC
 
+
+----
+
+You say this:
+
+: Next, consider what just happened:
+
+: If spammers added links, you will be presented with a list of these URLs and a text input field where you can provide a regular expression matching anything obvious such as “viagra”. Click on the Ban! button to add this regular expression to the BannedContent page.
+
+: If vandals made other changes to the page, you might have to ban their host name or IP number. Click on the Ban contributors link and click the appropriate Ban! button. This will add an appropriate regular expression to the BannedHosts page.
+
+I don't see any such Ban! links/buttons.  I see no change.  After I rollback, where do I find such links?
+
+-- DrewAdams 2013-08-04 22:34 UTC
+
