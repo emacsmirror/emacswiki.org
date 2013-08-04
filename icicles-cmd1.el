@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug  3 19:18:12 2013 (-0700)
+;; Last-Updated: Sun Aug  4 15:20:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25906
+;;     Update #: 25908
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7418,7 +7418,8 @@ That is, you descend into directory FILE-OR-DIR."
            (icicle-file-directory-p file-or-dir)
            (> emacs-major-version 20))  ; Emacs 20 BUG: `default-directory' gets changed.
       (let ((default-directory                       file-or-dir)
-            (icicle-show-Completions-initially-flag  t))
+            (icicle-show-Completions-initially-flag  t)
+            (enable-recursive-minibuffers            t)) ; For `C-RET' etc.
         (call-interactively command))
     (let ((fn  (if read-only-p
                    (if other-window-p #'find-file-read-only-other-window #'find-file-read-only)
