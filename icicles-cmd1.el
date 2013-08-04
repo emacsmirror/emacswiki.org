@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug  3 07:19:56 2013 (-0700)
+;; Last-Updated: Sat Aug  3 19:18:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25905
+;;     Update #: 25906
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4057,7 +4057,7 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
     "Action function for `icicle-kmacro'."
     (when (get-buffer icicle-orig-buff) (set-buffer icicle-orig-buff))
     (when (window-live-p icicle-orig-window) (select-window icicle-orig-window))
-    (let* ((count  (if current-prefix-arg (prefix-numeric-value current-prefix-arg) icicle-pref-arg))
+    (let* ((count  (prefix-numeric-value (or current-prefix-arg  icicle-pref-arg)))
            (macro  (cadr (assoc cand icicle-kmacro-alist))))
       (unless macro (error "No such macro: `%s'" cand))
       (execute-kbd-macro macro count #'kmacro-loop-setup-function)
