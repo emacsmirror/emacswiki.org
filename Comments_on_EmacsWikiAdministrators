@@ -17,3 +17,14 @@ I don't see any such Ban! links/buttons.  I see no change.  After I rollback, wh
 
 -- DrewAdams 2013-08-04 22:34 UTC
 
+
+----
+
+This is what it would look if you had the default theme and used a German locale:
+
+http://i.imgur.com/5YQWYIf.png
+
+Until a few minutes ago it didn't work because there was an illegal regular expression in our BannedContent which caused the script to crash before it could print the list of URLs… I need to make this code more robust. :)
+
+-- AlexSchroeder 2013-08-05 07:59 UTC
+
