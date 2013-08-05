@@ -5,27 +5,23 @@ and files -- it just knows an error happened, and that's it.
 
 You have several options:
 
-# Binary Search -- select half of the file in a region, and M-x eval-region. Depending on whether that
+# Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach.
+# You can also use ##(setq debug-on-error t)##
+# Binary Search -- select half of the file in a region, and ##M-x eval-region##. Depending on whether that
   causes the error or not, split this half or the other half again, and repeat.
 # Simplified Binary Search -- add (error "No error until here") in the middle of your file.
   If you get the error "No error until here" when reloading the file, move the expression
   towards the back of the file, otherwise towards the front of the file.
 # Use a keyboard macro that moves forward one expression (sexp) and evaluates it.
-: Then use the C-u prefix to run it many many times.  Here is how to define the
-  keyboard macro and run it 999 times.
-: 
-:: C-x ( C-M-f C-x C-e C-x ) C-u 999 C-x e
-: 
-# Try the CommandLine switch --debug-init.
-# Shouldn't (setq debug-on-error t) help?
-
+  Then use the ##C-u## prefix to run it many many times.  Here is how to define the keyboard macro and run it 999 times.
+  ##C-x ( C-M-f C-x C-e C-x ) C-u 999 C-x e##
 
 ----
 Plug: A side-effect of ##dope.el## is to trace the InitFile bug.  Just ##M-x dope-load-file ~/.emacs## (or any other file) and dope will stop right where your InitFile breaks. Dope is an InitFile profiler at http://gnufans.net/~deego/pub/emacspub/lisp-mine/dope/
--- DeepakGoel 
+-- DeepakGoel
 
 [new]
-The dope.el URL is now defunct, but fortunately it has been mirrored on Git Hub:
+The dope URL is now defunct, but fortunately it has been mirrored on Git Hub:
 
 * https://github.com/emacsmirror/dope
 * https://raw.github.com/emacsmirror/dope/master/dope.el
