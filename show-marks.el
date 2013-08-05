@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyright (c) 2003 Greg Rowe
 ;; Created: 2003
-;; Version: 0.3
-;; Last-Updated: 2013-05-20 23:37:35
+;; Version: 0.4
+;; Last-Updated: 2013-08-05 15:48:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/mark
 ;; Keywords: convenience
@@ -170,6 +170,10 @@ reset."
 (defvar mark-buffer nil
   "Name of buffer for last show-marks.")
 
+(defcustom show-marks-move-point t
+  "If non-nil then the cursor will be moved to the *marks* buffer when `show-marks' is called."
+  :type 'boolean)
+
 (put 'mark-mode 'mode-class 'special)
 
 (define-derived-mode mark-mode nil "mark"
@@ -254,7 +258,9 @@ with out affecting the mark-ring."
       (setq mark-buffer (current-buffer))
       (set-buffer standard-output)
       (show-mark old-buffer-mark-ring)
-      (mark-mode))))
+      (mark-mode)))
+  (if show-marks-move-point
+      (select-window (get-buffer-window "*marks*"))))
 
 (provide 'show-marks)
 
