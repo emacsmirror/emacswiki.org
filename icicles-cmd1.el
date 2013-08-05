@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Aug  4 15:20:57 2013 (-0700)
+;; Last-Updated: Mon Aug  5 07:00:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25908
+;;     Update #: 25918
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7410,16 +7410,21 @@ COMMAND is the Icicles file-finding command (a symbol).
 Non-nil READ-ONLY-P means visit the file in read-only mode.
 Non-nil OTHER-WINDOW-P means visit the file in another window.
 
-If `icicle-find-file-expand-directory-flag' is non-nil and FILE-OR-DIR
-is a directory name then, instead of visiting the directory using
-Dired, COMMAND is restarted, but this time in directory FILENAME.
-That is, you descend into directory FILE-OR-DIR."
+If `icicle-find-file-expand-directory-flag' is non-nil, FILE-OR-DIR is
+a directory name, and you have used a key such as `RET' that normally
+would make a final candidate choice and exit the minibuffer, then,
+instead of visiting the directory using Dired, COMMAND is restarted,
+but this time in directory FILENAME.  That is, you descend into
+directory FILE-OR-DIR.
+
+A non-exiting action such as `C-RET' does not have this special
+behavior.  Instead, it always visits the chosen directory."
   (if (and icicle-find-file-expand-directory-flag
            (icicle-file-directory-p file-or-dir)
+           (zerop (minibuffer-depth))
            (> emacs-major-version 20))  ; Emacs 20 BUG: `default-directory' gets changed.
       (let ((default-directory                       file-or-dir)
-            (icicle-show-Completions-initially-flag  t)
-            (enable-recursive-minibuffers            t)) ; For `C-RET' etc.
+            (icicle-show-Completions-initially-flag  t))
         (call-interactively command))
     (let ((fn  (if read-only-p
                    (if other-window-p #'find-file-read-only-other-window #'find-file-read-only)
