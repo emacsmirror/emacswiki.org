@@ -854,11 +854,12 @@ keys swapped are those defined by these user options:
 ==== Option icicle-find-file-expand-directory-flag ====
 
 Non-`nil' option '''`icicle-find-file-expand-directory-flag''''
-prevents choosing a directory-name candidate during file-name
-completion (e.g., using `RET' or `C-RET') from opening [[Dired]] on
+prevents the choice of a directory-name candidate using `RET' or `mouse-2' during file-name
+completion from opening [[Dired]] on
 the directory.  Instead, '''Icicles''' cycles into the directory,
-presenting its contents as completion candidates.  That is, it
-makes `RET' act like `C-M-/'.  You can toggle this option using
+presenting its contents as the completion candidates.  It thus makes `RET' behave like `C-M-/'.   The option has no such effect
+on [[multi-command]] candidate-action keys such as `C-RET' and
+`C-mouse-2'.  You can toggle this option using
 '''`C-x /''''.
 
 
