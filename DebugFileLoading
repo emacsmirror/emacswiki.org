@@ -9,7 +9,7 @@ You have several options:
 # You can also use ##(setq debug-on-error t)##
 # Binary Search -- select half of the file in a region, and ##M-x eval-region##. Depending on whether that
   causes the error or not, split this half or the other half again, and repeat.
-# Simplified Binary Search -- add (error "No error until here") in the middle of your file.
+# Simplified Binary Search -- add ##(error "No error until here")## in the middle of your file.
   If you get the error "No error until here" when reloading the file, move the expression
   towards the back of the file, otherwise towards the front of the file.
 # Use a keyboard macro that moves forward one expression (sexp) and evaluates it.
