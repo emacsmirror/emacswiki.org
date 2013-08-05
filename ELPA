@@ -8,7 +8,7 @@ ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included 
 
 The Emacs version of ##package.el## supports multiple repositories.  You can use the GNU ELPA plus other repositories like this:
 
-create a .emacs file in you ~ folder and add:
+create a .emacs file in your ~ folder and add:
 
 {{{
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
