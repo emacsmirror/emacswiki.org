@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug  4 15:20:40 2013 (-0700)
+;; Last-Updated: Mon Aug  5 07:02:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10183
+;;     Update #: 10184
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/08/05 dadams
+;;     icicle-find-file-or-expand-dir: Reverted last change.  Expand only for RET, not C-RET.
 ;; 2013/08/04 dadams
 ;;     icicle-find-file-or-expand-dir: bind enable-recursive-minibuffers to t (for C-RET etc.).
 ;; 2013/08/03 dadams
