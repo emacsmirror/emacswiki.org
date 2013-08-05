@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Aug  3 13:43:02 2013 (-0700)
+;; Last-Updated: Mon Aug  5 07:10:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27863
+;;     Update #: 27866
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8154,11 +8154,17 @@
 ;;  * `C-e TAB' (or `S-TAB')
 ;;
 ;;  If you prefer, you can have Icicles cycle into subdirectories
-;;  whenever you act on them, by setting option
-;;  `icicle-find-file-expand-directory-flag' to non-`nil'.  The effect
-;;  of `RET' and `C-RET' is then the same as `C-M-/' - directory
-;;  candidates are never visited using Dired.  You can toggle this
-;;  option using `C-x /'.
+;;  whenever you choose them using `RET' (or `mouse-2' in
+;;  `*Completions*'), by setting option
+;;  `icicle-find-file-expand-directory-flag' to non-`nil'.
+;;
+;;  The effect of `RET' is then the same as `C-M-/' - directory
+;;  candidates are not visited using Dired.  This behavior does not
+;;  occur for multi-command candidate actions such as `C-RET',
+;;  `C-mouse-2', and `C-down' - those continue to open Dired on the
+;;  candidate directory.
+;;
+;;  You can toggle this option using `C-x /'.
 ;;
 ;;(@* "Visit Recent Files or Files for Emacs Tags")
 ;;  *** Visit Recent Files or Files for Emacs Tags ***
