@@ -6,7 +6,7 @@ You can force all attempts to invoke perl-mode to invoke cperl-mode instead via 
 
    (fset 'perl-mode 'cperl-mode)
 
-== Using perltidy
+== Using perltidy ==
 
 Most [PerlLanguage Perl] indenting solutions revolve around customizing the settings of a particular mode.  However, in some cases you need to normalize indententation of code in a team of heterogenous editor users.  In other words I use perltidy at my work to indent perl code, and here is the elisp code I wrote to do it: PerlTidyElisp. -- [[wjt]]
 
