@@ -23,5 +23,12 @@ You have several options:
 ----
 Plug: A side-effect of ##dope.el## is to trace the InitFile bug.  Just ##M-x dope-load-file ~/.emacs## (or any other file) and dope will stop right where your InitFile breaks. Dope is an InitFile profiler at http://gnufans.net/~deego/pub/emacspub/lisp-mine/dope/
 -- DeepakGoel 
+
+[new]
+The dope.el URL is now defunct, but fortunately it has been mirrored on Git Hub:
+
+* https://github.com/emacsmirror/dope
+* https://raw.github.com/emacsmirror/dope/master/dope.el
+
 ----
 CategoryDebug
