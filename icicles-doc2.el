@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Aug  3 14:11:52 2013 (-0700)
+;; Last-Updated: Mon Aug  5 07:35:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29390
+;;     Update #: 29399
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5041,12 +5041,13 @@
 ;;    `icicle-modal-cycle-down-keys', `icicle-modal-cycle-up-keys'.)
 ;;
 ;;  * Non-`nil' option `icicle-find-file-expand-directory-flag'
-;;    prevents choosing a directory-name candidate during file-name
-;;    completion (e.g., using `RET' or `C-RET') from opening Dired on
-;;    the directory.  Instead, Icicles cycles into the directory,
-;;    presenting its contents as completion candidates.  That is, it
-;;    makes `RET' act like `C-M-/'.  You can toggle this option using
-;;    `C-x /'.
+;;    prevents the choice of a directory-name candidate using `RET' or
+;;    `mouse-2' during file-name completion from opening Dired on the
+;;    directory.  Instead, Icicles cycles into the directory,
+;;    presenting its contents as the completion candidates.  It thus
+;;    makes `RET' behave like `C-M-/'.  The option has no such effect
+;;    on multi-command candidate-action keys such as `C-RET' and
+;;    `C-mouse-2'.  You can toggle this option using `C-x /'.
 ;;
 ;;  * Non-`nil' option `icicle-TAB/S-TAB-only-completes-flag' inhibits
 ;;    `TAB' and `S-TAB' (actually the keys that are the values of
@@ -6377,10 +6378,12 @@
 ;;    - `C-e' followed by `TAB' or `S-TAB'
 ;;
 ;;  * If option `icicle-find-file-expand-directory-flag' is non-`nil'
-;;    then just choosing a directory candidate (e.g., using `RET' or
-;;    `C-RET') cycles into it.  That is, it acts like `C-M-/', instead
-;;    of opening the candidate directory in Dired.  You can toggle
-;;    this option using `C-x /'.
+;;    then just choosing a directory-name candidate using `RET' or
+;;    `mouse-2' cycles into it.  `RET' thus acts like `C-M-/' instead
+;;    of opening the candidate directory in Dired.  (Multi-command
+;;    candidate-action keys such as `C-RET' continue to open the
+;;    candidate directory in Dired.)  You can toggle this option using
+;;    `C-x /'.
  
 ;;(@* "Key Bindings")
 ;;
