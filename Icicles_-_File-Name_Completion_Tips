@@ -225,9 +225,11 @@ candidate is a directory:
 ==== Option `icicle-find-file-expand-directory-flag' ====
 
 If [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-expand-directory-flag|icicle-find-file-expand-directory-flag]]</tt>'''' is non-`nil'
-then just choosing a directory candidate (e.g., using `RET' or
-`C-RET') cycles into it.  That is, it acts like `C-M-/', instead
-of opening the candidate directory in [[Dired]].  You can toggle
+then just choosing a directory-name candidate using `RET' or
+`mouse-2' cycles into it.  `RET' thus acts like `C-M-/' instead
+of opening the candidate directory in [[Dired]].  ([[multi-command|Multi-command]]
+candidate-action keys such as `C-RET' continue to open the
+candidate directory in Dired.)  You can toggle
 this option using '''`C-x /''''.
 
 
