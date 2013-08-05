@@ -1,31 +1,30 @@
-==What is MultiScratch==
-MultiScrath is mode that manages multiple scratch buffer.
+MultiScratch is a mode that manages multiple scratch buffers.
 
-==Why need MultiScratch==
-Default, Emacs have a scratch buffer named "*scratch*". You will find it's not enough when have various code snippets need split in different scratch buffer.
-So MultiScratch do those work for you, make you can create and switch multiple scratch buffers quickly.
+==Why MultiScratch?==
+By default, Emacs has a single scratch buffer named ##*scratch*##. You may find a single buffer is not enough if you have multiple pieces of text you need split into separate scratch buffers.
+MultiScratch does this for you, so you can create and switch between multiple scratch buffers quickly.
 
 ==Install==
-Put Lisp:multi-scratch.el in your load-path, and add (require 'multi-scratch) in ~/.emacs
+Put Lisp:multi-scratch.el in your load-path, and add ##(require 'multi-scratch)## into your ~/.emacs or init.el.
 
 ==Usage==
-* "multi-scratch-new" 
+* ##multi-scratch-new## 
 : Create new scratch buffer.
 
-* "multi-scratch-next"
+* ##multi-scratch-next##
 : Switch to next scratch buffer.
 
-* "multi-scratch-prev"
+* ##multi-scratch-prev##
 : Switch to previous scratch buffer.
 
 ==Customize==
-All below option can customize by: M-x customize-group RET multi-scratch RET
+All the options below can be customized with: ##M-x customize-group RET multi-scratch RET##.
 
-* "multi-scratch-buffer-name"
-: The base name of scratch buffer.
+* ##multi-scratch-buffer-name##
+: The base name of scratch buffers.
 
-* "multi-scratch-try-create"
-: Whether try to create new scratch buffer when no scratch buffers exist.
+* ##multi-scratch-try-create##
+: Whether try to create new scratch buffers when no scratch buffers exist.
 
 [new:PengLiu:2009-09-04 01:58 UTC]
 I believe here's a bug in Version 0.1: run multi-scratch-new twice (there should be two multi-scratch buffers: multi-scratch<1> and multi-scratch<2> ); kill multi-scratch<1>; run multi-scratch-new. The BUG is no multi-scratch buffer can be created. 
