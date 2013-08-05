@@ -24,33 +24,4 @@ your edits to see how they look; you can just click '''Preview'''.
 
 (your test stuff goes here... don't forget the minor change checkbox!)
 
-<pre>
-(when pre tag)
-(unless :other)
-</pre>
-
-    (when indented)
-    (unless :other)
-
-{{{
-(when {{{ }}})
-(unless :other)
-}}}
-
-Testing highlighting in fragments.
-
-: indentation
-
-:: indentation
-
-::: INDENTATION!
-
-
-:not really
-
-:     colon followed by multiple spaces
-
-:	colon followed by tab
-
-
-stuff
+http://spam/stuff
