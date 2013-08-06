@@ -98,5 +98,67 @@ A bouncer is like an IRC proxy server. It connects to IRC and you connect to it.
 
 Several different bouncers are available but NicFerrier has written ShoesOff in EmacsLisp.
 
+== IRC Robots in EmacsLisp ==
+
+A number of robots have been written in EmacsLisp using [[ERC]] or [[rcirc]].
+
+Here's an example robot which implements a ping/pong conversation:
+
+{{{
+;;; ircpinger.el - rcirc robot to respond to pings                                                                                                                                                                  
+(require 'cl)
+(defconst ircpinger-nick "pinger-robot"
+  "The IRC nick of the robot.")
+(defconst ircpinger-joinlist '()
+  "List of channels the robot should join.")
+(defconst ircpinger-server ""
+  "Server name to connect to.")
+(defconst ircpinger-logging nil)
+
+(defun ircpinger-robot-channel-buffer-list ()
+  (mapcar
+   (lambda (e)
+     (let ((name (buffer-name e)))
+       (string-match "^#\\([A-Za-z0-9.-]+\\).*" name)
+       (cons (match-string 1 name) name)))
+   (remove-if
+    (lambda (e)
+      (with-current-buffer e
+        (not (eq major-mode 'rcirc-mode))))
+    (buffer-list))))
+
+(defun ircpinger-robot-ping-hook (process cmd sender args text)
+  (when (equal cmd "PRIVMSG")
+    (let* ((m (string-match ".* PRIVMSG #\\([A-Za-z.-]+\\) :\\(.*\\)" text))
+           (chan (when m (match-string 1 text)))
+           (txt (when m (match-string 2 text))))
+      (if (and txt (equal txt ",ping"))
+          (let* ((channel-alist (ircpinger-robot-channel-buffer-list))
+                 (channel (assoc chan channel-alist)))
+            (with-current-buffer (get-buffer  (cdr channel))
+              (save-excursion
+                (goto-char (point-max))
+                (insert (format "%s: pong" sender))
+                (rcirc-send-input))))
+        ;; else                                                                                                                                                                                                     
+        (when ircpinger-logging
+          (message "whoops! %s" text))))))                                                                
+
+(defun ircpinger-init ()
+  "Initialize the robot."
+  (interactive)
+  (rcirc-connect
+   ircpinger-server 6667 ircpinger-nick
+   "pinger-robot" "emacs robot" ircpinger-joinlist)
+  (add-hook 'rcirc-receive-message-hooks 'ircpinger-robot-ping-hook))
+
+(defun ircpinger-stop ()
+  "Remove the robot hook."
+  (interactive)
+  (remove-hook 'rcirc-receive-message-hooks 'ircpinger-robot-ping-hook))
+
+;;; ircpinger.el ends here    
+}}}
+
 ----
 CategoryChatClient CategoryHelp
