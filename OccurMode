@@ -172,6 +172,8 @@ See also `icicle-occur', which also lets you search all buffers. More flexibly, 
 [new:DrewAdams:2005-05-11 15:24 UTC]
 FYI -- In <code>gnu-emacs-sources@gnu.org</code> on 2005-05-11, Joe Corneli posted a library of convenience commands, [[aok.el]], for use with multi-occur. -- DrewAdams
 [new]
+I have updated the [[aok.el]], add `occur-select' for onvenient use, you can bind this function by `(global-set-key (kbd "C-c o") 'occur-select)' -- lynnux 2013.8.6
+[new]
 
 Is it possible to force multi-occur to not create more than one open window with the matching buffer? For instance I would like to to keep the *Occur* buffer on the left and a single buffer on the right, use next-error or "Auto Occurrence Display" and not have have occur create a new window for each each new buffer.
 
