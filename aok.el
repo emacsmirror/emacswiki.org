@@ -1,5 +1,6 @@
 ;;; aok.el -- various useful ways to do `multi-occur'
 
+;; Copyright (C) 2013 lynnux <lynnux.cn@gmail.com>
 ;; Copyright (C) 2004 Joe Corneli <jcorneli@math.utexas.edu>
 
 ;; Time-stamp: <jac -- Tue May 10 11:01:12 CDT 2005>
@@ -28,6 +29,9 @@
 ;; type, or all buffers in a certain mode, with `all-occur',
 ;; `type-occur', or `mode-occur', respectively.
 
+;;; Changelog:
+;;; 2013.8.6 updated for emacs 24.x, and occur-select by lynnux
+
 ;;; Code:
 
 (require 'cl)
@@ -43,7 +47,10 @@
   "EXTENSION denotes a filetype extension to search.
 Run occur in all buffers whose names match this type for REXP."
   (interactive "MExtension: \nMRegexp: ")
-  (multi-occur-by-filename-regexp (concat ".*\." extension) rexp))
+  (or (when (functionp 'multi-occur-by-filename-regexp)
+	(multi-occur-by-filename-regexp (concat ".*\." extension) rexp))
+      (when (functionp 'multi-occur-in-matching-buffers)
+	(multi-occur-in-matching-buffers (concat ".*\." extension) rexp))))
 
 (defun mode-occur (mode rexp)
   "Search all buffers with major mode MODE for REXP."
@@ -54,6 +61,25 @@ Run occur in all buffers whose names match this type for REXP."
                             (not (eq major-mode mode)))
                           (buffer-list))
                rexp))
+
+(defun occur-select (more regx &optional nothing)
+  "select what you wan't to see occur"
+  (interactive 
+   (cons
+    (let* ((choice (read-char "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer(any other key)?"))
+	   (more  (list (cond ((eq choice ?a) nil)
+			      ((eq choice ?t) (read-string "Extension: "))
+			      ((eq choice ?m) (read-command "Mode:"))
+			      (t ?o)))))
+      (add-to-list 'more choice)
+      (nreverse more))
+    (occur-read-primary-args)))
+  (let* ((choice (cadr more))
+	 (morearg (car more)))
+    (cond ((eq choice ?a) (all-occur regx))
+	  ((eq choice ?t) (type-occur morearg regx))
+	  ((eq choice ?m) (mode-occur morearg regx))
+	  (t (occur regx)))))
 
 (provide 'aok)
 ;;; aok.el ends here
