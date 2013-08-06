@@ -1,8 +1,5 @@
 Because JSP is a mixture of Java and HTML, the options for editing JSP are tied up with the options for editing HTML.
 
-==New possibility: web-mode==
-The new [http://web-mode.org/ web-mode ] is a major mode for editing HTML templates. Code is hosted on [https://github.com/fxbois/web-mode github] and a package is available through the [[MELPA]] repository. It handles .jsp font locking decently enough. It also supports many other HTML templating formats. Customization options are explained on the homepage.
-
 ==MultipleModes==
 
 This is the approach that is usually recommended.
@@ -88,7 +85,7 @@ This is helpful in the sense that it (1) highlights the non-HTML portions of the
 
 web-mode.el is major mode can be used to edit any web template (jsp, php, erb, django, ctemplate). It can downloaded on http://web-mode.org
 This major mode offers css and js compatibility.
-This mode is actively maintained.
+This mode is actively maintained. Code is hosted on [https://github.com/fxbois/web-mode github] and a package is available through the [[MELPA]] repository.
 
 ==Other Single Major Modes==
 
