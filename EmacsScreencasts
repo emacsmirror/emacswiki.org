@@ -90,7 +90,9 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * A post describing how the screencasts on the emacsmovies.org website are done. - http://emacsmovies.org/blog/2012/01/21/welcome_to_emacsmovies.org/
 
-* NicFerrier records ogg files with RecordMyDesktop on Ubuntu an tries to do it in a single take, then he uploads the ogg to youtube. Youtube generate a whole bunch of alternative sizes without having to edit at all.
+* NicFerrier records ogg files with RecordMyDesktop on Ubuntu and tries to do it in a single take
+** then he uploads the ogg to youtube
+*** Youtube generate a whole bunch of alternative sizes without having to edit at all
 ** some other tips
 *** use a hi res screen and then make a smallish window that you record - then you can have your script in a bigger window to one side
 *** use a scratch emacs instance to do recordings, so you can prove that something will work for someone else
