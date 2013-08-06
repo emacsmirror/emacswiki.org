@@ -102,7 +102,7 @@ Several different bouncers are available but NicFerrier has written ShoesOff in 
 
 A number of robots have been written in EmacsLisp using [[ERC]] or [[rcirc]].
 
-Here's an example robot which implements a ping/pong conversation:
+Here's an example robot which implements a ping/pong conversation with ##rcirc##:
 
 {{{
 ;;; ircpinger.el - rcirc robot to respond to pings
