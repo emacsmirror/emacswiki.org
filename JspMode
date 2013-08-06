@@ -3,7 +3,7 @@ Because JSP is a mixture of Java and HTML, the options for editing JSP are tied 
 ==New possibility: web-mode==
 The new [http://web-mode.org/ web-mode ] is a major mode for editing HTML templates. Code is hosted on [https://github.com/fxbois/web-mode github] and a package is available through the [[MELPA]] repository. It handles .jsp font locking decently enough. It also supports many other HTML templating formats. Customization options are explained on the homepage.
 
-==Using MultipleModes (recommended)==
+==MultipleModes==
 
 This is the approach that is usually recommended.
 The basic idea with this option is using a MultipleModes package (usually MuMaMo, previously mmm-mode) to automagically switch between an HTML editing mode (like HtmlMode or PsgmlMode) and a Java editing mode (like JavaDevelopmentEnvironment) as you move through a JSP buffer. 
@@ -82,8 +82,15 @@ Specifically, here's how I did it:
 
 This is helpful in the sense that it (1) highlights the non-HTML portions of the page, and (2) colorizes the Java portions correctly according to the JDE rules. However, the indentation is not perfect, apparently because MMM Mode only looks at one region at a time -- so Java constructs interspersed with HTML look funky. From reading the MMM Mode mailing list at http://sourceforge.net/mailarchive/forum.php?forum=mmm-mode-discuss, it seems that the authors are aware of this problem, but not quite sure how to handle it.
 
+==Single Major Modes (recommended)==
 
-==Using Single Major Modes (not recommended)==
+===Using web-mode===
+
+web-mode.el is major mode can be used to edit any web template (jsp, php, erb, django, ctemplate). It can downloaded on http://web-mode.org
+This major mode offers css and js compatibility.
+This mode is actively maintained.
+
+==Other Single Major Modes==
 
 None of these are said to work very well with JSP.
 
@@ -111,6 +118,7 @@ This is a mode written specifically for JSP files and based on xml-mode, which i
     (add-to-list 'auto-mode-alist '("\\.jsp\\'" . jsp-mode))
 
 This solution handles indenting the Java code better than the MultipleModes solution, but it does not highlight or colorize the Java code. It also causes HTML code to be indented differently, meaning that switching back and forth requires re-indenting your file each time.
+
 
 ----
 ProgrammingModes
