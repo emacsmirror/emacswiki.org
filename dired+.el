@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 07:51:53 2013 (-0700)
+;; Last-Updated: Tue Aug  6 13:32:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7085
+;;     Update #: 7098
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -483,6 +483,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/06 dadams
+;;     diredp-display-image,diredp-menu-bar-immediate-image-menu (:enable's):
+;;       Protect diredp-string-match-p from nil argument.
 ;; 2013/07/24 dadams
 ;;     Added: diredp-nonempty-region-p.  Use everywhere, in place of its definition.
 ;; 2013/07/21 dadams
@@ -1473,7 +1476,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 (defun dired-switches-escape-p (switches)
   "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
   ;; Do not match things like "--block-size" that happen to contain "b".
-  (if (> emacs-major-version 21)
+  (if (> emacs-major-version 21)        ; SWITCHES must be a string here, not nil.
       (diredp-string-match-p "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
     (diredp-string-match-p "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches)))
 
@@ -1752,7 +1755,7 @@ A prefix argument ARG specifies files to use instead of those marked.
           (failure  nil))
       (save-excursion
         (if (let ((inhibit-changing-match-data  t))
-              (diredp-string-match-p (image-file-name-regexp) file))
+              (and file  (diredp-string-match-p (image-file-name-regexp) file)))
             (condition-case err
                 (let ((find-file-run-dired  nil)) (find-file-other-window file))
               (error (setq failure  (error-message-string err))))
@@ -1937,8 +1940,9 @@ A prefix argument ARG specifies files to use instead of those marked.
   (defalias 'diredp-menu-bar-immediate-image-menu diredp-menu-bar-immediate-image-menu)
   (define-key diredp-menu-bar-immediate-menu [image]
     '(menu-item "Image" diredp-menu-bar-immediate-image-menu
-      :enable (diredp-string-match-p
-               (image-file-name-regexp) (dired-get-filename 'LOCALP 'NO-ERROR))))
+      :enable (let ((file  (dired-get-filename 'LOCALP 'NO-ERROR)))
+                (and file  (diredp-string-match-p
+                            (image-file-name-regexp) (dired-get-filename 'LOCALP 'NO-ERROR))))))
 
   (define-key diredp-menu-bar-immediate-image-menu [diredp-image-dired-display-thumb]
     '(menu-item "Go To Thumbnail" diredp-image-dired-display-thumb
@@ -6038,7 +6042,7 @@ Non-interactively:
            nil))
     (let ((dired-marker-char  (if unflag-p ?\   dired-marker-char)))
       (dired-mark-if (and (looking-at " ") ; Not already marked
-                          (let ((fn  (dired-get-filename localp t))) ; Uninteresting
+                          (let ((fn  (dired-get-filename localp 'NO-ERROR))) ; Uninteresting
                             (and fn  (diredp-string-match-p regexp fn))))
                      msg))))
 
@@ -6826,7 +6830,7 @@ REGEXP is added to `regexp-search-ring', for regexp search."
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (dired-mark-if (and (not (looking-at dired-re-dot))
                         (not (eolp))    ; Empty line
-                        (let ((fn  (dired-get-filename t t)))
+                        (let ((fn  (dired-get-filename 'LOCALP 'NO-ERROR)))
                           (and fn  (diredp-string-match-p regexp fn))))
                    "matching file")))
 
