@@ -1,3 +1,6 @@
 Hi, everyone here!
 I'm a big fan of emacs, emacs is very handy for my daly life, I can't live without her.
 I wish I can contribute to emacswiki, from which I got many useful elisp code.
+
+My contributon:
+[[aok.el]]: updated for emacs 24.x, add `occur-select'
