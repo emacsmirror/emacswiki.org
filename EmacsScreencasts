@@ -78,6 +78,8 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts.
 
+* [http://www.emacstapas.com/] - Nic Ferrier's series of screencasts that will teach you how to program in Emacs Lisp.
+
 == Tips about Creating Screencasts ==
 
 * ScreencastMode (everywhere, but only inside Emacs) and ScreencastRecord (GNU/Linux, FreeBSD - ogg, ie only open formats) are modes for creating screencasts from within Emacs easily.
