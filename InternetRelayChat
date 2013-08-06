@@ -105,7 +105,7 @@ A number of robots have been written in EmacsLisp using [[ERC]] or [[rcirc]].
 Here's an example robot which implements a ping/pong conversation:
 
 {{{
-;;; ircpinger.el - rcirc robot to respond to pings                                                                                                                                                                  
+;;; ircpinger.el - rcirc robot to respond to pings
 (require 'cl)
 (defconst ircpinger-nick "pinger-robot"
   "The IRC nick of the robot.")
@@ -140,7 +140,7 @@ Here's an example robot which implements a ping/pong conversation:
                 (goto-char (point-max))
                 (insert (format "%s: pong" sender))
                 (rcirc-send-input))))
-        ;; else                                                                                                                                                                                                     
+        ;; else
         (when ircpinger-logging
           (message "whoops! %s" text))))))                                                                
 
