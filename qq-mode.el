@@ -1,6 +1,7 @@
 ;;; qq-mode.el --- Modes for creating valid XHTML 1.0 Transitional pages.
 
-;; Author: Rhoderick Espineda <ekz@burlezke.com>
+;; Author: Rhoderick Espineda <padik@live.com>
+;; Website: http://padik.co.nr
 ;; Version: 1.0.3
 ;; Keywords: XHTML
 ;; URL: http://www.emacswiki.org/elisp/qq-mode.el
