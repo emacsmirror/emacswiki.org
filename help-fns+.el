@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:39:27 2013 (-0700)
+;; Last-Updated: Tue Aug  6 08:14:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1630
+;;     Update #: 1639
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `info', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `info', `naked', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,6 +120,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/06 dadams
+;;     describe-function: Ensure arg is a defined function before calling describe-function-1 (for Emacs 24+).
 ;; 2013/07/01 dadams
 ;;     Revert the filling part of yesterday's update.
 ;; 2013/06/30 dadams
@@ -913,8 +915,10 @@ Return the description that was displayed, as a string."
      (setq val  (completing-read prompt obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
                                  (and (if current-prefix-arg (commandp fn) (fboundp fn))  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)) current-prefix-arg)))
-  (if (not function)
-      (when (interactive-p) (message "You did not specify a function"))
+  (if (or (not function)  (not (fboundp (intern-soft function))))
+      (when (interactive-p) (if (not function)
+                                (message "You did not specify a defined function")
+                              (message "`%s' is not a defined function" function)))
     (unless (or (not commandp)  (commandp function))
       (error "Not a defined Emacs command (interactive function): `%s'" function))
     ;;$$$  (unless (fboundp function) (error "Not a defined Emacs function: `%s'" function))
