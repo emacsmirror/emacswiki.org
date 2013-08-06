@@ -1,6 +1,7 @@
 ;;; merriam.el --- Look up a word in WWW Merriam-Webster dictionary
 
-;; Copyright (c) 2004 by Rhoderick Espineda <padik@users.sourceforge.net>
+;; Copyright (c) 2004 by Rhoderick Espineda  <padik@live.com>
+;; Website: padik.co.nr 
 
 ;; Version: 1.0
 ;; Keywords: hypermedia
