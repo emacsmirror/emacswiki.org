@@ -9,13 +9,15 @@ The last couple of years I've started to look at ELisp as a practical language (
 
 == About me ==
 
-I work for [[http://soundcloud.com|SoundCloud]] doing !DevOps and !ChatOps stuff. 
+I work for [[http://soundcloud.com|SoundCloud]] doing !DevOps and !ChatOps stuff.
 
 I am trying to start [[http://teamchat.net|TeamChat.net]], a ChatOps company for teams built on Elnode, ShoesOff and other Emacs technology. 
 
-I used to be the CTO at woome.com where we built video tools to help people get laid.
+I used to work for ThoughtWorks, teaching people how to get shit live. Before that I was the CTO of woome.com where we built web video tools to help people get laid.
 
-I maintain the [[http://marmalade-repo.org|marmalade Emacs package repo]] and am porting it to [[Elnode]].
+I've just started the [[http://emacstapas.com|Emacs Tapas]], a series of screencasts about programming in Emacs and EmacsLisp. I would like to help more people learn Emacs as a second language so they can build tools for themselves.
+
+I maintain the [[http://marmalade-repo.org|marmalade Emacs package repo]] and am porting it to [[Elnode]] [[http://github.com/nicferrier/elmarmalade|here]] and it's running in draft state [[http://marmalade-repo.ferrier.me.uk|here]]
 
 I am the author and maintainer of [[Elnode]], the Emacs Async Webserver; more information about that in this page.
 
