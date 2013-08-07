@@ -26,8 +26,8 @@ This is a child-page of GuileEmacs
 * Use libguile hash tables
 * profiler.c is broken (maybe remove in favor of gprof + guile's profiler)
 * remove unexec support code
-* Test non-gtk x toolkits
-* Update nextstep support
+* '''DONE''' Test non-gtk x toolkits
+* '''DONE''' Update nextstep support
 * Test mingw build
 
 == User-visible issues ==
