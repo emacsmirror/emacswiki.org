@@ -24,7 +24,7 @@ This is a child-page of GuileEmacs
 * '''DONE''' Smob printing
 * '''DONE''' Use libguile hash functions
 * Use libguile hash tables
-* profiler.c is broken (maybe remove in favor of gprof + guile's profiler)
+* '''DONE''' Fix profiler.c
 * remove unexec support code
 * '''DONE''' Test non-gtk x toolkits
 * '''DONE''' Update nextstep support
