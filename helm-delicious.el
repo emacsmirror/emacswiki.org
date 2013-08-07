@@ -5,8 +5,8 @@
 ;; Author: Thierry Volpiatto <thierry.volpiatto@gmail.com>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyright (C) 2008, 2009 Thierry Volpiatto, all rights reserved
-;; Version: 1.0
-;; Last-Updated: 06/06/2013 03:00:00
+;; Version: 1.1
+;; Last-Updated: 07/08/2013 01:28:00
 ;; URL: https://github.com/vapniks/helm-delicious
 ;; Keywords: 
 ;; Compatibility: Gnus Emacs 24.3
@@ -122,11 +122,16 @@
                       (helm-set-up-delicious-bookmarks-alist)))))
     (candidates . (lambda () (mapcar #'car helm-c-delicious-cache)))
     (candidate-transformer helm-c-highlight-delicious-bookmarks)
-    (action . (("Browse Url" . (lambda (elm)
+    (action . (("Browse Url default" . (lambda (elm)
                                  (helm-c-delicious-browse-bookmark elm)
                                  (setq helm-delicious-last-pattern helm-pattern)))
                ("Browse Url Firefox" . (lambda (candidate)
-                                         (helm-c-delicious-browse-bookmark candidate t)))
+                                         (helm-c-delicious-browse-bookmark candidate 'firefox)))
+               ("Browse Url Chromium" . (lambda (candidate)
+                                         (helm-c-delicious-browse-bookmark candidate 'chromium)))
+               ("Browse Url w3m" . (lambda (candidate)
+                                         (helm-c-delicious-browse-bookmark candidate 'w3m)
+                                         (setq helm-delicious-last-pattern helm-pattern)))
                ("Delete bookmark" . (lambda (elm)
                                       (helm-c-delicious-delete-bookmark elm)))
                ("Copy Url" . (lambda (elm)
@@ -162,6 +167,7 @@ finding the path of your .authinfo file that is normally ~/.authinfo."
             helm-delicious-password (cadr helm-delicious-auth))
       nil)))
 
+;;;###autoload
 (defun helm-wget-retrieve-delicious (&optional sentinel)
   "Get the delicious bookmarks asynchronously with external program wget."
   (interactive)
@@ -270,7 +276,7 @@ finding the path of your .authinfo file that is normally ~/.authinfo."
                              (make-string (+ 2 interval) ? ) desc)
                      url))))
 
-
+;;;###autoload
 (defun w3m-add-delicious-bookmark (description tag)
   "Add a bookmark to delicious from w3m"
   (interactive (list (read-from-minibuffer "Description: "
@@ -337,9 +343,13 @@ to Delicious"
   (replace-regexp-in-string
    "\"" "" (cdr (assoc elm helm-c-delicious-cache))))
 
-(defun helm-c-delicious-browse-bookmark (elm &optional use-firefox new-tab)
+(defun helm-c-delicious-browse-bookmark (elm &optional browser new-tab)
   "Action function for helm-delicious"
-  (let* ((fn  (if use-firefox 'browse-url-firefox 'w3m-browse-url))
+  (let* ((fn (case browser
+               (firefox 'browse-url-firefox)
+               (chromium 'browse-url-chromium)
+               (w3m 'w3m-browse-url)
+               (t 'browse-url)))
          (arg (and (eq fn 'w3m-browse-url) new-tab)))
     (funcall fn (helm-c-delicious-bookmarks-get-value elm) arg)))
 
@@ -354,6 +364,7 @@ to Delicious"
                                    'face 'helm-w3m-bookmarks-face
                                    'help-echo (helm-c-delicious-bookmarks-get-value i))))))
 
+;;;###autoload
 (defun helm-delicious ()
   "Start helm-delicious outside of main helm"
   (interactive)
