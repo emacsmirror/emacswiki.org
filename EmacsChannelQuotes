@@ -196,8 +196,8 @@ lynx -nolist -dump http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuotes \
 <delYsid> |
 <shapr> ?
 <Riastradh> '
-<delYsid> Â¸
-<Riastradh> Ã
+<delYsid> ¸
+<Riastradh> Á
 <elf> a lot of weird characters hang out on #emacs
 %
 <creepto> im still just learning emacs, lets say i have the screen split four
@@ -402,8 +402,8 @@ JEMavenger left #emacs
 <tekonivel> kleenex: and you've a nick to match! (:)
 %
 <andi5> Lukhas: could you do me a favor and write some umlauts in latin1?
-<Riastradh> Ã¼
-<iNoah> hÃ¨rÃ¨'s Ã¢ whÃ¸lÃ« bÃ¹Ã±Ã§h Ã¶f lÃ£tÃ¬Ã±1 fÃ²r Ã½Ã¶Ã¹r 8bÃ¯t Ã¾lÃ¨Ã¢sÃºrÃ©
+<Riastradh> ü
+<iNoah> hèrè's â whølë bùñçh öf lãtìñ1 fòr ýöùr 8bït þlèâsúré
 %
 <gnup> the japanese have strange taste
 <yrk_work> gnup: "strange taste"? When did you last eat japanese person?
@@ -471,7 +471,7 @@ JEMavenger left #emacs
 %
 <bojohan>   _,  |Emacs~
 <bojohan>  o_O  |
-<bojohan> ( ÃÂ¯ =|
+<bojohan> ( Â¯ =|
 <bojohan> _| |_ |
 %
 21:09 < myrkraverk> I'm using ERC Version 4.0 $Revision: 1.671 $ with XEmacs 21.5  (beta17)
@@ -524,7 +524,7 @@ and the Beatles...
 <zeus> bye all
 *** zeus has quit: "bye"
 %
-<kensanata> olÃ¡ rw
+<kensanata> olá rw
 <rw> ola kensanata!!! como vao as coisas?
 <kensanata> estou ainda no trabalho... que mais!?
 <dipnlik> kensanata : where are you from?
@@ -603,7 +603,7 @@ bojohan has super psychic powers. Really!
 <ams> I'm Polish, so I'm god.
 <Lukhas> ams: Can I use you to clean my car ?
 %
-<Han> Which character is this:  Â¤
+<Han> Which character is this:  ¤
 <jemarch> Han: a space invader
 %
 < drewr> I've got a ton of (require ...) in my .emacs for each .el in
@@ -859,7 +859,7 @@ I didn't learn to read and write, so that I could communicate using a crude syst
 %
 <kensanata> I found that woman does everything that man does, but slower.
 %
-<ieure> Iâd love to hear you explain that to a rampaging pack of angry
+<ieure> I’d love to hear you explain that to a rampaging pack of angry
         Russians.
 %
 <wraith0x2b> what's the variable holding the modeline format?
