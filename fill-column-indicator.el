@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011-2012 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.84
+;; Version: 1.85
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -26,6 +26,13 @@
 ;; fill column by drawing a thin line (in design parlance, a `rule') down the
 ;; length of the editing window.  Fill-column-indicator implements this
 ;; facility in Emacs.
+
+;; PLEASE NOTE: There is a small incompatibility between this package and the
+;; current stable Emacs relase (v24.3).  A bug in Emacs's internal display
+;; routine that was introduced shortly before that release can cause vertical
+;; motion commands to skip blank lines when fci-mode is active.  This has
+;; been fixed in Emacs trunk.  See github.com/alpaker/Fill-Column-Indicator/issues/31
+;; for further discussion.
 
 ;; Installation and Usage
 ;; ======================
@@ -608,7 +615,7 @@ on troubleshooting.)"
 
 If the selected frame cannot display images, use the character
 height and width of the first graphic frame in the frame list
-displaying the current buffer.  (This fallback behavior is a
+displaying the current buffer.  (This fallback behavior is just a
 rough heuristic.)"
   (let ((frame (catch 'found-graphic
                  (if (display-images-p)
