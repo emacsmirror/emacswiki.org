@@ -1,6 +1,6 @@
-[[fr:DrewAdamsFranÃ§ais]]
+[[fr:DrewAdamsFrançais]]
 
-Cette page est aussi disponible en franglais ;-): FranÃ§ais:DrewAdamsFranÃ§ais
+Cette page est aussi disponible en franglais ;-): Français:DrewAdamsFrançais
 
 [new:DrewAdams:2010-04-30 14:44 UTC]
 
@@ -13,7 +13,7 @@ something occurred to me'' that I could easily
 do or someone suggested something, and it
 ''seemed like a cool idea''. Our mindset was
 that ''cool ideas were fun to pursue, even if
-we couldnât think of a practical use or need
+we couldn’t think of a practical use or need
 right away''." -- DanMurphy, inventor of TECO, [http://tenex.opost.com/anhc-31-4-anec.pdf|The Beginnings of TECO, 2009-10-31]
 
 ----
@@ -77,22 +77,22 @@ of bugs, and also makes the order of execution irrelevant -- since no side-effec
 can change the value of an expression, it can be evaluated at any time. This
 relieves the programmer of the burden of prescribing the _flow of control_. Since
 expressions can be evaluated at any time, one can freely replace variables by
-their values and vice versa -- that is, programs are âreferentially transparentâ.
+their values and vice versa -- that is, programs are “referentially transparent”.
 This freedom helps make functional programs more tractable mathematically
 than their conventional counterparts.
 
-: Such a catalogue of âadvantagesâ is all very well, but one must not be surprised
-if outsiders donât take it too seriously. It says a lot about ''what functional programming is '''not''''' (it has _no assignment_, _no side effects_, _no flow of control_) but
+: Such a catalogue of “advantages” is all very well, but one must not be surprised
+if outsiders don’t take it too seriously. It says a lot about ''what functional programming is '''not''''' (it has _no assignment_, _no side effects_, _no flow of control_) but
 not much about what it ''is''. The functional programmer sounds rather like a medieval
 monk, denying himself the pleasures of life in the hope that it will make
-him virtuous. To those more interested in material benefits, these âadvantagesâ
+him virtuous. To those more interested in material benefits, these “advantages”
 are not very convincing.
 
 : Functional programmers argue that there ''are'' great material benefits -- that
 a functional programmer is an order of magnitude more productive than his
 conventional counterpart, because functional programs are an order of magnitude
 shorter. Yet why should this be? The only faintly plausible reason one
-can suggest on the basis of these âadvantagesâ is that conventional programs
+can suggest on the basis of these “advantages” is that conventional programs
 consist of 90% assignment statements, and in functional programs these can be
 omitted! This is plainly ridiculous. If omitting assignment statements brought
 such enormous benefits then FORTRAN programmers would have been doing it
@@ -198,7 +198,7 @@ This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
 * '''FaceMenuPlus'''  -- enhancements to the '''Text Properties''' menu
 * '''ThingAtPointCommands''' -- commands to select things near the [[cursor]]
 * HighLight -- highlight text in different ways, hide/show [[face]]s
-* MousePlus -- highlight the [[yank]] position while you press âmouse-2â; other mouse enhancements
+* MousePlus -- highlight the [[yank]] position while you press ‘mouse-2’; other mouse enhancements
 * ModeLinePosition -- enhanced [[mode line]] support for [[variable]] `mode-line-position' (Emacs 22 and later)
 * CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
 * CustomizingAndSaving  -- how to make [[Customize]] play better with the rest of Emacs
@@ -660,12 +660,18 @@ All the best,
 Jason
 
 
+
 [new:towi:2013-08-08 15:30 MET]
 I like `col-highlight`. Really nice. A tweak that the highlight stops at the paragraph boundaries would be nice. A paragraph boundary being an empty line, for e.g. (or a configurable regexp?). 
 
 (you can contact me via towi attttt geocities, followed by dot com)
 
 cheers, towi.
+
+
+[new:DrewAdams:2013-08-08 16:14 UTC]
+Done.  See [[option]] '''`col-highlight-show-only''''.  Thanks for the suggestion -- DrewAdams
+
 
 ----
 
