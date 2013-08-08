@@ -51,3 +51,12 @@ Also, I repeat the request to place a like to this page (EmacsWikiAdministrators
 
 -- DrewAdams 2013-08-08 02:20 UTC
 
+
+----
+
+I've added EmacsWikiAdministrators to the _Administration_ page.
+
+The script itself doesn't have a list of known administrators which I could stop from getting banned. Whoever has the password is an administrator. Usernames are irrelevant. Then again, bans on administrators have no effect. Thus: If somebody were to ban you, and you visited the wiki, you'd be banned from editing the site unless you had the administrator set. With administrator password, the ban has no effect. This would allow you to undo any such self-banning mistakes easily. I don't think we have a problem, there.
+
+-- AlexSchroeder 2013-08-08 10:59 UTC
+
