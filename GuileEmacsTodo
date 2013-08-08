@@ -1,7 +1,3 @@
-== Parent ==
-This is a child-page of GuileEmacs
-
-== List ==
 * Compact buffers after GC. (Perhaps using [http://permalink.gmane.org/gmane.emacs.diffs/115317])
 * Undo list truncation
 * Shrink regexp cache after GC
