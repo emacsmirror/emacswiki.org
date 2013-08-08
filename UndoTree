@@ -9,7 +9,7 @@ For more information, see the Commentary at the top of the ##undo-tree.el## file
 
 == Downloading ==
 
-The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. The latest "stable" version (version 0.6.3, released December 2012) can also be downloaded from:
+The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. The latest "stable" version (version 0.6.4, released August 2013) can also be downloaded from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
