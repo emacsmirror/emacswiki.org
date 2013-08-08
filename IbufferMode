@@ -1,4 +1,4 @@
-[[zh:ibuffer模式]]
+[[zh:ibufferæ¨¡å¼]]
 Ibuffer is an advanced replacement for BufferMenu, which lets you operate on buffers much in the same manner as [[DiredMode|Dired]].  The most important Ibuffer features are highlighting and various alternate layouts. Ibuffer is part of Emacs 22.
 
 If you don't have '''[::Ibuffer]''', you can get it from GIT:ibuffer.el (there's also a probably out-of-date [http://gna.org/projects/ibuffer project] at gna.org).  Here's how to install it:
@@ -209,8 +209,8 @@ I don't like default "Size" column, so I write a human readable column instead o
 (define-ibuffer-column size-h
   (:name "Size" :inline t)
   (cond
-   ((> (buffer-size) 1000) (format "%7.3fk" (/ (buffer-size) 1000.0)))
    ((> (buffer-size) 1000000) (format "%7.3fM" (/ (buffer-size) 1000000.0)))
+   ((> (buffer-size) 1000) (format "%7.3fk" (/ (buffer-size) 1000.0)))
    (t (format "%8d" (buffer-size)))))
 
 ;; Modify the default ibuffer-formats
