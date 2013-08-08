@@ -29,6 +29,17 @@ Usage:
        M-x everything           Prompts for a query, let you choose one of the files and opens it.
 
 
+[new:lynnux:2013-08-08 01:17 UTC]You may get garbled char because everything's output is utf-8, I use everything by ftp, the solution is:
+
+(eval-after-load "everything" '(add-to-list 'network-coding-system-alist '(21 . (utf-8 . utf-8)))) ;; 21 means the default ftp port
+
+I don't try the way via process, you should have a look at `process-coding-system-alist', maybe the code below:
+
+(eval-after-load "everything" '(add-to-list 'process-coding-system-alist '("Everything" . (utf-8 . utf-8))))
+
+--[[lynnux]]
+[new]
+
 See also: LocateFilesAnywhere
 
 
