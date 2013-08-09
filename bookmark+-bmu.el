@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Jul  2 13:05:42 2013 (-0700)
+;; Last-Updated: Fri Aug  9 09:39:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2554
+;;     Update #: 2559
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -243,7 +243,7 @@
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record', `bmkp-face-prop',
-;;    `bmkp-bmenu-marked-or-this-or-all',
+;;    `bmkp-bmenu-marked-or-this-or-all', `bmkp-looking-at-p',
 ;;    `bmkp-maybe-unpropertize-bookmark-names',
 ;;    `bmkp-maybe-unpropertize-string',
 ;;    `bmkp-replace-regexp-in-string',
@@ -451,6 +451,12 @@ Elements of ALIST that are not conses are ignored."
   (defun bmkp-string-match-p (regexp string &optional start)
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
+
+(if (fboundp 'looking-at-p)
+    (defalias 'bmkp-looking-at-p 'looking-at-p)
+  (defun bmkp-looking-at-p (regexp)
+    "Like `looking-at', but this saves and restores the match data."
+    (save-match-data (looking-at regexp))))
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
@@ -1982,7 +1988,7 @@ confirmation."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (if (or (not markedp)  (yes-or-no-p "Delete bookmarks marked `>' (not `D') "))
       (let* ((mark-type  (if markedp "^>" "^D"))
-             (o-str      (and (not (looking-at mark-type))  (bookmark-bmenu-bookmark)))
+             (o-str      (and (not (bmkp-looking-at-p mark-type))  (bookmark-bmenu-bookmark)))
              (o-point    (point))
              (count      0))
         (message "Deleting bookmarks...")
@@ -2882,7 +2888,7 @@ message."
 If none are marked, toggle status of the bookmark of the current line."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((o-str       (and (not (looking-at "^>"))  (bookmark-bmenu-bookmark)))
+  (let ((o-str       (and (not (bmkp-looking-at-p "^>"))  (bookmark-bmenu-bookmark)))
         (o-point     (point))
         (count-temp  0)
         (count-save  0)
@@ -3080,7 +3086,7 @@ You can then mark some of them and use `\\[bmkp-bmenu-omit/unomit-marked]' to ma
  available again for the bookmark list."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((o-str    (and (not (looking-at "^>"))  (bookmark-bmenu-bookmark)))
+  (let ((o-str    (and (not (bmkp-looking-at-p "^>"))  (bookmark-bmenu-bookmark)))
         (o-point  (point))
         (count    0))
     (message "Omitting marked bookmarks...")
@@ -4476,7 +4482,7 @@ For each number indication:
                                 "%s%d%c"
                                 (save-excursion
                                   (forward-line 0)
-                                  (if (looking-at (concat regexp ".*"))
+                                  (if (bmkp-looking-at-p (concat regexp ".*"))
                                       (format "%d/" (1+ (count-matches regexp (point-min) (point))))
                                     ""))
                                 nb  mk)  'face (intern (format "bmkp-%c-mark" mk))))
@@ -5595,7 +5601,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
                                     ,(save-excursion
                                       (goto-char (posn-point mouse-pos))
                                       (beginning-of-line)
-                                      (if (looking-at "^D")
+                                      (if (bmkp-looking-at-p "^D")
                                           ["Unmark" bookmark-bmenu-unmark]
                                         ["Flag for Deletion" bookmark-bmenu-delete]))
                                     ["Omit" bmkp-bmenu-omit]
