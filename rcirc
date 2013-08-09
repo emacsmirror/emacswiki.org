@@ -1,9 +1,4 @@
-<ntc> go use xchat
-
-rcirc is a next generation IRC client. It blends seamlessly with the
-rest of emacs, it's tight, fast, and doesn't light up like a christmas
-tree. rcirc also has sane defaults. There is little or no reason to
-customize it because it does what you want by default (except that many people still do. :))
+rcirc is a next generation InternetRelayChat client. It blends seamlessly with the rest of Emacs, it's tight, fast, and doesn't light up like a christmas tree. rcirc also has sane defaults. There is little or no reason to customize it because it does what you want by default (except that many people still do).
 
 rcirc is part of GNU Emacs since release 22.0.
 
@@ -23,23 +18,24 @@ New versions of rcirc do not work in Emacs 21. You can get the last version of r
 
 In Emacs 22, just type ##M-x irc##.
 
-On Emacs 21 and/or very old rcirc version, you will have to add this to your .emacs:
-
-    (eval-after-load "rcirc"                ; for emacs 21
-      '(if (not (functionp 'irc))
-           (defun irc (x)
-             (interactive "P")
-             (if x
-                 (call-interactively 'rcirc)
-               (rcirc rcirc-server rcirc-port rcirc-nick
-                      (rcirc-startup-channels rcirc-server))))))
-
+In Emacs 21 and/or a very old rcirc version, you will have to add this to your InitFile:
+<pre>
+(eval-after-load "rcirc"                ; for Emacs 21
+  '(if (not (functionp 'irc))
+       (defun irc (x)
+         (interactive "P")
+         (if x
+             (call-interactively 'rcirc)
+           (rcirc rcirc-server rcirc-port rcirc-nick
+                  (rcirc-startup-channels rcirc-server))))))
+</pre>
 then just do as usual.
 
-rcirc comes set up with default values for IRC server and port (irc.freenode.net 6667), nickname (your login name), and channel (#rcirc). You can override these settings in your .emacs file or use C-u M-x rcirc to set these values.
+rcirc comes set up with default values for IRC server and port (irc.freenode.net 6667), nickname (your login name), and channel (#rcirc). You can override these settings in your InitFile or use C-u M-x rcirc to set these values.
 You also can define a key to start it for you:
-
-    (global-set-key (kbd "C-c I") 'irc)
+<pre>
+(global-set-key (kbd "C-c I") 'irc)
+</pre>
 
 Please also consider visiting these pages in order to getting started:
 
@@ -48,9 +44,9 @@ Please also consider visiting these pages in order to getting started:
 
 ==Connecting to servers using SSL/TLS ==
 
-The trunk (emacs 24) has SSL support out of the box.
+Emacs 24 has SSL support out of the box.
 
-For emacs 23 you need a fork of rcirc:
+For Emacs 23 you need a fork of rcirc:
 
 https://github.com/nealey/rcirc/wiki 
 which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
@@ -76,7 +72,7 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
 ; [[rcircLogging]]: Log conversations to disk
 ; [[rcircServerAuth]]: Patch that adds server authentication (PASS).
-; [[rcircAutoAway]]: Go /away after emacs is idle for a period of time.
+; [[rcircAutoAway]]: Go /away after Emacs is idle for a period of time.
 ; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
 ; [[rcircEncoding]]: Change the encoding per channel
 ; [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
@@ -103,15 +99,15 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircUnambiguousNickCompletion]]: Don't cycle-complete nicks if there is ambiguity
 ; [[rcircAlwaysKickBastard]]: Start your session by kicking the evil bastard that's stealing your nick
 ; [[rcircPresence]]: Make rcirc tell something else about your presence status (I'm away!)
-; rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simple add to ~/.emacs <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
-{{{
-		(defun rcirc-switch-buffer-or-screen (buffer)
-		  (if (elscreen-find-screen-by-buffer buffer)
-		      (elscreen-find-and-goto-by-buffer buffer)
-		    (switch-to-buffer buffer)))
+; rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
+<pre>
+(defun rcirc-switch-buffer-or-screen (buffer)
+  (if (elscreen-find-screen-by-buffer buffer)
+      (elscreen-find-and-goto-by-buffer buffer)
+    (switch-to-buffer buffer)))
 		
-		(setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
-}}}
+(setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
+</pre>
 ; [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
 ; [[rcircDbusNotification]]: use the dbus bindings for notifications
 ; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
