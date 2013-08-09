@@ -26,8 +26,3 @@ This URL doesn't work! http://www.jasonfruit.com doesn't work :'(
 Are there any way to contact JasonFruit? Is somewhere any copy of the code?
 Cheers!
 
-----
-Original tutorial moving to http://www.menotomy.biz/sw/emacs/
-Note that the row limit problem discussed above is Linux specific.  No problems on Windows i.e. 80,000 rows tested with all results returned.  Limit unknown.
-mbcladwell, July, 2013
-
