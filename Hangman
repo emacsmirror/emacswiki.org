@@ -1,6 +1,7 @@
 <code>hangman.el</code> by EricLudlam is a version of the simple hangman word guessing game, played against the computer.  Get it from
 
-: http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz
+: http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz (dead link)
+: http://wayback.archive.org/web/20070708044037/http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz (archived)
 
 By default words are chosen from <code>/usr/dict/words</code>.  But on most systems that file has an awful lot of obscure things, so you might want to change <code>hm-dictionary-file</code> if you've got a better word list.
 
