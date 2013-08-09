@@ -1,1 +1,2360 @@
-Scarcely  any sunglasses have  occupied such a storied town in American sample and anecdotal as Streak Bans.From Presidents to silver screen stars, pitch stars to artists, fashion designers to runway models, there's not a times  alive that can't  about  move backwards withdraw from on owning (or meretricious to own )  a match up of these iconic sunglasses.While Glimmer  Bans now  can be seen on the next begetting of Hollywood obsession setters, the famed sunglasses had a much more applied  and bring beginning.Founded in 1937 during Bausch & Lomb, the pre-eminent Scintilla Canteen sunglasses were created in behalf of the US Army Known Corp. The Army was looking in behalf of a sunglass to shelter aviators from the damaging rays of the bake, but also a sunglass that would look with it on the rococo airman of the day.
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || IciclesIndex || *Next:* IciclesIssues ||
+
+----
+
+
+
+== Icicles Discussion ==
+
+This page is for discussion of '''[[Icicles]]''' and library '''<tt>[[icicles.el]]</tt>'''. It includes general discussion, feedback, possible uses, and possible enhancements. It does '''''not''''' include bugs -- please '''''report bugs at'' IciclesIssues'''.  You can also report bugs using '''##M-x icicle-send-bug-report##'''.
+
+
+'''See Also:'''
+
+* '''LaCarte''' for discussion of library '''<tt>[[lacarte.el]]</tt>'''. This is not part of '''Icicles''', but it can take advantage of '''Icicles'''.
+* [[Icicles - Key Binding Discussion]] for some discussion about customizing '''Icicles''' key bindings. But see first [[Icicles - Key Bindings]] and [[Icicles - Customizing Key Bindings]].
+* IciclesForXEmacs for discussion of porting libraries '''<tt>[[icicles.el]]</tt>''' and '''<tt>[[lacarte.el]]</tt>''' (formerly called ##icicles-menu.el## and then ##alacarte.el##) to [[XEmacs]]. (This page is now quite old, but feel free to update it.)
+
+----
+
+For readability, please separate each discussion thread here with `----' (horizontal line), and introduce each entry within a thread with `<code>[new]</code>'. 
+
+Better yet, use this to separate threads (puts space before and after the horizontal line):
+
+ <pre>
+
+ </pre>
+ ----
+ <pre>
+
+ </pre>
+
+
+'''''To add a new entry here, search for ##LatestEntry## when editing the page source: please put your entry just after that.'''''
+
+----
+
+Edgar (edgar-rft@web.de) has suggested that '''Icicles''' might be particularly useful to blind people, who use screen readers. He thinks it might be easier to choose files using '''Icicles''' cycling or completion than using Dired. (See IciclesIssues for Edgar's posts on this.)
+
+This is an example of a use case that hadn't occurred to me. I'm interested in hearing about other uses you find for '''Icicles''', and related suggestions for enhancements or other changes. 
+
+There is a lot that is new in '''Icicles''' -- it's an experiment in progress.  I think its base functionality has already proven useful, and I think some of the more recent features have promise. I don't, however, expect that everything I've tried will be equally useful. Some things, I imagine, might hold more promise for Emacs-Lisp programmers than for end users.
+
+I'm interested in hearing people's reactions to the various features -- not just up/down opinions ("useless", "brilliant", "cumbersome", "silly", "cool"), but ideas about what a feature might be used for or how it might be improved. And implementations of new ideas are also welcome.
+
+Anyway, if an '''Icicles'''-related idea occurs to you, please jot it down here. This is a brainstorming page -- there's lots of room for crazy ideas that just might work (or not). As you can tell from the past evolution of '''Icicles''', it's easy to imagine new directions. With each new state of the program, new ideas occur to me -- and perhaps to you. 
+
+Any ''set'' is a potential target of application for '''Icicles'''. You've already seen (in '''<tt>[[icicles.el]]</tt>''' and '''<tt>[[lacarte.el]]</tt>''') examples of using sets of files, [[buffer]]s, [[command]]s, [[variable]]s, [[bookmark]]s, colors, color themes, menu items, and fonts. And, as some of these examples show, a command (the same command) can be made to operate on one object or all objects in a set. What other sets of Emacs or other objects might be useful to traverse, act on, or manipulate? Markers? Overlays?  
+
+Here a few ungelled ideas from my own "maybe-to-do" list, to prime the pump.  Dunno if '''Icicles''' can be used for these out of the box, or if some code (e.g. Lisp commands) would need to be written to adapt the applications for use with '''Icicles'''. -- DrewAdams
+
+* Access images in a directory (Lisp:tumme.el). A sequence of successive images (e.g. video frames, animated GIF frames) could be viewed as a film by holding down an arrow key. Get slower motion by repeatedly hitting the arrow key. Reverse to narrow down to a specific frame. (Now, if Emacs also had an image ''editor''...)
+
+* Access music selections in an MP3 player. Completion, regexp-matching...
+
+* Access email messages in an email client. Completion, regexp-matching...
+
+* Extend the idea behind `icicle-candidate-set-define', to let users ''edit'' buffer `*Completions*' to redefine the completions list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:Feedback]
+== Suggestions, Ideas, Feedback, ... ==
+
+The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:] 
+I have one small feature request. I think it would often be handy, espacially when only very few completion candidates are available, if TAB could cycle through the completions after completing to greatest common prefix. So in the case that a further TAB press will have no effect this (unused key) could be used to quickly cycle through the candidates. Same thing for S-TAB. -- HannesJanetzek
+
+[new:DrewAdams:2009-01-06 00:39 UTC]
+Maybe I misunderstand, but if not then '''Icicles''' already has that feature. See, for example, the example at [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix and Apropos Completion]].
+
+[new:]
+I forgot to say that TAB should still show the completion candidates window as I dont want to have it triggered automatically. The behaviour that I imagined would be that tab first completes input and shows the candidates _and_ then, in the case that the current input cant be expanded further, cycle through the possible expansions. I found some satisfying keybindings now, still it might be useful to have this option.  -- HannesJanetzek
+
+[new:DrewAdams:2009-05-02 05:13 UTC]
+That's exactly what happens -- try it. -- DrewAdams
+
+[new:]
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:] 
+Using split-root or ecb-compilation-window for showing completions. 
+I really would like to use split-root (http://nschum.de/src/emacs/split-root/) to show Icicles completions. Currently the completions window appears at somewhat unpredictable places as I often use many windows. I think Icicles has a special way to find a window to place the completions buffer in. Is there some way to turn this of so that it works with the above mentioned packages? -- HannesJanetzek
+
+[new:DrewAdams:2009-01-05 21:03 UTC]
+I'm afraid you'll need to be a bit more specific. '''Icicles''' does nothing special to control the placement of the `*Completions*' window. Unless you use a separate frame for it -- in that case, you can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-frame-at-right-flag|icicle-Completions-frame-at-right-flag]]</tt>'''' to position the `*Completions*' at the right of your screen. Otherwise, the appearance of the window should be the same as for vanilla Emacs, and yes, that is unpredictable.
+
+Please describe what happens and what you would like to happen. I don't use `split-root' or `ecb-compilation-window', so you will need to debug this yourself. One thing to keep in mind is that '''Icicles''' always uses buffer `*Completions*' for completion candidates. Some other code sometimes uses other buffers for that. -- DrewAdams
+
+[new:] ok it was a bug in split-root. I guess the same holds for ecb last time I tried that one. sorry to have bothered you with this.
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Sorry, newbie questions!
+
+I'd like to make the first press of TAB pop open the Completions buffer such that sub-string matches are shown. (I don't like just prefix matching) -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:34 UTC]
+: `TAB' does prefix completion; `S-TAB' does substring (regexp) completion. You can redefine what keys do what -- See [[Icicles - Customizing Key Bindings]] for how to change key bindings and [[Icicles - Key Binding Discussion]] for why the default bindings are what they are. -- DrewAdams
+
+[new]
+: I'm looking at the example bind-my-icicle-keys function and I just don't understand it.  OK, I get the gist, but I don't understand where any of those variables are coming from or what actually is being done in the loop or why.
+
+: The way emacs works for me is: I use it to hack on stuff other than lisp. Periodically I'll feel guilty for not getting the best out of emacs so I'll find some neat new example for my dot-emacs out on the net and cut 'n paste it in.  I can cut 'n paste and make trivialy modifications because lisp is, well, a foreign language.  Not that I'm a hater -- I feel guilty about not learning lisp, too... -- AvgJoe
+
+[new:DrewAdams:2007-02-20 20:01 UTC]
+:: You need some EmacsLisp knowledge to be able to follow those code examples; they are not for newbies. The non-'''Icicles''' variables, such as `minibuffer-local-completion-map', are standard Emacs variables.  I suggest you try using '''Icicles''' with its default behavior for a while, and consult the Emacs-Lisp manual to learn about minibuffer completion, the associated Emacs variables, and so on.  When you feel you can follow the key-binding customization examples, then you can try to implement the behavior that you prefer. -- DrewAdams
+
+[new]
+If I can see the thing I'm interested in in the Completions buffer, I'd like to be able to press TAB again and have the next thing in the list selected. I want to use the TAB key to initiate, and keep mashing on the TAB key until the thing I want is selected. TAB is my 'try harder' command... :-) -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:34 UTC]
+: That's not the way '''Icicles''' is designed, but you can write your own  command to bind to `TAB' in the minibuffer completion maps to do what you want -- it would combine `icicle-apropos-complete' (since you don't want prefix completion) with `icicle-next-apropos-candidate'. The former is bound by default to `S-TAB' and the latter to `next'. -- DrewAdams
+
+[new]
+: I don't even know how to begin doing this :-(  Maybe this is what I meant about the docs: there's some really good very basic introductory stuff, motivation, (require 'icicle) etc.  And there's thorough information about all the possibilities. But to realise them you're expected to be an emacs lisp hacker. -- AvgJoe
+
+[new:DrewAdams:2007-02-20 20:01 UTC]
+:: No, I would say that to achieve the level of customization that you're asking for, you must be somewhat familiar with Emacs Lisp. '''Icicles''' allows lots of customization without getting involved with Lisp, by changing the values of user options, but that is only customization that the '''Icicles''' design incorporates, that is, customization that the designer (me) has foreseen. If you want something beyond that, then, yes, you will need to code a little Lisp. -- DrewAdams
+
+[new]
+: I looked at your frame stuff (OneOnOneEmacs), and it is very interesting.  If I still had a large monitor I would give it a go.  I've recently started using a laptop however and i've realised that it completely changes the way I work.  I used to have multiple windows visible on the screen and switch between them.  But because of the laptop's phisical size I almost always run everything maximised now.  In fact I now run emacs in full-screen mode, no scroll bars, menu bar or tool bar, on a virtual desktop of it's own.
+
+: I think the smaller that devices get, the easier it is to just work on one app at a time, and/or to use frame-based window managers.
+
+: Anyway, I appreciate the points you've made about personal preferences and the work you've done on multiple frames.  I only mention this to suggest that maybe there's some real world situations where multiple frames don't work so well and it's not just some oddball personal quirk. Or maybe I'm just kidding myself :-) -- AvgJoe
+
+[new:DrewAdams:2007-02-20 20:01 UTC]
+:: OneOnOneEmacs is not for everyone or all contexts, I recognize.  That's why I said that enhancements such as what you suggest are on my to-do list. They are just not at the top of the list. -- DrewAdams
+
+[new]
+If there are only a very few candidates, I'd like them to show up in the mini-buffer rather than the Completions buffer. My eyes are down there anyway. It would be nice to opperate in a type-ahead-find mode here. -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:41 UTC]
+: I've thought about an apropos version of IcompleteMode, but that too is not a high priority for me. And the choice between prefix and apropos IcompleteMode would need to be made by the user somehow (as in `TAB' vs `S-TAB'), which kind of defeats the purpose of minibuffer icompletion.
+
+: Again, I think the annoyance you describe is due mainly to using an Emacs window instead of a frame for `*Completions*' -- a long, wide window, just to display a few candidates, interferes with your use of the main buffer. Wrt type-ahead: you can of course type ahead, cycle, and complete, without showing `*Completions*' at all, but I imagine that you meant that you wanted to see the candidates. -- DrewAdams
+
+[new]
+: Yeah, you kind of need the hint to help you type-ahead, otherwise your just guessing. -- AvgJoe
+
+[new]
+I'd like to try icy where even if there were more candidates than would fit in the mini-buffer, the first n that would fit are shown. A good half a dozen or more would fit in there. It would also say something like (6/20) to indicate how many are shown. -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:49 UTC]
+: That's just what IcompleteMode plus Icomplete+ does -- but for prefix candidates only. -- DrewAdams
+
+[new]
+Then, further presses on the TAB key would proceed to the next candidate. At the end of the list, the Completions buffer would pop up.  I guess this is where I might like to press S-TAB to force-pop up the Completions buffer. That's it! -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:49 UTC]
+: You're talking about something different from '''Icicles'''. It sounds like you should take a look at ##ido.el##. -- DrewAdams
+
+[new]
+I was thinking to myself wow, there's such a lot of great documentation here on icicles, it makes such a difference to what you usually find. But actually, I ended up getting a bit lost :-(   Maybe somewhere near the start could be something to literaly paste into your .emacs and a how-to-do-something-great-in-two-minutes? Thanks!!! -- AvgJoe
+
+[new:DrewAdams:2007-02-20 14:49 UTC]
+: I agree that the doc can be overwhelming for some people. [[Icicles - Nutshell View]] is intended to do what you describe. The first sentence tells you how to start: load <tt>[[icicles.el]]</tt> and turn on `icy-mode'. The beginning of <tt>[[icicles.el]]</tt> tells you this:
+
+     ;;    Add this to your initialization file (~/.emacs or ~/_emacs):
+     ;;
+     ;;      (require 'icicles) ; Load this library.
+     ;;      (icicle-mode 1)    ; Turn on Icicle mode.
+
+: The second thing [[Icicles - Nutshell View]] tells you is how to get summary help (`##C-?##'). I've just added a third paragraph telling you to read no further if you are easily overwhelmed by explanations -- HTH. I've also thought about writing a short tutorial, which might help some people. Others, of course, would be overwhelmed by that ;-). 
+
+: It seems that the more you explain something, the more some people will get the impression that it must be complicated. People learn differently. Some prefer a dense, short math book; others prefer a long, drawn out, simplified series of math books, to cover the same ground. You can't satisfy everyone. But I do appreciate and consider all kinds of input. -- DrewAdams
+
+[new]
+: I like both short and long example, both have their place.
+Maybe a bit more learn-by-example would help?
+Thanks, Drew! -- AvgJoe
+
+[new:DrewAdams:2007-02-20 20:01 UTC]
+:: Yes, a walk-through tutorial is probably a good idea. There is also IciclesTestCases, which one user came up with, but that is mostly for use of '''Icicles''' by EmacsLisp programmers. -- DrewAdams
+
+[new:AvgJoe:2007-02-20 21:24 UTC]
+OK. I guess the problem is I had the wrong expectations. Icicles is very customisable, but what I'm looking for is very unusual and wasn't anticipated in the design. I'll either have to learn to live with it or learn to fix it. Thanks for the help! -- AvgJoe
+
+[new:DrewAdams:2007-02-20 21:54 UTC]
+: All input is useful, and none is ignored. Thx -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I try Icicles periodically, because it has some really good ideas, but I always give it up because there are too many unrelated, nonstandard and, to me, annoying changes mixed in.  I want to like it, but the immediate annoyance of its "breaking my stuff" keeps getting in the way.  I suspect that these sneak by because DrewAdams uses a highly nonstandard Emacs configuration; testing Icicles with "emacs -Q" would probably be helpful.  My latest attempt has been frustrated by Icicles' deciding that it should kill frames sometimes, even though this is extremely disruptive to me.  Specifically, this code in icicle-kill-a-buffer (and elsewhere) is a bug:
+
+            (if (fboundp 'kill-buffer-and-its-windows)
+                (kill-buffer-and-its-windows buf) ; Defined in `misc-cmds.el'.
+              (kill-buffer buf)))
+
+The frame-killing behavior should be controlled by some user option, and disabled by default, not enabled if misc-cmds.el (which contains an autoload cookie!) happens to be present.
+
+Another frustration, though one that's easier to fix, is the way Icicles uses faces with different background colors.  I think they look terrible, especially with a dark background.  Would it be possible to have a single option to disable all changes to face backgrounds?
+
+Finally, the global S-tab binding should be disabled by default.  I happen to use S-tab as a M-tab replacement, since M-tab is stolen by the OS to switch between applications, and this feature is completely unrelated to the rest of Icicles. -- SeanO
+
+//(Sorry if responding in-line is confusing, but it's easiest.  My comments are in italics -- SeanO)//
+
+[new:DrewAdams:2007-06-10 21:37 UTC]
+SeanO: You say you try '''Icicles''' periodically, but you've been griping about it since before you tried it, no? Why, I don't know.
+
+//No, I first tried it a couple of years ago while comparing completion packages, and found it more complete but less intuitive than the others.  Presumably "griping" refers to complaints about Icicles in RecentChanges?  That's unrelated to the package's quality.//
+
+Perhaps it's just not your cup of tea. You make generalizations about annoyances, frustrations, and '''Icicles''' "breaking your stuff", but you haven't reported a single bug, IIRC. If you find a bug, please report it in sufficient detail to reproduce it. 
+
+//"Breaking my stuff" was meant as a tongue-in-cheek shorthand for "doing things I did not expect -- even though they may be documented -- that don't fit with my current customizations."  Haven't you ever had the experience of trying something new and being unpleasantly startled by its behavior?  Anyways, let me reiterate that Icicles does many things right, and that my criticism is aimed at the other things that get in the way of my adopting it.  You obviously want more people to use the library; I'm trying to explain why, although I am interested in it and have repeatedly tried it out, I don't use it.//
+
+FYI: 
+
+* I ''do'' test '''Icicles''' with ##emacs -Q##. But bugs do sometimes happen.
+
+//Cool.  I think my problems stem from having made customizations that conflict with Icicles.//
+
+* '''Icicles''' deletes no frames. There is not one call to `delete-frame' in '''Icicles'''.
+
+* '''''If you choose''''' (via user option `icicle-bind-top-level-commands-flag') to use `icicle-kill-buffer' for `C-x k', and '''''if you also choose''''' to use my library <tt>[[misc-cmds.el]]</tt>, then `C-x k' will also delete the window (''not'' the frame) when it kills a buffer. '''''If you also choose''''' to use my library <tt>[[frame-cmds.el]]</tt>, then a one-window frame will also be deleted when the window is deleted. And ''none'' of this happens when ''Icicle'' mode is off. You are ''choosing'' the behavior you object to. You are inflicting the "extremely disruptive" behavior on yourself.
+
+* I use autoload cookies, yes. If you build your own ##loaddefs.el## file from autoload cookies (most users do not), and if you don't like the <tt>[[misc-cmds.el]]</tt> autoloads, then take them out of your copy. Better yet, if you don't want to use <tt>[[misc-cmds.el]]</tt>, then don't download it or don't put it in your load path. You are choosing the behavior you object to.
+
+//Here's the way it happened: I downloaded a bunch of stuff using ##wikiarea.el## a couple of years ago, with the intention of checking it out when I have the time.  At some point, I got tired of typing in individual autoload statements, and generated a ##loaddefs.el## file for the wiki directory.  Then today I try out Icicles, and am accused of having CHOSEN to use these two libraries, when I did nothing of the kind.  I guess this is my fault in some sense, but it's still a non-obvious and non-standard way of enabling a feature.//
+
+* You only need to customize the [[Face]]s once. If that's too hard, then I suspect '''Icicles''' is not for you. `M-x customize-group Icicles' or else `M-x customize-group' followed by one of these subgroups:
+
+** `Icicles-Completions-Display' for faces in the `*Completions*' buffer
+** `Icicles-Minibuffer-Display' for faces in the minibuffer
+** `Icicles-Searching' for faces used in searching
+
+//As I have done -- I'm not too stupid to customize things.  My mistake was to have included this feature request with a bug report.  Icicles uses a dozen or so faces, and maybe eight or ten of those change background colors to something very bright compared to black.  It takes a couple of minutes to tweak them, would take a couple of seconds to toggle `icicles-dont-change-my-background', and would not be an issue if Icicles used a more subdued color scheme on dark backgrounds.//
+
+* `S-TAB' is bound only in ''Icicle'' mode. It is bound in `icicle-mode-map', and this binding is always in effect in ''Icicle'' mode. In ''Icicle'' mode (only), it is also bound in some other keymaps, including the global map, for key completion --  ''if'' you have not already bound it there to something else. These other-map bindings are removed when you exit ''Icicle'' mode. The check for a pre-existing binding happens each time you enter ''Icicle'' mode, so if you create a new binding and exit and then re-enter ''Icicle'' mode, your binding will remain in effect. For most purposes, however, your binding will be overshadowed in ''Icicle'' mode by the `icicle-mode-map' binding. If you don't like that binding, then you can change it, just as you would change any other binding: ##(define-key icicle-mode-map [S-tab] 'foobar)##. However, if you want to use `S-TAB' for minibuffer completion but not for key completion, then I suggest you model `foobar' after `icicle-generic-S-tab'. See also [[Icicles - Customizing Key Bindings]] and perhaps [[Icicles - Key Binding Discussion]] for more key-binding information.
+
+//No, Icicles always overrides `S-tab' bindings.  Run "emacs -Q", evaluate ##(define-key global-map (kbd "<S-tab>") 'dabbrev-expand)##, then enable Icicles, and you'll see that `S-tab' has been rebound.//
+
+* It is certainly ''not'' true that `S-TAB' for key completion is "completely unrelated to the rest of '''Icicles'''". Not at all. '''Icicles''' includes a lot of features, some of which are more or less dependent on others, but you might say that nearly ''any'' of its major features is "unrelated to the rest". Cycling? Apropos completion? Multi-commands? Multi-completions? Key completion? Progressive completion? Text-property search? Set operations on the candidate set? Saving/restoring candidate sets? Each of these is pretty much ''independent'' of the others, with the exception that progressive completion depends on apropos completion (it makes no sense to provide several prefixes).
+
+//I haven't used multi-* or other features yet, and would rather independently choose whether or not I want them.  I am treating Icicles as anther kind of completion, and expect it to redefine completion where other commands request it.//
+
+* In fact, you do complain that '''Icicles''' has "too many unrelated, nonstandard" features (you can't have it both ways: if you single out key completion as unrelated to the rest, then the rest is related). I think that these relatively independent features fit well together, and I wouldn't be without them. But if that brew is not your cup of tea, then don't imbibe -- just say no to '''Icicles'''. And nothing stops you from writing a library that has only candidate cycling or only regexp matching or only multi-commands or only candidate set operations or...
+
+//I think you summarize things well here.  This bundle of features is something you would not be without.  I would like to use some of these features (the completion), but probably not the rest.  I could probably write my own package to do this, but that would take a lot of time to get right, and it would be much nicer if I could use Icicles' version.  However, Icicles drags in all the other stuff either by default, or in ways that cannot be disabled other than by tweaking the code.//
+
+* '''Icicles''' is very customizable. Some people have even joked about the number of possibilities (and you of course have complained about so many possibilities making it difficult to learn). To me, that's normal, and it's necessary because '''Icicles''' offers something very general, and different people will want to use it in different ways. Is it likely that John or Jane might find something else that they wish were customizable? Sure, and I've been pretty accommodating when presented with a reasonable argument. The last 6 words are key.
+
+//Well, you say above that "all input is useful, and none is ignored."  I guess unreasonable, lazy complainers like me don't count.  Anyways, I appreciate that it is customizable, but not that it is invasive by default.  For an example of the right way to do this, look at ##ido.el## -- it is minimally invasive by default, but if the user sets `ido-everywhere', it rebinds more commands.// -- SeanO
+
+-- DrewAdams
+
+
+[new:DrewAdams:2007-06-11 07:42 UTC]
+: I won't try to respond to all of your interspersed replies. I will say this: 
+
+** If you find a bug, please report it specifically. You say that you think your problems stem from mixing your other customizations with using '''Icicles'''. Please start a bug report from ##emacs -Q##. That doesn't mean that you can't also report bad interactions between '''Icicles''' and particular customizations or other packages. Several such problems have been reported and some have been fixed, either in '''Icicles''' or in the other packages. In some cases, there is no known good solution -- for instance, Ido and '''Icicles''' do not play well together, because they each change minibuffer behavior and in conflicting ways. In sum, the devil is in the details: instead of simply voicing vague complaints about things being bad or breaking, try to identify a particular problem or annoyance. I might agree with you about it or I might not, but it is not likely that a broad-brush complaint will get you much satisfaction, unless you get satisfaction from complaining ;-).
+
+** A constructive solution for poorly chosen face defaults for dark screens is to propose different defaults for use with a dark background. I don't use a dark background and, yes, I haven't bothered to work on that. The defaults that are there now for dark backgrounds were suggested by another '''Icicles''' user -- I accepted them as suggested. The defaults for light backgrounds I did choose, after a fair amount of experimentation, both in ##emacs -Q## and in my personal setup. Feel free to suggest different defaults for use with a dark background -- for each face. You say that you have already customized them for your dark background -- why not send along your definitions, to benefit others? I have no objection to changing the default face definitions for dark backgrounds.
+
+** No, `S-TAB' is not bound in any map other than `icicle-mode-map' if you have already bound it. Follow your own recipe, and then do ##(lookup-key global-map [S-tab])## and you will see that the global binding is still `dabbrev-expand', even in ''Icicle'' mode. If you simply do `C-h k' you will see `icicle-generic-S-tab', however, for the reason I explained: in ''Icicle'' mode, the minor-map binding overrides all others (as always, in Emacs). Please read again my explanation and advice for customizing the key.
+
+** You don't have to "independently choose whether or not [you] want" the various features such as multi-commands. If you use only `TAB' you get the same completion behavior as in vanilla Emacs. If you don't use multi-command features (e.g. `C-RET') then it's just as if those features don't exist. Likewise for cycling candidates, `S-TAB', and all the rest. '''Icicles''' offers you more only if you use its extra minibuffer bindings.
+
+** It is true that, by default, '''Icicles''' substitutes a few commands for the standard versions (e.g. `icicle-find-file' for `find-file' on `C-x C-f'). That's my preference, to make users aware of these features. You can customize an option to opt out and not have that done. That default opt-in might be too "invasive" for you, but it is my preference to do things that way. What would be objectionable would be if there were no way to opt out.
+
+: All input ''is'' useful, and none is ignored. You don't think I'm ignoring you, do you? I think about your input and anyone else's input. That doesn't mean I necessarily am convinced or agree with it, but I do listen and your input does have an impact. A word to the wise ;-): the more concrete the feedback, the more concrete the consideration. -- DrewAdams
+
+[new:DrewAdams:2007-06-12 05:47 UTC]
+:: FYI -- I changed the face defaults for dark-background frames. You might want to give them a try. -- DrewAdams
+
+[new:SeanO:2007-06-12 06:53 UTC]
+::: Thanks for looking into that -- FWIW I customized the relevant faces, and put my choices on my home node.  The new choices look much better, though I personally prefer something more subdued (boxes? agh!).  In case you missed it, there's a hidden problem with the `region' face being temporarily rebound that causes it to flash blindingly white.  Setting <tt>icicle-change-region-background-flag</tt> to nil solves it for me, but that should probably be the default for dark backgrounds.
+
+::: One more thing -- you're strictly correct that `S-tab' isn't rebound in the global map, but the Icicles binding *does* globally override whatever was there before.  When the previous binding was used for completion at point, that bites.  (And yeah, since S-tab is not a user-reserved key, it's basically in a war zone, and I just whack that binding in a hook). -- SeanO
+
+
+[new:DrewAdams:2007-06-12 14:23 UTC]
+:::: I've removed the box on the reminder prompt face for dark backgrounds. I've made the region face change DTRT for dark-background frames also; thanks for that report. FYI, minor mode key bindings always override all other key bindings in Emacs. -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I'm middling new to Emacs and trying to pick it up primarily for the vhdl-mode that is very nice for coding in that language.  I'm using the [[EmacsW32]] variant for this <nowiki>WindowsXP</nowiki> box (because I have no other choice at the company at the moment.)
+
+Anyhow, icicles appeals to me because it's similar to the bufexplorer plugin for Vim and I use that one extensively to keep track of tons of buffers.  I do realize I can do that with C-x C-b but this also seemed to let me just go "forward" one buffer and "back" and that seemed nice.
+
+However I have a problem and it's actually documented in the wiki (though it is subtle.)  On the Icicles Screenshots page, it shows the initial menu-bar menu.  You'll notice that it has a lot of the shortcut keys labeled as <remap> and <switch-to-buffer> and so forth.  If you go next to Icicles in a Nutshell, it shows the menu-bar menu again, however now there are actual keys here.
+
+I think there's a step missing to get from 1 to 2, but I haven't quite figured out how to do it.
+
+If anyone has any suggestions I'm all ears, especially keeping in mind that I cannot remap the keys to swap control and capslock, and that if I start wildly remapping, it's going to break any tutorial I need to read to come up to speed on this.  So remapping needs to be done gently as I become more familiar with Emacs and it's quirks.
+
+Thanks! -- MarkNorton
+
+[new:DrewAdams:2007-06-21 21:19 UTC]
+: I just corrected the screenshot at [[Icicles - Screenshots]]. Actually, you don't see that in '''Icicles''' in Emacs 22, but you should. What you see is what you saw before at [[Icicles - Screenshots]]: ##<remap...>##, because of an Emacs bug. I reported the bug quite a while ago; I don't know if it will get fixed.  The screenshots show what you see in Emacs 20 and 21, which is also what you should see in Emacs 22. You do not need to remap any commands yourself. If you want to prevent '''Icicles''' from remapping some top-level commands, then customize option `icicle-bind-top-level-commands-flag' to `nil'.
+
+: BTW, the screenshot for the '''Minibuf''' shows another bug in Emacs 22, or, rather, in [[EmacsW32]], which is what I used for the screenshots. In the '''Minibuf''' menu, you see `M-' as the key binding for '''Satisfy Also...''' and `C-M-' as the binding for '''Save Predicate to Variable'''. Those bindings are in fac `##M-&##' and `##C-M-&##', respectively. This is a bug in [[EmacsW32]], which I've also reported. -- DrewAdams
+
+[new]Thanks.  Well at least the screenshots are consistent, though I still have the <remap> listed as shown originally in the screenshot.  I'm using [[EmacsW32]] and the "About" page brings up: 
+
+This is GNU Emacs 22.0.990.1 (i386-mingw-nt5.1.2600)
+ of 2007-05-23 on LENNART-69DE564 (patched)
+
+So I'm guessing the bug is not yet fixed.  Anyhow, if I just USE C-x b for instance, it looks like Icicles is working, as I can hit tab and scroll through things so I will take that as a positive sign. -- MarkNorton
+
+[new:DrewAdams:2007-06-27 23:31 UTC]
+Yes, everything should work OK; it's just the key-binding indication in the menu that is incorrect. I don't expect Emacs to fix that anytime soon, personally. -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Any chance of an "Icicles Lite" version, or a quick guide to configuring thus?
+
+Hey, Icicles is great. Good job. Now on with the complaint ;) ... Icicles is really comprehensive and full-featured, but after I recovered from the inspiration and admiration of all that was packed in there, I realized that I originally came to the festivities here for just one thing: the ability to have a plain-vanilla-Emacs that could complete M-x commands based on a substring (or better yet, a series of space-delimited substrings that together form the basis of a 'fuzzy match' -- but substring alone would be good enough) instead of just prefix-matching as Emacs does out of the box. 
+
+Yeah, substring-instead-of-prefix completions for M-x ... that's all I wanted. 
+
+Don't get me wrong, there's lots of extra stuff in Icicles that I didn't realize I'd need, and I will come back to it later, but for now, is there an Icicles "lite" that will just do that and that alone? -- [[Dreftymac]]
+
+[new:DrewAdams:2008-12-23 23:29 UTC]
+Just what is your size concern? Is it disk space, load time, download time...?
+
+A few things to say, which might or might not help:
+
+* If all you want is substring completion, then you can just use [[Ido]] (and there might be other alternatives). Starting with, I think, Emacs 22, Ido is included in the Emacs distribution.
+
+* There is no '''Icicles''' Lite, and probably won't be (unless you write one ;-)).
+
+* If you still want to use '''Icicles''', but pare it down a little, you can try not loading <tt>[[icicles-cmd1.el]]</tt> and <tt>[[icicles-cmd2.el]]</tt>. To do that, you will need to remove the `require's of those libraries in your copy of <tt>[[icicles.el]]</tt>, and <tt>[[icicles-mode.el]]</tt>. It's likely that the libraries are coupled a bit more than that, so you might need to fiddle a little more with `require's or even comment out some other code. Try it and see. The reason: ##icicles-cmd1.el## and ##icicles-cmd2.el## are large, and they provide user top-level commands that you might not need.
+
+* Each of these files represents only commentary and can be removed to save disk space: <tt>[[icicles-doc1.el]]</tt>, <tt>[[icicles-doc2.el]]</tt>, and <tt>[[icicles-chg.el]]</tt>. 
+
+* You can also remove all of the source files (##*.el##) after byte-compiling them, to save disk space. The size of the source files today is 2.34 MB. The size of the byte-compiled files is 1.09 MB. (That's byte-compiling with Emacs 20; dunno if Emacs 22 makes the ##*.elc## files smaller or larger than Emacs 20.)
+
+* '''Icicles''' also takes advantage of some other libraries that are optional, if they happen to be loaded -- see [[Icicles_-_Libraries#Optional]]. A few of those, such as <tt>[[lacarte.el]]</tt>, are included in the download, if you use, for example, <tt>[[icicles-install.el]]</tt> or <tt>[[get-icicles.sh]]</tt>. You can edit the download scripts to reduce download time, if that's a concern. Not loading those optional libraries will also reduce the '''Icicles''' load time and memory footprint.
+
+I can't think of any way to reduce the load time or memory footprint, short of eliminating (e.g. commenting out) code. Removing ##icicles-cmd[12].el(c)## and optional libraries will help with that. However, keep in mind that any code edits you make will need to be repeated if you later upgrade to a newer '''Icicles''' version. You could make yourself a smaller '''Icicles''' and decide not to upgrade for a while, and then gradually uncomment sections of code if you want to try other features later. But you're on your own for that.
+
+If size is really a problem for you, you don't want the hassle of fiddling with code, and you really want only substring completion, then I'd say try an alternative library. Sorry about that. Perhaps someday I'll break it up more and use some `autoloads', but don't hold your breath waiting. ;-) -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+basically, i just want to say that icicle home page really is geeking unreadable. I've heard it mentioned few times a year since about 2006, and the few times i tried to see what it is, spend 10 secs on the home page, came away not knowing what it actually do, and left. Today, i heard it in some blog again, so i think i'll actually give it a try. The name icicles really didn't help. The home page is one complex feature description, too complex, too many, too much. I haven't downloaded it yet, but if i think what it is, it really should just say: Icicles is a emacs extension that lets you have smart command completions everywhere.... something like that, but be more accurate and concrete.
+
+also, have you considered having its own domain or somewhere dedicated instead of emacs wiki? Because, emacs wiki is not really suitable. For example, the icicles home page is huge list of separate files. Little hierachy and focus... So to address that, would make emacswiki not suitable... perhaps google code would be a good candidate. (i use it, and several few major emacs packages e.g. js2, yasnippet, etc)
+
+i haven't read in detail, but i think the home page should reduced by at least 1/3. Of course you might disagree with me on all aspects... but anyway just wanted to put up one feedback. -- [[Xah Lee]]
+
+
+[new:DrewAdams:2009-02-21 17:26 UTC]
+Hello, Xah. Different strokes for different folks. It's OK if you don't like it. ;-)
+
+The first sentence at '''[[Icicles]]''' says that '''Icicles''' is "an Emacs library that enhances [[minibuffer]] [[completion]], that is, input completion."  If it takes more than 10 sec to get the gist of that summary with glossary links, then I'm not sure that any succinct summary will help. 
+
+The second sentence on the page gives a different, more opaque summary, by a user: "'''Icicles''' is to `TAB' completion what ‘TAB’ completion is to typing things manually every time." That's a bit cryptic -- it makes sense really only after one has some familiarity with '''Icicles'''.
+
+Wrt your guess: No, '''Icicles''' is not about "smart command completions" (depending on what you mean by that). It is about completion generally, but primarily minibuffer completion. 
+
+Minibuffer does not imply command. The minibuffer is used for many, many things in Emacs -- a `grep' of `completing-read' in the vanilla source code will show this. It is by no means limited to entering Emacs commands (`M-x'), file names (`C-x C-f'), and buffer names (`C-x b'), though that is a not infrequent misconception.
+
+'''Icicles''' does have lots of features, and some of them can be complex. But it is also simple to use and requires no doc, for many of the features. I try to document most of the features, and some of them in some detail, but I also try to make '''Icicles''' accessible to people who are not interested in reading doc. My guess is that most '''Icicles''' users have not studied much of the doc, but that those who use '''Icicles''' a lot have read more.
+
+To the end of getting users started who are not interested in doc, the first page:
+
+* Starts with a summary description of '''Icicles''' features -- what you can do with it (16 1-line bullets) -- [[Icicles#MainFeatures|Main Features]]
+
+* Tells you how to obtain and install '''Icicles''' (3 1-line bullets) -- [[Icicles#ObtainingAndInstalling|Obtaining and Installing]]
+
+That's it! Nothing more -- just what it does and how to install it. 
+
+That should be enough to get started. The rest of the first page is a [[Icicles#TOC|table of contents]] to the doc, so you can get to a specific topic you might (later) be interested in. The most important topics are bold. The topics are grouped by user group: [[Icicles#Newbie|newbies]], [[Icicles#AllUsers|all users]], [[Icicles#LispProgrammers|Lisp-programmer users]]. The page ends with links to bug, reference, and discussion pages (e.g. indexes).
+
+The doc pages are generally in pedagogical order, with '''Next''' and '''Previous''' page links, in case someone does want to learn partly by taking a reading tour. And here, again, the same principle applies: it starts with a one-page overview of what you can do and how to do it ([[Icicles - Nutshell View]]), followed by pages that provide more detail regarding each of the features.
+
+That nutshell page itself starts with a [[Icicles - Nutshell View#READMEforNonReaders|README for Non-Readers]], which tells you explicitly that you do ''not'' need to read the comprehensive doc: just load <tt>[[icicles.el]]</tt> and do `M-x icy-mode'. It tells you how to get help as you go along, so that you can learn by doing. It states clearly that you need "read no more -- just try it!".
+
+Dunno what more to say about this. Someone who reads more than s?he wants to should not then complain about too much doc [http://query.nytimes.com/gst/fullpage.html?res=9C02E0DF163EF93BA15757C0A9649C8B63]. Someone who spends only 10 seconds reading, can't figure out from that what '''Icicles''' is for, and doesn't give it a test drive to see, should not complain about too much or too little doc. You can lead an ass to the water, but you cannot make it drink.
+
+No one is required to like or use '''Icicles''' or its doc. But I don't buy the argument that the doc is "too much". No one is required to read it all, but it's there for those who appreciate it. It is also available from Emacs, in a couple of different ways. And the first parts of the doc present an overview and get you started.
+
+My experience is that people who continue to use '''Icicles''' eventually do dive into and study different doc topics, and they do find them helpful. For other people, here's my advice: ''"If it hurts, don't do it!".'' ;-) -- DrewAdams
+
+
+[new]
+hot damn. Tried to install icicles, came to this page ([[Icicles - Libraries]]), but then there's 100 options and buttons and knobs. Drew, if you want icicles to be professional quality software, make one single download. User don't have to go thru one hundred goddamn list of things and which is optional and which is required and their interactions and details with one hundred third-party ways to install them in bundle. [[Xah Lee]]
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Thanks for letting me know about ''Icicles now provides file-name completion for shell commands''.  –- PatrickAnderson
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I'm used to [InteractivelyDoThings IDO]: fuzzy matching; list of matches in the minibuffer; cycling with arrow keys; narrowing as I type; ##RET## selects the foremost match. Everything is automatically "there" when I hit ##C-x C-f## to find a file or ##C-x C-b## to switch buffer. How do I get similar behavior in Icicles? -- [[112.84-48-193.nextgentel.com]] 
+
+
+[:IdoAndIcicles]
+[new:DrewAdams:2009-05-02 05:13 UTC]
+Short answer:
+
+You can get some similar features and behavior as in [[Ido]]. However,
+'''Icicles''' is not Ido.  The '''Icicles''' UI is intentionally different from the Ido UI. It's probably a
+mistake to look for complete reproduction of Ido behavior in '''Icicles''' -- you're bound to be disappointed at some point. If you want exactly the same behavior as Ido, please use Ido. 
+
+
+Longer answer -- see these sections for info on how to get some behavior similar to Ido:
+
+* [[Icicles - Alternative Libraries]]
+
+* [[Icicles - Fuzzy Completion#ScatterMatchCompletion|Icicles - Fuzzy Completion]]
+* [[Icicles - Icompletion#CompletionsIcompletion|Icicles - Incremental Completion]]
+
+* [[Icicles - S-RET|Icicles - Accept Input Without Confirmation]]
+
+* [[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|Icicles - Show Completions Initially]]
+
+* [[Icicles - More About Multi-Commands#DeleteObjects|Icicles - Deleting Objects On the Fly]], [[Icicles - Customization and General Tips#icicle-deletion-action-flag|turning it off/on]]
+
+* [[Icicles - Special Characters in Input Patterns#Escaping|Icicles - Toggle Substring/Regexp Matching]], [[Icicles - Customization and General Tips#icicle-regexp-quote-flag|the option]]
+
+* See other discussions on this page, as well as this help-gnu-emacs discussion, 2009-02-01: [http://lists.gnu.org/archive/html/help-gnu-emacs/2009-02/msg00014.html]
+
+HTH -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+A suggestion: A 2-bit guide to easing into icicles from ido.  How to keep ido for the things you use it for (say file and buffer switching) but still play with the rest of icycles, and convert to icicles' actions as and when they appeal to me.  I say this because it seems that there are a lot of ido users (it's an easy startup these days), and I guess that many like me would like to try to get some of the cool features of icicles, but may not be in a "deconstruct and reconstruct my workflow" mode.  I know that one of the selling points of icicles is that you get the same interface everywhere, but it can be pretty painful to just switch those precious few core functions over to something, which, even if it may ultimately be better, is FTM more raw difference than my brain can cope with.  
+
+It's true that a good way to "enter in" is just to start playing (as you suggest), but if it were easy to play AND have instant access to everything I'm used to, it makes for less stress.  (Probably I should just map a key to toggle (icy-mode).  OK, just did.  That already feels better.)
+
+Also, it'd help the bewildered and ADHD among us to be able to see one or two screencasts.   Perhaps one showing the most-used features, and another with a selection of the less often used enhancements.  -- ScoBe
+
+
+
+[new:DrewAdams:2009-05-13 17:25 UTC]
+Dunno what to say. See above -- ''just'' before your post. Again, the short answer is that you ''cannot'' use Ido with '''Icicles''' (without toggling one or the other off) -- they use the minibuffer in incompatible ways. '''Icicles''' uses it pretty much the same way Emacs uses it; Ido does not.  You can use '''Icicles''' with [[IswitchBuffers|IswitchB]], which is similar to Ido for buffer switching. And you can use '''Icicles''' with [[IcompleteMode|Icomplete]] to show prefix matches in the minibuffer.
+
+%%IswitchB%% is essentially an extension of Icomplete to let you switch buffers, and Ido is essentially an extension of %%IswitchB%% to let you also find files. (Don't sue me for this characterization; think of it as a historical explanation. :-)) But Ido, unlike the others, changes minibuffer behavior in ways that are very different from vanilla Emacs and which render it incompatible with '''Icicles'''. 
+
+Anyway, I'm repeating what is said better in the links noted (just) above. If you are really interested in keeping some of the Ido UI behavior while you use '''Icicles''' (''not'' what I recommend), then read those linked sections.
+
+Wrt screenshots, an overview tour, and most vs least used/important '''Icicles''' features:
+
+* See '''[[Icicles - Nutshell View]]''', the first real page of the '''Icicles''' doc. This has some screenshots and try-this, step-by-step tutorial introductions to the main features. (The nutshell view is also at the beginning of the doc in <tt>[[icicles-doc1.el]]</tt>.)
+* Or see EmacsNewbieWithIcicles, for a different tour, oriented more toward [[EmacsNewbie]]s.
+* ''All'' of the '''Icicles''' screenshots are gathered together on the [[Icicles - Screenshots]] page, with links to their individual occurrences in the '''Icicles''' doc. 
+* In the '''Icicles''' [[Icicles#TOC|table of contents]], the '''bold''' links go to the most important pages. The links to the two '''''most''''' important pages have shaded backgrounds.
+
+HTH -- DrewAdams
+
+----
+
+
+[new:EthanGlasserCamp:2009-05-26 20:01 UTC]
+
+Hi, Icicles is very interesting to me, but I have some criticisms.
+
+
+1. Icicles breaks the grid-alignment in Completion-list buffers. Is this intentional? I find it hurts scannability.
+
+2. Why the inconsistency between previous/up in some variable names like icicle-previous-prefix-candidate and icicle-modal-cycle-up-keys? Not that you can really change it at this point..
+
+3. I'm aware that being too much like iswitchb/ido isn't something that appeals to you, but I do think that icicles could be more iswitch-y without compromising its generality. For example, if there's only one completion that matches what you've typed so far, RET could select it. (It might be that S-RET does this on machines besides my own.) Similarly, C-s and C-r could do next/prior.
+
+4. I sort of hate that ZSH-ish completion behavior of not differentiating characters I've typed from characters from the current completion candidate. iswitchb does this really right in my opinion -- completion candidates are distinct from things you've typed, and typing always adds characters to the end of what you've already typed. C-s/C-r changes the completion candidate, but "point" is still at the end of what you've typed. You probably use icomplete+ so don't need/want this, but I often prefer to whittle down candidate lists by adding more characters, which is impossible once I've pressed next/prior once. (Instead I have to press C-l first, which isn't impossible, but neither optimal.)
+
+Rereading the above paragraph, I don't think this is especially clear. To see what I mean, try creating buffers called "foobar" and "format". In iswitchb, completion stops at "fo", and you use C-s/C-r to cycle candidates. Typing "r" will give you "for", which will complete to "format". By contrast, in icicles, "fo" is replaced with "foobar" or "format", and typing "r" will give you "foobarr" or "formatr", neither of which is helpful.
+
+5. Some kind of sorting could be made available for completion candidates, sensitive to history. This could be overridden for certain commands -- particularly switch-to-buffer, which would sort according to buffer stack.
+
+6. Similar to the above -- I feel like apropos completion ought to match prefixes first. But then it might just be that for certain things (buffers) I want apropos completion, and for other things (files) I want prefix completion.
+
+OK, that's all. Sorry I can't offer patches, but since you write about Icicles all over EmacsWiki I assume you might want to know how you could make your project more useful to me :) -- EthanGlasserCamp
+
+[new:DrewAdams:2009-05-27 01:04 UTC]
+Thanks for your feedback, Ethan.
+
+1. Unlike vanilla Emacs, the display in `*Completions*' is customizable. You can even adjust it on the fly. You can easily get a strictly tabular display, if that's what you want (at the cost of showing fewer candidates). See [[Icicles - Completions Display#icicle-candidate-width-factor|Customizing and Adjusting Completions Display]].
+
+'''Icicles''' lets you use all kinds of things as completion candidates, including multi-line candidates and [[multi-completion]] candidates. A one-size-fits-all policy would be unnecessarily rigid. What is optimal for file names is not necessarily optimal for symbol names or doc strings. If you use '''DoReMi''', then you can easily adjust the display dynamically, regardless of the customized values of the options ('''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]</tt>'''') that control the display.
+
+2. Up/down refer to the (default) ''keys'' `up' and `down' (often written `##<up>##' and `##<down>##'). Previous/next refer to the candidates, not the keys. But your point is taken. And no, it's not too late to change names; I have no problem doing that. I will think about this one, but a priori I'm not convinced.
+
+3. Yes, that is what `S-RET' is for. If it doesn't work on your machine, bind the command to a different key. Bind it to `RET', if you like. ;-)
+
+`C-s' and `C-r' invoke [[Isearch]] in the minibuffer, as they should. '''Icicles''' is like vanilla Emacs wrt the minibuffer: you can use it for general editing. '''Icicles''' deals with all kinds of completion candidates, including multi-line candidates, and general editing in the minibuffer is therefore more important and therefore more usable in '''Icicles'''. There is no shortage of keys you can choose to cycle next or previous. Choose `C-s' and `C-r' if you are so inclined or that is your habit.
+
+4. I have no idea what you're talking about here. Typing in the minibuffer inserts the characters you type at the cursor. Always. Nothing special about that. if the cursor is at the end, then that's where characters are added. You can choose the initial cursor position (option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-value|icicle-default-value]]</tt>'''') and the cursor position during cycling (option '''`<tt>[[Icicles - Customization and General Tips#icicle-point-position-in-candidate|icicle-point-position-in-candidate]]</tt>'''').
+
+From your later mention of next/prior, I guess you're talking about cycling. Yes, when you cycle, the current candidate is in the minibuffer for editing. You can do anything you want with that text. Yes, to get back your actual input, use `C-l'. But it sounds like you perhaps just don't use the right values of `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate'. Sounds like you want to put the cursor after the current candidate, not before it. People have different preferences here, in particular depending on whether they use DeleteSelectionMode.
+
+If you have buffers `foobar' and `format', and you use `C-x b' and type `##fo TAB##', you see the two candidates in `*Completions*' (not in the minibuffer, as in Iswitchb, unless you use Icomplete). If you then type `##r TAB##', then your input is completed to `format'. This is no different from vanilla Emacs. There is no cycling involved here.
+
+Why isn't `for' completed to `format' without your needing to hit `TAB'? Because `C-x b' (`icicle-buffer') uses [[lax]] completion, by default. If you use a different command from `icicle-buffer', or you customize option 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'''', then you can get strict completion, and you won't need to hit `TAB'. (But you will sacrifice letting `C-x b' create a new buffer.)
+
+Cycling replaces your input with a complete candidate, yes. If you do that, don't also type `r'. That's all. You use either completion (e.g. type `r' and hit `TAB') or [[Icicles - Cycling Completions|cycling]].
+
+I think you are simply trying to use your existing habits in a new environment. You will either need to retrain your fingers and brain or give up and return to your familiar tools, to which they are adapted. ;-)
+
+5. Not sure what you mean. You can easily sort the candidates, in many different ways, some of which involve their previous use (history).
+
+For `icicle-buffer', since you mention choosing buffers, you even have an option to customize, for the default sort function: '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>''''. (But that doesn't prevent you from changing the sort order on the fly.)
+
+For buffer switching, the sort orders available include these (in addition to several that are available for most other completion types as well):
+
+* ##by last access## (buffer stack order)
+* ##*...* last## (put special buffers last)
+* ##by major mode name##
+* ##by mode-line mode name## (the name in the mode line can be different from the major mode name)
+* ##by file/process name## (file name for a file buffer, process name for a process buffer)
+
+A single key (`##C-,##') cycles among the possibilities. A single key (`##M-,##') swaps with an alternative sort order, so it's simple to go back and forth between two sort orders that you use the most. It takes two keystrokes (##`C-9 C-,##') to reverse the sort order.
+
+For other types of completion (file names, whatever), other sort orders are available. And you can easily define your own.
+
+The fact that you are focused on buffer switching suggests that you have perhaps not played much yet with '''Icicles'''. In vanilla Emacs (and Ido etc.) buffer-switching can constitute a large part of one's use of completion, but in '''Icicles''' it constitutes a very small part. And you can always use Iswitchb with '''Icicles''', if that's really your wont. 
+
+See [[Icicles - Sorting Candidates]].
+
+6. Apropos completion is [[regexp]] completion. Or it is substring completion, if you use the toggle `##C-`##'. I don't understand your question or request, here. Prefix completion is not apropos completion.
+
+HTH -- DrewAdams
+
+[new:EthanGlasserCamp:2009-05-29 01:21 UTC]
+
+Hi, thanks for your response!
+
+1. Ah, I had seen icicles-completion-width-factor and been completely confused by the explanation.  It's not easy for me to visualize window width divided by candidate columns, and reading "you can install another library to see what this means" didn't help. I set it to 100 and got my tabular layout again. I will think about a way to word an explanation for this variable that might be clearer. How about adding a couple lines like this:
+
+icicles-completion-width-factor controls how much to compromise a columnar layout of completions in order to save vertical space. 100 means "columns should never overlap". 0 means "fit as many items on a line as you can". How it works is as follows: for each column of completion candidates, find the widest candidate in that column. The width of the column is a percentage of the width of that candidate. 100% means no overlap; progressively smaller percentages mean that columns will overlap that widest candidate (although candidates never overlap; see screenshot). icicles-completion-width-factor is this percentage.
+
+A few screenshots might also be useful for those of us who don't want to install DoReMi.
+
+2. Actually, I wouldn't worry per se until you get a bug report saying "I spent 2 hours wondering why my setting for icicles-modal-cycle-previous-keys wasn't working, until I found out that the variable didn't actually exist!" But it was a little bit of a challenge to keep straight which was which when I was customizing. (Similar remarks apply for the package name "icicles" versus the namespace being "icicle-".)
+
+3. S-RET actually isn't exactly what I want, but it's pretty close, so thanks.
+
+It's true that I can configure C-s and C-r to do what I want, but now I'm curious if you've ever actually used C-s/C-r in the minibuffer, and what for. My feeling is that if you want Icicles to be wonderful out-of-the-box, adding default bindings for C-s/C-r would be a net win for people used to Iswitch, while being a net loss for people who do iterative search in the minibuffer -- and since I expect the latter to be a very small group indeed, I would consider it progress.
+
+4. Sorry about the unclear explanation. I think you understand what I mean, and the suggestion of icicle-point-position-in-candidate and icicle-mark-position-in-candidate are pretty close to the mark -- but I bet they don't work for apropos cycling. (Plus, by and large I don't like DeleteSelectionMode.) As a user, when my input gets replaced, I get a little antsy, even if I can bring it back with C-l.
+
+My position is, "Cycling stomps on what you have in the minibuffer, making iterative typing/cycling impossible". Your position seems to be "So don't do iterative typing/cycling" :). I feel that there is potential for icicles to support this feature without compromising its vision.
+
+5. Ah, I think I recall having stumbled over the sorting documentation at some point and then forgotten it. Thanks. If I understand the documentation correctly, icicle-buffer-sort is only used by icicle-buffer and icicle-buffer-other-window, which makes changing it exactly what I want, but I was hesitant to do this in case it should use icicle-sort-buffer in other contexts. (Which is silly, because I can always change it again, but there you are.)
+
+You say "The fact that you are focused on buffer switching suggests that you have perhaps not played much yet with Icicles. In vanilla Emacs (and Ido etc.) buffer-switching can constitute a large part of one’s use of completion, but in Icicles it constitutes a very small part." Do you mean in terms of the things you can complete? Or in terms of percentage of daily usage? Because I constantly have a zillion buffers open and switch back and forth all the time. I'm curious what workflow you use where that isn't true, or where you find yourself completing other things even *more* often. dabbrev?
+
+6. Well, here's what happened. I bound TAB to be apropos completion (to be more iswitch-y). Then, when finding a file, I typed in "Play" and hit TAB (actually I probably hammered on the TAB key three or four times, a habit I've picked up over the years). Since I'm used to prefix completion in the shell, I expected it to complete "Play/". Instead it cycled to ".aplayrc" or something like that. So this item is sort of "Gosh, wouldn't it be nice if that didn't happen?". Item #8 was going to be that I wanted a pony, but I couldn't figure out how to word it ;).
+
+Icicles really appeals to me because I've never seen a more sophisticated interactive querying system. M-*, C-~ and deleting individual results blew me away when I first saw them. I have often wanted features like that in, say, Google or aptitude. So I'll probably play around a little more and see if I can't make icicles more like what I want, even if I've never wanted features like those in emacs. Thanks for all your time and work. -- EthanGlasserCamp
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+Hello Drew,
+
+I have spent whole day on learning about Icicles completions. Absolutely marvelous. Thanks for the package!! 
+
+When during the typing a single candidate is found icicles automatically inserts it in original buffer. And each time I find myself continue typing by inertia and deleting characters back. Is there an option to deactivate that behavior (i.e. RET to be required)?
+
+Also thanks for automatic help navigation - the brightest idea ever!!
+I would like to implement the same facility in my ESS; is it possible? Is it  documented somewhere? The row code of icicle-help-on-previous-prefix-candidate
+unfortunately could not be decoded by my half-cooked e-lisp brain.
+
+Thanks a lot. -- RedBlue
+
+[new:DrewAdams:2009-09-03 02:09 UTC]
+Here's the story. Option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' controls whether '''Icicles''' uses the sole completion without waiting for you to hit `RET'. The default value is `nil', meaning it does not do that -- you must hit `RET'. However, for a few commands, and symbol completion (`M-TAB') is one of them, the command binds the option to `t' to impose a no-`RET' policy. Generally, this is preferable.
+
+So my first suggestion would be to try to get used to the behavior. ;-)
+
+However, I've just added a new option, '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'''', that will give you a little more leeway. If you customize this to a non-zero number (the default is zero), then '''Icicles''' will wait that many seconds before automatically accepting the sole completion.
+
+If you edit (type or delete a character) before the delay expires, then the automatic acceptance is annulled. So you might want to give this a try: [[Customize|customize]] the option to some delay, say 0.8 sec, and then either wait to have '''Icicles''' accept the sole completion after that delay, or type or delete a char before that delay. If you change your mind, and want to accept the sole completion after all, just hit `TAB' again (and wait the delay).
+
+See [[Icicles - S-RET#icicle-top-level-when-sole-completion-delay|Icicles - S-RET]].
+
+You'll need to download the '''Icicles''' libraries again, to take advantage of this feature -- I just added it in response to your post. Thx -- DrewAdams
+
+[new:] 
+Thanks for the feature. I was actually thinking of a delay after the completion - user input is prohibited for a while after the candidate is inserted (may be with exception of a "space" or possibly symbols in general). This way users will most likely even not notice any delay, nor before nor after the completion. -- RedBlue
+
+[new:DrewAdams:2009-09-03 16:09 UTC]
+The delay does occur after completion. When there is only one completion of your input, that completion is put in the minibuffer (and highlighted dark green). If you don't edit it (type or delete something), then after the delay the input is accepted automatically, without your needing to hit `RET'. If you like what you see, and you don't want to wait for the delay, just hit `RET' immediately -- no delay. If you don't like what you see, edit it and continue -- no delay. The delay kicks in only if you do nothing. -- DrewAdams
+
+[new:]
+Sorry, I didn't put it in right words. I meant: after the completion  has already taken place and candidate has been inserted in the original buffer. So that if sole completion is found, it is immediately inserted in the buffer and all my additional input (except symbols and space) is ignored for a predefined delay say .8 secs.
+
+It's just a suggestion. Completion is almost perfect without that. Thanks a lot.  -- RedBlue
+
+[new:DrewAdams:2009-09-03 17:43 UTC]
+I see. No, that wouldn't be feasible. Once the completion is accepted, completion is finished. It is inserted by code that runs after completion, using the result of completion (the candidate you chose). The only possibility at that point would be to start over in some way -- e.g. use `##C-_##' to undo the change, and then re-complete. And you can do that anyway, after you mistakenly type a few extra chars. 
+
+My suggestion is to try the default behavior a little more. If you still don't like it, try it with the delay. If neither suits you, you could look into some other symbol-completion mechanism. The wiki has some: [[CategoryCompletion#BufferTextCompletion]]
+
+'''Icicles''' is mainly for minibuffer completion, not completion of text in buffers. `icicle-lisp-complete-symbol' (`M-TAB') is one of the exceptions. -- DrewAdams
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+1.
+<pre>
+For Icicles cycling that acts on the candidates
+</pre>
+cool! how to change keys which act on candidates, default keys is " ‘C-next’, ‘C-down’, ‘C-prior’, or ‘C-up’." Your Icicles is so strong, I'll take time to learn to use it.
+
+2. 
+<pre>
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+M-x icicle-color-theme TAB C-g, but now  it cancel color-theme-aalto-dark and restore old color theme
+M-x icicle-frame-bg antiquewhite4: #8B8B83837878, now frame background color is antiquewhite4
+M-x icicle-frame-bg TAB C-g, and it does not restore old frame background color. 
+</pre>
+
+3. what's the difference between `icicle-frame-bg' and `set-face-background' when icy-mode is on?
+
+4. Are there any way to use `icicle-color-theme' with cycling and acts on the candidates when icy-mode is off? -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-24 05:07 UTC]
+1. You need to read a little of the '''Icicles''' doc, especially if you want to customize it. See [[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|Icicles Cycling Keys]].
+
+2. Yes. For `icicle-frame-bg', I use the normal behavior: `C-g' cancels the current command (only). It is `icicle-color-theme' that is exceptional in this regard.
+
+It's a choice; I can do it either way, for `icicle-color-theme'. The way I chose is to take a single color-theme snapshot, only the first time you use `icicle-color-theme' (per Emacs session), so that any use of `C-g' thereafter (or any use of `color-theme-snapshot', which is the ##[Reset]## pseudo-theme choice) restores that theme or color situation that was current before you started.
+
+This choice is in keeping with how ColorTheme itself works: it takes the snapshot for ##[Reset]## only once. But I guess it is a bit confusing, being exceptional in this regard (and I failed to document this).
+
+Do you prefer that `icicle-color-theme' take a snapshot each time it is called, so it restores to the state you had when it was called -- IOW, so it acts like `icicle-frame-bg'? I can do that. Or perhaps I should let a prefix arg force a new snapshot, but otherwise take a snapshot only the first time (as now). What do you think?
+
+3. `icicle-frame-bg' and `set-face-background' have nothing in common. The former affects the frame background (which is the background of face `default'); the latter affects the background of a face you choose. In ''Icicle'' mode you can choose the face and the color for it using WYSIWYG candidates, but otherwise there is nothing special about it. `icicle-frame-bg' is an '''Icicles''' [[multi-command]]: you can use `C-next', `C-mouse-2', etc. to act on any number of candidates (colors) in the same command invocation.
+
+4. Not sure what you're asking. It sounds like you're asking whether you can use an '''Icicles''' multi-command as such with ''Icicle'' mode turned off. The answer to that is no. With ''Icicle'' mode turned off, multi-commands act like normal Emacs commands: all you can do is use `RET' to choose one candidate (color theme, in this case). Also, with ''Icicle'' mode turned off, there is no [[Icicles - Cycling Completions|cycling]] of candidates (let alone acting on them), no [[apropos completion]], no [[progressive completion]] -- in short, no '''Icicles''' features. -- DrewAdams
+
+[new]
+1. OK
+
+2. If I press `C-g' when execute icicle-color-theme, icicle restore old color theme, how do I exit command icicle-color-theme but not cancel my new color theme which I change before execute icicle-color-theme?
+
+3. sorry, my mistake.what's the difference between `icicle-frame-bg' and `set-background-color' when icy-mode is on?
+
+4. yeah, I do mean that and I see. -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-24 15:28 UTC]
+2. `RET'. Just exit the minibuffer normally, instead quitting with `C-g'.
+
+BTW, I think what I'll do is, by default, take a snapshot each time, so `C-g' restores the situation before you invoked the command. And then let you override this, preventing a new snapshot being taken, by using a prefix arg. WDYT?
+
+3. Same answer, essentially (did you read it?). In ''Icicle'' mode, `set-background-color' lets you choose the color using WYSIWYG candidates, but otherwise there is nothing special about it; it is an ordinary, vanilla-Emacs command. `icicle-frame-bg' is an '''Icicles''' [[multi-command]]: you can use `C-next', `C-mouse-2', etc. to act on any number of candidates (colors) in the same command invocation. -- DrewAdams
+
+[new]
+2. `RET' does not work. 
+<pre>
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+M-x icicle-color-theme RET, I get error tip: "Symbol's function definition is void: ", and now  it cancel color-theme-aalto-dark 
+and restore old color theme
+</pre>
+and if use "RET", I M-x icicle-color-theme color-theme-, if I want to cancel to execute icicle-color-theme, I first must delete "color-theme-" which I typed.
+I'm not very understand your meaning, but it sounds good, :)
+
+3. Do there have multi-command like icicle-frame-bg to set face background, e.g. icicle-face-bg? -- [[ahei]]
+
+[new:DrewAdams:2009-11-24 16:56 UTC]
+2. Report a bug: `M-x icicle-send-bug-report' -- it works for me. Provide a precise recipe etc. Your first line shows that `RET' does work. I don't follow your explanation at all, sorry. Please try to rephrase it. Stick to short sentences or just a recipe of steps. And this page is not the place for reporting bugs.
+
+3. No. You can see this by doing `C-h f icicle S-SPC face'. And no, I won't be creating such a command. You can define such a command if you need it. It's as easy to define an '''Icicles''' multi-command as it is to define an ordinary command -- see [[Icicles - Defining Icicles Commands|Defining Icicles Commands]]. -- DrewAdams
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+i discovered icicles long ago, but didn't opt for it since i really liked ido for handling my buffers and finding files.  i'm running into icicles again and would like to incorporate it into my workflow.  is there a way to disable icicles for buffers and finding files?  i'd like to have ido handle those two tasks.  -- [[vinhdizzo]]
+
+[new:DrewAdams:2009-11-24 15:47 UTC]
+No, I'm sorry. [[Ido]] uses the minibuffer in incompatible ways; '''Icicles''' uses it essentially the same way vanilla Emacs does. You can get some of the Ido behavior and still use '''Icicles''', if you want, but you cannot use both Ido and '''Icicles''' at the same time (both modes active). See [[#IdoAndIcicles]], above, for more information. -- DrewAdams
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Any way to stop Icicles from shirking the completion window to fit the contents? I like the default Emacs behavior which splits the current window in half and shows completions in one of the half windows. -- [[Anonymous]]
+
+
+[new:DrewAdams:2010-10-09 23:19 UTC]
+Yes, see [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-text-scale-decrease|icicle-Completions-text-scale-decrease]]</tt>''''.  See also the other options that affect the display of `*Completions*'. -- DrewAdams
+
+
+[new]
+Thanks, that solves one problem, the text is not rescaled anymore, but the completion window is still resized. I'd like to keep it as a half window like default Emacs completion works. I found the option icicle-Completions-window-max-height, but I don't want to specify a maximum height. I want Icicles to create an equal size split window of the screen like pop-to-buffer works in vanilla Emacs.  -- [[Anonymous]]
+
+
+[new:DrewAdams:2010-10-10 14:12 UTC]
+Then you are out of luck. '''Icicles''' is not vanilla Emacs.  It lets you use completion for many more things in many more ways.  In particular, the set of matching completions at any time can vary widely depending on the context.  And the `*Completions*' window is used more, and differently, than in vanilla Emacs --- in particular, it is more important to be able to see more candidates at once. 
+
+'''Icicles''' automatically reduces the `*Completions*' window to adjust to fewer candidates, to save screen real estate.  If you find that the maximum space allowed for `*Completions*' is too great for you, then you can reduce that maximum height.  And, since different commands can have radically different numbers of candidates and make very different use of them, you can also set the maximum height on a per-command basis.  See [[Icicles - Completions Display]].
+
+This is the design and it is intentional.  I'm open to hearing about particular use cases, but a simple "''I wanna''" is not convincing.  I understand that you are not happy, but unless you can convince me of a reasonable use case I'm afraid your alternative is to not use '''Icicles'''. -- DrewAdams 
+
+[new]
+
+Standard Emacs completion window is better, in my opinion, because the beginning of the completion list is always at a fixed position, so I instantly know where to look, I don't have to search with my eyes the beginning of the list, because this location doesn't change every time the contents of the completion window changes. Screen real estate is not really an issue for me, because when I do completion then I usually look at the completion window, not at the other parts of the frame.
+
+When performing a frequent operation it is important to have anchors which helps you do the same operation again and again. Having the beginning of the split completion window at the same position is such a visual anchor for me.
+
+Anyway, I thought it was a trivial change, because all operations called the same fit to contents function (at least that's how I'd do it) and it involves simply adding an option (leave split window size alone) which this function would check and then do nothing instead of resizing the window. But I don't know anything about icicles internals, so it might be implemented in an other way. -- [[Anonymous]]
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Icicles is quite overwhelming, so I tried to use individual commands first instead of enabling icy-mode. When I tried icicle-occur (with icy-mode disabled) and pressed S-tab then I got the message: backtab is undefined.  Prefix (tab) completion works.
+
+Is it normal behavior? Or icicle-occur doesn't work without enabling icy-mode? -- [[Anonymous]]
+
+[new:DrewAdams:2010-10-10 17:31 UTC]
+1. The behavior offered by '''Icicles''' is encapsulated in a minor mode.  When you turn off ''Icicle'' mode you are left with the vanilla Emacs behavior.  That's the point.
+
+Thus, most of the '''Icicles''' commands do not work unless you are in ''Icicle'' mode.  I could raise an error in case you call such a command outside ''Icicle'' mode, but I don't bother to.
+
+About the only commands that work outside ''Icicle'' mode are those that replace standard commands (see [[Icicles - Standard Functions Redefined]]), and in such cases they typically have the same name but with the prefix `icicle-', and when you are not in ''Icicle'' mode they just do what the vanilla commands of the same name do.
+
+2. '''Icicles''' can be overwhelming if you let yourself get overwhelmed easily. ;-)  There is no reason not to take your time and learn it slowly.  For the most part you can carry on as usual without noticing much difference from vanilla Emacs.  For example, if you don't use `S-TAB' from the minibuffer then you get the usual, prefix completion matching.  If you don't use the cycling keys then, well, you get the same as vanilla Emacs: no cycling. ;-)
+
+Yes, there are some things to be aware of, some differences you will notice that you can look up in the doc as you encounter them (as you did wrt `*Completions*' display).  But in general you can bite off bits of '''Icicles''' and digest them at your own speed.
+
+I know that some people can get overwhelmed, in particular by the extensive doc.  Some others don't bother to read the doc at all.  At least one user I know learned '''Icicles''' piece by piece very methodically, investigating every detail, and he studied the doc the same way.  He took his time, however, and enjoyed it.
+
+Learning '''Icicles''' should not be a pain, but it's up to you, I think.  You should be able to learn it progressively, and what you don't know at any moment should not, in general, hurt you. ;-)
+
+Do not hesitate to ask questions or mention problems you encounter, but the doc is also your friend (assuming you are comfortable with reading doc -- some people are not, and that's OK). 
+
+3. '''Icicles''' search (e.g. `icicle-occur') is quite powerful, but it might not be the first thing to start with.  It won't hurt to start with it, but if you get discouraged and it seems too complex, turn to something simpler to start with.  -- DrewAdams
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi! I'm trying to get my head around Icicles - Search-And-Replace.
+Is there some way to enable completion when specifiying the initial
+context-regexp, and especially when specifying the replacement?
+So far I'm getting by with M-. to insert word at point, and Pause to
+suspend the minibuffer temporarily.
+
+Also, it would be nice to have an option to make the matches for the
+initial content-regexp be visible immediately as one types the
+regexp. Similar to how it works for incremental search.
+
+Thanks, Johan Widén.
+
+[new:DrewAdams:2013-03-04 18:41 UTC]
+Hi Johan,
+
+1. Completion ''is'' available when you enter the initial regexp (i.e., the context regexp). The completion is against the entries in `regexp-history', and that history is updated to include any context regexp you enter.
+
+2. Likewise, the same kind of completion is available for defining the replacement.
+
+3. Currently there is no default value for #1 and #2.  It sounds like you would want the word (for example) at point.  I can think about doing that.  I'm out this week, but when I get some time I'll look into doing that.
+
+4. I'm afraid that it would be impractical to provide incremental highlighting feedback as you type the context regexp.  Instead, you have completion.  Sorry.  But at least you can see the contexts highlighted as soon as you hit `RET' (though that can take some time).
+
+HTH.  I'm afraid it is about all I can offer.  -- DrewAdams
+
+[new:DrewAdams:2013-03-05 15:56 UTC]
+I should also have mentioned that you can do the following, to see what your context regexp will match as you type it.  It provides a workaround for your requested incremental highlighting, while still allowing completion against past regexps.
+
+: '''##C-S-r##''' ''<type your regexp>'' '''##S-TAB##'''
+
+That enters '''Icicles''' search and populates the  minibuffer with that Isearch regexp for use as the '''Icicles''' search-context regexp.  You can complete that input against the regexp history or just hit `RET' to accept it.
+
+See:
+
+* [[Icicles - Search Commands, Overview#IsearchStringAsIciclesRegexp]]
+
+* [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]]
+
+-- DrewAdams
+
+[new:JohanWidén:2013-03-05 16:57 UTC]
+
+OK: C-S-r achieves what I want for visual feedback.
+
+I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.  -- Johan Widén
+
+[new:DrewAdams:2013-03-05 19:25 UTC]
+1. Also, for the default, you can always use `##M-.##' (repeating as needed) to insert text things at/near point into the minibuffer.  See [[Icicles - Inserting Text from Cursor]].
+
+2. I have nevertheless now provided similar defaulting for the context regexp, so you can use `M-n' instead of `##M-.##' if you prefer -- try the latest code.
+
+3. Completion for reading the replacement string is against the history `icicle-search-replacement-history', which is specific to this purpose (i.e., previously entered replacement strings).  Defaulting is the same (things at point).
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
+
+1. Setting tags for a heading with C-c C-q - I want to set several tags (e.g. :book:computer:) one after another, using tab completion for each. Icicles replaces the first tag with the second - any way of avoiding this?
+
+2. There are a few other situations where key bindings clash e.g. C-c / for sparse tree - is it a question of setting key bindings for all such clashes?
+
+Thanks [[NickBell]]
+
+
+[new:DrewAdams:2012-03-14 23:16 UTC]
+1. I have no idea what you mean.  I do not use OrgMode.  If you want to report a problem, I will need a clear, step-by-step recipe, preferably starting from ##emacs -Q##.  
+
+The best way to report a problem is to use `M-x icicle-send-bug-report'.  Or you can do so at IciclesIssuesOpen.
+
+2. If '''Icicles''' key bindings clash with your application then change the key bindings in question.  It is easy to change '''Icicles''' keys -- see [[Icicles - Customizing Key Bindings]].
+
+3. In the case of `##C-c /##' you need only remove its entry from [[user option]] `icicle-top-level-bindings'.  Note too that `##C-c /##' falls in the category of keys that applications can use for minor modes (such as ''Icicle'' mode).  If OrgMode uses it for a major mode instead, that is not strictly prohibited, but it is not a great idea.  See [[Manual:Key Binding Conventions]].
+
+
+-- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+Hello. I have a newbie question. When I do icicle-find-tag I can cicle candidates by using C-up and C-down. When I push RET or select tag with a mouse, it opens in a new window and I have two emacs windows open. Is there a way to make it open in the original window? Also how do I change C-up and C-down to something else? Setting them Icicle Modal Cycle or Icicle Modal Cycle Action using customize-group didn't work.
+UPD: was able to set keys, my mistake -- Nikolay Kudryavtsev
+
+
+[new:DrewAdams:2013-03-25 03:00 UTC]
+I guess you were able to take care of the key customization.  For the other problem, I'm afraid there is no simple way to have the file you finally choose (with `RET') take the place of the current buffer, since the action function for [[multi-command]] `icicle-find-tag', `icicle-find-tag-action', uses `switch-to-buffer-other-window'.  You could modify that function or you could make a copy of the `icicle-find-tag' definition that calls a different action function that uses, say, `switch-to-buffer' instead of `switch-to-buffer-other-window'.  HTH -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+[:LatestEntry]
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:BrianKavanagh:2013-04-16 00:10 UTC]
+
+Hi Drew.
+
+Any chance of modifying <tt>icicle-default-buffer-names</tt> within [[icicles-cmd1.el]] so that it includes an options so that it doesn't include currently displayed buffers?
+
+i.e. add something like
+
+<pre>
+      (let* ((dbfnames (mapcar (lambda (window) (buffer-name (window-buffer window))) (window-list)))))
+         (if icicle-buffer-ignore-visible-buffers
+           (setq bfnames (icicle-remove-if (lambda (bfname) (member bfname dbfnames)) bfnames))))
+</pre>
+
+-- BrianKavanagh
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi Brian.  During commands that read buffer-name input, `C-x v -' removes buffers that are visible (and `##C-x v +##' removes those that are invisible).
+
+However, although there has been a prefix arg possibility (namely `C-u C-u') that gives you only visible buffers as candidates (and as default values), there has not been one that gives you only invisible buffers.  I've just added that now, so you should be able to do `C-u C-u C-u C-x b' to get what you want.
+
+You can also easily create a command that does only that, so you don't have to hit `C-u C-u C-u' if you use this behavior a lot.  (Just `let'-bind `current-prefix-arg' as you like and call `icicle-buffer'.)
+
+I suppose a user option would also be possible, but I'm not sure what the best form for that would be.  One thing that might be helpful would be to let users choose which prefix arg forms give which behaviors --- today that matchup is hard-coded.
+
+I don't have any plans to add an option for something like this, but I'm always open to considering suggestions.  In the meantime, try `C-u C-u C-u', or try using `C-x v -' to filter on the fly.
+
+Another thing you can do is to simply set option `icicle-buffer-predicate' to a predicate that excludes visible buffers.  I think most users will not want to use an option such as this or the one you suggested, because it is a blanket that covers ''all'' buffer-name completion.
+
+Another possibility is to dissociate the selectivity for default values (accessible via `M-n') from that for completion candidates.  Today they both follow the prefix argument form the same way.
+
+I mention that because you asked about default values, not about completion candidates.  Dunno whether that means that you would like all buffers as candidates but only invisible ones as default values?
+
+Thx -- DrewAdams
+
+
+
+[new:DrewAdams:2013-04-19 02:23 UTC]
+I just added two user options that I think might help:
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>'''', which controls the [[prefix argument]] behavior.  So, for instance, if you want lack of a prefix arg to mean use only invisible buffers and `C-u C-u C-u' to mean use all buffers, you can easily have that behavior.  You can define any prefix-arg tests you want, with any corresponding filter behaviors you want.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>'''', which defines the key bindings to use for on-the-fly filtering (narrowing).
+
+I think this should offer you the flexibility you seek. HTH -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+----
+----
+
+{{{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}}}
+
+
+
+== Implemented ==
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+The biggest thing I miss when running icicles is the help text that is displayed when a M-x command is run.   In normal emacs, after I run a M-x command i usually get a message like "You can run the command `butterfly-flap-wings-flipbit` with C-x M-c M-b".  Is there some way to turn this behavior back on with icicles? -- JonathanArkell
+
+[new:DrewAdams:2008-04-25 17:20 UTC]
+Good idea. I just implemented it -- please give it a try. FYI, you might also be interested in IcompleteMode. That too gives you info about the bindings of commands, but it does so while you are entering input, not after the command is executed. That's the reason, in fact, that I never noticed that '''Icicles''' didn't provide the message. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+I've been using icicles about over 1 year (but still i'm a sort of newbie). recently, i found i can use `directory-abbrev-alist' not to type very long path that is hard to remember in `find-file'. But I also found that Icicles' completion mechanism (including default emacs' one) does not handle this abbrev consistently. for example, when i set my directory-abbrev-alist up like 
+
+  (("^/exe" . "/very-long-path-here/exe"))
+
+and, when i enter in minibuffer after `find-file', "/exe", and TAB no expansion occurred.  
+How can i utilize abbreviation to long path in icicle ways? -- JoonhwanLee
+
+[new:DrewAdams:2007-10-02 18:16 UTC]
+As you said, neither vanilla Emacs nor '''Icicles''' expands file-name input according to `directory-abbrev-alist' when you try to complete it. However, that sounds like a good idea. It would also be good to do that expansion during candidate cycling.
+
+I've implemented these ideas -- please try the latest version of <tt>[[icicles-fn.el]]</tt> and <tt>[[icicles-mcmd.el]]</tt>.  However, there are two reasons that I wouldn't be completely surprised if this raises other problems, so please pound on '''Icicles''' wrt file names to see if you notice other problems somewhere. These are the two reasons:
+
+* Vanilla Emacs has never done that. Perhaps there is a good reason (perhaps not). FWIW, I passed along your suggestion it to the Emacs developers, but this was RichardStallman's reply: "I don't think Emacs should alter the names that the user enters."
+
+* The '''Icicles''' code that this affects is a bit tricky, since it is used in many very different contexts. A fix or improvement for one context can break things for another context.
+
+Please give it a try (beyond just confirming whether it responds well to your suggestion), and let me know what you find. Thanks for the suggestion. -- DrewAdams
+
+[new]
+It works, and thanks. But i did ##(setq icicle-fuzzy-completion-flag nil)## not to see emacs' complaining -- JoonhwanLee
+
+[new:DrewAdams:2007-10-04 16:56 UTC]
+Did you download the latest <tt>[[icicles-opt.el]]</tt>? It sounds like you don't have the latest version of the '''Icicles''' files. I suggest you download these files, which have been modified since Sept 29: 
+
+* <tt>[[icicles.el]]</tt>
+* <tt>[[icicles-cmd1.el]]</tt>
+* <tt>[[icicles-cmd2.el]]</tt>
+* <tt>[[icicles-doc1.el]]</tt> -- just doc, but good to have
+* <tt>[[icicles-doc2.el]]</tt> -- just doc, but good to have
+* <tt>[[icicles-fn.el]]</tt>
+* <tt>[[icicles-opt.el]]</tt>
+* <tt>[[icicles-mcmd.el]]</tt>
+* <tt>[[icicles-mode.el]]</tt>
+* <tt>[[fuzzy-match.el]]</tt> -- if you want to use '''Icicles''' fuzzy completion
+
+Let me know if that doesn't get rid of your problem. -- DrewAdams
+
+[new]
+Oh, I've not been get icicles updated for a while. After updating, everything works smoothly. One of good thing i found is i even can use environment variable without any emacs' complaining for completion prefix. I've not been used "$" prefix with icicle for a while. dunno why resolved, but ok. now i can used this seamlessly with icicle. Thanks -- JoonhwanLee
+
+[new:DrewAdams:2007-10-05 02:17 UTC]
+Glad to hear everything is OK. I wasn't aware that you previously had a problem with ##$##. -- DrewAdams
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi.  I've just discovered Icicles and am playing around with it.  I really dislike
+the audible bell in Emacs and have <code>(setq visible-bell t)</code> in my .emacs.
+
+I get an audible bell when I reach the end of a candidate list in Icicles.  I believe
+this is due to <code>icicle-increment-cand-nb+signal-end</code>, which (locally) sets
+<code>visible-bell</code> to <code>nil</code> and calls <code>(ding)</code>.
+
+I don't see a way of configuring Icicles to be silent here.  I can easily edit 
+icicles-fn.el, but would rather not.  Is there a cleaner way to silence Icicles? -- RoryMolinari
+
+[new:DrewAdams:2007-08-15 00:37 UTC]
+Yeah, me too. (Actually, I have the sound turned off or down.) The code makes both a visible and an audible bell happen. I've changed it to just a visible bell. I didn't want to leave it up to the user option `visible-bell', because I thought that a visible bell was better in this particular case, especially if you use a standalone minibuffer, as I do. I expect that most people don't use a visible bell, or perhaps don't even know about it, and anyway, it's not because a visible bell seems to fit well here that someone will want it everywhere. Since I figured that at least people with a sight problem might prefer an audible bell, I had both. I hate to add another option just for this, but maybe I'll have to, if people complain in the other direction. Anyway, for now we'll go with just the visible bell. Thanks. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+I would like to use apropos-complete + narrow-candidates binded on one key. So when i press for example SPC it will apropos complete text which is already entered and continue in narrow-candidates mode so i can enter more specific query. If there is only one candidate i want it to switch to that buffer.
+
+This is what i have so far: 
+
+    (defun ansearch ()
+      (interactive)
+      (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+      (icicle-apropos-complete)
+      (icicle-narrow-candidates))
+
+    (define-key minibuffer-local-completion-map (kbd "SPC") 'ansearch)
+
+but there is problem that when it finaly finds just one candidate and i submit it, last key is entered in newly opened buffer. Any idea how to fix that? -- MarianSchubert
+
+[new:DrewAdams:2007-03-23 17:30 UTC]
+: Good idea! Please try the latest version. I've bound '''`S-SPC'''' to the new command (`icicle-apropos-complete-and-narrow'), instead of `SPC', which is used in completion candidates themselves. I also considered `C-M-SPC' and `M-SPC', but their normal bindings are useful in the minibuffer. Another possibility is `C-M-*', but I finally picked `S-SPC'.  
+
+: Keep in mind that whenever lax completion is in play, you will need to complete the final match. IOW, for commands and such, where completion is strict, you can just hit `RET', but for, say, a file name, where completion is lax, you will need to hit `S-TAB' to complete the final, single match. See also [[Icicles - S-RET]] -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I'd like to be able to set icy to use up more verticle space for some completions, like buffer switching or file opening, which don't involve the current buffer in any way. It could use 75% of the screen, or 100% even, if there were a lot of candidates to justify it. -- AvgJoe
+
+[new:DrewAdams:2007-03-14 23:53 UTC]
+: This is now implemented. See [[Icicles - Completions Display]]. BTW, this is not a problem if you use a standalone frame for `*Completions*' -- see OneOnOneEmacs, [[Help and Completions Frames]]. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I'd like the Completion buffer to use more (or less) of the screen as appropriate. It seems like it always uses two columns, but that only utilises half my horizontal screen space. When there are a lot of candidates they scroll off the bottom yet there is wasted space to the right. Similarly, where there are only a few candidates two columns are still used so when cycling between them the cursor jumps around alot and is hard to follow, yet there is now also wasted space below. -- AvgJoe
+
+[new:DrewAdams:2007-03-12 23:34 UTC]
+: This is now implemented: '''Icicles''' displays a variable number of columns of completion candidates, depending on the widths of individual candidates. See [[Icicles - Completions Display]].  Personnally, I prefer to use a dedicated, shrink-wrapped frame for `*Completions*' -- see [[Help and Completions Frames]] and [[Shrink-Wrapping Frames]]. 
+
+-- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:rubikitch:2007-01-12 20:15 UTC]
+
+<pre>
+--- icicles-fn.el	2007/01/12 19:51:57	1.1
++++ icicles-fn.el	2007/01/12 20:02:51
+@@ -1501,7 +1501,7 @@
+         lcm))))
+ 
+ 
+-
++(defvar icicle-list-use-first nil)
+  
+ ;;; Icicles functions - common helper functions.............
+ 
+@@ -1567,6 +1567,10 @@
+                (when indx
+                  (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
+                                     icicle-last-completion-candidate)))
++             (if (and icicle-list-join-string
++                      icicle-list-use-first)
++                 (setq icicle-last-completion-candidate
++                       (car (split-string icicle-last-completion-candidate icicle-list-join-string ))))
+              (insert (if (and (icicle-file-name-input-p) insert-default-directory)
+                          (icicle-file-name-directory-w-default icicle-current-input)
+                        "")
+</pre>
+
+The testcase.
+
+<pre>
+(let (( icicle-list-use-first t)
+      ( icicle-list-join-string "\t")
+      ( icicle-list-end-string ""))
+  (completing-read "> " '((("cand1" "short-description1")) (("xxx" "short-description2")))))
+
+(let (( icicle-list-use-first nil)
+      ( icicle-list-join-string "\t")
+      ( icicle-list-end-string ""))
+  (completing-read "> " '((("cand1" "short-description1")) (("xxx" "short-description2")))))
+
+</pre>
+
+I want to use multiple completion for completion with short description.
+IOW I want to select candidates ONLY BEFORE short description.
+The `Help on Candidates' feature is very nice.
+But my quick patch enables us to narrow candidates by description. -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-13 05:58 UTC]
+''Cool.'' I'm really glad to see people starting to take advantage of '''Icicles''' in EmacsLisp programming.
+
+I implemented this idea, generalizing it a bit -- see variable `icicle-list-use-nth-parts' and [[Icicles - Multi-Completions]]. Thanks for the suggestion. -- DrewAdams
+
+[new:rubikitch:2007-01-13 15:03 UTC]
+Thank you!! I just used `icicle-list-use-nth-parts' in my icicles-rcodetools.el and realized more powerful completion. -- [[rubikitch]]
+
+[new:rubikitch:2007-01-14 03:52 UTC]
+
+<pre>
+(let (( icicle-list-use-nth-parts '(1))
+      ( icicle-list-join-string "\t")
+      ( icicle-list-end-string ""))
+  (completing-read "> " '((("cand1" "short-description1")))))
+</pre>
+
+When candidate is sole, pressing Tab / S-Tab should insert `icicle-list-use-nth-parts' parts, I think. -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-14 04:20 UTC]
+Sorry, but that's not how it works. The question is not the number of candidates; it is the treatment of ‘icicle-list-join-string’. The option has an effect only on cycling, not completion. The real candidates remain entire (unsplit); it is only for cycling that the transformation (extraction) is made. 
+
+That is mentioned here: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Multi-Completions. Another thing worth noting is this, also mentioned there:
+
+: ''Use this option only with lax completion, since strict completion requires an exact match against the entire completion candidate.''
+
+-- DrewAdams
+
+[new:rubikitch:2007-01-14 14:04 UTC]
+<pre>
+--- icicles-mcmd.el	2007/01/14 13:24:19	1.2
++++ icicles-mcmd.el	2007/01/14 16:46:35
+@@ -1270,6 +1270,13 @@
+   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+   (icicle-prefix-complete-1 'no-display))
+ 
++(defun icicle-transform-input ()
++  (when (and icicle-list-use-nth-parts icicle-list-join-string)
++    (let ((newcand (icicle-list-transform (car icicle-completion-candidates))))
++      (icicle-clear-minibuffer)
++      (insert newcand)
++      (setq icicle-completion-candidates (list newcand)))))
++
+ ;;;###autoload
+ (defun icicle-prefix-complete-1 (&optional no-display-p)
+   "Helper function for `icicle-prefix-complete(-no-display)'.
+@@ -1308,6 +1315,7 @@
+              (setq icicle-default-directory (icicle-abbreviate-or-expand-file-name
+                                              icicle-last-completion-candidate))))
+          (save-selected-window (icicle-remove-Completions-window))
++         (icicle-transform-input)
+          (icicle-highlight-complete-input)
+          (if icicle-icompleting-p
+              (minibuffer-message (format "  [One prefix completion: %s]"
+@@ -1473,6 +1481,7 @@
+              (setq icicle-default-directory (icicle-abbreviate-or-expand-file-name
+                                              icicle-last-completion-candidate))))
+          (save-selected-window (icicle-remove-Completions-window))
++         (icicle-transform-input)
+          (unless (boundp 'icicle-apropos-complete-and-exit-p)
+            (icicle-highlight-complete-input)
+            (if icicle-icompleting-p
+--- icicles-fn.el	2007/01/14 13:54:06	1.1
++++ icicles-fn.el	2007/01/14 13:54:20
+@@ -1522,6 +1522,27 @@
+  
+ ;;; Icicles functions - common helper functions.............
+ 
++(defun icicle-list-transform (multi-candidate)
++  (if (and icicle-list-use-nth-parts icicle-list-join-string)
++      (let* ((parts (split-string multi-candidate
++                                  icicle-list-join-string))
++             (maxpart (length parts))
++             (indexes icicle-list-use-nth-parts)
++             (cand "")
++             (firstp t)
++             partnum)
++        (while indexes
++          (setq partnum (car indexes))
++          (when (> partnum maxpart) (setq partnum maxpart))
++          (unless firstp (setq cand (concat cand icicle-list-join-string)))
++          (setq firstp nil)
++          (setq cand (concat cand (nth (1- partnum) parts)))
++          (setq indexes (cdr indexes)))
++        cand)
++    multi-candidate))
++
++
++
+ ;; Main cycling function - used by `icicle-next-prefix-candidate', `icicle-next-apropos-candidate'.
+ (defun icicle-next-candidate (nth candidates-fn &optional regexp-p)
+   "Replace input by NTH next or previous completion for an input.
+@@ -1586,23 +1607,8 @@
+                                     icicle-last-completion-candidate)))
+ 
+              ;; Use only specified parts of a multi-completion, in specified order.
+-             (when (and icicle-list-use-nth-parts icicle-list-join-string)
+-               (let* ((parts (split-string icicle-last-completion-candidate
+-                                           icicle-list-join-string))
+-                      (maxpart (length parts))
+-                      (indexes icicle-list-use-nth-parts)
+-                      (cand "")
+-                      (firstp t)
+-                      partnum)
+-                 (while indexes
+-                   (setq partnum (car indexes))
+-                   (when (> partnum maxpart) (setq partnum maxpart))
+-                   (unless firstp (setq cand (concat cand icicle-list-join-string)))
+-                   (setq firstp nil)
+-                   (setq cand (concat cand (nth (1- partnum) parts)))
+-                   (setq indexes (cdr indexes)))
+-                 (setq icicle-last-completion-candidate cand)))
+-
++             (setq icicle-last-completion-candidate
++                   (icicle-list-transform icicle-last-completion-candidate))
+              ;; Insert candidate in minibuffer.
+              (insert (if (and (icicle-file-name-input-p) insert-default-directory)
+                          (icicle-file-name-directory-w-default icicle-current-input)
+
+</pre>
+
+A test.
+<pre>
+(let (( icicle-list-use-nth-parts '(1))
+      ( icicle-list-join-string "\t")
+      ( icicle-list-end-string ""))
+  (icicle-list-transform "cand1\tshort-description1"))
+</pre>
+
+I wonder why the extraction is not made on completion.
+I bet when `icicle-list-use-nth-parts' is used, users want only parts.
+I roughly implemented. -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-14 19:28 UTC]
+Got it! Thanks. I also added an option to let users join the parts of the final candidate with a different string from `icicle-list-join-string': '''`icicle-list-nth-parts-join-string''''. I updated the doc, also mentioning that you can mix different-dimension multi-completions. The "Rubikitch transform" should be a handy addition to the '''Icicles''' tool box for EmacsLisp programmers, including me. -- DrewAdams
+
+[new:rubikitch:2007-01-15 14:36 UTC]
+Thank you. I added `icicle-list-nth-parts-join-string' to IciclesTestCases. -- [[rubikitch]]
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:rubikitch:2007-01-06 00:44 UTC]
+When I wrote IciclesTestCases, I wanted `icicle-initial-value' to specify initial input externally like `icicle-require-match-flag'.
+<pre>
+(let (( icicle-initial-value "foo")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read "input: " '(("cand")("foo"))))   ; initial input should be "foo"
+</pre>
+
+With this feature:
+<pre>
+(let (( icicle-initial-value "describe-")
+      ( icicle-show-Completions-initially-flag t))
+  (call-interactively 'describe-function))
+</pre>
+
+This code could pre-select candidate INITIALLY (by variable). -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-04 17:38 UTC]
+`icicle-initial-value' is an internal variable. The standard way to do what I think you want to do is to pass a non-`nil' value as the `INITIAL-INPUT' arg to `completing-read' or the `INITIAL' arg to `read-file-name'.
+
+'''Icicles''' also has a user option, `icicle-default-value', that can cause the `DEF' (default value) arg to `completing-read' and the `DEFAULT-FILENAME' arg to `read-file-name' to also be used as the initial value, just as if it were also passed as the `INITIAL-INPUT' or `INITIAL' arg.
+
+It would be possible to add another variable, to permit the kind of thing you ask for (binding outside code that might call `completing-read' or `read-file-name'), but I'm not sure that it would be worth it or that that kind of thing should be encouraged. Can you argue for it, so I understand the need better? -- DrewAdams
+
+[new:rubikitch:2007-01-04 19:04 UTC]
+Yes. I think it is useful when (like `describe-function' example above):
+* the candidate set is a determined subset
+* but both `DEF' and `INITIAL' of inner `completing-read' or `read-file-name' is nil.
+
+I have already tested `icicle-init-value-flag' [now enhanced and called `icicle-default-value -- DrewAdams] in IciclesTestCases. -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-05 05:40 UTC]
+Can you give a real example, with an initial value, that would demonstrate the usefulness? Or describe an application of it, to show why you would want to do that? I'm assuming that, like your example above, the code would not have access to the call to `completing-read'. Please indicate a case where it would be good to, in this way, override the default (or lack of default) that the `completing-read' call would impose. -- DrewAdams
+
+[new:rubikitch:2007-01-05 08:59 UTC]
+
+<pre>
+;; Function names of foo commands are /^foo-cmd-/
+(defun foo-cmd-get () "the GET command")
+(defun foo-cmd-post () "the POST command")
+
+;; Implemented the hard way.
+(defvar icicle-override-initial-string "bar-cmd-")
+(defun icicle-prepare-initial-string ()
+  (interactive)
+  (icicle-erase-minibuffer)
+  (insert icicle-override-initial-string))
+
+(defun foo-describe-cmd ()
+  "Show description of foo commands."
+  (interactive)
+  (let ((icicle-override-initial-string "^foo-cmd-")
+        (icicle-show-Completions-initially-flag t))
+    (add-hook 'minibuffer-setup-hook 'icicle-prepare-initial-string)
+    (unwind-protect
+        (call-interactively 'describe-function)
+      (remove-hook 'minibuffer-setup-hook 'icicle-prepare-initial-string))))
+</pre>
+
+[new:DrewAdams:2007-01-05 22:48 UTC]
+OK, I've implemented it -- just bind `icicle-initial-value'.  Do me a favor, though: Test `read-file-name', with all its possibilities, and test `icicle-find-file' with all its possibilities (absolute dir, cycling in diff dirs, etc.). Test all of the args to `read-file-name' etc. I've done some testing, but I'd like to find out now (not in 6 months) if this new feature breaks something. Thx, and have fun! -- DrewAdams
+
+[new:rubikitch:2007-01-06 09:25 UTC]
+Thank you!! I added `icicle-initial-value' to IciclesTestCases. -- [[rubikitch]]
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I use `iswitchb', `mcomplete' and `ffap' for years. [http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--configs/emacs--main--0--patch-25/other/iswitchb-fc.el?download iswitchb-fc.el]
+
+I start to use icicles EXCEPT buffer selection.
+Part of the reason I haven' t jumped to icicle-buffer is that iswitchb has several nice features. In switchb:
+* C-k kills selected buffer. I do not use C-x k anymore.
+* iswitchb-fc merges filecache to open cached file with iswitchb.
+* I add opened files into filecache. So once I killed a file buffer, it can be revived easily with iswitchb.
+
+But I miss icicles' progressive completion. -- [[Anonymous]]
+
+[new:DrewAdams:2006-12-25 16:34 UTC]
+Thanks for your input. I'm not very familiar with iswitchb, so correct me if I misspeak.
+
+Switching among buffers is one of those areas, I think, where everyone seems to have a different preference. The good news is that you should be able to use iswitchb with '''Icicles''', if that's your preference.
+
+Some packages, like iswitchb, are more or less specialists in buffer switching. The dialog they provide is tuned to work well with buffers, so it is sometimes not as well suited or easily adapted for other uses. '''Icicles''' is a generalist, so it would not be surprising if it is not as well suited as some specialist package to a particular use.
+
+Integrating buffer killing and file caching or file revisiting with buffer switching is an example of such specialization. In '''Icicles''', there are separate commands for the equivalent operations. There are innumerable ways that such different functions could be combined (add buffer switching to file finding or buffer killing, instead of the reverse, for example; add file deleting or compiling to the mix, and so on). In general, I'd rather not muddy the waters that way in '''Icicles''', even when it would not interfere with generality.
+
+In another sense, I wonder if the mixing of file finding with buffer switching in iswitchb has much to do with their logical connection. You mention that you can use filecache via iswitchb as a way to "reopen" a file buffer, so I guess there is at least that connection. Otherwise, that combination seems more like an attempt to render iswitchb a bit more general -- along the lines of `##ido.el##', for instance. That is, because the UI of iswitchb was liked (independently of its use for buffer switching), someone perhaps decided to add file access, to benefit from the same UI. The connection between buffer switching and buffer killing is more organic (natural), I guess.
+
+Be that as it may, I imagine that your input is mainly intended as a suggestion of things you like in iswitchb and might like to see in '''Icicles'''. Is that right? I will think about it, in any case -- thank you .
+
+FYI, here is some info on the features you mentioned, and how they relate to '''Icicles''' as it is now:
+
+`C-k' for buffer killing during buffer switching is one of those specialist, buffer-oriented features. As '''Icicles''' is a generalist, there is no direct equivalent of that feature. One could be added (you could add one!), but I probably won't do that. 
+
+You can, however, use `C-x k' (`icicle-kill-buffer') to kill any number of buffers, using completion: use `C-RET' on any completion candidate you want to kill -- see [[Icicles - Multi-Commands]]. You can also kill buffers during buffer switching, by using `M-RET' and entering `kill-buffer' as the function to apply to the buffer (name). You can apply any function this way. Yes, I recognize that this is not as simple as hitting `C-k'.
+
+'''Icicles''' also does not integrate filecache in any way. Instead, it:
+
+* provides an interface to RecentFiles, `icicle-recent-files', for accessing recently used files
+
+* lets you save a set of completions persistently, in a cache file. In particular, you can save a set of (absolute or relative) file names. The files need not be in the same directory, and their names can be identified using any match. -- see [[Icicles - Persistent Completions]] and [[Icicles - File-Name Input]]
+
+Wrt the second bullet, you can have any number of such (file) cache files; you are not limited to a single one. See also LocateFilesAnywhere for some comparison of different approaches (including FileNameCache) to finding files in unknown directories.
+
+I probably will not integrate filecache with '''Icicles''', since I don't see that it offers new functionality. But I could be mistaken about that, and I might change my mind. Feel free to point out what is specifically missing (besides an integration with buffer switching). 
+
+It occurs to me that one thing that might be useful would be a quick way to add or remove a candidate to or from any saved set. That is available for some particular saved sets -- buffer configurations, extra buffer candidates, and regions, for instance. Perhaps I will think about a general implementation, which would would be applicable to any saved completion set.
+
+For another discussion about '''Icicles''' and iswitchb, search for "##Hey 10##" below. Thx -- DrewAdams
+
+[new]
+I read this discussion and finally created IciclesIswitchb to integrate iswitchb and icicles.
+I'm addicted to icicles! I love icicles!! -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-02 00:09 UTC]
+Great job! Thanks for IciclesIswitchb; I'm sure many people will enjoy it. 
+
+Wrt what I said above about defining a generic way to add or remove a candidate to/from any saved set:
+
+* I defined two commands to do that: `icicle-add-candidate-to-saved-completion-set' and `icicle-remove-candidate-from-saved-completion-set'. You are prompted for the name of the saved completion set. The corresponding cache file is updated.
+
+* Somewhat related: I added macro `icicle-define-add-to-alist-command', which you can use to define your own commands to add entries to alists.
+
+You would use `icicle-add-candidate-to-saved-completion-set', for instance, to add a file name to an '''Icicles''' file-name cache. You can have any number of such caches, and completion-candidate caches need not be only for file names.
+
+-- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+I tried dabbrev completion with Icicles and it works fine, however the message "Use `C-M-/' again to complete further" bothers me. I'd find it more intuitive if it completed to the common root and showed all the possible further completions immediately, so that I didn't have to press the completion key twice.
+
+What do yo think? It's probably not specific to dabbrev completion, since the behavior is the same for other completions too.
+
+For example, if I press ##M-x## and type ##rev<TAB>## then rev is completed to ##rever## and only the second TAB shows the possible completions.
+
+I think an option could be added to show further completions automatically after completing to the common root. In bash file completion works like this if you set set show-all-if-ambiguous to on (I'd like a similar option for Icicles) and it's pretty convenient. -- TamasPatrovics
+
+[new:DrewAdams:2006-11-23 16:53 UTC]
+Good idea. I've implemented it, and made this behavior the default. I guess I pretty much left prefix completion with the standard Emacs behavior, but I too think showing the candidates is the better default behavior. Thx -- DrewAdams
+
+[new]
+Thanks, it's working fine for ##M-x##. However, for dabbrev completion it still says ##Use C-M-/' again to complete further##. I thought you generalized completion, so that all kinds of completion use the same backend. 
+
+[new:DrewAdams:2006-11-24 20:05 UTC]
+Please download the latest; I think it DTRT now. Thx -- DrewAdams
+[new]
+Yep, thanks. -- TamasPatrovics
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+Hi all, I'm a frequent user of [[AUCTeX]] and just started using Icicles. I think it's great, but some of the key bindings bother me since they get in the way of some default [[AUCTeX]]-keybindings; for example, ##\C-c `##. Now I'd like to use ##\C-c `## for `icicle-search-generic' in other modes, but in [[AUCTeX]]-mode it should retain its default binding of `TeX-next-error'. I came up with the following, which seems to work, but is maybe not very elegant. I add a function to `LaTeX-mode-hook' doing (among other customizations) the following:
+
+    (setq icicle-overriding-LaTeX-map (copy-keymap icicle-mode-map))
+    (define-key icicle-overriding-LaTeX-map [(control ?c) (?`)] nil)
+    (push (cons 'icicle-mode icicle-overriding-LaTeX-map)
+           minor-mode-overriding-map-alist)
+    (local-set-key [(control ?x) (?`)] 'icicle-search-generic)
+
+If someone more versed in elisp feels the need to give me a pointer to something like a right way to do this kind of thing, I'd be eternally grateful. -- ErikPostma
+
+[new:DrewAdams:2006-11-18 16:42 UTC]
+Thanks for the report. I'm not sure about how to handle your `##C-c `##' conflict. I could change the '''Icicles''' binding, but it is a good one, and is parallel to `##C-c '##' for `icicle-occur'. 
+
+Is the AUCTeX binding a minor-mode binding? I wasn't able to find out by checking the doc on the Web, and I don't have AUCTeX source code. If it is not a minor-mode binding, then I think that is an AUCTeX bug (or guideline non-respect). According to the Elisp manual, node Major Mode Conventions:
+
+: The key sequences bound in a major mode keymap should usually
+     start with `C-c', followed by a control character, a digit, or `{',
+     `}', `<', `>', `:' or `;'.  ''The other punctuation characters are
+     reserved for minor modes'', and ordinary letters are reserved for
+     users.
+
+If the AUCTeX binding for `##C-c `##' is a major-mode binding, then we should file a bug with AUCTeX. I suspect that it is a minor-mode binding, however, since AUCTeX has been around for some time and is supported by GNU.
+
+If it is a minor-mode binding, then we have a conflict between minor modes. Assuming this is the case, I see two ways to resolve the conflict: change the '''Icicles''' binding or make users do something like you've done. As I say, I'm willing to change the '''Icicles''' binding, if someone can come up with a good replacement -- IOW, I'm open to key suggestions.
+
+It would be good to first find out about the AUCTeX binding, however. If it is a major-mode binding, then it should be changed. -- DrewAdams
+
+[new:DrewAdams:2006-11-23 17:00 UTC]
+I've corresponded with DavidKastrup, who maintains at least some of AUCTeX, and with the ##auctex-devel@gnu.org## mailing list. The fault is with AUCTeX, it seems: it uses `##C-c `##' for a major-mode binding, which is a no-no. I think (and hope) the AUCTeX people will change this and other such bindings that don't follow the GnuEmacs coding guidelines. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+##icicle-select-window-or-frame## is killing me. Literally. :) I see it was introduced recently and I had a hard time finding out how to disable it to regain the original ##other-window## behavior. I see there is ##icicle-bind-top-level-commands-flag##, but it can only be nil or t and I want *some* top levels command to be overridden.
+
+I suggest two more variables ##icicle-bind-top-level-commands-list## and ##icicle-dont-bind-top-level-commands-list## which would be a list of function symbols to be overridden or not to be overridden respectively. At the moment I'd use only the latter, since I want to disable rebinding of only one command, while letting Icicles override all the others, but there may be some who will want to use the former, so it could also be included for completeness. -- TamasPatrovics
+
+[new:DrewAdams:2006-11-24 16:56 UTC]
+Hi Tamas. Actually, I agree about `##icicle-select-*##' -- I was going to take care of it today anyway. Instead of implementing your list suggestion, I've replaced `icicle-select-window-or-frame' by `icicle-other-window-or-frame'. It is just `other-window' or, if `one-window-p', `other-frame'. However, if you use `C-u 0', then it does what `icicle-select-window-or-frame' did. Because `C-u 0' does nothing special for `other-window' and `other-frame', this should let you use `C-x o' normally, including with a (non-zero) prefix arg. -- DrewAdams
+
+[new]
+Thanks, I'm OK with it if it does the same as `other-window'. --TamasPatrovics
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+Is there a command to kill the <code>*Completions*</code> buffer, when in the minibuffer? I find Icicles' incremental update of the <code>*Completions*</code> list quite useful. But if I type a prefix, bring up the <code>*Completions*</code> list, then change my mind about the prefix and use backspace to delete part of it, the list of completion candidates often gets very large, causing irritating delays.
+
+I know I could use `C-#' to toggle incremental completion off temporarily, but I'd prefer to kill the <code>*Completions*</code> buffer entirely, since I may not want it when completing the new prefix anyway (and if I do, it's only a couple of keystrokes away). -- TobyCubitt
+
+[new:DrewAdams:2006-08-04 15:05 UTC]
+Hi Toby! I could add such a command (and a binding), but I'm wondering if it's needed. Does option `icicle-Completions-display-min-input-chars' help you in this regard? Let me know; it would be easy to add a command to remove it manually, if that would help. -- DrewAdams
+
+[new]
+I'd missed that option. Thanks for pointing it out so quickly! Setting it to 2 or 3 helps a lot. I'd still find a command (and binding) to manually get rid of <code>*Completions*</code> useful, though. It's something that's always bugged me in standard Emacs, and Icicles seems like the right place to implement it. If not so many people are interested in using it, you could always write the function, but leave it unbound by default to avoid cluttering minibuffer keybindings.
+
+On a related issue, I notice that when modifying a completion prefix, the <code>*Completions*</code> list is updated to display apropos completions, even if it originally displayed prefix completions. Shouldn't it display prefix completions in this case?
+
+BTW, the latest version of Icicles seems to clear up a number of bugs that I hadn't got round to reporting yet. Great work! --TobyCubitt
+
+[new:DrewAdams:2006-08-04 17:30 UTC]
+I've added a command to manually remove `*Completions*': '''`icicle-remove-Completions-window''''. I bound it to '''`C-x 0'''' in the minibuffer.
+
+The `*Completions*' updating behavior should now be fixed; please try the latest version. -- DrewAdams
+
+[new]
+The latest version works fine for me - both the new command, and the `*Completions*' updating behaviour. Thanks! --TobyCubitt
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+Sometimes I lose entries in the kill ring, because I deleted other things too and I cannot access the wanted item with C-y. M-y is useful, but usually it would be quicker to get to the item with completion. How about implementing Icicles support for yanking text from the kill-ring? -- TamasPatrovics
+
+[new:DrewAdams:2006-08-03 15:02 UTC]
+That's a possibility. You might want to try coding it yourself, with `icicle-define-command' or just `completing-read'. If not, I'll think about adding it to my to-do list. Thanks. In the meantime, you might also want to check out Lisp:browse-kill-ring.el and Lisp:browse-kill-ring+.el -- see BrowseKillRing. -- DrewAdams
+
+[new]
+Thanks. I'll check out the packages you mentioned. -- TamasPatrovics
+
+[new:DrewAdams:2006-08-03 22:34 UTC]
+Done. I implemented an '''Icicles''' command, '''`icicle-insert-kill'''', to insert text from the `kill-ring'. Because I want `C-y' to just yank most of the time, but I also want to be able to do '''Icicles''' completion and cycling over the `kill-ring', I implemented another command, '''`icicle-yank-insert'''', and bound that to `C-y' in ''Icicle'' mode. If you give a negative prefix arg to `C-y' (e.g. `M-- C-y'), then you get `icicle-insert-kill'; otherwise, you get `yank' (vanilla `C-y'). Note that `icicle-insert-kill' inserts killed text; technically it does not ''yank'' the text, because it does not rotate the kill ring. HTH. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+Implement '''Icicles''' features for shell-mode completion (comint). -- DrewAdams 
+
+
+[new:DrewAdams:2006-07-28 05:49 UTC]
+: This has been implemented -- see [[Icicles - Other Search Commands#IciclesShell]]. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I tried occur mode today and had some trouble getting it to work at first, as I didn't know you had to hit C-next/prev.
+
+Why are there separate keystrokes for cycling through prefix and regexp matches? Do many people cycle through matches without a completions buffer visible? It seems to me that as soon as a completions buffer is displayed, the keystrokes should do the right thing depending on the current completion format in the completions buffer. If I'm looking at an apropos match completions buffer and hit C-n, suddenly the buffer changes. This seems confusing. Not to mention that I'd rather not have to reach over to the other side of the keyboard to hit PgUp/PgDown so I can cycle through apropos matches.
+
+Also, is case-insensitive search/occur matching possible? Apologies if I missed the documentation for it.  -- DamienElmes
+
+[new:DrewAdams:2006-07-18 16:34 UTC]
+Yes, some people cycle through matches without a `*Completions*' buffer displayed. I tend to use completion first, to narrow the set of candidates, before I cycle through them, but some people do not. It also depends on how many matching candidates there are and what kind of candidates (e.g. buffer names, file names, command names). As for all user interface, some use patterns are based on personal preference. 
+
+In many cases, I think that people have a prior habit of cycling (e.g. using ibuffer or ido), and they are not used to using a large set of completion candidates. They don't naturally think of completing first, to narrow the set of cycling candidates.
+
+Being able to change between prefix and apropos completion at any time, whether cycling or completing, is a ''feature''. IOW, you can switch between apropos and prefix matching for both completion (`TAB', `S-TAB') and cycling (`next', `C-n'), separately. If you are looking at apropos completions and you hit `C-n', then what would you want to happen? When I use `C-n', it means that I want to cycle among prefix matches. I often go back and forth, depending on what I want. 
+
+Wrt reaching for the `next' and `prior' keys: you can bind the commands to any keys you like. People use the keyboard differently, and people have different keyboards. They also make different use of '''Icicles'''. If you use apropos completion more than prefix completion, and you want its keys to be closer to hand, try swapping the key bindings. I use apropos completion and cycling more, but I don't mind reaching for `next' and `prior'. Different (key) strokes for different folks. You should be able to get what you want using customization.
+
+Yes, `icicle-search' is case-sensitive; or, rather, it respects the current value of `case-fold-search'. There is a minor bug that I still need to fix, which causes the second regexp (the only regexp of `icicle-occur') to be case-insensitive. I'll fix this when I get a chance. -- DrewAdams
+
+[new]
+I'm all for being able to switch between apropos and prefix completion at any time. And I agree that narrowing is useful - it's in the context of narrowing that I think that this is a problem.
+
+Consider the case that you'd like to choose an info function. I type M-x info and because I have icomplete-like behaviour enabled, a completions buffer automatically pops up, displaying apropos matches. If I want to select the first match, I need to choose the next/prev keybindings which match the completions buffer (eg Page Up/Page Down).
+
+But if I hit TAB to display on prefix matches, then I need to use a different set of bindings to cycle through the matches. You suggest that if apropos is used frequently I can switch the bindings to make apropos cycling closer to the middle of the keyboard, but I think that misses the point - as it stands I use both types of searches and I don't understand why the user should be expected to match their keystrokes to the current completions buffer display format. Why not use one set of keys to set the "search method" (eg as tab/s-tab set prefix or apropos searching now), and another set of keys to cycle depending on that search method? Having two sets of cycling keys (4 sets when you add in the "act on candidate" keys) seems confusing. At the moment if you hit the wrong "next" key the completions buffer completely changes which I don't believe is very intuitive.
+
+If you're set on the idea of having different "next/prev" keys depending on search mode, would you consider a patch to add "DWIM" next/prev functions, to be bound by the user? -- DamienElmes
+
+[new:DrewAdams:2006-07-19 00:15 UTC]
+First, I fixed the case-sensitivity problems I mentioned, in `icicle-search' and related functions. I've been meaning to do that for a while.
+
+Second, wrt correspondence between completion "mode" and cycling "mode": Perhaps you would be interested in setting '''`icicle-arrows-respect-completion-type-flag'''' to non-`nil'. I think that is related to what you're asking for; if not, try explaining it again. With that option, the arrow keys, used for cycling, follow the last completion mode, established by `TAB' or `S-TAB'. You can of course change the particular keys used for cycling. See [[Icicles_-_Customization_and_General_Tips#icicle-arrows-respect-completion-type-flag]]. -- DrewAdams
+
+[new]
+Thanks, that seems to be what I was after, with the exception that it hard codes [up] and [down]. Looking at the source code I'm not sure how I'd rebind those keys - it seems like the keys are set up in the completion functions after the minibuffer setup hook has been run. Sorry for being a bit dim here - how do I rebind those keys? --DamienElmes
+
+
+[new:DrewAdams:2006-07-19 01:49 UTC]
+No, you're not being dim; the arrow keys are hard-coded. I suppose I could introduce two new options, one for each key... I think, at least for now, you'll just have to copy the completion function definitions and change the bindings, hard-coding what you want. Just load your version of the functions after you load the '''Icicles''' libraries.
+
+BTW, I added a command to toggle case-sensitivity, bound to `S-C-a' (that is, `C-A') in the minibuffer. See [[Icicles_-_Customization_and_General_Tips#CaseSensitivity]]. -- DrewAdams
+
+
+[new]
+Thanks for adding the case-sensitivity support. I'll put a patch online soon which will add a variable to set the current seach type, and add some functions to run the appropriate command based on that variable, instead of hard-coding the keystrokes.
+
+By the way, have you considered using some sort of revision control system for Icicles? It'd make it easier to contribute patches to you and for people to update to the latest version (running get-icicles.sh every time you make some changes is not ideal :-) -- DamienElmes
+
+[new]
+Okay, I've made a new patch which doesn't have any problems with trailing whitespace. I've made the instruction supression into a defcustom, added all the functions and variables to the top of the file and tried to make it as clean as possible in the hope that you'll consider applying it. The only thing I haven't updated is the changelog entries as I thought you might like to do that. Please have a look. :-) http://repose.cx/dump/scrolling+instructions+context-cycle.diff -- DamienElmes
+
+[new:DrewAdams:2006-07-19 08:43 UTC]
+No, I don't want to bother with source control.
+
+I applied your patch, renaming a few things and making a few changes for Emacs 20 compatibility. Thanks. 
+
+When I get a chance later, I'll add a couple options to replace the hard-coded keys.  -- DrewAdams
+
+[new]
+
+Thanks!
+
+Perhaps separate options to replace the hard-coded keys aren't so important now. For example in my local config I just do the following in the minibuffer-setup-hook:
+
+<pre>
+    (define-key map (kbd "C-n") 'icicle-next-context-candidate)
+    (define-key map (kbd "C-p") 'icicle-previous-context-candidate)
+</pre>
+
+Anyway, thanks again. -- DamienElmes
+
+[new:DrewAdams:2006-07-21 03:10 UTC]
+I've implemented the two options for customizing these keys: '''`icicle-modal-cycle-down-key'''' and '''`icicle-modal-cycle-up-key''''. I also changed the name of option `icicle-arrows-respect-completion-type-flag' to '''`icicle-cycling-respects-completion-mode-flag'''', to reflect the fact that it need not apply to arrow keys. Please try the latest version. -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+When you enter some characters, like M-x info, and then decide you want to search for something else, removing all the characters can cause many completions to be displayed, which takes a long time and isn't very useful. The following code won't display a completions buffer until at least two characters have been entered. Backspacing in the minibuffer will remove the *Completions* buffer if there are too few characters. <snip> -- DamienElmes
+
+[new:DrewAdams:2006-07-18 16:19 UTC]
+Thanks, Damien. I've adopted your suggestion. Please try the latest version -- see option `icicle-Completions-display-min-input-chars' (the default value is, however 0). -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+If you give a numeric argument before M-x, Emacs displays the argument to the left of the prompt.  It would be nice if Icicles did the same.
+
+[new:DrewAdams:2006-07-07 16:02 UTC]
+Done. Thanks for the suggestion. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Use '''Icicles''' to navigate among tags (function etc. definitions). -- DrewAdams
+
+[new:DrewAdams:2006-04-29 22:55 UTC]
+Oops! This one sat here for six months before I read it again. This is already "implemented". Or, rather, there is nothing to implement! Just use the normal tag commands, `find-tag' and so on. They all use `completing-read', so you get all '''Icicles''' functionality for free! Nothing to be done. -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Icicles is very useful, good job! My only gripe with it is that it uses too many keys. You should consider making it more context aware (so that the same key does different things depending on context) for common use cases.
+
+To illustrate my point here's a simple customization I made for myself:
+
+Let's say I want to execute a command with ##M-x##.
+
+If I used the command recently then I want to simply select one of the most recently used entries. By default, if I don't use Icicles it's done with TextCursor up/down, but Icicles redefines these for prefix completion cycling (I know I still can use M-p and stuff, but it's a shifted key, so it's not as convenient as cursor up). Now, I think completion cycling is not very useful if the completion window is not visible, since the user doesn't have a picture of how many matches there are, so s/he might need to cycle a lot to get to the desired completion.
+
+It's much more useful in my opinion to use cursor up/down for simple history navigation when the completion is started.
+
+However, if the user presses TAB then it's unlikely s/he wants to return to simple history navigation, so cursor up/down can be rebound dynamically to prefix completion cycling.
+
+Similarly, there is no need to have different keys (pg up/down) for apropos completion cycling, since the user can press S-TAB and then up/down can be rebound to apropos cycling.
+
+This way the user can use the same keys (up/down) conveniently in different "contexts" and can switch between contexts with TAB, S-TAB. It's much more intuitive (at least for me) than to remember to use up/down keys for prefix cycling and pgup/down for apropos cycling.
+
+The less keys can be used to achieve the same functionality the better.
+
+Anyway, I did the above customization for myself by advising the Icicles functions, so I'm happy with it, but I do think Icicles would benefit from not having to use so much keys for the most common use cases. -- dsl5402B33F.pool.t-online.hu
+
+
+[new:DrewAdams:2006-04-09 22:29 UTC]
+As you can see, I've moved this to '''Implemented''', though I perhaps implemented it differently from how you might prefer. I also signed your contributions here with your IP address -- feel free to change that to a different name (perhaps fictitious, since you apparently prefer anonymity). I would also have acknowledged your input to this in the source file if I knew whom to thank ;-).
+
+I've implemented this suggestion as an option, `icicle-arrows-respect-completion-type-flag'. I have not changed the default behavior. I can certainly see why some people might prefer this modal behavior for `up' and `down', but I don't. In general, I try to avoid modal behavior in UIs, though I recognize that Emacs tends to use modes more than most UIs.
+
+As you suggested, prior `TAB' causes `up' and `down' to cycle prefix completions; prior `S-TAB' causes `up' and `down' to cycle apropos completions. Without either `TAB' or `S-TAB', `up' and `down' traverse the input history. 
+
+I have not bound any key to switch to input-history traversal after `TAB' or `S-TAB' has been used -- you must start the command over to get back to input-history traversal. That's probably OK, since 1) you either want to use history traversal from the beginning or you don't, 2) you can always use `M-h' or `M-pause' to complete against elements in the input history, and 3) I've kept the `M-p' and `M-n' bindings for history traversal, so you can also use those.
+
+There is always a tradeoff between dedicating more keys that are specific and making fewer keys do double duty. I think your suggestion of this optional behavior is a good one, so I implemented it. I personally prefer to dedicate separate key pairs for each type of completion and not bother with switching the context (cycling mode) explicitly, but it's good to provide the modal behavior as an option. 
+
+Use of keys is very much a personal thing and it involves habit. You, for instance, find using the `up' and `down' arrows more convenient than `M-p' and `M-n', you say because the latter are chords (they use a modifier key or, in your terminology, are "shifted"). Other people feel exactly the opposite, because they are in the habit of keeping their fingers on the main keyboard keys (perhaps typing with all fingers, as in touch-typing). For them, using an arrow key requires looking at the keyboard and moving their fingers off the main keyboard area. Different (key)strokes for different folks, as they say. Habit is something that lurks behind many an argument for or against a UI design. Trying something new requires a break with what seems "natural" and comfortable. Sometimes the new behavior is ultimately rewarding, but you need to give it a chance. Being able to easily customize things also means we can easily stick to our old habits, be they optimal or not.
+
+I decided to keep the history-traversal bindings `M-n' and `M-p'; the apropos-cycling bindings `next' and `prior'; and the prefix-cycling bindings `C-n' and `C-p', even when `icicle-arrows-respect-completion-type-flag' is non-`nil'. They generally do not interfere with standard bindings, and they provide dedicated keys for each type of cycling. Bindings `M-n' and `M-p' also give you a way to get back to history traversal after you have used `TAB' or `S-TAB'.
+
+You obviously are familiar with much of '''Icicles''', but I'll mention here for others that you can of course change any '''Icicles''' bindings that you don't like. You can, for instance, keep `up' and `down' for history traversal without employing option `icicle-arrows-respect-completion-type-flag'. See [[Icicles - Customizing Key Bindings]] for how to change key bindings and [[Icicles - Key Binding Discussion]] for why the default bindings are what they are.
+
+Wrt seeing the cycle candidates before you cycle (which you mentioned as being desirable): It depends on the context. I am sure that many people will prefer ''not'' to show all candidates first if they know that there are only a few -- switching among a small set of buffers comes to mind. Icompletion with <tt>[[icomplete+.el]]</tt> plus '''Icicles''' displays the number of candidates in the minibuffer -- see the screenshot at [[Icicles - Apropos Completions]]. And those who always want to show the candidates initially can always do so using options `icicle-show-Completions-initially-flag' and `icicle-incremental-completion-flag'.
+
+Thanks for another good suggestion, and thanks for experimenting with '''Icicles'''. -- DrewAdams
+
+[new]
+Thanks for implementing it. It works perfectly. -- dsl5402B33F.pool.t-online.hu
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I've hacked together experimental support for hippie expansion, similar to the current icicle-dabbrev-completion. Code is at http://repose.cx/dump/icicles-hippie.el if anyone's interested.
+
+One issue that's come up (and it's the same for icicle-dabbrev-completion): when the completions buffer is initially displayed, there's no font-locking.
+After hitting TAB once, the current search substring and any history elements are highlighted. Is there any way to make the formatting happen from the start? Cheers, --DamienElmes
+
+[new:DrewAdams:2006-07-19 17:03 UTC]
+Glad to see contributions like this! This is the first I've seen anyone take advantage of '''Icicles''' as a programmer -- which is one of the main reasons I wrote '''Icicles'''. Several '''Icicles''' features are only for programmers. 
+
+There are interactive users, of course, and lots of people have offered bug reports, fixes, and minor code enhancements (and LeWang offered a download script, which is handy), but this is the first '''Icicles''' command I've seen defined by someone else. Welcome!
+
+Perhaps some people do use '''Icicles''' in their Emacs-Lisp code and take advantage of its features (by calling `completing-read' or `read-file-name', or by defining multi-commands with `icicle-define-command' or `icicle-define-file-command'), but I'm unaware of that so far. I haven't seen any '''Icicles''' use in other libraries on the wiki :-(.
+
+Hippie expansion has in fact been on my to-do list for a while (of course, I can't add it now ;-)). Here are a couple related things on my to-do list that you might want to tackle -- there's no reason they need to be done by me, and I don't know when I'll get around to them. Plus, like ##icicles-hippie.el##, they shouldn't require changing the '''Icicles''' code; I expect they could be in separate libraries:
+
+* Implement '''Icicles''' features for shell-mode completion (comint). (Mentioned above.)
+
+* Let users cycle through `*Messages*' messages; that is, treat it as a history. This might not be easy to do well. It probably entails advising `message'. It really should be done at the C level first.
+
+[new:DrewAdams:2006-07-22 14:23 UTC]
+: Too late! Those to-do entries have been in my list, as I say, for a long time. You prompted me to think about them a bit.
+
+** I've just implemented the first one as command `icicle-comint-search', bound to `##C-c `##' in comint buffers such as `*shell*' and interactive lisp mode. It's just a specialization of `icicle-search' -- see [[Icicles - Other Search Commands]]. 
+
+** The second one is completely unnecessary, it turns out -- simply use `icicle-occur' in buffer `*Messages*'. At the time I added that to my to-do list, I hadn't yet written `icicle-search', I guess. Also, perhaps I was thinking that messages could be more than one line each. 
+
+-- DrewAdams
+
+[new]
+The other advantage of others programming '''Icicles''' functionalities is that eventually their code could be added to Emacs. There is a lot in '''Icicles''' -- too much to interest vanilla Emacs no doubt, but some of its ideas could usefully be applied to Emacs, IMO.
+
+However, GNU cannot accept my code, because my employer won't sign the necessary papers. So, to the extent that others become interested in programming '''Icicles''' or '''Icicles'''-like functionalities, there is a better chance that those can be incorporated into Emacs eventually.
+
+Here are a few minor comments on ##icicles-hippie.el##:
+
+* There a few typos (I assume) -- e.g. `ircircle' instead of `icicle'.
+
+* I recommend that you not bind keys in `icicle-minibuffer-setup-hook'; instead, suggest in the ##Commentary## that the user bind them (but see next).
+
+* You might want to make `icicle-hippie-mode' interactive. It is, after all, a toggle. Better yet, consider making it a proper minor mode, which binds `M-/' and restores the original binding (as you say in your to-do).
+
+* You might want to use `defcustom' for some of the variables.
+
+* You should probably make your code DTRT if '''Icicles''' is not loaded (available). You might want to also add a soft require of '''Icicles''': ##(require 'icicles nil t)##.
+
+Please add ##icicles-hippie.el## to the Elisp area of the wiki. Libraries like this that use '''Icicles''' should be sure to play well with the rest of '''Icicles''', of course, but that seems to be the case here.
+
+Wrt your question about initial (prefix) highlighting: Please try the latest version of '''Icicles'''; it should take care of that. I haven't pounded on it much, so the (trivial) fix might have broken something else. It seems to be OK for now. -- DrewAdams
+
+[new]
+
+Thanks for the highlighting fix. One problem is that if a complete match exists, the completions buffer is not displayed. Rather than fix the logic in icicle-prefix-complete I was just lazy and uncommented the line you'd commented (so it calls -display-Completions and then -prefix-complete). That fixed the problem for me.
+
+Another problem is that -prefix-complete is called programmatically, so last-command is not set properly. This means when you hit TAB the first time, instead of scrolling the Completions buffer, it regenerates the list of choices.
+
+Re ##-hippie.el##, once I give it a bit more testing and tidy it up, I'll put it on the wiki. -- DamienElmes
+
+[new:DrewAdams:2006-07-20 17:29 UTC]
+1. Yes, if a complete match exists, and it is the only match, then `*Completions*' is not displayed. That is the intended behavior -- both for vanilla Emacs and for '''Icicles'''. If there is only one match, then there is no need to display `*Completions*' with only that match.
+
+Perhaps this behavior is not ideal for your use case: you use a value of non-`t', non-`nil' for `icicle-show-Completions-initially-flag', I believe. Perhaps you can think a bit about the logic and suggest something.
+
+2. I see no commented line in `icicle-prefix-complete' (or `icicle-prefix-complete-1' or `icicle-prefix-complete-no-display') -- what commented line are you referring to?
+
+3. I don't think hitting `TAB' twice is a problem. The normal logic should be preserved, IMO: the first explicit, ''user'' use of `TAB' should not scroll. I'd be willing to look at a concrete, suggested code change, but I think this behavior is probably TRT. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+I use `iswitchb' and have for years.  I use `C-tab' for `iswitchb-next-match'.  Part of the reason I haven't jumped to '''Icicles''' is that I can't figure out how to set `C-tab' to the '''Icicles''' equivalent of `switchb-next-match'.  I've been using that key combo for so long, its sorta part of my DNA now for buffer switching. -- GameName
+
+[new:DrewAdams:2006-03-01 17:15 UTC]
+Hey 10!
+
+# You can use '''Icicles''' in general and still use `iswitchb' for buffer switching, if that's your preference. Some people do that. There is nothing you need to do, because '''Icicles''' changes no global bindings. If you have, for instance, `C-x b' bound to `iswitchb-buffer', then `iswitchb-buffer' will be used for buffer switching and '''Icicles''' will still be used for other minibuffer input.
+
+# I'm not that familiar with `iswitchb', but when I look at the code it seems that `iswitchb-next-match' just cycles to the next buffer. How is that different from `C-n'/`C-p' (or ##[next]##/##[prior]##) in '''Icicles'''?
+
+# Try `icicle-buffer' (or `icicle-buffer-other-window'), and let me know what features you have in `iswitchb' that you think are missing from  `icicle-buffer'.
+
+# See [[Icicles - S-RET]] for info on how to exit the minibuffer without confirmation (as in `iswitchb').
+
+# `iswitchb' displays the available buffers in the minibuffer. '''Icicles''' displays them in the `*Completions*' window. In '''Icicles''', by default they are only displayed upon demand (via `TAB' or `S-TAB'), but you can display them initially if you set option `icicle-show-Completions-initially-flag' to non-`nil'.  Alternatively, you can set option `icicle-incremental-completion-flag' to non-`nil' and non-`t', which will display `*Completions*' as soon as you type or delete input (but not initially).
+
+-- DrewAdams
+
+[new:GameName:2006-03-05 17:11 UTC]
+
+Thanks Drew! I'll try that.  Apologies for the belated response. ;-)
+-- TennisSmith (aka "GameName")
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Extend '''Icicles''' functionality to non-minibuffer completion. -- DrewAdams 
+
+[new:DrewAdams:2006-02-12 17:57 UTC]
+This has now been implemented -- see [[Icicles - Completion in Other Buffers]].
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Use '''Icicles''' to ''search''. The list of candidate completions could be derived from the words (or other text entities) in the buffer. Use a regexp to match a search target. -- DrewAdams
+
+[new:DrewAdams:2005-10-15 03:46 UTC]
+This has now been implemented. See [[Icicles - Search Commands, Overview]]. Type a regexp to match text in a buffer or region. Complete or cycle completions that match another regexp -- that is, filter the original set of matches by a fine-tuning match. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Write a command (or two) to use '''Icicles''' with `occur', `grep', and `compile' output.  For example, cycle among `grep' hits, or complete to `grep' hits, that match a minibuffer regexp. The `icicle-candidate-action-fn' would display matching hits via `Control' + arrow keys. -- DrewAdams
+
+[new:DrewAdams:2005-10-17 06:02 UTC]
+This has now been implemented. See [[Icicles - Other Search Commands]] for `grep' and `compile', and [[Icicles - Search Commands, Overview]] for `occur'.  The latter doesn't apply to an `occur' buffer; you use it instead of `occur'. -- DrewAdams
+[new]
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Add a macro for ''creating commands''. The macro would take a command as argument and apply it via `C-next', `C-prior', `C-o', `<code>C-!</code>'.  That is, semi-automate the creation of commands like `icicle-delete-file'. -- DrewAdams
+
+[new:DrewAdams:2005-10-29 17:53 UTC]
+This has now been implemented. See [[Icicles - Defining Icicles Commands]] for documentation on macros `icicle-define-command' and `icicle-define-file-command'. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Let users save a completions set to an arbitrary ''variable'', and then restore from it. -- DrewAdams
+
+[new:DrewAdams:2006-04-03 00:20 UTC]
+: You can now do this, using `##C-u ##''##N##'' ##C->##' and `##C-<##'. See [[Icicles - Candidate Sets]]. -- DrewAdams
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Provide for persistent completion-candidate sets. -- DrewAdams
+
+[new:DrewAdams:2006-03-24 16:29 UTC]
+This has now been implemented. See [[Icicles - Persistent Completions]]. -- DrewAdams
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+I try to use Icicles for file completion too, but in Clearcase controlled directories its painfully slow. We use dynamic clearcase views where file and directory operations are not very responsive (understatement).
+
+For example, when opening a file and using apropos completion the completion list is updated for every keypress. Since the underlying implementation apparently rereads the contents of the current directory when updating the completion list it works very slowly when completing a file name.
+
+I suggest adding an option (e.g. icicles-completion-update-delay) which specifies the number of seconds (float) of idle time after which the completion list is updated. This way, I could type away and the completion list would be updated only if I stopped typing for like 0.5 seconds. If it is set to nil it would work as usual (instant update). -- dsl5402B33F.pool.t-online.hu 
+
+[new:DrewAdams:2006-03-24 16:24 UTC]
+First, you can customize option `icicle-incremental-completion-p' to `nil' to prevent updating of `*Completions*' with each keystroke. 
+
+Second, instead of customizing `icicle-incremental-completion-p' to `nil', you can ''bind'' it to `nil' in a hook function. So, if you generally like icompletion in `*Completions*' but want to turn it off for all file-finding operations (or all clearcase operations, or whatever), then you can do so in a file-finding hook. (Note: `find-file-hooks' won't work; it is run after the file is found.) If there is no appropriate hook, you can write a wrapper command for `find-file' that binds the option (or provides a hook).
+
+Third, you can toggle `icicle-incremental-completion-p' at any time using `##C-^##' in the minibuffer. So, if you generally like icompletion in `*Completions*' but want to turn it off momentarily, just use `##C-^##' (and then `##C-^##' again to turn it back on).
+
+Please read [[Icicles - Icompletion]].
+
+At any rate, I'll think about perhaps adding a time-out such as you suggest (and such as exists in ##icomplete.el##). Thanks. -- DrewAdams
+
+[new]
+Thanks for the suggestions, I'll turn it off for file finding, though I would like to use it for finding files too, but due to the circumstances I can't.
+
+BTW, I think a short timeout wouldn't be annoying in case of other type of completions (history, etc.) either. Sometimes when there are lots of completion options there are small hiccups during typing. And it would also be useful for people who have an older computer which can't keep up with instant completion list updates when typing. -- dsl5402B33F.pool.t-online.hu
+
+[new:DrewAdams:2006-03-24 17:25 UTC]
+This is now implemented. Yes, a timeout should not be limited to file-name icompletion. See options '''`icicle-incremental-completion-delay'''' and
+'''`icicle-incremental-completion-threshold'''' and [[Icicles - Icompletion]]. Thanks for the suggestion. -- DrewAdams
+
+[new]
+Thanks for the quick work, but it seems to be something else than I wished.
+
+There is a delay all right, but the completion list is updated (with a delay) during typing (even if I'm still typing!). 
+
+The delay I had in mind should be applied after I hit the last character, so if I don't type anything for 0.5 seconds then it should update the list, but if I type continuosly it shouldn't do anything until I stop for at least 0.5 seconds.
+
+For a test I set the following variables:
+
+##(setq icicle-incremental-completion-threshold 0)##
+
+##(setq icicle-incremental-completion-delay 1)##
+
+and began typing continuously. The completion list was updated (the completion window was already visible) although I never paused for more than 1 second between characters. 
+
+I was wondering how you could implement it so quickly, since this feature requires the use of ##run-with-idle-timer## in my opinion which complicates things a bit. -- dsl5402B33F.pool.t-online.hu
+
+[new:DrewAdams:2006-03-24 22:27 UTC]
+Should be OK now -- please try the latest. The implementation is the same; I just moved the test to a better location. FYI, the implementation is the same as that used in ##icomplete.el##; there is no need for `run-with-idle-timer'. -- DrewAdams
+
+[new]
+Someting is fishy. The timeout works well if it works, but sometimes no incremental completion is done. I'll try to reproduce it reliably.
+
+Here's something which I did not experience before: ##M-x grep-find[TAB]## -> ##Wrong type argument: stringp, t##
+
+Maybe it's my libraries. I'll recheck them if you cannot reproduce this fault. -- dsl5402B33F.pool.t-online.hu
+
+[new:DrewAdams:2006-03-26 14:17 UTC]
+Please try the latest. There was a moment yesterday when what I uploaded had a bug in each of the things you mention (no incremental completion, `t' vs string for a single completion). I believe I fixed them both, but please let me know. Sorry for the multiple updates. -- DrewAdams.
+
+[new]
+Yep. Works fine. Thanks. -- dsl5402B33F.pool.t-online.hu
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+When typing ##M-x mini## and pressing TAB the text is completed to ##minibuffer-##. If I press S-TAB instead of TAB then the possible completions are shown, but the word ##minibuffer## is not completed, altough all the candidates contain this word. Why is that? I'd expect the same behavior as with TAB.
+
+[new:DrewAdams:2006-03-18 06:49 UTC]
+If you expect or want the same behavior as `TAB', then bind `S-TAB' to the same command as `TAB' ;-). `S-TAB' in '''Icicles''' does ''regexp'' matching, not prefix matching. Your input is the regexp `mini'. The command reading the input is either `icicle-execute-extended-command' or `execute-extended-command', depending on your choice of bindings. Both of those commands expect the input to be the name of a command. So, regexp `mini' is matched against all currently available Emacs commands (in your Emacs session). That's all.
+
+It sounds like what you're unclear about is what a RegularExpression (regexp) is or how regexps work. For that, see the node '''Regular Expressions''' in the EmacsLispReference. First, read a little about regexps, then practice with them using both '''Icicles''' (`S-TAB') and [[IncrementalSearch#RegexpSearches]] (`C-M-s') -- there is no better way to learn. 
+
+Remember that ordinary words and substrings are also regexps -- you've been using some regexps for years without knowing it (like M. Jourdain speaking prose). Give yourself some knowledge of how to use regexps as a present ''now''. It will be the best thing you've done for yourself in a long time. Once you get interested in them, read ''Mastering Regular Expressions'' -- see RegexpReferences. ''Have fun!'' -- DrewAdams
+
+[new]
+Actually, I'm quite familiar with regexps and know how to use them. However, I don't always use them, because in most of the cases a simple substring search does the job.
+
+So I use apropos search: ##M-x mini[S-TAB]##. The list of commands are filtered and the possible cacndidates are shown. I'd like to have an icicle option which when enabled would check if the input I entered was a simple substring, not a regexp . If it is then it would check if the input can be completed with more characters automatically. If so it would add the obvous completion automatically to the input.
+
+I think apropos search is great, but combined with automatic completion it could even be better, because most of the commands could be completed much faster. (Not having to type shifted characters (e.g. *) for regexps is an advantage.) And if the relevant option were not enabled or the input contained regexp characters it would work as usual.
+
+[new:DrewAdams:2006-03-18 07:52 UTC]
+A substring ''is'' a regexp. `mini' ''is'' a regexp. Apropos completion uses regexp matching. That's all.
+
+Try `C-M-s mini' and see what it matches in a buffer with `my-minibuffer-this' and `my-minibuffer-that'. '''Icicles''' `S-TAB' works the same way: it matches `mini', neither more nor less.
+
+What does it mean for substring "input to be completed with more characters automatically"? As a substring and as a regexp your input matches `mini', neither more nor less. What determines which "more characters" ''you'' might like it to match? What is "the obvious completion" and what algorithm determines it?
+
+You might be thinking of some kind of "obvious completion" that involves English words or sequences of letters (or who knows what). But that is not what either substring completion or regexp completion do. Sub''string'' does not mean sub''word''. If you want to match any ''word'' or sequence of ''letters'' containing `mini', then say so: ##\w*mini\w*## or ##[a-zA-Z]*mini[a-zA-Z]*##.  
+
+BTW, if all of the completion candidates that match your input `mini' also match `minibuffer', as you say, then "completing" to `minibuffer' would ''not'' help you disambiguate the candidates at all. It would certainly not be true that what you're after "could be completed much faster" if you're after something that ''distinguishes'' one of the `minibuffer' candidates from the others. 
+
+For that, you need to get beyond `minibuffer' in some way. If you are in the habit of prefix completion, then you naturally think that you have to "complete" as much as possible to the right of `mini', so that you can then type something that will distiguish the candidate you want. That's just thinking in terms of prefix matching.  With apropos completion, the way to get beyond `mini' to something else that distinguishes what you want is to use `##.*##' -- instead of typing `##M-x mini TAB foo##, where the `TAB' prefix-completes to, say, `minibuffer', you type `##M-x mini.*foo##. It's not easier or harder; it's different. Prefix completion has a notion of greatest common prefix; apropos completion does not. It could have a notion of greatest common substring, but it does not; apropos completion is not just substring completion.
+
+When you see `*Completions*' full of candidates, all of which contain `minibuffer' as well as `mini', then know that what you asked for has been realized: Each of those candidates is a completion of your input -- `mini' ''has'' already been "completed with more characters automatically": each candidate is 100% complete. Only the matching part, `mini', is highlighted in `*Completions*', but all of the completions are, well, complete; they all contain `minibuffer'. 
+
+It's when you ask that '''Icicles''' "add the the obvous completion automatically to the input" that you're missing the boat. For apropos completion, your input is ''not'' visibly "completed" in the minibuffer (unless there is only one matching candidate). Instead, it remains a ''pattern'' for matching; you can modify it quickly, without needing to delete lots of stuff. It lets you stay at a more succinct, more abstract level, instead of wading through the text of concrete candidates.
+
+If you ''cycle'' completion candidates, however, then your input is replaced by complete candidates, so you can get the best of both worlds. If what you really want, for instance, is none of the candidates but is similar to one of them, then you want to start with that concrete candidate and modify it slightly. To do that, either type a pattern that singles out that candidate or cycle to it (##[next]##, ##[prior]##) -- either approach will place it in the minibuffer for you to edit to what you really want. Regexp filtering and candidate cycling work hand in hand: narrow down the field first, then cycle to what you want.
+
+If you happen to prefer prefix completion, because that's your habit or because `##*##' is a hard-to-hit shifted key or because you prefer letters to symbols or for any other reason, then stick to using `TAB'. There's no harm in that. There are still many things that '''Icicles''' has to offer even for those who never touch `S-TAB'. And I get the same commission on `TAB' as I do on `S-TAB' ;-).
+
+'''Icicles''' `S-TAB' does regexp completion; that's all. There are plenty of other completion packages around. If neither prefix completion nor apropos completion do what you want, then look further for a package that provides "the obvious completion" for your needs, matching just what you expect.  But be careful what you wish for -- matching words or completing substrings might be just what you expect today, but you might expect something else tomorrow. -- DrewAdams
+
+[new]
+Maybe there should be a third type of completion beside prefix and apropos: greatest common substring completion. That's what I want.
+
+I know iciclies offers various keys to manipulate the completion input, but I think completion is most efficient when I can get to a specific item with as few keystrokes as possible using as few bindings as possible (I don't want to think during completion about which key to use to manipulate the input).
+
+For me it would be simple substring completion with automatic completion for the greatest common substring. I understand if you don't want to implement it for some reason, it's only my preference after all.
+
+[new:DrewAdams:2006-03-20 06:12 UTC]
+I've just added what you requested, as an option. Set option '''`icicle-expand-input-to-common-match-flag'''' to non-nil to get the behavior you prefer.  Actually, this change turned out to be a lot harder than I expected. Enjoy! -- DrewAdams
+
+[new:DrewAdams:2006-03-20 23:11 UTC]
+: Non-`nil' `icicle-expand-input-to-common-match-flag' is now the default behavior. My concern previously was wiping out the regexp input, but you can now use `C-l' to restore (refresh) it. Thanks for the initial motivation for this feature. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I have an 'uncustomized' Icicles setup. When my Emacs frame is small and square-ish with a single window, the *completions* buffer appears just above the minibuffer in new horizontal window. This is great! The minibuffer, with the next I'm trying to complete, is right next to the candidates I'm considering. 
+
+When emacs is set to fullscreen-mode (or even when it is just a little wider than square) or if I have the frame split horizontally, the *completions* buffer takes over one of those frames temporarily. It is still useful, but my eyes have to crawl all the way up to the top of the screen to read the first completion candidates, then back down to the minibuffer, ad nauseum. 
+
+I usually use emacs with a fullscreen frame, split horizontally into two big windows. Is there a way to force Icicles (or emacs - it's not clear to me who is responsible for deciding where to put the completions buffer) to use a short, temporary frame just above the minibuffer to show candidates? I rarely need space to see 50-100 completion candidates at once, and if I did, I would use some search refining or some such. 
+
+Any ideas? -- JasonSewall
+
+[new:DrewAdams:2012-10-29 23:20 UTC]
+Hi Jason. This is an Emacs question, not '''Icicles'''.  I believe it depends on your Emacs version, and I'm afraid I'm not knowledgable about the various possibilities.  It has changed a lot between Emacs 22, 23, and 24, and even among Emacs 24 versions.
+
+See if you don't notice the same behavior with ''Icicle'' mode turned off or (better) even with ##emacs -Q## (no [[init file]]).
+
+If so, then ask the question (about Emacs) at ##help-gnu-emacs@gnu.org## or similar.  If you find instead that the behavior is unique to '''Icicles''' (not Emacs), let me know.
+
+With '''Icicles''', BTW, it is not unusual at all to have 100 or more matching completion candidates.  But that's beside the point here.
+
+Let me know what you do find out.  Thx -- DrewAdams
+
+
+----
+See also: [[Icicles - Probably Won't Happen]]
+
+
+
+
+----
+
+
+|| '''[[Icicles]]''' || IciclesIndex || *Next:* IciclesIssues ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el, Lisp:icicles-mode.el, Lisp:icomplete+.el
+
+CategoryCommands
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+CategoryPersistence
+CategoryAccessibility
