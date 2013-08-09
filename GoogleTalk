@@ -13,7 +13,7 @@ Customize the variable `jabber-account-list' to have:
 
 ||JID||your gtalk username||
 ||Network Server||talk.google.com||
-||Port||5222||
+||Port||5223||
 ||Connection type||Legacy SSL||
 
 === Starting ===
