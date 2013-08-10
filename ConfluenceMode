@@ -19,5 +19,8 @@ Note, this mode uses a slightly modified version of the XmlRpc library, which is
 [new]
 Version 1.1 now supports emacs 23.
 
+[new]
+Version 1.6 now supports Confluence 4.0+.
+
 ----
 CategoryHypermedia
