@@ -179,5 +179,20 @@ The above solution optionally loads the theme system wide depending on the type 
 [new:PauloMatos:2010-01-28]
 It would be nice to have a list of color-themes that work well on a terminal.
 
+[new:BrianOney:2013-08-10]
+Themes on a terminal instance of emacs that I like:
+Well one first has to enable colors. Put:
+<pre>
+# colors! works in gnome-terminal  and hopefully others as well
+# put this in your .bashrc file
+export TERM=xterm-256color
+</pre>
+<pre>
+;; fav theme e.g.
+;; (load-theme 'manoj-dark) ; nice
+;; (load-theme 'grandshell t) ; recently broke for terminal
+(load-theme 'zenburn t) ; new fav
+</pre>
+
 ----
 CategoryFaces
