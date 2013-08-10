@@ -58,6 +58,8 @@
 
 ;;; ChangeLog:
 ;;
+;; (2013/08/10) fixed a bug when C-g sroked in popup-kill-ring, by lynnux
+;;
 ;; * 0.2.8 (2011/06/10)
 ;;   Added the new variable `popup-kill-ring-last-used-move-first'.  If
 ;;   this variable is non-nil, It means that last selected `kill-ring'
@@ -293,7 +295,7 @@ and `pos-tip.el'"
           ;; If `C-g' was typed, clear the inserted string. (7 is `C-g'.)
           (when (and popup-kill-ring-interactive-insert
                      (numberp last-input-event)
-                     (= last-input-event ? ))
+                     (= last-input-event ?\C-g ))
             (popup-kill-ring-clear-inserted)))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
