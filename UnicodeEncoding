@@ -3,15 +3,19 @@
 Starting with GNU Emacs 23, there is relatively complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
 
 * You can use one of the Emacs InputMethods.
-* You can use [[command]] `ucs-insert' (`C-x 8 RET'), which lets you either enter a Unicode code point or complete against the Unicode character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
+
+* You can use [[command]] `insert-char' (`ucs-insert' for Emacs before version 24) (`C-x 8 RET'), which lets you either enter a Unicode code point or complete against the Unicode character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
+
+[:ucsc-insert]
+[:ucs-cmds.el]
 * You can define a command that inserts a ''single'' Unicode character, and then bind it to a [[key]], effectively adding that character to your keyboard.  Library '''<tt>[[ucs-cmds.el]]</tt>''' provides:
-** Command '''`ucsc-insert'''', a replacement for `ucs-insert' --- bind it to `C-x 8 RET'.  It does the same thing, except that with a negative [[prefix argument]] (for which `ucs-insert' does nothing) it automatically creates such a command.
+
+** Command '''`ucsc-insert'''', a replacement for `insert-char' (`ucs-insert' for Emacs before version 24) --- bind it to `C-x 8 RET'.  It does the same thing, except that with a negative [[prefix argument]] (for which `ucs-insert' does nothing) it automatically creates such a command.
 ** Macro '''`ucs-make-commands'''', which defines a whole set of such commands.  You pass it a [[regexp]], which is
 matched against all Unicode character names (in `ucs-names').
 An insertion command is created for each of the characters whose name matches.
 
-:: In both cases, the
-commands created have the same names as the characters they
+:: In both cases, the commands created have the same names as the characters they
 insert, except that `SPC' characters in the character names are
 replaced by hyphens (`##-##'), and the command names are lowercase,
 not uppercase like the character names.
