@@ -14,8 +14,8 @@ Note that this page is not about EmacsWikiMode.
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
 
-
-
+[new]
+I think the problem is that the HTML being generated right now is invalid: ##<dl class="quote"><dl class="quote"><dt /><dd>indent 2</dd></dl></dl>## -- I don't think this ever worked as you intended it to. Right now you need to use ##:## before you can use ##::##. -- AlexSchroeder
 
 == How to do a search for CateogoryNeedsAttention without invoking the category ==
 Say we have the following markup:
