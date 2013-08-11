@@ -1,5 +1,6 @@
 [[zh:DiredOmitMode_目录隐藏模式]]
 [[zh:DiredOmitMode_目录隐藏模式]]
+[[zh:DiredOmitMode_目录隐藏模式]]
 DiredOmitMode lets you hide uninteresting files, such as backup files and AutoSave files, from the DiredMode view.
 
 It is defined in the [[Dired X]] package, so you must also arrange to load that:
