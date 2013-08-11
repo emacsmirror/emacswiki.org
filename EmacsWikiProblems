@@ -48,6 +48,10 @@ Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a
 
 Interestingly, the markup in this particular header renders properly in the TOC
 
+[new]
+Markup cannot be nested by default. Very few markup elements can in fact be nested. This is not document anywhere, I think.
+Common sense stuff like list items and inline markup can be nested (bold list items, for example).
+Emphasis markup using apostrophes is the online inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
 
 == No more `Article' link on `Comments on...' pages ==
 
