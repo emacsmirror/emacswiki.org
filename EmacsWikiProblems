@@ -38,6 +38,8 @@ But that particular search fails to find anything but the Category-NeedsAttentio
 
 Also of Note: CNA markup does not appear in the page preview. It only appears after save. So twiddling with tricks to avoid its appearance can only be tested by a number of frivolous edit-save cycles.
 
+[new]
+Clearly an instance failure of Wikipedia:Use–mention_distinction. I don't think there currently is a solution. I think all our categories suffer from it. The only way to solve this would be to add meta information. But then how would you search for the meta information? I believe that there is no perfect solution. The real question is: how many levels of meta are you willing to accept? I'm currently willing to accept a simple wiki system with no meta data and I'm willing to incur the cost since I don't believe that there are many such instances. -- AlexSchroeder
 
 == Can markup be used in headers? <code>I have failed to do so.</code> ==
 Is this documented somewhere?
