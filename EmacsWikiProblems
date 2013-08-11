@@ -70,22 +70,6 @@ This is what the page footer looks like on my iPhone with the traditional theme.
 Sorry, I don't know what I was seeing, or thought I was.  I cannot even find a `Newest Revision' link anywhere now. Unless that rings a bell, feel free to delete this problem report -- sorry for the noise. -- DrewAdams
 
 
-== DuckDuckGo search not strictly limited to site ==
-
-# I search for [[https://duckduckgo.com/?q=storing+dotfiles+site%3Aemacswiki.org|storing dotfiles site:emacswiki.org]]
-# Another site come up first in the results, THEN emacswiki.org, THEN other sites, emacswiki, etc.
-## same results for [[https://duckduckgo.com/?q=site%3Aemacswiki.org+storing+dotfiles|site:emacswiki.org storing dotfiles]]
-# as much as it pains me to admit this, when I do the same search on google, the results are limited to emacswiki
-## https://www.google.com/search?q=site%3Aemacswiki.org+storing+dotfiles
-
-[[http://imgur.com/K2UweJp screenshot @ imgur.com]]
-
--- MichaelPaulukonis 2013-05-22 15:15 UTC
-
-[new:MichaelPaulukonis:2013-06-17 18:55 UTC]
-As of   2013-06-17 18:55 UTC this appears to have been fixed; [[https://duckduckgo.com/?q=storing+dotfiles+site%3Aemacswiki.org|this search]] now only returns emacswiki-results. -MichaelPaulukonis
-
-
 == Disabling new CSS design has no effect on ElispArea ==
 
 Title says it all.  I disabled it, but it still shows up at ElispArea.  This was not the case yesterday (2013-04-24) but it is today. -- DrewAdams
