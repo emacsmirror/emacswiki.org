@@ -399,13 +399,6 @@ I've just opened at terminal and used w3m to browse and search the wiki and didn
 The answer above makes me think that maybe it's a w3m-mode question but I'm not sure. If it's a w3m issue,
 can you elaborate? -- AlexSchroeder
 
-=== RSS for single-pages doesn't work in Google Reader ===
-
-I haven't figured out what the problem is yet, but I added http://www.emacswiki.org/emacs/?action=rss;rcidonly=IciclesDiscussion to Google Reader, and it didn't get a "new item" notification when the page was changed. -- EthanGlasserCamp
-
-[new]
-When I look at the RSS feed, I get to see the latest revision of the page. I must therefore assume that it's Google Reader's fault. I can imagine two problems: 1. It takes very long for changes to be picked up by Google. That's the explanation I currently favor because I have several of my own wikis in Google Reader and I often have the impression that Google Reader is up to a day late. 2. Google Reader thinks that you're looking at an update to an existing page and will not show it anymore. I remember there was such an option for Blog Lines, but I can't find anything like it for Google Reader. -- AlexSchroeder
-
 === Browser `Open in New Window' no longer works on wiki pages ===
 
 This has changed in the last day or so -- since the spam attack. 
