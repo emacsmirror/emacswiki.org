@@ -99,26 +99,6 @@ Could be! I just tried looking at HighlightLibrary using IE 8---the oldest brows
 
 == Search ==
 
-=== Switch to DuckDuckGo? ===
-
-[new]
-All these search issues make me think that perhaps we'd be better off using DuckDuckGo?
-Apparently, [http://www.schneier.com/blog/archives/2013/03/changes_to_the.html Bruce Schneier uses it].
-
-Issues mentioned below:
-
-* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+apropos-fn%2Bvar.el apropos-fn+var.el]
-* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+BrowseKillRing BrowseKillRing]
-* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+buff-menu%2B.el buff-menu+.el]
-* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+DiredPlus DiredPlus]
-
-Then again, I'm not sure whether all of these issues still persist. The only one that clearly still didn't work was the ##DiredPlus## example.
-Anyway, what do you think? Switch away from Google?
-
-Perhaps I should just offer both in order to allow easy testing. -- AlexSchroeder
-
-
-
 === Search finds nothing when browser is Chrome ==
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
