@@ -206,19 +206,6 @@ For the example given, Google returns MacroBasics on third place. That's not so 
 We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
 
 
-=== both www.emacsen.org and emacsen.org work without one redirecting to the other ===
-
-This might not be the best setup, Google-juice-wise. Permanently redirecting from one to the other seems like the way to go.
-
-Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/foo##, ##/cgi-bin/emacs-en/foo##, and ##/cgi-bin/wiki/foo## all work. I suggest redirecting all of those to ##/wiki/foo##.
-
-[new]
-Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
-
-[new]
-emacswiki.org now redirects to www.emacswiki.org -- AlexSchroeder
-
-
 == Revisioning Problems ==
 
 === Conflict from my own edit 25 minutes ago? ===
