@@ -91,7 +91,6 @@ Besides the %%EmacsWiki%% ElispArea, which always has the latest source files fo
 
 * JonasBernoulli has created a '''Bookmark+''' Git repository here: https://github.com/emacsmirror/bookmark-plus.  (Many other %%EmacsWiki%% libraries are also mirrored at the same Git hub -- see [[Git repository]].)
 
-* [[BrandonWMaister]] didn't notice Jonas' work and has created a '''Bookmark+''' github mirror here: https://github.com/quodlibetor/bookmarkplus-github/.  Here is a [https://github.com/quodlibetor/bookmarkplus-github/tarball/master download] link for the tarball.  There is an auto-update script that ##cron## runs daily, so it shouldn't ever fall behind more than a day or two.
 
 
 
