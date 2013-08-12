@@ -1,10 +1,15 @@
 WikiPedia:TypeScript
 
-Emacs has been mentioned as "providing support" for Typescript, but it appears to be limited to syntax-highlighting, and does not extend to intellisense, warnings, and compilation tools.
+Emacs has been mentioned as "providing support" for Typescript.
 
 There are two (related?) highlight modes for Typescript:
 * [http://blogs.msdn.com/b/interoperability/archive/2012/10/01/sublime-text-vi-emacs-typescript-enabled.aspx typescript_support_for_emacs.zip] (blogs.msdn.com)
 * [https://github.com/mattdeboard/dotfiles-emacs/blob/master/typescript-mode/typescript-mode.el typescript-mode.el] (mattdeboard @ github)
+
+== Other Extension ==
+
+* [https://github.com/aki2o/emacs-tss tss.el] provide completion like intellisense and syntax-checking for Typescript.
+
 
 ----
 CategoryModes
