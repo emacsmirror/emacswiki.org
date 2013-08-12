@@ -850,8 +850,9 @@ Thx -- DrewAdams
 
 [new:VladimirLomov:2013-08-12 03:45 UTC]
 
-Thank you for clarification and the fix. -- Vladimir Lomov
+Thank you for clarification and the fix. -- VladimirLomov
 
+----
 [new:VladimirLomov:2013-08-12 04:13 UTC]
 
 I'm sorry to bother you again but something wrong again. I run Emacs in following ways:
@@ -870,7 +871,15 @@ then run ##M-x load-library## -> ##dired+## and after that ##M-x diredp-dired-fi
 
 According to screenshots on the page I thought that Dired+ will give the same view as Dired. Am I right and Dired+ should give another view than Dired?
 
-P.S. I use ##dired+.el## updated on Aug 11.
+P.S. I use ##dired+.el## updated on Aug 11. -- VladimirLomov
+
+[new:DrewAdams:2013-08-12 05:32 UTC]
+
+Customize option '''`diredp-hide-details-initially-flag'''' to `nil'.  Or just toggle the display, by hitting '''`##(##''''.  
+
+Hiding details is a new feature.  My guess is that most people will want to hide details most of the time, so I made the default value of the option `t', not `nil'.
+
+Let me know if I misunderstand and this is not what you meant (the fact that details are hidden). -- DrewAdams
 
 ----
 ----
