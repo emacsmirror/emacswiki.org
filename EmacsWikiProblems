@@ -17,6 +17,30 @@ See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the
 [new]
 I think the problem is that the HTML being generated right now is invalid: ##<dl class="quote"><dl class="quote"><dt /><dd>indent 2</dd></dl></dl>## -- I don't think this ever worked as you intended it to. Right now you need to use ##:## before you can use ##::##. -- AlexSchroeder
 
+
+[new]
+I'm pretty sure it used to work.  I guess you're saying that a workaround is to do this?
+
+{{{
+* A bullet entry
+
+:  
+
+:: Some text indented to be under the bullet.
+}}}
+
+
+That does seem to work.  (You need to put some spaces after the `:'.)
+
+* A bullet entry
+
+:  
+
+:: Some text indented to be under the bullet.
+
+I guess I'm OK with the workaround, though it indents too far and adds too much vertical whitespace.
+You can remove this problem unless you want to keep it as a reminder to look for a better solution.
+
 == How to do a search for CateogoryNeedsAttention without invoking the category ==
 Say we have the following markup:
 
