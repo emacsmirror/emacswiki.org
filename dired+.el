@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug  6 13:32:41 2013 (-0700)
+;; Last-Updated: Sun Aug 11 20:20:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7098
+;;     Update #: 7100
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -483,6 +483,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/11 dadams
+;;     diredp-dired-files-interactive-spec:
+;;       Protect icicle-file-sort with boundp.  Thx to Vladimir Lomov.
 ;; 2013/08/06 dadams
 ;;     diredp-display-image,diredp-menu-bar-immediate-image-menu (:enable's):
 ;;       Protect diredp-string-match-p from nil argument.
@@ -3248,7 +3251,8 @@ library `Bookmark+'):
  *C-x m     - Access file bookmarks (not just autofiles)"
   (list
    (unwind-protect
-        (let ((icicle-sort-comparer  (or icicle-file-sort ; If not reading files then dirs first.
+        (let ((icicle-sort-comparer  (or (and (boundp 'icicle-file-sort) ;; If not reading files
+                                              icicle-file-sort)          ;; then dirs first.
                                          (and (> (prefix-numeric-value current-prefix-arg) 0)
                                               'icicle-dirs-first-p)
                                          icicle-sort-comparer))
