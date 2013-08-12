@@ -812,6 +812,9 @@ But the same thing goes there: Unless someone points to a particular reason why 
 
 If can point to a problem you run into because of a particular redefinition, I'll be glad to take a closer look.  Thx -- DrewAdams
 
+
+----
+
 [new]
 
 Hello, I might be wrong but seems that dired+ requires icicles. I installed all dired+ files into ##/usr/share/emacs/site-lisp## then I run Emacs as
@@ -833,6 +836,17 @@ GNU Emacs 24.3.50.1 (x86_64-unknown-linux-gnu, GTK+ Version 3.8.2) of 2013-08-12
 </code>
 
 Thanks in advance, -- VladimirLomov
+
+[new:DrewAdams:2013-08-12 03:19 UTC]
+No, not at all.  Try it: `M-x load-file dired+.el'. Then `C-x 4 b *Messages*'.  You will see nothing about '''Icicles'''.
+
+However, thanks for pointing out that I forgot to protect that variable with `boundp'.  Should be OK now.
+
+'''Dired+''' does not in any way need '''Icicles''' or any other of my libraries.  It requires only the standard libraries ##dired.el## and ##dired-aux##.
+
+If you happen to have some other libraries in your `loadpath' then '''Dired+''' will load them (so-called ''soft'' ##require##s).  And in other cases if you happen to have some libraries already loaded then '''Dired+''' will make use of them, but it does not load them.
+
+Thx -- DrewAdams
 
 ----
 
