@@ -56,10 +56,14 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** will other themes auto-load?
 
 === re-org(ing) my init-file(s) ===
+* IN-PROGRESS as of 2013.07
+*** see https://github.com/MichaelPaulukonis/dot-emacs
+* some things to stare at
 ** https://github.com/ghoseb/dotemacs and https://github.com/overtone/emacs-live
 ** http://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html
-** IN-PROGRESS as of 2013.07
-** see https://github.com/MichaelPaulukonis/dot-emacs
+** http://ourcomments.org/Emacs/DL/elisp/dot-emacs/
+*** I like the message-dumping
+
 
 === tetris ===
 * I wanted to tweak tetris. But most things appear to be untweakable without tweaking all over the place. tsk tsk.
