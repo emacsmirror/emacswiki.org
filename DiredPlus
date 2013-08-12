@@ -881,6 +881,10 @@ Hiding details is a new feature.  My guess is that most people will want to hide
 
 Let me know if I misunderstand and this is not what you meant (the fact that details are hidden). -- DrewAdams
 
+[new:VladimirLomov:2013-08-12 06:30 UTC]
+
+Thank you, this is exactly what I need :). Regarding preferences, I don't know, besides Emacs+Dired(+) I use MC (midnight commander) and use 'short listing' to view a directory but in Emacs I prefer long list. I wouldn't mind if this option would be mentioned here with pair of screenshots ;) -- VladimirLomov
+
 ----
 ----
 CategoryDirectories
