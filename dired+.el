@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 11 20:20:54 2013 (-0700)
+;; Last-Updated: Mon Aug 12 07:15:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7100
+;;     Update #: 7105
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -46,6 +46,19 @@
 ;;
 ;;    (define-key ctl-x-map   "d" 'diredp-dired-files)
 ;;    (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+;;
+;;
+;;  Hide/Show Details
+;;  -----------------
+;;
+;;  Starting with Emacs 24.4, listing details are hidden by default.
+;;  Use `(' anytime to toggle this hiding.  You can use option
+;;  `diredp-hide-details-initially-flag' to change the default/initial
+;;  state.  See also option `diredp-hide-details-propagate-flag'.
+;;
+;;  If you have an Emacs version older than 24.4, you can use library
+;;  `dired-details+.el' (plus `dired-details.el') to get similar
+;;  behavior.
 ;;
 ;;
 ;;  Fontification Level
