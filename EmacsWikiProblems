@@ -77,6 +77,9 @@ Markup cannot be nested by default. Very few markup elements can in fact be nest
 Common sense stuff like list items and inline markup can be nested (bold list items, for example).
 Emphasis markup using apostrophes is the online inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
 
+[new]
+The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
+
 == No more `Article' link on `Comments on...' pages ==
 
 I thought there used to be an `Article' link to take you back to the page that is being commented on.  I find no link that does that now.  (However, as a workaround, if you click the `Newest Revision' link then you can find an `Article' link.)  -- DrewAdams
