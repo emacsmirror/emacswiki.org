@@ -812,11 +812,27 @@ But the same thing goes there: Unless someone points to a particular reason why 
 
 If can point to a problem you run into because of a particular redefinition, I'll be glad to take a closer look.  Thx -- DrewAdams
 
+[new]
 
+Hello, I might be wrong but seems that dired+ requires icicles. I installed all dired+ files into ##/usr/share/emacs/site-lisp## then I run Emacs as
+<code>
+emacs -Q -L /usr/share/emacs/site-lisp -l dired+.el.gz
+</code>
+and executed ##M-x diredp-dired-files## but instead of Dired+ window I see in minibuffer message
+<code>
+Symbol's value as variable is void: icicle-file-sort
+</code>
+In Message buffer I see
+<code>
+Making completion list...
+let: Symbol's value as variable is void: icicle-file-sort
+</code>
+Am I right and to work properly Dired+ needs Icicles? Or I do something wrong? Emacs version
+<code>
+GNU Emacs 24.3.50.1 (x86_64-unknown-linux-gnu, GTK+ Version 3.8.2) of 2013-08-12 on smoon4
+</code>
 
-
-
-
+Thanks in advance, -- VladimirLomov
 
 ----
 
