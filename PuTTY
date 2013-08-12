@@ -1,4 +1,4 @@
-A fully-featured, highly-stable, minimally-intrusive, well-loved open-source Secure Shell (SSH) client for Windows (95 to Vista) and Un*x computers, created by Simon Tatham. It fills the void left from the lack of a proper (non-Cygwin) !OpenSSH port to Windows. [http://www.chiark.greenend.org.uk/~sgtatham/putty/ Download the program from the official site]
+A fully-featured, highly-stable, minimally-intrusive, well-loved open-source Secure Shell (SSH) client for Windows (95 to 8) and Un*x computers, created by Simon Tatham. It fills the void left from the lack of a proper (non-Cygwin) !OpenSSH port to Windows. [http://www.chiark.greenend.org.uk/~sgtatham/putty/ Download the program from the official site]
 
 == Why would I want to use it with Emacs? ==
 
