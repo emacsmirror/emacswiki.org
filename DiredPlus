@@ -852,8 +852,27 @@ Thx -- DrewAdams
 
 Thank you for clarification and the fix. -- Vladimir Lomov
 
-----
+[new:VladimirLomov:2013-08-12 04:13 UTC]
 
+I'm sorry to bother you again but something wrong again. I run Emacs in following ways:
+1. run Emacs without any user settings
+<code>
+emacs -Q
+</code>
+and run in it ##M-x dired##, use ##~/tmp##, I see
+[[image:http://img-fotki.yandex.ru/get/9353/2502524.0/0_9e7d3_420ee6b5_orig]]
+2. run Emacs without any user settings but use specific directory to search for library
+<code>
+emacs -Q -L /usr/share/emacs/site-lisp/
+</code>
+then run ##M-x load-library## -> ##dired+## and after that ##M-x diredp-dired-files## with the same directory, I see this now
+[[image:http://img-fotki.yandex.ru/get/9091/2502524.0/0_9e7d4_caf86b9_orig]]
+
+According to screenshots on the page I thought that Dired+ will give the same view as Dired. Am I right and Dired+ should give another view than Dired?
+
+P.S. I use ##dired+.el## updated on Aug 11.
+
+----
 ----
 CategoryDirectories
 CategoryFiles
