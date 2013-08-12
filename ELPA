@@ -73,6 +73,15 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 }}}
 * some package specific initialization can be done with eval-after-load, see [[ELPA#eval-after-load|eval-after-load]]
 
+* it could be easier just to move package-initialize to another point during startup so you can (require) ELPA packages;
+this takes care of a lot of the described issues:
+{{{
+    ;; basic initialization, (require) non-ELPA packages, etc.
+    (setq package-enable-at-startup nil)
+    (package-initialize)
+    ;; (require) your ELPA packages, configure them as normal
+}}}
+
 * if all these tricks don't work you can still postpone config until after the packages have been loaded like this:
 
 {{{
