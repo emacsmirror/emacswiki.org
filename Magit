@@ -22,7 +22,7 @@ Other handy keys:
 After you are hooked check the info manual, it's not that big.
 
 == TRAMP ==
-Version 0.7 (March 2009) of Magit (the version in Debian Squeeze) didn't support TRAMP. Somewhere between there and 1.0 (March 2011) TRAMP support was added. February-August 2009 Ian Eure maintained a [http://atomized.org/2009/01/forked-magit-that-works-with-tramp/ fork] ([https://github.com/ieure/magit github]) that added support for TRAMP. Since more recent versions of the official Magit, you should use that. You still see some references to Ian's version around the net, they can be ignored.
+Version 0.7 (March 2009) of Magit (the version in Debian Squeeze) didn't support TRAMP. Somewhere between there and 1.0 (March 2011) TRAMP support was added. February-August 2009 Ian Eure maintained a [http://atomized.org/2009/01/forked-magit-that-works-with-tramp/ fork] ([https://github.com/ieure/magit github]) that added support for TRAMP. Since more recent versions of the official Magit support TRAMP natively, you should use them. You'll still see some references to Ian's version around the net, they can safely be ignored.
 
 === Tramp under windows ===
 [new:RodrigoWanderley:dt jun  30 21:25:37 CEST 2008]
