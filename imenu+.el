@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ((hide-comnts "0"))
-;; Last-Updated: Thu Jul 25 08:46:18 2013 (-0700)
+;; Last-Updated: Tue Aug 13 15:39:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 915
+;;     Update #: 929
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `imenu'.
+;;   `hide-comnt', `imenu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -73,6 +73,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/13 dadams
+;;     Added: imenup-lisp-other-defn-regexp-2.
+;;     Renamed: imenup-lisp-other-defn-regexp to imenup-lisp-other-defn-regexp-1.
+;;     imenup(-emacs)-lisp-generic-expression: Use imenup-lisp-other-defn-regexp-1 and *-2.
+;;     imenup-lisp-other-defn-regexp-1: Added cl-deftype, cl-defstruct.
+;;     imenup-lisp-fn-defn-regexp: Added cl-defun, defsubst.
+;;     imenup-lisp-macro-defn-regexp: Added cl-defmacro, cl-define-compiler-macro.
 ;; 2013/07/25 dadams
 ;;     Require hide-comnt.el for Emacs 20 also - see comment in code for require.
 ;; 2013/07/24 dadams
@@ -223,20 +230,28 @@ See also `imenup-emacs-key-defn-regexp-2'.")
   "*Regexp that recognizes Emacs key definitions.
 See also `imenup-emacs-key-defn-regexp-1'.")
 
-(defvar imenup-lisp-other-defn-regexp
+(defvar imenup-lisp-other-defn-regexp-1
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
-              (regexp-opt '("defgroup" "deftheme" "deftype" "defstruct"
+              (regexp-opt '("defgroup" "deftheme" "deftype" "cl-deftype" "defstruct" "cl-defstruct"
                             "defclass" "define-condition" "define-widget"
                             "defpackage") t)
               "\\s-+'?\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
     "(\\s-*def\\(type\\|class\\|ine-condition\\)\\s-+'?\\([^ \t()]+\\)")
   "*Regexp that recognizes other Lisp definitions.")
 
+(defvar imenup-lisp-other-defn-regexp-2
+  (if (>= emacs-major-version 22)
+      (concat "^\\s-*("
+              (regexp-opt '("defstruct" "cl-defstruct") t)
+              "\\s-+(\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+    "")
+  "*Regexp that recognizes other Lisp defs, where the name is followed by (.")
+
 (defvar imenup-lisp-fn-defn-regexp
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
-              (regexp-opt '("defun" "defun*" "defsubst" "defadvice"
+              (regexp-opt '("defun" "cl-defun" "defun*" "defsubst" "cl-defsubst" "defadvice"
                             "define-skeleton" "define-minor-mode"
                             "define-global-minor-mode" "define-globalized-minor-mode"
                             "define-derived-mode" "define-generic-mode" "defsetf"
@@ -253,7 +268,8 @@ See also `imenup-emacs-key-defn-regexp-1'.")
   "*Regexp that recognizes Lisp function definitions.")
 
 (defvar imenup-lisp-macro-defn-regexp
-  "(\\s-*\\(defmacro\\|define-compiler-macro\\|define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
+  "(\\s-*\\(defmacro\\|cl-defmacro\\|cl-define-compiler-macro\\|define-compiler-macro\\|\
+define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
   "*Regexp that recognizes Lisp macro definitions.")
 
 (defvar imenup-emacs-face-defn-regexp "(\\s-*\\(defface\\)\\s-+\\([^ \t()]+\\)"
@@ -281,7 +297,8 @@ See also `imenup-emacs-key-defn-regexp-1'.")
 ;;
 (defconst lisp-imenu-generic-expression
   (list
-   (list "Other"     imenup-lisp-other-defn-regexp 2)
+   (list "Other"     imenup-lisp-other-defn-regexp-1 2)
+   (list "Other"     imenup-lisp-other-defn-regexp-2 2)
    (list "Macros"    imenup-lisp-macro-defn-regexp 2)
    (list "Functions" imenup-lisp-fn-defn-regexp (if (string-match "\\(?:\\)" "") 2 6))
    (list "Variables" imenup-lisp-var-defn-regexp 2)
@@ -291,7 +308,8 @@ See `imenu-generic-expression'.")
 
 (defvar imenup-emacs-lisp-generic-expression
   (list
-   (list "Other"        imenup-lisp-other-defn-regexp 2)
+   (list "Other"        imenup-lisp-other-defn-regexp-1 2)
+   (list "Other"        imenup-lisp-other-defn-regexp-2 2)
    (list "Keys in Maps" imenup-emacs-key-defn-regexp-2 5)
    (list "Keys"         imenup-emacs-key-defn-regexp-1 5)
    (list "Macros"       imenup-lisp-macro-defn-regexp 2)
