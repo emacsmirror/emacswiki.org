@@ -4,9 +4,41 @@ There are a few solutions for this.
 
 == EasyPG Assistant ==
 
-At least in my emacs 23.1.1 that comes with Ubuntu 10.04 there is EasyPG Assistant that handles gpg encrypted files out-of-the-box. So (my) mc-gpg-file-mode is now obsolete.
+EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
 
-== stock emacs ==
+This library worked out of the box for me. In contrast to most other approaches discussed here, easy-pg does not change the major mode. 
+
+EasyPG Assistant is bundled with Emacs since version 23.1; it handles gpg encrypted files out-of-the-box so (my) mc-gpg-file-mode is now obsolete.
+
+== Mc-Auto-Encrypt ==
+
+You can get the code for this at Lisp:mc-auto-encrypt.el.  This method takes advantage of the FileLocalVariables to evaluate a form, mc-auto-encrypt, and setup a before-save-hook and after-save-hook that handles the decryption and encryption.  To start using it on a plain text file you need to put ##(require 'mc-auto-encrypt)## in your DotEmacs and then place this at the end of your unencrypt text file:
+
+<pre>
+ Local Variables:
+ eval:(mc-auto-encrypt)
+ End:
+</pre>
+
+Using mc-auto-encrypt, the file is always displayed unencrypted.  The buffer's modification state reflects the modification of the unencrypted text.  When you save the file you are prompted (via MailCrypt) for the recipient.  That should be at least you so that you can decrypt it later.  You can also add additional recipients at this time if you want others to have access to the file.  MailCrypt also prompts whether to sign the message or not.  I'm not sure how much this matters if you're only encrypting it to yourself.  
+
+Note that I've set mc-password-timeout to a fairly large value so I'm not prompted for my (complicated to type) GnuPG pass phrase every time I save the file.  I'm not totally paranoid.  I just want some reasonable way to protect my hosts, usernames, and passwords if my laptop were stolen.
+
+This method of auto encryption makes no more efforts than MailCrypt to protect the unencrypted text from memory.  In other words, I believe someone could extract the clear text of the file either from memory or from swap space.  I don't know if emacs has a way to take advantage of the 'mlock' POSIX function to disable paging for memory locations.
+
+If you need to see the encrypted, ASCII guarded text in emacs, you should adjust the value of enable-local-eval.
+
+This is known to work with mailcrypt version 3.5.8, GNU Emacs 21.2.2, and GnuPG 1.2.1
+
+== Mc-gpg-file-mode ==
+
+Based on MailCrypt there is Lisp:mc-gpg-file-mode.el which allows automatic decryption / encryption of files ending with '.gpg' at file open / save. This can e.g. be used to comfortably handle a gpg encrypted (ASCII) file with passwords or such 'secrets'.
+
+=== rewrite using pgg ===
+
+Note that this requires emacs22+.  This just a re-write of Lisp:mc-gpg-file-mode.el to use the built-in functions that emacs22+ now has.
+
+Also, because of the way ##pgg## operates, this does write out a temporary file to disk with the unencrypted contents.  The file is quickly erased, but user beware.
 
 Add this to your ##.emacs## file and any filename ending with ##.gpg## will be treated as encrypted:
 
@@ -38,43 +70,6 @@ Add this to your ##.emacs## file and any filename ending with ##.gpg## will be t
 	    (set-buffer-modified-p nil)))
   "Mode for gpg encrypted files")
 </pre>
-
-Note that this requires emacs22+.  This just a re-write of Lisp:mc-gpg-file-mode.el to use the built-in functions that emacs22+ now has.
-
-Also, because of the way ##pgg## operates, this does write out a temporary file to disk with the unencrypted contents.  The file is quickly erased, but user beware.
-
-
-== easy-pg ==
-
-EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
-
-This library worked out of the box for me. In contrast to most other approaches discussed here, easy-pg does not change the major mode. 
-
-
-== Mc-Auto-Encrypt ==
-
-You can get the code for this at Lisp:mc-auto-encrypt.el.  This method takes advantage of the FileLocalVariables to evaluate a form, mc-auto-encrypt, and setup a before-save-hook and after-save-hook that handles the decryption and encryption.  To start using it on a plain text file you need to put ##(require 'mc-auto-encrypt)## in your DotEmacs and then place this at the end of your unencrypt text file:
-
-<pre>
- Local Variables:
- eval:(mc-auto-encrypt)
- End:
-</pre>
-
-Using mc-auto-encrypt, the file is always displayed unencrypted.  The buffer's modification state reflects the modification of the unencrypted text.  When you save the file you are prompted (via MailCrypt) for the recipient.  That should be at least you so that you can decrypt it later.  You can also add additional recipients at this time if you want others to have access to the file.  MailCrypt also prompts whether to sign the message or not.  I'm not sure how much this matters if you're only encrypting it to yourself.  
-
-Note that I've set mc-password-timeout to a fairly large value so I'm not prompted for my (complicated to type) GnuPG pass phrase every time I save the file.  I'm not totally paranoid.  I just want some reasonable way to protect my hosts, usernames, and passwords if my laptop were stolen.
-
-This method of auto encryption makes no more efforts than MailCrypt to protect the unencrypted text from memory.  In other words, I believe someone could extract the clear text of the file either from memory or from swap space.  I don't know if emacs has a way to take advantage of the 'mlock' POSIX function to disable paging for memory locations.
-
-If you need to see the encrypted, ASCII guarded text in emacs, you should adjust the value of enable-local-eval.
-
-This is known to work with mailcrypt version 3.5.8, GNU Emacs 21.2.2, and GnuPG 1.2.1
-
-== Mc-gpg-file-mode ==
-
-Based on MailCrypt there is Lisp:mc-gpg-file-mode.el which allows automatic decryption / encryption of files ending with '.gpg' at file open / save. This can e.g. be used to comfortably handle a gpg encrypted (ASCII) file with passwords or such 'secrets'.
-
 
 == crypt++ and gnupg  ==
 
