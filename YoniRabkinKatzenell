@@ -29,6 +29,8 @@ SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encour
 === rt-liberation.el ===
 rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. Get it at http://yrk.nfshost.com/projects/rt-liberation/
 
+If you work with RT and hang around IRC, you might also be interested in [http://yrk.nfshost.com/projects/queue-status/ Queue-Status].
+
 === emacs-android.el ===
 I write some Android stuff. Some of the Emacs Lisp hacks I write to help me hack Android Java in Emacs find their way into emacs-android.el. You can get a copy with: git clone http://yrk.nfshost.com/repos/emacs-android.git
 
