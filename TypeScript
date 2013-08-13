@@ -8,7 +8,7 @@ There are two (related?) highlight modes for Typescript:
 
 == Other Extension ==
 
-* [https://github.com/aki2o/emacs-tss tss.el] provide completion like intellisense and syntax-checking for Typescript.
+* [https://github.com/aki2o/emacs-tss tss.el] provides Intellisense-like completion, as well as syntax-checking for Typescript. Also includes a modified version of <code>typescript-mode.el</code>
 
 
 ----
