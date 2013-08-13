@@ -24,7 +24,9 @@
 * remove unexec support code
 * '''DONE''' Test non-gtk x toolkits
 * '''DONE''' Update nextstep support
-* Test mingw build
+* '''DONE''' Test mingw build
+* Fix mingw build
+* Use scm_boot_guile
 
 == User-visible issues ==
 
