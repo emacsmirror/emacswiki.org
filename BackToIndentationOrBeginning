@@ -1,10 +1,8 @@
 This function switches the point to before the first non-space character, or if the point is already there it goes to the beginning of the line. Binding "Home" to this function turns it into a very nice DoWhatIMean key.
 
- (defun back-to-indentation-or-beginning ()
-   (interactive)
-   (if (= (point) (save-excursion (back-to-indentation) (point)))
-       (beginning-of-line)
-     (back-to-indentation)))
+ (defun back-to-indentation-or-beginning () (interactive)
+   (if (= (point) (progn (back-to-indentation) (point)))
+       (beginning-of-line)))
 [new]
 If you rather it go to beginning-of-line first and to indentation on the next hit use this version instead.
 
@@ -101,20 +99,9 @@ Here comes a function which goes to the indention, begining of line or begining 
      (skip-chars-backward " \t")
      (unless (bolp) (back-to-indentation))))
 
-BTW, the first presented function can be simplified:
-
- (defun back-to-indentation-or-beginning () (interactive)
-   (skip-chars-backward " \t")
-   (unless (bolp) (back-to-indentation)))
-
 -- mina86
 
-[new]
-: You are correct about a simplification being possible but your version doesn't behave anything like the original.  This should behave identically.
 
- (defun back-to-indentation-or-beginning () (interactive)
-   (if (= (point) (progn (back-to-indentation) (point)))
-       (beginning-of-line)))
 
 [new]
 There is a subtle problem with the way this interacts with cua-mode: shift-home no longer selects anything.  It should alternate between expanding the shifted selection to the beginning of the line and the beginning of indentation.  If home is pressed without shift, the current shifted selection should be deselected, but not if the selection was started with ctrl-space.  I was able to get this behavior with a bit of hacking, but it depends on an internal variable, cua--last-region-shifted, and doesn't work in the simpler shift-select-mode since that variable won't exist.  Hopefully someone can improve upon this further:
