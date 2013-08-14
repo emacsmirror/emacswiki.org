@@ -90,6 +90,14 @@ Hi!
 Version info in current update is inconsistent with previous one. We had Version 21.1 Update #: 4855 while currently Version is 0 with Update #: 4857
 Could you correct this? Thanks!  --[[Marcin]]
 
+[new:DrewAdams:2013-08-14 14:30 UTC]
+Hi [[Marcin]].  It is correct as is.  I don't use version information for <tt>[[info+.el]]</tt> (or for most of my other libraries either).  ##package.el## needs header field `Package-Requires' to include a version number, however.  (Pseudo) version `0' allows any package requiring the given package to use any version of the required one.  
+
+Each of my library files has a `Last-Updated' field that has the date and last `##Update ###' (which is incremented each time I save the file).  This is the best info to use for reporting/communicating (e.g. about bugs).  Users can ignore the `Version' field for most of my libraries.
+
+Thx -- DrewAdams
+
+
 ----
 Lisp:info+.el
 
