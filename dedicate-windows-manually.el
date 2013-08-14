@@ -1,4 +1,4 @@
-;; dedicate-windows-manually.el --- Manually (un)dedicate windows
+;;; dedicate-windows-manually.el --- Manually (un)dedicate windows
 
 ;; Copyright (C) 2013 Aaron Miller
 ;; <me@aaron-miller.me>
