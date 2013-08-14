@@ -28,6 +28,9 @@
 ;; considering them when selecting a window in which to display a
 ;; given buffer.
 
+;; Windows dedicated in this fashion will also be protected from
+;; splitting by setting `window-size-fixed'.
+
 ;; Installation
 ;; ============
 
@@ -74,7 +77,7 @@ in this list will not be undedicated by `undedicate-window'.")
     result))
 
 (defun dedicate-window (&optional window flag)
-  "Dedicate a window to its buffer.
+  "Dedicate a window to its buffer, and prevent it from being split.
 
 Optional argument WINDOW, if non-nil, should specify a window. Otherwise,
 or when called interactively, the currently selected window is used.
@@ -90,6 +93,7 @@ Optional argument FLAG, if non-nil, will be passed verbatim to
       (add-to-list 'dedicated-windows-by-hand window)
       (setq mode-line-format
             (append `(,dedicated-window-lighter-string) mode-line-format))
+      (setq window-size-fixed t)
       (set-window-dedicated-p window flag))))
 
 (defun undedicate-window (&optional window)
@@ -112,10 +116,11 @@ issued and nothing will be done."
               (remove window dedicated-windows-by-hand))
         (setq mode-line-format
               (remove dedicated-window-lighter-string mode-line-format))
+        (setq window-size-fixed nil)
         (set-window-dedicated-p window nil)))))
 
 (defun dedicate-window-toggle (&optional window)
-  "Toggle a window's buffer dedication state.
+  "Toggle a window's manual buffer dedication state.
 
 Optional argument WINDOW, if non-nil, should specify a window. Otherwise,
 or when called interactively, the value of `selected-window' is used."
