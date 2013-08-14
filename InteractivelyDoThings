@@ -411,6 +411,10 @@ Just add the following three defvars to get around this problem:
     (defvar ido-default-item nil)
     (defvar ido-cur-list nil)
 
+[:IdoCompletionInRegion]
+== ido-completion-in-region ==
+If you want to have ido-style `completion-at-point` (the default in-buffer completion), check out the [ido-completion-in-region](https://github.com/katspaugh/ido-completion-in-region) package. It replaces the standard completions buffer on `M-tab` with ido prompt.
+
 == Ido Hacks (modifying Ido's behavior) ==
 
 === Better flex (fuzzy) matching for Ido ===
