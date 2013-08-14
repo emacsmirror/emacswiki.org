@@ -1,4 +1,5 @@
-I use Emacs. I started using GNU Emacs emacs-unicode-2 branch somewhere in Dec. 2005 for emails and TeX/LaTeX documents. [2010-02-10] These days I am running Emacs 64bit on Snow Leopard. It is handling over 80% of my computing tasks, reliably and efficiently.
+I use Emacs. I started using GNU Emacs emacs-unicode-2 branch somewhere in Dec. 2005 for emails and TeX/LaTeX documents. [2010-02-10] These days I am running Emacs 64bit on Snow Leopard. It is handling over 80% of my computing tasks, reliably and efficiently. See https://github.com/leoliu for the full list of my elisp packages.
+
 -----
 New package: TelliCopy
 -----
@@ -115,12 +116,6 @@ the last key in the key sequence bound to it.
                    (setq unread-command-events (list last-input-event))))))))))
 </pre>
 -----
-
-
-
-http://www.srcf.ucam.org/~sl392/images/tango-emacs.png
-
-http://www.srcf.ucam.org/~sl392/images/tango-gnus.png
 
 [new]
 Welcome to the wiki! -- AlexSchroeder
