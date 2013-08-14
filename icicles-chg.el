@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Aug  5 07:02:20 2013 (-0700)
+;; Last-Updated: Tue Aug 13 19:25:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10184
+;;     Update #: 10186
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -933,6 +933,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/08/13 dadams
+;;     icicle-where-is: Bind icicle-highlight-input-completion-failure to nil if no prefix arg.
 ;; 2013/07/24 dadams
 ;;     icicle-exchange-point-and-mark: Use region-(beginning|end), not mark function - simpler.
 ;;     icicle-next-visible-thing(-and-bounds): Use buffer limit if region is empty.
