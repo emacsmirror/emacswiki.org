@@ -28,38 +28,6 @@ of the box. Here's a hook that fixes the problem:
       (setq default-directory (expand-file-name (concat default-directory "../../")))))
   (add-hook 'diff-mode-hook 'mq-patch-set-default-directory)
 
-== Breaking hardlinks in local clones ==
-
-When you create clones of local Mercurial repositories, Mercurial will try to create hardlinks
-to save space [http://mercurial.selenic.com/wiki/HardlinkedClones HardlinkedClones].  This works
-fine as long as Emacs is setup to break links.  The problem I have is that some hardlinks
-on my system need to stay hardlinked, and I cannot globally set 'break-hardlink-on-save to t.
-This hook below, gets around the problem by ask what to do when saving a file that has hardlinks.
-
-  (defun ask-to-break-hardlink ()
-    (if (and (file-exists-p buffer-file-name) (> (file-nlinks buffer-file-name) 1))
-        (if (yes-or-no-p
-             (format "File %s is has more than one hardlink; Break the hardlink? "
-                     (file-name-nondirectory
-                      buffer-file-name)))
-            (set (make-local-variable 'break-hardlink-on-save) t)
-          (set (make-local-variable 'break-hardlink-on-save) nil)
-          )
-      )
-    )
-  
-  (add-hook 'before-save-hook 'ask-to-break-hardlink)
-
-This is a different way to force breaking of hardlinks in Mercurial repositories, it forces break-hardlink-on-save to t when vc recognizes the file:
-
-  (defadvice vc-hg-registered (after vc-hg-registered-break-hardlink activate)
-    "Break hardlinks when editing in a Mercurial repository"
-    (if ad-return-value
-        (progn
-          (set (make-local-variable 'break-hardlink-on-save) t)
-          ))
-    ad-return-value)
-
 == Emacs from Mercurial ==
 
 see EmacsFromMercurial
