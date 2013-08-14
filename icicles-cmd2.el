@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Jul 24 09:40:00 2013 (-0700)
+;; Last-Updated: Tue Aug 13 19:24:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6491
+;;     Update #: 6502
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2778,14 +2778,23 @@ Non-interactively, argument NODESET is a list of Info node names."
   "Show keyboard/menu/mouse sequences that invoke specified command.
 This is a multi-command version of `where-is'.
 
-With no prefix argument, only commands actually bound to keys are
-completion candidates.  With a prefix argument, all commands are
-candidates.  NOTE: This is a significant difference from vanilla
-`where-is', which shows all commands as candidates, even those that
-are not bound.
+With no prefix argument:
 
-With a plain (non-numeric) prefix argument, `C-u', insert the message
-in the current buffer.  (This is the same for vanilla `where-is'.)
+ * Only commands actually bound to keys are completion candidates.
+
+ * Option `icicle-highlight-input-completion-failure' is temporarily
+   bound to nil, so there is no highlighting of the mismatch part of
+   your input.  This is for performance reasons: it would be costly
+   to try completing different prefixes of your input to look for the
+   mismatch position.
+
+NOTE: This is a significant difference from vanilla `where-is', which
+shows all commands as candidates, even those that are not bound.
+
+With a prefix arg, all commands are candidates, as in vanilla Emacs.
+
+With a plain (non-numeric) prefix arg, `C-u', insert the message in
+the current buffer, as in vanilla `where-is' with a prefix arg.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `where-is' to `icicle-where-is'.  If you do not want this
@@ -2799,19 +2808,20 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
                  (function-called-at-point))))
     (and fn  (symbol-name fn)))
   t
-  ((pref-arg  current-prefix-arg)       ; Bindings
-   (pred                                    (if pref-arg
-                                                (lambda (cand)
-                                                  (unless (symbolp cand) (setq cand  (intern cand)))
-                                                  (commandp cand))
-                                              (lambda (cand)
-                                                (unless (symbolp cand) (setq cand  (intern cand)))
-                                                (with-current-buffer icicle-orig-buff
-                                                  (and (commandp cand)
-                                                       (where-is-internal cand overriding-local-map
-                                                                          'non-ascii))))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
-   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+  ((pref-arg                                   current-prefix-arg) ; Bindings
+   (icicle-highlight-input-completion-failure  (and pref-arg  icicle-highlight-input-completion-failure))
+   (pred                                       (if pref-arg
+                                                   (lambda (cand)
+                                                     (unless (symbolp cand) (setq cand  (intern cand)))
+                                                     (commandp cand))
+                                                 (lambda (cand)
+                                                   (unless (symbolp cand) (setq cand  (intern cand)))
+                                                   (with-current-buffer icicle-orig-buff
+                                                     (and (commandp cand)
+                                                          (where-is-internal cand overriding-local-map
+                                                                             'non-ascii))))))
+   (icompletep                                 (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icicle-must-pass-after-match-predicate     (and (not icompletep)  pred))
    (icicle-candidate-help-fn
     (lambda (cand)
       (with-current-buffer icicle-orig-buff
