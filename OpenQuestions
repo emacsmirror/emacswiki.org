@@ -20,7 +20,10 @@ Common Lisp has packages to prevent name collisions, //and// the file loader als
 
 I'm aware of Elena's defadvice to defun solution (Sat, 27 Nov 2010), which seems to work for source files but not compiled files; and, messing with defun makes me nervous (sorry).
 
-Thanks much, Fred
+Thanks much, [[Fred]]
+
+[new:DrewAdams:2013-08-14 04:27 UTC]
+I don't know of a ready-made way to do what you want.  Perhaps someone else does.  However, a recommended practice is to use a common prefix for the names of the functions and variables in your library --- for example, prefix `fred-' --- to avoid name collision.   -- DrewAdams
 
 
 ===doc-view mode looks very blurry on the retina macbook pro.===
