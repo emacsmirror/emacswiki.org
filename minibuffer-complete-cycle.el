@@ -1,12 +1,17 @@
 ;;; minibuffer-complete-cycle.el --- Cycle through the *Completions* buffer
 
 ;; Copyright © 1997,1998,2000,2003,2006 Kevin Rodgers
+;; Copyright © 2013 Akinori MUSHA
 
-;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
+;; Author: Akinori MUSHA <knu@iDaemons.org>
+;;         Kevin Rodgers <ihs_4664@yahoo.com>
+;; Maintainer: Akinori MUSHA <knu@iDaemons.org>
+;; URL: https://github.com/knu/minibuffer-complete-cycle
 ;; Created: 15 Oct 1997
-;; Version: $Revision: 1.24 $
+;; Version: 1.25.20130814
 ;; Keywords: completion
-;; RCS: $Id: minibuffer-complete-cycle.el,v 1.24 2006/07/25 16:49:03 onc04664 Exp $
+;; X-Original-Version: $Revision: 1.24 $
+;; X-Original-RCS: $Id: minibuffer-complete-cycle.el,v 1.24 2006/07/25 16:49:03 onc04664 Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -50,7 +55,19 @@
 ;; name completion) inserting the directory component of the initial
 ;; input, and then inserting the completion string itself is based on
 ;; cycle-mini.el (1.03) by Joe Reiss <jreiss@vt.edu>.
+;;
+;; Emacs 24 introduced `completion-cycle-threshold' which achieves a
+;; similar goal.  This extension allows you to see the completion
+;; window while cycling, and to cycle backward with <backtab>.
 
+;;; Change log:
+;;
+;; Version 1.25.20130814  2013-08-14  Akinori MUSHA
+;;   Support for Emacs 24.
+;;   Fix a bug with partial completion.
+;;   Fix a bug when the minibuffer is like "~/dir1/~/".
+;;   Bind <backtab> to minibuffer-complete-backward rather than M-TAB.
+;;   Make the slash key settle the curent path component if appropriate.
 
 ;;; Code:
 
@@ -58,6 +75,8 @@
 (provide 'minibuffer-complete-cycle)
 
 (require 'custom)			; defgroup, defcustom, defface
+
+(eval-when-compile (require 'cl))
 
 ;; User options:
 
@@ -84,26 +103,18 @@ If `auto', `minibuffer-complete' selects the first completion immediately."
   "If non-nil, the end of the selected completion.")
 
 (defvar mcc-completion-property
-  (cond ((string-match "XEmacs" emacs-version) 'list-mode-item)
-	(t 'mouse-face))
+  'mouse-face
   "The text property used to identify completions.")
 
 (defvar mcc-overlay
-  (progn
-    (or (face-differs-from-default-p 'minibuffer-complete-cycle)
-	(copy-face 'secondary-selection 'minibuffer-complete-cycle)) ; Emacs 19
-    (cond ((and (fboundp 'make-extent) (fboundp 'set-extent-property)) ; XEmacs
-	   (let ((extent (make-extent 1 1)))
-	     (set-extent-property extent 'face 'minibuffer-complete-cycle)
-	     extent))
-	  ((and (fboundp 'make-overlay) (fboundp 'overlay-put))
-	   (let ((overlay (make-overlay 1 1)))
-	     (overlay-put overlay 'face 'minibuffer-complete-cycle)
-	     overlay))))
+  (let ((overlay (make-overlay 1 1)))
+    (overlay-put overlay 'face 'minibuffer-complete-cycle)
+    overlay)
   "If non-nil, the overlay used to highlight the *Completions* buffer.")
 
 
 ;; Commands:
+
 (defadvice minibuffer-complete (around cycle (&optional count) activate compile)
   "If the `minibuffer-complete-cycle' option is set, then instead of
 just scrolling the window of possible completions, insert each one in
@@ -111,52 +122,49 @@ turn in the minibuffer and highlight it in the *Completions* buffer with
 the `minibuffer-complete-cycle' face.
 
 Prefix arg means select the COUNT'th next completion.
-To cycle to previous completions, type `M-TAB'."
+To cycle to previous completions, type <backtab>."
 ;; `\\<minibuffer-local-completion-map>\\[minibuffer-complete-backward]'
   (interactive "p")
   (if (and minibuffer-complete-cycle
-	   ;; See Fminibuffer_complete:
-	   (or (eq last-command this-command)
-	       (and (eq minibuffer-complete-cycle 'auto)
-		    (progn
-		      (setq mcc-completion-begin nil
-			    mcc-completion-end nil)
-		      ad-do-it)))
-	   minibuffer-scroll-window
-	   (window-live-p minibuffer-scroll-window))
-      ;; Delete the current completion, then insert and display the
-      ;; next completion:
-      (let ((incomplete-path
-	     (if (cond ((boundp 'minibuffer-completing-file-name) ; Emacs 20
-			(symbol-value 'minibuffer-completing-file-name))
-		       ((eq minibuffer-completion-table
-			    'read-file-name-internal)))
-		 (buffer-substring (if (fboundp 'minibuffer-prompt-end)	; Emacs 21
-				       (minibuffer-prompt-end)
-				     (point-min))
-				   (point-max)))))
-	(delete-region (if (fboundp 'minibuffer-prompt-end) ; Emacs 21
-			   (minibuffer-prompt-end)
-			 (point-min))
-		       (point-max))
-	(if incomplete-path
-	    (progn
-	      ;; Truncate to directory:
-	      (setq incomplete-path
-		    (or (file-name-directory
-			 (if (and mcc-completion-begin mcc-completion-end
-				  (file-directory-p incomplete-path))
-			     (directory-file-name incomplete-path)
-			   incomplete-path))
-			""))
-	      (insert incomplete-path)))
-	(insert (mcc-completion-string count))
-	(mcc-display-completion (< count 0)))
+           (not (eq this-command 'completion-at-point)) ; Emacs 24
+           ;; See Fminibuffer_complete:
+           (or (eq last-command this-command)
+               (eq last-command 'completion-at-point)   ; Emacs 24
+               (and (eq minibuffer-complete-cycle 'auto)
+                    (progn
+                      (setq mcc-completion-begin nil
+                            mcc-completion-end nil)
+                      ad-do-it)))
+           minibuffer-scroll-window
+           (window-live-p minibuffer-scroll-window))
+      (let ((lastlen (and mcc-completion-begin mcc-completion-end
+                      (- mcc-completion-end mcc-completion-begin)))
+            (completion (mcc-completion-string count)))
+        (cond (lastlen
+               ;; Delete the part last completed
+               (delete-region (- (point-max) lastlen)
+                              (point-max)))
+              (minibuffer-completing-file-name
+               ;; Skip the last component
+               (or (re-search-backward "/" (minibuffer-prompt-end) t)
+                   (goto-char (minibuffer-prompt-end)))
+               ;; Skip components to be completed
+               (let ((str (directory-file-name completion))
+                     (start 0))
+                 (while (string-match "/" str start)
+                   (setq start (match-end 0))
+                   (or (re-search-backward "/" (minibuffer-prompt-end) t)
+                       (goto-char (minibuffer-prompt-end))))
+                 (if (looking-at "/") (forward-char 1))
+                 (delete-region (point) (point-max))))
+              (t (delete-region (minibuffer-prompt-end)
+                                (point-max))))
+        (insert completion)
+        (mcc-display-completion (< count 0)))
     ;; Reset the mcc variables and proceed normally:
-    (progn
-      (setq mcc-completion-begin nil
-	    mcc-completion-end nil)
-      ad-do-it)))
+    (setq mcc-completion-begin nil
+          mcc-completion-end nil)
+    ad-do-it))
 
 (defun minibuffer-complete-backward (&optional count)
   "Just like `minibuffer-complete', but cycle to the previous completion.
@@ -165,17 +173,35 @@ Prefix arg means select the COUNT'th previous completion."
   (setq this-command 'minibuffer-complete)
   (minibuffer-complete (- count)))
 
+(defun minibuffer-complete-slash (&optional arg)
+  "Insert a slash ARG times, or settle the current path component if complete-cycling is at a directory name."
+  (interactive "p")
+  (or
+   (and (= arg 1)
+        (eq last-command 'minibuffer-complete)
+        minibuffer-completing-file-name
+        (eolp)
+        (char-equal (preceding-char) ?/))
+   (self-insert-command arg)))
 
 ;; Functions:
-(defun mcc-define-backward-key ()	; mcc-minor-mode & -keymap
-  "Bind `M-TAB' to `minibuffer-complete-backward' in the local keymap.
-This has no effect unless the `minibuffer-complete-cycle' option is set and
-`M-TAB' is not already bound in the keymap."
-  (if (and minibuffer-complete-cycle
-	   (null (local-key-binding "\M-\t")))
-      (local-set-key "\M-\t" 'minibuffer-complete-backward)))
 
-(add-hook 'minibuffer-setup-hook 'mcc-define-backward-key)
+;;;###autoload
+(defun mcc-define-keys ()	; mcc-minor-mode & -keymap
+  "Define extra key bindings in the local keymap.
+This has no effect unless the `minibuffer-complete-cycle' option is set."
+  (when minibuffer-complete-cycle
+    (dolist (binding
+             '(("<backtab>" . minibuffer-complete-backward)
+               ("/"         . minibuffer-complete-slash)
+               ))
+      (let ((key (kbd (car binding)))
+            (func (cdr binding)))
+        (and (null (local-key-binding key))
+             (local-set-key key func))))))
+
+;;;###autoload
+(add-hook 'minibuffer-setup-hook 'mcc-define-keys)
 
 (defun mcc-completion-string (n)
   "Return the Nth next completion.
@@ -213,8 +239,7 @@ the *Completions* buffer"))
 					     mcc-completion-property
 					     nil (point-max)))
 	  (setq n (1- n))))
-      ;; Return the next completion (buffer-substring-no-properties?):
-      (buffer-substring mcc-completion-begin mcc-completion-end))))
+      (buffer-substring-no-properties mcc-completion-begin mcc-completion-end))))
 
 (defun mcc-display-completion (&optional backward)
   "Highlight the current completion and scroll the *Completions* buffer \
@@ -223,12 +248,8 @@ Scroll up by default, but scroll down if BACKWARD is non-nil."
   (let ((completion-buffer (window-buffer minibuffer-scroll-window))
 	(minibuffer-window (selected-window)))
     (if mcc-overlay
-	(cond ((fboundp 'set-extent-endpoints) ; XEmacs
-	       (set-extent-endpoints mcc-overlay mcc-completion-begin mcc-completion-end
-				     completion-buffer))
-	      ((fboundp 'move-overlay)
-	       (move-overlay mcc-overlay mcc-completion-begin mcc-completion-end
-			     completion-buffer))))
+        (move-overlay mcc-overlay mcc-completion-begin mcc-completion-end
+                      completion-buffer))
     (unwind-protect
 	(progn
 	  (select-window minibuffer-scroll-window) ; completion-buffer
