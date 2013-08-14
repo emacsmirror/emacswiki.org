@@ -1,4 +1,4 @@
-;;; dedicate-windows-manually.el --- Manually (un)dedicate windows
+;; dedicate-windows-manually.el --- Manually (un)dedicate windows
 
 ;; Copyright (C) 2013 Aaron Miller
 ;; <me@aaron-miller.me>
@@ -56,6 +56,8 @@
 ;; * Changing the lighter string while you have windows dedicated is
 ;;   probably not a good idea.
 ;; * I should certainly find a better way to change the mode line.
+
+;;; Code:
 
 (defcustom dedicated-window-lighter-string " [D]"
   "A string, propertized with `dedicated-window-lighter-face', prepended
@@ -124,3 +126,5 @@ or when called interactively, the value of `selected-window' is used."
     (dedicate-window window)))
 
 (provide 'dedicate-windows-manually)
+
+;;; dedicate-windows-manually.el ends here
