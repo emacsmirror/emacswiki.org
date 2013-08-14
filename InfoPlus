@@ -85,6 +85,12 @@ Thanks!  --[[PasJa]]
 Should be OK now.  I had some hard-coded cruft leftover from 1999.  Thx -- DrewAdams
 
 ----
+[new]
+Hi!
+Version info in current update is inconsistent with previous one. We had Version 21.1 Update #: 4855 while currently Version is 0 with Update #: 4857
+Could you correct this? Thanks!  --[[Marcin]]
+
+----
 Lisp:info+.el
 
 CategoryDocumentation CategoryHelp CategoryHypermedia CategoryModes
