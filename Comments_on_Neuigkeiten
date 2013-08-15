@@ -1,0 +1,19 @@
+[new:AlexSchroeder:2013-08-15 22:22 UTC]
+I'm experimenting with new ways of preventing spam. Let me know if it's preventing you from editing pages: mailto:kensanata@gmail.com
+
+The new code will prevent bots from editing a page if they requested a page less than 5 seconds ago. The idea is that a human needs to at least read the page and write something before hitting the Save button. This is supposed to prevent the following attack pattern:
+
+{{{
+137.175.68.182 - - [15/Aug/2013:15:39:10 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:39:16 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:41:41 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:41:51 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:32:57 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:33:04 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:34:53 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:34:58 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:35:01 +0200] "GET /emacs/SiteMap_Discussion HTTP/1.0"
+}}}
+
+-- AlexSchroeder 2013-08-15 22:22 UTC
+
