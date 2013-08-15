@@ -88,7 +88,7 @@ It is common for Emacs modes like these to define key bindings for RET and SPC. 
 === Key Translations (simple) ===
 Key Translations are another useful Emacs feature which allows one Key Sequence to translate to another prior to Emacs' process of Key Lookup in the active keymaps.  One limitation is [https://bitbucket.org/lyro/evil/issue/177/key-translation-map-not-honored-in-evil-o an Evil bug] that prevents Key Translations taking effect in the operator state.
 
-An example of defining a Key Translation: You could translate ch to C-h and cx to C-x .  To do this, make c a Prefix Key so as Key Lookup does not end on the c input alone.
+An example of defining a Key Translation: You could translate ch to C-h and cx to C-x.  To do this, make c a Prefix Key so as Key Lookup does not end on the c input alone.
 
    (define-key evil-normal-state-map "c" nil)
    (define-key evil-motion-state-map "cu" 'universal-argument)
@@ -226,14 +226,5 @@ The first thing I missed of Vim were the tabs. With elscreen.el and its dependen
     (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
     (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
 
-=== Integration with company-mode ===
-The `evil-repeat` has some issue with company-mode,  see [https://github.com/company-mode/company-mode/issues/15 the issue report], add following code into ~/.emacs to fix the issue.
-
-    (mapc #'evil-declare-change-repeat
-      '(company-complete-common
-        company-select-next
-        company-select-previous
-        company-complete-selection
-        )) 
 ----
 CategoryKeys CategoryEmulation
