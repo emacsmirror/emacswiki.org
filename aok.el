@@ -1,4 +1,4 @@
-;;; aok.el -- various useful ways to do `multi-occur'
+;;; aok.el --- various useful ways to do `multi-occur'
 
 ;; Copyright (C) 2013 lynnux <lynnux.cn@gmail.com>
 ;; Copyright (C) 2004 Joe Corneli <jcorneli@math.utexas.edu>
