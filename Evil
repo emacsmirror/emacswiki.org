@@ -2,7 +2,7 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [http://gitorious.org/evil/pages/Home home page].
 
-Current stable version: **1.0.1**
+Current stable version: **1.0.7**
 
 == Quick install ==
 
