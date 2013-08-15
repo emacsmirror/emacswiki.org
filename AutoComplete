@@ -277,7 +277,8 @@ BUG: Entering two forward slashes (for example to add a comment in C++) causes a
 Comment: I tried this with auto-complete 1.3.1 and don't witness the issue.  The first time I type // there's a noticible delay of less than a second.
 
 [new]
-I am seeing this same issue.  I am using auto-complete 1.3.1, emacs 24.3.1 (i686-pc-cygwin) on Windows 7 x64.  Typing the first forward slash gives me an auto-complete suggestion of "/bin". Typing the second forward slash make emacs unresponsive for around 30 seconds.  Interestingly, Windows does not report the program as "not responding" during this time, even though everything from text entry to cursor movement to drop-down menu items is completely frozen. --nispio
+I am seeing this same issue.  I am using auto-complete 1.3.1, emacs 24.3.1 (i686-pc-cygwin) on Windows 7 x64.  Typing the first forward slash gives me an auto-complete suggestion of "/bin". Typing the second forward slash make emacs unresponsive for around 30 seconds.  Interestingly, Windows does not report the program as "not responding" during this time, even though everything from text entry to cursor movement to drop-down menu items is completely frozen.
+--nispio
 
 ----
 [new]
