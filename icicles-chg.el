@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 13 19:25:01 2013 (-0700)
+;; Last-Updated: Thu Aug 15 09:01:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10186
+;;     Update #: 10192
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3888,6 +3888,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/08/15 dadams
+;;     icicle-change-sort-order: Provide current as default and add to prompt when asking for new one.
 ;; 2013/08/03 dadams
 ;;     Added: icicle-sort-by-last-use, icicle-sort-by-last-use\,-dirs-first.
 ;;     Applied renamings: icicle-*-first-p.
