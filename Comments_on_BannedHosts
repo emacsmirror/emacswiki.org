@@ -38,15 +38,15 @@ Another thing that seems worth noting is that in this particular case, we could 
 Another idea I've had based on the log file (not visible in the extract above) is that very little time elapses between GET and POST:
 
 {{{
-137.175.68.182 - - [15/Aug/2013:15:39:10 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion
-137.175.68.182 - - [15/Aug/2013:15:39:16 +0200] "POST /cgi-bin/emacs
-137.175.68.182 - - [15/Aug/2013:15:41:41 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion
-137.175.68.182 - - [15/Aug/2013:15:41:51 +0200] "POST /cgi-bin/emacs
-137.175.68.182 - - [15/Aug/2013:20:32:57 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion
-137.175.68.182 - - [15/Aug/2013:20:33:04 +0200] "POST /cgi-bin/emacs
-137.175.68.182 - - [15/Aug/2013:20:34:53 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion
-137.175.68.182 - - [15/Aug/2013:20:34:58 +0200] "POST /cgi-bin/emacs
-137.175.68.182 - - [15/Aug/2013:20:35:01 +0200] "GET /emacs/SiteMap_Discussion
+137.175.68.182 - - [15/Aug/2013:15:39:10 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:39:16 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:41:41 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:15:41:51 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:32:57 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:33:04 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:34:53 +0200] "GET /emacs/?action=edit;id=SiteMap_Discussion HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:34:58 +0200] "POST /cgi-bin/emacs HTTP/1.0"
+137.175.68.182 - - [15/Aug/2013:20:35:01 +0200] "GET /emacs/SiteMap_Discussion HTTP/1.0"
 }}}
 
 This looks more promising. I'll give it a try.
