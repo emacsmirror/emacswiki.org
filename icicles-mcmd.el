@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug  3 10:18:10 2013 (-0700)
+;; Last-Updated: Thu Aug 15 09:02:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19251
+;;     Update #: 19265
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1865,12 +1865,19 @@ order instead, updating `icicle-alternative-sort-comparer'."
                (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p   nil)
                                        (icicle-must-pass-after-match-predicate  nil)
                                        (icicle-show-Completions-initially-flag  t)
-                                       (enable-recursive-minibuffers            t))
+                                       (enable-recursive-minibuffers            t)
+                                       (icicle-default-value                    t) ; Put current in prompt.
+                                       (icicle-default-in-prompt-format-function
+                                        (lambda (def) (format " (NOW: %s)" def))))
                                    (save-selected-window
                                      (completing-read
                                       (format "New %ssort order: " (if alternativep "alternative " ""))
                                       (icicle-current-sort-functions)
-                                      nil t))))
+                                      nil t nil nil
+                                      (car (rassoc (if alternativep
+                                                       icicle-alternative-sort-comparer
+                                                     icicle-sort-comparer)
+                                                   icicle-sort-orders-alist))))))
                (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
                     (cdr (assoc next-order icicle-sort-orders-alist))))
               (t                        ; Cycle to next sort order.
