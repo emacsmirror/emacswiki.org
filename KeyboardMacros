@@ -1,7 +1,188 @@
-{Someone else's|Another person's|Somebody else's|Another woman's|A person's|An individual's|A persons|Peoples|Another} {good idea|wise decision|good option|good plan|great idea|wise course of action|good grasp|great way|good indication|proper picture|brilliant idea} {can be|could be|may be|might be|is usually|is often|are usually|will be|are generally|is generally|could very well be} {adapted|modified|designed|tailored|used|adjusted|taken|changed|customized|adaptable|customised} {by you|on your part} {to suit your|to match your|to fit your} {own|personal|very own|individual|unique|private|own personal|possess|have|personally own|special} {needs|requirements|wants|requires|demands|desires|necessities|must have|preferences|specifications|really needs}. {Is|Is actually|Will be|Can be|Is definitely|Is usually|Is certainly|Is without a doubt|Is undoubtedly|Might be|Is normally} #file_links[D:\keywords5.txt, #file_links[D:\keywords3.txt,1,S] 1,S]  {that|which|in which|that will|of which|this|which will|the fact that|which usually|who|which often} {immoral|wrong}? {Of course not|Absolutely not|You know they don't|Definitely not}. {There is no|There isn't any|There's no|There is absolutely no|There isn't a|You cannot find any|There is not any|There's really no|There isn't|You don't have|There isn't really} {copyright|copyright laws|trademark} {on|upon|about|in|with|for|regarding|concerning|at|relating to|on the subject of} {ideas|suggestions|tips|concepts|thoughts|strategies|recommendations|options|creative ideas|guidelines|choices}, s #file_links[D:\keywords4.txt,1,S] {o|to|a|e|i|u|} {you are|you're|you might be|you happen to be|that you are|you will be|that you're|you may be|you could be|you can be|you are usually} {free to|liberated to|absolve to|liberal to|able to|unengaged to}  #file_links[D:\keywords1.txt,1,S] {take it|go|go on it|get it|bring it|accept it|carry it|move it|get|use it|remove it} {and|as well as|and also|along with|in addition to|plus|together with|and even|not to mention|and additionally|and then} {develop|create|produce|build|acquire|grow|cultivate|establish|build up|construct|improve} {it|this|that|the idea|the item|them|it all|the application|it again|the software|doing it} {any way|in whatever way|in any manner|however|by any means|anyway|that is|any manner}  #file_links[D:\keywords2.txt,1,S] {you see|the thing is|the truth is|the thing is that|you observe|the simple truth is|you can see|in reality|so you see|you find|we can see} {fit|match|suit|in shape|healthy|accommodate|in good shape|meet|fit in|physically fit|compliment}.  CALL SALLY {AT|From|With|In|On|During|For|Within|Located at|By|Found at} 1-877-976-1414 {TO HEAR|To listen to|To know|To listen for|To see|To learn|To find out|To check on|To be controlled by|To be handled by|To listen} {YOUR|Your own|The|Your current|Ones|A person's|An individual's|Ones own|Your personal|Any|A} {EXTENDED|Prolonged|Lengthy|Expanded|Extensive|Long|Lengthened|Longer|Fully extended|Given|Drawn out} {WEEKLY|Every week|Each week|Once a week|Regular|Daily|Per week|7 days a week|Monthly|Regularly|7days} {FORECAST|Predict|Outlook|Prediction|Estimate|Foresee|Predicted|Anticipate|Calculate|Projected|Guess} {Calls|Phone calls|Telephone calls|Cell phone calls|Message or calls|Calling|Enquiries|Phones|Names|Requests|Dubs} {cost|price|expense|charge|price tag|value|fee|cost you|selling price|amount|expenditure} $1.{49|Forty-nine|Forty nine|1949|44} {per|for each|for every|every|each|a|in each|each and every|in every|every single|for each and every} {min|minutes|minute|minimum}.  DISCOVER {MORE ABOUT|Much more about|A little more about|More to do with|More details on|More info on|More information on|Read more about|Another recommendation of|On|A lot more about} {YOURSELF|Your self|Oneself|On your own|By yourself|All by yourself|You|Your own self|One self|Your body|Personally} {AND|As well as|And also|Along with|In addition to|Plus|Together with|And even|Not to mention|And additionally|And then} {WHAT THE|Exactly what the|What are the|Just what the|The|Precisely what the|Just what|How much the|The style the|What is the|Specifically what the} {FUTURE|Long term|Potential|Upcoming|Foreseeable future|Long run|Near future|Potential future|Long term future|Forthcoming|Possible future} {HOLDS|Retains|Keeps|Contains|Maintains|Supports|Secures|Has|Remains|Owns|Carries} {AT|From|With|In|On|During|For|Within|Located at|By|Found at}  {www|world wide web|internet|online world|web}.sallybrompton.{com|org|net|internet|web|world wide web}
- 
-http://arendtschmolze.girlshopes.com/                             Result: 选择注册用户名 "tomsuet"; 成功;
-http://arturpester.girlshopes.com/                                Result: 选择注册用户名 "tomsvwc"; 成功;
-http://podarkino.org.ua/shop/group_606/item_182/                  Result: 选择注册用户名 "ronallaq"; 验证码已识别; 成功; UBB代码不能使用;
-http://www.addwebsitetodir.com/AddUrl.html                        Result: 选择注册用户名 "tomsxxh"; 选择字段中的值 - "|__General Health"; 成功;
-http://www.bryanreesman.com/2009/08/03/travelers-beware-londons-appalling-currency-exchange/comment-page-1/#comment-148258 Result: 选择注册用户名 "tomszud"; 验证码已识别; 成功 (从第一页);
+[[zh:KeyboardMacros_(中文)]]
+
+== Overview ==
+
+Keyboard macros are a powerful Emacs feature. A '''[::keyboard macro]''' is simply a ''recording'' of a sequence of key sequences. A '''[[key sequence]]''' is a series of keyboard keystrokes, mouse actions, or menu actions that is bound to an Emacs command. So, a keyboard macro records a ''sequence of user actions'' that carry out Emacs commands.
+
+Did you note that a "''keyboard''" macro can record nearly any user actions -- ''not'' just ''keyboard'' actions?  Good.
+
+: '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using ##defmacro##. 
+
+Here is how to ''define'' a keyboard macro:
+* `<code>C-x (</code>' or <code><f3></code>-- start defining a keyboard macro
+* `<code>C-x )</code>' or <code><f4></code>-- stop defining the keyboard macro
+
+And here is how to ''execute'' a keyboard macro you've defined:
+* `C-x e' or <code><f4></code> -- execute the keyboard macro
+
+Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
+* `C-u 37 C-x e'
+
+'''Example:'''
+
+You want to add the text "-- foobar was here" at the end of ''each'' of the lines in a file.
+# Place the TextCursor at the beginning of the first line.
+# `<code>C-x (</code>' to start recording a keyboard macro.
+# `C-e' (or `M-x end-of-line') to move the cursor to the end of the line.
+# Type "<code>-- foobar was here</code>"
+# `C-a' (or `M-x beginning-of-line') to move the cursor to the beginning of the line.
+# `C-n' (or `M-x next-line') to move the cursor to the beginning of the next line.
+# `<code>C-x )</code>' to stop recording the keyboard macro.
+# `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
+
+What's important here is to stop defining the macro at a ''similar position to where you started it'' -- so that you are in a position to execute it again, after it executes. This is a general rule that you will often follow when defining keyboard macros: try to make them executable ''N'' times in a row.
+
+Actually, although it's good to learn this general rule, there is a shortcut for just applying the last-defined keyboard macro to each of the lines of a region:
+* `M-x apply-macro-to-region-lines'
+
+Or to be more precise (from the documentation of the command): 
+
+  For each complete line between point and mark, move to the beginning
+  of the line, and run the last keyboard macro.
+
+You can name the last-defined keyboard macro, so that you can then execute it by name:
+* `M-x name-last-kbd-macro' -- Name the last-defined keyboard macro.
+
+Why do that? One reason is that it lets you have more than one macro defined at the same time. Once you have named this macro, say, `my-macro', you can define another one that does something else. Then, you can execute the second macro using `C-x e' and execute `my-macro' as if it were a standard Emacs command: `M-x my-macro'. If you also name the second macro, then you can define a third one...
+
+Keyboard macros are only defined for your ''current Emacs session''. If you want to be able to reuse a macro in a future session, then save it in your initialization file (##.emacs## or ##_emacs##). Open the file, then insert the macro definition using this command:
+* `M-x insert-kbd-macro' -- Insert a named keyboard macro into your initialization file.
+
+Now you can use `M-x' to execute the named keyboard macro in future
+sessions -- just as if it were a standard Emacs command of the same name.  If you want to bind it to a key, you can add code like the
+following to your initialization file:
+
+    (global-set-key (kbd "C-c a") 'my-macro)
+
+This binds the key sequence `C-c a' to the macro `my-macro'.
+
+If you want to edit the macro in future sessions, you need to let the ##kmacro## library know that the symbol is indeed a macro by putting the ##kmacro## property on the symbol.
+
+  (put 'my-macro 'kmacro t)
+
+'''See Also:'''
+* DotMode -- An Emacs mode inspired by the Vi command of the same name that will redo a set of commands.
+* http://jfm3-repl.blogspot.com/2007/09/emacs-tricks-6-keyboard-macros.html is a tutorial on using Emacs macros to write C macros with with a nugget of wisdom from a Lisper.
+* http://www.linuxjournal.com/article/3769 for an article about Emacs Macros in the Linux Gazette by JesperPedersen
+* KeybindingGuide for an article on key bindings
+* Functions `local-set-key' and `global-set-key' for more info on key bindings
+* TinyMacro, a simple way to assign macros to keys.
+
+== Problems with Isearch ==
+
+[[Isearch]] is a critical component to recording macros:  Search to the a location in the buffer and perform a command, and the macro can be accurately repeated.  Unfortunately, macros that use Isearch to bring you to a location exhibit the behavior of skipping to the next occurrence and then halting rather than staying in `isearch-mode'.  This was reported as a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-10/msg00534.html], but is unfortunately not a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00021.html].
+
+== Calling a Keyboard Macro from Emacs Lisp ==
+
+When you use `name-last-kbd-macro', the string that defines the keyboard macro becomes the function definition of the macro name you provide. You cannot call such a macro by name in Emacs Lisp as if it were a function. For example, if you named the keyboard macro "foo", then you cannot simply write ##(foo)## in Lisp to execute the macro. Instead, you must use the function `execute-kbd-macro' as follows:
+
+    (execute-kbd-macro (symbol-function 'foo))
+
+(Function `symbol-function' returns the function definition of its symbol argument. In this case, it returns the string that defines the keyboard macro `foo'.)
+
+== Querying the User During Keyboard Macro Execution ==
+
+You can use `C-x q' (command `kbd-macro-query') to make Emacs pause and query the user at a certain point during keyboard macro execution.
+
+{{{
+C-x q runs the command kbd-macro-query
+   which is an interactive autoloaded Lisp function in `macros'.
+[Arg list not available until function definition is loaded.]
+
+Query user during kbd macro execution.
+  With prefix argument, enters recursive edit, reading keyboard
+commands even within a kbd macro.  You can give different commands
+each time the macro executes.
+  Without prefix argument, asks whether to continue running the macro.
+Your options are:
+Y       Finish this iteration normally and continue with the next.
+N       Skip the rest of this iteration, and start the next.
+RET     Stop the macro entirely right now.
+C-l     Redisplay the screen, then ask again.
+C-r     Enter recursive edit; ask again when you exit from that.
+}}}
+
+== Prompting During Keyboard Macro Execution ==
+
+Using `C-u C-x q' while recording a macro will, at macro execution, drop in to a recursive editing mode allowing you to intervene with custom editing on each macro iteration.
+
+You can also use the following piece of code to prompt for input using the
+MiniBuffer each time the macro executes.
+
+Pressing `C-x Q' during macro definition will present you with a
+minibuffer prompt (using recursive edit). Inserting some text and
+pressing RET will end recursive edit and continue the definition of
+the macro in the minibuffer. Pressing RET again will insert the
+entered text at point. If you don't want to insert the text right away you can instead kill the input at this point (using `C-a C-k RET') and use it later in the macro definition.
+
+    (defun my-macro-query (arg)
+      "Prompt for input using minibuffer during kbd macro execution.
+    With prefix argument, allows you to select what prompt string to use.
+    If the input is non-empty, it is inserted at point."
+      (interactive "P")
+      (let* ((query (lambda () (kbd-macro-query t)))
+             (prompt (if arg (read-from-minibuffer "PROMPT: ") "Input: "))
+             (input (unwind-protect
+                        (progn
+                          (add-hook 'minibuffer-setup-hook query)
+                          (read-from-minibuffer prompt))
+                      (remove-hook 'minibuffer-setup-hook query))))
+        (unless (string= "" input) (insert input))))
+
+    (global-set-key "\C-xQ" 'my-macro-query)
+
+In Emacs 22 we can use a shorter definition:
+
+      (let* ((prompt (if arg (read-from-minibuffer "PROMPT: ") "Input: "))
+             (input (minibuffer-with-setup-hook (lambda () (kbd-macro-query t))
+                      (read-from-minibuffer prompt))))
+        (unless (string= "" input) (insert input)))
+
+
+== One-Key Macros ==
+
+One may wish to bind the following code to a function key, like this:
+
+    (global-set-key '[(f1)]          'call-last-kbd-macro)
+    (global-set-key '[(shift f1)]    'toggle-kbd-macro-recording-on)
+
+It is much faster to use than the original bindings.
+
+The toggling function(s):
+
+<pre>
+    (defun toggle-kbd-macro-recording-on ()
+      "One-key keyboard macros: turn recording on."
+      (interactive)
+      (define-key global-map (this-command-keys)
+        'toggle-kbd-macro-recording-off)
+      (start-kbd-macro nil))
+
+    (defun toggle-kbd-macro-recording-off ()
+      "One-key keyboard macros: turn recording off."
+      (interactive)
+      (define-key global-map (this-command-keys)
+        'toggle-kbd-macro-recording-on)
+      (end-kbd-macro))
+</pre>
+
+== Part of GnuEmacs ==
+
+: ;;; kmacro.el --- enhanced keyboard macros
+: ;;; edmacro.el --- keyboard macro editor
+
+== External Packages ==
+
+While the kmacro package provides excellent support for dealing with keyboard
+macros that have been defined and named during the current Emacs
+session, support for saving, organizing, and reloading keyboard
+macros remains a bit on the weak side. The 
+[http://thbecker.net/free_software_utilities/emacs_lisp/emacros/start_page.html Emacros]
+package facilitates these tasks.
+
+== Keyboard Macro Timer ==
+
+See KeyboardMacroTimer.
+
+----
+CategoryKeys CategoryGlossary
