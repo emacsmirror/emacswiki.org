@@ -1,0 +1,86 @@
+[new:AlexSchroeder:2013-08-16 10:43 UTC]
+I've been thinking about our anti-spam efforts on this wiki.
+First of all, let me thank the tireless EmacsWikiAdministrators that keep adding to our defenses.
+
+Our defenses chiefly consist of three lists of regular expressions that are applied when somebody tries to save a page:
+
+# BannedHosts matches hostnames and IP numbers
+# BannedContent matches URLs
+# BannedRegexps matches page content (and is therefore the most severe)
+
+I wondered: how well are they working? I wrote a little piece of elisp to look at the spammer log I'm keeping.
+
+{{{
+Total spam rejected: 76745
+Total days surveyed: 214
+ (days without a single spam are skipped)
+Average spam rejected per day: 358.62
+
+Which rules are effective?
+
+ Matches  Rule
+   22377  BannedHosts: broadband\.kyivstar.net
+   19836  BannedHosts: ^SOL-FTTB\.[.0-9]+\.sovam\.net\.ua
+    9990  BannedRegexps: &lt;a\s+href=["']?http
+    6879  BannedHosts: ^static\..*\.clients\.your-server\.de
+    1872  BannedContent: \bcheap
+    1403  BannedRegexps: (?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.*
+    1284  BannedHosts: \.dynamic\.163data\.com\.cn
+    1250  BannedRegexps: \s(https?:\S+\s+https?:\S+)
+    1132  BannedRegexps: \[url=
+    1068  BannedHosts: \.amazonaws\.com
+     939  BannedHosts: ^178-137-.*-lvv\.broadband\.kyivstar\.net
+     770  BannedContent: jp[a-zA-Z]*\.com
+     712  BannedHosts: \.SteepHost\.Net
+     672  BannedContent: (loans|payday)
+     634  BannedRegexps: \s+(https?:\S+)[ .\r\n]*$
+     532  BannedHosts: ^112\.111\.1(6[0-9]|7[0-5])\.
+     516  BannedHosts: ^unassigned\.psychz.net
+     380  BannedContent: michaelkors
+     345  BannedContent: (viagra|cialis)
+     284  BannedContent: japan[a-zA-Z]*\.com
+     260  BannedHosts: ^193\.105\.210\.30
+     244  BannedContent: louboutin
+     238  BannedRegexps: \s+https?:\S+[ .\r\n]*$
+     230  BannedHosts: ^199\.15\.234\.80
+     196  BannedContent: louisvuitton
+     186  BannedContent: (xanax|tramadol|\bsoma\b)
+     184  BannedHosts: ^unknown\.xeex\.net
+     164  BannedHosts: ^46\.161\.41\.225
+     116  BannedContent: marcjacobs[a-zA-Z]*\.com
+     106  BannedHosts: ^198\.2\.208\.205
+     104  BannedHosts: ^91\.237\.249\.
+      94  BannedHosts: ^5\.39\.219\.26
+      94  BannedContent: vietnam
+      84  BannedHosts: ^ns4004874\.ip-198-27-65\.net
+      70  BannedHosts: ^31\.184\.238\.163
+      70  BannedHosts: ^142\.0\.35\.130
+      68  BannedHosts: \.broadband\.kyivstar.net
+      68  BannedContent: kamagra
+      64  BannedHosts: ^46\.119\.119\.145
+      64  BannedHosts: ^46\.161\.41\.223
+      64  BannedHosts: ^46\.119\.118\.174
+      58  BannedContent: (viagra|cialis|valium)
+      54  BannedHosts: \.broad\.fz\.fj\.dynamic\.163data\.com\.cn
+      52  BannedHosts: ^46\.119\.116\.228
+      52  BannedHosts: ^37\.59\.207\.2
+      50  BannedHosts: ^192\.74\.229\.1
+      40  BannedContent: japan(ese)?\.com
+      36  BannedHosts: ^208\.177\.76\.5\.ptr\.us\.xo\.net
+      32  BannedHosts: ^SOL-FTTB\.0\.122\.118\.46\.sovam\.net\.ua
+      32  BannedContent: erolove
+}}}
+
+Source Code:
+
+<include gist "https://gist.github.com/kensanata/6248849">
+
+The spammer log format was changed in the middle of the year.
+
+{{{
+2013/01/01	08:54:13	91.232.96.10: Comments_on_TinyUrl - La règle "(viagra|cialis)" correspondait à "http://cheapviagratc.com/" sur cette page. Raison inconnue. Voir <a class="local" href="http://www.emacswiki.org/emacs-fr/BannedContent">BannedContent</a> pour plus d’information.
+...
+2013-08-16T08:03Z	199.15.233.140	SiteMap_Discussion	Rule "jp[a-zA-Z]*\.com" matched "http://www.dieselshoppujp.com/" on this page. Reason: Icicles - Key Binding Discussion. See <a class="local" href="http://www.emacswiki.org/emacs/BannedContent">BannedContent</a> for more information.
+}}}
+
+The code handles both of these formats.
