@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.105
+;; Version: 0.106
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 16-Aug-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Changed last-command to this-command.  Now the new yank engine
+;;    actually runs.  (Issue #6 and Issue #23)
 ;; 16-Aug-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Changed auto-indent's yank engine to be in the post-command-hook.  May
@@ -2427,7 +2431,7 @@ around and the whitespace was deleted from the line."
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil t))
         (when auto-indent-minor-mode
           (cond
-           ((eq last-command 'yank)
+           ((eq this-command 'yank)
             (auto-indent-yank-post-command))
            ((and auto-indent-block-close
                  (condition-case err
