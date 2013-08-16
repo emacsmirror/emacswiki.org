@@ -21,7 +21,7 @@ Which rules are effective?
  Matches  Rule
    22377  BannedHosts: broadband\.kyivstar.net
    19836  BannedHosts: ^SOL-FTTB\.[.0-9]+\.sovam\.net\.ua
-    9990  BannedRegexps: &lt;a\s+href=["']?http
+    9990  BannedRegexps: &amp;lt;a\s+href=["']?http
     6879  BannedHosts: ^static\..*\.clients\.your-server\.de
     1872  BannedContent: \bcheap
     1403  BannedRegexps: (?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.*
