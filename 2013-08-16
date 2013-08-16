@@ -8,7 +8,7 @@ Our defenses chiefly consist of three lists of regular expressions that are appl
 # BannedContent matches URLs
 # BannedRegexps matches page content (and is therefore the most severe)
 
-I wondered: how well are they working? I wrote a little piece of elisp to look at the spammer log I'm keeping.
+I wondered: how well are they working? I wrote a little piece of elisp to look at the spammer log I'm keeping. This is the report for 2013 only. 
 
 {{{
 Total spam rejected: 76745
