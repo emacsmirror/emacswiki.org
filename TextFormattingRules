@@ -228,6 +228,8 @@ four (4) spaces.
 *  '''##<pre>##''': Preformatted (usually monospaced, for paragraphs, plus
 whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must be alone on a line, to work. (see [[#WikiTags|WikiTags]] above)
 
+* Include [[Gists]]
+
 [:headings]
 == Headings ==
 
