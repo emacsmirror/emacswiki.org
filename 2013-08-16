@@ -76,6 +76,7 @@ Source Code:
 <include gist "https://gist.github.com/6248849">
 
 The spammer log format was changed in the middle of the year.
+The code handles both of these formats.
 
 {{{
 2013/01/01	08:54:13	91.232.96.10: Comments_on_TinyUrl - La règle "(viagra|cialis)" correspondait à "http://cheapviagratc.com/" sur cette page. Raison inconnue. Voir <a class="local" href="http://www.emacswiki.org/emacs-fr/BannedContent">BannedContent</a> pour plus d’information.
@@ -83,4 +84,3 @@ The spammer log format was changed in the middle of the year.
 2013-08-16T08:03Z	199.15.233.140	SiteMap_Discussion	Rule "jp[a-zA-Z]*\.com" matched "http://www.dieselshoppujp.com/" on this page. Reason: Icicles - Key Binding Discussion. See <a class="local" href="http://www.emacswiki.org/emacs/BannedContent">BannedContent</a> for more information.
 }}}
 
-The code handles both of these formats.
