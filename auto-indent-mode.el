@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.103
+;; Version: 0.105
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -147,14 +147,9 @@
 ;; Also if you wish to just use specific functions from this library
 ;; that is possible as well.
 ;; 
-;; To have the auto-indentation-paste use:
+;; To have the auto-indentation delete characters use:
 ;; 
 ;; 
-;;   (autoload 'auto-indent-yank "auto-indent-mode" "" t)
-;;   (autoload 'auto-indent-yank-pop "auto-indent-mode" "" t)
-;;   
-;;   (define-key global-map [remap yank] 'auto-indent-yank)
-;;   (define-key global-map [remap yank-pop] 'auto-indent-yank-pop)
 ;;   
 ;;   (autoload 'auto-indent-delete-char "auto-indent-mode" "" t)
 ;;   (define-key global-map [remap delete-char] 'auto-indent-delete-char)
@@ -364,6 +359,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 16-Aug-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Changed auto-indent's yank engine to be in the post-command-hook.  May
+;;    fix Issue #24 and Issue #6
+;; 15-Aug-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Added unindent block close.  Its based on each's mode's syntax table
+;;    (hopefully they are correct).  Should also address Issue #24.
 ;; 29-Jul-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Should fix Issue #21.
@@ -1490,6 +1493,15 @@ If the major mode has `major-mode-indent-level', `major-indent-level', `major-mo
   :type '(repeat (symbol :tag "Variable"))
   :group 'auto-indent)
 
+(defcustom auto-indent-block-close t
+  "If a block is closed, unindent that line.
+int main(void) {
+    /* ... */
+    } // <- unindent this line when I type it.
+"
+  :type 'boolean
+  :group 'auto-indent)
+
 (make-variable-buffer-local 'auto-indent-eol-char)
 
 (defvar auto-indent-eol-ret-save ""
@@ -1610,8 +1622,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
          ;; Setup
          (cond
           ((eq auto-indent-engine 'keys) ;; Auto-indent engine
-           (local-set-key [remap yank] 'auto-indent-yank)
-           (local-set-key [remap yank-pop] 'auto-indent-yank-pop)
+           ;; (local-set-key [remap yank] 'auto-indent-yank)
+           ;; (local-set-key [remap yank-pop] 'auto-indent-yank-pop)
            (local-set-key [remap delete-char] 'auto-indent-delete-char)
            (local-set-key (kbd "RET") auto-indent-newline-function)
            (local-set-key [remap kill-line] 'auto-indent-kill-line))
@@ -1629,16 +1641,6 @@ http://www.emacswiki.org/emacs/AutoIndentation
            (add-hook 'post-command-hook 'auto-indent-mode-post-command-hook-last t t)
            
            (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil 't)
-           (mapc
-            (lambda(ad)
-              (when (fboundp ad)
-                (condition-case error
-                    (progn
-                      (ad-enable-advice ad 'around 'auto-indent-minor-mode-advice)
-                      (ad-activate ad))
-                  (error
-                   (message "[auto-indent-mode]: Error enabling after-advices for `auto-indent-mode': %s" (error-message-string error))))))
-            '(yank yank-pop))
            (mapc
             (lambda(ad)
               (ad-enable-advice ad 'around 'auto-indent-minor-mode-advice)
@@ -1663,15 +1665,6 @@ http://www.emacswiki.org/emacs/AutoIndentation
   (interactive)
   (mapc
    (lambda(ad)
-     (condition-case error
-         (progn
-           (ad-disable-advice ad 'around 'auto-indent-minor-mode-advice)
-           (ad-activate ad))
-       (error
-        (message "[auto-indent-mode] Error disabling advices: %s" (error-message-string error)))))
-   '(yank yank-pop))
-  (mapc
-   (lambda(ad)
      (when (fboundp ad)
        (ad-disable-advice ad 'around 'auto-indent-minor-mode-advice)
        (ad-activate ad)))
@@ -1683,9 +1676,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defun auto-indent-turn-on-org-indent ()
   "Turn on org-indent."
   (when auto-indent-start-org-indent
-    (org-indent-mode 1))
-  (ad-activate 'yank)
-  (ad-activate 'yank-pop))
+    (org-indent-mode 1)))
 
 (defadvice org-return (around auto-indent-mode activate)
   "Fixes org-return to press tab after a newline when `auto-indent-fix-org-return' is true"
@@ -1743,68 +1734,40 @@ mode."
                                                     (and (symbolp this-command)
                                                          this-command))))))
 
-(defun auto-indent-is-yank-p (&optional command)
-  "Test if the `this-command' or COMMAND was a yank."
-  (let ((ret
-         (or
-          (and (boundp 'cua-mode) cua-mode
-               (memq (or command this-command)
-                     (list
-                      'yank
-                      (key-binding (kbd "C-c"))
-                      (key-binding (kbd "C-v")))))
-          (and (boundp 'ergoemacs-mode) ergoemacs-mode
-               (memq (or command this-command)
-                     (list
-                      'yank
-                      (key-binding (kbd "M-c"))
-                      (key-binding (kbd "M-v")))))
-          (memq (or command this-command)
-                (list
-                 'yank
-                 (key-binding (kbd "C-y"))
-                 (key-binding (kbd "M-y")))))))
-    (symbol-value 'ret)))
 
 (defcustom auto-indent-after-yank-hook nil
   "Hooks to run after auto-indent's yank.  The arguments sent to the function should be the two points in the yank."
   :type 'hook
   :group 'auto-indent)
 
-(defun auto-indent-yank-engine ()
-  "Engine for the auto-indent yank functions/advices."
-  (when (not (minibufferp))
-    (let ((pt (point)))
-      (unless (memq indent-line-function auto-indent-disabled-indent-functions)
-        (save-excursion
-          (skip-chars-backward " \t")
-          (when (looking-at "[ \t]+")
-            (replace-match " ")))
-        (let (p1 p2)
-          (save-excursion
-            (when (mark t)
-              (save-restriction
-                (condition-case err
-                    (progn
-                      (narrow-to-region (progn (goto-char (mark t)) (point-at-bol))
-                                        (progn (goto-char pt) (point-at-eol))))
-                  (error
-                   (message "[Auto-Indent Mode] Ignoring error when narrowing region to run `auto-indent-after-yank-hook'")))
-                (condition-case err
-                    (run-hook-with-args 'auto-indent-after-yank-hook (point-min) (point-max))
-                  (error
-                   (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err))))
-                (setq p1 (point-min))
-                (setq p2 (point-max))))
-            (if auto-indent-on-yank-or-paste
-                (indent-region p1 p2))
-            (save-restriction
-              (narrow-to-region p1 p2)
-              (cond
-               ((eq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
-                (tabify (point-min) (point-max)))
-               (auto-indent-mode-untabify-on-yank-or-paste
-                (untabify (point-min) (point-max)))))))))))
+(defun auto-indent-yank-post-command ()
+  "Engine for the auto-indent yank post-command-hook changes."
+  (let ((inhibit-read-only t)
+        (before (< (point) (mark t)))
+        p1 p2)
+    (if before
+        (progn
+          (setq p1 (point))
+          (setq p2 (mark t)))
+      (setq p1 (mark t))
+      (setq p2 (point)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (condition-case err
+            (run-hook-with-args 'auto-indent-after-yank-hook (point-min) (point-max))
+          (error
+           (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err)))))
+      (if auto-indent-on-yank-or-paste
+          (indent-region p1 p2))
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (cond
+         ((eq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
+          (tabify (point-min) (point-max)))
+         (auto-indent-mode-untabify-on-yank-or-paste
+          (untabify (point-min) (point-max))))))))
+
 
 (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
   "`auto-indent-mode' advice for moving to the beginning of the line."
@@ -1841,40 +1804,6 @@ mode."
               (beginning-of-line))))
       (skip-chars-forward " \t"))))
 
-(defmacro auto-indent-advice-command (command)
-  "Define advices and functions for yank and `yank-pop'.
-
-yank or `yank-pop' is defined in the COMMAND argument."
-  `(progn
-     (defadvice ,command (around auto-indent-minor-mode-advice)
-       (let ((do-it t))
-         (when (and auto-indent-fix-org-yank
-                    (eq major-mode 'org-mode)
-                    (org-babel-where-is-src-block-head))
-           (setq do-it nil)
-           (let ((org-src-strip-leading-and-trailing-blank-lines nil))
-             (org-babel-do-in-edit-buffer
-              (,command (ad-get-arg 0)))))
-         (when do-it
-           ad-do-it
-           (when (and (or (not auto-indent-force-interactive-advices)
-                          (called-interactively-p 'any)
-                          (auto-indent-is-yank-p))
-                      (not (auto-indent-remove-advice-p))
-                      (not current-prefix-arg)
-                      (or auto-indent-minor-mode
-                          (and auto-indent-fix-org-yank)))
-             
-             (auto-indent-yank-engine)))))
-     (defun ,(intern (concat "auto-indent-" (symbol-name command))) (&optional prefix)
-       ,(concat "Auto-indent-mode `" (symbol-name command) "' function replacement.  Instead of using advices you can change keybindings to this function.")
-       (interactive ,(if (eq command 'yank) "*P" "*p"))
-       (,command prefix)
-       (when (not prefix)
-         (auto-indent-yank-engine)))))
-
-(auto-indent-advice-command yank)
-(auto-indent-advice-command yank-pop)
 
 (defun auto-indent-whole-buffer (&optional save)
   "Auto-indent whole buffer and untabify it.
@@ -2498,6 +2427,15 @@ around and the whitespace was deleted from the line."
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil t))
         (when auto-indent-minor-mode
           (cond
+           ((eq last-command 'yank)
+            (auto-indent-yank-post-command))
+           ((and auto-indent-block-close
+                 (condition-case err
+                     (save-match-data
+                       (looking-back "\\s)")
+                       (string= (match-string 0) (key-description (this-command-keys))))
+                   (error nil)))
+            (indent-according-to-mode))
            ((and last-command-event (memq last-command-event '(10 13 return)))
             (when (or (not (or (fboundp 'yas--snippets-at-point)
                                (fboundp 'yas/snippets-at-point)))
