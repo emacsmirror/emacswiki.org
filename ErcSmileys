@@ -1,3 +1,4 @@
+[[it:h]]
 The smiley module is disabled by default.  To enable it use M-x customize-variable RET erc-modules.
 
 ERC Smiley mode is a tiny mode that uses `smiley-region', which is
