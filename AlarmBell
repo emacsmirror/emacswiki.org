@@ -116,6 +116,14 @@ I use the following to make the Scroll Lock LED blink:
  (setq ring-bell-function (lambda ()
    (call-process-shell-command "xset led 3; xset -led 3" nil 0 nil)))
 
+Two points. The LED numbers are different on different hardware.  And on some systems the Scroll Lock LED doesn't respond if the command to turn it on and off are sent in the same system call.  A more robust way to get the same effect is to write:
+
+ (setq ring-bell-function
+       (lambda ()
+        (progn
+	   (call-process-shell-command "xset led named 'Scroll Lock'")
+	   (call-process-shell-command "xset -led named 'Scroll Lock'")))
+
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
 == A predicate for suppressing the bell at night ==
