@@ -1,0 +1,40 @@
+This page is about library '''<tt>[[highlight-fns.el]]</tt>''', which lets you highlight function calls in EmacsLisp code.
+
+== How to Use ==
+
+Command '''`highlight-lisp-fns-mode'''' is a [[minor mode]] command that toggles highlighting function calls in EmacsLisp code in the current buffer.
+
+The highlighting uses [[face]] `highlight-lisp-fns', which by default inherits from face `font-lock-constant-face'.  
+
+To use the command, put this in your [[init file]]:
+
+    (require 'highlight-fns)
+
+If you want to turn on this highlighting automatically for Emacs-Lisp mode, then put this in your init file after requiring the library:
+
+    (add-hook 'emacs-lisp-mode-hook 'highlight-lisp-fns-mode
+              'APPEND)
+
+You can use the command to toggle it off at any time.
+
+
+
+
+== Limitations ==
+
+The names of known EmacsLisp functions are highlighted.  This is so even if
+some occurrence of the name is not used for a function.  For example, it might be used as a variable name:
+
+     ;; `setq' is a variable here, but it is highlighted anyway.
+     (let ((setq  (foobar)))...)
+
+In practice this is not a major problem, but it is good to be aware of it.
+
+
+
+
+----
+CategoryDisplay
+CategoryLisp
+CategoryFaces
+CategoryCode
