@@ -73,7 +73,7 @@ Run occur in all buffers whose names match this type for REXP."
     (let* ((choice (read-char "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer(any other key)?"))
 	   (more  (list (cond ((eq choice ?a) nil)
 			      ((eq choice ?t) (read-string "Extension: "))
-			      ((eq choice ?m) (read-command "Mode:"))
+			      ((eq choice ?m) (read-command "Mode: "))
 			      (t ?o)))))
       (add-to-list 'more choice)
       (nreverse more))
