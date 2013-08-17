@@ -198,9 +198,12 @@ Wrt your suggestion, I don't think that's the solution here, but I might rename 
 I can't say I understand completely, either. Google ought to know that there is a page with Url bla/HighLight, title High Light and h1 HighLight -- why doesn't a search for "highlight" find it? I don't know. :(
 
 
-=== Page not found by search ===
+=== Pages not found by search ===
 
 Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
+
+[new:DrewAdams:2013-08-17 23:10 UTC]
+I tried searching for ##font-lock##, and it found only files that have ##font-lock## in their name.  How to find pages dealing with font-locking? -- DrewAdams
 
 
 === Problem with Google search ===
