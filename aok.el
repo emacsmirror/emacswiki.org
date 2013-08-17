@@ -34,8 +34,9 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile (require 'cl))
 
+;;;###autoload
 (defun all-occur (rexp)
   "Search all buffers for REXP."
   (interactive "MRegexp: ")
@@ -43,6 +44,7 @@
 
 ;; this one {c}/{sh}ould be a completing read that would read from a
 ;; predefined list of filetype extensions (without requiring a match).
+;;;###autoload
 (defun type-occur (extension rexp)
   "EXTENSION denotes a filetype extension to search.
 Run occur in all buffers whose names match this type for REXP."
@@ -52,6 +54,7 @@ Run occur in all buffers whose names match this type for REXP."
       (when (functionp 'multi-occur-in-matching-buffers)
 	(multi-occur-in-matching-buffers (concat ".*\." extension) rexp))))
 
+;;;###autoload
 (defun mode-occur (mode rexp)
   "Search all buffers with major mode MODE for REXP."
   (interactive (list (read-command "Mode: ")
@@ -62,6 +65,7 @@ Run occur in all buffers whose names match this type for REXP."
                           (buffer-list))
                rexp))
 
+;;;###autoload
 (defun occur-select (more regx &optional nothing)
   "select what you wan't to see occur"
   (interactive 
