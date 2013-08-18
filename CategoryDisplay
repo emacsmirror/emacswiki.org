@@ -12,10 +12,12 @@ that colors and [[Face]]s belong in CategoryFaces.
 * '''CategoryFrames'''
 * '''CategoryMouse'''
 * RemoteEmacs -- running Emacs from an another machine over X11
-* HighlightCurrentLine
-* HighlightCurrentColumn
-* HighlightIndentation -- highlight indentation using vertical guide lines.
-* CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
+* Highlighting
+** HighlightCurrentLine
+** HighlightCurrentColumn
+** HighlightIndentation -- highlight indentation using vertical guide lines.
+** HighlightTemporarily -- highlight parts of a buffer
+** CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
 * ChangingCursorDynamically -- automatically change the cursor, depending on the context
 * ModeLine -- the mode-line provides lots of information
 ** ModeLineMinorModeMenu -- pop up minor-mode menus from the mode-line.
@@ -23,9 +25,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 ** ShowPointMode -- show the value of the point in the mode line
 ** DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
 ** DelightedModes -- Abbreviate/customise both major and minor mode names in the ModeLine.
-* ShowWhiteSpace -- highlight whitespace
 * TransparentEmacs -- how to make your wallpaper shine through the buffer
-* HighlightTemporarily -- highlight parts of a buffer
 * WorkSpaces - an implementation based on registers
 * FullScreen - how to switch to fullscreen (with F11 for example)
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
@@ -62,10 +62,12 @@ that colors and [[Face]]s belong in CategoryFaces.
 
 * TruncateLines -- the display engine can do LineWrap
 
-== Modifying the DisplayTable ==
+== Changing the appearance of characters ==
 
 * PageBreaks -- change page breaks from a ^L to a horizontal line
 * [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el] -- unicode chars as ascii fallbacks if not displayable
+* PrettySymbol -- display ascii strings as unicode/graphically
+* ShowWhiteSpace -- make invisible characters visible
 
 == Saving screen real-estate ==
 
