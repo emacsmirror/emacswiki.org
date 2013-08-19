@@ -1,35 +1,38 @@
-This page is about library '''<tt>[[highlight-fns.el]]</tt>''', which lets you highlight function calls in EmacsLisp code.
+This page is about library '''<tt>[[hl-defined.el]]</tt>''', which lets you highlight [[symbol]]s that are known to be defined functions and/or variables in an EmacsLisp buffer.  Or you can highlight symbols that are ''not'' known to be defined functions or variables.
+
+(Library <tt>[[highlight-fns.el]]</tt> is a rudimentary version of this feature; it just highlights defined functions.)
 
 == How to Use ==
 
-Command '''`highlight-lisp-fns-mode'''' is a [[minor mode]] command that toggles highlighting function calls in EmacsLisp code in the current buffer.
+'''`hdefd-highlight-mode'''' is a [[minor mode]] that highlights, in the
+current buffer, all [[symbol]]s that are known to be defined as Emacs-Lisp
+functions or variables or both.  Alternatively, it can highlight
+symbols that are ''not'' known to be defined as functions or variables.
+The current buffer should be in EmacsLisp mode.
 
-The highlighting uses [[face]] `highlight-lisp-fns', which by default inherits from face `font-lock-constant-face'.  
+Command '''`hdefd-highlight-mode'''' toggles highlighting on/off.  The highlighting respects [[user option]] `hdefd-highlight-type', which specifies whether to highlight functions and variables, only functions, only variables, or only undefined symbols.
 
-To use the command, put this in your [[init file]]:
+Command '''`hdefd-cycle'''' cycles highlighting among these available
+types and off (no such highlighting), as follows:
+
+: functions & variables --> functions --> variables --> undefined --> off
+
+It does this by changing the current
+value of the option.
+
+Highlighting uses these [[face]]s:
+
+* `hdefd-functions' -- for defined functions
+* `hdefd-variables' -- for defined variables
+* `hdefd-undefined' -- for undefined symbols
+
+To use the library, put this in your [[init file]]:
 
     (require 'highlight-fns)
 
 If you want to turn on this highlighting automatically for Emacs-Lisp mode, then put this in your init file after requiring the library:
 
-    (add-hook 'emacs-lisp-mode-hook 'highlight-lisp-fns-mode
-              'APPEND)
-
-You can use the command to toggle it off at any time.
-
-
-
-
-== Limitations ==
-
-The names of known EmacsLisp functions are highlighted.  This is so even if
-some occurrence of the name is not used for a function.  For example, it might be used as a variable name:
-
-     ;; `setq' is a variable here, but it is highlighted anyway.
-     (let ((setq  (foobar)))...)
-
-In practice this is not a major problem, but it is good to be aware of it.
-
+    (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND)
 
 
 
