@@ -208,6 +208,8 @@ I tried searching for ##font-lock##, and it found only files that have ##font-lo
 [new:DrewAdams:2013-08-19 03:00 UTC]
 Seems like search is quite broken.  Try searching for ##highlight symbol## or ##"highlight-symbol"## -- it finds 0 pages.  And yet there is this page: HighlightSymbol, and it (at least) has plenty of occurrences of ##highlight## and ##symbol## and even ##highlight symbol## and ##highlight-symbol##.  And I wouldn't be surprised if other pages also had these terms.  Am I wrong in thinking that (a) this kind of thing used to work fine and (b) search doesn't work well at all anymore? -- DrewAdams
 
+[new]
+Perhaps a temporary issue? I tried it just now and it found a lot of pages and the first result was HighlightSearch. -- AlexSchroeder
 
 === Problem with Google search ===
 
