@@ -49,6 +49,7 @@ Suggestions:
 * NnirGrepmail -- http://www.cs.caltech.edu/~nkapur/emacs/nnir-grepmail.el
 * FindMailByMessageId -- given a message ID, how to find the message no matter what group you are in
 * GnusMairix -- how to use Mairix to index and search your mails
+* GnusSpotlight -- Searching Gnus Mail by Spotlight
 
 == Alternate Personalities ==
 
