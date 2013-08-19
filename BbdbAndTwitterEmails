@@ -1,1 +1,21 @@
 It is very convenient to have BBDB notice when an email arrives from a person whose name it already knows, but using an email address that it has not seen before. In these circumstances, it consults `bbdb-always-add-addresses' to determine whether it should auto-add the address, prompt the user, or ignore the similarity. I usually have this set to ##'ask##.
+
+But Twitter email notifications now make this traditional setting very painful, because they appear to be sent from one of your friend's names while actually being from an automated email address with a very ugly appearance. Such a ##From:## line looks something like this:
+
+    From: "Sarah Smith (Twitter)" <n-hqkavk=qypidm.bet-xrxv@postmaster.twitter.com>
+
+So every time a Twitter notification arrives in my ##Inbox-Twitter##, I have to press ##n## to say no, and have a BBDB buffer to close as well if I want to avoid distraction.
+
+But there is now a solution! Modern versions of BBDB (I am using 2.36-3, the version that currently comes with Ubuntu) allow a function to be specified that has the power to decide whether you are prompted for a given email address. Using this new power, BBDB can be completely silent about Twitter emails:
+
+{{{
+(defun is-email-address-interesting ()
+  "Return whether BBDB should ask to remember this email address"
+  (if (string= "@postmaster.twitter.com" (substring net -23))
+      nil
+    'ask))
+
+(setq bbdb-always-add-addresses 'is-email-address-interesting)
+ }}}
+
+I was only able to learn about the existence of the `net' variable by reading the BBDB source code that surrounds the call to this function. Among many other values that Emacs LISP's dynamic scoping will make available to such a function is the textual `name' itself that goes with the email address, in case it helps you write a function like this of your own.
