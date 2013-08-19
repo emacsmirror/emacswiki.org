@@ -1,24 +1,24 @@
 Click the heading to find all pages related to display stuff.  Note
-that colors and [[Face]]s belong in CategoryFaces.
+that colors and [[face]]s belong in CategoryFaces.
 
-== General tools for manipulating and adjusting the display ==
-
-* DoReMi -- command `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
-* DefineFaceConstant -- a macro, `define-face-const', for defining faces and constant variables (via `defconst') having the faces as values, given the face foreground and/or background names (strings).
-* CategoryCustomize
-
-== Some pages relating to the display ==
+== Pages relating to display ==
 
 * '''CategoryFrames'''
 * '''CategoryMouse'''
+* '''CategoryCustomize'''
+* DoReMi -- incremental changes or cycling
+** Function `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
+** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
 * RemoteEmacs -- running Emacs from an another machine over X11
 * Highlighting
-** HighlightCurrentLine
-** HighlightCurrentColumn
-** HighlightIndentation -- highlight indentation using vertical guide lines.
+** ShowWhiteSpace -- highlight whitespace characters
 ** HighlightTemporarily -- highlight parts of a buffer
 ** CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
+** HighlightCurrentLine
+** HighlightCurrentColumn
+** HighlightIndentation -- highlight indentation using vertical guide lines
 * ChangingCursorDynamically -- automatically change the cursor, depending on the context
+* TruncateLines -- the display engine can do LineWrap
 * ModeLine -- the mode-line provides lots of information
 ** ModeLineMinorModeMenu -- pop up minor-mode menus from the mode-line.
 ** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
@@ -35,7 +35,9 @@ that colors and [[Face]]s belong in CategoryFaces.
 
 * '''CategoryFrames'''
 * OneOnOneEmacs -- making Emacs more [[Frame]]-oriented, less Emacs window-oriented
-* Library Lisp:doremi-frm.el -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
+* DoReMi -- incremental changes or cycling
+** Function `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
+** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
 * FisheyeWithThumbs -- thumbnail frames give a fisheye view of your frames and provide an alternative to iconifying
 * [[FrameModes#FrameCommands|Frame Commands]] -- Maximize/restore (vertically, horizontally, both); tile; iconify; move or resize incrementally; manage frame configurations; copy/paste parameters (attributes); show/hide;...
 * [[Maximize]] -- Maximize frames vertically and or horizontally.
@@ -58,16 +60,12 @@ that colors and [[Face]]s belong in CategoryFaces.
 * GrabAndDrag -- scroll a window by mouse dragging
 * VerticalConsistency -- make opposite vertical movement go back its track
 
-== Display Line Wrap ==
-
-* TruncateLines -- the display engine can do LineWrap
-
 == Changing the appearance of characters ==
 
 * PageBreaks -- change page breaks from a ^L to a horizontal line
 * [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el] -- unicode chars as ascii fallbacks if not displayable
 * PrettySymbol -- display ascii strings as unicode/graphically
-* ShowWhiteSpace -- make invisible characters visible
+* ShowWhiteSpace -- highlight whitespace characters
 
 == Saving screen real-estate ==
 
