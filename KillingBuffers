@@ -279,5 +279,9 @@ The advice starts dying-mode after the process exits."
 }}}
 
 
+== Killing Buffers with PRED ==
+
+Q: As the save-some-buffers function does, is there any good way to kill some buffers with PRED? IMO, It must be very useful and flexible, because the PRED may check the major-mode, size of buffer, file name, etc. 
+
 ----
 CategoryCommands OneOnOneEmacs CategoryBufferSwitching
