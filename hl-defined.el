@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 19 10:56:53 2013 (-0700)
+;; Last-Updated: Mon Aug 19 15:43:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 227
+;;     Update #: 236
 ;; URL: http://www.emacswiki.org/hl-defined.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
@@ -29,8 +29,8 @@
 ;;  `hdefd-highlight-mode' is a minor mode that highlights, in the
 ;;  current buffer, symbols that are known to be defined as Emacs-Lisp
 ;;  functions or variables or both.  Alternatively, it can highlight
-;;  symbos that are not known to be defined as functions or variables.
-;;  The current buffer should be in Emacs-Lisp mode.
+;;  symbols that are not known to be defined as functions or
+;;  variables.  The current buffer should be in Emacs-Lisp mode.
 ;;
 ;;  Command `hdefd-highlight-mode' toggles highlighting on/off.  The
 ;;  highlighting respects option `hdefd-highlight-type'.
@@ -55,8 +55,7 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `hdefd-highlight-functions', `hdefd-highlight-variables',
-;;    `hdefd-highlight-undefined'.
+;;    `hdefd-functions', `hdefd-variables', `hdefd-undefined'.
 ;;
 ;;  User options defined here:
 ;;
@@ -118,17 +117,17 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://emacswiki.org/HighlightLispFunctions")
   :link '(emacs-commentary-link :tag "Commentary" "hl-defined"))
 
-(defface hdefd-highlight-functions
+(defface hdefd-functions
     '((t (:foreground "#00006DE06DE0"))) ; Like `font-lock-constant-face'.  Do not inherit.
   "Face used to highlight Emacs-Lisp functions."
   :group 'Highlight-Defined :group 'faces)
 
-(defface hdefd-highlight-variables
+(defface hdefd-variables
     '((t (:foreground "Orchid"))) ; Like `font-lock-builtin-face'.  Do not inherit.
   "Face used to highlight Emacs-Lisp variables."
   :group 'Highlight-Defined :group 'faces)
 
-(defface hdefd-highlight-undefined
+(defface hdefd-undefined
     '((t (:foreground "Orange")))
   "Face used to highlight undefined Emacs-Lisp symbols."
   :group 'Highlight-Defined :group 'faces)
@@ -136,18 +135,18 @@ Don't forget to mention your Emacs and library versions."))
 (defcustom hdefd-highlight-type 'fns-and-vars
   "Type of highlighting to be done by `hdefd-highlight-mode'.
 If the value is `undefined', highlight symbols not known to be defined
-as a function or a variable, using face `hdefd-highlight-undefined'.
+as a function or a variable, using face `hdefd-undefined'.
 Otherwise, highlight defined symbols.
 
 If highlighting defined symbols and a function and a variable have the
 same name then:
 * The name is highlighted.
 * If the option value means that function names are highlighted then
-  the name is highlighted with face `hdefd-highlight-functions'
-  (even if the occurrence is in fact used as a variable).
+  the name is highlighted with face `hdefd-functions' (even if the
+  occurrence is in fact used as a variable).
 * If the value means that only variable names are highlighted then the
-  name is highlighted with face `hdefd-highlight-variables' (even if
-  it is used as a function)."
+  name is highlighted with face `hdefd-variables' (even if it is used
+  as a function)."
   :type '(choice
           (const :tag "Functions and variables" fns-and-vars)
           (const :tag "Functions"               functions)
@@ -236,10 +235,10 @@ Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
                                          (if (and (fboundp hdefd-obj)
                                                   (memq hdefd-highlight-type
                                                         '(fns-and-vars functions)))
-                                             'hdefd-highlight-functions
+                                             'hdefd-functions
                                            (if (eq hdefd-highlight-type 'undefined)
-                                               'hdefd-highlight-undefined
-                                             'hdefd-highlight-variables)))
+                                               'hdefd-undefined
+                                             'hdefd-variables)))
                                    t))))
                  (error nil))
                (forward-sexp 1)
