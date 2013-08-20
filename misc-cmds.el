@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 20 11:30:26 2013 (-0700)
+;; Last-Updated: Tue Aug 20 13:19:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3099
+;;     Update #: 3100
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -465,8 +465,7 @@ tab stop.  If NTH is negative then indent negatively (outdent)."
   "Delete all other windows showing the selected window's buffer."
   (interactive)
   (let* ((selwin  (selected-window))
-         (buf     (window-buffer selwin))
-         (wins    ()))
+         (buf     (window-buffer selwin)))
     (walk-windows (lambda (ww) (unless (eq ww selwin)
                                  (when (eq (window-buffer ww) buf)
                                    (delete-window ww))))
