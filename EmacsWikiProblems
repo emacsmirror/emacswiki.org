@@ -41,6 +41,15 @@ That does seem to work.  (You need to put some spaces after the `:'.)
 I guess I'm OK with the workaround, though it indents too far and adds too much vertical whitespace.
 You can remove this problem unless you want to keep it as a reminder to look for a better solution.
 
+[new]
+I guess if the following two don't line up exactly, we can use some CSS fix it:
+
+* bullet
+: indent
+
+I'm assuming that the exact indentation is determined by the browser defaults...
+-- Alex 
+
 == How to do a search for CateogoryNeedsAttention without invoking the category ==
 Say we have the following markup:
 
