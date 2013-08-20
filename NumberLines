@@ -165,5 +165,12 @@ Print sequences with format string. -- [[rubikitch]]
 
 As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a vertical strip of 1 char wide rectangle and hit `C-x r N'and you're good.  `C-u' prefix works to start from any number you choose.
 
+----
+[new]
+Still yet another way, if you are on a linux box:
+1. Mark the region
+2. "C-u M-|" to run command on region
+3. enter "cat -n" in the minibuffer
 
+----
 CategoryEditing
