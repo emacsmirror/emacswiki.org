@@ -5,7 +5,7 @@ But if you must, below is a variety of elisp to color IRC nicks according to a l
 ==Option 1==
 The colors are determined by the MD5 sum of a nick string, and if the nick-colors-list changes, so will the color indexes.  Enjoy!  Put this in your emacs load path and add <code>(require 'erc-nick-colors)</code> to your <code>.emacs</code>.  If you have any improvements or suggestions, contact me at <code>cygnus at cprogrammer dot org</code>.
 
-<pre>
+{{{
 (setq nick-face-list '())
 
 ;; Define the list of colors to use when coloring IRC nicks.                                                                     
@@ -52,12 +52,12 @@ you'll change the colors used for nicks."
 (add-hook 'erc-insert-modify-hook 'my-insert-modify-hook)
 
 (provide 'erc-nick-colors)
-</pre>
+}}}
 
 ==Option 2==
 
 Here is a reformulation of the above. It is simpler to hack, and allows you to specify colors for some people (in case you're tired of their usual color, if you want to avoid collision, or whatever). Contact at antoine d0t levitt, at gmail.
-<pre>
+{{{
 ;; Pool of colors to use when coloring IRC nicks.
 (setq erc-colors-list '("green" "blue" "red"
 			"dark gray" "dark orange"
@@ -89,13 +89,13 @@ Here is a reformulation of the above. It is simpler to hack, and allows you to s
 				   (erc-get-color-for-nick nick)))))))
 
 (add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
-</pre>
+}}}
 
 ==Option 3==
 
 Same as the above, but highlight nicks no matter where they appear, using code copied from erc-button-add-nickname-buttons.  Take Option 2 code but replace erc-put-color-on-nick:
 
-<pre>
+{{{
 (defun erc-put-color-on-nick ()
   "Modifies the color of nicks according to erc-get-color-for-nick"
   (save-excursion
@@ -109,20 +109,20 @@ Same as the above, but highlight nicks no matter where they appear, using code c
         (put-text-property (car bounds) (cdr bounds) 
                            'face (cons 'foreground-color
                                        (erc-get-color-for-nick word)))))))
-</pre>
+}}}
 
 You may also want to modify the syntax table for characters which are commonly in nicks, e.g.::
 
-<pre>
+{{{
 (add-hook 'erc-mode-hook (lambda () 
                            (modify-syntax-entry ?\_ "w" nil)
                            (modify-syntax-entry ?\- "w" nil)))
-</pre>
+}}}
 
 ==Option 4==
 
 To get a bit more variety:
-<pre>
+{{{
 (defun erc-set-colors-list ()
   (unless (frame-parameter nil 'erc-nick-colors-list)
     (let ((v nil))
@@ -140,17 +140,17 @@ To get a bit more variety:
                (substring (md5 nick) 0 6) 16)
               (length colors))
          colors))))
-</pre>
-add extra substrings to exclude as needed, and, if you're like me and run one emacs daemon to rule them all (including both tty and X clients):
-<pre>
+}}}
+Add extra substrings to exclude as needed, and, if you're like me and run one emacs daemon to rule them all (including both terminal and X clients):
+{{{
 (add-hook 'after-make-frame-functions '(lambda (frame) (erc-set-colors-list)))
-</pre>
+}}}
 
 ==Option 5==
 
 Similar to 1 and 2, but generates the colors automatically. The idea for the luminance is stolen from the nick highlighting package.
 
-<pre>
+{{{
 (defmacro unpack-color (color red green blue &rest body)
   `(let ((,red   (car ,color))
          (,green (car (cdr ,color)))
@@ -192,4 +192,4 @@ Similar to 1 and 2, but generates the colors automatically. The idea for the lum
            (cons 'foreground-color (erc-get-color-for-nick nick 't))))))))
 
 (add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)
-</pre>
+}}}
