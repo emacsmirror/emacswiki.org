@@ -95,6 +95,9 @@ Clearly an instance failure of Wikipedia:Use–mention_distinction. I don't thin
 [new]
 I think that a category is a bit of meta information, but it is now a meta only due to some automagical coding in the background that treats the prefix-word "Category" as a bit of markup, distinct from other WikiLinks.. I would rather see a bit of markup to generate category tag that is distinct from the rendered output, so one could offer links to the category without becoming part of the category. --MichaelPaulukonis
 
+[new]
+What do you think of the addition of ##Category /emacs/Category## to the InterMap, for example. Now you can write ##Category:EmacsWikiSite## or ##[[Category:EmacsWikiSite]]##---resulting in Category:EmacsWikiSite and [[Category:EmacsWikiSite]]. If you then click on the header of CategoryEmacsWikiSite you will not find the pages with these links. If other languages are used more often, we can translate the prefix, too: ##Kategorie:EmacsWiki##. -- Alex
+
 == Can markup be used in headers? <code>I have failed to do so.</code> ==
 Is this documented somewhere?
 
