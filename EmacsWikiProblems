@@ -115,21 +115,6 @@ The irony being that markup in headers **is** rendered in the (javascript-built)
 
 
 
-== Disabling new CSS design has no effect on ElispArea ==
-
-Title says it all.  I disabled it, but it still shows up at ElispArea.  This was not the case yesterday (2013-04-24) but it is today. -- DrewAdams
-
-[new]
-Currently none of the [[CSS]] "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
-
-[new]
-Yeah, I assume they all need ##;bootstrap=0## or I should check for the presence of the CSS cookie. -- AlexSchroeder
-
-[new]
-Thanks. This works now. -- [[LeonidasTsampros]]
-
-[new]
-Out of curiosity: which one are you using? -- Alex
 
 == Still seeing double TOCs ==
 
