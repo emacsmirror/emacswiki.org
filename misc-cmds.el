@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 10:06:18 2013 (-0700)
+;; Last-Updated: Tue Aug 20 11:30:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3094
+;;     Update #: 3099
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -33,7 +33,8 @@
 ;;    `clear-regexp-search-history', `clear-regexp-search-ring'
 ;;    `clear-search-history', `clear-search-ring',
 ;;    `clear-search-histories', `count-chars-in-region',
-;;    `delete-lines', `end-of-line+', `end-of-visual-line+.',
+;;    `delete-extra-windows-for-buffer', `delete-lines',
+;;    `end-of-line+', `end-of-visual-line+.',
 ;;    `forward-char-same-line', `forward-overlay',
 ;;    `goto-previous-mark', `indent-rigidly-tab-stops',
 ;;    `indirect-buffer', `kill-buffer-and-its-windows',
@@ -81,6 +82,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/20 dadams
+;;     Added: delete-extra-windows-for-buffer.
 ;; 2013/07/24 dadams
 ;;     goto-longest-line, resolve-file-name: Region test ensures nonempty too.
 ;; 2013/07/12 dadams
@@ -456,6 +459,18 @@ tab stop.  If NTH is negative then indent negatively (outdent)."
     (let ((tabstop  (nth (mod (1- (abs nth)) (length tab-stop-list))
                          tab-stop-list)))
       (indent-rigidly start end (if (natnump nth) tabstop (- tabstop))))))
+
+;;;###autoload
+(defun delete-extra-windows-for-buffer ()
+  "Delete all other windows showing the selected window's buffer."
+  (interactive)
+  (let* ((selwin  (selected-window))
+         (buf     (window-buffer selwin))
+         (wins    ()))
+    (walk-windows (lambda (ww) (unless (eq ww selwin)
+                                 (when (eq (window-buffer ww) buf)
+                                   (delete-window ww))))
+                  'NO-MINI 'THIS-FRAME)))
 
 ;;;###autoload
 (defun recenter-top-bottom (&optional arg)
