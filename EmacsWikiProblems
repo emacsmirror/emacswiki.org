@@ -47,7 +47,25 @@ I guess if the following two don't line up exactly, we can use some CSS fix it:
 * bullet
 : indent
 
-I'm assuming that the exact indentation is determined by the browser defaults...
+I'm assuming that the exact indentation is determined by the browser defaults.
+On my iPad it looks as follows:
+
+{{{
+normal text
+
+   • bullet
+   indent
+}}}
+
+The variant you prefer would be this, correct?
+
+{{{
+normal text
+
+ • bullet
+   indent
+}}}
+
 -- Alex 
 
 == How to do a search for CateogoryNeedsAttention without invoking the category ==
