@@ -45,8 +45,10 @@ The manual is not yet complete. At the moment you can find more detailed informa
 : Development snapshots extract to a directory called erc/
 * Move the newly created directory to, for example, ~/elisp/erc
 * And put the following in your InitFile:
-{{{(add-to-list 'load-path "~/elisp/erc")
-(require 'erc)}}}
+{{{
+(add-to-list 'load-path "~/elisp/erc")
+(require 'erc)
+}}}
 * XEmacs users skip the above and get the [http://www.xemacs.org/Develop/packages.html#erc XEmacs erc Package]
 
 * To connect, call M-x erc (better: M-x erc-select)
