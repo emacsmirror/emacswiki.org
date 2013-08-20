@@ -113,21 +113,6 @@ Emphasis markup using apostrophes is the online inline markup that can be nested
 [new]
 The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
 
-== No more `Article' link on `Comments on...' pages ==
-
-I thought there used to be an `Article' link to take you back to the page that is being commented on.  I find no link that does that now.  (However, as a workaround, if you click the `Newest Revision' link then you can find an `Article' link.)  -- DrewAdams
-
-[new]
-
-    SiteMap Search ElispArea HowTo Glossary RecentChanges News Problems Suggestions 
-    Add Translation
-    Article Edit this page View other revisions Administration
-
-This is what the page footer looks like on my iPhone with the traditional theme. Note the Article link at the beginning of the last row. -- Alex
-
-
-[new:DrewAdams:2013-06-17 13:03 UTC]
-Sorry, I don't know what I was seeing, or thought I was.  I cannot even find a `Newest Revision' link anywhere now. Unless that rings a bell, feel free to delete this problem report -- sorry for the noise. -- DrewAdams
 
 
 == Disabling new CSS design has no effect on ElispArea ==
