@@ -1,3 +1,9 @@
+[http://subconscious-therapy.com/hipnoterapi-surabaya Hipnoterapi surabaya]
+[http://www.tiraimodern.com/product/vertical-blind Vertical blind]
+[http://www.mitrainti.com SAP indonesia]
+[http://www.propertykita.com/rumah.html Rumah dijual]
+[http://www.detikauto.com Variasi mobil]
+
 ;;; flymake-cursor.el --- displays flymake error msg in minibuffer after delay
 ;;
 ;; Author     : ??
@@ -20,7 +26,6 @@
 ;; in the minibuffer when point is on a line containing a flymake
 ;; error. This saves having to mouse over the error, which is a
 ;; keyboard user's annoyance.
-;;
 ;; -------------------------------------------------------
 ;;
 ;; This flymake-cursor module displays the flymake error in the
