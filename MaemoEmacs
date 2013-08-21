@@ -1,11 +1,156 @@
-Maemo merupakan sebuah perkembangan platform yang bersifat sumber terbuka untuk perangkat-perangkat yang menggunakan sistem Linux, seperti internet tablet, yang mewarisi arsitektur Linux dari sistem operasi Unix. Maemo dibuat melalui komponen sumber terbuka yang digunakan secara luas dengan beberapa tambahan untuk mengintegrasikan kesemuanya dengan baik pada perangkat yang menggunakannya.
+== Emacs 23 on Nokia N900 ==
 
-Internet tablet merupakan perangkat yang digunakan yang menyediakan desktop pada level PC yang digunakan untuk servis internet (seperti : webpages dan email). Perangkat-perangkat tersebut memiliki resolusi tinggi, dengan layar sentuh sensitif berukuran 800 x 480 pixel. Nokia telah merilis tiga internet tablet menggunakan platform Maemo, yaitu Nokia 770, Nokia N800, dan Nokia N810, dan yang terbaru Nokia N900.
+Follow the installation instructions on
+http://sumoudou.org/%E7%9B%B8%E6%92%B2%E5%A4%96%EF%BC%9AGNU%20Emacs%20for%20Nokia%20N900.html
 
-Sistem Operasi internet tablet pertama muncul pada Nokia 770, yang diluncurkan pada 2 November 2005. N770 memiliki beberapa spesifikasi yaitu akses internet menggunakan koneksi WLAN dengan mesin pencari opera, flash 6, email dasar, pemutar audio dan video, PDF, dan beberapa jenis permainan sederhana lainnya.
+To remap the keyboard, edit /usr/share/X11/xkb/symbols/nokia_vndr/rx-51 and call
 
-Selanjutnya, Nokia mengeluarkan versi beta dari Nokia 770 yang dilengkapi sistem operasi internet tablet terbaru dan disempurnakan pada 3 Juni 2006. Penyempurnaan ini meliputi penampilan yang lebih menarik, keyboard layar penuh, GoogleTalk di dalamnya, kemampuan mendukung kartu memori hingga 2gigabita, dan peningkatan Linux hingga 2.6.
+    setxkbmap [pl|fise|dano|nordic ...]
 
-Evolusi berikutnya dalam platform Maemo adalah Nokia 800 internet tablet yang berisikan Maemo 3. Aplikasi yang ditambahkan adalah Skype/VoIP-calls menggunakan WLAN, kamera yang terintegrasi, Opera 8, dan Flash 7. Nokia ini diluncurkan pada 4 Januari 2007.
+For a German qertz keyboard, that's
 
-dikutip oleh: [http://www.raywhitesemarang.com Properti semarang] - [http://subconscious-therapy.com/hipnoterapi-surabaya Hipnoterapi surabaya] - [http://www.tiraimodern.com/product/vertical-blind Vertical blind] - [http://www.morinfoods.com/selai-kacang.html Selai kacang]
+    setxkbmap de
+
+and the edited part of /usr/share/X11/xkb/symbols/nokia_vndr/rx-51 (which may serve as a starting point for other keyboard layouts with only two arrow keys) looks like
+
+
+{{{
+partial alphanumeric_keys
+xkb_symbols "de" {
+    include "nokia_vndr/rx-51(english_base)"
+    include "nokia_vndr/rx-51(arrows_2btns)"
+
+    name[Group1] = "German";
+
+    // |-------+----+----+----+----+----+----+----+----+----+-----+------+------|
+    // | BL+SH | F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | F10 | F11  | F12  |
+    // | BLUE  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 0   | ß    | TAB  |
+    // | SHIFT | Q  | W  | E  | R  | T  | Z  | U  | I  | O  | P   | Ü    | BKSP |
+    // |       | q  | w  | e  | r  | t  | z  | u  | i  | o  | p   | ü    | BKSP |
+    // |-------+----+----+----+----+----+----+----+----+----+-----+------+------|
+    // | BL+SH | *  | &  | °  | [  | ]  | (  |    |    | :  | {   | }    | MENU |
+    // | BLUE  | *  | +  | #  | -  | _  | (  | )  | ;  | :  | !   | ?    | ESC  |
+    // | SHIFT | A  | S  | D  | F  | G  | H  | J  | K  | L  | Ö   | Ä    | RET  |
+    // |       | a  | s  | d  | f  | g  | h  | j  | k  | l  | ö   | ä    | RET  |
+    // |-------+----+----+----+----+----+----+----+----+----+-----+------+------|
+    // | BL+SH |    |    | ^  | <  | >  | %  | `  |   ~     | |   | UP   | DOWN |
+    // | BLUE  | €  | $  | =  | /  | \  | "  | '  |   @     | ,   | UP   | DOWN |
+    // | SHIFT | Y  | X  | C  | V  | B  | N  | M  |   SPC   | ,   | LEFT | RGT  |
+    // |       | y  | x  | c  | v  | b  | n  | m  |   SPC   | .   | LEFT | RGT  |
+    // |-------+----+----+----+----+----+----+----+---------+-----+------+------|
+
+    // 1. row
+    key <AD01>	{ [	q,		Q,		1,		F1		] };
+    key <AD02>	{ [	w,		W,		2,		F2		] };
+    key <AD03>	{ [	e,		E,		3,		F3		] };
+    key <AD04>	{ [	r,		R,		4,		F4		] };
+    key <AD05>	{ [	t,		T,		5,		F5		] };
+    key <AD06>	{ [	z,		Z,		6,		F6		] };
+    key <AD07>	{ [	u,		U,		7,		F7		] };
+    key <AD08>	{ [	i,		I,		8,		F8		] };
+    key <AD09>	{ [	o,		O,		9,		F9		] };
+    key <AD10>	{ [	p,		P,		0,		F10		] };
+    key <AB08>	{ [	udiaeresis,	Udiaeresis,	ssharp,		F11		] };
+    key <BKSP>	{ [	BackSpace,	BackSpace,	Tab,		F12		] };
+
+    // 2. row
+    key <AC02>	{ [	s,		S,		plus,		ampersand	] };
+    key <AC03>	{ [	d,		D,		numbersign,	degree		] };
+    key <AC04>	{ [	f,		F,		minus,		bracketleft	] };
+    key <AC05>	{ [	g,		G,		underscore,	bracketright	] };
+    key <AC08>	{ [	k,		K,		semicolon,	semicolon	] };
+    key <AC09>	{ [	l,		L,		colon,		colon		] };
+    key <AB09>	{ [	odiaeresis,	Odiaeresis,	exclam,		braceleft	] };
+    key <UP>	{ [	adiaeresis,	Adiaeresis,	question,	braceright	] };
+    key <RTRN>	{ [	KP_Enter,	KP_Enter,	Escape,		Menu		] };
+
+    // 3. row
+    key <AB01>	{ [	y,		Y,		EuroSign,	EuroSign	] };
+    key <AB03>	{ [	c,		C,		equal,		asciicircum	] };
+    key <AB04>	{ [	v,		V,		slash,		less		] };
+    key <AB05>	{ [	b,		B,		backslash,	greater		] };
+    key <AB06>	{ [	n,		N,		quotedbl,	percent		] };
+    key <AB07>	{ [	m,		M,		apostrophe,	grave		] };
+    key <SPCE>	{ [	space,		space,		at,		asciitilde	] };
+    key <LEFT>	{ [	period,		comma,		comma,		bar		] };
+};
+}}}
+
+== Emacs 22 on Nokia N800 or N810 ==
+
+If you run a nokia linux tablet such as an N800 or N810, you can have a full emacs environment. The homepage for the project is http://danielsz.freeshell.org/code/mine/emacs-for-maemo/index.shtml .
+
+You may see as well https://garage.maemo.org/projects/maemacs (Gnu Emacs for Maemo).
+
+Some customization issues exist, due to the environment, and i have pasted my preliminary .emacs file here.
+
+<pre>
+;; dot emacs file for a nokia n800                                                                             
+;; christof                                                                                                    
+;; sietchtabr at gmail                                                                                         
+;;                                                                                                             
+;; the dired, list-directory, and gzip fixes all come from the                                                 
+;; packager of the emacs deb and responses from other community members                                        
+;; http://danielsz.freeshell.org/code/mine/emacs-for-maemo/index.shtml                                         
+;;                                                                                                             
+;; last updated 24  March 2008                                                                                 
+
+;; make dired work                                                                                             
+;; --dired option is not supported on busybox ls command                                                       
+(setq dired-use-ls-dired nil)
+
+;; make list-directory work                                                                                    
+;; -F not supported by busybox ls command                                                                      
+(setq list-directory-brief-switches "-C")
+
+
+;; we *REALLY* don't want to spew file backups all over the fs.                                                
+;; code to place all backups in one location                                                                   
+(when (not (file-directory-p "~/.backup"))
+  (make-directory "~/.backup"))
+(if (file-directory-p "~/.backup")
+    (setq backup-directory-alist '(("." . "~/.backup"))))
+
+;; custom variable setting to make info work using busybox gzip                                          
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.                                                                 
+  ;; If you edit it by hand, you could mess it up, so be careful.                                              
+  ;; Your init file should contain only one such instance.                                                     
+  ;; If there is more than one, they won't work right.                                                         
+ '(jka-compr-compression-info-list (quote (["\\.Z\\(~\\|\\.~[0-9]+~\\)?\\'" "compressing" "compress" ("-c") "u\
+ncompressing" "uncompress" ("-c") nil t "^_\x9d"] ["\\.bz2\\(~\\|\\.~[0-9]+~\\)?\\'" "bzip2ing" "bzip2" nil "b\
+unzip2ing" "bzip2" ("-d") nil t "BZh"] ["\\.tbz\\'" "bzip2ing" "bzip2" nil "bunzip2ing" "bzip2" ("-d") nil nil\
+ "BZh"] ["\\.tgz\\'" "compressing" "gzip" ("-c") "uncompressing" "gzip" ("-c" "-q" "-d") t nil "^_\x8b"] ["\\.\
+g?z\\(~\\|\\.~[0-9]+~\\)?\\'" "compressing" "gzip" ("-c") "uncompressing" "gzip" ("-c" "-d") t t "^_\x8b"] ["\\
+\.dz\\'" nil nil nil "uncompressing" "gzip" ("-c" "-d") nil t "^_\x8b"]))))
+</pre>
+
+=== Keyboard Improvements on the N810 ===
+
+The N810 doesn't have TAB or Meta keys, which makes using Emacs rather difficult. There is an escape key (the back button), but using it to simulate Meta gets boring quite fast. So Emacs users (and general keyboard junkies) will probably want to remap the keyboard. This can be done by editing /usr/share/X11/xkb/symbols/nokia_vndr/rx-44
+
+Adding the following to the "base" section of the file will set the Chr key (which normally launches a special-character selection menu, although not under the X version of Emacs) to be Meta, and the key combination Fn-SPC (which is reasonably nice to press) to TAB:
+
+    key <SPCE> { [ space, space, Tab, space ] };
+    key <COMP> { [ Meta_L, Meta_L, Multi_key, Meta_L ] };
+    modifier_map Mod1 { Meta_L };
+
+(Credit to some long-forgotten piece of the internet)
+
+Restarting the tablet will allow this to take effect. Note that, for some reason, Emacs may not recognise Fn-<key> sequences if it's the first thing that you launch after starting the tablet. Running XTerm seems to fix this problem, for some worryingly obscure reason.
+
+=== Extra keys on the N810 ===
+
+A nice feature of the N810 is that all the 'special' keys (Home, Back, Menu, etc.) just scan as function keys, which the X version of Emacs will intercept. This gives a selection of extra keys that we can rebind to make life a little easier. They scan as follows:
+
+|| Back (next to the screen) || Escape ||
+|| Menu (under the D-Pad) || F4 ||
+|| Home (next to the screen) || F5 ||
+|| Home (on the top edge) || F6 ||
+|| + (on the top edge) || F7 ||
+|| - (on the top edge) || F8 ||
+
+I'm not entirely sure where F[1-3] live.
+
+I'm working on some code to provide sticky modifiers based on the 'shoulder button' function keys. I'll post it here when it's done.
