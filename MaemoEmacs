@@ -1,7 +1,6 @@
 == Emacs 23 on Nokia N900 ==
 
-Follow the installation instructions on
-http://sumoudou.org/%E7%9B%B8%E6%92%B2%E5%A4%96%EF%BC%9AGNU%20Emacs%20for%20Nokia%20N900.html
+Follow the [http://sumoudou.org/GNU%20Emacs%20for%20Nokia%20N900.html installation instructions].
 
 To remap the keyboard, edit /usr/share/X11/xkb/symbols/nokia_vndr/rx-51 and call
 
