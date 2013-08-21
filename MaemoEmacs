@@ -79,9 +79,11 @@ xkb_symbols "de" {
 
 If you run a nokia linux tablet such as an N800 or N810, you can have a full emacs environment. The homepage for the project is http://danielsz.freeshell.org/code/mine/emacs-for-maemo/index.shtml .
 
+
 You may see as well https://garage.maemo.org/projects/maemacs (Gnu Emacs for Maemo).
 
 Some customization issues exist, due to the environment, and i have pasted my preliminary .emacs file here.
+[http://www.detikauto.com Variasi mobil] - [http://www.morinfoods.com/selai-kacang.html Selai kacang] - []
 
 <pre>
 ;; dot emacs file for a nokia n800                                                                             
