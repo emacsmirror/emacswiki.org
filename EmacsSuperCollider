@@ -1,1 +1,9 @@
 [http://en.wikipedia.org/wiki/SuperCollider Supercollider] has a nice emacs mode for working with the supercollider server and editing supercollider code
+
+== SuperCollider Link Dump ==
+* http://supercollider.sourceforge.net/wiki/index.php/SuperCollider_with_emacs:_scel
+* http://sam.aaron.name/2010/02/09/hooking-supercollider-up-to-emacs-on-os-x.html
+* http://swiki.hfbk-hamburg.de:8888/MusicTechnology/579
+
+== Obtaining scel ==
+The mode itself appears to come with Supercollider?
