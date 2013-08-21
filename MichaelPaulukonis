@@ -40,6 +40,12 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** <code>C-x 5 2</code> new frame
 ** CategoryFrames
 ** [[Frame]]
+* add the below (somehow) to EmacsSuperCollider
+
+== SuperCollider Link Dump ==
+* http://supercollider.sourceforge.net/wiki/index.php/SuperCollider_with_emacs:_scel
+* http://sam.aaron.name/2010/02/09/hooking-supercollider-up-to-emacs-on-os-x.html
+* http://swiki.hfbk-hamburg.de:8888/MusicTechnology/579
 
 === DropBox ===
 * look at DropBox notes -- implement, test, and update page
