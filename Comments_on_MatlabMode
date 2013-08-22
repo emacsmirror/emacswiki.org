@@ -8,5 +8,7 @@ Works for me. I downloaded the tarball, loaded matlab.el, switched my buffer to 
 
 http://i.imgur.com/hteEh8Z.png
 
+##M-x describe-text-properties## confirms that `font-lock-comment-face' is being used.
+
 -- AlexSchroeder 2013-08-22 11:22 UTC
 
