@@ -37,8 +37,8 @@ You can ignore whitespace or case sensitivity in two ways:
 
 * Persistently: Customize option `ediff-diff-options'. This assumes that you are using `##diff(1)##' as `ediff-diff-program'.
 
-** Whitespace sensitivity -- Include `-w' in `ediff-diff-options'.
-** Case sensitivity -- Include `-i' in `ediff-diff-options'.
+** Whitespace insensitivity -- Include `-w' in `ediff-diff-options'.
+** Case insensitivity -- Include `-i' in `ediff-diff-options'.
 
 
 
