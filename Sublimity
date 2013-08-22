@@ -4,7 +4,7 @@ Sublimity was originally authored by [https://github.com/zk-phi/sublimity zk-phi
 
 == Installation ==
 
-==== Based on Readme: ====
+* Based on Readme:
 
 Copy the files ##sublimity.el##, ##sublimity-scroll.el##, and ##sublimity-map.el## to a folder called ##/path/to/.emacs.d/sublimity##. In your ##.emacs## file, add the following:
 <pre>
