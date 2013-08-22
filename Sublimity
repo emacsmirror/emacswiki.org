@@ -1,0 +1,28 @@
+Smooth-scrolling and minimap, like [http://www.sublimetext.com/ Sublime] editor (non-free program): sublime text風のぬるぬるスクロール＆ミニマップ 
+
+Sublimity was originally authored by [https://github.com/zk-phi/sublimity zk-phi].
+
+== Installation ==
+
+==== Based on Readme: ====
+
+Copy the files ##sublimity.el##, ##sublimity-scroll.el##, and ##sublimity-map.el## to a folder called ##/path/to/.emacs.d/sublimity##. In your ##.emacs## file, add the following:
+<pre>
+(add-to-list 'load-path "/path/to/.emacs.d/sublimity/")
+(require 'sublimity)
+(require 'sublimity-scroll)
+(require 'sublimity-map)
+</pre>
+You can toggle sublimity-mode by ##M-x sublimity-mode##. If you want to enable sublimity everywhere, ##M-x sublimity-global-mode##.
+
+== Usage ==
+
+A narrow window containing the "minimap" appears on the right of the main window, and highlights the portion of the buffer that appears on the main window.  This is triggered by vertical navigation commands, for instance, ##C-n## and ##C-p##, or whenever the point is idle for around 2 seconds. The minimap disappears automatically when editing.
+
+== Screenshot ==
+
+https://imageshack.us/scaled/landing/547/4yom.png
+
+== Known Issues ==
+
+sublimity-mode seems to be enabled by default after ##require##. A minor fix is provided by this [https://github.com/prvteprts/sublimity/ fork].
