@@ -29,7 +29,7 @@ that colors and [[face]]s belong in CategoryFaces.
 * WorkSpaces - an implementation based on registers
 * FullScreen - how to switch to fullscreen (with F11 for example)
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
-
+* Sublimity - Smooth-scrolling and minimap like sublime editor, similar to MiniMap.
 
 == Managing Frames within Emacs ==
 
