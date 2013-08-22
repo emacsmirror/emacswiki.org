@@ -554,7 +554,7 @@ These are the W3C SVG color keywords found here:
   "Show hex color literals with the given color as background.\n
 In this mode hexadecimal colour specifications like #3253ff are
 displayed with the specified colour as background.\n
-Adds kiybindings for special CSS colour editing commands when
+Adds keybindings for special CSS colour editing commands when
 point is at a hexadecimal colour:\n\n
 \\{*css-color:map*}\n\n
 :SEE-ALSO `css-color-turn-on-in-buffer', `css-color-global-mode',
