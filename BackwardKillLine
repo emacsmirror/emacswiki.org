@@ -2,7 +2,7 @@ KillingAndYanking a line backwards can be done with `C-0 C-k' or `C-u 0 C-k'.
 
 Deleting words backwards with `C-DEL' or `M-DEL' (`backward-kill-word') is useful since each kill appends to the kill ring and is available as a single yank.  If the point is anywhere in the first sentence, `C-x DEL' (`backward-kill-sentence') can also delete to the beginning of the line.
 
-Note, `C-M-backspace' is bound to restarting X Windows or rebooting the system with the Linux kernel, so beware.
+Note, `C-M-backspace' is bound to restarting X Window or rebooting the system with the Linux kernel, so beware.
 
 If you needed a command specifically for killing backwards, use the following code by EvaluatingExpressions or by adding it to your InitFile:
 
