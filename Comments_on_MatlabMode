@@ -1,11 +1,3 @@
 I cannot get matlab.el to color comments differently.  Yes, colors do appear:  keywords like "function" are in cyan.  But comments are not colored.  This is very frustrating, and I have wasted hours on it now.  Please help.
 
 -- MajMin7 2013-07-31 01:26 UTC
-
-
-----
-
-http://www.mathworks.com/matlabcentral/newsreader/view_thread/53969
-
--- bo 2013-08-21 14:52 UTC
-
