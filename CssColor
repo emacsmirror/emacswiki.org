@@ -19,6 +19,9 @@ channels (or 'fields'). Toggling percentage in rgb() is done with
 the % key (not sure if that is wise though). The TAB key is bound to go to the next channel,
 cycling when at the end.
 
+== Alternatives ==
+[[http://julien.danjou.info/projects/emacs-packages#rainbow-mode|Rainbow mode]] also provides this functionality, and is available on GNU ELPA.
+
 ==Download==
 
 Css-color.el as distributed with [NxhtmlMode nXhtml].
