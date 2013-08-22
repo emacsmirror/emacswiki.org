@@ -303,12 +303,13 @@ Some ideas for improvement:
 
 == starttls, gnutls-cli and related issues ==
 
-<pre>
 If you have problems to connect to a secure jabber server using gnutls-cli (starttls mode), you can try this config:
 
+<pre>
 (setq starttls-use-gnutls t
       starttls-gnutls-program "gnutls-cli"
       starttls-extra-arguments '("--starttls" "--insecure"))
+</pre>
 
 This workaround try to connect to a server when there is a problem with its certificate. The problem usually appears when starttls package is not in your distro and the server you try to connect has some problem with its certificate.
 
@@ -317,7 +318,6 @@ This workaround try to connect to a server when there is a problem with its cert
 You can find more information about debian decision to remove starttls package and other related questions in:
 
 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=499774
-</pre>
 
 == Success-stories :) ==
 
