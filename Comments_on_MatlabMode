@@ -1,3 +1,12 @@
 I cannot get matlab.el to color comments differently.  Yes, colors do appear:  keywords like "function" are in cyan.  But comments are not colored.  This is very frustrating, and I have wasted hours on it now.  Please help.
 
 -- MajMin7 2013-07-31 01:26 UTC
+
+----
+
+Works for me. I downloaded the tarball, loaded matlab.el, switched my buffer to matlab-mode, and copied some examples from an [http://en.wikibooks.org/wiki/MATLAB_Programming/Comments online book]. Take a look:
+
+http://i.imgur.com/hteEh8Z.png
+
+-- AlexSchroeder 2013-08-22 11:22 UTC
+
