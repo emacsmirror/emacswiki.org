@@ -1,9 +1,3 @@
-[http://subconscious-therapy.com/hipnoterapi-surabaya Hipnoterapi surabaya]
-[http://www.tiraimodern.com/product/vertical-blind Vertical blind]
-[http://www.mitrainti.com SAP indonesia]
-[http://www.propertykita.com/rumah.html Rumah dijual]
-[http://www.detikauto.com Variasi mobil]
-
 ;;; flymake-cursor.el --- displays flymake error msg in minibuffer after delay
 ;;
 ;; Author     : ??
