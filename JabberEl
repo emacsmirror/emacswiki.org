@@ -301,6 +301,22 @@ Some ideas for improvement:
 
 <i>There is an article related about jabber.el's issues with Google Talk for connecting and chatting: Read GoogleTalk article. </i>
 
+== starttls, gnutls-cli and related issues ==
+
+If you have problems to connect to a secure jabber server using gnutls-cli (starttls mode), you can try this config:
+
+(setq starttls-use-gnutls t
+      starttls-gnutls-program "gnutls-cli"
+      starttls-extra-arguments '("--starttls" "--insecure"))
+
+This workaround try to connect to a server when there is a problem with its certificate. The problem usually appears when starttls package is not in your distro and the server you try to connect has some problem with its certificate.
+
+<b>WARNING!!!</b> as gnutls-cli parameter points to, this configuration could result in an insecure connection. Try to find out which kind of trouble is with server certificate before adding --insecure option.
+
+You can find more information about debian decision to remove starttls package and other related questions in:
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=499774
+
 == Success-stories :) ==
 
 I'm using this as my primary jabber client now and have no need for the extra jabber client (I primarily used JAJC on Windows and GAIM on Linux before) and it works really good. The nice thing is of course that you can hack it, customize key bindings etc, something that is much harder to do in most other clients. Among other things I use it as a &quot;agent&quot; to do stuff remotely. Read more about this in the forum on the SourceForge page. -- MathiasDahl
