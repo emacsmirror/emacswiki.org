@@ -311,7 +311,7 @@ If you have problems to connect to a secure jabber server using gnutls-cli (star
       starttls-extra-arguments '("--starttls" "--insecure"))
 </pre>
 
-This workaround try to connect to a server when there is a problem with its certificate. The problem usually appears when starttls package is not in your distro and the server you try to connect has some problem with its certificate.
+This workaround try to connect to a server when there is a problem with its certificate. The problem usually appears when starttls package is not included in your distro and the server you try to connect has some problem with its certificate.
 
 <b>WARNING!!!</b> as gnutls-cli parameter points to, this configuration could result in an insecure connection. Try to find out which kind of trouble is with server certificate before adding --insecure option.
 
