@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 20 13:19:23 2013 (-0700)
+;; Last-Updated: Thu Aug 22 20:31:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3100
+;;     Update #: 3102
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,17 +34,18 @@
 ;;    `clear-search-history', `clear-search-ring',
 ;;    `clear-search-histories', `count-chars-in-region',
 ;;    `delete-extra-windows-for-buffer', `delete-lines',
-;;    `end-of-line+', `end-of-visual-line+.',
-;;    `forward-char-same-line', `forward-overlay',
-;;    `goto-previous-mark', `indent-rigidly-tab-stops',
-;;    `indirect-buffer', `kill-buffer-and-its-windows',
-;;    `list-colors-nearest', `list-colors-nearest-color-at',
-;;    `mark-buffer-after-point', `mark-buffer-before-point',
-;;    `old-rename-buffer', `recenter-top-bottom',
-;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
-;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `revert-buffer-no-confirm',
-;;    `selection-length', `view-X11-colors'.
+;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
+;;    `end-of-visual-line+.', `forward-char-same-line',
+;;    `forward-overlay', `goto-previous-mark',
+;;    `indent-rigidly-tab-stops', `indirect-buffer',
+;;    `kill-buffer-and-its-windows', `list-colors-nearest',
+;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
+;;    `mark-buffer-before-point', `old-rename-buffer',
+;;    `recenter-top-bottom', `recenter-top-bottom-1',
+;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
+;;    `region-to-file', `resolve-file-name',
+;;    `revert-buffer-no-confirm', `selection-length',
+;;    `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -82,6 +83,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/22 dadams
+;;     Added: delete-window-maybe-kill-buffer.
 ;; 2013/08/20 dadams
 ;;     Added: delete-extra-windows-for-buffer.
 ;; 2013/07/24 dadams
@@ -470,6 +473,16 @@ tab stop.  If NTH is negative then indent negatively (outdent)."
                                  (when (eq (window-buffer ww) buf)
                                    (delete-window ww))))
                   'NO-MINI 'THIS-FRAME)))
+
+;;;###autoload
+(defun delete-window-maybe-kill-buffer ()
+  "Delete selected window.
+    If no other window shows its buffer, kill the buffer too."
+  (interactive)
+  (let* ((selwin  (selected-window))
+         (buf     (window-buffer selwin)))
+    (delete-window selwin)
+    (unless (get-buffer-window buf 'visible) (kill-buffer buf))))
 
 ;;;###autoload
 (defun recenter-top-bottom (&optional arg)
