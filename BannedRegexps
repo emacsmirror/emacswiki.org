@@ -15,11 +15,7 @@
 # When you make an addition to this page and you aren't sure how many existing
 # pages this will affect, take a look at this link (it's very slow):
 # http://www.emacswiki.org/emacs/?action=list-banned-content
-
 порно # 2012-12-31 Russian porn
-<a\s+href=["']?http # 2012-12-31 HTML anchor tags usually mean spam
 \[url= # 2012-12-31 bbCode links usually mean spam
-\s+(https?:\S+)[ .\r\n]*$ # 2012-12-31 ending with a link usually means spam
-# (?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.* # 2012-12-31 three naked links usually mean spam
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
 file_links\[[A-Z]:\\keywords\d+.txt,\d+,[A-Z]\] # 2013-08-21 used by misconfigured spambots
