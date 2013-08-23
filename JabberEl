@@ -207,6 +207,13 @@ My main Jabber server and its transport goes down from time to time so I also ha
 </pre>
 
 === Announcing about new message ===
+
+==== Using Xmessage ====
+To configure emacs-jabber to alert you throw incoming message throw Xmessage you can include this into your config file:
+<pre>
+(add-hook 'jabber-alert-message-hooks 'jabber-message-xmessage) 
+</pre>
+
 ==== Using xosd ====
 This code will alert about incoming message through xosd. Obviously, it requires xosd (package xosd-bin on debian-like distros)
 <pre>
