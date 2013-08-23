@@ -264,6 +264,14 @@ On Debian, the libnotify1 and libnotify-bin packages are required.
 ==== Using growl ====
 If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs-1.  It should be easy to adapt this to use ToDoChiKu for a more general solution.
 
+==== Setting several alerts at a time ====
+
+If you want to configure several alert systems at a time when a new message arrive, you can include them inside jabber-alert-message-hooks. For example, to receive an Xmessage notification and a system bell beep:
+
+<pre>
+(add-hook 'jabber-alert-message-hooks 'jabber-message-xmessage jabber-message-beep)
+</pre>
+
 === Preventing messages in the echo area from clobbering the mini buffer ===
 
 I found that redefining ''define-jabber-alert'' as follows prevents messages arriving while I am using the mini buffer from stealing my focus.
