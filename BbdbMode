@@ -31,7 +31,7 @@ your ~/.emacs:
 
 You will need to change it to:
 
-        (add-hook 'message-setup-hook 'bbdb-get-mail-aliases)
+       	     (add-hook 'message-setup-hook 'bbdb-mail-aliases)
 
 Or else message-mode will not set up new mail buffers correctly.
 
