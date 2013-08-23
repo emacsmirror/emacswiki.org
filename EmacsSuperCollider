@@ -11,7 +11,10 @@ I’ve written some extensions to the SuperCollider Emacs mode. Get them from Gi
 == scel ==
 [http://en.wikipedia.org/wiki/SuperCollider Supercollider] has a nice emacs mode for working with the supercollider server and editing supercollider code
 
-The mode itself appears to come with Supercollider?
+The mode itself should come with Supercollider, but as others have noted, it's a bit old.
+
+[http://ccrma.stanford.edu/planetccrma/software/supercollider-en/ How to make SuperCollider go "beep"] - an introduction to Supercollider using Emacs and <code>scel</code>
+
 
 == SuperCollider Link Dump ==
 * http://supercollider.sourceforge.net/wiki/index.php/SuperCollider_with_emacs:_scel
