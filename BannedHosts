@@ -1,224 +1,76 @@
 # This page lists all banned hosts and IP numbers.  The page is
 # locked; only administrators can edit it.
-
 # Leave a comment if you would like to get unbanned,
 # or if you would like to help maintain this list.
 # http://www.emacswiki.org/emacs/Comments_on_BannedHosts
-
 # A lot of innocent people can be banned if entire networks are being
 # banned.  Sometimes this is the only solution since the banned person
 # is using a dynamic IP and hostname assigned by the ISP.
-
 # Generally, we prefer to use BannedContent to fight link spam.
 # Banning hosts and IP numbers is for vandals and leeches.
-
 # If you got banned because you leeched the site (downloaded all the
 # pages), please get the page database instead.  See
 # http://emacswiki.org/cgi-bin/wiki/WikiDownload
-
-^60\.190\.240\.(6[456789]|[78][0-9]|9[0-5]) # for spamming our category pages
-^60\.10\.12\.117 # for spamming Comments on CategoryData
-^89\.163\.39\.37 # for spamming us with links to hacked boards and the like
-^46-105-54-85\.kimsufi\.com # for spamming, creating new pages with links
-^46\.183\.162\.80 # for spamming Icicles - Key Binding Discussion
 ^36\.250\.177\.162 # 2013-06-22 Icicles - Key Binding Discussion
-^175\.44\.30\.139 # 2013-07-01 Icicles - Key Binding Discussion
-^23\.19\.79\.210\.rdns\.ubiquity\.io # for spamming
-^23\.19\.195\.34\.rdns\.ubiquity\.io # for spamming
-^147\.255\.183\.235\.rdns\.ubiquity\.io # for spamming CategoryProject
-^rdns\.ubiquity\.io # for spamming
-^112\.101\.64\.113 # for spamming EmacsForums
-^114\.221\.150\.136 # for spamming WikiModeDiscussion
-^5-248-84-205-broadband\.kyivstar\.net # 2013-06-17 WikiModeDiscussion
-^117\.201\.46\.196 # 2013-06-16 SimpleWikiEditMode
-^117\.221\.140\.91 # 2013-06-16 SiteMap 
-^118\.99\.68\.104 # spamming XmlParser, including with action=edit;id=XmlParser
-^125\.51\.150\.178\.triolan\.net # for spamming
 ^124\.240\.187\.81 # for spamming Comments pages
-^142\.4\.117\.113 # for spamming
-^173\.57\.65\.119 # for spamming SiteMap
-^175\.4(0-9)\. # for spamming
-^178\.187\.166\.55 # for spamming
-^188\.143\.232\.43 # for spamming
 ^199\.15\.234\.80 # for spamming KeyBindingDiscussion
-^175\.44\.0\.209 # for spamming KeyBindingDiscussion
-^220\.161\.133\.195 # for spamming
 ^46\.119\.118\.174 # 2013-06-02 WikiModeDiscussion
 ^220\.162\.247\.243 # 2013-06-02 WikiModeDiscussion
-haciendasanangel\.com # 2013-07-02 WikiModeDiscussion
-^ip-194-187-151-104\.ava\.net\.ua # for spamming TextFormattingDiscussion
-^194\.25\.100\.94\.king-servers\.com # for spamming TextFormattingDiscussion
 ^198\.2\.218\.65 2013-06-09 Comments on VerticalConsistency
-^fullternmail\.com # for spamming KinesisKeyboard
-^broadband\.kyivstar\.net # for spamming ColemakKeyboard
-^dataturkiye\.net # 2103-06-29 Comments on Loop Find Package
-^domeny\.findit\.pl # 2103-06-29 Comments on Loop Find Package
-glamorsilverchain\.info # 2013-07-27
-albuquerqueima\.org # 2013-07-27
-winyouryardwith630ched\.com # 2013-07-27
-^icke\.so # 2103-06-29 Comments on Loop Find Package
-^ilyk\.it # 2103-06-29 Comments on Loop Find Package
-^ladybu\.gs # 2103-06-29 Comments on Loop Find Package
-^lzy\.cc # 2103-06-29 Comments on Loop Find Package
-^mkan\.com # 2103-06-29 Comments on Loop Find Package
-^nao9\.com # 2013-08-04 IciclesDiscussion
-^napaurls\.com # 2103-06-29 Comments on Loop Find Package
-^nn\.sg # 2103-06-29 Comments on Loop Find Package
-^srturl.net # 2103-06-29 Comments on Loop Find Package
-^swagg\.us # 2103-06-29 Comments on Loop Find Package
-^zeroforced\.com # 2103-06-29 Comments on Loop Find Package
-^117\.27\.138\.176 # for spamming KeyBoard
-^94\.142\.135\.48  # for spamming ColemakKeyboard
-229-152-92-178.pool.ukrtel.net for spamming ColemakKeyboard
 ^212\.107\.116\.232  # for spamming KeyboardMacros
 ^168\.62\.169\.221 # for spamming KeyboardMacros
 ^193\.105\.210\.30 # 2013-06-19 KeyboardMacros
 ^46\.161\.41\.225 # 2013-06-19 KeyboardMacros
 ^31\.184\.238\.163 # 2013-06-19 KeyboardMacros
-netcomposites\.com # 2013-06-20 KeyboardMacros
-gr-link\.jp # 2013-06-20 KeyboardMacros
-ns4004-5974\.ip-198-27-65\.net # 2013-06-20 KeyboardMacros
-^yi-in-f[0-9][0-9]\.1e100.net  # for spamming CategoryGlossary and others in April 2012
 \.amazonaws\.com  # for spamming various pages in April and May 2012
-^pool-173-74-59-171.dllstx.fios.verizon.net  # for spamming SiteMap in April 2012
-^confessionsofachocoholic\.com # 2013-06-29 IciclesDiscusssion
-^dancearchives\.net # 2013-06-29 IciclesDiscusssion
-^forwardchicago\.org # 2013-06-29 IciclesDiscusssion
-^forums.craigslist\.org # 2013-06-29 IciclesDiscusssion
-^gingerbreadsnowflakes\.com # 2013-06-29 IciclesDiscusssion
-^glowsticks-plus\.com # 2013-06-29 IciclesDiscusssion
-^passionoflife\.net # 2013-06-29 IciclesDiscusssion
-^projects.swaggerunit\.com# 2013-06-29 IciclesDiscusssion
-^roadagainmegan\.com # 2013-06-29 IciclesDiscusssion
-^smartchargestations\.com # 2013-06-29 IciclesDiscusssion
-^thecityuk\.com # 2013-06-29 IciclesDiscusssion
-^thewritingprocess\.org # 2013-06-29 IciclesDiscusssion
-^timelesswroughtiron\.com # 2013-06-29 IciclesDiscusssion
-^wenderful\.com # 2013-06-29 IciclesDiscusssion
-^youmaybenext.com # 2013-08-04 IciclesDiscussion
-^28\.153\.208\.42 # 2013-06-29 IciclesDiscusssion
-^36\.248\.21\.84 # for spamming IciclesDiscusssion
 ^36\.248\.127\.13 # for spamming IciclesDiscusssion
 ^37\.59\.173\.129 # for spamming IciclesDiscusssion
-^46\.183\.162\.21 # for spamming IciclesDiscusssion
-^58\.22\.23\.85 # for spamming IciclesDiscusssion
-^58\.22\.64\.227  # for spamming TableOfContentsDiscussion in April 2012
 \.vpn999\.com # 2013-06-17 Comments on ElispArea
 ^198\.50\.136\.123 # 2013-06-17 Comments on ElispArea
-^173\.0\.62\.85 # 2013-06-18 Comments on ElispArea
-^node1\.heading-toll-host\.org # for spamming Comments on LoopFindPackage
-^node1\.amountofcarforpurchase\.net # for spamming multiple "Comments on" pages
-^node1\.squiftw\.org # for spamming IciclesDiscussion
 ^static\..*\.clients\.your-server\.de # for spamming IciclesDiscussion
-^server1\.crosssoldshoes\.com # for spamming Comments on LoopFindPackage
-^113\.212\.69\.50 # for spamming multiple "Comments on" pages
 ^117\.27\.138\.86 # for spamming Comments on roland.walker
 ^142\.0\.35\.130 # for spamming Comments on roland.walker
-^27\.153\.187\.97 # for spamming Comments on roland.walker
-^91\.237\.249\.79 # for spamming multiple "Comments on" pages
-^99\.157\.56\.59 # for spamming IciclesDiscussion
-^a123\.c2\.fc\.aoindustries\.com # for spamming IciclesDiscussion
 ^ns394479.ovh.net # for creating spam KeyBoard page
-^ns224288\.ovh\.net # for spamming IciclesDiscussion
 ^37\.59\.207\.2 # for spamming IciclesDiscussion
 \.SteepHost\.Net # for spamming SiteMapDiscussion & IciclesDiscussion
-^ip-176-195-10-242\.bb\.netbynet\.ru 2013-06-09 SiteMapDiscussion
 ^SOL-FTTB\.[.0-9]+\.sovam\.net\.ua # 2013-06-09, 2013-06-15 SiteMapDiscussion
-boosterthon.com # 2013-06-19 SiteMapDiscussion
 gw1\.ecm4u\.de #2013-06-18 SiteMapDiscussion
-^175\.42\.81\.155 #2013-06-19 SiteMapDiscussion
-^176-8-88-230-lvv\.broadband\.kyivstar.net
 broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
-^105\.4\.207\.91\.unknown\.SteepHost\.Net # for spamming IciclesDiscussion
-^175\.42\.9\.107 # for spamming IciclesDiscussion
-^220\.250\.41\.84 # for spamming IciclesDiscussion
-^anythingarticles\.com # 2013-08-04 IciclesDiscussion
-^appetiteforgood\.com # 2013-08-04 IciclesDiscussion
-^bh2\.windowsnodes\.com # for spamming IciclesDiscussion
-^eurotailers\.com # 2013-08-04 IciclesDiscussion
-^gelaw\.co\.uk # 2013-08-04 IciclesDiscussion
-^kidsgolfclubsets\.net # 2013-08-04 IciclesDiscussion
-^manu-baeren.de# 2013-08-04 IciclesDiscussion
-^microelectroniccircuitdesign\.com # 2013-08-04 IciclesDiscussion
-^ns3001356\.ovh\.net # for spamming IciclesDiscussion
-^ns224288\.ovh\.net # for spamming IciclesDiscussion
-^theabusinessads\.com # 2013-08-04 IciclesDiscussion
 ^unassigned\.psychz.net # for spamming IciclesDiscussion
 ^unknown\.xeex\.net # for spamming IciclesDiscussion
-^unknown\.SteepHost\.Net # for spamming IciclesDiscussion
-^36\.248\.169\.184 # for spamming WThirtyTwoFontifiedRegionToClipboard
-forshoesbuy\.com # 2013-07-27 WThirtyTwoFontifiedRegionToClipboard
-^27\.153\.234\.159 # 2013-06-30 IciclesDiscussion
-^27\.159\.237\.29 # 2013-08-04 IciclesDiscussion
-^36\.248\.100\.95 # for spamming IciclesDiscussion
-^46\.183\.162\.37 # 2013-06-01 IciclesDiscussion
-^117\.21\.227\.40 # for spamming IciclesDiscussion
-^112\.111\.53\.175 # for spamming IciclesDiscussion
-^142\.54\.163\.75 # for spamming IciclesDiscussion
-^142\.4\.117\.129 # for spamming Comments on LoopFindPackage
-^142\.4\.117\.169 # for spamming KeyBindingDiscussion
-^220\.249\.165\.19 # for spamming KeyBindingDiscussion
-^199\.15\.234\.74 # for spamming IciclesDiscussion
-^199\.15\.234\.226 # for spamming multiple Comments on pages
-^120\.43\.29\.213 # for spamming Comments on 2012-03-22
 ^112\.111\.191\.45 # for spamming KeyBindingDiscussion
-^208\.177\.72\.206\.ptr\.us\.xo\.net # creating spam pages & spamming
-^wnode1\.lettheaffiliatedo\.com # for spamming Comments on CategoryProject
-^61\.157\.217\.247 #  for spamming Comments on CategoryCode 
 ^91\.237\.249\. # for spamming Comments on CategoryCode and others
 ^192\.74\.229\.1 # for spamming WThirtyTwoFontifiedRegionToClipboard
 ^112\.111\.1(6[0-9]|7[0-5])\. # 112.111.160.0 - 112.111.175.255
 newemailcenter # spamming SiteMap Discussion
 ^ks4002859.ip-198-100-149\.net # 2013-07-27 SiteMap Discussion & WThirtyTwoFontifiedRegionToClipboard
 ^46\.119\.116\.228 # 1013-06-05 SiteMap Discussion
-^araxinfo\.com # 2013-05-08 IciclesDiscussion
 ^91\.232\.96\.4 # 2013-05-15 Comments on MapaDelSitio
-^goro83\.la\.net\.ua # 2013-05-16 SiteMap Discussion
 ^218\.6\.9\.245 # 2013-05-18 GotoBarDiscussion
-^117\.27\.138\.102 # 2013-05-18 SiteMap Discussion
 \.ertelecom\.ru # 2013-08-19 SiteMap Discussion
-^mm-40-209-121-178\.dynamic\.pppoe\.mgts\.by # 2013-05-18 SiteMap Discussion
-^175\.42\.85\.208 # 2013-05-21 SiteMap Discussion
-^31-15-86-165\.broadband\.progtech\.ru # 2013-05-23 IciclesDiscussion
-^a08-06-04.opera-mini.net # 2013-06-01 DrewsEmacsColorNameCompletions
 ^31\.184\.238\.163 # 2013-06-02 KeyboardMacros
-^36\.248\.171\.217 # 2013-06-29 SiteMap Discussion
 ^178-137-.*-lvv\.broadband\.kyivstar\.net # 2013-06-06 SiteMap Discussion
 ^46\.161\.41\.223 # 2013-07-31 KeyboardMacros
 ^46\.161\.41\.225 # 2013-06-09 KeyboardMacros
-^173\.232\.104\.254 # 2013-06-17 Comments on ElispArea
-^74\.221\.219\.25 # 2013-06-20 Comments on ElispArea
-rizthewiz\.biz # 2013-06-17 Comments on ElispArea
-beyonddelay\.com # 2013-06-20 Comments on ElispArea
-requests-here\.tk # 2013-06-19 Comments on nXhtml
 ^ns4004874\.ip-198-27-65\.net # 2013-06-21 2013-06-21
 ^142\.4\.117\.245 # 2013-06-25 WikiModeDiscussion
 ^198\.2\.218\.28 # 2013-06-29 Comments on any-ini-mode.el
 \.dynamic\.163data\.com\.cn # 2013-07-01 spamming various pages
-^119\.96\.189\.111 # 2013-07-09 Comments on LoopFindPackage
-^46\.119\.117\.179 # 2013-07-17 SiteMap Discussion
 ^46\.119\.118\.25 # 2013-07-17 SiteMap Discussion
 ^46\.119\.116\.54 # 2013-07-22 SiteMap Discussion
 ^91\.236\.75\.4 # 2013-07-22 KeyboardMacros
 ^v-2376-unlim\.vpn\.mgn\.ru # 2013-07-23 SiteMap Discussion
-^120\.43\.20\.6 # 2013-07-25 KeyboardMacros
 ^142\.4\.117\.3 # 2013-07-29 keyboardmacros
 ^60\.55\. # 2013-08-18 KeyboardMacros
 ^198\.2\.208\.205 # 2013-07-31 WThirtyTwoFontifiedRegionToClipboard
 ^5\.39\.219\.26 # 2013-07-31 BitlBee
-^117\.26\.79\.148 # 2013-08-01 IciclesDiscussion
 ^46\.119\.119\.145 # 2013-08-03 WikiModeDiscussion
 ^142\.4\.117\.5 # 2013-08-05 sitemap discussion
 ^36\.7\.77\.215 # 2013-08-08 SiteMap Discussion
 ^192\.74\.240\.210 # 2013-08-09 IciclesDiscussion
-^117\.25\.126\.209 # 2013-08-12 KeyboardMacros
 ^208\.177\.76\.5\.ptr\.us\.xo\.net # 2013-08-14 SiteMap Discussion
 ^115\. # 2013-08-14 sitemap discussion
-^110\.85\.73\.80 # 2013-08-15 KeyboardMacros
-^117\.26\.116\.52 # 2013-08-15 KeyboardMacros
 ^137\.175\.68\.182 # 2013-08-15 SiteMap Discussion
 ^88-190-61-169\.rev\.dedibox\.fr # 2013-08-17 SiteMap Discussion
 ^137\.175\.0\.123 # 2013-08-18 CategoryOutline
-\.dynamic\.mts-nn\.ru # 2013-08-20 SiteMap Discussion
 ^118\.99\.67\.68 # 2013-08-21 MaemoEmacs
-^46\.119\.119\.15 # 2013-08-23 SiteMap Discussion
