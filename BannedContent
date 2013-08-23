@@ -5,90 +5,31 @@
 # comment starts with a date, this date is not included in the explanation.
 # In other words:
 # ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
-
-acqualab
 airmaxpascher
-amoxicillin # 2103-07-31 KeyboardMacros
-doxycycline # 2103-07-31 KeyboardMacros
-(best|real|custom|rush|superior)(essay|termpaper|writing|paper)s?\.com
-blog\.campuscultr\.com # 2013-06-16 SiteMap
-boosterthon
-buytestosterone
-dissertation\.com
-essay(writingservices|help|lib|ontime)
 louboutin
-mightystudents\.com
 michaelkors
 overuc\.com
-koncept\.com
-thoughtmesh\.net
-resumesplanet\.com
-zolpo\.com
-college-paper\.org
-(profischnell|uebersetzung)
-securedatarecovery
 mmesquire
 onlinecasino
-cheap.*software
-diamondlink
-rullymisar
 muzzles
-androidplaya\.com
-biztechday\.com
-cooper-law\.com
-grupodecidavencer\.net
 texasranchfun\.com
-zarticles\.dirtycheater\.com
-ya-mp\.org
-url\.vn
 vietnam
-girisergos
-cheapboots-online
-cozy(boot|northface)
 kamagra
-testosterone
 (loans|payday)
-nolvadx\.info
-wholesalemaccosmetics
-monclerjacketsold
 erolove
 japan[a-zA-Z]*\.com # 2013-02-28, 2013-03-15 Icicles - Key Binding Discussion
 marcjacobs[a-zA-Z]*\.com # 2013-03-15 Icicles - Key Binding Discussion
 jp[a-zA-Z]*\.com # Icicles - Key Binding Discussion
 \bcheap # 2013-03-11 KeyboardMacros
 louisvuitton
-louis vuitton
 (xanax|tramadol|\bsoma\b)
-portedeurope # 2013-06-25 More translation spam
 goodcheapjerseys # 2013-06-25 More translation spam
 onet34342\.pl # 2013-07-10 Used to spam WikiModeDiscussion
 elearning # 2013-07-15 Site Map Discussion spam
 (viagra|cialis|valium) # 2013-07-16 Site Map Discussion spam
-burberrybilligeonline # 2013-07-30 KeyboardMacros spam
 ach(at|eter) # 2013-08-05 IciclesDiscussion
-(eddietapp|hrgrad|obamagirlfriends)\.org # 2013-08-05 sitemap discussion
-newera-magasin\.com # 2013-08-07 KeyboardMacros
-prixralphlauren\.com # 2013-08-07 KeyboardMacros
-likecheap-prada\.com # 2013-08-13 sitemap discussion
 pradaoutlet # 2013-08-09 SiteMapDiscussion
-todsshowcase # 2013-08-13 keyboardmacros
-myskywave\.com # 2013-08-13 Auto Complete
-guccishowcase\.com
 burberryoutletcenter\.com
-bginmymind\.com
-officialceline\.com
-armani-discount\.com
-vrd[a-zA-Z]*\.lo\.gs
-disfuncioner\.lo\.gs
-girlshopes\.com
-podarkino\.org\.ua
-addwebsitetodir\.com
 hermesbirkin # 2013-08-16 SiteMap Discussion
-mulberry[a-zA-Z]*\.com # 2013-08-18 KeyboardMacros
-class3vip-ro\.com # 2013-08-18 CategoryOutline
-bogorodsk # 2013-08-20 SiteMap Discussion
 (surabaya|semarang) # 2013-08-21 MaemoEmacs
 tiraimodern # 2013-08-21 MaemoEmacs
-detikauto # 2013-08-21 MaemoEmacs
-selai-kacang # 2013-08-21 MaemoEmacs
-ustudyhall # 2013-08-22 CategoryEducation
