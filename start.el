@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 17:00:24 2013 (-0700)
+;; Last-Updated: Fri Aug 23 20:26:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2984
+;;     Update #: 2990
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -33,21 +33,21 @@
 ;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
 ;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `highlight', `icomplete',
-;;   `icomplete+', `imenu', `imenu+', `info', `info+', `isearch+',
-;;   `iso-transl', `lacarte', `lib-requires', `lisp-mnt', `loadhist',
-;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
-;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
-;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
-;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-keys', `simple+', `speedbar', `start', `strings',
-;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `window+', `zoom-frm'.
+;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
+;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
+;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
+;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
+;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
+;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
+;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
+;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
+;;   `sendmail', `setup', `setup-keys', `simple+', `speedbar',
+;;   `start', `strings', `subr-21', `swiss-move', `synonyms',
+;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
+;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
+;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2013/08/23 dadams
+;;     Soft-require highlight-symbol.el (Emacs 22+).
 ;; 2013/07/20 dadams
 ;;     Do not (soft)-require dired-details+.el if (fboundp 'dired-hide-details-mode) - Emacs 24.4.
 ;; 2013/07/02 dadams
@@ -512,7 +514,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
     (require 'compile+20 nil t)         ; Highlighting, etc.
   (require 'compile+ nil t)             ; Highlighting.
   (require 'grep+ nil t))               ; Highlighting.
-(require 'highlight nil t)              ; Simple highlighting commands. Also loads `menu-bar+.el'.
+(require 'highlight nil t)              ; Highlighting commands. Also loads `menu-bar+.el'.
 
 (require 'menu-bar+ nil t)              ; Extensions to `menu-bar.el'.  Also loads `info+.el'.
 
@@ -744,6 +746,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 
 (when (> emacs-major-version 20)
   (autoload 'column-marker-1 "column-marker" "Highlight a column." t))
+
+(when (fboundp 'define-minor-mode) (require 'highlight-symbol nil t))
+
 ;; (require 'highlight-context-line nil t)
 
 ;;; Define some aliases so can find toggle commands easily.
