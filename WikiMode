@@ -1,20 +1,12 @@
 This code has been '''abandoned''' by AlexSchroeder.  Feel free to take over.
-See EmacsWikiMode.
 
-WikiMode gives you a hypertext authoring environment from within
-Emacs.
+WikiMode gives you a *hypertext authoring environment* from within Emacs.
 
 * Lisp:wiki.el
 
-== Questions ==
-
-''I believe that the whole wiki.el is obsolete because its functionality and more is covered in EmacsWikiMode. Am I right?''
-
-No! WikiMode is a MinorMode, EmacsWikiMode is a MajorMode. Sometimes it can be very handy to have a minor mode.
-
-''Is this the only difference between these both?'' - MarcoBakera
-
-No; EmacsWikiMode grew tons of features. -- AlexSchroeder
+EmacsWikiMode has much more functionality. The only benefit WikiMode has is that it's a MinorMode.
+EmacsWikiMode is a MajorMode. Sometimes it can be very handy to have a minor mode.
+A minor mode can be used while a different major mode is active.
 
 == Documentation ==
 
