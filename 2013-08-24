@@ -8,3 +8,6 @@ I still want to replace all occurrences of WikiModeDiscussion with WikiModes, ho
 Ok, I think we're back in business. Ugh, sorry for the mess.
 The edit lock has been removed.
 I see that RecentChanges is still acting up, but I hope that will settle down.
+
+I think I fixed a bug in RecentChanges which showed up in conjunction with global rollbacks.
+Everything should be back to normal now.
