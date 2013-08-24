@@ -6,3 +6,4 @@ In addition to that, it appears that the global rollback functionality was broke
 I still want to replace all occurrences of WikiModeDiscussion with WikiModes, however. Let me try that, first. I'll remove the edit lock once that works.
 
 Ok, I think we're back in business. Ugh, sorry for the mess.
+The edit lock has been removed.
