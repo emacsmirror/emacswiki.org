@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 25 16:59:09 2013 (-0700)
+;; Last-Updated: Fri Aug 23 20:43:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1216
+;;     Update #: 1224
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/23 dadams
+;;     Soft-require highlight-symbol.el (Emacs 22+).  Bind its commands to f11 (+ modifiers).
 ;; 2013/07/25 dadams
 ;;     Invoke find-function-setup-keys.
 ;; 2013/07/05 dadams
@@ -317,6 +319,9 @@
 (require 'simple+ nil t) ;; (no error if not found): comment-region
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight, hlt-highlighter,
                            ;; hlt-eraser, hlt-(next|previous)-highlight
+(when (fboundp 'define-minor-mode) ;; (no error if not found): *-at-point,
+  (require 'highlight-symbol nil t)) ;; *-(next|prev), *-query-replace
+
 (require 'misc-cmds nil t) ;; (no error if not found): beginning-of-line+,
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
@@ -611,8 +616,7 @@
     (global-set-key [(shift control ?z)]      'thumfr-thumbify-other-frames)   ; `C-S-z'
     (global-set-key [(shift control ?n)]      'thumfr-fisheye-next-frame)      ; `C-S-n'
     (global-set-key [(shift control ?p)]      'thumfr-fisheye-previous-frame)  ; `C-S-p'
-    (global-set-key [(control meta ?z)]                                        ; `C-M-z'
-     'thumfr-really-iconify-or-deiconify-frame)
+    (global-set-key [(control meta ?z)]    'thumfr-really-iconify-or-deiconify-frame) ; `C-M-z'
     ;; `e' for eye (fisheye)
     (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames+)          ; `C-x t e'
     ;; Make window-manager "minimize" button thumbify instead of iconify.
@@ -657,6 +661,13 @@
     (when (fboundp 'next-single-char-property-change) ; Emacs 21+
       (global-set-key [(shift control ?p)] 'hlt-previous-highlight)            ; `C-S-p'
       (global-set-key [(shift control ?n)] 'hlt-next-highlight))))             ; `C-S-n'
+
+(eval-after-load "highlight-symbol"
+  '(progn
+    (global-set-key [(control f11)] 'highlight-symbol-at-point)                ; `C-f11'
+    (global-set-key [f11]           'highlight-symbol-next)                    ; `f11'
+    (global-set-key [(shift f11)]   'highlight-symbol-prev)                    ; `S-f11'
+    (global-set-key [(meta f3)]     'highlight-symbol-query-replace)))         ; `M-f11'
 
 (eval-after-load "dired-x"
   '(progn
