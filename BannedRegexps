@@ -20,3 +20,5 @@
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
 file_links\[[A-Z]:\\keywords\d+.txt,\d+,[A-Z]\] # 2013-08-21 used by misconfigured spambots
 <a\s+href=["']?http # 2013-08-23 HTML anchor tags usually mean spam
+\b(valium|xanax)\b # 2013-08-24 common drugs
+
