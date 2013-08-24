@@ -1,0 +1,80 @@
+There are two kinds of wiki modes:
+
+# The first kind allows you to download a page from a remote wiki, edit it using Emacs, and submit it back to the wiki.
+# The second kind allows you to treat local files as a local wiki without using a browser.  Usually these modes allow you to publish the local wiki as a set of static HTML pages.
+
+Wiki modes to edit pages on a remote wiki:
+
+* [http://launchpad.net/mediawiki-el
+ MediaWiki] Mode - Edit Wikipedia and Mediawikis [[MediaWikiMode|Basic Documentation]]
+
+* ConfluenceMode -- tailored to the Confluence wiki software.
+* OddmuseMode -- tailored to Oddmuse wikis such as this one.
+* [[Yaoddmuse]] -- tailored to Oddmuse wikis such as this one.  A modification of the above.
+* Wiki:WikiModeCode by Wiki:BrianEwins
+* ZWiki:EmacsAndWiki by ZWiki:SimonMichael. A modification of the above.
+* RuseWikiMode -- tailored to Ruse wikis using ##curl## to download and post pages
+* WikiRemote -- A framework that currently allows editing of remote <nowiki>UseMod</nowiki> pages.  Zwiki support is currently being tested. (*abandoned*)
+
+Wiki modes to edit pages on a local wiki:
+
+* HowmMode -- implemented as a minor mode. Everything is based on full-text search.
+* EmacsMuse -- the successor of EmacsWikiMode with even more features.
+* EmacsWikiMode by JohnWiegley -- the successor of WikiMode and with more features built-in. (*abandoned*)
+* WikiMode by AlexSchroeder -- edit local wiki files and export them to HTML. (*abandoned*)
+* OrgMode -- a wiki + outline + planner + todo lists all in one file.
+* WikipediaMode -- for MediaWiki syntax.
+
+Wiki modes to edit text files that might eventually end up on a wiki
+(usually a mode to use when Emacs acts as the external editor to a
+browser):
+
+* ReallySimpleWikiMode by AlexSchroeder -- a very simple mode to edit wiki files.  When you are using EmacsClient or GnuClient as the external editor for your browser (eg. [[w3m]]), then this is the mode to edit the wiki pages with.
+
+* SimpleWikiMode is a successor of ReallySimpleWikiMode and got merged into EmacsHttp.
+
+* [http://www.pmwiki.org/wiki/EmacsModes/Pmwiki-mode pmwiki-mode] by ChristianRidderstroem -- originally based on SimpleWikiMode. First it was simply adapted to work with the Pm''''''Wiki WikiEngine, and then rewritten.
+
+* [http://www.neilvandyke.org/erin-twiki-emacs Erin Twiki mode] by Neil van Dyke
+
+* [https://github.com/christopherjwhite/emacs-twiki-mode twiki-mode] by Christopher J White -- started as a mode for editing !DokuWiki pages, but revamped and expanded for TWiki.  Makes TWiki pages visually appealing as well as easy to edit.  Integrates with org-table minor mode for editing of embedded tables.
+
+Raw wiki browsers -- view and edit a wiki on a remote server without a web browser:
+
+* SimpleWikiEditMode augments SimpleWikiMode with the ability to follow links and save changes.  This is essentially a raw wiki browser.  It only works for <nowiki>UseMod</nowiki> wikis with UseMod:WikiPatches/RawMode -- eg. the Emacs Wiki.
+
+Traditionally, a wiki is an application running on the web somewhere,
+a CGI script, a JSP, whatever.  This wiki has its page database stored
+on the server, often in cryptic formats, perhaps using version
+control.  Here, we call this a "remote" wiki.  All wikis using the
+Usemod script (such as this one) are therefore "remote" wikis.
+
+People have written modes to edit such a remote wiki:
+These modes will query for a server and a file, fetch the file, allow
+you to edit it within Emacs, and save it back to the server.
+
+What characterizes a wiki, though, is something else (the definition
+varies a lot).  Some people claim that the two core features are
+automatic linking (using a special naming convention) and editability.
+These features, however, can be implemented in Emacs as well!  That is
+what a wiki mode does.  The wiki mode is just another mode in Emacs
+that allows you to edit text, and it does automatic linking based on a
+special naming convention.  Since these text files usually exist
+locally, we call this a "local" wiki.  It is usually not served to
+other people on the web, although it may be shared with other people
+via a file share (or an FTP server).
+
+The modes used to edit local wikis usually allow you to convert your
+collection of text files to HTML, and some even use the httpd.el
+package to let Emacs act as a web server.
+
+== Possible name confusion ==
+
+Note that the wiki software written in Perl known as "Oddmuse" is separate and distinct from "EmacsMuse", aka "Muse mode" or just "Muse". This site (the Emacs Wiki) runs on Oddmuse. As mentioned above, there's an Oddmuse mode for use with Oddmuse wiki's.
+
+Also note that, although Emacs Muse was forked off of Emacs Wiki Mode (in 2004), the two are no longer the same. Neither depends upon the other. When Muse 3.03 is released, it will be considered a complete replacement for Emacs Wiki Mode.
+
+Finally, emacs-wiki.el refers to Emacs Wiki Mode, and wiki.el refers to the (now abandoned) "Wiki Mode".
+
+----
+CategoryHypermedia
