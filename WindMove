@@ -1,7 +1,9 @@
-Windmove is a library built into GnuEmacs starting with version 21. It lets you move [[point]] from [[window]] to window using Shift and the arrow keys.  This is easier to type than `C-x o' and, for some users, may be more intuitive.  To activate all these keybindings, add the following to your [[init file]]:
+Windmove is a library built into GnuEmacs starting with version 21. It lets you move [[point]] from [[window]] to window using Shift and the arrow keys.  This is easier to type than `C-x o' and, for some users, may be more intuitive.  To activate all these keybindings, add the following to your InitFile:
 
-    (when (fboundp 'windmove-default-keybindings)
-      (windmove-default-keybindings))
+{{{
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+}}}
 
 The `fbound' test is for those XEmacs installations that don't have
 the windmove package available.
@@ -9,31 +11,33 @@ the windmove package available.
 If you are a PcSelectionMode or CuaMode user, however, you will need to use your own keybindings, since shift plus arrow keys are used to extend the selection.
 For CuaMode it may be natural to use
 
-    (windmove-default-keybindings 'meta)
+{{{
+(windmove-default-keybindings 'meta)
+}}}
 
 This will override `M-left' and `M-right' but these are duplicated by `C-left' and `C-right' which are probably more natural for a CuaMode user.
 
-Some terminals do not support modified arrow keys.  To use a prefix instead of a modifier, add something like the following to your [[init file]].
-
-    (global-set-key (kbd "C-c <left>")  'windmove-left)
-    (global-set-key (kbd "C-c <right>") 'windmove-right)
-    (global-set-key (kbd "C-c <up>")    'windmove-up)
-    (global-set-key (kbd "C-c <down>")  'windmove-down)
-
+Some terminals do not support modified arrow keys.  To use a prefix instead of a modifier, add something like the following to your InitFile.
+{{{
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
+}}}
 See WindowNavigation for a similar piece of code, but written from scratch.
 
-If you want to use windmove on Xemacs, look at:
+If you want to use windmove on XEmacs, please read:
 
 http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&th=52b56e235ffba787
 
 --> Is possible to make windmove jump between [[frame]]s? 
 
-*Yes*. To jump between frames, see FrameMove (which can integrate seamlessly with windmove)
+*Yes*. To jump between frames, see FrameMove (which can integrate seamlessly with windmove).
 
 [new]
 
 Look also at `M-x next-multiframe-window' command and possibly bound it to a handy keybinding! 
-also exist: `M-x previous-multiframe-window', so it will be better than default: other-window (C-x 5 o)
+There also exists: `M-x previous-multiframe-window', so it will be better than the default: `other-window` (C-x 5 o).
 
 
 ----
