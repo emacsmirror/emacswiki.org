@@ -29,6 +29,7 @@ And here is a variant by TrentBuck:
 
 [new]
 I stopped using this hack [http://fresh.homeunix.net/~luke/misc/emacs/pretty-lambda.el] because Emacs was actually saving weird escape characters in my files such that when I reloaded them I'd still get lambda-symbols, even with this turned off. But it makes the files unreadable to other programs. Does anyone else have this problem, and know the fix? Since it's all done in font-lock I didn't expect the saved files to be affected. -- LukeGorrie
+
 [new]
 : This should happen only if the file was saved in the coding system Emacs Mule, because emacs-mule preserves the composition property. (Composition is actually part of Emacs' m17n support.) Normally you should not use emacs-mule; however, auto-save files are saved in that coding system. So if you restore a file after a crash, for instance, you can get something like what you describe. A fix would be to use a hook to remove all composition properties before auto-saving. -- OliverScholz
 
@@ -39,9 +40,10 @@ This library defines a minor mode that uses font-lock and overlays to display `l
 
 [new]
 I use the misc-fixed font instead of the default, so lambda-mode displayed what looked like a Korean character. You can fix it by adding to your .emacs:
-<pre>    
+{{{
 (setq lambda-symbol (string #x1d77a))
-</pre>
+}}}
+
 == Using an Image ==
 
 [[Sugawara]] offers another approach: a minor mode that displays `lambda' as a large Greek letter using an image.
