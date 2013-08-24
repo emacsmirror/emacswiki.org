@@ -164,8 +164,8 @@ commands because the candidates are simpler.  When you want to
 search you will generally use the `-full' commands.
 
 Be aware that "full" really means what it says only for 
-definitions in languages like Lisp.  These commands in fact first match the Imenu regexp,
-then use the text between the regexp match beginning and one sexp
+definitions in languages like Lisp.  These commands in fact first match the Imenu [[regexp]],
+then use the text between the regexp match beginning and one [[sexp]]
 forward.  In the case of Lisp sexps, that means they use the full sexp for
 the definition.  But in the case of other languages, such as C,
 the "full" definitions can in fact be shorter than the simple
