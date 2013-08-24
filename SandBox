@@ -24,7 +24,8 @@ your edits to see how they look; you can just click '''Preview'''.
 
 (your test stuff goes here... don't forget the minor change checkbox!)
 
-By a "'''character property'''" is meant either a [[text property]] or an
-[[overlay]] property.  [tt]`icicle-search-[b]char[/b]-property'[/tt] searches both kinds of character property; [tt]`icicle-search-[b]overlay[/b]-property'[/tt] searches only overlay
+
+Example for Drew:
+[tt]`icicle-search-[b]char[/b]-property'[/tt] searches both kinds of character property; [tt]`icicle-search-[b]overlay[/b]-property'[/tt] searches only overlay
 properties; and [tt]`icicle-search-[b]text[/b]-property'[/tt] (`##C-c "##') searches only text
 properties.  
