@@ -23,7 +23,7 @@ wiki-remote.el requires [[w3]] or [[w3m]].
 Currently three wiki engines are supported, Usemod, Zwiki and CLiki. For phpwiki see the needed functions below.
 
 If you want to follow links, you need a wiki mode to edit the file
-itself -- either WikiMode or EmacsWikiMode.  See WikiModeDiscussion.
+itself -- either WikiMode or EmacsWikiMode.  See WikiModes.
 The default is plain text mode, which is good enough to edit the page.
 
 There is a customizable option that allows you to choose which

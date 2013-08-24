@@ -2,7 +2,7 @@ EmacsWiki doesn't run [WikiPedia:MediaWiki MediaWiki] (the software used to run 
 The software is maintained by AlexSchroeder.
 
 * OddmuseMode, [[Yaoddmuse]] -- how to edit the wiki using Emacs instead of a browser
-** WikiModeDiscussion -- more information if you need some context
+** WikiModes -- more information if you need some context
 
 * WikiDownload – how to download parts of this wiki (including all the stuff you need to fork it)
 * [Self:action=version Wiki Version] -- see what modules this wiki has installed (important if you want to fork it)

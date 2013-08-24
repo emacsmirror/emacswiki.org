@@ -1,4 +1,4 @@
-As some of you may have noticed, pages like WikiModeDiscussion and SiteMapDiscussion are currently attracting a large amount of vandalism. Some of it is not really spam, since it doesn't contain any links – just one or two lines saying "Hello! / Just wanted to say hello.", "Peace people / We love you", or "Hi! How r u? / nice site!" and so on.
+As some of you may have noticed, pages like WikiModes and SiteMapDiscussion are currently attracting a large amount of vandalism. Some of it is not really spam, since it doesn't contain any links – just one or two lines saying "Hello! / Just wanted to say hello.", "Peace people / We love you", or "Hi! How r u? / nice site!" and so on.
 
 The reason these messages all have a line break in them is that there already exists a regular expression on StrangeBannedContent that prevents the saving of single-line pages.
 

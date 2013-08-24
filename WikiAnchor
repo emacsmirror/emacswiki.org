@@ -27,5 +27,5 @@ The rule for <nowiki>PageName#Anchor</nowiki> references:
 
 Note how the second rule just rearranges the HTML links produced by wiki-replace-links.
 
-If you want more elaborate control over the output, you will have to combine this with the WikiLink code.  But then again, if you might be better off with an other wiki mode.  See WikiModeDiscussion.
+If you want more elaborate control over the output, you will have to combine this with the WikiLink code.  But then again, if you might be better off with an other wiki mode.  See WikiModes.
 

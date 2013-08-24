@@ -1,4 +1,4 @@
-This is the simplest of all the modes from WikiModeDiscussion.  All it
+This is the simplest of all the modes from WikiModes.  All it
 does is add a keybinding to insert some tags, and the hilighting of
 tags plus <nowiki>WikiNames</nowiki>.  If you are editing wiki pages
 within Emacs, this is quite elegant.

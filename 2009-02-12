@@ -1,4 +1,4 @@
-I want edit page http://www.emacswiki.org/emacs/?action=browse;diff=2;id=WikiModeDiscussion
+I want edit page http://www.emacswiki.org/emacs/?action=browse;diff=2;id=WikiModes
 
 Can anyone help me add "(See also [[Yaoddmuse]])" after "・ OddmuseMode ? tailored to Oddmuse wikis and using curl to download and post pages"?
 Make user can easy to find page "http://www.emacswiki.org/cgi-bin/emacs/Yaoddmuse".

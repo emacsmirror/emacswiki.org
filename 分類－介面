@@ -12,7 +12,7 @@ Emacs Interfaces to Online Utilities.
 * Hachette (Lisp:hachette.el]) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge) NB. This is currently broken!
 * Rdict ([http://lgarc.narod.r_u/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el]) -- View headlines from Slashdot.org (by SteveKemp)
-* Editing remote wikis (see WikiModeDiscussion)
+* Editing remote wikis (see WikiModes)
 ** WikiRemote -- Edit pages on this and other wikis.
 ** SimpleWikiEditMode -- Edit pages on this wiki, supercedes WikiRemote
 ** EmacsWikiRemoteMode -- Alternative to SimpleWikiEditMode which uses emacs-wiki.el + w3m

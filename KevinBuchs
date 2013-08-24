@@ -5,7 +5,7 @@ Hello and welcome!  I'd like to improve the site -- especially for newbies.  The
 
 
 [new]
-Alex - thanks for the pointers.  I have read those pages.  I guess I have the basic understanding of how this website works.  I have an interest in using the tools here for Wiki support to implement my own wiki for personal use.  I have downloaded files related to the emacs wiki mode, but I am overwhelmed with the information contained in these and would like to see a simple overview as to the concepts involved.  I have visited WikiModeDiscussion and WikiMode.  Thanks for any further help you can provide.  -- KevinBuchs
+Alex - thanks for the pointers.  I have read those pages.  I guess I have the basic understanding of how this website works.  I have an interest in using the tools here for Wiki support to implement my own wiki for personal use.  I have downloaded files related to the emacs wiki mode, but I am overwhelmed with the information contained in these and would like to see a simple overview as to the concepts involved.  I have visited WikiModes and WikiMode.  Thanks for any further help you can provide.  -- KevinBuchs
 
 [new]
 Hm, why not try it like this: Download Lisp:wiki.el, install it, create the directory ~/Wiki, create a file in this directory called <nowiki>SiteMap</nowiki>.  This should activate wiki-mode for that file.  Write some text, adding the word <nowiki>KevinBuchs</nowiki> somewhere.  This should be hilighted as a link as you type.  Click it (or type RET at it), and you should be propelled to the new page.  Let me know how it works. -- AlexSchroeder

@@ -27,7 +27,7 @@ Emacs Interfaces to Online Utilities.
 * LookUpHTMLDoc -- Look up documentation in HTML form
 * [http://github.com/cefstat/simplenote.el simplenote.el] -- using [http://simplenoteapp.com Simplenote] from within Emacs
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] -- '''''broken link''''') -- View headlines from Slashdot.org (by SteveKemp)
-* Editing remote wikis (see WikiModeDiscussion)
+* Editing remote wikis (see WikiModes)
 ** OddmuseMode -- Edit pages on this wiki, supercedes WikiRemote and SimpleWikiEditMode
 ** [[Yaoddmuse]] -- Edit or post page with Oddmuse wiki page *asynchronous*.
 ** WikiRemote -- Edit pages on this and other wikis.

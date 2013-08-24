@@ -12,7 +12,7 @@ English:CategoryInterface [English:action=browse&diff=1&id=CategoryInterface&dif
 * Hachette (Lisp:hachette.el) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge)
 * Rdict ([http://lgarc.narod.ru/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el]) -- View headlines from Slashdot.org (by SteveKemp)
-* 編輯遠端的 wiki (請參閱 WikiModeDiscussion)
+* 編輯遠端的 wiki (請參閱 WikiModes)
 ** WikiRemote -- 編寫這裡或其他的 wiki 頁面
 ** SimpleWikiEditMode -- 編寫這個 wiki 的頁面，取代 WikiRemote
 ** EmacsWikiRemoteMode -- 承接自 SimpleWikiEditMode ，使用 emacs-wiki.el + w3m

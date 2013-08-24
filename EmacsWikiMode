@@ -1,11 +1,11 @@
-This is JohnWiegley's implementation of a Wiki.  See WikiModeDiscussion
+This is JohnWiegley's implementation of a Wiki.  See WikiModes
 for a comparison with other wiki modes and a clarification of the terms used.
 
 EmacsWikiMode is a [http://en.wikipedia.org/wiki/Personal_wiki personal wiki]: a wiki that's only available to you. You might also think of it as a wiki-like publishing tool and
 personal information manager. emacs-wiki.el allows you to create a wiki
 on your local system and export HTML pages, in its basic
 configuration.  It does not allow you to edit the pages of
-emacswiki.org -- see WikiModeDiscussion for more.  To obtain the
+emacswiki.org -- see WikiModes for more.  To obtain the
 latest version, it is best to use Arch.  Instructions may be found on
 http://mwolson.org/projects/EmacsWikiMode.html.  Development snapshots
 and releases are available on the aforementioned site.
@@ -558,7 +558,7 @@ wiki to edit/maintain it; so I can edit it on the road via a web
 browser _and_ use emacs wiki when I have it. Is this possible? Any
 ideas? --AadityaSood
 
-''Check WikiModeDiscussion for some ideas.''--SachaChua
+''Check WikiModes for some ideas.''--SachaChua
 
 = Web Sites That Use EmacsWikiMode =
 

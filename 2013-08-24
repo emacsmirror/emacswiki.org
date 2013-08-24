@@ -1,0 +1,8 @@
+[new:AlexSchroeder:2013-08-24 11:31 UTC]
+Ugh, I seem to have messed up a global search & replace operation… Working on it!
+Apparently the Search functionality was broken, which led to the replacement of "Search" instead of "WikiModeDiscussion".
+In addition to that, it appears that the global rollback functionality was broken by bit-rot. While looking for changed pages, it would ignore all minor changes. Not good... Written a test to confirm the bug. Patched software. Installing… I think we're back!
+
+I still want to replace all occurrences of WikiModeDiscussion with WikiModes, however. Let me try that, first. I'll remove the edit lock once that works.
+
+Ok, I think we're back in business. Ugh, sorry for the mess.

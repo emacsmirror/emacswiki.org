@@ -1,5 +1,5 @@
 This is the successor of ReallySimpleWikiMode and got integrated into EmacsHttp.
-See WikiModeDiscussion for comparisons.
+See WikiModes for comparisons.
 All it does is add a keybinding to insert some tags, and the hilighting of
 tags plus <nowiki>WikiNames</nowiki>.  If you are editing wiki pages
 within Emacs, this is quite elegant.

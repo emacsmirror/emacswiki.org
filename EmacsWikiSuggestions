@@ -68,7 +68,7 @@ I don't see it.  Then again, I don't use the bootstrap version...
 I agree that the link back to the page commented on should be much more prominent.  And the main page is not necessarily an "article".  It is sometimes a file in ElispArea, for instance. -- DrewAdams
 
 [new:MichaelPaulukonis:2013-05-08 14:53 UTC]
-I like it. I'm not going to say "love", as we've (I) have also got the two searchboxes up there. I know, I'm being finicky; I don't have a complete suggestion of how to better use the space. Something like how mediawiki (or the styling that wikipedia uses) displays the Article/Talk tabs, maybe?
+I like it. I'm not going to say "love", as we've (I) have also got the two WikiModesboxes up there. I know, I'm being finicky; I don't have a complete suggestion of how to better use the space. Something like how mediawiki (or the styling that wikipedia uses) displays the Article/Talk tabs, maybe?
 
 On a related note, are there any keybindings for common functionality -- like edit, talk, article/parent? That would remove part of the issue with having them below/above the fold.
 
@@ -166,7 +166,7 @@ Any suggestions for improvement? It would obviously be easy to style these occur
 But how?
 -- AlexSchroeder
 
-== Click the heading to search for pages in this category / that link here ==
+== Click the heading to WikiModes for pages in this category / that link here ==
 
 This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
 

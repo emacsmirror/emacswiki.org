@@ -31,7 +31,7 @@ processor how to interpret the remaining text.
 Modes that take text with peculiar formatting and ''add'' markup:
 
 * BhlMode -- convert brut text into HTML/SGML/LaTeX/Texinfo
-* WikiMode and EmacsWikiMode -- convert text into hyperlinked text, and export as HTML (see WikiModeDiscussion for differences)
+* WikiMode and EmacsWikiMode -- convert text into hyperlinked text, and export as HTML (see WikiModes for differences)
 * EmacsMuse -- A modular and more generalized derivate of EmacsWikiMode by the same author
 * FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
 * TableMode -- edit and convert tables to HTML/LaTeX/XML/SGML(TEI)/CALS
