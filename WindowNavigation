@@ -12,7 +12,7 @@ direction of travel.
 
 See also WindMove, which is part of Emacs.
 
-<pre>
+{{{
 (unless (fboundp 'window-rightmost-p)
   (defun window-rightmost-p (window)
     (>= (nth 2 (window-edges window))
@@ -111,11 +111,10 @@ arg move to the left."
   (define-key winnav-map "h"    'other-column)
   (define-key winnav-map "j"    'jump-to-window)
   (define-key winnav-map "o"    'other-window)))
-</pre>
+}}}
 
 Alternative jump-to-window using ido-mode:
-
-<pre>
+{{{
 ;; This command is AMAZING. I recommend mapping it to `C-x v' or `C-x w'
 ;; depending on which is easier on your keyboard.
 (defun ido-jump-to-window ()
@@ -137,7 +136,7 @@ Alternative jump-to-window using ido-mode:
                                          nil))
                                   (window-list))))
       (select-window (car window-of-buffer)))))
-</pre>
+}}}
 -- ChrisDone
 
 ----
