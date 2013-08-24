@@ -63,7 +63,7 @@ The following code will produce a reasonable approximation of Unix Emacs on NT:
       ;; Otherwise, uncomment below to set a HOME
       ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
     
-      ;; NT-emacs assumes a Windows shell. Change to baash.
+      ;; NT-emacs assumes a Windows shell. Change to bash.
       (setq shell-file-name "bash")
       (setenv "SHELL" shell-file-name) 
       (setq explicit-shell-file-name shell-file-name) 
