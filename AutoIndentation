@@ -2,25 +2,30 @@
 
 '''If you want automatic indentation, try to use ##C-j## instead of ##RET## for a while. ##C-j## usually runs ##newline-and-indent##. If you really like it, you might want to bind it to ##RET##.''' Add something along the following lines to your ##.emacs##:
 
-    (add-hook 'lisp-mode-hook '(lambda ()
-      (local-set-key (kbd "RET") 'newline-and-indent)))
+{{{
+(add-hook 'lisp-mode-hook '(lambda ()
+  (local-set-key (kbd "RET") 'newline-and-indent)))
+}}}
 
 Replace ##lisp-mode-hook## with the appropriate hook. Note that for any mode derived from ##c-mode##, the hook ##c-mode-common-hook## will do the trick.
 
 If you feel squeamish about using anonymous functions in your hooks, the following will work just as well:
 
-    (defun set-newline-and-indent ()
-      (local-set-key (kbd "RET") 'newline-and-indent))
-    (add-hook 'lisp-mode-hook 'set-newline-and-indent)
+{{{
+(defun set-newline-and-indent ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+(add-hook 'lisp-mode-hook 'set-newline-and-indent)
+}}}
 
 On the other hand, this thing is a little bit cleaner and works with most modes:
-
-    (define-key global-map (kbd "RET") 'newline-and-indent)
-
+<pre>
+(define-key global-map (kbd "RET") 'newline-and-indent)
+</pre>
 For some programming languages, e.g., Fortran, using ##reindent-then-newline-and-indent## instead of ##newline-and-indent## may be clearer. Incidentally, ##f90-mode## (for Fortran 90, Fortran 95, etc.) is one in which redefining the key in the ##global-map## does not work. One must write something like:
-
-    (add-hook 'f90-mode-hook
-      (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+{{{
+(add-hook 'f90-mode-hook
+  (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+}}}
 [new]
 
 If you want to autoindent file when save or visit, try [[indent-file.el]] -- coldnew
@@ -41,44 +46,44 @@ You can call <code>(electric-indent-mode 1)</code> in your .<tt>emacs</tt> or <t
 '''"In !TextMate, pasted lines are automatically indented, which is extremely time-saving. This should be fairly straightforward to implement in Emacs, but how?"'''
 
 The following code (inspired by [http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/ this post]) accomplishes this beautifully:
-
-     (dolist (command '(yank yank-pop))
-       (eval `(defadvice ,command (after indent-region activate)
-                (and (not current-prefix-arg)
-                     (member major-mode '(emacs-lisp-mode lisp-mode
-                                                          clojure-mode    scheme-mode
-                                                          haskell-mode    ruby-mode
-                                                          rspec-mode      python-mode
-                                                          c-mode          c++-mode
-                                                          objc-mode       latex-mode
-                                                          plain-tex-mode))
-                     (let ((mark-even-if-inactive transient-mark-mode))
-                       (indent-region (region-beginning) (region-end) nil))))))
-
+{{{
+(dolist (command '(yank yank-pop))
+   (eval `(defadvice ,command (after indent-region activate)
+            (and (not current-prefix-arg)
+                 (member major-mode '(emacs-lisp-mode lisp-mode
+                                                      clojure-mode    scheme-mode
+                                                      haskell-mode    ruby-mode
+                                                      rspec-mode      python-mode
+                                                      c-mode          c++-mode
+                                                      objc-mode       latex-mode
+                                                      plain-tex-mode))
+                 (let ((mark-even-if-inactive transient-mark-mode))
+                   (indent-region (region-beginning) (region-end) nil))))))
+}}}
 Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes.
 
 Fall back to default, non-indented yanking by preceding the yanking commands with C-u. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)
 
 Alternatively, you may define a separate ##yank-and-indent## command as such:
-
-    (defun yank-and-indent ()
-      "Yank and then indent the newly formed region according to mode."
-      (interactive)
-      (yank)
-      (call-interactively 'indent-region))
-
+{{{
+(defun yank-and-indent ()
+  "Yank and then indent the newly formed region according to mode."
+  (interactive)
+  (yank)
+  (call-interactively 'indent-region))
+}}}
 and then bind it as you see fit, e.g., ##(global-set-key "\C-y" 'yank-and-indent)##. However, note that the ##defadvice## method is recommended if you use modes such as CuaMode.
 
 Another simple ##defadvice## for e.g. ##html-mode## is the following:
-
-    (defadvice yank (around html-yank-indent)
-      "Indents after yanking."
-      (let ((point-before (point)))
-        ad-do-it
-        (when (eq major-mode 'html-mode) ;; check what mode we're in
-          (indent-region point-before (point)))))
-    (ad-activate 'yank)
-
+{{{
+(defadvice yank (around html-yank-indent)
+  "Indents after yanking."
+  (let ((point-before (point)))
+    ad-do-it
+    (when (eq major-mode 'html-mode) ;; check what mode we're in
+      (indent-region point-before (point)))))
+(ad-activate 'yank)
+}}}
 [new]
 
 This is done in AutoIndentMode -- MatthewFidler
@@ -101,38 +106,38 @@ when it might be more desirable to have
 which is what would have happened if the lines were ''not'' indented.
 
 The following command, ##kill-and-join-forward##, accomplishes this:
-
-    (defun kill-and-join-forward (&optional arg)
-      (interactive "P")
-      (if (and (eolp) (not (bolp)))
-          (progn (forward-char 1)
-                 (just-one-space 0)
-                 (backward-char 1)
-                 (kill-line arg))
-        (kill-line arg)))
-
+{{{
+(defun kill-and-join-forward (&optional arg)
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (progn (forward-char 1)
+             (just-one-space 0)
+             (backward-char 1)
+             (kill-line arg))
+    (kill-line arg)))
+}}}
 It may be inserted into ##.emacs## and bound to ##C-k## (e.g., ##(global-set-key "\C-k" 'kill-and-join-forward)##). In conjunction with the code above for automatic indentation of yanked text, this reduces the need to press ##<tab>## in order to re-indent misaligned lines.
 
 Alternatively, ##defadvice## may be used to alter the ##kill-line## command itself:
-
-    (defadvice kill-line (before check-position activate)
+{{{
+(defadvice kill-line (before check-position activate)
+  (if (and (eolp) (not (bolp)))
+      (progn (forward-char 1)
+             (just-one-space 0)
+             (backward-char 1))))
+}}}
+This affects all modes. Checking the value of the ##major-mode## variable allows for filtering:
+{{{
+(defadvice kill-line (before check-position activate)
+  (if (member major-mode
+              '(emacs-lisp-mode scheme-mode lisp-mode
+                                c-mode c++-mode objc-mode
+                                latex-mode plain-tex-mode))
       (if (and (eolp) (not (bolp)))
           (progn (forward-char 1)
                  (just-one-space 0)
-                 (backward-char 1))))
-
-This affects all modes. Checking the value of the ##major-mode## variable allows for filtering:
-
-    (defadvice kill-line (before check-position activate)
-      (if (member major-mode
-                  '(emacs-lisp-mode scheme-mode lisp-mode
-                                    c-mode c++-mode objc-mode
-                                    latex-mode plain-tex-mode))
-          (if (and (eolp) (not (bolp)))
-              (progn (forward-char 1)
-                     (just-one-space 0)
-                     (backward-char 1)))))
-
+                 (backward-char 1)))))
+}}}
 [new]
 ##(delete-indentation t)## & Viper's ##J## in ##vi-mode## do exactly that, except that
 * point can be anywhere on the first line
@@ -155,32 +160,32 @@ Yes, but you can only use ##delete-indentation## to /join/ lines (and the origin
 
 [new]
 I modified ##kill-and-join-forward## command a little -- it work almost as the original and uses standard ##delete-indentation## function.
-
-    (defun kill-and-join-forward (&optional arg)
-      "If at end of line, join with following; otherwise kill line.
-    Deletes whitespace at join."
-      (interactive "P")
-      (if (and (eolp) (not (bolp)))
-          (delete-indentation t)
-        (kill-line arg)))
-
+{{{
+(defun kill-and-join-forward (&optional arg)
+  "If at end of line, join with following; otherwise kill line.
+Deletes whitespace at join."
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (delete-indentation t)
+    (kill-line arg)))
+}}}
 [new]
 That's indeed more elegant :) (I've edited the docstring a little so that the first line stands on its own when calling ##M-x apropos##.) How does it differ from the original behavior?
 
 [new]
 I did this to it:
-
-     (defun kill-and-join-forward (&optional arg)
-       "If at end of line, join with following; otherwise kill line.
-     Deletes whitespace at join."
-       (interactive "P")
-       (if (and (eolp) (not (bolp)))
-           (progn
-     	(delete-indentation t)
-     	(if (looking-at " $")
-     	    (delete-char 1)))
-         (kill-line arg)))
-
+{{{
+ (defun kill-and-join-forward (&optional arg)
+   "If at end of line, join with following; otherwise kill line.
+ Deletes whitespace at join."
+   (interactive "P")
+   (if (and (eolp) (not (bolp)))
+       (progn
+  (delete-indentation t)
+  (if (looking-at " $")
+     	(delete-char 1)))
+     (kill-line arg)))
+}}}
 so that when you're killing a whole bunch of lines you don't have to switch between C-k and C-d. I'm kind of lousy with elisp, though, and it seems really hacky compared to some of the other ways of doing things on this page. Is there something better I should have done instead of that progn?
 
 
