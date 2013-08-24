@@ -20,7 +20,7 @@ Examples:
 * BbCode -- Hacks for helping write in a Web forum markup 
 * EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
 * EmacsAtomApi -- Editing blog posts, and even writing them in EmacsMuse.
-* WikiModeDiscussion -- Comparing emacs-wiki.el and wiki.el (which see).
+* WikiModes -- Comparing emacs-wiki.el and wiki.el (which see).
 ** WikiMode -- wiki.el, the original mode to edit and navigate files with wiki syntax, and to translate these into static HTML pages.
 ** OddmuseMode -- A mode for editing pages in an OddMuse Wiki, including the EmacsWiki.
 ** [[Yaoddmuse]] -- Edit or Post OddMuse Wiki pages *asynchronously*, including the EmacsWiki. 
