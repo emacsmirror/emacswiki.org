@@ -109,7 +109,7 @@ With the default value of `icicle-top-level-key-bindings',
 * '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview#icicle-occur|`icicle-occur']]
 * '''`##C-c =##'''' -- [[Icicles - Other Search Commands#IciclesImenu|`icicle-imenu']]
 * '''`##C-c ^##''''  -- [[Icicles - Search Commands, Overview#icicle-search-keywords|`icicle-search-keywords']]
-* '''`##C-c "##''''  -- [[Icicles - Search Commands, Overview#icicle-search-text-property|`icicle-search-text-property]]
+* [tt][b]‘C-c "’[/b][/tt]  -- [[Icicles - Search Commands, Overview#icicle-search-text-property|`icicle-search-text-property]]
 * '''`##C-c $##''''  -- [[Icicles - Search Commands, Overview#icicle-search-word|`icicle-search-word]]
 * '''`##C-c `##'''' -- [[Icicles - Search Commands, Overview|`icicle-search']]
 * '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesCompileOrGrep|`icicle-compilation-search']] (in `*grep*' etc.)
