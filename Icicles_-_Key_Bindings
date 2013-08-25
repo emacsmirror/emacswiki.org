@@ -957,7 +957,7 @@ during '''Icicles''' [[Icicles - Search Commands, Overview|search]]:
 
 The following minibuffer binding lets you evaluate an EmacsLisp
 [[sexp]] at any time, using a recursive minibuffer.  It displays the result of evaluation in the [[echo area]] or in
-a pop-up buffer, ##‘*Pp Eval Output*’##.  With a prefix arg (`C-u M-:'), it inserts the result into the minibuffer at [[point]].
+a pop-up buffer, ##‘*Pp Eval Output*’##.  With a prefix arg (‘C-u M-:’), it inserts the result into the minibuffer at [[point]].
 
 [:icicle-pp-eval-expression-in-minibuffer]
 
