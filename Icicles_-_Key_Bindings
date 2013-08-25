@@ -106,28 +106,28 @@ With the default value of `icicle-top-level-key-bindings',
 [:icicle-kmacro]
 [:icicle-switch-to-from-minibuffer]
 [:icicle-select-frame]
-* '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview#icicle-occur|`icicle-occur']]
-* '''`##C-c =##'''' -- [[Icicles - Other Search Commands#IciclesImenu|`icicle-imenu']]
-* '''`##C-c ^##''''  -- [[Icicles - Search Commands, Overview#icicle-search-keywords|`icicle-search-keywords']]
+* '''##‘C-c '’##''' -- [[Icicles - Search Commands, Overview#icicle-occur|‘icicle-occur’]]
+* '''##‘C-c =’##''' -- [[Icicles - Other Search Commands#IciclesImenu|‘icicle-imenu’]]
+* '''##‘C-c ^’##'''  -- [[Icicles - Search Commands, Overview#icicle-search-keywords|‘icicle-search-keywords’]]
 * '''##‘C-c "’##'''  -- [[Icicles - Search Commands, Overview#icicle-search-text-property|`icicle-search-text-property]]
-* '''`##C-c $##''''  -- [[Icicles - Search Commands, Overview#icicle-search-word|`icicle-search-word]]
-* '''`##C-c `##'''' -- [[Icicles - Search Commands, Overview|`icicle-search']]
-* '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesCompileOrGrep|`icicle-compilation-search']] (in `*grep*' etc.)
-* '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesShell|`icicle-comint-search']] (in `*shell*' etc.)
-* '''`C-c TAB'''' -- [[Icicles - Other Search Commands#IciclesShell|`icicle-comint-command']] (in `*shell*' etc.)
-* '''`##C-c /##'''' -- [[Icicles - Completion in Other Buffers#ThesaurusCompletion|`icicle-complete-thesaurus-entry']]
-* '''`C-h C-o'''' -- [[Icicles - Multi-Completions|`icicle-describe-option-of-type']]
-* '''`##ESC M-x##'''' -- [[LaCarte|`lacarte-execute-command']]
-* '''`##M-`##'''', '''`f10'''' -- [[LaCarte|`lacarte-execute-menu-command']]
-* '''`M-x'''' -- [[Icicles - Multi M-x|`icicle-execute-extended-command']]
-* '''`C-x SPC'''' -- [[Icicles - Multi M-x#icicle-command-abbrev|`icicle-command-abbrev']]
+* '''##‘C-c $’##'''  -- [[Icicles - Search Commands, Overview#icicle-search-word|`icicle-search-word]]
+* '''##‘C-c `’##''' -- [[Icicles - Search Commands, Overview|‘icicle-search’]]
+* '''##‘C-c `’##''' -- [[Icicles - Other Search Commands#IciclesCompileOrGrep|‘icicle-compilation-search’]] (in `*grep*' etc.)
+* '''##‘C-c `’##''' -- [[Icicles - Other Search Commands#IciclesShell|‘icicle-comint-search’]] (in `*shell*' etc.)
+* '''`C-c TAB'''' -- [[Icicles - Other Search Commands#IciclesShell|‘icicle-comint-command’]] (in `*shell*' etc.)
+* '''##‘C-c /’##''' -- [[Icicles - Completion in Other Buffers#ThesaurusCompletion|‘icicle-complete-thesaurus-entry’]]
+* '''`C-h C-o'''' -- [[Icicles - Multi-Completions|‘icicle-describe-option-of-type’]]
+* '''##‘ESC M-x’##''' -- [[LaCarte|‘lacarte-execute-command’]]
+* '''##‘M-`’##''', '''`f10'''' -- [[LaCarte|‘lacarte-execute-menu-command’]]
+* '''`M-x'''' -- [[Icicles - Multi M-x|‘icicle-execute-extended-command’]]
+* '''`C-x SPC'''' -- [[Icicles - Multi M-x#icicle-command-abbrev|‘icicle-command-abbrev’]]
 * '''`C-x M-e'''' -- `icicle-execute-named-keyboard-macro'
 * '''`S-f4'''' -- `icicle-kmacro'
-* '''`pause'''' -- [[Icicles - Moving Between the Minibuffer and Other Buffers|`icicle-switch-to/from-minibuffer']]
+* '''`pause'''' -- [[Icicles - Moving Between the Minibuffer and Other Buffers|‘icicle-switch-to/from-minibuffer’]]
 * '''`C-x 5 o'''' -- `icicle-select-frame'
 
 [:icicle-complete-keys]
-'''`S-TAB'''' is bound, in effect, to [[Icicles - Key Completion|`icicle-complete-keys']], which
+'''`S-TAB'''' is bound, in effect, to [[Icicles - Key Completion|‘icicle-complete-keys’]], which
 completes a [[key sequence]].  [[prefix key|Prefix keys]] followed by `S-TAB' are
 also bound to `icicle-complete-keys'.  (`S-TAB' is effectively
 bound to other commands in [[buffer]] `*Completions*' and in the
@@ -289,7 +289,7 @@ similar to what you are reading now.  It also lists toggle
 commands and the current toggle values.
 
 [:icicle-minibuffer-help]
-* '''`##M-?##'''' -- `icicle-minibuffer-help'
+* '''##‘M-?’##''' -- `icicle-minibuffer-help'
 
 The following key will always cancel all minibuffer input.  No
 matter whether you have recursive minibuffers, it always returns
@@ -373,7 +373,7 @@ current candidate in buffer `*Completions*'.
 * '''`M-*'''' -- `icicle-narrow-candidates': Narrow the set of completion candidates using another input regexp.
 
 [:icicle-widen-candidates]
-* '''`##M-+##'''' -- `icicle-widen-candidates': Widen the set of completion candidates using another input regexp.
+* '''##‘M-+’##''' -- `icicle-widen-candidates': Widen the set of completion candidates using another input regexp.
 
 [:icicle-prefix-word-complete]
 * '''`M-SPC'''' -- `icicle-prefix-word-complete': Complete current input
@@ -427,7 +427,7 @@ this as `C-M-S-TAB'.  Actually, it is only
 option '''<tt>‘[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]’</tt>'''.)
 
 [:icicle-save-predicate-to-variable]
-* '''`##C-M-&##''''  -- `icicle-save-predicate-to-variable': Save the current
+* '''##‘C-M-&’##'''  -- `icicle-save-predicate-to-variable': Save the current
 predicate used for completion to a variable.
 
 [:icicle-remove-candidate]
@@ -469,7 +469,7 @@ contents into a list of candidates, then add them to
 those in `icicle-saved-completion-candidates'.
 
 [:icicle-regexp-quote-input]
-* '''`##M-%##''''  -- Regexp quote current input or its active [[region]], then
+* '''##‘M-%’##'''  -- Regexp quote current input or its active [[region]], then
 apropos-complete.  Use this to literally match all or
 some input, in the context of regexp matching overall.
 
@@ -514,10 +514,10 @@ to `grow-only', at least while in ''Icicle'' mode.)
 
 [:icicle-insert-dot-command]
 [:icicle-toggle-dot]
-You can insert a single '''Icicles''' [[multi-line dot]] using '''`##C-u .##'''', or
-by turning on this dot magic generally, using '''`##C-M-.##'''':
-* '''`##.##'''' -- `icicle-insert-dot-command'
-* '''`##C-M-.##'''' -- `icicle-toggle-dot' (toggle [[option]] `<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>')
+You can insert a single '''Icicles''' [[multi-line dot]] using '''##‘C-u .’##''', or
+by turning on this dot magic generally, using '''##‘C-M-.’##''':
+* '''##‘.’##''' -- `icicle-insert-dot-command'
+* '''##‘C-M-.’##''' -- `icicle-toggle-dot' (toggle [[option]] `<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>')
 
 
 In vanilla Emacs, the following keys have a special purpose during
@@ -527,7 +527,7 @@ better ways to do what vanilla Emacs uses these keys for and (2)
 it is useful to be able to insert these characters without first
 typing `C-q' to quote them.
 
-* '''`##?##''''   -- see also [[Icicles - Special Characters in Input Patterns]]
+* '''##‘?’##'''   -- see also [[Icicles - Special Characters in Input Patterns]]
 * '''`SPC'''' (space)
 
 [:icicle-insert-newline-in-minibuffer]
@@ -571,7 +571,7 @@ minibuffer bindings are also in effect:
 
 * '''`C-backspace'''' -- `icicle-up-directory': Navigate up the directory hierarchy.
 
-* '''`##C-c +##''''  -- `icicle-make-directory': Create a directory.
+* '''##‘C-c +’##'''  -- `icicle-make-directory': Create a directory.
 
 * '''`C-x m'''' -- `icicle-bookmark-file-other-window': Visit a file or directory ([[Dired]]) bookmark. See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]]. (Available only if you use '''[[Bookmark+]]'''.)
 
@@ -591,17 +591,17 @@ default, they are the following:
 
 * '''`C-x C-m -'''' -- `icicle-remove-buffer-cands-for-derived-mode': ''Remove'' buffer-name candidates with a [[major mode]] that is ''derived'' from a given ''mode''.  Repeat to filter progressively.  (`C-m' is the same key as `RET'.)
 
-* '''`##C-x C-m +##'''' -- `icicle-keep-only-buffer-cands-for-derived-mode': ''Keep'' only buffer-name candidates with a major mode that is ''derived'' from a given ''mode''.
+* '''##‘C-x C-m +’##''' -- `icicle-keep-only-buffer-cands-for-derived-mode': ''Keep'' only buffer-name candidates with a major mode that is ''derived'' from a given ''mode''.
 
 * '''`C-x M -'''' -- `icicle-remove-buffer-cands-for-mode': Same as `C-x C-m -', but excludes ancestor modes.
 
-* '''`##C-x M +##'''' -- `icicle-keep-only-buffer-cands-for-mode': Same as `##C-x C-m +##', but excludes ancestor modes.
+* '''##‘C-x M +’##''' -- `icicle-keep-only-buffer-cands-for-mode': Same as `##C-x C-m +##', but excludes ancestor modes.
 
 
 * '''`C-x v -''''  -- `icicle-remove-buffer-cands-for-visible': ''Remove'' buffers that are ''visible''.  Includes
 buffers in iconified frames.
 
-* '''`##C-x v +##''''  -- `icicle-keep-only-buffer-cands-for-visible': ''Keep'' only buffers that are ''visible''.  Includes buffers in iconified frames.
+* '''##‘C-x v +’##'''  -- `icicle-keep-only-buffer-cands-for-visible': ''Keep'' only buffers that are ''visible''.  Includes buffers in iconified frames.
 
 * '''`C-x F''''      -- Toggle whether to include cached files (i.e.,  toggle option `<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>')
 
@@ -708,8 +708,8 @@ completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - Mor
 * '''`C-prior''''  -- `icicle-previous-apropos-candidate-action'
 * '''`C-end''''  -- `icicle-next-prefix-candidate-action'
 * '''`C-home''''    -- `icicle-previous-prefix-candidate-action'
-* '''`##C-!##'''' -- `icicle-all-candidates-action': each candidate, in turn
-* '''`##M-!##'''' -- `icicle-all-candidates-list-action': all candidates, as a list
+* '''##‘C-!’##''' -- `icicle-all-candidates-action': each candidate, in turn
+* '''##‘M-!’##''' -- `icicle-all-candidates-list-action': all candidates, as a list
 * '''`M-RET'''' -- `icicle-candidate-read-fn-invoke': apply a function to current candidate
 * '''`M-mouse-2'''' -- `icicle-mouse-yank-secondary' (in minibuffer)
 * '''`M-mouse-2'''' -- `icicle-mouse-candidate-read-fn-invoke': apply a function to clicked candidate (in `*Completions*')
@@ -774,8 +774,8 @@ the given command.  Most commands define no alternative action.
 * '''`C-S-prior'''' -- `icicle-previous-apropos-candidate-alt-action'
 * '''`C-S-end'''' -- `icicle-next-prefix-candidate-alt-action'
 * '''`C-S-home'''' -- `icicle-previous-prefix-candidate-alt-action'
-* '''`##C-|##'''' -- `icicle-all-candidates-alt-action': each candidate, in turn
-* '''`##M-|##'''' -- `icicle-all-candidates-list-alt-action': all candidates, as a list
+* '''##‘C-|’##''' -- `icicle-all-candidates-alt-action': each candidate, in turn
+* '''##‘M-|’##''' -- `icicle-all-candidates-list-alt-action': all candidates, as a list
 
 
 
@@ -804,19 +804,19 @@ on sets of completion candidates.  For explanation, see [[Icicles - Candidate Se
 [:icicle-candidate-set-swap]
 [:icicle-candidate-set-define]
 
-* '''`##C-~##'''' -- `icicle-candidate-set-complement'
-* '''`##C--##'''' -- `icicle-candidate-set-difference'
-* '''`##C-+##'''' -- `icicle-candidate-set-union'
-* '''`##C-*##'''' -- `icicle-candidate-set-intersection'
-* '''`##C-M-<##'''' -- `icicle-candidate-set-retrieve': retrieve saved set
-* '''`##C-M->##'''' -- `icicle-candidate-set-save': save current set
-* '''`##C-M-)##'''' -- `icicle-candidate-set-save-selected': save mouse-selected candidates as set
-* '''`##C-<##'''' -- `icicle-candidate-set-retrieve-more': add from saved set
-* '''`##C->##'''' -- `icicle-candidate-set-save-more': add to saved set
-* '''`##C-)##'''' -- `icicle-candidate-set-save-more-selected': add mouse-selected candidates to saved set
+* '''##‘C-~’##''' -- `icicle-candidate-set-complement'
+* '''##‘C--’##''' -- `icicle-candidate-set-difference'
+* '''##‘C-+’##''' -- `icicle-candidate-set-union'
+* '''##‘C-*’##''' -- `icicle-candidate-set-intersection'
+* '''##‘C-M-<’##''' -- `icicle-candidate-set-retrieve': retrieve saved set
+* '''##‘C-M->’##''' -- `icicle-candidate-set-save': save current set
+* '''##‘C-M-)’##''' -- `icicle-candidate-set-save-selected': save mouse-selected candidates as set
+* '''##‘C-<’##''' -- `icicle-candidate-set-retrieve-more': add from saved set
+* '''##‘C->’##''' -- `icicle-candidate-set-save-more': add to saved set
+* '''##‘C-)’##''' -- `icicle-candidate-set-save-more-selected': add mouse-selected candidates to saved set
 * '''`insert'''' -- `icicle-save/unsave-candidate': save or unsave current candidate
-* '''`##C-%##'''' -- `icicle-candidate-set-swap': swap saved and current sets
-* '''`##C-:##'''' -- `icicle-candidate-set-define': define current (EmacsLisp)
+* '''##‘C-%’##''' -- `icicle-candidate-set-swap': swap saved and current sets
+* '''##‘C-:’##''' -- `icicle-candidate-set-define': define current (EmacsLisp)
 * '''`M-S-mouse-2'''' -- `icicle-mouse-save/unsave-candidate': click candidate to save or unsave
 * '''`M-S-mouse-3'''' -- `icicle-mouse-candidate-set-save': save candidates in region or save clicked candidate
 * '''`M-mouse-3'''' -- `icicle-mouse-candidate-set-save-more': add region candidates or clicked candidate to saved set
@@ -868,39 +868,39 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 [:icicle-toggle-tilde-for-home-dir]
 
 * '''`C-A'''' (that is, `C-S-a') -- `icicle-toggle-case-sensitivity'
-* '''`##C-.##'''' -- `icicle-toggle-ignored-extensions' (file-name completion)  (toggle option `completion-ignored-extensions')
+* '''##‘C-.’##''' -- `icicle-toggle-ignored-extensions' (file-name completion)  (toggle option `completion-ignored-extensions')
 
-* '''`##C-.##'''' -- `icicle-toggle-search-cleanup' (search) (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|icicle-search-cleanup-flag]]</tt>')
-* '''`##C-M-.##'''' -- `icicle-toggle-dot'
+* '''##‘C-.’##''' -- `icicle-toggle-search-cleanup' (search) (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|icicle-search-cleanup-flag]]</tt>')
+* '''##‘C-M-.’##''' -- `icicle-toggle-dot'
 (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>')
-* '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]]</tt>')
-* '''`##C-u C-x .##'''' -- `icicle-toggle-hiding-non-matching-lines' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>')
-* '''`##C-"##'''' -- `icicle-toggle-expand-to-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>')
-* '''`##C-M-"##'''' -- `icicle-cycle-expand-to-common-match' (cycle values of option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>')
-* '''`##M-;##'''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
+* '''##‘C-x .’##''' -- `icicle-toggle-hiding-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]]</tt>')
+* '''##‘C-u C-x .’##''' -- `icicle-toggle-hiding-non-matching-lines' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-hide-non-matching-lines-flag|icicle-hide-non-matching-lines-flag]]</tt>')
+* '''##‘C-"’##''' -- `icicle-toggle-expand-to-common-match' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>')
+* '''##‘C-M-"’##''' -- `icicle-cycle-expand-to-common-match' (cycle values of option `<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>')
+* '''##‘M-;’##''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
 * '''`##C-M-;##''' -- `icicle-toggle-icicle-toggle-ignoring-comments'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>')
-* '''`##C-,##'''' -- `icicle-change-sort-order' (next sort order in option `<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>')
-* '''`##M-,##'''' -- `icicle-change-alternative-sort-order' (next alternative sort order)
-* '''`##C-M-,##'''' -- `icicle-toggle-alternative-sorting' (swap with alternative)
-* '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>')
-* '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
-* '''`##C-M-^##'''' -- `icicle-toggle-completions-format' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-toggle-completions-format|icicle-toggle-completions-format]]</tt>')
+* '''##‘C-,’##''' -- `icicle-change-sort-order' (next sort order in option `<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>')
+* '''##‘M-,’##''' -- `icicle-change-alternative-sort-order' (next alternative sort order)
+* '''##‘C-M-,’##''' -- `icicle-toggle-alternative-sorting' (swap with alternative)
+* '''##‘C-^’##''' -- `icicle-toggle-remote-file-testing'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>')
+* '''##‘C-^’##''' -- `icicle-toggle-highlight-all-current' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
+* '''##‘C-M-^’##''' -- `icicle-toggle-completions-format' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-toggle-completions-format|icicle-toggle-completions-format]]</tt>')
 
 * '''<tt>‘C-#’</tt>''' -- `icicle-cycle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
-* '''`##C-(##'''' -- `icicle-next-TAB-completion-method'  (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>')
-* '''`##C-`##'''' -- `icicle-toggle-regexp-quote' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>')
-* '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
-* '''`##C-$##'''' -- `icicle-toggle-transforming': removal of duplicates (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-transform-function|icicle-transform-function]]</tt>')
+* '''##‘C-(’##''' -- `icicle-next-TAB-completion-method'  (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>')
+* '''##‘C-`’##''' -- `icicle-toggle-regexp-quote' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>')
+* '''##‘C-M-`’##''' -- `icicle-toggle-literal-replacement' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
+* '''##‘C-$’##''' -- `icicle-toggle-transforming': removal of duplicates (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-transform-function|icicle-transform-function]]</tt>')
 * '''`C-pause'''' -- `icicle-toggle-highlight-historical-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-highlight-historical-candidates-flag|icicle-highlight-historical-candidates-flag]]</tt>')
 * '''`S-pause'''' -- `icicle-toggle-highlight-saved-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-highlight-saved-candidates-flag|icicle-highlight-saved-candidates-flag]]</tt>')
 * '''`C-S-pause'''' -- `icicle-toggle-WYSIWYG-Completions' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>')
 * '''`M-g''''     -- `icicle-toggle-C-for-actions'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>')
 * '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>')
-* '''`##M-(##'''' -- `icicle-next-S-TAB-completion-method'   (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>')
-* '''`##M-~##'''' -- `##icicle-toggle-~-for-home-dir##'   (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-use-tilde-for-home-dir-flag|icicle-use-~-for-home-dir-flag]]</tt>')
-* '''`##M-_##'''' -- `icicle-toggle-ignored-space-prefix'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-ignore-space-prefix-flag|icicle-ignore-space-prefix-flag]]</tt>')
-* '''`##M-_##'''' -- `icicle-toggle-search-replace-whole' (search) (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>')
-* '''`##C-M-_##'''' -- `icicle-toggle-proxy-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>')
+* '''##‘M-(’##''' -- `icicle-next-S-TAB-completion-method'   (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>')
+* '''##‘M-~’##''' -- `##icicle-toggle-~-for-home-dir##'   (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-use-tilde-for-home-dir-flag|icicle-use-~-for-home-dir-flag]]</tt>')
+* '''##‘M-_’##''' -- `icicle-toggle-ignored-space-prefix'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-ignore-space-prefix-flag|icicle-ignore-space-prefix-flag]]</tt>')
+* '''##‘M-_’##''' -- `icicle-toggle-search-replace-whole' (search) (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>')
+* '''##‘C-M-_’##''' -- `icicle-toggle-proxy-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>')
 
 
 
@@ -918,11 +918,11 @@ advantage of these, you must also use '''DoReMi'''.
 
 * '''`C-x w'''' -- `##icicle-doremi-candidate-width-factor+##' (requires 
 <tt>[[doremi.el]]</tt>)  (increment option `<tt>[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]</tt>')
-* '''`##C-x |##'''' -- `##icicle-doremi-inter-candidates-min-spaces+##' (requires 
+* '''##‘C-x |’##''' -- `##icicle-doremi-inter-candidates-min-spaces+##' (requires 
 <tt>[[doremi.el]]</tt>) (increment option `<tt>[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]</tt>')
 * '''`C-x -'''' -- `##icicle-doremi-zoom-Completions+##' (requires 
 <tt>[[doremi-frm.el]]</tt> and Emacs 23 or later)
-* '''`##C-x ###'''' -- increment/decrement option `<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'
+* '''##‘C-x #’##''' -- increment/decrement option `<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'
 
 When used in the minibuffer, the following '''Icicles''' global binding lets you remove the `*Completions*' window.
 
@@ -943,13 +943,13 @@ during '''Icicles''' [[Icicles - Search Commands, Overview|search]]:
 [:icicle-toggle-highlight-all-current]
 [:icicle-toggle-literal-replacement]
 
-* '''`##C-.##'''' -- `icicle-toggle-search-cleanup'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|icicle-search-cleanup-flag]]</tt>')
-* '''`##C-,##'''' -- `icicle-change-sort-order' (next sort order in option `<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>')
-* '''`##M-,##'''' -- `icicle-search-define-replacement'
-* '''`##M-;##'''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
+* '''##‘C-.’##''' -- `icicle-toggle-search-cleanup'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|icicle-search-cleanup-flag]]</tt>')
+* '''##‘C-,’##''' -- `icicle-change-sort-order' (next sort order in option `<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>')
+* '''##‘M-,’##''' -- `icicle-search-define-replacement'
+* '''##‘M-;’##''' -- `icicle-toggle-search-replace-common-match'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>')
 * '''`M-q'''' -- `icicle-toggle-search-whole-word'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>')
-* '''`##C-^##''''    -- `icicle-toggle-highlight-all-current' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
-* '''`##C-M-`##''''  -- `icicle-toggle-literal-replacement' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
+* '''##‘C-^’##'''    -- `icicle-toggle-highlight-all-current' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
+* '''##‘C-M-`’##'''  -- `icicle-toggle-literal-replacement' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
 
 
 
@@ -961,7 +961,7 @@ a pop-up buffer, `##*Pp Eval Output*##'.  With a prefix arg (`C-u M-:'), it inse
 
 [:icicle-pp-eval-expression-in-minibuffer]
 
-* '''`##M-:##'''' -- `icicle-pp-eval-expression-in-minibuffer'
+* '''##‘M-:’##''' -- `icicle-pp-eval-expression-in-minibuffer'
 
 
 
