@@ -1,4 +1,12 @@
-I have no business using emacs. I am a literary translator and have a hard enough time maintaining discipline without the bottomless sinkhole of twiddling that is emacs. But I love it desperately, with an unrequited love, and have moved all aspects of my computing life into it except for the two holdouts of mail and RSS feeds (I'm using a CVS Carbon build on Leopard). The translation I do could be done as easily in <nowiki>TextEdit</nowiki> (or Notepad, for that matter), but I justify my usage/abusage by employing emacs to maintain [http://paper-republic.org/ Paper Republic], a website (in [http://www.djangoproject.com Django]) about Chinese-English translation. My need to read/write Chinese in emacs has led me into the many dark and abandoned alleyways of unicode, until I saw the 23 light. I'm on IRC as [::girzel].
+I have no business using emacs. I am a literary translator and have a hard enough time maintaining discipline without the bottomless sinkhole of twiddling that is emacs. But I love it desperately, with an unrequited love, and have moved all aspects of my computing life into it, now including the deadly trifecta of [[http://www.emacswiki.org/emacs/CategoryGnus Gnus]], [[http://www.emacswiki.org/emacs/OrgMode Org]], and [[http://www.emacswiki.org/emacs/CategoryBbdb BBDB]]. The translation I do could be done as easily in <nowiki>TextEdit</nowiki> (or Notepad, for that matter), but I justify my usage/abusage by employing emacs to maintain [http://paper-republic.org/ Paper Republic], a website (in [http://www.djangoproject.com Django]) about Chinese-English translation. It's unlikely I'd ever respond to a single email without the happy integration of Gnus and Org. My need to read/write Chinese in emacs has led me into the many dark and abandoned alleyways of unicode, and some truly awful experiences with Pinyin and Wubi. I'm on IRC as [::girzel]. Stuff I'm sort of chewing through:
+
+* An Epub exporter for Org
+* A translation environment based on Org
+* A blob of glue-code between org, gnus, and BBDB
+* A new version of BBDB built on top of [[http://www.emacswiki.org/emacs/EmacsLispObjects EIEIO]]
+* A system of identifying word boundaries in Chinese (similar to what's done for Thai in lisp/languages/thai-word.el)
+
+I may finish one or more of these projects before the age of retirement.
 
 [new:DrewAdams:2009-08-18 15:18 UTC]
 Welcome to the wiki. -- DrewAdams
