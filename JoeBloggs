@@ -23,6 +23,7 @@ Here are some libraries I wrote:
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]].
 * '''Lisp:jb-misc-macros.el''' -- Miscellaneous macros used in some of my libs.
 * '''Lisp:ido-gnus.el''' -- access gnus groups and servers using [[InteractivelyDoThings]]
+* '''Lisp:smptmail-multi.el''' -- Use different SMTP accounts for different emails.
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
