@@ -262,7 +262,7 @@ Here are the suffix keys on the `M-s M-s' prefix key:
 * '''`p'''' -- `icicle-search-paragraphs' -- Search Emacs paragraphs as contexts
 * '''`s'''' -- `icicle-search-sentences' -- Search sentences as contexts
 * '''`t'''' -- `icicle-search-thing' -- Search ThingAtPoint things as contexts, optionally ignoring comments
-* '''`T'''' -- `icicle-search-text-property' -- Search text zones having a given text property ('''`##C-c "##'''')
+* '''`T'''' -- `icicle-search-text-property' -- Search text zones having a given text property ([tt][b]‘C-c "’[/b][/tt])
 * '''`w'''' -- `icicle-search-word' -- Whole words as search contexts ('''`##C-c $##'''')
 * '''`x'''' -- `icicle-search-xml-element' -- Search the contents of XML elements as contexts
 * '''`X'''' -- `icicle-search-xml-element-text-node' -- Search the text() nodes of XML elements as contexts
