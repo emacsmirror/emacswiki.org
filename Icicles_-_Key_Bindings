@@ -389,7 +389,7 @@ are bound to this command; `M-SPC' is by default.
 
 [:icicle-apropos-complete-and-widen]
 * '''`S-backspace'''' -- `icicle-apropos-complete-and-widen': Same as
-`S-TAB' followed by `##M-+##'.
+`S-TAB' followed by ##‘M-+’##.
 
 
 
@@ -474,11 +474,11 @@ apropos-complete.  Use this to literally match all or
 some input, in the context of regexp matching overall.
 
 [:icicle-read+insert-file-name]
-* '''`C-M-F'''' ('''`C-M-S-f'''') -- `##icicle-read+insert-file-name##': Invoke completion to
+* '''`C-M-F'''' ('''`C-M-S-f'''') -- ##‘icicle-read+insert-file-name’##: Invoke completion to
 insert a file name in the minibuffer.
 
 [:icicle-completing-read+insert]
-* '''`C-M-C'''' ('''`C-M-S-c'''') -- `##icicle-completing-read+insert##': Invoke completion
+* '''`C-M-C'''' ('''`C-M-S-c'''') -- ##‘icicle-completing-read+insert’##: Invoke completion
 to insert something other than a file name (not
 always available).
 (`C-M-F' and `C-M-C' are the default values for
@@ -495,7 +495,7 @@ You can move up and down minibuffer lines with `C-p' and `C-n',
 and you can use the following keys to move among [[line]] beginnings
 and ends:
 
-* '''`C-a'''', '''`C-e'''' -- `##icicle-beginning-of-line+##', `##icicle-end-of-line+##': Like normal `C-a', `C-e', but repeating goes to the previous or next line.
+* '''`C-a'''', '''`C-e'''' -- ##‘icicle-beginning-of-line+’##, ##‘icicle-end-of-line+’##: Like normal `C-a', `C-e', but repeating goes to the previous or next line.
 
 If you use libraries <tt>[[fit-frame.el]]</tt> and <tt>[[oneonone.el]]</tt> with a standalone minibuffer frame (non-`nil' `1on1-minibuffer-frame-flag'), and if option `1on1-fit-minibuffer-frame-flag' is non-`nil', then the minibuffer frame is automatically resized to fit its content as you edit that
 content.  (Options `1on1-fit-minibuffer-frame-max-height' and `1on1-fit-minibuffer-frame-max-height-percent' define the maximum height for this.)
@@ -595,7 +595,7 @@ default, they are the following:
 
 * '''`C-x M -'''' -- `icicle-remove-buffer-cands-for-mode': Same as `C-x C-m -', but excludes ancestor modes.
 
-* '''##‘C-x M +’##''' -- `icicle-keep-only-buffer-cands-for-mode': Same as `##C-x C-m +##', but excludes ancestor modes.
+* '''##‘C-x M +’##''' -- `icicle-keep-only-buffer-cands-for-mode': Same as ##‘C-x C-m +’##, but excludes ancestor modes.
 
 
 * '''`C-x v -''''  -- `icicle-remove-buffer-cands-for-visible': ''Remove'' buffers that are ''visible''.  Includes
@@ -830,9 +830,9 @@ The following minibuffer bindings insert text in the minibuffer:
 [:icicle-insert-string-at-point]
 [:icicle-insert-string-from-variable]
 
-* `##M-.##' -- `icicle-insert-string-at-point'
-* `##C-=##' -- `icicle-insert-string-from-variable'
-* `##M-:##' -- `icicle-pp-eval-expression-in-minibuffer' (with a [[prefix argument]])
+* ##‘M-.’## -- `icicle-insert-string-at-point'
+* ##‘C-=’## -- `icicle-insert-string-from-variable'
+* ##‘M-:’## -- `icicle-pp-eval-expression-in-minibuffer' (with a [[prefix argument]])
 
 
 
@@ -878,7 +878,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''##‘C-"’##''' -- `icicle-toggle-expand-to-common-match' (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]’</tt>)
 * '''##‘C-M-"’##''' -- `icicle-cycle-expand-to-common-match' (cycle values of option <tt>‘[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]’</tt>)
 * '''##‘M-;’##''' -- `icicle-toggle-search-replace-common-match'  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]’</tt>)
-* '''`##C-M-;##''' -- `icicle-toggle-icicle-toggle-ignoring-comments'  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]’</tt>)
+* '''##‘C-M-;’##''' -- `icicle-toggle-icicle-toggle-ignoring-comments'  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]’</tt>)
 * '''##‘C-,’##''' -- `icicle-change-sort-order' (next sort order in option <tt>‘[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]’</tt>)
 * '''##‘M-,’##''' -- `icicle-change-alternative-sort-order' (next alternative sort order)
 * '''##‘C-M-,’##''' -- `icicle-toggle-alternative-sorting' (swap with alternative)
@@ -897,7 +897,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`M-g''''     -- `icicle-toggle-C-for-actions'  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]’</tt>)
 * '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]’</tt>)
 * '''##‘M-(’##''' -- `icicle-next-S-TAB-completion-method'   (next method in option <tt>‘[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]’</tt>)
-* '''##‘M-~’##''' -- `##icicle-toggle-~-for-home-dir##'   (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-use-tilde-for-home-dir-flag|icicle-use-~-for-home-dir-flag]]’</tt>)
+* '''##‘M-~’##''' -- ##‘icicle-toggle-~-for-home-dir’##   (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-use-tilde-for-home-dir-flag|icicle-use-~-for-home-dir-flag]]’</tt>)
 * '''##‘M-_’##''' -- `icicle-toggle-ignored-space-prefix'  (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-ignore-space-prefix-flag|icicle-ignore-space-prefix-flag]]’</tt>)
 * '''##‘M-_’##''' -- `icicle-toggle-search-replace-whole' (search) (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]’</tt>)
 * '''##‘C-M-_’##''' -- `icicle-toggle-proxy-candidates' (toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]’</tt>)
@@ -916,11 +916,11 @@ options that affect the `*Completions*' display columns and text
 size.  To take
 advantage of these, you must also use '''DoReMi'''.
 
-* '''`C-x w'''' -- `##icicle-doremi-candidate-width-factor+##' (requires 
+* '''`C-x w'''' -- ##‘icicle-doremi-candidate-width-factor+’## (requires 
 <tt>[[doremi.el]]</tt>)  (increment option <tt>‘[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]’</tt>)
-* '''##‘C-x |’##''' -- `##icicle-doremi-inter-candidates-min-spaces+##' (requires 
+* '''##‘C-x |’##''' -- ##‘icicle-doremi-inter-candidates-min-spaces+’## (requires 
 <tt>[[doremi.el]]</tt>) (increment option <tt>‘[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]’</tt>)
-* '''`C-x -'''' -- `##icicle-doremi-zoom-Completions+##' (requires 
+* '''`C-x -'''' -- ##‘icicle-doremi-zoom-Completions+’## (requires 
 <tt>[[doremi-frm.el]]</tt> and Emacs 23 or later)
 * '''##‘C-x #’##''' -- increment/decrement option <tt>‘[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]’</tt>
 
@@ -957,7 +957,7 @@ during '''Icicles''' [[Icicles - Search Commands, Overview|search]]:
 
 The following minibuffer binding lets you evaluate an EmacsLisp
 [[sexp]] at any time, using a recursive minibuffer.  It displays the result of evaluation in the [[echo area]] or in
-a pop-up buffer, `##*Pp Eval Output*##'.  With a prefix arg (`C-u M-:'), it inserts the result into the minibuffer at [[point]].
+a pop-up buffer, ##‘*Pp Eval Output*’##.  With a prefix arg (`C-u M-:'), it inserts the result into the minibuffer at [[point]].
 
 [:icicle-pp-eval-expression-in-minibuffer]
 
@@ -1012,7 +1012,7 @@ completions:
 * '''`C-insert'''' -- `icicle-insert-completion': Move
 cursor to the minibuffer, with the current `*Completions*' candidate
 as input.
-* '''`C-a'''', '''`C-e'''' -- `##icicle-beginning-of-line+##', `##icicle-end-of-line+##' (repeatable)
+* '''`C-a'''', '''`C-e'''' -- ##‘icicle-beginning-of-line+’##, ##‘icicle-end-of-line+’## (repeatable)
 * '''`C-g'''', '''`q'''' -- `icicle-abort-recursive-edit'
 * ''''`C-M-T'''' (aka `C-M-S-t') -- `icicle-top-level'
 * '''`mouse-2'''' -- `icicle-mouse-choose-completion' (Emacs <23.2)
