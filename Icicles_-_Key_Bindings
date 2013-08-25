@@ -34,7 +34,7 @@ existing '''Minibuf''' menu.  Whatever the menu they appear in, however,
 '''Icicles''' menu items are visible only when ''Icicle'' mode is active.
 
 If you do not want '''Icicles''' to add items to menus besides '''Minibuf'''
-and '''Icicles''', then set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus|icicle-touche-pas-aux-menus]]</tt>'''' to
+and '''Icicles''', then set [[option]] '''<tt>‘[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus|icicle-touche-pas-aux-menus]]’</tt>''' to
 non-`nil'.  See [[Icicles - Customizing Key Bindings]].
 
 '''2.''' '''Icicles''' adds the [[key]] `S-TAB' (bound to `icicle-complete-keys')
@@ -47,7 +47,7 @@ more information about this use of `S-TAB'.
 
 (The documentation always refers to the key that performs key
 completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
-You can [[Customize]] it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+You can [[Customize]] it, using option '''<tt>‘[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]’</tt>'''.)
 
 
 
@@ -67,7 +67,7 @@ You can [[Customize]] it, using option '''`<tt>[[Icicles - Customization and Gen
 == Icicle-Mode Bindings ==
 
 Most top-level ''Icicle''-mode bindings are in the '''Icicles''' menu-bar menu.  In
-addition, option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' causes
+addition, option '''<tt>‘[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]’</tt>''' causes
 '''Icicles''' to bind some keyboard keys to some top-level '''Icicles'''
 commands.  Some of these take the place of similar,
 global bindings whenever you are in ''Icicle'' mode.  Typically, these
@@ -135,7 +135,7 @@ bound to other commands in [[buffer]] `*Completions*' and in the
 
 (The documentation always refers to the key that performs key
 completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
-You can customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+You can customize it, using option '''<tt>‘[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]’</tt>'''.)
 
 
 
@@ -217,7 +217,7 @@ by '''Icicles''' commands:
  `yank-pop'.........................`icicle-yank-pop-commands' (`M-y')
 
 Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
-to whatever the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]</tt>'''' is.  By
+to whatever the value of option '''<tt>‘[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]’</tt>''' is.  By
 default, this value is `yank'.
 
 Option `icicle-top-level-key-bindings' remaps not only these standard
@@ -226,7 +226,7 @@ For example, if you use package '''[[Bookmark+]]''', then type-specific
 [[bookmark]] jump commands such as `bookmarkp-dired-jump-other-window'
 are remapped to '''Icicles''' multi-command versions.
 
-In addition, option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' redefines some
+In addition, option '''<tt>‘[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]’</tt>''' redefines some
 vanilla functions to their '''Icicles''' versions while in ''Icicle'' mode.
 Any redefined functions that are bound to keys keep those
 bindings.  For example, `Info-index' is by default redefined to
@@ -306,7 +306,7 @@ for input with completion (e.g. `completing-read',
 
 The keys mentioned are those that are bound by default and used in
 the documentation, but you can customize any or all of them using
-[[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>''''.
+[[option]] '''<tt>‘[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]’</tt>'''.
 
 
 
@@ -325,7 +325,7 @@ the documentation, but you can customize any or all of them using
 :: Whether a modal cycling key is used for prefix or apropos
 completion at a given time depends on the current completion
 mode, which is determined by which of `TAB' and `S-TAB' was used
-last, or by option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>'''' 
+last, or by option '''<tt>‘[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]’</tt>''' 
 if neither was used.
 
 :: (The mouse wheel bindings are only for Emacs 22 and later. The documentation refers to the keys
@@ -333,12 +333,12 @@ that cycle completion candidates as `down',
 `up', `next', `prior', `end', and `home'.  Actually, these are
 the cycling keys only by default.  You can
 customize the cycling keys using options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''', 
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>''''.)
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]’</tt>''',
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]’</tt>''',
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]’</tt>''', 
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]’</tt>''',
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]’</tt>''',
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]’</tt>'''.)
 
 
 
@@ -399,32 +399,32 @@ display them in buffer `*Completions*', highlighting the
 common prefix. This replaces `minibuffer-complete'.  (The documentation always refers to the key that does
  this as `TAB'.  Actually, it is only `TAB' by
 default.  You can customize it, using option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>''''.)
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]’</tt>'''.)
 
 [:icicle-apropos-complete]
 [:icicle-previous-candidate-keys]
 * '''`S-TAB'''' -- In the minibuffer: `icicle-apropos-complete' -- like `TAB', but use [[apropos completion]].   In buffer `*Completions*': `icicle-move-to-previous-completion' -- move backwards among candidates. At top level:
 `icicle-complete-keys' -- complete a [[key sequence]].  (The documentation always refers to the keys that do these things as `S-TAB'.  Actually, they are only `S-TAB' by
 default.  You can customize the keys using options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]’</tt>''',
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]’</tt>''', and '''<tt>‘[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]’</tt>'''.)
 
 [:icicle-prefix-complete-no-display]
 * '''`C-M-TAB'''' -- `icicle-prefix-complete-no-display': Like `TAB', but
 does not display candidates in `*Completions*'.  (The documentation always refers to the key that does
 this as `C-M-TAB'.  Actually, it is only `C-M-TAB' by
 default.  You can customize it, using option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)  During Isearch, `C-M-TAB' and `M-TAB' complete the
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]’</tt>'''.)  During Isearch, `C-M-TAB' and `M-TAB' complete the
 search string against past search strings.  (These
 are the keys by default.  You can customize this
-using option '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''''.)
+using option '''<tt>‘[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]’</tt>'''.)
 
 [:icicle-apropos-complete-no-display]
 * '''`C-M-S-TAB'''' -- `icicle-apropos-complete-no-display': Like
 `S-TAB', but does not display candidates in `*Completions*'.  (The documentation always refers to the key that does
 this as `C-M-S-TAB'.  Actually, it is only
 `C-M-S-TAB' by default.  You can customize it, using
-option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>''''.)
+option '''<tt>‘[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]’</tt>'''.)
 
 [:icicle-save-predicate-to-variable]
 * '''`##C-M-&##''''  -- `icicle-save-predicate-to-variable': Save the current
@@ -442,11 +442,11 @@ insert a previously entered input into the minibuffer.
 Use this instead of the `M-s' and `M-r' of vanilla
 Emacs, which are not available in Icicle mode.
 (`M-o' is the key by default.  You can customize this
-using option '''`<tt>[[Icicles - Customization and General Tips#icicle-minibuffer-key-bindings|icicle-minibuffer-key-bindings]]</tt>''''.)  During Isearch, `M-o' completes against the current
+using option '''<tt>‘[[Icicles - Customization and General Tips#icicle-minibuffer-key-bindings|icicle-minibuffer-key-bindings]]’</tt>'''.)  During Isearch, `M-o' completes against the current
 [[search ring]], and appends the past search string you
 choose to the current one.  (`M-o' is the key by
 default.  You can customize this using option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>''''.)
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]’</tt>'''.)
 
 
 [:icicle-insert-key-description]
@@ -484,11 +484,11 @@ always available).
 (`C-M-F' and `C-M-C' are the default values for
 the keys that invoke completion on demand.  You can
 customize the keys to use, using options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.)
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]’</tt>''' and '''<tt>‘[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]’</tt>'''.)
 
 By default, `TAB' and `S-TAB' also perform modal candidate cycling
 when you repeat them.  You can inhibit this feature by customizing
-option '''`<tt>[[Icicles - Customizing Key Bindings#icicle-TAB-S-TAB-only-completes-flag|icicle-TAB/S-TAB-only-completes-flag]]</tt>''''.
+option '''<tt>‘[[Icicles - Customizing Key Bindings#icicle-TAB-S-TAB-only-completes-flag|icicle-TAB/S-TAB-only-completes-flag]]’</tt>'''.
 
 In '''Icicles''', multi-line completion candidates are not uncommon.
 You can move up and down minibuffer lines with `C-p' and `C-n',
@@ -556,7 +556,7 @@ items: it deletes the current item from the history.
 
 The following key is bound during completion to control the
 display of thumbnail images in `*Completions*' for candidates that
-name image files or image-file bookmarks (see '''[[Bookmark+]]''').  It cycles the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>'''' to show images and names (the default), show only names, or show only images.
+name image files or image-file bookmarks (see '''[[Bookmark+]]''').  It cycles the value of option '''<tt>‘[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]’</tt>''' to show images and names (the default), show only names, or show only images.
 
 * '''`C-x t'''' -- `icicle-cycle-image-file-thumbnail'
 
@@ -584,7 +584,7 @@ See also [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and D
 
 During [[buffer]]-name completion, the following additional minibuffer bindings
 are
-defined by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>''''.  By
+defined by user option '''<tt>‘[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]’</tt>'''.  By
 default, they are the following:
 
 * '''`C-x m'''' -- `icicle-bookmark-non-file-other-window': Visit a [[BookmarkPlus#AdditionalTypes|buffer (non-file) bookmark]].  See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].  (Available only if you use '''[[Bookmark+]]'''.)
@@ -615,7 +615,7 @@ buffers in iconified frames.
 
 The following minibuffer binding moves the [[cursor]] to the start of
 the part of your input, if any, that is highlighted because it does not match any
-completion candidate (see option '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]</tt>'''').  Repeating this
+completion candidate (see option '''<tt>‘[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]’</tt>''').  Repeating this
 command kills the rest of the line, removing the highlighted
 mismatched input.
 
@@ -650,7 +650,7 @@ their documentation.  If you finished the command by just typing
 `C-g', then your input (`hook') was never really entered, so it is
 not available via the minibuffer history (`M-p').  You can
 retrieve it with `C-l', to use it again, in your next command.  User option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]</tt>'''' controls the behavior of `C-l'
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]’</tt>''' controls the behavior of `C-l'
 and `##C-##'''##L##''''; if non-`nil', then, instead of cycling inputs, these
 commands let you access previous inputs using completion.
 
@@ -675,7 +675,7 @@ the current minibuffer history list.  For explanation, see [[Icicles - History E
 Minibuffer binding '''`C-M-pause'''' lets you use a different minibuffer
 history during the current input reading with completion.
 Normally, you are prompted for the history to use.  Starting with
-Emacs 23, if option '''`<tt>[[Icicles - Customization and General Tips#icicle-populate-interactive-history-flag|icicle-populate-interactive-history-flag]]</tt>'''' is
+Emacs 23, if option '''<tt>‘[[Icicles - Customization and General Tips#icicle-populate-interactive-history-flag|icicle-populate-interactive-history-flag]]’</tt>''' is
 non-`nil', then during command, abbrev, and keyboard-macro
 completion, `C-M-pause' completes your input against the history
 of all commands that were invoked interactively in any way,
@@ -886,7 +886,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>')
 * '''`##C-M-^##'''' -- `icicle-toggle-completions-format' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-toggle-completions-format|icicle-toggle-completions-format]]</tt>')
 
-* '''`<tt>C-#</tt>'''' -- `icicle-cycle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
+* '''<tt>‘C-#’</tt>''' -- `icicle-cycle-incremental-completion' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>')
 * '''`##C-(##'''' -- `icicle-next-TAB-completion-method'  (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>')
 * '''`##C-`##'''' -- `icicle-toggle-regexp-quote' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>')
 * '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|icicle-search-replace-literally-flag]]</tt>')
