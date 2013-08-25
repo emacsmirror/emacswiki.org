@@ -21,11 +21,11 @@ search commands along the same lines.  To do that, it is instructive to look at
 the source code of the commands described in this section; they
 can serve as a model for defining your own search commands.
 
-Two of the commands described here, `icicle-compilation-search' and `icicle-comint-search', are specialized versions of `icicle-search' that work only in particular [[buffer]]s where there is little need for `icicle-search' itself. For this reason, these commands reuse the [[key sequence]], '''`##C-c `##'''' (backquote), that is normally bound to `icicle-search'.  This shadow binding occurs
+Two of the commands described here, `icicle-compilation-search' and `icicle-comint-search', are specialized versions of `icicle-search' that work only in particular [[buffer]]s where there is little need for `icicle-search' itself. For this reason, these commands reuse the [[key sequence]], '''`[tt]C-c `'[tt]''' (backquote), that is normally bound to `icicle-search'.  This shadow binding occurs
 if the current [[major mode]] is a compilation mode (for `icicle-compilation-search') or an
 interactive interpreter mode such as `shell-mode' or Lisp interactive mode (for `icicle-comint-search').
 
-: ['''Programmer Note:''' Actually, the way this works is that `##C-c `##' is
+: ['''Programmer Note:''' Actually, the way this works is that '''`[tt]C-c `'[tt]'''  is
 bound to `icicle-search-generic', which calls the command that is the value of internal [[variable]] `icicle-search-command'.
 You can use this mechanism to provide custom '''Icicles''' search
 commands for particular buffers.]
@@ -54,15 +54,15 @@ command.  See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-fla
 Instead of providing a [[context regexp]], for commands
 '''`icicle-search-char-property'''',
 '''`icicle-search-overlay-property'''', and
-'''`icicle-search-text-property'''' ('''`##C-c "##'''') you provide a ''[[character property]]''
+'''`icicle-search-text-property'''' ('''[tt]`C-c "'[/tt]''') you provide a ''[[character property]]''
 (e.g. `face') and its value (e.g. `font-lock-function-name-face').
 All zones of text that have that property with that value become
 the [[completion]] candidates (search hits).  As always, you can
 filter this set of candidates by typing input in the minibuffer.
 
 By a "'''character property'''" is meant either a [[text property]] or an
-[[overlay]] property.  [tt]‘icicle-search-[b]char[/b]-property’[/tt]  searches both kinds of character property; [tt]‘icicle-search-[b]overlay[/b]-property’[/tt] searches only overlay
-properties; and [tt]‘icicle-search-[b]text[/b]-property’[/tt] (`##C-c "##') searches only text
+[[overlay]] property.  [tt]‘icicle-search-[b][i]char[/i][/b]-property’[/tt]  searches both kinds of character property; [tt]‘icicle-search-[b][i]overlay[/i][/b]-property’[/tt] searches only overlay
+properties; and [tt]‘icicle-search-[b][i]text[/i][/b]-property’[/tt] (`##C-c "##') searches only text
 properties.  
 
 For example, if you use `icicle-search-char-property' with a `face' property
