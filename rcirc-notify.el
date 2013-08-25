@@ -19,6 +19,9 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
+;; * 2013/08/25 - Adjust formatting for compatibility with
+;;                package.el - Steve Purcell
+;;
 ;; * 2012/04/06 - Fix bug breaking PRIVMSG notifications,
 ;;                indicate each of the keywords mentioned, and
 ;;                implement settings as customizations. -Ken Manheimer
