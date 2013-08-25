@@ -61,8 +61,8 @@ the [[completion]] candidates (search hits).  As always, you can
 filter this set of candidates by typing input in the minibuffer.
 
 By a "'''character property'''" is meant either a [[text property]] or an
-[[overlay]] property.  `##icicle-search-##'''##char##'''##-property##'  searches both kinds of character property; `##icicle-search-##'''##overlay##'''##-property##' searches only overlay
-properties; and `##icicle-search-##'''##text##'''##-property##' (`##C-c "##') searches only text
+[[overlay]] property.  [tt]`icicle-search-[b]char[/b]-property'[/tt]  searches both kinds of character property; [tt]`icicle-search-[b]overlay[/b]-property'[/tt] searches only overlay
+properties; and [tt]`icicle-search-[b]text[/b]-property'[/tt] (`##C-c "##') searches only text
 properties.  
 
 For example, if you use `icicle-search-char-property' with a `face' property
