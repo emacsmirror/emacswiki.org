@@ -513,7 +513,7 @@ contexts as defined.
 For example, if you use `icicle-search-thing' and you define [[sexp]]s
 as the search contexts, then this feature lets you search the
 zones of text that are ''not'' within a sexp.  Or if you use
-`icicle-search-text-property' (`##C-c "##'), you can search the zones
+`icicle-search-text-property' (##‘C-c "’##), you can search the zones
 of text that do ''not'' have a text-property value that you specify
 (e.g., property `face' with faces `font-lock-comment-face' and
 `font-lock-comment-delimiter-face' -- which means all code ''outside
