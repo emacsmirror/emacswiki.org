@@ -47,7 +47,7 @@ of hits.
 * You can act across ''multiple'' [[buffer]]s, files, or [[bookmark]]s -- see
 information about the `icicle-search' [[prefix argument]].
 
-* You can also replace matches within ''text-property'' search contexts -- just use `icicle-search-text-property' ([tt][b]‘C-c "’[/b][/tt]) as the search
+* You can also replace matches within ''text-property'' search contexts -- just use `icicle-search-text-property' ('''##‘C-c "’##''') as the search
 command.
 
 [:SearchMatch--definition]
