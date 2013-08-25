@@ -4,6 +4,7 @@
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;; Keywords: popup, kill-ring, pos-tip
+;; Package-Requires: ((pos-tip "0.4.5") (popup "0.5"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
