@@ -4,7 +4,7 @@ I have no business using emacs. I am a literary translator and have a hard enoug
 * A translation environment based on Org
 * A blob of glue-code between org, gnus, and BBDB
 * A new version of BBDB built on top of [[http://www.emacswiki.org/emacs/EmacsLispObjects EIEIO]]
-* A system of identifying word boundaries in Chinese (similar to what's done for Thai in lisp/languages/thai-word.el)
+* A system of identifying word boundaries in Chinese (similar to what's done for Thai in [[http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/language/thai-word.el lisp/languages/thai-word.el]])
 
 I may finish one or more of these projects before the age of retirement.
 
