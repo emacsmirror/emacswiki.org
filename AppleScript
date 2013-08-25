@@ -4,8 +4,10 @@ Edit Mac AppleScript using Emacs
 ;;;; Allow editing of binary .scpt files (applescript) on mac.
 (add-to-list 'jka-compr-compression-info-list
              `["\\.scpt\\'"
-               "converting text applescript to binary applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") nil
-               "converting binary applescript to text applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") ("-d")
+               "converting text applescript to binary applescprit " 
+               ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") nil
+               "converting binary applescript to text applescprit " 
+               ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") ("-d")
                nil t "FasdUAS"])
 ;;It is necessary to perform an update!
 (jka-compr-update)
