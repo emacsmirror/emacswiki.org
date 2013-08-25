@@ -1,4 +1,5 @@
-;;;; rcirc-notify.el -- libnotify popups
+;;; rcirc-notify.el -- libnotify popups
+;;
 ;; Copyright (c) 2008 Will Farrington
 ;; Copyright (c) 2009, 2011 Alex Schroeder <alex@gnu.org>
 ;;
@@ -42,7 +43,7 @@
 ;;
 ;; * 2008/02/11 - First release
 ;;
-;;;; Commentary:
+;;; Commentary:
 ;;
 ;; This code is inspired in part by erc-page-me.el and offers
 ;; the same functionality as it, but for rcirc.
@@ -203,3 +204,4 @@ to them."
 (add-hook 'rcirc-print-hooks 'my-rcirc-notify-me)
 
 (provide 'rcirc-notify)
+;;; rcirc-notify.el ends here
