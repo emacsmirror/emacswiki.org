@@ -73,7 +73,6 @@ Keys:
 [color=blue]this text is blue[/color]
 [size=+2]this text is two sizes larger than normal[/size]
 [font=courier]this text is in the courier font[/font]
-[url=http://www.example.org/]text[/url]
 [quote]quoted text[/quote]
 [code]preformatted monospaced text[/code] (no nesting of other bbCode!)
 [center]this text is centered[/center]
