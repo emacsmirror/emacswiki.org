@@ -62,6 +62,10 @@ Keys:
 * `C-#' -- no tt ([tt][tt][tt][/tt][/tt])
 * `[tt]C-#[/tt]' -- `...' then tt
 * [tt]`C-#'[/tt] -- tt then `...'
+* [tt]`C-"'[/tt] -- tt then `.."'
+* `[tt]C-"[/tt]' -- tt then `.."'
+* `##C-"##' -- the old way
+
 
 
 [b]this text is bold[/b]
