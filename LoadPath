@@ -12,9 +12,9 @@ Emacs or by adding it to your InitFile.
 == Adding a directory ==
 
 To add a single directory to the front of your `load-path':
-
-    (add-to-list 'load-path "~/.emacs.d/lisp/")
-
+{{{
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+}}}
 People with a CommonLisp background like to make sure that the entry ends with a trailing slash, but this is not required by EmacsLisp.
 
 [:AddSubDirectories]
@@ -27,73 +27,73 @@ the directory from which Emacs was started.  To add a directory to the
 `load-path' the current directory has to be temporarily changed by
 binding `default-directory'. To recursively add the sub-directories of
 the current directory to the end of the `load-path' do this:
-
-    (let ((default-directory "~/.emacs.d/lisp/"))
-      (normal-top-level-add-subdirs-to-load-path))
-
+{{{
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
+}}}
 This avoids subdirectories not starting with letters or digits, those named
 ##RCS## or ##CVS##, and those containing a file named ##.nosearch##.
 
 To add only some subdirectories, pass the list as a second argument.  For example:
-
-    (let ((default-directory "~/.emacs.d/lisp/"))
-      (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
-
+{{{
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
+}}}
 To have libraries in particular paths take precedence over other libraries elsewhere with the same name, put those
 paths at the beginning of `load-path'.
-
-    (let ((default-directory "~/.emacs.d/lisp/"))
-      (setq load-path
-            (append
-             (let ((load-path (copy-sequence load-path))) ;; Shadow
-               (normal-top-level-add-subdirs-to-load-path))
-             load-path)))
-
+{{{
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (normal-top-level-add-subdirs-to-load-path))
+         load-path)))
+}}}
 Assuming that you install packages in ##~/.emacs.d/lisp/## and
 that some of the installed packages are single libraries while others
 are placed inside their own sub-directories you need to combine the
 steps from above.
-
-    (let ((default-directory "~/.emacs.d/lisp/"))
-      (normal-top-level-add-to-load-path '("."))
-      (normal-top-level-add-subdirs-to-load-path))
-
+{{{
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (normal-top-level-add-to-load-path '("."))
+  (normal-top-level-add-subdirs-to-load-path))
+}}}
 Since various packages store information in ##~/.emacs.d/##, it is
 unwise to add all of its sub-directories to `load-path'.  Above we
 only added the sub-directory ##lisp## to avoid loading files that
 aren't libraries.
 
 To install all directories to the beginning of the `load-path' use:
-
-    (let ((default-directory "~/.emacs.d/lisp/"))
-      (setq load-path
-            (append
-             (let ((load-path (copy-sequence load-path))) ;; Shadow
-               (append 
-                (copy-sequence (normal-top-level-add-to-load-path '(".")))
-                (normal-top-level-add-subdirs-to-load-path)))
-             load-path)))
-
+{{{
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append 
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
+}}}
 If you are using Emacs 23 you can use `user-emacs-directory' to
 construct a path to one of its sub-directories.
-
-    (concat user-emacs-directory
-            (convert-standard-filename "lisp/"))
-
+{{{
+(concat user-emacs-directory
+        (convert-standard-filename "lisp/"))
+}}}
 Note how we use `convert-standard-file-name' to construct a path
 which is valid on all supported platforms.
 
 If you use an older versions of Emacs you can backport this useful
 variable.
-
-    (unless (boundp 'user-emacs-directory)
-      (defvar user-emacs-directory "~/.emacs.d/"
-        "Directory beneath which additional per-user Emacs-specific
+{{{
+(unless (boundp 'user-emacs-directory)
+  (defvar user-emacs-directory "~/.emacs.d/"
+    "Directory beneath which additional per-user Emacs-specific
 files are placed.
-      Various programs in Emacs store information in this directory.
-      Note that this should end with a directory separator.
-      See also `locate-user-emacs-file'."))
-
+  Various programs in Emacs store information in this directory.
+  Note that this should end with a directory separator.
+  See also `locate-user-emacs-file'."))
+}}}
 == Default value ==
 
 The default value of `load-path' includes two special directories
