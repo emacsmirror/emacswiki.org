@@ -217,12 +217,17 @@ instead."
         (notsent t))
     (if accounts
         (while (and accounts notsent)
-          (smtpmail-multi-change (car accounts))
-          (condition-case err
-              (progn (funcall 'smtpmail-send-it)
-                     (setq notsent nil))
-            (error (setq notsent t)))
-          (setq accounts (cdr accounts)))
+          (let (account (car accounts))
+            (smtpmail-multi-change account)
+            (condition-case err
+                (progn (message "Trying %S account... " account)
+                       (funcall 'smtpmail-send-it)
+                       (setq notsent nil))
+              (error (message "Failed to send mail via %S account" account)
+                     (setq notsent t)))
+            (unless notsent
+              (message "Successfully sent message via %S account" account))
+            (setq accounts (cdr accounts))))
       (error "No SMTP accounts associated with current buffer, and no default account set"))
     (if notsent (error "Mail not sent"))))
 
