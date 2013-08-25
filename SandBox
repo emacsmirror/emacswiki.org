@@ -62,3 +62,33 @@ Keys:
 * `C-#' -- no tt ([tt][tt][tt][/tt][/tt])
 * `[tt]C-#[/tt]' -- `...' then tt
 * [tt]`C-#'[/tt] -- tt then `...'
+
+
+[b]this text is bold[/b]
+[i]this text is italic[/i]
+[u]this text is underlined[/u]
+[s]this text is striked through[/s] [strike]and this too[/strike]
+[tt]monospaced text[/tt]
+[sub]subscript[/sub] [sup]superscript[/sup]
+[color=blue]this text is blue[/color]
+[size=+2]this text is two sizes larger than normal[/size]
+[font=courier]this text is in the courier font[/font]
+[url=http://www.example.org/]text[/url]
+[quote]quoted text[/quote]
+[code]preformatted monospaced text[/code] (no nesting of other bbCode!)
+[center]this text is centered[/center]
+[img]http://www.example.org/logo.png[/img]
+[left]this (often an image) floats left[/left]
+[right]this (often an image) floats right[/right]
+[h1]title[/h1]
+[h2]title[/h2]
+[h3]title[/h3]
+[h4]title[/h4]
+[h5]title[/h5]
+[h6]title[/h6]
+[list]
+  [*]item one
+  [*]item two
+[/list]
+:) :-) ☺
+:( :-( ☹
