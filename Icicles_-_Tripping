@@ -268,7 +268,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-search-pages''''          -- Search Emacs pages
 * '''`icicle-search-paragraphs''''     -- Search Emacs paragraphs
 * '''`icicle-search-sentences''''      -- Search sentences as contexts
-* '''`icicle-search-text-property'''' ('''`##C-c "##'''') -- Trip among buffer
+* '''`icicle-search-text-property'''' ([tt][b]‘C-c "’[/b][/tt]) -- Trip among buffer
   strings with some [[text property]]
 * '''`icicle-search-thing''''          --- Search ThingAtPoint things
 * '''`icicle-search-word'''' ('''`##C-c $##'''') -- Search whole-word hits
