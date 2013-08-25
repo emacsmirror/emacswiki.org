@@ -1,0 +1,31 @@
+Edit Mac AppleScript using Emacs
+<pre>
+;; # mac 上 emacs 直接编辑二进制applescript
+;;;; Allow editing of binary .scpt files (applescript) on mac.
+(add-to-list 'jka-compr-compression-info-list
+             `["\\.scpt\\'"
+               "converting text applescript to binary applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") nil
+               "converting binary applescript to text applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") ("-d")
+               nil t "FasdUAS"])
+;;It is necessary to perform an update!
+(jka-compr-update)
+
+</pre>
+
+applescript-helper.sh
+<pre>
+#/bin/sh
+# mac 上 emacs 直接编辑二进制applescript 
+if [ "$1" = "-d" ]; then
+    RANDOMFILE="applescript${RANDOM}.scpt"
+    cat /dev/stdin >"/tmp/$RANDOMFILE"
+    osadecompile "/tmp/$RANDOMFILE"
+    rm "/tmp/$RANDOMFILE"
+else
+    RANDOMFILE="applescript${RANDOM}.scpt"
+    osacompile -o "/tmp/$RANDOMFILE"
+    cat "/tmp/$RANDOMFILE"
+    rm "/tmp/$RANDOMFILE"
+fi
+</pre>
+and put applescript-helper.sh in ~/.emacs.d/bin/
