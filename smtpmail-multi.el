@@ -220,7 +220,7 @@ instead."
         (notsent t))
     (if accounts
         (while (and accounts notsent)
-          (let (account (car accounts))
+          (let ((account (car accounts)))
             (smtpmail-multi-change account)
             (condition-case err
                 (progn (message "Trying %S account... " account)
