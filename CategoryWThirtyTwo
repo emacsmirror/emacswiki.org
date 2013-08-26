@@ -15,7 +15,7 @@ Where to get it:
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 * Unofficial/Development versions (it is however normally very stable):
-** Periodic trunk builds for w32 (by Dani Moncayo): https://www.dropbox.com/sh/zmxzw7pk2ml7qip/jS1Fuz1pZr
+** w32 binaries (by Dani Moncayo): https://www.dropbox.com/sh/zmxzw7pk2ml7qip/jS1Fuz1pZr
 ** **2012-08-25** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
 *** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
 *** Support for images enabled:
