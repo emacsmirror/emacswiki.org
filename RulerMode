@@ -10,9 +10,9 @@ Or you can enable ruler mode for windows containing files with
 
   (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
-== tabbar-ruler ==
+== TabbarRuler ==
 
-This allows a popup tabbar AND menu bar based on cursor location.  It also switches between tab-bar and ruler mode.  It is included in EmacsPortable.  It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]] [[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as Lisp:tabbar.el.  It is located in Lisp:tabbar-ruler.el
+TabbarRuler allows a popup tabbar AND menu bar based on cursor location.  It also switches between tab-bar and ruler mode.  It is included in EmacsPortable.  It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]] [[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as Lisp:tabbar.el.  It is located in Lisp:tabbar-ruler.el
 
 
 '''See Also:''' PopupRuler.
