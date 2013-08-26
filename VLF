@@ -21,6 +21,10 @@ In the screenshot above you can see VLF happily (albeit slowly) surfing a 3GB+ l
 In improved mode called vlfi (View Large Files Improved) supporting indexing, unicode, regexp search, chunk editing is available here: https://github.com/m00natic/vlfi
 
 [new]
+vlfi is now merged to GNU ELPA's vlf
+-- Andrey Kotlarski
+
+[new]
 Strange. Does it really work? I thought the EmacsFileSizeLimit was
 imposed because `point' has to be a number in Elisp. But in your code,
 the variables `vlf-current-start-pos' and all computations made with
