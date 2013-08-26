@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-08-19 02:06:43
-;; Version: 0.1
-;; Last-Updated: 2013-08-19 02:06:43
+;; Version: 0.2
+;; Last-Updated: 2013-08-26 15:24:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/smtpmail-multi
 ;; Keywords: comm
@@ -176,6 +176,7 @@ These different smtp accounts will be tried sequentially until the mail is succe
                        (repeat (symbol :tag "SMTP Account" :help-echo "A symbol associated with an SMTP account listed in `smtp-multi-accounts'"))))
   :group 'smtpmail)
 
+;;;###autoload
 (defun smtpmail-multi-change (account)
   "Change the smtp settings to match the settings for ACCOUNT in `smtpmail-multi-accounts'."
   (let ((settings (cdr (assoc account smtpmail-multi-accounts))))
@@ -192,6 +193,7 @@ These different smtp accounts will be tried sequentially until the mail is succe
         (setq mail-specify-envelope-from t
               mail-envelope-from (nth 3 settings))))))
 
+;;;###autoload
 (defun smtpmail-multi-get-accounts nil
   "Returns the SMTP accounts associated with the current buffer according to `smtpmail-multi-associations'.
 The account details associated with each account name are stored in `smtpmail-multi-accounts'.
@@ -211,6 +213,7 @@ instead."
       smtpmail-multi-default-account))
 
 ;; Set message-send-mail-function to this function
+;;;###autoload
 (defun smtpmail-multi-send-it nil
   "Send mail using smtp server selected by the `smtpmail-multi-select' function."
   (let ((accounts (smtpmail-multi-get-accounts))
