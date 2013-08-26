@@ -19,7 +19,7 @@ This package includes a number of extensions and improvements:
 * minibuffer documentation using Eldoc
 * C-z switches between the Post buffer and Workspace
 * display documentation and help in w3m, rather than launching the SC Help app
-* fixes application and documentation paths OS X
+* fixes application and documentation paths on OS X
 
 == SuperCollider Link Dump ==
 * http://supercollider.sourceforge.net/wiki/index.php/SuperCollider_with_emacs:_scel
