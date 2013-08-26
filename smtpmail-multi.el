@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-08-19 02:06:43
-;; Version: 0.2
+;; Version: 0.3
 ;; Last-Updated: 2013-08-26 15:24:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/smtpmail-multi
