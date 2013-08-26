@@ -87,7 +87,7 @@ In that case, you just use `icicle-search', not `icicle-occur',
 providing it with a context-defining regexp that matches only the
 lines you want.
 
-For example, you might use '''`##.*for.*###'''', to start
+For example, you might use '''##‘.*for.*’##''', to start
 with only the lines containing `for' as the contexts to search.
 Again, `icicle-occur' is just a shortcut version of
 `icicle-search' for the common case where you want to dynamically
