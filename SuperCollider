@@ -1,13 +1,3 @@
-== SuperCollider tools for Emacs ==
-''[Supercollider] has an Emacs mode, but unfortunately it has bitrotted. This isn’t surprising – they’ve got a great IDE now. Still, you’ll pry Emacs from my COLD DEAD HANDS.''
-
-I’ve written some extensions to the SuperCollider Emacs mode. Get them from GitHub or MELPA:
-
-:: <code>M-x package-install sclang-extensions</code>
-
-* https://chrisbarrettnz.wordpress.com/2013/04/28/supercollider-tools-for-emacs/
-** https://github.com/chrisbarrett/sclang-extensions
-
 == scel ==
 [http://en.wikipedia.org/wiki/SuperCollider Supercollider] has a nice emacs mode for working with the supercollider server and editing supercollider code
 
@@ -15,6 +5,21 @@ The mode itself should come with Supercollider, but as others have noted, it's a
 
 [http://ccrma.stanford.edu/planetccrma/software/supercollider-en/ How to make SuperCollider go "beep"] - an introduction to Supercollider using Emacs and <code>scel</code>
 
+== Third-Party Extensions ==
+''[Supercollider] has an Emacs mode, but unfortunately it has bitrotted. This isn’t surprising – they’ve got a great IDE now. Still, you’ll pry Emacs from my COLD DEAD HANDS.''
+
+SuperCollider is packaged with an Emacs mode, but it does not appear to be actively maintained. There is set of extensions available on the [http://melpa.milkbox.net/ MELPA] package repo that aim to make the mode feel more modern.
+
+* MELPA : <code>M-x package-install sclang-extensions</code>
+* [https://github.com/chrisbarrett/sclang-extensions GitHub]
+* [https://chrisbarrettnz.wordpress.com/2013/04/28/supercollider-tools-for-emacs/ Blogged]
+
+This package includes a number of extensions and improvements:
+* better auto-completion
+* minibuffer documentation using Eldoc
+* C-z switches between the Post buffer and Workspace
+* display documentation and help in w3m, rather than launching the SC Help app
+* fixes application and documentation paths OS X
 
 == SuperCollider Link Dump ==
 * http://supercollider.sourceforge.net/wiki/index.php/SuperCollider_with_emacs:_scel
