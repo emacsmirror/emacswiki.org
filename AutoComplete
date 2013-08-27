@@ -42,7 +42,7 @@ If you are using the current development version of AutoComplete (0.20 at the ti
 [I'm pretty sure this is horribly outdated! (current version 1.4)]
 Speaking of omnicompletion, the way it functions was changed recently.  Since it is not documented yet here is an example of how it works:
 
-
+{{{
   (add-hook 'c-mode-common-hook '(lambda ()
 
           ;; ac-omni-completion-sources is made buffer local so
@@ -69,7 +69,7 @@ Speaking of omnicompletion, the way it functions was changed recently.  Since it
 
           (setq ac-sources '(ac-source-semantic ac-source-yasnippet))
   ))
-
+}}}
 Not terribly difficult but it took me a bit to puzzle out what needed to be done so I thought I would share my results.  [[AndyStewart]] has included the omnicompletion bits into his init file.
 
 -- [[LesHarris]]
