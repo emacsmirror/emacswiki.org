@@ -584,6 +584,13 @@ Is it possible to add some additional information in the popup menus that doesn'
 | x : int    |. 
 </pre>
 --AlessandroPiras
+
+
+[new]
+I couldn't find the place to post a bug report, so I'll leave it here. As of Emacs 24.3.50.1 and auto-complete 1.4 the variable `ac-auto-start' is mysteriously set to `nil' regardless of any configuration value. It is set right after calling `auto-complete-mode' and cannot be reset afterwards. Most likely some timer resets it to nil. However, it is not `ac-clear-variables-every-minute', that happens much later. 
+
+--wvxvw
+
 ----
 CategoryCompletion
 
