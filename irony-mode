@@ -1,4 +1,3 @@
-=irony-mode=
 [https://github.com/Sarcasm/irony-mode/ Irony-mode] is a minor mode that allows clang based completion for C and C++, on the fly syntax checking and more!
 
 ==Advantages==
@@ -7,4 +6,5 @@ One of the big advantages in comparison to other tools is that irony-mode has mu
 The compilation database is used as a reference what rules are used concerning compilation (headers, libraries, etc.).
 
 ==Installation==
+
 To get it simply visit the [https://github.com/Sarcasm/irony-mode/ github] page and clone the repository. All further steps are explained in the readme.
