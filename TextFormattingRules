@@ -34,7 +34,7 @@ does ''not'' work:
 * For horizontal lines, use hyphens (##----##) on a separate line. Horizontal lines are used for the category section of pages, see WikiOrganization.
 * For a short punctuation dash (//en//-dash) in a sentence use two hyphens (##--##) surrounded by spaces.
 ** ##--## -> -- 
-* For a long punctuation dash (//em//-dash) in a sentence use three hyphens (##---##) surrounded by spaces.
+* For a long punctuation dash (//em//-dash) in a sentence use three hyphens (##---##).
 ** ##---## -> ---
 
 The official documentation is here:
@@ -42,6 +42,7 @@ The official documentation is here:
 * [[Oddmuse:Text_Formatting_Rules]]
 * [[Oddmuse:Markup Extension]]
 * [[Oddmuse:Usemod Markup Extension]]
+* [[Oddmuse:bbCode Extension]]
 
 [:AlternativeMarkup]
 == Alternative Markup ==
@@ -81,6 +82,47 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 ; '''##<em>##''': <em>Emphasis</em> (usually italics): ##<em>foo bar (toto)</em>## -> <em>foo bar (toto)</em>
 
 ; '''##<strong>##''': <strong>Strong</strong> (usually bold): ##<strong>foo bar (toto)</strong>## -> <strong>foo bar (toto)</strong>
+
+[bbcode]
+=== BBCode ===
+
+“BBCode is an abbreviation for Bulletin Board Code, the lightweight markup language used to format posts in many message boards. The available tags are usually indicated by rectangular brackets surrounding a keyword, and they are parsed by the message board system before being translated into a markup language the web browsers understands, usually HTML or XHTML” -- [http://en.wikipedia.org/wiki/BBCode Wikipedia]
+
+This module is an implementation of BBCode for OddMuse.
+
+Currently supported:
+
+{{{
+[b]this text is bold[/b]
+[i]this text is italic[/i]
+[u]this text is underlined[/u]
+[s]this text is striked through[/s] [strike]and this too[/strike]
+[tt]monospaced text[/tt]
+[sub]subscript[/sub] [sup]superscript[/sup]
+[color=blue]this text is blue[/color]
+[size=+2]this text is two sizes larger than normal[/size]
+[font=courier]this text is in the courier font[/font]
+[quote]quoted text[/quote]
+[code]preformatted monospaced text[/code] (no nesting of other bbCode!)
+[center]this text is centered[/center]
+[img]http://www.example.org/logo.png[/img]
+[left]this (often an image) floats left[/left]
+[right]this (often an image) floats right[/right]
+[h1]title[/h1]
+[h2]title[/h2]
+[h3]title[/h3]
+[h4]title[/h4]
+[h5]title[/h5]
+[h6]title[/h6]
+[list]
+  [*]item one
+  [*]item two
+[/list]
+:) :-) ☺ (smile)
+:( :-( ☹ (frown)
+}}}
+
+Note that traditionally, ##[url‍=http://www.example.org/]text[/url]## would also be allowed. Apparently spammers also like it, which is why it ended up on BannedHosts.
 
 [:links][:anchors]
 == Links and Anchors ==
