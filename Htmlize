@@ -30,7 +30,7 @@ See also [http://www.students.itu.edu.tr/~yazicivo/files/htmlize.tar.gz htmlize.
 ----
 
 [new]
-<code>htmlize.el</code> has some conflicts with <code>rainbow-delimiters-mode</code>, dunctions such as <code>htmlize-buffer</code> will report an error: <code>htmlize-make-face-map: Wrong type argument: listp, "rainbow-delimiters-depth-1-face"</code>, so I do a small hack to overcome this by using the elisp's <code>defadvice</code> utility.
+<code>htmlize.el</code> has some conflicts with <code>rainbow-delimiters-mode</code>, functions such as <code>htmlize-buffer</code> will report an error: <code>htmlize-make-face-map: Wrong type argument: listp, "rainbow-delimiters-depth-1-face"</code>, so I do a small hack to overcome this by using the elisp's <code>defadvice</code> utility.
 
 Here's the code:
 <pre>
