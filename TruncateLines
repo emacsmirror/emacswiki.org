@@ -2,16 +2,16 @@ Turn off wrapping for a single buffer using `M-x toggle-truncate-lines'.
 
 This is a BufferLocalVariable.
 You can also use the following in your InitFile, although we don't recommend it.
-
-    (set-default 'truncate-lines t)
-
+{{{
+(set-default 'truncate-lines t)
+}}}
 This setting does not apply to horizontally-split windows.
 `C-x 3' splits windows horizontally, where as `C-x 2' splits them vertically.
 
 To turn wrapping on in horizontally-split windows, use the following in your InitFile:
-
-    (setq truncate-partial-width-windows nil)
-
+{{{
+(setq truncate-partial-width-windows nil)
+}}}
 We don't recommend it, either, because horizontally split windows are usually too small to read anyway.  Note that this variable is /not/ buffer-local.
 
 See LineWrap for more info.
@@ -21,8 +21,9 @@ See PhysicalLineMove for a minor-mode that changes line movement commands (C-n, 
 
 If you want to set truncate-partial-width-windows just for a certain mode, you need
 to put the setting in a hook:
-
-    (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
+{{{
+(add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
+}}}
 [new] 
 Nano truncates lines so that when you scroll toward the end of one,
 the line itself moves to the left independently of the rest of the
