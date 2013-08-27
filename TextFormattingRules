@@ -122,7 +122,7 @@ Currently supported:
 :( :-( ☹ (frown)
 }}}
 
-Note that traditionally, ##[url‍=http://www.example.org/]text[/url]## would also be allowed. Apparently spammers also like it, which is why it ended up on BannedHosts.
+Note that traditionally, ##[url‍=http://www.example.org/]text[/url]## would also be allowed. Apparently spammers also like it, which is why it ended up on BannedRegexps.
 
 [:links][:anchors]
 == Links and Anchors ==
