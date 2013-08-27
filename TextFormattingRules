@@ -88,10 +88,6 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 
 “BBCode is an abbreviation for Bulletin Board Code, the lightweight markup language used to format posts in many message boards. The available tags are usually indicated by rectangular brackets surrounding a keyword, and they are parsed by the message board system before being translated into a markup language the web browsers understands, usually HTML or XHTML” -- [http://en.wikipedia.org/wiki/BBCode Wikipedia]
 
-This module is an implementation of BBCode for OddMuse.
-
-Currently supported:
-
 {{{
 [b]this text is bold[/b]
 [i]this text is italic[/i]
