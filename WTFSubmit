@@ -1,0 +1,11 @@
+This scrips allows you to submit code ot thedailywtf.com from emacs.
+
+To use Lisp:submit-wtf.el, insert in your ##~/.emacs##:
+
+   (require 'the-daily-wtf)
+
+To activate the form, type:
+
+   M-x wtf-submit RET
+
+You can customize ##the-daily-wtf## it to  set some defaults like email address and name:
