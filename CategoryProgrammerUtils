@@ -1,4 +1,4 @@
-[[fr:CatégorieOutilsDuProgrammeur]]
+[[fr:CatÃÂ©gorieOutilsDuProgrammeur]]
 
 This page collects tools that help programmers be more
 productive with programs written in languages such as C,
@@ -90,3 +90,4 @@ See also CategoryVersionControl.
 * RemoteProgramDevelopment -- Edit and run code on a remote host.
 * <tt>[[vhdl-goto-def.el]]</tt>, <tt>[[vhdl-process-wave.el]]</tt> -- For VHDL coders.
 * [http://code.google.com/p/flyparse-mode/  Flyparse-mode] -- Use external parsers to generate s-expression ASTs for language files, as they are being edited. Language modes are then able to query these ASTs using a declarative search syntax. 
+* [[WTFSubmit]] -- Submit some horrible code to TheDailyWTF.com
