@@ -61,7 +61,7 @@ GitCommitMode helps with editing and manipulating commit messages.
 
 * EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
 * [http://github.com github] is a popular website to host and browse git repositories.  See GitHub.
-* [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
+* [http://alexott.net/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
 * [http://files.taesoo.org/git-emacs/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
 
 == Configuration ==
