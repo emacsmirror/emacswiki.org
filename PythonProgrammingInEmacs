@@ -134,7 +134,7 @@ to support virtual environments, but this is largely untested.
 
 * Newest version of this code from the original author [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py here].
 
-* The code [http://python.pastebin.com/f627691e0 here], [http://pastebin.ca/1797770 here] or [http://paste.uni.cc/20534 here] runs pylint + pychecker + pep8
+* The code [http://python.pastebin.com/f627691e0 here] or [http://pastebin.ca/1797770 here] runs pylint + pychecker + pep8
 
 * [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py Here] is an extended, cleaned up and bug-fixed version of the script above by Tavis Rudd (not the original author)
 
