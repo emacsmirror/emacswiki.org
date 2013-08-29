@@ -9,15 +9,15 @@ edited in the same way, with visual feedback as you type.
 
 Normal scenario of Iedit mode is like:
 
- - Highlight certain contents - by press C-;
+* Highlight certain contents - by press C-;
    All occurrences of a symbol, string or a rectangle in the buffer or a region
    may be highlighted corresponding to current mark, point and prefix
    argument. Refer to the document of `iedit-mode' for details.
 
- - Edit one of the occurrences
+* Edit one of the occurrences
    The change is applied to other occurrences simultaneously.
 
- - Finish - by pressing C-; again
+* Finish - by pressing C-; again
 
 This package also provides rectangle support with *visible rectangle*
 highlighting, which is similar with cua mode rectangle support. But it's
@@ -30,14 +30,14 @@ when in Iedit mode - it toggles hiding non-matching lines.
 
 Renaming refactoring is convenient in Iedit mode
 
- - The symbol under point is selected as occurrence by default and only complete
+* The symbol under point is selected as occurrence by default and only complete
    symbols are matched
 
- - With digit prefix argument 0, only symbols in current function are matched
+* With digit prefix argument 0, only symbols in current function are matched
 
- - Restricting symbols in current region can be done by pressing C-; again
+* Restricting symbols in current region can be done by pressing C-; again
 
- - Last renaming refactoring is remembered and can be applied to other buffers
+* Last renaming refactoring is remembered and can be applied to other buffers
    later
 
 There are also some other facilities you may never think about.  Refer to the
