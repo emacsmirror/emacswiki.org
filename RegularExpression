@@ -44,7 +44,7 @@ Many characters are special when they follow a backslash -- see below.
   \( \)    start\end of group
   \< \>    start\end of word
   \_< \_>  start\end of symbol
-  \` \'    start\end of buffer
+  \` \'    start\end of buffer/string
   \1       string matched by the first group
   \n       string matched by the nth group
   \{3\}    previous character or group, repeated 3 times
