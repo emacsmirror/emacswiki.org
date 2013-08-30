@@ -64,6 +64,7 @@ See also CategoryVersionControl.
 == Bug tracking ==
 
 * DitzMode -- Interface to the Ditz distributed bug tracker.
+* BugzMode -- Interface to the Bugzilla bug tracker.
 
 == Package management and installers ==
 
