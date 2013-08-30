@@ -1,0 +1,6 @@
+bugz-mode provides a nice Emacs user interface to the bugzilla bug tracking system. Underneath it uses the pybugz command-line program to communicate with the remote server.  The goal is that you must be able to do all kind of activities in the bug tracker without leaving Emacs, without X-window and, most importantly, without a bloated modern web brower like firefox. 
+
+bugz-mode homepage is at http://www.jemarch.net/bugz-mode.html
+
+Git repo at http://www.jemarch.net/git/bugz-mode.git
+
