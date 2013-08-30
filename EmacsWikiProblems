@@ -10,6 +10,13 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
+== "New" entries do not appear correctly ==
+
+I modified [[LineNumbers]] and that somehow broke the page appearance; now it's full of "[new]" strings (it wasn't before my edit).
+
+Oh God, it looks like i'm going to do it with this page as well.  "Diff" tells me only about my small modifications.  What am i doing wrong?
+-- AlexKost
+
 == Colon line prefix does not indent correctly ==
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
