@@ -37,6 +37,7 @@ Other pages (could this please be split in major and minor modes?):
 * BlankMode -- minor mode to visualize blanks (SPACE, HARD SPACE and TAB)
 * BrowseUrl
 * BugzillaMode -- a mode for editing bugzilla dump files
+* BugzMode -- a mode for editing bugzilla bugs
 * ButtonLockMode -- clickable text defined by regular expression, controlled by font-lock
 * CelsscMode -- a mode for editing celestia catalog files
 * CddbMode -- a mode for CD database files
