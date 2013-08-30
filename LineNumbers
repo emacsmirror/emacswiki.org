@@ -274,6 +274,10 @@ It is possible to change the linum's face so that the background has a custom co
 [[image:leftmargin]]
 
 
+[new]
+As far as i know that space under the numbers is the "default" face and there is no difference between this color and the background of other buffers.  So all you can do is to have the same background color for the "default" and "linum" faces.  (You can customize a face with "M-x customize-face")  -- AlexKost
+
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,
