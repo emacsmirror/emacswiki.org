@@ -17,6 +17,9 @@ I modified [[LineNumbers]] and that somehow broke the page appearance; now it's 
 Oh God, it looks like i'm going to do it with this page as well.  "Diff" tells me only about my small modifications.  What am i doing wrong?
 -- AlexKost
 
+[new]
+Whoops! That was a bug. I had installed the BBCode extension to support ##[b]bold[/b]## and the like. When it looked at the wiki text, it decided that ##[new]## was an unknown BBCode and it didn't get handled by the "Portrait Extension". I changed the order of the rules and now it should work again. -- AlexSchroeder
+
 == Colon line prefix does not indent correctly ==
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
@@ -60,7 +63,7 @@ On my iPad it looks as follows:
 {{{
 normal text
 
-   • bullet
+   â¢ bullet
    indent
 }}}
 
@@ -69,7 +72,7 @@ The variant you prefer would be this, correct?
 {{{
 normal text
 
- • bullet
+ â¢ bullet
    indent
 }}}
 
@@ -97,7 +100,7 @@ But that particular search fails to find anything but the Category-NeedsAttentio
 Also of Note: CNA markup does not appear in the page preview. It only appears after save. So twiddling with tricks to avoid its appearance can only be tested by a number of frivolous edit-save cycles.
 
 [new]
-Clearly an instance failure of WikiPedia:Use–mention_distinction. I don't think there currently is a solution. I think all our categories suffer from it. The only way to solve this would be to add meta information. But then how would you search for the meta information? I believe that there is no perfect solution. The real question is: how many levels of meta are you willing to accept? I'm currently willing to accept a simple wiki system with no meta data and I'm willing to incur the cost since I don't believe that there are many such instances. -- AlexSchroeder
+Clearly an instance failure of WikiPedia:Useâmention_distinction. I don't think there currently is a solution. I think all our categories suffer from it. The only way to solve this would be to add meta information. But then how would you search for the meta information? I believe that there is no perfect solution. The real question is: how many levels of meta are you willing to accept? I'm currently willing to accept a simple wiki system with no meta data and I'm willing to incur the cost since I don't believe that there are many such instances. -- AlexSchroeder
 
 [new]
 I think that a category is a bit of meta information, but it is now a meta only due to some automagical coding in the background that treats the prefix-word "Category" as a bit of markup, distinct from other WikiLinks.. I would rather see a bit of markup to generate category tag that is distinct from the rendered output, so one could offer links to the category without becoming part of the category. --MichaelPaulukonis
