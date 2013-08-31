@@ -32,7 +32,7 @@ Here are some libraries written by others but maintained by me:
 * '''Lisp:show-marks.el''' -- Navigate and visualize the mark-ring.
 * '''Lisp:lazy-search.el''' -- Search for thing at point ([[LazySearch]]).
 * '''Lisp:lazy-search-extension.el''' -- Extra search items for [[LazySearch]].
-* [https://github.com/emacs-helm/helm-recoll helm-recoll.el] -- [https://github.com/emacs-helm/helm Helm] plugin for the [http://www.lesbonscomptes.com/recoll/ recoll] desktop search engine.
+* [https://github.com/emacs-helm/helm-recoll helm-recoll] -- [https://github.com/emacs-helm/helm Helm] plugin for the [http://www.lesbonscomptes.com/recoll/ recoll] desktop search engine.
 
 
 ===Github===
