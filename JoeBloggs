@@ -39,8 +39,7 @@ Here are some libraries written by others but maintained by me:
 Most of these can also be found on my github account: https://github.com/vapniks?tab=repositories
 
 ==TODO==
-Here is a list of things that I would like to see at some point, but haven't got around to doing myself yet
-(and might never do so).
+Here is a list of things that I would like to see at some point, but haven't got around to doing yet (and might never do so).
 If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
 
 * A currency conversion library - it should get it's information from some reliable online source such as http://www.xe.com. It would also be good if there was some way to integrate it with the emacs [AdvancedDeskCalculator calculator].
