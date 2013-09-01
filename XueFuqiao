@@ -1,7 +1,7 @@
 == About Me ==
-<code>
+[code]
 (minibuffer-message "Welcome to my homepage! ;-)")
-</code>
+[/code]
 I use Emacs.
 
 My name is Xue Fuqiao.  English is not my native language; please
@@ -17,9 +17,9 @@ Many thanks to the people who contributed or are contributing to
 emacsen and EmacsWiki.  My daily life becomes very interesting.
 
 You can contact me using (please send plain text mail, not HTML):
-<code>
+[code]
 (concat (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") " AT " "gmail" "." "com")
-</code>
+[/code]
 
 Feel free to ask anything about Emacs :)
 
@@ -47,7 +47,6 @@ Feel free to ask anything about Emacs :)
 * Implement a URL Shortener in EmacsLisp.
 * Implement a DOM binding for EmacsLisp.
 * Make Emacs support more image formats.
-* Implement multithreaded features in Emacs.
 * Make the face code to be simpler, clearer and faster.
 * Write an OpenPGP implementation in EmacsLisp.
 * Implement a EmacsLisp library that generates XPMs dynamically.
