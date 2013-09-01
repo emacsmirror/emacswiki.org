@@ -16,3 +16,5 @@ Emacs comes with ReferenceCards.  Emacs is known as "the SelfDocumenting" editor
 If you need information on a specific library within Emacs, use FinderCommentary.  And FinderMode lists available libraries by keyword categories.
 
 Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.
+
+If, for some reason, you need access to the Emacs documentation strings without having access to Emacs itself, there's a site collecting it: [http://bruce-connor.github.io/emacs-online-documentation/ Emacs Online Documentation].
