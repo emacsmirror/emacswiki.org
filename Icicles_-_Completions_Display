@@ -235,6 +235,7 @@ Because different sets of candidates have different candidate
 lengths and distributions of those lengths.  Play with it a bit
 and you will see.  One size does ''not'' fit all in an ideal way.
 
+[:icicle-Completions-max-columns]
 (You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-max-columns|icicle-Completions-max-columns]]</tt>'''' to prevent
 '''Icicles''' from automatically calculating the number of columns to
 display, but I do not recommend this.)
