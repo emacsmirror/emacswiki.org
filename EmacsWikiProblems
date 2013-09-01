@@ -23,6 +23,9 @@ Whoops! That was a bug. I had installed the BBCode extension to support ##[b]bol
 [new]
 Thanks for the explanation, it's a big relief for me.  There are "[new]"-s at [[LineNumbers]] still.  -- AlexKost
 
+[new]
+Thanks. I edited it and added a newline in order to force the regeneration of the HTML. -- AlexSchroeder
+
 == Colon line prefix does not indent correctly ==
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
