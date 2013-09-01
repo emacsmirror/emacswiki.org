@@ -43,6 +43,7 @@ Here is a list of things that I would like to see at some point, but haven't got
 If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
 
 * A currency conversion library - it should get it's information from some reliable online source such as http://www.xe.com. It would also be good if there was some way to integrate it with the emacs [AdvancedDeskCalculator calculator].
+* A function to make it easy to format text in different colours/faces, e.g. (format+ "%y, %y, %y" '("red" :foreground "red") '("blue" :background "blue") '("red & blue" :foreground "red" :background "blue"))
 * Fix [[ComintMode]] so that `comint-delete-output' (C-c C-o) works for prompts other than just the last one.
 * Get `orgstruct-mode' working in comint buffers (see `orgstruct-heading-prefix-regexp').
 * [http://www.stata.com/ Stata] support for [http://orgmode.org/worg/org-contrib/babel/index.html org-babel].
