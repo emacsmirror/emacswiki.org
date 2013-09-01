@@ -519,4 +519,4 @@ and make a virtual group contains its results."
 
 (provide 'gnus-spotlight)
 
-;; gnus-spotlight.el ends here.
+;;; gnus-spotlight.el ends here.
