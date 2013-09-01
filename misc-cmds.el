@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 22 20:31:34 2013 (-0700)
+;; Last-Updated: Sun Sep  1 08:12:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3102
+;;     Update #: 3108
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -44,8 +44,8 @@
 ;;    `recenter-top-bottom', `recenter-top-bottom-1',
 ;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
 ;;    `region-to-file', `resolve-file-name',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `view-X11-colors'.
+;;    `revert-buffer-no-confirm', `selection-length', `undo-repeat'
+;;    (Emacs 24.3+), `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -83,6 +83,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/01 dadams
+;;     Added: undo-repeat.
 ;; 2013/08/22 dadams
 ;;     Added: delete-window-maybe-kill-buffer.
 ;; 2013/08/20 dadams
@@ -1235,6 +1237,19 @@ With prefix arg, clear also the simple search history."
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
+
+;; Suggested: rebind `undo' keys to `undo-repeat'.
+;; (global-set-key [remap undo] 'undo-repeat)
+
+(when (fboundp 'set-temporary-overlay-map) ; Emacs 24.3+
+  (defun undo-repeat (arg)
+    "Same as `undo', but repeatable even on a prefix key.
+E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
+    (interactive "*P")
+    (undo arg)
+    (set-temporary-overlay-map (let ((map  (make-sparse-keymap)))
+                                 (define-key map "u" 'undo-repeat)
+                                 map))))
 
 ;;;###autoload
 (defun view-X11-colors ()
