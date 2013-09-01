@@ -20,6 +20,9 @@ Oh God, it looks like i'm going to do it with this page as well.  "Diff" tells m
 [new]
 Whoops! That was a bug. I had installed the BBCode extension to support ##[b]bold[/b]## and the like. When it looked at the wiki text, it decided that ##[new]## was an unknown BBCode and it didn't get handled by the "Portrait Extension". I changed the order of the rules and now it should work again. -- AlexSchroeder
 
+[new]
+Thanks for the explanation, it's a big relief for me.  There are "[new]"-s at [[LineNumbers]] still.  -- AlexKost
+
 == Colon line prefix does not indent correctly ==
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
