@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 23 20:43:50 2013 (-0700)
+;; Last-Updated: Sun Sep  1 08:16:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1224
+;;     Update #: 1227
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/01 dadams
+;;     Added remapping of undo to undo-repeat.
 ;; 2013/08/23 dadams
 ;;     Soft-require highlight-symbol.el (Emacs 22+).  Bind its commands to f11 (+ modifiers).
 ;; 2013/07/25 dadams
@@ -325,7 +327,8 @@
 (require 'misc-cmds nil t) ;; (no error if not found): beginning-of-line+,
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
-                           ;; recenter-top-bottom, region-to-buffer, region-to-file
+                           ;; recenter-top-bottom, region-to-buffer, region-to-file,
+                           ;; undo-repeat
 (require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary,
                             ;; yank-pop-commands, isearch-yank-secondary, set-secondary-start,
                             ;; secondary-save-then-kill
@@ -644,7 +647,9 @@
     (define-key ctl-x-map [home] 'mark-buffer-before-point)                    ; `C-x home'
     (define-key ctl-x-map [end]  'mark-buffer-after-point)                     ; `C-x end'
     (define-key ctl-x-map "\M-f" 'region-to-file)                              ; `C-x M-f'
-    (define-key ctl-x-map "L"    'goto-longest-line)))                         ; `C-x L'
+    (define-key ctl-x-map "L"    'goto-longest-line)                           ; `C-x L'
+    (when (fboundp 'undo-repeat) (global-set-key [remap undo] 'undo-repeat)))) ; `C-x u' etc.
+  
 ;; In `chistory.el'.
 (define-key ctl-x-map [(meta ?x)] 'repeat-matching-complex-command)            ; `C-x M-x'
 (define-key ctl-x-map "c" 'font-lock-mode)                                     ; `C-x c'
