@@ -1,3 +1,4 @@
+[[fr:Gpicker_francais]]
 gpicker is a solution for quickly choosing a file from a (possibly large) project.
 
 Files are searched by their basename, but patterns containing '/'
