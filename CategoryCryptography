@@ -15,3 +15,5 @@ How to encrypt and decrypt anything you might want to edit using Emacs.
 * AdvancedEncryptionStandard -- Implementation of AES in elisp.
 
 * [http://github.com/Sodel-the-Vociferous/inline-crypt-el inline-crypt] -- This package may be useful if you'd just like to encrypt /parts/ of files or buffers, and to have encrypted output in the same line as other unencrypted text.
+
+* [http://github.com/avillafiorita/openssl-rw openssl-rw] -- Functions to decrypt and encrypt files using openssl. 
