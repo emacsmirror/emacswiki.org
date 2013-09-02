@@ -2,6 +2,38 @@
 
 *Note that this page is not GMail-specific.*
 
+== Quickstart ==
+
+Put the following in your ##~/.gnus## file and replace "user@gmail.com" with your email address:
+
+{{{
+(setq gnus-select-method
+      '(nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")
+	       (nnimap-server-port 993)
+	       (nnimap-stream ssl)))
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587
+				   "user@gmail.com" nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+}}}
+
+Put the following in your ##~/.authinfo## file and replace "user@gmail.com" with your email addres and replace "secret" with your password---or your [https://accounts.google.com/IssuedAuthSubTokens application-specific password]:
+
+{{{
+machine imap.gmail.com login user@gmail.com password secret port 993
+machine smtp.gmail.com login user@gmail.com password secret port 587
+}}}
+
+You can find more information in the following sections.
+
+== Introduction ==
+
 [[Gnus]] can connect to the gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
 
 This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you're able to do through the web interface.
