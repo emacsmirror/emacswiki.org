@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Aug  3 07:25:03 2013 (-0700)
+;; Last-Updated: Mon Sep  2 16:17:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5740
+;;     Update #: 5741
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4320,7 +4320,7 @@ toggle Icicle mode off and then back on."
     (customize-apropos-options     icicle-customize-apropos-options    t)
     (customize-face                icicle-customize-face               t)
     (customize-face-other-window   icicle-customize-face-other-window  t)
-    (dabbrev-completion            icicle-dabbrev-completion           (< emacs-major-version 24))
+    (dabbrev-completion            icicle-dabbrev-completion           t)
     ;; Overrides previous for `C-M-/', but not for any other keys.
     ([?\C-\M-/]                    icicle-dispatch-C-M-/               t) ; `C-M-/'
     (delete-window                 icicle-delete-window                t) ; `C-x 0'
