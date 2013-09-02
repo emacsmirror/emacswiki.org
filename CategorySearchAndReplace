@@ -26,6 +26,7 @@ Additional:
 * [[msearch]] -- Search matches of text dragged with the mouse in the current buffer.
 * [[Replace+]] -- Extensions to OccurMode.
 * SearchBuffers -- Like OccurMode, but for multiple buffers.
+* SearchKeybind -- `occur' for key bindings and their commands.
 * SearchNear -- Using OccurMode to find words that are near each other.
 * SummaryEditMode -- List up matched strings from a buffer, and display them in summary buffer.
 * SuperDuperRedundantPlus -- can mark all files in dired buffer using `dired-mark-files-containing-regexp' followed by `dired-do-query-replace-regexp'.
