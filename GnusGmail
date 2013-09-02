@@ -1,7 +1,5 @@
 [[es:Gnus_y_Gmail]]
 
-*Note that this page is not GMail-specific.*
-
 == Quickstart ==
 
 Put the following in your ##~/.gnus## file and replace "user@gmail.com" with your email address:
