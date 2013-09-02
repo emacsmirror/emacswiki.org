@@ -1,4 +1,4 @@
-*Warning*: This page documents an obsolete package. Gnus comes with cryptography support built in.
+*Warning*: This page documents an obsolete package. [[Gnus]] comes with cryptography support built in.
 
 ----
 
@@ -307,6 +307,3 @@ In emacs 22, pgg-gpg has a bug which caused (on my newer, faster desktop) output
 Can anyone tell how to do this (automaticllay selecting a particular key for signing/encryption) with gnus-parameters? See here http://permalink.gmane.org/gmane.emacs.gnus.user/12031 -- SunoAno)
 ----
 CategoryGnus SigningMail EncryptingMail
- 
-
-CategoryNeedsAttention (If you require pgg it will tell you that Package pgg is obsolete!)
