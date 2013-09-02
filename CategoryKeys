@@ -62,6 +62,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 
 [:CoolBindings]
 == Cool Bindings ==
+* SearchKeybind occur search the full list of keybinds & their commands. Very helpful for learning and remembering forgotten binds.
 * DefineKeyLazy      a macro for define-key ,without writing (eval-after-load)
 * [[next-line-2.0]] A keybinding that makes C-n and C-p work well with large buffers and long, wrapped, lines.
 * Lisp:setup-keys.el -- Various key bindings, some for custom commands. See DrewsElispLibraries for associated command libraries.
