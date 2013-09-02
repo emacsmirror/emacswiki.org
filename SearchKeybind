@@ -1,0 +1,12 @@
+Occur search the full list of keybinds & their commands. Very helpful for learning and remembering forgotten binds.
+
+ (defun search-keybind (regexp &optional nlines)
+   (interactive (occur-read-primary-args))
+   (save-excursion
+     (describe-bindings)
+     (set-buffer "*Help*")
+     (occur regexp nlines)
+     (delete-windows-on "*Help*")))
+
+I use C-M-u, change this to something more appropriate to emacs defaults as you see fit.
+ (global-set-key (kbd "C-M-u") 'search-keybind)
