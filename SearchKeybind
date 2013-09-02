@@ -9,4 +9,5 @@ Occur search the full list of keybinds & their commands. Very helpful for learni
      (delete-windows-on "*Help*")))
 
 I use C-M-u, change this to something more appropriate to emacs defaults as you see fit.
+
  (global-set-key (kbd "C-M-u") 'search-keybind)
