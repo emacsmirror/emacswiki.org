@@ -1,3 +1,7 @@
+*Warning*: This page documents an obsolete package. Gnus comes with cryptography support built in.
+
+----
+
 Beware: by default Gnus now (March, 2011) uses EasyPG if it is available.
 
 PGG is part of (No/Oort) Gnus, and documented in the manual.
