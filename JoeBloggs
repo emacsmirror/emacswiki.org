@@ -47,7 +47,7 @@ If anyone decides to implement one of these, or finds an already existing implem
 * Fix [[ComintMode]] so that `comint-delete-output' (C-c C-o) works for prompts other than just the last one.
 * Get `orgstruct-mode' working in comint buffers (see `orgstruct-heading-prefix-regexp').
 * [http://www.stata.com/ Stata] support for [http://orgmode.org/worg/org-contrib/babel/index.html org-babel].
-  
+* Add ido-completion option to `org-goto-interface' variable for `org-goto' function. Also allow selection of org file to navigate.
 
 == Mail Box ==
 
