@@ -4,9 +4,9 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 ##hide-comnt.el## provides two commands, a macro, and a user option:
 
-* [[command]] '''`hide/show-comments'''' -- Does what its name says.  If the [[region]] is [[active region|active]] then hiding is limited to the region.  With a [[prefix argument]], hidden comments are shown again.
+* [[command|Command]] '''`hide/show-comments'''' -- Does what its name says.  If the [[region]] is [[active region|active]] then hiding is limited to the region.  With a [[prefix argument]], hidden comments are shown again.
 
-* command '''`hide/show-comments-toggle'''' -- Toggles hiding/showing in the active region, or the whole buffer if the region is inactive.
+* Command '''`hide/show-comments-toggle'''' -- Toggles hiding/showing in the active region, or the whole buffer if the region is inactive.
 
 * EmacsLisp [[macro]] '''`with-comments-hidden'''' --  Temporarily hides comments while it executes a body of code.  You do not see the commented text disappear and reappear -- it is effectively just ignored while processing the body.  The macro uses `hide/show-comments' to hide the comments.
 
