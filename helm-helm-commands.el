@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-09-02 15:25:22
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-09-02 15:25:22
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/helm-helm-commands
@@ -116,7 +116,7 @@
   "Select from helm commands to execute."
   (interactive)
   (helm :sources 'helm-source-helm-commands
-        :buffer helm-commands-source-buffer))
+        :buffer helm-helm-commands-source-buffer))
 
 (provide 'helm-helm-commands)
 
