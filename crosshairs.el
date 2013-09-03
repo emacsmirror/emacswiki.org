@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Tue Jul 23 14:32:36 2013 (-0700)
+;; Last-Updated: Tue Sep  3 16:38:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 480
+;;     Update #: 485
 ;; URL: http://www.emacswiki.org/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -54,6 +54,12 @@
 ;;  You can also have crosshairs highlighting come on automatically,
 ;;  when Emacs is idle.  Command `toggle-crosshairs-when-idle' toggles
 ;;  this mode.
+;;
+;;  You can use command `flash-crosshairs' to do what its name says
+;;  when you switch buffers or windows.  Here is how one user did it
+;;  (rejoin the split URL):
+;;  http://unix.stackexchange.com/questions/83167/emacs-finding-the-
+;;  cursor-in-multiple-windows
 ;;
 ;;
 ;;  See also:
