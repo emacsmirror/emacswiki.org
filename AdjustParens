@@ -10,3 +10,5 @@ In your emacs init file:
 <pre>
 (require 'adjust-parens)
 </pre>
+
+[http://elpa.gnu.org/packages/adjust-parens.html ELPA page]
