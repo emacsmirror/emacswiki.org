@@ -1,0 +1,14 @@
+A quick and dirty way to replace all notepad.exe calls would be to use the Registry:
+
+1. Start [tt]regedit.exe[/tt]
+
+2. Go to [tt]HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options[/tt]
+
+3. Add a new key named [tt]notepad.exe[/tt]
+
+4. Add (in there) a new string named [tt]Debugger[/tt] and use this value: [tt]emacsclientw.exe -na runemacs.exe -F[/tt]
+
+Note that this will pretty much break the usual "-F" behavior but it is needed as Emacsclientw has no [http://stackoverflow.com/questions/2984846/set-image-file-execution-options-will-always-open-the-named-exe-file-as-defaul -z parameter] (yet).
+
+-- tux. 2013-09-04 14:25 UTC
+
