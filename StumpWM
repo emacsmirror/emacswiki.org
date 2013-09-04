@@ -31,5 +31,53 @@ This is an example of how you can use stumpwm commands to call emacs functions.
 	    (send-meta-key (current-screen) (kbd "RET")))
 }}}
 
+==Loading swank from a quicklisp installation==
+
+If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  Given /path/to/quicklisp/installation (in my case this is /home/consultant/quicklisp but your mileage will be different,) it is possible to auto-detect the correct path.  Replace (load "/path/to/slime/swank-loader.lisp") with:
+
+{{{
+;;
+;; Set the path to the quicklisp installation:
+;;
+(defvar *quicklisp-installation-directory*
+  "/path/to/quicklisp/installation"
+  "The base of the quicklisp installation")
+;;
+;; Set path to installation data file:
+;;
+(defvar *quicklisp-data-file*
+  (concat *quicklisp-installation-directory* "/dists/quicklisp/releases.txt")
+  "Release and version data for quicklisp packages.")
+;;
+;; Set path to quicklisp software directory:
+;;
+(defvar *quicklisp-packages-directory*
+  (concat *quicklisp-installation-directory* "/dists/quicklisp/software")
+    "Path to the quicklisp packages")
+  (setf *I-got-here* "*quicklisp-packages-directory*")
+
+;;
+;; Auto-detect /path/to/slime/swank-loader.lisp
+;;
+(defvar *swank-loader-path* nil
+  "The path to swank-loader.lisp")
+;;
+(setf *swank-loader-path*
+      (with-open-file (stream *quicklisp-data-file*)
+	(loop
+	   for line = (read-line stream nil :finished)
+	   until (eq line :finished)
+	   for data-list = (split-by-one-space line)
+	   when (equal "slime" (first data-list)) do
+	     (return (concat
+		      *quicklisp-packages-directory*
+		      "/" (sixth data-list)
+		      "/swank-loader.lisp")))))
+;;
+;; Now load swank-loader.lisp (and carry on as before)
+;;
+(load *swank-loader-path*)
+}}}
+
 ----
 CategoryRelated
