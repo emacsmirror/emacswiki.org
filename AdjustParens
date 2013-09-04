@@ -1,0 +1,12 @@
+The adjust-parens package in ELPA allows one to indent and dedent Lisp code and have the close parens automatically adjust themselves to be consistent. To use: 
+
+<pre>
+M-x list-packages
+Search for adjust-parens
+</pre>
+
+In your emacs init file:
+
+<pre>
+(require 'adjust-parens)
+</pre>
