@@ -44,7 +44,7 @@ Use it to find X in all your rcirc buffers. I discovered what had happened: ##**
 
 Install [http://www.growlforwindows.com/gfw/ Growl for Windows] and run ##Growl.exe## in order to start the server.
 
-Register Emacs by running the following command from a shell, eg. from [[Eshell]]: ##"/Program Files (x86)/Growl for Windows/growlnotify.exe" /t:IRC /ai:http://www.emacswiki.org/pics/static/CarbonEmacsPackageIcon.png /a:Emacs /r:IRC /n:IRC foo##
+Register Emacs by running the following command from a shell, eg. from [[eshell]]: ##"/Program Files (x86)/Growl for Windows/growlnotify.exe" /t:IRC /ai:http://www.emacswiki.org/pics/static/CarbonEmacsPackageIcon.png /a:Emacs /r:IRC /n:IRC foo##
 
 Add the path to your ##exec-path##:
 
