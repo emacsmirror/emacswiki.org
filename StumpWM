@@ -66,7 +66,6 @@ if there were an empty string between them."
 (defvar *quicklisp-packages-directory*
   (concat *quicklisp-installation-directory* "/dists/quicklisp/software")
     "Path to the quicklisp packages")
-  (setf *I-got-here* "*quicklisp-packages-directory*")
 ;;
 ;; Auto-detect /path/to/slime/swank-loader.lisp
 ;; 
