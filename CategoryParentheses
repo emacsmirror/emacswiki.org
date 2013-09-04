@@ -1,5 +1,6 @@
 Click on the header to find all parenthesis related pages. In Emacs-jargon, parentheses are often called "parens".
 
+* AdjustParens -- Indent and dedent Lisp code, automatically adjust close parens
 * InsertPair -- Commands for inserting pairs of characters.
 * ShowParenMode -- highlight matching parentheses
 * NavigatingParentheses -- navigating between paretheses
