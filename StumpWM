@@ -37,6 +37,18 @@ If, like me, you have installed slime through quicklisp then then /path/to/slime
 
 {{{
 ;;
+;; A helper function:
+;;
+(defun split-by-one-space (string)
+    "Returns a list of substrings of string
+divided by ONE space each.
+Note: Two consecutive spaces will be seen as
+if there were an empty string between them."
+    (loop for i = 0 then (1+ j)
+          as j = (position #\Space string :start i)
+          collect (subseq string i j)
+       while j))
+;;
 ;; Set the path to the quicklisp installation:
 ;;
 (defvar *quicklisp-installation-directory*
