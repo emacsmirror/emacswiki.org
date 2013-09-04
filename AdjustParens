@@ -11,4 +11,4 @@ In your emacs init file:
 (require 'adjust-parens)
 </pre>
 
-[http://elpa.gnu.org/packages/adjust-parens.html ELPA page]
+For more information, see [http://elpa.gnu.org/packages/adjust-parens.html the ELPA page].
