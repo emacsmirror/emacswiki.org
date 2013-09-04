@@ -40,6 +40,20 @@ I found the following to be useful:
 
 Use it to find X in all your rcirc buffers. I discovered what had happened: ##*** X MODE +oooo kensanata## -- aaaah! :)
 
+== Windows ==
+
+Install [http://www.growlforwindows.com/gfw/ Growl for Windows] and run ##Growl.exe## in order to start the server.
+
+Register Emacs by running the following command from a shell, eg. from [[eshell]]: ##"/Program Files (x86)/Growl for Windows/growlnotify.exe" /t:IRC /ai:http://www.emacswiki.org/pics/static/CarbonEmacsPackageIcon.png /a:Emacs /r:IRC /n:IRC foo##
+
+Add the path to your ##exec-path##:
+
+{{{
+(add-to-list 'exec-path "C:/Program Files (x86)/Growl for Windows")
+}}}
+
+Test it by evaluating ##(my-page-me "foo")##.
+
 == See also ==
 
 * Lisp:rcirc-notify-mode.el: maintain an *rcirc-notify* buffer in rcirc-notify-mode (RET to follow notification to buffer of origin, in the same window, for example)
