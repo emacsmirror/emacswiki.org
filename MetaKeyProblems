@@ -328,6 +328,10 @@ Meta-key in XTerm edit follwing:
     XTerm*eightBitInput: false
 </pre>
 
+The metaSendsEscape flag can also be tried or toggled by holding
+CTRL and pressing mouse button one and then selecting the
+'meta sends escape' option in the resulting xterm menu.
+
 === terminals ===
 
 It might not be obvious that when using EmacsOnTerminal, at least
@@ -335,7 +339,6 @@ certain popular DEC terminals in the absense of an Escape-key send the
 escape prefix sequence on <code>C-3</code> or <code>C-[</code>.  Often
 the Emacs term/ libraries configure the <code>f11</code> to be an
 <code>ESC</code> too.
-
 
 
 == source hacking for xemacs ==
