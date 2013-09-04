@@ -68,7 +68,7 @@ A quick and dirty way to replace all ##notepad.exe## calls from any application 
 
 4. Add (in there) a new string named ##Debugger## and use this value: ##emacsclientw.exe -na runemacs.exe -F## (requires ##emacsclientw## to be in your ##PATH##)
 
-Note that this will pretty much break the usual ##-F## behavior but it is needed as ##emacsclientw## has no [http://stackoverflow.com/questions/2984846/set-image-file-execution-options-will-always-open-the-named-exe-file-as-defaul ##-z## parameter] (yet).
+Note that this will pretty much break the usual ##-F## behavior but it is needed as ##emacsclientw## has no [http://stackoverflow.com/questions/2984846/set-image-file-execution-options-will-always-open-the-named-exe-file-as-defaul -z parameter] (yet).
 
 
 ----
