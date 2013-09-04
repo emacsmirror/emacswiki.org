@@ -33,7 +33,7 @@ This is an example of how you can use stumpwm commands to call emacs functions.
 
 ==Loading swank from a quicklisp installation==
 
-If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  Given /path/to/quicklisp/installation (in my case this is /home/consultant/quicklisp but your mileage will be different,) it is possible to auto-detect the correct path.  Replace (load "/path/to/slime/swank-loader.lisp") with:
+If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  Given /path/to/quicklisp/installation (in my case this is /home/consultant/quicklisp but your mileage will be different,) it is possible to auto-detect the correct path.  Use this code instead of that in the SLIME section.  If, for some reason, slime is not installed, the code will not try to load it!
 
 {{{
 ;;
@@ -67,10 +67,9 @@ if there were an empty string between them."
   (concat *quicklisp-installation-directory* "/dists/quicklisp/software")
     "Path to the quicklisp packages")
   (setf *I-got-here* "*quicklisp-packages-directory*")
-
 ;;
 ;; Auto-detect /path/to/slime/swank-loader.lisp
-;;
+;; 
 (defvar *swank-loader-path* nil
   "The path to swank-loader.lisp")
 ;;
@@ -86,9 +85,20 @@ if there were an empty string between them."
 		      "/" (sixth data-list)
 		      "/swank-loader.lisp")))))
 ;;
-;; Now load swank-loader.lisp (and carry on as before)
+;; Now load swank-loader.lisp and carry on as before
+;; But _ONLY_ if swank has been detected.
 ;;
-(load *swank-loader-path*)
+(when *swank-loader-path*
+      (load *swank-loader-path*)
+      (swank-loader:init)
+      (defcommand swank () ()
+         (setf stumpwm:*top-level-error-action* :break)
+         (swank:create-server :port 4005
+                              :style swank:*communication-style*
+                              :dont-close t)
+         (echo-string (current-screen) 
+	              "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+      (swank))
 }}}
 
 ----
