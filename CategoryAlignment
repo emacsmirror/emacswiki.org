@@ -7,6 +7,7 @@ There is a number of facilities provided by emacs to align text, comments, assig
 Matthias Helmling. Do not confuse with the align.el lisp file
 provided with recent emacs versions and described above.
 
+* backspace-whitespace-to-tab-stop
   
 * ColumnizeWords is an extension written by [[Rick_Bielawski]]. It provides the
 <code>columnize-text</code> command, which lines up words or numbers, 
