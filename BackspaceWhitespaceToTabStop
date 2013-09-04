@@ -1,6 +1,7 @@
 Enhanced from [http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs a StackOverflow question].
 
 <pre>
+(defvar my-offset 4 "My indentation offset. ")
 (defun backspace-whitespace-to-tab-stop ()
   "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
   (interactive)
