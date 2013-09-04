@@ -1,4 +1,4 @@
-[[es:Expresión_Regular]]
+[[es:ExpresiÃ³n_Regular]]
 A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "re") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
 See [[Manual:Regexps]]. Examples:
 
@@ -50,6 +50,8 @@ Many characters are special when they follow a backslash -- see below.
   \{3\}    previous character or group, repeated 3 times
   \{3,\}   previous character or group, repeated 3 or more times
   \{3,6\}  previous character or group, repeated 3 to 6 times
+  \=       match succeeds if it is located at point
+
 
 ##.?##,  ##+?##, and ##??## are non-greedy versions of ##.##,  ##+##, and ##?## -- see NonGreedyRegexp.
 Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match 
