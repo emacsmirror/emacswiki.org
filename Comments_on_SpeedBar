@@ -1,0 +1,6 @@
+make-local-hook is removed from emacs. If you can't use the snippet, remove the call to this function, and make your add-hook function call like this: (add-hook HOOK FUNC nil t)
+
+The t at tail means exactly what make-local-hook does.
+
+-- v-yadli 2013-09-04 05:03 UTC
+
