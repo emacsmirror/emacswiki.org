@@ -2,7 +2,7 @@
 ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included in Emacs 24 after contributions from others.
 
 == ELPA  ==
-//"Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el## a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."//
+//"Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply// ##package.el## //a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."//
 
 ##package.el## is a package manager included in Emacs since version 24. It includes a built-in repository of FSF sanctioned Emacs packages, also called ELPA and found at [[http://elpa.gnu.org/|ELPA repository]].
 
