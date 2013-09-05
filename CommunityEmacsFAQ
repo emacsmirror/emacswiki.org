@@ -347,7 +347,7 @@ You can't.  When emacsclient creates a new X frame, it just tells the Emacs serv
 
 === Why are some of my keybindings not working in the terminal? ===
 
-Most likely because they can not be entered in a terminal.  For example, <code>C-M-S-f</code> is equivalent to <code>C-M-f</code> in a terminal, because shift can not be used as a modifier for control characters.  Why?  Because 'f' and 'F' are separate characters, but there is only one control-F character, <code>^F</code>; control characters are case-less.
+Most likely because they can not be entered in a terminal.  For example, <code>C-M-S-f</code> is equivalent to <code>C-M-f</code> in a terminal, because shift can not be used as a modifier for control characters.  Why?  Because 'f' and 'F' are separate characters, but there is only one control-F character, <code>^F</code>; control characters are case-less.  Modifiers also can't be applied to the cursor keys, and there are no control chatacters for the cursor keys.
 
 == ELisp ==
 
