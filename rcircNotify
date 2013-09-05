@@ -54,6 +54,13 @@ Add the path to your ##exec-path##:
 
 Test it by evaluating ##(my-page-me "foo")##.
 
+*Problem: M-x* -- unfortunately Growl uses `M-x' [http://www.growlforwindows.com/gfw/help/default.aspx#actions as a shortcut]. You probably want to [https://groups.google.com/forum/#!topic/growl-for-windows/luSpf9lQQRM change this].
+
+# quit Growl
+# edit ##%USERPROFILE%\appdata\local\growl\2.0.0.0\user.config##
+# replace "Alt+X" with "Alt-Shift-Y" or whatever suits you
+# restart Growl
+
 == See also ==
 
 * Lisp:rcirc-notify-mode.el: maintain an *rcirc-notify* buffer in rcirc-notify-mode (RET to follow notification to buffer of origin, in the same window, for example)
