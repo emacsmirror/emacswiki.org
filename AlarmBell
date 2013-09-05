@@ -10,20 +10,19 @@ Combinations of these two variables can create very interesting alert functions,
 
 The visible bell is great if Emacs is the only program you ever use.  However, if you aren't paying attention to Emacs, or it's on another desktop, you won't see the visible bell.  In those cases, you probably want the bell to ring instead of blink.  Use the following:
 
-  (defun unfoused-ding-blink ()
+  (defun unfocused-ding-blink ()
     "Flash the screen when Emacs is focused, ring the bell (ding) if not."
-
     (setq ring-bell-function `(lambda ()
       (setq visible-bell (fsm-frame-x-active-window-p (selected-frame)))
       (ding)))
-
+  
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Frame-related functions ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; All from http://www.emacswiki.org/emacs-pt/rcircDbusNotification
-
+  
     (require 'dbus)
-
+  
     (defun fsm-x-active-window ()
       "Return the window ID of the current active window in X, as
   given by the _NET_ACTIVE_WINDOW of the root window set by the
@@ -32,14 +31,14 @@ The visible bell is great if Emacs is the only program you ever use.  However, i
           (let ((x-active-window (x-window-property "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t)))
             (string-to-number (format "%x00%x" (car x-active-window) (cdr x-active-window)) 16))
         nil))
-
+  
     (defun fsm-frame-outer-window-id (frame)
       "Return the frame outer-window-id property, or nil if FRAME not of the correct type"
       (if (framep frame)
           (string-to-number
            (frame-parameter frame 'outer-window-id))
         nil))
-
+  
     (defun fsm-frame-x-active-window-p (frame)
       "Check if FRAME is is the X active windows
   Returns t if frame has focus or nil if"
@@ -50,9 +49,8 @@ The visible bell is great if Emacs is the only program you ever use.  However, i
                 t
               nil))
         nil))
-
-  )(unfoused-ding-blink)
-
+  )
+  (unfocused-ding-blink)
 
 == Get visual indication of an exception == 
 
