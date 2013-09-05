@@ -10,7 +10,7 @@
 || bbdb-address-zip |||| ? bbdb-address-postcode ? ||
 || bbdb-addresses-label-list |||| ? ||
 || bbdb-always-add-addresses |||| bbdb-add-mails ||
-|| bbdb-anniversary-format-alist |||| bbdb-anniv-alist ||
+|| bbdb-anniversary-format-alist |||| bbdb-anniv-alist (might also have to (add-to-list 'diary-date-forms '(year "-" month "-" day "[^0-9]"))) ||
 || bbdb-auto-notes-alist |||| bbdb-auto-notes-rules ||
 || bbdb-auto-notes-hook |||| bbdb-auto-notes ||
 || bbdb-canonicalize-net-hook |||| bbdb-canonicalize-mail-function ||
