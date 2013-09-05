@@ -1,6 +1,7 @@
 = About =
 
-Major-mode for editing web templates (HTML with PHP, Java/JSP, ASPX, JavaScripts, CSS).
+Major-mode for editing web templates aka HTML documents embedding parts (CSS, JavaScript) and blocks (php, jsp, asp, django, twig, erb, etc).
+Template engine compatibility : PHP, JSP, ASP / ASP.NET AJAX (Atlas), Django / Twig / Jinja(2) / ErlyDTL (Zotonic), ERB, FreeMarker, Velocity, Cheetah, Smarty, CTemplate / Mustache / Hapax / Handlebars / ember.js, Blade (laravel), Knockoutjs, Go Template (Revel), Razor/Play, Dust, Closure (soy), underscore.js
 
 = Home page =
 
