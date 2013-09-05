@@ -66,6 +66,7 @@ Click on the header to list some pages related to game playing on Emacs.
 
 * AntMode -- edit ant brain files for Ant Wars
 * WmlMode -- edit Wesnoth Markup Language (WML) files for Battle of Wesnoth
+* TinyFugueMode -- edit TF files
 
 ----
 CategoryGames
