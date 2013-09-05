@@ -1,3 +1,6 @@
 TinyFugue is a MUD client, and can be found at http://tinyfugue.sourceforge.net/
 
-A mode for the .tfrc and related files can be found at http://paste.lisp.org/display/138769#1
+A mode for the .tfrc and related files:
+
+<include lisppaste "http://paste.lisp.org/display/138769">
+
