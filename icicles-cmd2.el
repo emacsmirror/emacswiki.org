@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 13 19:24:43 2013 (-0700)
+;; Last-Updated: Fri Sep  6 13:09:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6502
+;;     Update #: 6504
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4139,7 +4139,7 @@ If REGEXP has subgroups, then use what the Nth subgroup matches as the
  search context (hit), where N = `icicle-search-context-level'.
  If N=0, then use the overall match of REGEXP as the search context.
 PREDICATE is nil or a boolean function that takes these arguments:
-  - the search-context string
+  - the search-hit string (what matches REGEXP or the chosen subgroup)
   - a marker at the end of the search-context
 If PREDICATE is non-nil, then push only the hits for which it holds.
 
