@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Sep  6 13:09:55 2013 (-0700)
+;; Last-Updated: Fri Sep  6 14:17:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6504
+;;     Update #: 6510
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4133,6 +4133,7 @@ The other arguments are the same as for `icicle-search'."
 
 (defun icicle-search-regexp-scan (buffer beg end regexp &optional predicate action)
   "Scan BUFFER for REGEXP, pushing hits onto `icicle-candidates-alist'.
+Highlight the matches in face `icicle-search-main-regexp-others'.
 If BUFFER is nil, scan the current buffer.
 If BEG and END are non-nil, scan only between positions BEG and END.
 If REGEXP has subgroups, then use what the Nth subgroup matches as the
@@ -4142,8 +4143,9 @@ PREDICATE is nil or a boolean function that takes these arguments:
   - the search-hit string (what matches REGEXP or the chosen subgroup)
   - a marker at the end of the search-context
 If PREDICATE is non-nil, then push only the hits for which it holds.
-
-Highlight the matches in face `icicle-search-main-regexp-others'."
+If ACTION is non-nil then it is a function that accepts no arguments.
+ It is called after matching buffer text with REGEXP.  After ACTION,
+ the search hit end position is extended or restricted to point."
   (setq regexp  (or regexp  (icicle-search-read-context-regexp)))
   (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
