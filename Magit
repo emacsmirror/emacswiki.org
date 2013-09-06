@@ -65,14 +65,14 @@ And then changed magit-highlight-section as follows:
 A more future-proof solution would be to customize magit-item-highlight face to make it stand out less. 
 These settings look ok-ish with Emacs 24 and the tango-dark theme:
 
- (eval-after-load "magit"
+ (eval-after-load 'magit
    '(set-face-attribute 'magit-item-highlight nil :foreground "#ffffff" :background "#3f4747"))
 
 -- AnselmHelbig
 
 Or you can simply override magit-highlight-section with an empty implementation:
 
-  (eval-after-load "magit"
+  (eval-after-load 'magit
     ;; no highlight
     (defun magit-highlight-section ())
 
