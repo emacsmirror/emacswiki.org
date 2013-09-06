@@ -25,9 +25,15 @@
 ;; desired.  And put the following expression into your ~/.emacs.
 ;;
 ;; (require 'ac-dabbrev)
-;; (setq ac-sources
-;;      (list ac-source-dabbrev
-;;            ))
+;; (add-to-list 'ac-sources 'ac-source-dabbrev)
+;;
+;; Or you could replace dabbrev-expand with auto-complete using this source:
+;;
+;; (defun ac-dabbrev-expand ()
+;;   (interactive)
+;;   (auto-complete '(ac-source-dabbrev)))
+;;
+;; (global-set-key "\M-/" 'ac-dabbrev-expand)
 
 ;;; Change Log
 ;; 0.0.9: fix for Emacs 24, add autoloads, fix a limit bug (by Akinori MUSHA <knu@idaemons.org>)
@@ -96,6 +102,7 @@ If IGNORE-CASE is non-nil, accept matches which differ in case."
                  (setq count 1)))
     count))
 
+;;;###autoload
 (defun ac-dabbrev-get-candidates (abbrev)
   (if (>= (ac-dabbrev-set-count) ac-dabbrev-all-min-count)
       (ac-dabbrev-get-limit-candidates abbrev t)
