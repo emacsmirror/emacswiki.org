@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Sep  6 20:43:35 2013 (-0700)
+;; Last-Updated: Fri Sep  6 21:27:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6513
+;;     Update #: 6526
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6447,8 +6447,7 @@ anytime during completion using `C-u C-x .'"
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
-  (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where
-                  'icicle-imenu-command-p
+  (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-command-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
@@ -6477,8 +6476,8 @@ search multiple regions, buffers, or files, see the doc for command
   (interactive `(,@(icicle-region-or-buffer-limits)
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
-  (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
+  (unless (or where  (eq major-mode 'emacs-lisp-mode))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
@@ -6499,17 +6498,16 @@ anytime during completion using `C-u C-x .'"
   (interactive `(,@(icicle-region-or-buffer-limits)
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
-  (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
-  (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
-                  'icicle-imenu-non-interactive-function-p
+  (unless (or where  (eq major-mode 'emacs-lisp-mode))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
+  (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No non-command function definitions in buffer")))))
 
 (defun icicle-imenu-non-interactive-function-p (ignored-hit-string ignored-marker)
-  "Return non-nil for a non-interactive function definition.
+  "Return non-nil for a non-interactive Emacs-Lisp function definition.
 Predicate for `icicle-search'.  Both arguments are ignored."
   (let* ((indx  (if (< emacs-major-version 21) 6 2))
          (fn    (intern-soft
@@ -6517,7 +6515,7 @@ Predicate for `icicle-search'.  Both arguments are ignored."
     (and (fboundp fn)  (not (commandp fn)))))
 
 (defun icicle-imenu-macro (beg end require-match &optional where)
-  "Search/go to an Emacs macro definition using `icicle-search'.
+  "Search/go to a Lisp macro definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
 information about the arguments and the use of a prefix argument to
@@ -6535,7 +6533,7 @@ search multiple regions, buffers, or files, see the doc for command
                         (icicle-user-error "No macro definitions in buffer")))))
 
 (defun icicle-imenu-macro-full (beg end require-match &optional where)
-  "Search/go to an Emacs macro definition using `icicle-search'.
+  "Search/go to a Lisp macro definition using `icicle-search'.
 Same as `icicle-imenu-non-interactive-function', except candidates are
 complete function definitions.
 
@@ -6550,15 +6548,14 @@ anytime during completion using `C-u C-x .'"
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
     (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
-  (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
-                  'icicle-imenu-macro-p
+  (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-macro-p
                   (lambda (menus)
                     (or (car (assoc "Macro" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No macro definitions in buffer")))))
 
 (defun icicle-imenu-variable (beg end require-match &optional where)
-  "Search/go to an Emacs non-option variable definition using `icicle-search'.
+  "Search/go to a Lisp variable definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
 information about the arguments and the use of a prefix argument to
@@ -6576,7 +6573,7 @@ search multiple regions, buffers, or files, see the doc for command
                         (icicle-user-error "No non-option variable definitions in buffer")))))
 
 (defun icicle-imenu-variable-full (beg end require-match &optional where)
-  "Search/go to an Emacs non-option variable definition using `icicle-search'.
+  "Search/go to a Lisp variable definition using `icicle-search'.
 Same as `icicle-imenu-variable', except candidates are complete
 variable definitions.
 
@@ -6591,7 +6588,7 @@ anytime during completion using `C-u C-x .'"
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
     (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
-  (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where nil
+  (icicle-imenu-1 'FULL beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Variables" menus))
                         (car (assoc "Other" menus))
@@ -6631,7 +6628,7 @@ anytime during completion using `C-u C-x .'"
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
-  (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
+  (icicle-imenu-1 'FULL beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "User Options" menus))
                         (car (assoc "Other" menus))
@@ -6669,7 +6666,7 @@ definitions."
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
-  (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
+  (icicle-imenu-1 'FULL beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys" menus))
                         (car (assoc "Other" menus))
@@ -6704,7 +6701,7 @@ complete key definitions."
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
-  (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
+  (icicle-imenu-1 'FULL beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys in Maps" menus))
                         (car (assoc "Other" menus))
@@ -6739,7 +6736,7 @@ definitions."
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
-  (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
+  (icicle-imenu-1 'FULL beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Faces" menus))
                         (car (assoc "Other" menus))
