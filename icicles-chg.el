@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Sep  6 21:31:48 2013 (-0700)
+;; Last-Updated: Fri Sep  6 22:46:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10204
+;;     Update #: 10206
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -940,8 +940,10 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2013/009/06 dadams
+;;     Added: icicle-imenu-macro-full.
 ;;     icicle-imenu-*-full: First arg to icicle-imenu-1 should just be non-nil.
 ;;     icicle-imenu-non-interactive-function: Emacs Lisp only, not Lisp mode too.
+;;     icicle-imenu-macro-full: Typo: Macro -> Macros.
 ;; 2013/08/13 dadams
 ;;     icicle-where-is: Bind icicle-highlight-input-completion-failure to nil if no prefix arg.
 ;; 2013/07/24 dadams
