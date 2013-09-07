@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep  6 19:30:28 2013 (-0700)
+;; Last-Updated: Sat Sep  7 00:26:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2322
+;;     Update #: 2325
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -390,6 +390,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2013/09/06 dadams
+;;     isearchp-put-prop-on-region: Restore buffer-modified-p after adding property.
 ;;     isearchp-char-prop-1: Show message only when already in isearch-mode.
 ;; 2013/06/29 dadams
 ;;     isearchp-drop-mismatch: Removed quote in const.
@@ -2316,7 +2317,9 @@ you specify none (empty input immediately) then *all* faces are
                           (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
                         (isearchp-read-sexps 'ONLY-ONE-P))))
          (list prop vals (region-beginning) (region-end)))))
-    (add-text-properties beg end (list property value)))
+    (let ((buffer-mod  (buffer-modified-p)))
+      (add-text-properties beg end (list property value))
+      (set-buffer-modified-p buffer-mod)))
 
   )
 
