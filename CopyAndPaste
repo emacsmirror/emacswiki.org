@@ -86,13 +86,22 @@ If you want to keep the C-w, M-w, and C-y original settings, there is another wa
 (global-set-key [(shift insert)] 'clipboard-yank)
 </pre>
 
+Another way to preserve the default C-w, M-w, and C-y behaviors is to assign one keystroke to an intelligent clipboard integration function. The following function either copies the current region to the system clipboard or, if no region is active, yanks the clipboard at point:
+<pre>
+(defun clipboard-dwim ()
+  (interactive)
+  (if (region-active-p)
+      (clipboard-kill-ring-save (region-beginning) (region-end))
+    (clipboard-yank)))
+
+(global-set-key (kbd "C-c w") 'clipboard-dwim)
+</pre>
 
 The emacs menu bar cut/copy/paste probably uses these too I think, but of course you've turned that off as you've been told that having the menu bar on will impede learning emacs. :-)
 
 This produces behaviour I like: The current region becomes PRIMARY as one might expect (like most freedesktop.org compliant apps, so it can be directly middle-button pasted in X apps), but CLIPBOARD is NOT munged by merely highlighting a region (again like most freedesktop.org compliant apps, and unlike x-select-enable-clipboard) - Iff you kill and yank, it interacts with the X CLIPBOARD in a vaguely sane manner (as if <code>C-w/M-w/C-y</code> were like <code>C-x/C-c/C-v</code> in other X11 apps, roughly).  This makes interacting with other X11 applications pleasant I think - you just learn that emacs uses different keys for cut/copy/paste, basically - though of course this behaviour might cause people to think the kill ring was a mere clipboard, which it isn't, as a press of <code>M-y</code> after a few kills will readily demonstrate :-).
 
 <code>clipboard-yank</code> in particular seems eerily smart.
-
 
 === Alternate alternate method ===
 
