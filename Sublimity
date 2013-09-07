@@ -22,8 +22,3 @@ A narrow window containing the "minimap" appears on the right of the main window
 == Screenshot ==
 
 https://imageshack.us/scaled/landing/547/4yom.png
-
-== Known Issues ==
-
-sublimity-mode seems to be enabled by default after ##require##. A minor fix is provided by this [https://github.com/prvteprts/sublimity/ fork].
-- solved in version 1.0.4
