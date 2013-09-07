@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:31:37 2013 (-0700)
+;; Last-Updated: Fri Sep  6 19:30:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2318
+;;     Update #: 2322
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -389,6 +389,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/06 dadams
+;;     isearchp-char-prop-1: Show message only when already in isearch-mode.
 ;; 2013/06/29 dadams
 ;;     isearchp-drop-mismatch: Removed quote in const.
 ;; 2013/06/28 dadams
@@ -2139,10 +2141,10 @@ See `isearchp-char-prop-backward'."
   (defun isearchp-char-prop-1 (search-fn arg)
     "Helper for `isearchp-char-prop-(forward|backward)(-regexp)'."
     (isearch-done)
-    (let ((message-log-max  nil))
-      (message "CHAR PROP %s%s" (isearchp-message-prefix nil nil isearch-nonincremental)
-               isearch-message))
-    (sit-for 1)
+    (when isearch-mode
+      (let ((message-log-max  nil))
+        (message "CHAR PROP %s%s" (isearchp-message-prefix nil nil isearch-nonincremental) isearch-message))
+      (sit-for 1))
     (setq isearch-success   t
           isearch-adjusted  t)
     (let* ((enable-recursive-minibuffers    t)
