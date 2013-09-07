@@ -1,6 +1,6 @@
 Emacs jargon predates most user interfaces used today. See EmacsJargon for an introductory translation to/from Emacs-speak.  See EmacsSymbolNotation for the ways Emacs and EmacsLisp types are presented.
 
-See also Manual:Glossary.
+See also [[Manual:Glossary]].
 
 * '''[::atom]''' -- a Lisp entity that is not a [[cons]].  This includes [[symbol]]s and strings.
 * '''[::alist]''' -- a [[list]] whose elements are [[cons]]es.
