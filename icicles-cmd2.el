@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Sep  6 14:17:13 2013 (-0700)
+;; Last-Updated: Fri Sep  6 20:43:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6510
+;;     Update #: 6513
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6478,7 +6478,7 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (icicle-user-error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
@@ -6500,7 +6500,7 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (icicle-user-error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
@@ -6549,7 +6549,7 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (icicle-user-error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-macro-p
                   (lambda (menus)
