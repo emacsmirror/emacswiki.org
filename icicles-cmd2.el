@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Sep  6 21:27:38 2013 (-0700)
+;; Last-Updated: Fri Sep  6 22:46:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6526
+;;     Update #: 6543
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -192,6 +192,7 @@
 ;;    `icicle-get-anything-types', `icicle-goto-marker-1',
 ;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
+;;    `icicle-imenu-macro-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-Info-apropos-complete-match',
 ;;    `icicle-Info-build-node-completions',
@@ -6453,7 +6454,7 @@ anytime during completion using `C-u C-x .'"
                         (car (assoc "Other" menus))
                         (icicle-user-error "No command definitions in buffer")))))
 
-(defun icicle-imenu-command-p (ignored-hit-string ignored-marker)
+(defun icicle-imenu-command-p (_hit _marker)
   "Return non-nil for a command definition.
 Predicate for `icicle-search'.
 Both arguments are ignored here."
@@ -6506,7 +6507,7 @@ anytime during completion using `C-u C-x .'"
                         (car (assoc "Other" menus))
                         (icicle-user-error "No non-command function definitions in buffer")))))
 
-(defun icicle-imenu-non-interactive-function-p (ignored-hit-string ignored-marker)
+(defun icicle-imenu-non-interactive-function-p (_hit _marker)
   "Return non-nil for a non-interactive Emacs-Lisp function definition.
 Predicate for `icicle-search'.  Both arguments are ignored."
   (let* ((indx  (if (< emacs-major-version 21) 6 2))
@@ -6516,6 +6517,10 @@ Predicate for `icicle-search'.  Both arguments are ignored."
 
 (defun icicle-imenu-macro (beg end require-match &optional where)
   "Search/go to a Lisp macro definition using `icicle-search'.
+This finds only currently defined macros.  That is, if the buffer has
+not been evaluated, then its macro definitions are NOT considered
+macros by `icicle-imenu-macro'.
+
 This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
 information about the arguments and the use of a prefix argument to
@@ -6534,8 +6539,8 @@ search multiple regions, buffers, or files, see the doc for command
 
 (defun icicle-imenu-macro-full (beg end require-match &optional where)
   "Search/go to a Lisp macro definition using `icicle-search'.
-Same as `icicle-imenu-non-interactive-function', except candidates are
-complete function definitions.
+Same as `icicle-imenu-macro', except candidates are complete macro
+definitions.
 
 Remember that non-nil option `icicle-hide-non-matching-lines-flag'
 hides, in `*Completions*', all lines of multi-line candidates that do
@@ -6550,9 +6555,16 @@ anytime during completion using `C-u C-x .'"
     (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-macro-p
                   (lambda (menus)
-                    (or (car (assoc "Macro" menus))
+                    (or (car (assoc "Macros" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No macro definitions in buffer")))))
+
+(defun icicle-imenu-macro-p (_hit _marker)
+  "Return non-nil for a Lisp macro definition.
+Predicate for `icicle-search'.  Both arguments are ignored."
+  (let ((fn  (intern-soft (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
+    (and (fboundp fn)
+         (let ((def  (symbol-function fn))) (and (consp def)  (eq (car def) 'macro))))))
 
 (defun icicle-imenu-variable (beg end require-match &optional where)
   "Search/go to a Lisp variable definition using `icicle-search'.
