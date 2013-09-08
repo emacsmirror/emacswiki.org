@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Tue Jul 23 17:03:37 2013 (-0700)
+;; Last-Updated: Sun Sep  8 11:41:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 719
+;;     Update #: 721
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -66,6 +66,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/08 dadams
+;;     next-visible-thing: Use point-max if region is active but empty.
 ;; 2013/07/22 dadams
 ;;     Code that uses with-comments-hidden conditional needs Emacs 21+, for hide-comnt.el.
 ;; 2012/08/21 dadams
@@ -455,7 +457,9 @@ the bounds of THING.  Return nil if no such THING is found."
                               (symbol-name thgcmd-last-thing-type))))
                  thgcmd-last-thing-type))
            (point)
-           (if mark-active  (max (region-beginning) (region-end))  (point-max))))
+           (if (and mark-active  (not (eq (region-beginning) (region-end))))
+               (max (region-beginning) (region-end))
+             (point-max))))
     (setq thgcmd-last-thing-type  thing)
     (unless start (setq start  (point)))
     (unless end   (setq end  (if backward (point-min) (point-max))))
