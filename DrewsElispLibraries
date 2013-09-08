@@ -81,6 +81,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
+* <tt>[[isearch-prop.el]]</tt> -- search character-property contexts (zones with given text or overlay properties)
 * <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[completion]] and cycling, to access [[menu bar]] menus -- see '''LaCarte'''
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
@@ -102,9 +103,10 @@ I make minor changes to some libraries often, so check for the latest versions.
 '''Tip:''' The best way to know what files have recently been uploaded to the ElispArea is to consult the recent uploads list: [http://www.emacswiki.org/elisp/changelog.html Recent uploads].
 
 
-=== Emacs 23 and Later ===
+=== Emacs 23 or Later  (will not work in older versions) ===
 
 * <tt>[[descr-text+.el]]</tt> -- extensions to standard library `descr-text'
+* <tt>[[isearch-prop.el]]</tt> -- search character-property contexts (zones with given text or overlay properties)
 * <tt>[[ucs-cmds.el]]</tt> -- macro to define commands that insert Unicode characters
 
 
