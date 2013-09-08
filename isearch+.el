@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep  7 00:26:14 2013 (-0700)
+;; Last-Updated: Sun Sep  8 15:47:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2325
+;;     Update #: 2334
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -27,7 +27,7 @@
 ;;
 ;;    Extensions to `isearch.el'.
 ;;
-;;  More description below.
+;;  More description below - see Overview of Features.
 ;;
 ;;
 ;;  Index
@@ -104,9 +104,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearch-invisible', `isearchp-char-prop-prop',
-;;    `isearchp-char-prop-type', `isearchp-char-prop-values',
-;;    `isearchp-filter-predicate-orig',
+;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
+;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-win-pt-line'.
@@ -134,6 +133,12 @@
 ;;  `isearch-toggle-word' - Message, and turn off regexp search.
 ;;  `isearch-update' (Emacs 20-23) - Run `isearch-update-post-hook'.
 ;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'.
+;;
+;;
+;;  ***** NOTE: The following internal variables defined in
+;;              `isearch.el' have been REDEFINED HERE:
+;;
+;;  `isearch-invisible'   - defined for Emacs<24.4 & added doc string.
 ;;
 ;;
 ;;  The following bindings are made here for incremental search mode
@@ -2332,8 +2337,7 @@ Isearch Plus
 
 Commands
 --------
-\\<isearch-mode-map>\\[isearchp-char-prop-forward]\t- search for a character (overlay or text) property
-\\[isearchp-char-prop-forward-regexp]\t- regexp-search for a character (overlay or text) property
+\\<isearch-mode-map>\\[isearchp-set-region-around-search-target]\t- select search hit
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
 \\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
 \\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively
@@ -2345,8 +2349,11 @@ Commands
 \\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
 \\[isearchp-yank-symbol-or-char]\t- yank a symbol or char from buffer onto search string
 \\[isearchp-yank-sexp-symbol-or-char]\t- yank sexp, symbol, or char from buffer onto search string
-\\[isearchp-put-prop-on-region]\t- add a text property to region
-\\[isearchp-set-region-around-search-target]\t- select search hit
+\\[isearchp-char-prop-forward]\t- search for a character (overlay or text) property [*]
+\\[isearchp-char-prop-forward-regexp]\t- regexp-search for a character (overlay or text) property [*]
+\\[isearchp-put-prop-on-region]\t- add a text property to region [*]
+
+ [*] Requires library `isearch-prop.el' and Emacs 23 or later.
 
 Options
 -------
