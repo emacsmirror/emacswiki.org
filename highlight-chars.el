@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:20:16 2013 (-0700)
+;; Last-Updated: Sun Sep  8 12:20:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 209
+;;     Update #: 210
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -177,12 +177,12 @@
 ;; `highlight-chars.el' then t is restored).
 ;;
 ;; NOTE: If you byte-compile this file in an older version of Emacs
-;; (prior to Emacs 23) then the code for highlighting hard hyphens
-;; will not work, even in Emacs 23+.  If you use Emacs 23+ then you
-;; should either byte-compile it using Emacs 23+ or evaluate the
-;; source code that defines `hc-highlight-hard-hyphens' and
-;; `hc-dont-highlight-hard-hyphens'.  (This is because older Emacs
-;; versions interpret [\u2011] as just [u2011].)
+;; (prior to Emacs 23) then the code for highlighting hard hyphens and
+;; hard spaces will not work, even in Emacs 23+.  If you use Emacs 23+
+;; then you should either byte-compile it using Emacs 23+ or evaluate
+;; the source code that defines functions that highlight such
+;; characters.  (This is because older Emacs versions interpret
+;; [\u2011] as just [u2011], etc.)
 ;;
 ;;
 ;; See Also:
