@@ -17,6 +17,7 @@ It is probably not useful to use more than one of these at the same time, for th
 ** FsProject -- plugin for ProjectBufferMode 
 ** [[IProject]] -- interactive project plugin for ProjectBufferMode 
 ** SlnMode -- SLN file plugin for ProjectBufferMode 
+* prosjekt -- Project workspace for emacs. Associate command with projects; open and close hooks; project configuration with elisp.
 
 * [https://github.com/bbatsov/projectile projectile]
 * [[Emacs-IDE]]
