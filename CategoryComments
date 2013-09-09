@@ -8,6 +8,7 @@ Comments in code depend on the programming language used.
 * AutoFillMode -- filling (code and) comments
 * AutomaticFileHeaders -- automatic insertion and update of (comment-block) file headers
 * DocMode -- create or edit foldable %%JavaDoc%% or Doxygen comment blocks
+* DoxyPreview -- Preview latex formulas, graphs, images of doxygen's comments.
 * ExtraLicense -- insert (comment-block) licensing text into the current buffer
 * FillAdapt -- filling that guesses a fill prefix
 * FillingComments -- filling for comments only, in c-mode
