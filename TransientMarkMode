@@ -94,66 +94,23 @@ purposes.  See the documentation of `set-mark' for more information."
 
 === Commands that Do Not Work Well with Transient Mark Mode ===
 
-==== indent-rigidly ====
+==== indent-rigidly (prior to Emacs 23 only) ====
 
 # Set [[mark]] (C-SPC)
 # Move the [[cursor]] a couple of [[lines]] down
 # C-x TAB
 
-This works only one time, consecutive presses of `C-x TAB' beep at you ("The mark is not active now"). This works fine when using `pc-selection-mode' and also the standard behaviour when the region is not marked at all. This is quite annoying, I am thinking of disabling Transient Mark mode and settle with the hardcore default behaviour. I don't know if it messes up with other commands. -- MathiasDahl
+In GnuEmacs prior to Emacs 23, if `transient-mark-mode' is on, the above works only one time.  Consecutive presses of `C-x TAB' beep at you ("The mark is not active now"). 
 
-On vanilla GNU Emacs 24.3.1+, consecutive presses of `C-x TAB' do the job the user intends and do not beep. indent-rigidly no longer checks if mark is active. Other tips below may still be useful for other commands that check for active mark. In order to keep region highlighted after `C-x TAB' finishes, use this advice:
+In order to keep the region highlighted after `C-x TAB' finishes, you can use this advice:
 
- (defadvice indent-rigidly (after deactivate-mark-nil activate)
-   (if (called-interactively-p)
-       (setq deactivate-mark nil)))
+   (defadvice indent-rigidly (after deactivate-mark-nil activate)
+     (if (called-interactively-p)
+         (setq deactivate-mark nil)))
 
---  JisangYoo
 
-##(setq mark-even-if-inactive t)## would probably help with this.
 
-or try these (GNUemacs):
 
- (global-set-key (kbd "C-x TAB")
-                 #'(lambda (arg)
-                     (interactive "p")
-                     (save-excursion
-                       (let ((deactivate-mark nil))
-                         (indent-rigidly (min (point) (mark))
-                                         (max (point) (mark))
-                                         arg)))))
-
- (global-set-key (kbd "C-x <S-iso-lefttab>")
-                 #'(lambda (arg)
-                     (interactive "p")
-                     (save-excursion
-                       (let ((deactivate-mark nil))
-                         (indent-rigidly (min (point) (mark))
-                                         (max (point) (mark))
-                                         (- arg))))))
-
--- ClausBrunzema
-
-[new]
-: Actually, I have learned to live without a highlighted region by now. I very seldom feel a need for it. But, it would be nice for those rare times, if there was a way to hilight the region temporarily, for example when doing a "dangerous" rectangle-command. Hmm, well, yes, there's always the undo command of course... -- MaDa
-
-[new]
-:: See above, regarding `C-SPC C-SPC' (set-mark-command): it gives you the temporarily highlighted region you're asking for (temporary transient mark mode). [new] `C-SPC C-SPC' almost does what I want. I don't want to have transient mark always (given), and I do want to use it sometimes for commands that change their behavior (comment-dwim in particular). But I don't want to move the mark. I want to make the current region transient for the space of one command without changing anything else. Example use case: I want to paste some piece of spec or reference into a comment with `C-y SOMETHING M-;'. Currently, SOMETHING is `C-x C-x C-SPC C-SPC C-M-n' with possibly other fiddling with point in addition to / instead of `C-M-n'.
-
-[new]
-:: I finally resorted to grepping simple.el until I found that exchange-point-and-mark with a prefix arg is one way. So now I'm down to `C-y C-u C-x C-x M-;'. That'll do. I think what I really want is for yank and clipboard-yank to temporarily set transient-mark-mode, but I'm still thinking about it.
-
-[new]
-The mark disappears after an editing action, but you can get it back with `C-x C-x' (exchange-point-and-mark). This puts the point at the opposite end of the region, so you have to type it again to get back where you were before: `C-x C-x C-x C-x'. Or, you can use this function, and save a few keystrokes:
-
- (defun toggle-mark ()
-   (interactive)
-   (if mark-active
-       (deactivate-mark)
-     (exchange-point-and-mark)
-     (exchange-point-and-mark)))
-
--- DaveBenjamin
 
 ==== Trouble Activating the Region at the End of a Command ====
 
