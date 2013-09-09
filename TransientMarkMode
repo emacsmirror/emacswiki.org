@@ -102,7 +102,9 @@ purposes.  See the documentation of `set-mark' for more information."
 
 This works only one time, consecutive presses of `C-x TAB' beep at you ("The mark is not active now"). This works fine when using `pc-selection-mode' and also the standard behaviour when the region is not marked at all. This is quite annoying, I am thinking of disabling Transient Mark mode and settle with the hardcore default behaviour. I don't know if it messes up with other commands. -- MathiasDahl
 
-On vanilla GNU Emacs 24.3.1, consecutive presses of `C-x TAB' do the job the user intends and do not beep. indent-rigidly no longer checks if mark is active. Tips below may still be useful for other commands that check for active mark. -- JisangYoo
+[new]
+: On vanilla GNU Emacs 24.3.1, consecutive presses of `C-x TAB' do the job the user intends and do not beep. indent-rigidly no longer checks if mark is active. Tips below may still be useful for other commands that check for active mark. -- JisangYoo
+[new]
 
 ##(setq mark-even-if-inactive t)## would probably help with this.
 
