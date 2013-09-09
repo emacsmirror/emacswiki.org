@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  8 15:52:16 2013 (-0700)
+;; Last-Updated: Sun Sep  8 19:40:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 108
+;;     Update #: 110
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -25,6 +25,9 @@
 ;;; Commentary:
 ;;
 ;;    Search character-property contexts.
+;;
+;;  Such contexts are zones of text that have certain text properties
+;;  or overlays with certain overlay properties.
 ;;
 ;;  More description below - see Overview of Features.
 ;;
@@ -84,11 +87,10 @@
 ;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig'.
 ;;
 ;;
-;;  The following bindings are made here for incremental search mode
-;;  (`C-s' prefix):
+;;  Keys bound in `isearch-mode-map' here:
 ;;
-;;    `C-t'        `isearchp-char-prop-forward' (Emacs 23+)
-;;    `C-M-t'      `isearchp-char-prop-forward-regexp' (Emacs 23+)
+;;    `C-t'        `isearchp-char-prop-forward'
+;;    `C-M-t'      `isearchp-char-prop-forward-regexp'
 ;;
 ;;
 ;;
