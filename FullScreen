@@ -286,6 +286,12 @@ The disadvantage of this is that if you bind F11 so that emacs matches other pro
 
 === Mac OS X ===
 
+==== Emacs 24.4 ====
+
+Use `ns-use-native-fullscreen` to get “native” fullscreen on OS X 10.7.
+
+Both `M-x toggle-frame-fullscreen` or `M-x toggle-frame-maximized` are available without having to define a function from below.
+
 ==== Frame parameter ====
 
 This is the simplest approach, and works with CarbonEmacs and Aquamacs and the Yamamoto Mitsuharu version of Emacs 24.  Use the toggle function:
