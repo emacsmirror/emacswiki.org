@@ -288,9 +288,9 @@ The disadvantage of this is that if you bind F11 so that emacs matches other pro
 
 ==== Emacs 24.4 ====
 
-Use `ns-use-native-fullscreen` to get “native” fullscreen on OS X 10.7.
+Use `ns-use-native-fullscreen' to get “native” fullscreen on OS X 10.7.
 
-Both `M-x toggle-frame-fullscreen` or `M-x toggle-frame-maximized` are available without having to define a function from below.
+Both <code>M-x toggle-frame-fullscreen</code> or <code>M-x toggle-frame-maximized</code> are available without having to define a function from below.
 
 ==== Frame parameter ====
 
