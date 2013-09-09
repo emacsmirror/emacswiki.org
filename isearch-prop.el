@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  8 19:40:23 2013 (-0700)
+;; Last-Updated: Mon Sep  9 09:20:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 110
+;;     Update #: 235
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -29,6 +29,9 @@
 ;;  Such contexts are zones of text that have certain text properties
 ;;  or overlays with certain overlay properties.
 ;;
+;;  The features provided by this library are based on similar
+;;  features introduced by Icicles (http://www.emacswiki.org/Icicles).
+;;
 ;;  More description below - see Overview of Features.
 ;;
 ;;
@@ -46,14 +49,16 @@
 ;;  (@> "Change Log")
 ;;  (@> "Variables")
 ;;  (@> "Keys")
-;;  (@> "Commands")
-;;  (@> "Non-Interactive Functions")
+;;  (@> "General Commands")
+;;  (@> "General Non-Interactive Functions")
+;;  (@> "Imenu Commands and Functions")
+;;  (@> "THING Commands and Functions")
 ;;  (@> "Character-Property Search")
 ;;
 ;;
 ;;  Macros defined here:
 ;;
-;;    None.
+;;    `isearchp-with-comments-hidden'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -61,11 +66,17 @@
 ;;    `isearchp-char-prop-backward-regexp',
 ;;    `isearchp-char-prop-forward',
 ;;    `isearchp-char-prop-forward-regexp',
-;;    `isearchp-put-prop-on-region'.
+;;    `isearchp-hide/show-comments', `isearchp-next-visible-thing',
+;;    `isearchp-previous-visible-thing',
+;;    `isearchp-put-prop-on-region',
+;;    `isearchp-regexp-define-contexts', `isearchp-thing',
+;;    `isearchp-thing-define-contexts',
+;;    `isearchp-toggle-complementing-domain',
+;;    `isearchp-toggle-ignoring-comments'.
 ;;
 ;;  User options defined here:
 ;;
-;;    None.
+;;    `isearchp-ignore-comments-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -73,25 +84,32 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-char-prop-1', `isearchp-char-prop-default-match-fn',
-;;    `isearchp-char-prop-end', `isearchp-char-properties-in-buffer',
+;;    `isearchp-bounds-of-thing-at-point', `isearchp-char-prop-1',
+;;    `isearchp-char-prop-default-match-fn', `isearchp-char-prop-end',
+;;    `isearchp-char-properties-in-buffer',
 ;;    `isearchp-char-prop-filter-pred',
-;;    `isearchp-char-prop-matches-p', `isearchp-message-prefix',
+;;    `isearchp-char-prop-matches-p', `isearchp-defined-thing-p',
+;;    `isearchp-message-prefix', `isearchp-next-visible-thing-1',
+;;    `isearchp-next-visible-thing-2',
+;;    `isearchp-next-visible-thing-and-bounds',
 ;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
 ;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
-;;    `isearchp-some'.
+;;    `isearchp-some', `isearchp-thing-read-args',
+;;    `isearchp-thing-scan', `isearchp-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
-;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig'.
+;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
+;;    `isearchp-last-thing-type'.
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here:
 ;;
 ;;    `C-t'        `isearchp-char-prop-forward'
 ;;    `C-M-t'      `isearchp-char-prop-forward-regexp'
-;;
+;;    `C-M-;'      `isearchp-toggle-ignoring-comments'
+;;    `C-M-~'      `isearchp-toggle-complementing-domain'
 ;;
 ;;
 ;;  This file should be loaded *AFTER* loading the standard GNU file
@@ -125,6 +143,21 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/09 dadams
+;;     Added: isearchp-toggle-complementing-domain, isearchp-context-level,
+;;            isearchp-complement-domain-p, isearchp-read-context-regexp, isearchp-regexp-scan,
+;;            isearchp-regexp-define-contexts, isearchp-regexp-context-search,
+;;            isearchp-add-regexp-as-property, isearchp-regexp-read-args, isearchp-text-prop-present-p,
+;;            isearchp-ignore-comments-flag, isearchp-hide/show-comments, isearchp-with-comments-hidden,
+;;            isearchp-toggle-ignoring-comments, isearchp-last-thing-type, isearchp-thing,
+;;            isearchp-thing-read-args, isearchp-thing-define-contexts, isearchp-thing-scan,
+;;            isearchp-things-alist, isearchp-defined-thing-p, isearchp-bounds-of-thing-at-point,
+;;            isearchp-next-visible-thing-and-bounds, isearchp-previous-visible-thing,
+;;            isearchp-next-visible-thing(-1|-2).
+;;     isearchp-char-prop-1: Handle complementing. Deactivate region when done.
+;;     isearchp-char-prop-filter-pred: Handle complementing.
+;;     isearchp-char-prop-forward: Update doc to better describe behavior with no prefix arg.
+;;     Bound isearchp-toggle-ignoring-comments to C-M-;, isearchp-toggle-complementing-domain' to C-M-~.
 ;; 2013/09/08 dadams
 ;;     Created from code factored out of isearch+.el.
 ;;
@@ -153,8 +186,11 @@
 
 ;;; Variables ----------------------------------------------
 
-(defvar isearchp-filter-predicate-orig nil
-  "Original value of `isearch-filter-predicate'.")
+;; Same as `ignore-comments-flag' in `hide-comnt.el'.
+;;
+(defcustom isearchp-ignore-comments-flag t
+  "*Non-nil means `isearch-with-comments-hidden' hides comments."
+  :type 'boolean :group 'isearch-plus)
 
 (defvar isearchp-char-prop-type nil
   "Last property type used for `isearchp-char-prop-*' commands.")
@@ -165,22 +201,60 @@
 (defvar isearchp-char-prop-values nil
   "Last property values used for `isearchp-char-prop-*' commands.")
 
+(defvar isearchp-complement-domain-p nil
+  "Non-nil means complement the initial search candidates wrt the buffer.
+This has an effect only on (some) Icicles search commands.
+The scan function or regexp for the search command defines a set of
+matches in the buffer.  If this option is non-nil then the actual
+candidates used are the sections of buffer text that are separated by
+the initial candidates, that is, the non-candidates as defined by the
+scan or regexp.")
+
+(defvar isearchp-context-level 0
+  "Match level for Isearch context regexp.
+0 means use whatever matches the whole context regexp as the search
+context.  1 means use whatever matches the first subgroup of the
+regexp as the search context, and so on.")
+
+(defvar isearchp-filter-predicate-orig nil
+  "Original value of `isearch-filter-predicate'.")
+
+;;; Same as `thgcmd-last-thing-type' in `thing-cmds.el'.
+(defvar isearchp-last-thing-type (if (boundp 'thgcmd-last-thing-type) thgcmd-last-thing-type 'sexp)
+  "Type of thing last used by `isearchp-next-visible-thing' (or previous).")
  
 ;;(@* "Keys")
 
 ;;; Keys -------------------------------------------------------------
 
-(define-key isearch-mode-map "\C-t"    'isearchp-char-prop-forward)
-(define-key isearch-mode-map "\C-\M-t" 'isearchp-char-prop-forward-regexp)
+(define-key isearch-mode-map (kbd "C-t")   'isearchp-char-prop-forward)
+(define-key isearch-mode-map (kbd "C-M-t") 'isearchp-char-prop-forward-regexp)
+(define-key isearch-mode-map (kbd "C-M-;") 'isearchp-toggle-ignoring-comments)
+(define-key isearch-mode-map (kbd "C-M-~") 'isearchp-toggle-complementing-domain)
  
-;;(@* "Commands")
+;;(@* "General Commands")
 
-;;; Commands ---------------------------------------------------------
+;;; General Commands -------------------------------------------------
 
 (defun isearchp-char-prop-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
-  "Isearch forward for a character (overlay or text) property.
-If you have not previously used an `isearch-char-prop-*' command, you
-are prompted for:
+  "Isearch forward in text with a character (overlay or text) property.
+That is, move to the next such property and search within it for text
+matching your input.
+
+If `isearchp-complement-domain-p' is non-nil then move to the next
+zone that does *not* have the given property.  (Use `C-M-~' during
+Isearch to toggle this variable.)  For example, this lets you search
+for text that is NOT displayed using a certain face or combination of
+faces.
+
+By default, search for the character property that you last used in an
+Isearch command.  This means any Isearch command that searches or
+applies character properties, which includes the `isearch-char-prop-*'
+commands and commands such as `isearchp-imenu*', `isearchp-thing', and
+`isearchp-regexp-context-search'.
+
+If you have not previously used such an Isearch command then you are
+prompted for the following:
 
  * the property type (`text', `overlay', or `text and overlay')
  * the property (e.g., `face', `mumamo-major-mode')
@@ -189,10 +263,10 @@ are prompted for:
 Otherwise:
 
  With no prefix arg, use the settings (property type, property,
- property values) from the last time you invoked an
- `isearch-char-prop-*' command.
+ property values) from the last time you invoked a command that
+ searches character properties.
 
- With a prefix arg you are prompted for the property and property
+ With a prefix arg, you are prompted for the property and property
  values to use.  The particular prefix arg determines the property
  type to search, as follows:
 
@@ -204,9 +278,9 @@ By default, an actual value of the property matches the value
 you specify if it is `equal'.  Properties `mumamo-major-mode' and
 `face' (or `font-lock-face') are exceptions.
 
-For `mumamo-major-mode' you specify the major mode whose zones of text
-you want to search.  The actual property value is a list whose car is
-the major mode symbol.
+For `mumamo-major-mode', you specify the major mode whose zones of
+text you want to search.  The actual property value is a list whose
+car is the major mode symbol.
 
 For properties `face' and `font-lock-face', you can pick multiple
 faces, using completion (hit `RET' with empty input to finish
@@ -228,13 +302,13 @@ NOTE: This command is available during normal Isearch, on key `C-t'.
   (isearchp-char-prop-1 'isearch-forward arg))
 
 (defun isearchp-char-prop-backward (arg)
-  "Isearch backward for a character (overlay or text) property.
+  "Isearch backward in text with a character (overlay or text) property.
 See `isearchp-char-prop-forward'."
   (interactive "P")
   (isearchp-char-prop-1 'isearch-backward arg))
 
 (defun isearchp-char-prop-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
-  "Regexp Isearch forward for a character (overlay or text) property.
+  "Regexp Isearch forward in text with a character (overlay or text) property.
 NOTE: This command is available during normal Isearch, on key `C-M-t'.
       However, in order to be able to use a prefix arg with this
       command, you must set `isearch-allow-scroll' or
@@ -245,14 +319,120 @@ See `isearchp-char-prop-forward'."
   (isearchp-char-prop-1 'isearch-forward-regexp arg))
 
 (defun isearchp-char-prop-backward-regexp (arg)
-  "Regexp Isearch backward for a character (overlay or text) property.
+  "Regexp Isearch backward in text with a character (overlay or text) property.
 See `isearchp-char-prop-backward'."
   (interactive "P")
   (isearchp-char-prop-1 'isearch-backward-regexp arg))
- 
-;;(@* "Non-Interactive Functions")
 
-;;; Non-Interactive Functions
+(defun isearchp-toggle-complementing-domain () ; Bound to `C-M-~' during Isearch.
+  "Toggle searching the complements of the normal search contexts.
+This toggles internal variable `isearchp-complement-domain-p'.
+Bound to `C-M-~' during Isearch."
+  (interactive)
+  (setq isearchp-complement-domain-p  (not isearchp-complement-domain-p))
+  (message "%s the search domain now" (if isearchp-complement-domain-p
+                                          "*COMPLEMENTING*"
+                                        "*NOT* complementing")))
+
+(defun isearchp-add-regexp-as-property (property regexp &optional beg end predicate action msgp)
+  "Add PROPERTY with value (REGEXP . PREDICATE) to REGEXP matches.
+If region is active, limit action to region.  Else, use whole buffer.
+If REGEXP has subgroups, then use what the Nth subgroup matches as the
+ search context (hit), where N = `isearchp-context-level'.
+ If N=0, then use the overall match of REGEXP as the search context.
+PROPERTY is a text property to add to the search-hit text.
+ the value of the property is REGEXP (a string).
+ Interactively, PREDICATE is nil, so the PROPERTY value is (REGEXP).
+
+Non-interactively:
+
+BEG, END are the region limits.  If nil, the buffer limits are used.
+PREDICATE is nil or a boolean function that takes these arguments:
+  - the search-context string
+  - a marker at the end of the search-context
+If PREDICATE is non-nil then act on only the hits for which it holds.
+If ACTION is non-nil then it is a function that accepts no arguments.
+ It is called after matching buffer text with REGEXP.  After ACTION,
+ the search hit end position is extended or restricted to point.
+Non-interactively, non-nil BEG and END are used as the region limits."
+  (interactive (let* ((prop     (intern (read-string "Text property: ")))
+                      (regionp  (and transient-mark-mode  mark-active)))
+                 (list prop
+                       (isearchp-read-context-regexp)
+                       (if regionp (region-beginning) (point-min))
+                       (if regionp (region-end) (point-max))
+                       nil
+                       nil
+                       'MSGP)))
+  (let ((prop-value  (isearchp-regexp-scan beg end property regexp predicate action)))
+    (when msgp
+      (if prop-value
+          (message "Prop value added: `%s'" prop-value)
+        (message "No property added - no match for %s" regexp)))))
+
+(defun isearchp-regexp-context-search (new beg end property regexp &optional predicate action)
+  "Search within contexts defined by a regexp.
+If `isearchp-complement-domain-p' is non-nil then search *outside* the
+contexts defined by the regexp.  (Use `C-M-~' during Isearch to toggle
+this variable.
+
+IMPORTANT: By default, this command assumes that the search contexts
+have already been defined, by a previous use of this command,
+`isearchp-imenu', or `isearchp-regexp-define-contexts'.
+
+If you do not use a prefix arg then this command searches for the
+character property that you last used in an Isearch command that
+searches or applies character properties.  This includes the
+`isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
+`isearchp-thing'.  See `isearchp-char-prop-forward' for more
+information.
+
+If you use a prefix arg, or if you have not previously used this
+command or similar commands, then you are prompted for the
+context-defining regexp.
+
+If the regexp has subgroups, then you are prompted for the subgroup to
+use to define the contexts.  Subgroup 0 means use the entire regexp
+match as a context.  1 means use the first regexp group match as a
+context.  And so on.
+
+With a negative prefix arg you are prompted also for a Boolean
+function that takes these arguments:
+
+  - the search-hit string (what matches the regexp or chosen subgroup)
+  - a marker at the end of the search-context
+
+Only the search hits for which the predicate holds are retained.
+
+The search contexts are marked in the buffer using a text property.
+You can also search them using `isearch-char-prop-*' commands.  The
+text property used is the symbol whose name is the regexp.  The
+property value is a cons whose car is the regexp (a string) and whose
+cdr is PREDICATE."
+  (interactive (cons current-prefix-arg (isearchp-regexp-read-args)))
+  (when (or new
+            (not (consp (car isearchp-char-prop-values)))
+            (not (equal (caar isearchp-char-prop-values) regexp))
+            (not (eq isearchp-char-prop-prop (intern regexp)))
+            (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
+    (isearchp-regexp-define-contexts beg end property regexp predicate action))
+  (isearchp-char-prop-forward nil))
+
+(defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action)
+  "Define search contexts for a future character-property search.
+This command does not actually search the contexts.  For that, use
+`isearchp-regexp-context-search' or `isearchp-char-prop-forward'."
+  (interactive (isearchp-regexp-read-args))
+  (message "Scanning for regexp matches...")
+  (let ((matches-p  (isearchp-regexp-scan beg end property regexp predicate action)))
+    (setq isearchp-char-prop-prop    property
+          isearchp-char-prop-type    'text
+          isearchp-char-prop-values  (list (cons regexp predicate)))
+    (message (if matches-p "Scanning for regexp matches...done" "NO MATCH for regexp"))))
+   
+;;(@* "General Non-Interactive Functions")
+
+;;; General Non-Interactive Functions --------------------------------
 
 (defun isearchp-char-prop-1 (search-fn arg)
   "Helper for `isearchp-char-prop-(forward|backward)(-regexp)'."
@@ -284,8 +464,9 @@ See `isearchp-char-prop-backward'."
                                  (current-buffer) (point-min) (point-max) type))))
          (prop     (if (or arg  (not isearchp-char-prop-prop))
                        (intern (completing-read
-                                (format "%s property to search: "
-                                        (if type (capitalize (symbol-name type)) "Character"))
+                                (format "%s property to %ssearch: "
+                                        (if type (capitalize (symbol-name type)) "Character")
+                                        (if isearchp-complement-domain-p "NOT " ""))
                                 props nil nil nil nil "face"))
                      isearchp-char-prop-prop))
          (values   (if (or arg  (not isearchp-char-prop-values))
@@ -299,6 +480,7 @@ See `isearchp-char-prop-backward'."
           isearchp-char-prop-prop         prop
           isearchp-char-prop-values       values))
   (add-hook 'isearch-mode-end-hook 'isearchp-char-prop-end)
+  (when (and transient-mark-mode  mark-active) (deactivate-mark))
   (funcall search-fn))
 
 ;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
@@ -338,17 +520,18 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
   (let ((tag  (make-symbol "isearchp-char-prop-filter-pred")))
     `(lambda (beg end)
        (and (or
-             (and (fboundp 'isearch-filter-visible)  (isearch-filter-visible beg end))
-             (and (boundp 'isearch-invisible)  (not (or (eq search-invisible t) ; Emacs 24.4+
-                                                        (not (isearch-range-invisible beg end))))))
+             (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
+             (and (boundp 'isearch-invisible) ; Emacs 24.4+
+                  (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
             (catch ',tag
               (while (< beg end)
-                (unless (isearchp-char-prop-matches-p
-                         ',type ',prop ',values
-                         (isearchp-char-prop-default-match-fn
-                          ',prop)
-                         beg)
-                  (throw ',tag nil))
+                (let ((matches-p  (isearchp-char-prop-matches-p
+                                   ',type ',prop ',values (isearchp-char-prop-default-match-fn ',prop)
+                                   beg)))
+                  (unless (if matches-p
+                              (not isearchp-complement-domain-p)
+                            isearchp-complement-domain-p)
+                    (throw ',tag nil)))
                 (setq beg  (1+ beg)))
               t)))))
 
@@ -532,6 +715,114 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
                    sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
         (when (interactive-p) (message "Sexps: %S" sexps))))))
 
+
+(defun isearchp-read-context-regexp ()
+  "Read context regexp and determine `isearchp-context-level'."
+  (let* ((prompt  "Search %s contexts (regexp): ")
+         (prompt  (format prompt (if isearchp-complement-domain-p "*OUTSIDE*" "within")))
+         (regexp  (read-regexp prompt)))
+    (while (string= "" regexp)
+      (message "Regexp cannot be empty.  Try again...") (sit-for 2)
+      (setq regexp  (read-regexp prompt)))
+    (setq isearchp-context-level  (if (string-match "\\\\(" regexp)
+                                      (truncate (read-number
+                                                 "Subgroup to use as search context [0, 1, 2,...]: "
+                                                 0))
+                                    0))
+    regexp))
+
+(defun isearchp-regexp-scan (beg end property regexp &optional predicate action)
+  "Scan buffer for REGEXP, adding text property PROPERTY to matches.
+Return the value of PROPERTY, if added somewhere.  Else return nil.
+See `isearchp-add-regexp-as-property' for the parameter descriptions."
+  (setq regexp  (or regexp  (isearchp-read-context-regexp)))
+  (when (stringp property) (setq property  (intern property)))
+  (unless (and beg  end) (setq beg  (point-min)
+                               end  (point-max)))
+  (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
+  (let ((last-beg      nil)
+        (added-prop-p  nil))
+    (condition-case-no-debug isearchp-regexp-scan
+        (save-excursion
+          (goto-char (setq last-beg  beg))
+          (while (and beg  (< beg end)  (not (eobp))
+                      (progn (while (and (setq beg  (re-search-forward regexp end t))
+                                         (eq last-beg beg)
+                                         (not (eobp)))
+                               ;; Matched again, same place.  Advance 1 char.
+                               (forward-char) (setq beg  (1+ beg)))
+                             ;; Stop if no more match.  But if complementing then continue until eobp.
+                             (or beg  isearchp-complement-domain-p)))
+            (unless (or (not beg)  (match-beginning isearchp-context-level)) ; No `user-error': Emacs 23
+              (error "Search context has no subgroup of level %d - try a lower number"
+                     isearchp-context-level))
+            (let* ((hit-beg     (if isearchp-complement-domain-p
+                                    last-beg
+                                  (match-beginning isearchp-context-level)))
+                   (hit-end     (if isearchp-complement-domain-p
+                                    (if beg
+                                        (match-beginning isearchp-context-level)
+                                      (point-max))
+                                  (match-end isearchp-context-level)))
+                   (IGNORE      (when action (save-excursion (funcall action) (setq hit-end  (point)))))
+                   (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                   end-marker)
+              (if (and (not (string= "" hit-string))
+                       (setq end-marker  (copy-marker hit-end))
+                       (or (not predicate)
+                           (save-match-data (funcall predicate hit-string end-marker))))
+                  ;; Put (REGEXP . PREDICATE) on hit text as text property PROPERTY.
+                  ;; It is not enough to record REGEXP.  E.g., `*-imenu-non-interactive-function' and
+                  ;; `*-imenu-command' use the same REGEXP.  Only the PREDICATE is different.
+                  (let ((buffer-mod  (buffer-modified-p))
+                        (prop-value  (cons regexp predicate)))
+                    (put-text-property hit-beg hit-end property prop-value)
+                    (setq added-prop-p  prop-value)
+                    (set-buffer-modified-p buffer-mod))
+                (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
+            (setq last-beg  beg)))
+      (error (error "%s" (error-message-string isearchp-regexp-scan))))
+    added-prop-p)) ; Return property value if added, or nil otherwise.
+
+(defun isearchp-regexp-read-args ()
+  "Read args for `isearchp-regexp*'."
+  (let* ((regionp  (and transient-mark-mode  mark-active))
+         (beg      (if regionp (region-beginning) (point-min)))
+         (end      (if regionp (region-end) (point-max)))
+         (regxp    (if (or current-prefix-arg
+                           (not (consp (car isearchp-char-prop-values)))
+                           (not (stringp (caar isearchp-char-prop-values))))
+                       (isearchp-read-context-regexp)
+                     (caar isearchp-char-prop-values)))
+         (prop     (if (or current-prefix-arg
+                           (not (consp (car isearchp-char-prop-values)))
+                           (not (stringp (caar isearchp-char-prop-values))))
+                       (intern regxp)
+                     isearchp-char-prop-prop))
+         (pred     (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)
+                        (read-from-minibuffer
+                         "Predicate to filter search contexts: "
+                         nil read-expression-map t (and (boundp 'function-name-history)
+                                                        'function-name-history)))))
+    (list beg end prop regxp pred)))
+
+(defun isearchp-text-prop-present-p (beg end property value)
+  "Return non-nil if some text between BEG and END has PROPERTY of VALUE."
+  (unless (and beg  end) (setq beg  (point-min)
+                               end  (point-max)))
+  (save-excursion
+    (let ((pos  beg)
+          propval)
+      (goto-char pos)
+      (catch 'isearchp-text-prop-present-p
+        (while (<= pos end)
+          (setq pos      (or (next-property-change pos nil end)  end)
+                propval  (get-text-property pos property))
+          (if (and propval  (equal propval value))
+              (throw 'isearchp-text-prop-present-p t)
+            (setq pos  (1+ pos))))
+        nil))))
+
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
   "Copy of SEQUENCE with duplicate elements removed.
@@ -543,6 +834,620 @@ See `make-hash-table' for possible values of TEST."
        unless (gethash elt htable)
        do     (puthash elt elt htable)
        finally return (loop for i being the hash-values in htable collect i))))
+
+ 
+;;(@* "Imenu Commands and Functions")
+
+;;; Imenu Commands and Functions -------------------------------------
+
+(defun isearchp-imenu ()
+  (interactive)
+  "Search Imenu entries.
+A search context is the text between the beginning of the Imenu regexp
+match and `forward-sexp' from there.
+
+IMPORTANT: By default, this command assumes that the search contexts
+have already been defined, by a previous use of this command,
+`isearchp-regexp-context-search', or
+`isearchp-regexp-define-contexts'.
+
+If you do not use a prefix arg then this command searches for the
+character property that you last used in an Isearch command that
+searches or applies character properties.  This includes the
+`isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
+`isearchp-thing'.  See `isearchp-char-prop-forward' for more
+information.
+
+If you use a prefix arg, or if you have not previously used this
+command or similar commands, this command defines the search contexts
+and then searches them"
+  (isearchp-imenu-1 current-prefix-arg))
+
+(defun isearchp-imenu-command ()
+  "Search Emacs command definitions.
+This uses `commandp', so it finds only currently defined commands.
+That is, if the buffer has not been evaluated, then its function
+definitions are NOT considered commands by `isearchp-imenu-command'.
+See `isearchp-imenu' for more information."
+  (interactive)
+  (unless (eq major-mode 'emacs-lisp-mode)
+    (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
+  (isearchp-imenu-1 current-prefix-arg
+                    (lambda (_hit _mrkr)
+                      (commandp (intern-soft
+                                 (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
+                    (lambda (menus)
+                      (or (car (assoc "Functions" menus))
+                          (car (assoc "Other" menus))
+                          (error "No command definitions in buffer"))))) ; No `user-error' in Emacs 23.
+
+(defun isearchp-imenu-non-interactive-function ()
+  "Search Emacs non-command function definitions.
+See `isearchp-imenu' for more information."
+  (interactive)
+  (unless (eq major-mode 'emacs-lisp-mode)
+    (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
+  (isearchp-imenu-1 current-prefix-arg
+                    (lambda (_hit _mrkr)
+                      (let ((fn  (intern-soft
+                                  (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
+                        (and (fboundp fn)  (not (commandp fn)))))
+                    (lambda (menus)
+                      (or (car (assoc "Functions" menus))
+                          (car (assoc "Other" menus))
+                          (error "No non-command function definitions in buffer"))))) ; No `user-error'
+
+(defun isearchp-imenu-macro ()
+  "Search Lisp macro definitions.
+See `isearchp-imenu' for more information."
+  (interactive)
+  (unless (memq major-mode '(emacs-lisp-mode lisp-mode))
+    (error "This command is only for Emacs-Lisp mode or Lisp mode")) ; No `user-error' in Emacs 23.
+  (isearchp-imenu-1 current-prefix-arg
+                    (lambda (_hit _mrkr)
+                      (let ((fn  (intern-soft
+                                  (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
+                        (if (fboundp 'macrop) ; Emacs 24.4+
+                            (macrop fn)
+                          (and (fboundp fn)
+                               (let ((def  (symbol-function fn)))
+                                 (and (consp def)  (eq (car def) 'macro)))))))
+                    (lambda (menus)
+                      (or (car (assoc "Macro" menus))
+                          (car (assoc "Other" menus))
+                          (error "No macro definitions in buffer"))))) ; No `user-error' in Emacs 23.
+
+(defun isearchp-imenu-1 (new &optional predicate submenu-fn)
+  "Helper for `isearchp-imenu*' commands.
+BEG, END are the region limits.  If nil, the buffer limits are used.
+Non-nil PREDICATE means act on only the hits for it holds.  It is a
+Boolean function that takes these args:
+  - the search-context string
+  - a marker at the end of the search-context
+SUBMENU-FN is a function to apply to the list of Imenu submenus to
+ choose one.  If nil then the user chooses one using completion."
+  (unless imenu-generic-expression
+    (error "No Imenu pattern for this buffer")) ; No `user-error' in Emacs 23.
+  (let ((case-fold-search  (if (or (local-variable-p 'imenu-case-fold-search)
+                                   (not (local-variable-p 'font-lock-defaults)))
+                               imenu-case-fold-search
+                             (nth 2 font-lock-defaults)))
+        (old-table         (syntax-table))
+        (table             (copy-syntax-table (syntax-table)))
+        (slist             imenu-syntax-alist)
+        (beg               (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+        (end               (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+        prop)
+    (dolist (syn  slist) ; Modify the syntax table used while matching regexps.
+      (if (numberp (car syn))
+          (modify-syntax-entry (car syn) (cdr syn) table) ; Single character.
+        (dolist (char  (car syn))  (modify-syntax-entry char (cdr syn) table)))) ; String.
+    (unwind-protect
+         (save-match-data
+           (set-syntax-table table)
+           (let* ((others   0)
+                  (menus    (mapcar (lambda (menu)
+                                      (when (equal (car menu) "Other")
+                                        (setq others  (1+ others))
+                                        (when (> others 1)
+                                          (setcar menu (format "Other<%d>" others))))
+                                      menu)
+                                    (isearchp-remove-if-not
+                                     #'isearchp-imenu-in-buffer-p ; Use only menus that match buffer.
+                                     (mapcar (lambda (menu) ; Name unlabeled menu(s) `Other[<N>]'.
+                                               (if (stringp (car menu))
+                                                   menu
+                                                 (cons "Other" (cdr menu))))
+                                             imenu-generic-expression))))
+                  (submenu  (if submenu-fn
+                                (funcall submenu-fn menus)
+                              (if (cadr menus)
+                                  (let ((completion-ignore-case  t))
+                                    (completing-read "Choose: " menus nil t))
+                                (caar menus)))) ; Only one submenu, so use it.
+                  (regexp   (cadr (assoc submenu menus))))
+             (unless (stringp regexp) (error "No match")) ; No `user-error' in Emacs 23.
+             (isearchp-regexp-context-search new beg end (intern regexp) regexp predicate
+                                             ;; We rely on the match data having been preserved.
+                                             ;; $$$$$$ An alternative fn for Lisp only:
+                                             ;; (lambda () (up-list -1) (forward-sexp))))))
+                                             (lambda ()
+                                               (goto-char (match-beginning 0))
+                                               (condition-case isearchp-imenu-1
+                                                   (forward-sexp)
+                                                 (error (goto-char (match-end 0))))))))
+      (set-syntax-table old-table))))
+
+(defun isearchp-imenu-in-buffer-p (menu)
+  "Return non-nil if the regexp in MENU has a match in the buffer."
+  (save-excursion (goto-char (point-min)) (re-search-forward (cadr menu) nil t)))
+
+(defun isearchp-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
+
+ 
+;;(@* "THING Commands and Functions")
+
+;;; THING Commands and Functions" ------------------------------------
+
+;; Same as `hide/show-comments' in `hide-comnt.el'.
+;;
+(defun isearchp-hide/show-comments (&optional hide/show start end)
+  "Hide or show comments from START to END.
+Interactively, hide comments, or show them if you use a prefix arg.
+Interactively, START and END default to the region limits, if active.
+Otherwise, including non-interactively, they default to `point-min'
+and `point-max'.
+
+Uses `save-excursion', restoring point.
+
+Be aware that using this command to show invisible text shows *all*
+such text, regardless of how it was hidden.  IOW, it does not just
+show invisible text that you previously hid using this command.
+
+From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
+show them.
+
+This function does nothing in Emacs versions prior to Emacs 21,
+because it needs `comment-search-forward'."
+  (interactive (list (if current-prefix-arg 'show 'hide)
+                     (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
+                     (if (and transient-mark-mode  mark-active) (region-end) (point-max))))
+  (when (require 'newcomment nil t)     ; `comment-search-forward'
+    (comment-normalize-vars)     ; Per Stefan, should call this first.
+    (unless start (setq start  (point-min)))
+    (unless end   (setq end    (point-max)))
+    (unless (<= start end) (setq start  (prog1 end (setq end  start))))
+    (let ((bufmodp           (buffer-modified-p))
+          (buffer-read-only  nil)
+          cbeg cend)
+      (unwind-protect
+           (save-excursion
+             (goto-char start)
+             (while (and (< start end)  (setq cbeg  (comment-search-forward end 'NOERROR)))
+               (setq cend  (if (string= "" comment-end)
+                               (min (1+ (line-end-position)) (point-max))
+                             (search-forward comment-end end 'NOERROR)))
+               (when (and cbeg  cend)
+                 (if (eq 'hide hide/show)
+                     (put-text-property cbeg cend 'invisible t)
+                   (put-text-property cbeg cend 'invisible nil)))))
+        (set-buffer-modified-p bufmodp)))))
+
+;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
+(defmacro isearchp-with-comments-hidden (start end &rest body)
+  "Evaluate the forms in BODY while comments are hidden from START to END.
+But if `isearchp-ignore-comments-flag' is nil, just evaluate BODY,
+without hiding comments.  Show comments again when BODY is finished.
+You can toggle `isearchp-ignore-comments-flag' using `C-M-;' in the
+minibuffer, but depending on when you do so you might need to invoke
+the current command again.
+
+See `isearchp-hide/show-comments', which is used to hide and show the
+comments."
+  (let ((result  (make-symbol "result"))
+        (ostart  (make-symbol "ostart"))
+        (oend    (make-symbol "oend")))
+    `(let ((,ostart  ,start)
+           (,oend    ,end)
+           ,result)
+       (unwind-protect
+            (setq ,result  (progn (when isearchp-ignore-comments-flag
+                                    (isearchp-hide/show-comments 'hide ,ostart ,oend))
+                                  ,@body))
+         (when isearchp-ignore-comments-flag (isearchp-hide/show-comments 'show ,ostart ,oend))
+         ,result))))
+
+(defun isearchp-toggle-ignoring-comments () ; Bound to `C-M-;' during Isearch.
+  "Toggle the value of option `isearchp-ignore-comments-flag'.
+If option `ignore-comments-flag' is defined (in library
+`hide-comnt.el') then it too is toggled.
+Bound to `C-M-;' during Isearch."
+  (interactive)
+  (setq isearchp-ignore-comments-flag  (not isearchp-ignore-comments-flag))
+  (when (boundp 'ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
+  (message "Ignoring comments is now %s" (if isearchp-ignore-comments-flag "ON" "OFF")))
+
+;--------------
+
+(defun isearchp-thing (new thing beg end property &optional predicate transform-fn)
+  "Search within THING search contexts.
+That is, each zone of text searched is a THING.
+Enter the type of THING to search: `sexp', `sentence', `list',
+`string', `comment', etc.
+
+Possible THINGs are those for which
+`isearchp-bounds-of-thing-at-point' returns non-nil (and for which the
+bounds are not equal: an empty thing).  This does not include
+everything THING that is defined as a thing-at-point type.
+
+If user option `isearchp-ignore-comments-flag' is nil then include
+THINGs located within comments.  Non-nil (the default value) means to
+ignore things inside comments for searching.  You can toggle this
+option using `C-M-;' during Isearch, but to see the effect you will
+need to invoke this command again, and with a prefix arg (see below).
+
+IMPORTANT: By default, this command assumes that the search contexts
+have already been defined by a previous use of this command.
+
+If you do not use a prefix arg then this command searches for the
+character property that you last used in an Isearch command that
+searches or applies character properties.  This includes the
+`isearch-char-prop-*' commands, the `isearchp-imenu*' commands.  See
+`isearchp-char-prop-forward' for more information.
+
+If you use a prefix arg, or if you have not previously used this
+command or similar commands, then you are prompted for the THING and
+the search contexts are created.  Text properties are added to the
+contexts to identify them and allow for character-property searching.
+
+Non-interactively, if optional arg PREDICATE is non-nil then it is a
+predicate that acceptable things must satisfy.  It is passed the thing
+in the form of the cons returned by
+`isearchp-next-visible-thing-and-bounds'.
+
+Non-interactively, if optional arg TRANSFORM-FN is non-nil then it is
+a function to apply to each thing plus its bounds and which returns
+the actual target to search in place of THING.  Its argument is the
+same as PREDICATE's.
+
+It returns the replacement search context for the thing plus its
+bounds, in the same form: a cons (STRING START . END), where STRING is
+the search hit string and START and END are its bounds).
+
+You can alternatively choose to search, not the THINGs as search
+contexts, but the non-THINGs (non-contexts), that is, the buffer text
+that is outside THINGs.  To do this, use
+`C-M-~' (`isearchp-toggle-completing-domain') during Isearch.
+
+NOTE:
+
+1. For best results, use also library `thingatpt+.el'.
+
+2. In some cases it can take a while to compute the THING search
+   contexts.  Use the command on an active region when you do not need
+   to search THINGS throughout an entire buffer.
+
+3. In `nxml-mode', remember that option `nxml-sexp-element-flag'
+   controls what a `sexp' means.  To use whole XML elements as search
+   contexts, set the option to t, not nil.  (This is already done for
+   the predefined Isearch+ commands.)
+
+4. The scan candidate things moves forward a THING at a time.  In
+   particular, if either PREDICATE or TRANSFORM-FN disqualifies the
+   thing being scanned currently, then scanning skips forward to the
+   next thing.  The scan does not dig inside the current thing to look
+   for a qualified THING."
+  (interactive (cons current-prefix-arg (isearchp-thing-read-args)))
+  (when (or new
+            (not (consp (car isearchp-char-prop-values)))
+            (not (equal (caar isearchp-char-prop-values) thing))
+            (not (eq isearchp-char-prop-prop property))
+            (not (isearchp-text-prop-present-p beg end property (cons thing predicate))))
+    (isearchp-thing-define-contexts thing beg end property predicate))
+  (isearchp-char-prop-forward nil))
+
+(defun isearchp-thing-read-args ()
+  "Read args for `isearchp-thing*'."
+  (let* ((thng  (intern
+                 (completing-read
+                  (format "%shing (type): " (if isearchp-complement-domain-p "*NOT* t" "T"))
+                  (isearchp-things-alist) nil nil nil nil (symbol-name isearchp-last-thing-type))))
+         (beg   (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+         (end   (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+         (pred  (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)
+                     (read-from-minibuffer
+                      "Predicate to filter search contexts: "
+                      nil read-expression-map t (and (boundp 'function-name-history)
+                                                     'function-name-history))))
+         (prop  (if (or current-prefix-arg
+                        (not (consp (car isearchp-char-prop-values)))
+                        (not (equal thng (caar isearchp-char-prop-values))))
+                    (intern (format "isearchp-thing-%s" thng))
+                  isearchp-char-prop-prop)))
+    (list thng beg end prop pred)))
+
+(defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn)
+  "Define search contexts for a future thing searches.
+This command does not actually search the contexts.  For that, use
+`isearchp-thing' or `isearchp-char-prop-forward'."
+  (interactive (isearchp-thing-read-args))
+  (message "Scanning for thing: `%s'..." thing)
+  (isearchp-thing-scan beg end thing property predicate transform-fn)
+  (setq isearchp-char-prop-prop    property
+        isearchp-char-prop-type    'text
+        isearchp-char-prop-values  (list (cons thing predicate)))
+  (message "Scanning for thing: `%s'...done" thing))
+
+(defun isearchp-thing-scan (beg end thing property &optional predicate transform-fn)
+  "Scan buffer from BEG to END for things of type THING.
+Create THING search contexts: Add text property PROPERTY to THING
+matches.
+
+Return non-nil if PROPERTY was added somewhere, nil otherwise.
+
+If PREDICATE is non-nil then it is a predicate that acceptable things
+must satisfy.  It is passed the thing plus its bounds, in the form of
+the cons returned by `isearchp-next-visible-thing-and-bounds'.
+
+If TRANSFORM-FN is non-nil then it is a function to apply to each
+thing plus its bounds.  Its argument is the same as PREDICATE's.  It
+returns the actual search-target to propertize, in place of THING.
+That is, it returns the replacement for the thing plus its bounds, in
+the same form: a cons (STRING START . END), where STRING is the search
+hit string and START and END are its bounds).  It can also return nil,
+in which case it acts as another predicate: the thing is not
+propertized.
+
+NOTE: The scan moves forward a THING at a time.  In particular, if
+either PREDICATE or TRANSFORM-FN disqualifies the thing being scanned
+currently, then scanning skips forward to the next thing.  The scan
+does not dig inside the current thing to look for a qualified THING.
+
+This function respects both `isearchp-search-complement-domain-p' and
+`isearchp-ignore-comments-flag'."
+  (unless (and beg  end) (setq beg  (point-min)
+                               end  (point-max)))
+  (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
+  (when (stringp property) (setq property  (intern property)))
+  (let ((last-beg      nil)
+        (added-prop-p  nil))
+    (isearchp-with-comments-hidden
+     beg end
+     (condition-case-no-debug isearchp-thing-scan
+         (save-excursion
+           (goto-char (setq last-beg  beg)) ; `isearchp-next-visible-thing-and-bounds' uses point.
+           (while (and last-beg  (< last-beg end))
+             (while (and (< beg end)  (invisible-p beg)) ; Skip invisible, overlay or text.
+               (when (get-char-property beg 'invisible)
+                 (setq beg  (next-single-char-property-change beg 'invisible nil end))))
+             (let ((thg+bnds  (isearchp-next-visible-thing-and-bounds thing beg end)))
+               (if (and (not thg+bnds)  (not isearchp-complement-domain-p))
+                   (setq beg  end)
+                 (let* ((thg-beg       (cadr thg+bnds))
+                        (thg-end       (cddr thg+bnds))
+                        (tr-thg-beg    thg-beg)
+                        (tr-thg-end    thg-end)
+                        (hit-beg       (if isearchp-complement-domain-p last-beg tr-thg-beg))
+                        (hit-end       (if isearchp-complement-domain-p
+                                           (or tr-thg-beg  end)
+                                         tr-thg-end))
+                        (hit-string    (buffer-substring-no-properties hit-beg hit-end))
+                        (end-marker    (copy-marker hit-end))
+                        (filteredp     (or (not predicate)
+                                           (not thg+bnds)
+                                           (funcall predicate thg+bnds)))
+                        (new-thg+bnds  (if isearchp-complement-domain-p
+                                           thg+bnds
+                                         (and filteredp
+                                              thg+bnds
+                                              (if transform-fn
+                                                  (funcall transform-fn thg+bnds)
+                                                thg+bnds)))))
+                   (cond ((and (not (string= "" hit-string)) ; No-op if empty hit.
+                               (or new-thg+bnds  isearchp-complement-domain-p))
+                          (when (and transform-fn  (not isearchp-complement-domain-p))
+                            (setq hit-string  (car  new-thg+bnds)
+                                  tr-thg-beg  (cadr new-thg+bnds)
+                                  tr-thg-end  (cddr new-thg+bnds)
+                                  end-marker  (copy-marker tr-thg-end)))
+                         
+                          (when (and isearchp-ignore-comments-flag  isearchp-complement-domain-p)
+                            (put-text-property 0 (length hit-string) 'invisible nil hit-string))
+                          (let ((buffer-mod  (buffer-modified-p))
+                                (prop-value  (cons thing predicate))) ; @@@@@@@@@ ?????
+                            (put-text-property hit-beg hit-end property prop-value)
+                            (setq added-prop-p  prop-value)
+                            (set-buffer-modified-p buffer-mod)))
+                         (t
+                          (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
+                   (if thg-end
+                       ;; $$$$$$
+                       ;; The correct code here is (setq beg end).  However, unless you use my
+                       ;; library `thingatpt+.el' or unless Emacs bug #9300 is fixed (hopefully
+                       ;; in Emacs 24), that will loop forever.  In that case we move forward a
+                       ;; char to prevent looping, but that means that the position just after
+                       ;; a THING is considered to be covered by the THING (which is incorrect).
+                       (setq beg  (if (or (featurep 'thingatpt+)  (> emacs-major-version 23))
+                                      thg-end
+                                    (1+ thg-end)))
+                     ;; If visible then no more things - skip to END.
+                     (unless (invisible-p beg) (setq beg  end)))))
+               (setq last-beg  beg))))
+       (error (error "%s" (error-message-string isearchp-thing-scan)))))
+    added-prop-p))  ; Return indication of whether property was added.
+
+;;--------------------------------------
+
+;;; Same as `thgcmd-things-alist' in `thing-cmds.el'.
+(defun isearchp-things-alist ()
+  "Alist of most thing types currently defined.
+Each is a cons (STRING), where STRING names a type of text entity for
+which there is a either a corresponding `forward-'thing operation, or
+corresponding `beginning-of-'thing and `end-of-'thing operations.  The
+list includes the names of the symbols that satisfy
+`isearchp-defined-thing-p', but with these excluded: `thing', `buffer',
+`point'."
+  (let ((types  ()))
+    (mapatoms
+     (lambda (tt)
+       (when (isearchp-defined-thing-p tt) (push (symbol-name tt) types))))
+    (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
+      (setq types (delete typ types)))
+    (setq types  (sort types #'string-lessp))
+    (mapcar #'list types)))
+
+;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
+(defun isearchp-defined-thing-p (thing)
+  "Return non-nil if THING (type) is defined as a thing-at-point type."
+  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+        (beginning-op  (get thing 'beginning-op))
+        (end-op        (get thing 'end-op))
+        (bounds-fn     (get thing 'bounds-of-thing-at-point))
+        (thing-fn      (get thing 'thing-at-point)))
+    (or (functionp forward-op)
+        (and (functionp beginning-op)  (functionp end-op))
+        (functionp bounds-fn)
+        (functionp thing-fn))))
+
+(defun isearchp-bounds-of-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
+`tap-bounds-of-thing-at-point' if defined, else
+`bounds-of-thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-bounds-of-thing-at-point)
+      (tap-bounds-of-thing-at-point thing syntax-table)
+    (if (and (fboundp 'with-syntax-table)  (syntax-table-p syntax-table)) ; Emacs 21+.
+        (with-syntax-table syntax-table (bounds-of-thing-at-point thing))
+      (bounds-of-thing-at-point thing)))) ; Punt - ignore any SYNTAX-TABLE arg.
+
+(defun isearchp-next-visible-thing-and-bounds (thing start end)
+  "Return the next visible THING and its bounds.
+Start at BEG and end at END, when searching for THING.
+Return (THING THING-START . THING-END), with THING-START and THING-END
+ the bounds of THING.  Return nil if no such THING is found.
+
+The \"visible\" in the name refers to ignoring things that are within
+invisible text, such as hidden comments.
+
+You can toggle hiding of comments using `C-M-;' during Isearch, but
+depending on when you do so you might need to invoke the current
+command again.."
+  (save-excursion (isearchp-next-visible-thing thing start end)))
+
+;; Simple version of `previous-visible-thing' from `thing-cmds.el'.
+;;
+(defun isearchp-previous-visible-thing (thing start &optional end)
+  "Same as `isearchp-next-visible-thing', except it moves backward."
+  (interactive
+   (list (or (and (memq last-command '(isearchp-next-visible-thing isearchp-previous-visible-thing))
+                  isearchp-last-thing-type)
+             (prog1 (intern (completing-read "Thing (type): " (isearchp-things-alist) nil nil nil nil
+                                             (symbol-name isearchp-last-thing-type)))))
+         (point)
+         (if (and mark-active  (not (eq (region-beginning) (region-end))))
+             (min (region-beginning) (region-end))
+           (point-min))))
+  (if (interactive-p)
+      (isearchp-with-comments-hidden start end (isearchp-next-visible-thing thing start end 'BACKWARD))
+    (isearchp-next-visible-thing thing start end 'BACKWARD)))
+
+;; Simple version of `next-visible-thing' from `thing-cmds.el'.
+;;
+(defun isearchp-next-visible-thing (thing &optional start end backward)
+  "Go to the next visible THING.
+Start at START.  If END is non-nil then look no farther than END.
+Interactively:
+ - START is point.
+ - If the region is not active, END is the buffer end.  If the region
+   is active, END is the region end: the greater of point and mark.
+
+Ignores (skips) comments if `isearchp-ignore-comments-flag' is
+non-nil.  You can toggle this ignoring of comments using `C-M-;'
+during Isearch, but depending on when you do so you might need to
+invoke the current command again.
+
+If you use this command or `isearchp-previous-visible-thing'
+successively, even mixing the two, you are prompted for the type of
+THING only the first time.  You can thus bind these two commands to
+simple, repeatable keys (e.g. `f11', `f12'), to navigate among things
+quickly.
+
+Non-interactively, THING is a symbol, and optional arg BACKWARD means
+go to the previous thing.
+
+Return (THING THING-START . THING-END), with THING-START and THING-END
+the bounds of THING.  Return nil if no such THING is found."
+  (interactive
+   (list (or (and (memq last-command '(isearchp-next-visible-thing isearchp-previous-visible-thing))
+                  isearchp-last-thing-type)
+             (prog1 (intern (completing-read "Thing (type): " (isearchp-things-alist) nil nil nil nil
+                                             (symbol-name isearchp-last-thing-type)))))
+         (point)
+         (if (and mark-active  (not (eq (region-beginning) (region-end))))
+             (max (region-beginning) (region-end))
+           (point-max))))
+  (setq isearchp-last-thing-type  thing)
+  (unless start (setq start  (point)))
+  (unless end   (setq end    (if backward (point-min) (point-max))))
+  (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
+        ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+  (if (interactive-p)
+      (isearchp-with-comments-hidden start end (isearchp-next-visible-thing-1 thing start end backward))
+    (isearchp-next-visible-thing-1 thing start end backward)))
+
+;;; Same as `thgcmd-next-visible-thing-1' in `thing-cmds.el'.
+(if (fboundp 'thgcmd-next-visible-thing-1)
+    (defalias 'isearchp-next-visible-thing-1 'thgcmd-next-visible-thing-1)
+  (defun isearchp-next-visible-thing-1 (thing start end backward)
+    "Helper for `isearchp-next-visible-thing'.  Get thing past point."
+    (let ((thg+bds  (isearchp-next-visible-thing-2 thing start end backward)))
+      (if (not thg+bds)
+          nil
+        ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
+        ;; $$$$$$ Seems that < is better than <=, at least for `isearchp-search-thing':
+        ;; $$$$$$ for XML elements and lists, <= misses the first one.
+        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (< (cadr thg+bds) (point))))
+          (if backward
+              (setq start  (max end (1- (cadr thg+bds))))
+            (setq start  (min end (1+ (cddr thg+bds)))))
+          (setq thg+bds  (isearchp-next-visible-thing-2 thing start end backward)))
+        (when thg+bds (goto-char (cadr thg+bds)))
+        thg+bds))))
+
+;;; Same as `thgcmd-next-visible-thing-2' in `thing-cmds.el'.
+(if (fboundp 'thgcmd-next-visible-thing-2)
+    (defalias 'isearchp-next-visible-thing-2 'thgcmd-next-visible-thing-2)
+  (defun isearchp-next-visible-thing-2 (thing start end &optional backward)
+    "Helper for `isearchp-next-visible-thing-1'.  Thing might not be past START."
+    (and (not (= start end))
+         (save-excursion
+           (let ((bounds  nil))
+             ;; If BACKWARD, swap START and END.
+             (cond ((< start end) (when   backward (setq start  (prog1 end (setq end  start)))))
+                   ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
+             (catch 'isearchp-next-visible-thing-2
+               (while (if backward (> start end) (< start end))
+                 (goto-char start)
+                 ;; Skip invisible text.
+                 (when (and (if backward (> start end) (< start end))  (invisible-p start))
+                   (setq start  (if (get-text-property start 'invisible) ; Text prop.
+                                    (if backward
+                                        (previous-single-property-change start 'invisible nil end)
+                                      (next-single-property-change start 'invisible nil end))
+                                  (if backward ; Overlay prop.
+                                      (previous-overlay-change start)
+                                    (next-overlay-change start))))
+                   (goto-char start))
+                 (when (and (setq bounds  (isearchp-bounds-of-thing-at-point thing))
+                            (not (equal (car bounds) (cdr bounds)))) ; Not an empty thing, "".
+                   (throw 'isearchp-next-visible-thing-2
+                     (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
+                 (setq start  (if backward (1- start) (1+ start))))
+               nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
