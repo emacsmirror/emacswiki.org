@@ -8,6 +8,8 @@ Save the following two files in your file system:
 Lisp:doxy-preview.el
 Lisp:make-image.sh
 
+Here is a screenshot: DoxyPreviewScreenshot
+
 {{{
 (add-to-list 'load-path "/path/to/doxy-preview.el")
 (require 'doxy-preview)
