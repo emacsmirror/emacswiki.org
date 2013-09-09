@@ -1,0 +1,22 @@
+= Overview =
+
+DoxyPreview is a minor-mode that allows preview of latex formulas, graphs, and images of Doxygen comments.
+
+= Install =
+
+Save the following two files in your file system:
+Lisp:doxy-preview.el
+Shell:make-image.sh
+
+{{{
+(add-to-list 'load-path "/path/to/doxy-preview.el")
+(require 'doxy-preview)
+}}}
+
+= Notes =
+
+DoxyPreview is made of two part: one in emacs-lisp to  fetch the region between  tags like \dot ..   \enddot and another one  in shell  script that  takes these  region and  creates the corresponding image before rendering.
+
+Thus make sure that the make-image.sh script is in a path pointed to by ${PATH} and is executable.
+----
+CategoryDoc
