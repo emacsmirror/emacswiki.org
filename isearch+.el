@@ -1,16 +1,16 @@
-;;; isearch+.el --- Extensions to `isearch.el'.
+;;; isearch+.el --- Extensions to `isearch.el' (incremental search).
 ;;
 ;; Filename: isearch+.el
-;; Description: Extensions to `isearch.el'.
+;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  8 15:47:04 2013 (-0700)
+;; Last-Updated: Sun Sep  8 20:06:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2334
+;;     Update #: 2383
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -25,7 +25,28 @@
 ;;
 ;;; Commentary:
 ;;
-;;    Extensions to `isearch.el'.
+;;    Extensions to `isearch.el' (incremental search).
+;;
+;;  The Isearch+ libraries are these:
+;;
+;;  `isearch+.el' (this file)    - General extensions to `isearch.el'.
+;;                                 Can be used with Emacs 20 or later.
+;;  `isearch-prop.el' (optional) - Commands to search within contexts,
+;;                                 which are character-property zones:
+;;                                 regions of text that have certain
+;;                                 text or overlay properties.  Can be
+;;                                 Used with Emacs 23 or later.
+;;
+;;
+;;  This file should be loaded *AFTER* loading the standard GNU file
+;;  `isearch.el'.  So in your `~/.emacs' file, do this:
+;;
+;;  (eval-after-load "isearch" '(require 'isearch+))
+;;
+;;  Library `isearch-prop.el' is optional.  If you do not want to use
+;;  it then do not put it in your `load-path'.  If it is in your
+;;  `load-path' then it will automatically be loaded when you load
+;;  library `isearch+.el'.
 ;;
 ;;  More description below - see Overview of Features.
 ;;
@@ -46,7 +67,6 @@
 ;;  (@> "Keys and Hooks")
 ;;  (@> "Commands")
 ;;  (@> "Non-Interactive Functions")
-;;  (@> "Character-Property Search")
 ;;
 ;;
 ;;  Macros defined here:
@@ -56,14 +76,9 @@
 ;;  Commands defined here:
 ;;
 ;;    `isearch-char-by-name' (Emacs 23-24.3),
-;;    `isearchp-char-prop-backward',
-;;    `isearchp-char-prop-backward-regexp',
-;;    `isearchp-char-prop-forward',
-;;    `isearchp-char-prop-forward-regexp',
 ;;    `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
-;;    `isearchp-put-prop-on-region',
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-search-invisible',
@@ -90,22 +105,17 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-char-prop-1', `isearchp-char-prop-default-match-fn',
-;;    `isearchp-char-prop-end', `isearchp-char-properties-in-buffer',
-;;    `isearchp-char-prop-filter-pred',
-;;    `isearchp-char-prop-matches-p', `isearchp-fail-pos',
-;;    `isearchp-highlight-lighter', `isearchp-message-prefix',
-;;    `isearchp-message-suffix', `isearchp-read-face-names',
-;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
-;;    `isearchp-remove-duplicates', `isearchp-remove-mismatch',
-;;    `isearchp-repeat-command', `isearchp-set-region',
-;;    `isearchp-set-sel-and-yank', `isearchp-some',
-;;    `isearchp-update-edit-init-commands' (Emacs 22+).
+;;    `isearchp-fail-pos', `isearchp-highlight-lighter',
+;;    `isearchp-message-prefix', `isearchp-message-suffix',
+;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
+;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
+;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
+;;    `isearchp-set-region', `isearchp-set-sel-and-yank',
+;;    `isearchp-update-edit-init-commands' (Emacs
+;;    22+).
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
-;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-win-pt-line'.
@@ -151,7 +161,6 @@
 ;;    `C-SPC'      `isearchp-toggle-set-region'
 ;;    `C-end'      `goto-longest-line' (requires `misc-cmds.el')
 ;;    `C-h'        `isearch-mode-help'
-;;    `C-t'        `isearchp-char-prop-forward' (Emacs 23+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
 ;;    `C-x 8 RET'  `isearch-char-by-name' (Emacs 23-24.3)
 ;;    `C-y C-_'    `isearchp-yank-symbol-or-char' (Emacs 22+)
@@ -170,7 +179,6 @@
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s w'      `isearch-toggle-word'
 ;;    `M-w'        `isearchp-kill-ring-save'
-;;    `C-M-t'      `isearchp-char-prop-forward-regexp' (Emacs 23+)
 ;;    `C-M-y'      `isearch-yank-secondary'
 ;;    `C-M-tab'    `isearch-complete' (on MS Windows)
 ;;    `next'       `isearch-repeat-forward'
@@ -187,13 +195,6 @@
 ;;
 ;;    `C-x 8 RET'  `insert-char' (Emacs 23+)
 ;;    `C-M-tab'    `isearch-complete-edit' (MS Windows only)
-;;
-;;
-;;  This file should be loaded *AFTER* loading the standard GNU file
-;;  `isearch.el'.  So, in your `~/.emacs' file, do this:
-;;
-;;  (eval-after-load "isearch" '(require 'isearch+))
-;;
  
 ;;(@* "Overview of Features")
 ;;
@@ -209,24 +210,6 @@
 ;;  * Highlighting of parts of the prompt, to indicate the type of
 ;;    search: regexp, word, multiple-buffer, and whether searching has
 ;;    wrapped around the buffer (Emacs 22+ only).
-;;
-;;  * Ability to search within character-property zones.  Example:
-;;    search within zones having a `face' text property with a value
-;;    of `font-lock-comment-face' or `font-lock-string-face'.  Search
-;;    overlays or text properties.  From within Isearch: `C-t' (or
-;;    `C-M-t' for regexp search).  First time, or with a prefix
-;;    argument, you are prompted for the property and its values.  See
-;;    the doc string of command `isearchp-char-prop-forward'.
-;;
-;;  * Besides relying on other code to set `face' and other text
-;;    properties for use with `C-t', you can use command
-;;    `isearchp-put-prop-on-region' (outside of Isearch) to add a text
-;;    property to a zone of text.  By default, it applies the last
-;;    property and value whose zones you searched using `C-t', but a
-;;    prefix arg lets you specify the property and value to apply.
-;;    This gives you an interactive way to set up zones for
-;;    text-property search (`C-t').  For property `face', empty input
-;;    removes all faces from the region.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -269,8 +252,7 @@
 ;;  * `M-w' (`isearchp-kill-ring-save') copies the current search
 ;;    string to the kill ring.  You can then, for example, use `C-s
 ;;    M-y' to search for the same thing in another Emacs session.
-
-
+;;
 ;;    (I use this all the time, but you might not use multiple Emacs
 ;;    sessions.)  Note that if you did not have this feature then you
 ;;    would need to select the search-string text (in the text buffer
@@ -387,6 +369,22 @@
 ;;  * You can, by default, select text with the mouse, then hit `C-s'
 ;;    etc. to search for it.  This is controlled by user option
 ;;    `isearchp-mouse-2-flag'.
+;;
+;;  If you have Emacs 23 or later then I recommend that you also use
+;;  the companion library, `isearch-prop.el'.  If it is in your
+;;  `load-path' then it will be loaded by `isearch+.el'.  It lets you
+;;  limit incremental searching to contexts that you define.
+;;
+;;  Example: search within zones having a `face' text property with a
+;;  value of `font-lock-comment-face' or `font-lock-string-face'.
+;;  Search overlays or text properties.
+;;
+;;  Besides relying on existing text properties such as `face' for
+;;  contexts to search, you can use command
+;;  `isearchp-put-prop-on-region' to add any text property to the
+;;  region.  This gives you an easy way to set up contexts for
+;;  text-property search.  For property `face', empty input to
+;;  `isearchp-put-prop-on-region' removes all faces from the region.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -394,6 +392,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/08 dadams
+;;     Moved all character-property code to new library isearch-prop.el.  Soft-require it.
+;;       Moved: *-char-prop*, *-put-prop-on-region, *-some, *-filter-predicate-orig.
 ;; 2013/09/06 dadams
 ;;     isearchp-put-prop-on-region: Restore buffer-modified-p after adding property.
 ;;     isearchp-char-prop-1: Show message only when already in isearch-mode.
@@ -640,17 +641,18 @@
 (eval-when-compile (require 'cl)) ;; case
 
  ;; Cannot do (require 'isearch), because `isearch.el' does no `provide'.
- ;; Don't want to do a (load-library "isearch") either, because it wouldn't
+ ;; We  do not want to do a (load-library "isearch"), because it would not
  ;; allow doing (eval-after-load "isearch" '(progn (require 'isearch+)))
 
-(require 'misc-cmds nil t) ;; goto-longest-line
+(require 'isearch-prop nil t) ;; (no error if not found)
+
+(require 'misc-cmds nil t) ;; (no error if not found): goto-longest-line
 
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)        ; Emacs 24+, built-in.
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
 (defvar isearch-error)                  ; In `isearch.el'.
-(defvar isearch-filter-predicate)       ; In `isearch.el'.
 (defvar isearch-invalid-regexp)         ; In `isearch.el' (Emacs 20-21).
 (defvar isearch-last-case-fold-search)  ; In `isearch.el'.
 (defvar isearch-message-prefix-add)     ; In `isearch.el'.
@@ -2050,286 +2052,6 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
     (setq last-repeatable-command  command)
     (repeat nil)))
  
-;;(@* "Character-Property Search")
-
-;;; Character-Property Search ----------------------------------------
-
-(when (boundp 'isearch-filter-predicate) ; Emacs 23+
-
-  (define-key isearch-mode-map "\C-t"    'isearchp-char-prop-forward)
-  (define-key isearch-mode-map "\C-\M-t" 'isearchp-char-prop-forward-regexp)
-
-  (defvar isearchp-filter-predicate-orig nil
-    "Original value of `isearch-filter-predicate'.")
-
-  (defvar isearchp-char-prop-type nil
-    "Last property type used for `isearchp-char-prop-*' commands.")
-
-  (defvar isearchp-char-prop-prop nil
-    "Last property used for `isearchp-char-prop-*' commands.")
-
-  (defvar isearchp-char-prop-values nil
-    "Last property values used for `isearchp-char-prop-*' commands.")
-
-  (defun isearchp-char-prop-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
-    "Isearch forward for a character (overlay or text) property.
-If you have not previously used an `isearch-char-prop-*' command, you
-are prompted for:
-
- * the property type (`text', `overlay', or `text and overlay')
- * the property (e.g., `face', `mumamo-major-mode')
- * the property values (e.g., a list of faces, for property `face')
-
-Otherwise:
-
- With no prefix arg, use the settings (property type, property,
- property values) from the last time you invoked an
- `isearch-char-prop-*' command.
-
- With a prefix arg you are prompted for the property and property
- values to use.  The particular prefix arg determines the property
- type to search, as follows:
-
-  * plain prefix arg (`C-u'): both overlay and text property zones
-  * negative prefix arg (e.g., `C--'): overlay property zones
-  * non-negative prefix arg (e.g., `C-9'): text property zones
-
-By default, an actual value of the property matches the value
-you specify if it is `equal'.  Properties `mumamo-major-mode' and
-`face' (or `font-lock-face') are exceptions.
-
-For `mumamo-major-mode' you specify the major mode whose zones of text
-you want to search.  The actual property value is a list whose car is
-the major mode symbol.
-
-For properties `face' and `font-lock-face', you can pick multiple
-faces, using completion (hit `RET' with empty input to finish
-choosing).  Text is searched that has a face property that includes
-any of the faces you choose.  If you choose no face (empty input at
-the outset), then text with any face at all is searched.
-
-NOTE: If you search zones of property `face', and the property values
-      include `font-lock' faces, then you might want to first make
-      sure the entire buffer has been fontified.  You can do that
-      using command `isearchp-fontify-buffer-now'.
-
-NOTE: This command is available during normal Isearch, on key `C-t'.
-      However, in order to be able to use a prefix arg with this
-      command from within Isearch, you must set `isearch-allow-scroll'
-      or `isearch-allow-prefix' (if available) to non-nil.  Otherwise,
-      a prefix arg during Isearch exits Isearch."
-    (interactive "P")
-    (isearchp-char-prop-1 'isearch-forward arg))
-
-  (defun isearchp-char-prop-backward (arg)
-    "Isearch backward for a character (overlay or text) property.
-See `isearchp-char-prop-forward'."
-    (interactive "P")
-    (isearchp-char-prop-1 'isearch-backward arg))
-
-  (defun isearchp-char-prop-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
-    "Regexp Isearch forward for a character (overlay or text) property.
-NOTE: This command is available during normal Isearch, on key `C-M-t'.
-      However, in order to be able to use a prefix arg with this
-      command, you must set `isearch-allow-scroll' or
-      `isearch-allow-prefix' (if available) to non-nil.
-      Otherwise, a prefix arg during Isearch exits Isearch.
-See `isearchp-char-prop-forward'."
-    (interactive "P")
-    (isearchp-char-prop-1 'isearch-forward-regexp arg))
-
-  (defun isearchp-char-prop-backward-regexp (arg)
-    "Regexp Isearch backward for a character (overlay or text) property.
-See `isearchp-char-prop-backward'."
-    (interactive "P")
-    (isearchp-char-prop-1 'isearch-backward-regexp arg))
-
-  (defun isearchp-char-prop-1 (search-fn arg)
-    "Helper for `isearchp-char-prop-(forward|backward)(-regexp)'."
-    (isearch-done)
-    (when isearch-mode
-      (let ((message-log-max  nil))
-        (message "CHAR PROP %s%s" (isearchp-message-prefix nil nil isearch-nonincremental) isearch-message))
-      (sit-for 1))
-    (setq isearch-success   t
-          isearch-adjusted  t)
-    (let* ((enable-recursive-minibuffers    t)
-           ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
-           (search-nonincremental-instead   nil)
-           ;; Test *-prop, not *-type, for TYPE, because nil means both.
-           (type     (if (or arg  (not isearchp-char-prop-prop))
-                         (if (not isearchp-char-prop-prop)
-                             (let ((typname
-                                    (completing-read
-                                     "Type: " '(("text") ("overlay") ("text and overlay"))
-                                     nil t nil nil "text and overlay")))
-                               (and (not (string= "text and overlay" typname))  (intern typname)))
-                           (and (atom arg) ; `C-u' means nil (both).
-                                (if (wholenump (prefix-numeric-value arg)) 'text 'overlay)))
-                       isearchp-char-prop-type))
-           (props    (and (or arg  (not isearchp-char-prop-prop))
-                          (mapcar #'(lambda (prop) (list (symbol-name prop)))
-                                  (isearchp-char-properties-in-buffer
-                                   (current-buffer) (point-min) (point-max) type))))
-           (prop     (if (or arg  (not isearchp-char-prop-prop))
-                         (intern (completing-read
-                                  (format "%s property to search: "
-                                          (if type (capitalize (symbol-name type)) "Character"))
-                                  props nil nil nil nil "face"))
-                       isearchp-char-prop-prop))
-           (values   (if (or arg  (not isearchp-char-prop-values))
-                         (if (memq prop '(face font-lock-face))
-                             (isearchp-read-face-names)
-                           (isearchp-read-sexps))
-                       isearchp-char-prop-values)))
-      (setq isearchp-filter-predicate-orig  isearch-filter-predicate
-            isearch-filter-predicate        (isearchp-char-prop-filter-pred type prop values)
-            isearchp-char-prop-type         type
-            isearchp-char-prop-prop         prop
-            isearchp-char-prop-values       values))
-    (add-hook 'isearch-mode-end-hook 'isearchp-char-prop-end)
-    (funcall search-fn))
-
-  ;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
-  (defun isearchp-char-properties-in-buffer (&optional buffer beg end type)
-    "List of all character properties in BUFFER between BEG and END.
-Only the character properties are included, not their values.
-TYPE can be `overlay', `text', or nil, meaning overlay properties,
-text properties, or both, respectively."
-    (unless buffer (setq buffer  (current-buffer)))
-    (let ((props  ())
-          ovrlays curr-props)
-      (when (bufferp buffer)            ; Do nothing if BUFFER is not a buffer.
-        (with-current-buffer buffer
-          (unless (and beg  end)
-            (setq beg  (point-min)
-                  end  (point-max)))
-          (when (or (not type)  (eq type 'overlay)) ; Get overlay properties.
-            (setq ovrlays  (overlays-in beg end))
-            (dolist (ovrly  ovrlays)
-              (setq curr-props  (overlay-properties ovrly))
-              (while curr-props
-                (unless (memq (car curr-props) props) (push (car curr-props) props))
-                (setq curr-props  (cddr curr-props)))))
-          (when (or (not type)  (eq type 'text)) ; Get text properties.
-            (while (< beg end)
-              (setq beg         (or (next-property-change beg nil end)  end)
-                    curr-props  (text-properties-at beg))
-              (while curr-props
-                (unless (memq (car curr-props) props) (push (car curr-props) props))
-                (setq curr-props  (cddr curr-props)))))))
-      props))
-
-  (defun isearchp-char-prop-filter-pred (type prop values)
-    "Return a predicate that uses `isearchp-char-prop-matches-p'.
-TYPE, PROP, and VALUES are used by that function.
-The predicate is suitable as a value of `isearch-filter-predicate'."
-    (let ((tag  (make-symbol "isearchp-char-prop-filter-pred")))
-      `(lambda (beg end)
-        (and (or
-              (and (fboundp 'isearch-filter-visible)  (isearch-filter-visible beg end))
-              (and (boundp 'isearch-invisible)  (not (or (eq search-invisible t) ; Emacs 24.4+
-                                                      (not (isearch-range-invisible beg end))))))
-         (catch ',tag
-           (while (< beg end)
-             (unless (isearchp-char-prop-matches-p
-                      ',type ',prop ',values
-                      (isearchp-char-prop-default-match-fn
-                       ',prop)
-                      beg)
-               (throw ',tag nil))
-             (setq beg  (1+ beg)))
-           t)))))
-
-  ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
-  (defun isearchp-char-prop-matches-p (type property values match-fn position)
-    "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
-TYPE is `overlay', `text', or nil, and specifies the type of character
-property - nil means look for both overlay and text properties.
-
-Find text with a PROPERTY value that overlaps with VALUES: If the
-value of PROPERTY is an atom, then it must be a member of VALUES.  If
-it is a list, then at least one list element must be a member of
-VALUES.
-
-MATCH-FN is a binary predicate that is applied to each item of VALUES
-and a zone of text with property PROP.  If it returns non-nil then the
-zone is a search hit."
-    (let* ((ovlyval  (and (or (not type)  (eq type 'overlay))
-                          (get-char-property position property)))
-           (textval  (and (or (not type)  (eq type 'text))
-                          (get-text-property position property))))
-      (or (and ovlyval  (isearchp-some values ovlyval match-fn))
-          (and textval  (isearchp-some values textval match-fn)))))
-
-  ;; Same as `icicle-some', defined in `icicles-fn.el'.
-  (defun isearchp-some (list arg2 predicate)
-    "Apply binary PREDICATE successively to an item of LIST and ARG2.
-Return the first non-nil value returned by PREDICATE, or nil if none.
-PREDICATE must be a function with two required arguments."
-    (let ((result  nil))
-      (catch 'isearchp-some
-        (dolist (arg1  list)
-          (when (setq result  (funcall predicate arg1 arg2))  (throw 'isearchp-some result))))
-      result))
-
-  ;; Same as `icicle-search-property-default-match-fn', defined in `icicles-cmd2.el'.
-  (defun isearchp-char-prop-default-match-fn (prop)
-    "Return the default match function for text or overlay property PROP.
-Properties `face' and `mumamo-major-mode' are handled specially.
-For other properties the values are matched using `equal'."
-    (case prop
-      ((face font-lock-face) (lambda (val rprop)
-                               (if (consp rprop)
-                                   (condition-case nil ; Allow for dotted cons.
-                                       (member val rprop)
-                                     (error nil))
-                                 (eq val rprop))))
-      ((mumamo-major-mode)   (lambda (val rprop) (equal val (car rprop))))
-      (t                     #'equal)))
-
-  (defun isearchp-char-prop-end ()
-    "End Isearch for a character property."
-    (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
-    (remove-hook 'isearch-mode-end-hook 'isearchp-char-prop-end))
-
-  (defun isearchp-put-prop-on-region (property value beg end)
-    "Add text PROPERTY with VALUE to the region from BEG to END.
-If you have already used any of the commands `isearchp-char-prop-*'
-and you do not use a prefix argument, then use the property and (the
-first of) its values that you last specified for such searching.
-
-Otherwise, you are prompted for the property and its value.
-
-If the property is not `face' or `font-lock-face', then you enter a
-sexp, which is read as the Lisp value to use.  E.g., if the property
-is `mumamo-major-mode' then you might enter `(emacs-lisp-mode)' as the
-value.
-
-If the property is `face' or `font-lock-face' then you can specify
-more than one face - their union is used as the property value.  If
-you specify none (empty input immediately) then *all* faces are
-*removed* from the region."
-    (interactive
-     (if (and (not current-prefix-arg)  isearchp-char-prop-prop  (car isearchp-char-prop-values))
-         (list isearchp-char-prop-prop isearchp-char-prop-values (region-beginning) (region-end))
-       (let* ((props  (and (or current-prefix-arg  (not isearchp-char-prop-prop))
-                           (mapcar #'(lambda (prop) (list (symbol-name prop)))
-                                   (isearchp-char-properties-in-buffer
-                                    (current-buffer) (point-min) (point-max) 'text))))
-              (prop   (intern (completing-read "Text property: " props nil nil nil nil "face")))
-              (vals   (if (memq prop '(face font-lock-face))
-                          (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
-                        (isearchp-read-sexps 'ONLY-ONE-P))))
-         (list prop vals (region-beginning) (region-end)))))
-    (let ((buffer-mod  (buffer-modified-p)))
-      (add-text-properties beg end (list property value))
-      (set-buffer-modified-p buffer-mod)))
-
-  )
-
- 
-
 (defadvice isearch-forward (before isearch+-doc activate)
   "
 Isearch Plus
