@@ -6,7 +6,7 @@ DoxyPreview is a minor-mode that allows preview of latex formulas, graphs, and i
 
 Save the following two files in your file system:
 Lisp:doxy-preview.el
-Shell:make-image.sh
+Lisp:make-image.sh
 
 {{{
 (add-to-list 'load-path "/path/to/doxy-preview.el")
