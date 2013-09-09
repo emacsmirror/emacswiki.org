@@ -199,7 +199,7 @@
 
 ;;; TODO
 ;;
-;;
+;; Option to show prominent warning message if some blocks didn't load (e.g. in large font in dedicated buffer after startup)
 ;; 
 
 ;;; Require
@@ -207,6 +207,8 @@
 (require 'org)
 
 ;;; Code:
+
+
 
 (defgroup org-dotemacs nil
   "Store your emacs config as an org file, and choose which bits to load."
@@ -481,11 +483,11 @@ and no code is saved."
   (org-dotemacs-load-file match org-dotemacs-default-file nil))
 
 ;; Code to handle command line arguments
-(let* ((errpos (or (position-if (lambda (x) (equal x "-error-handling")) command-line-args)
-		   (position-if (lambda (x) (equal x "--error-handling")) command-line-args)))
+(let* ((errpos (or (cl-position-if (lambda (x) (equal x "-error-handling")) command-line-args)
+		   (cl-position-if (lambda (x) (equal x "--error-handling")) command-line-args)))
        (errval (if errpos (nth (+ 1 errpos) command-line-args)))
-       (tagpos (or (position-if (lambda (x) (equal x "-tag-match")) command-line-args)
-		   (position-if (lambda (x) (equal x "--tag-match")) command-line-args)))
+       (tagpos (or (cl-position-if (lambda (x) (equal x "-tag-match")) command-line-args)
+		   (cl-position-if (lambda (x) (equal x "--tag-match")) command-line-args)))
        (tagval (if tagpos (nth (+ 1 tagpos) command-line-args))))
   (if errval 
       (setq org-dotemacs-error-handling (intern errval)))
