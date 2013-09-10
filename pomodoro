@@ -6,6 +6,8 @@ There are at least three emacs modes specifically for this.
 * http://ivan.kanis.fr/pomodoro.el (also hosted [http://www.emacswiki.org/emacs/pomodoro.el here])
 
 == Pomodoro & Org-Mode integration ==
+
+* [http://www.headhole.org/organisation/2012/08/22/org-mode-gtd-and-the-pomodoro-technique/ org-pomodoro]
 * One way of [http://theadmin.org/articles/pomodoro-emacs-with-orgmode/ doing it]. More of Pomodoro diary 
 * And another which integrates with org-timer module: [http://www.couchet.org/blog/index.php?post/2010/08/04/Pomodoro-et-org-mode (in French)] or [http://translate.google.com/translate?hl=en&sl=fr&tl=en&u=http%3A%2F%2Fwww.couchet.org%2Fblog%2Findex.php%3Fpost%2F2010%2F08%2F04%2FPomodoro-et-org-mode translated (via Google Translate)]
 
