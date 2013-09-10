@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 13:50:36 2013 (-0700)
+;; Last-Updated: Tue Sep 10 14:44:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2513
+;;     Update #: 2538
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -97,8 +97,8 @@
 ;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
 ;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
-;;    `isearchp-limit-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-mouse-2-flag', `isearchp-regexp-quote-yank-flag',
+;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-set-region-flag', `isearchp-toggle-option-flag'.
 ;;
 ;;  Faces defined here:
@@ -157,8 +157,7 @@
 ;;  `isearch-invisible'   - defined for Emacs<24.4 & added doc string.
 ;;
 ;;
-;;  The following bindings are made here for incremental search mode
-;;  (`C-s' prefix):
+;;  Keys bound in `isearch-mode-map' here:
 ;;
 ;;    `C-`'        `isearchp-toggle-regexp-quote-yank'
 ;;    `C-+'        `isearchp-toggle-search-invisible'
@@ -167,6 +166,7 @@
 ;;    `C-SPC'      `isearchp-toggle-set-region'
 ;;    `C-end'      `goto-longest-line' (requires `misc-cmds.el')
 ;;    `C-h'        `isearch-mode-help'
+;;    `C-x n'      `isearchp-toggle-region-restriction' (Emacs 24.3+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
 ;;    `C-x 8 RET'  `isearch-char-by-name' (Emacs 23-24.3)
 ;;    `C-y C-_'    `isearchp-yank-symbol-or-char' (Emacs 22+)
@@ -218,10 +218,12 @@
 ;;    wrapped around the buffer (Emacs 22+ only).
 ;;
 ;;  * Optional limiting of search to the active region, controlled by
-;;    option `isearchp-limit-to-region-flag'.  Deactivation of the
+;;    option `isearchp-restrict-to-region-flag'.  Deactivation of the
 ;;    active region, controlled by option
 ;;    `isearchp-deactivate-region-flag'.  Both of these are available
-;;    for Emacs 24.3 and later.
+;;    for Emacs 24.3 and later.  You can use `C-x n' (command
+;;    `isearchp-toggle-region-restriction') during search to toggle
+;;    `isearchp-restrict-to-region-flag'.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -406,10 +408,11 @@
 ;;
 ;; 2013/09/10 dadams
 ;;     Added support for limiting search to active region (Emacs 24.3+):
-;;       Added: isearchp-deactivate-region-flag, isearchp-limit-to-region-flag, isearchp-reg-beg,
-;;              isearchp-reg-end.
+;;       Added: isearchp-deactivate-region-flag, isearchp-restrict-to-region-flag, isearchp-reg-beg,
+;;              isearchp-reg-end, isearchp-toggle-region-restriction.
 ;;       Added redefinitions: isearch-search, isearch-repeat, isearch-lazy-highlight-search,
-;;             isearch-lazy-highlight-update, 
+;;             isearch-lazy-highlight-update.
+;;       Bound isearchp-toggle-region-restriction to C-x n.
 ;;       isearch-mode: Save isearchp-reg-beg|end.  Deactivate region.
 ;; 2013/09/08 dadams
 ;;     Moved all character-property code to new library isearch-prop.el.  Soft-require it.
@@ -700,8 +703,8 @@
 (defvar isearch-start-hscroll)           ; In `isearch.el'.
 (defvar isearch-within-brackets)         ; In `isearch.el'.
 (defvar isearch-wrap-function)           ; In `isearch.el'.
-(defvar isearchp-deactivate-region-flag) ; Here (Emacs 24+).
-(defvar isearchp-limit-to-region-flag)   ; Here (Emacs 24+).
+(defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
 (defvar lazy-highlight-face)             ; In `isearch.el' (Emacs 24+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
@@ -861,21 +864,23 @@ and act on the buffer text."
 
 (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
   (defcustom isearchp-deactivate-region-flag t
-    "*Non-nil means isearching deactivates the region."
+    "*Non-nil means isearching deactivates the region.
+See also option `isearchp-restrict-to-region-flag'."
     :type 'boolean :group 'isearch-plus)
 
-  (defcustom isearchp-limit-to-region-flag t
-    "*Non-nil means limit isearching to the active region."
+  (defcustom isearchp-restrict-to-region-flag t
+    "*Non-nil means restrict isearching to the active region.
+See also option isearchp-deactivate-region-flag."
     :type 'boolean :group 'isearch-plus))
 
 (defvar isearchp-reg-beg 1              ; Used only for Emacs 24.3+
   "Beginning of the nonempty active region or end of buffer.
-If `isearchp-limit-to-region-flag' then the former.
+If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
 (defvar isearchp-reg-end 1              ; Used only for Emacs 24.3+
   "End of the nonempty active region or beginning of buffer.
-If `isearchp-limit-to-region-flag' then the former.
+If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
 ;;;###autoload
@@ -1030,7 +1035,7 @@ Toggles between nil and the last non-nil value."
   "Toggle the value of option `isearchp-toggle-option-flag'."
   (interactive)
   (setq isearchp-toggle-option-flag  (not isearchp-toggle-option-flag))
-  (message "Option `isearchp-toggle-option-flag' is now `%s'" (if isearchp-toggle-option-flag 'ON 'OFF))
+  (message "Option `isearchp-toggle-option-flag' is now %s" (if isearchp-toggle-option-flag 'ON 'OFF))
   (sit-for 1))
 
 ;;;###autoload
@@ -1038,9 +1043,7 @@ Toggles between nil and the last non-nil value."
   "Toggle `isearchp-regexp-quote-yank-flag'."
   (interactive)
   (setq isearchp-regexp-quote-yank-flag  (not isearchp-regexp-quote-yank-flag))
-  (if isearchp-regexp-quote-yank-flag
-      (message "Escaping regexp special chars for yank is now ON")
-    (message "Escaping regexp special chars for yank is now OFF"))
+  (message "Escaping regexp special chars for yank is now %s" (if isearchp-regexp-quote-yank-flag 'ON 'OFF))
   (sit-for 1)
   (isearch-update))
 
@@ -1049,11 +1052,18 @@ Toggles between nil and the last non-nil value."
   "Toggle `isearchp-set-region-flag'."
   (interactive)
   (setq isearchp-set-region-flag  (not isearchp-set-region-flag))
-  (if isearchp-set-region-flag
-      (message "Setting region around search target is now ON")
-    (message "Setting region around search target is now OFF"))
+  (message "Setting region around search target is now %s" (if isearchp-set-region-flag 'ON 'OFF))
   (sit-for 1)
   (isearch-update))
+
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
+  (defun isearchp-toggle-region-restriction () ; Bound to `C-x n' in `isearch-mode-map'.
+    "Toggle option `isearchp-restrict-to-region-flag'."
+    (interactive)
+    (setq isearchp-restrict-to-region-flag  (not isearchp-restrict-to-region-flag))
+    (message "Restricting search to active region is now %s" (if isearchp-restrict-to-region-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update)))
 
 
 ;; REPLACE ORIGINAL in `isearch.el' (Emacs 22+).
@@ -1072,7 +1082,7 @@ Toggles between nil and the last non-nil value."
   (when isearch-word (setq isearch-regexp  nil)) ; Added to Juri's code by Stefan.
   (setq isearch-success   t
         isearch-adjusted  t)
-  (if isearch-word (message "Whole word search is now ON") (message "Whole word search is now OFF"))
+  (message "Whole word search is now %s" (if isearch-word 'ON 'OFF))
   (sit-for 1)
   (isearch-update))
 
@@ -1629,13 +1639,13 @@ Argument WORD, if t, means search for a sequence of words, ignoring
         isearch-start-hscroll            (window-hscroll)
         isearch-opoint                   (point)
         isearchp-win-pt-line             (- (line-number-at-pos) (line-number-at-pos (window-start)))
-        isearchp-reg-beg                 (if (and (boundp 'isearchp-limit-to-region-flag)
-                                                  isearchp-limit-to-region-flag
+        isearchp-reg-beg                 (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                  isearchp-restrict-to-region-flag
                                                   (use-region-p))
                                              (region-beginning)
                                            (point-min))
-        isearchp-reg-end                 (if (and (boundp 'isearchp-limit-to-region-flag)
-                                                  isearchp-limit-to-region-flag
+        isearchp-reg-end                 (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                  isearchp-restrict-to-region-flag
                                                   (use-region-p))
                                              (region-end)
                                            (point-max))
@@ -2406,9 +2416,12 @@ Options
   (define-key isearch-mode-map [C-M-tab]       'isearch-complete))
 (when (> emacs-major-version 21)
   (define-key isearch-mode-map "\C-x"          nil)
+  (when (or (> emacs-major-version 24)  ; Emacs 24.3+
+            (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+    (define-key isearch-mode-map "\C-xn"       'isearchp-toggle-region-restriction)) ; `n'arrow to region
   (define-key isearch-mode-map "\C-xo"         'isearchp-open-recursive-edit) ; `o'pen edit session
   ;; Do this even for Emacs 24.4+ (where it is true by default), because we set `C-x' to nil.
-  (when (> emacs-major-version 22)   ; Emacs 23+ (supports Unicode)
+  (when (> emacs-major-version 22)      ; Emacs 23+ (supports Unicode)
     (define-key isearch-mode-map "\C-x8"       nil)
     (define-key isearch-mode-map "\C-x8\r"     'isearch-char-by-name)))
 
