@@ -25,6 +25,14 @@ This gives you an interactive way to set up zones for
 text-property search (`C-t').  For property `face', empty input
 removes all faces from the region.
 
+
+[:isearchp-limit-to-region-flag]
+[:isearchp-deactivate-region-flag]
+* Optional limiting of search to the [[active region]], controlled by [[option]] '''`isearchp-limit-to-region-flag''''.  Deactivation of the active region, controlled by option
+'''`isearchp-deactivate-region-flag''''.  Both of these are available
+for Emacs 24 and later.
+
+
 [:isearchp-set-region-flag]
 [:isearchp-toggle-set-region]
 [:set-region-around-search-target]
