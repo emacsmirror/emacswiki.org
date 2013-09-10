@@ -26,18 +26,18 @@ text-property search (`C-t').  For property `face', empty input
 removes all faces from the region.
 
 
-[:isearchp-limit-to-region-flag]
+[:isearchp-restrict-to-region-flag]
 [:isearchp-deactivate-region-flag]
-* Optional limiting of search to the [[active region]], controlled by [[option]] '''`isearchp-limit-to-region-flag''''.  Deactivation of the active region, controlled by option
+* Optional restriction of search to the [[active region]], controlled by [[option]] '''`isearchp-restrict-to-region-flag''''.  Deactivation of the active region, controlled by option
 '''`isearchp-deactivate-region-flag''''.  Both of these are available
-for Emacs 24 and later.
+for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggle-region-restriction'''') during search to toggle `isearchp-restrict-to-region-flag'.
 
 
 [:isearchp-set-region-flag]
 [:isearchp-toggle-set-region]
 [:set-region-around-search-target]
 * [[option|Option]] and commands to let you select the last target occurrence (set the [[region]] around it):
-** [[option|Option]] '''`isearchp-set-region-flag'''' -- Non-`nil' means automatically set the region around the last search target.
+** Option '''`isearchp-set-region-flag'''' -- Non-`nil' means automatically set the region around the last search target.
 ** Command `isearchp-toggle-set-region', bound to
 '''`C-SPC'''' during isearch -- toggle `isearchp-set-region-flag'.
 ** Command '''`set-region-around-search-target'''' -- manually set the region around the last search target.
