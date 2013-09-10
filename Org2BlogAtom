@@ -1,6 +1,6 @@
 org2blog/atom is one of two packages named org2blog.  [[Org2BlogWp]] is the other.  Both org2blogs let you post blogs from OrgMode, just to different blogs.  
 
-org2blog/atom is for blogs that use the Atom API, for instance Google's Blogger.  It depends on [GoogleClient g-client].  org2blog/atom lives in a git repo [[http://repo.or.cz/r/org2blog.git here]].
+org2blog/atom is for blogs that use the Atom API, for instance Google's Blogger.  It depends on [GoogleClient g-client].  org2blog/atom lives in a git repo [[http://repo.or.cz/w/org2blog.git here]].
 
 It recognizes the usual org file export properties, such as %%#+TITLE:%% %%#+OPTIONS:%%, and %%#+AUTHOR:%%  It also recognizes %%#+BLOGLABELS:%%, which gives one or more labels to your post.
 
