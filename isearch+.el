@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 10:28:29 2013 (-0700)
+;; Last-Updated: Tue Sep 10 13:50:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2500
+;;     Update #: 2513
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -95,9 +95,9 @@
 ;;  User options defined here:
 ;;
 ;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
-;;    24+), `isearchp-drop-mismatch',
+;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
-;;    `isearchp-limit-to-region-flag' (Emacs 24+),
+;;    `isearchp-limit-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-mouse-2-flag', `isearchp-regexp-quote-yank-flag',
 ;;    `isearchp-set-region-flag', `isearchp-toggle-option-flag'.
 ;;
@@ -129,8 +129,8 @@
 ;;  `isearch-abort'       - Save search string when `C-g'.
 ;;  `isearch-cancel'      - Restore cursor position relative to window.
 ;;  `isearch-edit-string' - Put point at mismatch position.
-;;  `isearch-lazy-highlight-search' - Support limiting to region (24+)
-;;  `isearch-lazy-highlight-update' - Support limiting to region (24+)
+;;  `isearch-lazy-highlight-search' - Can limit to region (24.3+)
+;;  `isearch-lazy-highlight-update' - Can limit to region (24.3+)
 ;;  `isearch-mode'        - Save cursor position relative to window.
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
@@ -138,8 +138,8 @@
 ;;  `isearch-message-prefix' - Highlight prompt keywords:
 ;;                             wrapped, regexp, word, multi
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
-;;  `isearch-search'      - Support limiting to active region (E 24+)
-;;  `isearch-repeat'      - Support limiting to active region (E 24+)
+;;  `isearch-search'      - Can limit to active region (Emacs 24.3+)
+;;  `isearch-repeat'      - Can limit to active region (Emacs 24.3+)
 ;;  `isearch-printing-char' - Respect option `isearchp-drop-mismatch'
 ;;  `isearch-toggle-case-fold' - Respect `isearchp-toggle-option-flag'
 ;;                               Show case sensitivity in mode-line.
@@ -221,7 +221,7 @@
 ;;    option `isearchp-limit-to-region-flag'.  Deactivation of the
 ;;    active region, controlled by option
 ;;    `isearchp-deactivate-region-flag'.  Both of these are available
-;;    for Emacs 24 and later.
+;;    for Emacs 24.3 and later.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -405,7 +405,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2013/09/10 dadams
-;;     Added support for limiting search to active region (Emacs 24+):
+;;     Added support for limiting search to active region (Emacs 24.3+):
 ;;       Added: isearchp-deactivate-region-flag, isearchp-limit-to-region-flag, isearchp-reg-beg,
 ;;              isearchp-reg-end.
 ;;       Added redefinitions: isearch-search, isearch-repeat, isearch-lazy-highlight-search,
@@ -675,7 +675,7 @@
 (defvar isearch-filter-predicate)        ; In `isearch.el' (Emacs 24+).
 (defvar isearch-invalid-regexp)          ; In `isearch.el' (Emacs 20-21).
 (defvar isearch-last-case-fold-search)   ; In `isearch.el'.
-(defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24.3+).
 (defvar isearch-lazy-highlight-case-fold-search) ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-end)      ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-end-limit) ; In `isearch.el' (Emacs 24+).
@@ -684,7 +684,7 @@
 (defvar isearch-lazy-highlight-lax-whitespace) ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-overlays) ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-regexp)   ; In `isearch.el' (Emacs 24+).
-(defvar isearch-lazy-highlight-regexp-lax-whitespace) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-regexp-lax-whitespace) ; In `isearch.el' (Emacs 24.3+).
 (defvar isearch-lazy-highlight-start)    ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-start-limit) ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-timer)    ; In `isearch.el' (Emacs 24+).
@@ -859,7 +859,7 @@ and act on the buffer text."
                     :match-alternatives (symbolp) :value ignore))
     :group 'isearch-plus))
 
-(when (> emacs-major-version 23)
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
   (defcustom isearchp-deactivate-region-flag t
     "*Non-nil means isearching deactivates the region."
     :type 'boolean :group 'isearch-plus)
@@ -868,12 +868,12 @@ and act on the buffer text."
     "*Non-nil means limit isearching to the active region."
     :type 'boolean :group 'isearch-plus))
 
-(defvar isearchp-reg-beg 1              ; Used only for Emacs 24+
+(defvar isearchp-reg-beg 1              ; Used only for Emacs 24.3+
   "Beginning of the nonempty active region or end of buffer.
 If `isearchp-limit-to-region-flag' then the former.
 Set when Isearch is started.")
 
-(defvar isearchp-reg-end 1              ; Used only for Emacs 24+
+(defvar isearchp-reg-end 1              ; Used only for Emacs 24.3+
   "End of the nonempty active region or beginning of buffer.
 If `isearchp-limit-to-region-flag' then the former.
 Set when Isearch is started.")
@@ -1587,8 +1587,8 @@ not necessarily fontify the whole buffer."
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
 ;; 1. Save `isearchp-win-pt-line'.
-;; 2. Save `isearchp-reg-beg' and `isearchp-reg-end'.  (Used only for Emacs 24+.)
-;; 3. Deactivate region (Emacs 24+ only).
+;; 2. Save `isearchp-reg-beg' and `isearchp-reg-end'.  (Used only for Emacs 24.3+.)
+;; 3. Deactivate region (Emacs 24.3+ only).
 ;;
 (defun isearch-mode (forward &optional regexp op-fun recursive-edit word)
   "Start Isearch minor mode.  Called by `isearch-forward' and similar.
@@ -1649,7 +1649,7 @@ Argument WORD, if t, means search for a sequence of words, ignoring
         isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
                                                          minibuffer-message-timeout)
         minibuffer-message-timeout       nil)
-  (when (and (boundp 'isearchp-deactivate-region-flag)  isearchp-deactivate-region-flag) ; Emacs 24+
+  (when (and (boundp 'isearchp-deactivate-region-flag)  isearchp-deactivate-region-flag) ; Emacs 24.3+
     (deactivate-mark))
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
   ;; input method is turned on in minibuffer to read multibyte characters.
@@ -1991,7 +1991,8 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 
 
 ;;; Support for limiting search to active region.
-(when (> emacs-major-version 23)
+;;;
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
 
 
   ;; REPLACE ORIGINAL in `isearch.el'.
