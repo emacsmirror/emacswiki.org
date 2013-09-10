@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  8 20:06:26 2013 (-0700)
+;; Last-Updated: Tue Sep 10 10:25:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2383
+;;     Update #: 2499
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `frame-fns', `isearch-prop', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -94,8 +94,10 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-case-fold', `isearchp-drop-mismatch',
+;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
+;;    24+), `isearchp-drop-mismatch',
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
+;;    `isearchp-limit-to-region-flag' (Emacs 24+),
 ;;    `isearchp-mouse-2-flag', `isearchp-regexp-quote-yank-flag',
 ;;    `isearchp-set-region-flag', `isearchp-toggle-option-flag'.
 ;;
@@ -118,7 +120,7 @@
 ;;
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
-;;    `isearchp-win-pt-line'.
+;;    `isearchp-reg-beg', `isearchp-reg-end', `isearchp-win-pt-line'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
@@ -127,6 +129,8 @@
 ;;  `isearch-abort'       - Save search string when `C-g'.
 ;;  `isearch-cancel'      - Restore cursor position relative to window.
 ;;  `isearch-edit-string' - Put point at mismatch position.
+;;  `isearch-lazy-highlight-search' - Support limiting to region (24+)
+;;  `isearch-lazy-highlight-update' - Support limiting to region (24+)
 ;;  `isearch-mode'        - Save cursor position relative to window.
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
@@ -134,6 +138,8 @@
 ;;  `isearch-message-prefix' - Highlight prompt keywords:
 ;;                             wrapped, regexp, word, multi
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
+;;  `isearch-search'      - Support limiting to active region (E 24+)
+;;  `isearch-repeat'      - Support limiting to active region (E 24+)
 ;;  `isearch-printing-char' - Respect option `isearchp-drop-mismatch'
 ;;  `isearch-toggle-case-fold' - Respect `isearchp-toggle-option-flag'
 ;;                               Show case sensitivity in mode-line.
@@ -210,6 +216,11 @@
 ;;  * Highlighting of parts of the prompt, to indicate the type of
 ;;    search: regexp, word, multiple-buffer, and whether searching has
 ;;    wrapped around the buffer (Emacs 22+ only).
+;;
+;;  * Optional limiting of search to the active region, controlled by
+;;    option `isearchp-limit-to-region-flag'.  Optional deactivation
+;;    of the active region `isearchp-deactivate-region-flag'.  Both of
+;;    these are available for Emacs 24 and later.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -392,6 +403,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/10 dadams
+;;     Added support for limiting search to active region (Emacs 24+):
+;;       Added: isearchp-deactivate-region-flag, isearchp-limit-to-region-flag, isearchp-reg-beg,
+;;              isearchp-reg-end.
+;;       Added redefinitions: isearch-search, isearch-repeat, isearch-lazy-highlight-search,
+;;             isearch-lazy-highlight-update, 
+;;       isearch-mode: Save isearchp-reg-beg|end.  Deactivate region.
 ;; 2013/09/08 dadams
 ;;     Moved all character-property code to new library isearch-prop.el.  Soft-require it.
 ;;       Moved: *-char-prop*, *-put-prop-on-region, *-some, *-filter-predicate-orig.
@@ -650,21 +668,44 @@
 
 
 ;; Quiet the byte compiler.
-(defvar bidi-display-reordering)        ; Emacs 24+, built-in.
+(defvar bidi-display-reordering)         ; Emacs 24+, built-in.
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
-(defvar isearch-error)                  ; In `isearch.el'.
-(defvar isearch-invalid-regexp)         ; In `isearch.el' (Emacs 20-21).
-(defvar isearch-last-case-fold-search)  ; In `isearch.el'.
-(defvar isearch-message-prefix-add)     ; In `isearch.el'.
-(defvar isearch-new-message)            ; In `with-isearch-suspended' (here).
-(defvar isearch-new-string)             ; In `with-isearch-suspended' (here).
+(defvar isearch-error)                   ; In `isearch.el'.
+(defvar isearch-filter-predicate)        ; In `isearch.el' (Emacs 24+).
+(defvar isearch-invalid-regexp)          ; In `isearch.el' (Emacs 20-21).
+(defvar isearch-last-case-fold-search)   ; In `isearch.el'.
+(defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-case-fold-search) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-end)      ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-end-limit) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-forward)  ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-last-string) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-lax-whitespace) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-overlays) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-regexp)   ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-regexp-lax-whitespace) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-start)    ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-start-limit) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-timer)    ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-window)   ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-word)     ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-highlight-wrapped)  ; In `isearch.el' (Emacs 24+).
+(defvar isearch-message-function)        ; In `isearch.el' (Emacs 24+).
+(defvar isearch-message-prefix-add)      ; In `isearch.el'.
+(defvar isearch-new-message)             ; In `with-isearch-suspended' (here).
+(defvar isearch-new-string)              ; In `with-isearch-suspended' (here).
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
-(defvar isearch-push-state-function)    ; In `isearch.el'.
-(defvar isearch-start-hscroll)          ; In `isearch.el'.
-(defvar isearch-within-brackets)        ; In `isearch.el'.
-(defvar isearch-wrap-function)          ; In `isearch.el'.
-(defvar last-repeatable-command)        ; In `repeat.el'.
-(defvar minibuffer-message-timeout)     ; In Emacs C code.
+(defvar isearch-push-state-function)     ; In `isearch.el'.
+(defvar isearch-start-hscroll)           ; In `isearch.el'.
+(defvar isearch-within-brackets)         ; In `isearch.el'.
+(defvar isearch-wrap-function)           ; In `isearch.el'.
+(defvar isearchp-deactivate-region-flag) ; Here (Emacs 24+).
+(defvar isearchp-limit-to-region-flag)   ; Here (Emacs 24+).
+(defvar last-repeatable-command)         ; In `repeat.el'.
+(defvar lazy-highlight-face)             ; In `isearch.el' (Emacs 24+).
+(defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
+(defvar lazy-highlight-max-at-a-time)    ; In `isearch.el' (Emacs 24+).
+(defvar minibuffer-message-timeout)      ; In Emacs C code.
 (defvar multi-isearch-next-buffer-current-function) ; In `isearch.el'.
 (defvar subword-mode)
 
@@ -816,6 +857,25 @@ and act on the buffer text."
                     ;; case the library defining the function is not loaded.
                     :match-alternatives (symbolp) :value ignore))
     :group 'isearch-plus))
+
+(when (> emacs-major-version 23)
+  (defcustom isearchp-deactivate-region-flag t
+    "*Non-nil means isearching deactivates the region."
+    :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-limit-to-region-flag t
+    "*Non-nil means limit isearching to the active region."
+    :type 'boolean :group 'isearch-plus))
+
+(defvar isearchp-reg-beg 1              ; Used only for Emacs 24+
+  "Beginning of the nonempty active region or end of buffer.
+If `isearchp-limit-to-region-flag' then the former.
+Set when Isearch is started.")
+
+(defvar isearchp-reg-end 1              ; Used only for Emacs 24+
+  "End of the nonempty active region or beginning of buffer.
+If `isearchp-limit-to-region-flag' then the former.
+Set when Isearch is started.")
 
 ;;;###autoload
 (defcustom isearchp-mouse-2-flag t
@@ -1525,29 +1585,24 @@ not necessarily fontify the whole buffer."
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
-;; Save `isearchp-win-pt-line'.
+;; 1. Save `isearchp-win-pt-line'.
+;; 2. Save `isearchp-reg-beg' and `isearchp-reg-end'.  (Used only for Emacs 24+.)
+;; 3. Deactivate region (Emacs 24+ only).
 ;;
 (defun isearch-mode (forward &optional regexp op-fun recursive-edit word)
-  "Start Isearch minor mode.
-It is called by the function `isearch-forward' and other related functions.
-
+  "Start Isearch minor mode.  Called by `isearch-forward' and similar.
+Deactivate the region, if active.
 Non-nil argument FORWARD means search in the forward direction.
 Non-nil argument REGEXP means regular expression search.
-
 Argument OP-FUN is a function to be called after each input character
-is processed.  (It is not called after characters that exit the search.)
-
-When argument RECURSIVE-EDIT is non-nil, this function behaves
-modally.  It does not return to the calling function until the search
-is completed.  To behave this way it enters a recursive edit and exits
-that when you finish searching.
-
+ is processed.  (It is not called after chars that exit the search.)
+Non-nil RECURSIVE-EDIT means this function behaves modally.  It does
+ not return to the calling function until the search is completed.
+ It enters a recursive edit, which it exits that search is finished.
 Argument WORD, if t, means search for a sequence of words, ignoring
-punctuation.  If a function, the function is called to convert the
-search string to a regexp used for regexp searching."
-
-  ;; Initialize global vars.
-  (setq isearch-forward                  forward
+ punctuation.  If a function, the function is called to convert the
+ search string to a regexp that is used for regexp searching."
+  (setq isearch-forward                  forward ; Initialize global vars.
         isearch-regexp                   regexp
         isearch-word                     word
         isearch-op-fun                   op-fun
@@ -1571,59 +1626,56 @@ search string to a regexp used for regexp searching."
         isearch-small-window             nil
         isearch-just-started             t
         isearch-start-hscroll            (window-hscroll)
-
         isearch-opoint                   (point)
         isearchp-win-pt-line             (- (line-number-at-pos) (line-number-at-pos (window-start)))
+        isearchp-reg-beg                 (if (and (boundp 'isearchp-limit-to-region-flag)
+                                                  isearchp-limit-to-region-flag
+                                                  (use-region-p))
+                                             (region-beginning)
+                                           (point-min))
+        isearchp-reg-end                 (if (and (boundp 'isearchp-limit-to-region-flag)
+                                                  isearchp-limit-to-region-flag
+                                                  (use-region-p))
+                                             (region-end)
+                                           (point-max))
         search-ring-yank-pointer         nil
         isearch-opened-overlays          ()
         isearch-input-method-function    input-method-function
         isearch-input-method-local-p     (local-variable-p 'input-method-function)
         regexp-search-ring-yank-pointer  nil
-
-        ;; Save the original value of `minibuffer-message-timeout', and
-        ;; set it to nil so that isearch's messages don't get timed out.
+        ;; Save original value of `minibuffer-message-timeout'.
+        ;; Then reset it to nil, so Isearch messages do not time-out.
         isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
                                                          minibuffer-message-timeout)
         minibuffer-message-timeout       nil)
-
+  (when (and (boundp 'isearchp-deactivate-region-flag)  isearchp-deactivate-region-flag) ; Emacs 24+
+    (deactivate-mark))
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
   ;; input method is turned on in minibuffer to read multibyte characters.
-  (unless isearch-input-method-local-p  (make-local-variable 'input-method-function))
+  (unless isearch-input-method-local-p (make-local-variable 'input-method-function))
   (setq input-method-function  nil)
   (looking-at "")
   (setq isearch-window-configuration
         (if isearch-slow-terminal-mode (current-window-configuration) nil))
-
   ;; Maybe make minibuffer frame visible and/or raise it.
-  (let ((frame (window-frame (minibuffer-window))))
+  (let ((frame  (window-frame (minibuffer-window))))
     (unless (memq (frame-live-p frame) '(nil t))
-      (unless (frame-visible-p frame)
-        (make-frame-visible frame))
-      (if minibuffer-auto-raise
-          (raise-frame frame))))
-
-  (setq	isearch-mode " Isearch");; forward? regexp?
+      (unless (frame-visible-p frame) (make-frame-visible frame))
+      (when minibuffer-auto-raise (raise-frame frame))))
+  (setq isearch-mode  " Isearch")       ; forward? regexp?
   (force-mode-line-update)
-
-  (setq overriding-terminal-local-map isearch-mode-map)
+  (setq overriding-terminal-local-map  isearch-mode-map)
   (run-hooks 'isearch-mode-hook)
-
-  ;; Pushing the initial state used to be before running isearch-mode-hook,
-  ;; but a hook might set `isearch-push-state-function' used in
-  ;; `isearch-push-state' to save mode-specific initial state.  (Bug#4994)
+  ;; Pushing initial state used to be before running `isearch-mode-hook', but a hook might set
+  ;; `isearch-push-state-function' used in `isearch-push-state' to save mode-specific initial state.
+  ;; (Bug#4994)
   (isearch-push-state)
-
   (isearch-update)
-
   (add-hook 'mouse-leave-buffer-hook 'isearch-done)
   (add-hook 'kbd-macro-termination-hook 'isearch-done)
-
-  ;; isearch-mode can be made modal (in the sense of not returning to
-  ;; the calling function until searching is completed) by entering
-  ;; a recursive-edit and exiting it when done isearching.
-  (if recursive-edit
-      (let ((isearch-recursive-edit t))
-        (recursive-edit)))
+  ;; `isearch-mode' can be made modal (in the sense of not returning to the calling function until
+  ;; searching is completed) by entering a recursive-edit and exiting it when done isearching.
+  (when recursive-edit (let ((isearch-recursive-edit t)) (recursive-edit)))
   isearch-success)
 
 
@@ -1935,6 +1987,210 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                    ": ")
                                  'face 'minibuffer-prompt))))
       (concat (upcase (substring m 0 1)) (substring m 1)))))
+
+
+;;; Support for limiting search to active region.
+(when (> emacs-major-version 23)
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; 1. Pass `isearchp-reg-(beg|end)', not nil, as BOUND arg to `isearch-search-string'.
+  ;; 2. Instead of testing bobp|eobp, test whether point is beyond `isearchp-reg-(beg|end)'.
+  ;; 3. Added doc string.
+  ;;
+  (defun isearch-search ()
+    "Search using the current search string."
+    (if isearch-message-function (funcall isearch-message-function nil t) (isearch-message nil t))
+    (when (and (eq isearch-case-fold-search t)  search-upper-case)
+      (setq isearch-case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
+    (condition-case lossage
+        (let ((inhibit-point-motion-hooks  isearch-invisible)
+              (inhibit-quit                nil)
+              (case-fold-search            isearch-case-fold-search)
+              (search-invisible            isearch-invisible)
+              (retry                       t))
+          (setq isearch-error  nil)
+          (while retry
+            (setq isearch-success  (isearch-search-string isearch-string (if isearch-forward
+                                                                             isearchp-reg-end
+                                                                           isearchp-reg-beg)
+                                                          t))
+            ;; Clear RETRY unless the search predicate says to skip this search hit.
+            (when (or (not isearch-success)
+                      (if isearch-forward (> (point) isearchp-reg-end) (< (point) isearchp-reg-beg))
+                      (= (match-beginning 0) (match-end 0))
+                      (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
+              (setq retry  nil)))
+          (setq isearch-just-started  nil)
+          (when isearch-success
+            (setq isearch-other-end  (if isearch-forward (match-beginning 0) (match-end 0)))))
+      (quit           (isearch-unread ?\C-g) (setq isearch-success  nil))
+      (invalid-regexp (setq isearch-error  (cadr lossage))
+                      (cond ((string-match "\\`Premature \\|\\`Unmatched \\|\\`Invalid " isearch-error)
+                             (setq isearch-error  "incomplete input"))
+                            ((and (not isearch-regexp)
+                                  (string-match "\\`Regular expression too big" isearch-error))
+                             (cond (isearch-word (setq isearch-error  "Too many words"))
+                                   ((and isearch-lax-whitespace  search-whitespace-regexp)
+                                    (setq isearch-error  "Too many spaces for whitespace matching"))))))
+      (search-failed  (setq isearch-success  nil
+                            isearch-error    (nth 2 lossage)))
+      (error          (setq isearch-error  (format "%s" lossage)))) ; Stack overflow in regexp search.
+    (if isearch-success
+        nil
+      (and (isearch--state-success  (car isearch-cmds)) ; Failed this time after succeeding last time.
+           (ding))
+      (when (functionp (isearch--state-pop-fun (car isearch-cmds)))
+        (funcall (isearch--state-pop-fun (car isearch-cmds)) (car isearch-cmds)))
+      (goto-char (isearch--state-point (car isearch-cmds)))))
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; 1. Instead of just `isearch-success', test also that point is within `isearchp-reg-(beg|end)'.
+  ;; 2. Goto char `isearchp-reg-(beg|end)', not `point-min|max'.
+  ;; 3. Instead of testing bobp|eobp, test whether point is beyond `isearchp-reg-(beg|end)'.
+  ;; 4. Added doc string.
+  ;;
+  (defun isearch-repeat (direction)
+    "Utility for `isearch-repeat-forward' and `isearch-repeat--backward'."
+    (if (eq isearch-forward (eq direction 'forward))
+        (if (equal isearch-string "")   ; `C-s' in forward or `C-r' in reverse.
+            ;; If search string is empty, use last one.
+            (if (null (if isearch-regexp regexp-search-ring search-ring))
+                (setq isearch-error  "No previous search string")
+              (setq isearch-string            (car (if isearch-regexp regexp-search-ring search-ring))
+                    isearch-message           (mapconcat 'isearch-text-char-description isearch-string "")
+                    isearch-case-fold-search  isearch-last-case-fold-search)
+              (isearch-ring-adjust1 nil)) ; After taking the last element, adjust ring to previous one.
+          (or (and isearch-success      ; If already have what to search for, repeat it.
+                   (if isearch-forward (<= (point) isearchp-reg-end) (>= (point) isearchp-reg-beg)))
+              (progn (setq isearch-wrapped  t) ; Set isearch-wrapped before calling isearch-wrap-function
+                     (if isearch-wrap-function
+                         (funcall isearch-wrap-function)
+                       (goto-char (if isearch-forward isearchp-reg-beg isearchp-reg-end))))))
+      (setq isearch-forward  (not isearch-forward) ; C-s in reverse or C-r in forward, change direction.
+            isearch-success  t))
+    (setq isearch-barrier  (point))     ; For subsequent \| if regexp.
+    (if (equal isearch-string "")
+        (setq isearch-success  t)
+      (if (and isearch-success  (equal (point) isearch-other-end)  (not isearch-just-started))
+          ;; If repeating a search that found an empty string, ensure we advance.
+          (if (if isearch-forward
+                  (or (eobp)  (> (point) isearchp-reg-end))
+                (or (bobp)  (< (point) isearchp-reg-beg)))
+              ;; If there's nowhere to advance to, fail (and wrap next time).
+              (progn (setq isearch-success  nil) (ding))
+            (forward-char (if isearch-forward 1 -1))
+            (isearch-search))
+        (isearch-search)))
+    (isearch-push-state)
+    (isearch-update))
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;;
+  (defun isearch-lazy-highlight-search ()
+    "Search ahead for the next or previous match, for lazy highlighting.
+Attempt to do the search exactly the way the pending Isearch would."
+    (condition-case nil
+        (let ((case-fold-search               isearch-lazy-highlight-case-fold-search)
+              (isearch-regexp                 isearch-lazy-highlight-regexp)
+              (isearch-word                   isearch-lazy-highlight-word)
+              (isearch-lax-whitespace         isearch-lazy-highlight-lax-whitespace)
+              (isearch-regexp-lax-whitespace  isearch-lazy-highlight-regexp-lax-whitespace)
+              (isearch-forward                isearch-lazy-highlight-forward)
+              (search-invisible               nil) ; Do not match invisible text.
+              (retry                          t)
+              (success                        nil)
+              (bound
+               (if isearch-lazy-highlight-forward
+                   (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end)
+                        (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-start (window-end)))
+                 (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg)
+                      (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-end (window-start))))))
+          (while retry                  ; Use a loop, like in `isearch-search'.
+            (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
+            ;; Clear RETRY unless the search predicate says to skip this search hit.
+            (if (or (not success)
+                    (= (point) bound)   ; like (bobp) (eobp) in `isearch-search'.
+                    (= (match-beginning 0) (match-end 0))
+                    (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
+                (setq retry  nil)))
+          success)
+      (error nil)))
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;;
+  (defun isearch-lazy-highlight-update ()
+    "Update highlighting of other matches for current search."
+    (let ((max      lazy-highlight-max-at-a-time)
+          (looping  t)
+          nomore)
+      (with-local-quit
+        (save-selected-window
+          (when (and (window-live-p isearch-lazy-highlight-window)
+                     (not (eq (selected-window) isearch-lazy-highlight-window)))
+            (select-window isearch-lazy-highlight-window))
+          (save-excursion
+            (save-match-data
+              (goto-char (if isearch-lazy-highlight-forward
+                             isearch-lazy-highlight-end
+                           isearch-lazy-highlight-start))
+              (while looping
+                (let ((found  (isearch-lazy-highlight-search)))
+                  (when max
+                    (setq max  (1- max))
+                    (when (<= max 0) (setq looping  nil)))
+                  (when found
+                    (let ((mb  (match-beginning 0))
+                          (me  (match-end 0)))
+                      (if (= mb me)     ; Zero-length match
+                          (if isearch-lazy-highlight-forward
+                              (if (= mb (if isearch-lazy-highlight-wrapped
+                                            isearch-lazy-highlight-start
+                                          (window-end)))
+                                  (setq found  nil)
+                                (forward-char 1))
+                            (if (= mb (if isearch-lazy-highlight-wrapped
+                                          isearch-lazy-highlight-end
+                                        (window-start)))
+                                (setq found  nil)
+                              (forward-char -1)))
+                        (let ((ov  (make-overlay mb me))) ; Non-zero-length match
+                          (push ov isearch-lazy-highlight-overlays)
+                          ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
+                          (overlay-put ov 'priority 1000)
+                          (overlay-put ov 'face lazy-highlight-face)
+                          (overlay-put ov 'window (selected-window))))
+                      ;; Remember current point for next call of `isearch-lazy-highlight-update' when
+                      ;; `lazy-highlight-max-at-a-time' is too small.
+                      (if isearch-lazy-highlight-forward
+                          (setq isearch-lazy-highlight-end  (point))
+                        (setq isearch-lazy-highlight-start  (point)))))
+                  (unless found         ; Not found or zero-length match at the search bound
+                    (if isearch-lazy-highlight-wrapped
+                        (setq looping  nil
+                              nomore   t)
+                      (setq isearch-lazy-highlight-wrapped  t)
+                      (if isearch-lazy-highlight-forward
+                          (progn (setq isearch-lazy-highlight-end  (window-start))
+                                 (goto-char (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg)
+                                                 (window-start))))
+                        (setq isearch-lazy-highlight-start  (window-end))
+                        (goto-char (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end)
+                                        (window-end))))))))
+              (unless nomore
+                (setq isearch-lazy-highlight-timer  (run-at-time lazy-highlight-interval nil
+                                                                 'isearch-lazy-highlight-update)))))))))
+
+  )
 
 (defun isearchp-read-face-names  (&optional empty-means-none-p only-one-p)
   "Read face names with completion, and return a list of their symbols.
