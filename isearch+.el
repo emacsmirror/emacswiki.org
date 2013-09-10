@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 10:25:48 2013 (-0700)
+;; Last-Updated: Tue Sep 10 10:28:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2499
+;;     Update #: 2500
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -218,9 +218,10 @@
 ;;    wrapped around the buffer (Emacs 22+ only).
 ;;
 ;;  * Optional limiting of search to the active region, controlled by
-;;    option `isearchp-limit-to-region-flag'.  Optional deactivation
-;;    of the active region `isearchp-deactivate-region-flag'.  Both of
-;;    these are available for Emacs 24 and later.
+;;    option `isearchp-limit-to-region-flag'.  Deactivation of the
+;;    active region, controlled by option
+;;    `isearchp-deactivate-region-flag'.  Both of these are available
+;;    for Emacs 24 and later.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
