@@ -656,11 +656,8 @@ You most certainly want automatic linebreaking, include the following
 lines in your .gnus to achieve this:
 
      (defun my-message-mode-setup ()
-
        (setq fill-column 72)
-
        (turn-on-auto-fill))
-
      (add-hook 'message-mode-hook 'my-message-mode-setup)
 
 More stuff:
@@ -822,8 +819,6 @@ server be the native server, hence:
 
           (setq gnus-select-method '(nntp "news.frob.org"))
 
-
-
 Groups from the native server are also known as native groups.
 
 _Secondary select methods_
@@ -833,8 +828,6 @@ people are only going to have two servers, one native (for news) and one
 secondary (for mail). Thus:
 
           (setq gnus-secondary-select-methods '((nnml "")))
-
-
 
 Note that there is one more pair of parentheses in order to be able to
 mention more than one seconary select method.
@@ -850,12 +843,8 @@ the empty string. For example, given the following in your ~/.gnus.el
 file
 
           (setq gnus-secondary-select-methods
-
                 '((nnml "work" (nnml-directory "~/Mail.work/"))
-
                   (nnml "play" (nnml-directory "~/Mail.play/"))))
-
-
 
 you might have the groups nnml+work:boss and nnml+play:so1.
 
@@ -1188,11 +1177,8 @@ the nnmbox backend, then you might wish to specify a different mbox file
 to use (the default is ~/mbox):
 
      (add-to-list 'gnus-secondary-select-methods
-
                   '(nnmbox ""
-
                     (nnmbox-mbox-file "~/MAIL")
-
                     (nnmbox-active-file "~/Mail.active")))
 
 The other server parameters can be set in a similar way. The Gnus info
@@ -1207,11 +1193,8 @@ directory which is used by Pine. Therefore, you should add the right
 parameters to tell Gnus to stay away from that directory. For example:
 
      (add-to-list 'gnus-secondary-select-methods
-
                   '(nnml ""
-
                     (nnml-directory "~/GnusMail/")
-
                     (nnml-active-file "~/GnusMail/active")))
 
 The file-per-message and file-per-group types of backends each have a
@@ -1250,9 +1233,7 @@ mail, but it gives you the choice of remembering the password for the
 session. You can also put the password into ~/.gnus.el:
 
      (setq mail-sources '((pop :server "frumple"
-
                                :user "jrl"
-
                                :password "secret")))
 
 Note that this means that your password is stored on your hard disk in
@@ -1263,7 +1244,6 @@ You can also have several entries for several servers, you only need to
 be careful with the nesting of the parentheses:
 
      (setq mail-sources '((pop :server "frumple" :user "jrl")
-
                           (pop :server "mypop" :user "joe")))
 
 For sending mail, you probably want to contact an SMTP server
@@ -1271,15 +1251,10 @@ directly. This is easily done with smtpmail.el. Just include the
 following in ~/.gnus.el and replace host names and so on:
 
      (setq send-mail-function 'smtpmail-send-it) ; not for Gnus
-
      (setq message-send-mail-function 'smtpmail-send-it) ; for Gnus
-
      (setq smtpmail-default-smtp-server "YOUR SMTP HOST")
-
      (setq smtpmail-local-domain "YOUR DOMAIN NAME")
-
      (setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
-
      (setq smtpmail-debug-info t) ; only to debug problems
 
 The above was directly snarfed from the beginning of the file. The
