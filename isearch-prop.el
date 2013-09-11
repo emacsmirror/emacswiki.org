@@ -1,16 +1,16 @@
-;;; isearch-prop.el --- Search character-property contexts.
+;;; isearch-prop.el --- Search text-property or overlay-property contexts.
 ;;
 ;; Filename: isearch-prop.el
-;; Description: Search character-property contexts.
+;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 21:52:30 2013 (-0700)
+;; Last-Updated: Wed Sep 11 14:12:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 257
+;;     Update #: 284
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -24,7 +24,7 @@
 ;;
 ;;; Commentary:
 ;;
-;;    Search character-property contexts.
+;;    Search text-property or overlay-property contexts.
 ;;
 ;;  Such contexts are zones of text that have certain text properties
 ;;  or overlays with certain overlay properties.
@@ -126,13 +126,14 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
-;;  * Ability to search within character-property zones.  Example:
-;;    search within zones having a `face' text property with a value
-;;    of `font-lock-comment-face' or `font-lock-string-face'.  Search
-;;    overlays or text properties.  From within Isearch: `C-t' (or
-;;    `C-M-t' for regexp search).  First time, or with a prefix
-;;    argument, you are prompted for the property and its values.  See
-;;    the doc string of command `isearchp-char-prop-forward'.
+;;  * Ability to search within text-property or overlay-property
+;;    buffer zones.  Example: search within zones having a `face' text
+;;    property with a value of `font-lock-comment-face' or
+;;    `font-lock-string-face'.  Search overlays or text properties.
+;;    From within Isearch: `C-t' (or `C-M-t' for regexp search).
+;;    First time, or with a prefix argument, you are prompted for the
+;;    property and its values.  See the doc string of command
+;;    `isearchp-char-prop-forward'.
 ;;
 ;;  * Besides relying on other code to set `face' and other text
 ;;    properties for use with `C-t', you can use command
@@ -250,7 +251,7 @@ regexp as the search context, and so on.")
 ;;; General Commands -------------------------------------------------
 
 (defun isearchp-char-prop-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
-  "Isearch forward in text with a character (overlay or text) property.
+  "Isearch forward in text with a text or overlay property.
 That is, move to the next such property and search within it for text
 matching your input.
 
@@ -260,9 +261,9 @@ Isearch to toggle this variable.)  For example, this lets you search
 for text that is NOT displayed using a certain face or combination of
 faces.
 
-By default, search for the character property that you last used in an
-Isearch command.  This means any Isearch command that searches or
-applies character properties, which includes the `isearch-char-prop-*'
+By default, search for the text or overlay property that you last used
+in an Isearch command.  This means any Isearch command that searches
+or applies such properties, which includes the `isearch-char-prop-*'
 commands and commands such as `isearchp-imenu*', `isearchp-thing', and
 `isearchp-regexp-context-search'.
 
@@ -277,7 +278,7 @@ Otherwise:
 
  With no prefix arg, use the settings (property type, property,
  property values) from the last time you invoked a command that
- searches character properties.
+ searches text or overlay properties.
 
  With a prefix arg, you are prompted for the property and property
  values to use.  The particular prefix arg determines the property
@@ -315,13 +316,13 @@ NOTE: This command is available during normal Isearch, on key `C-t'.
   (isearchp-char-prop-1 'isearch-forward arg))
 
 (defun isearchp-char-prop-backward (arg)
-  "Isearch backward in text with a character (overlay or text) property.
+  "Isearch backward in text with a text or overlay property.
 See `isearchp-char-prop-forward'."
   (interactive "P")
   (isearchp-char-prop-1 'isearch-backward arg))
 
 (defun isearchp-char-prop-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
-  "Regexp Isearch forward in text with a character (overlay or text) property.
+  "Regexp Isearch forward in text with a text or overlay property.
 NOTE: This command is available during normal Isearch, on key `C-M-t'.
       However, in order to be able to use a prefix arg with this
       command, you must set `isearch-allow-scroll' or
@@ -332,7 +333,7 @@ See `isearchp-char-prop-forward'."
   (isearchp-char-prop-1 'isearch-forward-regexp arg))
 
 (defun isearchp-char-prop-backward-regexp (arg)
-  "Regexp Isearch backward in text with a character (overlay or text) property.
+  "Regexp Isearch backward in text with a text or overlay property.
 See `isearchp-char-prop-backward'."
   (interactive "P")
   (isearchp-char-prop-1 'isearch-backward-regexp arg))
@@ -393,9 +394,9 @@ IMPORTANT: By default, this command assumes that the search contexts
 have already been defined, by a previous use of this command,
 `isearchp-imenu', or `isearchp-regexp-define-contexts'.
 
-If you do not use a prefix arg then this command searches for the
-character property that you last used in an Isearch command that
-searches or applies character properties.  This includes the
+If you do not use a prefix arg then this command searches for the text
+or overlay property that you last used in an Isearch command that
+searches or applies such properties.  This includes the
 `isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
 `isearchp-thing'.  See `isearchp-char-prop-forward' for more
 information.
@@ -432,7 +433,7 @@ cdr is PREDICATE."
   (isearchp-char-prop-forward nil))
 
 (defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action)
-  "Define search contexts for a future character-property search.
+  "Define search contexts for a future text- or overlay-property search.
 This command does not actually search the contexts.  For that, use
 `isearchp-regexp-context-search' or `isearchp-char-prop-forward'."
   (interactive (isearchp-regexp-read-args))
@@ -498,8 +499,8 @@ This command does not actually search the contexts.  For that, use
 
 ;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
 (defun isearchp-char-properties-in-buffer (&optional buffer beg end type)
-  "List of all character properties in BUFFER between BEG and END.
-Only the character properties are included, not their values.
+  "List of all text or overlay properties in BUFFER between BEG and END.
+Only the properties are included, not their values.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
   (unless buffer (setq buffer  (current-buffer)))
@@ -568,8 +569,8 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
 ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
 (defun isearchp-char-prop-matches-p (type property values match-fn position)
   "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
-TYPE is `overlay', `text', or nil, and specifies the type of character
-property - nil means look for both overlay and text properties.
+TYPE is `overlay', `text', or nil, and specifies the type of property
+- nil means look for both overlay and text properties.
 
 Find text with a PROPERTY value that overlaps with VALUES: If the
 value of PROPERTY is an atom, then it must be a member of VALUES.  If
@@ -613,7 +614,7 @@ For other properties the values are matched using `equal'."
     (t                     #'equal)))
 
 (defun isearchp-char-prop-end ()
-  "End Isearch for a character property."
+  "End Isearch for a text or overlay property."
   (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
   (remove-hook 'isearch-mode-end-hook 'isearchp-char-prop-end))
 
@@ -865,9 +866,9 @@ have already been defined, by a previous use of this command,
 `isearchp-regexp-context-search', or
 `isearchp-regexp-define-contexts'.
 
-If you do not use a prefix arg then this command searches for the
-character property that you last used in an Isearch command that
-searches or applies character properties.  This includes the
+If you do not use a prefix arg then this command searches for the text
+or overlay property that you last used in an Isearch command that
+searches or applies such properties.  This includes the
 `isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
 `isearchp-thing'.  See `isearchp-char-prop-forward' for more
 information.
@@ -1109,16 +1110,17 @@ need to invoke this command again, and with a prefix arg (see below).
 IMPORTANT: By default, this command assumes that the search contexts
 have already been defined by a previous use of this command.
 
-If you do not use a prefix arg then this command searches for the
-character property that you last used in an Isearch command that
-searches or applies character properties.  This includes the
+If you do not use a prefix arg then this command searches for the text
+or overlay property that you last used in an Isearch command that
+searches or applies such properties.  This includes the
 `isearch-char-prop-*' commands, the `isearchp-imenu*' commands.  See
 `isearchp-char-prop-forward' for more information.
 
 If you use a prefix arg, or if you have not previously used this
 command or similar commands, then you are prompted for the THING and
 the search contexts are created.  Text properties are added to the
-contexts to identify them and allow for character-property searching.
+contexts to identify them and allow for text-property or
+overlay-property searching.
 
 Non-interactively, if optional arg PREDICATE is non-nil then it is a
 predicate that acceptable things must satisfy.  It is passed the thing
