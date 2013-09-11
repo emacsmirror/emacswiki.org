@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 09:01:56 2013 (-0700)
+;; Last-Updated: Wed Sep 11 14:21:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3250
+;;     Update #: 3251
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1904,8 +1904,8 @@ Optional 5th arg FACE is the face to use for highlighting.
   Interactively, this is the last face that was used for highlighting.
   (Use command `hlt-choose-default-face' to choose a different face.)
 Optional 6th arg TYPE is `overlay', `text', or nil, and specifies the
-  type of character property - nil means to look for both overlay and
-  text properties.  Interactively, TYPE is derived from
+  type of property - nil means to look for both overlay and text
+  properties.  Interactively, TYPE is derived from
   `hlt-use-overlays-flag'.
 Optional 7th arg MSG-P non-nil means to display a progress message.
 Optional 8th arg MOUSE-P non-nil means use the `mouse-face' property,
