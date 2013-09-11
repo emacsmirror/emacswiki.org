@@ -131,11 +131,8 @@ Let's say you have downloaded gnus-5.8.8.tar.gz and put it in the /tmp
 directory. To install this, you might do the following:
 
      cd /usr/local/share/emacs/site-lisp
-
      gzip -d -c /tmp/gnus-5.8.8.tar.gz | tar xf -
-
      ./configure
-
      make
 
 The first step depends on the directory you have chosen for the
@@ -144,11 +141,8 @@ flavor of Emacs. The above code is for Emacs users, XEmacs users will
 want to look below:
 
      cd /usr/local/lib/xemacs/site-lisp
-
      gzip -d -c /tmp/gnus-5.8.8.tar.gz | tar xf -
-
      ./configure --with-xemacs
-
      make EMACS=xemacs
 
 FIXME: What about --with-w3?
@@ -158,7 +152,6 @@ your Emacs where to find it. This is not very difficult, you just add a
 line like the following to the Emacs init file, ~/.emacs:
 
      (add-to-list 'load-path
-
        "/usr/local/share/emacs/site-lisp/gnus-5.8.8/lisp/")
 
 Note that this line must be in ~/.emacs and not in ~/.gnus.el. This is
@@ -176,7 +169,6 @@ In order to get the Gnus info pages added to your documentation, also
 augment the INFOPATH environment variable, like
 
      INFOPATH=$INFOPATH:/usr/local/share/emacs/site-lisp/gnus-5.8.8/texi
-
      export INFOPATH
 
 The above should go in your shell startup file, such as ~/.profile. We
@@ -329,9 +321,7 @@ got to set the INFOPATH environment variable. On a Win9x system you can
 do this by saying
 
      set INFOPATH=C:\Programme\NewGnus\info;
-
                   C:\Programme\XEmacs\XEmacs-21.4.5\info;
-
                   C:\Programme\XEmacs\xemacs-packages\info;
 
 in your autoexec.bat. In Win NT, 2K and XP it's done via Start ->
@@ -359,7 +349,6 @@ Now, that we have the famous ~/.gnus.el, we'll only have to fill it.
 Now you need to tell Gnus who you are. Do so with the lines
 
      (setq user-mail-address "you@somewhere.com")
-
      (setq user-full-name "Your Name")
 
 Now Gnus needs to know where to fetch its messages from. Let's say your
@@ -371,20 +360,13 @@ backend for this. (See section mail for further information.)
 We tell Gnus all this with
 
      (setq gnus-select-method '(nntp "foo.bar.com"))
-
      (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
-
-     (add-to-list 'gnus-secondary-select-methods '(nntp
-     "news.gnus.org"))
-
-
-
+     (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
+     
      (add-to-list 'gnus-secondary-select-methods '(nnml ""))
-
+     
      (setq mail-sources '((pop :server "pop.provider.org"
-
                                :user "you"
-
                                :password "secret")))
 
 If a newsserver requires authentification, Gnus will prompt you for
@@ -392,7 +374,6 @@ username and password. If you are too lazy for this create a file
 ~/.authinfo which should look like this:
 
      machine foo.bar.com login your_username password your_pass
-
      machine localhost login foo password bar
 
 If your server offers access to anonymous users Gnus will connect as
@@ -400,8 +381,7 @@ anonymous as well as you specified username and password in
 .authinfo. You will probably then wonder why there are so few groups and
 have no idea what to do now. Don't fear, it's simple. Just say
 
-     machine foo.bar.com login your_username password your_pass force
-     yes
+     machine foo.bar.com login your_username password your_pass force yes
 
 instead of
 
@@ -412,9 +392,7 @@ and how to send outgoing mails. I suggest to use the smtpmail package
 for this which comes with Emacs.
 
      (setq send-mail-function 'smtpmail-send-it)
-
      (setq message-send-mail-function 'smtpmail-send-it)
-
      (setq smtpmail-default-smtp-server "your.smtp-server.de")
 
 should do the trick unless it requires authentification.
@@ -422,7 +400,6 @@ should do the trick unless it requires authentification.
 If you are using authentication, you will need to use the following two variables as defined on this reference page: http://www.gnu.org/software/emacs/manual/html_node/smtpmail/index.html (Look in the 'Authentication' node).
 
   (setq smtpmail-auth-credentials '(("hostname" "port" "username" "password")))
-
   (setq smtpmail-starttls-credentials '(("hostname" "port" nil nil)))
 
 
