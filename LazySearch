@@ -127,3 +127,6 @@ By default, LazySearch will popup a help window when you execute the command `la
 ==Screenshot==                  
 [[image:LazySearchScreenshot]]
 
+== Troubleshooting ==
+
+Errors out for me on Emacs 24... https://gist.github.com/mgalgs/6530478
