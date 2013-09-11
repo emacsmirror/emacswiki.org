@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Sep 11 09:39:54 2013 (-0700)
+;; Last-Updated: Wed Sep 11 14:25:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6551
+;;     Update #: 6569
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5437,10 +5437,9 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
 
 (defun icicle-search-char-property (beg end require-match ; Bound to `M-s M-s c'.
                                     &optional where prop values predicate match-fn)
-  "Search for text that has a character property with a certain value.
-By \"character property\" is meant either an overlay property or a
-text property.  If you want to search for only an overlay property or
-only a text property, then use `icicle-search-overlay-property' or
+  "Search text that has a text or overlay property with a certain value.
+If you want to search for only an overlay property or only a text
+property, then use `icicle-search-overlay-property' or
 `icicle-search-text-property' instead.
 
 Interactively, you are prompted for the property to search and its
@@ -5460,10 +5459,10 @@ at all is searched.
 
 You can alternatively choose to search, not the search contexts as
 defined, but the zones of buffer text that do NOT have the given
-character property value.  In other words, search the complement
-zones.  To toggle such complementing, use `C-M-~' anytime during
-completion.  (This toggling affects only future search commands, not
-the current one.)
+property value.  In other words, search the complement zones.  To
+toggle such complementing, use `C-M-~' anytime during completion.
+(This toggling affects only future search commands, not the current
+one.)
 
 Non-interactively, arguments BEG, END, REQUIRE-MATCH, and WHERE are as
 for `icicle-search'.  Arguments PROP, VALUES, and PREDICATE are passed
@@ -5534,12 +5533,12 @@ For other properties the values are matched using `equal'."
     (t                     #'equal)))
 
 (defun icicle-char-properties-in-buffers (where beg end &optional type)
-  "List of all character properties in WHERE.
+  "List of all text or overlay properties in WHERE.
 The other arguments are passed to `icicle-char-properties-in-buffer'.
-Only the character properties are included, not their values.
-WHERE is a list of buffers, a list of files, or a list of region
-  bookmarks (in which case you must also use library `Bookmark+').
-  If nil, then only the current buffer is used.
+Only the properties are included, not their values.  WHERE is a list
+  of buffers, a list of files, or a list of region bookmarks (in which
+  case you must also use library `Bookmark+').  If nil, then only the
+  current buffer is used.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
   (cond ((and (consp where)  (bufferp (car where))) ; List of buffers - search buffers.
@@ -5562,8 +5561,8 @@ text properties, or both, respectively."
          (icicle-char-properties-in-buffer (current-buffer) beg end type))))
 
 (defun icicle-char-properties-in-buffer (&optional buffer beg end type)
-  "List of all character properties in BUFFER between BEG and END.
-Only the character properties are included, not their values.
+  "List of all text or overlay properties in BUFFER between BEG and END.
+Only the properties are included, not their values.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
   (unless buffer (setq buffer  (current-buffer)))
@@ -5589,20 +5588,20 @@ text properties, or both, respectively."
               (setq curr-props  (cddr curr-props)))))))
     props))
 
-(defun icicle-search-char-property-scan (buffer beg end prop values type predicate match-fn)
-  "Scan BUFFER from BEG to END for character property PROP with VALUES.
+(defun icicle-search-char-property-scan (buffer beg end property values type predicate match-fn)
+  "Scan BUFFER from BEG to END for text or overlay PROPERTY with VALUES.
 Push hits onto `icicle-candidates-alist'.
 If BUFFER is nil, scan the current buffer.
 Highlight the matches in face `icicle-search-main-regexp-others'.
 If BEG and END are nil, scan entire BUFFER.
 
-Find text with a PROP value that overlaps with VALUES.  That is, if
-the value of PROP is an atom, then it must be a member of VALUES; if
-it is a list, then at least one list element must be a member of
-VALUES.
+Find text with a PROPERTY value that overlaps with VALUES.  That is,
+if the value of PROPERTY is an atom, then it must be a member of
+VALUES; if it is a list, then at least one list element must be a
+member of VALUES.
 
-TYPE is `overlay', `text', or nil, and specifies the type of character
-property - nil means look for both overlay and text properties.
+TYPE is `overlay', `text', or nil, and specifies the type of property
+- nil means look for both overlay and text properties.
 
 If PREDICATE is non-nil, then push only the hits for which it holds.
 PREDICATE is nil or a Boolean function that takes these arguments:
@@ -5610,9 +5609,9 @@ PREDICATE is nil or a Boolean function that takes these arguments:
   - a marker at the end of the search-context
 
 MATCH-FN is a binary predicate that is applied to each item of VALUES
-and a zone of text with property PROP.  If it returns non-nil then the
-zone is a search hit."
-  (setq match-fn  (or match-fn  (icicle-search-property-default-match-fn prop)))
+and a zone of text with PROPERTY.  If it returns non-nil then the zone
+is a search hit."
+  (setq match-fn  (or match-fn  (icicle-search-property-default-match-fn property)))
   (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
         (last           nil)
@@ -5626,10 +5625,10 @@ zone is a search hit."
             (save-excursion
               (setq last  beg)
               (while (and beg  (< beg end) ; Skip to first zone.
-                          (not (icicle-search-char-prop-matches-p type prop values match-fn beg)))
-                (setq beg  (icicle-next-single-char-property-change beg prop nil end)))
+                          (not (icicle-search-char-prop-matches-p type property values match-fn beg)))
+                (setq beg  (icicle-next-single-char-property-change beg property nil end)))
               (while (and beg  (< last end)) ; We have a zone.
-                (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end)  end))
+                (setq zone-end  (or (icicle-next-single-char-property-change beg property nil end)  end))
                 (let ((hit-beg  (if icicle-search-complement-domain-p last beg))
                       (hit-end  (if icicle-search-complement-domain-p beg zone-end))
                       saved-hit-beg saved-hit-end)
@@ -5643,8 +5642,9 @@ zone is a search hit."
                     ;; Try to extend zone.
                     (let (hit-beg hit-end)
                       (while (and beg  (< last end)
-                                  (icicle-search-char-prop-matches-p type prop values match-fn beg))
-                        (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end)  end))
+                                  (icicle-search-char-prop-matches-p type property values match-fn beg))
+                        (setq zone-end  (or (icicle-next-single-char-property-change beg property nil end)
+                                            end))
                         (setq hit-beg  (if icicle-search-complement-domain-p last beg)
                               hit-end  (if icicle-search-complement-domain-p beg zone-end))
                         (when (and (not (= hit-beg hit-end)) ; Do nothing if hit is empty.
@@ -5684,8 +5684,8 @@ zone is a search hit."
                 (setq beg   zone-end
                       last  zone-end)
                 (while (and beg  (< beg end) ; Skip to next zone.
-                            (not (icicle-search-char-prop-matches-p type prop values match-fn beg)))
-                  (setq beg  (icicle-next-single-char-property-change beg prop nil end))))
+                            (not (icicle-search-char-prop-matches-p type property values match-fn beg)))
+                  (setq beg  (icicle-next-single-char-property-change beg property nil end))))
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
