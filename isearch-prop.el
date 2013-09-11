@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep  9 09:20:48 2013 (-0700)
+;; Last-Updated: Tue Sep 10 19:06:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 235
+;;     Update #: 240
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -28,6 +28,11 @@
 ;;
 ;;  Such contexts are zones of text that have certain text properties
 ;;  or overlays with certain overlay properties.
+;;
+;;  This file is part of library Isearch+, which includes also file
+;;  `isearch+.el'.  You can use either of the files without the other,
+;;  if you like, but I recommend that you use them together.
+;;
 ;;
 ;;  The features provided by this library are based on similar
 ;;  features introduced by Icicles (http://www.emacswiki.org/Icicles).
@@ -143,6 +148,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/10 dadams
+;;     Forgot to require cl.el at compile time, for case.
 ;; 2013/09/09 dadams
 ;;     Added: isearchp-toggle-complementing-domain, isearchp-context-level,
 ;;            isearchp-complement-domain-p, isearchp-read-context-regexp, isearchp-regexp-scan,
@@ -181,6 +188,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+
+(eval-when-compile (require 'cl)) ;; case
  
 ;;(@* "Variables")
 
