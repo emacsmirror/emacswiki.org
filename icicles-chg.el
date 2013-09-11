@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Sep  6 22:46:18 2013 (-0700)
+;; Last-Updated: Wed Sep 11 09:42:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10206
+;;     Update #: 10207
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -939,6 +939,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/09/11 dadams
+;;     icicle-Info-multi-read-node-name: Bind case-fold-search to t in filter function for NODES.
 ;; 2013/009/06 dadams
 ;;     Added: icicle-imenu-macro-full.
 ;;     icicle-imenu-*-full: First arg to icicle-imenu-1 should just be non-nil.
