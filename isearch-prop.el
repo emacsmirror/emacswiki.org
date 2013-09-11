@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 19:06:36 2013 (-0700)
+;; Last-Updated: Tue Sep 10 21:52:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 240
+;;     Update #: 257
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -149,6 +149,8 @@
 ;;; Change Log:
 ;;
 ;; 2013/09/10 dadams
+;;     isearchp-regexp-scan, isearchp-thing-scan: Added text property isearchp.
+;;     Bound isearchp-hide/show-comments to M-; in isearch-mode-map.
 ;;     Forgot to require cl.el at compile time, for case.
 ;; 2013/09/09 dadams
 ;;     Added: isearchp-toggle-complementing-domain, isearchp-context-level,
@@ -199,7 +201,7 @@
 ;; Same as `ignore-comments-flag' in `hide-comnt.el'.
 ;;
 (defcustom isearchp-ignore-comments-flag t
-  "*Non-nil means `isearch-with-comments-hidden' hides comments."
+  "*Non-nil means `isearchp-with-comments-hidden' hides comments."
   :type 'boolean :group 'isearch-plus)
 
 (defvar isearchp-char-prop-type nil
@@ -238,6 +240,7 @@ regexp as the search context, and so on.")
 ;;; Keys -------------------------------------------------------------
 
 (define-key isearch-mode-map (kbd "C-t")   'isearchp-char-prop-forward)
+(define-key isearch-mode-map (kbd "M-;")   'isearchp-hide/show-comments)
 (define-key isearch-mode-map (kbd "C-M-t") 'isearchp-char-prop-forward-regexp)
 (define-key isearch-mode-map (kbd "C-M-;") 'isearchp-toggle-ignoring-comments)
 (define-key isearch-mode-map (kbd "C-M-~") 'isearchp-toggle-complementing-domain)
@@ -545,6 +548,23 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
                 (setq beg  (1+ beg)))
               t)))))
 
+(defun isearchp-text-prop-present-p (beg end property value)
+  "Return non-nil if some text between BEG and END has PROPERTY of VALUE."
+  (unless (and beg  end) (setq beg  (point-min)
+                               end  (point-max)))
+  (save-excursion
+    (let ((pos  beg)
+          propval)
+      (goto-char pos)
+      (catch 'isearchp-text-prop-present-p
+        (while (<= pos end)
+          (setq pos      (or (next-property-change pos nil end)  end)
+                propval  (get-text-property pos property))
+          (if (and propval  (equal propval value))
+              (throw 'isearchp-text-prop-present-p t)
+            (setq pos  (1+ pos))))
+        nil))))
+
 ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
 (defun isearchp-char-prop-matches-p (type property values match-fn position)
   "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
@@ -787,6 +807,7 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                   (let ((buffer-mod  (buffer-modified-p))
                         (prop-value  (cons regexp predicate)))
                     (put-text-property hit-beg hit-end property prop-value)
+                    (put-text-property hit-beg hit-end 'isearchp t)
                     (setq added-prop-p  prop-value)
                     (set-buffer-modified-p buffer-mod))
                 (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
@@ -815,23 +836,6 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                          nil read-expression-map t (and (boundp 'function-name-history)
                                                         'function-name-history)))))
     (list beg end prop regxp pred)))
-
-(defun isearchp-text-prop-present-p (beg end property value)
-  "Return non-nil if some text between BEG and END has PROPERTY of VALUE."
-  (unless (and beg  end) (setq beg  (point-min)
-                               end  (point-max)))
-  (save-excursion
-    (let ((pos  beg)
-          propval)
-      (goto-char pos)
-      (catch 'isearchp-text-prop-present-p
-        (while (<= pos end)
-          (setq pos      (or (next-property-change pos nil end)  end)
-                propval  (get-text-property pos property))
-          (if (and propval  (equal propval value))
-              (throw 'isearchp-text-prop-present-p t)
-            (setq pos  (1+ pos))))
-        nil))))
 
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
@@ -1005,12 +1009,17 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
 
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;
-(defun isearchp-hide/show-comments (&optional hide/show start end)
+(defun isearchp-hide/show-comments (&optional hide/show start end) ; Bound to `M-;' during Isearch
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
+
+During Isearch this is bound to `M-;'.  However, in order to use a
+prefix arg with it you must set `isearch-allow-scroll' or
+`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
+arg during Isearch exits Isearch.
 
 Uses `save-excursion', restoring point.
 
@@ -1019,10 +1028,7 @@ such text, regardless of how it was hidden.  IOW, it does not just
 show invisible text that you previously hid using this command.
 
 From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
-show them.
-
-This function does nothing in Emacs versions prior to Emacs 21,
-because it needs `comment-search-forward'."
+show them."
   (interactive (list (if current-prefix-arg 'show 'hide)
                      (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
                      (if (and transient-mark-mode  mark-active) (region-end) (point-max))))
@@ -1181,7 +1187,7 @@ NOTE:
     (list thng beg end prop pred)))
 
 (defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn)
-  "Define search contexts for a future thing searches.
+  "Define search contexts for future thing searches.
 This command does not actually search the contexts.  For that, use
 `isearchp-thing' or `isearchp-char-prop-forward'."
   (interactive (isearchp-thing-read-args))
@@ -1268,8 +1274,9 @@ This function respects both `isearchp-search-complement-domain-p' and
                           (when (and isearchp-ignore-comments-flag  isearchp-complement-domain-p)
                             (put-text-property 0 (length hit-string) 'invisible nil hit-string))
                           (let ((buffer-mod  (buffer-modified-p))
-                                (prop-value  (cons thing predicate))) ; @@@@@@@@@ ?????
+                                (prop-value  (cons thing predicate)))
                             (put-text-property hit-beg hit-end property prop-value)
+                            (put-text-property hit-beg hit-end 'isearchp t)
                             (setq added-prop-p  prop-value)
                             (set-buffer-modified-p buffer-mod)))
                          (t
