@@ -14,7 +14,7 @@ Emacs 21 such as the fringe/display margin for breakpoints, and the toolbar
 M-x gdb will start the debugger. M-x gud-gdb will start the old text mode
 debugger that existed prior to Emacs 22.1.
 
-This file has evolved from gdba.el that was included with GDB 5.0 andwritten
+This file has evolved from gdba.el that was included with GDB 5.0 and written
 by Tom Lord and Jim Kingdon.  It uses GDB's annotation interface.
 You don't need to know about annotations to use this mode as a debugger,
 but if you are interested developing the mode itself, then see the
