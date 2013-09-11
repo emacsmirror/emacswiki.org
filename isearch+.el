@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 19:05:04 2013 (-0700)
+;; Last-Updated: Tue Sep 10 21:54:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2539
+;;     Update #: 2641
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -417,6 +417,7 @@
 ;;             isearch-lazy-highlight-update.
 ;;       Bound isearchp-toggle-region-restriction to C-x n.
 ;;       isearch-mode: Save isearchp-reg-beg|end.  Deactivate region.
+;;     isearch-forward: Updated doc string.
 ;; 2013/09/08 dadams
 ;;     Moved all character-property code to new library isearch-prop.el.  Soft-require it.
 ;;       Moved: *-char-prop*, *-put-prop-on-region, *-some, *-filter-predicate-orig.
@@ -2330,33 +2331,71 @@ Isearch Plus
 
 Commands
 --------
-\\<isearch-mode-map>\\[isearchp-set-region-around-search-target]\t- select search hit
-\\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
-\\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
-\\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively
-\\[isearchp-toggle-set-region]\t- toggle setting region around search target
-\\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or beyond: `C-u')
-\\[isearch-toggle-invisible]\t- toggle searching invisible text for current search or beyond
-\\[isearchp-toggle-search-invisible]\t- toggle option `search-invisible'
-\\[isearchp-toggle-regexp-quote-yank]\t- toggle quoting (escaping) of regexp special characters
-\\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
+\\<isearch-mode-map>\\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively, during Isearch
+\\[isearchp-hide/show-comments]\t- hide or (`C-u') show comments
+
+\\[isearchp-kill-ring-save]\t- copy current search string to kill ring
+\\[isearchp-yank-char]\t- yank a char from buffer onto search string
+\\[isearchp-yank-word-or-char]\t- yank a word or char from buffer onto search string
 \\[isearchp-yank-symbol-or-char]\t- yank a symbol or char from buffer onto search string
 \\[isearchp-yank-sexp-symbol-or-char]\t- yank sexp, symbol, or char from buffer onto search string
+\\[isearchp-yank-line]\t- yank text up to end of line onto search string
+\\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
+\\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
+
 \\[isearchp-char-prop-forward]\t- search for a character (overlay or text) property [*]
 \\[isearchp-char-prop-forward-regexp]\t- regexp-search for a character (overlay or text) property [*]
-\\[isearchp-put-prop-on-region]\t- add a text property to region [*]
 
- [*] Requires library `isearch-prop.el' and Emacs 23 or later.
+\\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
+\\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
+\\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
+\\[isearch-toggle-invisible]\t- toggle searching invisible text, for current search or more
+\\[isearchp-toggle-option-toggle]\t- toggle option `isearchp-toggle-option-flag'
+\\[isearchp-toggle-region-restriction]\t- toggle restricting search to active region
+\\[isearchp-toggle-set-region]\t- toggle setting region around search target
+\\[isearchp-toggle-complementing-domain]\t- toggle searching complements of normal search contexts [*]
+\\[isearchp-toggle-ignoring-comments]\t- toggle ignoring comments for `isearchp-thing' [*]
+\\[isearchp-toggle-regexp-quote-yank]\t- toggle quoting (escaping) of regexp special characters
+
+ [*] Requires library `isearch-prop.el'.
 
 Options
 -------
 `isearchp-case-fold'\t- search is case sensitive?
-`isearchp-drop-mismatch'\t- handling input after search mismatch
-`isearchp-initiate-edit-commands'\t- keys that edit, not exit
+`isearchp-set-region-flag'\t- select last search target?
+`isearchp-restrict-to-region-flag'\t- restrict search to region?
+`isearchp-deactivate-region-flag'\t- search deactivates region?
+`isearchp-ignore-comments-flag'\t- ignore THINGs in comments? [*]
 `isearchp-mouse-2-flag'\t- `mouse-2' anywhere yanks the selection?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
-`isearchp-set-region-flag'\t- select last search target?
-`isearchp-toggle-option-flag'\t- toggling toggles options too?")
+`isearchp-toggle-option-flag'\t- toggling toggles options too?
+`isearchp-drop-mismatch'\t- handling input after search mismatch
+`isearchp-initiate-edit-commands'\t- keys that edit, not exit
+
+ [*] Requires library `isearch-prop.el'.
+
+Other Isearch+ Commands
+-----------------------
+\\[isearchp-fontify-buffer-now]\t- fontify whole buffer
+\\[isearchp-set-region-around-search-target]\t- select last search
+
+Other Isearch+ Commands that Require Library `isearch-prop.el'
+--------------------------------------------------------------
+
+\\[isearchp-put-prop-on-region]\t- add a text property to region
+\\[isearchp-add-regexp-as-property]\t- add prop to regexp matches
+\\[isearchp-regexp-context-search]\t- search regexp contexts
+\\[isearchp-regexp-define-contexts]\t- define regexp contexts
+
+\\[isearchp-imenu] \t- search Emacs-Lisp definitions
+\\[isearchp-imenu-command] \t- search Emacs command definitions
+\\[isearchp-imenu-non-interactive-function] \t- search non-commands
+\\[isearchp-imenu-macro] \t- search Emacs-Lisp macro definitions
+
+\\[isearchp-thing]\t- search THING search contexts
+\\[isearchp-thing-define-contexts]\t- define THING contexts
+\\[isearchp-previous-visible-thing]\t- go to previous visible THING
+\\[isearchp-next-visible-thing]\t- go to next visible THING")
  
 ;;(@* "Keys and Hooks")
 
