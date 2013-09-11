@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Sep  6 22:46:47 2013 (-0700)
+;; Last-Updated: Wed Sep 11 09:39:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6543
+;;     Update #: 6551
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2670,7 +2670,9 @@ This is used as the value of `minibuffer-completion-table'."
                                         (icicle-transform-multi-completion strg)))
                         (nodes        (mapcar #'car Info-read-node-completion-table))
                         (nodes        (icicle-remove-if-not
-                                       `(lambda (nod) (icicle-string-match-p ',node-pat nod))
+                                       `(lambda (nod)
+                                         (let ((case-fold-search  t))
+                                           (icicle-string-match-p ',node-pat nod)))
                                        nodes))
                         (nodes        (if (equal "" content-pat)
                                           nodes
