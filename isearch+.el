@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 14:44:37 2013 (-0700)
+;; Last-Updated: Tue Sep 10 19:05:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2538
+;;     Update #: 2539
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -36,6 +36,9 @@
 ;;                                 regions of text that have certain
 ;;                                 text or overlay properties.  Can be
 ;;                                 Used with Emacs 23 or later.
+;;
+;;  You can use either of the Isearch+ files without the other, but I
+;;  recommend that you use them together.
 ;;
 ;;
 ;;  This file should be loaded *AFTER* loading the standard GNU file
