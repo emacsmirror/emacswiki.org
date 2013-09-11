@@ -175,6 +175,18 @@ It should work on Windows, MacOS and GNU systems.  I've tested it on Linux only.
 -- Vitalie Spinu
 
 ----
+[:GNU Win32 and Windows 7]
+==Experience with GNU Win32 and Windows 7==
+Recently I had occasion to try GNU Win32 as a way of running nix style tools under Emacs. 
+I downloaded a bunch of GNU Win32 packages including find. 
+My experience was that the find executable does not work at all with Windows 7,
+This link discusses the issue more specifically:
+http://gnuwin32.996325.n3.nabble.com/gnuwin32-Help-find-exe-td1265.html.
+Generally I use Cygwin to get the tools. This is referring to GNU Emacs 24.3 running Windows 7.
+I do not use Cygwin as my inferior shell interpreter (use cmd instead). Mike F
+
+
+----
 [:OpenWithInRecentf]
 ==Adding files opened with external apps to the history of recent files.==
 
