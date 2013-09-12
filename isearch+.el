@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 10 21:54:05 2013 (-0700)
+;; Last-Updated: Thu Sep 12 12:32:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2641
+;;     Update #: 2694
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -409,6 +409,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/12 dadams
+;;     isearchp-reg-(beg|end): Changed default value to nil.
+;      isearch-mode: save-restriction and widen, to get region limits.
+;;     isearch-search, isearch-repeat, isearch-lazy-highlight-search, isearch-lazy-highlight-update:
+;;       handle null isearchp-reg-(beg|end) case per vanilla.
 ;; 2013/09/10 dadams
 ;;     Added support for limiting search to active region (Emacs 24.3+):
 ;;       Added: isearchp-deactivate-region-flag, isearchp-restrict-to-region-flag, isearchp-reg-beg,
@@ -877,13 +882,13 @@ See also option `isearchp-restrict-to-region-flag'."
 See also option isearchp-deactivate-region-flag."
     :type 'boolean :group 'isearch-plus))
 
-(defvar isearchp-reg-beg 1              ; Used only for Emacs 24.3+
-  "Beginning of the nonempty active region or end of buffer.
+(defvar isearchp-reg-beg nil            ; Used only for Emacs 24.3+
+  "Beginning of the nonempty active region or nil.
 If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
-(defvar isearchp-reg-end 1              ; Used only for Emacs 24.3+
-  "End of the nonempty active region or beginning of buffer.
+(defvar isearchp-reg-end nil            ; Used only for Emacs 24.3+
+  "End of the nonempty active region or nil.
 If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
@@ -1643,16 +1648,20 @@ Argument WORD, if t, means search for a sequence of words, ignoring
         isearch-start-hscroll            (window-hscroll)
         isearch-opoint                   (point)
         isearchp-win-pt-line             (- (line-number-at-pos) (line-number-at-pos (window-start)))
-        isearchp-reg-beg                 (if (and (boundp 'isearchp-restrict-to-region-flag)
-                                                  isearchp-restrict-to-region-flag
-                                                  (use-region-p))
-                                             (region-beginning)
-                                           (point-min))
-        isearchp-reg-end                 (if (and (boundp 'isearchp-restrict-to-region-flag)
-                                                  isearchp-restrict-to-region-flag
-                                                  (use-region-p))
-                                             (region-end)
-                                           (point-max))
+        isearchp-reg-beg                 (save-restriction
+                                           (widen)
+                                           (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                    isearchp-restrict-to-region-flag
+                                                    (use-region-p))
+                                               (region-beginning)
+                                             nil))
+        isearchp-reg-end                 (save-restriction
+                                           (widen)
+                                           (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                    isearchp-restrict-to-region-flag
+                                                    (use-region-p))
+                                               (region-end)
+                                             nil))
         search-ring-yank-pointer         nil
         isearch-opened-overlays          ()
         isearch-input-method-function    input-method-function
@@ -2034,7 +2043,9 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                                           t))
             ;; Clear RETRY unless the search predicate says to skip this search hit.
             (when (or (not isearch-success)
-                      (if isearch-forward (> (point) isearchp-reg-end) (< (point) isearchp-reg-beg))
+                      (if isearch-forward
+                          (or (eobp)  (and isearchp-reg-end  (> (point) isearchp-reg-end)))
+                        (or (bobp)  (and isearchp-reg-beg  (< (point) isearchp-reg-beg))))
                       (= (match-beginning 0) (match-end 0))
                       (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
               (setq retry  nil)))
@@ -2080,22 +2091,26 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                     isearch-message           (mapconcat 'isearch-text-char-description isearch-string "")
                     isearch-case-fold-search  isearch-last-case-fold-search)
               (isearch-ring-adjust1 nil)) ; After taking the last element, adjust ring to previous one.
-          (or (and isearch-success      ; If already have what to search for, repeat it.
-                   (if isearch-forward (<= (point) isearchp-reg-end) (>= (point) isearchp-reg-beg)))
+          (or (and isearch-success ; If already have what to search for, repeat it.
+                   (if isearch-forward
+                       (or (not isearchp-reg-end)  (<= (point) isearchp-reg-end))
+                     (or (not isearchp-reg-beg)  (>= (point) isearchp-reg-beg))))
               (progn (setq isearch-wrapped  t) ; Set isearch-wrapped before calling isearch-wrap-function
                      (if isearch-wrap-function
                          (funcall isearch-wrap-function)
-                       (goto-char (if isearch-forward isearchp-reg-beg isearchp-reg-end))))))
+                       (goto-char (if isearch-forward
+                                      (or isearchp-reg-beg  (point-min))
+                                    (or isearchp-reg-end  (point-max))))))))
       (setq isearch-forward  (not isearch-forward) ; C-s in reverse or C-r in forward, change direction.
             isearch-success  t))
     (setq isearch-barrier  (point))     ; For subsequent \| if regexp.
     (if (equal isearch-string "")
         (setq isearch-success  t)
       (if (and isearch-success  (equal (point) isearch-other-end)  (not isearch-just-started))
-          ;; If repeating a search that found an empty string, ensure we advance.
+          ;; If repeating a search that found an empty string, ensure that we advance.
           (if (if isearch-forward
-                  (or (eobp)  (> (point) isearchp-reg-end))
-                (or (bobp)  (< (point) isearchp-reg-beg)))
+                  (or (eobp)  (and isearchp-reg-end  (> (point) isearchp-reg-end)))
+                (or (bobp)  (and isearchp-reg-beg  (< (point) isearchp-reg-beg))))
               ;; If there's nowhere to advance to, fail (and wrap next time).
               (progn (setq isearch-success  nil) (ding))
             (forward-char (if isearch-forward 1 -1))
@@ -2124,9 +2139,9 @@ Attempt to do the search exactly the way the pending Isearch would."
               (success                        nil)
               (bound
                (if isearch-lazy-highlight-forward
-                   (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end)
+                   (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
                         (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-start (window-end)))
-                 (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg)
+                 (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
                       (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-end (window-start))))))
           (while retry                  ; Use a loop, like in `isearch-search'.
             (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
@@ -2197,10 +2212,11 @@ Attempt to do the search exactly the way the pending Isearch would."
                       (setq isearch-lazy-highlight-wrapped  t)
                       (if isearch-lazy-highlight-forward
                           (progn (setq isearch-lazy-highlight-end  (window-start))
-                                 (goto-char (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg)
-                                                 (window-start))))
+                                 (goto-char
+                                  (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
+                                       (window-start))))
                         (setq isearch-lazy-highlight-start  (window-end))
-                        (goto-char (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end)
+                        (goto-char (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
                                         (window-end))))))))
               (unless nomore
                 (setq isearch-lazy-highlight-timer  (run-at-time lazy-highlight-interval nil
