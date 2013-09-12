@@ -3,25 +3,25 @@ The easiest way by far to generate a [[tags file]] recursively is with `ctags' w
 ==steps==
 
 You want to eventually run something like:
-
+{{{
 ctags --languages=lisp -e -R -f TAGS-lisps
-
-to see which files are picked up by that language do:
-
+}}}
+To see which files are picked up by that language do:
+{{{
 ctags --list-maps
-
-and you'll see that 'lisp' picks up *.el files.  Then in your .emacs file put:
-
+}}}
+You'll see that 'lisp' picks up *.el files.  Then in your .emacs file put:
+{{{
 (visit-tags-table "~/TAGS-lisps")
-
+}}}
 Better yet add a hook for lispy languages to load this tags file, when editing python or something else create a different TAGS file for that and selectively load that with another hook.
-
+{{{
 (mapc (lambda (mode)   
         (let ((hook (intern (concat (symbol-name mode)   
                                     "-mode-hook"))))   
           (visit-tags-table "~/TAGS-lisps")
       '(emacs-lisp lisp inferior-lisp slime slime-repl))
-
+}}}
 == ctags ==
 
  From: those who know me have no need of my name
