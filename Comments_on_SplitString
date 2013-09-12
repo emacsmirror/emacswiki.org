@@ -1,0 +1,5 @@
+Is there a way to easily apply string split within the buffer (transform the text)?
+- I am currently save the text to a file, and then run ruby script on it - I guess there might be better way to apply text function in emacs to selected regions? some ideas? Thanks
+
+-- ipstone 2013-09-12 18:18 UTC
+
