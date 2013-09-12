@@ -12,16 +12,16 @@ Here is an example.
 
  (setq gnus-posting-styles
        '((".*"
-	  (signature <nowiki>"http://www.geocities.com/kensanata/\nCoffee should be black as hell, strong as death and sweet as love.\n\t-- Turkish proverb"</nowiki>))
+	  (signature "http://www.geocities.com/kensanata/\nCoffee should be black as hell, strong as death and sweet as love.\n\t-- Turkish proverb"))
 	 ("de.rec.spiele.rpg.misc" 
-	  (signature <nowiki>"drsrm0.02 t0 ss12 d0 SfDSA Rwo A0 Dr1w1 T*on W3,4 a5 xsmr1 E7 Vr GzP,Fsp,o,h\nhttp://www.geocities.com/kensanata/rpg.html"</nowiki>))
+	  (signature "drsrm0.02 t0 ss12 d0 SfDSA Rwo A0 Dr1w1 T*on W3,4 a5 xsmr1 E7 Vr GzP,Fsp,o,h\nhttp://www.geocities.com/kensanata/rpg.html"))
 	 ("emacs"
-	  (signature (concat <nowiki>"http://www.geocities.com/kensanata/emacs.html\n\""</nowiki>
+	  (signature (concat "http://www.geocities.com/kensanata/emacs.html\n\""
 			     (vfaq-entry) "\"")))
 	 ("emacs.sources"
 	  ("Followup-To" "gnu.emacs.help"))
 	 ("atlantis$"
-	  (signature <nowiki>"http://www.geocities.com/kensanata/juenger.html\nhttp://home.pages.de/~GA/"</nowiki>)
+	  (signature "http://www.geocities.com/kensanata/juenger.html\nhttp://home.pages.de/~GA/")
 	  (name "Kensanata")
 	  (address "kensanata@yahoo.com"))
 	 ("mail.foo"
@@ -38,8 +38,8 @@ Here is an example.
 ----
 Here's something I just did with posting-styles.  Here at work we use the MDaemon mail server.  It is configured to allow relaying iff you use a valid "From:" address (note that IP address is not taken into account at all).  So, I have to set my "From:" address to be my work address.  However, I don't always want to use my work address.  So, I'm able to use posting-styles to handle conditional setting of "Reply-To:".  This basically says to default to using my own mail address if the 'm' key is hit from the *Group* buffer.  If I'm replying to an article, then use whatever was in the "To:" field of the article.  Also, if I'm sending a message from within my work account (always nnml backend), use my work address.  It's much simpler in elisp than english. --LathI
 
-<pre>
-(setq gnus-posting-styles
+
+ (setq gnus-posting-styles
       '((""
          ("Reply-To" (save-excursion
                        (or (and (get-buffer gnus-article-buffer)
@@ -48,6 +48,6 @@ Here's something I just did with posting-styles.  Here at work we use the MDaemo
 		            "mailbox@home"))))
         ("nnml.*"
           ("Reply-To" "mailbox@work"))))
-</pre>
+
 ----
 CategoryGnus
