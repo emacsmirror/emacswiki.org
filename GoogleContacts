@@ -5,5 +5,12 @@ A package to integrate Google Contacts into Emacs.
 See also:
 GoogleClient
 
+== Questions: ==
+
+Can this be made to work without entering a passphrase each time it is used?  
+After setting it up, it works fine for me for a little while, but then eventually asks for a 
+passphrase for PLSTORE (...oauth2.plstore).  I'm not even sure what the passphrase 
+is or should be.
+
 ----
 CategoryInterface
