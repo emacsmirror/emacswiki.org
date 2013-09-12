@@ -1,14 +1,14 @@
 = Contact Me =
 
-Website: http://www.mygooglest.com/fni/
+Website: http://www.pirilampo.org/
 
-Email: (concat "fni" at "mygooglest.com")
+Contact: http://www.pirilampo.org/contact/
 
 = Emacs =
 
-Customizing Emacs is difficult, but this task is needed... That's why I'm sharing my [http://www.mygooglest.com/fni/dot-emacs.html|Emacs config file], hoping it can help you getting what you want.
+Customizing Emacs is difficult, but this task is needed... That's why I'm sharing my [https://github.com/fniessen/emacs-leuven|Emacs config file], hoping it can help you getting what you want.
 
-My [http://www.mygooglest.com/fni/dot-emacs.html|Emacs init file] is really huge, but very well commented. You should find lots of interesting things in it. It runs on Windows and Unix platforms, and it works well with both GNU Emacs and XEmacs. I keep on updating it quite frequently, so visit that page often!
+My [https://github.com/fniessen/emacs-leuven|Emacs init file] is really huge, but very well commented. You should find lots of interesting things in it. It runs on Windows and Unix platforms, and it works well with both GNU Emacs and XEmacs. I keep on updating it quite frequently, so visit that page often!
 
 = Web =
 
