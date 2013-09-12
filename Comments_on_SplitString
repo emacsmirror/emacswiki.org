@@ -3,3 +3,12 @@ Is there a way to easily apply string split within the buffer (transform the tex
 
 -- ipstone 2013-09-12 18:18 UTC
 
+
+----
+
+I.P. Stone --- that name sure brings back memories. ;-)
+
+Sounds like you want to (a) select the text, (b) copy it to a string (e.g., `buffer-substring`), (c) act on that string (e.g. split it), and then (d) delete the original text and insert instead something you came up with using `split-string'.  That's straightforward to do.  If that's not what you're asking, try to specify it more exactly.
+
+-- DrewAdams 2013-09-12 19:42 UTC
+
