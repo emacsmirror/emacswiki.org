@@ -191,6 +191,3 @@ This list is mostly for pages that are no longer relevant because Emacs comes wi
 
 * FakeClosures -- How to fake a closure in Emacs Lisp (Emacs introduced LexicalBinding with version 24)
 
-== See Also ==
-
-* CategoryCode
