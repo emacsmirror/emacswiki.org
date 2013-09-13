@@ -17,7 +17,7 @@ There are  multiple options for checking Javascript syntax that can be used with
 
     @ECHO OFF
     node "%APPDATA%"\npm\node_modules\jslint\bin\jslint.js >"%TEMP%"\jslint.out 2>&1 %*
-    type "%TEMP%"\jslint.out
+    TYPE "%TEMP%"\jslint.out
 
 3. Test JSLint <em>(on Windows be sure to call the wrapper):</em>
 
