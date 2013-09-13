@@ -11,7 +11,7 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 : On Windows there is
    [http://stackoverflow.com/questions/18748164/process-exit0-output-disappears
-   an issue] with calling <code>jslint</code> from EMACS 23. Thus, create a
+   an issue] with executing Node.js apps from EMACS 23. Thus, create a
    wrapper <code>~/.emacs.d/jslint.bat</code> <em>("jslint" needs to be part of the file
    name!):</em>
 
