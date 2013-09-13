@@ -164,12 +164,6 @@ You can also show code snippets by indenting them (space chars before each line)
 
 -- DrewAdams 2013-05-31 02:50 UTC
 
-
-== Other stuff ==
-
-...
-
-
 ----
 
 == How to continue numeric list? ==
@@ -177,9 +171,9 @@ You can also show code snippets by indenting them (space chars before each line)
 Input:
 
     # list item 1
-
+    
     : paragraph which is part of list item 1
-
+    
     # list item 2
 
 Output:
@@ -192,3 +186,8 @@ Output:
 
 -- FelixKlee 2013-09-13 13:17 UTC
 
+----
+
+== Other stuff ==
+
+...
