@@ -34,6 +34,8 @@
 
 : That's all.
 
+
+[:KeyBindings]
 ==Note==
 
 * You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over too few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.  
@@ -204,6 +206,8 @@ So sorry.
 
    -- AndyStewart
 
+
+[:MoreKeyBindings]
 [new]
 Hi! it seems pretty cool. I used to run M-x shell in my emacs and play a lot of my daily job in it. But I found that in the terminal mode I just not able to send a Ctrl-r charactor to my shell. You know it used to invoke a (reverse-i-search) in bash command history. Anytime when I type C-r in the terminal it just invoke (isearch-backward) in Emacs, even when I type C-q C-r. I can unset the default key binding on C-r in Emacs, but it seems not work for terminal mode. Then I made a term-mode-hook and it really runs, but the key binding of C-r is still there. It's quite strange.
 
