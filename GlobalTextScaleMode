@@ -1,7 +1,13 @@
 [[Gyom]] I used  to  have  M-0, M-+  and  M-- bound  to
 ordinary 'text-scale-adjust'  commands,   but  I  found  it  quite
-annoying  to  have  to  zoom  in  *each*  buffer  separately.  This
-globalized-mode hack is not very elegant, but it works fo me.
+annoying  to  have  to  zoom  in  *each*  buffer  separately.
+This globalized-mode hack is not very elegant, but it works fo me.
+
+
+'''See Also:''' [[SetFonts#ChangingFontSize]] for more information and solutions.
+
+
+== Global Text Scale Mode ==
 
 Note  that using,  at the  same  time, commands  from the  original
 text-scale-mode  and  from  this  globalized  mode  yields  strange
@@ -64,3 +70,12 @@ I hope you find this helpful. --- [[Bernard Hurley]]
     (dolist (buffer (buffer-list))
       (with-current-buffer buffer
         ad-do-it)))
+
+
+----
+[[SetFonts#ChangingFontSize]]
+
+CategoryDisplay
+
+CategoryFaces
+
