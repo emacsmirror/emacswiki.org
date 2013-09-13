@@ -2,7 +2,7 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 == With JSLint on Rhino ==
 
-First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [https://developer.mozilla.org/en-US/docs/Rhino].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
+First, you will need to install Rhino, and download jslint.js for Rhino [https://developer.mozilla.org/en-US/docs/Rhino].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
 
 Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
 
