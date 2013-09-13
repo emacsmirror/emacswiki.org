@@ -125,7 +125,6 @@ Programming Emacs in Lisp and C Source Code:
 
 * [[CategoryCode|Code]] -- EmacsLisp coding tips
 * [[CategoryDebug|Debug]] -- debugging Emacs, debugging with Emacs, debugging EmacsLisp
-* [[CategoryDev|Dev]] -- general development of Emacs
 * [[CategoryPatches|Patches]] -- patches to Emacs, mostly for C-level
 extensions
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
