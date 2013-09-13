@@ -169,3 +169,26 @@ You can also show code snippets by indenting them (space chars before each line)
 
 ...
 
+
+----
+
+== How to continue numeric list? ==
+
+Input:
+
+    # list item 1
+
+    : paragraph which is part of list item 1
+
+    # list item 2
+
+Output:
+
+# list item 1
+
+: paragraph which is part of list item 1
+
+# list item 2
+
+-- FelixKlee 2013-09-13 13:17 UTC
+
