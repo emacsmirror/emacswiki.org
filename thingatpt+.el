@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 17:05:03 2013 (-0700)
+;; Last-Updated: Fri Sep 13 11:03:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2105
+;;     Update #: 2109
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -234,6 +234,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/13 dadams
+;;     tap-thing/form-nearest-point-with-bounds:
+;;       Do not skip looping over chars in same line when eobp.
 ;; 2012/11/10 dadams
 ;;     Added: tap(-bounds-of)-color-at-point, tap-color-nearest-point(-with-bounds).
 ;;     tap-word-nearest-point: Corrected doc string: returns nil if none found.
@@ -669,7 +672,7 @@ Other args are as for `tap-thing-nearest-point-with-bounds'."
               (error nil)))
           ;; Do not try to go beyond buffer or field limit.
           (unless (or (and bobp  (> (* updown ind2) 0)) ; But do it for ind2=0.
-                      (and eobp  (< updown 0)))
+                      nil)              ; $$$$$$ (and eobp  (< updown 0))) ; No, loop OK here.
             (setq f-or-t+bds  (prog1 (if predicate
                                          (funcall fn thing predicate syntax-table)
                                        (funcall fn thing syntax-table))
