@@ -5,21 +5,21 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 1. Install [http://nodejs.org/ Node.js].
 
-2. From the command line of your OS, install the jslint package for Node.js:
+2. From the command line of your OS, install JSLint with <em>npm,</em> the package manager for Node.js:
 
     $ npm -g install jslint
 
 : On Windows there is
    [http://stackoverflow.com/questions/18748164/process-exit0-output-disappears
    an issue] with calling <code>jslint</code> from EMACS 23. Thus, create a
-   wrapper <code>jslint.bat</code> <em>("jslint" needs to be part of the file
+   wrapper <code>~/.emacs.d/jslint.bat</code> <em>("jslint" needs to be part of the file
    name!):</em>
 
     @ECHO OFF
     node "%APPDATA%"\npm\node_modules\jslint\bin\jslint.js >"%TEMP%"\jslint.out 2>&1 %*
     TYPE "%TEMP%"\jslint.out
 
-3. Test JSLint <em>(on Windows be sure to call the wrapper):</em>
+3. Test JSLint <em>(on Windows use <code>~/.emacs.d/jslint.bat</code>):</em>
 
     $ jslint
     No files specified.
@@ -34,7 +34,7 @@ There are  multiple options for checking Javascript syntax that can be used with
     (require 'flymake-jslint)
     (add-hook 'js-mode-hook 'flymake-jslint-load)
 
-6. Optionally customize <code>flymake-jslint-command</code> and other flymake-jslint options.
+6. Customize flymake-jslint options. On Windows set <code>flymake-jslint-command</code> to: <code>~/.emacs.d/jslint.bat</code>
 
 7. Restart Emacs to make sure that everything loads fine.
 
