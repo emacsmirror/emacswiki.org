@@ -76,11 +76,6 @@ and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
 -Dave Dreisigmeyer
 
 
-== With JSLint server on Node.js (lintnode) ==
-
-If you run the above in a persistent server on v8 instead of invoking rhino every time, it goes about twice as fast.  Server code with instructions is available at http://github.com/keturn/lintnode
-
-
 == With JSLint on Rhino ==
 
 First, you will need to install Rhino, and download jslint.js for Rhino [https://developer.mozilla.org/en-US/docs/Rhino].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
@@ -134,6 +129,11 @@ You can control options of JSLint by using special comments in your source code 
 [new]
 
 Seems like you really want <code>(flymake-mode 1)</code> in that hook, not <code>(flymake-mode t)</code>.  According to the documentation, to turn on the minor mode explicitly requires that the arg be *positive*, not non-nil.  --DinoChiesa
+
+
+== With JSLint server on Node.js (lintnode) ==
+
+If you run the above in a persistent server on v8 instead of invoking rhino every time, it goes about twice as fast.  Server code with instructions is available at http://github.com/keturn/lintnode
 
 
 == With SpiderMonkey ==
