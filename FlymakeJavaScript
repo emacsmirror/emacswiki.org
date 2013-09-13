@@ -40,6 +40,8 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 8. Test by opening a flawed JavaScript file.
 
+[[image:JslintOnWindowsScreenshot]]
+
 === Troubleshooting ===
 
 * Customize <code>flymake-log-level</code> and inspect the
