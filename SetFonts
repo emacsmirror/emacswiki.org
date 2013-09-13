@@ -81,7 +81,7 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 [:ZoomFrame]
 === Resize (Zoom) Frame Font Incrementally ===
 
-You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it incrementally -- ''zooming'' the text in or out.  
+You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it ''incrementally'' -- ''zooming'' the text in or out.  
 
 * '''`zoom-in/out'''', '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- see [[#zoom-in|above]] for the descriptions.  For frame zooming these zoom all windows of the frame, and they do not affect the display in another frame of a buffer that is shown in the frame.
 
@@ -92,6 +92,8 @@ You can use any of the following to increase or decrease the font size for the c
 * '''`doremi-frame-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change frame font size incrementally using the arrow keys or the mouse wheel.
 
 * '''`enlarge-font'''' (in <tt>[[frame-cmds.el]]</tt>) -- Change font size by a given increment (prefix arg).
+
+* '''`zoom-all-frames-in'''', '''`zoom-all-frames-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Incrementally zoom all frames at once, by changing the size of [[face]] `default'.
 
 * CycleFontSizes -- Cycle a sequence of font sizes.
 
