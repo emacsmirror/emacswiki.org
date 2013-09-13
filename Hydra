@@ -1,1 +1,3 @@
 View the Continuous Integration status of Emacs at http://hydra.nixos.org/jobset/gnu/emacs-trunk
+
+See Glenn Morris's description of the Hydra interface at http://lists.gnu.org/archive/html/emacs-devel/2013-09/msg00205.html
