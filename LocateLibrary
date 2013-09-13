@@ -1,3 +1,4 @@
+[[de:Polski]]
 On 2006-06-29, PaulLussier asked the EmacsChannel which situations called for featurep and which for locate-library.  TrentBuck provided the following typical "use cases":
 
 == Writing functions ==
