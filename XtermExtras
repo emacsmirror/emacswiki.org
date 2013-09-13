@@ -9,3 +9,9 @@ xterm-extras.el is a package to allow you to use all sorts of modified function 
 Package is unusable from the above web-site. Two necessary links are broken and xterm-extras.el is garbled.
 
 --ColinBaxter
+
+[new]
+
+The file is not garbled, it is just gzipped but does not have proper extension. Download it, rename to xterm-extras.el.gz, then gunzip. The content of the two files - Xresources  and .inputrc is in the comments section in the beginning of xterm-extras.el so nothing is lost.
+
+--AlexVorobiev
