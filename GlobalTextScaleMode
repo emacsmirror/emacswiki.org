@@ -57,4 +57,10 @@ file.  I always think of that first because I'm not much into using
 customization.  However I found that bug #1785 scuppers that too!
 
 I hope you find this helpful. --- [[Bernard Hurley]]
-  
+
+= And another way to get the same effect =  
+
+  (defadvice text-scale-increase (around all-buffers (arg) activate)
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        ad-do-it)))
