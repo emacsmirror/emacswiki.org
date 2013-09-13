@@ -34,7 +34,7 @@ There are  multiple options for checking Javascript syntax that can be used with
     (require 'flymake-jslint)
     (add-hook 'js-mode-hook 'flymake-jslint-load)
 
-6. Optionally customize <code>flymake-jslint-command</code>.
+6. Optionally customize <code>flymake-jslint-command</code> and other flymake-jslint options.
 
 7. Restart Emacs to make sure that everything loads fine.
 
@@ -49,6 +49,8 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 * Make sure that the command configured in <code>flymake-jslint-command</code>
   runs in EShell.
+
+* Check <code>flymake-jslint-args</code>.
 
 
 == With JSHint on Node.js ==
