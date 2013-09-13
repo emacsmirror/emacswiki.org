@@ -7,7 +7,7 @@
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-05 01:38:24
 ;; Version: 0.2
-;; Last-Updated: 2013-06-05 01:38:24
+;; Last-Updated: 2013-09-14 00:28:24
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/jb-misc-macros
 ;; Keywords: lisp
@@ -206,7 +206,8 @@ The macro arguments will be evaluated once before expanding the macro."
                                                         (while (member (char-to-string nextkey) uniqkeys)
                                                           (setq nextkey (1+ nextkey)))
                                                         (char-to-string nextkey))))
-                                            (nconc origkeys (make-list (- (length ,prompts2) (length origkeys)) nil)))))
+                                            (nconc origkeys
+                                                   (make-list (max 0 (- (length ,prompts2) (length origkeys))) nil)))))
                         (,keystrs (mapcar 'key-description ,newkeys))
                         (,maxlen (loop for keystr in ,keystrs maximize (length keystr)))
                         (,newprompts (mapcar* (lambda (k p)
