@@ -1,5 +1,82 @@
 There are  multiple options for checking Javascript syntax that can be used within flymake.  The javascript engines %%SpiderMonkey%% and Rhino can both check Javascript syntax.  Alternatively, you can use Douglas Crockford's rather handy [http://www.jslint.com JSLint], which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is [http://jshint.com/ JSHint], which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original.  The following describe some of these options.  
 
+
+== With JSLint on Node.js ==
+
+1. Install [http://nodejs.org/ Node.js].
+
+2. From the command line of your OS, install the jslint package for Node.js:
+
+    $ npm -g install jslint
+
+: On Windows there is
+   [http://stackoverflow.com/questions/18748164/process-exit0-output-disappears
+   an issue] with calling <code>jslint</code> from EMACS 23. Thus, create a
+   wrapper <code>jslint.bat</code> <em>("jslint" needs to be part of the file
+   name!):</em>
+
+    @ECHO OFF
+    node "%APPDATA%"\npm\node_modules\jslint\bin\jslint.js >"%TEMP%"\jslint.out 2>&1 %*
+    type "%TEMP%"\jslint.out
+
+3. Test JSLint <em>(on Windows be sure to call the wrapper):</em>
+
+    $ jslint
+    No files specified.
+    [...]
+
+: Testing from Emacs' built in shell EShell is recommended: CategoryEshell
+
+4. Install [https://github.com/purcell/flymake-jslint flymake-jslint] and its dependency [https://github.com/purcell/flymake-easy flymake-easy].
+
+5. Add to <code>~/.emacs</code>:
+
+    (require 'flymake-jslint)
+    (add-hook 'js-mode-hook 'flymake-jslint-load)
+
+6. Optionally customize <code>flymake-jslint-command</code>.
+
+7. Restart Emacs to make sure that everything loads fine.
+
+8. Test by opening a flawed JavaScript file.
+
+=== Troubleshooting ===
+
+* Customize <code>flymake-log-level</code> and inspect the
+  <code>*Messages*</code> buffer.
+
+* Make sure that the command configured in <code>flymake-jslint-command</code>
+  runs in EShell.
+
+
+== With JSHint on Node.js ==
+
+=== Variant 1 ===
+
+I had trouble getting jshint-mode working properly, so I created a simple way to use JSHint from the command-line: [https://github.com/jegbjerg/flymake-node-jshint flymake-node-jshint].
+
+-- Henrik Jegbjerg Hansen <hjh@freecode.dk>
+
+=== Variant 2 ===
+
+You can do 
+<pre>
+$ npm -g install jshint
+</pre>
+and then install flymake-jshint using marmalade (http://marmalade-repo.org/).  You may need to do the following in /usr/local/bin:
+<pre>
+ln -s /usr/local/Cellar/node/0.6.6/lib/node_modules/csslint/cli.js
+</pre>
+and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
+
+-Dave Dreisigmeyer
+
+
+== With JSLint server on Node.js (lintnode) ==
+
+If you run the above in a persistent server on v8 instead of invoking rhino every time, it goes about twice as fast.  Server code with instructions is available at http://github.com/keturn/lintnode
+
+
 == With JSLint on Rhino ==
 
 First, you will need to install Rhino, and download jslint.js for Rhino [https://developer.mozilla.org/en-US/docs/Rhino].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
@@ -54,61 +131,6 @@ You can control options of JSLint by using special comments in your source code 
 
 Seems like you really want <code>(flymake-mode 1)</code> in that hook, not <code>(flymake-mode t)</code>.  According to the documentation, to turn on the minor mode explicitly requires that the arg be *positive*, not non-nil.  --DinoChiesa
 
-== With jslint command line from node.js ==
-
-Install jslint from node
-
-<pre>
-$ npm -g install jslint
-</pre>
-
-Now you should have a jslint command on your path, you can set it up in a similar way as the Rhino example above or put this in your .emacs
-
-<pre>
-(when (load "flymake" t)
-  (defun flymake-jslint-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-		       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "jslint" (list local-file))))
-
-  (setq flymake-err-line-patterns 
-	(cons '("^  [[:digit:]]+ \\([[:digit:]]+\\),\\([[:digit:]]+\\): \\(.+\\)$"  
-		nil 1 2 3)
-	      flymake-err-line-patterns))
-  
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.js\\'" flymake-jslint-init)))
-</pre>
-
-[new]
-Latest versions of node-jslint (as of 10-dec-2011) have changed the error reporting format, breaking the pattern regexp above and, even worse, reporting errors on two lines. See http://lapin-bleu.net/riviera/?p=191
-
-[new]
-You can do 
-<pre>
-$ npm -g install jshint
-</pre>
-and then install flymake-jshint using marmalade (http://marmalade-repo.org/).  You may need to do the following in /usr/local/bin:
-<pre>
-ln -s /usr/local/Cellar/node/0.6.6/lib/node_modules/csslint/cli.js
-</pre>
-and then put (add-to-list 'exec-path "/usr/local/bin") somwhere in your .emacs.
-
--Dave Dreisigmeyer
-
-== With JSHint command-line from Node.js ==
-
-I had trouble getting jshint-mode working properly, so I created a simple way to use JSHint from the command-line: [https://github.com/jegbjerg/flymake-node-jshint flymake-node-jshint].
-
--- Henrik Jegbjerg Hansen <hjh@freecode.dk>
-
-
-== With JSLint server on node.js (lintnode) ==
-
-If you run the above in a persistent server on v8 instead of invoking rhino every time, it goes about twice as fast.  Server code with instructions is available at http://github.com/keturn/lintnode
 
 == With SpiderMonkey ==
 
