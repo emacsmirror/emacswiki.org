@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-05 01:38:24
-;; Version: 0.2
+;; Version: 0.4
 ;; Last-Updated: 2013-09-14 00:28:24
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/jb-misc-macros
@@ -150,7 +150,7 @@ Note: you can set INITFORM to nil if you only want to evaluate a single form rep
     (let ((retval (gensym)))
       `(let* (,@bindings ,retval)
          (or (and ,testfunc
-                  (or (and (funcall ,testfunc ,initform) ,initform)
+                  (or (and ,initform (funcall ,testfunc ,initform) ,initform)
                       (while (not (funcall ,testfunc (setq ,retval ,nextform))))
                       ,retval))
              ,initform
