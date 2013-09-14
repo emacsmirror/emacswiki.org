@@ -49,6 +49,7 @@ Some complete [[InitFile]]s:
 * [https://mtpforge.melting-pot.org/projects/dotemacs Yann Hodique's config] is huge, and split into many files. Tested (and used) only with GNU Emacs (CVS version) under GNU/Linux
 * [http://ourcomments.org/Emacs/DL/elisp/dot-emacs/ Here] is a .emacs structure that helps you catch errors during startup of Emacs.
 * [http://github.com/mina86/dot-files/tree/master/dot-emacs mina86's .emacs] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions.
+* [https://github.com/dertuxmalwieder/My-Emacs-config/ dertuxmalwieder's config] is targeted at Gnus users and web developers (work in progress).
 * ChrisForno's [http://jekor.com/emacs/dot-emacs.pdf .emacs] is a literate program written in Noweb.
 * [http://code.google.com/p/dea/ DEA] DEA stands for "Dot emacs of ahei", its target is provide powerful emacs profile for emacser. 
 * [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file].
