@@ -1,4 +1,5 @@
 ;;; smart-compile.el --- an interface to `compile'
+;; Version: 20120710.1600
 
 ;; Copyright (C) 1998-2012  by Seiji Zenitani
 
@@ -127,9 +128,11 @@ which is defined in `smart-compile-alist'."
   (let ((name (buffer-file-name))
         (not-yet t))
     
-    (if (not name)(error "cannot get filename."))
-;;     (message (number-to-string arg))
+    (if (not name)
+        (error "cannot get filename."))
 
+    (save-buffer)
+    
     (cond
 
      ;; local command
