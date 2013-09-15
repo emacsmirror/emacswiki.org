@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 11 14:21:18 2013 (-0700)
+;; Last-Updated: Sun Sep 15 11:16:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3251
+;;     Update #: 3255
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -468,9 +468,10 @@
 ;;  ** Interference by Font Lock **
 ;;
 ;;  If you use Emacs 22 or later, then you can use this library in
-;;  conjunction with library `font-lock+.el'.  That will prevent
-;;  font-locking from removing any highlighting face properties that
-;;  you apply using the commands defined here.
+;;  conjunction with library `font-lock+.el' (it is loaded
+;;  automatically, if available).  That prevents font-locking from
+;;  removing any highlighting face properties that you apply using the
+;;  commands defined here.
 ;;
 ;;  Otherwise, when `hlt-use-overlays-flag' is nil, font-lock
 ;;  highlighting will interfere with the highlighting of this library.
@@ -550,6 +551,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/15 dadams
+;;     Soft-require font-lock+.el (Emacs 22+).
 ;; 2013/07/24 dadams
 ;;     Added: hlt-nonempty-region-p.
 ;;     Renamed: Paste Text Properties to * to Region, except in menu-bar-edit-region-menu.
@@ -764,6 +767,7 @@
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; (no error if not found):
                                                           ;; read-face-name
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
+(when (> emacs-major-version 21) (require 'font-lock+ nil t)) ;; (no error if not found)
 ;; (require 'icicles nil t)   ;; (no error if not found): icicle-define-command,
                               ;; icicle-face-name-history, icicle-make-face-candidate,
                               ;; icicle-read-string-completing, icicle-remove-if,
