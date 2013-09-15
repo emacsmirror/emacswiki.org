@@ -37,9 +37,21 @@ Seriously. The compilation of meta-data should be programmatic, not manual. That
 
 That doesn't mean to say that pages tagged /foo/ should remain as /foo/ - perhaps they should be tagged as /baz/. But as it stands now, it's so bloody difficult to create a new tag that there's very little chance for such a thing to gain traction.
 
-It's just too much work to research the available tags, select the right one, add it to the page, and then add a backlink to the tags index page.
+It's just too much work to research the available tags, select the right one, add it to the page, and then add a backlink to the tags index page.  -- MichaelPaulukonis
 
--- MichaelPaulukonis
+
+[new:DrewAdams:2013-09-15 23:22 UTC]
+I sympathize with much that you say.  However, the categories on this wiki are *not* tags, AFAIU.  Tags are categories of a sort.  But categories, in the sense used here at least, are not tags.
+
+Categories here are intended to be relatively well defined and more or less exclusive.  Not exclusive in their application --- a given page can be in multiple categories --- but exclusive in terms of their meanings.  In particular, the wiki categories serve to provide a TOC or index on the SiteMap.
+
+Tags are freely creatable and applicable - they are ad hoc.  They serve as shortcuts for search.  We do not have explicit tags on this wiki, but search should pick up relevant terms.  If it does not then that could be seen as a failing in search.
+
+We could perhaps consider adding a separate tagging facility; dunno.  (I'm no expert on this, FWIW.) -- DrewAdams
+
+
+
+
 
 === CategoryBatchMode ===
 
