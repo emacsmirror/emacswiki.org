@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  1 08:16:33 2013 (-0700)
+;; Last-Updated: Sun Sep 15 09:26:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1227
+;;     Update #: 1231
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -20,12 +20,12 @@
 ;;   `apropos', `apropos+', `avoid', `doremi', `doremi-cmd',
 ;;   `doremi-frm', `easymenu', `eyedropper', `faces', `faces+',
 ;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `hexrgb',
-;;   `highlight', `info', `info+', `isearch+', `iso-transl',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
-;;   `mouse+', `mwheel', `naked', `pp', `pp+', `replace+', `ring',
-;;   `second-sel', `simple+', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `highlight', `info', `info+', `isearch+', `isearch-prop',
+;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
+;;   `ring', `second-sel', `simple+', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/15 dadams
+;;     Do not bind help-on-click/key here.  Do not require help+(20).el for that.
 ;; 2013/09/01 dadams
 ;;     Added remapping of undo to undo-repeat.
 ;; 2013/08/23 dadams
@@ -343,10 +345,10 @@
                             ;; doremi-color-themes+,
 
 (when (< emacs-major-version 21)
-  (require 'help+20 nil t) ;; (no error if not found): help-on-click/key
+  ;; (require 'help+20 nil t) ;; (no error if not found): help-on-click/key
   (require 'unaccent nil t)) ;; (no error if not found): unaccent-region, unaccent-word
-(when (> emacs-major-version 21)
-  (require 'help+ nil t)) ;; (no error if not found): help-on-click/key
+;;; (when (> emacs-major-version 21)
+;;;   (require 'help+ nil t)) ;; (no error if not found): help-on-click/key
 (require 'replace+ nil t)   ;; (no error if not found): query-replace-w-options
 
 ;; Quiet the byte compiler.
@@ -689,11 +691,11 @@
 (find-function-setup-keys)  ;; C-x F, C-x 4 F, C-x 5 F, C-x K, C-x V, C-x 4 V, C-x 5 V
 
 ;; [f1] function key.
-(eval-after-load "help+"
-  ;; Standard binding is `help-command'
-  '(global-set-key [f1] 'help-on-click/key))                                   ; `f1'
-(eval-after-load "help+20"
-  '(global-set-key [f1] 'help-on-click/key))
+;;; (eval-after-load "help+"
+;;;   ;; Standard binding is `help-command'
+;;;   '(global-set-key [f1] 'help-on-click/key))                                   ; `f1'
+;;; (eval-after-load "help+20"
+;;;   '(global-set-key [f1] 'help-on-click/key))
 
 (eval-after-load "misc-cmds"
   '(global-set-key [C-S-f1] 'region-to-buffer))                                ; `C-S-f1'
