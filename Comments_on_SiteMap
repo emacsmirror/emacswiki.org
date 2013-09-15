@@ -27,6 +27,19 @@ Yes, it says that about editing SiteMap, but it says nothing about proposing new
 Seems like there should be some discussion, or at least opportunity for discussion, before creating a new category page (or deleting an existing one).  Category pages are at the meta level, and they determine the shape/organization of the wiki in a stronger way than do non-category pages. -- DrewAdams
 
 
+[new]
+Categories should be meta-data, and meta-data should be able to be created willy-nilly. Much like any other content in a **wiki**.
+It's about being fast, and then cohering things later. 
+
+I do find that categories, here, are not so useful, because they are less meta-data as opposed to hand-crafted links and index pages. If only somebody would do such a thing for the World Wide Web, it is sure to be useful and never go out of fashion, because the idea of /automating/ such a practice [e.g., automatically compiling a list of all pages tagged with the category /foo/] is surely an impossible task and were it otherwise would undoubtedly lack the fine craftsmanship that a trained keypunch operator brings to such a task.
+
+Seriously. The compilation of meta-data should be programmatic, not manual. That's not the art - the art is in crafting the content.
+
+That doesn't mean to say that pages tagged /foo/ should remain as /foo/ - perhaps they should be tagged as /baz/. But as it stands now, it's so bloody difficult to create a new tag that there's very little chance for such a thing to gain traction.
+
+It's just too much work to research the available tags, select the right one, add it to the page, and then add a backlink to the tags index page.
+
+-- MichaelPaulukonis
 
 === CategoryBatchMode ===
 
