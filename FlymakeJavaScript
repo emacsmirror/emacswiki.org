@@ -1,9 +1,20 @@
 There are  multiple options for checking Javascript syntax that can be used within flymake.  The javascript engines %%SpiderMonkey%% and Rhino can both check Javascript syntax.  Alternatively, you can use Douglas Crockford's rather handy [http://www.jslint.com JSLint], which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is [http://jshint.com/ JSHint], which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original.  The following describe some of these options.  
 
 
+== With Flycheck ==
+
+[[Flycheck]] is a modern alternative to flymake.
+
+
 == With JSLint on Node.js ==
 
-1. Install [http://nodejs.org/ Node.js].
+=== Important ===
+
+As of September 2013, the jslint package available via npm (see below) is based on a seven months old JSLint, which is outdated. This may have changed by now. Be sure to double check.
+
+=== Steps ===
+
+1. Install [[http://nodejs.org/ Node.js]].
 
 2. From the command line of your OS, install JSLint with <em>npm,</em> the package manager for Node.js:
 
