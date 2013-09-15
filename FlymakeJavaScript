@@ -3,7 +3,7 @@ There are  multiple options for checking Javascript syntax that can be used with
 
 == With Flycheck ==
 
-[[Flycheck]] is a modern alternative to flymake.
+See: [[Flycheck]] (a modern alternative to flymake)
 
 
 == With JSLint on Node.js ==
