@@ -192,3 +192,21 @@ You cannot, unfortunately.
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-09-13 21:50 UTC
 
+
+----
+
+Without much thinking, a possible solution is giving authors a way to specify the number with which a list starts, like so:
+<pre>
+# list item 1
+    
+    : paragraph which is part of list item 1
+    
+#[2] list item 2
+
+# list item 3
+</pre>
+
+Or you could add a special continuation parameter, something like <code>#[cont]</code>. Just an idea. In the meantime I avoid ordered lists.
+
+-- FelixKlee 2013-09-15 14:33 UTC
+
