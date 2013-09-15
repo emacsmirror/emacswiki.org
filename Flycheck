@@ -1,1 +1,70 @@
 Flycheck is a modern alternative to Flymake that supports many programming languages out of the box. It is available [https://github.com/flycheck/flycheck on GitHub].
+
+== JSLint with Flycheck ==
+
+As of mid September 2013, Flycheck has no built in support for JSLint, but it is easy to add.
+
+1. Install [http://nodejs.org/ Node.js].
+
+2. Install [https://github.com/FND/jslint-reporter jslint-reporter] into: <code>~/.emacs.d/jslint-reporter</code>
+
+3. Download JSLint (or JSHint, using <code>--jshint</code>):
+
+<pre>
+$ cd ~/.emacs.d/jslint-reporter
+$ node wrapper.js --upgrade
+</pre>
+
+4. Create an executable script:
+
+* UNIX, <code>~/.emacs.d/jslint-reporter.sh</code>:
+
+<pre>
+#!/bin/sh
+node "`dirname \"$0\"`/jslint-reporter/wrapper.js" "$@"
+</pre>
+
+* Windows, <code>~/.emacs.d/jslint-reporter.js</code> (temp file is a [http://stackoverflow.com/questions/18748164/process-exit0-output-disappears workaround]):
+
+<pre>
+@ECHO OFF
+node c:\Temp\jslint-reporter-master\jslint-reporter-master\wrapper.js >"%TEMP%"\jslint-reporter.out 2>&1 %*
+TYPE "%TEMP%"\jslint-reporter.out
+</pre>
+
+5. Create a test file <code>test.js</code>:
+
+<pre>
+// Test
+console.log("Hello world!");
+</pre>
+
+6. From EShell (CategoryEshell), test jslint-reporter <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
+
+<pre>
+$ ~/.emacs.d/jslint-reporter.bat test.js
+test.js:2:1:'console' was used before it was defined.
+</pre>
+
+7. Install [https://github.com/flycheck/flycheck Flycheck].
+
+8. Add to <code>~/.emacs</code> <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
+
+<pre>
+(require 'flycheck)
+(flycheck-define-checker javascript-jslint-reporter
+  "A JavaScript syntax and style checker based on using JSLint Reporter.
+
+See URL `https://github.com/FND/jslint-reporter'."
+  :command ("~/.emacs.d/jslint-reporter.sh" source)
+  :error-patterns
+  ((error line-start (1+ nonl) ":" line ":" column ":" (message) line-end))
+  :modes (js-mode js2-mode js3-mode))
+(add-hook 'js-mode-hook (lambda ()
+                          (flycheck-select-checker 'javascript-jslint-reporter)
+                          (flycheck-mode)))
+</pre>
+
+9. Restart Emacs to make sure that everything loads fine.
+
+10. Test by opening above <code>test.js</code>.
