@@ -2,7 +2,7 @@ Flycheck is a modern alternative to Flymake that supports many programming langu
 
 == JSLint with Flycheck ==
 
-As of mid September 2013, Flycheck has no built in support for JSLint, but it is easy to add.
+As of mid September 2013, Flycheck has no built in support for JSLint. Fortunately support is straight forward to add.
 
 1. Install [http://nodejs.org/ Node.js].
 
@@ -39,7 +39,7 @@ TYPE "%TEMP%"\jslint-reporter.out
 console.log("Hello world!");
 </pre>
 
-6. From EShell (CategoryEshell), test jslint-reporter <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
+6. From EShell (CategoryEshell) test jslint-reporter <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
 
 <pre>
 $ ~/.emacs.d/jslint-reporter.bat test.js
@@ -65,6 +65,8 @@ See URL `https://github.com/FND/jslint-reporter'."
                           (flycheck-mode)))
 </pre>
 
-9. Restart Emacs to make sure that everything loads fine.
+9. Restart Emacs to make sure everything loads fine.
 
 10. Test by opening above <code>test.js</code>.
+
+[[image:JslintFlycheckOnWindowsScreenshot]]
