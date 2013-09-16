@@ -49,9 +49,14 @@ Tags are freely creatable and applicable - they are ad hoc.  They serve as short
 
 We could perhaps consider adding a separate tagging facility; dunno.  (I'm no expert on this, FWIW.) -- DrewAdams
 
+[new:AlexSchroeder:2013-09-16 07:21 UTC]
+The reason I started using categories the way they are is that I find it extremely hard to navigate hypertext without a hand-crafted structure.
+The original wikis relied on full-text search to navigate categories, and it worked, more or less.
+It was hard to see which categories existed. It was slow to use. When presented with a list of page names, it was hard to figure out which ones were relevant to my interest.
+Taking a cue from Emacs' Info structure, I decided that having a hand-crafted structure where each page of the menu is annotated is much easier to use.
 
-
-
+Writers can still write pages and create categories willy-nilly. And there will be diligent peer reviewers like Drew fixing the stuff later.
+I still want to encourage writers to spend the time and do it right, however.
 
 === CategoryBatchMode ===
 
