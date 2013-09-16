@@ -36,7 +36,7 @@ parameter) is case sensitive.
     (require 'easymenu)
     (easy-menu-add-item nil '("tools") ["IRC" erc-select t])
 
-One way to determine ##PATH## is to use C-h C-k and click on a menu item close to
+One way to determine ##PATH## is to use C-h k and click on a menu item close to
 where you want your entry to appear.  The `*Help*' buffer then says something like:
 
     <menu-bar> <tools> <games> <tetris> runs the command tetris
