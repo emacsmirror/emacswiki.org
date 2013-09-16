@@ -1,4 +1,4 @@
-[http://ebib.sourceforge.net/|Ebib] is a major mode for managing BibTeX databases inside Emacs. It is available as a package from the [http://melpa.milkbox.net/|Melpa package archive].
+[http://ebib.sourceforge.net/|Ebib] is a package for managing BibTeX databases inside Emacs. It is available as a package from the [http://melpa.milkbox.net/|Melpa package archive].
 
 ==== Ebib and OrgMode ====
 The following emacs lisp snippet enables the user to create a new link type in OrgMode buffers. With this code evaluated a user can enter [[ebib:<id>][id]] to link to the appropriate entry in the ebib database(s).
