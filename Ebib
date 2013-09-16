@@ -3,8 +3,8 @@ Ebib is a !BibTeX database manager for Emacs.
 * Homepage: http://ebib.sourceforge.net
 * Mailing list: [mailto:ebib-users@lists.sourceforge.net ebib-users@lists.sourceforge.net] (also available on [http://gmane.org gmane] as [http://dir.gmane.org/gmane.emacs.ebib.user gmane.emacs.ebib.user]).  Join and report bugs, ask questions, and say what kinds of features you'd like to see!
 
-Ebib does not provide a [CategoryModes mode] for editing BibTeX files, but is rather a stand-alone program, like [CategoryGnus gnus].
+Ebib does not provide a [CategoryModes mode] for editing BibTeX files, but is rather a stand-alone program running inside Emacs, like [CategoryGnus gnus].
 
-It is currently available in the [http://www.finkproject.org fink] package database under the name `ebib'.  (Thus, issue the command `fink install ebib' to install Ebib.)
+It is currently available in the [http://www.finkproject.org fink] package database under the name `ebib'.  (Thus, issue the command `fink install ebib' to install Ebib.) It can also be installed from the [http://melpa.milkbox.net/|Melpa package archive].
 
 Category: BibTeX
