@@ -8,7 +8,7 @@ This caused me a great deal of consternation and confusion, because I love Emacs
 
 Common replies:
 * EmacsLisp isn't [[Scheme]]
-* EmacsLisp doesn't have lexical scoping
+* EmacsLisp doesn't have lexical scoping (it does since 2011)
 * EmacsLisp isn't CommonLisp
 * EmacsLisp isn't Haskell
 * The Emacs APIs suck
@@ -36,19 +36,6 @@ I didn't know Scheme -- and in fact do not now claim to know Scheme, though I ha
 That conclusion is not justified.  There's a great deal of difference between Scheme and EmacsLisp beyond just the question of lexical scoping.  As the OP mentions in passing, but then ignores, there's the fact that <tt>nil</tt> isn't false in Scheme, but is in CommonLisp and EmacsLisp.  Scheme has a stylistic convention of marking destructive operations with an exclamation point and predicates (boolean functions) with a question mark; again noted in the OP.  I'm not sure the latter is so significant, but the former indicates a stigmatization of side-effecting in the Scheme community, more closely wedded to function programming concepts, that we certainly don't see in EmacsLisp.  Scheme is a Lisp-1, sharing the same namespace for variable and function definitions, so that the name <tt>list</tt> must be bound (at least locally) <em>either</em> to a function, or a variable, but not both.  In a Lisp-2, you can use the same name for both a function and a variable.
 
 ----
-
-= EmacsLisp Doesn't Have Lexical Scoping =
-
-This is a perfectly valid criticism of a programming language. I can see immediately how automatic lexical scoping of variables is a big win when writing complex and/or large Emacs extensions[3]. 
-
-However, as a new EmacsLisp programmer writing /simple/ Emacs extensions which deal more with buffers and words than with turning Emacs into, say, a realtime financial analysis suite with embedded web browser, I really like the fact that I have access to every state variable in the whole editor. I can see if anything is set, and what it's set to. It's really quite great, being able to instantly harness the whole power of Emacs to frob my text around in an automated fashion. Is it possible to get lexical scoping without losing this?
-
-:  It is. It's called "fluids", and they need to be specified explicitly. 
-:: ...in Scheme, or "special variables" in CommonLisp, FWIW.
-
-[new]
-
-Allegedly optional lexical scoping is coming after Emacs 23 is released. (according to emacs-devel) Once it's in place, adding coroutines will be feasible, which addresses the "single-threading sucks" argument that's surprisingly absent on this page. Should also make closures possible.
 
 = EmacsLisp Isn't CommonLisp/Haskell/Other =
 
