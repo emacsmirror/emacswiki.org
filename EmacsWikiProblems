@@ -145,7 +145,7 @@ Could be! I just tried looking at HighlightLibrary using IE 8---the oldest brows
 
 == Search ==
 
-=== "Press tab to search DuckDuckGo" problem
+=== "Press tab to search DuckDuckGo" problem ===
 
 What does happen: When I type `emacswiki` into the omnibox in Chrome, I am presented with a choice: "Press tab to search DuckDuckGo".  If I press tab and provide search terms, I am presented with a standard DuckDuckGo search results page.
 
@@ -153,7 +153,7 @@ What should happen: When I type `emacswiki` into the omnibox in Chrome, I should
 
 Steps to resolve: Dunno.  I'd start here: http://www.chromium.org/tab-to-search  (Presumably this covers other browsers, too?  If not, there's always http://www.opensearch.org/ as a reference.)
 
-=== Search finds nothing when browser is Chrome ==
+=== Search finds nothing when browser is Chrome ===
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
 
