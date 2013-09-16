@@ -1,6 +1,6 @@
-[[zh:DiredOmitMode_目录隐藏模式]]
-[[zh:DiredOmitMode_目录隐藏模式]]
-[[zh:DiredOmitMode_目录隐藏模式]]
+[[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
+[[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
+[[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
 DiredOmitMode lets you hide uninteresting files, such as backup files and AutoSave files, from the DiredMode view.
 
 It is defined in the [[Dired X]] package, so you must also arrange to load that:
@@ -9,9 +9,9 @@ It is defined in the [[Dired X]] package, so you must also arrange to load that:
     (add-hook 'dired-load-hook '(lambda () (require 'dired-x)))
 
     ;; Enable toggling of uninteresting files.
-    (setq dired-omit-files-p t)
+    (setq dired-omit-mode t)
 
-`M-o' in Dired buffers will toggle hiding of files. Variables `dired-omit-files' (note: no `-p' at end) and `dired-omit-extensions' together define the uninteresting files.
+Note that versions of Emacs before 22.1 used `dired-omit-files-p'. `M-o' in Dired buffers will toggle hiding of files. Variables `dired-omit-files' (note: no `-p' at end) and `dired-omit-extensions' together define the uninteresting files.
 
 With most recent Emacs versions (e.g. 23.1.92.1) no hooks are needed and the following lines in your .emacs enable omit mode (in this example "dot" files are omitted):
 
