@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Sep 11 14:25:42 2013 (-0700)
+;; Last-Updated: Mon Sep 16 09:56:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6569
+;;     Update #: 6570
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4186,7 +4186,10 @@ If ACTION is non-nil then it is a function that accepts no arguments.
                   (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
                              (setq end-marker  (copy-marker hit-end))
                              (or (not predicate)
-                                 (save-match-data (funcall predicate hit-string end-marker))))
+                                 (let ((pred-ok-p  (save-match-data (funcall predicate hit-string end-marker))))
+                                   (if icicle-search-complement-domain-p
+                                       (not pred-ok-p)
+                                     pred-ok-p))))
                     (icicle-candidate-short-help
                      (concat (and add-bufname-p
                                   (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
