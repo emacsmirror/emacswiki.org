@@ -62,6 +62,8 @@ I heard this a lot as well, but I have no idea what exactly is being referred to
 
 : My wild guess would be "because they're not OO", which doesn't really bother me, but can be seen as a problem given the typical Java-centric way people are taught CS in the US.
 
+The APIs related to match data are an example. Instead of returning a data structure of the match results (eg from a call to match-string), the match results are mutated in global memory and accessed in separate function calls. This is both less functional in style and more error prone. For example, if save-match-data is not used appropriately, then library functions can trample on the match data which a higher level function is in the middle of using.
+
 = Do You Mean EmacsLisp (Language) Or EmacsLisp (Library)? =
 
 I don't know. Which do you, the EmacsLisp detractor, mean?
