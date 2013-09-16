@@ -53,7 +53,7 @@ test.js:2:1:'console' was used before it was defined.
 <pre>
 (require 'flycheck)
 (flycheck-define-checker javascript-jslint-reporter
-  "A JavaScript syntax and style checker based on using JSLint Reporter.
+  "A JavaScript syntax and style checker based on JSLint Reporter.
 
 See URL `https://github.com/FND/jslint-reporter'."
   :command ("~/.emacs.d/jslint-reporter.sh" source)
