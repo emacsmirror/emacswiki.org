@@ -4,8 +4,8 @@
 
 ;; Author: Igor Sikaček <isikacek@gmail.com>
 ;; Maintainer: Igor Sikaček <isikacek@gmail.com>
-;; Created: 31 Jan 2013
-;; Version: 0.76
+;; Created: 17 Sep 2013
+;; Version: 0.77
 ;; Keywords: awk
 
 ;; This file is not part of Emacs
@@ -172,6 +172,9 @@
 ;; 2013.01.31. - 0.76
 ;;   fix:
 ;;     - minor dependency fix
+;; 2013.09.17. - 0.77
+;;   fix:
+;;     - minor dependency fix
 
 ;;; Code:
 
@@ -183,7 +186,7 @@
 
 (defgroup awk-it nil
   "Run awk interactively on region."
-  :version "0.75"
+  :version "0.77"
   :group 'external)
 
 (defcustom awk-it-load-hook nil
@@ -362,7 +365,7 @@ specifying custom field separator."
 ;;;###autoload
 (defun awk-it-version ()
   "Returns current AWK it! version."
-  "0.75")
+  "0.77")
 
 
 (defun awk-it-fs ()
@@ -409,7 +412,7 @@ specifying custom field separator."
     (yas/expand-snippet (concat
       "Data: " (awk-it-get-line-with-max-separators beg end) "
 AWK pattern: ${1:"(if file (replace-regexp-in-string "\\(\\$\\|`\\)" "\\\\\\1" awk-it-code) "pattern") "}
-${1:$(" (symbol-name func) " text)}") beg end)))
+${1:$(" (symbol-name func) " yas-text)}") beg end)))
 
 
 (defun awk-it-process (code)
