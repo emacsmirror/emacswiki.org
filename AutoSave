@@ -94,6 +94,18 @@ Automatically save your changes after an customizable interval. Can be selective
 * http://www.litchie.net/programs/real-auto-save.html
 
 [new]
+I really like this idea, because it's dumb to make me hit C-x C-s all the time because of technical details of the computer's architecture, and almost everything I edit is under version control anyway. I like using auto-save-hook, and that seems to work well, but I want to save *all* the buffers, because if I switch away from a buffer before it autosaves, I want it to get saved when things next get saved after that. So I combined parts of the two above solutions (this is the first elisp code I've written, could have glaring problems):
+
+	(defun full-auto-save ()
+	  (interactive)
+	  (save-excursion
+		(dolist (buf (buffer-list))
+		  (set-buffer buf)
+		  (if (and (buffer-file-name) (buffer-modified-p))
+			  (basic-save-buffer)))))
+	(add-hook 'auto-save-hook 'full-auto-save)
+
+[new]
 What about to save file when emacs frame loose focus? -- VitalieLazu
 
 
