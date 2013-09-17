@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 11 14:12:06 2013 (-0700)
+;; Last-Updated: Tue Sep 17 14:43:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 284
+;;     Update #: 311
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -89,6 +89,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `isearchp-add-regexp-as-property',
 ;;    `isearchp-bounds-of-thing-at-point', `isearchp-char-prop-1',
 ;;    `isearchp-char-prop-default-match-fn', `isearchp-char-prop-end',
 ;;    `isearchp-char-properties-in-buffer',
@@ -97,15 +98,19 @@
 ;;    `isearchp-message-prefix', `isearchp-next-visible-thing-1',
 ;;    `isearchp-next-visible-thing-2',
 ;;    `isearchp-next-visible-thing-and-bounds',
-;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
-;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
+;;    `isearchp-read-context-regexp', `isearchp-read-face-names',
+;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
+;;    `isearchp-regexp-context-search', `isearchp-regexp-read-args',
+;;    `isearchp-regexp-scan', `isearchp-remove-duplicates',
 ;;    `isearchp-some', `isearchp-thing-read-args',
-;;    `isearchp-thing-scan', `isearchp-things-alist'.
+;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
+;;    `isearchp-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
-;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
+;;    `isearchp-char-prop-values', `isearchp-complement-domain-p',
+;;    `isearchp-context-level', `isearchp-filter-predicate-orig',
 ;;    `isearchp-last-thing-type'.
 ;;
 ;;
@@ -149,6 +154,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/17 dadams
+;;     isearchp-regexp-scan: If complementing, then PREDICATE must *not* be satisfied.
+;;                           Moved saving of buffer-modified-p earlier.
+;;     isearchp-thing-scan: Save & restore buffer-modified-p.
 ;; 2013/09/10 dadams
 ;;     isearchp-regexp-scan, isearchp-thing-scan: Added text property isearchp.
 ;;     Bound isearchp-hide/show-comments to M-; in isearch-mode-map.
@@ -647,9 +656,9 @@ you specify none (empty input immediately) then *all* faces are
                         (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
                       (isearchp-read-sexps 'ONLY-ONE-P))))
        (list prop vals (region-beginning) (region-end)))))
-  (let ((buffer-mod  (buffer-modified-p)))
+  (let ((bufmodp  (buffer-modified-p)))
     (add-text-properties beg end (list property value))
-    (set-buffer-modified-p buffer-mod)))
+    (set-buffer-modified-p bufmodp)))
 
 (defun isearchp-message-prefix (&optional arg1 arg2 arg3)
   "Version of `isearch-message-prefix' that works for all Emacs releases."
@@ -791,26 +800,27 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                                     last-beg
                                   (match-beginning isearchp-context-level)))
                    (hit-end     (if isearchp-complement-domain-p
-                                    (if beg
-                                        (match-beginning isearchp-context-level)
-                                      (point-max))
+                                    (if beg (match-beginning isearchp-context-level) (point-max))
                                   (match-end isearchp-context-level)))
                    (IGNORE      (when action (save-excursion (funcall action) (setq hit-end  (point)))))
                    (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                   (bufmodp     (buffer-modified-p))
                    end-marker)
               (if (and (not (string= "" hit-string))
                        (setq end-marker  (copy-marker hit-end))
                        (or (not predicate)
-                           (save-match-data (funcall predicate hit-string end-marker))))
+                           (let ((pred-ok-p  (save-match-data
+                                               (funcall predicate hit-string end-marker))))
+                             (if isearchp-complement-domain-p (not pred-ok-p) pred-ok-p))))
                   ;; Put (REGEXP . PREDICATE) on hit text as text property PROPERTY.
                   ;; It is not enough to record REGEXP.  E.g., `*-imenu-non-interactive-function' and
                   ;; `*-imenu-command' use the same REGEXP.  Only the PREDICATE is different.
-                  (let ((buffer-mod  (buffer-modified-p))
-                        (prop-value  (cons regexp predicate)))
+                  
+                  (let ((prop-value  (cons regexp predicate)))
                     (put-text-property hit-beg hit-end property prop-value)
                     (put-text-property hit-beg hit-end 'isearchp t)
                     (setq added-prop-p  prop-value)
-                    (set-buffer-modified-p buffer-mod))
+                    (set-buffer-modified-p bufmodp))
                 (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
             (setq last-beg  beg)))
       (error (error "%s" (error-message-string isearchp-regexp-scan))))
@@ -883,7 +893,9 @@ and then searches them"
 This uses `commandp', so it finds only currently defined commands.
 That is, if the buffer has not been evaluated, then its function
 definitions are NOT considered commands by `isearchp-imenu-command'.
-See `isearchp-imenu' for more information."
+
+See `isearchp-imenu' for more information, in particular about using a
+prefix arg."
   (interactive)
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
@@ -898,7 +910,8 @@ See `isearchp-imenu' for more information."
 
 (defun isearchp-imenu-non-interactive-function ()
   "Search Emacs non-command function definitions.
-See `isearchp-imenu' for more information."
+See `isearchp-imenu' for more information, in particular about using a
+prefix arg.."
   (interactive)
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
@@ -914,7 +927,8 @@ See `isearchp-imenu' for more information."
 
 (defun isearchp-imenu-macro ()
   "Search Lisp macro definitions.
-See `isearchp-imenu' for more information."
+See `isearchp-imenu' for more information, in particular about using a
+prefix arg."
   (interactive)
   (unless (memq major-mode '(emacs-lisp-mode lisp-mode))
     (error "This command is only for Emacs-Lisp mode or Lisp mode")) ; No `user-error' in Emacs 23.
@@ -1232,7 +1246,8 @@ This function respects both `isearchp-search-complement-domain-p' and
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (when (stringp property) (setq property  (intern property)))
   (let ((last-beg      nil)
-        (added-prop-p  nil))
+        (added-prop-p  nil)
+        (bufmodp       (buffer-modified-p)))
     (isearchp-with-comments-hidden
      beg end
      (condition-case-no-debug isearchp-thing-scan
@@ -1295,7 +1310,8 @@ This function respects both `isearchp-search-complement-domain-p' and
                                     (1+ thg-end)))
                      ;; If visible then no more things - skip to END.
                      (unless (invisible-p beg) (setq beg  end)))))
-               (setq last-beg  beg))))
+               (setq last-beg  beg))
+             (set-buffer-modified-p bufmodp)))
        (error (error "%s" (error-message-string isearchp-thing-scan)))))
     added-prop-p))  ; Return indication of whether property was added.
 
