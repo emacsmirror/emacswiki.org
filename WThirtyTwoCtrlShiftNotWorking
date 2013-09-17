@@ -1,0 +1,3 @@
+The Windows "language bar" has some global keyboard shortcuts that enable changing the active keyboard language. These shortcuts can conflict with some Emacs key combinations, in particular, <code>C-S-)</code> (but <code>C-S-(</code> works!), as used by ParEdit.
+
+Windows 8: To disable these shortcuts, open the Control Panel, choose Language, find the Advanced Settings link on the left, click "Change language bar hot keys" and disable all shortcuts. This solution was found at http://www.eightforums.com/general-support/22552-cant-use-ctrl-shift-0-windows-has.html
