@@ -67,5 +67,8 @@ Why do you say that the `defface' won't take effect? Did you try it? If you put 
 
 -- DrewAdams
 
+[new]
+For those who want to undefine a face in order to replace the face's original defface spec with one's own defface spec, they may achieve similar effects without undefining the face by either 1. going to the Customize interface for the face and clicking on `State' then on `For All Kinds of Displays' and start customizing, or 2. customizing the face so that it simply inherits from a new face which is defined with a defface form in the init file. --JisangYoo
+
 ----
 CategoryGlossary
