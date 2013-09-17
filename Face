@@ -14,7 +14,8 @@ Alternatively, you can use `M-x describe-face RET'. The faces used are listed as
 : If you use [[Icicles]], then `describe-face' shows the face-name candidates in buffer `*Completions*' using their own faces -- WYSIWYG.
 ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]]) -- DrewAdams
 
-
+[new]
+Use `M-x describe-text-properties RET' to learn all faces being used at point: faces for overlays at point (as in flyspell incorrect words), face which in turn is a list of faces (as in org mode tags). -- JisangYoo
 
 
 == Faces and Emacs Lisp ==
