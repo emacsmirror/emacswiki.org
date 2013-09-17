@@ -3,7 +3,7 @@ This page is about some ways to [[completion|complete]] text in a [[buffer]] (ot
 
 == TabKey2 ==
 
-*tabkey2.el* ([http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head:/util/tabkey2.el available] from [NxhtmlMode nXhtml] repository at Launchpad) is a little library that tries to generalize the ideas from Smart Tab.
+*tabkey2.el* ([http://bazaar.launchpad.net/~nxhtml/nxhtml/main/view/head:/util/tabkey2.el available] from [NxhtmlMode nXhtml] repository at Launchpad) is a little library that tries to generalize the ideas from Smart Tab.
 However, it works a bit differently.
 In most major modes, the first Tab press will indent and following Tab presses will complete.
 Since there are many ways to complete you can also choose which function you want to use
