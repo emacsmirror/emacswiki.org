@@ -100,6 +100,7 @@ MS Tips and Tricks:
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 * WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
+* WThirtyTwoCtrlShiftNotWorking -- Windows "language bar" shortcuts prevent certain keyboard shortcuts like C-S-)
 
 MS applications:
 
