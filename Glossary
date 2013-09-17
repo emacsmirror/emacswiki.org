@@ -9,7 +9,7 @@ See also [[Manual:Glossary]].
 * [[buffer]] -- editing happens in buffers (workspaces)
 * car -- see [[cons]]
 * cdr -- see [[cons]]
-* '''[::character property]''' -- a [[text property]] or an [[overlay]] property
+* '''[::character property]''' -- 1. a [[text property]] or an [[overlay]] property (this now outdated meaning is used in some old materials) 2. "a named attribute of a character that specifies how the character behaves and how it should be handled during text processing and display" as the elisp manual says.
 * [[chord]] -- a [[key sequence]] with keys pressed simultaneously
 * [[command]] -- an InteractiveFunction
 * [[completion]] -- completing input in the [[minibuffer]] or text in another buffer
