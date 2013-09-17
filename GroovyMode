@@ -1,3 +1,9 @@
+= Most supported mode  =
+
+Groovy home page http://groovy.codehaus.org/Emacs+Groovy+Mode promote https://github.com/russel/Emacs-Groovy-Mode
+
+= Other modes =
+
 See http://groovy.codehaus.org/Emacs+Groovy+Mode.
 
 Be sure to also read informations inside inf-groovy.el. Here is environment juggling that I use in order to make it work.
