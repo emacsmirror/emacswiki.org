@@ -1,7 +1,7 @@
 An '''[::overlay]''' acts similar to a [[text property]], but it is attached to [[buffer]] or string positions, not to the characters at those positions. 
 
-Overlay start and end positions can be markers, which move around as
-text is inserted before/between/after them.
+An overlay uses markers to record its beginning and end, thus it moves around as
+text is inserted before/in/after it.
 Since overlays are not attached to the text itself, they are lost when you kill text and then yank it somewhere else.
 
 Overlays were introduced to GnuEmacs following the development of [[XEmacsExtents|extents]]
