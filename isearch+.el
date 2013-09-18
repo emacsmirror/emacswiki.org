@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 12 12:32:32 2013 (-0700)
+;; Last-Updated: Wed Sep 18 08:19:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2694
+;;     Update #: 2698
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -871,7 +871,8 @@ and act on the buffer text."
                     :match-alternatives (symbolp) :value ignore))
     :group 'isearch-plus))
 
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
   (defcustom isearchp-deactivate-region-flag t
     "*Non-nil means isearching deactivates the region.
 See also option `isearchp-restrict-to-region-flag'."
@@ -1065,7 +1066,8 @@ Toggles between nil and the last non-nil value."
   (sit-for 1)
   (isearch-update))
 
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
   (defun isearchp-toggle-region-restriction () ; Bound to `C-x n' in `isearch-mode-map'.
     "Toggle option `isearchp-restrict-to-region-flag'."
     (interactive)
@@ -2015,7 +2017,8 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 
 ;;; Support for limiting search to active region.
 ;;;
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
 
   ;; REPLACE ORIGINAL in `isearch.el'.
@@ -2091,7 +2094,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                     isearch-message           (mapconcat 'isearch-text-char-description isearch-string "")
                     isearch-case-fold-search  isearch-last-case-fold-search)
               (isearch-ring-adjust1 nil)) ; After taking the last element, adjust ring to previous one.
-          (or (and isearch-success ; If already have what to search for, repeat it.
+          (or (and isearch-success      ; If already have what to search for, repeat it.
                    (if isearch-forward
                        (or (not isearchp-reg-end)  (<= (point) isearchp-reg-end))
                      (or (not isearchp-reg-beg)  (>= (point) isearchp-reg-beg))))
@@ -2359,8 +2362,8 @@ Commands
 \\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
 \\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
 
-\\[isearchp-char-prop-forward]\t- search for a character (overlay or text) property [*]
-\\[isearchp-char-prop-forward-regexp]\t- regexp-search for a character (overlay or text) property [*]
+\\[isearchp-property-forward]\t- search for a character (overlay or text) property [*]
+\\[isearchp-property-forward-regexp]\t- regexp-search for a character (overlay or text) property [*]
 
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
