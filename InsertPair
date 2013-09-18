@@ -10,7 +10,7 @@ As an example, consider having to type the definition for the Fibonacci number i
        (fib (- n 2)))))
 }}}
 
-This could be done with the commands ##M-(## and ##M-)## (and `C-j' see AutoIndentation).  They will insert the 81 characters properly indented in just 50 keys (63 finger presses when considering [[chord]]s).
+This could be done with the commands ##M-(## and ##M-)## (and ##C-j## (assuming you are typing the example in an emacs lisp mode buffer, not the scratch buffer where ##C-j## does something different). see AutoIndentation). (Users of paredit should type ##(## instead of ##M-(##) They will insert the 81 characters properly indented in just 50 keys (63 finger presses when considering [[chord]]s).
 
 Here are those keys pretty-printed (see EmacsKeyNotation):
 
