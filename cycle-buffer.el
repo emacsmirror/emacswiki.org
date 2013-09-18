@@ -1,3 +1,4 @@
+[[ru:1]]
 ;;; cycle-buffer.el --- select buffer by cycling through
 
 ;; Author:     Vladimir Alexiev <vladimir@cs.ualberta.ca>
