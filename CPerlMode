@@ -224,6 +224,33 @@ and then
 
 Have a look at [Geocities:user42_kevin/ffap-perl-module/index.html ffap-perl-module.el] for a similar thing, for use in all modes and with some module name expanding and contracting.
 
+[new]
+My Emacs didn't want to ffap modules with :: in them, as is pretty common. I tracked this down to my version of ffap as shipped with Emacs 24.2 contains this code:
+
+	 ;; If it contains a colon, get rid of it (and return if exists)
+	 ((and (string-match path-separator name)
+	       (setq name (ffap-string-at-point 'nocolon))
+	       (ffap-file-exists-string name)))
+	 ;; File does not exist, try the alist:
+
+that means colons are removed before attempting to use the functions in alist, so the custom ffap function only ever gets passed the module part up to the colon. I think ffap should really be fixed here but until then:
+
+    (defun ffap-perl-module (file)
+      (let ((real-file (shell-command-to-string (concat "perldoc -ml " file))))
+        (unless (string-match "No module found for " real-file)
+          (substring real-file 0 -1)
+        )))
+
+    (eval-after-load 'ffap
+      '(add-to-list 'ffap-alist '(cperl-mode . ffap-perl-module)))
+
+    (defadvice ffap-string-at-point (before ffap-perl-module-fix activate)
+      "allow ffap to locate perl modules"
+      (when (and (ad-get-arg 0) (eq major-mode 'cperl-mode))
+        (ad-set-arg 0 major-mode)))
+
+will make finding Perl modules work again
+
 ==Finding Perl modules==
 
 As an alternative to the ffap version above, the following will find a given Perl module, using
