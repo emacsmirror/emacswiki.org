@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 18 08:22:09 2013 (-0700)
+;; Last-Updated: Wed Sep 18 09:15:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 329
+;;     Update #: 343
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -152,7 +152,8 @@
 ;;; Change Log:
 ;;
 ;; 2013/09/18 dadams
-;;     Renamed *-char-prop* to *-property* (or *-properties*).
+;;     Renamed *-char-prop-* to *-property-*, *-char-properties to *-properties.
+;;     isearchp-property-matches-p: Corrected overlays-only check.
 ;; 2013/09/17 dadams
 ;;     isearchp-regexp-scan: If complementing, then PREDICATE must *not* be satisfied.
 ;;                           Moved saving of buffer-modified-p earlier.
@@ -214,7 +215,8 @@
   :type 'boolean :group 'isearch-plus)
 
 (defvar isearchp-property-type nil
-  "Last property type used for `isearchp-property-*' commands.")
+  "Last property type used for `isearchp-property-*' commands.
+Possible values are `text', `overlay', and nil, meaning both.")
 
 (defvar isearchp-property-prop nil
   "Last property used for `isearchp-property-*' commands.")
@@ -405,7 +407,7 @@ have already been defined, by a previous use of this command,
 If you do not use a prefix arg then this command searches for the text
 or overlay property that you last used in an Isearch command that
 searches or applies such properties.  This includes the
-`isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
+`isearch-property-*' commands, the `isearchp-imenu*' commands, and
 `isearchp-thing'.  See `isearchp-property-forward' for more
 information.
 
@@ -427,7 +429,7 @@ function that takes these arguments:
 Only the search hits for which the predicate holds are retained.
 
 The search contexts are marked in the buffer using a text property.
-You can also search them using `isearch-char-prop-*' commands.  The
+You can also search them using `isearch-property-*' commands.  The
 text property used is the symbol whose name is the regexp.  The
 property value is a cons whose car is the regexp (a string) and whose
 cdr is PREDICATE."
@@ -589,7 +591,8 @@ MATCH-FN is a binary predicate that is applied to each item of VALUES
 and a zone of text with property PROP.  If it returns non-nil then the
 zone is a search hit."
   (let* ((ovlyval  (and (or (not type)  (eq type 'overlay))
-                        (get-char-property position property)))
+                        (let ((ovs  (overlays-at position)))
+                          (and ovs  (isearchp-some ovs property #'overlay-get)))))
          (textval  (and (or (not type)  (eq type 'text))
                         (get-text-property position property))))
     (or (and ovlyval  (isearchp-some values ovlyval match-fn))
@@ -878,7 +881,7 @@ have already been defined, by a previous use of this command,
 If you do not use a prefix arg then this command searches for the text
 or overlay property that you last used in an Isearch command that
 searches or applies such properties.  This includes the
-`isearch-char-prop-*' commands, the `isearchp-imenu*' commands, and
+`isearch-property-*' commands, the `isearchp-imenu*' commands, and
 `isearchp-thing'.  See `isearchp-property-forward' for more
 information.
 
@@ -1126,7 +1129,7 @@ have already been defined by a previous use of this command.
 If you do not use a prefix arg then this command searches for the text
 or overlay property that you last used in an Isearch command that
 searches or applies such properties.  This includes the
-`isearch-char-prop-*' commands, the `isearchp-imenu*' commands.  See
+`isearch-property-*' commands, the `isearchp-imenu*' commands.  See
 `isearchp-property-forward' for more information.
 
 If you use a prefix arg, or if you have not previously used this
