@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 1.3
-;; Last-Updated: 2013-07-13 22:35:00
+;; Version: 1.5
+;; Last-Updated: 2013-09-19 16:35:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
 ;; Keywords: convenience
@@ -61,10 +61,16 @@
 ;; By adding query points to the end of each newly created macro, macro decision trees can be built up
 ;; and complex automated operations performed.
 
-;; Note: you can also use `kbd-macro-query' to choose a named macro to replay when not recording a macro
-;; (in case you forgot the name). Also note that when prompted for a condition you can scroll forward through
-;; the input history using M-n to get conditions for searching for strings/regexps. You can add to this list
-;; by customizing `kmacro-decision-conditions'.
+;; NOTES: 
+;;
+;; If you are creating a complex macro with several layers of conditional branching you should build it up
+;; layer at a time from the bottom up, naming the constituent macros as you go. You need to make sure all
+;; conditions of a constituent macro are defined before using that macro in another one as you will not be
+;; able to edit the constituent macro while running the parent macro. It may be safer to just write a program
+;; to do the task instead.
+;; If you want to see what macros have been named (and maybe run one) you can use `kbd-macro-query' (C-x C-k q).
+;; Also note that when prompted for a condition you can scroll forward through the input history using M-n to get
+;; conditions for searching for strings/regexps. You can add to this list by customizing `kmacro-decision-conditions'.
 
 ;;; Customizable Options:
 ;;
@@ -100,7 +106,7 @@
 
 ;;; TODO
 ;;
-;; Finish `kmacro-decision-menu', and integrate with `one-key-read-list' if available.
+;; Integrate with `one-key-read-list' if available.
 ;;
 
 ;;; Require
@@ -117,6 +123,8 @@
   "A list of conditions to be made available in the history list in calls to `kmacro-decision'"
   :type '(repeat string)
   :group 'kmacro)
+
+(defvar kmacro-decision-condition-history nil)
 
 (defun kmacro-decision-recursive-edit nil
   "Enter recursive edit, binding `end-kbd-macro' to `exit-recursive-edit' and setting `kmacro-call-repeat-key' to nil.
@@ -190,7 +198,8 @@ is reached."
                 ((eq val 'edit) (funcall editfunc nil))
                 ((eq val 'branch)
                  (let* ((condition (read-from-minibuffer
-                                    "Condition: " nil nil nil nil
+                                    "Condition: " nil nil nil
+                                    'kmacro-decision-condition-history
                                     kmacro-decision-conditions))
                         (action (kmacro-decision-menu t))
                         (resetmacro "(let* ((calling-kbd-macro executing-kbd-macro) (executing-kbd-macro nil)) ")
@@ -205,7 +214,7 @@ is reached."
                                               (prin1-to-string it) ")" revertmacro)))
                             (useredit "(kmacro-decision-recursive-edit)")
                             (form
-                             (concat resetmacro 
+                             (concat resetmacro
                                      (read-from-minibuffer
                                       "Elisp: " nil read-expression-map nil
                                       'read-expression-history)
@@ -222,7 +231,7 @@ is reached."
                         (pre (subseq calling-kbd-macro 0 executing-kbd-macro-index))
                         (condexists (and (> (length pre) 33)
                                          (equal (string-to-vector "(t (kmacro-decision)))")
-                                                (subseq pre -26))))
+                                                (subseq pre -23))))
                         (post (subseq calling-kbd-macro executing-kbd-macro-index))
                         (condcode
                          (concatenate 'vector
@@ -230,8 +239,10 @@ is reached."
                                         (concatenate 'vector (kbd "M-:") "(cond "))
                                       "(" condition " " actioncode ") "
                                       "(t (kmacro-decision)))")))
-                   (setq pre (if condexists (subseq pre 0 -26) (concatenate 'vector pre " ")))
-                   (setq last-kbd-macro (concatenate 'vector pre condcode post))))
+                   (setq pre (if condexists (subseq pre 0 -23) (concatenate 'vector pre " "))
+                         last-kbd-macro (concatenate 'vector pre condcode post)
+                         executing-kbd-macro last-kbd-macro
+                         executing-kbd-macro-index (+ (length pre) (length condcode)))))
                 ((and val (symbolp val)) (funcall val))
                 (t (message nil))))))))
 
