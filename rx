@@ -1,7 +1,7 @@
 A nifty macro that generates regular expressions for you, from reasonably-comprehensible s-expressions.  Inspired by something similar in Olin Shivers' "scsh".
 
 Example:
-<code>
+{{{
 (rx bol
   (zero-or-more blank)
   (one-or-more digit)
@@ -10,12 +10,13 @@ Example:
 yields
 <code>
 "\\(?:^[[:blank:]]*[[:digit:]]+:\\)"
-</code>
+}}}
 
 When given just a single string argument, it acts just like regexp-to-string.
 
 Here is one way in which to temporarily extend the keywords used by rx for specific purposes:
- 
+
+{{{
  (defmacro rx-extra (&rest body-forms)
    (let ((add-ins (list
                    `(file . ,(rx (+ (or alnum digit "." "/" "-" "_"))))
@@ -24,24 +25,23 @@ Here is one way in which to temporarily extend the keywords used by rx for speci
                    `(int . ,(rx (+ digit))))))
      `(let ((rx-constituents (append ',add-ins rx-constituents nil)))
         ,@body-forms)))
+}}}
 
 Example of using the above rx-extra macro:
- 
+
+{{{ 
  (let ((string " at Isrc/file-23_2.c line 23 ;: flubber"))
    (if (string-match (rx-extra
                       (rx ws+ "at" ws+ (group file) ws+ "line" ws+ (group int))) string)
        (format "file is %s line is %s"
                (match-string-no-properties 1 string)
                (match-string-no-properties 2 string))))
+}}}
 
-returns:
-
- "file is Isrc/file-23_2.c line is 23"
+This returns: "file is Isrc/file-23_2.c line is 23"
 
 So the idea behind rx-extra is that you can add new named regular
 expressions to be used cleanly in other rx forms.
-
-See also: SymbolicRegexp.
 
 ----
 CategoryRegexp
