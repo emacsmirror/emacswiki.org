@@ -6,9 +6,9 @@ Example:
   (zero-or-more blank)
   (one-or-more digit)
   ":")
-</code>
+}}}
 yields
-<code>
+{{{
 "\\(?:^[[:blank:]]*[[:digit:]]+:\\)"
 }}}
 
