@@ -193,11 +193,11 @@ Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Ici
 * You can move incrementally among search hits in the target buffer(s).
 
 [:Show last ISearch string in prompt ]
-== display last searched string in minibuffer prompt ==
+== Display last searched string in minibuffer prompt ==
 
-(add-hook 'isearch-mode-hook (lambda () (interactive) 
-			  (setq isearch-message (concat isearch-message  "[ " (car search-ring)  " ] " ))    
-			  (isearch-search-and-update )))
+ (add-hook 'isearch-mode-hook (lambda () (interactive)
+   (setq isearch-message (concat isearch-message "[ " (car search-ring) " ] "))
+   (isearch-search-and-update)))
 
 
 
