@@ -128,8 +128,8 @@ to END keyword. this is Minor mode for ruby-mode only."
     (setq ruby-block-timer nil)))
 
 (defun ruby-block-hook ()
-  "When Major-mode is ruby-mode, this package is running."
-  (if (eq major-mode 'ruby-mode)
+  "When Major-mode is ruby-mode or enh-ruby-mode, this package is running."
+  (if (or (eq major-mode 'ruby-mode) (eq major-mode 'enh-ruby-mode))
       (condition-case err
 	  (ruby-block-function)
 	(error
