@@ -383,23 +383,5 @@ shouldDo.org tracks your weekly progress as a "score" (where perfect equals 100)
 
 http://shouldDo.org
 
-== Interaction with windmove ==
-
-When using `windmove-default-keybindings' (see WindMove) the default modifier is Shift. There seems to be no appropriate setting for `org-support-shift-select' which is why the following is such a hack: we just overwrite the error message.
-
-{{{
-(defun org-shiftselect-error ()
-  "An alternate definition compatible with `windmove-default-keybindings'."
-  (call-interactively (lookup-key (current-global-map) (this-command-keys))))
-}}}
-
-Shifted cursor keys will execute Org commands in the following contexts:
-* on a headline, changing TODO state (left/right) and priority (up/down)
-* on a time stamp, changing the time
-* in a plain list item, changing the bullet type
-* in a property definition line, switching between allowed values
-* in the BEGIN line of a clock table (changing the time block)
-* everywhere else, the default command is looked up in the global map, which is where it should find the MindMove commands.
-
 ----
 CategoryOutline CategoryPersonalInformationManager CategoryCalendar CategoryNeedsAttention
