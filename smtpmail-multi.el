@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-08-19 02:06:43
-;; Version: 0.3
-;; Last-Updated: 2013-08-26 15:24:00
+;; Version: 0.4
+;; Last-Updated: 2013-09-19 15:24:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/smtpmail-multi
 ;; Keywords: comm
@@ -58,6 +58,9 @@
 ;; (see the documentation for further details).
 ;; Finally you must set the values of `send-mail-function' (if you use `mail-mode') and/or
 ;; `message-send-mail-function' (if you use gnus or `message-mode') to `smtpmail-multi-send-it'.
+;;
+;; Note: If you install this library through the emacs package manager you need to run (require 'smtpmail-multi)
+;; first before you can customize `smtpmail-multi-accounts' and `smtpmail-multi-associations'.
 
 ;;; Installation:
 ;;
