@@ -27,6 +27,7 @@ Before you can open new connections, you must customize `mu-worlds'. As soon as 
 Get it from here:
 
 * Lisp:mu.el
+* https://github.com/kensanata/mu
 
 == colors ==
 
