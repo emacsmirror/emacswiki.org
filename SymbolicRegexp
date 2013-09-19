@@ -1,3 +1,7 @@
+This package has been marked *obsolete* in Emacs 24.1. You should probably be using [[rx]] instead.
+
+----
+
     <gbvb> kensanata: It makes so much more sense..
     <kensanata> gbvb: "it was hard to write, it should be hard to read"!!
 
@@ -16,8 +20,6 @@ You can also load it interactively, of course: M-x load-library RET sregex RET. 
     (sregexq (group (or "Go" "Run"))
              ", Spot, "
              (backref 1))             =>  "\\(Go\\|Run\\), Spot, \\1"
-
-See also [[rx]] and the rx.el commentary.
 
 ----
 CategoryCode
