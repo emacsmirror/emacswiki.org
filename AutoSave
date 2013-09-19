@@ -108,6 +108,29 @@ I really like this idea, because it's dumb to make me hit C-x C-s all the time b
 [new]
 What about to save file when emacs frame loose focus? -- VitalieLazu
 
+[new]
+You could, as I did, tell emacs to do full-auto-save when it receives the USR1 signal.
+  
+  (define-key special-event-map [sigusr1]
+        (lambda ()
+          (interactive)
+          (full-auto-save)))
+
+Create a shell script to send the signal to emacs.
+  
+  #!/usr/bin/env sh
+  for a in $(ps -au "<name>" | gawk '/emacs/{print $1}')
+  do
+      kill -USR1 $a
+  done
+
+And tell your window manager to run the script whenever you switch windows.
+I use sawfish and so:
+
+  ;;.sawfish/rc code
+  (defun save-emacs () 
+    (system "save-emacs &"))
+  (add-hook 'leave-workspace-hook save-emacs)
 
 ----
 CategoryFiles
