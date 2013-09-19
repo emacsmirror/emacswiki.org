@@ -30,6 +30,7 @@ There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013
 
 
 == See Also ==
+* FlymakeJavaScript - jslint in Emacs via Node and FlyMake
 * [[Elnode]] - a non-blocking IO webserver written entirely in EmacsLisp. It’s like an EmacsLisp version of node.js.
 * WikiPedia:Nodejs
 
