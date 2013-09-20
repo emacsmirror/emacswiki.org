@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Fri Sep 13 11:03:34 2013 (-0700)
+;; Last-Updated: Fri Sep 20 16:10:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2109
+;;     Update #: 2171
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -48,6 +48,7 @@
 ;;    `tap-bounds-of-sexp-at-point',
 ;;    `tap-bounds-of-sexp-nearest-point',
 ;;    `tap-bounds-of-string-at-point',
+;;    `tap-bounds-of-string-contents-at-point',
 ;;    `tap-bounds-of-symbol-at-point',
 ;;    `tap-bounds-of-symbol-nearest-point',
 ;;    `tap-bounds-of-thing-nearest-point', `tap-color-at-point',
@@ -68,7 +69,8 @@
 ;;    `tap-region-or-non-nil-symbol-name-nearest-point',
 ;;    `tap-sentence-nearest-point', `tap-sexp-at-point-with-bounds',
 ;;    `tap-sexp-nearest-point', `tap-sexp-nearest-point-with-bounds',
-;;    `tap-string-at-point', `tap-string-match-p',
+;;    `tap-string-at-point', `tap-string-contents-at-point',
+;;    `tap-string-contents-nearest-point.', `tap-string-match-p',
 ;;    `tap-string-nearest-point', `tap-symbol-at-point-with-bounds',
 ;;    `tap-symbol-name-at-point', `tap-symbol-name-nearest-point',
 ;;    `tap-symbol-nearest-point',
@@ -234,6 +236,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/20 dadams
+;;     Added: tap-bounds-of-string-contents-at-point, tap-string-contents-at-point,
+;;            tap-string-contents-nearest-point.
+;;     tap-define-aliases-wo-prefix: Updated for new functions.
+;;     tap-bounds-of-string-at-point (incompatible change):
+;;       Include " chars in string returned.  Return the string also when point on ending ".
 ;; 2013/09/13 dadams
 ;;     tap-thing/form-nearest-point-with-bounds:
 ;;       Do not skip looping over chars in same line when eobp.
@@ -1368,7 +1376,7 @@ Return nil if none is found."
          (string-to-number strg 16))))
 
 
-(when (fboundp 'syntax-ppss)            ; Based on `comint-extract-string'.
+(when (fboundp 'syntax-ppss)            ; Based loosely on `comint-extract-string'.
 
   (put 'string 'bounds-of-thing-at-point     'tap-bounds-of-string-at-point)
   (put 'string 'tap-bounds-of-thing-at-point 'tap-bounds-of-string-at-point)
@@ -1377,14 +1385,19 @@ Return nil if none is found."
     "Return the start and end locations for the string at point.
 Return a consp (START . END), where START /= END.
 Return nil if no string is found at point.
-See `tap-string-at-point'."
+
+NOTE: The ENCLOSING `\"' CHARACTERS ARE COUNTED - they are part of the
+string syntax.  See `tap-string-at-point'."
     (save-excursion
-      (let ((syntax  (syntax-ppss))
-            beg end)
+      (let (syntax beg end)
+        (if (not (eq ?\" (char-after)))
+            (setq syntax  (syntax-ppss))
+          (or (progn (forward-char)  (setq syntax  (syntax-ppss))  (nth 3 syntax))
+              (progn (backward-char) (setq syntax  (syntax-ppss))  (nth 3 syntax))))
         (and (nth 3 syntax)
              (condition-case ()
-                 (setq beg  (1+ (nth 8 syntax))
-                       end  (progn (goto-char (nth 8 syntax)) (forward-sexp) (1- (point))))
+                 (setq beg  (nth 8 syntax)
+                       end  (progn (goto-char (nth 8 syntax)) (forward-sexp) (point)))
                (error nil))
              (cons beg end)))))
 
@@ -1392,16 +1405,42 @@ See `tap-string-at-point'."
   (put 'string 'tap-thing-at-point 'tap-string-at-point)
 
   (defun tap-string-at-point ()
-    "Return the string at point, or nil if there is not string at point.
-Put roughly, there is a string at point if point is between \" and \"."
+    "Return the string at point, or nil if there is no string at point.
+Put roughly, there is a string at point if point is on or after a \"
+and on or before a second \".
+
+NOTE: The text returned as a string INCLUDES THE ENCLOSING `\"' chars,
+which are part of the string syntax (the string THING).  If the result
+is read, then the string contents, i.e., the text without the
+delimiting `\"' chars, is returned from that reading.  You can obtain
+those string contents directly using `tap-string-contents-at-point'."
     (let ((bounds  (tap-bounds-of-string-at-point)))
-      (and bounds
-           (buffer-substring (car bounds) (cdr bounds)))))
+      (and bounds  (buffer-substring (car bounds) (cdr bounds)))))
 
   (defun tap-string-nearest-point ()
     "Return the string nearest point, or nil if there is none.
-See also `tap-string-at-point'."
-    (tap-thing-nearest-point 'string)))
+See `tap-string-at-point'."
+    (tap-thing-nearest-point 'string))
+
+  (defun tap-bounds-of-string-contents-at-point ()
+    "Return the start and end locations for the string contents at point.
+Same as `tap-bounds-of-string-at-point', except that this does not
+include the enclosing `\"' characters."
+    (let ((full  (tap-bounds-of-string-at-point)))
+      (and full  (cons (1+ (car full)) (1- (cdr full))))))
+
+  (defun tap-string-contents-at-point ()
+    "Return the contents of the string at point, or nil if none.
+Same as `tap-string-at-point', except that this does not include the
+enclosing `\"' characters."
+    (let ((bounds  (tap-bounds-of-string-contents-at-point)))
+      (and bounds  (buffer-substring (car bounds) (cdr bounds)))))
+
+  (defun tap-string-contents-nearest-point ()
+    "Return the contents of the string nearest point, or nil if none.
+See `tap-string-contents-at-point'."
+    (let ((full  (tap-bounds-of-thing-nearest-point 'string)))
+      (and full  (buffer-substring (1+ (car full)) (1- (cdr full)))))))
  
 ;;; COMMANDS ---------------------------------------------------------
 
@@ -1504,7 +1543,8 @@ The standard functions replaced are these:
   (defalias 'bounds-of-sexp-at-point 'tap-bounds-of-sexp-at-point)
   (defalias 'bounds-of-sexp-nearest-point 'tap-bounds-of-sexp-nearest-point)
   (when (fboundp 'tap-bounds-of-string-at-point)
-    (defalias 'bounds-of-string-at-point 'tap-bounds-of-string-at-point))
+    (defalias 'bounds-of-string-at-point 'tap-bounds-of-string-at-point)
+    (defalias 'bounds-of-string-contents-at-point 'tap-bounds-of-string-contents-at-point))
   (defalias 'bounds-of-symbol-at-point 'tap-bounds-of-symbol-at-point)
   (defalias 'bounds-of-symbol-nearest-point 'tap-bounds-of-symbol-nearest-point)
   (defalias 'bounds-of-thing-nearest-point 'tap-bounds-of-thing-nearest-point)
@@ -1531,9 +1571,11 @@ The standard functions replaced are these:
   (defalias 'sexp-nearest-point 'tap-sexp-nearest-point)
   (defalias 'sexp-nearest-point-with-bounds 'tap-sexp-nearest-point-with-bounds)
   (when (fboundp 'tap-string-at-point)
-    (defalias 'string-at-point 'tap-string-at-point))
+    (defalias 'string-at-point 'tap-string-at-point)
+    (defalias 'string-contents-at-point 'tap-string-contents-at-point))
   (when (fboundp 'tap-string-nearest-point)
-    (defalias 'string-nearest-point 'tap-string-nearest-point))
+    (defalias 'string-nearest-point 'tap-string-nearest-point)
+    (defalias 'string-contents-nearest-point 'tap-string-contents-nearest-point))
   (defalias 'symbol-at-point-with-bounds 'tap-symbol-at-point-with-bounds)
   (defalias 'symbol-name-at-point 'tap-symbol-name-at-point)
   (defalias 'symbol-name-nearest-point 'tap-symbol-name-nearest-point)
