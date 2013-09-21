@@ -435,7 +435,7 @@ Hello, Xah. Different strokes for different folks. It's OK if you don't like it.
 
 The first sentence at '''[[Icicles]]''' says that '''Icicles''' is "an Emacs library that enhances [[minibuffer]] [[completion]], that is, input completion."  If it takes more than 10 sec to get the gist of that summary with glossary links, then I'm not sure that any succinct summary will help. 
 
-The second sentence on the page gives a different, more opaque summary, by a user: "'''Icicles''' is to `TAB' completion what âTABâ completion is to typing things manually every time." That's a bit cryptic -- it makes sense really only after one has some familiarity with '''Icicles'''.
+The second sentence on the page gives a different, more opaque summary, by a user: "'''Icicles''' is to `TAB' completion what ‘TAB’ completion is to typing things manually every time." That's a bit cryptic -- it makes sense really only after one has some familiarity with '''Icicles'''.
 
 Wrt your guess: No, '''Icicles''' is not about "smart command completions" (depending on what you mean by that). It is about completion generally, but primarily minibuffer completion. 
 
@@ -477,7 +477,7 @@ hot damn. Tried to install icicles, came to this page ([[Icicles - Libraries]]),
 
 </pre>
 
-Thanks for letting me know about ''Icicles now provides file-name completion for shell commands''.  â- PatrickAnderson
+Thanks for letting me know about ''Icicles now provides file-name completion for shell commands''.  –- PatrickAnderson
 
 
 <pre>
@@ -649,7 +649,7 @@ My position is, "Cycling stomps on what you have in the minibuffer, making itera
 
 5. Ah, I think I recall having stumbled over the sorting documentation at some point and then forgotten it. Thanks. If I understand the documentation correctly, icicle-buffer-sort is only used by icicle-buffer and icicle-buffer-other-window, which makes changing it exactly what I want, but I was hesitant to do this in case it should use icicle-sort-buffer in other contexts. (Which is silly, because I can always change it again, but there you are.)
 
-You say "The fact that you are focused on buffer switching suggests that you have perhaps not played much yet with Icicles. In vanilla Emacs (and Ido etc.) buffer-switching can constitute a large part of oneâs use of completion, but in Icicles it constitutes a very small part." Do you mean in terms of the things you can complete? Or in terms of percentage of daily usage? Because I constantly have a zillion buffers open and switch back and forth all the time. I'm curious what workflow you use where that isn't true, or where you find yourself completing other things even *more* often. dabbrev?
+You say "The fact that you are focused on buffer switching suggests that you have perhaps not played much yet with Icicles. In vanilla Emacs (and Ido etc.) buffer-switching can constitute a large part of one’s use of completion, but in Icicles it constitutes a very small part." Do you mean in terms of the things you can complete? Or in terms of percentage of daily usage? Because I constantly have a zillion buffers open and switch back and forth all the time. I'm curious what workflow you use where that isn't true, or where you find yourself completing other things even *more* often. dabbrev?
 
 6. Well, here's what happened. I bound TAB to be apropos completion (to be more iswitch-y). Then, when finding a file, I typed in "Play" and hit TAB (actually I probably hammered on the TAB key three or four times, a habit I've picked up over the years). Since I'm used to prefix completion in the shell, I expected it to complete "Play/". Instead it cycled to ".aplayrc" or something like that. So this item is sort of "Gosh, wouldn't it be nice if that didn't happen?". Item #8 was going to be that I wanted a pony, but I couldn't figure out how to word it ;).
 
@@ -730,7 +730,7 @@ My suggestion is to try the default behavior a little more. If you still don't l
 <pre>
 For Icicles cycling that acts on the candidates
 </pre>
-cool! how to change keys which act on candidates, default keys is " âC-nextâ, âC-downâ, âC-priorâ, or âC-upâ." Your Icicles is so strong, I'll take time to learn to use it.
+cool! how to change keys which act on candidates, default keys is " ‘C-next’, ‘C-down’, ‘C-prior’, or ‘C-up’." Your Icicles is so strong, I'll take time to learn to use it.
 
 2. 
 <pre>
@@ -910,7 +910,7 @@ Also, it would be nice to have an option to make the matches for the
 initial content-regexp be visible immediately as one types the
 regexp. Similar to how it works for incremental search.
 
-Thanks, Johan WidÃ©n.
+Thanks, Johan Widén.
 
 [new:DrewAdams:2013-03-04 18:41 UTC]
 Hi Johan,
@@ -940,11 +940,11 @@ See:
 
 -- DrewAdams
 
-[new:JohanWidÃ©n:2013-03-05 16:57 UTC]
+[new:JohanWidén:2013-03-05 16:57 UTC]
 
 OK: C-S-r achieves what I want for visual feedback.
 
-I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.  -- Johan WidÃ©n
+I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.  -- Johan Widén
 
 [new:DrewAdams:2013-03-05 19:25 UTC]
 1. Also, for the default, you can always use `##M-.##' (repeating as needed) to insert text things at/near point into the minibuffer.  See [[Icicles - Inserting Text from Cursor]].
@@ -1027,23 +1027,6 @@ I guess you were able to take care of the key customization.  For the other prob
 
 
 
-
-[:LatestEntry]
-
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-Drew,
-
-I have been comparing <tt>icicle-search</tt> to <tt>grep-find</tt> and <tt>occur</tt>.  I understand that <tt>icicle-search</tt> uses the completions buffer while <tt>grep-find</tt> and <tt>occur</tt> use the compilation buffer.  One feature I found missing in the completions buffer is the ability to move among buffer names associated with completion candidates.  In the compilation buffer I can accomplish this with <tt>compilation-next-file</tt> and <tt>compilation-previous-file</tt>.  Are there Icicles equivalents of these two commands?
-
--- JamesKLin
-
 <pre>
 
 </pre>
@@ -1120,6 +1103,21 @@ I think this should offer you the flexibility you seek. HTH -- DrewAdams
 
 
 
+
+[:LatestEntry]
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Drew,
+
+I have been comparing <tt>icicle-search</tt> to <tt>grep-find</tt> and <tt>occur</tt>.  I understand that <tt>icicle-search</tt> uses the completions buffer while <tt>grep-find</tt> and <tt>occur</tt> use the compilation buffer.  One feature I found missing in the completions buffer is the ability to move among buffer names associated with completion candidates.  In the compilation buffer I can accomplish this with <tt>compilation-next-file</tt> and <tt>compilation-previous-file</tt>.  Are there Icicles equivalents of these two commands?
+
+-- JamesKLin
 
 
 
@@ -1394,7 +1392,7 @@ Thank you!! I just used `icicle-list-use-nth-parts' in my icicles-rcodetools.el 
 When candidate is sole, pressing Tab / S-Tab should insert `icicle-list-use-nth-parts' parts, I think. -- [[rubikitch]]
 
 [new:DrewAdams:2007-01-14 04:20 UTC]
-Sorry, but that's not how it works. The question is not the number of candidates; it is the treatment of âicicle-list-join-stringâ. The option has an effect only on cycling, not completion. The real candidates remain entire (unsplit); it is only for cycling that the transformation (extraction) is made. 
+Sorry, but that's not how it works. The question is not the number of candidates; it is the treatment of ‘icicle-list-join-string’. The option has an effect only on cycling, not completion. The real candidates remain entire (unsplit); it is only for cycling that the transformation (extraction) is made. 
 
 That is mentioned here: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Multi-Completions. Another thing worth noting is this, also mentioned there:
 
