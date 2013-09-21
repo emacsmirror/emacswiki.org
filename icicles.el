@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep  6 22:47:25 2013 (-0700)
+;; Last-Updated: Sat Sep 21 12:02:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23445
+;;     Update #: 23446
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1240,8 +1240,10 @@
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
 ;;    `icicle-unsorted-file-name-prefix-candidates',
-;;    `icicle-unsorted-prefix-candidates', `icicle-upcase',
-;;    `icicle-upcase-if-ignore-case', `icicle-update-and-next',
+;;    `icicle-unsorted-prefix-candidates',
+;;    `icicle-universal-argument--mode' (Emacs 24.4+),
+;;    `icicle-upcase', `icicle-upcase-if-ignore-case',
+;;    `icicle-update-and-next',
 ;;    `icicle-update-ignored-extensions-regexp',
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
