@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Sep 16 09:58:14 2013 (-0700)
+;; Last-Updated: Sat Sep 21 12:03:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10209
+;;     Update #: 10218
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3904,6 +3904,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/09/21 dadams
+;;     Added: icicle-universal-argument--mode.
+;;     icicle-(digit|negative|universal)-argument, : Updated for Emacs 24.4 (snapshot of 9/20).
+;;     Define only for Emacs < 24.4: icicle-universal-argument-other-key, universal-argument--mode.
 ;; 2013/08/15 dadams
 ;;     icicle-change-sort-order: Provide current as default and add to prompt when asking for new one.
 ;; 2013/08/03 dadams
@@ -7612,6 +7616,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/09/21 dadams
+;;     icicle-universal-argument-map: Updated for Emacs 24.4 (snapshot from 9/20).
 ;; 2013/05/13 dadams
 ;;     icicle-general-help-string: Reflect renaming to icicle-change-sort-order-completion.
 ;; 2013/04/04 dadams
