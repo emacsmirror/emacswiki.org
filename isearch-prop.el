@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 18 09:15:39 2013 (-0700)
+;; Last-Updated: Sat Sep 21 16:36:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 343
+;;     Update #: 400
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -72,8 +72,9 @@
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
 ;;    `isearchp-put-prop-on-region',
-;;    `isearchp-regexp-define-contexts', `isearchp-thing',
-;;    `isearchp-thing-define-contexts',
+;;    `isearchp-regexp-define-contexts',
+;;    `isearchp-remove-all-properties', `isearchp-remove-property',
+;;    `isearchp-thing', `isearchp-thing-define-contexts',
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-ignoring-comments'.
 ;;
@@ -105,10 +106,10 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-property-prop', `isearchp-property-type',
-;;    `isearchp-property-values', `isearchp-complement-domain-p',
-;;    `isearchp-context-level', `isearchp-filter-predicate-orig',
-;;    `isearchp-last-thing-type'.
+;;    `isearchp-property-prop', `isearchp-property-prop-prefix',
+;;    `isearchp-property-type', `isearchp-property-values',
+;;    `isearchp-complement-domain-p', `isearchp-context-level',
+;;    `isearchp-filter-predicate-orig', `isearchp-last-thing-type'.
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here:
@@ -151,6 +152,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/21 dadams
+;;     Added: isearchp-remove-all-properties, isearchp-remove-property, isearchp-property-prop-prefix.
+;;     Everywhere: Reversed prefix arg: none now prompts for input, with prefix arg reuse last.
+;;     isearchp-properties-in-buffer: Added PREDICATE arg.
+;;     isearchp-read-sexps: Ignore errors when reading.
+;;     isearchp-(regexp|thing)-scan: Restore bufmodp properly.  Do not add extra isearchp property.
+;;     isearchp-thing-scan: Fixed scope for last-beg.  Do not put property on empty scan hit.
+;;     isearchp-thing-read-args: Use isearchp-property-prop-prefix.
+;;     *-add-regexp-as-property, *-regexp-context-search, *-(regexp|thing)-read-args:
+;;       Use isearchp-property-prop-prefix as init value.
+;;     isearchp-imenu-1: Removed first arg.  Pass (intern regexp) as prop to *-regexp-context-search.
+;;     Use string-match-p, not string-match.
 ;; 2013/09/18 dadams
 ;;     Renamed *-char-prop-* to *-property-*, *-char-properties to *-properties.
 ;;     isearchp-property-matches-p: Corrected overlays-only check.
@@ -224,6 +237,9 @@ Possible values are `text', `overlay', and nil, meaning both.")
 (defvar isearchp-property-values nil
   "Last property values used for `isearchp-property-*' commands.")
 
+(defvar isearchp-property-prop-prefix "isearchp-"
+  "Prefix for Isearch property names.")
+
 (defvar isearchp-complement-domain-p nil
   "Non-nil means complement the initial search candidates wrt the buffer.
 This has an effect only on (some) Icicles search commands.
@@ -260,8 +276,106 @@ regexp as the search context, and so on.")
 
 ;;; General Commands -------------------------------------------------
 
+(defun isearchp-remove-property (beg end property &optional type predicate msgp)
+  "Remove PROPERTY from the active region or buffer.
+If PROPERTY was the last property used for a property search, then
+forget that it was used.
+
+You are prompted for PROPERTY.  By default, PROPERTY is removed from
+both text and overlays.  With a prefix arg you are also prompted for
+the type to remove: text, overlay, or both.
+
+Non-interactively:
+ TYPE = nil means both text and overlays.
+ Non-nil PREDICATE is a predicate that each property must satisfy."
+  (interactive
+   (let ((beg1  (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+         (end1  (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+         (typ   (and current-prefix-arg
+                     (completing-read  "Type: " '(("text") ("overlay") ("text and overlay"))
+                                       nil t nil nil "text and overlay"))))
+     (setq typ  (and (not (equal typ "text and overlay"))  (intern typ)))
+     (list beg1
+           end1
+           (let ((prop  (completing-read
+                         "Property: " (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                              (isearchp-properties-in-buffer
+                                               (current-buffer) beg1 end1 typ))
+                         nil t nil nil ; Must pick a property that is present.
+                         (and isearchp-property-prop  (symbol-name isearchp-property-prop)))))
+             (when (equal "" prop) (error "No property chosen"))
+             (intern prop))
+           (if (not typ) '(text overlay) (list typ))
+           nil
+           'MSGP)))
+  (unless type (setq type  '(text overlay)))
+  (let ((bufmodp   (buffer-modified-p))
+        (removedp  nil))
+    (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list property))))
+    (when (memq 'overlay type) (while (< beg end)
+                                 (dolist (ov  (overlays-at beg))
+                                   (when (overlay-get ov property)
+                                     (delete-overlay ov)
+                                     (setq removedp  t)))
+                                 (setq beg  (1+ beg))))
+    (set-buffer-modified-p bufmodp)
+    (when msgp (message (if removedp "Property removed" "Property NOT removed"))))
+  (when (eq isearchp-property-prop property) (setq isearchp-property-prop    nil
+                                                   isearchp-property-values  nil)))
+
+(defun isearchp-remove-all-properties (beg end &optional type predicate msgp)
+  "Remove all properties from the active region or buffer.
+With a non-negative prefix arg you are prompted for the type of
+properties to remove: text, overlay, or both.
+
+By default, remove only Isearch properties, which are those whose
+names begin with `isearchp-'.  But with a non-positive prefix arg all
+properties present in the active region or buffer are candidates for
+removal.  In this case, you are prompted for a predicate that each
+property to be removed must satisfy.  Empty input at the prompt means
+no filtering: *all* properties are removed unconditionally.
+
+Non-interactively:
+ TYPE = nil means both text and overlays.
+ Non-nil PREDICATE is a predicate that each property must satisfy,
+  instead of having to be an Isearch property."
+  (interactive
+   (let ((beg1  (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+         (end1  (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+         (typ  (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
+                    (completing-read  "Type: " '(("text") ("overlay") ("text and overlay"))
+                                      nil t nil nil "text and overlay"))))
+     (setq typ  (and typ  (not (equal typ "text and overlay"))  (intern typ)))
+     (list beg1 end1 (if (not typ) '(text overlay) (list typ))
+           (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+               (read-from-minibuffer "Remove properties satisfying predicate: "
+                                     nil read-expression-map t (and (boundp 'function-name-history)
+                                                                    'function-name-history)
+                                     "nil")
+             (lambda (prop) (string-match-p "\\`isearchp-" (symbol-name prop))))
+           'MSGP)))
+  (unless type (setq type  '(text overlay)))
+  (let ((bufmodp   (buffer-modified-p))
+        (removedp  nil)
+        beg2)
+    (dolist (prop  (isearchp-properties-in-buffer (current-buffer) beg end
+                                                  (if (cadr type) nil type)
+                                                  predicate))
+      (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list prop))))
+      (setq beg2  beg)
+      (when (memq 'overlay type) (while (< beg2 end)
+                                   (dolist (ov  (overlays-at beg2))
+                                     (when (overlay-get ov prop)
+                                       (delete-overlay ov)
+                                       (setq removedp  t)))
+                                   (setq beg2  (1+ beg2))))
+      (when (eq isearchp-property-prop prop) (setq isearchp-property-prop    nil
+                                                   isearchp-property-values  nil)))
+    (set-buffer-modified-p bufmodp)
+    (when msgp (message (if removedp "Properties removed" "Properties NOT removed")))))
+
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
-  "Isearch forward in text with a text or overlay property.
+  "Isearch forward in text with a text property or overlay property.
 That is, move to the next such property and search within it for text
 matching your input.
 
@@ -271,32 +385,29 @@ Isearch to toggle this variable.)  For example, this lets you search
 for text that is NOT displayed using a certain face or combination of
 faces.
 
-By default, search for the text or overlay property that you last used
-in an Isearch command.  This means any Isearch command that searches
-or applies such properties, which includes the `isearch-char-prop-*'
-commands and commands such as `isearchp-imenu*', `isearchp-thing', and
-`isearchp-regexp-context-search'.
-
-If you have not previously used such an Isearch command then you are
-prompted for the following:
+With no prefix argument, or if you have not previously used an Isearch
+command that searches properties or applies them, you are prompted for
+the following:
 
  * the property type (`text', `overlay', or `text and overlay')
  * the property (e.g., `face', `mumamo-major-mode')
  * the property values (e.g., a list of faces, for property `face')
 
-Otherwise:
+If you have previously used such an Isearch property command, then a
+prefix arg means reuse the property type, property, and value from the
+last Isearch property command.  This includes `isearch-char-prop-*'
+commands and commands such as `isearchp-imenu*', `isearchp-thing',
+`isearchp-regexp-context-search', and `isearchp-put-prop-on-region'.
 
- With no prefix arg, use the settings (property type, property,
- property values) from the last time you invoked a command that
- searches text or overlay properties.
+Note that this means that you can simply use `C-u C-t' during ordinary
+Isearch in order to repeat the last property search.
 
- With a prefix arg, you are prompted for the property and property
- values to use.  The particular prefix arg determines the property
- type to search, as follows:
+The particular prefix arg controls the behavior as follows:
 
-  * plain prefix arg (`C-u'): both overlay and text property zones
-  * negative prefix arg (e.g., `C--'): overlay property zones
-  * non-negative prefix arg (e.g., `C-9'): text property zones
+ * Plain `C-u': Reuse the last property type (overlay, text, or both).
+ * Positive prefix arg (e.g., `C-9'): Search only text properties.
+ * Negative prefix arg (e.g., `C--'): Search only overlayproperties.
+ * Zero prefix arg (`C-0'): Search both text and overlay properties.
 
 By default, an actual value of the property matches the value
 you specify if it is `equal'.  Properties `mumamo-major-mode' and
@@ -312,16 +423,16 @@ choosing).  Text is searched that has a face property that includes
 any of the faces you choose.  If you choose no face (empty input at
 the outset), then text with any face at all is searched.
 
-NOTE: If you search zones of property `face', and the property values
+NOTE: If you search zones of property `face' and the property values
       include `font-lock' faces, then you might want to first make
       sure the entire buffer has been fontified.  You can do that
       using command `isearchp-fontify-buffer-now'.
 
 NOTE: This command is available during normal Isearch, on key `C-t'.
-      However, in order to be able to use a prefix arg with this
-      command from within Isearch, you must set `isearch-allow-scroll'
-      or `isearch-allow-prefix' (if available) to non-nil.  Otherwise,
-      a prefix arg during Isearch exits Isearch."
+      However, in order to be able to use a prefix arg within Isearch,
+      you must set `isearch-allow-scroll' or `isearch-allow-prefix'
+      (if available) to non-nil.  Otherwise, a prefix arg exits
+      Isearch."
   (interactive "P")
   (isearchp-property-1 'isearch-forward arg))
 
@@ -334,10 +445,10 @@ See `isearchp-property-forward'."
 (defun isearchp-property-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
   "Regexp Isearch forward in text with a text or overlay property.
 NOTE: This command is available during normal Isearch, on key `C-M-t'.
-      However, in order to be able to use a prefix arg with this
-      command, you must set `isearch-allow-scroll' or
-      `isearch-allow-prefix' (if available) to non-nil.
-      Otherwise, a prefix arg during Isearch exits Isearch.
+      However, in order to be able to use a prefix arg within Isearch,
+      you must set `isearch-allow-scroll' or `isearch-allow-prefix'
+      (if available) to non-nil.  Otherwise, a prefix arg exits
+      Isearch.
 See `isearchp-property-forward'."
   (interactive "P")
   (isearchp-property-1 'isearch-forward-regexp arg))
@@ -379,73 +490,76 @@ If ACTION is non-nil then it is a function that accepts no arguments.
  It is called after matching buffer text with REGEXP.  After ACTION,
  the search hit end position is extended or restricted to point.
 Non-interactively, non-nil BEG and END are used as the region limits."
-  (interactive (let* ((prop     (intern (read-string "Text property: ")))
-                      (regionp  (and transient-mark-mode  mark-active)))
-                 (list prop
-                       (isearchp-read-context-regexp)
-                       (if regionp (region-beginning) (point-min))
-                       (if regionp (region-end) (point-max))
-                       nil
-                       nil
-                       'MSGP)))
+  (interactive (list (intern (read-string "Text property: " isearchp-property-prop-prefix
+                                          'isearchp-property-history isearchp-property-prop-prefix))
+                     (isearchp-read-context-regexp)
+                     (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
+                     (if (and transient-mark-mode  mark-active) (region-end) (point-max))
+                     nil
+                     nil
+                     'MSGP))
   (let ((prop-value  (isearchp-regexp-scan beg end property regexp predicate action)))
     (when msgp
       (if prop-value
           (message "Prop value added: `%s'" prop-value)
         (message "No property added - no match for %s" regexp)))))
 
-(defun isearchp-regexp-context-search (new beg end property regexp &optional predicate action)
+(defun isearchp-regexp-context-search (reuse beg end _ignored regexp &optional predicate action)
   "Search within contexts defined by a regexp.
 If `isearchp-complement-domain-p' is non-nil then search *outside* the
 contexts defined by the regexp.  (Use `C-M-~' during Isearch to toggle
 this variable.
 
-IMPORTANT: By default, this command assumes that the search contexts
-have already been defined, by a previous use of this command,
-`isearchp-imenu', or `isearchp-regexp-define-contexts'.
+Search is limited to the region if it is active.
 
-If you do not use a prefix arg then this command searches for the text
-or overlay property that you last used in an Isearch command that
-searches or applies such properties.  This includes the
-`isearch-property-*' commands, the `isearchp-imenu*' commands, and
-`isearchp-thing'.  See `isearchp-property-forward' for more
-information.
+If you do not use a prefix arg (or non-interactively if argument REUSE
+is nil), or you have not previously used this command or similar
+commands, then you are prompted for the following:
 
-If you use a prefix arg, or if you have not previously used this
-command or similar commands, then you are prompted for the
-context-defining regexp.
-
-If the regexp has subgroups, then you are prompted for the subgroup to
-use to define the contexts.  Subgroup 0 means use the entire regexp
-match as a context.  1 means use the first regexp group match as a
-context.  And so on.
-
-With a negative prefix arg you are prompted also for a Boolean
-function that takes these arguments:
-
+ * the context-defining regexp
+ * a predicate (Boolean function) that takes these arguments:
   - the search-hit string (what matches the regexp or chosen subgroup)
   - a marker at the end of the search-context
 
 Only the search hits for which the predicate holds are retained.
 
+If the regexp has subgroups then you are prompted for the subgroup to
+use to define the contexts.  Subgroup 0 means use the entire regexp
+match as a context.  Subgroup 1 means use the first regexp group match
+as a context.  And so on.
+
 The search contexts are marked in the buffer using a text property.
 You can also search them using `isearch-property-*' commands.  The
 text property used is the symbol whose name is the regexp.  The
 property value is a cons whose car is the regexp (a string) and whose
-cdr is PREDICATE."
+cdr is PREDICATE.
+
+If you use a prefix arg (or non-interactively if argument REUSE is
+non-nil), and you have previously used this command or similar
+commands, then this command acts like `isearchp-property-forward' with
+a plain prefix arg.  That is, it searches for the text property or
+overlay property that you last used in an Isearch command that
+searches or applies such properties.  See `isearchp-property-forward'
+for more information.
+
+Non-interactively, _IGNORED is ignored, and the other arguments are as
+in `isearchp-add-regexp-as-property'."
   (interactive (cons current-prefix-arg (isearchp-regexp-read-args)))
-  (when (or new
+  (setq _ignored  (intern (concat isearchp-property-prop-prefix regexp)))
+  (when (or (not reuse)
             (not (consp (car isearchp-property-values)))
             (not (equal (caar isearchp-property-values) regexp))
             (not (eq isearchp-property-prop (intern regexp)))
             (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
-    (isearchp-regexp-define-contexts beg end property regexp predicate action))
-  (isearchp-property-forward nil))
+    (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
+  (isearchp-property-forward '(4)))
 
 (defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action)
   "Define search contexts for a future text- or overlay-property search.
 This command does not actually search the contexts.  For that, use
-`isearchp-regexp-context-search' or `isearchp-property-forward'."
+`isearchp-regexp-context-search' or `isearchp-property-forward'.
+See `isearchp-regexp-context-search' for a description of the
+arguments and prefix-argument behavior in terms of prompting for them."
   (interactive (isearchp-regexp-read-args))
   (message "Scanning for regexp matches...")
   (let ((matches-p  (isearchp-regexp-scan beg end property regexp predicate action)))
@@ -457,6 +571,32 @@ This command does not actually search the contexts.  For that, use
 ;;(@* "General Non-Interactive Functions")
 
 ;;; General Non-Interactive Functions --------------------------------
+
+(defun isearchp-regexp-read-args ()
+  "Read args for `isearchp-regexp*'.
+The list of args returned is:
+ BEG and END, the active region limits or the buffer limits
+ PROPERTY, the regexp read, as a symbol (i.e., interned)
+ REGEXP, the regexp read, as a string
+ PREDICATE, a predicate to filter search contexts
+See `isearchp-regexp-context-search' for a description of the prompting."
+  (let* ((beg   (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+         (end   (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+         (valuesp  (and (consp (car isearchp-property-values))
+                        (stringp (caar isearchp-property-values))))
+         (regxp    (if (or (not current-prefix-arg)  (not valuesp))
+                       (isearchp-read-context-regexp)
+                     (caar isearchp-property-values)))
+         (prop     (if (or (not current-prefix-arg)  (not valuesp))
+                       (intern (concat isearchp-property-prop-prefix regexp))
+                     isearchp-property-prop))
+         (pred     (and (or (not current-prefix-arg)  (not valuesp))
+                        (read-from-minibuffer "Predicate to filter search contexts: "
+                                              nil read-expression-map t
+                                              (and (boundp 'function-name-history)
+                                                   'function-name-history)
+                                              "nil"))))
+    (list beg end prop regxp pred)))
 
 (defun isearchp-property-1 (search-fn arg)
   "Helper for `isearchp-property-(forward|backward)(-regexp)'."
@@ -471,33 +611,35 @@ This command does not actually search the contexts.  For that, use
   (let* ((enable-recursive-minibuffers    t)
          ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
          (search-nonincremental-instead   nil)
-         ;; Test *-prop, not *-type, for TYPE, because nil means both.
-         (type     (if (or arg  (not isearchp-property-prop))
-                       (if (not isearchp-property-prop)
-                           (let ((typname
-                                  (completing-read
-                                   "Type: " '(("text") ("overlay") ("text and overlay"))
-                                   nil t nil nil "text and overlay")))
-                             (and (not (string= "text and overlay" typname))  (intern typname)))
-                         (and (atom arg) ; `C-u' means nil (both).
-                              (if (wholenump (prefix-numeric-value arg)) 'text 'overlay)))
-                     isearchp-property-type))
-         (props    (and (or arg  (not isearchp-property-prop))
-                        (mapcar #'(lambda (prop) (list (symbol-name prop)))
-                                (isearchp-properties-in-buffer
-                                 (current-buffer) (point-min) (point-max) type))))
-         (prop     (if (or arg  (not isearchp-property-prop))
-                       (intern (completing-read
-                                (format "%s property to %ssearch: "
-                                        (if type (capitalize (symbol-name type)) "Character")
-                                        (if isearchp-complement-domain-p "NOT " ""))
-                                props nil nil nil nil "face"))
-                     isearchp-property-prop))
-         (values   (if (or arg  (not isearchp-property-values))
-                       (if (memq prop '(face font-lock-face))
-                           (isearchp-read-face-names)
-                         (isearchp-read-sexps))
-                     isearchp-property-values)))
+         (restartp  (or (not arg)  (not isearchp-property-prop)))
+         (type      (if restartp ; For TYPE, tested *-prop above, not *-type, because nil means both.
+                        (let ((typname
+                               (completing-read
+                                "Type: " '(("text") ("overlay") ("text and overlay"))
+                                nil t nil nil "text and overlay")))
+                          (and (not (string= "text and overlay" typname))  (intern typname)))
+                      (if (consp arg)   ; `C-u' means use last.
+                          isearchp-property-type
+                        (setq arg  (prefix-numeric-value arg))
+                        (cond ((zerop arg)  nil) ; Both text and overlay.
+                              ((> arg 0)    'text)
+                              (t            'overlay)))))
+         (props     (and restartp  (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                           (isearchp-properties-in-buffer
+                                            (current-buffer) (point-min) (point-max) type))))
+         (prop      (if restartp
+                        (intern (completing-read
+                                 (format "%s property to %ssearch: "
+                                         (if type (capitalize (symbol-name type))
+                                           "Text and overlay")
+                                         (if isearchp-complement-domain-p "NOT " ""))
+                                 props nil nil nil 'isearchp-property-history "face"))
+                      isearchp-property-prop))
+         (values    (if restartp
+                        (if (memq prop '(face font-lock-face))
+                            (isearchp-read-face-names)
+                          (isearchp-read-sexps))
+                      isearchp-property-values)))
     (setq isearchp-filter-predicate-orig  isearch-filter-predicate
           isearch-filter-predicate        (isearchp-property-filter-pred type prop values)
           isearchp-property-type         type
@@ -507,12 +649,13 @@ This command does not actually search the contexts.  For that, use
   (when (and transient-mark-mode  mark-active) (deactivate-mark))
   (funcall search-fn))
 
-;; Same as `icicle-char-properties-in-buffer', defined in `icicles-cmd2.el'.
-(defun isearchp-properties-in-buffer (&optional buffer beg end type)
+;; Similar to `icicle-properties-in-buffer', defined in `icicles-cmd2.el', but this has PREDICATE.
+(defun isearchp-properties-in-buffer (&optional buffer beg end type predicate)
   "List of all text or overlay properties in BUFFER between BEG and END.
 Only the properties are included, not their values.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
-text properties, or both, respectively."
+text properties, or both, respectively.
+Non-nil PREDICATE is a predicate that each property must satisfy."
   (unless buffer (setq buffer  (current-buffer)))
   (let ((props  ())
         ovrlays curr-props)
@@ -526,20 +669,24 @@ text properties, or both, respectively."
           (dolist (ovrly  ovrlays)
             (setq curr-props  (overlay-properties ovrly))
             (while curr-props
-              (unless (memq (car curr-props) props) (push (car curr-props) props))
+              (unless (and (memq (car curr-props) props)
+                           (or (not predicate)  (funcall predicate (car curr-props))))
+                (push (car curr-props) props))
               (setq curr-props  (cddr curr-props)))))
         (when (or (not type)  (eq type 'text)) ; Get text properties.
           (while (< beg end)
             (setq beg         (or (next-property-change beg nil end)  end)
                   curr-props  (text-properties-at beg))
             (while curr-props
-              (unless (memq (car curr-props) props) (push (car curr-props) props))
+              (unless (and (memq (car curr-props) props)
+                           (or (not predicate)  (funcall predicate (car curr-props))))
+                (push (car curr-props) props))
               (setq curr-props  (cddr curr-props)))))))
     props))
 
-(defun isearchp-property-filter-pred (type prop values)
+(defun isearchp-property-filter-pred (type property values)
   "Return a predicate that uses `isearchp-property-matches-p'.
-TYPE, PROP, and VALUES are used by that function.
+TYPE, PROPERTY, and VALUES are used by that function.
 The predicate is suitable as a value of `isearch-filter-predicate'."
   (let ((tag  (make-symbol "isearchp-property-filter-pred")))
     `(lambda (beg end)
@@ -549,9 +696,10 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
                   (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
             (catch ',tag
               (while (< beg end)
-                (let ((matches-p  (isearchp-property-matches-p
-                                   ',type ',prop ',values (isearchp-property-default-match-fn ',prop)
-                                   beg)))
+                (let ((matches-p  (isearchp-property-matches-p ',type ',property ',values
+                                                               (isearchp-property-default-match-fn
+                                                                ',property)
+                                                               beg)))
                   (unless (if matches-p
                               (not isearchp-complement-domain-p)
                             isearchp-complement-domain-p)
@@ -610,11 +758,11 @@ PREDICATE must be a function with two required arguments."
     result))
 
 ;; Same as `icicle-search-property-default-match-fn', defined in `icicles-cmd2.el'.
-(defun isearchp-property-default-match-fn (prop)
-  "Return the default match function for text or overlay property PROP.
+(defun isearchp-property-default-match-fn (property)
+  "Return the default match function for text or overlay PROPERTY.
 Properties `face' and `mumamo-major-mode' are handled specially.
 For other properties the values are matched using `equal'."
-  (case prop
+  (case property
     ((face font-lock-face) (lambda (val rprop)
                              (if (consp rprop)
                                  (condition-case nil ; Allow for dotted cons.
@@ -631,29 +779,39 @@ For other properties the values are matched using `equal'."
 
 (defun isearchp-put-prop-on-region (property value beg end)
   "Add text PROPERTY with VALUE to the region from BEG to END.
-If you have already used any of the commands `isearchp-property-*' and
-you do not use a prefix argument, then use the property and (the first
-of) its values that you last specified for such searching.
+Interactively, BEG and END are the region limits.
 
-Otherwise, you are prompted for the property and its value.
+With no prefix argument, or if you have not previously used an Isearch
+command that searches properties or applies them, you are prompted for
+the following:
 
-If the property is not `face' or `font-lock-face', then you enter a
-sexp, which is read as the Lisp value to use.  E.g., if the property
-is `mumamo-major-mode' then you might enter `(emacs-lisp-mode)' as the
-value.
+ * the property (e.g., `face', `mumamo-major-mode')
+ * the property values (e.g., a list of faces, for property `face')
 
 If the property is `face' or `font-lock-face' then you can specify
 more than one face - their union is used as the property value.  If
 you specify none (empty input immediately) then *all* faces are
-*removed* from the region."
+*removed* from the region.
+
+If the property is not `face' or `font-lock-face' then you enter a
+sexp, which is read as the Lisp value to use.  For example, if the
+property is `mumamo-major-mode' you might enter `(emacs-lisp-mode)'
+as the value.
+
+If you have already used any of the Isearch property commands, then a
+prefix arg means reuse the property and (the first of) its values that
+you last specified.  Such commands include the `isearch-char-prop-*'
+commands and commands such as `isearchp-imenu*', `isearchp-thing',
+`isearchp-regexp-context-search', and `isearchp-put-prop-on-region'."
   (interactive
-   (if (and (not current-prefix-arg)  isearchp-property-prop  (car isearchp-property-values))
+   (if (and current-prefix-arg  isearchp-property-prop  (car isearchp-property-values))
        (list isearchp-property-prop isearchp-property-values (region-beginning) (region-end))
-     (let* ((props  (and (or current-prefix-arg  (not isearchp-property-prop))
+     (let* ((props  (and (or (not current-prefix-arg)  (not isearchp-property-prop))
                          (mapcar #'(lambda (prop) (list (symbol-name prop)))
                                  (isearchp-properties-in-buffer
                                   (current-buffer) (point-min) (point-max) 'text))))
-            (prop   (intern (completing-read "Text property: " props nil nil nil nil "face")))
+            (prop   (intern (completing-read "Text property: " props nil nil nil
+                                             'isearchp-property-history "face")))
             (vals   (if (memq prop '(face font-lock-face))
                         (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
                       (isearchp-read-sexps 'ONLY-ONE-P))))
@@ -666,7 +824,7 @@ you specify none (empty input immediately) then *all* faces are
   "Version of `isearch-message-prefix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
           (and (= emacs-major-version 24)  (< emacs-minor-version 3)
-               (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
+               (not (string-match-p "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
       (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.2.
     (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.3+
 
@@ -754,19 +912,22 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
         (setq sexp        (completing-read prompt2 sexp-cands nil nil nil 'read-expression-history)
               sexp-cands  (delete (assoc sexp sexp-cands) sexp-cands)))
       (prog1 (setq sexps  (nreverse (delete "" sexps)) ; Return the list of sexps.
-                   sexps  (mapcar (lambda (sx) (car (read-from-string sx))) sexps))
+                   sexps  (mapcar (lambda (sx)
+                                    (car (condition-case nil
+                                             (read-from-string sx)
+                                           (error nil))))
+                                  sexps))
         (when (interactive-p) (message "Sexps: %S" sexps))))))
-
 
 (defun isearchp-read-context-regexp ()
   "Read context regexp and determine `isearchp-context-level'."
-  (let* ((prompt  "Search %s contexts (regexp): ")
+  (let* ((prompt  "Search %s contexts (regexp)")
          (prompt  (format prompt (if isearchp-complement-domain-p "*OUTSIDE*" "within")))
          (regexp  (read-regexp prompt)))
     (while (string= "" regexp)
       (message "Regexp cannot be empty.  Try again...") (sit-for 2)
       (setq regexp  (read-regexp prompt)))
-    (setq isearchp-context-level  (if (string-match "\\\\(" regexp)
+    (setq isearchp-context-level  (if (string-match-p "\\\\(" regexp)
                                       (truncate (read-number
                                                  "Subgroup to use as search context [0, 1, 2,...]: "
                                                  0))
@@ -774,7 +935,8 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
     regexp))
 
 (defun isearchp-regexp-scan (beg end property regexp &optional predicate action)
-  "Scan buffer for REGEXP, adding text property PROPERTY to matches.
+  "Scan for REGEXP, adding text property PROPERTY to matches.
+If the region is active then scan it.  Otherwise scan the buffer.
 Return the value of PROPERTY, if added somewhere.  Else return nil.
 See `isearchp-add-regexp-as-property' for the parameter descriptions."
   (setq regexp  (or regexp  (isearchp-read-context-regexp)))
@@ -783,7 +945,8 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                                end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (let ((last-beg      nil)
-        (added-prop-p  nil))
+        (added-prop-p  nil)
+        (bufmodp       (buffer-modified-p)))
     (condition-case-no-debug isearchp-regexp-scan
         (save-excursion
           (goto-char (setq last-beg  beg))
@@ -806,7 +969,6 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                                   (match-end isearchp-context-level)))
                    (IGNORE      (when action (save-excursion (funcall action) (setq hit-end  (point)))))
                    (hit-string  (buffer-substring-no-properties hit-beg hit-end))
-                   (bufmodp     (buffer-modified-p))
                    end-marker)
               (if (and (not (string= "" hit-string))
                        (setq end-marker  (copy-marker hit-end))
@@ -820,35 +982,12 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                   
                   (let ((prop-value  (cons regexp predicate)))
                     (put-text-property hit-beg hit-end property prop-value)
-                    (put-text-property hit-beg hit-end 'isearchp t)
-                    (setq added-prop-p  prop-value)
-                    (set-buffer-modified-p bufmodp))
+                    (setq added-prop-p  prop-value))
                 (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
             (setq last-beg  beg)))
       (error (error "%s" (error-message-string isearchp-regexp-scan))))
+    (set-buffer-modified-p bufmodp)
     added-prop-p)) ; Return property value if added, or nil otherwise.
-
-(defun isearchp-regexp-read-args ()
-  "Read args for `isearchp-regexp*'."
-  (let* ((regionp  (and transient-mark-mode  mark-active))
-         (beg      (if regionp (region-beginning) (point-min)))
-         (end      (if regionp (region-end) (point-max)))
-         (regxp    (if (or current-prefix-arg
-                           (not (consp (car isearchp-property-values)))
-                           (not (stringp (caar isearchp-property-values))))
-                       (isearchp-read-context-regexp)
-                     (caar isearchp-property-values)))
-         (prop     (if (or current-prefix-arg
-                           (not (consp (car isearchp-property-values)))
-                           (not (stringp (caar isearchp-property-values))))
-                       (intern regxp)
-                     isearchp-property-prop))
-         (pred     (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)
-                        (read-from-minibuffer
-                         "Predicate to filter search contexts: "
-                         nil read-expression-map t (and (boundp 'function-name-history)
-                                                        'function-name-history)))))
-    (list beg end prop regxp pred)))
 
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
@@ -868,41 +1007,23 @@ See `make-hash-table' for possible values of TEST."
 ;;; Imenu Commands and Functions -------------------------------------
 
 (defun isearchp-imenu ()
-  (interactive)
   "Search Imenu entries.
+Search is limited to the region if it is active.
 A search context is the text between the beginning of the Imenu regexp
-match and `forward-sexp' from there.
-
-IMPORTANT: By default, this command assumes that the search contexts
-have already been defined, by a previous use of this command,
-`isearchp-regexp-context-search', or
-`isearchp-regexp-define-contexts'.
-
-If you do not use a prefix arg then this command searches for the text
-or overlay property that you last used in an Isearch command that
-searches or applies such properties.  This includes the
-`isearch-property-*' commands, the `isearchp-imenu*' commands, and
-`isearchp-thing'.  See `isearchp-property-forward' for more
-information.
-
-If you use a prefix arg, or if you have not previously used this
-command or similar commands, this command defines the search contexts
-and then searches them"
-  (isearchp-imenu-1 current-prefix-arg))
+match and `forward-sexp' from there."
+  (interactive)
+  (isearchp-imenu-1))
 
 (defun isearchp-imenu-command ()
   "Search Emacs command definitions.
 This uses `commandp', so it finds only currently defined commands.
 That is, if the buffer has not been evaluated, then its function
 definitions are NOT considered commands by `isearchp-imenu-command'.
-
-See `isearchp-imenu' for more information, in particular about using a
-prefix arg."
+See `isearchp-imenu' for more information."
   (interactive)
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
-  (isearchp-imenu-1 current-prefix-arg
-                    (lambda (_hit _mrkr)
+  (isearchp-imenu-1 (lambda (_hit _mrkr)
                       (commandp (intern-soft
                                  (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
                     (lambda (menus)
@@ -912,13 +1033,13 @@ prefix arg."
 
 (defun isearchp-imenu-non-interactive-function ()
   "Search Emacs non-command function definitions.
-See `isearchp-imenu' for more information, in particular about using a
-prefix arg.."
+This uses `commandp', so it finds only currently defined functions
+that are not interactive.
+See `isearchp-imenu' for more information."
   (interactive)
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
-  (isearchp-imenu-1 current-prefix-arg
-                    (lambda (_hit _mrkr)
+  (isearchp-imenu-1 (lambda (_hit _mrkr)
                       (let ((fn  (intern-soft
                                   (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
                         (and (fboundp fn)  (not (commandp fn)))))
@@ -929,13 +1050,11 @@ prefix arg.."
 
 (defun isearchp-imenu-macro ()
   "Search Lisp macro definitions.
-See `isearchp-imenu' for more information, in particular about using a
-prefix arg."
+See `isearchp-imenu' for more information."
   (interactive)
   (unless (memq major-mode '(emacs-lisp-mode lisp-mode))
     (error "This command is only for Emacs-Lisp mode or Lisp mode")) ; No `user-error' in Emacs 23.
-  (isearchp-imenu-1 current-prefix-arg
-                    (lambda (_hit _mrkr)
+  (isearchp-imenu-1 (lambda (_hit _mrkr)
                       (let ((fn  (intern-soft
                                   (buffer-substring-no-properties (match-beginning 2) (match-end 2)))))
                         (if (fboundp 'macrop) ; Emacs 24.4+
@@ -948,9 +1067,8 @@ prefix arg."
                           (car (assoc "Other" menus))
                           (error "No macro definitions in buffer"))))) ; No `user-error' in Emacs 23.
 
-(defun isearchp-imenu-1 (new &optional predicate submenu-fn)
+(defun isearchp-imenu-1 (&optional predicate submenu-fn)
   "Helper for `isearchp-imenu*' commands.
-BEG, END are the region limits.  If nil, the buffer limits are used.
 Non-nil PREDICATE means act on only the hits for it holds.  It is a
 Boolean function that takes these args:
   - the search-context string
@@ -967,8 +1085,7 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
         (table             (copy-syntax-table (syntax-table)))
         (slist             imenu-syntax-alist)
         (beg               (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
-        (end               (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
-        prop)
+        (end               (if (and transient-mark-mode  mark-active) (region-end) (point-max))))
     (dolist (syn  slist) ; Modify the syntax table used while matching regexps.
       (if (numberp (car syn))
           (modify-syntax-entry (car syn) (cdr syn) table) ; Single character.
@@ -998,7 +1115,7 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
                                 (caar menus)))) ; Only one submenu, so use it.
                   (regexp   (cadr (assoc submenu menus))))
              (unless (stringp regexp) (error "No match")) ; No `user-error' in Emacs 23.
-             (isearchp-regexp-context-search new beg end (intern regexp) regexp predicate
+             (isearchp-regexp-context-search nil beg end 'IGNORED regexp predicate
                                              ;; We rely on the match data having been preserved.
                                              ;; $$$$$$ An alternative fn for Lisp only:
                                              ;; (lambda () (up-list -1) (forward-sexp))))))
@@ -1029,18 +1146,19 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
 (defun isearchp-hide/show-comments (&optional hide/show start end) ; Bound to `M-;' during Isearch
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
-Interactively, START and END default to the region limits, if active.
-Otherwise, including non-interactively, they default to `point-min'
-and `point-max'.
+\(This is thus *not* a toggle command.)
+
+Interactively, START and END are the region limits if it is active
+Otherwise, including non-interactively, they are the buffer limits.
 
 During Isearch this is bound to `M-;'.  However, in order to use a
-prefix arg with it you must set `isearch-allow-scroll' or
+prefix arg within Isearch you must set `isearch-allow-scroll' or
 `isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
-arg during Isearch exits Isearch.
+arg exits Isearch.
 
 Uses `save-excursion', restoring point.
 
-Be aware that using this command to show invisible text shows *all*
+Be aware that using this command to show invisible text shows *ALL*
 such text, regardless of how it was hidden.  IOW, it does not just
 show invisible text that you previously hid using this command.
 
@@ -1112,50 +1230,44 @@ That is, each zone of text searched is a THING.
 Enter the type of THING to search: `sexp', `sentence', `list',
 `string', `comment', etc.
 
+You can alternatively choose to search, not the THINGs as search
+contexts, but the non-THINGs (non-contexts), that is, the buffer text
+that is outside THINGs.  To do this, use
+`C-M-~' (`isearchp-toggle-completing-domain') during Isearch.
+
 Possible THINGs are those for which
 `isearchp-bounds-of-thing-at-point' returns non-nil (and for which the
-bounds are not equal: an empty thing).  This does not include
-everything THING that is defined as a thing-at-point type.
+bounds are not equal: an empty thing).  This does not include every
+THING that is defined as a thing-at-point type.
 
 If user option `isearchp-ignore-comments-flag' is nil then include
 THINGs located within comments.  Non-nil (the default value) means to
 ignore things inside comments for searching.  You can toggle this
 option using `C-M-;' during Isearch, but to see the effect you will
-need to invoke this command again, and with a prefix arg (see below).
+need to invoke this command again.
 
-IMPORTANT: By default, this command assumes that the search contexts
-have already been defined by a previous use of this command.
+You are prompted for the type of THING to search.
 
-If you do not use a prefix arg then this command searches for the text
-or overlay property that you last used in an Isearch command that
-searches or applies such properties.  This includes the
-`isearch-property-*' commands, the `isearchp-imenu*' commands.  See
-`isearchp-property-forward' for more information.
+If you do not use a prefix argument then you are prompted also for a
+PREDICATE (Boolean function) that acceptable things must satisfy.  It
+is passed the thing plus its bounds, in the same form as the cons that
+is returned by `isearchp-next-visible-thing-and-bounds'.
 
-If you use a prefix arg, or if you have not previously used this
-command or similar commands, then you are prompted for the THING and
-the search contexts are created.  Text properties are added to the
-contexts to identify them and allow for text-property or
-overlay-property searching.
+If you use a prefix arg, and if the last property search also searched
+THING contexts, then search the contexts again, using the same
+predicate (if any).
 
-Non-interactively, if optional arg PREDICATE is non-nil then it is a
-predicate that acceptable things must satisfy.  It is passed the thing
-in the form of the cons returned by
-`isearchp-next-visible-thing-and-bounds'.
+In either case, the search contexts are created as zones of text with
+text property `isearchp-thing-THING' of value (THING . PREDICATE).
 
 Non-interactively, if optional arg TRANSFORM-FN is non-nil then it is
-a function to apply to each thing plus its bounds and which returns
+a function to apply to each thing plus its bounds, and which returns
 the actual target to search in place of THING.  Its argument is the
-same as PREDICATE's.
+same as the argument of PREDICATE.
 
-It returns the replacement search context for the thing plus its
-bounds, in the same form: a cons (STRING START . END), where STRING is
-the search hit string and START and END are its bounds).
-
-You can alternatively choose to search, not the THINGs as search
-contexts, but the non-THINGs (non-contexts), that is, the buffer text
-that is outside THINGs.  To do this, use
-`C-M-~' (`isearchp-toggle-completing-domain') during Isearch.
+TRANSFORM-FN returns a replacement search context for the thing plus
+its bounds, in the same form: a cons (STRING START . END), where
+STRING is the search hit string and START and END are its bounds).
 
 NOTE:
 
@@ -1163,46 +1275,26 @@ NOTE:
 
 2. In some cases it can take a while to compute the THING search
    contexts.  Use the command on an active region when you do not need
-   to search THINGS throughout an entire buffer.
+   to search THINGS throughout the entire buffer.
 
 3. In `nxml-mode', remember that option `nxml-sexp-element-flag'
    controls what a `sexp' means.  To use whole XML elements as search
    contexts, set the option to t, not nil.  (This is already done for
    the predefined Isearch+ commands.)
 
-4. The scan candidate things moves forward a THING at a time.  In
+4. The buffer or region scan moves forward a THING at a time.  In
    particular, if either PREDICATE or TRANSFORM-FN disqualifies the
    thing being scanned currently, then scanning skips forward to the
    next thing.  The scan does not dig inside the current thing to look
    for a qualified THING."
-  (interactive (cons current-prefix-arg (isearchp-thing-read-args)))
+  (interactive (cons (not current-prefix-arg) (isearchp-thing-read-args)))
   (when (or new
             (not (consp (car isearchp-property-values)))
             (not (equal (caar isearchp-property-values) thing))
             (not (eq isearchp-property-prop property))
             (not (isearchp-text-prop-present-p beg end property (cons thing predicate))))
     (isearchp-thing-define-contexts thing beg end property predicate))
-  (isearchp-property-forward nil))
-
-(defun isearchp-thing-read-args ()
-  "Read args for `isearchp-thing*'."
-  (let* ((thng  (intern
-                 (completing-read
-                  (format "%shing (type): " (if isearchp-complement-domain-p "*NOT* t" "T"))
-                  (isearchp-things-alist) nil nil nil nil (symbol-name isearchp-last-thing-type))))
-         (beg   (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
-         (end   (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
-         (pred  (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)
-                     (read-from-minibuffer
-                      "Predicate to filter search contexts: "
-                      nil read-expression-map t (and (boundp 'function-name-history)
-                                                     'function-name-history))))
-         (prop  (if (or current-prefix-arg
-                        (not (consp (car isearchp-property-values)))
-                        (not (equal thng (caar isearchp-property-values))))
-                    (intern (format "isearchp-thing-%s" thng))
-                  isearchp-property-prop)))
-    (list thng beg end prop pred)))
+  (isearchp-property-forward '(4)))
 
 (defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn)
   "Define search contexts for future thing searches.
@@ -1215,6 +1307,32 @@ This command does not actually search the contexts.  For that, use
         isearchp-property-type    'text
         isearchp-property-values  (list (cons thing predicate)))
   (message "Scanning for thing: `%s'...done" thing))
+
+(defun isearchp-thing-read-args ()
+  "Read args for `isearchp-thing*'.
+The list of args returned is:
+ THING, the type of things to search
+ BEG and END, the active region limits or the buffer limits
+ PROPERTY, the symbol `isearchp-thing-THING'
+ PREDICATE, a predicate to filter search contexts
+See `isearchp-thing' for a description of the prompting."
+  (let* ((thng     (intern
+                    (completing-read
+                     (format "%shing (type): " (if isearchp-complement-domain-p "*NOT* t" "T"))
+                     (isearchp-things-alist) nil nil nil nil (symbol-name isearchp-last-thing-type))))
+         (beg      (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
+         (end      (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+         (valuesp  (and (consp (car isearchp-property-values))
+                        (equal thng (caar isearchp-property-values))))
+         (prop     (if (or (not current-prefix-arg)  (not valuesp))
+                       (intern (format "%sthing-%s" isearchp-property-prop-prefix thng))
+                     isearchp-property-prop))
+         (pred     (if (or (not current-prefix-arg)  (not valuesp))
+                       (read-from-minibuffer
+                        "Predicate to filter search contexts: " nil read-expression-map t
+                        (and (boundp 'function-name-history)  'function-name-history) "nil")
+                     (cdar isearchp-property-values)))) ; Reuse last predicate.
+    (list thng beg end prop pred)))
 
 (defun isearchp-thing-scan (beg end thing property &optional predicate transform-fn)
   "Scan buffer from BEG to END for things of type THING.
@@ -1292,17 +1410,17 @@ This function respects both `isearchp-search-complement-domain-p' and
                          
                           (when (and isearchp-ignore-comments-flag  isearchp-complement-domain-p)
                             (put-text-property 0 (length hit-string) 'invisible nil hit-string))
-                          (let ((buffer-mod  (buffer-modified-p))
-                                (prop-value  (cons thing predicate)))
-                            (put-text-property hit-beg hit-end property prop-value)
-                            (put-text-property hit-beg hit-end 'isearchp t)
-                            (setq added-prop-p  prop-value)
-                            (set-buffer-modified-p buffer-mod)))
+                          (unless (equal hit-beg hit-end)
+                            (let ((buffer-mod  (buffer-modified-p))
+                                  (prop-value  (cons thing predicate)))
+                              (put-text-property hit-beg hit-end property prop-value)
+                              (setq added-prop-p  prop-value)
+                              (set-buffer-modified-p buffer-mod))))
                          (t
                           (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
                    (if thg-end
                        ;; $$$$$$
-                       ;; The correct code here is (setq beg end).  However, unless you use my
+                       ;; The correct code here is (setq beg thg-end).  However, unless you use my
                        ;; library `thingatpt+.el' or unless Emacs bug #9300 is fixed (hopefully
                        ;; in Emacs 24), that will loop forever.  In that case we move forward a
                        ;; char to prevent looping, but that means that the position just after
@@ -1312,8 +1430,8 @@ This function respects both `isearchp-search-complement-domain-p' and
                                     (1+ thg-end)))
                      ;; If visible then no more things - skip to END.
                      (unless (invisible-p beg) (setq beg  end)))))
-               (setq last-beg  beg))
-             (set-buffer-modified-p bufmodp)))
+               (setq last-beg  beg)))
+           (set-buffer-modified-p bufmodp))
        (error (error "%s" (error-message-string isearchp-thing-scan)))))
     added-prop-p))  ; Return indication of whether property was added.
 
