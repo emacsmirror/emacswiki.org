@@ -9,9 +9,9 @@
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Tue Jul 23 16:13:51 2013 (-0700)
+;; Last-Updated: Sat Sep 21 09:21:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2888
+;;     Update #: 2893
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -264,6 +264,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/21 dadams
+;;     maximize-frame: Apply frame-geom-value-numeric to new-* also.  Bug report thx: Mike Fitzgerald.
 ;; 2013/07/21 dadams
 ;;     Added Package-Requires to header, at least temporarily, but should not need to specify version.
 ;; 2013/07/12 dadams
@@ -1099,13 +1101,17 @@ In Lisp code:
          (top    . ,new-top)
          (height . ,new-height)
          ;; If we actually changed a parameter, record the old one for restoration.
-         ,(and new-left    (/= (frame-geom-value-numeric 'left orig-left) new-left)
+         ,(and new-left    (/= (frame-geom-value-numeric 'left orig-left)
+                               (frame-geom-value-numeric 'left new-left))
                (cons 'restore-left   orig-left))
-         ,(and new-top     (/= (frame-geom-value-numeric 'top orig-top) new-top)
+         ,(and new-top     (/= (frame-geom-value-numeric 'top orig-top)
+                               (frame-geom-value-numeric 'top new-top))
                (cons 'restore-top    orig-top))
-         ,(and new-width   (/= (frame-geom-value-numeric 'width orig-width) new-width)
+         ,(and new-width   (/= (frame-geom-value-numeric 'width orig-width)
+                               (frame-geom-value-numeric 'width new-width))
                (cons 'restore-width  orig-width))
-         ,(and new-height  (/= (frame-geom-value-numeric 'height orig-height) new-height)
+         ,(and new-height  (/= (frame-geom-value-numeric 'height orig-height)
+                               (frame-geom-value-numeric 'height new-height))
                (cons 'restore-height orig-height)))))
     (show-frame frame)
     (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))
