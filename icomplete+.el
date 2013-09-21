@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:28:55 2013 (-0700)
+;; Last-Updated: Sat Sep 21 07:35:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1610
+;;     Update #: 1614
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/21 dadams
+;;     icompletep-completion-all-sorted-completions:
+;;       Temporary hack for 24.4: completion--cache-all-sorted-completions takes 3 args now.
 ;; 2013/01/31 dadams
 ;;     Added: icompletep-cycling-mode.  Turn it off by default.
 ;; 2013/01/01 dadams
@@ -1052,7 +1055,13 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
                                                         (length (member c2 hist))))))))
             ;; Cache result.  Not just for speed, but also so repeated calls to
             ;; `minibuffer-force-complete' can cycle through all possibilities.
-            (completion--cache-all-sorted-completions (nconc all base-size)))))))
+
+            ;; $$$$$$ Temporary fix - will need to change more when `icomplete.el' in Emacs 24.4
+            ;;        becomes more stable.  They changed the number of args here from 1 to 3.
+            (if (fboundp 'icomplete--field-beg) ; Emacs 24.4+
+                (completion--cache-all-sorted-completions
+                 (icomplete--field-beg) (icomplete--field-end) (nconc all base-size))
+              (completion--cache-all-sorted-completions (nconc all base-size))))))))
 
 (defvar icompletep-cycling-mode nil)
 (when (boundp 'icomplete-minibuffer-map) ; Emacs 24.4+
