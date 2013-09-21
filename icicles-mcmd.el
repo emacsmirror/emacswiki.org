@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Aug 15 09:02:10 2013 (-0700)
+;; Last-Updated: Sat Sep 21 12:01:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19265
+;;     Update #: 19294
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -313,6 +313,7 @@
 ;;    `icicle-transpose-chars-magic',
 ;;    `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
+;;    `icicle-universal-argument--mode' (Emacs 24.4+),
 ;;    `icicle-upcase-if-ignore-case', `icicle-update-and-next'.
 ;;
 ;;  Internal variables defined here:
@@ -454,7 +455,7 @@
 (defvar doremi-up-keys)                 ; In `doremi.el'
 (defvar filesets-data)                  ; In `filesets.el'.
 (defvar icicle-ido-like-mode)           ; In `icicles-cmd2.el' (implicit)
-(defvar ignore-comments-flag)           ; In `thing-cmds.el'.
+(defvar ignore-comments-flag)           ; In `hide-comnt.el'.
 (defvar minibuffer-confirm-exit-commands) ; In `minibuffer.el' in Emacs 23+.
 (defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
 (defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
@@ -1546,7 +1547,7 @@ Bound to `M-_' in the minibuffer."
 (defun icicle-toggle-ignoring-comments () ; Bound to `C-M-;' in minibuffer.
   "Toggle the value of option `icicle-ignore-comments-flag'.
 If option `ignore-comments-flag' is defined (in library
-`thing-cmds.el') then it too is toggled.
+`hide-comnt.el') then it too is toggled.
 Bound to `C-M-;' in the minibuffer."
   (interactive)
   (setq icicle-ignore-comments-flag  (not icicle-ignore-comments-flag))
@@ -2516,39 +2517,49 @@ you do not want this remapping, then customize option
                      last-command-event
                    (icicle-get-safe last-command-event 'ascii-character)))
          (digit  (- (logand char ?\177) ?0)))
-    (cond ((integerp arg)
-           (setq prefix-arg  (+ (* arg 10) (if (< arg 0) (- digit) digit))))
-          ((eq arg '-)
-           ;; Treat -0 as just -, so that -01 will work.
-           (setq prefix-arg  (if (zerop digit) '- (- digit))))
-          (t
-           (setq prefix-arg  digit))))
-  (setq universal-argument-num-events  (length (this-command-keys)))
-  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
-      (save&set-overriding-map icicle-universal-argument-map)
-    (icicle-ensure-overriding-map-is-bound))
+    (setq prefix-arg  (cond ((integerp arg)  (+ (* arg 10) (if (< arg 0) (- digit) digit)))
+                            ;; Treat -0 as just -, so that -01 will work.
+                            ((eq arg '-)     (if (zerop digit) '- (- digit)))
+                            (t               digit))))
+  (if (fboundp 'universal-argument--mode)
+      (icicle-universal-argument--mode)
+    (setq universal-argument-num-events  (length (this-command-keys)))
+    (if (fboundp 'save&set-overriding-map) ; Emacs 24.1 to 24.3.
+        (save&set-overriding-map icicle-universal-argument-map)
+      (icicle-ensure-overriding-map-is-bound)))
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
 (defun icicle-negative-argument (arg)   ; Bound to `M--', `C-M--' in minibuffer.
   "`negative-argument', but also echo the prefix."
   (interactive "P")
-  (cond ((integerp arg) (setq prefix-arg  (- arg)))
-        ((eq arg '-) (setq prefix-arg  nil))
-        (t (setq prefix-arg  '-)))
-  (setq universal-argument-num-events  (length (this-command-keys)))
-  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
-      (save&set-overriding-map icicle-universal-argument-map)
-    (icicle-ensure-overriding-map-is-bound))
+  (setq prefix-arg  (cond ((integerp arg) (- arg))
+                          ((eq arg '-)    nil)
+                          (t              '-)))
+  (if (fboundp 'universal-argument--mode)
+      (icicle-universal-argument--mode)
+    (setq universal-argument-num-events  (length (this-command-keys)))
+    (if (fboundp 'save&set-overriding-map) ; Emacs 24.1 to 24.3.
+        (save&set-overriding-map icicle-universal-argument-map)
+      (icicle-ensure-overriding-map-is-bound)))
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
+
+(when (fboundp 'universal-argument--mode) ; Emacs 24.4+.
+  (defun icicle-universal-argument--mode ()
+    "Like `universal-argument--mode', but use `icicle-universal-argument-map'."
+    (set-temporary-overlay-map icicle-universal-argument-map)))
 
 (defun icicle-universal-argument ()     ; Bound to `C-u' in minibuffer.
   "`universal-argument', but also echo the prefix."
   (interactive)
-  (setq prefix-arg                     (list 4)
-        universal-argument-num-events  (length (this-command-keys)))
-  (if (fboundp 'save&set-overriding-map) ; Emacs 24+
-      (save&set-overriding-map icicle-universal-argument-map)
-    (icicle-ensure-overriding-map-is-bound))
+  (cond ((fboundp 'universal-argument--mode) ; Emacs 24.4+.
+         (setq prefix-arg  (list 4))
+         (icicle-universal-argument--mode))
+        (t
+         (setq prefix-arg                     (list 4)
+               universal-argument-num-events  (length (this-command-keys)))
+         (if (fboundp 'save&set-overriding-map)
+             (save&set-overriding-map icicle-universal-argument-map) ; Emacs 24.1 to 24.3.
+           (icicle-ensure-overriding-map-is-bound)))) ; Emacs < 24.1.
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
 (defun icicle-universal-argument-more (arg)
@@ -2557,17 +2568,19 @@ you do not want this remapping, then customize option
   (universal-argument-more arg)
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
 
-(defun icicle-universal-argument-other-key (arg)
-  "`universal-argument-other-key', but also echo the prefix."
-  (interactive "P")
-  (universal-argument-other-key arg)
-  (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
+(when (fboundp 'universal-argument-other-key) ; Emacs < 24.4.
+  (defun icicle-universal-argument-other-key (arg)
+    "`universal-argument-other-key', but also echo the prefix."
+    (interactive "P")
+    (universal-argument-other-key arg)
+    (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg)))
 
-(defun icicle-universal-argument-minus (arg)
-  "`universal-argument-minus', but also echo the prefix."
-  (interactive "P")
-  (universal-argument-minus arg)
-  (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
+(unless (fboundp 'universal-argument--mode)
+  (defun icicle-universal-argument-minus (arg) ; Emacs < 24.4.
+    "`universal-argument-minus', but also echo the prefix."
+    (interactive "P")
+    (universal-argument-minus arg)
+    (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg)))
 
 
 ;; REPLACE ORIGINAL `sit-for' in `subr.el',
