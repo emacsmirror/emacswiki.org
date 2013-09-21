@@ -1115,9 +1115,48 @@ I think this should offer you the flexibility you seek. HTH -- DrewAdams
 
 Drew,
 
-I have been comparing <tt>icicle-search</tt> to <tt>grep-find</tt> and <tt>occur</tt>.  I understand that <tt>icicle-search</tt> uses the completions buffer while <tt>grep-find</tt> and <tt>occur</tt> use the compilation buffer.  One feature I found missing in the completions buffer is the ability to move among buffer names associated with completion candidates.  In the compilation buffer I can accomplish this with <tt>compilation-next-file</tt> and <tt>compilation-previous-file</tt>.  Are there Icicles equivalents of these two commands?
+I have been comparing <tt>icicle-search</tt> to <tt>grep-find</tt> and <tt>occur</tt>.  I understand that <tt>icicle-search</tt> uses the completions buffer while <tt>grep-find</tt> and <tt>occur</tt> use the compilation buffer.  One feature I found missing in the completions buffer is the ability to move among buffer names associated with completion candidates.  In the compilation buffer I can accomplish this with <tt>compilation-next-file</tt> and <tt>compilation-previous-file</tt>.  Are there Icicles equivalents of these two commands? -- JamesKLin
 
--- JamesKLin
+[new:DrewAdams:2013-09-21 22:46 UTC]
+Good question, James. First, as you realize, '''Icicles''' search is quite different, which is another way of saying that it has advantages and disadvantages, depending on what you want to do.  There is no direct analog of `compilation-next-file' etc.  In particular, though you can cycle amont search hits, you can change the sort order, and you need not cycle at all, so there is less of an emphasis on "next" hit or "next" file or buffer.
+
+But you can nevertheless focus on the hits of one file or buffer at a time, if you like.  I can think of two ways to do that, both of which require that option `icicle-show-multi-completion-flag' has its default value of non-`nil'.  That causes the search-context completion candidates to be two-part: the search cotnext itself followed by `icicle-list-join-string', followed by the file or buffer name.  For '''Icicles''' search, that string contains only a `TAB' character (it is usually <tt>"^G^J"</tt>).
+
+To insert `icicle-list-join-string' in the minibuffer, you can hit `C-M-j'.  Or in the case of '''Icicles''' search you can use `C-q TAB'.
+
+Here are two ways to match the hits of only one buffer at a time:
+
+''First way:''
+
+1. First match the text you want to match, using whatever you like, including perhaps progressive completion.  E.g., type `forward' for search hits in all files/buffers that have that text.
+
+2. Hit `S-SPC', for progressive completion.  Then type a pattern that matches just one of the file/buffer names.  If that name appears also in the buffer text then you can prefix it with `##.*##' followed by the join string (i.e., `C-q TAB'), to be sure to match outside the text.
+
+3. That will show you only the hits for that file/buffer.  Navigate among them as you like.
+
+4. `M-k' to erase the minibuffer, so you see all file/buffer hits again.  Type a different file/buffer name pattern, and visit its hits etc.  Repeat this step for other files/buffers.
+
+''Second way:''
+
+1. Type your search-hit pattern, followed immediately by `##.*##' and the join string (`C-q TAB') and a file/buffer name pattern.
+
+2. When done searching that file/buffer, change the file/buffer part of your input pattern to search another.
+
+3. If you want to search for a different pattern, edit the search-hit part of your input as well.  You can search for any number of things in any number of files/buffers.
+
+(For both methods, you use `##.*##' after your search-hit pattern to match the rest of the line, up to the `TAB' character and the file/buffer name.)
+
+The disadvantage of the first way is that at step 2 you are committed to the search-hit pattern you gave in step 1.  The second way does not have this limitation.  The advantage of the first way is the same as its disadvantage: you have committed the search-hit pattern, which can be handy if it is complicated (e.g., requires multiple progressive-completion steps).  IOW, with the first way you only need to define the search-hit pattern once, but you can only search for that pattern.
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
+
 
 
 
