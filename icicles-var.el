@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Version: 22.0
-;; Last-Updated: Sun May 12 19:26:45 2013 (-0700)
+;; Last-Updated: Sat Sep 21 10:47:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1711
+;;     Update #: 1728
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -355,7 +354,7 @@ same car.  Icicles search is one such example.")
 (defvar icicle-cands-to-narrow ()
   "Saved `icicle-completion-candidates' for reference during narrowing.")
 
-(defvar icicle-char-property-value-history nil "History for character property values.")
+(defvar icicle-char-property-value-history nil "History for text and overlay property values.")
 
 (defvar icicle-cmd-calling-for-completion 'ignore
   "Last command causing display of list of possible completions.")
@@ -1395,12 +1394,24 @@ by binding it to `icicle-remove-duplicates' or
   "Local copy of `icicle-transform-function', so we can restore it.")
 
 (defvar icicle-universal-argument-map
-  (let ((map  (make-sparse-keymap)))
-    (define-key map [t]                         'icicle-universal-argument-other-key)
-    (define-key map (vector meta-prefix-char t) 'icicle-universal-argument-other-key)
-    (define-key map [switch-frame]              nil)
+  (let ((map                       (make-sparse-keymap))
+        (universal-argument-minus
+         (and (fboundp 'universal-argument--mode) ; Emacs 24.4+
+              `(menu-item "" icicle-negative-argument
+                :filter ,(lambda (cmd) (if (integerp prefix-arg) nil cmd))))))
+    (cond ((fboundp 'universal-argument-other-key) ; Emacs < 24.4
+           (define-key map [t]                         'icicle-universal-argument-other-key)
+           (define-key map (vector meta-prefix-char t) 'icicle-universal-argument-other-key)
+           (define-key map [switch-frame]              nil))
+          (t                            ; Emacs 24.4+
+           (define-key map [switch-frame]       (lambda (evt)
+                                                  (interactive "e")
+                                                  (handle-switch-frame evt)
+                                                  (universal-argument--mode)))))
     (define-key map (icicle-kbd "C-u")          'icicle-universal-argument-more)
-    (define-key map (icicle-kbd "-")            'icicle-universal-argument-minus)
+    (define-key map (icicle-kbd "-")            (if (fboundp 'universal-argument--mode)
+                                                    universal-argument-minus ; Emacs 24.4+
+                                                  'icicle-universal-argument-minus))
     (define-key map (icicle-kbd "0")            'icicle-digit-argument)
     (define-key map (icicle-kbd "1")            'icicle-digit-argument)
     (define-key map (icicle-kbd "2")            'icicle-digit-argument)
@@ -1421,7 +1432,9 @@ by binding it to `icicle-remove-duplicates' or
     (define-key map (icicle-kbd "kp-7")         'icicle-digit-argument)
     (define-key map (icicle-kbd "kp-8")         'icicle-digit-argument)
     (define-key map (icicle-kbd "kp-9")         'icicle-digit-argument)
-    (define-key map (icicle-kbd "kp-subtract")  'icicle-universal-argument-minus)
+    (define-key map (icicle-kbd "kp-subtract")  (if (fboundp 'universal-argument--mode)
+                                                    universal-argument-minus ; Emacs 24.4+
+                                                  'icicle-universal-argument-minus))
     map)
   "Keymap used while processing `C-u' during Icicles completion.")
 
