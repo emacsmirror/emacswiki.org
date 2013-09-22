@@ -143,7 +143,16 @@ substitute your new value, call `foo' and then restore the old value.
 And remember to handle non-local exits using `throw'.  When you're
 through with this, you'll see that you've implemented dynamic binding!
 
-RichardStallman explains the advantages of dynamic binding in the context of EmacsLisp: http://www.gnu.org/software/emacs/emacs-paper.html#SEC17
+RichardStallman explains the advantages of dynamic binding in the context of EmacsLisp: http://www.gnu.org/software/emacs/emacs-paper.html#SEC17.
+See also the article ''Dynamic vs. Static Typing — A Pattern-Based Analysis'' by Pascal Costanza, http://www.p-cos.net/documents/dynatype.pdf.
+
+
+
+
+
+
+
+
 
 
 
