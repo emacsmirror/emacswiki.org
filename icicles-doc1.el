@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Aug  5 07:10:32 2013 (-0700)
+;; Last-Updated: Sun Sep 22 15:54:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27866
+;;     Update #: 27873
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -997,9 +997,9 @@
 ;;    C-x 4 f TAB C-x C-t *  2013  RET  mountains  RET RET
 ;;
 ;;  During file-name completion, `C-x C-t *' narrows the current
-;;  candidates to those naming files have been tagged with each of the
-;;  tags you enter.  You type each tag to be matched, followed by
-;;  `RET', then you add a second `RET' after the last tag.
+;;  candidates to those naming files that have been tagged with each
+;;  of the tags you enter.  You type each tag to be matched, followed
+;;  by `RET', then you add a second `RET' after the last tag.
 ;;
 ;;  In this case, the current candidates before using `C-x C-t *'
 ;;  included all files in the current directory (you hit `TAB'
@@ -1455,11 +1455,11 @@
 ;;  `S-TAB' will still show them as candidates.
 ;;
 ;;  `C-~' is particularly handy in combination with progressive
-;;  completion (`M-*') to narrow down a set of candidates, especially
-;;  when you are not exactly sure what you are looking for.  You can
-;;  repeat `C-~' with different inputs to eliminate everything matched
-;;  by each of them.  In other words, this is a variable-size chisel,
-;;  and you can use it to remove very large chips.
+;;  completion (`M-*' or `S-SPC') to narrow down a set of candidates,
+;;  especially when you are not exactly sure what you are looking for.
+;;  You can repeat `C-~' with different inputs to eliminate everything
+;;  matched by each of them.  In other words, this is a variable-size
+;;  chisel, and you can use it to remove very large chips.
 ;;
 ;;  For instance, suppose you are looking for a standard Emacs command
 ;;  involving buffers.  You try `M-x buff S-TAB', but that shows
@@ -1467,19 +1467,19 @@
 ;;  command in some 3rd-party package.  You proceed to eliminate
 ;;  those, progressively, using something like this:
 ;;
-;;    M-* ediff C-~ ibuffer C-~ icicle C-~ Buffer-menu C-~ ps- C-~
-;;        ido C-~ search-buffers C-~ moccur C-~ swbuff C-~
+;;    S-SPC ediff C-~ ibuffer C-~ icicle C-~ Buffer-menu C-~ ps- C-~
+;;          ido C-~ search-buffers C-~ moccur C-~ swbuff C-~
 ;;
-;;  And so on.  That is, instead of using `M-*' repeatedly to specify
-;;  multiple patterns that candidates must match, you use `C-~'
-;;  repeatedly (after an initial `M-*'), to chip away candidates you
-;;  do not want.  You could, alternatively, hold down the `delete' key
-;;  to eliminate each of these groups of command names.  There are
-;;  over 100 commands whose names begin with `ediff', however, so `M-*
-;;  C-~' can be quicker in that case.  It can definitely be quicker
-;;  when apropos matching is involved.  And you can of course combine
-;;  the fine chiseling of `delete' with the variable-size chiseling of
-;;  `C-~'.
+;;  And so on.  That is, instead of using `M-*' or `S-SPC' repeatedly
+;;  to specify multiple patterns that candidates must match, you use
+;;  `C-~' repeatedly (after an initial `M-*' or `S-SPC'), to chip away
+;;  candidates you do not want.  You could, alternatively, hold down
+;;  the `delete' key to eliminate each of these groups of command
+;;  names.  There are over 100 commands whose names begin with
+;;  `ediff', however, so `S-SPC C-~' can be quicker in that case.  It
+;;  can definitely be quicker when apropos matching is involved.  And
+;;  you can of course combine the fine chiseling of `delete' with the
+;;  variable-size chiseling of `C-~'.
 ;;
 ;;  See (@> "Sets of Completion Candidates") for more about `C-~'.
 ;;
@@ -1488,12 +1488,14 @@
 ;;
 ;;  The opposite operation from chipping away at a set of candidates
 ;;  to refine it is to build up a set of candidates that you want to
-;;  act on.  This too is easy with Icicles.  In some user interfaces,
-;;  including Dired in Emacs, you can mark items in a checklist and
-;;  then, when you've selected the items you want and verified the
-;;  list, act on those that are selected.  You might do this, for
-;;  instance, if you were deleting some files.  Icicles lets you
-;;  interact with completion candidates this same way.
+;;  act on.  This too is easy with Icicles.
+;;
+;;  In some user interfaces, including Dired in Emacs, you can mark
+;;  items in a checklist and then, when you've selected the items you
+;;  want and verified the list, act on those that are selected.  You
+;;  might do this, for instance, if you were deleting some files.
+;;  Icicles lets you interact with completion candidates this same
+;;  way.
 ;;
 ;;  You do this by building up a saved set of candidates, and then
 ;;  retrieving these saved candidates later.  You can use the
