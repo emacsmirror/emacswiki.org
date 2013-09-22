@@ -525,9 +525,8 @@ Brought this from the WishList page.
       (delete-region beg end))
   (insert (x-selection 'CLIPBOARD)))
 
-But i think what it very useful function for everyone.
 }}}
-
+But i think what it very useful function for everyone.
 
 == Visual feedback of Yank and Yank-Pop operations ==
 
