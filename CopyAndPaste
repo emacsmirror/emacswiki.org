@@ -484,6 +484,51 @@ Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behav
 [new::roland.walker]
 [[Simpleclip]] is a more general library for separating the kill ring and the system clipboard. -- [[roland.walker]]
 
+== Functions for working with the clipboard ==
+
+Brought this from the WishList page.
+
+* I'd like copy, paste and cut command which working with the clipboard instead kill-ring. I write it for myself 
+{{{
+(defun copy (beg end)
+  "Copy region into clipboard"
+  (interactive "r")
+  (if mark-active
+      (progn
+        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
+        (setq mark-active nil)
+        (message "Marked text copied"))
+    (progn
+      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
+      (setq mark-active nil)
+      (message "Current line is copied"))))
+
+(defun cut (beg end)
+  "Copy region into clipboard and kill"
+  (interactive "r")
+  (if mark-active
+      (progn
+        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
+        (delete-region beg end)
+        (setq mark-active nil)
+        (message "Marked text cut"))
+    (progn
+      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
+      (delete-region line-beginning-position line-end-position)
+      (setq mark-active nil)
+      (message "Current line is cut"))))
+
+(defun paste (beg end)
+  "Paste contents of clipboard into point"
+  (interactive "r")
+  (if mark-active
+      (delete-region beg end))
+  (insert (x-selection 'CLIPBOARD)))
+
+But i think what it very useful function for everyone.
+}}}
+
+
 == Visual feedback of Yank and Yank-Pop operations ==
 
 [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
