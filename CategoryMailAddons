@@ -32,6 +32,7 @@ Biff Tools (notification of new mail):
 * ByrdBiff -- Lisp:byrd-biff.el
 * DisplayTime -- also has biff-functionality
 * EmacsBiff -- flagging new mail on the modeline
+* MailNotify -- Popup notify window when you get new mail.
 * PopBiff -- Lisp:popbiff.el
 ** Lisp:popbiff2.el provides the setup to integrate mail notification for remote mail boxes with recent Emacs versions.  (Why were those changes net merged with the original popbiff?)
 
@@ -72,7 +73,6 @@ Other Useful Modes:
 * FetchmailMode -- mode for editing fetchmail configuration files
 * FortuneMode -- interface to write fortunes quickly
 * MailboxMode -- berkeley style aka standard mailbox browsing minor mode
-* MailNotify -- Popup notify window when you get new mail.
 * MuttRc -- generic mode for mutt configuration files
 * [[muttrc-mode.el]] - another mode for mutt confuguration files
 * ProcmailMode -- mode for editing procmail configuration files
