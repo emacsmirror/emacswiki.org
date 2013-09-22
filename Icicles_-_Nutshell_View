@@ -441,7 +441,7 @@ You could use [[Isearch|incremental search]] to search the whole manual for
 terms like `indent', but that would be quite laborious.  (You can
 also use [[Icicles - Info Enhancements#UsingIcicleSearchWithInfo|Icicles search]] to search a manual.)
 
-But this example uses the same approach as in the [[#SecondExampleMultiCompletion|second one]] :
+But this example uses the same approach as in the [[#SecondExampleMultiCompletion|second one]]:
 match node names and node content.
 
 : '''1.''' Start by searching all nodes of the Emacs manual for `indent':
@@ -607,7 +607,7 @@ you do not and you just want to match tags.
 
 
 During file-name completion, '''`C-x C-t *'''' narrows the current
-candidates to those naming files have been tagged with each of the
+candidates to those naming files that have been tagged with each of the
 tags you enter.  You type each tag to be matched, followed by
 `RET', then you add a second `RET' after the last tag.
 
@@ -940,7 +940,7 @@ You can display all of the matches for the current minibuffer input, in the `##*
 
 [[image:IciclesRegexpCompletions]]
 
-When you cycle among matching candidates as described above, if buffer `##*Completions*##' is displayed, then the current candidate is highlighted there. In this screenshot taken while cycling, the current candidate is `insert-in-minibuffer'. (The other screenshot annotations shown here are covered in [[Icicles - Apropos Completions]].)
+When you cycle among matching candidates as described above, if buffer `##*Completions*##' is displayed, then the current candidate is highlighted there. In this screenshot taken while cycling, the current candidate is `isearch-forward-exit-minibuffer'. (The other screenshot annotations shown here are covered in [[Icicles - Apropos Completions]].)
 
 [[image:iciclesscreenshot]]
 
@@ -1112,7 +1112,7 @@ candidates, so `TAB' and `S-TAB' will still show them as
 candidates.
 
 `##C-~##' is particularly handy in combination with [[Icicles - Progressive Completion|progressive
-completion]] (`##M-*##') to narrow down a set of candidates, especially
+completion]] (`##M-*##' or `S-SPC') to narrow down a set of candidates, especially
 when you are not exactly sure what you are looking for.  You can
 repeat `##C-~##' with different inputs to eliminate everything matched
 by each of them.  In other words, this is a variable-size chisel,
@@ -1124,16 +1124,15 @@ zillions of matches.  Suppose that you know you do not want a
 command in some 3rd-party package.  You proceed to eliminate
 those, progressively, using something like this:
 
-  M-* ediff C-~ ibuffer C-~ icicle C-~ Buffer-menu C-~ ps- C-~
-      ido C-~ search-buffers C-~ moccur C-~ swbuff C-~
+  S-SPC ediff C-~ ibuffer C-~ icicle C-~ Buffer-menu C-~ ps- C-~
+        ido C-~ search-buffers C-~ moccur C-~ swbuff C-~
 
-And so on.  That is, instead of using `##M-*##' repeatedly to specify
+And so on.  That is, instead of using `##M-*##' or `S-SPC' repeatedly to specify
 multiple patterns that candidates must match, you use `##C-~##'
-repeatedly (after an initial `##M-*##'), to chip away candidates you
+repeatedly (after an initial `##M-*##' or `S-SPC'), to chip away candidates you
 do not want.  You could, alternatively, hold down the `delete' key
 to eliminate each of these groups of command names.  There are
-over 100 commands whose names begin with `ediff', however, so `##M-*
-C-~##' can be quicker in that case.  It can definitely be quicker
+over 100 commands whose names begin with `ediff', however, so `##S-SPC C-~##' can be quicker in that case.  It can definitely be quicker
 when apropos matching is involved.  And you can of course combine
 the fine chiseling of `delete' with the variable-size chiseling of
 `##C-~##'.
@@ -1150,7 +1149,9 @@ the fine chiseling of `delete' with the variable-size chiseling of
 
 The opposite operation from chipping away at a set of candidates
 to refine it is to build up a set of candidates that you want to
-act on.  This too is easy with '''Icicles'''.  In some user interfaces,
+act on.  This too is easy with '''Icicles'''.
+
+In some user interfaces,
 including DiredMode in Emacs, you can mark items in a checklist and
 then, when you've selected the items you want and verified the
 list, act on those that are selected.  You might do this, for instance, if you were deleting some files.  '''Icicles''' lets you interact
@@ -1429,7 +1430,7 @@ example, you could use `##C-|##' with the following input to copy all
 
   (lambda (f) (copy-file f "ICICLES" t))
 
-Note that function `copy-file' iseffectively ''curried'' here, to
+Note that function `copy-file' is effectively ''curried'' here, to
 create a function of a single argument on the fly.
 
 See Also: [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
