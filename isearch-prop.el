@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 21 16:36:39 2013 (-0700)
+;; Last-Updated: Sat Sep 21 17:14:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 400
+;;     Update #: 404
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -361,7 +361,8 @@ Non-interactively:
     (dolist (prop  (isearchp-properties-in-buffer (current-buffer) beg end
                                                   (if (cadr type) nil type)
                                                   predicate))
-      (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list prop))))
+      (when (memq 'text type)  (let ((removd  (remove-text-properties beg end (list prop 'IGNORE))))
+                                 (setq removedp  (or removedp  removd))))
       (setq beg2  beg)
       (when (memq 'overlay type) (while (< beg2 end)
                                    (dolist (ov  (overlays-at beg2))
@@ -678,8 +679,8 @@ Non-nil PREDICATE is a predicate that each property must satisfy."
             (setq beg         (or (next-property-change beg nil end)  end)
                   curr-props  (text-properties-at beg))
             (while curr-props
-              (unless (and (memq (car curr-props) props)
-                           (or (not predicate)  (funcall predicate (car curr-props))))
+              (when (and (not (memq (car curr-props) props))
+                         (or (not predicate)  (funcall predicate (car curr-props))))
                 (push (car curr-props) props))
               (setq curr-props  (cddr curr-props)))))))
     props))
