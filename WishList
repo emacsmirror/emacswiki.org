@@ -27,7 +27,7 @@ for shell scripting.  I'd prefer elisp with (require 'cl) over scsh.
 ** On that note, I'd like to see Emacs support the type of [[CollaborativeEditing]] that [http://www.codingmonkeys.de/subethaedit/ SubEthaEdit] has. I know there have been attempts, but they seem to have gone to ground all. [[SummerOfCode]] 2010?
 [new]
 *** This type of collaborative editing is possible in Emacs with [[Rudel]]. Currently the obby protocol (introduced by the [http://gobby.0x539.de/trac/ Gobby] collaborative editor) is supported. Support for the protocol used by [[SubEthaEdit]] is under development.  -- JanMoringen (disclaimer: Rudel author)
-[new]
+----
 
 == Configuration Wishes ==
 
@@ -38,11 +38,6 @@ libraries written by others.  Web and version control features should be incorpo
   metafunction could be written that would ask the user at startup where 
   to get the init files from. --bressen
 * Let's make a slimmed down version of GnuEmacs with only the bare-minimum EmacsLisp packages needed for quick editing.  Then we would make a small package-manager boot-strap that would update the list of available `interactive' functions with the associated file location.  When a user or the system attempts any such feature, the package would be seamlessly installed and loaded and the attempted function called.  We could use a profiler [what's the name of that one... unsafep.el?] to initially check unknown packages, and digital signatures to stamp those we finally determined 'safe'.   -- PatrickAnderson
-* A package manager for Emacs Lisp packages. The features that seam most important to me are a huge (browsable) list of packages and automatic dependency handling. Besides general stability of course.
-** See [[CategoryCode#Installers]] to find a list of existing package managers.
-** I have posted [http://stackoverflow.com/questions/454259/what-do-you-expect-from-a-package-manager-for-emacs What do you expect from a package manager for Emacs] to stackoverflow on 2009-01-17 because of the ability to vote down/up suggested features. Please participate. -- JonasBernoulli
-** Discussion in [[emacs-devel]] on 2008-08-01 called [http://article.gmane.org/gmane.emacs.devel/101927 Emacs Package Management].
-** Discussion in [[comp.emacs]] on 2002-11-21 called [http://groups.google.com/group/comp.emacs/browse_thread/thread/696d4ba8809ff258 Package Manager]
 
 == Software Design Wishes ==
 
@@ -51,6 +46,7 @@ that affect Emacs broadly.  Issues are commonly related to using files generally
 Emacs is expected to do (tasks even beyond text editing for example).
 
 * SupportForLargeFiles - a mode, like the less command, that does not read the entire file in memory, and provides efficient navigation. 
+  I wish that GNU Emacs could open files of any size (Buffer size == (Unlimited or super big not only 128 or 256 MB))
 
 * MultiThreadedEmacs (or ConcurrentEmacs) - one reason I haven't switched to gnus is that
   everytime I try to read news, erc my irc client times out. I WANT A
@@ -59,15 +55,8 @@ Emacs is expected to do (tasks even beyond text editing for example).
 read out a server, for instance, it could be made asynchronous in the
 same way as ange-ftp or the url package.
 
-* I wish XEmacs recognized when opening a file that is a hard link to
-  another file that's already open.  It should just leave the one
-  buffer I think (or have two buffers that
-  simultaneously/automatically update each other).  (Amen to this one
-  -- LathI)
 * Have Emacs always use VersionControl.
 ** this can be done using find-file-hooks and after-save-hook if you need it
-
-* I wish that GNU Emacs could open files of any size (Buffer size == (Unlimited or super big not only 128 or 256 MB))
 
 * It would be really cool, if the emacs display engine would support
   the drawing of circles, lines, boxes. This would allow the creation
@@ -116,7 +105,7 @@ your circle, box etc drawing code, and you'd write a data structure and tell ema
 ** Well, the python 're' package does that, and then there is a package for using python as an extension language. That might be an easy implementation.  But, yes (!), lookahead/lookbehind in elisp functions would be great and I would use them.
 
 * I would like to have bonjour chat client in GNU/Emacs... And it would be wonderfoul if I could use ERC for this aim.
-** [http://www.bitlbee.org/main.php/extdoc.html Bitlbee] + ERC?
+** BitlBee + ERC?
 
 == Portability and Internationalisation Wishes ==
 
@@ -130,63 +119,7 @@ or to support other human languages and compatibility issues between other Emacs
 
 == Editing Wishes ==
 
-* [http://www.sublimetext.com/ Minimap] of Sublime editor. See the left side of the screenshots.
-** This is now possible using ##minimap.el##. Please see the page MiniMap for details.
-
-* [http://player.vimeo.com/video/41090089 typing on several lines at once], also of Sublime editor
-** Can be done with Lisp:multiple-line-edit.el
-** Also CuaMode can edit multiple lines
-** Quick and dirty: C-x r t
-** I've just written a mode that does this, among other things: [[Multipoint]]. It's not very good.
-
 These are wishes for better support for text editing, especially writers, but not exclusively.
-[new]
-* I'd like copy, paste and cut command which working with the clipboard instead kill-ring. I write it for myself 
-{{{
-(defun copy (beg end)
-  "Copy region into clipboard"
-  (interactive "r")
-  (if mark-active
-      (progn
-        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
-        (setq mark-active nil)
-        (message "Marked text copied"))
-    (progn
-      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
-      (setq mark-active nil)
-      (message "Current line is copied"))))
-
-(defun cut (beg end)
-  "Copy region into clipboard and kill"
-  (interactive "r")
-  (if mark-active
-      (progn
-        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
-        (delete-region beg end)
-        (setq mark-active nil)
-        (message "Marked text cut"))
-    (progn
-      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
-      (delete-region line-beginning-position line-end-position)
-      (setq mark-active nil)
-      (message "Current line is cut"))))
-
-(defun paste (beg end)
-  "Paste contents of clipboard into point"
-  (interactive "r")
-  (if mark-active
-      (delete-region beg end))
-  (insert (x-selection 'CLIPBOARD)))
-
-But i think what it very useful function for everyone.
-}}}
-[new]
-
-
-* I'd like Emacs to support true word wrap and other "soft" formatting. i.e. formatting that applies to the display, but not the file. For example, VisualSlickEdit has a soft indent mode where a single long line of code in the file is displayed not only word wrapped, but also indented appropriately.  [Try LongLines]
-
-** True word-wrap has been partially given to you (the indenting part of it, not so much).  See the instructions under LineWrap.
-** I've written a proof-of-concept implementation of SoftIndent --JamesWright
 
 * I'd like to see emacs (optionally) allow a multiline modeline, which
   automatically resizes to accomodate all text, just as the echo area
@@ -194,31 +127,16 @@ But i think what it very useful function for everyone.
 
 * Gnu Emacs should have a MarginMode.
 
-* I wish for a tabs-then-spaces option in the indentation modes (at least the C derived ones).  Tabs to get to the block-level, then spaces for pretty formatting.
-** *Done:* SmartTabs.
-
 * I'd like to scroll a buffer with the mouse wheel and have the cursor remain at the original line, even if it goes off-screen. Emacs seems to be designed with the premise that the cursor be on-screen all the time, but could make an exception for wheel/scroll-bar events and refocus the cursor on keypress. Otherwise the user who habitually scrolls will be constantly worried of losing the cursor position… Mmm; that's a feature to discourage excessive glancing. -- [[DanielClemente]]
 
 == User-Interface Wishes ==
 
 These are wishes related to interacting with Emacs or with the graphical user interface of Emacs.
 
-* I wish emacs supported XEmacs' <code>modeline-click-swaps-buffer</code>. Bonus points if also supported left->next buffer and right->previous buffer.
-
-[new]
-** Isn't this wish satisfied by Emacs 21?  From etc/NEWS:
-*** Mouse-1 on the buffer name in the mode line goes to the next buffer.
-*** Mouse-3 on the buffer-name goes to the previous buffer.
-
-[new]
 * I'd like to see +/- sign on (left) margin while using hideshow mode.
 
 * More support for One-[[Frame]]-Per-[[Buffer]] use -- that is, non-`nil' `pop-up-frames'. Currently, the `nil' case is pretty much all that's thought about during UI design and testing, IMO. Emacs is hard-code biased toward using Emacs windows instead of frames. OneOnOneEmacs is my attempt to work around some of the problems. -- DrewAdams
 
-* AntiAliasedFaces.
-** This is supported out of the box in GNU Emacs 23.1.
-
-[new]
 * I'd like the 'suggested fix' feature thats in IDEA, or something like it. IDEA parses the buffer continually when idle, lightbulb appears when the TextCursor is over some parts of the buffer where an autocorrection is possible (typically warnings, errors), pressing Alt-Enter presents a menu of tasks, typically fixes but sometimes other things (eg 'Implement this interface'). Its spelling correction on steroids. A minor mode perhaps? Example uses: in an html editing mode suggested fixes may optionally include fixing tag spelling, closing tags, fixing text spelling, fixing text grammar, adding required attributes ... emacs has all this kind of thing, but all done as separately like ispell, rather than all cooperating on a common 'blackboard' of tasks/fixes.
 
 [new]
@@ -229,8 +147,8 @@ These are wishes related to interacting with Emacs or with the graphical user in
 ** I suppose you could extend the idea to run static analysis (FxCop, StyleCop) on the buffer, in addition to the csc.exe compiler. Then emacs could propose somewhat more useful fixes or changes. (Eg, "use appropriate capitalization on Methods" etc.) 
 
 ** Currently the csharp stuff is all very language-specific. It wouldn't be difficult to modularize and generalize it. 
-[new]
 
+----
 
 * I would like to see (as an option) the ability to close a frame and have 
   the file closed as well, making Emacs work a bit more like a Mac or Windows
@@ -243,12 +161,6 @@ These are wishes related to interacting with Emacs or with the graphical user in
 *** [[KillingBuffers#kill-buffer-and-its-windows]] does just that. See also OneOnOneEmacs (in particular, [[Delete Frames Easily - But Not Too Easily]]) for more stuff related to the problem you mention of dealing with multiple buffers and frames. -- DrewAdams
 
 ** In AquamacsEmacs, Apple-W calls `close-current-window-asktosave' which will delete the current buffer and close the selected window and also its frame if it is the only window in that frame. It's defined in the one-buffer-one-frame-mode package.
-
-* I'd like `previous-matching-history-element' to work like C-r in bash/readline, i.e. to display matches incrementally. It would be a great addition to Emacs' excellent incremental search facilities.
-
-[new]
-** In CVS Emacs you can isearch (C-s/C-r) the minibuffer history.
-[new]
 
 * Splitting windows horizontally with `C-x 3' should be generalized to the prefix key `C-x 6', which is occupied by `2C-two-columns' commands.  Which is just silly. 
 
@@ -263,6 +175,8 @@ of writing).
 *** if you have Alt-F4 mapped to "close window" in KDE, it will do fine closing programs, but if you try to re-define it in Emacs for, e.g., "kill buffer and close frame", it won't work because it will kill the window (KDE-wise) before Emacs "reads" the keystroke.
 *** I'd love to start Emacs as a service (gnuserv) without any frame initially associated (starting it with --iconic) and having it represented by an icon in the "system tray" which would support drag-n-drop (well, I assume this goes rather in "utopian wishes").
 [new]
+**** Since 23.1 there is the --daemon option, dunno about "system tray" or drag-n-drop
+----
 * I think if GNU Emacs can take a picture as its background, it will be very cooooooool. I know XEmacs can do this, and something called TransparentEmacs also. But TransparentEmacs is a branch and it seems that under windows it's simply no way. Emacs can display pictures both under windows and linux, so I think it's not a hard work to make picture backgounds. I'm looking forward to it......
 
 * You can put a pixmap background in XEmacs (I don't know about Emacs)
@@ -281,41 +195,23 @@ of writing).
 
 ** I get the impression it cannot be done currently. Unlike the mode-line, it looks like all mouse buttons have the same effect wrt ToolBar buttons. I took a look in `bindings.el' and in various C source files (dispextern.c, xdisp.c, w32term.c, macterm.c), but I don't see a way to fiddle with this. The C function that handles mouse clicks in the ToolBar seems to be `<code>[w32]handle_tool_bar_click</code>, and it looks like the only thing tested is the <code>down_modifier</code> for any mouse button -- all buttons are treated alike.
 On the other hand, the click event seems to be stored as a <code>TOOL_BAR_EVENT</code> along with its [[modifier key]]s (Control, Meta etc.), so maybe I'm reading the code wrong and there is a way to get at this info. I tried binding [tool-bar mouse-2] etc., but to no avail. The ToolBar seems to be treated half-way between how the MenuBar and the ModeLine are treated: the menu-bar doesn't even recognize keyboard modifiers; the mode-line recognizes mouse buttons and keyboard modifiers. -- DrewAdams
-[new]
-* I wish C-x s had a `d' command option for running `diff'
-[new]
-** It does in Emacs 22.
-[new]
+----
 * TextMate has a nice feature where you can bind the same key to different commands in different contexts (they call them "[http://macromates.com/textmate/manual/scope_selectors scope selectors]").  For example, M-d could delete a whole sexp when on a paren, a whole word when in a non-comment word, and a whole comment when in a comment.  This sort of DWIM could free up a lot of simple key combinations.  Widgets and a few other packages already do somethign similar, but it would be nice to have an infrastructure tied in to text properties and/or font-lock to simplify users' creating such bindings.
 
-* Follow mode can only synchronize scrolling windows which content a same file. Does it possible to scrolling windows with diffrent files synchronously?
-  -- 9307420654
-** There is a minor mode to apply all scrolling commands to all visible windows in the current frame. Check <code>scroll-all-mode</code> for that. Or else, if you want to scroll together only 2 windows and only when you use a specific keystroke, you can do something like a function that scrolls the current window (<code>scroll-up</code> or <code>scroll-down</code>) and then the "other window" (i.e., the next one in the list of windows), with <code>scroll-other-window</code> (with argument <code>'-</code>, i.e., the symbol "minus", for scrolling down). Then you can assign this to a keystroke, e.g., C-M-up / down.
-[new]
 * It would be very nice if TRAMP could work asynchronously. While saving a remote file, Emacs is frozen, which is pretty annoying. Generally speaking, Emacs would improve significantly when all the small freezes will be removed. More asynchronous operations would be very welcome!
 
-[new]
 * Emacs diplay images in tty,xterm.
+
+* A xlock/vlock for emacs :)
+** GNU screen has this feature if that's any help.
 
 == Extensibility Wishes ==
 
 These are wishes about Emacs lisp or generally extending Emacs.
 
-* Closures. Oh, how I would appreciate it if Emacs had real lexical
-  let (not the expensive workaround from the cl package) and real
-  closures. -- OliverScholz
-* And while I am at it: proper tail call reduction. Sometimes it is
+* Proper tail call reduction. Sometimes it is
   more straight-forward to use recursion instead of a loop. --
   OliverScholz (who is currently struggling with exactly this)
-* I wish Emacs had Common Lisp #'format -- BtTempleton
-** It has on [http://marmalade-repo.org/packages?q=format Marmalade].
-
-* I wish Emacs could tell me about (generate a list of) un-bound simple keychords, instead of hunting for them using C-h k.
-** 1. Which key sequences are unbound depends on what the current major mode is.
-** 2. This doesn't give you a list of '''''un'''''bound key sequences in the current major mode, but it at least gives you a list of ''bound'' key sequences, so it is better than `C-h k': `'''<code>describe-bindings</code>''''. -- DrewAdams
-** Could you automate this fishing?  A cartesian join of possible key combinations in a database to come up with a Hugh Jass table, and a dash of code? --ChristopherSmith
-*** I've implemented this (with combinations determined by variables) as Lisp:unbound.el.  The interesting bit in the request is the word "simple", really.  --DavisHerring
-* guile2 instead of core elisp
 
 == Mode Wishes ==
 
@@ -360,11 +256,8 @@ How about:
 	   (current-buffer))
        (error "%s not found in %s" filename tar-filename))))
 </pre>
-[new]
 
-* I wish that vr-mode.el would work with both xemacs and emacs.  This
-  is an irreplaceable application for people who use speech
-  recognition, but it only works with emacs.
+----
 
 * I'd like to use an outline for EmacsPresentation like JMP's software.
 
@@ -397,9 +290,7 @@ mode.  You would write a function to assign to
 ** SemanticBovinator doesn't do this exactly but it might be the best option.
 [new]
 ** word-count.el does this for a single file; it should take just a few minutes to script it to count all marked files. 
-[new]
-* A xlock/vlock for emacs :)
-** GNU screen has this feature if that's any help.
+----
 * I'd like to able able to goto and browse functions within a buffer like I would switch buffers using iswitch-buffer or ido.
 ** See [[Icicles - Search Commands, Overview]] (command `icicle-imenu'). You can even make semantic distinctions, such as between Emacs commands and non-interactive functions.
 ** EmacsCodeBrowser
@@ -457,7 +348,7 @@ string including the beginning and quotes.")
 * I wish the EmacsDoctor would help me find bugs in my code instead of just bugs in my psychology.  It should actually be pretty easy to help with [http://en.wikipedia.org/wiki/Rubber_duck_debugging Rubber Duck Debugging].
 
 * I'd like if Emacs has a forward-byte to move in buffer by n bytes and not characters.
-
+** HexlMode?
 * I'd like Emacs keybindings for OpenOffice, something like [http://www.rath.ca/Misc/VBacs/ VBacs] does for Ms Word.
 
 * There are indexed searchers like namazu, mairix, lucene, ... Some are a little bit out of date, unmantained, or their multiplatform capability is not there out of the box (having to deal with dependencies, compilation, ...). It would be nice to have an indexed searcher for fast searches within a project (documentation) or many org-mode files. One elisp based would be a good start (José M.)
@@ -474,49 +365,6 @@ emacs or are in another way very very unlikely to ever happen.
 If you find any utopian wishes above, please move them here.
 * Port Emacs to Palm OS -- (emacs@mrspud.cjb.net)
 ** I'd like to see something akin to emacs on Palm os well. I enjoy editing text on the Palm with a keyboard but miss the basic controls (C-k, etc) available in emacs.
-* Follow mode can only scrolling windows screen synchronously which
-contain a same file. Does it possible to scrolling diffrent file
-buffers or windows synchronously?
-** scroll-all-mode already does this, not utopian
-* "I'd like someone else to rewrite it in..."
-** ...C# and GTK#, working with portable.NET (or mono), and programmable in C#! :-)
-** ...[[Guile]].
-** ... erlang (see [[ErLisp]]) :-)
-** ...[[CommonLisp]].
-** ...[[EmacsLisp]] (in other words, make the Lisp engine faster and then replace all the C code with Lisp).
-** ...[[Haskell]] ([http://www.haskell.org/pipermail/haskell-cafe/2007-June/026994.html]: "the idea of writing an Emacs-like system  in Haskell might be 
-ill-considered but, as you also notice in the rest of your message, that 
-doesn't make it worthless in a long-term perspective"; [http://www.haskell.org/pipermail/haskell-cafe/2007-June/027010.html]: "Having just presented a case for the possible rationality of the irrational 
-decision of creating an Emacs-like IDE in Haskell, I wonder if we should not 
-be even more irrational and contemplate the possibility of using Haskell to 
-create a radically different kind of IDE.").
-* Emacs or Xemacs running on top of portable, standard ANSI Common
-  Lisp (with macrology to emulate elisp enough that most packages will
-  work).  Then we can choose the back end (clisp, cmucl, sbcl, ...)
-  according to our needs, and leverage off of the incredible design
-  and implementation work that has gone into ANSI.  (Not that elisp
-  hasn't been incredibly great, but it's an OLD dialect of Lisp.  Time
-  to move on, IMHO.) -- (wayestuncool@yahoo).
-
-** There actually is an emacs-like editor written in Scheme (MitSlashGnuScheme, not Guile, but that's not the biggest of differences) called EdWin.
-
-*** emacs-like.  ha.  ha ha.  blow away all existing elisp code.  ha ha ha.
-
-** There actually is a free software emacs-like editor written in Common Lisp called Hemlock, that comes with CMUCL. Also, just about every commercial Common Lisp has an emacs-like editor in it (at least Symbolics Genera, Xanalysis LispWorks and MCL have them).
-* I wish Emacs used both.
-
-* One should port Emacs to Common Lisp "slowly", i.e. in a way where at first, it runs the original emacs through a compatibility layer, and then once you get that working, you can start porting bits of C and ELisp code to Common Lisp.
-
-** Creating some files in CL to provide ELisp compatibility. The bulk of how they ported Macsyma from MacLisp to Common Lisp was by adding a slew of functions and macros to provide compatibility. ELisp is actually closer to CL than Maclisp is, I think. The main problem was then, and will be now, to deal with dynamic scoping. Emacs is full of idioms like (defun bar () foo) (let ((foo 3)) (bar)), which returns 3 in Maclisp and Elisp, but an error in CL. Judging from the Maxima sources, this was dealt with by long lists of proclaims declaring many variables "special" (special in CL == fluid in Scheme == dynamic in general). 
-*** One way of dealing with dynamic scoping is to redefine all binding constructs with macros to explicitly use (declare (special foo)). There should be some trick to read .el files with those macros and .lisp files without them, but I'm sure it could be done, since Common Lisp is especially suited to advanced macrology.
-*** Suppose that it were to become possible in this way to run ELisp files in a Common Lisp system -- and I am fairly certain that could be done -- then the next step would be to 
-** In GCL, it is possible to link C and Lisp code. GCL is probably the preferred CL. It has been hacked on with ever-increasing intensity lately. They're getting close to full ANSI compatibility (for a longtime, the main problem with GCL was that it only went as far as CLtL1). It uses GCC as a back end, which makes it  portable and *very* fast,  and allows for the aforementioned Lisp with C linking. It also knows how to unexec.
-
-** Convert all the .el files to common lisp, and run them, for the time being, using emacs's CL compatibility thingy. I don't think that'd work so great.
-*** Indeed.  Common Lisp doesn't, for instance, have buffer-local variables,
-text properties, the Emacs character set --- let alone appropriate
-critical section signal handling and the like...
-
 * I'd like it if GNU Emacs would, by default, keep all of the 712 .elc files, 760 .el files, and 460 other files in .JAR format by default. See http://java.sun.com/j2se/1.4.2/docs/guide/jar/jar.html The Info-ZIP project has almost all  necessary code.  Would developers be opposed to this?
 ** You could implement that yourself via a file-name handler to demonstrate
 how useful it is.  Why not zip up your entire filesystem, though?
@@ -537,6 +385,57 @@ applications often support Emacs-sty.le bindings:
 
     $ gconftool-2 --get /desktop/gnome/interface/gtk_key_theme
     Emacs
+=== Different extension/implentation language ===
+"I'd like someone else to rewrite it in..."
+* ...C# and GTK#, working with portable.NET (or mono), and programmable in C#! :-)
+* ...[[Guile]] (see GuileEmacs).
+* ... erlang (see [[ErLisp]]) :-)
+* ...[[EmacsLisp]] (in other words, make the Lisp engine faster and then replace all the C code with Lisp).
+* ...[[Haskell]] ([http://www.haskell.org/pipermail/haskell-cafe/2007-June/026994.html]: "the idea of writing an Emacs-like system  in Haskell might be 
+ill-considered but, as you also notice in the rest of your message, that 
+doesn't make it worthless in a long-term perspective"; [http://www.haskell.org/pipermail/haskell-cafe/2007-June/027010.html]: "Having just presented a case for the possible rationality of the irrational 
+decision of creating an Emacs-like IDE in Haskell, I wonder if we should not 
+be even more irrational and contemplate the possibility of using Haskell to 
+create a radically different kind of IDE.").
+* ...[[CommonLisp]].
+** Emacs or Xemacs running on top of portable, standard ANSI Common
+  Lisp (with macrology to emulate elisp enough that most packages will
+  work).  Then we can choose the back end (clisp, cmucl, sbcl, ...)
+  according to our needs, and leverage off of the incredible design
+  and implementation work that has gone into ANSI.  (Not that elisp
+  hasn't been incredibly great, but it's an OLD dialect of Lisp.  Time
+  to move on, IMHO.) -- (wayestuncool@yahoo).
+
+*** There actually is an emacs-like editor written in Scheme (MitSlashGnuScheme, not Guile, but that's not the biggest of differences) called EdWin.
+
+**** emacs-like.  ha.  ha ha.  blow away all existing elisp code.  ha ha ha.
+
+*** There actually is a free software emacs-like editor written in Common Lisp called Hemlock, that comes with CMUCL. Also, just about every commercial Common Lisp has an emacs-like editor in it (at least Symbolics Genera, Xanalysis LispWorks and MCL have them).
+** I wish Emacs used both.
+
+** One should port Emacs to Common Lisp "slowly", i.e. in a way where at first, it runs the original emacs through a compatibility layer, and then once you get that working, you can start porting bits of C and ELisp code to Common Lisp.
+
+*** Creating some files in CL to provide ELisp compatibility. The bulk of how they ported Macsyma from MacLisp to Common Lisp was by adding a slew of functions and macros to provide compatibility. ELisp is actually closer to CL than Maclisp is, I think. The main problem was then, and will be now, to deal with dynamic scoping. Emacs is full of idioms like (defun bar () foo) (let ((foo 3)) (bar)), which returns 3 in Maclisp and Elisp, but an error in CL. Judging from the Maxima sources, this was dealt with by long lists of proclaims declaring many variables "special" (special in CL == fluid in Scheme == dynamic in general). 
+**** One way of dealing with dynamic scoping is to redefine all binding constructs with macros to explicitly use (declare (special foo)). There should be some trick to read .el files with those macros and .lisp files without them, but I'm sure it could be done, since Common Lisp is especially suited to advanced macrology.
+**** Suppose that it were to become possible in this way to run ELisp files in a Common Lisp system -- and I am fairly certain that could be done -- then the next step would be to 
+*** In GCL, it is possible to link C and Lisp code. GCL is probably the preferred CL. It has been hacked on with ever-increasing intensity lately. They're getting close to full ANSI compatibility (for a longtime, the main problem with GCL was that it only went as far as CLtL1). It uses GCC as a back end, which makes it  portable and *very* fast,  and allows for the aforementioned Lisp with C linking. It also knows how to unexec.
+
+*** Convert all the .el files to common lisp, and run them, for the time being, using emacs's CL compatibility thingy. I don't think that'd work so great.
+**** Indeed.  Common Lisp doesn't, for instance, have buffer-local variables,
+text properties, the Emacs character set --- let alone appropriate
+critical section signal handling and the like...
+
+== XEmacs ==
+
+* I wish XEmacs recognized when opening a file that is a hard link to
+  another file that's already open.  It should just leave the one
+  buffer I think (or have two buffers that
+  simultaneously/automatically update each other).  (Amen to this one
+  -- LathI)
+
+* I wish that vr-mode.el would work with both xemacs and emacs.  This
+  is an irreplaceable application for people who use speech
+  recognition, but it only works with emacs.
 
 == Archive ==
 
@@ -545,6 +444,72 @@ code, wishes that have been implemented.  If you disagree, refine the
 wish, and move it to the top again.  On the other hand, if some of
 these resolved wishes attract a lot of comments, move them to their
 own page.
+
+=== Implemented ===
+
+* A package manager for Emacs Lisp packages. The features that seam most important to me are a huge (browsable) list of packages and automatic dependency handling. Besides general stability of course.
+** See [[CategoryCode#Installers]] to find a list of existing package managers.
+** I have posted [http://stackoverflow.com/questions/454259/what-do-you-expect-from-a-package-manager-for-emacs What do you expect from a package manager for Emacs] to stackoverflow on 2009-01-17 because of the ability to vote down/up suggested features. Please participate. -- JonasBernoulli
+** Discussion in [[emacs-devel]] on 2008-08-01 called [http://article.gmane.org/gmane.emacs.devel/101927 Emacs Package Management].
+** Discussion in [[comp.emacs]] on 2002-11-21 called [http://groups.google.com/group/comp.emacs/browse_thread/thread/696d4ba8809ff258 Package Manager]
+
+* I'd like copy, paste and cut command which working with the clipboard instead kill-ring.
+  I write it for myself, code moved to [[CopyAndPaste#ClipboardFunctions]].
+
+* [http://www.sublimetext.com/ Minimap] of Sublime editor. See the left side of the screenshots.
+** This is now possible using ##minimap.el##. Please see the page MiniMap for details.
+
+* [http://player.vimeo.com/video/41090089 typing on several lines at once], also of Sublime editor
+** See [[https://github.com/magnars/multiple-cursors.el]]
+** Can be done with Lisp:multiple-line-edit.el
+** Also CuaMode can edit multiple lines
+** Quick and dirty: C-x r t
+** I've just written a mode that does this, among other things: [[Multipoint]]. It's not very good.
+
+* I'd like Emacs to support true word wrap and other "soft" formatting. i.e. formatting that applies to the display, but not the file. For example, VisualSlickEdit has a soft indent mode where a single long line of code in the file is displayed not only word wrapped, but also indented appropriately.  [Try LongLines]
+
+** True word-wrap has been partially given to you (the indenting part of it, not so much).  See the instructions under LineWrap.
+** I've written a proof-of-concept implementation of SoftIndent --JamesWright
+
+* I wish for a tabs-then-spaces option in the indentation modes (at least the C derived ones).  Tabs to get to the block-level, then spaces for pretty formatting.
+** *Done:* SmartTabs.
+
+* I wish emacs supported XEmacs' <code>modeline-click-swaps-buffer</code>. Bonus points if also supported left->next buffer and right->previous buffer.
+
+[new]
+** Isn't this wish satisfied by Emacs 21?  From etc/NEWS:
+*** Mouse-1 on the buffer name in the mode line goes to the next buffer.
+*** Mouse-3 on the buffer-name goes to the previous buffer.
+----
+* AntiAliasedFaces.
+** This is supported out of the box in GNU Emacs 23.1.
+
+* I'd like `previous-matching-history-element' to work like C-r in bash/readline, i.e. to display matches incrementally. It would be a great addition to Emacs' excellent incremental search facilities.
+
+** In CVS Emacs you can isearch (C-s/C-r) the minibuffer history.
+[new]
+*** What version did this correspond to? 23.x?
+----
+* I wish C-x s had a `d' command option for running `diff'
+** It does in Emacs 22.
+
+* Follow mode can only synchronize scrolling windows which content a same file. Does it possible to scrolling windows with diffrent files synchronously?
+  -- 9307420654
+** There is a minor mode to apply all scrolling commands to all visible windows in the current frame. Check <code>scroll-all-mode</code> for that. Or else, if you want to scroll together only 2 windows and only when you use a specific keystroke, you can do something like a function that scrolls the current window (<code>scroll-up</code> or <code>scroll-down</code>) and then the "other window" (i.e., the next one in the list of windows), with <code>scroll-other-window</code> (with argument <code>'-</code>, i.e., the symbol "minus", for scrolling down). Then you can assign this to a keystroke, e.g., C-M-up / down.
+
+* Closures. Oh, how I would appreciate it if Emacs had real lexical
+  let (not the expensive workaround from the cl package) and real
+  closures. -- OliverScholz
+** Lexical binding is implemented in 24.3
+
+* I wish Emacs had Common Lisp #'format -- BtTempleton
+** It has on [http://marmalade-repo.org/packages?q=format Marmalade].
+
+* I wish Emacs could tell me about (generate a list of) un-bound simple keychords, instead of hunting for them using C-h k.
+** 1. Which key sequences are unbound depends on what the current major mode is.
+** 2. This doesn't give you a list of '''''un'''''bound key sequences in the current major mode, but it at least gives you a list of ''bound'' key sequences, so it is better than `C-h k': `'''<code>describe-bindings</code>''''. -- DrewAdams
+** Could you automate this fishing?  A cartesian join of possible key combinations in a database to come up with a Hugh Jass table, and a dash of code? --ChristopherSmith
+*** I've implemented this (with combinations determined by variables) as Lisp:unbound.el.  The interesting bit in the request is the word "simple", really.  --DavisHerring
 
 ----
 CategoryWishList
