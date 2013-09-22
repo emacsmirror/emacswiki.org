@@ -42,6 +42,8 @@ It makes heavy use of the template.el package (TemplatesMode).
 
 * [http://github.com/jrockway/stylish/tree/master Stylish] -- An interactive mode.
 
+* [http://web-mode.org web-mode.el] -- Major mode for editing template-toolkit (tt) templates.
+
 == Related modes ==
 
 * [http://www.shellarchive.co.uk/content/emacs.html] -- A perl compilation mode with syntax highlighting and the usual compilation stuff.
