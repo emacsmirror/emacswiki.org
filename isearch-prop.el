@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 21 17:14:07 2013 (-0700)
+;; Last-Updated: Sun Sep 22 10:45:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 404
+;;     Update #: 410
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -152,6 +152,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/22 dadams
+;;     isearchp-properties-in-buffer: Fixed condition for adding prop to list for overlays.
 ;; 2013/09/21 dadams
 ;;     Added: isearchp-remove-all-properties, isearchp-remove-property, isearchp-property-prop-prefix.
 ;;     Everywhere: Reversed prefix arg: none now prompts for input, with prefix arg reuse last.
@@ -670,8 +672,8 @@ Non-nil PREDICATE is a predicate that each property must satisfy."
           (dolist (ovrly  ovrlays)
             (setq curr-props  (overlay-properties ovrly))
             (while curr-props
-              (unless (and (memq (car curr-props) props)
-                           (or (not predicate)  (funcall predicate (car curr-props))))
+              (when (and (not (memq (car curr-props) props))
+                         (or (not predicate)  (funcall predicate (car curr-props))))
                 (push (car curr-props) props))
               (setq curr-props  (cddr curr-props)))))
         (when (or (not type)  (eq type 'text)) ; Get text properties.
