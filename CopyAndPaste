@@ -484,6 +484,7 @@ Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behav
 [new::roland.walker]
 [[Simpleclip]] is a more general library for separating the kill ring and the system clipboard. -- [[roland.walker]]
 
+[:ClipboardFunctions]
 == Functions for working with the clipboard ==
 
 Brought this from the WishList page.
