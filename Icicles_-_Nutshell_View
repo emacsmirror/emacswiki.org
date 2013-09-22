@@ -307,7 +307,7 @@ match the glob pattern `##ici*.el##':
 : '''##C-x 4 f##'''##  i c i * . e l  ##'''##RET##'''
 
 In ''Icicle'' mode you can also do the following, to visit all
-`##ici*.el##' files, file `my file.txt', and file `bookmark+.el', just as if you had used `C-x 4 f' three separate times [[#footnote1|[*]]]:
+`##ici*.el##' files, file `##my file.txt##', and file `##bookmark+.el##', just as if you had used `C-x 4 f' three separate times [[#footnote1|[*]]]:
 
 : '''##C-x 4 f##'''##  ici*.el  "my file.txt"  bookmark+.el  ##'''##M-R  C-g##'''
 
@@ -323,7 +323,7 @@ because `C-x 4 f' is bound to a [[multi-command]]
 
 [:footnote1]
 [*] (For brevity, spaces were not used here to separate each
-printable character typed: `##ici*.el##' instead of `i c i * . e l'.)
+printable character typed: `##ici*.el##' instead of `##i c i * . e l##'.)
 
 
 
@@ -342,8 +342,8 @@ Suppose that you do this:
 : '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   c o l o r   ##'''##S-SPC##'''
 
 The completion candidates, shown in `##*Completions*##', are the files
-(a) whose name contains `icicles' (completed from `ici') and (b)
-whose content includes `color' --- that is, the files themselves
+(a) whose ''name'' contains `icicles' (completed from `ici') and (b)
+whose ''content'' includes `color' --- that is, the files themselves
 contain the text `color'.
 
 The file content is in fact part of the two-part completion
