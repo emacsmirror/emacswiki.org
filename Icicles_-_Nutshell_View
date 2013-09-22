@@ -39,7 +39,7 @@ One good way to start with '''Icicles''' is to explore [[menu bar|menu-bar]] men
 
 [:IciclesMenuBarMenu]
 [:MinibufMenuBarMenu]
-Menu '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode). Menu '''Minibuf''' is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
+Menu '''Icicles''' is available all of the time (that is, whenever you are in ''Icicle'' mode). Menu '''Minibuf''' is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
 
 Menu '''Icicles''' offers top-level commands of all sorts that are
 available in ''Icicle'' mode.  Instead of grouping these all in the
