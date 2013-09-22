@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-08-19 02:06:43
-;; Version: 0.5
+;; Version: 0.6
 ;; Last-Updated: 2013-09-19 15:24:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/smtpmail-multi
@@ -214,7 +214,7 @@ instead."
                    (and (consp match)
                         (string-match (cdr match) (message-fetch-field (car match)))))
             return accounts)
-      smtpmail-multi-default-account))
+      (list smtpmail-multi-default-account)))
 
 ;; Set message-send-mail-function to this function
 ;;;###autoload
