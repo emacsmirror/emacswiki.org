@@ -5,7 +5,7 @@ Lisp:macro-utils.el
 
 == with-gensyms ==
 
-When defining macros, there is often a need to introduce new variable names that are guaranteed not to clash with other variables.  This can be done by calling /gensym/, like so:
+When defining macros, there is often a need to introduce new variable names that are guaranteed not to clash with other variables.  This can be done by calling /gensym/ (provided by cl library), like so:
 
   (let ((foo (gensym))
         (bar (gensym))
