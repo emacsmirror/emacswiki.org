@@ -13,9 +13,12 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 [new] 
 
 ===Emacs for Prose===
-[new] I'm a novelist working with large prose text files, and an emacs newbie who's very enthusiastic about org-mode. I'm trying to add some customizations to my init.el file, but so far I have failed. Here's what I'm hoping to achieve:
+[new]
+I'm a novelist working with large prose text files, and an emacs newbie who's very enthusiastic about org-mode. I'm trying to add some customizations to my init.el file, but so far I have failed. 
+I've found some .el files for these kinds of things, but can't seem to get it all together into my elisp and init.el files in a way that results in the desired behavior. Any help would be much appreciated! Apologies if I've done poorly in this wiki ... new to this, too.
+-- Steven Arntson
 
-* Automatic startup in org-mode.
+**Automatic startup in org-mode**
 
 The problem is that Emacs starts with the scratch buffer, wich has no file attached. Even if we put it in Org Mode, you'd loose anything you type if you forget to save (and Emacs won't remind you of that because the scratch buffer has no file attached).
 
@@ -31,17 +34,71 @@ Or, alternatively, use org-mode for all text files if you don't want to use the 
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
 }}}
 
-* Automatic startup in visual-line-mode.
+**Automatic startup in visual-line-mode**
 
-* Numbered backups created with each save: file01, file02, file03, etc, or similar.
+Assuming you want this for all text based modes:
 
-* Enabled n-dashes and smartquotes (typopunct-mode?).
+{{{
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+}}}
 
-* Visible marks for whitespace, tabs, and hard returns.
+**Numbered backups created with each save: file01, file02, file03, etc, or similar**
 
-I've found some .el files for these kinds of things, but can't seem to get it all together into my elisp and init.el files in a way that results in the desired behavior. Any help would be much appreciated! Apologies if I've done poorly in this wiki ... new to this, too.
+{{{
+(setq version-control t)
+}}}
 
--Steven Arntson
+This enables what is called "numbered backup files". From the manual:
+
+[quote]
+Numbered backup file
+names contain `.~', the number, and another `~' after the original file
+name.  Thus, the backup files of `eval.c' would be called `eval.c.~1~',
+`eval.c.~2~', and so on, all the way through names like `eval.c.~259~'
+and beyond.
+[/quote]
+
+**Enabled n-dashes and smartquotes (typopunct-mode?)**
+
+Personally, I use the following to switch org-mode buffers between German and English depending on the buffer content:
+
+{{{
+(add-hook 'org-mode-hook 'my-org-init)
+
+(defun my-org-init ()
+  (when (require 'typopunct nil t)
+    (save-excursion
+      (goto-char (point-min))
+      (if (> (count-matches (regexp-opt '("der" "die" "das") 'words)) 3)
+	  (typopunct-change-language 'deutsch)
+	(typopunct-change-language 'english))
+      (typopunct-mode 1))))
+}}}
+
+If you only care about English, you can probably just stick to the following:
+
+{{{
+(add-hook 'org-mode-hook
+  (lambda ()
+    (typopunct-change-language 'english))
+    (typopunct-mode 1)))
+}}}
+
+**Visible marks for whitespace, tabs, and hard returns**
+
+Maybe something like the following?
+
+{{{
+(global-whitespace-mode 1)
+}}}
+
+Alternatively, for org-mode only:
+
+{{{
+(add-hook 'org-mode-hook
+  (lambda ()
+    (whitespace-mode 1)))
+}}}
 
 === Warning when functions are redefined by loading a file? ===
 
