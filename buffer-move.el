@@ -70,7 +70,7 @@
 ;;;###autoload
 (defun buf-move-up ()
   "Swap the current buffer and the buffer above the split.
-If there is no split, ie now window above the current one, an
+If there is no split, ie no window above the current one, an
 error is signaled."
 ;;  "Switches between the current buffer, and the buffer above the
 ;;  split, if possible."
@@ -88,7 +88,7 @@ error is signaled."
 ;;;###autoload
 (defun buf-move-down ()
 "Swap the current buffer and the buffer under the split.
-If there is no split, ie now window under the current one, an
+If there is no split, ie no window under the current one, an
 error is signaled."
   (interactive)
   (let* ((other-win (windmove-find-other-window 'down))
@@ -105,7 +105,7 @@ error is signaled."
 ;;;###autoload
 (defun buf-move-left ()
 "Swap the current buffer and the buffer on the left of the split.
-If there is no split, ie now window on the left of the current
+If there is no split, ie no window on the left of the current
 one, an error is signaled."
   (interactive)
   (let* ((other-win (windmove-find-other-window 'left))
@@ -121,7 +121,7 @@ one, an error is signaled."
 ;;;###autoload
 (defun buf-move-right ()
 "Swap the current buffer and the buffer on the right of the split.
-If there is no split, ie now window on the right of the current
+If there is no split, ie no window on the right of the current
 one, an error is signaled."
   (interactive)
   (let* ((other-win (windmove-find-other-window 'right))
