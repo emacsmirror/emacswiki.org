@@ -577,5 +577,8 @@ These questions are kept here to let people avoid asking frequently asked questi
 
 [new]
 '''Question:''' Why tetris is not shipped with emacs anymore? I have googled this, without success. Yet this particular feature is still advertised on www.gnu.org/software/emacs/tour/
+
+'''Answer:'''  It still comes with my Emacs 24.3.
+
 ----
 CategoryHelp
