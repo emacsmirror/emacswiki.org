@@ -21,9 +21,8 @@ A simple http://www.emacswiki.org/emacs?action=rss;diff=1 should be enough. Summ
 [new]
 I don't see any diffs at that link. It seems full=0 corresponds to summary, somehow it hides the diff=1 parameter.
 [new]
-Looking more carefully, I see that you are right. If you provide full=1 it will /replace/ the summary in the description with something else. By default, that's going to be the page content. You can switch off the page content and switch on the diff, but you've still lost the summary. Hm.
+Looking more carefully, I see that you are right. If you provide full=1 it will /replace/ the summary in the description with something else. By default, that's going to be the page content. You can switch off the page content and switch on the diff, but you've still lost the summary. That looks like a bug... Time passes... [http://git.savannah.gnu.org/cgit/oddmuse.git/commit/?id=50b71adf2d58fef3e6325ad4bad643b5d93335eb Fixed]! Thanks for the heads up. This should work, now:
 http://www.emacswiki.org/emacs/?action=rss;full=1;page=0;diff=1
-Let me check some more.
 -- Alex
 
 == "New" entries do not appear correctly ==
