@@ -10,6 +10,12 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
+== Is there a way to get recent changes RSS with summaries and diffs? ==
+
+<WikiRss> "Note, many of these options in the query string can be combined and configured to your preference."
+
+But there doesn't seem to be an option in the query corresponding to summary.
+
 == "New" entries do not appear correctly ==
 
 I modified [[LineNumbers]] and that somehow broke the page appearance; now it's full of "[new]" strings (it wasn't before my edit).
