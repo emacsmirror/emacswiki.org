@@ -13,7 +13,7 @@ values of ##pop-up-frames##.
 
 === Installation ===
 
-Put the package file in your load path and put:
+Put the package file  [[frame-bufs.el]] in your load path and put:
 
     (require 'frame-bufs)
 
