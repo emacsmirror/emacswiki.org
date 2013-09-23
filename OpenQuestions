@@ -574,6 +574,7 @@ These questions are kept here to let people avoid asking frequently asked questi
 [new]
 
 '''Question:''' Is it possible to tunnel info to emacs via SSH without using X11?  I prefer using the built-in emacs version shipped with OS X within Terminal.app.  Though, when I "ssh -X" it opens the server's version & config for Emacs within an X window on OS X.  Is there a way to bypass X11?
+'''Answer:''' Yes: `emacs -nw' starts a new text-only Emacs session.
 
 [new]
 '''Question:''' Why tetris is not shipped with emacs anymore? I have googled this, without success. Yet this particular feature is still advertised on www.gnu.org/software/emacs/tour/
