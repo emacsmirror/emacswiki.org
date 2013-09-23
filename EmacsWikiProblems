@@ -123,21 +123,6 @@ I think that a category is a bit of meta information, but it is now a meta only 
 [new]
 What do you think of the addition of ##Category /emacs/Category## to the InterMap, for example. Now you can write ##Category:EmacsWikiSite## or ##[[Category:EmacsWikiSite]]##---resulting in Category:EmacsWikiSite and [[Category:EmacsWikiSite]]. If you then click on the header of CategoryEmacsWikiSite you will not find the pages with these links. If other languages are used more often, we can translate the prefix, too: ##Kategorie:EmacsWiki##. -- Alex
 
-== Can markup be used in headers? <code>I have failed to do so.</code> ==
-Is this documented somewhere?
-
-Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a header, without actually invoking it.
-
-Interestingly, the markup in this particular header renders properly in the TOC
-
-[new]
-Markup cannot be nested by default. Very few markup elements can in fact be nested. This is not document anywhere, I think.
-Common sense stuff like list items and inline markup can be nested (bold list items, for example).
-Emphasis markup using apostrophes is the online inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
-
-[new]
-The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
-
 
 
 
@@ -263,6 +248,23 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 
 
 == Markup/Generation Issues==
+
+
+== Can markup be used in headers? <code>I have failed to do so.</code> ==
+Is this documented somewhere?
+
+Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a header, without actually invoking it.
+
+Interestingly, the markup in this particular header renders properly in the TOC
+
+[new]
+Markup cannot be nested by default. Very few markup elements can in fact be nested. This is not document anywhere, I think.
+Common sense stuff like list items and inline markup can be nested (bold list items, for example).
+Emphasis markup using apostrophes is the online inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
+
+[new]
+The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
+
 
 
 === Apostrophes etc. not prettified in links ==
