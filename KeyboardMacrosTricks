@@ -66,7 +66,7 @@ Here are a few tricks to get the most out of Emacs macros:
 
 * Alternatively, select a region, then use apply-macro-to-region-lines, which is bound to C-x C-k r. From the docstring: /Apply last keyboard macro to all lines in the region. For each line that begins in the region, move to the beginning of the line, and run the last keyboard macro./
 
-* `call-last-kbd-macro' is, in effect, bound to F4 by default, for recent versions of emacs  (> 21). If you have an older version, bind `call-last-kbd-macro' to a single key (or use ##repeatable.el## to add a repeatable advice on `call-last-kbd-macro'). That way, you can trigger the macro in riffle by simply resting your finger on the key.
+* `call-last-kbd-macro' is, in effect, bound to F4 by default, for recent versions of emacs  (> 21). If you have an older version, bind `call-last-kbd-macro' to a single key (or use [[Repeatable]] to add a repeatable advice on `call-last-kbd-macro'). That way, you can trigger the macro in riffle by simply resting your finger on the key.
 
          (define-key global-map [f4] 'call-last-kbd-macro)
 
