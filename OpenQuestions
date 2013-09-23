@@ -129,7 +129,7 @@ I can do this quickly in Mucommander by using "CTRL+e". Is there any way to do t
 
 Many thanks for the help.
 
-[new:JosÃ© Alfredo Romero L.:2012-10-09 07:42 UTC]
+[new:José Alfredo Romero L.:2012-10-09 07:42 UTC]
 
 M-o (or Alt-o, if you prefer) is what you need:
 
@@ -244,16 +244,16 @@ I'm using Emacs in Supercollider mode, which opens two buffer windows automatica
 My keyboard layout is Turkish Q. I want to use emacs for latex so I need to type backslash extensively, but it is situated at an awkward Alt-Gr combination on my keyboard, so I want to swap it (and also brackets and braces) with Turkish characters that I don't use since I type in English.
 
 First in my .emacs file I tried
-(global-set-key (kbd "Å") "\")
+(global-set-key (kbd "ş") "\")
 with no results. Then as a trial I tried
-(global-set-key (kbd "Å") "i")
+(global-set-key (kbd "ş") "i")
 still without luck. Then
-(global-set-key (kbd "i") "Å")
+(global-set-key (kbd "i") "ş")
 did work to my suprise, but
 (global-set-key (kbd "i") "\")
 didn't. After much googling I tried using the octal code for \, and I got
 (global-set-key (kbd "i") "\134")
-to give me a "\" when I press "i". But of course I need the "i" and I want backslash on another key. It appears that somehow (kbd "Å") is not understood for some reason, and when I tried to put in the octal code I found for "Å" with C-x = it again didn't work, probably because it was a 7-digit-long thing. So in short it appears that I can assign Turkish characters to other keys, but not vice versa.
+to give me a "\" when I press "i". But of course I need the "i" and I want backslash on another key. It appears that somehow (kbd "ş") is not understood for some reason, and when I tried to put in the octal code I found for "ş" with C-x = it again didn't work, probably because it was a 7-digit-long thing. So in short it appears that I can assign Turkish characters to other keys, but not vice versa.
 
 Any explanations of this behaviour and a solution would be much appreciated. (Note, I am very much a noob with both emacs and my debian)
 
@@ -283,7 +283,7 @@ You can run with elevated priviledges, run as a user with rights to create/chang
 After installing new 23.1 installation on an XP machine, I came across a very annoying issue. When I load some el files, I get errors such as 
 apply: Invalid read syntax: "?"
 Loading d:/emacs/emacs-23.1/lisp/shell.el (source)...
-apply: Symbol's value as variable is void: Â«
+apply: Symbol's value as variable is void: «
 When I find the file in question, and eval the buffer, I do not get these errors. Also byte compiled files always fail to load.
 Thanks.
 
@@ -347,9 +347,9 @@ However, after opening a java file the java generics are not properly colored.  
 
 ==Always indent with only tabs==
 [new] I would like to config Emacs so that all indentation is done with tabs, with four-space wide tab stops.
-(Iâm workin in PHP but have been testing in C mode and I suspect the same answer will work in both places.)
+(I’m workin in PHP but have been testing in C mode and I suspect the same answer will work in both places.)
 
-What Iâm getting (where . indicates a space and _ indicates a tab
+What I’m getting (where . indicates a space and _ indicates a tab
 
     foo();
     ....if (x == y) {
@@ -375,7 +375,7 @@ What I would like
 
 
 
-Iâm using 21.4.1 with version 1.2.0 of php-mode.el. (Not sure which version of c-mode.)
+I’m using 21.4.1 with version 1.2.0 of php-mode.el. (Not sure which version of c-mode.)
 
 [new]
 The `c-basic-offset' variable (and a few others) are [BufferLocalVariable buffer-local variables].  This means that you can set them outside of any buffer, in your ##.emacs## file but they will probably be overriden by code that runs in a [ManagingHookVariables mode-hook variable].  Try setting the same variables in a hook function.  I just fired up a new Emacs session and wrote the following in the ##*scratch*## buffer:
