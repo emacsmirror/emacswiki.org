@@ -250,7 +250,7 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 == Markup/Generation Issues==
 
 
-== Can markup be used in headers? <code>I have failed to do so.</code> ==
+=== Can markup be used in headers? <code>I have failed to do so.</code> ===
 Is this documented somewhere?
 
 Use-case: putting a category-tag like <code>CategoryNeedsAttention</code> into a header, without actually invoking it.
