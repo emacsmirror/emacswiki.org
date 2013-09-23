@@ -100,6 +100,9 @@ Alternatively, for org-mode only:
     (whitespace-mode 1)))
 }}}
 
+
+Thank you--I will try these! ~s 
+
 === Warning when functions are redefined by loading a file? ===
 
 [new] I want to give some elisp code to a friend. When he loads my code into his environment, is there any way for him to know when one of my functions has the same name as --- and is thus inadvertently redefining --- a function that has already been defined? Ideally the file loaded is either source ".el" or compiled ".elc" 
