@@ -15,15 +15,29 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 ===Emacs for Prose===
 [new] I'm a novelist working with large prose text files, and an emacs newbie who's very enthusiastic about org-mode. I'm trying to add some customizations to my init.el file, but so far I have failed. Here's what I'm hoping to achieve:
 
-*Automatic startup in org-mode.
+* Automatic startup in org-mode.
 
-*Automatic startup in visual-line-mode.
+The problem is that Emacs starts with the scratch buffer, wich has no file attached. Even if we put it in Org Mode, you'd loose anything you type if you forget to save (and Emacs won't remind you of that because the scratch buffer has no file attached).
 
-*Numbered backups created with each save: file01, file02, file03, etc, or similar.
+It would be better for you to simply open a default file when you start Emacs, perhaps?
 
-*Enabled n-dashes and smartquotes (typopunct-mode?).
+{{{
+(find-file "~/NOTES.org")
+}}}
 
-*Visible marks for whitespace, tabs, and hard returns.
+Or, alternatively, use org-mode for all text files if you don't want to use the ##.org## extension?
+
+{{{
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+}}}
+
+* Automatic startup in visual-line-mode.
+
+* Numbered backups created with each save: file01, file02, file03, etc, or similar.
+
+* Enabled n-dashes and smartquotes (typopunct-mode?).
+
+* Visible marks for whitespace, tabs, and hard returns.
 
 I've found some .el files for these kinds of things, but can't seem to get it all together into my elisp and init.el files in a way that results in the desired behavior. Any help would be much appreciated! Apologies if I've done poorly in this wiki ... new to this, too.
 
