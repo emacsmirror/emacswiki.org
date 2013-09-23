@@ -18,6 +18,8 @@ But there doesn't seem to be an option in the query corresponding to summary.
 
 [new]
 A simple http://www.emacswiki.org/emacs?action=rss;diff=1 should be enough. Summaries instead of page content is the default. -- AlexSchroeder
+[new]
+I don't see any diffs at that link. It seems full=0 corresponds to summary, somehow it hides the diff=1 parameter.
 
 == "New" entries do not appear correctly ==
 
