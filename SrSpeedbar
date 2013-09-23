@@ -151,14 +151,16 @@ How to integrate sr-speedbar with ERC's erc-speedbar-browser?
 
 ----
 There is a bug when using multiple frames
+
 C-x 5 2
+
 C-x 5 o  (I'm in origial frame with speedbar)
+
 C-x 5 o  (I'm in 2nd frame without speedbar)
+
 Now when I page up and page down it also moves the first frame.
 
-I don't get this when using regular speedbar
-
-It seems like multiple sr-speedbars would be desired (one for each window).
+I don't get this when using regular speedbar. It seems like multiple sr-speedbars would be desired (one for each window).
 
 ----
 
