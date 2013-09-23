@@ -78,7 +78,7 @@ If big is non-nil result is a math-bignum."
 
 (defun bignum-to-float (x)
   (let ((r 0.0))
-    (mapc '(lambda (d)
+    (mapc #'(lambda (d)
 	     (setq r (+ (* r math-bignum-digit-size) d)))
 	  (reverse x))
     r))
