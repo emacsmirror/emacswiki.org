@@ -16,6 +16,9 @@ Note that this page is not about EmacsWikiMode.
 
 But there doesn't seem to be an option in the query corresponding to summary.
 
+[new]
+A simple http://www.emacswiki.org/emacs?action=rss;diff=1 should be enough. Summaries instead of page content is the default. -- AlexSchroeder
+
 == "New" entries do not appear correctly ==
 
 I modified [[LineNumbers]] and that somehow broke the page appearance; now it's full of "[new]" strings (it wasn't before my edit).
