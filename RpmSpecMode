@@ -1,6 +1,8 @@
 rpm-spec-mode.el is a mode for creating RPM spec files.
 
-Download:  http://www.tihlde.org/~stigb/rpm-spec-mode.el
+Download:  http://www.tihlde.org/~stigb/rpm-spec-mode.el or https://raw.github.com/bjorlykke/rpm-spec-mode/master/rpm-spec-mode.el
+
+github project: https://github.com/bjorlykke/rpm-spec-mode
 
 rpm-spec-mode.el is bundled with [[XEmacs]] and by default into the emacs package of [http://fedoraproject.org Fedora] and rpm package of [http://www.mandriva.com/ Mandriva-Linux]
 
