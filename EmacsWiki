@@ -72,25 +72,23 @@ Please note bugs on the [[Problems]] page.
 Current crontab:
 
 <pre>
-07  *  *  *  *  /home/aschroeder/bin/update-changelog
+32  *  *  *  *  /home/aschroeder/bin/emacs-git-update
 17  1  *  *  *  /home/aschroeder/bin/sitemap
 14  2  *  *  *  /home/aschroeder/bin/maintenance
 54  3  *  *  *  /home/aschroeder/bin/update-ell
+43  4  *  *  *  /home/aschroeder/bin/emacs-elisp-area
 47 6,12 * *  *  /home/aschroeder/bin/backup
-23  9  *  *  *  /home/aschroeder/bin/emacs-cvs-update
 38 10  *  *  *  /home/aschroeder/bin/emacs-svn-update
-32  *  *  *  *  /home/aschroeder/bin/emacs-git-update
 57  1,3,5,7,9,11,13,15,17,19,21,23 * * * /home/aschroeder/bin/emacs-rss
 </pre>
 
-* [http://www.emacswiki.org/scripts/update-changelog update-changelog] -- update the Oddmuse:ChangeLog -- has nothing to do with EmacsWiki
+* [http://www.emacswiki.org/scripts/emacs-git-update emacs-git-update] -- update the [[Git repository]] (push)
 * [http://www.emacswiki.org/scripts/sitemap sitemap] -- create a sitemap for Google
 * [http://www.emacswiki.org/scripts/maintenance maintenance] -- run maintenance for the wiki
 * [http://www.emacswiki.org/scripts/update-ell update-ell] -- update the WikifiedEmacsLispList
+* [http://www.emacswiki.org/scripts/emacs-elisp-area emacs-elisp-area] -- update the precomputed lists for the ElispArea
 * [http://www.emacswiki.org/scripts/backup backup] -- update the [[Rsync repository]]
-* [http://www.emacswiki.org/scripts/emacs-cvs-update emacs-cvs-update] -- update the [[CVS repository]]
 * [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] -- update the [[SVN repository]]
-* [http://www.emacswiki.org/scripts/emacs-git-update emacs-git-update] -- update the [[Git repository]] (push)
 * [http://www.emacswiki.org/scripts/emacs-rss emacs-rss] -- create static copies of the most commonly used RSS files
 
 ----
