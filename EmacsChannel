@@ -12,7 +12,13 @@ The chatter is in English and EmacsLisp, but other flavours of Lisp and French, 
 
 After spending some time on the channel, one's mind might start suspecting the EmacsChannelPeople are mere slackers, doing little else than idling on their beloved channel.  The EmacsChannelDemographics certainly proves such accusations downright rubbish.  These "slackers" come from all aspects of life and are involved a vast range of most Useful Things indeed.  Besides they're so busy doing their Useful Things, they have only time to idle on the channel, and not chit-chat all day long.  Many have even automated the joining process (f.ex. ErcEmacsChannel), to minimize the distraction.  If the channel does seem rather quiet at times, a gentle stir usually attracts audience.
 
-Though a separate XEmacsChannel does exist, it's not to separate Emacs-people from one another.  (There's also '''#gnus''' and '''#org-mode'''.)  EmacsChannel is a generic channel, not just for GnuEmacs.  We're all one jolly family, forget you not!
+Though a separate XEmacsChannel does exist, it's not to separate Emacs-people from one another. EmacsChannel is a generic channel, not just for GnuEmacs.  We're all one jolly family, forget you not!
+
+Other channels:
+
+* '''#gnus''' for [[Gnus]]
+* '''#org-mode''' for OrgMode
+* '''#emacswiki''' for EmacsWiki
 
 It would be naive to think only strictly Emacs-related issues were discussed on the channel, especially on a channel where 'strict' itself is such an unpopular idea.  At times discussions, especially about politics, can get rather carried away as we all so well know.  It might be best to take it to the IdeologiesChannel when that happens.  All in all, the Emacsfolks being such a well-behaved lots, there isn't much to EmacsChannelMaintenance beyond fighting EmacsChannelHarassment.
 
