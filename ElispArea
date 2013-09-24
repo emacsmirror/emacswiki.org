@@ -138,7 +138,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 297%
+%Id: 300%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
@@ -164,7 +164,7 @@ This usually happens when code contains string literals. Consider using octal es
   (replace-string "\221" "`" nil (point-min) (point-max))  ; opening single quote
   (replace-string "\222" "'" nil (point-min) (point-max))  ; closing single quote
 
-To convince yourself that octal escapes really work, consider (length "\221") -> 1.
+To convince yourself that octal escapes really work, consider ##(length "\221")## -> 1.
 
 === Syntax highlighting ===
 
