@@ -1,6 +1,6 @@
 ;;; ruby-block.el --- highlight matching block
 
-;; Copyright (C) 2007-2011  khiker
+;; Copyright (C) 2007-2013  khiker, shishi
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;; Keywords: languages, faces, ruby
@@ -45,7 +45,7 @@
 
 ;;; Note:
 
-;; A ruby-mode.el is necessary to use this package.
+;; A ruby-mode.el or enh-ruby-mode is necessary to use this package.
 
 ;;; Code:
 
