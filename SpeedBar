@@ -1,6 +1,7 @@
 Speedbar is another frame which displays information about the current buffer, allowing you to better navigate your sources.  In a way, it's similar to ImenuMode, but much more powerful. It is a part of GNU Emacs since version 23.2.
 
 * http://cedet.sf.net/speedbar.shtml -- see also CollectionOfEmacsDevelopmentEnvironmentTools
+* http://www.gnu.org/software/emacs/manual/html_node/speedbar/ INFO manual
 
 Speedbar can use etags, imenu, or the SemanticBovinator to parse C, C++, Java, texinfo, Makefiles, etc. and provides alternate views into each individual files.  For example, for C files, function list and variable lists are provided for quick navigation within files.
 
