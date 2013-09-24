@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011-2013 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 2.02
+;; Version: 2.03
 ;; Keywords: convenience, buffers
 
 ;; This program is free software; you can redistribute it and/or
@@ -337,7 +337,7 @@ use of the variable `frame-bufs--global-list'."
 (defconst frame-bufs--size-column 4)
 
 (defconst frame-bufs--advised-fns 
-  '(electric-buffer-list))
+  '(electric-buffer-list select-window))
 
 (defconst frame-bufs--hook-assignments
   '((Buffer-menu-mode-hook . frame-bufs--set-up-buff-menu)
@@ -542,6 +542,9 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
 ;;; ---------------------------------------------------------------------
 ;;; Per-Frame Buffer List Maintenance and Manipulation
 ;;; ---------------------------------------------------------------------
+
+(defadvice select-window (after frame-bufs)
+  (frame-bufs--add-buffer (window-buffer) (window-frame)))
 
 ;; Called by window-configuration-change-hook to update the associated-buffer
 ;; list.
