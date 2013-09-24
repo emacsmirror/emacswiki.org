@@ -20,7 +20,7 @@
 ;; Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; Frame-bufs extends Emacs's buffer menu so that it understands a
 ;; distinction between those buffers that "belong" to a frame and those that
@@ -32,7 +32,7 @@
 ;; The package interacts properly with `other-buffer' and respects changes in
 ;; buffer ordering made by `bury-buffer'.  It does not alter the
 ;; `buffer-list' or `buried-buffer-list' frame parameters.  It is not
-;; compatible with non-`il values of `pop-up-frames'.
+;; compatible with non-nil values of `pop-up-frames'.
 
 ;; Installation
 ;; ============
@@ -44,9 +44,9 @@
 ;; in your .emacs.  To toggle frame-bufs mode on and off, use the command
 ;;`frame-bufs-mode'.  To turn it on automatically when starting Emacs, put:
 ;;
-;;  (frame-bufs-mode t) 
+;;  (frame-bufs-mode t)
 ;;
-;; in your .emacs.  
+;; in your .emacs.
 
 ;; Usage
 ;; =====
@@ -268,17 +268,17 @@ variable."
   :group 'frame-bufs
   :type 'list)
 
-(defcustom frame-bufs-mode-line-local-string "[Local]" 
+(defcustom frame-bufs-mode-line-local-string "[Local]"
   "Mode-line indication that the buffer menu is in local mode."
   :group 'frame-bufs
   :type 'string)
 
-(defcustom frame-bufs-mode-line-global-string "[Global]" 
+(defcustom frame-bufs-mode-line-global-string "[Global]"
   "Mode-line indication that the buffer menu is in global mode."
   :group 'frame-bufs
   :type 'string)
 
-(defcustom frame-bufs-mode-line-identification 
+(defcustom frame-bufs-mode-line-identification
   '(frame-bufs--global-list
     (:eval (propertize frame-bufs-mode-line-global-string
                         'local-map frame-bufs-mode-line-keymap
@@ -288,7 +288,7 @@ variable."
                         'local-map frame-bufs-mode-line-keymap
                         'help-echo (concat "Buffer list for frame \""
                                            (frame-parameter nil 'name)
-                                           "\"\n" 
+                                           "\"\n"
                                            "mouse-1 for global list"))))
   "Mode-line indication of the buffer menu's state.
 When frame-bufs is enabled, this variable is inserted into the
@@ -302,7 +302,7 @@ use of the variable `frame-bufs--global-list'."
   :group 'frame-bufs
   :type 'sexp)
 
-(defcustom frame-bufs-associated-buffer-bit ?o 
+(defcustom frame-bufs-associated-buffer-bit ?o
   "Character used to indicate frame-associated buffers in the buffer menu."
   :group 'frame-bufs
   :type 'character)
@@ -336,7 +336,7 @@ use of the variable `frame-bufs--global-list'."
 
 (defconst frame-bufs--size-column 4)
 
-(defconst frame-bufs--advised-fns 
+(defconst frame-bufs--advised-fns
   '(electric-buffer-list select-window))
 
 (defconst frame-bufs--hook-assignments
@@ -349,13 +349,13 @@ use of the variable `frame-bufs--global-list'."
 ;;; Mode Definition and Keymaps
 ;;; ---------------------------------------------------------------------
 
-(defvar frame-bufs-mode-map 
+(defvar frame-bufs-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "F" 'frame-bufs-toggle-global-list)
     (define-key map "A" 'frame-bufs-make-associated)
     (define-key map "N" 'frame-bufs-make-non-associated)
     map)
-    "Keymap for `frame-bufs-mode'.  
+    "Keymap for `frame-bufs-mode'.
 See the documentation of that command for details.")
 
 (set-keymap-parent frame-bufs-mode-map Buffer-menu-mode-map)
@@ -366,7 +366,7 @@ See the documentation of that command for details.")
     map)
 "Keymap for `frame-bufs-mode-line-identification'.")
 
-(defvar frame-bufs-mode nil 
+(defvar frame-bufs-mode nil
   "Non-nil if frame-bufs mode is enabled.
 
 Do not set this variable directly.  Use the command
@@ -374,7 +374,7 @@ Do not set this variable directly.  Use the command
 
 (add-to-list 'minor-mode-list 'frame-bufs-mode)
 
-(defun frame-bufs-mode (&optional arg) 
+(defun frame-bufs-mode (&optional arg)
   "Toggle frame-bufs-mode.
 
 Frame-bufs-mode tracks which buffers are associated with a given
@@ -412,11 +412,11 @@ provided by the variables `frame-bufs-include-displayed-buffers',
 
 For further customization options, see the documentation of the
 variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
-`frame-bufs-mode-line-local-string', 
-`frame-bufs-mode-line-global-string', and 
+`frame-bufs-mode-line-local-string',
+`frame-bufs-mode-line-global-string', and
 `frame-bufs-mode-line-identification'."
   (interactive "P")
-  (setq frame-bufs-mode (if (not arg) 
+  (setq frame-bufs-mode (if (not arg)
                          (not frame-bufs-mode)
                        (> (prefix-numeric-value arg) 0)))
   (if frame-bufs-mode
@@ -482,7 +482,7 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
     (setq frame-bufs--init-buffer (current-buffer)
           frame-bufs--prev-buffers (buffer-list)
           frame-bufs--parent-buffer-list (copy-sequence
-                                         (frame-parameter (selected-frame) 
+                                         (frame-parameter (selected-frame)
                                                           'frame-bufs-buffer-list))))
 
 (defun frame-bufs--after-make-frame (frame)
@@ -495,11 +495,11 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
   (unwind-protect
       (when (frame-live-p frame-bufs--new-frame)
         (when frame-bufs-include-new-buffers
-          (frame-bufs--add-buffers (frame-bufs--set-diff (buffer-list) 
+          (frame-bufs--add-buffers (frame-bufs--set-diff (buffer-list)
                                                          frame-bufs--prev-buffers)
                                   frame-bufs--new-frame))
         (unless (or frame-bufs-include-init-buffer
-                    (memq frame-bufs--init-buffer 
+                    (memq frame-bufs--init-buffer
                           (mapcar #'(lambda (x) (window-buffer x))
                                   (window-list frame-bufs--new-frame 'no-minibuf))))
           (frame-bufs--remove-buffer frame-bufs--init-buffer frame-bufs--new-frame))
@@ -519,15 +519,15 @@ variables `frame-bufs-associated-buffer-bit', `frame-bufs-use-buffer-predicate',
           (set-frame-parameter frame
                                'frame-bufs-saved-buffer-pred
                                buffer-pred)
-          (set-frame-parameter frame 
-                               'buffer-predicate 
+          (set-frame-parameter frame
+                               'buffer-predicate
                                'frame-bufs--ok-to-display-p))
       (when (eq buffer-pred 'frame-bufs--ok-to-display-p)
-        (set-frame-parameter frame 
-                             'buffer-predicate 
+        (set-frame-parameter frame
+                             'buffer-predicate
                              (frame-parameter frame 'frame-bufs-saved-buffer-predicate))
-        (set-frame-parameter frame 
-                             'frame-bufs-saved-buffer-predicate 
+        (set-frame-parameter frame
+                             'frame-bufs-saved-buffer-predicate
                              nil)))))
 
 ;;; ---------------------------------------------------------------------
@@ -582,9 +582,9 @@ itself."
      ;; First, remove dead buffers.  (Should be able to do this as the
      ;; buffers are killed, via kill-buffer-hook, but there are a few corner
      ;; cases that let dead buffers slip through that way.)
-     (set-frame-parameter frame 
+     (set-frame-parameter frame
                           'frame-bufs-buffer-list
-                          (delq nil 
+                          (delq nil
                                 (mapcar #'(lambda (x) (if (buffer-live-p x) x))
                                         (frame-parameter frame
                                                          'frame-bufs-buffer-list))))
@@ -601,7 +601,7 @@ itself."
   (dolist (rule frame-bufs-assoc-rules)
     (dolist (buffer (buffer-list))
       (if (funcall rule frame buffer)
-          (frame-bufs--add-buffer buffer frame) 
+          (frame-bufs--add-buffer buffer frame)
         (frame-bufs--remove-buffer buffer frame)))))
 
 ;;; ---------------------------------------------------------------------
@@ -639,9 +639,9 @@ itself."
 
 ;; Return bit info for BUF appropriate for the 4th column in the buffer-menu.
 (defun frame-bufs--bit-info (buf)
-  (if (and frame-bufs--global-list 
+  (if (and frame-bufs--global-list
            (frame-bufs--associated-p buf))
-      (char-to-string frame-bufs-associated-buffer-bit) 
+      (char-to-string frame-bufs-associated-buffer-bit)
     " "))
 
 (defun frame-bufs--set-up-buff-menu ()
@@ -654,7 +654,7 @@ itself."
                                  after))))
 
 (defun frame-bufs--unload-from-buff-menu ()
-  (use-local-map Buffer-menu-mode-map)  
+  (use-local-map Buffer-menu-mode-map)
   (setq mode-line-format (delq frame-bufs-mode-line-identification mode-line-format)))
 
 ;;; ---------------------------------------------------------------------
@@ -667,7 +667,7 @@ If any windows on FRAME are currently displaying BUF, replace BUF
 in those windows with some other buffer.  Arguments default to
 the current buffer and the selected frame."
   (interactive)
-  (unless buf 
+  (unless buf
     (setq buf (current-buffer)))
   (unless frame
     (setq frame (selected-frame)))
@@ -683,12 +683,12 @@ Set list of buffers associated with FRAME to the list of all
 buffers that have been selected on FRAME, and no others.  FRAME
 defualts to the selected frame."
   (interactive)
-  (unless frame 
+  (unless frame
     (setq frame (selected-frame)))
-  (set-frame-parameter frame 
+  (set-frame-parameter frame
                        'frame-bufs-buffer-list
                        ;; Make sure we get copies, not the lists themselves.
-                       (append 
+                       (append
                         (frame-parameter frame 'buffer-list)
                         (frame-parameter frame 'buried-buffer-list)
                         '())))
@@ -800,7 +800,7 @@ Optional ARG means move up."
               (t
                (let ((delete (eq (char-after) ?D)))
                  (when (and frame-bufs-mode (not delete))
-                   (cond 
+                   (cond
                     ((equal (aref entry 3) "A")
                      (frame-bufs--add-buffer buffer (selected-frame))
                      (tabulated-list-set-col 3 (char-to-string frame-bufs-associated-buffer-bit) t))
@@ -839,7 +839,7 @@ Optional ARG means move up."
                          ,(if frame-bufs-mode
                               '("M" 1 t :pad-right 0)
                             '("M" 1 t))))
-                 (fb-bit (if frame-bufs-mode 
+                 (fb-bit (if frame-bufs-mode
                              (if frame-bufs--global-list
                                  '(("F"  1 t))
                                '(("-"  1 t)))))
@@ -855,7 +855,7 @@ Optional ARG means move up."
         (show-non-file (not Buffer-menu-files-only))
         entries)
     (dolist (buffer (or buffer-list
-                        (and frame-bufs-mode 
+                        (and frame-bufs-mode
                              (frame-bufs-buffer-list (selected-frame) frame-bufs--global-list))
                         (buffer-list (if Buffer-menu-use-frame-buffer-list
                                          (selected-frame)))))
