@@ -1,6 +1,6 @@
 See WikiModes if you are looking for a mode to edit a local wiki.
 
-= This is the Emacs Wiki =
+== This is the Emacs Wiki =
 
 This page has meta information about the Emacs Wiki.  See the SiteMap
 for entry points.
@@ -12,7 +12,9 @@ for entry points.
 * See [[CSS]] for some very simple themes to choose from.
 * See EmacsWikiAppearance for how to create a user cascading style sheet if you don't like the defaults.
 
-= Hosting =
+We talk about Emacs and the wiki on the EmacsChannel.
+
+== Hosting =
 
 AlexSchroeder is the administrator of this wiki. It is hosted by [http://waldmann-edv.de/ Waldmann EDV] in Germany.
 If Alex gets run over by a truck, contact [http://waldmann-edv.de/WedvHome Thomas Waldmann] (also on IRC).
@@ -25,7 +27,7 @@ http://emacswiki.wikiwikiweb.de/, if
 emacswiki.org is down.  This is a virtual hosting environment,
 therefore you need to use HTTP/1.1 to access the site.
 
-= Backups =
+== Backups =
 
 Help make distributed backups.
 This will help us get the wiki back up and running if it goes down.
@@ -36,7 +38,7 @@ Backup space kindly donated by [http://bonmot.ca/ Bonmot Internet Consulting].
 If the wiki disappears in a major crisis and neither Alex nor Thomas Waldmann can help you get to the files in order to resurrect Emacs Wiki,
 contact Daniel !MacKay (contact info available on the Bonmot site).
 
-= Money =
+== Money =
 
 At the moment AlexSchroeder is paying for the server:
 EUR 20 per month covers bandwidth.
@@ -52,22 +54,22 @@ donated to charity because of the Emacs Wiki.  That would be
 awesome.
 -- AlexSchroeder
 
-= Administrators =
+== Administrators =
 
 Anybody willing to share administrator duties on this wiki?
 See EmacsWikiAdministrators.
 
-= Wiki Engine =
+== Wiki Engine =
 
 This wiki runs [[Oddmuse]].
 
 Using a wiki engine written in Lisp or Scheme would have been more in
 the spirit of Emacs and XEmacs, but Perl is ubiquitous, and
-Oddmuse is just one single Perl script, easy to install.
+Oddmuse is easy to install.
 
 Please note bugs on the [[Problems]] page.
 
-= Scripts Used =
+== Scripts Used =
 
 Current crontab:
 
