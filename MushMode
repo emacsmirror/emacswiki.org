@@ -1,33 +1,16 @@
-If you enjoy playing on a MUSH or a MUD, you need
-a mode for it.  You can of course always use
-telnet.  `M-x telnet' even.
+If you enjoy playing on a MUSH or a MUD, you need a mode for it.  You can of course always use telnet.  `M-x telnet' even.
 
 But there are other alternatives -- mu.el and [[eMUDs]].  Some of us use Lisp:mudel.el written by JorgenSchaefer.
 
 = mu.el =
 
-Mu uses ComintMode to do its job.  This has the
-added benefit of providing you with an entire
-communication infrastructure.  MinibufferHistory,
-moving between prompts, highlighting of SGR
-(escape sequences controlling colors on a tty)
-using AnsiColor, etc.
+Mu uses ComintMode to do its job.  This has the added benefit of providing you with an entire communication infrastructure.  MinibufferHistory, moving between prompts, highlighting of SGR (escape sequences controlling colors on a tty) using AnsiColor, etc. 
 
-Use `mu-open' to open a new connection. This will create two buffers for you. One buffer is the mu connection buffer. All the output from the
-host appears here. You can also type your commands here, but this will get confusing rather quickly as output gets added while your type.
+Before you can open new connections, you must customize `mu-worlds'.  As soon as you have done that, use `mu-open' to play.
 
-That's when the other buffer, the mu input buffer, comes into play. Whatever you type there will get sent to the mu connection buffer as well. If
-you do that, input and output will happen in two different buffers. 
+Get it from https://github.com/aidalgol/mu.el
 
-The only important buffer is the mu connection buffer. The mu input buffer is just for convenience. You can create more mu input buffers
-using `mu-input-buffer', or you can kill all mu input buffers. It doesn't matter. 
-
-Before you can open new connections, you must customize `mu-worlds'. As soon as you have done that, use `mu-open' to play.
-
-Get it from here:
-
-* Lisp:mu.el
-* https://github.com/kensanata/mu
+mu.el was written by AlexSchroeder (still available here: Lisp:mu.el), and [[aidalgol|AidanGauland]] forked it in 2013.
 
 == colors ==
 
@@ -38,17 +21,16 @@ Use AnsiColor.  Here's how to install it in your ~/.emacs:
 
 == coding system ==
 
-Switch to the output buffer and use `M-x mu-dos' if your host is sending you DOS line endings (ie. you have a ^M at the end of every line).  `set-process-coding-system' can be used to set output and input coding systems.
-There is probably some smart way of adding this to `mu-connection-mode-hook'.
+Switch to the output buffer and use `M-x mu-dos' if your host is sending you DOS line endings (ie. you have a ^M at the end of every line).  `set-process-coding-system' can be used to set output and input coding systems.  There is probably some smart way of adding this to `mu-connection-mode-hook'.
 
 <pre>
 (defun mu-dos ()
   "Set coding system of the current buffer's process to DOS."
   (interactive)
   (set-process-coding-system 
-   (get-buffer-process (current-buffer))
-		       'iso-latin-1-dos
-		       'iso-latin-1-unix))
+    (get-buffer-process (current-buffer))
+		  'iso-latin-1-dos
+		  'iso-latin-1-unix))
 </pre>
 
 I have this problem when playing on the Belerian Mush. -- AlexSchroeder
