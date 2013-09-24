@@ -96,6 +96,10 @@ You will have to reboot for launchd to reload ##launchd.conf##. If you don't wan
 
     % launchctl setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
+Under OS X 10.8, /etc/launchd.conf does not exist by default, so you may have to create it.  Also, you can inherit the path other system changes may provide using the path_helper utility:
+
+    % echo \`/usr/libexec/path_helper -c\` | sudo bash -c "cat - >> /etc/launchd.conf"
+
 ===getenv/setenv variants===
 
 Note that using any of these, PATH and exec-path will not be kept in sync automatically so you will may want set exec-path as well, e.g.:
