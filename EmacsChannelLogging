@@ -41,28 +41,35 @@ Why should we actively make it THAT easy? Are the pros worth the cons?
 
 Speak your mind, we need to hear everyone who have anything to say on the topic before making a decision, that no matter what it'll be, will annoy someone gravely.
 
-: I wrote the first draft of this page. Be aware that it's flavoured against logging, and please try to make it more objective by adding the points of those who support logging, since I can't represent those views properly. Basically I feel that logging is a very nice tool, and I don't personally mind it. But some people do - and some even talk of getting problems in real life due to them. Yes, people could stop saying things they might get in trouble for. But why should we actively enforce monitoring? The logs are not important enough to me, that I think we should impose that kind of inhibition on EmacsChannel. I'm against enabling clog again. -- TerryPatcher
+[new]
+I wrote the first draft of this page. Be aware that it's flavoured against logging, and please try to make it more objective by adding the points of those who support logging, since I can't represent those views properly. Basically I feel that logging is a very nice tool, and I don't personally mind it. But some people do - and some even talk of getting problems in real life due to them. Yes, people could stop saying things they might get in trouble for. But why should we actively enforce monitoring? The logs are not important enough to me, that I think we should impose that kind of inhibition on EmacsChannel. I'm against enabling clog again. -- TerryPatcher
 
-: This is a common problem - private information made accessible on the net, thus breaking privacy. Since both sides do have a point, I would like to see both sides made happy. This is possible: Make the logs accessible on the net anonymous. This isn't as easy at it might appear at first, since nicks not only show up in between the <> at the beginning of the line, but also in the discussion itself. If someone can find a way to identify all nicks to make anonymous, that would be a solution I think both sides can live with. -- JorgenSchaefer
+[new]
+This is a common problem - private information made accessible on the net, thus breaking privacy. Since both sides do have a point, I would like to see both sides made happy. This is possible: Make the logs accessible on the net anonymous. This isn't as easy at it might appear at first, since nicks not only show up in between the <> at the beginning of the line, but also in the discussion itself. If someone can find a way to identify all nicks to make anonymous, that would be a solution I think both sides can live with. -- JorgenSchaefer
 
-: How about logging, but not having google (or other search engines) index it?
+[new]
+How about logging, but not having google (or other search engines) index it?
 That way interested people can still read the logs, but people just googling for your nickname won't read your conversations. -- chneukirchen
 
-: When i googled for something and found entire transcripts of #emacs, i was appalled and stopped joining #emacs. This 
+[new]
+When i googled for something and found entire transcripts of #emacs, i was appalled and stopped joining #emacs. This 
 stinks of Big Brother. when i write on this wiki, i expect it to be publicly available. but i was naive enough to think
 that an irc session would be too transient to get indexed. my mistake, but it won't happen again. -- GregScott
 
-: I'm against public logs because I don't go out to places where my boss could overhear my conversation.  And when I spend time on #emacs, I don't want my boss to overhear my conversation, either. -- AlexSchroeder
+[new]
+I'm against public logs because I don't go out to places where my boss could overhear my conversation.  And when I spend time on #emacs, I don't want my boss to overhear my conversation, either. -- AlexSchroeder
 
-: I honestly don't see the benefit of logging.  Surely if I want a record of the channel while I'm using it, I can tell my client to make my own log. -- EricHanchrow
+[new]
+I honestly don't see the benefit of logging.  Surely if I want a record of the channel while I'm using it, I can tell my client to make my own log. -- EricHanchrow
 
-: Let's just have one thing clear: Logging will happen. The channel is logged. Anything said there has entered the semipermanent store room that is someone's hard drive. That said, the problem of lost privacy is real and preventable; it should therefore be prevented. This would mean, at the very least, a prohibition from spiders on the source site; a measure which is not likely to suffice (due to possible mirroring). Therefore: No publicly available log should be maintained. I myself don't mind; but as stated, people have found this to be a real problem. If it can be avoided, it should. -- HerbertSnorrason // Odin- & Odin-LAP
+[new]
+Let's just have one thing clear: Logging will happen. The channel is logged. Anything said there has entered the semipermanent store room that is someone's hard drive. That said, the problem of lost privacy is real and preventable; it should therefore be prevented. This would mean, at the very least, a prohibition from spiders on the source site; a measure which is not likely to suffice (due to possible mirroring). Therefore: No publicly available log should be maintained. I myself don't mind; but as stated, people have found this to be a real problem. If it can be avoided, it should. -- HerbertSnorrason // Odin- & Odin-LAP
 
-: I am personally, indifferent towards the (non-)logging issue; whatever is decided, is fine. I am a firm believer in compromises whenever there is a conflict-- it is the only way to satisfy everyone. So, the concerns of the naysayers should be outlined and the addressed. I like the idea of anonymized logs-- that sounds like a good compromise; but what do we do with what is already logged? Do we ask google to flush the cache? I don't understand why this issue exists-- isn't IRC a public forum like your neighbourhood sidewalk? Or is it considered a private forum? Why would you do or say things on IRC that you wouldn't say out on the street? --LuisFernandes e1f 
+[new]
+I am personally, indifferent towards the (non-)logging issue; whatever is decided, is fine. I am a firm believer in compromises whenever there is a conflict-- it is the only way to satisfy everyone. So, the concerns of the naysayers should be outlined and the addressed. I like the idea of anonymized logs-- that sounds like a good compromise; but what do we do with what is already logged? Do we ask google to flush the cache? I don't understand why this issue exists-- isn't IRC a public forum like your neighbourhood sidewalk? Or is it considered a private forum? Why would you do or say things on IRC that you wouldn't say out on the street? --LuisFernandes e1f 
 
-
-
-: I wouldn't have even said anything since I am very torn on the issue.
+[new]
+I wouldn't have even said anything since I am very torn on the issue.
 But it says above: "We need all people to speak their minds," so here goes----All the points raised by the aye-sayers make a lot of sense to me and
 I can't counter any of them.  Yet, it's scary to have your boss look
 up your logs and feds going after those talking about pot ;-). I guess one way out would be to have htpass-protected logs, so atleast
@@ -70,26 +77,31 @@ google or bosses wouldn't have easy access.  The FBI still will, of
 course :) Some of the other ideas above sound good to me too, like
 anonymizing, robots.txt to prevent googling, etc. --DeepakGoel
 
+[new]
+I think the following are the advantages of channel logs (from my experience)
 
-: I think the following are the advantages of channel logs (from my experience)
-* Lookup stuff which was once said and which you don't want to ask again. 
- *We do have the wiki for that, answers to commonly asked questions should be documented in a proper way, the logs are not helpful here -- MarioLang
+* Lookup stuff which was once said and which you don't want to ask again.
 * Read up on current thread of discussion which you might have missed out. 
 * Useful technical information might be there that is useful to have indexed. 
- * I highly doubt that anything really useful can be extracted from IRC logs.  Thats why we produce web pages and Wiki Pages, to sort out the useless stuff, and summarize a worthy topic. -- MarioLang
 
-: I don't see any other advantages. The absence of a public log would prevent such conveniences but point 3, which is IMHO the most important can be remedied by using a local log. Anonymising/htprotecting the logs sounds like a nice idea to me. I personally feel that the FBI argument is a little too much. The boss looking over the shoulder is a valid one and I've often felt an urge to edit out some parts of the logs (which might be a solution too. A 'wiki'fied log but that's just an idea). In short, having a public log is a convenience but its absence is something we can get used to so I'm against public logs myself. -- NoufalIbrahim
+I don't see any other advantages. The absence of a public log would prevent such conveniences but point 3, which is IMHO the most important can be remedied by using a local log. Anonymising/htprotecting the logs sounds like a nice idea to me. I personally feel that the FBI argument is a little too much. The boss looking over the shoulder is a valid one and I've often felt an urge to edit out some parts of the logs (which might be a solution too. A 'wiki'fied log but that's just an idea). In short, having a public log is a convenience but its absence is something we can get used to so I'm against public logs myself. -- NoufalIbrahim
+
+[new]
+Lookup stuff which was once said? We do have the wiki for that, answers to commonly asked questions should be documented in a proper way, the logs are not helpful here.
+
+Useful technical information? I highly doubt that anything really useful can be extracted from IRC logs.  Thats why we produce web pages and Wiki Pages, to sort out the useless stuff, and summarize a worthy topic.
 
 I personally am against public available logs.  I have said this several times on IRC, and I'll try to summarize my arguments:
+
 * If someone wants to be part of the #emacs community, he should /join #emacs, and be part of the conversation, not passively sit somewhere and read weblogs.  We want to know you, and talk to you!
 * I have personally never experienced any situation where I needed a #emacs weblog.  Never!  And I am quite a regular #emacs visitor since about three years.
 * Someone above said that IRC is a public place, yes, it is.  But even on public places, people are complaining about video cameras.  As I am complaining about weblogs.  There *is* a different between a place being public, and a place being under active surveilance.
 * If you go to a nice Pub and have a chat with a friend of yours, you are in fact assuming that someone might overhear you and tell it to someone you originally didn't intend to know that information.  But you do not assume that all your conversation can be review years later by everyone on the planet, do you?  There is where the difference between public places and logging is.
-  -- MarioLang
 
-Opinion of occasional visitor:
+-- MarioLang
 
-: I'm occasional visitor of #emacs. I join there when I have some
+[new]
+I'm occasional visitor of #emacs. I join there when I have some
 problem, but I do a search before. Being permanently joined is not
 solution for me as there is too much "noise" and talk about things I'm
 not interested in. I found the logs are at some times useful (not only
@@ -100,6 +112,6 @@ accessible for the rest of their life without ability to erase them is
 bad. But hey, I don't care who wrote that information, so maybe
 anonymous logs are solution. --jtra
 
+[new]
 Another occasional visitor:
-
-: It shouldn't be that hard to have an opt in system where people who say '/msg botname logme' get logged.  I'm sure a number of people would like to be able to have themselves logged, and this would allow for that. --mocker
+It shouldn't be that hard to have an opt in system where people who say '/msg botname logme' get logged.  I'm sure a number of people would like to be able to have themselves logged, and this would allow for that. --mocker
