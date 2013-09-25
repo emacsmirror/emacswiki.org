@@ -136,6 +136,7 @@ I found folding-mode is not compatiable with GNU Emacs 22.0.50.1. The newlines o
 folding.el (version 2006.1118), folding-2.107.el, and folding-2.99 all work on plain text in GNU Emacs (GNU Emacs 22.1.50.1 (powerpc-apple-darwin8.11.0, Carbon Version 1.6.0) of 2008-01-17 on cf-ppc-macosx.usr.sourceforge.jp).  However all have unpleasant interaction with narrowing and widening in LaTeX.
 [new] Is there a way to change the face of the folding indicator (i.e. the "...")? I would also like to change that folding indicator text if possible...
 [new] And while I'm at it, any way of *not* narrowing every time I enter a fold?
+[new] <code>(setq folding-narrow-by-default nil)</code>
 
 
 == yafolding.el - Yet another folding extension for the Emacs editor ==
