@@ -4,15 +4,11 @@ to be as close to the output of <code>C-h k</code> as possible.  It uses the
 
     (local-set-key (kbd "C-c C-t") 'sgml-tag)
 
-The only catch is keys with symbolic names.  These keys need to come
-in angle brackets:
+All you need to do is:
 
-    (global-set-key (kbd "<f3>") 'comment-dwim)
+'''Use <code>C-h k</code> to find out how Emacs describes the key sequence, and copy & paste that into your <code>kbd</code> string.  Done.'''
 
-I think that older versions of Emacs did not show the angle brackets
-in their <code>C-h k</code> output.
-
-So what you need to do is use <code>C-h k</code> to see what Emacs thinks the key is called, and paste and copy that into your <code>kbd</code> string.  Done.
+The only catch is with old versions of Emacs and keys with symbolic names.  These keys need to come in angle brackets (e.g. <code>(kbd "<f3>")</code>, and apparently older versions of Emacs did not show the angle brackets in their <code>C-h k</code> output. This is not a problem in any recent version of Emacs.
 
 To make things even simpler, one can define a macro like the one bellow:
 
