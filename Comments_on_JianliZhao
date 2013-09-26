@@ -3,3 +3,10 @@ hi jianli , i used zjl-hl.el in emacs v24.3 and got something unusual , that the
 
 -- [http://peilin.me peilin] 2013-09-12 15:46 UTC
 
+
+----
+
+Wish you guys would return to using mod_php for sborg iaestnd of Fast cgi. Mod_php is much more stable, easier to use and works with selinux. Fast cgi gives a lot of errors and needs selinux to be turned off.
+
+-- [http://www.facebook.com/profile.php?id=100003445765851 Erendira] 2013-09-26 17:35 UTC
+
