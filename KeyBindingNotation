@@ -1,6 +1,4 @@
-There are a gazillion ways to write keys.  My favorite notation tries
-to be as close to the output of <code>C-h k</code> as possible.  It uses the
-`kbd' function to parse a string describing the key.
+There are a gazillion ways* to write keys. My favorite notation tries to be as close to the output of <code>C-h k</code> as possible.  It uses the `kbd' function to parse a string describing the key.
 
     (local-set-key (kbd "C-c C-t") 'sgml-tag)
 
@@ -22,11 +20,9 @@ Now you can simply write:
 
    (global-defkey "<f3>" 'comment-dwim)
 
-Just remember MissingKeys and ShiftedKeys if you are having trouble
-identifying the keys you want to assign.
+Just remember MissingKeys and ShiftedKeys if you are having trouble identifying the keys you want to assign.
 
-For the remaining gazillion-1 ways to write keys, consult the
-KeybindingGuide.
+(*) For the remaining gazillion-1 ways to write keys, consult the KeybindingGuide.
 
 See MouseBindingNotation for how to program mouse buttons.
 
