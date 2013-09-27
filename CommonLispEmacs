@@ -1,6 +1,6 @@
 There is not yet an implementation of Emacs in CommonLisp.
 A lot of people would like to see one, however.
-It is often talked about on news:comp.lang.lisp. The McCLIM source includes the beginning of an Emacs in CL, but it's not yet usable (cf. http://www.mikemac.com/mikemac/McCLIM/).
+It is often talked about on news:comp.lang.lisp. The [http://www.mikemac.com/mikemac/McCLIM/ McCLIM] source includes the beginning of an Emacs in CL, but it's not yet usable.
 
 There's also a page over on the Common Lisp Wiki on the subject.
 CLiki:CL-Emacs
