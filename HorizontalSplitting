@@ -1,3 +1,19 @@
+In modern Emacs version (at least from Emacs 24 onwards) we have easier customization for this through variables like
+
+    split-height-threshold
+    split-width-threshold
+
+For forced vertical positioning of pop-up windows you can set
+
+    (setq split-width-threshold 0)
+
+I ([[halloleo]]) personally do the oposite: I want the pop-up windows always horizontally split, so I use
+
+     (setq split-width-threshold 9999)
+
+-- [[halloleo]]
+
+
 I prefer having two windows side-by-side in my Emacs, as opposed to two windows, one vertically above each other. No problem, I just use C-x 3 all the time instead of C-x 2. However, Emacs insists that I use vertically positioned windows for its popup windows: for example, when you only have a single window open and you use C-x C-b, or describe-function, or something similar. Here's how I (with help from bpalmer and bojohan on EmacsChannel) managed to persuade emacs to use horizontally positioned windows instead:
 
      (defun split-horizontally-not-vertically ()
