@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 12 07:15:01 2013 (-0700)
+;; Last-Updated: Thu Sep 26 22:41:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7105
+;;     Update #: 7109
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -496,6 +496,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/26 dadams
+;;     diredp-next-line: Hack to compensate line-move putting point at eol for a wrapped line.
 ;; 2013/08/11 dadams
 ;;     diredp-dired-files-interactive-spec:
 ;;       Protect icicle-file-sort with boundp.  Thx to Vladimir Lomov.
@@ -6403,6 +6405,8 @@ Otherwise, just move to the buffer limit."
                 (invisible-p (point))
                 (not (if (and arg (< arg 0)) (bobp) (eobp))))
       (forward-char (if (and arg (< arg 0)) -1 1)))
+    ;; Hack because `line-move' puts point at eol for a wrapped line.
+    (when (eolp) (forward-char (signum arg)))
     (dired-move-to-filename)))
 
 ;; In Emacs < 22, `C-p' does not wrap around, because it never moves to the first header line.
