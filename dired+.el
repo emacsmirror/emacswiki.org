@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 26 22:41:01 2013 (-0700)
+;; Last-Updated: Thu Sep 26 22:58:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7109
+;;     Update #: 7111
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -497,7 +497,7 @@
 ;;; Change Log:
 ;;
 ;; 2013/09/26 dadams
-;;     diredp-next-line: Hack to compensate line-move putting point at eol for a wrapped line.
+;;     diredp-next-line: Use let*, so line-move sees let bindings.
 ;; 2013/08/11 dadams
 ;;     diredp-dired-files-interactive-spec:
 ;;       Protect icicle-file-sort with boundp.  Thx to Vladimir Lomov.
@@ -6390,12 +6390,12 @@ If `diredp-wrap-around-flag' is non-nil then wrap around if none is
 found before the buffer end (buffer beginning, if ARG is negative).
 Otherwise, just move to the buffer limit."
   (interactive "p")
-  (let ((line-move-visual  nil)
-        (goal-column       nil)
-        ;; Use `condition-case' and `(progn... t)' because Emacs < 22 `line-move' has no
-        ;; NO-ERROR arg and it always returns nil.
-        (no-more           (or (not (condition-case nil (progn (line-move arg) t) (error nil)))
-                               (if (< arg 0) (bobp) (eobp)))))
+  (let* ((line-move-visual  nil)
+         (goal-column       nil)
+         ;; Use `condition-case' and `(progn... t)' because Emacs < 22 `line-move' has no
+         ;; NO-ERROR arg and it always returns nil.
+         (no-more           (or (not (condition-case nil (progn (line-move arg) t) (error nil)))
+                                (if (< arg 0) (bobp) (eobp)))))
     (when (and diredp-wrap-around-flag  no-more)
       (let ((diredp-wrap-around-flag  nil))
         (goto-char (if (< arg 0) (point-max) (point-min)))
@@ -6405,8 +6405,6 @@ Otherwise, just move to the buffer limit."
                 (invisible-p (point))
                 (not (if (and arg (< arg 0)) (bobp) (eobp))))
       (forward-char (if (and arg (< arg 0)) -1 1)))
-    ;; Hack because `line-move' puts point at eol for a wrapped line.
-    (when (eolp) (forward-char (signum arg)))
     (dired-move-to-filename)))
 
 ;; In Emacs < 22, `C-p' does not wrap around, because it never moves to the first header line.
