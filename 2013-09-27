@@ -1,0 +1,6 @@
+[new:AlexSchroeder:2013-09-27 14:06 UTC]
+Another move to a new host and a new infrastructure is imminent.
+The admins of the new machine will be replacing Apache with nginx and the wiki will no longer run as a simple CGI script.
+They have set up a *test* site. Want to help test it? Click some links, make some edits, and let me know if you find any problems.
+
+* http://test.emacswiki.org/ [size=+3][color=red]<- it's beta!
