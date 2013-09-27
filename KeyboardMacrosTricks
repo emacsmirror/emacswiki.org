@@ -210,11 +210,11 @@ If you want to increment by more than one step at a time, send a prefix argument
 
 === Make a keyboard macro out of your lossage === 
 
-You can create a macro out of your last 100 keystrokes. Type <code>C-x C-k C-h l</code>. 
+You can create a macro out of your last 100 keystrokes. Type <code>C-x C-k l</code>. 
 
 If you want to define a kbd macro, you dont necessarily need
 to <code>C-x ( ... C-x )</code>. you can simply do what you wanted to do,
-and hit <code>C-x C-k C-h l</code> afterwards. This presents you with
+and hit <code>C-x C-k l</code> afterwards. This presents you with
 your last 100 keystokes in a editable form. Simply fill in a
 name, and a keybinding, hit <code>C-c C-c</code>, and you are done.
 
