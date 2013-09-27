@@ -42,7 +42,10 @@ Wikipedia makes the talk link red. http://en.wikipedia.org/wiki/Inciting_inciden
 
 [new]
 Sure. I think there's a related question, here: Should all links to non-existing pages get "red link" instead of the question-mark?
-For now, I'll see about a simple change that only affects the comment links we have right now.
+For now, I'll see about a simple change that only affects the comment links we have right now...
+
+Here's what I'm doing right now: If the comment link points to a comment-page that doesn't exist, the class "edit" is added but without changing it into a standard edit link (no questionmark!). Plus, if you're using the default setup with bootstrap CSS, I'm adding the "warning" [http://getbootstrap.com/css/#buttons button style], resulting in a yellow button instead of a standard yellow button for non-existing Talk pages.
+What do you think?
 -- AlexSchroeder
 
 == Easy navigation from talk page back to parent ==
