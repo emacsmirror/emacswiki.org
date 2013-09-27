@@ -1,4 +1,4 @@
-In modern Emacs version (at least from Emacs 24 onwards) we have easier customization for this through variables like
+In modern Emacs versions (at least from Emacs 24 onwards) we have easy customization for this through variables like
 
     split-height-threshold
     split-width-threshold
