@@ -10,3 +10,12 @@ http://test.emacswiki.org/
 For those of you preferring the classic look, try this link:
 
 http://test.emacswiki.org/emacs/?action=browse;bootstrap=0;id=SiteMap;theme=;css=
+
+[new]
+Actually, I already found a problem: If you start at test.emacswiki.org
+and follow a link to a page, you get an URL like this:
+http://test.emacswiki.org/EmacsWiki. If you then click on something that
+involves an action, eg. the Administration link, you get an URL like
+this: http://test.emacswiki.org/EmacsWiki?action=admin;id=EmacsWiki --
+note how EmacsWiki is duplicated in the URL. -- Alex
+
