@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 22 10:45:52 2013 (-0700)
+;; Last-Updated: Fri Sep 27 12:42:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 410
+;;     Update #: 422
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -152,6 +152,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/27 dadams
+;;     isearchp-remove-(property|all-properties), isearchp-put-prop-on-region, isearchp-regexp-scan,
+;;       isearchp-thing-scan:
+;;         Bind buffer-read-only to nil.
 ;; 2013/09/22 dadams
 ;;     isearchp-properties-in-buffer: Fixed condition for adding prop to list for overlays.
 ;; 2013/09/21 dadams
@@ -311,8 +315,9 @@ Non-interactively:
            nil
            'MSGP)))
   (unless type (setq type  '(text overlay)))
-  (let ((bufmodp   (buffer-modified-p))
-        (removedp  nil))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (removedp          nil))
     (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list property))))
     (when (memq 'overlay type) (while (< beg end)
                                  (dolist (ov  (overlays-at beg))
@@ -357,8 +362,9 @@ Non-interactively:
              (lambda (prop) (string-match-p "\\`isearchp-" (symbol-name prop))))
            'MSGP)))
   (unless type (setq type  '(text overlay)))
-  (let ((bufmodp   (buffer-modified-p))
-        (removedp  nil)
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (removedp          nil)
         beg2)
     (dolist (prop  (isearchp-properties-in-buffer (current-buffer) beg end
                                                   (if (cadr type) nil type)
@@ -819,7 +825,8 @@ commands and commands such as `isearchp-imenu*', `isearchp-thing',
                         (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
                       (isearchp-read-sexps 'ONLY-ONE-P))))
        (list prop vals (region-beginning) (region-end)))))
-  (let ((bufmodp  (buffer-modified-p)))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil))
     (add-text-properties beg end (list property value))
     (set-buffer-modified-p bufmodp)))
 
@@ -947,9 +954,10 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
   (unless (and beg  end) (setq beg  (point-min)
                                end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
-  (let ((last-beg      nil)
-        (added-prop-p  nil)
-        (bufmodp       (buffer-modified-p)))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (last-beg          nil)
+        (added-prop-p      nil))
     (condition-case-no-debug isearchp-regexp-scan
         (save-excursion
           (goto-char (setq last-beg  beg))
@@ -1368,9 +1376,10 @@ This function respects both `isearchp-search-complement-domain-p' and
                                end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (when (stringp property) (setq property  (intern property)))
-  (let ((last-beg      nil)
-        (added-prop-p  nil)
-        (bufmodp       (buffer-modified-p)))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (last-beg          nil)
+        (added-prop-p      nil))
     (isearchp-with-comments-hidden
      beg end
      (condition-case-no-debug isearchp-thing-scan
@@ -1410,7 +1419,6 @@ This function respects both `isearchp-search-complement-domain-p' and
                                   tr-thg-beg  (cadr new-thg+bnds)
                                   tr-thg-end  (cddr new-thg+bnds)
                                   end-marker  (copy-marker tr-thg-end)))
-                         
                           (when (and isearchp-ignore-comments-flag  isearchp-complement-domain-p)
                             (put-text-property 0 (length hit-string) 'invisible nil hit-string))
                           (unless (equal hit-beg hit-end)
