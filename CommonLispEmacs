@@ -12,26 +12,18 @@ client, can display to tty or X11. See
 http://www.cons.org/cmucl/hemlock/. -- EricMarsden
 
 Gilbert Baumann "ported" Hemlock to standard Common Lisp.  The
-resulting project is called Phemlock, for Portable Hemlock.
-See the project page (http://common-lisp.net/project/phemlock) for
-details. -- EmilioLopes
+resulting project is called [http://common-lisp.net/project/phemlock Phemlock], for Portable Hemlock.
 
-ErikNaggum had a project running once.
+There is a lengthy discussion on news:comp.lang.lisp in a thread entitled [https://groups.google.com/forum/#!topic/comp.lang.lisp/Dq52-8B3Vk4 Re: ZWEI (Re: emacs rules and vi sucks)].
 
-There is a mailing list for people interested in this:
+Later, [[Climacs]] was created. Climacs is built on DREI, which is a combination meant to
+subsume both (Portable) Hemlock and Goatee.
 
-* http://lists.unlambda.com/mailman/listinfo/cl-emacs
-
-This link is dead.
-
-It was created 2001-09-29 due to a lengthy discussion on
-news:comp.lang.lisp in a thread entitled "Re: ZWEI (Re: emacs rules
-and vi sucks)".
-
-See also: [[Climacs]]
 See also: [[LiCE]]
 
-There is also FRED (Fred Resembles Emacs Deliberately), which is an emacs implemented in CommonLisp.  It comes with Macintosh Common Lisp, which means it is limited to running on Mac OS 9 or X on PPC machines. It can be downloaded at ftp://clozure.com/pub/MCL/
+There is also FRED (Fred Resembles Emacs Deliberately), which is an emacs implemented in CommonLisp.  It comes with [ftp://clozure.com/pub/MCL/ Macintosh Common Lisp], which means it is limited to running on Mac OS 9 or X on PPC machines.
+
+== Discussion ==
 
 Having used MCL and FRED I have to say FRED really stands for FRED Requires Extensive Debugging. The keybindings are also garbage and its attempt to be compatible with mac bindings just makes things worse. --sabetts
 
