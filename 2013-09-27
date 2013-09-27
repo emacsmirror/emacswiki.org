@@ -19,3 +19,7 @@ involves an action, eg. the Administration link, you get an URL like
 this: http://test.emacswiki.org/EmacsWiki?action=admin;id=EmacsWiki --
 note how EmacsWiki is duplicated in the URL. -- Alex
 
+[new]
+Drew also found a problem: Something about the ElispArea setup seems to be
+broken. Visiting http://test.emacswiki.org/emacs?action=elisp-area;context=0
+results in a timeout. -- Alex
