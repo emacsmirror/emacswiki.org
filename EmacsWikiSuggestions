@@ -32,14 +32,18 @@ But if it's not there, I don't want to bother clicking through.
 On Pmwiki, Talk-links are followed by a question-mark if there is no page (it's the default indicator that a wiki-link does not exist). I don't actually like the question-mark.
 On Wikipedia... well, I can't find an article without a talk page right now. 
 No idea.
-[new]
-Wikipedia makes the talk link red. http://en.wikipedia.org/wiki/Inciting_incident as of  21 September 2013 at 16:30.
------
-
 
 While I'm on about Talk, is there a reason that Talk asks for a users homepage-url, while other edits only ask for username?
-
 --MichaelPaulukonis
+
+[new]
+Wikipedia makes the talk link red. http://en.wikipedia.org/wiki/Inciting_incident as of  21 September 2013 at 16:30.
+-- Anon
+
+[new]
+Sure. I think there's a related question, here: Should all links to non-existing pages get "red link" instead of the question-mark?
+For now, I'll see about a simple change that only affects the comment links we have right now.
+-- AlexSchroeder
 
 == Easy navigation from talk page back to parent ==
 Pages ("parents" or "parent pages") have links to goto/create talk pages, but there's no reverse functionality on the talk pages to go back to the parent (that I can see).
