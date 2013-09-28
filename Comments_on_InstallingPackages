@@ -13,17 +13,3 @@ You are correct.
 
 -- AlexSchroeder 2013-01-29 09:21 UTC
 
-
-----
-
-That really caturpes the spirit of it. Thanks for posting.
-
--- [http://www.facebook.com/profile.php?id=100003445074945 Ted] 2013-09-26 10:21 UTC
-
-
-----
-
-как заставить работать cedet с исходниками unzip? cedet для этих исходников не может распарсить даже в пределах одного .c файла. Там используется много макроопределений. Очень хочется видеть только тот код который используется. я прописал.(ede-cpp-root-project &quot;unzip&quot;                       :name &quot;unzip&quot;                      :version &quot;6.0&quot;                      :directory (file-name-directory load-file-name)                      :file load-file-name                      :system-include-path &#39;(&quot;/usr/include&quot; )                      :include-path &#39;( &quot;.&quot; )                      :spp-table&#39;((&quot;UNIX&quot; . &quot;&quot;)                                  (&quot;LARGE_FILE_SUPPORT&quot; . &quot;&quot;)                                   (&quot;UNICODE_SUPPORT&quot; . &quot;&quot;)                                  (&quot;UNICODE_WCHAR&quot; . &quot;&quot;)                                   (&quot;UNICODE_SUPPORT&quot; . &quot;&quot;)                                  (&quot;UTF8_MAYBE_NATIVE&quot; . &quot;&quot;)                                  (&quot;NO_LCHMOD&quot; . &quot;&quot;)                                  (&quot;HAVE_DIRENT_H&quot; . &quot;&quot;)                                  (&quot;HAVE_TERMIOS_H&quot; . &quot;&quot;)                                  (&quot;_MBCS&quot; . &quot;&quot;)                                  (&quot;BZIP2_SUPPORT&quot; . &quot;&quot;)                                  (&quot;SFX&quot; . &quot;&quot;)))Файл с этим кодом находится в директории с unzip. Но он никак не помогает. Написал собственный скрипт для elisp который при открытие .c | .cpp | .h файлов автоматически ищет файл содержащий ede-cpp-root-project и его загужает. Есть ли какие то встроенные средства в cedet для этого? Или при создании обычного проекта в него это все можно прописать? Очень хочется настроить полноценно cedet, но я никак не понимаю как это делается. работает поэтому только наполовину. А вы похоже единственный русскоязычный человек, который в нем понимает :). вопросов очень много.
-
--- [http://www.eben-uk.org/ business insurance] 2013-09-28 06:44 UTC
-
