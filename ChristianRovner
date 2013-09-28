@@ -1,10 +1,6 @@
 I'm an Emacs user from Buenos Aires, Argentina.
 
-Some hacks:
-
-* Lisp:ifind-mode.el -- A minor mode based on isearch, for interactively finding files in your workspace. 
-* Lisp:mybuffers.el -- Switch buffers with Ctrl-Tab just like Alt-Tab switches windows in popular window managers
-* Lisp:.emacs-ChristianRovner.el -- My Emacs InitFile
+My configuration and hacks are at github: [https://github.com/crovner/emacs.d crovner/emacs.d]
 
 ----
 CategoryHomepage
