@@ -43,4 +43,4 @@ teamoc\.org # 2013-09-10 categoryforum
 tekjnke\.com # 2013-09-10 categoryforum
 watchxk # 2013-09-15 categoryforum
 http://www.ez-days.com/ # 2013-09-25 categoryforum
-http://www.facebook.com/profile.php?id=\d+ # 2013-09-27 We've had a lot of bogus comments with user names linked to Facebook profiles. Please remove the link in question in order to save the page.
+http://www\.facebook\.com/profile.php\?id=\d+ # 2013-09-27 We've had a lot of bogus comments with user names linked to Facebook profiles. Please remove the link in question in order to save the page.
