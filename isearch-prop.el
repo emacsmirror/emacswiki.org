@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 27 18:02:20 2013 (-0700)
+;; Last-Updated: Fri Sep 27 18:36:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 457
+;;     Update #: 465
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -155,8 +155,10 @@
 ;; 2013/09/27 dadams
 ;;     isearchp-property-1: Do not deactivate-mark (done in isearch-mode of isearch+.el).
 ;;     isearchp-property-filter-pred: Ensure that BEG, END are within isearchp-reg-(beg|end).
-;;     isearchp-regexp-scan:
+;;     isearchp-(thing|regexp)-scan:
 ;;       Do not handle isearchp-complement-domain-p here.  Done in isearchp-property-filter-pred.
+;;     isearchp-thing-scan: Move set-buffer-modified-p outside isearchp-with-comments-hidden.
+;;     isearchp-regexp-scan:
 ;;       Apply ACTION only if there is a match.
 ;;       Remove PROPERTY from text between matches.
 ;;       Move to updated LAST-BEG at each loop iteration.
@@ -1406,43 +1408,38 @@ This function respects both `isearchp-search-complement-domain-p' and
                (when (get-char-property beg 'invisible)
                  (setq beg  (next-single-char-property-change beg 'invisible nil end))))
              (let ((thg+bnds  (isearchp-next-visible-thing-and-bounds thing beg end)))
-               (if (and (not thg+bnds)  (not isearchp-complement-domain-p))
+               (if (not thg+bnds)
                    (setq beg  end)
                  (let* ((thg-beg       (cadr thg+bnds))
                         (thg-end       (cddr thg+bnds))
                         (tr-thg-beg    thg-beg)
                         (tr-thg-end    thg-end)
-                        (hit-beg       (if isearchp-complement-domain-p last-beg tr-thg-beg))
-                        (hit-end       (if isearchp-complement-domain-p
-                                           (or tr-thg-beg  end)
-                                         tr-thg-end))
+                        (hit-beg       tr-thg-beg)
+                        (hit-end       tr-thg-end)
                         (hit-string    (buffer-substring-no-properties hit-beg hit-end))
                         (end-marker    (copy-marker hit-end))
                         (filteredp     (or (not predicate)
                                            (not thg+bnds)
                                            (funcall predicate thg+bnds)))
-                        (new-thg+bnds  (if isearchp-complement-domain-p
-                                           thg+bnds
-                                         (and filteredp
-                                              thg+bnds
-                                              (if transform-fn
-                                                  (funcall transform-fn thg+bnds)
-                                                thg+bnds)))))
+                        (new-thg+bnds  (and filteredp
+                                            thg+bnds
+                                            (if transform-fn
+                                                (funcall transform-fn thg+bnds)
+                                              thg+bnds))))
                    (cond ((and (not (string= "" hit-string)) ; No-op if empty hit.
-                               (or new-thg+bnds  isearchp-complement-domain-p))
-                          (when (and transform-fn  (not isearchp-complement-domain-p))
+                               new-thg+bnds)
+                          (when transform-fn
                             (setq hit-string  (car  new-thg+bnds)
                                   tr-thg-beg  (cadr new-thg+bnds)
                                   tr-thg-end  (cddr new-thg+bnds)
                                   end-marker  (copy-marker tr-thg-end)))
-                          (when (and isearchp-ignore-comments-flag  isearchp-complement-domain-p)
+                          (when isearchp-ignore-comments-flag
                             (put-text-property 0 (length hit-string) 'invisible nil hit-string))
                           (unless (equal hit-beg hit-end)
                             (let ((buffer-mod  (buffer-modified-p))
                                   (prop-value  (cons thing predicate)))
                               (put-text-property hit-beg hit-end property prop-value)
-                              (setq added-prop-p  prop-value)
-                              (set-buffer-modified-p buffer-mod))))
+                              (setq added-prop-p  prop-value))))
                          (t
                           (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
                    (if thg-end
@@ -1457,9 +1454,9 @@ This function respects both `isearchp-search-complement-domain-p' and
                                     (1+ thg-end)))
                      ;; If visible then no more things - skip to END.
                      (unless (invisible-p beg) (setq beg  end)))))
-               (setq last-beg  beg)))
-           (set-buffer-modified-p bufmodp))
-       (error (error "%s" (error-message-string isearchp-thing-scan)))))
+               (setq last-beg  beg))))
+         (error (error "%s" (error-message-string isearchp-thing-scan)))))
+    (set-buffer-modified-p bufmodp)
     added-prop-p))  ; Return indication of whether property was added.
 
 ;;--------------------------------------
