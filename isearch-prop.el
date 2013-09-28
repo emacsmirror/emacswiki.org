@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 27 12:42:19 2013 (-0700)
+;; Last-Updated: Fri Sep 27 18:02:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 422
+;;     Update #: 457
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -153,6 +153,14 @@
 ;;; Change Log:
 ;;
 ;; 2013/09/27 dadams
+;;     isearchp-property-1: Do not deactivate-mark (done in isearch-mode of isearch+.el).
+;;     isearchp-property-filter-pred: Ensure that BEG, END are within isearchp-reg-(beg|end).
+;;     isearchp-regexp-scan:
+;;       Do not handle isearchp-complement-domain-p here.  Done in isearchp-property-filter-pred.
+;;       Apply ACTION only if there is a match.
+;;       Remove PROPERTY from text between matches.
+;;       Move to updated LAST-BEG at each loop iteration.
+;;       Bind prop-value outside loop.
 ;;     isearchp-remove-(property|all-properties), isearchp-put-prop-on-region, isearchp-regexp-scan,
 ;;       isearchp-thing-scan:
 ;;         Bind buffer-read-only to nil.
@@ -222,6 +230,10 @@
 
 
 (eval-when-compile (require 'cl)) ;; case
+
+;; Quiet the byte-compiler.
+(defvar isearchp-reg-beg) ;; In `isearch+.el'.
+(defvar isearchp-reg-end) ;; In `isearch+.el'.
  
 ;;(@* "Variables")
 
@@ -250,10 +262,12 @@ Possible values are `text', `overlay', and nil, meaning both.")
   "Non-nil means complement the initial search candidates wrt the buffer.
 This has an effect only on (some) Icicles search commands.
 The scan function or regexp for the search command defines a set of
-matches in the buffer.  If this option is non-nil then the actual
-candidates used are the sections of buffer text that are separated by
-the initial candidates, that is, the non-candidates as defined by the
-scan or regexp.")
+matches in the buffer.
+
+If this option is non-nil then the actual candidates used are the
+sections of region or buffer text that are separated by the initial
+candidates, that is, the non-candidates as defined by the scan or
+regexp.")
 
 (defvar isearchp-context-level 0
   "Match level for Isearch context regexp.
@@ -655,7 +669,6 @@ See `isearchp-regexp-context-search' for a description of the prompting."
           isearchp-property-prop         prop
           isearchp-property-values       values))
   (add-hook 'isearch-mode-end-hook 'isearchp-property-end)
-  (when (and transient-mark-mode  mark-active) (deactivate-mark))
   (funcall search-fn))
 
 ;; Similar to `icicle-properties-in-buffer', defined in `icicles-cmd2.el', but this has PREDICATE.
@@ -699,10 +712,11 @@ TYPE, PROPERTY, and VALUES are used by that function.
 The predicate is suitable as a value of `isearch-filter-predicate'."
   (let ((tag  (make-symbol "isearchp-property-filter-pred")))
     `(lambda (beg end)
-       (and (or
-             (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
-             (and (boundp 'isearch-invisible) ; Emacs 24.4+
-                  (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
+       (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
+            (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
+            (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
+                (and (boundp 'isearch-invisible) ; Emacs 24.4+
+                     (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
             (catch ',tag
               (while (< beg end)
                 (let ((matches-p  (isearchp-property-matches-p ',type ',property ',values
@@ -949,6 +963,9 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
 If the region is active then scan it.  Otherwise scan the buffer.
 Return the value of PROPERTY, if added somewhere.  Else return nil.
 See `isearchp-add-regexp-as-property' for the parameter descriptions."
+  ;; Use text property (REGEXP . PREDICATE).  It is not enough to record only REGEXP.
+  ;; E.g., `*-imenu-non-interactive-function' and `*-imenu-command' use the same REGEXP.
+  ;; Only the PREDICATE is different.
   (setq regexp  (or regexp  (isearchp-read-context-regexp)))
   (when (stringp property) (setq property  (intern property)))
   (unless (and beg  end) (setq beg  (point-min)
@@ -956,6 +973,7 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
+        (prop-value        (cons regexp predicate))
         (last-beg          nil)
         (added-prop-p      nil))
     (condition-case-no-debug isearchp-regexp-scan
@@ -967,35 +985,33 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                                          (not (eobp)))
                                ;; Matched again, same place.  Advance 1 char.
                                (forward-char) (setq beg  (1+ beg)))
-                             ;; Stop if no more match.  But if complementing then continue until eobp.
-                             (or beg  isearchp-complement-domain-p)))
+                             beg))      ; Stop if no more matches.
             (unless (or (not beg)  (match-beginning isearchp-context-level)) ; No `user-error': Emacs 23
               (error "Search context has no subgroup of level %d - try a lower number"
                      isearchp-context-level))
-            (let* ((hit-beg     (if isearchp-complement-domain-p
-                                    last-beg
-                                  (match-beginning isearchp-context-level)))
-                   (hit-end     (if isearchp-complement-domain-p
-                                    (if beg (match-beginning isearchp-context-level) (point-max))
-                                  (match-end isearchp-context-level)))
-                   (IGNORE      (when action (save-excursion (funcall action) (setq hit-end  (point)))))
+            (let* ((hit-beg     (match-beginning isearchp-context-level))
+                   (hit-end     (match-end isearchp-context-level))
+                   (IGNORED     (when (and hit-beg  action)
+                                  (save-excursion (funcall action)
+                                                  (setq hit-end  (min end (point))
+                                                        beg      hit-end))))
                    (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                   (c-beg       last-beg)
+                   (c-end       (if beg
+                                    (match-beginning isearchp-context-level)
+                                  (min end (point-max)))) ; Truncate.
+                   (pred-ok-p   t)
                    end-marker)
-              (if (and (not (string= "" hit-string))
-                       (setq end-marker  (copy-marker hit-end))
-                       (or (not predicate)
-                           (let ((pred-ok-p  (save-match-data
-                                               (funcall predicate hit-string end-marker))))
-                             (if isearchp-complement-domain-p (not pred-ok-p) pred-ok-p))))
-                  ;; Put (REGEXP . PREDICATE) on hit text as text property PROPERTY.
-                  ;; It is not enough to record REGEXP.  E.g., `*-imenu-non-interactive-function' and
-                  ;; `*-imenu-command' use the same REGEXP.  Only the PREDICATE is different.
-                  
-                  (let ((prop-value  (cons regexp predicate)))
-                    (put-text-property hit-beg hit-end property prop-value)
-                    (setq added-prop-p  prop-value))
-                (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
-            (setq last-beg  beg)))
+              (remove-text-properties c-beg c-end (list property 'IGNORED))
+              (when (and predicate
+                         (not (string= "" hit-string))
+                         (setq end-marker  (copy-marker hit-end)))
+                (setq pred-ok-p  (save-match-data (funcall predicate hit-string end-marker))))
+              (cond ((and pred-ok-p  (not (string= "" hit-string)))
+                     (put-text-property hit-beg hit-end property prop-value)
+                     (setq added-prop-p  prop-value))
+                    (t (remove-text-properties hit-beg hit-end (list property 'IGNORED)))))
+            (goto-char (setq last-beg  beg))))
       (error (error "%s" (error-message-string isearchp-regexp-scan))))
     (set-buffer-modified-p bufmodp)
     added-prop-p)) ; Return property value if added, or nil otherwise.
