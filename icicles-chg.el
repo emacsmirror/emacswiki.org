@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Sep 21 16:42:44 2013 (-0700)
+;; Last-Updated: Sun Sep 29 10:19:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10219
+;;     Update #: 10220
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -939,6 +939,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/09/29 dadams
+;;     icicle-search-char-prop-matches-p: Typo: isearchp-some -> icicle-some.
 ;; 2013/09/21 dadams
 ;;     icicle-search-char-prop-matches-p: Corrected for overlays: only overlays, not get-char-property.
 ;; 2013/09/16 dadams
