@@ -131,6 +131,15 @@ A `case' expression can include a final default clause by using a comparison val
 
 `ecase' is like `case' except it signals error if no test succeeds. One should prefer `ecase' over `case' as it is better to catch erroneous values early.
 
+  (defun my-got-what (x)
+    (ecase x
+      ((nil) :got-nil)
+      ((t) :got-t)
+      ((foo bar) :got-foo-or-bar)))
+  (my-got-what 'nil) ; ⇒ :got-nil
+  (my-got-what 'foo) ; ⇒ :got-foo-or-bar
+
+
 
 ----
 CategoryCode
