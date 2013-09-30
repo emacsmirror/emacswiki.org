@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-11-01 21:28:07
-;; Version: 1.0.0
-;; Last-Updated: 2012-11-01 21:28:07
+;; Version: 1.1
+;; Last-Updated: 2013-09-30 21:28:07
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
 ;;      https://github.com/vapniks/simple-call-tree-ext
