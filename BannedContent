@@ -46,4 +46,4 @@ http://www.ez-days.com/ # 2013-09-25 categoryforum
 http://www\.facebook\.com/profile.php\?id=\d+ # 2013-09-27 We've had a lot of bogus comments with user names linked to Facebook profiles. Please remove the link in question in order to save the page.
 \baccutane\b # 2013-09-28 Comments on 2013-05-07
 \bonline-colleges?\b # 2013-09-28 Comments on EmacsWikiProblems
-\blow.*card\b # Comments on 2013-05-07 and others
+\blow.*card\b # 2013-09-30 Comments on 2013-05-07 and others
