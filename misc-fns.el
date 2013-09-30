@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:42:09 2013 (-0700)
+;; Last-Updated: Mon Sep 30 10:07:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 603
+;;     Update #: 604
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -47,16 +47,18 @@
 ;;
 ;;    `another-buffer', `color-named-at', `current-line',
 ;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
-;;    `force-time-redisplay', `interesting-buffer-p',
-;;    `live-buffer-name', `make-transient-mark-mode-buffer-local',
-;;    `mode-ancestors', `mod-signed', `notify-user-of-mode',
-;;    `region-or-buffer-limits', `signum', `undefine-keys-bound-to',
-;;    `undefine-killer-commands', `unique-name'.
+;;    `interesting-buffer-p', `live-buffer-name',
+;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
+;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
+;;    `signum', `undefine-keys-bound-to', `undefine-killer-commands',
+;;    `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/30 dadams
+;;     Removed force-time-redisplay.
 ;; 2012/11/10 dadams
 ;;     Added: color-named-at.
 ;; 2012/06/18 dadams
@@ -189,14 +191,6 @@
     (force-mode-line-update)
     (sit-for mode-line-reminder-duration))
   (force-mode-line-update))
-
-(defun force-time-redisplay ()
-  "Force a redisplay.
-This is probably obsolete now.  Use `force-mode-line-update'."
-  (save-excursion (set-buffer (other-buffer)))
-  (set-buffer-modified-p (buffer-modified-p))
-  (sit-for 0))
-
 
 
 ;;;$ BUFFERS ------------------------------------------------------------------
