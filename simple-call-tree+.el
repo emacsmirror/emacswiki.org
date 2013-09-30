@@ -122,7 +122,6 @@
 
 ;;; TODO
 ;;
-;; I am going to work on a plugin for one-key.el which provides similar functionality.
 ;; If anyone wants to implement the following ideas, please do:
 ;; More reliable code for building tree (handle duplicate function names properly).
 ;; Fix code so that we can have several calls to the same function in the same tree.
@@ -353,11 +352,14 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "M-n") 'simple-call-tree-jump-next)
   (define-key simple-call-tree-mode-map (kbd "w") 'widen)
   (define-key simple-call-tree-mode-map (kbd "C-M-x") 'simple-call-tree-eval-defun)
+  (define-key simple-call-tree-mode-map (kbd "R") 'simple-call-tree-build-tree)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
     `("Simple Call Tree"
       ["Quit" simple-call-tree-quit
        :help "Quit and bury this buffer"]
+      ["Rebuild tree" simple-call-tree-build-tree
+       :help "Rebuild the call tree"]
       ["View Function At Point" simple-call-tree-view-function
        :help "View the function at point"
        :key "v"]
@@ -492,8 +494,11 @@ See `simple-call-tree-default-sort-method' for possible values.")
   "If non-nil then duplicate sub-branches will not be included in the tree.
 I.e. if a function makes multiple calls to the same function then only one of these calls will
 be shown in the tree.")
-;;; Functions from simple-call-tree.el (some are rewritten)
 
+(defvar simple-call-tree-buffers nil
+  "Buffers analyzed to create the simple-call-tree.")
+
+;;; Functions from simple-call-tree.el (some are rewritten)
 (defun simple-call-tree-add (start end alist)
   "Add tokens between START and END to ALIST.
 ALIST is an item of simple-call-tree-alist."
@@ -634,8 +639,7 @@ nil."
 ;;;###autoload
 (defun* simple-call-tree-display-buffer (&optional files)
   "Display call tree for current buffer.
-If optional arg FILES is supplied it specifies a list of files to search for functions
-to display in the tree.
+If optional arg FILES is supplied it specifies a list of files to search for functions to display in the tree.
 When called interactively files will be prompted for and only functions in the current buffer will be used."
   (interactive "P")
   (let (buffers dir regexp)
@@ -647,7 +651,7 @@ When called interactively files will be prompted for and only functions in the c
                             (or (eq ido-mode 'file)
                                 (eq ido-mode 'both)))
                        (ido-read-directory-name "Dir containing files: ")
-                     (read-directory-name "Dir cointaining files: ")))
+                     (read-directory-name "Dir containing files: ")))
              (list-directory dir)
              (setq regexp (read-regexp "Regexp matching filenames (RET to finish)"))
              (unless (string= regexp "")
@@ -655,18 +659,27 @@ When called interactively files will be prompted for and only functions in the c
                                         (add-to-list 'files (concat dir name))))
                      (directory-files dir))))))
     (save-excursion
-      (setq buffers (loop for file in files
-                          collect (find-file file))))
+      (setq buffers (loop for file in files collect (find-file file))))
     (if (or (not files) (called-interactively-p))
         (add-to-list 'buffers (current-buffer)))
-    (simple-call-tree-analyze buffers)
-    (case simple-call-tree-default-sort-method
-      (alphabet (simple-call-tree-sort-alphabetically))
-      (position (simple-call-tree-sort-positionally)))
-    (setq simple-call-tree-inverted nil)
-    (simple-call-tree-list-callers-and-functions)
+    (simple-call-tree-build-tree buffers)
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
           simple-call-tree-jump-ring-index 0)))
+
+;;;###autoload
+(defun simple-call-tree-build-tree (&optional buffers)
+  "Build the simple-call-tree and display it in the \"*Simple Call Tree*\" buffer.
+If BUFFERS is supplied it should be a list of buffer to analyze, otherwise the buffers
+listed in `simple-call-tree-buffers' will be used."
+  (interactive)
+  (setq buffers (or buffers simple-call-tree-buffers))
+  (simple-call-tree-analyze buffers)
+  (case simple-call-tree-default-sort-method
+    (alphabet (simple-call-tree-sort-alphabetically))
+    (position (simple-call-tree-sort-positionally)))
+  (setq simple-call-tree-inverted nil)
+  (simple-call-tree-list-callers-and-functions)
+  (setq simple-call-tree-buffers buffers))
 
 ;;;###autoload
 (defun* simple-call-tree-current-function (func &optional wide)
