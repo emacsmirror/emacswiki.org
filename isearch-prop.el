@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 27 18:36:49 2013 (-0700)
+;; Last-Updated: Mon Sep 30 12:43:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 465
+;;     Update #: 542
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `hexrgb'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,10 +76,16 @@
 ;;    `isearchp-remove-all-properties', `isearchp-remove-property',
 ;;    `isearchp-thing', `isearchp-thing-define-contexts',
 ;;    `isearchp-toggle-complementing-domain',
+;;    `isearchp-toggle-dimming-non-prop-zones',
 ;;    `isearchp-toggle-ignoring-comments'.
+;;
+;;  Faces defined here:
+;;
+;;    `isearchp-dimmed'.
 ;;
 ;;  User options defined here:
 ;;
+;;    `isearchp-dim-non-prop-zones-flag',
 ;;    `isearchp-ignore-comments-flag'.
 ;;
 ;;  Faces defined here:
@@ -89,27 +95,30 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `isearchp-add-regexp-as-property',
-;;    `isearchp-bounds-of-thing-at-point', `isearchp-defined-thing-p',
+;;    `isearchp-add/remove-dim-overlay',
+;;    `isearchp-bounds-of-thing-at-point',
+;;    `isearchp-complement-dimming', `isearchp-defined-thing-p',
 ;;    `isearchp-message-prefix', `isearchp-next-visible-thing-1',
 ;;    `isearchp-next-visible-thing-2',
 ;;    `isearchp-next-visible-thing-and-bounds',
 ;;    `isearchp-properties-in-buffer', `isearchp-property-1',
-;;    `isearchp-property-default-match-fn', `isearchp-property-end',
-;;    `isearchp-property-filter-pred', `isearchp-property-matches-p',
-;;    `isearchp-read-context-regexp', `isearchp-read-face-names',
-;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
-;;    `isearchp-regexp-context-search', `isearchp-regexp-read-args',
-;;    `isearchp-regexp-scan', `isearchp-remove-duplicates',
-;;    `isearchp-some', `isearchp-thing-read-args',
-;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
-;;    `isearchp-things-alist'.
+;;    `isearchp-property-default-match-fn',
+;;    `isearchp-property-filter-pred', `isearchp-property-finish',
+;;    `isearchp-property-matches-p', `isearchp-read-context-regexp',
+;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
+;;    `isearchp-read-sexps', `isearchp-regexp-context-search',
+;;    `isearchp-regexp-read-args', `isearchp-regexp-scan',
+;;    `isearchp-remove-duplicates', `isearchp-some',
+;;    `isearchp-thing-read-args', `isearchp-text-prop-present-p',
+;;    `isearchp-thing-scan', `isearchp-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-property-prop', `isearchp-property-prop-prefix',
-;;    `isearchp-property-type', `isearchp-property-values',
-;;    `isearchp-complement-domain-p', `isearchp-context-level',
-;;    `isearchp-filter-predicate-orig', `isearchp-last-thing-type'.
+;;    `isearchp-dimmed-overlays', `isearchp-property-prop',
+;;    `isearchp-property-prop-prefix', `isearchp-property-type',
+;;    `isearchp-property-values', `isearchp-complement-domain-p',
+;;    `isearchp-context-level', `isearchp-filter-predicate-orig',
+;;    `isearchp-last-thing-type'.
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here:
@@ -152,6 +161,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09/30 dadams
+;;     Added: isearchp-dimmed-overlays, isearchp-dim-non-prop-zones-flag, face isearchp-dimmed,
+;;       isearchp-complement-dimming, isearchp-toggle-dimming-non-prop-zones,
+;;       isearchp-add/remove-dim-overlay.
+;;     Renamed: isearchp-property-end to isearchp-property-finish.
+;;     Soft-require hexrgb.el.
+;;     Bind isearchp-toggle-dimming-non-prop-zones to C-M-S-d.
+;;     isearchp-toggle-complementing-domain, isearchp-regexp-define-contexts,
+;;       isearchp-toggle-ignoring-comments, isearchp-thing-define-contexts:
+;;         Added optional MSGP arg.
+;;     isearchp-property-finish: Delete overlays in isearchp-dimmed-overlays, and empty it.
+;;     isearchp-(regexp|thing)-scan, isearchp-put-prop-on-region: Call isearchp-add/remove-dim-overlay.
 ;; 2013/09/27 dadams
 ;;     isearchp-property-1: Do not deactivate-mark (done in isearch-mode of isearch+.el).
 ;;     isearchp-property-filter-pred: Ensure that BEG, END are within isearchp-reg-(beg|end).
@@ -233,6 +254,8 @@
 
 (eval-when-compile (require 'cl)) ;; case
 
+(require 'hexrgb nil t) ;; (no error if not found): hexrgb-increment-value
+
 ;; Quiet the byte-compiler.
 (defvar isearchp-reg-beg) ;; In `isearch+.el'.
 (defvar isearchp-reg-end) ;; In `isearch+.el'.
@@ -241,11 +264,50 @@
 
 ;;; Variables ----------------------------------------------
 
+(defface isearchp-dimmed
+    (if (featurep 'hexrgb)
+        (let ((default-bg  (face-background 'default)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-value)
+                               (hexrgb-increment-value default-bg 0.20)
+                               "#316B22970000"))) ; a very dark brown
+            (t (:background ,(if (fboundp 'hexrgb-increment-value)
+                                 (hexrgb-increment-value default-bg -0.10)
+                                 "#E1E1EAEAFFFF"))))) ; a light blue
+      '((((class color grayscale) (min-colors 88) (background light))
+         :background "gray95")
+        (((class color grayscale) (min-colors 88) (background dark))
+         :background "gray10")
+        (((class color) (min-colors 8) (background light))
+         :background "green")
+        (((class color) (min-colors 8) (background dark))
+         :background "blue")))
+  "*Face used to dim text areas not being searchd.
+This dimming is done during Isearch+ property-based searching whenever
+`isearchp-dim-non-prop-zones-flag' is non-nil."
+  :group 'isearch-plus :group 'faces)
+
+(defcustom isearchp-dim-non-prop-zones-flag t
+  "*Non-nil means dim text that does not have the property being searched.
+More precisely, if `isearchp-complement-domain-p' is non-nil then the
+text being searched does not have the property, and this then dims the
+text that does have the property."
+  :type 'boolean :group 'isearch-plus
+  :initialize 'custom-initialize-changed
+  :set (lambda (symb defs)
+         (let ((old-val  (symbol-value symb)))
+           (custom-set-default symb defs)
+           (unless (eq old-val (symbol-value symb)) (isearchp-toggle-dimming-non-prop-zones)))))
+
 ;; Same as `ignore-comments-flag' in `hide-comnt.el'.
 ;;
 (defcustom isearchp-ignore-comments-flag t
   "*Non-nil means `isearchp-with-comments-hidden' hides comments."
   :type 'boolean :group 'isearch-plus)
+
+(defvar isearchp-dimmed-overlays () "Dimmed-text overlays for text not being searched.")
+
+;;; $$$$$$ (defvar isearchp-last-prop+value nil "Last Isearch+ property added.")
 
 (defvar isearchp-property-type nil
   "Last property type used for `isearchp-property-*' commands.
@@ -288,11 +350,12 @@ regexp as the search context, and so on.")
 
 ;;; Keys -------------------------------------------------------------
 
-(define-key isearch-mode-map (kbd "C-t")   'isearchp-property-forward)
-(define-key isearch-mode-map (kbd "M-;")   'isearchp-hide/show-comments)
-(define-key isearch-mode-map (kbd "C-M-t") 'isearchp-property-forward-regexp)
-(define-key isearch-mode-map (kbd "C-M-;") 'isearchp-toggle-ignoring-comments)
-(define-key isearch-mode-map (kbd "C-M-~") 'isearchp-toggle-complementing-domain)
+(define-key isearch-mode-map (kbd "C-t")     'isearchp-property-forward)
+(define-key isearch-mode-map (kbd "M-;")     'isearchp-hide/show-comments)
+(define-key isearch-mode-map (kbd "C-M-t")   'isearchp-property-forward-regexp)
+(define-key isearch-mode-map (kbd "C-M-;")   'isearchp-toggle-ignoring-comments)
+(define-key isearch-mode-map (kbd "C-M-~")   'isearchp-toggle-complementing-domain)
+(define-key isearch-mode-map (kbd "C-M-S-d") 'isearchp-toggle-dimming-non-prop-zones)
  
 ;;(@* "General Commands")
 
@@ -351,7 +414,7 @@ Non-interactively:
 With a non-negative prefix arg you are prompted for the type of
 properties to remove: text, overlay, or both.
 
-By default, remove only Isearch properties, which are those whose
+By default, remove only Isearch+ properties, which are those whose
 names begin with `isearchp-'.  But with a non-positive prefix arg all
 properties present in the active region or buffer are candidates for
 removal.  In this case, you are prompted for a predicate that each
@@ -484,16 +547,73 @@ See `isearchp-property-backward'."
   (interactive "P")
   (isearchp-property-1 'isearch-backward-regexp arg))
 
-(defun isearchp-toggle-complementing-domain () ; Bound to `C-M-~' during Isearch.
+(defun isearchp-toggle-complementing-domain (&optional msgp) ; Bound to `C-M-~' during Isearch.
   "Toggle searching the complements of the normal search contexts.
 This toggles internal variable `isearchp-complement-domain-p'.
-Bound to `C-M-~' during Isearch."
-  (interactive)
+Bound to \\<isearch-mode-map>`isearchp-toggle-complementing-domain' during Isearch."
+  (interactive "p")
   (setq isearchp-complement-domain-p  (not isearchp-complement-domain-p))
-  (message "%s the search domain now" (if isearchp-complement-domain-p
-                                          "*COMPLEMENTING*"
-                                        "*NOT* complementing")))
+  (when isearchp-dim-non-prop-zones-flag (isearchp-complement-dimming))
+  (when msgp (message "%s the search domain now" (if isearchp-complement-domain-p
+                                                     "*COMPLEMENTING*"
+                                                   "*NOT* complementing"))))
 
+(defun isearchp-toggle-dimming-non-prop-zones (&optional msgp) ; Bound to `C-M-D' during Isearch.
+  "Toggle dimming text that does not have the property being searched.
+More precisely, toggle option `isearchp-dim-non-prop-zones-flag', then
+update dimming.  This updating applies to the searchable area: the
+region that was active before Isearch started, or the whole buffer if
+the region was not active.
+
+Bound to \\<isearch-mode-map>`isearchp-toggle-dimming-non-prop-zones' during Isearch."
+  (interactive "p")
+  (setq isearchp-dim-non-prop-zones-flag  (not isearchp-dim-non-prop-zones-flag))
+  (dolist (ov  isearchp-dimmed-overlays)
+    (if isearchp-dim-non-prop-zones-flag
+        (overlay-put ov 'face 'isearchp-dimmed)
+      (overlay-put ov 'face nil)))
+  (when msgp (message "%s the zones not being searched now" (if isearchp-dim-non-prop-zones-flag
+                                                                "*DIMMING*"
+                                                              "*NOT* dimming"))))
+
+(defun isearchp-complement-dimming ()
+  "Complement which areas are dimmed."
+  (let* ((beg      (or (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)  (point-min)))
+         (end      (or (and (boundp 'isearchp-reg-end)  isearchp-reg-end)  (point-max)))
+         (pos      beg)
+         (ov-lims  ())
+         (new-ovs  ())
+         new-ov ovb ove oprops oprops1)
+    (setq isearchp-dimmed-overlays  (sort isearchp-dimmed-overlays
+                                          (lambda (ov1 ov2)
+                                            (and (overlay-start ov1)  (overlay-start ov2)
+                                                 (< (overlay-start ov1) (overlay-start ov2))))))
+    (dolist (ov  isearchp-dimmed-overlays)
+      (setq ovb     (overlay-start ov)
+            ove     (overlay-end ov)
+            oprops  (overlay-properties ov))
+      (delete-overlay ov)
+      (when ovb (push ovb ov-lims))
+      (when ove (push ove ov-lims)))
+    (setq ov-lims  (nreverse ov-lims))
+    (when (and (car ov-lims)  (< beg (car ov-lims)))
+      (push (setq new-ov  (make-overlay beg (car ov-lims))) new-ovs)
+      (setq oprops1  oprops)
+      (while oprops1 (overlay-put new-ov (pop oprops1) (pop oprops1))))
+    (when (and (car ov-lims)  (< (setq ove  (car (last ov-lims))) end))
+      (push (setq new-ov  (make-overlay ove end)) new-ovs)
+      (setq oprops1  oprops)
+      (while oprops1 (overlay-put new-ov (pop oprops1) (pop oprops1))))
+    (setq ov-lims  (butlast ov-lims))   ; Drop the last end pos.
+    (while (setq ov-lims  (cdr ov-lims)) ; Drop the first beg pos, to start with.
+      (unless (= (car ov-lims) (cadr ov-lims))
+        (push (setq new-ov  (make-overlay (car ov-lims) (cadr ov-lims))) new-ovs)
+        (setq oprops1  oprops)
+        (while oprops1 (overlay-put new-ov (pop oprops1) (pop oprops1))))
+      (setq ov-lims  (cdr ov-lims)))
+    (setq isearchp-dimmed-overlays  new-ovs)
+    (isearch-lazy-highlight-update)))
+      
 (defun isearchp-add-regexp-as-property (property regexp &optional beg end predicate action msgp)
   "Add PROPERTY with value (REGEXP . PREDICATE) to REGEXP matches.
 If region is active, limit action to region.  Else, use whole buffer.
@@ -579,19 +699,19 @@ in `isearchp-add-regexp-as-property'."
     (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
   (isearchp-property-forward '(4)))
 
-(defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action)
+(defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action msgp)
   "Define search contexts for a future text- or overlay-property search.
 This command does not actually search the contexts.  For that, use
 `isearchp-regexp-context-search' or `isearchp-property-forward'.
 See `isearchp-regexp-context-search' for a description of the
 arguments and prefix-argument behavior in terms of prompting for them."
-  (interactive (isearchp-regexp-read-args))
-  (message "Scanning for regexp matches...")
+  (interactive (append (isearchp-regexp-read-args) (list t)))
+  (when msgp (message "Scanning for regexp matches..."))
   (let ((matches-p  (isearchp-regexp-scan beg end property regexp predicate action)))
     (setq isearchp-property-prop    property
           isearchp-property-type    'text
           isearchp-property-values  (list (cons regexp predicate)))
-    (message (if matches-p "Scanning for regexp matches...done" "NO MATCH for regexp"))))
+    (when msgp (message (if matches-p "Scanning for regexp matches...done" "NO MATCH for regexp")))))
    
 ;;(@* "General Non-Interactive Functions")
 
@@ -667,10 +787,10 @@ See `isearchp-regexp-context-search' for a description of the prompting."
                       isearchp-property-values)))
     (setq isearchp-filter-predicate-orig  isearch-filter-predicate
           isearch-filter-predicate        (isearchp-property-filter-pred type prop values)
-          isearchp-property-type         type
-          isearchp-property-prop         prop
-          isearchp-property-values       values))
-  (add-hook 'isearch-mode-end-hook 'isearchp-property-end)
+          isearchp-property-type          type
+          isearchp-property-prop          prop
+          isearchp-property-values        values))
+  (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
   (funcall search-fn))
 
 ;; Similar to `icicle-properties-in-buffer', defined in `icicles-cmd2.el', but this has PREDICATE.
@@ -797,10 +917,13 @@ For other properties the values are matched using `equal'."
     ((mumamo-major-mode)   (lambda (val rprop) (equal val (car rprop))))
     (t                     #'equal)))
 
-(defun isearchp-property-end ()
+(defun isearchp-property-finish ()
   "End Isearch for a text or overlay property."
   (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
-  (remove-hook 'isearch-mode-end-hook 'isearchp-property-end))
+  (while isearchp-dimmed-overlays
+    (delete-overlay (car isearchp-dimmed-overlays))
+    (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays)))
+  (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish))
 
 (defun isearchp-put-prop-on-region (property value beg end)
   "Add text PROPERTY with VALUE to the region from BEG to END.
@@ -844,6 +967,9 @@ commands and commands such as `isearchp-imenu*', `isearchp-thing',
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil))
     (add-text-properties beg end (list property value))
+    (isearchp-add/remove-dim-overlay beg end nil)
+;;; $$$$$$    (when (string-match-p "\\`isearchp-" (symbol-name property))
+;;;             (setq isearchp-last-prop+value (cons property value)))
     (set-buffer-modified-p bufmodp)))
 
 (defun isearchp-message-prefix (&optional arg1 arg2 arg3)
@@ -1005,19 +1131,44 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                    (pred-ok-p   t)
                    end-marker)
               (remove-text-properties c-beg c-end (list property 'IGNORED))
+              (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
               (when (and predicate
                          (not (string= "" hit-string))
                          (setq end-marker  (copy-marker hit-end)))
                 (setq pred-ok-p  (save-match-data (funcall predicate hit-string end-marker))))
               (cond ((and pred-ok-p  (not (string= "" hit-string)))
                      (put-text-property hit-beg hit-end property prop-value)
-                     (setq added-prop-p  prop-value))
-                    (t (remove-text-properties hit-beg hit-end (list property 'IGNORED)))))
+                     (setq added-prop-p  prop-value)
+                     (isearchp-add/remove-dim-overlay hit-beg hit-end nil))
+                    (t
+                     (remove-text-properties hit-beg hit-end (list property 'IGNORED))
+                     (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD))))
             (goto-char (setq last-beg  beg))))
       (error (error "%s" (error-message-string isearchp-regexp-scan))))
     (set-buffer-modified-p bufmodp)
+    ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p)) ; Return property value if added, or nil otherwise.
 
+(defun isearchp-add/remove-dim-overlay (beg end addp)
+  "Add or remove dim overlays from BEG to END, depending on ADDP.
+Non-nil ADDP means add an overlay; nil means remove any present.
+But reverse the effect of ADDP if `isearchp-complement-domain-p'
+is non-nil."
+  (when isearchp-complement-domain-p (setq addp  (not addp)))
+  (cond (addp
+         (let ((ov  (make-overlay beg end)))
+           (push ov isearchp-dimmed-overlays)
+           (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
+           (overlay-put ov 'face 'isearchp-dimmed)))
+        (t
+         (let ((pos  beg))
+           (while (< pos end)
+             (let* ((ovs   (overlays-at pos))
+                    (d-ov  (car (isearchp-some ovs nil (lambda (ov _)
+                                                         (member ov isearchp-dimmed-overlays))))))
+               (when d-ov (delete-overlay d-ov)))
+             (setq pos (1+ pos)))))))
+  
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
   "Copy of SEQUENCE with duplicate elements removed.
@@ -1241,15 +1392,15 @@ comments."
          (when isearchp-ignore-comments-flag (isearchp-hide/show-comments 'show ,ostart ,oend))
          ,result))))
 
-(defun isearchp-toggle-ignoring-comments () ; Bound to `C-M-;' during Isearch.
+(defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `C-M-;' during Isearch.
   "Toggle the value of option `isearchp-ignore-comments-flag'.
 If option `ignore-comments-flag' is defined (in library
 `hide-comnt.el') then it too is toggled.
 Bound to `C-M-;' during Isearch."
-  (interactive)
+  (interactive "p")
   (setq isearchp-ignore-comments-flag  (not isearchp-ignore-comments-flag))
   (when (boundp 'ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
-  (message "Ignoring comments is now %s" (if isearchp-ignore-comments-flag "ON" "OFF")))
+  (when msgp (message "Ignoring comments is now %s" (if isearchp-ignore-comments-flag "ON" "OFF"))))
 
 ;--------------
 
@@ -1325,17 +1476,17 @@ NOTE:
     (isearchp-thing-define-contexts thing beg end property predicate))
   (isearchp-property-forward '(4)))
 
-(defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn)
+(defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn msgp)
   "Define search contexts for future thing searches.
 This command does not actually search the contexts.  For that, use
 `isearchp-thing' or `isearchp-property-forward'."
-  (interactive (isearchp-thing-read-args))
-  (message "Scanning for thing: `%s'..." thing)
+  (interactive (append (isearchp-thing-read-args) (list t)))
+  (when msgp (message "Scanning for thing: `%s'..." thing))
   (isearchp-thing-scan beg end thing property predicate transform-fn)
   (setq isearchp-property-prop    property
         isearchp-property-type    'text
         isearchp-property-values  (list (cons thing predicate)))
-  (message "Scanning for thing: `%s'...done" thing))
+  (when msgp (message "Scanning for thing: `%s'...done" thing)))
 
 (defun isearchp-thing-read-args ()
   "Read args for `isearchp-thing*'.
@@ -1397,6 +1548,7 @@ This function respects both `isearchp-search-complement-domain-p' and
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
         (last-beg          nil)
+        (prop-value        nil)
         (added-prop-p      nil))
     (isearchp-with-comments-hidden
      beg end
@@ -1436,12 +1588,14 @@ This function respects both `isearchp-search-complement-domain-p' and
                           (when isearchp-ignore-comments-flag
                             (put-text-property 0 (length hit-string) 'invisible nil hit-string))
                           (unless (equal hit-beg hit-end)
-                            (let ((buffer-mod  (buffer-modified-p))
-                                  (prop-value  (cons thing predicate)))
+                            (let ((buffer-mod  (buffer-modified-p)))
+                              (setq prop-value  (cons thing predicate))
                               (put-text-property hit-beg hit-end property prop-value)
-                              (setq added-prop-p  prop-value))))
+                              (setq added-prop-p  prop-value)
+                              (isearchp-add/remove-dim-overlay hit-beg hit-end nil))))
                          (t
-                          (remove-text-properties hit-beg hit-end (list property 'IGNORED))))
+                          (remove-text-properties hit-beg hit-end (list property 'IGNORED))
+                          (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD)))
                    (if thg-end
                        ;; $$$$$$
                        ;; The correct code here is (setq beg thg-end).  However, unless you use my
@@ -1457,6 +1611,7 @@ This function respects both `isearchp-search-complement-domain-p' and
                (setq last-beg  beg))))
          (error (error "%s" (error-message-string isearchp-thing-scan)))))
     (set-buffer-modified-p bufmodp)
+    ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p))  ; Return indication of whether property was added.
 
 ;;--------------------------------------
