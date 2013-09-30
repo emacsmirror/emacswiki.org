@@ -469,5 +469,10 @@ After having trouble installing twittering-mode and EasyPG on the mac, I spent s
 
 --unpluggd
 
+[new]
+Can I use twitter's lists? I found api-methods in the code, but I don't understand how to use it.
+
+--pimiento
+
 ----
 See also: [[Twitter]] [[Identica-mode]]
