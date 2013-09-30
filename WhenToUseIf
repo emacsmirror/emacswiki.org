@@ -116,7 +116,10 @@ In the example, `and' first tests whether there is a space before the current lo
 
 
 [:Case]
-== Case ==
+[:ecase]
+== `case' and `ecase' ==
+
+`case' and `ecase' are macros that are part of the Common Lisp package. To use either, just require ##cl## at compile time.
 
 `case' is like `cond' in that it can involve multiple tests.  What distinguishes `case' is that a single test [[sexp]] is evaluated only once.  The result of that evaluation is compared to multiple values, in turn, until a comparison succeeds or all have been tried. Comparison is done using CommonLisp function `eql'. 
 
@@ -124,12 +127,7 @@ When a comparison succeeds. its associated sexps are evaluated (an implicit `pro
 
 A `case' expression can include a final default clause by using a comparison value of `t' or `otherwise'. Comparison values can be ''grouped'', so that several values will lead to the same consequence code being executed. 
 
-`case' is part of the Common Lisp package. To use it, you must `<code>(require 'cl)</code>'.
-
-[:Ecase]
-== Ecase ==
-
-`ecase' is like `case' except it signals error if no test succeeds. One should prefer `ecase' over `case' as it is better to catch erroneous values early.
+`ecase' is like `case' except it signals error if no test succeeds. 
 
   (defun my-got-what (x)
     (ecase x
