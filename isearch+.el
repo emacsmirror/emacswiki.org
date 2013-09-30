@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 18 08:19:36 2013 (-0700)
+;; Last-Updated: Mon Sep 30 09:42:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2698
+;;     Update #: 2701
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `isearch-prop', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -409,6 +409,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/09/30 dadams
+;;     Do not soft-require isearch-prop.el unless Emacs 23+.
 ;; 2013/09/12 dadams
 ;;     isearchp-reg-(beg|end): Changed default value to nil.
 ;      isearch-mode: save-restriction and widen, to get region limits.
@@ -675,7 +677,7 @@
  ;; We  do not want to do a (load-library "isearch"), because it would not
  ;; allow doing (eval-after-load "isearch" '(progn (require 'isearch+)))
 
-(require 'isearch-prop nil t) ;; (no error if not found)
+(when (> emacs-major-version 22) (require 'isearch-prop nil t)) ;; (no error if not found)
 
 (require 'misc-cmds nil t) ;; (no error if not found): goto-longest-line
 
