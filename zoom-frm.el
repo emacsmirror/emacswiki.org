@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Fri Sep 13 14:32:07 2013 (-0700)
+;; Last-Updated: Sun Sep 29 19:14:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 301
+;;     Update #: 308
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -156,6 +156,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/09//29 dadams
+;;     zoom-in/out: Only for Emacs 24.3+ (needs set-temporary-overlay-map).
 ;; 2013/09/13 dadams
 ;;     Added: zoom-all-frames-in, zoom-all-frames-out.
 ;; 2013/04/21 dadams
@@ -329,8 +331,9 @@ Buffer zooming uses command `text-scale-decrease'."
             (current-buffer))
         (text-scale-decrease 1))))
 
-  (defun zoom-in/out (arg)
-    "Zoom current frame or buffer in or out.
+  (when (fboundp 'set-temporary-overlay-map) ; Emacs 24.3+
+    (defun zoom-in/out (arg)
+      "Zoom current frame or buffer in or out.
 A prefix arg determines the behavior, as follows:
  none       : Use 1 as the zoom amount.
  plain `C-u': Toggle between zooming frame and zooming buffer.
@@ -353,44 +356,44 @@ Buffer zooming uses command `text-scale-increase'.
 User option `zoom-frame/buffer' determines the default zoom type:
 frame or buffer.  If the option value is `buffer' and you never use
 plain `C-u' with this command then it acts like `text-scale-adjust'."
-    (interactive "P")
-    (when (or (equal arg '(4))  (eq ?\025 last-command-event)) ; `C-u'
-      (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame)
-            arg                1)
-      (message "Zooming %sS from now on" (upcase (symbol-name zoom-frame/buffer)))
-      (sit-for 1))    
-    (let* ((ev               last-command-event)
-           (echo-keystrokes  nil)
-           (base             (event-basic-type ev))
-           (step             (if (or (equal arg '(4))  (eq ?\025 last-command-event)) ; C-u
-                                 'C-U-WAS-USED
-                               (setq arg  (prefix-numeric-value arg))
-                               (case base
-                                 ((?+ ?=) arg)
-                                 (?-      (- arg))
-                                 (?0      0)
-                                 (t       arg)))))
-      (message (if (eq step 0)
-                   "Reset to default size.  Use +/- to zoom in/out"
-                 "Use +/- to zoom in/out, 0 to reset (unzoom)"))
-      (unless (eq step 'C-U-WAS-USED)
-        (if (eq zoom-frame/buffer 'frame)
-            (if (eq step 0)
-                (zoom-frm-unzoom)
-              (let ((frame-zoom-font-difference  step)) (zoom-frm-in)))
-          (with-current-buffer
-              (if (string-match "mouse" (format "%S" (event-basic-type last-command-event)))
-                  (window-buffer (posn-window (event-start last-command-event)))
-                (current-buffer))
-            (text-scale-increase step))))
-      (set-temporary-overlay-map
-       (let ((map  (make-sparse-keymap)))
-         (dolist (mods  '(() (control)))
-           (dolist (key  '(?- ?+ ?= ?0)) ; The `=' key is often unshifted `+' key.
-             (define-key map (vector (append mods (list key)))
-               `(lambda () (interactive) (zoom-in/out ',arg)))))
-         (define-key map "\C-u" `(lambda () (interactive) (zoom-in/out ',arg)))
-         map)))))
+      (interactive "P")
+      (when (or (equal arg '(4))  (eq ?\025 last-command-event)) ; `C-u'
+        (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame)
+              arg                1)
+        (message "Zooming %sS from now on" (upcase (symbol-name zoom-frame/buffer)))
+        (sit-for 1))    
+      (let* ((ev               last-command-event)
+             (echo-keystrokes  nil)
+             (base             (event-basic-type ev))
+             (step             (if (or (equal arg '(4))  (eq ?\025 last-command-event)) ; C-u
+                                   'C-U-WAS-USED
+                                 (setq arg  (prefix-numeric-value arg))
+                                 (case base
+                                   ((?+ ?=) arg)
+                                   (?-      (- arg))
+                                   (?0      0)
+                                   (t       arg)))))
+        (message (if (eq step 0)
+                     "Reset to default size.  Use +/- to zoom in/out"
+                   "Use +/- to zoom in/out, 0 to reset (unzoom)"))
+        (unless (eq step 'C-U-WAS-USED)
+          (if (eq zoom-frame/buffer 'frame)
+              (if (eq step 0)
+                  (zoom-frm-unzoom)
+                (let ((frame-zoom-font-difference  step)) (zoom-frm-in)))
+            (with-current-buffer
+                (if (string-match "mouse" (format "%S" (event-basic-type last-command-event)))
+                    (window-buffer (posn-window (event-start last-command-event)))
+                  (current-buffer))
+              (text-scale-increase step))))
+        (set-temporary-overlay-map
+         (let ((map  (make-sparse-keymap)))
+           (dolist (mods  '(() (control)))
+             (dolist (key  '(?- ?+ ?= ?0)) ; The `=' key is often unshifted `+' key.
+               (define-key map (vector (append mods (list key)))
+                 `(lambda () (interactive) (zoom-in/out ',arg)))))
+           (define-key map "\C-u" `(lambda () (interactive) (zoom-in/out ',arg)))
+           map))))))
 
 ;; These are not so useful, but some people might like them.
 (when (fboundp 'set-face-attribute)     ; Emacs 22+
