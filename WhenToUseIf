@@ -117,7 +117,7 @@ In the example, `and' first tests whether there is a space before the current lo
 
 [:Case]
 [:ecase]
-== ‘case’ and ‘ecase’ ==
+== Case, Ecase ==
 
 `case' and `ecase' are macros that are part of the Common Lisp package. To use either, just require ##cl## at compile time.
 
