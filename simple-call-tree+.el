@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-11-01 21:28:07
-;; Version: 1.1
+;; Version: 1.2
 ;; Last-Updated: 2013-09-30 21:28:07
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
@@ -171,7 +171,8 @@ and by `simple-call-tree-visit-function' and `simple-call-tree-view-function'."
 The children of each header will be sorted separately."
   :group 'simple-call-tree
   :type '(choice (const :tag "Sort by position" position)
-                 (const :tag "Sort alphabetically" alphabet)))
+                 (const :tag "Sort alphabetically" alphabet)
+                 (const :tag "Sort by face" face)))
 
 (defcustom simple-call-tree-default-maxdepth 2
   "The depth at which new call trees should be displayed."
@@ -310,6 +311,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "s") 'simple-call-tree-sort-map)
   (define-key simple-call-tree-mode-map (kbd "s a") 'simple-call-tree-sort-alphabetically)
   (define-key simple-call-tree-mode-map (kbd "s p") 'simple-call-tree-sort-positionally)
+  (define-key simple-call-tree-mode-map (kbd "s f") 'simple-call-tree-sort-by-face)
   (if (featurep 'outline-magic)
       (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-cycle)
     (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-toggle-children))
@@ -432,7 +434,8 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
       ["Sort Tree..." (keymap
                        "Sort"
                        (alpha menu-item "Alphabetically" simple-call-tree-sort-alphabetically)
-                       (position menu-item "Positionally" simple-call-tree-sort-positionally))]
+                       (position menu-item "Positionally" simple-call-tree-sort-positionally)
+                       (face menu-item "By face" simple-call-tree-sort-by-face))]
       ["Change Depth..." simple-call-tree-change-maxdepth
        :help "Change the depth of the tree"]
       ["Toggle Narrowing" simple-call-tree-toggle-narrowing
@@ -448,7 +451,8 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
                                        "Sorted "
                                        (case simple-call-tree-current-sort-order
                                          (position "by position|")
-                                         (alphabet "alphabetically|")))
+                                         (alphabet "alphabetically|")
+                                         (face "by face|")))
                                simple-call-tree-current-maxdepth)))
          (subseq mode-line-format
                  (+ 2 (position 'mode-line-buffer-identification
@@ -676,7 +680,8 @@ listed in `simple-call-tree-buffers' will be used."
   (simple-call-tree-analyze buffers)
   (case simple-call-tree-default-sort-method
     (alphabet (simple-call-tree-sort-alphabetically))
-    (position (simple-call-tree-sort-positionally)))
+    (position (simple-call-tree-sort-positionally))
+    (face (simple-call-tree-sort-by-face)))
   (setq simple-call-tree-inverted nil)
   (simple-call-tree-list-callers-and-functions)
   (setq simple-call-tree-buffers buffers))
@@ -833,6 +838,17 @@ The toplevel functions will be sorted, and the functions in each branch will be 
                                   (marker-position (second b))))))
   (simple-call-tree-restore-state (simple-call-tree-store-state))
   (setq simple-call-tree-current-sort-order 'position))
+
+(defun simple-call-tree-sort-by-face nil
+  "Sort the items in the *Simple Call Tree* buffer according to the display face name.
+This should sort the items by type (e.g. function, variable, etc.) since different types are generally displayed
+with different faces.
+The toplevel functions will be sorted, and the functions in each branch will be sorted separately."
+  (interactive)
+  (simple-call-tree-sort (lambda (a b) (string< (symbol-name (get-text-property 0 'face (car a)))
+                                                (symbol-name (get-text-property 0 'face (car b))))))
+  (simple-call-tree-restore-state (simple-call-tree-store-state))
+  (setq simple-call-tree-current-sort-order 'face))
 
 (defun simple-call-tree-store-state nil
   "Store the current state of the displayed call tree, and return as an alist."
