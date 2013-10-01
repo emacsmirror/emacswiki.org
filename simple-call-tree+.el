@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-11-01 21:28:07
-;; Version: 1.2
-;; Last-Updated: 2013-09-30 21:28:07
+;; Version: 1.3
+;; Last-Updated: 2013-10-01 18:00:00
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
 ;;      https://github.com/vapniks/simple-call-tree-ext
@@ -276,6 +276,12 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
                                (const :tag "end-of-defun function" t)
                                (function :tag "Other function" :help-echo "Function for finding end of object"))))
   :link '(variable-link simple-call-tree-default-valid-fonts))
+
+(defcustom simple-call-tree-org-link-style 'radio
+  "Style used for links of child headers when exporting org tree using `simple-call-tree-export-org-tree'."
+  :group 'simple-call-tree
+  :type '(choice (const :tag "internal radio link" radio)
+                 (const :tag "link to source code" source)))
 
 ;; Saves a little typing
 (defmacro whilelast (&rest forms)
@@ -727,32 +733,73 @@ By default FUNCLIST is set to `simple-call-tree-alist'."
     (setq simple-call-tree-current-maxdepth (max maxdepth 1)
           buffer-read-only t)))
 
+(defun* simple-call-tree-export-org-tree (&optional (maxdepth simple-call-tree-current-maxdepth)
+                                                    (funclist simple-call-tree-alist))
+  "Create an org-tree from the current call tree and put it in an org buffer.
+The style of links used for child headers is controlled by `simple-call-tree-org-link-style'."
+  (interactive)
+  (let ((buf (generate-new-buffer "simple-call-tree.org")))
+    (switch-to-buffer buf)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    (org-mode)
+    (let ((maxdepth (max maxdepth 1)))
+      (dolist (item funclist)
+        (simple-call-tree-list-callees-recursively
+         (car item)
+         maxdepth 1 funclist
+         simple-call-tree-inverted
+         'simple-call-tree-insert-org-header)))
+    (org-update-radio-target-regexp)))
+
 (defun* simple-call-tree-list-callees-recursively (item &optional (maxdepth 2)
                                                         (curdepth 1)
                                                         (funclist simple-call-tree-alist)
-                                                        (inverted simple-call-tree-inverted))
+                                                        (inverted simple-call-tree-inverted)
+                                                        (displayfunc 'simple-call-tree-insert-item))
   "Insert a call tree for the function named FNAME, to depth MAXDEPTH.
 FNAME must be the car of one of the elements of FUNCLIST which is set to `simple-call-tree-alist' by default.
 The optional arguments MAXDEPTH and CURDEPTH specify the maximum and current depth of the tree respectively.
 This is a recursive function, and you should not need to set CURDEPTH."
   (let* ((fname (first item))
-         (pos (second item))
          (callees (cdr (assoc-if (lambda (x) (string= (car x) fname)) funclist)))
+         done)
+    (funcall displayfunc item curdepth inverted)
+    (if (< curdepth maxdepth)
+        (dolist (callee callees)
+          (unless (and simple-call-tree-nodups (member (car callee) done))
+            (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist inverted displayfunc))
+          (add-to-list 'done (car callee))))))
+
+(defun simple-call-tree-insert-item (item curdepth inverted)
+  "Display ITEM at depth CURDEPTH in the call tree."
+  (let* ((fname (first item))
+         (pos (second item))
          (arrowtail (make-string (* 2 (1- curdepth)) 45))
          (arrow (if inverted (concat (if (> curdepth 1) "<") arrowtail " ")
                   (concat arrowtail (if (> curdepth 1) "> " " "))))
-         (face (get-text-property 0 'face fname))
-         done)
+         (face (get-text-property 0 'face fname)))
     (insert "|" arrow (propertize fname
                                   'font-lock-face (list :inherit face :underline t)
                                   'mouse-face 'highlight
                                   'location pos)
-            "\n")
-    (if (< curdepth maxdepth)
-        (dolist (callee callees)
-          (unless (and simple-call-tree-nodups (member (car callee) done))
-            (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist))
-          (add-to-list 'done (car callee))))))
+            "\n")))
+
+(defun simple-call-tree-insert-org-header (item curdepth inverted)
+  "Display ITEM at depth CURDEPTH in the call tree."
+  (let* ((fname (first item))
+         (marker (second item))
+         (stars (make-string curdepth 42)))
+    (if (and (> curdepth 1)
+             (eq simple-call-tree-org-link-style 'radio))
+        (insert stars " " fname "\n")
+      (with-current-buffer (marker-buffer marker)
+        (goto-char (marker-position marker))
+        (call-interactively 'org-store-link))
+      (insert stars " [[" (substring-no-properties (caar org-stored-links)) "][" fname "]]\n")
+      (if (eq simple-call-tree-org-link-style 'radio)
+          (insert "<<<" fname ">>>\n"))
+      (setq org-stored-links (cdr org-stored-links)))))
 
 (defun simple-call-tree-outline-level nil
   "Return the outline level of the function at point.
