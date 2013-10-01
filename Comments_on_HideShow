@@ -16,3 +16,10 @@ Submit a regular bug report using Emacs? The wiki is poorly suited for that.
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-06-22 09:58 UTC
 
+
+----
+
+I'd like to know if there's any way to save the 'folded state' of the file between emacs sessions?
+
+-- joelarbear 2013-10-01 14:01 UTC
+
