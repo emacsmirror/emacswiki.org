@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Sep 29 10:19:39 2013 (-0700)
+;; Last-Updated: Wed Oct  2 09:47:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10220
+;;     Update #: 10223
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -939,6 +939,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/10/02 dadams
+;;     icicle-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;; 2013/09/29 dadams
 ;;     icicle-search-char-prop-matches-p: Typo: isearchp-some -> icicle-some.
 ;; 2013/09/21 dadams
@@ -948,7 +950,7 @@
 ;;       If icicle-search-complement-domain-p then PREDICATE should not succeed.
 ;; 2013/09/11 dadams
 ;;     icicle-Info-multi-read-node-name: Bind case-fold-search to t in filter function for NODES.
-;; 2013/009/06 dadams
+;; 2013/09/06 dadams
 ;;     Added: icicle-imenu-macro-full.
 ;;     icicle-imenu-*-full: First arg to icicle-imenu-1 should just be non-nil.
 ;;     icicle-imenu-non-interactive-function: Emacs Lisp only, not Lisp mode too.
