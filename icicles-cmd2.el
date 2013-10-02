@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Sep 29 10:18:55 2013 (-0700)
+;; Last-Updated: Wed Oct  2 09:45:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6574
+;;     Update #: 6577
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5321,9 +5321,11 @@ the bounds of THING.  Return nil if no such THING is found."
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-        ;; $$$$$$ Seems that < is better than <=, at least for `icicle-search-thing':
-        ;; $$$$$$ for XML elements and lists, <= misses the first one.
-        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (< (cadr thg+bds) (point))))
+        ;;        Seems that < is better than <=, at least for `icicle-search-thing':
+        ;;        for XML elements and lists, <= misses the first one.
+        ;; $$$$$$ No, I don't think that is the case (anymore).
+        ;;        <= is OK and is needed for interactive use of `icicle-next-visible-thing'.  
+        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
