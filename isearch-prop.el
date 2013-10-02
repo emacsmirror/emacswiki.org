@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 30 12:43:11 2013 (-0700)
+;; Last-Updated: Wed Oct  2 11:38:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 542
+;;     Update #: 653
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -26,10 +26,10 @@
 ;;
 ;;    Search text-property or overlay-property contexts.
 ;;
-;;  Such contexts are zones of text that have certain text properties
-;;  or overlays with certain overlay properties.
+;;  Such contexts are either zones of text that have certain text
+;;  properties or overlays that have certain overlay properties.
 ;;
-;;  This file is part of library Isearch+, which includes also file
+;;  This file is part of package Isearch+, which includes also file
 ;;  `isearch+.el'.  You can use either of the files without the other,
 ;;  if you like, but I recommend that you use them together.
 ;;
@@ -67,11 +67,14 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearchp-hide/show-comments', `isearchp-next-visible-thing',
+;;    `isearchp-hide/show-comments', `isearchp-imenu',
+;;    `isearchp-imenu-command', `isearchp-imenu-macro',
+;;    `isearchp-imenu-non-interactive-function',
+;;    `isearchp-next-visible-thing',
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
-;;    `isearchp-put-prop-on-region',
+;;    `isearchp-put-prop-on-region', `isearchp-regexp-context-search',
 ;;    `isearchp-regexp-define-contexts',
 ;;    `isearchp-remove-all-properties', `isearchp-remove-property',
 ;;    `isearchp-thing', `isearchp-thing-define-contexts',
@@ -79,18 +82,10 @@
 ;;    `isearchp-toggle-dimming-non-prop-zones',
 ;;    `isearchp-toggle-ignoring-comments'.
 ;;
-;;  Faces defined here:
-;;
-;;    `isearchp-dimmed'.
-;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-dim-non-prop-zones-flag',
+;;    `isearchp-dimming-color', `isearchp-dim-non-prop-zones-flag',
 ;;    `isearchp-ignore-comments-flag'.
-;;
-;;  Faces defined here:
-;;
-;;    None.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -98,6 +93,7 @@
 ;;    `isearchp-add/remove-dim-overlay',
 ;;    `isearchp-bounds-of-thing-at-point',
 ;;    `isearchp-complement-dimming', `isearchp-defined-thing-p',
+;;    `isearchp-dim-color', `isearchp-dim-face-spec',
 ;;    `isearchp-message-prefix', `isearchp-next-visible-thing-1',
 ;;    `isearchp-next-visible-thing-2',
 ;;    `isearchp-next-visible-thing-and-bounds',
@@ -106,11 +102,11 @@
 ;;    `isearchp-property-filter-pred', `isearchp-property-finish',
 ;;    `isearchp-property-matches-p', `isearchp-read-context-regexp',
 ;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
-;;    `isearchp-read-sexps', `isearchp-regexp-context-search',
-;;    `isearchp-regexp-read-args', `isearchp-regexp-scan',
-;;    `isearchp-remove-duplicates', `isearchp-some',
-;;    `isearchp-thing-read-args', `isearchp-text-prop-present-p',
-;;    `isearchp-thing-scan', `isearchp-things-alist'.
+;;    `isearchp-read-sexps', `isearchp-regexp-read-args',
+;;    `isearchp-regexp-scan', `isearchp-remove-duplicates',
+;;    `isearchp-some', `isearchp-thing-read-args',
+;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
+;;    `isearchp-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -138,14 +134,19 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
-;;  * Ability to search within text-property or overlay-property
-;;    buffer zones.  Example: search within zones having a `face' text
-;;    property with a value of `font-lock-comment-face' or
-;;    `font-lock-string-face'.  Search overlays or text properties.
-;;    From within Isearch: `C-t' (or `C-M-t' for regexp search).
-;;    First time, or with a prefix argument, you are prompted for the
-;;    property and its values.  See the doc string of command
-;;    `isearchp-property-forward'.
+;;  * You can search within text-property or overlay-property zpnes of
+;;    the buffer or active region.  Example: search within zones
+;;    having a `face' text property with a value of
+;;    `font-lock-comment-face' or `font-lock-string-face'.
+;;
+;;  * The basic commands for searching propertied zones are
+;;    `isearchp-property-forward' and
+;;    `isearchp-property-forward-regexp', and their backward
+;;    counterparts.  By default, you are prompted for the property
+;;    type (`text' or `overlay'), the property, and the property
+;;    values (e.g., a list of faces, for property `face').  These
+;;    commands are bound to `C-t' and `C-M-t', respectively, during
+;;    Isearch.
 ;;
 ;;  * Besides relying on other code to set `face' and other text
 ;;    properties for use with `C-t', you can use command
@@ -156,11 +157,80 @@
 ;;    This gives you an interactive way to set up zones for
 ;;    text-property search (`C-t').  For property `face', empty input
 ;;    removes all faces from the region.
+;;
+;;  * You can search zones of text/overlays that have a given
+;;    property, as described above, or you can search the complement:
+;;    the zones that do *NOT* have a given property.  You can toggle
+;;    this search-domain complementing at any time during Isearch,
+;;    using `C-M-~' (command `isearchp-toggle-complementing-domain').
+;;
+;;  * When you search propertied zones, the non-searchable zones are
+;;    dimmed, to make the searchable areas stand out.  Option
+;;    `isearchp-dim-non-prop-zones-flag' controls whether such dimming
+;;    occurs.  You can toggle it anytime during Isearch, using `C-M-D'
+;;    (aka `C-M-S-d').  Option `isearchp-dimming-color' defines the
+;;    dimming behavior.  It specifies a given background color to use
+;;    always, or it specifies that the current background color is to
+;;    be dimmed a given amount.
+;;
+;;  * You can search the zones of text that match a given regexp,
+;;    using command `isearchp-regexp-context-search'.  This is
+;;    equivalent to using command `isearchp-regexp-define-contexts',
+;;    which marks such zones with a text property, and then using
+;;    command `isearchp-property-forward' (`C-t' during Isearch).
+;;
+;;  * You can search the text of THINGS of various kind (sexps, lists,
+;;    defuns, lines, pages, sentences, filenames, strings, comments,
+;;    xml/html elements, symbols,...), using command `isearchp-thing'.
+;;    This is equivalent to using command
+;;    `isearchp-thing-define-contexts', which marks such zones with a
+;;    text property, and then using `isearchp-property-forward'.
+;;
+;;  * Not related to searching, but you can also move forward and
+;;    backward among things of a given kind, using the repeatable
+;;    commands `isearchp-next-visible-thing' and
+;;    `isearchp-previous-visible-thing'.  For best results I strongly
+;;    recommend that you also use library `thingatpt+.el'.  It
+;;    enhances the vanilla treatment of THINGS and fixes various
+;;    vanilla thing-at-point bugs.
+;;
+;;  * You can search the text of Emacs-Lisp definitions of different
+;;    kinds, using commands `isearchp-imenu',
+;;    `isearchp-imenu-command', `isearchp-imenu-macro', and
+;;    `isearchp-imenu-non-interactive-function'.  Since Imenu is based
+;;    on regexps that recognize definitions, these commands are based
+;;    on the behavior of `isearchp-regexp-context-search'.
+;;
+;;  * You can remove properties from text or overlays using commands
+;;    `isearchp-remove-property' and `isearchp-remove-all-properties'.
+;;    By default, the latter removes only properties whose names begin
+;;    with `isearchp-'.  These are the properties inserted
+;;    automatically by the commands of this library, when you do not
+;;    specify a property.
+;;
+;;  * You can hide code comments, that is, make them invisible, by
+;;    using `M-;' (command `isearchp-hide/show-comments') during
+;;    Isearch.  This is *NOT* a toggle command.  To show the hidden
+;;    comments, use a prefix arg: `C-u M-;'.  However, to be able to
+;;    use a prefix argument during Isearch you must set
+;;    `isearch-allow-scroll' or, better, `isearch-allow-prefix' (if
+;;    available) to non-nil.  Otherwise, a prefix arg exits Isearch.
+;;    You can toggle the hiding of comments during Isearch using
+;;    `C-M-;' (command `isearchp-toggle-ignoring-comments').
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/02 dadams
+;;     isearchp-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
+;;     Soft-require thingatpt+.el.
+;;     isearchp-defined-thing-p, isearchp-things-alist: defalias to thgcmd-* version if defined.
+;; 2013/10/01 dadams
+;;     Added: isearchp-dimming-color, isearchp-dim-face-spec, isearchp-dim-color.
+;;     Removed: face isearchp-dimmed.
+;;     Require color.el, when available.
+;;     isearchp-add/remove-dim-overlay: Use isearchp-dim-color, not face isearchp-dimmed.
 ;; 2013/09/30 dadams
 ;;     Added: isearchp-dimmed-overlays, isearchp-dim-non-prop-zones-flag, face isearchp-dimmed,
 ;;       isearchp-complement-dimming, isearchp-toggle-dimming-non-prop-zones,
@@ -254,7 +324,11 @@
 
 (eval-when-compile (require 'cl)) ;; case
 
-(require 'hexrgb nil t) ;; (no error if not found): hexrgb-increment-value
+(if (fboundp 'color-name-to-rgb)
+    (require 'color)                    ; Emacs 24+
+  (require 'hexrgb nil t)) ;; (no error if not found): hexrgb-increment-value
+
+(require 'thingatpt+ nil t) ;; (no error if not found): tap-bounds-of-thing-at-point
 
 ;; Quiet the byte-compiler.
 (defvar isearchp-reg-beg) ;; In `isearch+.el'.
@@ -264,28 +338,28 @@
 
 ;;; Variables ----------------------------------------------
 
-(defface isearchp-dimmed
-    (if (featurep 'hexrgb)
-        (let ((default-bg  (face-background 'default)))
-          `((((background dark))
-             (:background ,(if (fboundp 'hexrgb-increment-value)
-                               (hexrgb-increment-value default-bg 0.20)
-                               "#316B22970000"))) ; a very dark brown
-            (t (:background ,(if (fboundp 'hexrgb-increment-value)
-                                 (hexrgb-increment-value default-bg -0.10)
-                                 "#E1E1EAEAFFFF"))))) ; a light blue
-      '((((class color grayscale) (min-colors 88) (background light))
-         :background "gray95")
-        (((class color grayscale) (min-colors 88) (background dark))
-         :background "gray10")
-        (((class color) (min-colors 8) (background light))
-         :background "green")
-        (((class color) (min-colors 8) (background dark))
-         :background "blue")))
-  "*Face used to dim text areas not being searchd.
-This dimming is done during Isearch+ property-based searching whenever
-`isearchp-dim-non-prop-zones-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
+(defcustom isearchp-dimming-color (if (or (fboundp 'color-name-to-rgb)  (featurep 'hexrgb))
+                                      -0.10
+                                    "#9A6BC0CDCD4C")
+  "*Background color to use for dimmed zones of text.
+The value can be a color name or a hex RGB code that starts with `#'.
+
+Or it can be a number between -1.0 and 1.0, which is used to calculate
+the background color by tweaking the current background color..  A
+negative option value dims; a positive value brightens.  The larger
+the absolute value, the greater the difference from the current color.
+
+* If you have library `color.el' (in Emacs 24+), this tweaking uses a
+  combination of `color-lighten-name' and `color-saturate-name'.
+
+* If not, but you have library `hexrgb.el', it uses
+  `hexrgb-increment-value'.
+
+* If you have neither `hexrgb.el' nor `color.el', a numeric value has
+  no effect."
+  :group 'isearch-plus :type '(choice
+                               (color  :tag "Shading color"  :value "#9A6BC0CDCD4C")
+                               (number :tag "Dimming factor" :value -0.10)))
 
 (defcustom isearchp-dim-non-prop-zones-flag t
   "*Non-nil means dim text that does not have the property being searched.
@@ -558,24 +632,6 @@ Bound to \\<isearch-mode-map>`isearchp-toggle-complementing-domain' during Isear
                                                      "*COMPLEMENTING*"
                                                    "*NOT* complementing"))))
 
-(defun isearchp-toggle-dimming-non-prop-zones (&optional msgp) ; Bound to `C-M-D' during Isearch.
-  "Toggle dimming text that does not have the property being searched.
-More precisely, toggle option `isearchp-dim-non-prop-zones-flag', then
-update dimming.  This updating applies to the searchable area: the
-region that was active before Isearch started, or the whole buffer if
-the region was not active.
-
-Bound to \\<isearch-mode-map>`isearchp-toggle-dimming-non-prop-zones' during Isearch."
-  (interactive "p")
-  (setq isearchp-dim-non-prop-zones-flag  (not isearchp-dim-non-prop-zones-flag))
-  (dolist (ov  isearchp-dimmed-overlays)
-    (if isearchp-dim-non-prop-zones-flag
-        (overlay-put ov 'face 'isearchp-dimmed)
-      (overlay-put ov 'face nil)))
-  (when msgp (message "%s the zones not being searched now" (if isearchp-dim-non-prop-zones-flag
-                                                                "*DIMMING*"
-                                                              "*NOT* dimming"))))
-
 (defun isearchp-complement-dimming ()
   "Complement which areas are dimmed."
   (let* ((beg      (or (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)  (point-min)))
@@ -614,6 +670,57 @@ Bound to \\<isearch-mode-map>`isearchp-toggle-dimming-non-prop-zones' during Ise
     (setq isearchp-dimmed-overlays  new-ovs)
     (isearch-lazy-highlight-update)))
       
+(defun isearchp-toggle-dimming-non-prop-zones (&optional msgp) ; Bound to `C-M-D' during Isearch.
+  "Toggle dimming text that does not have the property being searched.
+More precisely, toggle option `isearchp-dim-non-prop-zones-flag', then
+update dimming.  This updating applies to the searchable area: the
+region that was active before Isearch started, or the whole buffer if
+the region was not active.
+
+Dimming is per option `isearchp-dimming-color'.
+Bound to \\<isearch-mode-map>`isearchp-toggle-dimming-non-prop-zones' during Isearch."
+  (interactive "p")
+  (setq isearchp-dim-non-prop-zones-flag  (not isearchp-dim-non-prop-zones-flag))
+  (let ((face-spec  (isearchp-dim-face-spec)))                         
+    (dolist (ov  isearchp-dimmed-overlays) (overlay-put ov 'face face-spec)))
+  (when msgp (message "%s the zones not being searched now" (if isearchp-dim-non-prop-zones-flag
+                                                                "*DIMMING*"
+                                                              "*NOT* dimming"))))
+
+(defun isearchp-dim-face-spec ()
+  "Return `(:background COLOR)', where COLOR is the background color dimmed."
+  (let ((dim-color  (if (stringp isearchp-dimming-color)
+                        isearchp-dimming-color
+                      (isearchp-dim-color (face-background 'default) isearchp-dimming-color))))
+    (and isearchp-dim-non-prop-zones-flag  (list :background dim-color))))
+
+(declare-function color-saturate-name "color.el" '(name percent))
+
+(defun isearchp-dim-color (color number)
+  "Return COLOR, dimmed by NUMBER.
+COLOR is a color name or an RGB hexadecimal color triplet.
+NUMBER is limited to be between -1.0 and 1.0.  A negative NUMBER
+ decreases the brightness, dimming.  A positive NUMBER increases the
+ brightness, brightening.
+
+* If you have library `color.el' (in Emacs 24+), this uses a
+  combination of `color-lighten-name' and `color-saturate-name'.
+
+* If not, but you have library `hexrgb.el', this uses
+  `hexrgb-increment-value'.
+
+* If you have neither `hexrgb.el' nor `color.el', this is a no-op:
+  COLOR is returned unchanged."
+  (setq number  (min  1.0 number)
+        number  (max -1.0 number))
+  (if (fboundp 'color-lighten-name)
+      (let* ((new  (color-saturate-name color (* 220.0 number))) ; Emacs 24+, `color.el'.
+             (new  (color-lighten-name new (* 88.7 number))))
+        new)
+    (if (fboundp 'hexrgb-increment-value)
+        (hexrgb-increment-value color number)
+      color)))                       ; < Emacs 24.  Punt - cannot dim.
+
 (defun isearchp-add-regexp-as-property (property regexp &optional beg end predicate action msgp)
   "Add PROPERTY with value (REGEXP . PREDICATE) to REGEXP matches.
 If region is active, limit action to region.  Else, use whole buffer.
@@ -1159,7 +1266,7 @@ is non-nil."
          (let ((ov  (make-overlay beg end)))
            (push ov isearchp-dimmed-overlays)
            (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
-           (overlay-put ov 'face 'isearchp-dimmed)))
+           (overlay-put ov 'face (isearchp-dim-face-spec))))
         (t
          (let ((pos  beg))
            (while (< pos end)
@@ -1326,7 +1433,7 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
 (defun isearchp-hide/show-comments (&optional hide/show start end) ; Bound to `M-;' during Isearch
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
-\(This is thus *not* a toggle command.)
+\(This is thus *NOT* a toggle command.)
 
 Interactively, START and END are the region limits if it is active
 Otherwise, including non-interactively, they are the buffer limits.
@@ -1617,35 +1724,39 @@ This function respects both `isearchp-search-complement-domain-p' and
 ;;--------------------------------------
 
 ;;; Same as `thgcmd-things-alist' in `thing-cmds.el'.
-(defun isearchp-things-alist ()
-  "Alist of most thing types currently defined.
+(if (fboundp 'thgcmd-things-alist)
+    (defalias 'isearchp-things-alist 'thgcmd-things-alist)
+  (defun isearchp-things-alist ()
+    "Alist of most thing types currently defined.
 Each is a cons (STRING), where STRING names a type of text entity for
 which there is a either a corresponding `forward-'thing operation, or
 corresponding `beginning-of-'thing and `end-of-'thing operations.  The
 list includes the names of the symbols that satisfy
 `isearchp-defined-thing-p', but with these excluded: `thing', `buffer',
 `point'."
-  (let ((types  ()))
-    (mapatoms
-     (lambda (tt)
-       (when (isearchp-defined-thing-p tt) (push (symbol-name tt) types))))
-    (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
-      (setq types (delete typ types)))
-    (setq types  (sort types #'string-lessp))
-    (mapcar #'list types)))
+    (let ((types  ()))
+      (mapatoms
+       (lambda (tt)
+         (when (isearchp-defined-thing-p tt) (push (symbol-name tt) types))))
+      (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
+        (setq types (delete typ types)))
+      (setq types  (sort types #'string-lessp))
+      (mapcar #'list types))))
 
 ;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
-(defun isearchp-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined as a thing-at-point type."
-  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
-        (beginning-op  (get thing 'beginning-op))
-        (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'bounds-of-thing-at-point))
-        (thing-fn      (get thing 'thing-at-point)))
-    (or (functionp forward-op)
-        (and (functionp beginning-op)  (functionp end-op))
-        (functionp bounds-fn)
-        (functionp thing-fn))))
+(if (fboundp 'thgcmd-defined-thing-p)
+    (defalias 'isearchp-defined-thing-p 'thgcmd-defined-thing-p)
+  (defun isearchp-defined-thing-p (thing)
+    "Return non-nil if THING (type) is defined as a thing-at-point type."
+    (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+          (beginning-op  (get thing 'beginning-op))
+          (end-op        (get thing 'end-op))
+          (bounds-fn     (get thing 'bounds-of-thing-at-point))
+          (thing-fn      (get thing 'thing-at-point)))
+      (or (functionp forward-op)
+          (and (functionp beginning-op)  (functionp end-op))
+          (functionp bounds-fn)
+          (functionp thing-fn)))))
 
 (defun isearchp-bounds-of-thing-at-point (thing &optional syntax-table)
   "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
@@ -1742,9 +1853,11 @@ the bounds of THING.  Return nil if no such THING is found."
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-        ;; $$$$$$ Seems that < is better than <=, at least for `isearchp-search-thing':
-        ;; $$$$$$ for XML elements and lists, <= misses the first one.
-        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (< (cadr thg+bds) (point))))
+        ;;        Seems that < is better than <=, at least for `icicle-search-thing':
+        ;;        for XML elements and lists, <= misses the first one.
+        ;; $$$$$$ No, I do not think that is the case (anymore).
+        ;;        <= is OK and is needed for interactive use of `isearchp-next-visible-thing'.  
+        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
