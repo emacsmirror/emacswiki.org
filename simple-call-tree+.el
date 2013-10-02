@@ -41,22 +41,23 @@
 ;;
 ;; Bitcoin donations gratefully accepted: 1AmWPmshr6i9gajMi1yqHgx7BYzpPKuzMz
 
+;;;; Introduction:
 ;; This library is based on simple-call-tree.el by Alex Schroeder, but you
 ;; do not need that library to use it (this is a replacement).
 ;; It displays a buffer containing a call tree for functions in source
 ;; code files. You can easily & quickly navigate the call tree, displaying
-;; the code in another window, and perform query-replace on the functions
-;; which may be useful for refactoring.
+;; the code in another window, and apply query-replace or other commands
+;; to individual functions.
 
 ;; When the command `simple-call-tree-display-buffer' is executed
 ;; a call tree for the functions in the current buffer will be created.
-;; The user is also prompted for other files containing functions to be
-;; included in the call tree.
+;; The user is also prompted for other files to include in the call tree.
 ;; The call tree is displayed in a buffer called *Simple Call Tree*,
 ;; which has a dedicated menu in the menu-bar showing various commands
 ;; and their keybindings. Most of these commands are self explanatory
 ;; so try them out.
 
+;;;; Navigation:
 ;; You can navigate the call tree either by moving through consecutive
 ;; headers (n/p or N/P keys) or by jumping to main branches (j for branch
 ;; corresponding to function at point, and J to prompt for a function).
@@ -67,14 +68,23 @@
 ;; jumped to will not be added to the jump-ring.
 ;; If you have fm.el (available here: http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el)
 ;; you can press f to toggle follow mode on/off.
-;; When follow mode is on, or when you press the v or C-o key the code line
-;; corresponding to the branch under point will be displayed. If it is a
-;; toplevel branch then that function will be displayed, if it is a lower-level
-;; branch then the corresponding function call will be displayed.
-;; You can invert the tree by pressing i, and change the depth by pressing d.
-;; You can toggle narrowing to the current branch by pressing /.
-;; You can perform query-replace or query-replace-regexp on the function at
-;; point by pressing % or C-%
+
+;;;; Display
+;; Normally child branches correspond to functions/variables called by the parent
+;; branch. However, if you invert the tree by pressing i then the child branches
+;; will correspond to functions that call the parent branch.
+;; You can sort the tree in various different ways, and change the depth of the tree.
+;; You can also narrow the tree to the function at point by pressing /
+
+;;;; Exporting:
+;; The tree can be exported in its current state with the `simple-call-tree-export-org-tree'
+;; command, and you can alter the TODO state and types of links using options `simple-call-tree-org-todo-state',
+;; and `simple-call-tree-org-link-style'. This may be useful for project management.
+
+;;;; Refactoring
+;; You can perform `query-replace' or `query-replace-regexp' on the function at
+;; point by pressing % or C-%, or any other arbitrary command by pressing !
+;; This may be useful when refactoring.
 
 ;;; Installation:
 ;;
@@ -94,25 +104,33 @@
 ;; (global-set-key (kbd "C-c S") 'simple-call-tree-display-buffer)
 
 
-
-
-;;; Customize:
+;;; Customizable Options:
 ;;
-;; `simple-call-tree-default-recenter' : How to recenter the window after moving to another function in the "*Simple Call Tree*" 
-;;                                       buffer.
-;; `simple-call-tree-jump-ring-max' : Maximum number of elements in `simple-call-tree-jump-ring', before old elements are removed.
-
+;; Below are customizable option list:
+;;
+;;  `simple-call-tree-default-recenter'
+;;    How to recenter the window after moving to another function in the "*Simple Call Tree*" buffer.
+;;  `simple-call-tree-default-valid-fonts'
+;;    List of fonts to use for finding objects to include in the call tree.
+;;  `simple-call-tree-default-invalid-fonts'
+;;    List of fonts that should not be in the text property of any valid token.
+;;  `simple-call-tree-default-sort-method'
+;;    The default sort method to use when a call tree is newly created.
+;;  `simple-call-tree-default-maxdepth'
+;;    The depth at which new call trees should be displayed.
+;;  `simple-call-tree-major-mode-alist'
+;;    Alist of major modes, and information to use for identifying objects for the simple call tree.
+;;  `simple-call-tree-org-link-style'
+;;    Style used for links of child headers when exporting org tree using `simple-call-tree-export-org-tree'.
+;;  `simple-call-tree-org-todo-state'
+;;    TODO state to add to toplevel headers when exporting org tree using `simple-call-tree-export-org-tree'.
+;;  `simple-call-tree-jump-ring-max'
+;;    Maximum number of elements in `simple-call-tree-jump-ring', before old elements are removed.
 
 ;;
 ;; All of the above can customized by:
 ;;      M-x customize-group RET simple-call-tree+ RET
 ;;
-
-;;; Change log:
-;;	
-;; 2012/11/01
-;;      * First released.
-;; 
 
 ;;; Acknowledgements:
 ;;
@@ -172,6 +190,7 @@ The children of each header will be sorted separately."
   :group 'simple-call-tree
   :type '(choice (const :tag "Sort by position" position)
                  (const :tag "Sort alphabetically" alphabet)
+                 (const :tag "Sort by number of children" numchild)
                  (const :tag "Sort by face" face)))
 
 (defcustom simple-call-tree-default-maxdepth 2
@@ -283,6 +302,12 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   :type '(choice (const :tag "internal radio link" radio)
                  (const :tag "link to source code" source)))
 
+(defcustom simple-call-tree-org-todo-state "TODO"
+  "TODO state to add to toplevel headers when exporting org tree using `simple-call-tree-export-org-tree'."
+  :group 'simple-call-tree
+  :type '(choice (const :tag "None" nil)
+                 (string :tag "Value")))
+
 ;; Saves a little typing
 (defmacro whilelast (&rest forms)
   `(while (progn ,@forms)))
@@ -318,6 +343,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "s a") 'simple-call-tree-sort-alphabetically)
   (define-key simple-call-tree-mode-map (kbd "s p") 'simple-call-tree-sort-positionally)
   (define-key simple-call-tree-mode-map (kbd "s f") 'simple-call-tree-sort-by-face)
+  (define-key simple-call-tree-mode-map (kbd "s c") 'simple-call-tree-sort-by-num-children)
   (if (featurep 'outline-magic)
       (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-cycle)
     (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-toggle-children))
@@ -356,10 +382,11 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "m") 'simple-call-tree-bookmark)
   (define-key simple-call-tree-mode-map (kbd "%") 'simple-call-tree-query-replace)
   (define-key simple-call-tree-mode-map (kbd "C-%") 'simple-call-tree-query-replace-regexp)
+  (define-key simple-call-tree-mode-map (kbd "C-M-x") 'simple-call-tree-eval-defun)
+  (define-key simple-call-tree-mode-map (kbd "!") 'simple-call-tree-apply-command)
   (define-key simple-call-tree-mode-map (kbd "M-p") 'simple-call-tree-jump-prev)
   (define-key simple-call-tree-mode-map (kbd "M-n") 'simple-call-tree-jump-next)
   (define-key simple-call-tree-mode-map (kbd "w") 'widen)
-  (define-key simple-call-tree-mode-map (kbd "C-M-x") 'simple-call-tree-eval-defun)
   (define-key simple-call-tree-mode-map (kbd "R") 'simple-call-tree-build-tree)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
@@ -373,14 +400,19 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :key "v"]
       ["Visit Function At Point" simple-call-tree-visit-function
        :help "Visit the function at point"]
-      ["Replace String In Function At Point..." simple-call-tree-query-replace
-       :help "Perform query-replace on the function at point"]
-      ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
-       :help "Perform query-replace-regexp on the function at point"]
-      ["Evaluate function at point" simple-call-tree-eval-defun
-       :help "Evaluate the function at point. With a prefix arg instrument it for debugging."]
-      ["Bookmark Current Position..." simple-call-tree-bookmark
-       :help "Create a bookmark for the position corresponding to the branch at point"]
+      ["Operate on function at point..."
+       (keymap "Operate"
+        (queryreplace menu-item "Replace String..." simple-call-tree-query-replace
+                      :help "Perform query-replace on the function at point")
+        (queryreplaceregex menu-item "Replace Regexp..." simple-call-tree-query-replace-regexp
+                           :help "Perform query-replace-regexp on the function at point")
+        (eval menu-item "Evaluate" simple-call-tree-eval-defun
+              :help "Evaluate the function at point. With a prefix arg instrument it for debugging.")
+        (bookmark menu-item "Add Bookmark" simple-call-tree-bookmark
+                  :help "Create a bookmark for the position corresponding to the function at point")
+        (arbitrary menu-item "Apply Arbitrary Command..." simple-call-tree-apply-command
+                   :help "Apply an arbitrary elisp command to the function at point"))]
+      ["---" "---"]
       ["Jump To Branch At Point" simple-call-tree-jump-to-function
        :help "Goto the toplevel branch for the function at point"]
       ["Jump To Branch..." ,(lambda nil (interactive) (setq current-prefix-arg 1)
@@ -393,6 +425,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :help "Goto previous function in jump ring"]
       ["Next Jump" simple-call-tree-jump-next
        :help "Goto next function in jump ring"]
+      ["---" "---"]
       ["Parent Branch" simple-call-tree-move-up
        :help "Goto the parent branch of this branch"]
       ["Next Branch" simple-call-tree-move-next
@@ -405,6 +438,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
       ["Previous Branch Same Level" simple-call-tree-move-prev-samelevel
        :help "Goto the previous branch at the same level as this one"
        :key "P"]
+      ["---" "---"]
       ["Cycle Tree Visibility" outline-cycle
        :help "Cycle through different tree visibility states"
        :visible (featurep 'outline-magic)
@@ -437,17 +471,20 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :help "Invert the tree"
        :style toggle
        :selected simple-call-tree-inverted]
-      ["Sort Tree..." (keymap
-                       "Sort"
+      ["Sort Tree..." (keymap "Sort"
                        (alpha menu-item "Alphabetically" simple-call-tree-sort-alphabetically)
                        (position menu-item "Positionally" simple-call-tree-sort-positionally)
+                       (numchild menu-item "Number of children" simple-call-tree-sort-by-num-children)
                        (face menu-item "By face" simple-call-tree-sort-by-face))]
       ["Change Depth..." simple-call-tree-change-maxdepth
        :help "Change the depth of the tree"]
       ["Toggle Narrowing" simple-call-tree-toggle-narrowing
-       :help "Toggle between narrowed/wide buffer"
+       :help "Toggle between narrow/wide buffer"
        :style toggle
-       :selected (simple-call-tree-buffer-narrowed-p)]))
+       :selected (simple-call-tree-buffer-narrowed-p)]
+      ["---" "---"]
+      ["Export As Org-Tree" simple-call-tree-export-org-tree
+       :help "Export the call tree to an org-mode buffer"]))
   (setq mode-line-format
         (append
          (subseq mode-line-format 0
@@ -458,6 +495,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
                                        (case simple-call-tree-current-sort-order
                                          (position "by position|")
                                          (alphabet "alphabetically|")
+                                         (numchild "number of children|")
                                          (face "by face|")))
                                simple-call-tree-current-maxdepth)))
          (subseq mode-line-format
@@ -687,6 +725,7 @@ listed in `simple-call-tree-buffers' will be used."
   (case simple-call-tree-default-sort-method
     (alphabet (simple-call-tree-sort-alphabetically))
     (position (simple-call-tree-sort-positionally))
+    (numchild (simple-call-tree-sort-by-face))
     (face (simple-call-tree-sort-by-face)))
   (setq simple-call-tree-inverted nil)
   (simple-call-tree-list-callers-and-functions)
@@ -733,8 +772,7 @@ By default FUNCLIST is set to `simple-call-tree-alist'."
     (setq simple-call-tree-current-maxdepth (max maxdepth 1)
           buffer-read-only t)))
 
-(defun* simple-call-tree-export-org-tree (&optional (maxdepth simple-call-tree-current-maxdepth)
-                                                    (funclist simple-call-tree-alist))
+(defun* simple-call-tree-export-org-tree nil
   "Create an org-tree from the current call tree and put it in an org buffer.
 The style of links used for child headers is controlled by `simple-call-tree-org-link-style'."
   (interactive)
@@ -743,13 +781,14 @@ The style of links used for child headers is controlled by `simple-call-tree-org
     (setq buffer-read-only nil)
     (erase-buffer)
     (org-mode)
-    (let ((maxdepth (max maxdepth 1)))
-      (dolist (item funclist)
-        (simple-call-tree-list-callees-recursively
-         (car item)
-         maxdepth 1 funclist
-         simple-call-tree-inverted
-         'simple-call-tree-insert-org-header)))
+    (dolist (item simple-call-tree-alist)
+      (simple-call-tree-list-callees-recursively
+       (car item)
+       simple-call-tree-current-maxdepth
+       1
+       simple-call-tree-alist
+       simple-call-tree-inverted
+       'simple-call-tree-insert-org-header))
     (org-update-radio-target-regexp)))
 
 (defun* simple-call-tree-list-callees-recursively (item &optional (maxdepth 2)
@@ -794,9 +833,12 @@ This is a recursive function, and you should not need to set CURDEPTH."
              (eq simple-call-tree-org-link-style 'radio))
         (insert stars " " fname "\n")
       (with-current-buffer (marker-buffer marker)
-        (goto-char (marker-position marker))
-        (call-interactively 'org-store-link))
-      (insert stars " [[" (substring-no-properties (caar org-stored-links)) "][" fname "]]\n")
+        (save-excursion
+          (goto-char (marker-position marker))
+          (call-interactively 'org-store-link)))
+      (insert stars " " (if (and simple-call-tree-org-todo-state (= curdepth 1))
+                            (concat simple-call-tree-org-todo-state " ") "")
+              "[[" (substring-no-properties (caar org-stored-links)) "][" fname "]]\n")
       (if (eq simple-call-tree-org-link-style 'radio)
           (insert "<<<" fname ">>>\n"))
       (setq org-stored-links (cdr org-stored-links)))))
@@ -865,6 +907,18 @@ narrowing."
         (sort simple-call-tree-inverted-alist
               (lambda (a b)
                 (funcall predicate (car a) (car b))))))
+
+(defun simple-call-tree-sort-by-num-children nil
+  "Sort the branches in the *Simple Call Tree* buffer by the number of children."
+  (interactive)
+  (setq simple-call-tree-alist
+        (sort simple-call-tree-alist
+              (lambda (a b) (> (length a) (length b)))))
+  (setq simple-call-tree-inverted-alist
+        (sort simple-call-tree-inverted-alist
+              (lambda (a b) (> (length a) (length b)))))
+  (simple-call-tree-restore-state (simple-call-tree-store-state))
+  (setq simple-call-tree-current-sort-order 'numchild))
 
 (defun simple-call-tree-sort-alphabetically nil
   "Sort the functions in the *Simple Call Tree* buffer alphabetically.
@@ -1161,38 +1215,45 @@ When narrowed, the buffer will be narrowed to the subtree at point."
   (with-current-buffer "*Simple Call Tree*"
     (simple-call-tree-restore-state (simple-call-tree-store-state))))
 
-(defun simple-call-tree-query-replace (func &optional arg)
-  "Perform query-replace on function FUNC.
-If called interactively the function at point in the *Simple Call Tree*
-buffer will be used.
-If ARG is non-nil perform query-replace-regexp instead."
-  (interactive (list (simple-call-tree-get-function-at-point)))
+(defun* simple-call-tree-apply-command (cmd &optional (func (simple-call-tree-get-function-at-point)))
+  "Apply command CMD on function FUNC.
+By default FUNC is set to the function at point in the *Simple Call Tree* buffer.
+The command CMD will be called interactively after switching to the source code buffer,
+and narrowing the buffer around FUNC."
+  (interactive (list (read-command "Command: ")
+                     (simple-call-tree-get-function-at-point)))
   (let ((buf (marker-buffer
               (second (car (assoc-if (lambda (x) (string= (car x) func))
                                      simple-call-tree-alist))))))
     (switch-to-buffer-other-window buf)
     (simple-call-tree-narrow-to-function func)
-    (if arg
-        (call-interactively 'query-replace-regexp)
-      (call-interactively 'query-replace))
+    (call-interactively cmd)
     (widen)
     (switch-to-buffer-other-window "*Simple Call Tree*")))
 
-(defun simple-call-tree-query-replace-regexp (func)
-  "Perform query-replace-regexp on function FUNC."
-  (interactive (list (simple-call-tree-get-function-at-point)))
-  (simple-call-tree-query-replace func t))
+(defun simple-call-tree-query-replace nil
+  "Perform query-replace on the function at point in the *Simple Call Tree* buffer.
+This just calls `simple-call-tree-apply-command' with the `query-replace' command."
+  (interactive)
+  (simple-call-tree-apply-command 'query-replace))
+
+(defun simple-call-tree-query-replace-regexp nil
+  "Perform `query-replace-regexp' on the function at point in the *Simple Call Tree* buffer.
+This just calls `simple-call-tree-apply-command' with the `query-replace-regexp' command."
+  (interactive)
+  (simple-call-tree-apply-command 'query-replace-regexp))
+
+(defun simple-call-tree-eval-defun (&optional arg)
+  "Evaluate the function/variable/struct corresponding to the branch at point.
+With a prefix arg, and if the form is a function, instrument it for debugging with edebug."
+  (interactive)
+  (if arg (simple-call-tree-apply-command 'edebug-defun)
+    (simple-call-tree-apply-command 'eval-defun)))
 
 (defun simple-call-tree-bookmark nil
   "Set a bookmark at the position corresponding to the branch at point."
   (interactive)
-  (let* ((funmark (get-text-property (point) 'location))
-         (buf (and funmark (marker-buffer funmark)))
-         (pos (and funmark (marker-position funmark))))
-    (if funmark
-        (with-current-buffer buf
-          (goto-char pos)
-          (call-interactively 'bookmark-set)))))
+  (simple-call-tree-apply-command 'bookmark-set))
 
 (defun simple-call-tree-delete-other-windows nil
   "Make the *Simple Call Tree* buffer fill the frame."
@@ -1202,18 +1263,6 @@ If ARG is non-nil perform query-replace-regexp instead."
     (fm-unhighlight 1)
     (setq fm-working nil))
   (delete-other-windows))
-
-(defun simple-call-tree-eval-defun (&optional arg)
-  "Evaluate the function/variable/struct corresponding to the branch at point.
-With a prefix arg, and if the form is a function, instrument it for debugging with edebug."
-  (interactive "P")
-  (let* ((funmark (get-text-property (point) 'location))
-         (buf (and funmark (marker-buffer funmark)))
-         (pos (and funmark (marker-position funmark))))
-    (if funmark
-        (with-current-buffer buf
-          (goto-char pos)
-          (eval-defun arg)))))
 
 (unless (not (featurep 'fm))
   (add-to-list 'fm-modes '(simple-call-tree-mode simple-call-tree-visit-function))
