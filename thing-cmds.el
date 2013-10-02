@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Sun Sep  8 11:41:11 2013 (-0700)
+;; Last-Updated: Wed Oct  2 09:41:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 721
+;;     Update #: 726
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -66,6 +66,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/02 dadams
+;;     thgcmd-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;; 2013/09/08 dadams
 ;;     next-visible-thing: Use point-max if region is active but empty.
 ;; 2013/07/22 dadams
@@ -475,9 +477,11 @@ the bounds of THING.  Return nil if no such THING is found."
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-        ;; $$$$$$ Seems that < is better than <=, at least for `icicle-search-thing':
-        ;; $$$$$$ for XML elements and lists, <= misses the first one.
-        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (< (cadr thg+bds) (point))))
+        ;;        Seems that < is better than <=, at least for `icicle-search-thing':
+        ;;        for XML elements and lists, <= misses the first one.
+        ;; $$$$$$ No, I don't think that is the case (anymore).
+        ;;        <= is OK and is needed for interactive use of `next-visible-thing'.  
+        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
