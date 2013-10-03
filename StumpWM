@@ -25,36 +25,20 @@ Multi-threading is available in SBCL, though [[http://bbs.archlinux.org/viewtopi
 This is an example of how you can use stumpwm commands to call emacs functions.
 {{{
 (defcommand wanderlust () ()
-	    (emacs)
-	    (send-meta-key (current-screen) (kbd "M-x"))
-	    (window-send-string "wl")
-	    (send-meta-key (current-screen) (kbd "RET")))
+  (emacs)
+  (send-meta-key (current-screen) (kbd "M-x"))
+  (window-send-string "wl")
+  (send-meta-key (current-screen) (kbd "RET")))
 }}}
 
 ==Loading swank from a quicklisp installation==
 
-If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank:
+If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank, by replacing the first two lines of code with:
 
 {{{
 ;;
-;; Load swank using quicklisp.
-;;
 (ql:quickload :swank)
 ;;
-;; Now define the swank command.
-;;
-(defcommand swank () ()
-            "Start the swank server."
-            (setf stumpwm:*top-level-error-action* :break)
-            (swank:create-server :port 4005
-                                 :style swank:*communication-style*
-                                 :dont-close t)
-            (echo-string (current-screen) 
-            "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
-;;
-;; Invoke the swank command.
-;;
-(swank)
 }}}
 
 ==Security Issues==
