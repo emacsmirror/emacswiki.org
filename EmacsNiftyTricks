@@ -262,6 +262,7 @@ RET##', but not all systems have `uniq'.
 * Delete all lines matching a regex: `flush-lines' -- JonAquino
 * `count-matches' -- JonAquino
 * Replace tabs with spaces and vice versa:  `untabify', `tabify' -- JonAquino  But do not use this with unknown (bad written) code because it will also replace inside string literals!
+One reason why there should not be literal tabs inside strings - use \t
 
 [new:DrewAdams:2009-01-28 21:34 UTC]
 :: `untabify' acts only on the region, so that is typically not a problem. The better guideline is to not use it on a region that contains TABs other than as insignificant whitespace. IOW, it is not a proble of badly written code but of knowing what the code is/does before you act on it. -- DrewAdams
