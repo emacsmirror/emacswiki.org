@@ -179,12 +179,4 @@ Shouldn't be difficult to add commands for reporting statistics aswell, but I do
 Thanks! I'll update my Lisp:syslog-mode.el immediately. :-) -- ChristianGiménez
 
 ----
-
-= Identica Public Posts =
-I have just connected my [https://identi.ca/cnngimenez Identi.ca account] with my [https://joindiaspora.com/u/cnngimenez Diáspora] thanks to [http://campanilla.info/ Campanilla].
-
-<rss https://identi.ca/api/statuses/user_timeline/518740.rss>
-
-
-----
 CategoryHomepage
