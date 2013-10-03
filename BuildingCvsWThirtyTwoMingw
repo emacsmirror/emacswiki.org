@@ -40,7 +40,7 @@ and a cmd file to automate it all from checkout CVS to installation.
 I have found the guide below for images support very good so I have shamelessly included it in my guide above.
 
 * Can you please give the link to the guide?
-** http://ourcomments.org/Emacs/w32-build-emacs.html
+** http://ourcomments.org/Emacs/w32-build-emacs.html (obsolete)
 
 = A guide for images support =
 
