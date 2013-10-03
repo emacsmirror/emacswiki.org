@@ -33,71 +33,28 @@ This is an example of how you can use stumpwm commands to call emacs functions.
 
 ==Loading swank from a quicklisp installation==
 
-If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  Given /path/to/quicklisp/installation (in my case this is /home/consultant/quicklisp but your mileage will be different,) it is possible to auto-detect the correct path.  Use this code instead of that in the SLIME section.  If, for some reason, slime is not installed, the code will not try to load it!
+If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank:
 
 {{{
 ;;
-;; A helper function:
+;; Load swank using quicklisp.
 ;;
-(defun split-by-one-space (string)
-    "Returns a list of substrings of string
-divided by ONE space each.
-Note: Two consecutive spaces will be seen as
-if there were an empty string between them."
-    (loop for i = 0 then (1+ j)
-          as j = (position #\Space string :start i)
-          collect (subseq string i j)
-       while j))
+(ql:quickload :swank)
 ;;
-;; Set the path to the quicklisp installation:
+;; Now define the swank command.
 ;;
-(defvar *quicklisp-installation-directory*
-  "/path/to/quicklisp/installation"
-  "The base of the quicklisp installation")
+(defcommand swank () ()
+            "Start the swank server."
+            (setf stumpwm:*top-level-error-action* :break)
+            (swank:create-server :port 4005
+                                 :style swank:*communication-style*
+                                 :dont-close t)
+            (echo-string (current-screen) 
+            "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 ;;
-;; Set path to installation data file:
+;; Invoke the swank command.
 ;;
-(defvar *quicklisp-data-file*
-  (concat *quicklisp-installation-directory* "/dists/quicklisp/releases.txt")
-  "Release and version data for quicklisp packages.")
-;;
-;; Set path to quicklisp software directory:
-;;
-(defvar *quicklisp-packages-directory*
-  (concat *quicklisp-installation-directory* "/dists/quicklisp/software")
-    "Path to the quicklisp packages")
-;;
-;; Auto-detect /path/to/slime/swank-loader.lisp
-;; 
-(defvar *swank-loader-path* nil
-  "The path to swank-loader.lisp")
-;;
-(setf *swank-loader-path*
-      (with-open-file (stream *quicklisp-data-file*)
-	(loop
-	   for line = (read-line stream nil :finished)
-	   until (eq line :finished)
-	   for data-list = (split-by-one-space line)
-	   when (equal "slime" (first data-list)) do
-	     (return (concat
-		      *quicklisp-packages-directory*
-		      "/" (sixth data-list)
-		      "/swank-loader.lisp")))))
-;;
-;; Now load swank-loader.lisp and carry on as before
-;; But _ONLY_ if swank has been detected.
-;;
-(when *swank-loader-path*
-      (load *swank-loader-path*)
-      (swank-loader:init)
-      (defcommand swank () ()
-         (setf stumpwm:*top-level-error-action* :break)
-         (swank:create-server :port 4005
-                              :style swank:*communication-style*
-                              :dont-close t)
-         (echo-string (current-screen) 
-	              "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
-      (swank))
+(swank)
 }}}
 
 ==Security Issues==
