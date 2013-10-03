@@ -1,5 +1,7 @@
 Saving session information in Emacs is made possible with GIT:desktop.el. More information is available from [[Manual:Saving Emacs Sessions]].
 
+There are many other packages providing similar functionality. See SessionManagement for alternatives.
+
 == Loading a Desktop Saved from a Previous Session at Startup ==
 
 Desktop will load, at startup, the buffers you were editing when you last quit Emacs.
@@ -299,12 +301,6 @@ Here's what I do to solve that problem:
     (loop for mode in minor-mode-list do (add-to-list 'desktop-minor-mode-table (list mode nil)))
 
 Be sure to require all of the minor modes you use, and put this at the bottom!
-
-----
-
-
-
-See SessionManagement for other similar packages.
 
 ----
 CategoryDotEmacs CategoryPersistence
