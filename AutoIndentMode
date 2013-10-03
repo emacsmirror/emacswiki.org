@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.107
+* <b>Version </b> --  0.108
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -370,6 +370,7 @@ to the major mode's conventions.
 === Internal Variables ===
 == History ==
 
+* <b>03-Oct-2013 </b> --   Set the indent variables globally (should fix Issue #27). Also makes these variables stick after auto-indent is turned off. (Matthew L. Fidler)
 * <b>25-Aug-2013 </b> --   Upload and change version (Matthew L. Fidler)
 * <b>16-Aug-2013 </b> --   Changed last-command to this-command. Now the new yank engine actually runs. (Issue #6 and Issue #23) (Matthew L. Fidler)
 * <b>16-Aug-2013 </b> --   Changed auto-indent's yank engine to be in the post-command-hook. May fix Issue #24 and Issue #6 (Matthew L. Fidler)
