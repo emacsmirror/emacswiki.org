@@ -2,3 +2,13 @@ When I use the save-desktop-mode, the current buffer when I open emacs (the firs
 
 -- Peregring-lk 2013-07-26 07:52 UTC
 
+
+----
+
+The article ends up with this line:
+    See SessionManagement for other similar packages.
+
+I would suggest to put it at the beginning of the article.
+
+-- JackDuthen 2013-10-03 14:08 UTC
+
