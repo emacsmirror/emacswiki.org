@@ -128,6 +128,13 @@ You can use wl as a NNTP client, and post to usenet newsgroups. In the folder vi
 -gmane.mail.wanderlust.general@news.gmane.org
 }}}
 
+=== Problems ===
+
+* I have the "Cannot generate valid FQDN" message on the minibuffer when sending. 
+
+Check the variable `wl-local-domain' and `stmp-local-domain'. It should have a real domain, at least "localhost". See the previous example.
+
+
 == Getting Help ==
 Please read the Info Manual carefully:  (<code>M-x info RET >> C-s Wanderlust</code>). 
 as there is an enormous wealth of knowledge and variables to tweak. The most active channel of wanderlust discussion (in English) 
