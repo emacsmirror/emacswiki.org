@@ -89,10 +89,14 @@ My emacs lisp skills are feeble, but how does this look?
 It seems to work for me with both regular files and file you visited with tramp. -- BryanMurdock
 
 [new]
-I like this. Also trying it with these settings, so that everything is just always saved. Seems to work so far.
+I like this. Also tried it with these settings, so that everything is just always saved.
 
     (setq auto-save-interval 1
           auto-save-timeout 1)
+
+This works. However, I find it very annoying that the saving message is displayed every time I do anything. Thinking about it, continuous save should be silent. Also, it would be nice if there was a way to save a checkpoint that you could come back to. I often go off on an editing tangent, and then either undo until the "dirty" flag is cleared or just "M-x revert-buffer" to go back to before the madness - neither approach works when everything is always saved. I already use versioned backups in a separate directory; maybe the "checkpoint" could just be one of those. Bind "C-x C-s" to create a versioned backup (since manual saving is not needed) and provide a way to step back and forth through versions.
+
+So: 1. Silent continuous save;  2. A function to create a versioned backup on demand - bound to "C-x C-s";  3. A function or functions to step forward and backward through versioned backups. Anyone have thoughts on how to do these things, or if they are even the correct goal?
 
 [new]
 Automatically save your changes after an customizable interval. Can be selectively applied some modes.
