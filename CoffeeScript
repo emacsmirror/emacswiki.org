@@ -5,7 +5,7 @@
 * [[http://ozmm.org/posts/coffee_mode.html|some notes on CoffeeMode]]
 * https://github.com/ajkavanagh/coffeelintnode - lint, for Coffeescript - well, for [[http://www.coffeelint.org/|Coffee Lint]]
 * https://github.com/purcell/flymake-coffee - a flymake handler for syntax-checking Coffeescript source code using coffeelint or coffee.
-
+* http://project.catx.me/ac-coffee - CoffeeScript auto complete source
 
 ----
 CategoryJavaScript
