@@ -1,12 +1,12 @@
 [[es:ModoOrg]]
 [[es:ModoOrg]]
-[[zh:Org-Mode (中文)]]
+[[zh:Org-Mode (ä¸­æ)]]
 [:overview]
 == Overview ==
 
 Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
-Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. [http://gnu.manticore.es/manual-org-emacs El Manual de Org], traduccioón al español para 23.1.
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. [http://gnu.manticore.es/manual-org-emacs El Manual de Org], traduccioÃ³n al espaÃ±ol para 23.1.
 
 [:features]
 === Features ===
@@ -50,7 +50,7 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
   OrgMode files, images, and source code, if desired).
 
 === new exporter/publish framework ===
-* [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
+* [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziouâ¦''
 * For instructions on how to upgrade from the previous Org-mode exporter, see the [http://orgmode.org/worg/org-8.0.html upgrade guide.]
 
 
@@ -200,6 +200,78 @@ To open a link with a program other than the default(e.g. modify a pdf rather th
     ))
 </pre>
 
+=== Sort a column in an Org Table ===
+
+Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines based on a column. But sometime one need to sort just one column :
+<pre>
+
+(defun org-table-sort-column ()
+  "Sort table column at point."
+
+  (interactive)
+  (let* ((thisline (org-current-line))
+	 (thiscol (org-table-current-column))
+	 (otc org-table-overlay-coordinates)
+	 beg end bcol ecol tend tbeg column lns pos)
+    (when (equal thiscol 0)
+      (if (org-called-interactively-p 'any)
+	  (setq thiscol
+		(string-to-number
+		 (read-string "Use column N for sorting: ")))
+	(setq thiscol 1))
+      (org-table-goto-column thiscol))
+    (org-table-check-inside-data-field)
+    (if (org-region-active-p)
+	(progn
+	  (setq beg (region-beginning) end (region-end))
+	  (goto-char beg)
+	  (setq column (org-table-current-column)
+		beg (point-at-bol))
+	  (goto-char end)
+	  (setq end (point-at-bol 2)))
+      (setq column (org-table-current-column)
+	    pos (point)
+	    tbeg (org-table-begin)
+	    tend (org-table-end))
+      (if (re-search-backward org-table-hline-regexp tbeg t)
+	  (setq beg (point-at-bol 2))
+	(goto-char tbeg)
+	(setq beg (point-at-bol 1)))
+      (goto-char pos)
+      (if (re-search-forward org-table-hline-regexp tend t)
+	  (setq end (point-at-bol 1))
+	(goto-char tend)
+	(setq end (point-at-bol))))
+    (setq beg (move-marker (make-marker) beg)
+	  end (move-marker (make-marker) end))
+    (untabify beg end)
+    (goto-char beg)
+    (org-table-goto-column column)
+    (skip-chars-backward "^|")
+    (setq bcol (point))
+    (goto-char end)
+    (previous-line)
+    (org-table-goto-column column)
+    (skip-chars-forward "^|")
+    (setq ecol (point))
+    (org-table-copy-region bcol ecol nil)
+    (setq lns (mapcar (lambda (x) (cons 
+				   (org-sort-remove-invisible 
+				    (substring-no-properties x) )
+				   x))
+		      ( mapcar 'car org-table-clip)))    
+    (setq lns (org-do-sort lns "Column" ))
+
+    (setq org-table-clip (mapcar 'list (mapcar 'cdr lns)))
+    (goto-char beg)
+    (org-table-goto-column column)
+    (org-table-paste-rectangle)
+    (org-goto-line thisline)
+    (org-table-goto-column thiscol)
+    (when otc (org-table-toggle-coordinate-overlays))
+    (message "%d element sorted in column %d" (length lns) column)))
+
+</pre>
 === Editing Wikipedia ===
 
 Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
