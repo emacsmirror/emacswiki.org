@@ -8,3 +8,10 @@ my questions are :
 
 -- camj421 2013-10-04 07:34 UTC
 
+
+----
+
+You cannot "compile" Python code using Emacs. You can edit Python code. Any file ending in ".py" is automatically edited in Python Mode.
+
+-- AlexSchroeder 2013-10-04 11:19 UTC
+
