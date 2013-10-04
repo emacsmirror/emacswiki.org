@@ -1,0 +1,10 @@
+i want to use emacs as a compiler for python.  i dont want emacs for anything else but this.  whenever i open emacs, i want it to just be a compiler for python.  i have been instructed to add it to my filepath.
+
+my questions are :
+
+1.  how do i add python-mode.el (which is a file folder containing a bunch of stuff that i dont know anything about) to the filepath?
+
+2.  is it possible to open emacs immediately to something that can compile python code?
+
+-- camj421 2013-10-04 07:34 UTC
+
