@@ -100,6 +100,10 @@ Hmm, seemed fine, but it wouldn't work for me. I just got a black non blinking p
 
 I still like to see a fix to the above though and avoid setting my terminal to a dumber one than what I got. 
 
+
+----
+
+I have tried everything on this page except the /proc trick and nothing worked.  This is a serious bug.
 ----
 Two cursors
 
