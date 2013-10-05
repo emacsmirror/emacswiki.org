@@ -23,6 +23,7 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 == Code Navigation And Inspection ==
 
+* [[ESSdescribe-object-at-point|Describe object at point]] - [part of ESS]
 * [[ESSTags-for-directory|ess-build-tags-for-directory]] - [part of ESS]
 
 * [[https://github.com/vitoshka/imenu-anywhere|imenu-anywhere]] -- ido and helm imenu tag selection across all buffers with the same mode
