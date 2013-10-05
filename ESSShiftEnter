@@ -49,6 +49,9 @@ This is quite useful, saving keystrokes, especially starting R.
 
 -- FelipeCsaszar
 
+----
+
+Exactly the same functionality is available on `C-RET' (`ess-eval-region-or-line-and-step') in ESS v.12.09 and higher.
 
 ----
 EmacsSpeaksStatistics
