@@ -1,0 +1,10 @@
+C-c C-e C-t runs the command ess-build-tags-for-directory
+
+Ask for directory and tag file and build tags for current dialect.
+
+Afterwards, use M-. to navigate to a tag. M-x `visit-tags-table' to
+append/replace the currently used tag table.
+
+If prefix is given, force tag generation based on imenu. Might be
+useful when different language files are also present in the
+directory (.cpp, .c etc).
