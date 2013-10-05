@@ -1,1 +1,1 @@
-Bound to <pre>C-c C-d C-e</pre> this commands pops an ellectric buffer describing the object at point. You can continue to press <pre>C-e</pre> in order to cycle through the useful summaries of the object. You can define your own summaries by customizing {{{ess-R-describe-object-at-point-commands}}}
+Bound to `C-c C-d C-e' his commands pops an electric buffer describing the object at point. You can continue to press `C-e' in order to cycle through the useful summaries of the object. You can define your own summaries by customizing `ess-R-describe-object-at-point-commands'
