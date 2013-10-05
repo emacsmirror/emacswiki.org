@@ -12,4 +12,4 @@ The <code>/etc/mailcap</code> file is the usual way under Unix to associate a MI
 <code>mailcap.el</code> also parses the <code>/etc/mime.types</code> file which maps filename extensions to mime types.  This can be used to establish the type for a file (or a default for it).  An email attachment or HTTP content will have a specified mime type rather than relying on a filename.
 
 ----
-CategoryMail
+CategoryMailAddons
