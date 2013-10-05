@@ -1,0 +1,15 @@
+The <code>/etc/mailcap</code> file is the usual way under Unix to associate a MIME type with programs which might view, print, create or edit such a part or file type.  Its format is specified by RFC 1524.  Things in Emacs related to mailcap include
+
+* [[Gnus]] <code>mailcap.el</code> -- parsing <code>/etc/mailcap</code>, and can be used separately
+* [[Lisp:extview.el]] -- run <code>mailcap.el</code> entry for a file
+* [[Lisp:mailcap-view.el]] -- run <code>mailcap.el</code> entry for a file
+* OrgMode <code>org-open-file</code> -- optionally run mailcap for external viewing of links
+
+* [[FLIM]] <code>mime-conf.el</code> -- parsing <code>/etc/mailcap</code>
+
+* [http://user42.tuxfamily.org/mailcap-mode/index.html mailcap-mode.el] -- major mode for editing <code>/etc/mailcap</code>
+
+<code>mailcap.el</code> also parses the <code>/etc/mime.types</code> file which maps filename extensions to mime types.  This can be used to establish the type for a file (or a default for it).  An email attachment or HTTP content will have a specified mime type rather than relying on a filename.
+
+----
+CategoryMail
