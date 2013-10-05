@@ -2,6 +2,8 @@
 
 I wrote a blog entry showing how to get a tooltip to show a summary of the object at point in an R source buffer.  I use this a lot for interactive data analysis. You can read about it and watch a screencast at http://www.sigmafield.org/2009/10/01/r-object-tooltips-in-ess/
 
+---
+This functionality was overtaken by the  builtin `ess-describe-object-at-point` which is bound to <kbd>C-c C-d C-e</kbd>. By default it displays the summary in an electric buffer,but you can can customise `ess-describe-at-point-method` to display in a tooltip if you want.
 
 
 ----
