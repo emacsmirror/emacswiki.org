@@ -80,6 +80,7 @@ Other Useful Modes:
 
 MIME for Emacs:
 
+* [[Mailcap]] -- <code>/etc/mailcap</code>
 * MetaMail, a Metamail interface for Emacs -- http://www.mit.edu/afs/sipb/contrib/emacs/elisp/metamail.el
 * MimeCompose -- http://ftp.xemacs.org/Attic/elisp/mime-compose.el
 * [[SEMI]] -- http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/elisp/SEMI/index.html.ja.iso-2022-jp
