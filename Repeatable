@@ -7,6 +7,8 @@ An example should make this clear: after advising kmacro-end-and-call-macro
 time with `C-x e' and with only `e' subsequently. After you press another
 key, things are back to normal.
 
+A clean implementation for emacs 24.x can be found on https://github.com/leoliu/repeatable.el
+
 Get it here: http://furius.ca/pubcode/
 
 ----
