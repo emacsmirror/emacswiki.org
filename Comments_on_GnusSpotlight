@@ -1,0 +1,18 @@
+As I keep my mails on an external hard disk, I've had to set `gnus-spotlight-mail-spool' to the value of my `nnml-directory'.
+
+I had created a new server in the Server buffer using the following:
+
+{{{
+(nnml "mail"
+      (nnml-directory "/Volumes/Extern/Archives/Mail")
+      (nnml-active-file "/Volumes/Extern/Archives/Mail/active"))
+}}}
+
+Thus, the setting I needed was:
+
+{{{
+(setq gnus-spotlight-mail-spool "/Volumes/Extern/Archives/Mail")
+}}}
+
+-- AlexSchroeder 2013-10-06 20:19 UTC
+
