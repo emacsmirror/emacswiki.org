@@ -1,0 +1,5 @@
+I am not a very active emacs user, but I've used emacs on or off in the last decade or so. I am an intermediate elisp user - and that is being generous. These days I am moving more and more of my day to day tasks to emacs. I am hoping to replace eclipse altoghether and start using emacs for java development one day. :)
+
+My .emacs.d can be found at [https://github.com/vhallac/.emacs.d my github page].
+
+I am the author of the [https://github.com/vhallac/gradle-el gradle library], but I don't use (and hence maintain) it any more. I also contributed to other projects, which are available on my github pages.
