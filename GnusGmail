@@ -115,6 +115,17 @@ follows:
     ;; Make Gnus NOT ignore [Gmail] mailboxes
     (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
+====Adaptive Scoring in the [Gmail] folders====
+
+There is a bug in Gnus v5.13 that prevent adaptive scoring to be used in [Gmail] folders. The ADAPT files are created and updated, but scores are not adjusted.
+
+If you want to use adaptive scores in these folders, a simple work-around is to define nnheader-file-name-translation-alist as follows:
+
+    ;; Replace [ and ] with _ in ADAPT file names
+    (setq nnheader-file-name-translation-alist '((?[ . ?_) (?] . ?_)) )
+
+Note that this will not rename ADAPT files in your News directory. You need to either rename existing files or delete them.
+  
 ===Accessing Gmail via POP===
 
 "Retrieving mail with POP3 is supported over SSL/TLS and with <nowiki>StartTLS</nowiki>." (from GNUS-NEWS)
