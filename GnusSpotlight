@@ -1,1 +1,14 @@
-Lisp:gnus-spotlight.el
+Search mail with Gnus and Spotlight (Mac OS).
+
+Download the code from Lisp:gnus-spotlight.el.
+
+Installation:
+{{{
+(require 'gnus-spotlight)
+(gnus-spotlight-insinuate)
+}}}
+
+This makes `C-c C-n' in the Summary buffer search your mail using Spotlight and lets you browse the result in Gnus.
+
+----
+CategoryGnus
