@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct  4 16:33:20 2013 (-0700)
+;; Last-Updated: Sun Oct  6 10:23:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3124
+;;     Update #: 3163
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -129,7 +129,8 @@
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
 ;;    `isearchp-noprompt-action-function', `isearchp-reg-beg',
 ;;    `isearchp-reg-end', `isearchp-replacement' (Emacs 22+),
-;;    `isearchp-update-post-hook', `isearchp-win-pt-line'.
+;;    `isearchp-win-pt-line', `isearch-update-post-hook' (Emacs
+;;    20-21).
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
@@ -157,10 +158,9 @@
 ;;  `isearch-toggle-invisible' - Respect `isearchp-toggle-option-flag'
 ;;                               Message.
 ;;  `isearch-toggle-word' - Message, and turn off regexp search.
-;;  `isearch-update' - Run `isearchp-update-post-hook' (Emacs 20-21).
-;;                   - Run `isearchp-noprompt-action-function',
-;;                     `isearchp-nomodify-action-hook' (Emacs 22+),
-;;                     and `isearchp-update-post-hook'.
+;;  `isearch-update' - Run `isearch-update-post-hook' (Emacs 20-21).
+;;                   - Run `isearchp-noprompt-action-function' and
+;;                     `isearchp-nomodify-action-hook' (Emacs 22+).
 ;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'.
 ;;
 ;;
@@ -281,9 +281,13 @@
 ;;
 ;;  * The value of variable `isearchp-noprompt-action-function' is a
 ;;    function that is invoked automatically, after you visit each
-;;    search hit.  It must accept the same arguments as
+;;    search hit.  The function must accept the same arguments as
 ;;    `isearchp-act-on-demand'.  It cannot use the minibuffer, but it
-;;    can modify buffer contents.
+;;    can modify buffer contents.  The variable is reset to `nil' when
+;;    you quit Isearch.  As an example of use, command
+;;    `isearchp-replace-on-demand' with a negative prefix arg sets
+;;    this to `isearchp-replace-string', which causes automatic
+;;    replacement each time you visit a search hit.
 ;;
 ;;  * Hook `isearchp-nomodify-action-hook' (Emacs 22+ only) is also
 ;;    run after each search visit.  Its functions also must accept the
@@ -465,6 +469,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/10/06 dadams
+;;     Define isearch-update-post-hook only if not already defined.
+;;     isearchp-update-post-hook -> isearch-update-post-hook.
+;;     isearchp-replace-on-demand: Use <, not <= (typo).
 ;; 2013/10/03 dadams
 ;;     Added: isearchp-nomodify-action-hook, isearchp-noprompt-action-function,
 ;;            isearchp-on-demand-action-function, isearchp-act-on-demand, isearchp-replace-on-demand,
@@ -783,6 +791,7 @@
 (defvar isearch-wrap-function)           ; In `isearch.el'.
 (defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
+(defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
 (defvar isearchp-replacement)            ; Here (Emacs 22+).
 (defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
@@ -1052,9 +1061,10 @@ Set when Isearch is started.")
   (defvar isearchp-replacement ""
     "Replacement string used by `isearchp-replace-on-demand'."))
 
-(defvar isearchp-update-post-hook ()
-  "Function(s) called after each isearch command.
-More precisely, called at the end of `isearch-update'.")
+(unless (boundp 'isearch-update-post-hook)
+  (defvar isearch-update-post-hook ()
+    "Function(s) called after each Isearch command.
+More precisely, called at the end of `isearch-update'."))
 
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
@@ -1072,6 +1082,7 @@ This variable has an effect only for the current search.")
 (when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
   (defun isearchp-act-on-demand (arg)
     "Invoke the value of `isearchp-on-demand-action-function'.
+This suspends Isearch, performs the action, then reinvokes Isearch.
 By default, replace the search hit - see `isearchp-replace-on-demand'.
 Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
     (interactive "P")
@@ -1091,8 +1102,8 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
                                   ((nil)         t)
                                   (otherwise     'replace-last)))
   (if (and isearchp-drop-mismatch  (not (eq 'replace-last isearchp-drop-mismatch)))
-      (add-hook 'isearchp-update-post-hook 'isearchp-remove-mismatch)
-    (remove-hook 'isearchp-update-post-hook 'isearchp-remove-mismatch))
+      (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
+    (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
   (case isearchp-drop-mismatch
     (replace-last  (message "Automatic REPLACEMENT of last mismatched input is now ON"))
     ((nil)         (message "Automatic removal of mismatched input is now OFF"))
@@ -1106,9 +1117,9 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
                                         isearch-error
                                       isearch-invalid-regexp))
     (isearch-pop-state))
-  (remove-hook 'isearchp-update-post-hook 'isearchp-remove-mismatch)
+  (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
   (isearch-update)
-  (add-hook 'isearchp-update-post-hook 'isearchp-remove-mismatch))
+  (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -1742,14 +1753,15 @@ not necessarily fontify the whole buffer."
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
-;; Run `isearchp-nomodify-action-hook' after visiting (and highlighting) each search hit.
+;; Run `isearchp-nomodify-action-hook' if successful (Emacs 22+).
+;; Call `isearchp-noprompt-action-function' if successful.
 ;;
 (when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
   (defun isearch-update ()
     "This is called after every isearch command, to update the display.
 After visiting a search hit, run `isearchp-nomodify-action-hook'
  (Emacs 22+) and invoke `isearchp-noprompt-action-function'.
-At the end, run `isearchp-update-post-hook'."
+At the end, run `isearch-update-post-hook'."
     (unless (or unread-command-events  executing-kbd-macro)
       (unless (input-pending-p)
         (if (and (boundp 'isearch-message-function)  isearch-message-function)
@@ -1803,7 +1815,7 @@ At the end, run `isearchp-update-post-hook'."
       (isearch-lazy-highlight-new-loop))
     ;; Prevent point moving to end of composition when part of it has just been searched.
     (when (boundp 'disable-point-adjustment) (setq disable-point-adjustment  t))
-    (run-hooks 'isearchp-update-post-hook)))
+    (run-hooks 'isearch-update-post-hook)))
 
 (defun isearchp-barf-if-use-minibuffer ()
   (error "Tried to use minibuffer in `isearchp-noprompt-action-function'"))
@@ -1956,6 +1968,8 @@ Argument WORD, if t, means search for a sequence of words, ignoring
 (defun isearch-abort ()
   "Abort incremental search mode if searching is successful, signaling quit.
 Otherwise, revert to previous successful search and continue searching.
+Save last successful search string or regexp for later retrieval
+ during Isearch, using \\<isearch-mode-map>`\\[isearchp-retrieve-last-quit-search]'.
 Use `isearch-exit' to quit without signaling."
   (interactive)
   ;; (ding)  signal instead below, if quitting
@@ -2246,10 +2260,10 @@ Useful as the value of `isearchp-on-demand-action-function'."
                                                    "REPLACE WHEN VISIT.  Replacement: "
                                                  "Replacement: ")
                                                string)))
-    (if (not (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0)))
+    (if (not (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)))
         (isearchp-replace-string string beg end)
       (setq isearchp-noprompt-action-function 'isearchp-replace-string)))
-  
+
   (defun isearchp-replace-string (string beg end)
     "Replace STRING from BEG to END by `isearchp-replacement' or \"\"."
     (delete-region beg end)
@@ -2760,11 +2774,11 @@ This is used only for Transient Mark mode."
 
 (add-hook 'isearch-mode-end-hook 'isearchp-set-region)
 
-;; ADVISE `isearch-update' to run `isearchp-update-post-hook', in Emacs 20-21.
+;; ADVISE `isearch-update' to run `isearch-update-post-hook', in Emacs 20-21.
 (when (< emacs-major-version 22)
-  (defadvice isearch-update (after run-isearchp-update-post-hook activate)
-    "Run `isearchp-update-post-hook' at the end."
-    (run-hooks 'isearchp-update-post-hook)))
+  (defadvice isearch-update (after run-isearch-update-post-hook activate)
+    "Run `isearch-update-post-hook' at the end."
+    (run-hooks 'isearch-update-post-hook)))
 
 (defun isearchp-highlight-lighter ()
   "Update minor-mode mode-line lighter to reflect case sensitivity."
@@ -2785,7 +2799,7 @@ This is used only for Transient Mark mode."
       (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
     (error nil)))
 
-(add-hook 'isearchp-update-post-hook 'isearchp-highlight-lighter)
+(add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
