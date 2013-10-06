@@ -6,13 +6,40 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 == Screencasts about Emacs ==
 
+=== Lisp ===
+
+* MarcoBaringer [http://common-lisp.net/project/movies/movies/slime.mov shows SlimeMode] (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) (see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here)
+
+* another SlimeMode demo from the [http://www.unixuser.org/~euske/vnc2swf/ vnc2swf-site]: http://www.unixuser.org/~euske/vnc2swf/slime.html
+
+* Redshank by MichaelWeber is a helper for all CommonLisp hackers. You can see a demo at
+http://www.foldr.org/~michaelw/emacs/redshank/
+
+* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts.
+
+* [http://www.emacstapas.com/ Emacs tapas] - [[NicFerrier]]'s series of screencasts that will teach you how to program in Emacs Lisp.
+
+=== Ruby ===
+
+* [http://www.vimeo.com/2854412 Rinari Screencast] is a short demonstration of the [http://rinari.rubyforge.org/ Rinari] minor-mode for RubyOnRails development
+
+* Marshall Vandegrift uses EmacsCodeBrowser and show [http://platypope.org/yada/emacs-demo how to move ruby on rails with it]
+
+* [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif Icicles with rcodetools], by [[rubikitch]]
+
+* RubyOnRails and EmacsCodeBrowser demo (no audio, Flash required):  http://emacsonrails.drozdov.net [1.8MB]
+
+* Short [http://eigenclass.org/hiki.rb?rcodetools RCodeTools]  [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif animation] showing use of [[Icicles]] completion with Ruby 
+
+=== Misc ===
+
 * [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by LeWang.
 
 * [http://vimeo.com/2871241 Meet Magit] introduces [http://zagadka.vm.bytemark.co.uk/magit/ Magit], a git mode, by demonstrating a variety of features designed to keep you productive with git without ever leaving the comfort of Emacs.
 
 * [https://peepcode.com/products/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $12. For a preview, see [http://peepcode.com/system/uploads/2008/peepcode-emacs-in-5-demo.mov 5 minutes of Emacs].
 
-* [http://www.vimeo.com/2854412 Rinari Screencast] is a short demonstration of the [http://rinari.rubyforge.org/ Rinari] minor-mode for RubyOnRails development
+
 
 * Tim Visher has a [http://vimeo.com/timvisher/videos/page:1/sort:newest series of screencasts] where he does [http://vimgolf.com/ vimgolf challenges] in emacs.
 
@@ -22,13 +49,11 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 * Seongkook(CinSK) has very interesting screencasts in his website. see them all in [http://www.cinsk.org/emacs/ here]
 
-* Marshall Vandegrift uses EmacsCodeBrowser and show [http://platypope.org/yada/emacs-demo how to move ruby on rails with it]
 
-* MarcoBaringer [http://common-lisp.net/project/movies/movies/slime.mov shows SlimeMode] (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) (see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here)
 
-* another SlimeMode demo from the [http://www.unixuser.org/~euske/vnc2swf/ vnc2swf-site]: http://www.unixuser.org/~euske/vnc2swf/slime.html
 
-* [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif Icicles with rcodetools], by [[rubikitch]]
+
+
 
 * DavidEsposito manages web sites using EmacsMuse : [http://greens.org/~ringo0 Here's a demo of how he uses it]
 
@@ -38,9 +63,7 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 * [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo] of TempoSnippets, a snippet.el-like front-end for TempoMode.
 
-* RubyOnRails and EmacsCodeBrowser demo (no audio, Flash required):  http://emacsonrails.drozdov.net [1.8MB]
 
-* Short [http://eigenclass.org/hiki.rb?rcodetools RCodeTools]  [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif animation] showing use of [[Icicles]] completion with Ruby 
 
 * Editing !JavaDoc via DocMode:  http://nschum.de/src/emacs/doc-mode/screencast/
 
@@ -56,8 +79,7 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 * General getting started screencasts for emacs on OS X: http://railsnewbie.com (6 large quicktime movies)
 
-* Redshank by MichaelWeber is a helper for all CommonLisp hackers. You can see a demo at
-http://www.foldr.org/~michaelw/emacs/redshank/
+
 
 * [NxhtmlMode nXhtml], some tutorials: http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html
 
@@ -76,9 +98,6 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * Programothesis has a [http://www.youtube.com/user/emailataskcom/videos?query=emacs series of screencasts].
 
-* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts.
-
-* [http://www.emacstapas.com/ Emacs tapas] - [[NicFerrier]]'s series of screencasts that will teach you how to program in Emacs Lisp.
 
 == Tips about Creating Screencasts ==
 
