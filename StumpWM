@@ -33,12 +33,46 @@ This is an example of how you can use stumpwm commands to call emacs functions.
 
 == Loading swank from a quicklisp installation ==
 
+=== Code to put in .stumpwmrc ===
+
 If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank, by replacing the first two lines of code with:
 
 {{{
 ;;
 (ql:quickload :swank)
 ;;
+}}}
+
+=== Code to put in .emacs or .init.d ===
+
+If you are using quicklisp you will need the code like the following in your Emacs start-up file:
+{{{
+;; In my case /path/to/quicklisp is ~/quicklisp
+(defvar quicklisp-path "/path/to/quicklisp")
+;;
+;; Load slime-helper, this sets up various autoloads:
+;;
+(load (concat quicklisp-path "/slime-helper"))
+;;
+;; Set up slime with whatever modules you decide to use:
+;;
+(slime-setup '(slime-fancy slime-mrepl slime-banner slime-tramp
+	       slime-xref-browser slime-highlight-edits
+	       slime-sprof))
+;;
+;; Decide where to put a slime scratch file, if you want one, and set
+;; it up with:
+;;
+(setf slime-scratch-file "/path/to/.slime-scratch.lisp")
+;;
+;; Unfortunately there is no hook for the slim-scratch mode so if you
+;; want to automatically enable/disable various minor modes in the
+;; slime scratch buffer you must do something like:
+;;
+(defadvice slime-scratch
+    (after slime-scratch-adjust-modes () activate compile)
+  (turn-some-mode-off)
+  (turn-some-other-mode-on))
 }}}
 
 == Security Issues ==
@@ -82,6 +116,31 @@ Even better, you can amend the code for the command "swank" so that it toggles t
 	   "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm).")
 	  (setf server-running t)))))
 }}}
+
+== Using the stumpish shell ==
+
+The stumpish shell is used both in the code for lazy loading swank and in stumpwm-mode.  Unfortunately the path to it changes every time quicklisp updates stumpwm.  To overcome this problem, put a "fake" stumpish that loads the "real" stumpish somewhere in your PATH, say in ${HOME}/bin if you use that.  Don't forget to make it executable.
+
+{{{
+#!/bin/bash
+#
+# `fake' stumpish.
+# This loads the latest version of `real' stumpish
+
+# In my case /path/to/quicklisp is ${HOME}/quicklisp; your mileage may be different!
+
+stump_start="/path/to/quicklisp"
+stump_middle=$(cat ${stump_start}/dists/quicklisp/installed/releases/stumpwm.txt)
+stump_end="contrib/stumpish"
+
+stumpish=${stump_start}/${stump_middle}${stump_end}
+
+# Note the `.' - the `real' stumpish must be sourced!
+
+. ${stumpish}
+}}}
+
+Note: this has only been tested for Debian Wheezy but should work for any Unix-like operating system.  If anyone can work out how to modify it for other operating system, please comment on this.
 
 == Lazy Loading Swank ==
 
@@ -164,24 +223,25 @@ Load a file that re-defines swank and then call it."
 
 Note that the first time the command swank is called,  it's definition gets change to that in the loaded file.
 
-All this assumes that stumpish is in your shell's PATH but we again have the problem that the path to it changes every time stumpwm is updated with quicklisp.  One solution is to put the following shell script, also called stumpish but which sources the "real" stumpish, somewhere in your PATH:
+== Using stumpwm-mode with quicklisp ==
 
+The quicklisp package for stumpwm comes bundled with Shawn Betts' stumpwm-mode.  There is the usual problem that its path cahnges every time stumpwm is updated.  If you wish to be able to use it put code like the following in your Emacs startup file:
 {{{
-#!/bin/bash
-# stumpish
-# This should always load the latest version of stumpish
-
-# In my case /path/to/quicklisp is ${HOME}/quicklisp; your mileage may be different!
-
-stump_start="/path/to/quicklisp"
-stump_middle=$(cat ${stump_start}/dists/quicklisp/installed/releases/stumpwm.txt)
-stump_end="contrib/stumpish"
-
-stumpish=${stump_start}/${stump_middle}${stump_end}
-
-# Note the `.' - the `real' stumpish must be sourced!
-
-. ${stumpish}
+(let
+    ((stump-ver
+      (with-temp-buffer
+	(insert-file-contents
+	 (concat quicklisp-path
+		 "/dists/quicklisp/installed/releases/stumpwm.txt"))
+	(buffer-string))))
+  (add-to-list 'load-path
+	       (format "%s%s%s%s" quicklisp-path "/" stump-ver "contrib/")))
+;;
+(autoload 'stumpwm-mode "stumpwm-mode" nil t)
 }}}
+
+Notes: [1] quicklisp-path is defined as in previous code.
+       [2] sumpwm-mode uses the stumpish shell (see section on stumpish.)
+       
 ----
 CategoryRelated
