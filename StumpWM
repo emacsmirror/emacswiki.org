@@ -31,7 +31,7 @@ This is an example of how you can use stumpwm commands to call emacs functions.
   (send-meta-key (current-screen) (kbd "RET")))
 }}}
 
-==Loading swank from a quicklisp installation==
+== Loading swank from a quicklisp installation ==
 
 If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank, by replacing the first two lines of code with:
 
@@ -41,7 +41,7 @@ If, like me, you have installed slime through quicklisp then then /path/to/slime
 ;;
 }}}
 
-==Security Issues==
+== Security Issues ==
 
 The usual way to connect to the swank server in emacs is with code like:
 
@@ -83,5 +83,100 @@ Even better, you can amend the code for the command "swank" so that it toggles t
 	  (setf server-running t)))))
 }}}
 
+== Lazy Loading Swank ==
+
+Since Swank is a fairly big package, it would be a good idea not to load it every time the StumpWM starts up.
+
+=== The Problem ===
+
+The "obvious" solution doesn't work.  If you write:
+
+{{{
+  (ql:quickload :swank)
+  (swank:create-server :port 4005 ...
+}}}
+
+inside a function, you come across the problem that Common Lisp first loads a form and only then interprets it.  In a case like this, it will not know that swank:create-server exists when it first sees it as swank will not have been loaded.  If you are using SBCL then the problem is even more complicated as it incrementally compiles forms as they are loaded.  This is one of the few places where this behaviour of SBCL makes a real difference.
+
+=== The Usual Solution ===
+
+In most versions of Common Lisp, you can simply intern the symbol create-server as follows:
+
+{{{
+   (ql:quickload :swank)
+   (funcall (intern "create-server" :swank) :port 4005 ....
+}}}
+
+The Lisp knows that create-swank is a function when the form is being loaded, and when the form is interpreted, swank has already loaded so the code does what you expect.
+
+=== The Solution for SBCL ===
+
+Since SBCL tries to compile a form when it is first loaded, this solution will not work.  The solution has to be more complex as somehow we must ensure that :swank is loaded before the call to the function even though it is not loaded at start-up.  One solution is the use the stumpish shell to load the package.  Put the definition of the function is another file something like:
+
+{{{
+;; swank.lisp -*- Mode: Lisp -*-
+
+;; Load swank
+(ql:quickload :swank)
+;;
+(let ((server-running nil)
+      (first-time t))
+  ;;
+  (defcommand swank () ()
+    "Toggle the swank server on/off."
+    (setf stumpwm:*top-level-error-action* :break)
+    (if server-running
+        (progn
+          (swank:stop-server 4005)
+          (echo-string
+           (current-screen)
+           "Stopping swank.")
+          (setf server-running nil))
+        (progn
+          (swank:create-server :port 4005
+                               :style swank:*communication-style*
+                               :dont-close t)
+	  (if first-time
+            (echo-string
+             (current-screen)
+             "Re-starting swank.")
+	    (setf first-time nil))
+          (setf server-running t)))))
+;; Now call the re-defined command
+(swank)
+}}}
+
+Then in your .stumpwmrc put some code like:
+
+{{{
+(defcommand swank () ()
+  "Turn on the swank server the first time.
+Load a file that re-defines swank and then call it."
+  (setf stumpwm:*top-level-error-action* :break)
+  (run-shell-command
+   "stumpish 'eval (load \"/path/to/swank.lisp\")'")
+  (echo-string
+   (current-screen)
+   "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+;;
+(define-key *root-map* (kbd "C-s") "swank")
+}}}
+
+This assumes tha stumpish is in your shells PATH but we again have the problem that the path to it changes every time swank is updated with quicklisp.  One solution is to put the following shell script, also called stumpish, somewhere in the PATH:
+
+{{{
+#!/bin/bash
+# stumpish
+# This should always load the latest version of stumpish
+
+stump_start="/home/consultant/quicklisp/"
+stump_end="contrib/stumpish"
+
+stump_middle=$(cat ~/quicklisp/dists/quicklisp/installed/releases/stumpwm.txt)
+ 
+stumpish=${stump_start}${stump_middle}${stump_end}
+
+. ${stumpish}
+}}}
 ----
 CategoryRelated
