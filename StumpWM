@@ -170,7 +170,7 @@ The Lisp knows that create-swank is a function when the form is being loaded, an
 
 === The Solution for SBCL ===
 
-Since SBCL tries to compile a form when it is first loaded, this solution will not work.  The solution has to be more complex as somehow we must ensure that :swank is loaded before the call to the function even though it is not loaded at start-up.  One solution is the use stumpish, stumpwm's shell, to load the package.  Put the definition of the function is another file something like:
+Since SBCL tries to compile a form when it is first loaded, this solution will not work.  The solution has to be more complex as somehow we must ensure that :swank is loaded before the call to the function even though it is not loaded at start-up.  One solution is the use stumpish, stumpwm's shell, (see section on using stumpish) to load the package.  Put the definition of the function is another file something like:
 
 {{{
 ;; swank.lisp -*- Mode: Lisp -*-
