@@ -1,4 +1,3 @@
-
 I'm afraid (and sorry!) there's a terrible bug with this.
 
 I often use a shell script, which is a filter, to filter parts
@@ -29,9 +28,11 @@ This is an addition to my previous comment here.
 I forgot to give the (admittedly non-impressive) source
 code of the notrail script:
 
+{{{
 #!/bin/bash
 # remove trailing whitespace from lines
 sed 's/[ 	]*$//g'
+}}}
 
 Also, there was another problem with setnu+ that surfaced
 even before the notrail bug;  I often paste code example
