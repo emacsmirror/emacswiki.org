@@ -111,7 +111,7 @@ The Lisp knows that create-swank is a function when the form is being loaded, an
 
 === The Solution for SBCL ===
 
-Since SBCL tries to compile a form when it is first loaded, this solution will not work.  The solution has to be more complex as somehow we must ensure that :swank is loaded before the call to the function even though it is not loaded at start-up.  One solution is the use the stumpish shell to load the package.  Put the definition of the function is another file something like:
+Since SBCL tries to compile a form when it is first loaded, this solution will not work.  The solution has to be more complex as somehow we must ensure that :swank is loaded before the call to the function even though it is not loaded at start-up.  One solution is the use stumpish, stumpwm's shell, to load the package.  Put the definition of the function is another file something like:
 
 {{{
 ;; swank.lisp -*- Mode: Lisp -*-
@@ -153,8 +153,8 @@ Then in your .stumpwmrc put some code like:
   "Turn on the swank server the first time.
 Load a file that re-defines swank and then call it."
   (setf stumpwm:*top-level-error-action* :break)
-  (run-shell-command
-   "stumpish 'eval (load \"/path/to/swank.lisp\")'")
+  ;; Be careful with the quotes!
+  (run-shell-command  "stumpish 'eval (load \"/path/to/swank.lisp\")'")
   (echo-string
    (current-screen)
    "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
@@ -162,19 +162,24 @@ Load a file that re-defines swank and then call it."
 (define-key *root-map* (kbd "C-s") "swank")
 }}}
 
-This assumes tha stumpish is in your shells PATH but we again have the problem that the path to it changes every time stumpwm is updated with quicklisp.  One solution is to put the following shell script, also called stumpish, somewhere in the PATH:
+Note that the first time the command swank is called,  it's definition gets change to that in the loaded file.
+
+All this assumes that stumpish is in your shells PATH but we again have the problem that the path to it changes every time stumpwm is updated with quicklisp.  One solution is to put the following shell script, also called stumpish but which sources the "real" stumpish, somewhere in your PATH:
 
 {{{
 #!/bin/bash
 # stumpish
 # This should always load the latest version of stumpish
 
-stump_start="/home/consultant/quicklisp/"
+# In my case /path/to/quicklisp is ${HOME}/quicklisp; your mileage may be different!
+
+stump_start="/path/to/quicklisp"
+stump_middle=$(cat ${stump_start}/dists/quicklisp/installed/releases/stumpwm.txt)
 stump_end="contrib/stumpish"
 
-stump_middle=$(cat ~/quicklisp/dists/quicklisp/installed/releases/stumpwm.txt)
- 
-stumpish=${stump_start}${stump_middle}${stump_end}
+stumpish=${stump_start}/${stump_middle}${stump_end}
+
+# Note the `.' - the `real' stumpish must be sourced!
 
 . ${stumpish}
 }}}
