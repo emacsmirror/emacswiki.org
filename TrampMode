@@ -20,7 +20,7 @@ Tramp Documentation:
 * http://www.gnu.org/software/tramp/
 
 == Quick-start tramp configuration ==
-
+    (require 'tramp)
     (setq tramp-default-method "ssh")
 
 For GNU Emacs
