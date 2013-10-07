@@ -105,4 +105,7 @@ Other ways to deal with renumbering are discussed in ReplaceCount and
 IncrementNumber.
 
 ----
+As of at least 24.3.1 \# is an int, so drop the <code>int-to-string</code>
+
+----
 CategoryEditing
