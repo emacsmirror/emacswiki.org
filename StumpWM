@@ -155,7 +155,7 @@ The "obvious" solution doesn't work.  If you write:
   (swank:create-server :port 4005 ...
 }}}
 
-inside a function, you come across the problem that Common Lisp first loads a form and only then interprets it.  In a case like this, it will not know that swank:create-server exists when it first sees it as swank will not have been loaded.  If you are using SBCL then the problem is even more complicated as it incrementally compiles forms as they are loaded.  This is one of the few places where this behaviour of SBCL makes a real difference.
+inside a function, you come across the problem that Common Lisp first loads and parses a form and only then interprets it.  In a case like this, it will not know that swank:create-server exists when it first sees it as swank will not have been loaded.  If you are using SBCL then the problem is even more complicated as it incrementally compiles forms as they are loaded.  This is one of the few places where this behaviour of SBCL makes a real difference.
 
 === The Usual Solution ===
 
