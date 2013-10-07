@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul 24 07:46:23 2013 (-0700)
+;; Last-Updated: Mon Oct  7 16:31:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15391
+;;     Update #: 15436
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/10/07 dadams
+;;     bmkp-edit-bookmark-records-send: Move to line of current bmk, if only one.
+;; 2013/08/09 dadams
+;;     Added: bmkp-read-bookmark-file-hook, bmkp-desktop-file-p.
+;;     Renamed: bmkp-printable-p to bmkp-readable-p.
+;;     bmkp-readable-p: Treat string with no text props separately.
+;;     bookmark-alist: Updated doc string.
+;;     bookmark-send-edited-annotation: looking-at -> bmkp-looking-at-p (new).
+;;     bookmark-load: Update blist with bookmark-import-new-list.
+;;                    Run bmkp-read-bookmark-file-hook after reading the bookmark file.
+;;     bmkp-set-desktop-bookmark: Added prefix arg: sets bookmark without saving desktop file.
 ;; 2013/07/24 dadams
 ;;     bmkp-new-bookmark-default-names, bookmark-make-record-default:
 ;;       Test using (region-beginning|end), not mark function (C code and simpler).
@@ -944,6 +955,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/10/07 dadams
+;;     bmkp-bmenu-edit-marked: If no marked bmks, mark the current line bmk, to start with.
+;;                             Use correct buffer when go to point-min.
+;; 2013/08/09 dadams
+;;     Added: bmkp-looking-at-p.  Use it instead of looking-at, everywhere.
 ;; 2013/07/02 dadams
 ;;     Added to menu-bar Edit menu: bmkp-set-snippet-bookmark, bmkp-snippet-to-kill-ring.
 ;; 2013/06/30 dadams
