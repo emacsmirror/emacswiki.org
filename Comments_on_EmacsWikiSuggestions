@@ -47,3 +47,14 @@ I'd suggest a new page to be linked from CategoryMenus. I guess adding a new sec
 
 -- AlexSchroeder 2013-10-07 07:40 UTC
 
+
+----
+
+It's not clear that the topic "right-click menu" or "context menu" or similar, would or should point especially to pages about ''how to create'' such a menu.
+
+Googling for ##emacswiki "right-click"## shows lots of hits that are appropriate, depending on what you are looking for, because there are lots of different right-click menus mentioned on the wiki. 
+
+I have nothing against Alex's suggestion of adding a CategoryMenus page, but googling will still show such a how-to page, especially one that is specific for Aquamacs, as only one "right-click menu" or "context menu" hit among many for this wiki.  The category entry will be helpful, however, for discovery/access via the CategoryMenus page.
+
+-- DrewAdams 2013-10-07 14:00 UTC
+
