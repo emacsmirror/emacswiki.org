@@ -73,7 +73,7 @@ HideShow works with:
 * Python [https://code.launchpad.net/~freiksenet/python-mode/hide-show-support] (for python-mode that is NOT built in emacs)
 * Python with the built-in Python mode, at least with emacs 23
 
-HideShow is included with Emacs 20 and later.  [The maintainer version, which is slightly more featureful (and perhaps slightly less stable) can be found at http://www.gnuvola.org/software/j/hideshow/ --ttn] [-this returns 404 not found as of March 25, 2013]
+HideShow is included with Emacs 20 and later.
 
 Making it work with other languages can be simple or complex, depending on the regularity of the language's syntax.  See commentary and/or email ttn for hints.
 
