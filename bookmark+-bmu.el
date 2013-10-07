@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Aug  9 09:39:28 2013 (-0700)
+;; Last-Updated: Mon Oct  7 15:43:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2559
+;;     Update #: 2575
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4259,6 +4259,10 @@ The current bookmark list is then updated to reflect your edits."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-last-bmenu-bookmark  (bookmark-bmenu-bookmark))
+  ;; No marked bookmarks.  Mark this bookmark, so that `C-c C-c' in edit buffer will find it.
+  ;; Do this before we copy and strip full-bookmark property from name, because `bookmark-bmenu-mark'
+  ;; propertizes the name.
+  (unless bmkp-bmenu-marked-bookmarks (bookmark-bmenu-mark))
   (let ((bufname      "*Edit Marked Bookmarks*")
         (copied-bmks  (mapcar (lambda (bmk)
                                 (setq bmk  (copy-sequence bmk)) ; Shallow copy
@@ -4279,7 +4283,7 @@ The current bookmark list is then updated to reflect your edits."
 `\\[bmkp-edit-bookmark-records-send]' when done.\n;;\n")))
       ;; $$$$$$ (let ((print-circle  t)) (pp copied-bmks)) ; $$$$$$ Should not really be needed now.
       (pp copied-bmks)
-      (goto-char (point-min)))
+      (with-current-buffer bufname (goto-char (point-min))))
     (pop-to-buffer bufname)
     (buffer-enable-undo)
     (with-current-buffer (get-buffer bufname) (bmkp-edit-bookmark-records-mode))))
