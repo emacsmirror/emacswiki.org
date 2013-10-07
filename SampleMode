@@ -60,14 +60,14 @@ Anyway, here is the sample major mode to get you started.  Note that this sample
  (define-derived-mode sample-mode fundamental-mode "Sample"
    "A major mode for editing Sample files."
    :syntax-table sample-mode-syntax-table
-   (set (make-local-variable 'comment-start) "# ")
-   (set (make-local-variable 'comment-start-skip) "#+\\s-*")
-   (set (make-local-variable 'font-lock-defaults)
+   (setq-local comment-start "# ")
+   (setq-local comment-start-skip "#+\\s-*")
+   (setq-local font-lock-defaults
 	'(sample-font-lock-keywords))
-   (set (make-local-variable 'indent-line-function) 'sample-indent-line)
-   (set (make-local-variable 'imenu-generic-expression)
+   (setq-local indent-line-function 'sample-indent-line)
+   (setq-local imenu-generic-expression
 	sample-imenu-generic-expression)
-   (set (make-local-variable 'outline-regexp) sample-outline-regexp)
+   (setq-local outline-regexp sample-outline-regexp)
    ...)
 
  ;;; Indentation
