@@ -94,6 +94,8 @@ I think the above snippet will not work on a recent Emacs 24 from the bzr trunk 
 [new:pank:2011-07-21]
 I upgraded to emacs bzr rev. 105301 yesterday. It still works with Volkan's smtp function. Lars did a good job it seems. 
 
+[new:DavidGreene:2013-10-08]
+I am getting "smtp-server not defined" with a recent emacs-snapshot.  Any ideas?
 ----
 
 This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz
