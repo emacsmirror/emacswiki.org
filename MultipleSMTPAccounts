@@ -1,6 +1,7 @@
 Basically, there are two possible approaches to let gnus decide which SMTP server should be used for sending email.
 * The easiest solution is probably using [http://msmtp.sourceforge.net/ msmtp]: Either let msmtp choose based on the "From" header or explicitly advice it, which account should be used using the "-a" switch. You can find elisp snippets to configure msmtp [http://www.emacswiki.org/emacs/GnusMSMTP here].
 * If you want to avoid dependency on emacs-external tools, another approach using message hooks is documented on this page.
+* There is also the [http://marmalade-repo.org/packages/smtpmail-multi smtpmail-multi] package on marmalade.
 
 Unfortunately, there doesn't exist a built-in feature set to decide which SMTP server should be used by looking at the "From:" header line of the current post. However, this can be easily implemented by using message hooks. Here are a couple of functions that will do this for you.
 
