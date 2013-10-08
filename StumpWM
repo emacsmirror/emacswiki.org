@@ -225,7 +225,7 @@ Note that the first time the command swank is called,  it's definition gets chan
 
 == Using stumpwm-mode with quicklisp ==
 
-The quicklisp package for stumpwm comes bundled with Shawn Betts' stumpwm-mode.  There is the usual problem that its path cahnges every time stumpwm is updated.  If you wish to be able to use it put code like the following in your Emacs startup file:
+The quicklisp package for stumpwm comes bundled with Shawn Betts' stumpwm-mode.  There is the usual problem that its path changes every time stumpwm is updated.  If you wish to be able to use it put code like the following in your Emacs startup file:
 {{{
 (let
     ((stump-ver
