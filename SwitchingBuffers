@@ -226,6 +226,20 @@ For exactly this use case there is pointback-mode: http://stud4.tuwien.ac.at/~e0
 [new:AlpAker:2011-03-04 03:39 UTC]
 
 This functionality is also provided by both [[Rebound]] and [[winpoint.el]].
+
+[new:JackDuthen:2013-10-08 08:36 UTC]
+
+I'm often facing the same problem (working on part 1 of a single file in window1 and part 2 of the same file in window2, switching temporarily to another file in window2 and wanting to switch back to part 2 of the single file in window2). 
+I noticed that many commands which read from the MiniBuffer, like `execute-extended-command' (`M-x') or `switch-to-buffer' (`C-x b'), for example, record (on the execution stack) the window configuration (maybe using something like `save-window-excursion'). So I often use this very simple trick. From inside window2, type:
+* `M-x' (or `C-x b' or any similar command), 
+* `C-- C-x o' WITHOUT ANY RETURN to go back to window2 (this lets the `M-x ' prompt in the MiniBuffer),
+* switch to the most recent buffer with `C-x b RET' (or select one from the menu) in window2,
+* do whatever you want (even commands like `M-x something RET'),
+* when you are done, `C-x o' to switch back to the MiniBuffer (or click inside it),
+* `C-g' to abort the MiniBuffer command,
+* and, like magics, it restores the window configuration, i.e. part 2 in window2.
+
+This "trick" does not require any external module! HTH -- JackDuthen
 ----
 
 [new]
