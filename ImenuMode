@@ -91,21 +91,36 @@ See [[Icicles - Search Commands, Overview]].
 
 
 
+
+
+
+
 == Imenu+ == 
 
 Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
 
 * Redefines standard functions `imenu-update-menubar' and `imenu--mouse-menu' so that submenus are sorted before splitting.
-* Ignores invisible definitions.  Ignores definitions that are commented out, if [[user option]] `ignore-comments-flag' is non-`nil'.
-* Adds new commands:
+* Ignores invisible definitions.  Ignores definitions that are commented out, if [[user option]] '''`imenup-ignore-comments-flag'''' is non-`nil'.
+
+* Three toggle items added to every Imenu menu:
+** '''Toggle Case-Sensitive Name-Sort'''
+** '''Toggle Ignoring Commented Defs'''
+** '''Toggle Sorting'''
+
+* New commands:
 ** '''`imenu-add-defs-to-menubar'''' -- Add '''Defs''' imenu to the [[menu bar]] for current local keymap.
 ** '''`toggle-imenu-sort'''' -- Toggle sorting.
+** '''`imenup-toggle-case-sensitive-sorting'''' -- Toggle case-sensitivity when sorting by name.
+** '''`imenup-toggle-ignoring-comments'''' -- Toggle ignoring definitions that are inside comments.  (Toggles option `imenup-ignore-comments-flag'.)
+
 * Adds mode-specific '''Defs''' Imenus for Lisp mode and Emacs-Lisp mode.  These menus include [[face]]s, [[user option]]s, other [[variable]]s, functions, [[macro]]s, [[key binding]]s etc.
 
-:: Here is a screenshot showing the '''Defs''' menu in Emacs-Lisp mode:
+:: Here is a screenshot showing the '''Defs''' menu in Emacs-Lisp mode (not up-to-date: does not show toggle menu items):
 
 [:ImenuScreenshot]
 :: [[image:DrewEmacsImenuImage]]
+
+
 
 == Imenu anywhere with IDO and Helm ==
 
