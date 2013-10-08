@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
-;; Package-Requires: ((hide-comnts "0"))
-;; Last-Updated: Tue Aug 13 15:39:37 2013 (-0700)
+;; Package-Requires: ()
+;; Last-Updated: Tue Oct  8 14:12:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 929
+;;     Update #: 992
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -28,12 +28,15 @@
 ;;
 ;;   User options defined here:
 ;;
-;;    `imenup-sort-ignores-case'.
+;;    `imenup-ignore-comments-flag' (Emacs 22+),
+;;    `imenup-sort-ignores-case-flag'.
 ;;
 ;;   Commands defined here:
 ;;
 ;;    `imenup-add-defs-to-menubar',
-;;    `imenup-toggle-case-sensitive-sorting', `imenup-toggle-sort',
+;;    `imenup-toggle-case-sensitive-sorting',
+;;    `imenup-toggle-ignoring-comments' (Emacs 22+),
+;;    `imenup-toggle-sort',
 ;;
 ;;   Non-interactive functions defined here:
 ;;
@@ -73,6 +76,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/08 dadams
+;;     Added: imenup-ignore-comments-flag, imenup-toggle-ignoring-comments.
+;;     Renamed: imenup-sort-ignores-case to imenup-sort-ignores-case-flag.
+;;     Do not require hide-comnt.el.
+;;     imenu--make-index-alist: Added menu item for toggling ignoring commented defs.
+;;                              Do not use with-comments-hidden etc.  Now in imenu--generic-function.
+;;     imenu--generic-function: Respect imenup-ignore-comments-flag.
 ;; 2013/08/13 dadams
 ;;     Added: imenup-lisp-other-defn-regexp-2.
 ;;     Renamed: imenup-lisp-other-defn-regexp to imenup-lisp-other-defn-regexp-1.
@@ -181,20 +191,16 @@
 
 (require 'imenu)
 
-;; Even though the commands of `hide-comnt.el' are not usable in Emacs 20, require it even for
-;; Emacs 20, in case a user byte-compiles `imenu+.el' in Emacs 20 for use in later Emacs versions.
-(require 'hide-comnt)
-
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
+(defvar imenup-ignore-comments-flag)    ; Here (Emacs 22+).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
 (defgroup Imenu-Plus nil
   "Various enhancements to Imenu."
-  :prefix "imenup-"
-  :group 'imenu
+  :prefix "imenup-" :group 'imenu
   :link `(url-link :tag "Send Bug Report"
           ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 imenu+.el bug: \
@@ -206,8 +212,13 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/ImenuMode#ImenuPlus")
   :link '(emacs-commentary-link :tag "Commentary" "imenu+"))
 
+(when (fboundp 'syntax-ppss)            ; Emacs 22+.
+  (defcustom imenup-ignore-comments-flag t
+    "Non-nil means Imenu ignores comments."
+    :type 'boolean :group 'Imenu-Plus))
+
 ;;;###autoload
-(defcustom imenup-sort-ignores-case nil
+(defcustom imenup-sort-ignores-case-flag nil
   "*Non-nil means that `imenu--sort-by-name' sorts case-insensitively."
   :type 'boolean :group 'Imenu-Plus)
 
@@ -353,23 +364,32 @@ See also command `imenup-toggle-case-sensitive-sorting'."
 
 ;;;###autoload
 (defun imenup-toggle-case-sensitive-sorting ()
-  "Toggle option `imenup-sort-ignores-case'.
+  "Toggle option `imenup-sort-ignores-case-flag'.
 This affects menu sorting using `imenu--sort-by-name'."
   (interactive)
-  (setq imenup-sort-ignores-case  (not imenup-sort-ignores-case))
+  (setq imenup-sort-ignores-case-flag  (not imenup-sort-ignores-case-flag))
   (imenu--menubar-select imenu--rescan-item)
   (if (eq 'imenu--sort-by-name imenu-sort-function)
-      (message "Sorting menu items by name %s" (if imenup-sort-ignores-case
-                                                   "now ignores case"
+      (message "Sorting menu items by name %s" (if imenup-sort-ignores-case-flag
+                                                   "now IGNORES case"
                                                  "is now case SENSITIVE"))
-    (message "NOT sorting by name now, but will %s if you do" (if imenup-sort-ignores-case
+    (message "NOT sorting by name now, but will %s if you do" (if imenup-sort-ignores-case-flag
                                                                   "IGNORE case"
                                                                 "RESPECT case"))))
+
+(when (boundp 'imenup-ignore-comments-flag)
+  (defun imenup-toggle-ignoring-comments ()
+    "Toggle option `imenup-ignore-comments-flag'."
+    (interactive)
+    (setq imenup-ignore-comments-flag  (not imenup-ignore-comments-flag))
+    (imenu--menubar-select imenu--rescan-item)
+    (message "Ignoring definitions inside comments is now %s"
+             (if imenup-ignore-comments-flag 'ON 'OFF))))
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
 ;;
-;; Respect `imenup-sort-ignores-case'
+;; Respect `imenup-sort-ignores-case-flag'
 ;;
 ;;;###autoload
 (defun imenu--sort-by-name (item1 item2)
@@ -377,12 +397,12 @@ This affects menu sorting using `imenu--sort-by-name'."
 The arguments are menu items, which have form (NAME . POSITION).
 Their NAMEs are compared.
 
-Comparison is case-sensitive if `imenup-sort-ignores-case' is
+Comparison is case-sensitive if `imenup-sort-ignores-case-flag' is
 non-nil.  You can toggle that option using `\\[imenup-toggle-sort]'."
   (let ((name1  (car item1))
         (name2  (car item2)))
-    (when imenup-sort-ignores-case (setq name1  (upcase name1)
-                                         name2  (upcase name2)))
+    (when imenup-sort-ignores-case-flag (setq name1  (upcase name1)
+                                              name2  (upcase name2)))
     (string-lessp name1 name2)))
 
 ;;;###autoload
@@ -476,32 +496,20 @@ NOT share structure with ALIST."
 
 ;; REPLACE ORIGINAL in `imenu.el'.
 ;;
-;; 1. Respect `ignore-comments-flag', if defined: use `with-comments-hidden'.
-;; 2. Add Imenu+ toggle commands to menu.
+;; Add Imenu+ toggle commands to menu.
 ;;
 (defun imenu--make-index-alist (&optional noerror)
   "Create an index alist for the definitions in the current buffer.
+Include menu items for Imenu+ toggle commands, plus `*Rescan*'.
 This works by using the hook function `imenu-create-index-function'.
 Report an error if the list is empty unless NOERROR is supplied and
-non-nil.
-
-If `ignore-comments-flag' is defined and non-nil, then respect it,
-ignoring definitions inside comments.
-
-See `imenu--index-alist' for the format of the index alist."
+non-nil.  See `imenu--index-alist' for the format of the index alist."
   (or (and imenu--index-alist
            (or (not imenu-auto-rescan)
                (and imenu-auto-rescan  (> (buffer-size) imenu-auto-rescan-maxout))))
       ;; Get the index; truncate if necessary
-      (progn (setq imenu--index-alist  (save-excursion
-                                         (save-restriction
-                                           (widen)
-                                           (if (featurep 'hide-comnt) ; Emacs 21+
-                                               (let ((search-invisible  nil))
-                                                 (with-comments-hidden
-                                                     (point-min) (point-max)
-                                                     (funcall imenu-create-index-function)))
-                                             (funcall imenu-create-index-function)))))
+      (progn (setq imenu--index-alist
+                   (save-excursion (save-restriction (widen) (funcall imenu-create-index-function))))
              (imenu--truncate-items imenu--index-alist)))
   (or imenu--index-alist  noerror
       (if (fboundp 'user-error)
@@ -512,7 +520,10 @@ See `imenu--index-alist' for the format of the index alist."
         (cons '("Toggle Case-Sensitive Name-Sort" IGNORE
                 (lambda (&rest _ignore) (imenup-toggle-case-sensitive-sorting)))
               (cons '("Toggle Sorting" IGNORE (lambda (&rest _ignore) (imenup-toggle-sort)))
-                    imenu--index-alist))))
+                    (and (fboundp 'imenup-toggle-ignoring-comments)
+                         (cons '("Toggle Ignoring Commented Defs" IGNORE
+                                 (lambda (&rest _ignore) (imenup-toggle-ignoring-comments)))
+                               imenu--index-alist))))))
 
 ;; Same as `thgcmd-invisible-p' in `thing-cmds.el', and `icicle-invisible-p' in `icicles-cmd2.el'.
 (defun imenup-invisible-p (position)
@@ -622,8 +633,11 @@ depending on PATTERNS."
                                 (cons (match-string-no-properties index) beg)))
                        ;; This is the desired submenu, starting with its title (or nil).
                        (menu (assoc menu-title index-alist)))
-                   ;; Insert the item unless it is already present.
-                   (unless (member item (cdr menu)) (setcdr menu (cons item (cdr menu)))))
+                   ;; Insert the item unless it is already present or is in a comment being ignored.
+                   (unless (or (and (boundp 'imenup-ignore-comments-flag)  imenup-ignore-comments-flag
+                                    (nth 8 (syntax-ppss)))
+                               (member item (cdr menu)))
+                     (setcdr menu (cons item (cdr menu)))))
                  ;; Go to the start of the match, to make sure we keep making progress backwards.
                  (goto-char start))))
            (set-syntax-table old-table)))
