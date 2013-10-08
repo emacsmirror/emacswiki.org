@@ -3,3 +3,17 @@ I'm really annoyed by the loud "ding" sound of the bell and I would love to chan
 
 -- sdssix 2013-10-08 00:54 UTC
 
+
+----
+
+The traditional alternative is for Emacs to flash the screen.
+
+# you need to edit your InitFile: ##C-x C-f ~/.emacs##
+# put ##(setq visible-bell t)## at the very end
+# save it: ##C-x C-s##
+# restart Emacs---or evaluate the sexpr (the expression in parenthesis) just in front of point using ##C-x C-e##
+
+Hope that helps. :)
+
+-- AlexSchroeder 2013-10-08 09:09 UTC
+
