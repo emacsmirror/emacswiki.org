@@ -12,3 +12,21 @@ http://i.imgur.com/hteEh8Z.png
 
 -- AlexSchroeder 2013-08-22 11:22 UTC
 
+
+----
+
+Thanks for your response.  I tried this.  
+
+M-x describe-text-properties confirms for me that 'font-lock-comment-face' is being used ... 
+
+but my comment color remains green (not red).  How can I set that color to red?
+
+My color scheme is also very different than what you show.  I have cyan keywords, blue function names, and green text on a black background.  Comments are supposed to be red.
+
+I say "supposed to be red" because I resolved this problem on a linux-based machine in my department, where I use red for comments.  I was able to fix it by removing the following line from my .emacs file
+(set-background-color "black") 
+
+I have no such line on my OSX emacs.el, and adding it has no effect.  I would greatly appreciate any help!
+
+-- Anonymous 2013-10-08 18:57 UTC
+
