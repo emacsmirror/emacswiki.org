@@ -1,4 +1,4 @@
-[[fr:RépertoireDeSauvegarde]]
+[[fr:RÃ©pertoireDeSauvegarde]]
 
 By default Emacs saves BackupFiles under the original name with a
 tilde `~' appended.  Example: Editing ##README## will result in ##README## and
@@ -109,5 +109,7 @@ When using the backup directory cleanup code I get this error:
 "Symbol's function definition is void: fifth"
 GNU Emacs 23.3.1
 Ubuntu 12.04.2 LTS
+
+I think this will fix the "fifth" error: instead of (float-time(fifth (file-attributes file))) use (float-time (nth 5 (file-attributes file))). Works for me in emacs 24.3.1.
 ----
 CategoryFiles
