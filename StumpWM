@@ -65,7 +65,7 @@ If you are using quicklisp you will need the code like the following in your Ema
 ;;
 (setf slime-scratch-file "/path/to/.slime-scratch.lisp")
 ;;
-;; Unfortunately there is no hook for the slim-scratch mode so if you
+;; Unfortunately there is no hook for the slime-scratch mode so if you
 ;; want to automatically enable/disable various minor modes in the
 ;; slime scratch buffer you must do something like:
 ;;
@@ -119,7 +119,7 @@ Even better, you can amend the code for the command "swank" so that it toggles t
 
 == Using the stumpish shell ==
 
-The stumpish shell is used both in the code for lazy loading swank and in stumpwm-mode.  Unfortunately the path to it changes every time quicklisp updates stumpwm.  To overcome this problem, put a "fake" stumpish that loads the "real" stumpish somewhere in your PATH, say in ${HOME}/bin if you use that.  Don't forget to make it executable.
+The stumpish shell is used both in the code for lazy loading swank below and in stumpwm-mode.  Unfortunately the path to it changes every time quicklisp updates stumpwm.  To overcome this problem, put a "fake" stumpish that loads the "real" stumpish somewhere in your PATH, say in ${HOME}/bin if you use that.  Don't forget to make it executable.
 
 {{{
 #!/bin/bash
@@ -166,7 +166,7 @@ In most versions of Common Lisp, you can simply intern the symbol create-server 
    (funcall (intern "create-server" :swank) :port 4005 ....
 }}}
 
-The Lisp knows that create-swank is a function when the form is being loaded, and when the form is interpreted, swank has already loaded so the code does what you expect.
+Then Lisp knows that create-swank is a function when the form is being loaded, and when the form is interpreted, swank has already loaded so the code does what you expect.  However, as explained below, this doesn't work for SBCL.
 
 === The Solution for SBCL ===
 
@@ -242,6 +242,7 @@ The quicklisp package for stumpwm comes bundled with Shawn Betts' stumpwm-mode. 
 
 Notes: [1] quicklisp-path is defined as in previous code.
        [2] sumpwm-mode uses the stumpish shell (see section on stumpish.)
+       [3] This solution presumably works for any other Common Lisp that incrementally compiles code, but it has only been tested for SBCL.
        
 ----
 CategoryRelated
