@@ -251,7 +251,7 @@ problem of `e' and `pi' being dynamically scoped, but hopefully only for a few v
 
 * Can anyone think of a better solution?
 
-* Why not strictly force the lexical of let regardless of whether a global value exists? The programmer can always (setq global-variable ...) if `global-variable` is not currently shadowed. Living with the fear that one's code might clobber another global variable and hoping that all packages adhere strictly to some naming convention seems problematic and unnecessary. If this new `let` does not have a fixed, predictable behavior and instead will act differently depending on dynamic states that are far beyond the author's control, this is going to cause a lot of headaches for a lot of people for many years to come.
+* Why not strictly force the lexical behavior of let regardless of whether a global value exists? The programmer can always (setq global-variable ...) if `global-variable` is not currently shadowed. Living with the fear that one's code might clobber another vital global variable and hoping that all packages adhere strictly to some naming convention seems problematic and unnecessary. If this new `let` does not have a fixed, predictable behavior and instead will act differently depending on dynamic states that are far beyond the author's control, this is going to cause a lot of headaches for a lot of people for many years to come.
 
 === More radical approaches ===
 
