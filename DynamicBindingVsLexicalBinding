@@ -1,5 +1,5 @@
-[[zh:å¨æç»å®_vs_è¯æ³ç»å®]]
-[[zh:å¨æç»å®_vs_è¯æ³ç»å®]]
+[[zh:动态绑定_vs_词法绑定]]
+[[zh:动态绑定_vs_词法绑定]]
 Dynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
 
 == Binding ==
@@ -144,7 +144,7 @@ And remember to handle non-local exits using `throw'.  When you're
 through with this, you'll see that you've implemented dynamic binding!
 
 RichardStallman explains the advantages of dynamic binding in the context of EmacsLisp: http://www.gnu.org/software/emacs/emacs-paper.html#SEC17.
-See also the article ''Dynamic vs. Static Typing â A Pattern-Based Analysis'' by Pascal Costanza, http://www.p-cos.net/documents/dynatype.pdf.
+See also the article ''Dynamic vs. Static Typing — A Pattern-Based Analysis'' by Pascal Costanza, http://www.p-cos.net/documents/dynatype.pdf.
 
 
 
