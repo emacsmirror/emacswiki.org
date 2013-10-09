@@ -26,6 +26,8 @@ Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
 
 [http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Another clang autocompletion source]
 
+[https://github.com/Sarcasm/irony-mode Clang based package for C & C++ completion, on-the-fly syntax checking and more]
+
 [https://github.com/monsanto/readline-complete.el Readline completion for shell-mode]
 
 [https://github.com/aki2o/auto-complete-nxml Auto Complete on nXML-mode]
@@ -581,7 +583,7 @@ Hi. I use autocomplete + eclim. I wrote an autocomplete source which uses eclim 
 </pre>
 --Lucas Pandolfo
 [new]
-Is it possible to add some additional information in the popup menus that doesn't get inserted when the text is completed? I would like to have the additional type information semantic provides for C/C++ code in the popup menuãlike 
+Is it possible to add some additional information in the popup menus that doesn't get inserted when the text is completed? I would like to have the additional type information semantic provides for C/C++ code in the popup menuÃ£ÂÂlike 
 
 <pre>
 | l : long[] |
