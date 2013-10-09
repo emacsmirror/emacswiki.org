@@ -512,7 +512,7 @@ In the users initialization there should be the lines:
 The following piece of code lightens the input of multilingual text. It switches the ispell-dictionary in dependence of the language at the current point position.
 The points in the buffer where the language switches are recognized by predefined strings at the beginning of line (see variable swL-alist).
 
-Paste the following into your .emacs.el file (or whereever your configuration is).
+Paste the following into your .emacs.el file (or wherever your configuration is).
 Adapt the variable swL-alist to your needs.
 Currently, detecting between english and ngerman in babel-latex documents is configured.
 Then open your document and start swL-mode by M-x swL-mode.
