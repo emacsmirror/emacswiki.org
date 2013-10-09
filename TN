@@ -508,7 +508,77 @@ In the users initialization there should be the lines:
 	     (setcdr (assoc "View" TeX-command-list) '("xpdfsynctex view %s %n 1" TeX-run-background nil t :help "Run Viewer"))
 	     ))
 </pre>
+== Multiple languages in one buffer (e.g. flyspell in latex-document with \selectlanguage) ==
+The following piece of code lightens the input of multilingual text. It switches the ispell-dictionary in dependence of the language at the current point position.
+The points in the buffer where the language switches are recognized by predefined strings at the beginning of line (see variable swL-alist).
 
+Paste the following into your .emacs.el file (or whereever your configuration is).
+Adapt the variable swL-alist to your needs.
+Currently, detecting between english and ngerman in babel-latex documents is configured.
+Then open your document and start swL-mode by M-x swL-mode.
+The dictionary to be used for flyspell or ispell is then recognized automagically in dependence of the point-position.
+
+<pre>
+(require 'ispell) ;; for variables ispell-dictionary and so on
+
+(defvar swL-alist '(
+		    ("\\selectlanguage{english}" . "en_US")
+		    ("\\selectlanguage{ngerman}" . "de_DE"))
+  "List of language switchers.
+Each language switcher is a cons of a string that introduces a new language
+and the corresponding ispell-dictionary.")
+(make-variable-buffer-local 'swL-alist)
+
+(defun swL-jit-handler (b e)
+  "(Re-)scan buffer for language switches."
+  (save-excursion
+    (with-silent-modifications
+      (let ((re (concat "^" (regexp-opt (mapcar 'car swL-alist))))
+	    lang)
+	(goto-char b)
+	(beginning-of-line -1) ;; One line back to force overlapping with old formatted region.
+	(setq b (point))
+	(unless (setq lang (get-text-property (point) :ispell-dictionary))
+	  ;; No dictionary found at the starting point of the region.
+	  (if (search-backward-regexp re nil 'noErr)
+	      (setq lang (cdr (assoc-string (match-string-no-properties 0) swL-alist))
+		    b (1+ (match-beginning 0)))
+	    (setq lang swL-default-dictionary
+		  b (point-min))))
+	;; Now we have the real starting point b for formatting and a
+	;; non-nil language lang.
+	(while (search-forward-regexp re e 'noErr)
+	  (put-text-property b (match-beginning 0) :ispell-dictionary lang)
+	  (setq b (1+ (match-beginning 0))
+		lang (cdr (assoc-string (match-string-no-properties 0) swL-alist))))
+	(put-text-property b e :ispell-dictionary lang)
+	))))
+
+(defun swL-eye ()
+  "Switching `ispell-local-dictionary' depending on the text property :ispell-dictionary"
+  (let ((newLang (get-text-property (point) :ispell-dictionary))
+	(curLang (or ispell-local-dictionary ispell-dictionary swL-default-dictionary)))
+    (unless (string= newLang curLang)
+      (ispell-change-dictionary newLang)
+      )))
+	      
+(define-minor-mode swL-mode "Switch ispell-dictionary corresponding to the entries in `swL-alist'." nil " swL" nil
+  (if swL-mode
+      (progn
+	(setq-local swL-default-dictionary
+		    (or
+		     ispell-local-dictionary
+		     ispell-dictionary
+		     "default"))
+	(jit-lock-register 'swL-jit-handler)
+	(add-hook 'post-command-hook 'swL-eye 'append t)
+	)
+    (jit-lock-unregister 'swL-jit-handler)
+    (remove-hook 'post-command-hook 'swL-eye t)
+    (unintern 'swL-default-dictionary)
+    )
+  )
+</pre>
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
 
