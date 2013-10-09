@@ -1,5 +1,5 @@
-[[zh:动态绑定_vs_词法绑定]]
-[[zh:动态绑定_vs_词法绑定]]
+[[zh:å¨æç»å®_vs_è¯æ³ç»å®]]
+[[zh:å¨æç»å®_vs_è¯æ³ç»å®]]
 Dynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
 
 == Binding ==
@@ -144,7 +144,7 @@ And remember to handle non-local exits using `throw'.  When you're
 through with this, you'll see that you've implemented dynamic binding!
 
 RichardStallman explains the advantages of dynamic binding in the context of EmacsLisp: http://www.gnu.org/software/emacs/emacs-paper.html#SEC17.
-See also the article ''Dynamic vs. Static Typing — A Pattern-Based Analysis'' by Pascal Costanza, http://www.p-cos.net/documents/dynatype.pdf.
+See also the article ''Dynamic vs. Static Typing â A Pattern-Based Analysis'' by Pascal Costanza, http://www.p-cos.net/documents/dynatype.pdf.
 
 
 
@@ -251,7 +251,7 @@ problem of `e' and `pi' being dynamically scoped, but hopefully only for a few v
 
 * Can anyone think of a better solution?
 
-
+* Why not strictly force the lexical of let regardless of whether a global value exists? The programmer can always (setq global-variable ...) if `global-variable` is not currently shadowed. Living with the fear that one's code might clobber another global variable and hoping that all packages adhere strictly to some naming convention seems problematic and unnecessary. If this new `let` does not have a fixed, predictable behavior and instead will act differently depending on dynamic states that are far beyond the author's control, this is going to cause a lot of headaches for a lot of people for many years to come.
 
 === More radical approaches ===
 
