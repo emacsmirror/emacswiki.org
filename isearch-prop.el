@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  2 11:38:08 2013 (-0700)
+;; Last-Updated: Wed Oct  9 13:07:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 653
+;;     Update #: 672
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hexrgb'.
+;;   `hexrgb', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -80,7 +80,8 @@
 ;;    `isearchp-thing', `isearchp-thing-define-contexts',
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-dimming-non-prop-zones',
-;;    `isearchp-toggle-ignoring-comments'.
+;;    `isearchp-toggle-ignoring-comments',
+;;    `isearchp-toggle-hiding-comments'.
 ;;
 ;;  User options defined here:
 ;;
@@ -208,20 +209,18 @@
 ;;    automatically by the commands of this library, when you do not
 ;;    specify a property.
 ;;
-;;  * You can hide code comments, that is, make them invisible, by
-;;    using `M-;' (command `isearchp-hide/show-comments') during
-;;    Isearch.  This is *NOT* a toggle command.  To show the hidden
-;;    comments, use a prefix arg: `C-u M-;'.  However, to be able to
-;;    use a prefix argument during Isearch you must set
-;;    `isearch-allow-scroll' or, better, `isearch-allow-prefix' (if
-;;    available) to non-nil.  Otherwise, a prefix arg exits Isearch.
-;;    You can toggle the hiding of comments during Isearch using
-;;    `C-M-;' (command `isearchp-toggle-ignoring-comments').
+;;  * You can hide or show code comments during Isearch, using `M-;'
+;;    (command `isearchp-toggle-hiding-comments').  You can toggle
+;;    ignoring comments during Isearch, using `C-M-;' (command
+;;    `isearchp-toggle-ignoring-comments').
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/09 dadams
+;;     Added: isearchp-toggle-hiding-comments (same as hide/show-comments-toggle in hide-comnt.el).
+;;            Bind it, not isearchp-hide/show-comments, to M-;.
 ;; 2013/10/02 dadams
 ;;     isearchp-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;;     Soft-require thingatpt+.el.
@@ -425,7 +424,7 @@ regexp as the search context, and so on.")
 ;;; Keys -------------------------------------------------------------
 
 (define-key isearch-mode-map (kbd "C-t")     'isearchp-property-forward)
-(define-key isearch-mode-map (kbd "M-;")     'isearchp-hide/show-comments)
+(define-key isearch-mode-map (kbd "M-;")     'isearchp-toggle-hiding-comments)
 (define-key isearch-mode-map (kbd "C-M-t")   'isearchp-property-forward-regexp)
 (define-key isearch-mode-map (kbd "C-M-;")   'isearchp-toggle-ignoring-comments)
 (define-key isearch-mode-map (kbd "C-M-~")   'isearchp-toggle-complementing-domain)
@@ -1428,9 +1427,35 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
 
 ;;; THING Commands and Functions" ------------------------------------
 
+;; Same as `hide/show-comments-toggle' in `hide-comnt.el'.
+;;
+(defun isearchp-toggle-hiding-comments (&optional start end) ; Bound to `M-;' during Isearch
+  "Toggle hiding/showing of comments in the active region or whole buffer.
+If the region is active then toggle in the region.  Otherwise, in the
+whole buffer.
+
+Interactively, START and END default to the region limits, if active.
+Otherwise, including non-interactively, they default to `point-min'
+and `point-max'.
+
+Uses `save-excursion', restoring point.
+
+Be aware that using this command to show invisible text shows *ALL*
+such text, regardless of how it was hidden.  IOW, it does not just
+show invisible text that you previously hid using this command."
+  (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                   (list (point-min) (point-max))
+                 (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
+  (when (require 'newcomment nil t) ; `comment-search-forward', Emacs 21+.
+    (comment-normalize-vars)     ; Per Stefan, should call this first.
+    (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
+                                               (get-text-property (point) 'invisible)))
+        (hide/show-comments 'show start end)
+      (hide/show-comments 'hide start end))))
+
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;
-(defun isearchp-hide/show-comments (&optional hide/show start end) ; Bound to `M-;' during Isearch
+(defun isearchp-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
 \(This is thus *NOT* a toggle command.)
@@ -1484,8 +1509,8 @@ You can toggle `isearchp-ignore-comments-flag' using `C-M-;' in the
 minibuffer, but depending on when you do so you might need to invoke
 the current command again.
 
-See `isearchp-hide/show-comments', which is used to hide and show the
-comments."
+See `isearchp-hide/show-comments', which is used to hide and
+show the comments."
   (let ((result  (make-symbol "result"))
         (ostart  (make-symbol "ostart"))
         (oend    (make-symbol "oend")))
