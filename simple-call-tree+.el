@@ -306,13 +306,9 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   :type '(choice (const :tag "internal radio link" radio)
                  (const :tag "link to source code" source)))
 
-;; simple-call-tree-info: APPT  
+;; simple-call-tree-info: APPT  :this:test:
 (defcustom simple-call-tree-org-todo-keywords nil
   "List of different TODO keywords, if nil then `org-todo-keywords' will be used."
-  ;org-todo-keyword-faces
-  ;org-highest-priority
-  ;org-lowest-priority
-  ;org-default-priority
   :group 'simple-call-tree
   :type 'list)
 
@@ -321,6 +317,9 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
 
 (defcustom simple-call-tree-org-lowest-priority org-lowest-priority
   "See `org-lowest-priority'")
+
+(defcustom simple-call-tree-org-tag-alist org-tag-alist
+  "See `org-tag-alist'")
 
 (defun simple-call-tree-org-todo-keywords nil
   "Return list of all TODO states.
@@ -346,6 +345,13 @@ as a flat list."
 (defmacro simple-call-tree-get-item (func)
   "Return the item in `simple-call-tree-alist' corresponding with function named FUNC."
   `(assoc-if (lambda (x) (string= (car x) ,func)) simple-call-tree-alist))
+
+(defun simple-call-tree-tags-to-string (tags)
+  (if (> (length tags) 0)
+      (concat ":" (mapconcat 'identity tags ":") ":")))
+
+(defun simple-call-tree-string-to-tags (str)
+  (aif str (split-string (substring-no-properties it) "[ \f\t\n\r\v,;:]+" t)))
 
 ;; This is still not exactly right: it will match both abc & abc' on abc'
 ;; where ' could be any char in the expression prefix syntax class.
@@ -425,6 +431,8 @@ as a flat list."
   (define-key simple-call-tree-mode-map (kbd "<S-left>") 'simple-call-tree-prev-todo)
   (define-key simple-call-tree-mode-map (kbd "<S-up>") 'simple-call-tree-up-priority)
   (define-key simple-call-tree-mode-map (kbd "<S-down>") 'simple-call-tree-down-priority)
+  (define-key simple-call-tree-mode-map (kbd "C-c C-c") 'simple-call-tree-set-tags)
+  (define-key simple-call-tree-mode-map (kbd "C-c C-q") 'simple-call-tree-set-tags)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
     `("Simple Call Tree"
@@ -744,8 +752,7 @@ The LOOKBACK argument indicates how many lines backwards to search and should be
         (progn
           (aif (match-string 1) (setq todo (substring-no-properties it)))
           (aif (match-string 3) (setq priority (substring-no-properties it)))
-          (aif (match-string 5) (setq tags (split-string (substring-no-properties it)
-                                                         "[ \f\t\n\r\v,;:]+" t)))))
+          (setq tags (simple-call-tree-string-to-tags (match-string 5)))))
     (goto-char end)
     (list todo priority tags)))
 
@@ -755,6 +762,13 @@ The LOOKBACK argument indicates how many lines backwards to search and should be
                                              (func (or (simple-call-tree-get-parent)
                                                        (simple-call-tree-get-function-at-point)))
                                              (updatesrc t))
+  "Set the todo, priority, or tags for an item in `simple-call-tree-alist', and update the buffer and source code.
+ATTR can be one of: 'todo, 'priority, or 'tags
+VALUE is the corresponding value: a string for 'todo or 'priority (a single letter), or a list of strings for 'tags.
+FUNC is the name of the function corresponding to the item to be updated.
+The *Simple Call Tree* buffer and comments in the source code (just before FUNC) will be updated with the corresponding
+information. If UPDATESRC is nil then don't bother updating the source code.
+"
   (let* ((item (car (simple-call-tree-get-item func)))
          (marker (second item))
          (buf (marker-buffer marker))
@@ -765,7 +779,7 @@ The LOOKBACK argument indicates how many lines backwards to search and should be
                   (fourth item) value))
       (priority (setf srcval (concat "\\1" (if value (concat " [#" value "]") nil) " \\3")
                       (fifth item) value))
-      (tags (setf srcval (concat "\\1 \\2 " value)
+      (tags (setf srcval (concat "\\1 \\2 " (simple-call-tree-tags-to-string value))
                   (sixth item) value)))
     (if updatesrc
         (with-current-buffer buf
@@ -794,7 +808,7 @@ The LOOKBACK argument indicates how many lines backwards to search and should be
                  (simple-call-tree-insert-item item 1 nil)))
       (read-only-mode 1))))
 
-;; simple-call-tree-info: TODO  
+;; simple-call-tree-info: TODO  :a:b:
 (defun* simple-call-tree-set-todo (value &optional
                                          (func (or (simple-call-tree-get-parent)
                                                    (simple-call-tree-get-function-at-point))))
@@ -857,13 +871,18 @@ The LOOKBACK argument indicates how many lines backwards to search and should be
                              ((= curpriority simple-call-tree-org-lowest-priority) nil))))
     (simple-call-tree-set-attribute 'priority (and nextpriority (char-to-string nextpriority)) func t)))
 
-(defun simple-call-tree-set-tags (tags &optional
-                                        (func (or (simple-call-tree-get-parent)
-                                                  (simple-call-tree-get-function-at-point))))
-  
-  "Set the org tags for the function at point"
-;  org-set-tags
-;  org-get-tags
+(defun* simple-call-tree-set-tags (value &optional
+                                         (func (or (simple-call-tree-get-parent)
+                                                   (simple-call-tree-get-function-at-point))))
+  "Set the org tags for the toplevel function at point"
+  (interactive (let* ((func (or (simple-call-tree-get-parent)
+                                (simple-call-tree-get-function-at-point)))
+                      (item (simple-call-tree-get-item func))
+                      (currenttags (sixth (car item))))
+                 (list (simple-call-tree-string-to-tags
+                        (org-fast-tag-selection
+                         currenttags nil
+                         simple-call-tree-org-tag-alist)))))
   (simple-call-tree-set-attribute 'tags value func t))
 
 ;;;###autoload
@@ -1001,8 +1020,7 @@ This is a recursive function, and you should not need to set CURDEPTH."
          (pos (second item))
          (todo (fourth item))
          (priority (fifth item))
-         (tags (if (> (length (sixth item)) 0)
-                   (concat ":" (mapconcat 'identity (sixth item) ":") ":")))
+         (tags (simple-call-tree-tags-to-string (sixth item)))
          (pre (concat (if todo (concat " " todo))
                       (if priority (concat " [#" priority "]"))))
          (arrowtail (make-string (* 2 (1- curdepth)) 45))
