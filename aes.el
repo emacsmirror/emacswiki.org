@@ -1,5 +1,26 @@
 ;;; aes.el --- Implementation of AES
 
+
+
+
+;; From now on updates will be published on Github https://github.com/gaddhi/aes
+;; This version is outdated!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;; Copyright (C) 2008 Markus Sauermann
 
 ;; This program is free software; you can redistribute it and/or
