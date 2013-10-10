@@ -135,6 +135,8 @@ And the latest release (version 0.26) was done 2010-03-30.
 [new:EngelkeEschner:2011-04-18 13:00 UTC]
 I'm using it occasionally and lack a better alternative for emacs, so I recommend keeping it. -- EngelkeEschner
 
+I agree with EngelkeEschner.  I've just started using it, but so far it works smoothly. -- MattFlaschen
+
 == Improved Imenu by Class ==
 
 [http://www.oak.homeunix.org/~marcel/blog/articles/2008/07/18/nested-imenu-for-php php-imenu.el] organizes the imenu for php-mode a little differently.  Instead of listing all classes separate from all functions, it lists functions within a class, like most other IDEs do.
