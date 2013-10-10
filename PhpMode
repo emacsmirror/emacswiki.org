@@ -123,7 +123,7 @@ Now I can quickly toggle between PHP & HTML mode, depending on what I'm mostly g
 
 == Debugging ==
 
-[http://trac.sakura.ne.jp/geben/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. emacs debug mode using XDebug). -M
+[https://code.google.com/p/geben-on-emacs/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. emacs debug mode using XDebug). -M
 [new]
 I think this project is dead (and also doesn't work properly) - my posts to the mailing list have met with a deafening silence (a month now, with no activity on the list except my
 posts). I recommend removing mention of it from emascwiki.
@@ -135,7 +135,7 @@ And the latest release (version 0.26) was done 2010-03-30.
 [new:EngelkeEschner:2011-04-18 13:00 UTC]
 I'm using it occasionally and lack a better alternative for emacs, so I recommend keeping it. -- EngelkeEschner
 
-I agree with EngelkeEschner.  I've just started using it, but so far it works smoothly. -- MattFlaschen
+I agree with EngelkeEschner.  I've just started using it, but so far it works smoothly. I've also updated the link. -- MattFlaschen
 
 == Improved Imenu by Class ==
 
