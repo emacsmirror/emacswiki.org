@@ -97,9 +97,10 @@ for details.
 [:RegexpsInEmacs]
 == Idiosyncrasies of Emacs Regular Expressions ==
 
-* In a interactive search involving a regexp, a space character stands for
+* In an interactive search, a space character stands for
 one or more whitespace characters (tabs are whitespace characters).
-Enter <code>C-q SPC</code> to get a single space character.
+You can use <code>M-s SPC</code> while searching or replacing to toggle
+ between this behavior and treating spaces as literal spaces.
 Or put the following in your InitFile to override this behaviour.
 
                  (setq search-whitespace-regexp nil)
