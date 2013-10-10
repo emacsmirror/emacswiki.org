@@ -35,9 +35,13 @@ In its current form, the actual functionality of `highlight-indentation' is very
 
 [new]
 
-http://forum.ubuntu.org.cn/download/file.php?id=154714
-
 https://github.com/ran9er/init.emacs/blob/master/20_aux-line.el
+
+[http://forum.ubuntu.org.cn/download/file.php?id=154714 Screenshot]
+
+[new]
+
+That link to ran9er's !GitHub repo seemed to have moved to [https://github.com/ran9er/init.emacs/blob/master/_lib/indent-hint.el indent-hint.el].
 
 ----
 CategoryDisplay
