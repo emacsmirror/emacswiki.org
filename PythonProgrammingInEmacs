@@ -28,8 +28,7 @@ https://ep2013.europython.eu/conference/p/andrea-crotti
 
 === IPython ===
 
-[ProgrammingWithPythonModeDotEl python-mode.el] comes with integrated IPython support, no setup needed at all.
-Also ipython.el is not needed.
+[ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated and will be done by the mode on the fly.
 
 Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
 
