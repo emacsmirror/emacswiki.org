@@ -752,7 +752,7 @@ Drew, it works now.  Thanks a lot.  -- FidelSalas
 Is there any tarballs (e.g. icicles.tar.gz), so that the user can easily obtain up-to-date icicle files at once? -- SeijiZenitani
 
 [new:DrewAdams:2007-03-19 14:39 UTC]
-: This FAQ is addressed at [[IciclesIssues#IciclesTarball]]. Here is a script that should download all '''Icicles''' libraries: [[Icicles - Libraries#BulkIciclesDownload]]. -- DrewAdams
+: Here is a script that should download all '''Icicles''' libraries: [[Icicles - Libraries#BulkIciclesDownload]]. -- DrewAdams
 
 [new]
 : I see. Thank you! -- SeijiZenitani
