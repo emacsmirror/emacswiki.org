@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 11 12:59:54 2013 (-0700)
+;; Last-Updated: Fri Oct 11 14:44:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3236
+;;     Update #: 3239
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -1114,9 +1114,14 @@ This variable has an effect only for the current search.")
 (defmacro with-isearch-suspended (&rest body)
   "Exit Isearch mode, run BODY, and reinvoke the pending search.
 BODY can involve use of the minibuffer, including recursive minibuffers.
+
 You can update the global isearch variables by setting new values to
 `isearch-new-string', `isearch-new-message', `isearch-new-forward',
-`isearch-new-word', `isearch-new-case-fold'."
+`isearch-new-word', `isearch-new-case-fold'.
+
+If BODY `throw's a non-nil value, it is taken as the position from
+which to resume searching.  Otherwise, searching resumes where it was
+suspended."
   ;; This code is very hairy for several reasons, explained in the code.
   ;; Mainly, `isearch-mode' must be terminated while suspended and then restarted.
   ;; If there were a way to catch any change of buffer from the minibuffer, this could be
@@ -1181,9 +1186,9 @@ You can update the global isearch variables by setting new values to
                     (unwind-protect (progn ,@body)
                       ;; Set point at the start (end) of old match if forward (backward), so after exiting
                       ;; minibuffer isearch resumes at the start (end) of this match and can find it again.
-                      (if (and old-other-end  (eq old-point (point))  (eq isearch-forward
-                                                                          isearch-new-forward))
-                          (goto-char old-other-end))
+                      (when (and old-other-end  (eq old-point (point))  (eq isearch-forward
+                                                                            isearch-new-forward))
+                        (goto-char old-other-end))
                       ;; Always resume isearching by restarting it.
                       (isearch-mode isearch-forward isearch-regexp isearch-op-fun nil isearch-word)
                       ;; Copy new local values to isearch globals
