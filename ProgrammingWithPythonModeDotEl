@@ -1,4 +1,4 @@
-python-mode.el is part of the Python distribution.  You can also download it from launchpad:
+python-mode.el is part of the Python distribution.  You can download latest release from launchpad:
 
 * https://launchpad.net/python-mode
 
@@ -19,7 +19,7 @@ this could be useful: (RichardRiley : why?)
                   'py-beginning-of-def-or-class)
              (setq outline-regexp "def\\|class ")))
 
-: It should be noted that python-mode.el, since it is part of python, doesn't usually need to be separately installed. Also, many distros will also add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  -- CH
+Many distros add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  
 
 For Emacs 22 and after, consider ProgrammingWithPythonDotEl
 
@@ -52,10 +52,10 @@ I have found the following settings helpful in using xpdb:
 
 {{{
 ;; Let python-mode know about xpdb and generator expressions.
-(setq py-pdbtrack-input-prompt "\n[(<]*x?pdb[>)]+ "
+(setq py-pdbtrack-input-prompt "\n[(&amp;amp;amp;lt;]*x?pdb[&amp;amp;amp;gt;)]+ "
       py-pdbtrack-stack-entry-regexp
-      (concat "^> \\(.*\\)(\\([0-9]+\\))"
-	      "\\([?a-zA-Z0-9_]+\\|<genexpr>\\)()"))
+      (concat "^&amp;amp;amp;gt; \\(.*\\)(\\([0-9]+\\))"
+	      "\\([?a-zA-Z0-9_]+\\|&amp;amp;amp;lt;genexpr&amp;amp;amp;gt;\\)()"))
 }}}
 
 xpdb is a fork of the standard library pdb, available here: https://code.launchpad.net/~eyal-lotem+launchpad/xpdb/main
