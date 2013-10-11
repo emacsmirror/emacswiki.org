@@ -42,6 +42,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** ModeLine, ModeLinePosition -- current-column in [[mode line]]; highlight when too large
 ** RulerMode -- a [[minor mode]] showing a ruler with columns, tab stops and more
 ** PopupRuler -- temporarily displays a column ruler just above point
+** ColumnEnforceMode -- a [[minor mode]] for highlighting text that extends past a certain column limit.
 ** ColumnMarker -- displays semi-permanent column markers
 ** HighlightCurrentColumn -- highlight the column of the cursor
 ** FindLongLines -- commands to find long lines
