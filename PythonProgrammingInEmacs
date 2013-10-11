@@ -3,7 +3,7 @@ This page collects information for creating a usable Python programming environm
 
 == Python Modes ==
 
-There are a number of Python modes for Emacs. The major ones right now are [ProgrammingWithPythonDotElGallina python.el] which comes with Emacs 24.2 and up and [ProgrammingWithPythonModeDotEl python-mode.el] which used to be included in Python (up to 2.6.8). The older [ProgrammingWithPythonDotEl python.el] from Emacs 24.1 and before has a number of fans as well.
+There are a number of Python modes for Emacs. The major ones right now are [ProgrammingWithPythonDotElGallina python.el] which comes with Emacs 24.2 and up and [ProgrammingWithPythonModeDotEl python-mode.el]. The older [ProgrammingWithPythonDotEl python.el] from Emacs 24.1 and before has a number of fans as well.
 
 === Emacs as a Python IDE ===
 
