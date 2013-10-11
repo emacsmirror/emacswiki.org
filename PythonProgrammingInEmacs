@@ -21,9 +21,15 @@ Beyond the basic Python modes described above, there are a number of modes that 
 * [https://bitbucket.org/durin42/nosemacs nosemacs], a mode to run the nosetests testing framework
 * [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
 
+How to setup a complete IDE employing a few lines of code was shown at EuroPython 2013
+https://ep2013.europython.eu/conference/p/andrea-crotti
+
 == Various Python Interpreters ==
 
 === IPython ===
+
+[ProgrammingWithPythonModeDotEl python-mode.el] comes with integrated IPython support, no setup needed at all.
+Also ipython.el is not needed.
 
 Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
 
@@ -85,7 +91,7 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 
 ( doesn't python-mode.el offer `py-comment-region? --CH )
 
-You can also use "rectangles" with comment/uncomment region (among other things that you can do with rectangles).  See RectangleCommands or "(emacs) Rectangles" in the Emacs manual.
+Beside py-comment-region [ProgrammingWithPythonModeDotEl python-mode.el] provides commands to comment/uncomment all known forms, def, block, clause etc.
 
 === Browse the Python Documentation using Info ===
 
