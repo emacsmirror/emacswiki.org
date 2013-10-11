@@ -137,11 +137,11 @@ To connect to a very old system I had to switch the remote, default LANG to a ''
 
 == Tips and tricks ==
 
-=== The NEW (Emacs 24) ad-hoc multi-hop syntax -- the replacement for multi: ===
+=== The NEW (Emacs 24.3+) ad-hoc multi-hop syntax -- the replacement for multi: ===
 
 Note that some of the Tips and tricks below still refer to the old ##multi:## syntax, which was removed in Emacs 23 (in Emacs 23 you must configure proxies manually to facilitate multi-hops).
 
-As of Emacs 24, an analog of the old ##multi:## syntax has been layered on top of the modern `tramp-default-proxies-alist' approach, meaning that you can once again perform multi-hops without any prior configuration. For details, see:
+As of Emacs 24.3, an analog of the old ##multi:## syntax has been layered on top of the modern `tramp-default-proxies-alist' approach, meaning that you can once again perform multi-hops without any prior configuration. For details, see:
 
  C-h i g (tramp) Ad-hoc multi-hops RET
 
