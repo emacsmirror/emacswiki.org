@@ -1,5 +1,5 @@
 ;;; .emacs for Alex Schroeder's Pyrobombus
-;; This is Free Software.
+;; This is free software.
 ;; Posted using C-x h M-| and the following command:
 ;; wikiput -m -z uihnscuskc -s "update" -u AlexSchroeder http://www.emacswiki.org/cgi-bin/wiki/AlexSchroederConfigPyrobombus
 ;; Get wikiput from here:
@@ -27,10 +27,13 @@
 ;;   (require 'pink-bliss)
 ;;   (pink-bliss))
 
+(require 'cl)
+
 ;; minor modes
 (global-font-lock-mode 1)
 (show-paren-mode 1)
-(tool-bar-mode -1)
+(when (functionp 'tool-bar-mode)
+  (tool-bar-mode -1))
 (winner-mode 1)
 (windmove-default-keybindings)
 (column-number-mode 1)
@@ -94,6 +97,7 @@
          (lambda (buf)
            (with-current-buffer buf
              (not (eq major-mode 'dired-mode)))) nil)
+	("gnus" "^\\*\\(Group\\|Summary\\|Article\\|Server\\|\\(un\\)?sent\\b\\)" nil "" nil nil)
         ("rcirc" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
@@ -222,6 +226,7 @@ in parsed XML OPML."
 ;; session management, optional
 (when (require 'session nil t)
   (add-hook 'after-init-hook 'session-initialize))
+(setq history-length 100)
 
 ;; slime mode, optional
 ;; (setq inferior-lisp-program "/sw/bin/openmcl")
@@ -235,6 +240,9 @@ in parsed XML OPML."
 
 ;; action script
 (add-to-list 'auto-mode-alist '("\\.as\\'" . javascript-mode))
+
+;;; javascript
+(setq js-indent-level 2)
 
 ;;; ispell
 
@@ -327,7 +335,8 @@ in parsed XML OPML."
       ;; for ChangeLog, I want my GNU address
       add-log-mailing-address "alex@gnu.org"
       ;; for Gnus, I want my Gmail address
-      user-mail-address "kensanata@gmail.com")
+      ;; user-mail-address "kensanata@gmail.com"
+      user-mail-address "alex@gnu.org")
 
 ;; (global-set-key (kbd "M-SPC") 'just-one-space)
 ;; (global-set-key (kbd "C-v") 'goto-line)
@@ -435,9 +444,9 @@ in parsed XML OPML."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
-	  "#epfarms" "#inkscape" "#emacswiki" "#raspbian"))
-	("irc.gimp.org" :channels ("#gimp-users"))
-	;; "#eclipse" "#eclipse-de" "#osgi" "#perl6"
+	  "#epfarms" "#emacswiki" "#raspbian"))
+	;; ("irc.gimp.org" :channels ("#gimp-users"))
+	;; "#eclipse" "#eclipse-de" "#osgi" "#perl6" "#inkscape"
 	;; "#ubuntu" "#hcoop" "#biology" "#clojure" "#clojure.de"
 	;; ("ircnet.eversible.com" :channels ("#drsrm"))
 	;; ("irc.euirc.net" :channels ("#tanelorn"))
@@ -623,14 +632,16 @@ in parsed XML OPML."
 	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps"
 	 utf-8 "question" "Alex")
 	("Montag in Zürich" "http://www.campaignwiki.org/wiki/MontagInZ%C3%BCrich"
-	 utf-8 "question" "Alex")
-	("Mondschein Saga" "http://www.campaignwiki.org/wiki/MondscheinSaga"
+	 utf-8 "frodo" "Alex")
+	("Fünf Winde" "http://www.campaignwiki.org/wiki/F%C3%BCnfWinde"
+	 utf-8 "frodo" "Alex")
+	("Wilderlande" "http://www.campaignwiki.org/wiki/Wilderlande"
 	 utf-8 "frodo" "Alex")
 	("Community Wiki" "http://www.communitywiki.org/cw"
 	 utf-8 "question" nil)
 	("Oddmuse Wiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
 	 utf-8 "question" nil)
-	("Alex" "http://www.emacswiki.org/cgi-bin/alex"
+	("Alex" "http://alexschroeder.ch/wiki"
 	 utf-8 "question")))
 
 (add-hook 'oddmuse-mode-hook
@@ -1049,7 +1060,7 @@ cells by rows first."
 			     "/]]")))))
 
 ;; emacs-w3m
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/w3m")
+(add-to-list 'load-path "~/elisp/w3m")
 (require 'w3m-load)
 (setq w3m-use-cookies t)
 
@@ -1084,86 +1095,285 @@ cells by rows first."
 
 ;;; Gnus
 
-;; (setq gnus-select-method '(nntp "news.hispeed.ch")
-;;       gnus-secondary-select-methods
-;;       '((nnimap "gmail"
-;; 		(nnimap-address "imap.gmail.com")
-;; 		(nnimap-authinfo-file "~/.netrc")
-;; 		(nnimap-server-port 993)
-;; 		(nnimap-stream ssl)
-;; 		(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-;; 		(nnmail-expiry-wait immediate)))
-;;       gnus-treat-display-smileys nil)
-(add-hook 'gnus-summary-mode-hook 'my-gnus-summary-keys)
+(setq gnus-select-method
+      '(nnimap "raspberrypi"
+	       (nnimap-address "raspberrypi.local")
+	       (nnimap-server-port 993)
+	       (nnimap-stream ssl))
+      gnus-secondary-select-methods
+      '((nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")
+	       (nnimap-server-port 993)
+	       (nnimap-stream ssl)))
+      gnus-summary-line-format
+      "%U%R%z %&user-date; %I%(%[%4L: %-23,23n%]%) %s\n"
+      gnus-user-date-format-alist '((t . " %Y-%m-%d"))
+      gnus-message-archive-group "nnml+mail:mail.misc"
+      gnus-gcc-mark-as-read t)
 
-(defun my-gnus-summary-keys ()
-  (local-set-key "y" 'gmail-archive)
-  (local-set-key "$" 'gmail-report-spam))
+;; (add-hook 'gnus-summary-mode-hook 'my-gnus-summary-keys)
 
-(defun gmail-archive ()
-  "Archive the current or marked mails.
-This moves them into the All Mail folder."
+;; (defun my-gnus-summary-keys ()
+;;   (local-set-key "y" 'gmail-archive)
+;;   (local-set-key "$" 'gmail-report-spam))
+
+;; (defun gmail-archive ()
+;;   "Archive the current or marked mails.
+;; This moves them into the All Mail folder."
+;;   (interactive)
+;;   (gnus-summary-move-article nil "nnimap+imap.gmail.com:[Gmail]/All Mail"))
+
+;; (defun gmail-report-spam ()
+;;   "Report the current or marked mails as spam.
+;; This moves them into the Spam folder."
+;;   (interactive)
+;;   (gnus-summary-move-article nil "nnimap+imap.gmail.com:[Gmail]/Spam"))
+
+;; ManageSieve says 2000 is deprecated
+;; uploading the sieve doesn't work with STARTTLS?
+;; (setq sieve-manage-default-port 4190)
+
+(setq gnus-spotlight-mail-spool "/Volumes/Extern/Archives/Mail")
+(eval-after-load "gnus"
+  '(progn
+     (require 'gnus-spotlight)
+     (gnus-spotlight-insinuate)))
+
+(defun read-until-not-in-mail-misc ()
+  "Start reading messages in a Gnus Summary buffer
+until the article is not available in nnml+mail:mail.misc.
+You could call this from nnimap+imap.gmail.com:[Gmail]/All Mail, for example."
   (interactive)
-  (gnus-summary-move-article nil "nnimap+gmail:[Gmail]/All Mail"))
+  (find-in-mail-misc); error if not found
+  (while (and (forward-line) (not (looking-at "$")))
+    (find-in-mail-misc)))
 
-(defun gmail-report-spam ()
-  "Report the current or marked mails as spam.
-This moves them into the Spam folder."
+(defun find-in-mail-misc ()
+  "Figure out if this mail is also available in nnml+mail:mail.misc.
+Call from a Gnus Summary buffer."
   (interactive)
-  (gnus-summary-move-article nil "nnimap+gmail:[Gmail]/Spam"))
+  (let (id number)
+    (gnus-summary-select-article)
+    (gnus-summary-toggle-header 1)
+    (gnus-with-article-headers
+      (message-narrow-to-head)
+      (goto-char (point-min))
+      (if (re-search-forward "^Message-ID: *\\(.*\\)" nil t)
+	  (setq id (match-string 1))
+	(error "Unable to find Message-ID header")))
+    (gnus-summary-toggle-header -1)
+    (with-current-buffer (get-buffer-create " *nnml id*")
+      (setq number (nnml-find-id "mail.misc" id "nnml+mail")))
+    (if number
+	(message "Found %d" number)
+      (case (read-char "Not found in mail.misc: (e)xpire, (m)ove there, (i)gnore or (q)uit? ")
+	((?e) (gnus-summary-mark-as-expirable 1)
+	 ;; avoid skipping a line...
+	 (forward-line -1))
+	((?i) (message "Ignoring..."))
+	((?m) (gnus-summary-move-article 1 "nnml+mail:mail.misc"))
+	((?q) (error "Quit"))))))
 
-;;; Writing mail, message-mode
+;;; Mail writing, sending, SMTP
 (setq mail-user-agent 'gnus-user-agent
-      gnus-outgoing-message-group "nnimap+gmail:[Gmail]/Sent Mail")
-
-;; override the simple defun provided
-(defadvice message-expand-name (after or-complete-alias activate)
-  "Complete alias at point if it could not be expanded."
-  (unless ad-return-value
-    (mail-abbrev-complete-alias)))
-
-;;; Mail sending, SMTP
-(setq send-mail-function 'smtpmail-send-it
+      message-mail-alias-type 'ecomplete
+      ;; obsolete -- using `gnus-message-archive-group' instead
+      ;; gnus-outgoing-message-group "nnimap+imap.gmail.com:[Gmail]/Sent Mail"
+      send-mail-function 'smtpmail-send-it
       message-send-mail-function 'smtpmail-send-it
-      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-default-smtp-server "fencepost.gnu.org" ; "smtp.gmail.com"
+      smtpmail-smtp-server "fencepost.gnu.org" ; "smtp.gmail.com"
       smtpmail-smtp-service 587
       smtpmail-starttls-credentials
-      `((,smtpmail-smtp-server
-	 ,smtpmail-smtp-service
-	 nil nil))
-      smtpmail-auth-credentials "~/.netrc")
+      '(("fencepost.gnu.org" 587 nil nil)
+	("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials
+      '(("fencepost.gnu.org" 587 "alex" nil)
+	("smtp.gmail.com" 587 "kensanata@gmail.com" nil))
+      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+(add-hook 'message-mode-hook 'longlines-mode)
+
+;; override the simple defun provided
+;; (defadvice message-expand-name (after or-complete-alias activate)
+;;   "Complete alias at point if it could not be expanded."
+;;   (unless ad-return-value
+;;     (mail-abbrev-complete-alias)))
 
 ;;; Labyrinth Lord (Fünf Winde) Gold & XP
 
-(defun fünf-winde-gold (gold)
-  (interactive "nAnteil: ")
-  (save-excursion
-    (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[ \t]*\\(1\\|1/3\\)[ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
-      (let ((str (match-string 1))
-	    (name (match-string 2))
-	    (anteil (match-string 3))
-	    (num (match-string 4)))
-	(when (y-or-n-p (format "War %s dabei?" name))
-	  (replace-match (concat str
-				 (format (concat "%" (number-to-string
-						      (length num)) "d")
-					 (+  (string-to-number num)
-					     (/ gold (if (string= anteil "1")
-							 1 3)))))))))))
+(defconst fünf-winde-regexp "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[ \t]*\\(1\\|1/3\\)[ \t]*\\)|\\([ \t]*[0-9]+[ \t]*\\)|\\([ \t]*[0-9]+[ \t]*\\)"
+  "Regular expression to parse the Status page.
+\(let ((str (match-string 1))
+      (name (match-string 2))
+      (share (match-string 3))
+      (xp (match-string 4))
+      (gold (match-string 5)))
+    ...\)")
 
-(defun fünf-winde-xp (xp)
-  (interactive "nXP: ")
+(defvar fünf-winde-buf nil
+  "Source buffer.")
+
+(defvar fünf-winde-xp nil
+  "XP share.")
+
+(defvar fünf-winde-gold nil
+  "Gold share.")
+
+(defvar fünf-winde-party nil
+  "Charakters in the party.")
+
+(defun fünf-winde-xp-and-gold ()
+  "Hand out Gold and XP."
+  (interactive)
+  (let ((buf (current-buffer))
+	names shares)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward fünf-winde-regexp nil t)
+	(let ((name (match-string 2))
+	      (share (match-string 3)))
+	  (setq names (cons name names)
+		shares (cons share shares)))))
+    (switch-to-buffer "*Fünf Winde*")
+    (kill-all-local-variables)
+    (set (make-local-variable 'fünf-winde-buf) buf)
+    (make-local-variable 'fünf-winde-xp)
+    (make-local-variable 'fünf-winde-gold)
+    (make-local-variable 'fünf-winde-party)
+    (let ((inhibit-read-only t))
+      (erase-buffer))
+    (remove-overlays)
+    (setq fünf-winde-xp
+	  (widget-create 'integer
+			 :size 13
+			 :format "XP total:   %v\n"
+			 0))
+    (setq fünf-winde-gold
+	  (widget-create 'integer
+			 :size 13
+			 :format "Gold total: %v\n"
+			 0))
+    (setq fünf-winde-party
+	  (apply 'widget-create 'checklist
+		 (mapcar* (lambda (name share)
+			    `(item
+			      :format ,(concat "%v"
+					       (if (string= share "1/3")
+						   " (⅓)" "")
+					       "\n")
+			      :value ,name))
+			  (nreverse names)
+			  (nreverse shares))))
+    (widget-insert "\n")
+    (widget-create 'push-button
+		   :notify (lambda (&rest ignore)
+			     (fünf-winde-process
+			      fünf-winde-buf
+			      (widget-value fünf-winde-xp)
+			      (widget-value fünf-winde-gold)
+			      (widget-value fünf-winde-party)))
+		   "Go!")
+    (widget-insert "\n")
+    (use-local-map widget-keymap)
+    (local-set-key (kbd "q") 'bury-buffer)
+    (local-set-key (kbd "SPC") 'widget-button-press)
+    (local-set-key (kbd "<left>") 'widget-backward)
+    (local-set-key (kbd "<up>") 'widget-backward)
+    (local-set-key (kbd "<right>") 'widget-forward)
+    (local-set-key (kbd "<down>") 'widget-forward)
+    (widget-setup)
+    (goto-char (point-min))
+    (widget-forward 1)))
+
+(defun fünf-winde-process (buf total-xp total-gold party)
+  (switch-to-buffer buf)
   (save-excursion
-    (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
-      (let ((str (match-string 1))
-	    (name (match-string 2))
-	    (num (match-string 3)))
-	(when (y-or-n-p (format "War %s dabei?" name))
+    (let ((xp-shares 0)
+	  (xp-share nil)
+	  (gold-shares 0)
+	  (gold-share nil))
+      (goto-char (point-min))
+      (while (re-search-forward fünf-winde-regexp nil t)
+	(let ((name (match-string 2))
+	      (share (match-string 3)))
+	  (when (member name party)
+	    (setq gold-shares (+ gold-shares
+				 (cond ((string= share "1/2") 0.5)
+				       ((string= share "1/3") (/ 1.0 3))
+				       (t (string-to-number share))))
+		  xp-shares (1+ xp-shares)))))
+      (setq gold-share (/ total-gold gold-shares)
+	    xp-share (/ total-xp xp-shares))
+      (goto-char (point-min))
+      (while (re-search-forward fünf-winde-regexp nil t)
+	(let ((str (match-string 1))
+	      (name (match-string 2))
+	      (share (match-string 3))
+	      (xp (match-string 4))
+	      (gold (match-string 5)))
+	  (when (member name party)
+	    (setq gold (format (concat "%9d")
+			       (+  (string-to-number gold)
+				   (* gold-share (cond ((string= share "1/2") 0.5)
+						       ((string= share "1/3") (/ 1.0 3))
+						       (t (string-to-number share))))))
+		  xp (format (concat "%9d")
+			     (+  (string-to-number xp)
+				 xp-share)))
+	    (replace-match (concat str
+				   "|" xp
+				   "|" gold))))))))
+
+(defun fünf-winde-transfer ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (when (re-search-forward fünf-winde-regexp (line-end-position) t)
+      (let* ((str (match-string 1))
+	     (name (match-string 2))
+	     (xp (string-to-number (match-string 4)))
+	     (gold (string-to-number (match-string 5)))
+	     (gold-delta (read-number (concat "Gold für " name "? ")))
+	     (xp-delta (read-number (concat "XP für " name "? ")
+				    (* -1 gold-delta))))
+	  (setq gold (format (concat "%9d")
+			     (+ gold gold-delta))
+		xp (format (concat "%9d")
+			   (+ xp xp-delta)))
 	  (replace-match (concat str
-				 (format (concat "%" (number-to-string
-						      (length num)) "d")
-					 (+  (string-to-number num)
-					     xp)))))))))
+				 "|" xp
+				 "|" gold))))))
+
+;; (defun fünf-winde-gold (gold)
+;;   (interactive "nAnteil: ")
+;;   (save-excursion
+;;     (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[ \t]*\\(1\\|1/3\\)[ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
+;;       (let ((str (match-string 1))
+;; 	    (name (match-string 2))
+;; 	    (anteil (match-string 3))
+;; 	    (num (match-string 4)))
+;; 	(when (y-or-n-p (format "War %s dabei?" name))
+;; 	  (replace-match (concat str
+;; 				 (format (concat "%" (number-to-string
+;; 						      (length num)) "d")
+;; 					 (+  (string-to-number num)
+;; 					     (/ gold (if (string= anteil "1")
+;; 							 1 3)))))))))))
+
+;; (defun fünf-winde-xp (xp)
+;;   (interactive "nXP: ")
+;;   (save-excursion
+;;     (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
+;;       (let ((str (match-string 1))
+;; 	    (name (match-string 2))
+;; 	    (num (match-string 3)))
+;; 	(when (y-or-n-p (format "War %s dabei?" name))
+;; 	  (replace-match (concat str
+;; 				 (format (concat "%" (number-to-string
+;; 						      (length num)) "d")
+;; 					 (+  (string-to-number num)
+;; 					     xp)))))))))
 
 ;;; Wilderlande XP
 
@@ -1246,6 +1456,8 @@ This moves them into the Spam folder."
 			  (round n))))))))
 
 ;; LaTeX
+
+(setq latex-run-command "/usr/local/texlive/2012/bin/x86_64-darwin/pdflatex")
  
 (define-skeleton my-latex-bold
   "Make bold in LaTeX using \\textbf{}."
@@ -1292,6 +1504,23 @@ This moves them into the Spam folder."
 		  ((= m 6) 20)
 		  (t ft)))
       (replace-match (format "\\\\unit[%d]{Fuss}" ft)))))
+
+;;; Magit
+
+(load-library "magit-setup")
+
+;;; Traveller + text-mapper
+
+(defun traveller-next-hex ()
+  (interactive)
+  (when (save-excursion
+	  (re-search-backward "\\([0-9][0-9]\\)\\([0-9][0-9]\\)" nil t))
+    (let ((x (string-to-number (match-string 1)))
+	  (y (1+ (string-to-number (match-string 2)))))
+      (when (> y 10)
+	(setq x (1+ x)
+	      y 1))
+      (insert (format "%02d%02d\n" x y)))))
 
 ;;; automatic additions
 
