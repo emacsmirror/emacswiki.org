@@ -5172,17 +5172,9 @@ BTW, you should think about making downloading icicles easier, so that it's not 
 Glad to hear things are working.
 
 [:IciclesTarball]
-Wrt a zip archive or tarball, see:
-
-* [[Icicles - Libraries#BulkIciclesDownload]] -- script to download all '''Icicles''' files.
-
-* ElispArea (search for "Uploading" and also "Emacs Lisp Files Categories")
-
-* [[Icicles - Key Binding Discussion]] (search for "tar" or "zip")
-
-* WikiDownload, for downloading a tarball of all EmacsLisp files.
-
-* DownloadPartOfWiki
+[new:DrewAdams:2013-10-11 19:52 UTC]
+There is now an automatically generated zip archive of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles
+Icicles repository]]''' on the GitHubMirror. See http://www.emacswiki.org/emacs/Icicles_-_Libraries#ZipFileDownload.
 
 -- DrewAdams
 
