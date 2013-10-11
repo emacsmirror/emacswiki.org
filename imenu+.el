@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct  8 14:12:45 2013 (-0700)
+;; Last-Updated: Fri Oct 11 08:48:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 992
+;;     Update #: 997
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hide-comnt', `imenu'.
+;;   `imenu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,6 +76,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/11 dadams
+;;     imenu--make-index-alist: Fix for Emacs < 22 (no imenup-ignore-comments-flag).
 ;; 2013/10/08 dadams
 ;;     Added: imenup-ignore-comments-flag, imenup-toggle-ignoring-comments.
 ;;     Renamed: imenup-sort-ignores-case to imenup-sort-ignores-case-flag.
@@ -520,10 +522,11 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
         (cons '("Toggle Case-Sensitive Name-Sort" IGNORE
                 (lambda (&rest _ignore) (imenup-toggle-case-sensitive-sorting)))
               (cons '("Toggle Sorting" IGNORE (lambda (&rest _ignore) (imenup-toggle-sort)))
-                    (and (fboundp 'imenup-toggle-ignoring-comments)
-                         (cons '("Toggle Ignoring Commented Defs" IGNORE
-                                 (lambda (&rest _ignore) (imenup-toggle-ignoring-comments)))
-                               imenu--index-alist))))))
+                    (if (fboundp 'imenup-toggle-ignoring-comments)
+                        (cons '("Toggle Ignoring Commented Defs" IGNORE
+                                (lambda (&rest _ignore) (imenup-toggle-ignoring-comments)))
+                               imenu--index-alist)
+                      imenu--index-alist)))))
 
 ;; Same as `thgcmd-invisible-p' in `thing-cmds.el', and `icicle-invisible-p' in `icicles-cmd2.el'.
 (defun imenup-invisible-p (position)
