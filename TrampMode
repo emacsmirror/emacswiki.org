@@ -151,7 +151,7 @@ With the new syntax, each 'hop' is separated by ##|##. The example in the manual
 
 Which connects firstly as ##bird@bastion##, and from there to ##you@remotehost:/path##
 
-==== /su:: or /sudo:: on remote hosts ====
+==== /su: or /sudo: on remote hosts ====
 
 You can also use this syntax to sudo/su to root (or of course any other user) on a remote host:
 
