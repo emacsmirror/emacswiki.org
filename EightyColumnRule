@@ -31,6 +31,8 @@ Keeping lines short is important.
 ----
 Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition, FindLongLines, and FillColumnIndicator.
 
+ColumnEnforceMode can also be used to keep track of overflow in a subjectively less intrusive way.
+
 ----
 whitespace mode (part of Emacs 23+) has two interesting options you can set in variable whitespace-style:
 
