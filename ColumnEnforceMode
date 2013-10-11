@@ -1,0 +1,1 @@
+[https://github.com/jordonbiondo/column-enforce-mode/ Column-enforce-mode] is a minor mode that will highlight text that extends beyond a certain column limit. It's main use would be to help enforce good style like following the EightyColumnRule.
