@@ -762,6 +762,11 @@ Is there any tarballs (e.g. icicles.tar.gz), so that the user can easily obtain 
 
 : However, a major problem is this: just which groups of files should be in a zip? The '''[[Icicles]]''' libraries are one obvious candidate (a natural grouping of files), but other groupings are not so obvious. And '''Icicles''' files, in particular, change often. Still, an '''Icicles''' zip archive could be useful in the same way that the download scripts can be useful. -- DrewAdams
 
+[new:DrewAdams:2013-10-11 19:52 UTC]
+There is now an automatically generated zip archive of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles
+Icicles repository]]''' on the GitHubMirror. See http://www.emacswiki.org/emacs/Icicles_-_Libraries#ZipFileDownload.
+
+
 ----
 
 [new]
