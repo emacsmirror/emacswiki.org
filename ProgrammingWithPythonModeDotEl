@@ -13,15 +13,42 @@ The relevant page also has installation instructions.  The following was enough 
 
 this could be useful: (RichardRiley : why?)
 
- (add-hook 'python-mode-hook
-           (lambda ()
-             (set (make-variable-buffer-local 'beginning-of-defun-function)
-                  'py-beginning-of-def-or-class)
-             (setq outline-regexp "def\\|class ")))
-
 Many distros add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  
 
-For Emacs 22 and after, consider ProgrammingWithPythonDotEl
+== Design ==
+python-mode.el reduces number of needed keystrokes providing tailored commands. It makes edits faster, assists programming by speech, macro-driven input etc.
+
+Support Python language features, for example:
+
+py-up, py-down - travelling nested blocks
+
+Avoid typos fetching forms at point, a clause for example:
+
+py-backward-clause
+
+py-copy-clause
+
+py-down-clause
+
+...
+
+No need to customize when testing different versions:
+
+py-execute-clause-python2
+
+py-execute-clause-python3
+
+py-execute-clause-ipython
+
+...
+
+- Notion of finer grained parts - py-expression, py-minor-expression
+
+- Commands running versioned and paralleled (I)Python-executables, no need to re-define the default Python
+    largely removing the need of an active region marked before, see py-execute-line and a whole bunch more
+
+Have a look at the menu. Directory "doc" lists commands.
+
 
 == some more commands ===
 
