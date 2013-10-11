@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 11 09:56:32 2013 (-0700)
+;; Last-Updated: Fri Oct 11 11:00:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3217
+;;     Update #: 3220
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -68,6 +68,7 @@
 ;;  (@> "Change log")
 ;;  (@> "Faces and Variables")
 ;;  (@> "Keys and Hooks")
+;;  (@> "Macros")
 ;;  (@> "Commands")
 ;;  (@> "Non-Interactive Functions")
 ;;
@@ -491,7 +492,7 @@
 ;; 2013/10/11 dadams
 ;;     Added: isearchp-replace-multiple.
 ;;     isearch-mode: Add hooks: isearch-(pre|post)-command-hook, for new Emacs 24.4 snapshot.
-;;     with-isearch-suspended: For all versions now.  Added catch.
+;;     with-isearch-suspended: For all versions now.  Added catch.  Put first in file.
 ;;     isearchp-replace-on-demand: Plain C-u: replace only current. N>0: replace N. N=0: replace all.
 ;;     isearch-forward: Updated doc string.
 ;; 2013/10/06 dadams
@@ -1100,6 +1101,127 @@ More precisely, called at the end of `isearch-update'."))
 Values are the same as for option `search-invisible'.
 This variable has an effect only for the current search.")
  
+;;(@* "Macros")
+
+;;; Macros -----------------------------------------------------------
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; 1. Add `catch'.
+;; 2. Provided for Emacs 22 through 24.2, anyway.
+;;
+;; (when (and (> emacs-major-version 21)   ; Emacs 22 through 24.2
+;;            (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
+;;
+(defmacro with-isearch-suspended (&rest body)
+  "Exit Isearch mode, run BODY, and reinvoke the pending search.
+BODY can involve use of the minibuffer, including recursive minibuffers.
+You can update the global isearch variables by setting new values to
+`isearch-new-string', `isearch-new-message', `isearch-new-forward',
+`isearch-new-word', `isearch-new-case-fold'."
+  ;; This code is very hairy for several reasons, explained in the code.
+  ;; Mainly, `isearch-mode' must be terminated while suspended and then restarted.
+  ;; If there were a way to catch any change of buffer from the minibuffer, this could be
+  ;; simplified greatly.
+  ;;
+  ;; This code does not back up the search point. Should it, for use with `isearch-edit-string'?
+  `(catch 'with-isearch-suspended
+    (condition-case nil
+        (progn
+          (let ((enable-recursive-minibuffers  t)
+                (isearch-nonincremental        isearch-nonincremental)
+                ;; Locally bind all isearch global vars to protect them from recursive isearching.
+                ;; isearch-string -message and -forward are not bound, so they can be changed.
+                ;; Instead, save the values.
+                (isearch-new-string            isearch-string)
+                (isearch-new-message           isearch-message)
+                (isearch-new-forward           isearch-forward)
+                (isearch-new-word              isearch-word)
+                (isearch-new-case-fold         isearch-case-fold-search)
+                (isearch-regexp                isearch-regexp)
+                (isearch-op-fun                isearch-op-fun)
+                (isearch-cmds                  isearch-cmds)
+                (isearch-success               isearch-success)
+                (isearch-wrapped               isearch-wrapped)
+                (isearch-barrier               isearch-barrier)
+                (isearch-adjusted              isearch-adjusted)
+                (isearch-yank-flag             isearch-yank-flag)
+                (isearch-error                 isearch-error)
+
+                ;; Do not bind this.  We want `isearch-search', below, to set it.  And the old value
+                ;; does not matter after that.
+                ;; (isearch-other-end         isearch-other-end)
+                ;;
+                ;; Perhaps some of these other variables should be bound for a shorter period,
+                ;; ending before the next isearch-search.  But there doesn't seem to be a real bug,
+                ;; so let's not risk it now.
+
+                (isearch-opoint                isearch-opoint)
+                (isearch-slow-terminal-mode    isearch-slow-terminal-mode)
+                (isearch-small-window          isearch-small-window)
+                (isearch-recursive-edit        isearch-recursive-edit)
+                ;; Save the current configuration so we can restore it.
+                (isearch-window-configuration  (current-window-configuration))
+
+                ;; This could protect the index of the search rings, but we can't reliably count the
+                ;; number of typed `M-p' in `read-from-minibuffer' to adjust the index accordingly.
+                ;; So when the following is commented out, `isearch-mode' below resets the index to
+                ;; the predictable value nil.
+                ;; (search-ring-yank-pointer        search-ring-yank-pointer)
+                ;; (regexp-search-ring-yank-pointer regexp-search-ring-yank-pointer)
+
+                ;; Temporarily restore `minibuffer-message-timeout'.
+                (minibuffer-message-timeout    isearch-original-minibuffer-message-timeout)
+                (isearch-original-minibuffer-message-timeout
+                 isearch-original-minibuffer-message-timeout)
+                old-point  old-other-end)
+            ;; Suspend isearching until BODY is done.  This is so that the user can do anything
+            ;; without failure, like switch buffers and start another isearch, and return.
+            (condition-case nil (isearch-done t t) (exit nil)) ; was recursive editing
+            ;; Save old point and `isearch-other-end' before reading from minibuffer, which can
+            ;; change their values.
+            (setq old-point      (point)
+                  old-other-end  isearch-other-end)
+            (unwind-protect (progn ,@body)
+              ;; Set point at the start (end) of old match if forward (backward), so after exiting
+              ;; minibuffer isearch resumes at the start (end) of this match and can find it again.
+              (if (and old-other-end  (eq old-point (point))  (eq isearch-forward
+                                                                  isearch-new-forward))
+                  (goto-char old-other-end))
+              ;; Always resume isearching by restarting it.
+              (isearch-mode isearch-forward isearch-regexp isearch-op-fun nil isearch-word)
+              ;; Copy new local values to isearch globals
+              (setq isearch-string            isearch-new-string
+                    isearch-message           isearch-new-message
+                    isearch-forward           isearch-new-forward
+                    isearch-word              isearch-new-word
+                    isearch-case-fold-search  isearch-new-case-fold))
+            ;; Empty `isearch-string' means use default.
+            (when (= 0 (length isearch-string))
+              (setq isearch-string   (or (car (if isearch-regexp regexp-search-ring search-ring))
+                                         "")
+                    isearch-message  (mapconcat 'isearch-text-char-description
+                                                isearch-string ""))
+              ;; After taking the last element, adjust ring to previous one.
+              (isearch-ring-adjust1 nil)))
+
+          ;; This used to push the state as of before this `C-s', but it adds an inconsistent state
+          ;; where some of the variables are from the previous search (e.g. `isearch-success'), and
+          ;; some of the variables were just entered from the minibuffer (e.g. `isearch-string').
+          ;; (isearch-push-state)
+
+          (isearch-search)              ; Reinvoke the pending search.
+          (isearch-push-state)          ; Push the correct state.
+          (isearch-update)
+          (when isearch-nonincremental
+            ;; (sit-for 1) ;; needed if `isearch-done' does: (message "")
+            (isearch-done)
+            ;; The search-done message is confusing when the string is empty, so erase it.
+            (when (equal isearch-string "") (message ""))))
+      ;; Handle `abort-recursive-edit' outside of let to restore outside global values.
+      (quit (isearch-abort))))) 
+ 
 ;;(@* "Commands")
 
 ;;; Commands ---------------------------------------------------------
@@ -1356,124 +1478,6 @@ Bindings in Isearch minor mode:
 ------------------------------
 
 \\{isearch-mode-map}")))))
-
-
-
-;; REPLACE ORIGINAL in `isearch.el'.
-;;
-;; 1. Add `catch'.
-;; 2. Provided for Emacs 22 through 24.2, anyway.
-;;
-;; (when (and (> emacs-major-version 21)   ; Emacs 22 through 24.2
-;;            (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
-;;
-(defmacro with-isearch-suspended (&rest body)
-  "Exit Isearch mode, run BODY, and reinvoke the pending search.
-BODY can involve use of the minibuffer, including recursive minibuffers.
-You can update the global isearch variables by setting new values to
-`isearch-new-string', `isearch-new-message', `isearch-new-forward',
-`isearch-new-word', `isearch-new-case-fold'."
-  ;; This code is very hairy for several reasons, explained in the code.
-  ;; Mainly, `isearch-mode' must be terminated while suspended and then restarted.
-  ;; If there were a way to catch any change of buffer from the minibuffer, this could be
-  ;; simplified greatly.
-  ;;
-  ;; This code does not back up the search point. Should it, for use with `isearch-edit-string'?
-  `(catch 'with-isearch-suspended
-    (condition-case nil
-        (progn
-          (let ((enable-recursive-minibuffers  t)
-                (isearch-nonincremental        isearch-nonincremental)
-                ;; Locally bind all isearch global vars to protect them from recursive isearching.
-                ;; isearch-string -message and -forward are not bound, so they can be changed.
-                ;; Instead, save the values.
-                (isearch-new-string            isearch-string)
-                (isearch-new-message           isearch-message)
-                (isearch-new-forward           isearch-forward)
-                (isearch-new-word              isearch-word)
-                (isearch-new-case-fold         isearch-case-fold-search)
-                (isearch-regexp                isearch-regexp)
-                (isearch-op-fun                isearch-op-fun)
-                (isearch-cmds                  isearch-cmds)
-                (isearch-success               isearch-success)
-                (isearch-wrapped               isearch-wrapped)
-                (isearch-barrier               isearch-barrier)
-                (isearch-adjusted              isearch-adjusted)
-                (isearch-yank-flag             isearch-yank-flag)
-                (isearch-error                 isearch-error)
-
-                ;; Do not bind this.  We want `isearch-search', below, to set it.  And the old value
-                ;; does not matter after that.
-                ;; (isearch-other-end         isearch-other-end)
-                ;;
-                ;; Perhaps some of these other variables should be bound for a shorter period,
-                ;; ending before the next isearch-search.  But there doesn't seem to be a real bug,
-                ;; so let's not risk it now.
-
-                (isearch-opoint                isearch-opoint)
-                (isearch-slow-terminal-mode    isearch-slow-terminal-mode)
-                (isearch-small-window          isearch-small-window)
-                (isearch-recursive-edit        isearch-recursive-edit)
-                ;; Save the current configuration so we can restore it.
-                (isearch-window-configuration  (current-window-configuration))
-
-                ;; This could protect the index of the search rings, but we can't reliably count the
-                ;; number of typed `M-p' in `read-from-minibuffer' to adjust the index accordingly.
-                ;; So when the following is commented out, `isearch-mode' below resets the index to
-                ;; the predictable value nil.
-                ;; (search-ring-yank-pointer        search-ring-yank-pointer)
-                ;; (regexp-search-ring-yank-pointer regexp-search-ring-yank-pointer)
-
-                ;; Temporarily restore `minibuffer-message-timeout'.
-                (minibuffer-message-timeout    isearch-original-minibuffer-message-timeout)
-                (isearch-original-minibuffer-message-timeout
-                 isearch-original-minibuffer-message-timeout)
-                old-point  old-other-end)
-            ;; Suspend isearching until BODY is done.  This is so that the user can do anything
-            ;; without failure, like switch buffers and start another isearch, and return.
-            (condition-case nil (isearch-done t t) (exit nil)) ; was recursive editing
-            ;; Save old point and `isearch-other-end' before reading from minibuffer, which can
-            ;; change their values.
-            (setq old-point      (point)
-                  old-other-end  isearch-other-end)
-            (unwind-protect (progn ,@body)
-              ;; Set point at the start (end) of old match if forward (backward), so after exiting
-              ;; minibuffer isearch resumes at the start (end) of this match and can find it again.
-              (if (and old-other-end  (eq old-point (point))  (eq isearch-forward
-                                                                  isearch-new-forward))
-                  (goto-char old-other-end))
-              ;; Always resume isearching by restarting it.
-              (isearch-mode isearch-forward isearch-regexp isearch-op-fun nil isearch-word)
-              ;; Copy new local values to isearch globals
-              (setq isearch-string            isearch-new-string
-                    isearch-message           isearch-new-message
-                    isearch-forward           isearch-new-forward
-                    isearch-word              isearch-new-word
-                    isearch-case-fold-search  isearch-new-case-fold))
-            ;; Empty `isearch-string' means use default.
-            (when (= 0 (length isearch-string))
-              (setq isearch-string   (or (car (if isearch-regexp regexp-search-ring search-ring))
-                                         "")
-                    isearch-message  (mapconcat 'isearch-text-char-description
-                                                isearch-string ""))
-              ;; After taking the last element, adjust ring to previous one.
-              (isearch-ring-adjust1 nil)))
-
-          ;; This used to push the state as of before this `C-s', but it adds an inconsistent state
-          ;; where some of the variables are from the previous search (e.g. `isearch-success'), and
-          ;; some of the variables were just entered from the minibuffer (e.g. `isearch-string').
-          ;; (isearch-push-state)
-
-          (isearch-search)              ; Reinvoke the pending search.
-          (isearch-push-state)          ; Push the correct state.
-          (isearch-update)
-          (when isearch-nonincremental
-            ;; (sit-for 1) ;; needed if `isearch-done' does: (message "")
-            (isearch-done)
-            ;; The search-done message is confusing when the string is empty, so erase it.
-            (when (equal isearch-string "") (message ""))))
-      ;; Handle `abort-recursive-edit' outside of let to restore outside global values.
-      (quit (isearch-abort))))) 
 
 
 (when (> emacs-major-version 21)        ; Emacs 22+
