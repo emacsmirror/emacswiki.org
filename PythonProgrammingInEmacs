@@ -21,8 +21,8 @@ Beyond the basic Python modes described above, there are a number of modes that 
 * [https://bitbucket.org/durin42/nosemacs nosemacs], a mode to run the nosetests testing framework
 * [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
 
-How to setup a complete IDE employing a few lines of code was shown at EuroPython 2013
-https://ep2013.europython.eu/conference/p/andrea-crotti
+Video from  EuroPython 2013 displays how to setup a complete IDE employing a few lines of code:
+https://ep2013.europython.eu/conference/p/andrea-crotti resp. http://www.youtube.com/watch?v=0cZ7szFuz18
 
 == Various Python Interpreters ==
 
