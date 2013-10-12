@@ -70,5 +70,8 @@ It seems as when building the menu-items, some list may contain a nil. The follo
 Another comment: the version number in the comment is 1.15, but the variable "redo-version" is still set to 1.14. 
 
 -- Frank
+
+[new]
+: Fixed the issues in 1.17. -- [[irie]]
 ----
 CategoryUndo
