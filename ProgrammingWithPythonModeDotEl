@@ -91,8 +91,6 @@ I have found the following settings helpful in using xpdb:
 
 xpdb is a fork of the standard library pdb, available here: https://code.launchpad.net/~eyal-lotem+launchpad/xpdb/main
 
-When you execute a buffer with C-c C-c, the Python shell is launched as the top buffer (rather than the bottom?). How do you make it load the shell on the bottom buffer as python.el does?
-
 == other things you may be interested in ===
 
 * Some rudimentary completion support is available from http://www.python.org/cgi-bin/moinmoin/EmacsPythonCompletion
