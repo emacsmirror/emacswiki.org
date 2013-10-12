@@ -75,6 +75,8 @@ For Emacs 23:
 C-c C-f	"sys" -- this works, and describes the "sys" module in a separate Emacs help buffer.
 : If I define function "zoot", help doesn't on it -- it's only for global things.
 
+(Andreas Röhler: which is a bug. Please report bugs and feature requests at https://bugs.launchpad.net/python-mode)
+
 == Integrating python-mode's pdbtrack with xpdb and making it aware of generator expressions ==
 
 AlexCoventry
@@ -92,7 +94,7 @@ I have found the following settings helpful in using xpdb:
 xpdb is a fork of the standard library pdb, available here: https://code.launchpad.net/~eyal-lotem+launchpad/xpdb/main
 
 == other things you may be interested in ===
-
+* Please report bugs and feature requests at https://bugs.launchpad.net/python-mode
 * Some rudimentary completion support is available from http://www.python.org/cgi-bin/moinmoin/EmacsPythonCompletion
 * use C-c ! to start ipython instead of python: http://ipython.scipy.org/
 * press F1 to check your code with pylint: http://www.logilab.org/projects/pylint
