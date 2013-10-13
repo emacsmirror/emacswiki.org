@@ -43,6 +43,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * DiredTar - extension for creating and unpacking tar-files from Dired
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
+* [https://github.com/fasheng/dired-toggle dired-toggle.el] -- provide a simple way to toggle dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
 * [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- add dired visits to <code>file-name-history</code>
 * [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
@@ -59,7 +60,6 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * ThumbsMode -- Modify dired for automatic image previewing.
 * <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
-* [https://github.com/fasheng/dired-toggle dired-toggle.el] -- provide a simple way to toggle dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
 
 = Windows specific tips and additional features =
 
