@@ -1,11 +1,11 @@
 ;;; repository-root.el --- deduce the repository root directory for a given file
 
-;; Copyright (C) 2008-2012 Avi Rozen
+;; Copyright (C) 2008-2013 Avi Rozen
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: project, repository, root, source control
 ;; URL: https://github.com/ZungBang/emacs-repository-root
-;; Version: 1.0.3
+;; Version: 1.0.4
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -338,7 +338,7 @@ The result is cached (if possible) to speed up subsequent function calls."
       (set (make-local-variable 'repository-root-list) result))
     result))
 
-
+;;;###autoload
 (defun repository-root (&optional path)
   "Return the repository root directory corresponding to the
 input PATH string. Calls `repository-root-list'."
