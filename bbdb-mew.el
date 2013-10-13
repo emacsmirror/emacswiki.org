@@ -5,10 +5,10 @@
 ;; Copyright (C) 1996 Daisuke Kanda
 ;; Copyright (C) 1999 Mitsuo Nishizawa
 
-;; Author: Jamie Zawinski <jwz@netscape.com>
-;;         Shuhei KOBAYASHI <shuhei-k@jaist.ac.jp>
-;;         Daisuke Kanda <small@first.tsukuba.ac.jp>
-;;         Mitsuo Nishizawa <mitsuo@phys2.med.osaka-u.ac.jp>
+;; Author: Jamie Zawinski &lt;jwz@netscape.com&gt;
+;;         Shuhei KOBAYASHI &lt;shuhei-k@jaist.ac.jp&gt;
+;;         Daisuke Kanda &lt;small@first.tsukuba.ac.jp&gt;
+;;         Mitsuo Nishizawa &lt;mitsuo@phys2.med.osaka-u.ac.jp&gt;
 ;; Created: 1996/11/04
 ;; Version: $Id: bbdb-mew.el,v 1.5 2001/12/29 16:12:20 chrisb Exp $
 
@@ -52,7 +52,6 @@
 ;; To use BBDB name at From: field of header in citation, please set
 ;; (setq mew-cite-bbdb-header t)
 ;;
-;; Chris Beggy started doing some maintenance.
 
 ;;; Codes:
 
@@ -66,7 +65,7 @@
     (fset 'mew-header-get-value (symbol-function 'mew-field-get-value))
     )
 
-(defun bbdb/mew-update-record (&optional offer-to-create)
+(defun bbdb/mew-update-record (&amp;optional offer-to-create)
   "Returns the record corresponding to the current mew message,
 creating or modifying it as necessary.  A record will be created if 
 bbdb/mail-auto-create-p is non-nil, or if OFFER-TO-CREATE is true and
@@ -99,7 +98,7 @@ corresponding to the sender of this message."
            (read-string "Comments: "))))
   (bbdb-annotate-notes (bbdb/mew-update-record t) string))
 
-(defun bbdb/mew-edit-notes (&optional arg)
+(defun bbdb/mew-edit-notes (&amp;optional arg)
   "Edit the notes field or (with a prefix arg) a user-defined field
 of the BBDB record corresponding to the sender of this message."
   (interactive "P")
@@ -118,7 +117,7 @@ This buffer will be in bbdb-mode, with associated keybindings."
 	(bbdb-display-records (list record))
       (error "unperson"))))
 
-(defun bbdb/mew-pop-up-bbdb-buffer (&optional offer-to-create)
+(defun bbdb/mew-pop-up-bbdb-buffer (&amp;optional offer-to-create)
   "Make the *BBDB* buffer be displayed along with the mew windows,
 displaying the record corresponding to the sender of the current message."
   (let ((framepop (eq temp-buffer-show-function 'framepop-display-buffer)))
@@ -186,7 +185,7 @@ displaying the record corresponding to the sender of the current message."
       (setq prefix (mew-addrstr-extract-user from)))
     (if mew-ask-cite-prefix
 	(setq prefix (read-string "Citation prefix: " prefix)))
-    (format "%s> " prefix)
+    (format "%s&gt; " prefix)
     )))
 
 (defun mew-header-get-bbdb-name ()
