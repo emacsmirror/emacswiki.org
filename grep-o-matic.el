@@ -102,8 +102,8 @@ more details."
     (let* ((directory (file-name-directory filename))
 	   (backend (vc-backend filename))
 	   (vc_rootdir (if backend
-                           (ignore-errors
-                             (vc-call-backend backend 'root directory))
+			   (ignore-errors
+			     (vc-call-backend backend 'root directory))
 			 nil))
 	   (rr_rootdir (if (featurep 'repository-root)
 			   (repository-root filename)
@@ -167,16 +167,16 @@ Optionaly prompt for regexp to search."
     (grep-compute-defaults)
     (save-some-buffers (not compilation-ask-about-save) nil)
     (let ((default-directory repository-root))
-      ; Running git grep with no pager (as is necessary) does not play
-      ; well with font-locking, so that next/previous-error do not
-      ; work at all. So we pipe the output of 'git grep' through a
-      ; dummy 'cat'.
+      ;; Running git grep with no pager (as is necessary) does not play
+      ;; well with font-locking, so that next/previous-error do not
+      ;; work at all. So we pipe the output of 'git grep' through a
+      ;; dummy 'cat'.
       (grep (grep-expand-template
 	     (concat (grep-expand-template 
 		      grep-o-matic-git-grep-template
 		      regexp
 		      patterns)
-		      " | cat"))))))
+		     " | cat"))))))
 
 ;;;###autoload
 (defun grep-o-matic-repository (&optional prompt)
