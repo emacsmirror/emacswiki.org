@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 10:00:29 2013 (-0700)
+;; Last-Updated: Sun Oct 13 16:29:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1620
+;;     Update #: 1664
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -134,6 +134,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/13 dadams
+;;     Corrected handling of evaluable sexp for regexp replacement:
+;;      query-replace-read-to: Rewrote, based closer on vanilla.
+;;      query-replace-w-options: Use perform-replace for REGEXP handling, like vanilla.
 ;; 2013/07/24 dadams
 ;;     query-replace(-w-options|regexp), replace-(string|regexp): Region test includes being nonempty.
 ;; 2013/04/08 dadams
@@ -314,6 +318,7 @@
 
 ;; Quiet the byte compiler.
 (defvar occur-collect-regexp-history)   ; In `replace.el' (Emacs 24+).
+(defvar query-replace-defaults)         ; In `replace.el' (Emacs 22+).
 
 ;;;;;;;;;;;;;;;;;;;;;
 
@@ -550,52 +555,34 @@ to a symbol name."
 ;; 3. Else provide default input using `search/replace-default-fn'.
 ;; 3. Use `completing-read' if `replace-w-completion-flag' is non-nil.
 ;;
-;; As with vanilla query-replace, you can also use the history lists,
-;; and you can enter nothing to repeat the previous query replacement
-;; operation.
+;; As with vanilla query-replace, you can also use the history lists, and you can enter nothing to repeat
+;; the previous query replacement operation.
 ;;
 (when (> emacs-major-version 21)
   (defun query-replace-read-to (from string regexp-flag)
     "Query and return the `to' argument of a query-replace operation.
-See `query-replace-read-from'."
-    (let* ((default    (search/replace-default (symbol-value query-replace-to-history-variable)))
-           (to-prompt  (format "%s.  NEW (replacing %s): " string (query-replace-descr from)))
-           ;; The save-excursion here is in case the user marks and copies
-           ;; a region in order to specify the minibuffer input.
-           ;; That should not clobber the region for the query-replace itself.
-           (to         (save-excursion
-                         (if replace-w-completion-flag
-                             (completing-read to-prompt obarray nil nil nil
-                                              query-replace-to-history-variable default t)
-                           (read-from-minibuffer to-prompt nil nil nil
-                                                 query-replace-to-history-variable default t)))))
-      (when (and regexp-flag (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\[,#]" to))
-        (let (pos list char)
-          (while (progn (setq pos  (match-end 0))
-                        (push (substring to 0 (- pos 2)) list)
-                        (setq char  (aref to (1- pos))
-                              to    (substring to pos))
-                        (cond ((eq char ?\#) (push '(number-to-string replace-count) list))
-                              ((eq char ?\,)
-                               (setq pos  (read-from-string to))
-                               (push `(replace-quote ,(car pos)) list)
-                               ;; Swallow a space after a symbol if there is a space.
-                               (let ((end  (if (and (or (symbolp (car pos))
-                                                        ;; Swallow a space after 'foo
-                                                        ;; but not after (quote foo).
-                                                        (and (eq (car-safe (car pos)) 'quote)
-                                                             (not (= ?\( (aref to 0)))))
-                                                    (eq (string-match " " to (cdr pos))
-                                                        (cdr pos)))
-                                               (1+ (cdr pos))
-                                             (cdr pos))))
-                                 (setq to  (substring to end)))))
-                        (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\[,#]" to)))
-          (setq to  (nreverse (delete "" (cons to list)))))
-        (replace-match-string-symbols to)
-        (setq to  (cons 'replace-eval-replacement (if (> (length to) 1) (cons 'concat to) (car to)))))
-      to)))
-
+See also `query-replace-read-from'."
+    (query-replace-compile-replacement
+     (save-excursion
+       (let* ((history-add-new-input  nil)
+              (default                (search/replace-default
+                                       (symbol-value query-replace-to-history-variable)))
+              (to-prompt              (format "%s.  NEW (replacing %s): "
+                                              string (query-replace-descr from)))
+              ;; The save-excursion here is in case the user marks and copies
+              ;; a region in order to specify the minibuffer input.
+              ;; That should not clobber the region for the query-replace itself.
+              (to                     (save-excursion
+                                        (if replace-w-completion-flag
+                                            (completing-read to-prompt obarray nil nil nil
+                                                             query-replace-to-history-variable default t)
+                                          (read-from-minibuffer
+                                           to-prompt nil nil nil query-replace-to-history-variable
+                                           default t)))))
+         (add-to-history query-replace-to-history-variable to nil t)
+         (setq query-replace-defaults  (cons from to))
+         to))
+     regexp-flag)))
 
 
 
@@ -652,10 +639,10 @@ Option `replace-w-completion-flag', if non-nil, provides for
 minibuffer completion while you type the arguments.  In that case, to
 insert a `SPC' or `TAB' character, you will need to precede it by \
 `\\[quoted-insert]'."
-    (unless noerror
-      (barf-if-buffer-read-only))
+    (unless noerror (barf-if-buffer-read-only))
     (let* ((from  (query-replace-read-from prompt regexp-flag))
-           (to    (if (consp from) (prog1 (cdr from) (setq from (car from)))
+           (to    (if (consp from)
+                      (prog1 (cdr from) (setq from  (car from)))
                     (query-replace-read-to from prompt regexp-flag))))
       (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
       (list from to current-prefix-arg))))
@@ -728,15 +715,15 @@ insert a SPC or TAB character, you will need to precede it by \
 If option `isearchp-set-region-flag' is non-nil, then select the last
 replacement."
   (interactive
-   (let* ((kind    (cond ((and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg)))
+   (let* ((kind    (cond ((and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
                           " WORD")
                          (current-prefix-arg " REGEXP")
                          (t " STRING")))
-          (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP " kind))))
+          (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP" kind))))
      (list (nth 0 common) (nth 1 common) (nth 2 common)
            (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-beginning))
            (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-end)))))
-  (let ((kind  (cond ((and prefix (natnump (prefix-numeric-value prefix))) 'WORD)
+  (let ((kind  (cond ((and prefix  (natnump (prefix-numeric-value prefix))) 'WORD)
                      (prefix 'REGEXP)
                      (t 'STRING))))
     (case kind
@@ -745,11 +732,11 @@ replacement."
       (REGEXP
        (if (< emacs-major-version 21)
            (query-replace-regexp old new)
-         (query-replace-regexp old new nil start end)))
+         (perform-replace old new t t nil nil nil start end)))
       (STRING
        (if (< emacs-major-version 21) (query-replace old new) (query-replace old new nil start end))))
     (when (interactive-p) (message "query-replace %s `%s' by `%s'...done" kind old new)))
-  (when (and (boundp 'isearchp-set-region-flag) isearchp-set-region-flag)
+  (when (and (boundp 'isearchp-set-region-flag)  isearchp-set-region-flag)
     (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
 
