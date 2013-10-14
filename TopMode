@@ -1,6 +1,8 @@
-top-mode.el can run the Unix program "<tt>top</tt>" from Emacs.
+top-mode.el can run the Unix program "&lt;tt&gt;top&lt;/tt&gt;" from Emacs.
 
 You can find it here: Lisp:top-mode.el
+
+_Notice that top runs inside eshell flawlessly._
 
 [new:DrewAdams:2010-04-04 08:33 UTC]
 Nice mode, but lacks many features: face highliting (runnable tasks, own tasks, etc), choosing signal which to kill with, list of files opened by process (like in htop). -- IvanKorotkov
@@ -8,7 +10,7 @@ Nice mode, but lacks many features: face highliting (runnable tasks, own tasks, 
 
 == Installation ==
 
-Load it with <tt>autoload</tt> or <tt>require</tt>.
+Load it with &lt;tt&gt;autoload&lt;/tt&gt; or &lt;tt&gt;require&lt;/tt&gt;.
 The enter
 
  M-x top-mode
@@ -21,7 +23,7 @@ in your emacs configuration file.
 
 == Usage ==
 
-Press <tt>g</tt> to run top and <tt>q</tt> to quit.
+Press &lt;tt&gt;g&lt;/tt&gt; to run top and &lt;tt&gt;q&lt;/tt&gt; to quit.
 Other features are:
 
 * strace a process
@@ -31,9 +33,9 @@ Other features are:
 == Autorefresh ==
 If you want this to auto-refresh like the shell's top, you might add the following to your .emacs. It binds the A key in top-mode to an interactive function. Set the refresh rate in seconds, and turn off by setting the refresh rate to 0.
 
-Note that a refresh rate of 1 is not recommended, as the <tt>top</tt> function moves point to top's buffer. This leaves little time to render the prompt and let the user change the refresh rate in the minibuffer. 
+Note that a refresh rate of 1 is not recommended, as the &lt;tt&gt;top&lt;/tt&gt; function moves point to top's buffer. This leaves little time to render the prompt and let the user change the refresh rate in the minibuffer. 
 
-It would be nice if <tt>top</tt> updated its buffer without moving point, so you could have top in one buffer and work in another.
+It would be nice if &lt;tt&gt;top&lt;/tt&gt; updated its buffer without moving point, so you could have top in one buffer and work in another.
 
  (defun top-auto-refresh (rate)
    (interactive "nTop refresh rate (seconds): ")
