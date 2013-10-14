@@ -50,7 +50,7 @@ A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] 
 
 * [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
 
-* [http://blog.binchen.org/?p=775 evil matchit]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=39 matchit], support html tag
+* [https://github.com/redguardtoo/evil-matchit evil-matchit]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=39 matchit], support html tag
 == Bug tracker ==
 
 If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil BitBucket bug tracker] (open for all).
