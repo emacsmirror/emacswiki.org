@@ -1,5 +1,7 @@
 Lisp:tellicopy.el
 
+This package has been replaced by [https://github.com/leoliu/easy-kill easy-kill.el] which is under active development and more polished. -- [[Leo]] on 2013-10-14
+
 This code is directly copied out of my init file and the code has been
 in intensive daily use with incremental improvements over some months
 (~ 2 years).
