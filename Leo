@@ -1,120 +1,19 @@
 I use Emacs. I started using GNU Emacs emacs-unicode-2 branch somewhere in Dec. 2005 for emails and TeX/LaTeX documents. [2010-02-10] These days I am running Emacs 64bit on Snow Leopard. It is handling over 80% of my computing tasks, reliably and efficiently. See https://github.com/leoliu for the full list of my elisp packages.
 
 -----
-New package: TelliCopy
------
-kmacro-ring-list.el:
-http://permalink.gmane.org/gmane.emacs.sources/3395
------
-* Make M-w do more intelligently.
-If region is active, behave like normal. Otherwise, do the following:
-** M-w copy url, email or current line, in that order
+* [https://github.com/leoliu/easy-kill easy-kill]: make M-w do more.
+** If region is active, behave like normal. Otherwise,
+** Save url, email or current line, in that order
 ** M-w followed by key f, l, s or w, copy filename, list, sexp and word, respectively
-** with numeric prefix, copy that many thing-at-point
-
-The following code is now replaced by TelliCopy.
-
+** +, - expand/shrink selection line-wise or list-wise
 -----
-<pre>
-;;; Copy thing-at-point intelligently
-(defun sdl-kill-ring-save-thing-at-point (&optional n)
-  "Save THING at point to kill-ring."
-  (interactive "p")
-  (let ((things '((?l . list) (?f . filename) (?w . word) (?s . sexp)))
-        (message-log-max)               ; don't write to *Message*
-        beg t-a-p thing event)
-    (flet ((get-thing ()
-                      (save-excursion
-                        (beginning-of-thing thing)
-                        (setq beg (point))
-                        (if (= n 1)
-                            (end-of-thing thing)
-                          (forward-thing thing n))
-                        (buffer-substring beg (point)))))
-      ;; try detecting url email and fall back to 'line'
-      (dolist (thing '(url email line))
-        (when (bounds-of-thing-at-point thing)
-          (setq t-a-p (get-thing))
-          ;; remove the last newline character
-          (when (and (eq thing 'line)
-                     (>= (length t-a-p) 1)
-                     (equal (substring t-a-p -1) "\n"))
-            (setq t-a-p (substring t-a-p 0 -1)))
-          (kill-new t-a-p)
-          (message "%s" t-a-p)
-          (return nil)))
-      (setq event (read-event nil))
-      (when (setq thing (cdr (assoc event things)))
-        (clear-this-command-keys t)
-        (if (not (bounds-of-thing-at-point thing))
-            (message "No %s at point" thing)
-          (setq t-a-p (get-thing))
-          (kill-new t-a-p 'replace)
-          (message "%s" t-a-p))
-        (setq last-input-event nil))
-      (when last-input-event
-        (clear-this-command-keys t)
-        (setq unread-command-events (list last-input-event))))))
-(defun sdl-kill-ring-save-dwim ()
-  "This command dwim on saving text.
+* [https://github.com/leoliu/repeatable.el repeatable.el]
 
-If region is active, call `kill-ring-save'. Else, call
-`sdl-kill-ring-save-thing-at-point'.
-
-This command is to be used interactively."
-  (interactive)
-  (if (use-region-p)
-      (call-interactively 'kill-ring-save)
-    (call-interactively 'sdl-kill-ring-save-thing-at-point)))
-(global-set-key (kbd "M-w") 'sdl-kill-ring-save-dwim)
-</pre>
+** A macro to define commands that can be repeated by last key in the key sequence bound it.
+** A function to turn existing commands into repeatable ones.
 -----
-
-* A macro that helps you define commands that can be repeated by last key in the key sequence bound to it
-** The idea is from C-x e (kmacro-end-and-call-macro)
-** i.e. you type the key sequence once, if you want to repeat the command type the last key in the key sequence, anything else will do whatever they are supposed to do
-** I wrap it up in a macro
-
-I don't like the macro name, please help me come up with a better name.
-
------
-<pre>
-(defmacro defun-with-repeat-key (func args &rest body)
-  "Create function NAME like `defun' that can be repeated with
-the last key in the key sequence bound to it.
-
-\(fn NAME ARGLIST [DOCSTRING] BODY...)"
-  (declare (debug t))
-  (let ((body2 body)
-        (repeat-key (make-symbol "repeat-key")))
-    ;; strip doc-string
-    (when (stringp (car body2)) (setq body2 (cdr body2)))
-    ;; strip interactive form
-    (when (and (consp (car body2))
-               (eq (caar body2) 'interactive))
-      (setq body2 (cdr body2)))
-    `(defun ,func ,args
-       ,@body
-       ;; expand only if body2 is non-nil
-       ,@(when body2
-           `((let ((,repeat-key (and (> (length (this-single-command-keys)) 1)
-                                     last-input-event)))
-               (when ,repeat-key
-                 (message "(Press %s to repeat this command)"
-                          (if (characterp ,repeat-key)
-                              (string ,repeat-key)
-                            ,repeat-key))
-                 (while ,repeat-key
-                   (if (equal ,repeat-key (read-event))
-                       (progn
-                         (clear-this-command-keys t)
-                         ,@body2
-                         (setq last-input-event nil))
-                     (setq ,repeat-key nil)))
-                 (when last-input-event
-                   (clear-this-command-keys t)
-                   (setq unread-command-events (list last-input-event))))))))))
-</pre>
+* kmacro-ring-list.el:
+http://permalink.gmane.org/gmane.emacs.sources/3395
 -----
 
 [new]
@@ -126,25 +25,4 @@ Nice function. I've referenced it at CopyingWholeLines.
 [new]
 I'm glad you find it useful.
 
-[new]
-Suggestion for those who do not have use-region-p:
-<pre>
-(defun sdl-kill-ring-save-dwim ()
-  "This command dwim on saving text.
-
-If region is active, call `kill-ring-save'. Else, call
-`sdl-kill-ring-save-thing-at-point'.
-
-This command is to be used interactively."
-  (interactive)
-  (condition-case e
-      (when (mark)
-        (call-interactively 'kill-ring-save))
-    ;; handler
-    ('mark-inactive
-     (call-interactively 'sdl-kill-ring-save-thing-at-point)))
-  )
-</pre>
-- EsbenAndreasen
------
 CategoryHomepage
