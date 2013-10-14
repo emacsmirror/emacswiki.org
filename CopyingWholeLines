@@ -157,7 +157,7 @@ If you mark a region this behaves as expected and saves the region to the kill r
 !SlickEdit, !TextMate and !VisualStudio have clever line-wise behavior: if no text is selected, the copy and cut commands act on the current line instead. '''To do this in Emacs (with ##M-w## and ##C-w##), see WholeLineOrRegion.'''
 
 [new]
-A more versatile solution is provided by [[Leo]]: if the region is active, ##M-w## behaves like normal, otherwise it copies an URL, e-mail address or the current line, in that order. ##M-w## followed by the key ##f##, ##l##, ##s## or ##w## copies file name, list, S-expression and word, respectively. See [[Leo|his page]] for more details.
+A more versatile solution is provided by [[Leo]]: if the region is active, ##M-w## saves the region, otherwise it tries in order of URL, e-mail and the current line. ##M-w## followed by the key ##f##, ##l##, ##s## or ##w## copies file name, list, S-expression and word, respectively. The selection can be expanded or shrunk line-wise or list-wise. See [https://github.com/leoliu/easy-kill easy-kill] for more details.
 
 ----
 CategoryRegion CategoryMouse
