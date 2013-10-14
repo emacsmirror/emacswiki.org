@@ -32,14 +32,14 @@
 ;; `paragraph-separate', after `paragraph-start' at `left-margin', or
 ;; after `sentence-end') is automatically capitalized when a following
 ;; whitespace or punctuation character is inserted.
-;; 
+;;
 ;; The `auto-capitalize-words' variable can be customized so that
 ;; commonly used proper nouns and acronyms are capitalized or upcased,
 ;; respectively.
-;; 
+;;
 ;; The `auto-capitalize-yank' option controls whether words in yanked
 ;; text should by capitalized in the same way.
-;; 
+;;
 ;; To install auto-capitalize.el, copy it to a `load-path' directory,
 ;; `M-x byte-compile-file' it, and add this to your
 ;; site-lisp/default.el or ~/.emacs file:
@@ -49,23 +49,23 @@
 ;; 	  "Turn on `auto-capitalize' minor mode in this buffer." t)
 ;; 	(autoload 'enable-auto-capitalize-mode "auto-capitalize"
 ;; 	  "Enable `auto-capitalize' minor mode in this buffer." t)
-;; 
+;;
 ;; To turn on (unconditional) capitalization in all Text modes, add
 ;; this to your site-lisp/default.el or ~/.emacs file:
 ;; 	(add-hook 'text-mode-hook 'turn-on-auto-capitalize-mode)
 ;; To enable (interactive) capitalization in all Text modes, add this
 ;; to your site-lisp/default.el or ~/.emacs file:
 ;; 	(add-hook 'text-mode-hook 'enable-auto-capitalize-mode)
-;; 
+;;
 ;; To prevent a word from ever being capitalized or upcased
 ;; (e.g. "http"), simply add it (in lowercase) to the
 ;; `auto-capitalize-words' list.
-;; 
+;;
 ;; To prevent a word in the `auto-capitalize-words' list from being
 ;; capitalized or upcased in a particular context (e.g.
 ;; "GNU.emacs.sources"), insert the following whitespace or
 ;; punctuation character with `M-x quoted-insert' (e.g. `gnu C-q .').
-;; 
+;;
 ;; To enable contractions based on a word in the
 ;; `auto-capitalize-words' list to be capitalized or upcased
 ;; (e.g. "I'm") in the middle of a sentence in Text mode, define the
@@ -77,16 +77,16 @@
 ;;; Code:
 
 ;; Rationale:
-;; 
+;;
 ;; The implementation of auto-capitalize via an after-change-function is
 ;; somewhat complicated, but two simpler designs don't work due to
 ;; quirks in Emacs' implementation itself:
-;; 
+;;
 ;; One idea is to advise `self-insert-command' to `upcase'
 ;; `last-command-char' before it is run, but command_loop_1 optimizes
 ;; out the call to the Lisp binding with its C binding
 ;; (Fself_insert_command), which prevents any advice from being run.
-;; 
+;;
 ;; Another idea is to use a before-change-function to `upcase'
 ;; `last-command-char', but the change functions are called by
 ;; internal_self_insert, which has already had `last-command-char'
@@ -146,7 +146,7 @@ non-nil value if the current word is within \"normal\" text.")
 
 
 ;; Commands:
-	
+
 (defun auto-capitalize-mode (&optional arg)
   "Toggle `auto-capitalize' minor mode in this buffer.
 With optional prefix ARG, turn `auto-capitalize' mode on iff ARG is positive.
@@ -180,9 +180,9 @@ This sets `auto-capitalize' to `query'."
 
 ;; Internal functions:
 
-(defun auto-capitalize-sentence-end()		
+(defun auto-capitalize-sentence-end()
   "portability function. emacs 22.0.50 introduced sentence-end
-function, not available on other emacsen. 
+function, not available on other emacsen.
 Fix known to work on 23.0.90 and later"
   (if (fboundp 'sentence-end)
       (sentence-end)
@@ -223,7 +223,7 @@ This should be installed as an `after-change-function'."
 				 (= length 0)
 				 (= (- end beg) 1))))
 		      (let ((self-insert-char
-			     (cond ((fboundp 'event-to-character) ; XEmacs
+			     (cond ((featurep 'xemacs) ; XEmacs
 				    (event-to-character last-command-event
 							nil nil t))
 				   (t last-command-event)))) ; GNU Emacs
@@ -353,7 +353,7 @@ This should be installed as an `after-change-function'."
 		   (let* ((this-command 'self-insert-command)
 			  (non-word-char (char-after (match-beginning 0)))
 			  (last-command-event
-			   (cond ((fboundp 'character-to-event) ; XEmacs
+			   (cond ((featurep 'xemacs) ; XEmacs
 				  (character-to-event non-word-char))
 				 (t non-word-char)))) ; GNU Emacs
 		     (auto-capitalize (match-beginning 0)
@@ -362,8 +362,8 @@ This should be installed as an `after-change-function'."
 
 ;;; auto-capitalize.el ends here
 
-;; 1 Jun 2009: It does not work with Aquamacs 1.7/GNUEmacs 22. Only the first word in the buffer 
-;; (or the first word typed after mode activation) is capitalized. 
+;; 1 Jun 2009: It does not work with Aquamacs 1.7/GNUEmacs 22. Only the first word in the buffer
+;; (or the first word typed after mode activation) is capitalized.
 ;; Maybe the code is too old (1998). -- Rikal
 
 ;; 29 Aug 2009: Added auto-capitalize-sentence-end which should probably work on older and current day emacsen
