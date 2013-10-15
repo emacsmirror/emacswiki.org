@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 11 14:44:15 2013 (-0700)
+;; Last-Updated: Tue Oct 15 15:10:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3239
+;;     Update #: 3361
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -81,9 +81,10 @@
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
-;;    `isearchp-toggle-search-invisible',
+;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
+;;    `isearchp-toggle-search-invisible',
 ;;    `isearchp-toggle-set-region', `isearchp-yank-char' (Emacs 22+),
 ;;    `isearchp-yank-line' (Emacs 22+),
 ;;    `isearchp-yank-sexp-symbol-or-char' (Emacs 22+),
@@ -106,6 +107,10 @@
 ;;
 ;;    `isearch-fail'.
 ;;
+;;  Macros defined here:
+;;
+;;    `isearchp-user-error'.
+;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `isearchp-barf-if-use-minibuffer', `isearchp-fail-pos',
@@ -113,9 +118,10 @@
 ;;    `isearchp-message-suffix', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
 ;;    `isearchp-remove-duplicates', `isearchp-remove-mismatch',
-;;    `isearchp-repeat-command', `isearchp-replace-multiple' (Emacs
-;;    22+), `isearchp-replace-on-demand' (Emacs 22+),
-;;    `isearchp-replace-string' (Emacs 22+),
+;;    `isearchp-repeat-command', `isearchp-replace-fixed-case-p'
+;;    (Emacs 22+), `isearchp-replace-match' (Emacs 22+),
+;;    `isearchp-replace-multiple' (Emacs 22+),
+;;    `isearchp-replace-on-demand' (Emacs 22+),
 ;;    `isearchp-reset-noprompt-action-fn', `isearchp-set-region',
 ;;    `isearchp-set-sel-and-yank',
 ;;    `isearchp-update-edit-init-commands' (Emacs 22+).
@@ -125,10 +131,11 @@
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
-;;    `isearchp-noprompt-action-function', `isearchp-reg-beg',
-;;    `isearchp-reg-end', `isearchp-replacement' (Emacs 22+),
-;;    `isearchp-win-pt-line', `isearch-update-post-hook' (Emacs
-;;    20-21).
+;;    `isearchp-noprompt-action-function', `isearchp-pref-arg',
+;;    `isearchp-reg-beg', `isearchp-reg-end',
+;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
+;;    (Emacs 22+), `isearchp-win-pt-line', `isearch-update-post-hook'
+;;    (Emacs 20-21).
 ;;
 ;;
 ;;  ***** NOTE: The following macros and functions defined in
@@ -259,18 +266,18 @@
 ;;
 ;;  * The default value of `isearchp-on-demand-action-function' is
 ;;    function `isearchp-replace-on-demand', which replaces the search
-;;    hit.  This means you can replace (or delete) chosen search hits
-;;    on demand.
+;;    hit.  This means that you can replace (or delete) chosen search
+;;    hits on demand.
 ;;
 ;;    By default, the replacement string is empty, so with no prefix
 ;;    argument the action is to delete the search hit (replace it with
 ;;    nothing).
 ;;
 ;;    With a prefix arg, `isearchp-replace-on-demand' prompts for the
-;;    replacement string, which is used thereafter until you again use
-;;    a prefix arg.  Since you can use a prefix arg at any time, you
-;;    can provide different replacements for different search hits.
-;;    When prompted, if you clear the minibuffer and hit `RET', hit
+;;    replacement, which is used thereafter until you again use a
+;;    prefix arg.  Since you can use a prefix arg at any time, you can
+;;    provide different replacements for different search hits.  When
+;;    prompted, if you clear the minibuffer and hit `RET', hit
 ;;    replacement just becomes search-hit deletion.
 ;;
 ;;    . With a plain prefix arg (`C-u') or a numeric prefix arg of
@@ -296,15 +303,53 @@
 ;;    `isearch-allow-prefix' (if available) or `isearch-allow-scroll'
 ;;    to non-nil.)
 ;;
+;;  * When you use on-demand replacement (with `C-M-RET') the
+;;    replacement text can be either inserted literally, as is, or
+;;    interpreted as in `query-replace-regexp'.  In the latter case,
+;;    you can use `\&`, `\=\N', `\#', and `\,' (but not `\?').  See
+;;    the doc for `query-replace-regexp' and node `Regexp Replace' of
+;;    the Emacs manual for more information.
+;;
+;;  * You can use `C-M-`' (`isearchp-toggle-literal-replacement')
+;;    anytime during Isearch to toggle whether replacement text is
+;;    used literally or interpreted per the special regexp-replacement
+;;    constructs.
+;;
+;;    Note that the use of the special regexp replacement patterns is
+;;    unrelated to the kind of incremental search: literal string
+;;    search or regexp search.  Just remember that the way to switch
+;;    on/off the special behavior of `\&' and so on is to use `C-M-`'.
+;;
+;;  * When using the special interpreted regexp-replacement
+;;    constructs, note the following difference between query-replace
+;;    and on-demand replacement during Isearch: `C-M-RET' moves on to
+;;    the next search hit after replacing only if the result of
+;;    replacing no longer matches the regexp replacement pattern.
+;;
+;;    That is, if the text after replacement still matches the regexp
+;;    replacement pattern, then `C-M-RET' does *not* move on to the
+;;    next search hit.  To move to the next hit in this context, just
+;;    use the search key (e.g. `C-s').  Otherwise, repeating the
+;;    replacement action just acts on the current hit over and over.
+;;
+;;    For example, suppose your search regexp is "\(e\)\|a" and the
+;;    replacement pattern is "\,(if \1 "a" "e")".  In query-replace
+;;    this would swap `e' for `a' and vice versa, advancing to the
+;;    next hit after each replacement.  With on-demand replacement,
+;;    `C-M-RET' swaps a `e' for an `a'.  But since the result, `a',
+;;    still matches the replacement pattern, `C-M-RET' does not
+;;    advance after replacment, and a second `C-M-RET' at the same hit
+;;    then swaps that resulting `a' for an `e', and so on.  Just use
+;;    `C-M-RET C-M-s C-M-RET...'.
+;;
 ;;  * The value of variable `isearchp-noprompt-action-function' is a
 ;;    function that is invoked automatically, after you visit each
-;;    search hit.  The function must accept the same arguments as
-;;    `isearchp-act-on-demand'.  It cannot use the minibuffer, but it
-;;    can modify buffer contents.  The variable is reset to `nil' when
-;;    you quit Isearch.  As an example of use, command
-;;    `isearchp-replace-on-demand' with a negative prefix arg sets
-;;    this to `isearchp-replace-string', which causes automatic
-;;    replacement each time you visit a search hit.
+;;    search hit.  The function is called with no arguments.  It
+;;    cannot use the minibuffer, but it can modify buffer contents.
+;;    The variable is reset to `nil' when you quit Isearch.  As an
+;;    example of use, command `isearchp-replace-on-demand' with a
+;;    negative prefix arg sets this to `isearchp-replace-match', which
+;;    causes automatic replacement each time you visit a search hit.
 ;;
 ;;  * Hook `isearchp-nomodify-action-hook' (Emacs 22+ only) is also
 ;;    run after each search visit.  Its functions also must accept the
@@ -486,6 +531,20 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/10/15 dadams
+;;     Added: isearchp-toggle-literal-replacement, isearchp-user-error, isearchp-replace-fixed-case-p,
+;;            isearchp-replace-match, isearchp-pref-arg, isearchp-replace-literally.
+;;     Removed: isearchp-replace-string.
+;;     isearchp-act-on-demand: Bind isearchp-pref-arg to prefix arg.
+;;                             Call isearchp-on-demand-action-function with no args.
+;;     isearch-update: Call isearchp-nomodify-action-hook and isearchp-noprompt-action-function with no args.
+;;     isearchp-replace-on-demand:
+;;       Removed the args - none now.  Use (match-string 0) instead of STRING arg.
+;;       Use isearchp-pref-arg, not current-prefix-arg.  Use isearchp-replace-match, not *-replace-string.
+;;       Reset replace-count where applicable.  Set this-command to isearchp-act-on-demand at end.
+;;     isearchp-replace-multiple:
+;;       Use replace-count, not COUNT.  Use isearchp-replace-match instead of deleting and inserting.
+;;     Bind isearchp-toggle-literal-replacement to C-M-`.
 ;; 2013/10/11 dadams
 ;;     Added: isearchp-replace-multiple.
 ;;     isearch-mode: Add hooks: isearch-(pre|post)-command-hook, for new Emacs 24.4 snapshot.
@@ -784,6 +843,7 @@
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
 (defvar isearch-error)                   ; In `isearch.el'.
 (defvar isearch-filter-predicate)        ; In `isearch.el' (Emacs 24+).
+(defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
 (defvar isearch-invalid-regexp)          ; In `isearch.el' (Emacs 20-21).
 (defvar isearch-last-case-fold-search)   ; In `isearch.el'.
 (defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24.3+).
@@ -823,9 +883,8 @@
 (defvar lazy-highlight-max-at-a-time)    ; In `isearch.el' (Emacs 24+).
 (defvar minibuffer-message-timeout)      ; In Emacs C code.
 (defvar multi-isearch-next-buffer-current-function) ; In `isearch.el'.
+(defvar replace-count)                  ; In `replace.el'.
 (defvar subword-mode)
-
-(defvar isearchp-initiate-edit-commands) ; Below.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1000,13 +1059,13 @@ outside of Isearch."
 (when (> emacs-major-version 21)
   (defcustom isearchp-on-demand-action-function 'isearchp-replace-on-demand
     "*Function invoked by command `isearchp-act-on-demand'.
-It must accept, as its first three arguments:
- STRING: the search-hit
- START:  the buffer start position of the search hit
- END:    the buffer end position of the search hit
+It is called with no arguments.
 
-The default value, `isearchp-act-on-demand', replaces the search hit
-with the value of `isearchp-replacement'."
+It can access the raw prefix argument used for command
+`isearchp-act-on-demand' as the value of variable `isearchp-pref-arg'.
+
+The default value, `isearchp-replace-on-demand', replaces the search
+hit with the value of `isearchp-replacement'."
     :group 'isearch-plus :type 'function))
 
 ;;;###autoload
@@ -1049,26 +1108,25 @@ option.  Currently this means `M-s i' (`isearch-toggle-invisible') and
 (when (> emacs-major-version 21)
   (defvar isearchp-nomodify-action-hook nil
     "Functions invoked after visiting and highlighting each search hit.
+Each function is invoked passing no arguments.  It can access the
+current search hit using the match data.
+
 NOTE: The functions must not update the buffer text (in a way
 noticeable by Isearch), or else they will likely lead to a call-stack
 overflow.  This is because they are called with Isearch suspended
 during `isearch-update' (which can itself be invoked by the
-action...).
-
-Each function must accept, as its first three arguments:
- STRING: the search-hit
- START:  the buffer start position of the search hit
- END:    the buffer end position of the search hit"))
+action...)."))
 
 (defvar isearchp-noprompt-action-function nil
   "Function invoked after visiting and highlighting each search hit.
 This is reset to nil when you quit Isearch.
 
-The function cannot use the minibuffer, and it must accept, as its
-first three arguments:
- STRING: the search-hit
- START:  the buffer start position of the search hit
- END:    the buffer end position of the search hit")
+The function cannot use the minibuffer.  It is called with no
+arguments.  It can access the current search hit using the match
+data.")
+
+(defvar isearchp-pref-arg  nil
+  "Raw prefix arg value when you invoked `isearchp-act-on-demand'.")
 
 (defvar isearchp-reg-beg nil            ; Used only for Emacs 24.3+
   "Beginning of the nonempty active region or nil.
@@ -1081,6 +1139,13 @@ If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
 (when (> emacs-major-version 21)
+
+  (defvar isearchp-replace-literally nil  ; Toggle using `M-`'.
+    "Non-nil means to treat replacement text literally.
+Otherwise (nil), interpret `\\' specially in replacement text, as in
+the LITERAL argument to `replace-match'.
+You can use `M-`' to toggle this anytime during Isearch.")
+
   (defvar isearchp-replacement ""
     "Replacement string used by `isearchp-replace-on-demand'."))
 
@@ -1101,6 +1166,10 @@ This variable has an effect only for the current search.")
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+(defmacro isearchp-user-error (&rest args)
+  "`user-error' if defined, otherwise `error'."
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -1228,7 +1297,7 @@ suspended."
 ;;; Commands ---------------------------------------------------------
 
 (when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
-  (defun isearchp-act-on-demand (arg) ; Bound to `C-M-RET' in `isearch-mode-map'.
+  (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
 This suspends Isearch, performs the action, then reinvokes Isearch.
 By default, replace the search hit - see `isearchp-replace-on-demand'.
@@ -1236,10 +1305,7 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
     (interactive "P")
     (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
       (with-isearch-suspended
-          (funcall isearchp-on-demand-action-function
-                   (buffer-substring (point) isearch-other-end)
-                   (min (point) isearch-other-end)
-                   (max (point) isearch-other-end))))))
+          (let ((isearchp-pref-arg  arg)) (funcall isearchp-on-demand-action-function))))))
 
 ;;;###autoload
 (defun isearchp-cycle-mismatch-removal () ; Bound to `M-k' in `isearch-mode-map'.
@@ -1829,19 +1895,12 @@ At the end, run `isearch-update-post-hook'."
             (isearch-highlight isearch-other-end (point))
           (isearch-highlight (point) isearch-other-end))
         (when (and (> emacs-major-version 21)  isearchp-nomodify-action-hook)
-          (with-isearch-suspended
-              (run-hook-with-args 'isearchp-nomodify-action-hook
-                                  (buffer-substring (point) isearch-other-end)
-                                  (min (point) isearch-other-end)
-                                  (max (point) isearch-other-end))))
+          (with-isearch-suspended (run-hooks 'isearchp-nomodify-action-hook)))
         (when isearchp-noprompt-action-function
           (unwind-protect
                (progn
                  (add-hook 'minibuffer-setup-hook 'isearchp-barf-if-use-minibuffer)
-                 (funcall isearchp-noprompt-action-function
-                          (buffer-substring (point) isearch-other-end)
-                          (min (point) isearch-other-end)
-                          (max (point) isearch-other-end)))
+                 (funcall isearchp-noprompt-action-function))
             (remove-hook 'minibuffer-setup-hook 'isearchp-barf-if-use-minibuffer)))))
     (setq  isearch-adjusted   nil
            isearch-yank-flag  nil
@@ -2279,10 +2338,12 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                  'face 'minibuffer-prompt))))
       (concat (upcase (substring m 0 1)) (substring m 1)))))
 
+;;; Replacement on demand.  Emacs 22+
 (when (> emacs-major-version 21)
 
-  (defun isearchp-replace-on-demand (string beg end)
+  (defun isearchp-replace-on-demand ()
     "Replace current search hit by the value of `isearchp-replacement'.
+This is the default value of `isearchp-on-demand-action-function'.
 Isearch is not exited after replacing.
 
 By default, `isearchp-replacement' is \"\", so with no prefix arg, by
@@ -2307,10 +2368,13 @@ updates `isearchp-replacement'.  (If you clear the minibuffer and hit
 To use this command with a prefix arg, you must set
  `isearch-allow-prefix' or `isearch-allow-scroll' to non-nil.
 
-Useful as the value of `isearchp-on-demand-action-function'."
-    (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
-      (when current-prefix-arg
-        (when (consp current-prefix-arg) (setq numarg 1)) ; Treat plain `C-u' like `C-1'.
+You can use `C-M-`' anytime during Isearch to toggle whether the
+replacement text is taken literally or interpreted as using the
+special regexp replacement constructs.  These are the same as in
+`query-replace-regexp': `\&`, `\=\N', `\#', and `\,' (but not `\?')."
+    (let ((numarg  (and isearchp-pref-arg  (prefix-numeric-value isearchp-pref-arg))))
+      (when isearchp-pref-arg
+        (when (consp isearchp-pref-arg) (setq numarg 1)) ; Treat plain `C-u' like `C-1'.
         (setq isearchp-replacement
               (read-string (format "%sReplacement: "
                                    (cond ((> numarg 0) "")
@@ -2318,32 +2382,63 @@ Useful as the value of `isearchp-on-demand-action-function'."
                                          (t "Replace just by VISITING.  ")))
                            nil nil
                            (or (and (not (equal isearchp-replacement ""))  isearchp-replacement)
-                               string))))
-      (cond ((or (not current-prefix-arg) (= 1 numarg)) (isearchp-replace-string string beg end))
-            ((natnump numarg) (isearchp-replace-multiple numarg))
-            (t (setq isearchp-noprompt-action-function 'isearchp-replace-string)))))
-
-  (defun isearchp-replace-string (string beg end)
-    "Replace STRING from BEG to END by `isearchp-replacement' or \"\"."
-    (delete-region beg end)
-    (insert (if (stringp isearchp-replacement) isearchp-replacement "")))
+                               (match-string 0)))))
+      (cond ((or (not isearchp-pref-arg) (= 1 numarg))
+             (unless (eq this-command 'isearchp-act-on-demand) (setq replace-count  0))
+             (isearchp-replace-match))
+            ((natnump numarg)
+             (isearchp-replace-multiple numarg))
+            (t
+             (setq replace-count  0)
+             (setq isearchp-noprompt-action-function 'isearchp-replace-match))))
+    (setq this-command  'isearchp-act-on-demand))
 
   ;; $$$$$$ TO DO: The cursor is left at the right place, but when resume search it resumes from the end
   ;;               of the last search hit (not the last replacement).
   (defun isearchp-replace-multiple (arg)
     "Replace ARG search hits, but stopping at the search limit.
 If ARG is 0 then replace *all* remaining search hits, up to the limit."
-    (let ((count  0))
-      (if (and (not (zerop arg))  (>= count arg))
+    (let ((replace-count  0))
+      (if (and (not (zerop arg))  (>= replace-count arg))
           (throw 'with-isearch-suspended (point))
-        (while (and isearch-success  (or (zerop arg)  (< count arg)))
-          (unless (zerop arg) (setq count  (1+ count)))
-          (delete-region (min (point) isearch-other-end) (max (point) isearch-other-end))
-          (insert (if (stringp isearchp-replacement) isearchp-replacement ""))
-          (when (or (zerop arg)  (< count arg))
+        (while (and isearch-success  (or (zerop arg)  (< replace-count arg)))
+          (isearchp-replace-match)
+          (when (or (zerop arg)  (< replace-count arg))
             (isearch-resume isearch-string isearch-regexp isearch-word isearch-forward isearch-message
                             `,isearch-case-fold-search)))
-        (throw 'with-isearch-suspended (point)))))) ; If hit limit, put point at end of last hit.
+        (throw 'with-isearch-suspended (point))))) ; If hit limit, put point at end of last hit.
+
+  (defun isearchp-replace-match ()
+    "Replace current match with `isearchp-replacement', interpreting escapes.
+Treat the replacement string as does `query-replace-regexp'."
+    (let ((compiled                      (save-match-data
+                                           (query-replace-compile-replacement
+                                            isearchp-replacement (not isearchp-replace-literally))))
+          (enable-recursive-minibuffers  t)) ; So we can read input from \?.
+      (condition-case isearchp-replace-match
+          (replace-match-maybe-edit
+           (if (consp compiled)
+               (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+             compiled)
+           (isearchp-replace-fixed-case-p (match-string 0)) isearchp-replace-literally nil (match-data))
+        (buffer-read-only (ding) (isearchp-user-error "Buffer is read-only"))
+        (error (isearchp-user-error "No match for `%s'" isearchp-replacement)))))
+
+  (defun isearchp-replace-fixed-case-p (from)
+    "Return non-nil if FROM should be replaced without transferring case.
+FROM is a string or nil.  If FROM is nil, then return nil.
+Retuns non-nil if FROM is a string and one of the following holds:
+ * FROM is not all lowercase
+ * `case-replace' or `case-fold-search' is nil"
+    (and from  (not (and case-fold-search  case-replace  (string= from (downcase from))))))
+
+  (defun isearchp-toggle-literal-replacement () ; Bound to `C-M-`' in `isearch-mode-map'.
+    "Toggle escaping of regexp special chars in replacement text.
+This toggles variable `isearchp-replace-literally'.
+Bound to `C-M-`' during Isearch."
+    (interactive)
+    (setq isearchp-replace-literally  (not isearchp-replace-literally))
+    (message "Replacement of text literally is now %s" (if isearchp-replace-literally "ON" "OFF"))))
 
 
 ;;; Support for limiting search to active region.
@@ -2785,6 +2880,7 @@ Other Isearch+ Commands that Require Library `isearch-prop.el'
 ;; An alternative to binding `isearch-edit-string' (but less flexible):
 ;; (setq search-exit-option  'edit) ; M- = edit search string, not exit.
 
+(define-key isearch-mode-map (kbd "C-M-`")        'isearchp-toggle-literal-replacement)
 (define-key isearch-mode-map "\M-c"               'isearch-toggle-case-fold)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-e"               'isearch-edit-string)
