@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Sep  2 16:17:04 2013 (-0700)
+;; Last-Updated: Mon Oct 14 20:53:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5741
+;;     Update #: 5742
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3545,12 +3545,12 @@ Remember that you can also use multi-command `icicle-toggle-option'
 anytime to toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
-(defcustom icicle-search-replace-literally-flag nil ; Toggle with `M-`'.
+(defcustom icicle-search-replace-literally-flag nil ; Toggle with `C-M-`'.
   "*Non-nil means to treat replacement text literally.
 Otherwise (nil), interpret `\\' specially in replacement text, as in
 the LITERAL argument to `replace-match'.
 
-You can use `M-`' to toggle this at any time during Icicles search.
+You can use `C-M-`' to toggle this at any time during Icicles search.
 You can also use multi-command `icicle-toggle-option' anytime to
 toggle the option."
   :type 'boolean :group 'Icicles-Searching)
