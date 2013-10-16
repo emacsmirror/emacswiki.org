@@ -1010,6 +1010,42 @@ A simple version of the ones above.  Designed to allow you to reopen an existing
 }}}
 --- Russell Sim
 
+=== Dired sudo edit current file (24.3+) ===
+Hi. I had trouble getting the above to work with my emacs 24.3 with this new multi syntax for tramp. Always got the "sudo is only for local file" error. I also wanted to press s-return in dired mode to open file using sudo. So here is the modified above code which works for me.
+{{{
+(defun sudo-edit-current-file ()
+  (interactive)
+  (let ((my-file-name) ; fill this with the file to open
+        (position))    ; if the file is already open save position
+    (if (equal major-mode 'dired-mode) ; test if we are in dired-mode 
+        (progn
+          (setq my-file-name (dired-get-file-for-visit))
+          (find-alternate-file (prepare-tramp-sudo-string my-file-name)))
+      (setq my-file-name (buffer-file-name); hopefully anything else is an already opened file
+            position (point))
+      (find-alternate-file (prepare-tramp-sudo-string my-file-name))
+      (goto-char position))))
+
+
+(defun prepare-tramp-sudo-string (tempfile)
+  (if (file-remote-p tempfile)
+      (let ((vec (tramp-dissect-file-name tempfile)))
+
+        (tramp-make-tramp-file-name
+         "sudo"
+         (tramp-file-name-user nil)
+         (tramp-file-name-host vec)
+         (tramp-file-name-localname vec)
+         (format "ssh:%s@%s|"
+                 (tramp-file-name-user vec)
+                 (tramp-file-name-host vec))))
+    (concat "/sudo:root@localhost:" tempfile)))
+
+(define-key dired-mode-map [s-return] 'sudo-edit-current-file)
+
+}}}
+
+--- Stefan Eichberger
 
 ----
 CategoryExternalUtilities
