@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 16 10:21:30 2013 (-0700)
+;; Last-Updated: Wed Oct 16 12:52:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3369
+;;     Update #: 3378
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -306,12 +306,19 @@
 ;;  * When you use on-demand replacement (with `C-M-RET') the
 ;;    replacement text can be either inserted literally, as is, or
 ;;    interpreted as in `query-replace-regexp'.  In the latter case,
-;;    you can use `\&`, `\=\N', `\#', `\,' and `\?'.  See the doc for
-;;    `query-replace-regexp' and node `Regexp Replace' of the Emacs
-;;    manual for more information.
+;;    you can use `\&`, `\=\N', `\#', `\,' and `\?'.
 ;;
-;;    (However, `\?' is not very useful in this context, as it prompts
-;;    you to edit the result each time you hit `C-M-RET'.)
+;;    For example, suppose you use a regexp-search pattern of
+;;    "\(e\)\|a" and a replacement pattern of "\,(if \1 "a" "e")".
+;;    Each `C-M-RET' will then swap `e' for `a' and vice versa.
+;;
+;;    See the doc for `query-replace-regexp' and node `Regexp Replace'
+;;    of the Emacs manual for more information.
+;;
+;;    (Note that `\?' is supported, but it is not very useful in this
+;;    context, because it prompts you to edit the result each time you
+;;    hit `C-M-RET'.  Instead, use `C-u C-M-RET' whenever you want to
+;;    change (edit) the replacement pattern.)
 ;;
 ;;  * You can use `C-M-`' (`isearchp-toggle-literal-replacement')
 ;;    anytime during Isearch to toggle whether replacement text is
@@ -537,6 +544,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/10/16 dadams
+;;     with-isearch-suspended: Do not (goto-char old-other-end) after BODY if we just replaced text.
 ;; 2013/10/15 dadams
 ;;     Added: isearchp-toggle-literal-replacement, isearchp-user-error, isearchp-replace-fixed-case-p,
 ;;            isearchp-replace-match, isearchp-pref-arg, isearchp-replace-literally.
@@ -1262,7 +1271,8 @@ suspended."
                       ;; Set point at the start (end) of old match if forward (backward), so after exiting
                       ;; minibuffer isearch resumes at the start (end) of this match and can find it again.
                       (when (and old-other-end  (eq old-point (point))  (eq isearch-forward
-                                                                            isearch-new-forward))
+                                                                            isearch-new-forward)
+                                 (not (eq last-command 'isearchp-act-on-demand)))
                         (goto-char old-other-end))
                       ;; Always resume isearching by restarting it.
                       (isearch-mode isearch-forward isearch-regexp isearch-op-fun nil isearch-word)
@@ -1296,7 +1306,7 @@ suspended."
               ;; Handle `abort-recursive-edit' outside of let to restore outside global values.
               (quit (isearch-abort)))
             nil)))
-    (when newpoint (setq isearch-success  newpoint)))) 
+    (when newpoint (setq isearch-success  newpoint))))
  
 ;;(@* "Commands")
 
