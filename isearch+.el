@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 15 15:10:29 2013 (-0700)
+;; Last-Updated: Wed Oct 16 10:21:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3361
+;;     Update #: 3369
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -306,9 +306,12 @@
 ;;  * When you use on-demand replacement (with `C-M-RET') the
 ;;    replacement text can be either inserted literally, as is, or
 ;;    interpreted as in `query-replace-regexp'.  In the latter case,
-;;    you can use `\&`, `\=\N', `\#', and `\,' (but not `\?').  See
-;;    the doc for `query-replace-regexp' and node `Regexp Replace' of
-;;    the Emacs manual for more information.
+;;    you can use `\&`, `\=\N', `\#', `\,' and `\?'.  See the doc for
+;;    `query-replace-regexp' and node `Regexp Replace' of the Emacs
+;;    manual for more information.
+;;
+;;    (However, `\?' is not very useful in this context, as it prompts
+;;    you to edit the result each time you hit `C-M-RET'.)
 ;;
 ;;  * You can use `C-M-`' (`isearchp-toggle-literal-replacement')
 ;;    anytime during Isearch to toggle whether replacement text is
@@ -320,27 +323,30 @@
 ;;    search or regexp search.  Just remember that the way to switch
 ;;    on/off the special behavior of `\&' and so on is to use `C-M-`'.
 ;;
-;;  * When using the special interpreted regexp-replacement
-;;    constructs, note the following difference between query-replace
-;;    and on-demand replacement during Isearch: `C-M-RET' moves on to
-;;    the next search hit after replacing only if the result of
-;;    replacing no longer matches the regexp replacement pattern.
+;;  * Note the following difference between query-replace and
+;;    on-demand replacement during Isearch: `C-M-RET' moves on to the
+;;    next search hit after replacing only if the result of replacing
+;;    no longer matches the replacement pattern.
 ;;
-;;    That is, if the text after replacement still matches the regexp
-;;    replacement pattern, then `C-M-RET' does *not* move on to the
-;;    next search hit.  To move to the next hit in this context, just
-;;    use the search key (e.g. `C-s').  Otherwise, repeating the
-;;    replacement action just acts on the current hit over and over.
+;;    If the text after replacement still matches the replacement
+;;    pattern then `C-M-RET' does not move on to the next search hit.
+;;    To move to the next hit in this context, just use the search key
+;;    (e.g. `C-s').  Otherwise, repeating the replacement action just
+;;    acts on the current hit over and over.
 ;;
-;;    For example, suppose your search regexp is "\(e\)\|a" and the
-;;    replacement pattern is "\,(if \1 "a" "e")".  In query-replace
-;;    this would swap `e' for `a' and vice versa, advancing to the
-;;    next hit after each replacement.  With on-demand replacement,
-;;    `C-M-RET' swaps a `e' for an `a'.  But since the result, `a',
-;;    still matches the replacement pattern, `C-M-RET' does not
-;;    advance after replacment, and a second `C-M-RET' at the same hit
-;;    then swaps that resulting `a' for an `e', and so on.  Just use
-;;    `C-M-RET C-M-s C-M-RET...'.
+;;    For example, if your search pattern is "ea" and the replacement
+;;    is also "ea", then `C-M-RET' carries out the replacement, but
+;;    search does not move to the next hit.
+;;
+;;    A more interesting example: Suppose the regexp-search pattern is
+;;    "\(e\)\|a" and the replacement pattern is "\,(if \1 "a" "e")".
+;;    In query-replace this would swap `e' for `a' and vice versa,
+;;    advancing to the next hit after each replacement.  With
+;;    on-demand replacement, `C-M-RET' swaps `e' for `a'.  But since
+;;    the result, `a', still matches the replacement pattern,
+;;    `C-M-RET' does not advance after replacment, and a second
+;;    `C-M-RET' at the same hit then swaps that resulting `a' for an
+;;    `e', and so on.  Just use `C-M-RET C-M-s C-M-RET...'.
 ;;
 ;;  * The value of variable `isearchp-noprompt-action-function' is a
 ;;    function that is invoked automatically, after you visit each
@@ -1853,6 +1859,13 @@ not necessarily fontify the whole buffer."
   (when isearch-overlay (delete-overlay isearch-overlay)))
 
 
+;; ADVISE `isearch-update' to run `isearch-update-post-hook', in Emacs 20-21.
+(when (< emacs-major-version 22)
+  (defadvice isearch-update (after run-isearch-update-post-hook activate)
+    "Run `isearch-update-post-hook' at the end."
+    (run-hooks 'isearch-update-post-hook)))
+
+
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
 ;; Run `isearchp-nomodify-action-hook' if successful (Emacs 22+).
@@ -1898,9 +1911,8 @@ At the end, run `isearch-update-post-hook'."
           (with-isearch-suspended (run-hooks 'isearchp-nomodify-action-hook)))
         (when isearchp-noprompt-action-function
           (unwind-protect
-               (progn
-                 (add-hook 'minibuffer-setup-hook 'isearchp-barf-if-use-minibuffer)
-                 (funcall isearchp-noprompt-action-function))
+               (progn (add-hook 'minibuffer-setup-hook 'isearchp-barf-if-use-minibuffer)
+                      (funcall isearchp-noprompt-action-function))
             (remove-hook 'minibuffer-setup-hook 'isearchp-barf-if-use-minibuffer)))))
     (setq  isearch-adjusted   nil
            isearch-yank-flag  nil
@@ -2947,12 +2959,6 @@ This is used only for Transient Mark mode."
     (push-mark isearch-other-end t 'activate)))
 
 (add-hook 'isearch-mode-end-hook 'isearchp-set-region)
-
-;; ADVISE `isearch-update' to run `isearch-update-post-hook', in Emacs 20-21.
-(when (< emacs-major-version 22)
-  (defadvice isearch-update (after run-isearch-update-post-hook activate)
-    "Run `isearch-update-post-hook' at the end."
-    (run-hooks 'isearch-update-post-hook)))
 
 (defun isearchp-highlight-lighter ()
   "Update minor-mode mode-line lighter to reflect case sensitivity."
