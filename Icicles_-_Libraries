@@ -135,6 +135,11 @@ Here's one way to check which '''Icicles''' libraries have changed recently: '''
 [:BulkIciclesDownload]
 == Downloading Icicles Libraries ==
 
+[new:DrewAdams:2013-10-16 20:12 UTC]
+'''NOTE:''' '''Icicles''', as well as my other libraries that are on %%EmacsWiki%% are also obtainable from [[http://melpa.milkbox.net/|MELPA]].  What's more, you can be pretty sure that they are untampered with, because their wiki pages are locked except to %%EmacsWiki%% administrators.
+[new]
+
+
 You can download the '''Icicles''' files individually from ElispArea, by clicking the file link and then right-clicking the `Download' link for each, and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
 
 Alternatively, there are ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
