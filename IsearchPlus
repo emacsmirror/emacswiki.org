@@ -42,6 +42,68 @@ for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggl
 '''`C-SPC'''' during isearch -- toggle `isearchp-set-region-flag'.
 ** Command '''`set-region-around-search-target'''' -- manually set the region around the last search target.
 
+
+
+
+[:isearchp-act-on-demand]
+[:isearchp-on-demand-action-function]
+* When you visit a search hit, you can perform an ''action'' on it.
+Use '''`C-M-RET'''' (command `isearchp-act-on-demand' -- Emacs 22+
+only) to invoke the action function that is the value of option
+'''`isearchp-on-demand-action-function''''.  That function is passed
+the current search-hit string and its start and end positions in
+the buffer.  Search moves to the next hit in the same search
+direction, so just repeating `C-M-RET' carries out the action on
+subsequent hits.
+
+
+
+
+* The default value of `isearchp-on-demand-action-function' is
+function `isearchp-replace-on-demand', which ''replaces the search
+hit''.  This means that you can replace (or delete) chosen search
+hits on demand.
+By default, the replacement string is empty, so with no prefix
+argument the action is to ''delete'' the search hit (replace it with
+nothing).
+
+
+* With a [[prefix argument]], `isearchp-replace-on-demand' ('''`C-M-RET'''') prompts for the
+replacement, which is used thereafter until you again use a
+prefix arg.  Since you can use a prefix arg at any time, you can
+provide ''different replacements'' for different search hits.  When
+prompted, if you clear the minibuffer and hit `RET', hit
+replacement just becomes search-hit ''deletion''.
+['''NOTE:''' To use a prefix arg within Isearch, you must set
+'''`isearch-allow-prefix'''' (if available) or '''`isearch-allow-scroll''''
+to non-`nil'.]
+
+** With a ''plain'' prefix arg ('''`C-u'''') or a numeric prefix arg of
+value '''1''' (e.g. `C-1'), `isearchp-replace-on-demand' replaces
+only the current search hit.
+
+** With a ''negative'' prefix arg (e.g. '''`M--''''),
+`isearchp-replace-on-demand' changes searching so that it also
+replaces.  That is, the search key (e.g., `C-s') then acts the
+same as `C-M-RET'.  (You can cancel this by using a
+non-negative prefix arg or by quitting and restarting
+Isearch.)
+
+** With a ''positive'' prefix arg ''N'' (e.g. `C-8' or `C-u 200'),
+`isearchp-replace-on-demand' replaces ''N'' search hits (but it
+stops at the search limit, if reached).
+
+** With a ''zero'' prefix arg (e.g. `C-0),
+`isearchp-replace-on-demand' replaces ''all'' remaining search
+hits (up to the search limit).
+
+
+
+
+
+
+
+
 [:isearchp-regexp-quote-yank-flag]
 [:isearchp-toggle-regexp-quote-yank]
 * [[option|Option]] ('''`isearchp-regexp-quote-yank-flag'''') and command (`isearchp-toggle-regexp-quote-yank', bound to '''`##C-`##'''') to toggle quoting (escaping) of [[regexp]] special characters.  With escaping turned off, you can yank text such as ##^\*.*## without it being transformed to ##\^\\\*\.\*##.
