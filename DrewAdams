@@ -183,12 +183,18 @@ And Emacs has improved greatly over the years. I still use Emacs 20, as well as 
 
 === My EmacsWiki Elisp Libraries: ===
 
-This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
+This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
+
+'''NOTE:''' All of my libraries that are on %%EmacsWiki%% are also obtainable from [[http://melpa.milkbox.net/|MELPA]].  What's more, you can be pretty sure that they are untampered with, because their wiki pages are locked except to %%EmacsWiki%% administrators.
+
+
+
 
 === Recent Developments ===
 
 [new]
-* '''[[Icicles]]''' --  [[minibuffer]] input [[completion]] and [[Icicles - Cycling Completions|cycling]] like you've never seen 
+* '''[[IsearchPlus]]''' -- IncrementalSearch enhancements
+* '''[[Icicles]]''' --  enhanced [[minibuffer]] input [[completion]] and [[Icicles - Cycling Completions|cycling]] 
 * '''LaCarte'''  --  execute ''menu'' commands using the keyboard, with [[completion]]
 * '''[[Bookmark+]]''' -- record places and things, tag stuff
 * '''DoReMi'''   -- define [[command]]s to use the arrow keys or mouse wheel to change things incrementally
@@ -245,6 +251,7 @@ This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
 * CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
 * [[IcompleteMode#IcompleteModePlus]] -- '''Icomplete Mode+''' (<tt>[[icomplete+.el]]</tt>): highlight possible [[completion]]s to [[minibuffer]] input
 * [[ImenuMode#ImenuModePlus]] -- '''Imenu+''' (<tt>[[imenu+.el]]</tt>): dynamically add mode-specific menus for definitions ([[key]]s, functions, macros, [[variable]]s...)
+* [[IsearchPlus]] -- IncrementalSearch enhancements
 * IncrementalSearch -- [[key binding]] recommendations
 * ShowWhiteSpace -- toggle highlighting of TABs, hard spaces, or trailing whitespace
 
