@@ -1,0 +1,10 @@
+== Check buffers with fragments of html code ==
+The problem is described on stackoverflow: http://stackoverflow.com/questions/19363837/how-can-i-highlight-unmatched-html-tags-in-emacs/19364696#19364696
+Citation:
+"How can I highlight unbalanced HTML tags, without writing full HTML documents?"
+
+You can use:
+
+Lisp:html-check-frag.el
+
+For installation and usage see comments therein.
