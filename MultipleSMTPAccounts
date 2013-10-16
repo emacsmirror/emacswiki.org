@@ -97,6 +97,10 @@ I upgraded to emacs bzr rev. 105301 yesterday. It still works with Volkan's smtp
 
 [new:DavidGreene:2013-10-08]
 I am getting "smtp-server not defined" with a recent emacs-snapshot.  Any ideas?
+
+[new:DavidGreene:2013-10-1 6]
+For reference, the "smtp-server not defined" error is due to FLIM's conflicting smtp implementation.
+An "aptitude purge flim" solved the problem.
 ----
 
 This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz
