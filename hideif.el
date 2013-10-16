@@ -6,6 +6,7 @@
 ;;      Daniel LaLiberte <liberte@holonexus.org>
 ;; Maintainer: FSF
 ;; Keywords: c, outlines
+;; Rewrite by Luke Lee in 2013.
 
 ;; This file is part of GNU Emacs.
 
