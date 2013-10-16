@@ -10,5 +10,56 @@ text unawares.
 You can make your buffer read-only while hide-ifdef-hiding by setting
 `hide-ifdef-read-only' to a non-nil value.
 
+Luke Lee note:
+I've extensively rewrite the original hideif.el for the following:
+* Automatically find and add #define macros when hiding
+* Complete C expression with operator precedence implemented
+* Hex/octal/decimal number supported
+* Bit shift operation supported
+* Stringification/ string concatenation / token concatenation supported
+* Argumented macro expansion supported, even for complicated and rarely used token replacement syntax
+{{{
+#define TESTVAL1 0x123
+#define TESTVAL2 291 // 0x123
+
+#define CONCAT(x,y) x ## y
+#define CONCAT2(x,y) CONCAT(x,y)
+
+#if CONCAT( TESTVAL1=,=TESTVAL2 )
+#error correct
+#else
+#error wrong
+#endif
+
+#if CONCAT( TESTVAL1!,=TESTVAL2 )
+#error wrong
+#else
+#error correct
+#endif
+}}}
+after hiding, it will become
+{{{
+#define TESTVAL1 0x123
+#define TESTVAL2 291 // 0x123
+
+#define CONCAT(x,y) x ## y
+#define CONCAT2(x,y) CONCAT(x,y)
+
+#if CONCAT( TESTVAL1=,=TESTVAL2 )
+#error correct
+#else...
+#endif
+
+#if CONCAT( TESTVAL1!,=TESTVAL2 )...
+#else
+#error correct
+#endif
+}}}
+* GNU C compatibility
+* hide/unhide a region
+* Evaluate a macro, just mark the region you want to evalute and press &lt;Ctrl-C&gt; &lt;@&gt; &lt;e&gt;
+* When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
+
+Lisp:hideif.el
 ----
 CategoryHideStuff
