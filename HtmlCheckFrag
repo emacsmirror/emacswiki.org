@@ -8,3 +8,7 @@ You can use:
 Lisp:html-check-frag.el
 
 For installation and usage see comments therein.
+
+=== Possible improvements ===
+# Store parser stack in overlays at tags to speed up jit-font-lock. Currently, an error can cause jit-lock to parse the whole buffer again. With the overlays we only need to parse back to the last overlay.
+# Colorize the error notification in the mode-line. (Implementation already tried but does not work. I assume that is caused by the minor mode highlighters already setting the propertize attribute.
