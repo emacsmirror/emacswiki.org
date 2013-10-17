@@ -833,9 +833,10 @@ prompt.  You must also use some '''Icicles''' command, such as `TAB',
 `S-TAB', `next', or `down' to tell '''Icicles''' how to create the
 candidate set -- how to match the regexp.
 
-[:GrepTags]
-== Grep on Files in the Tags Table ==
-Icicles should incorperate something similar to the igrep solution below:
+[:Questions]
+== Questions ==
+Icicles should incorperate something similar to the igrep solution below for grep on all files in the tags table.
+The icicle-tags-search works but doesn't provide enough information about the line that the match is on.
 http://stackoverflow.com/questions/4474583/help-writing-emacs-lisp-for-emacs-etags-search
 
 ----
