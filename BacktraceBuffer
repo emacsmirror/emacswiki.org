@@ -14,7 +14,7 @@ In order to ''leave'' a recursive edit, do `C-]' (<code>abort-recursive-edit</co
 
 = Example =
 
-Use `M-x set-variable' to set the variable debug-on-quit to t.  Then
+Use `M-x set-variable' to set the variable `debug-on-quit' to t.  Then
 evaluate the following piece of code, and then hit C-g to quit.
 
     (let ((n 0))
