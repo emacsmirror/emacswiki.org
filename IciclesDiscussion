@@ -1108,11 +1108,14 @@ I think this should offer you the flexibility you seek. HTH -- DrewAdams
 
 </pre>
 
-Icicles should incorperate something similar to the igrep solution below for grep on all files in the tags table.
-The icicle-tags-search works but doesn't provide enough information about the line that the match is on.
+Icicles should incorperate something similar to the `igrep' solution below for `grep' on all files in the TAGS table.
+The `icicle-tags-search' works but doesn't provide enough information about the line that the match is on.
 http://stackoverflow.com/questions/4474583/help-writing-emacs-lisp-for-emacs-etags-search -- [[tus-gate3.raytheon.com]]
 
 
+
+[new:DrewAdams:2013-10-17 18:52 UTC]
+It "should"? Why? Why do you want the line number. Icicles tags search shows you all matching tags and lets you browse among them.  See also commands `icicle-find-tag', `icicle-find-first-tag', and `icicle-tags-search'. See also the [[Icicles_-_Emacs_Tags_Enhancements#EmacsTagBookmarks|automatic creation of bookmarks]] to tags. -- DrewAdams
 
 
 
