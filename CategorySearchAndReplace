@@ -1,6 +1,6 @@
-Emacs can search in the current buffer, across many buffers or in files.
+Emacs can search in the current [[buffer]], across multiple buffers or in files.
 
-You can also search Emacs internals--like documentation, commands and variables (See SelfDocumentation).
+You can also search Emacs itself: introspect documentation, [[command]]s, [[face]]s, [[variable]]s,... (See SelfDocumentation).
 Some [EmacsWiki:CategoryCompletion completion] features use search.
 
 This page is about searching and replacing text in Emacs. Look for `search' in the EmacsManual for more information -- that will also provide info about replacing.
@@ -11,7 +11,8 @@ This page is about searching and replacing text in Emacs. Look for `search' in t
 Vanilla:
 
 * IncrementalSearch -- aka [[Isearch]]. ‘C-s’ and `C-M-s'.
-* OccurMode -- ‘M-x occur’ and family. Like GrepMode, but for buffers, not files.
+* Incremental search across multiple buffers: command `multi-isearch-buffers'.  (See the Emacs manual: [[Manual:Other Repeating Search]].)
+* OccurMode -- ‘M-x occur’ and `multi-occur'. Similar to [[GrepMode|grep]], but for buffers, not files.
 
 Additional:
 
@@ -34,24 +35,41 @@ Additional:
 * SuperDuperRedundantPlus -- can mark all files in dired buffer using `dired-mark-files-containing-regexp' followed by `dired-do-query-replace-regexp'.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [:ReplaceInBuffers]
 == Replace in Buffers ==
 
 Vanilla:
 
-* ReplaceRegexp -- Query-replace, evaluating a Lisp sexpr for the replacement text.
+* ReplaceRegexp -- Query-replace, possibly evaluating an EmacsLisp [[sexp]] to compute the replacement text.
 * IncrementalSearchAndReplace -- Query-replace using the last `isearch' string (Emacs 22).
 * IbufferMode -- Operate on multiple buffers, including query replace (Emacs 22).
 
 Additional:
 
 * [[Anything]] -- `M-x anything-regexp', `M-x anything-query-replace-regexp': narrow the matched lines by multiple patterns and replace.
+
+[:IciclesSearchAndReplace]
 * Icicles [[Icicles - Search-And-Replace|search-and-replace]]
--- Replace individual search hits in any order. Replace all. Search hits can be regexp matches within a search context that corresponds to a regexp or a regexp-subgroup match. EmacsLisp-sexp replacement text is allowed, as in ReplaceRegexp. Search and replace across multiple buffers or multiple saved regions. 
+-- Replace individual search hits in any order. Replace all. Search hits can be [[regexp]] matches within a search context that corresponds to a regexp or a regexp-subgroup match. Lisp [[sexp]] eval replacement text is allowed, as in ReplaceRegexp. Search and replace across multiple buffers, files, bookmarks, or saved [[region]]s.
 [:IciclesSearchAndReplace]
 
 * [[Iedit]] -- Replace multiple occurrences of the [[Isearch]] string.
-* [[Isearch+]] -- ''On-demand'' replacement during Isearch: hit `C-M-RET' to replace the current search hit, the next ''N'' search hits, or all remaining search hits. Can limit search-and-replace to ''[[#IsearchPlusContexts|search contexts]]''.
+* [[Isearch+]] -- ''On-demand'' replacement during Isearch: hit `C-M-RET' to replace the current search hit, the next ''N'' search hits, or all remaining search hits. Can limit search-and-replace to ''[[#IsearchPlusContexts|search contexts]]''.  Similar to [[#IciclesSearchAndReplace|Icicles search-and-replace]] ([[sexp]] eval replacement etc.).
 * QueryExchange -- Exchange two string interactively.
 * [[Replace+]] -- Extensions to Emacs' standard query-replace commands.
 * ReplaceGarbageChars -- Replace MS and other goofy/"garbage" characters with latin1.  Simple elisp code can be easily applied to LaTeX or HTML or other kinds of buffers.
