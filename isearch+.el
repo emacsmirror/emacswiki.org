@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 16 12:52:32 2013 (-0700)
+;; Last-Updated: Thu Oct 17 09:08:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3378
+;;     Update #: 3383
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -33,7 +33,7 @@
 ;;                                 Can be used with Emacs 20 or later.
 ;;  `isearch-prop.el' (optional) - Commands to search within contexts,
 ;;                                 which are character-property zones:
-;;                                 regions of text that have certain
+;;                                 spans of text that have certain
 ;;                                 text or overlay properties.  Can be
 ;;                                 Used with Emacs 23 or later.
 ;;
@@ -244,6 +244,9 @@
 ;;    for Emacs 24.3 and later.  You can use `C-x n' (command
 ;;    `isearchp-toggle-region-restriction') during search to toggle
 ;;    `isearchp-restrict-to-region-flag'.
+;;
+;;    NOTE: For search to be limited to the active region in Info, you
+;;    must also use library `info+.el'.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -1057,7 +1060,7 @@ See also option `isearchp-restrict-to-region-flag'."
 
   (defcustom isearchp-restrict-to-region-flag t
     "*Non-nil means restrict isearching to the active region.
-See also option isearchp-deactivate-region-flag."
+See also option `isearchp-deactivate-region-flag'."
     :type 'boolean :group 'isearch-plus))
 
 ;;;###autoload
@@ -2017,8 +2020,7 @@ Argument WORD, if t, means search for a sequence of words, ignoring
   (unless isearch-input-method-local-p (make-local-variable 'input-method-function))
   (setq input-method-function  nil)
   (looking-at "")
-  (setq isearch-window-configuration
-        (if isearch-slow-terminal-mode (current-window-configuration) nil))
+  (setq isearch-window-configuration  (if isearch-slow-terminal-mode (current-window-configuration) nil))
   ;; Maybe make minibuffer frame visible and/or raise it.
   (let ((frame  (window-frame (minibuffer-window))))
     (unless (memq (frame-live-p frame) '(nil t))
