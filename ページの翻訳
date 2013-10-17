@@ -1,0 +1,54 @@
+[[en:TranslationPages]]
+[[ja:ページの翻訳]]
+[[es:TraduciendoPáginas]]
+[[fr:TraduireLesPages]]
+
+新しい言語を追加リクエストや、システムの改善を提案をしたい場合には、 AlexSchroeder と連絡をとってください。
+
+ページの翻訳の手順は、[[翻訳のヘルプ]]で段階を追って説明されています。このページでは、異なる翻訳間のリンクをサポートするための技術的なインフラについて説明しています。
+
+== 既知の言語 ==
+
+この wiki では、正規表現を用いて、書かれたページの言語を自動的に検出しています。以下の正規表現が3回以上マッチすれば、「ヒットした」とみなされます。ページは、複数の言語で書くことができます。
+
+* en -- English -- ' (the|that|and|why|what) '
+* de -- Deutsch -- ' (der|das|und|oder) '
+* fr -- Français -- ' (et|une|les|est|je|avec|même) '
+* it -- Italiano -- ' (gli|che|perchè|così) '
+* es -- Español -- '(¡|¿|ñ|ción)'
+* ru -- Русский -- '\b(и|или|это|тот|для|как)\b'
+* zh -- 中文 -- '(是|但|這|这|你|了|啊|沒)'
+* pt -- Português -- '(ã|õ)'
+* se -- Svenska -- ' (är|från|för) '
+* ja -- 日本語 -- '(ま|す|ん|し|ょ|う|の|は)'
+* ko -- 한국어 -- '(이)'
+
+この発見的方法 (heuristic) は完全ではなりませんが、少なくとも自動化できます。:)
+
+[new]
+このリストを変更したい時には私に知らせてください。 -- AlexSchroeder
+
+== 翻訳リンク ==
+
+##[[de:SeitenÜbersetzen]]## この文字列は、翻訳リンクの一例です。これは、wiki に対して、現在のページのドイツ語版の翻訳が SeitenÜbersetzen という名前で名付けられていることを知らせています。wiki は、このドイツ語版の翻訳ページを、現在のページの最下部に表示します。
+
+== 言語のLanguages offered ==
+
+_Add Translation_ というリンクをクリックすると、すでに翻訳リンクが存在している言語を除いた、既知の言語のリストが表示されます。
+
+if there is but one remaining language that is not accounted for, the wiki assumes that this is the copy you’re looking at, and doesn’t offer it anymore.
+
+いつでも、手動でページを編集して、翻訳リンクを変更することができます。
+
+
+_Add Translation_ リンクを使用すると、直前に読んでいたページにあなたが提供した情報に基づいて、翻訳リンクが自動的に追加されます。
+
+== インターフェイスの翻訳方法 ==
+
+wiki のインターフェイスも翻訳する必要があります。Oddmuse:Translations を参照してください。どの言語にもこれらのファイルが必要です。
+
+それに加えて、どの言語にも、 *いくつかの重要なページ名* が必要になります。これは、すべてのページの上部と下部に表示されるものです。最も大切なものは、 SiteMap と RecentChanges です。 HowTo もあると良いでしょう。「翻訳のヘルプ」ページも、それなりに大切でしょう。:)
+
+== Discussion ==
+(英語版のページを参照してください。)
+
