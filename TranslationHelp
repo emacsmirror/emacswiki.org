@@ -1,13 +1,13 @@
 [[ja:翻訳のヘルプ]]
 [[es:AyudaTraducción]]
-このwikiには、いくつかの /既知の言語/ というものがあります。この経緯については、 TranslatingPages を読んでください。
+The wiki has a number of /known languages/. See TranslatingPages for some background.
 
-ここでは、たとえば「サンドボックス」のページを翻訳する場合の手順を説明します。
+Here's what to do if you want to translate a page such as our SandBox:
 
-# SandBox のページを開きます
-# ページの下までスクロールして、_Add Translation_ と書かれたリンクをクリックします
-# 翻訳したい言語 (たとえば「日本語」) を選択します (/翻訳リンク/ が存在しないページだけが表示されます)
-# 翻訳後のページ名を選びます (例: サンドボックス)
-# '''Go!''' ボタンをクリックします
-# この操作によって、/翻訳リンク/ として %%[[ja:サンドボックス]]%% という文字列が英語版の SandBox ページに追加されます。こうすることで、wiki に対して「サンドボックス」のページが !SandBox の翻訳であることを伝えています
-# 「サンドボックス」のページの翻訳を完成させます
+# Visit SandBox
+# Scroll to the bottom and click the _Add Translation_ link
+# Pick a language such as Deutsch (only languages without existing /translation links/ are offered...)
+# Choose the name of the translated page name, eg. !SandKasten
+# Click the '''Go!''' button
+# This will add the /translation link/ %%[[de:SandKasten]]%% to the SandBox page, telling the wiki that !SandKasten is a translation of !SandBox
+# You will end up editing the !SandKasten page
