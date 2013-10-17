@@ -15,7 +15,7 @@ The default program name is `scheme'.  If your copy of scheme is called `guile' 
 
 For a really good interface for writing Scheme, check SlimeMode.
 
-For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
+For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT Scheme). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
 
 For a really nice mode for Racket Scheme and other Schemes ([[Guile]]), see QuackMode.
 
