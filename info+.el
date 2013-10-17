@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:30:50 2013 (-0700)
+;; Last-Updated: Thu Oct 17 10:02:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 4857
+;;     Update #: 4937
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -70,7 +70,8 @@
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
 ;;    `Info-insert-breadcrumbs-in-mode-line' (Emacs 23+),
-;;    `info-quotation-regexp'.
+;;    `Info-isearch-search-p' (Emacs 23+), `info-quotation-regexp',
+;;    `Info-search-beg' (Emacs 23+), `Info-search-end' (Emacs 23+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -129,6 +130,8 @@
 ;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
 ;;  `Info-mouse-follow-nearest-node' (Emacs 21+) -
 ;;     With prefix arg, show node in new info buffer.
+;;  `Info-isearch-search' - Respect restriction to active region.
+;;  `Info-isearch-wrap' - Respect restriction to active region.
 ;;
 ;;
 ;;  ***** NOTE: The following behavior defined in `info.el'
@@ -199,6 +202,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/17 dadams
+;;     Added: Info-search-beg, Info-search-end, Info-isearch-search-p.
+;;     Added redefinition: Info-isearch-wrap, Info-isearch-search.
+;;     Info-display-node-default-header, Info-merge-subnodes: Renamed node-name to infop-node-name.
 ;; 2013/03/17 dadams
 ;;     Added: Info-history-clear, macro info-user-error (and font-lock it).  Advised: Info-history.
 ;;     Use info-user-error instead of error, where appropriate.
@@ -584,12 +591,10 @@
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
+(defvar isearch-lax-whitespace)         ; In `isearch.el'.
+(defvar isearch-regexp-lax-whitespace)  ; In `isearch.el'.
+(defvar infop-node-name)                ; Here, in `Info-merge-subnodes'.
 (defvar widen-automatically)
-
-;;; You will likely get byte-compiler messages saying that variable
-;;; `node-name' is free.  In older Emacs versions, you might also get
-;;; a byte-compiler message saying that some functions are not known
-;;; to be defined.
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -4313,7 +4318,6 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\([\n]          \\(.*\\)\\)*
                            'info-reference-item)))))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;;
 ;; 1. Fits frame if `one-window-p'.
@@ -4407,13 +4411,15 @@ To remove the highlighting, just start an incremental search: \
 ;; 2. Highlights the found regexp if `search-highlight'.
 ;;
 (when (= emacs-major-version 22)
-  (defun Info-search (regexp &optional bound noerror count direction)
+  (defun Info-search (regexp &optional bound _noerror _count direction)
     "Search for REGEXP, starting from point, and select node it's found in.
 If DIRECTION is `backward', search in the reverse direction.
 Fits frame if `one-window-p'.
 Highlights current location of found regexp if `search-highlight'.
-Note that the highlighting remains, after the search is over.
-To remove the highlighting, just start an incremental search: \
+
+If called interactively then this is a non-incremental search.  In
+that case, the search-hit highlighting remains, after the search is
+over.  To remove the highlighting, just start an incremental search:
 `\\[isearch-forward]'."
     (interactive
      (list (let ((prompt  (if Info-search-history
@@ -4592,19 +4598,105 @@ To remove the highlighting, just start an incremental search: \
                     "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                    regexp))))))
 
-
-;; REPLACES ORIGINAL in `info.el':
-;; 1. Fits frame if `one-window-p'.
-;; 2. Highlights the found regexp if `search-highlight'.
-;;
 (when (> emacs-major-version 22)
-  (defun Info-search (regexp &optional bound noerror count direction)
-    "Search for REGEXP, starting from point, and select node it's found in.
-If DIRECTION is `backward', search in the reverse direction.
+
+  (defun Info-search-beg ();; `isearchp-reg-beg' is defined in library `isearch+.el' for Emacs 24.3+.
+    "`isearchp-reg-beg', if defined and non-nil; else `point-min'."
+    (or (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)  (point-min)))
+
+  (defun Info-search-end ();; `isearchp-reg-end' is defined in library `isearch+.el' for Emacs 24.3+.
+    "`isearchp-reg-end', if defined and non-nil; else `point-max'."
+    (or (and (boundp 'isearchp-reg-end)  isearchp-reg-end)  (point-max)))
+
+  (defun Info-isearch-search-p ()
+    "Return non-nil if isearch in Info searches through multiple nodes.
+\(Returns nil if search is restricted to the active region.)"
+    (and Info-isearch-search  (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg))))
+
+
+  ;; REPLACES ORIGINAL in `info.el':
+  ;;
+  ;; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+  ;;
+  (defun Info-isearch-wrap ()
+    (if (not (Info-isearch-search-p))
+        (goto-char (if isearch-forward (Info-search-beg) (Info-search-end)))
+      (if (not Info-isearch-initial-node)
+          (setq Info-isearch-initial-node  Info-current-node
+                isearch-wrapped            nil)
+        (if isearch-forward (Info-top-node) (Info-final-node))
+        (goto-char (if isearch-forward (Info-search-beg) (Info-search-end))))))
+
+
+  ;; REPLACES ORIGINAL in `info.el':
+  ;;
+  ;; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+  ;;
+  (when (= emacs-major-version 23)
+    (defun Info-isearch-search ()       ; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+      (if (Info-isearch-search-p)
+          (lambda (string &optional bound noerror count)
+            (if isearch-word
+                (Info-search (concat "\\b" (replace-regexp-in-string
+                                            "\\W+" "\\W+"
+                                            (replace-regexp-in-string
+                                             "^\\W+\\|\\W+$" "" string)
+                                            nil t)
+                                     ;; Lax version of word search
+                                     (if (or isearch-nonincremental
+                                             (eq (length string)
+                                                 (length (isearch-string-state
+                                                          (car isearch-cmds)))))
+                                         "\\b"))
+                             bound noerror count (unless isearch-forward 'backward))
+              (Info-search (if isearch-regexp string (regexp-quote string))
+                           bound noerror count (unless isearch-forward 'backward)))
+            (point))
+        (let ((isearch-search-fun-function  nil)) (isearch-search-fun)))))
+
+
+  ;; REPLACES ORIGINAL in `info.el':
+  ;;
+  ;; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+  ;;
+  (when (> emacs-major-version 23)
+    (defun Info-isearch-search ()       ; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+      (if (Info-isearch-search-p)
+          (lambda (string &optional bound noerror count)
+            (let ((Info-search-whitespace-regexp  (if (if isearch-regexp
+                                                          isearch-regexp-lax-whitespace
+                                                        isearch-lax-whitespace)
+                                                      search-whitespace-regexp)))
+              (Info-search (cond (isearch-word
+                                  ;; Lax version of word search
+                                  (let ((lax  (not (or isearch-nonincremental
+                                                       (eq (length string)
+                                                           (length (isearch--state-string
+                                                                    (car isearch-cmds))))))))
+                                    (if (functionp isearch-word)
+                                        (funcall isearch-word string lax)
+                                      (word-search-regexp string lax))))
+                                 (isearch-regexp string)
+                                 (t (regexp-quote string)))
+                           bound noerror count (unless isearch-forward 'backward)))
+            (point))
+        (isearch-search-fun-default))))
+
+
+  ;; REPLACES ORIGINAL in `info.el':
+  ;; 1. Fit frame if `one-window-p'.
+  ;; 2. Highlight the found regexp if `search-highlight'.
+  ;; 3. Respect restriction to active region.
+  ;;
+  (defun Info-search (regexp &optional bound _noerror _count direction)
+    "Search for REGEXP, starting from point, and select node of search hit.
+If DIRECTION is `backward', search backward.
 Fits frame if `one-window-p'.
 Highlights current location of found regexp if `search-highlight'.
-Note that the highlighting remains, after the search is over.
-To remove the highlighting, just start an incremental search: \
+
+If called interactively then this is a non-incremental search.  In
+that case, the search-hit highlighting remains, after the search is
+over.  To remove the highlighting, just start an incremental search:
 `\\[isearch-forward]'."
     (interactive
      (list (let ((prompt  (if Info-search-history
@@ -4626,8 +4718,8 @@ To remove the highlighting, just start an incremental search: \
                       (onode       Info-current-node)
                       (ofile       Info-current-file)
                       (opoint      (point))
-                      (opoint-min  (point-min))
-                      (opoint-max  (point-max))
+                      (opoint-min  (Info-search-beg))
+                      (opoint-max  (Info-search-end))
                       (ostart      (window-start))
                       (osubfile    Info-current-subfile))
             (setq Info-search-case-fold  case-fold-search) ; `Info-search-case-fold' is free here.
@@ -4637,10 +4729,10 @@ To remove the highlighting, just start an incremental search: \
                 (when backward
                   ;; Hide Info file header for backward search
                   (narrow-to-region (save-excursion
-                                      (goto-char (point-min))
+                                      (goto-char (Info-search-beg))
                                       (search-forward "\n\^_")
                                       (1- (point)))
-                                    (point-max)))
+                                    (Info-search-end)))
                 (while (and (not give-up)
                             (or (null found)
                                 (not (funcall isearch-filter-predicate beg-found found))))
@@ -4652,7 +4744,7 @@ To remove the highlighting, just start an incremental search: \
                               beg-found  (if backward (match-end 0) (match-beginning 0)))
                       (setq give-up  t))))))
 
-            (when (and isearch-mode Info-isearch-search ; `Info-isearch-search' is free here.
+            (when (and isearch-mode  (Info-isearch-search-p)
                        (not Info-isearch-initial-node) ; `Info-isearch-initial-node' is free here.
                        (not bound)
                        (or give-up (and found (not (and (> found opoint-min) (< found opoint-max))))))
@@ -4672,13 +4764,13 @@ To remove the highlighting, just start an incremental search: \
                    ;; Try other subfiles.
                    (let ((list  ()))
                      (with-current-buffer (marker-buffer Info-tag-table-marker)
-                       (goto-char (point-min))
+                       (goto-char (Info-search-beg))
                        (search-forward "\n\^_\nIndirect:")
                        (save-restriction
                          (narrow-to-region (point)
                                            (progn (search-forward "\n\^_")
                                                   (1- (point))))
-                         (goto-char (point-min))
+                         (goto-char (Info-search-beg))
                          ;; Find the subfile we just searched.
                          (search-forward (concat "\n" osubfile ": "))
                          ;; Skip that one.
@@ -4691,7 +4783,7 @@ To remove the highlighting, just start an incremental search: \
                                (re-search-backward "\\(^.*\\): [0-9]+$")
                              (re-search-forward "\\(^.*\\): [0-9]+$"))
                            (goto-char (+ (match-end 1) 2))
-                           (setq list  (cons (cons (+ (point-min) (read (current-buffer)))
+                           (setq list  (cons (cons (+ (Info-search-beg) (read (current-buffer)))
                                                    (match-string-no-properties 1))
                                              list))
                            (goto-char (if backward
@@ -4704,12 +4796,11 @@ To remove the highlighting, just start an incremental search: \
                        (Info-read-subfile (car (car list)))
                        (when backward
                          ;; Hide Info file header for backward search
-                         (narrow-to-region (save-excursion
-                                             (goto-char (point-min))
-                                             (search-forward "\n\^_")
-                                             (1- (point)))
-                                           (point-max))
-                         (goto-char (point-max)))
+                         (narrow-to-region (save-excursion (goto-char (Info-search-beg))
+                                                           (search-forward "\n\^_")
+                                                           (1- (point)))
+                                           (Info-search-end))
+                         (goto-char (Info-search-end)))
                        (setq list     (cdr list)
                              give-up  nil
                              found    nil)
@@ -5405,12 +5496,12 @@ These are all of the current Info Mode bindings:
 
 (defun Info-display-node-default-header ()
   "Insert node name as header."
-  ;; `node-name' is free here - bound in `Info-merge-subnodes'.
+  ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
   (insert (if (fboundp 'concat-w-faces)
               (concat-w-faces (if (< emacs-major-version 21)
-                                  (list 'info-node node-name)
-                                (list 'Info-title-1-face node-name))) ; FREE: NODE-NAME
-            node-name)
+                                  (list 'info-node infop-node-name)
+                                (list 'Info-title-1-face infop-node-name))) ; FREE: INFOP-NODE-NAME
+            infop-node-name)
           "\n")
   (beginning-of-buffer)
   (center-line 2))
@@ -5418,8 +5509,8 @@ These are all of the current Info Mode bindings:
 ;;; ;; Not currently used.
 ;;; (defun Info-display-node-time-header ()
 ;;;   "Insert current time and node name as header."
-;;;   ;; `node-name' is free here - bound in `Info-merge-subnodes'.
-;;;   (insert (current-time-string) "    " node-name) ; FREE here: NODE-NAME
+;;;   ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
+;;;   (insert (current-time-string) "    " infop-node-name) ; FREE here: INFOP-NODE-NAME
 ;;;   (beginning-of-buffer)
 ;;;   (center-line))
 
@@ -5582,16 +5673,16 @@ subnodes (outside Info)? ")
   (setq recursive-display-p  (and recursive-display-p (prefix-numeric-value recursive-display-p)))
   (let* ((buf                        (current-buffer)) ; Info buffer
          (single-buf-p               (and recursive-display-p (zerop recursive-display-p)))
-         (node-name                  (or (and single-buf-p recursive-call-p)
+         (infop-node-name            (or (and single-buf-p recursive-call-p)
                                          Info-current-node))
          (rep-buf                    (get-buffer-create (concat "*Info: " ; Merge buffer.
-                                                                node-name "*")))
+                                                                infop-node-name "*")))
          (more                       t)
          (inhibit-field-text-motion  t) ; Just to be sure, for `end-of-line'.
          token oldpt strg menu-item-line ind)
 
     (when (interactive-p)
-      (message "Processing node `%s' and %ssubnodes..." node-name
+      (message "Processing node `%s' and %ssubnodes..." infop-node-name
                (if recursive-display-p "all of its " "its immediate ")))
     (save-window-excursion
       (goto-char (point-min))
@@ -5613,7 +5704,7 @@ subnodes (outside Info)? ")
                                              (> recursive-display-p 0)))
                                     strg)))) ; Insert main node's contents.
 
-      (unless  (string-match "\\s-*Index$" node-name) ; Don't recurse down Index menus.
+      (unless  (string-match "\\s-*Index$" infop-node-name) ; Don't recurse down Index menus.
 
         ;; Insert menu items and possibly their subnodes.
         (save-excursion
@@ -5691,7 +5782,7 @@ subnodes (outside Info)? ")
                                    (Info-get-token ; nonfile menu item
                                     (point) "\\* "
                                     "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]")))
-                      (Info-merge-subnodes recursive-display-p node-name)))
+                      (Info-merge-subnodes recursive-display-p infop-node-name)))
 
                   ;; Info buffer: Go back to parent node.
                   (set-buffer buf)
@@ -5712,7 +5803,7 @@ subnodes (outside Info)? ")
     (set-buffer-modified-p nil)
     (use-local-map Info-merged-map)
     (when (interactive-p)
-      (message "Processing node `%s' and %ssubnodes... done" node-name
+      (message "Processing node `%s' and %ssubnodes... done" infop-node-name
                (if recursive-display-p "all of its " "its immediate ")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
