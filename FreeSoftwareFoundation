@@ -1,6 +1,8 @@
+[[en:FreeSoftwareFoundation]]
 [[ja:フリーソフトウェア財団]]
-The Free Software Foundation ([::FSF]) is a not-for-profit organization founded by RichardStallman to promote FreeSoftware.  Its main objective is the release of a completely free replacement for Unix, called GNU.  GNU stands for "GNU's Not Unix."
 
-The FSF's website can be found at http://www.fsf.org/.  The GNU website can be found at http://www.gnu.org.  GnuEmacs can be found on the GNU website.
+フリーソフトウェア財団 ([::FSF]) は、 FreeSoftware を促進するために RichardStallman によって設立された非営利組織です。この財団の主な目的は、GNU と呼ばれる、UNIX の完全にフリーな (自由な) 代替を公開することです。GNU は、"GNU's Not Unix." の略です。
 
-GNU/Linux is an operating system combining the [http://www.gnu.org/gnu/linux-and-gnu.html GNU System with the Linux kernel].
+FSF のウェブサイトは http://www.fsf.org/ にあります。GNU のウェブサイトは http://www.gnu.org にあります。 GnuEmacs は、GNU のウェブサイトから入手できます。
+
+GNU/Linux は、[http://www.gnu.org/gnu/linux-and-gnu.html GNU システムを Linux カーネルと組み合わせたもの]です。
