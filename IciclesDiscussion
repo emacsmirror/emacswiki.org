@@ -1115,8 +1115,13 @@ http://stackoverflow.com/questions/4474583/help-writing-emacs-lisp-for-emacs-eta
 
 
 [new:DrewAdams:2013-10-17 18:52 UTC]
-It "should"? Why? What information about the line do you need?  You mention `icicle-tags-search', but that is for searching the source files that are the source of the TAGS.
-Other Icicles TAGS commands show you all matching tags and let you browse among them.  See commands `icicle-find-tag', `icicle-find-first-tag'. See also the [[Icicles_-_Emacs_Tags_Enhancements#EmacsTagBookmarks|automatic creation of bookmarks]] to tags. -- DrewAdams
+It "should"? Why? What information about the line do you need?
+
+`icicle-tags-search' is for searching the source files from which your TAGS files were built. You provide a [[regexp]] that defines the ''search contexts''.  If you want `grep'-like behavior then you want each line in each of the files to be searched, i.e., you want the search contexts to be ''lines'', which means you provide the context-defining regexp `.*'.
+
+After you define the contexts, you type text in the minibuffer to filter the contexts (which are completion candidates).  You can use any number of patterns to filter the contexts this way: use `S-SPC' to type a new pattern. You can type patterns that match the file name as well, since that is attached to the context text.
+
+(Other Icicles TAGS commands show you tags whose names match your input -- they let you browse among the tags, instead of searching the files that define the tags.  See commands `icicle-find-tag', `icicle-find-first-tag'. See also the [[Icicles_-_Emacs_Tags_Enhancements#EmacsTagBookmarks|automatic creation of bookmarks]] to tags.) -- DrewAdams
 
 
 
