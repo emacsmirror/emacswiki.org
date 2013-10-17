@@ -1115,7 +1115,8 @@ http://stackoverflow.com/questions/4474583/help-writing-emacs-lisp-for-emacs-eta
 
 
 [new:DrewAdams:2013-10-17 18:52 UTC]
-It "should"? Why? Why do you want the line number. Icicles tags search shows you all matching tags and lets you browse among them.  See also commands `icicle-find-tag', `icicle-find-first-tag', and `icicle-tags-search'. See also the [[Icicles_-_Emacs_Tags_Enhancements#EmacsTagBookmarks|automatic creation of bookmarks]] to tags. -- DrewAdams
+It "should"? Why? What information about the line do you need?  You mention `icicle-tags-search', but that is for searching the source files that are the source of the TAGS.
+Other Icicles TAGS commands show you all matching tags and let you browse among them.  See commands `icicle-find-tag', `icicle-find-first-tag'. See also the [[Icicles_-_Emacs_Tags_Enhancements#EmacsTagBookmarks|automatic creation of bookmarks]] to tags. -- DrewAdams
 
 
 
