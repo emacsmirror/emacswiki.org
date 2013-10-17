@@ -10,7 +10,7 @@ This page is about searching and replacing text in Emacs. Look for `search' in t
 
 Vanilla:
 
-* '''IncrementalSearch''' -- aka ‘isearch’. ‘C-s’ and `C-M-s'.
+* IncrementalSearch -- aka [[Isearch]]. ‘C-s’ and `C-M-s'.
 * OccurMode -- ‘M-x occur’ and family. Like GrepMode, but for buffers, not files.
 
 Additional:
@@ -18,10 +18,12 @@ Additional:
 * [[AceJump]] -- a minor mode for Emacs, enabling direct cursor-moving in current view.
 * AcmeSearch -- Simple right-click searching.
 * BuffersMisc
-* [[Isearch+]] -- Extensions to Emacs' standard IncrementalSearch.
 * [[Icicles]] -- two unrelated features: `icicle-search' and [[completion]] for Isearch:
-** [[Icicles - Search Commands, Overview|Icicles search]]: A new kind of [[regexp]] search within search contexts, themselves defined using regexps (and their subgroups) or using [[text property]] values. Combine syntactic and semantic (predicate) searching.
+** [[Icicles - Search Commands, Overview|Icicles search]]: [[regexp|Regexp]] search within ''search contexts'': text zones defined using regexps (and their subgroups) or using [[text property|text or overlay property]] values.  Combine syntactic and semantic (predicate) searching. (Cf. [[Isearch+]].)
 ** Use completion against previous [[Icicles - Isearch Enhancements|Isearch search strings]].
+
+[:IsearchPlusContexts]
+* [[Isearch+]] -- Many extensions to Emacs' standard [[Isearch]], including search within ''search contexts'': [[text property|text or overlay property]] zones, [[ImenuMode|Imenu]] definitions, and Emacs THINGs (sexps, lists, symbols, paragraphs, whatever). (Cf. [[Icicles - Search Commands, Overview|Icicles search]].)
 * LazySearch -- A new search mode to search string around point fast.
 * [[msearch]] -- Search matches of text dragged with the mouse in the current buffer.
 * [[Replace+]] -- Extensions to OccurMode.
@@ -49,8 +51,9 @@ Additional:
 [:IciclesSearchAndReplace]
 
 * [[Iedit]] -- Replace multiple occurrences of the [[Isearch]] string.
+* [[Isearch+]] -- ''On-demand'' replacement during Isearch: hit `C-M-RET' to replace the current search hit, the next ''N'' search hits, or all remaining search hits. Can limit search-and-replace to ''[[#IsearchPlusContexts|search contexts]]''.
 * QueryExchange -- Exchange two string interactively.
-* [[Replace+]] -- Various extensions to Emacs' standard `query-replace' command.
+* [[Replace+]] -- Extensions to Emacs' standard query-replace commands.
 * ReplaceGarbageChars -- Replace MS and other goofy/"garbage" characters with latin1.  Simple elisp code can be easily applied to LaTeX or HTML or other kinds of buffers.
 * ReplaceRecentCharacter -- Quickly fix typos using a non-incremental search and replace.
 * SearchAndReplaceDelimitedStrings -- Replace (only) the prefix and suffix of a pattern.
