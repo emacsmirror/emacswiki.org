@@ -275,11 +275,11 @@ When revising your change, even though nobody else knows about your first commit
 
 If you are a committer, you can merge to the upstream master directly.
 
-If you're solving a bug, there's one thing to set up first. In your bazaar.conf (~/.bazaar/bazaar.conf) add:
+If you're solving a bug, there's one thing to set up first. In your ~/.bazaar/bazaar.conf add:
 
   bugtracker_debbugs_url = http://debbugs.gnu.org/{id}
 
-{id} is literal, so don't substitute with an ID. Not doing so will cause an error at the time of commit:
+{id} is literal, so don't substitute with an ID. Not adding this line to your bazaar.conf will cause an error at the time of commit:
 
   ERROR: Unrecognized bug debbugs:12345. Commit refused.
 
