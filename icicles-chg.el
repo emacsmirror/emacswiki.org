@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Oct  2 09:47:49 2013 (-0700)
+;; Last-Updated: Fri Oct 18 14:07:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10223
+;;     Update #: 10226
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -939,6 +939,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/10/18 dadams
+;;     Added: icicle-imenu-help.
+;;     icicle-imenu: Bind icicle-candidate-help-fn to icicle-imenu-help.
+;;     icicle-search: Respect an existing value of icicle-candidate-help-fn.
 ;; 2013/10/02 dadams
 ;;     icicle-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;; 2013/09/29 dadams
