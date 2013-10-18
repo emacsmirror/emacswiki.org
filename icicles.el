@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 21 12:02:17 2013 (-0700)
+;; Last-Updated: Fri Oct 18 14:08:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23446
+;;     Update #: 23447
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1047,8 +1047,8 @@
 ;;    `icicle-highlight-input-noncompletion',
 ;;    `icicle-highlight-input-noncompletion-rest',
 ;;    `icicle-highlight-lighter', `icicle-historical-alphabetic-p',
-;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
-;;    `icicle-imenu-macro-p',
+;;    `icicle-imenu-command-p', `icicle-imenu-help',
+;;    `icicle-imenu-in-buffer-p', `icicle-imenu-macro-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-increment-cand-nb+signal-end',
 ;;    `icicle-Info-apropos-complete-match',
