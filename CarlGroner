@@ -1,6 +1,6 @@
 [http://carlgroner.me Carl Groner] uses Emacs on Linux and OSX.
 
-My emacs config can be found on my [https://github.com/cgroner/dotfiles/tree/master/.emacs.d github] page.
+I've tried to modularize my emacs config by creating smaller, task specific init files. The goal was to not have to maintain a giant monolithic init file. My attempt can be found on [https://github.com/cgroner/dotemacs github].
 
 
 My notes on [http://carlgroner.me/Emacs/OSX/2011/10/19/Building-Emacs-for-Mac-OSX-Lion.html compiling Emacs on OSX].
