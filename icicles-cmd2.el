@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Oct  2 09:45:56 2013 (-0700)
+;; Last-Updated: Fri Oct 18 14:07:40 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6577
+;;     Update #: 6582
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -191,8 +191,8 @@
 ;;    `icicle-get-anything-req-pat-chars',
 ;;    `icicle-get-anything-types', `icicle-goto-marker-1',
 ;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
-;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
-;;    `icicle-imenu-macro-p',
+;;    `icicle-imenu-command-p', `icicle-imenu-help',
+;;    `icicle-imenu-in-buffer-p', `icicle-imenu-macro-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-Info-apropos-complete-match',
 ;;    `icicle-Info-build-node-completions',
@@ -3880,8 +3880,8 @@ This command is intended for use only in Icicle mode."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp)  scan-fn-or-regexp))
-  (let ((icicle-candidate-action-fn                  (or icicle-candidate-action-fn  'icicle-search-action))
-        (icicle-candidate-help-fn                    'icicle-search-help)
+  (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn  'icicle-search-action))
+        (icicle-candidate-help-fn           (or icicle-candidate-help-fn    'icicle-search-help))
         (icicle-all-candidates-list-alt-action-fn
          (or icicle-all-candidates-list-alt-action-fn  'icicle-search-replace-all-search-hits))
         (icicle-candidate-alt-action-fn
@@ -6398,7 +6398,30 @@ procedure name."
   (interactive `(,@(icicle-region-or-buffer-limits)
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
-  (icicle-imenu-1 nil beg end require-match where))
+  (let ((icicle-candidate-help-fn  'icicle-imenu-help))
+    (icicle-imenu-1 nil beg end require-match where)))
+
+(defun icicle-imenu-help (cand)
+  "Use as `icicle-candidate-help-fn' for `icicle-search' commands."
+  (let* ((icicle-whole-candidate-as-text-prop-p  t)
+         (marker  (cdr (funcall icicle-get-alist-candidate-function cand)))
+         (buffer  (marker-buffer marker)))
+    (if (not (with-current-buffer buffer (eq major-mode 'emacs-lisp-mode)))
+        (icicle-search-help cand)
+      (save-match-data
+        (let ((found  nil)
+              regexp index)
+          (setq found  (catch 'icicle-imenu-help
+                         (dolist (menu  (with-current-buffer buffer imenu-generic-expression))
+                           (setq regexp  (nth 1 menu)
+                                 index   (nth 2 menu))
+                           (when (and (not (string= "" regexp)) (string-match regexp cand))
+                             (throw 'icicle-imenu-help (match-string index cand))))
+                         nil))
+          (if (not found)
+              (icicle-search-help cand)
+            (setq cand  (match-string index cand))
+            (let ((icicle-candidate-help-fn  nil)) (icicle-help-on-candidate cand))))))))
 
 (defalias 'icicle-search-defs-full 'icicle-imenu-full) ; Bound to `M-s M-s D'.
 (defun icicle-imenu-full (beg end require-match &optional where) ; Bound to `M-s M-s I'.
