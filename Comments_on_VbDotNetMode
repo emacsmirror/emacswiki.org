@@ -1,0 +1,10 @@
+Couple of minor tweaks are needed:
+
+In the "func-start" regex: You want to change the "         "[Ss]tatic\\)" line to read "         "[Ss]tatic\\)?" -- i.e., none of the Public/Private/Friend/Static modifiers are actually *required*.
+
+In the "sub-start" regex: a) I notice there's no "Shared" modifier for "Friend" like "func-start" defines. I really don't know VB: is there a reason for this or did you just miss that? b) Stick a "?" at the end of the "[Ff]riend\\)" part of the regex to make all the modifiers optional.
+
+The "flymake-ler-make-ler" function seems to have changed: you're passing two "nil"s at the end of that call which (at least in my flymake version) is one too many -- drop the last nil.
+
+-- ErikKnowles 2013-10-18 17:39 UTC
+
