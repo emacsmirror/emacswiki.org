@@ -279,7 +279,7 @@ If you're solving a bug, there's one thing to set up first. In your bazaar.conf 
 
   bugtracker_debbugs_url = http://debbugs.gnu.org/{id}
 
-{id} is literal, so don't substitute with an ID. Not doing so leads to the error:
+{id} is literal, so don't substitute with an ID. Not doing so will cause an error at the time of commit:
 
   ERROR: Unrecognized bug debbugs:12345. Commit refused.
 
