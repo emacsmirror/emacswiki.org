@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Oct 18 14:07:40 2013 (-0700)
+;; Last-Updated: Fri Oct 18 14:14:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6582
+;;     Update #: 6583
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6406,22 +6406,20 @@ procedure name."
   (let* ((icicle-whole-candidate-as-text-prop-p  t)
          (marker  (cdr (funcall icicle-get-alist-candidate-function cand)))
          (buffer  (marker-buffer marker)))
-    (if (not (with-current-buffer buffer (eq major-mode 'emacs-lisp-mode)))
-        (icicle-search-help cand)
-      (save-match-data
-        (let ((found  nil)
-              regexp index)
-          (setq found  (catch 'icicle-imenu-help
-                         (dolist (menu  (with-current-buffer buffer imenu-generic-expression))
-                           (setq regexp  (nth 1 menu)
-                                 index   (nth 2 menu))
-                           (when (and (not (string= "" regexp)) (string-match regexp cand))
-                             (throw 'icicle-imenu-help (match-string index cand))))
-                         nil))
-          (if (not found)
-              (icicle-search-help cand)
-            (setq cand  (match-string index cand))
-            (let ((icicle-candidate-help-fn  nil)) (icicle-help-on-candidate cand))))))))
+    (save-match-data
+      (let ((found  nil)
+            regexp index)
+        (setq found  (catch 'icicle-imenu-help
+                       (dolist (menu  (with-current-buffer buffer imenu-generic-expression))
+                         (setq regexp  (nth 1 menu)
+                               index   (nth 2 menu))
+                         (when (and (not (string= "" regexp)) (string-match regexp cand))
+                           (throw 'icicle-imenu-help (match-string index cand))))
+                       nil))
+        (if (not found)
+            (icicle-search-help cand)
+          (setq cand  (match-string index cand))
+          (let ((icicle-candidate-help-fn  nil)) (icicle-help-on-candidate cand)))))))
 
 (defalias 'icicle-search-defs-full 'icicle-imenu-full) ; Bound to `M-s M-s D'.
 (defun icicle-imenu-full (beg end require-match &optional where) ; Bound to `M-s M-s I'.
