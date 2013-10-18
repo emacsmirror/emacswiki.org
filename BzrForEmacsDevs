@@ -273,7 +273,17 @@ When revising your change, even though nobody else knows about your first commit
 [:MergeToUpstream]
 === Merging Into the Upstream Master ===
 
-If you are a committer, you can merge to the upstream master directly.  To do this, first update your mirror:
+If you are a committer, you can merge to the upstream master directly.
+
+If you're solving a bug, there's one thing to set up first. In your bazaar.conf (~/.bazaar/bazaar.conf) add:
+
+  bugtracker_debbugs_url = http://debbugs.gnu.org/{id}
+
+{id} is literal, so don't substitute with an ID. Not doing so leads to the error:
+
+  ERROR: Unrecognized bug debbugs:12345. Commit refused.
+
+Next, update your mirror:
 
       cd $DEVHOME/emacs/trunk/
       bzr update
@@ -282,9 +292,19 @@ If you are a committer, you can merge to the upstream master directly.  To do th
 and then commit
 
       bzr status                  # (recommended) sanity check -- lists changed and unknown files
-      bzr commit -m "Merge: fix bla bla bla (closes Bug #1)."
+      bzr commit --fixes debbugs:12345
 
-which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr update## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
+which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.
+
+Alternatively, if you use VC in Emacs, Emacs will populate the commit message from your ChangeLog updates. If the ChangeLogs reference the bug, VC also generates the --fixes flag when it carries out the commit. To use VC:
+
+  vc-dir the root directory of Emacs sources
+  vc-dir-mark to mark files to commit
+  vc-next-action to edit a commit message
+  log-edit-insert-changelog to populate from ChangeLogs, possibly using prefix-arg
+  vc-next-action to commit
+
+In this process, updating your ##trunk## with ##bzr update## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
 
       bzr revert
 
