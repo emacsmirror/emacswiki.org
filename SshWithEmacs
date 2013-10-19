@@ -32,5 +32,9 @@ Hello i am trying to work with a source from a remote cvs. I want to use vc or  
 
 :: Tried ssh-add? You need to run that first.
 
+=== Fast ssh alternative ===
+
+If you’ll be connecting to a remote shell over a slow internet connection, there’s the mosh project [http://mosh.mit.edu]. Along with its state synchronisation protocol, it allows for fast local responsiveness, and it supports roaming - making it a great drop-in replacement for ssh (and thus a practical possibility to connect to a remote host over a slow internet connection). Does anyone else think it would be a good idea [https://github.com/keithw/mosh/issues/467] to implement a Emacs mosh client, or to enhance it with functionality to collaborate with fast interactive responsiveness?
+
 ----
 CategoryExternalUtilities
