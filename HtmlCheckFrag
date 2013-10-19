@@ -16,4 +16,5 @@ For installation and usage see comments therein.
 ## Each of these overlays starts either at the beginning of the buffer or at a html tag. (Where exactly is yet unspecified specified.)
 ## Each of these overlays has the parser stack of its position as its property.
 ## On re-fontification through jit the driver uses the overlays at the start and the end of the re-fontification region to initialize the parser stack if such an overlays exists. Otherwise the currently implemented mechanism is run. After re-fontification the overlays may be extended. At tags new overlays are started.
-# Colorize the error notification in the mode-line. (Implementation already tried but does not work. I assume that is caused by the minor mode highlighters already setting the propertize attribute.
+=== Changes ===
+# 2013-10-19: Colorize the error notification in the mode-line. (Implementation already tried but does not work. I assume that is caused by the minor mode highlighters already setting the propertize attribute.
