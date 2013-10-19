@@ -97,6 +97,33 @@ Item _This..._ gives help on any key/menu sequence or object clicked with the mo
 The standard '''Options''' menu is enhanced with a new menu item, _Show, Edit All Options_ (`edit-options').
 
 
+=== Tools Menu ===
+
+If library <tt>[[cmds-menu.el]]</tt> is in your `load-path' then it is loaded by library <tt>[[menu-bar+.el]]</tt>.  It adds a `Recent Commands' submenu to menu `Tools'.  The list of recent commands is updated automatically, similarly to how the `Buffers' menu buffer list is updated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 == Discussion ==
 
 [new:MaDa:2005-05-16 18:54 UTC]
