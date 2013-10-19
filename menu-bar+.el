@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 09:34:44 2013 (-0700)
+;; Last-Updated: Sat Oct 19 14:13:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3702
+;;     Update #: 3705
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -130,12 +130,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/19 dadams
+;;     Soft-require cmds-menu.el.
 ;; 2013/07/24 dadams
 ;;     Added: menu-barp-nonempty-region-p.
 ;;       Use it everywhere where appropriate, e.g., instead of just mark-active.
 ;;     menu-bar-edit-region-menu, menu-bar-edit-sort-menu:
 ;;       Removed :enable from items, since on menu itself.
-;; @@@@@@@@@@@@@@@@@@
 ;; 2013/07/20 dadams
 ;;     menu-bar-tools-menu: Removed grep, since it is on Search menu.
 ;;     menu-bar-search-menu: Added: multi-occur(-in-matching-buffers).
@@ -402,6 +403,7 @@
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
 (require 'apropos+ nil t) ;; (no error if not found): apropos-user-options
+(require 'cmds-menu nil t) ;; (no error if not found): recent-cmds-menu
 
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
