@@ -36,7 +36,7 @@ Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and u
 
 == Documentation ==
 
-A brief [https://gitorious.org/evil/evil/blobs/raw/doc/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
+A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
 
 == Plug-ins ==
 
