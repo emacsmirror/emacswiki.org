@@ -280,7 +280,7 @@ the (almost) the same meaning as for
 (define-minor-mode html-check-frag-mode
   "Check xml-fragments at point and decorate tags.
 To be used with html-mode as major mode."
-  :lighter (:propertize html-check-frag-lighter 'face 'html-check-frag-error-face)
+  :lighter (:propertize html-check-frag-lighter face html-check-frag-error-face)
   (declare (special html-check-frag-lighter html-check-frag-err))
   (if html-check-frag-mode
       (progn
