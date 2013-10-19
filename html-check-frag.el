@@ -53,8 +53,9 @@ Note that the stack contents has reverse order.
 You should look at (reverse html-check-frag-debug).")
 (make-variable-buffer-local 'html-check-frag-debug)
 
-(defvar html-check-frag-void-tags '("area" "base" "br" "col" "embed" "hr" "img" "input" "keygen" "link" "meta" "param" "source" "track" "wbr")
-  "Void tags not needed to be marked as <.../>.")
+(defvar html-check-frag-void-tags '("!doctype" "area" "base" "br" "col" "embed" "hr" "img" "input" "keygen" "link" "meta" "param" "source" "track" "wbr")
+  "Void tags not needed to be marked as <.../>.
+Note, everything should be lower case here. Even !DOCTYPE should actually be !doctpype in this list.")
 
 (defun html-invalid-context-p (&optional pos)
   "Return non-nil if point is inside string comment or the character at point is quoted."
@@ -89,7 +90,7 @@ the (almost) the same meaning as for
 	void
 	found ;; temporary
 	value ;; temporary
-	(re "\\(?:<\\(/\\)?\\([[:alpha:]][[:alnum:]]*\\)\\|\\(>\\)\\)")
+	(re "\\(?:<\\(/\\)?\\([[:alpha:]!][[:alnum:]]*\\)\\|\\(>\\)\\)")
 	(search-regexp (or (and backward 'search-backward-regexp) 'search-forward-regexp))
 	)
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
@@ -160,7 +161,7 @@ the (almost) the same meaning as for
 \(fn TAG BODY...)"
   (declare (indent 1) (debug t))
   (append
-   `(if (member (plist-get ,tag :type) html-check-frag-void-tags)
+   `(if (member (downcase (plist-get ,tag :type)) html-check-frag-void-tags)
 	(when html-check-frag-debug
 	  (push (list 'omit-void-tag :tag ,tag) html-check-frag-debug)))
    body))
