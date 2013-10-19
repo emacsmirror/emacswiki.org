@@ -96,7 +96,7 @@ workaround by
 
     $ ps -auxwww | grep [s]creen
     ... pty/0 ... screen ...
-    $ echo -e '\e[?1000h' &gt; /dev/pty/0-or-whatever-tty-screen-is-sending-to
+    $ echo -e '\e[?1000h' > /dev/pty/0-or-whatever-tty-screen-is-sending-to
 
 which you'd do at each login - easier to upgrade.
 
