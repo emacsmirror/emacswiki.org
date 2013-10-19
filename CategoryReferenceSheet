@@ -20,7 +20,7 @@ Ideally, they would fit nicely on a mug.  :)
 * [[http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Reference Sheet by John Sturdy]] -- Concise summary of keys, [[command]]s, terminology, [[regexp]] syntax….
 
 * [[Reference Sheet by Aaron Hawley]] -- Longer list of keys. 
-* A (customisable) version of Aaron Hawley's Reference Sheet, typeset on a 16 page pdf card [[http://alejandroerickson.com/home/blog/blog.php?entry=12]].
+* A (customisable) version of Aaron Hawley's Reference Sheet, typeset on a [[http://alejandroerickson.com/home/blog/blog.php?entry=12 16 page Reference Card]].
 * ReferenceSheetHelpUtils -- Started as a set of utilities extending [[Reference Sheet by Aaron Hawley]]. Has since become an animal unto itself.
 * [[V_E_R_A]] -- V.E.R.A. -- Virtual Entity of Relevant Acronyms
 * [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
