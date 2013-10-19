@@ -1,4 +1,4 @@
-;;; redo+.el -- Redo/undo system for Emacs
+;;; redo+.el --- Redo/undo system for Emacs
 
 ;; Copyright (C) 1985, 1986, 1987, 1993-1995 Free Software Foundation, Inc.
 ;; Copyright (C) 1995 Tinker Systems and INS Engineering Corp.
@@ -66,8 +66,12 @@
 
 
 ;; History:
+;; 2013-10-19  S. Irie
+;;         * Fix package.el/MELPA issue ("---" in the first line required)
+;;         * Version 1.18
+;;
 ;; 2013-10-12  S. Irie
-;;         * Fix an error that occurs on Emacs 22/24
+;;         * Fix errors that occur on Emacs 22/24
 ;;           (The fix in 1.16 was incorrect.  It actually did nothing.)
 ;;         * Version 1.17
 ;;
@@ -108,7 +112,7 @@
 
 ;;; Code:
 
-(defvar redo-version "1.17"
+(defvar redo-version "1.18"
   "Version number for the Redo+ package.")
 
 (defvar last-buffer-undo-list nil
