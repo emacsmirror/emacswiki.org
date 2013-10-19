@@ -96,7 +96,7 @@ workaround by
 
     $ ps -auxwww | grep [s]creen
     ... pty/0 ... screen ...
-    $ echo -e '\e[?1000h' > /dev/pty/0-or-whatever-tty-screen-is-sending-to
+    $ echo -e '\e[?1000h' &gt; /dev/pty/0-or-whatever-tty-screen-is-sending-to
 
 which you'd do at each login - easier to upgrade.
 
@@ -116,6 +116,10 @@ If the remote server is SunOS, we might need to put the following
 ##export TERMINFO##
 
 in the remote server's ##.bashrc## file.
+
+== Fast connection to a remote shell ==
+
+In a given Screen or tmux window, if you'll be connecting to a remote shell, there's the mosh project [http://mosh.mit.edu].  Along with its state synchronisation protocol, it allows for fast local responsiveness, and it supports roaming - making it a great drop-in replacement for ssh (and thus a practical possibility to connect to a remote host over a slow internet connection).  Does anyone else think it would be a good idea [https://github.com/keithw/mosh/issues/467] to implement an Emacs mosh client?
 
 == 256 Colours under Gnu Screen ==
 
