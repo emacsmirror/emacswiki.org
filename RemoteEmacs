@@ -24,6 +24,11 @@ connection.  Combining block compression with smarter systems seems to
 make sense, but some of the latter already have it in their
 repertoire.
 
+If the Emacs instance is running in tty mode, it's also possible to accelerate
+that connection by running a mosh shell [http://mosh.mit.edu].  In addition to
+xpra and winswitch, there is also an interest [https://github.com/keithw/mosh/issues/41]
+in having mosh support X forwarding.
+
 ==The various methods==
 
 One good, basic thing is compressing with ssh, as running over ssh is
