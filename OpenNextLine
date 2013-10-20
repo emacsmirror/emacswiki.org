@@ -29,7 +29,7 @@ Some people (such as JerameyCrawford and JeremyCowgar) don't much care for how o
     (defvar newline-and-indent t
       "Modify the behavior of the open-*-line functions to cause them to autoindent.")
 
-The `o' and `O' commands of vi are closely equivalent to `C-a C-M-o' and `C-e C-j' in Emacs, respectively. Although, open-line and split-line do break a line in half that vi users are not accustomed. The `open-next-line' and `open-previous-line' functions above accept a `C-u' prefix, while `split-line' (`C-M-o') does not. This doesn't get you exactly vi-like behavior as everything you type after an `o' or `O' and before you hit ESC is inserted /prefix/ times in vi. Ultimately KeyboardMacros would be the answer there.
+The `o' and `O' commands of vi are closely equivalent to `C-a C-M-o' and `C-e C-j' in Emacs, respectively. The `open-next-line' and `open-previous-line' functions above accept a `C-u' prefix, while `split-line' (`C-M-o') does not. This doesn't get you exactly vi-like behavior as everything you type after an `o' or `O' and before you hit ESC is inserted /prefix/ times in vi. Ultimately KeyboardMacros would be the answer there.
 
 [new]
 I think TextMate uses Shift+Enter for "open next line". (Ctrl+Shift+Enter might be a good candidate for "open previous line".) So if you're into consistency,
