@@ -53,7 +53,7 @@ Jetzt hat man einen leeren Schnipsel. Füge nun den folgenden Text in die Datei 
 }}}
     
 Mit einem anschließenden <code>C-c C-c</code> wird der neue Schnipsel gesichert und steht zur Verwendung bereit.
-Man kann es jetzt verwenden, indem man in einer tex-Datei <code>arttemp</code> eingibt, und direkt danach <code>Tab</code>. Man beachte, wie mit <code>$1</code>, <code>$2</code>, <code>$3</code> und <code>$0</code> Sprungmarken definiert werden, von denen die ersten drei einen Standardwert besitzen. Dieser kann direkt überschrieben werden, wenn der Cursor an der entsprechenden Position steht. Hier sieht man, wie dieser Schnipsel verwendet wird:
+Man kann ihn jetzt verwenden, indem man in einer tex-Datei <code>arttemp</code> eingibt, und direkt danach <code>Tab</code>. Man beachte, wie mit <code>$1</code>, <code>$2</code>, <code>$3</code> und <code>$0</code> Sprungmarken definiert werden, von denen die ersten drei einen Standardwert besitzen. Dieser kann direkt überschrieben werden, wenn der Cursor an der entsprechenden Position steht. Hier sieht man, wie dieser Schnipsel verwendet wird:
 http://i.stack.imgur.com/jDBbw.gif
 
 === Noch mehr Vorlagen ===
