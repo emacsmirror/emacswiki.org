@@ -1,23 +1,25 @@
 [[de:YasnippetDeutsch]]
 == Description ==
 
-*YASnippet* is a template system for Emacs. It allows you to type an
-abbreviation and automatically expand it into function
-templates. 
+*YASnippet* (Yet Another Snippet, etwa "Noch ein Schnippsel") ist ein Vorlagensystem für Emacs. 
+Es ermöglicht, ein getipptes Schlagwort automatisch in eine Textvorlage zu ersetzen.
 
-See what it looks like: http://www.youtube.com/watch?v=ZCGmZK4V7Sg.
+In diesem Beispielvideo wird die Funktionsweise verdeutlicht: http://www.youtube.com/watch?v=ZCGmZK4V7Sg.
 
-Bundled language templates includes: C, C++, [CSharpMode C#], [PerlMode Perl], [PythonMode Python], [RubyMode Ruby],
-[SqlMode SQL], LaTeX, [NxhtmlMode HTML], [CascadingStyleSheetMode CSS] and more. The snippet syntax is inspired from [http://manual.macromates.com/en/snippets TextMate's] syntax, you can even
-[http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets import] most !TextMate templates to YASnippet.
+Die vordefinierten Vorlagen decken folgende Sprachen ab:
+C, C++, [CSharpMode C#], [PerlMode Perl], [PythonMode Python], [RubyMode Ruby], [SqlMode SQL], LaTeX, 
+[NxhtmlMode HTML], [CascadingStyleSheetMode CSS] und vieles mehr.
 
-Hosted at http://github.com/capitaomorte/yasnippet
+Die Syntax wurde von der [http://manual.macromates.com/en/snippets TextMate's] syntax inspiriert. Man kann sogar die meisten der dortigen Vorlagen
+[http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets importieren]!
 
-== Installation instructions ==
+Zu finden ist Yasnippet auf http://github.com/capitaomorte/yasnippet
 
-=== Standard install ===
+== Installationsanweisungen ==
 
-To install the normal archive, download and unpack the latest <code>yasnippet-*.tar.bz2</code>. to a suitable directory like <code>~/.emacs.d/packages/</code> and add the following in your <code>~/.emacs</code> InitFile:
+=== Standardinstallation ===
+
+Um das gewöhnliche <code>yasnippet-*.tar.bz2</code>-Archiv zu installieren, lädt und entpackt man dieses in ein gewünschtes Verzeichnis. Üblicherweise ist dies <code>~/.emacs.d/packages/</code>. Danach fügt man folgendes in die <code>~/.emacs</code> Konfigurationsdatei ein:
 
 {{{
     (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
@@ -25,49 +27,46 @@ To install the normal archive, download and unpack the latest <code>yasnippet-*.
     (yas-global-mode 1)
 }}}
 
-=== With yasnippet-bundle.el ===
+=== Mit yasnippet-bundle.el ===
 
-To quickly tryout Yasnippet, download the a simpler "bundle" version.
-If you plan to modify the existing templates or make your own, you should
-download the "normal" package.
+Für ein schnelles Testen von Yasnippet lädt man sich die einfachere "bundle" Version herunter.
+Wenn man jedoch plant, sich eigene Vorlagen zu erstellen (was sehr wahrscheinlich ist), oder bestehende zu ändern, so sollte man die normale Installation durchführen.
 
-1. Download <code>yasnippet-bundle-*.el tar gz</code> and unpack it.
+1. Herunterladen von <code>yasnippet-bundle-*.el</code> als <code>tar gz</code> Archiv. Dieses entpacken.
 
-2. You'll get a file named <code>yasnippet-bundle.el</code>, put it in <code>~/.emacs.d/packages/</code> (create that directory if not exists).
+2. Die Datei <code>yasnippet-bundle.el</code>, in den Ordner <code>~/.emacs.d/packages/</code> einfügen. Man erstelle diesen, wenn er noch nicht existiert.
 
-3. Open the file in Emacs, and type <code>Alt+x eval-buffer</code>.
+3. Öffnen der eben abgespeicherten Datei in Emacs. Ausführen des Befehls<code>Alt+x eval-buffer</code>.
 
-That's it. Now, open any file, you'll see a menu "YASnippet".  You can
-pull the menu to insert a template. Or, you can type a pre-defined
-abbrev and press TAB to expand it! To have Emacs load YASnippet automatically 
-when it starts, put the following in your <code>~/.emacs</code> file:
+Das war's schon. Wenn man jetzt eine Datei öffnet, erscheint "YASnippet" in der Menüleiste.  Hier kann man komfortabel eine Vorlage auswählen und in den Text einfügen.
+Außerdem kann man nun eine vordefinierte Abkürzung im Text eingeben, und diese durch Drücken von <code>Tab</code> durch die entsprechende Vorlage ersetzen.
+Möchte man beim Starten von Emacs Yasnippet automatisch laden, so trägt man folgendes in seine <code>~/.emacs</code> Datei ein:
 
 {{{
 (add-to-list 'load-path "~/.emacs.d/packages")
 (require 'yasnippet-bundle)
 }}}
 
-== User contributed templates ==
+== Noch mehr Vorlagen ==
 
-See [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate few  templates] I wrote.
--- AndyStewart
+Hier gibt es eine größere Auswahl an Vorlagen von [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Andy Stewart].
 
-See http://coderepos.org/share/browser/config/yasnippet for another repository.
+Und hier gibt es noch mehr: http://coderepos.org/share/browser/config/yasnippet
 
-
-Here are some templates for the JSP Standard Tag Library: http://github.com/eentzel/yasnippet-jstl/
+Hier gibt es einige Vorlagen für die JSP Standard Tag Bibliothek: http://github.com/eentzel/yasnippet-jstl/
 [new]
-There are four packages to automatically create yasnippets:
 
-* [https://github.com/mlf176f2/r-autoyas.el R-autoyas] -- Creates automatic snippets for R in ess-mode
+Außerdem gibt es vier Pakete, um Vorlagen automatisch zu erstellen:
 
-* ElAutoyas -- Creates automatic snippets for emacs-lisp-mode.
+* [https://github.com/mlf176f2/r-autoyas.el R-autoyas] -- Erstellt Vorlagen für R im ess-mode
 
-* Lisp:auto-yasnippet.el -- Quickly creates disposable yasnippets.
+* ElAutoyas -- Erstellt Vorlagen für den emacs-lisp-mode.
 
-* [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Creates snippets for php-mode
+* Lisp:auto-yasnippet.el -- Erstellt schnell und einfach "Wegwerf"-Vorlagen.
 
-== Select snippet using helm (anything.el) ==
+* [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Erstellt Vorlagen für den php-mode
+
+== Auswahl einer Vorlage mit helm (anything.el) ==
 
   (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
     "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
@@ -89,11 +88,11 @@ There are four packages to automatically create yasnippets:
             (cdr (assoc result rmap))))
       nil))
 
-== Popup menu for yas-choose-value ==
+== Popup Menü für yas-choose-value ==
 
-Taken from http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
+Übernommen von http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
 
-Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and variable names)
+Note: yasnippet von git (version 0.8) (new yas-* instead of yas/* functions and variable names)
 
 {{{
 ;;; use popup menu for yas-choose-value
@@ -154,24 +153,9 @@ and map yas-ido-expand with a chord, e.g.:
 
     (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
 
-enjoy ;)
+Viel Spaß ;)
 
 == Discussion ==
-
-[new]
-YASnippet has recently entered version 0.6.x. For this version many of the tweaks in Lisp:yasnippet-config.el are probably invalid or unnecessary. See the [http://yasnippet.googlecode.com/svn/trunk/doc/changelog.html changelog]
--- JoaoTavora
-
-[new]
-This version of Lisp:yasnippet-config.el works fine with 0.6.x. -- [[rubikitch]]
-
-[new]
-I created a new method of importing TexMate templates entirely in emacs lisp.  Perhaps later it might be integrated into yasnippet itself.  Here is the code Lisp: [[textmate-to-yas.el]]  -- MatthewFidler
-
-[new]
-
-I have changed the startup mechanism so it doesn't load every single snippet upon startup.  Only loaded on demand.  [[yas-jit.el]]
-
 
 ----
 CategoryTemplates
