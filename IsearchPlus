@@ -93,7 +93,7 @@ Isearch.)
 `isearchp-replace-on-demand' replaces ''N'' search hits (but it
 stops at the search limit, if reached).
 
-** With a ''zero'' prefix arg (e.g. `C-0),
+** With a ''zero'' prefix arg (e.g. `C-0'),
 `isearchp-replace-on-demand' replaces ''all'' remaining search
 hits (up to the search limit).
 
