@@ -1,35 +1,35 @@
 [[de:YasnippetDeutsch]]
-== Description ==
+== Beschreibung ==
 
 *YASnippet* (Yet Another Snippet, etwa "Noch ein Schnippsel") ist ein Vorlagensystem für Emacs. 
-Es ermöglicht, ein getipptes Schlagwort automatisch in eine Textvorlage zu ersetzen.
+Es ermöglicht, ein getipptes Schlagwort automatisch in eine Textvorlage zu ersetzen. Dies ist äußerst praktisch, wenn man häufig vorkommende Textfragmente im Quellcode einbauen muss. 
 
-In diesem Beispielvideo wird die Funktionsweise verdeutlicht: http://www.youtube.com/watch?v=ZCGmZK4V7Sg.
+Die Vorlagen von YASnippet werden auch Schnipsel (engl.: /snippet/) genannt. In diesem [https://yasnippet.googlecode.com/files/yas_demo.avi Video] wird die Installation und die Funktionsweise von YASnippet verdeutlicht (Avi, etwa 70MB).
 
-Die vordefinierten Vorlagen decken folgende Sprachen ab:
+Die vordefinierten Schnippsel decken folgende Sprachen ab:
 C, C++, [CSharpMode C#], [PerlMode Perl], [PythonMode Python], [RubyMode Ruby], [SqlMode SQL], LaTeX, 
 [NxhtmlMode HTML], [CascadingStyleSheetMode CSS] und vieles mehr.
 
-Die Syntax wurde von der [http://manual.macromates.com/en/snippets TextMate's] syntax inspiriert. Man kann sogar die meisten der dortigen Vorlagen
-[http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets importieren]!
-
-Zu finden ist Yasnippet auf http://github.com/capitaomorte/yasnippet
+Zu finden ist YASnippet auf http://github.com/capitaomorte/yasnippet
 
 == Installationsanweisungen ==
 
 === Standardinstallation ===
 
-Um das gewöhnliche <code>yasnippet-*.tar.bz2</code>-Archiv zu installieren, lädt und entpackt man dieses in ein gewünschtes Verzeichnis. Üblicherweise ist dies <code>~/.emacs.d/packages/</code>. Danach fügt man folgendes in die <code>~/.emacs</code> Konfigurationsdatei ein:
+Um das gewöhnliche <code>yasnippet-*.tar.bz2</code>-Archiv zu installieren, lädt man sich dieses von dieser [https://code.google.com/p/yasnippet/ Seite] und entpackt es in ein gewünschtes Verzeichnis. Üblicherweise ist dies <code>~/.emacs.d/packages/</code>. Danach fügt man folgendes in die <code>~/.emacs</code> Konfigurationsdatei ein:
 
 {{{
     (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
     (require 'yasnippet) ;; not yasnippet-bundle
-    (yas-global-mode 1)
+    (yas/initialize)
+    (yas/load-directory "~/.emacs.d/plugins/yasnippet-x.y.z/snippets")
 }}}
+
+<code>x.y.z</code> ist dabei mit der Versionsnummer des aktuellen Paketes zu ersetzen.
 
 === Mit yasnippet-bundle.el ===
 
-Für ein schnelles Testen von Yasnippet lädt man sich die einfachere "bundle" Version herunter.
+Für ein schnelles Testen von Yasnippet lädt man sich die einfachere "bundle" Version von der selben [https://code.google.com/p/yasnippet/ Seite] herunter. Die Installationsanleitung findet man im eingangs erwähnten [https://yasnippet.googlecode.com/files/yas_demo.avi Video].
 Wenn man jedoch plant, sich eigene Vorlagen zu erstellen (was sehr wahrscheinlich ist), oder bestehende zu ändern, so sollte man die normale Installation durchführen.
 
 1. Herunterladen von <code>yasnippet-bundle-*.el</code> als <code>tar gz</code> Archiv. Dieses entpacken.
@@ -47,6 +47,35 @@ Möchte man beim Starten von Emacs Yasnippet automatisch laden, so trägt man fo
 (require 'yasnippet-bundle)
 }}}
 
+=== Unter Gentoo ===
+
+Derzeit (Stand: Oktober 2013) befindet sich yasnippet noch im Teszweig von Gentoo. Um es trotzdem zu installieren führt man folgendes als Administrator aus:
+<code>su</code> Enter
+<code>echo "app-emacs/yasnippet" >> /etc/portage/package.keywords</code>
+<code>emerge yasnippet</code> 
+
+Unter <code>/usr/share/emacs/etc/yasnippet/snippets</code> sind dann die vordefinierten Schnipsel gespeichert. Um eigene Schnipsel anzulegen, erstellt man sich dafür einen eigenen Ordner:
+
+<code>mkdir ~/.emacs.d/mysnippets</code>
+
+In die Datei <code>~/.emacs</code> trägt man dann folgendes ein:
+
+{{{
+(yas/initialize)
+(yas/load-directory "/usr/share/emacs/etc/yasnippet/snippets")
+(setq yas/root-directory "~/.emacs.d/mysnippets"); Zum Entwickeln und Speichern von persönliche Schnipseln unter ~/emacs.d/mysnippets
+(yas/load-directory yas/root-directory); Load the snippets
+}}}
+
+=== Installation mit package-install in Emacs ===
+
+In einem modernen Emacs ist der Befehl <code>M-x list-packages</code> der empfohlene Weg um Pakete aufzulisten und zu installieren. 
+MELPA enthält einen sehr aktuellen Schnappschuss von YASnippet. Siehe auch http://melpa.milkbox.net/#installing (Englisch).
+
+== Anleitung == 
+
+Eine detaillierte Anleitung für YASnippet gibt es [http://capitaomorte.github.io/yasnippet/#how-to-use-yasnippet hier] auf Englisch unter /How to use YASnippet/.
+
 == Noch mehr Vorlagen ==
 
 Hier gibt es eine größere Auswahl an Vorlagen von [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Andy Stewart].
@@ -54,7 +83,6 @@ Hier gibt es eine größere Auswahl an Vorlagen von [http://www.emacswiki.org/em
 Und hier gibt es noch mehr: http://coderepos.org/share/browser/config/yasnippet
 
 Hier gibt es einige Vorlagen für die JSP Standard Tag Bibliothek: http://github.com/eentzel/yasnippet-jstl/
-[new]
 
 Außerdem gibt es vier Pakete, um Vorlagen automatisch zu erstellen:
 
@@ -155,7 +183,7 @@ and map yas-ido-expand with a chord, e.g.:
 
 Viel Spaß ;)
 
-== Discussion ==
+== Diskussion ==
 
 ----
 CategoryTemplates
