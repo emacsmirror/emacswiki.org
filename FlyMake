@@ -240,7 +240,7 @@ http://i.imgur.com/34ceS.png
 
 === flymake-cursor.el : Display flymake messages in the minibuffer ===
 
-FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys.  It works with any language.  Just require it, and it works.
+FlymakeCursor automatically displays the flymake error for the current line in the minibuffer. The default flymake behavior is to display the message on mouse hover, so the FlymakeCursor thing is nice for keyboard jockeys and those who use nox / no-window.  It works with any language.  Just require it, and it works.
 
 Example:
 
