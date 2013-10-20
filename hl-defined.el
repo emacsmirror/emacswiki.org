@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 19 15:43:21 2013 (-0700)
+;; Last-Updated: Sun Oct 20 10:59:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 236
+;;     Update #: 281
 ;; URL: http://www.emacswiki.org/hl-defined.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
@@ -28,17 +28,33 @@
 ;;
 ;;  `hdefd-highlight-mode' is a minor mode that highlights, in the
 ;;  current buffer, symbols that are known to be defined as Emacs-Lisp
-;;  functions or variables or both.  Alternatively, it can highlight
-;;  symbols that are not known to be defined as functions or
-;;  variables.  The current buffer should be in Emacs-Lisp mode.
+;;  functions, variables, and constants.  Alternatively, it can
+;;  highlight symbols that are not known to be defined as functions,
+;;  variables, or constants.
+;;
+;;  A constant in this context is any non-keyword symbol whose
+;;  variable value is the same as the symbol itself.  A constant is
+;;  thus also a variable.  Lisp keywords are highlighted as usual in
+;;  Emacs-Lisp mode, using `font-lock-builtin-face'.
+;;
+;;  The current buffer should be in Emacs-Lisp mode.
 ;;
 ;;  Command `hdefd-highlight-mode' toggles highlighting on/off.  The
 ;;  highlighting respects option `hdefd-highlight-type'.
 ;;
 ;;  Command `hdefd-cycle' cycles highlighting among the available
 ;;  types and off, as follows: functions & variables > functions >
-;;  variables > undefined > off.  It does this by changing the current
-;;  value of the option.
+;;  variables > constants > undefined > off > functions & variables &
+;;  constants.  It does this by changing the current value of option
+;;  `hdefd-highlight-type'.
+;;
+;;  You can of course customize the faces used for highlighting.  You
+;;  might want, for instance, to have face `hdefd-functions' inherit
+;;  from face `font-lock-function-name-face', `hdefd-variables'
+;;  inherit from `font-lock-variable-name-face', and `hdefd-constants'
+;;  inherit from `font-lock-constant-face'.  This is not the default
+;;  because I don't find it so useful.
+;;
 ;;
 ;;  Put this in your init file:
 ;;
@@ -55,7 +71,8 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `hdefd-functions', `hdefd-variables', `hdefd-undefined'.
+;;    `hdefd-constants', `hdefd-functions', `hdefd-variables',
+;;    `hdefd-undefined'.
 ;;
 ;;  User options defined here:
 ;;
@@ -77,6 +94,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/20 dadams
+;;     Added: hdefd-constants.
+;;     hdefd-highlight-mode, hdefd-cycle, hdefd-highlight:
+;;       Adapted to highlighting also constants.
 ;; 2013/08/19 dadams
 ;;     Created from highlight-fns.el (obsolete - replaced by this).
 ;;
@@ -127,6 +148,11 @@ Don't forget to mention your Emacs and library versions."))
   "Face used to highlight Emacs-Lisp variables."
   :group 'Highlight-Defined :group 'faces)
 
+(defface hdefd-constants
+    '((t (:foreground "Red")))
+  "Face used to highlight Emacs-Lisp constants."
+  :group 'Highlight-Defined :group 'faces)
+
 (defface hdefd-undefined
     '((t (:foreground "Orange")))
   "Face used to highlight undefined Emacs-Lisp symbols."
@@ -175,10 +201,12 @@ undefined symbols or defined symbols: functions or variables or both."
           (called-interactively-p))
     (message "Highlighting Emacs-Lisp %s is now %s."
              (case hdefd-highlight-type
-               (fns-and-vars "FUNCTIONS and VARIABLES")
-               (functions    "FUNCTIONS")
-               (variables    "VARIABLES")
-               (undefined    "UNDEFINED symbols"))
+               (fns-vars-and-constants "FUNCTIONS, VARIABLES, and CONSTANTS")
+               (fns-and-vars           "FUNCTIONS and VARIABLES")
+               (functions              "FUNCTIONS")
+               (variables              "VARIABLES")
+               (constants              "CONSTANTS")
+               (undefined              "UNDEFINED symbols"))
              (if hdefd-highlight-mode "ON" "OFF"))))
 
 (defun hdefd-cycle ()
@@ -188,21 +216,27 @@ Cycle among the possible values of option `hdefd-highlight-type' and off."
   (setq hdefd-highlight-type  (if (not hdefd-highlight-mode)
                                   'fns-and-vars
                                 (case hdefd-highlight-type
-                                  (fns-and-vars  'functions)
-                                  (functions     'variables)
-                                  (variables     'undefined)
-                                  (undefined     nil)
-                                  ((nil)         'fns-and-vars))))
+                                  (fns-and-vars            'functions)
+                                  (functions               'variables)
+                                  (variables               'constants)
+                                  (constants               'undefined)
+                                  (undefined               'fns-vars-and-constants)
+                                  (fns-vars-and-constants  nil)
+                                  ((nil)                   'fns-and-vars))))
   (if hdefd-highlight-type
       (unless hdefd-highlight-mode (hdefd-highlight-mode 1))
     (setq hdefd-highlight-type  'fns-and-vars)
     (hdefd-highlight-mode -1))
   (message "Highlighting Emacs-Lisp %s is now %s."
            (case hdefd-highlight-type
-             (fns-and-vars (if hdefd-highlight-mode "FUNCTIONS and VARIABLES" "symbols"))
-             (functions    "FUNCTIONS")
-             (variables    "VARIABLES")
-             (undefined    "UNDEFINED symbols"))
+             (fns-and-vars           (if hdefd-highlight-mode
+                                         "FUNCTIONS and VARIABLES"
+                                       "symbols"))
+             (functions              "FUNCTIONS")
+             (variables              "VARIABLES")
+             (constants              "CONSTANTS")
+             (undefined              "UNDEFINED symbols")
+             (fns-vars-and-constants "FUNCTIONS, VARIABLES, and CONSTANTS"))
            (if hdefd-highlight-mode "ON" "OFF"))
   (font-lock-fontify-buffer))
 
@@ -210,7 +244,7 @@ Cycle among the possible values of option `hdefd-highlight-type' and off."
   "Highlight Emacs-Lisp functions and/or variables.
 Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
   ;; If your code uses any of these variable names then too bad - they will be highlighted:
-  ;; `hdefd-opoint', `hdefd-found', `hdefd-obj'
+  ;; `hdefd-found', `hdefd-highlight-type', `hdefd-obj', and `hdefd-opoint'.
   (let ((hdefd-opoint  (point))
         (hdefd-found   nil))
     (with-syntax-table emacs-lisp-mode-syntax-table
@@ -221,11 +255,14 @@ Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
                      (setq hdefd-opoint  (point))
                      (let ((hdefd-obj  (read (current-buffer))))
                        (and (symbolp hdefd-obj)
-                            (not (memq hdefd-obj '(nil t)))
-                            (not (keywordp hdefd-obj))
-                            (or (and (memq hdefd-highlight-type '(fns-and-vars functions))
+                            (or (and (memq hdefd-highlight-type '(fns-vars-and-constants
+                                                                  fns-and-vars
+                                                                  functions))
                                      (fboundp hdefd-obj))
-                                (and (memq hdefd-highlight-type '(fns-and-vars variables))
+                                (and (memq hdefd-highlight-type '(fns-vars-and-constants
+                                                                  fns-and-vars
+                                                                  variables
+                                                                  constants))
                                      (boundp hdefd-obj))
                                 (and (eq hdefd-highlight-type 'undefined)
                                      (not (fboundp hdefd-obj))
@@ -234,11 +271,24 @@ Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
                                    (setq hdefd-face
                                          (if (and (fboundp hdefd-obj)
                                                   (memq hdefd-highlight-type
-                                                        '(fns-and-vars functions)))
+                                                        '(fns-vars-and-constants
+                                                          fns-and-vars
+                                                          functions)))
                                              'hdefd-functions
                                            (if (eq hdefd-highlight-type 'undefined)
                                                'hdefd-undefined
-                                             'hdefd-variables)))
+                                             (if (and (memq hdefd-highlight-type
+                                                            '(fns-vars-and-constants
+                                                              constants))
+                                                      (or (memq hdefd-obj '(nil t))
+                                                          (eq hdefd-obj
+                                                              (symbol-value hdefd-obj))))
+                                                 'hdefd-constants
+                                               (and (memq hdefd-highlight-type
+                                                          '(fns-vars-and-constants
+                                                            fns-and-vars
+                                                            variables))
+                                                    'hdefd-variables)))))
                                    t))))
                  (error nil))
                (forward-sexp 1)
