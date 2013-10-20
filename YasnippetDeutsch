@@ -1,8 +1,8 @@
 [[de:YasnippetDeutsch]]
 == Beschreibung ==
 
-*YASnippet* (Yet Another Snippet, etwa "Noch ein Schnippsel") ist ein Vorlagensystem für Emacs. 
-Es ermöglicht, ein getipptes Schlagwort automatisch in eine Textvorlage zu ersetzen. Dies ist äußerst praktisch, wenn man häufig vorkommende Textfragmente im Quellcode einbauen muss. 
+*YASnippet* (Yet Another Snippet, zu Deutsch etwa "Noch ein Schnipsel") ist ein Vorlagensystem für Emacs. 
+Es ermöglicht, ein getipptes Schlagwort automatisch durch eine Textvorlage zu ersetzen. Dies ist äußerst praktisch, wenn man häufig vorkommende Textfragmente im Quellcode einbauen muss. Die Schnipsel können durch Haltemarken erweitert werden, zu denen der Cursor durch Drücken von <code>Tab</code> nacheinander springt.
 
 Die Vorlagen von YASnippet werden auch Schnipsel (engl.: /snippet/) genannt. In diesem [https://yasnippet.googlecode.com/files/yas_demo.avi Video] wird die Installation und die Funktionsweise von YASnippet verdeutlicht (Avi, etwa 70MB).
 
@@ -32,11 +32,11 @@ Um das gewöhnliche <code>yasnippet-*.tar.bz2</code>-Archiv zu installieren, lä
 Für ein schnelles Testen von Yasnippet lädt man sich die einfachere "bundle" Version von der selben [https://code.google.com/p/yasnippet/ Seite] herunter. Die Installationsanleitung findet man im eingangs erwähnten [https://yasnippet.googlecode.com/files/yas_demo.avi Video].
 Wenn man jedoch plant, sich eigene Vorlagen zu erstellen (was sehr wahrscheinlich ist), oder bestehende zu ändern, so sollte man die normale Installation durchführen.
 
-1. Herunterladen von <code>yasnippet-bundle-*.el</code> als <code>tar gz</code> Archiv. Dieses entpacken.
+# Herunterladen von <code>yasnippet-bundle-*.el</code> als <code>tar gz</code> Archiv. Dieses entpacken.
 
-2. Die Datei <code>yasnippet-bundle.el</code>, in den Ordner <code>~/.emacs.d/packages/</code> einfügen. Man erstelle diesen, wenn er noch nicht existiert.
+# Die Datei <code>yasnippet-bundle.el</code>, in den Ordner <code>~/.emacs.d/packages/</code> einfügen. Man erstelle diesen, wenn er noch nicht existiert.
 
-3. Öffnen der eben abgespeicherten Datei in Emacs. Ausführen des Befehls<code>Alt+x eval-buffer</code>.
+# Öffnen der eben abgespeicherten Datei in Emacs. Ausführen des Befehls<code>Alt+x eval-buffer</code>.
 
 Das war's schon. Wenn man jetzt eine Datei öffnet, erscheint "YASnippet" in der Menüleiste.  Hier kann man komfortabel eine Vorlage auswählen und in den Text einfügen.
 Außerdem kann man nun eine vordefinierte Abkürzung im Text eingeben, und diese durch Drücken von <code>Tab</code> durch die entsprechende Vorlage ersetzen.
@@ -49,22 +49,23 @@ Möchte man beim Starten von Emacs Yasnippet automatisch laden, so trägt man fo
 
 === Unter Gentoo ===
 
-Derzeit (Stand: Oktober 2013) befindet sich yasnippet noch im Teszweig von Gentoo. Um es trotzdem zu installieren führt man folgendes als Administrator aus:
-<code>su</code> Enter
-<code>echo "app-emacs/yasnippet" >> /etc/portage/package.keywords</code>
-<code>emerge yasnippet</code> 
+Derzeit (Stand: Oktober 2013) befindet sich YASnippet noch im Teszweig von Gentoo. Um es trotzdem zu installieren führt man folgendes als Administrator aus:
 
-Unter <code>/usr/share/emacs/etc/yasnippet/snippets</code> sind dann die vordefinierten Schnipsel gespeichert. Um eigene Schnipsel anzulegen, erstellt man sich dafür einen eigenen Ordner:
+# <code>su</code>
 
-<code>mkdir ~/.emacs.d/mysnippets</code>
+# <code>echo "app-emacs/yasnippet" >> /etc/portage/package.keywords</code>
+
+# <code>emerge yasnippet</code> 
+
+Unter <code>/usr/share/emacs/etc/yasnippet/snippets</code> sind dann die vordefinierten Schnipsel gespeichert. Um eigene Schnipsel anzulegen, erstellt man sich dafür einen eigenen Ordner: <code>mkdir ~/.emacs.d/mysnippets</code>
 
 In die Datei <code>~/.emacs</code> trägt man dann folgendes ein:
 
 {{{
 (yas/initialize)
 (yas/load-directory "/usr/share/emacs/etc/yasnippet/snippets")
-(setq yas/root-directory "~/.emacs.d/mysnippets"); Zum Entwickeln und Speichern von persönliche Schnipseln unter ~/emacs.d/mysnippets
-(yas/load-directory yas/root-directory); Load the snippets
+(setq yas/root-directory "~/.emacs.d/mysnippets"); Ordner zum Abspeichern von eigenen Schnipseln
+(yas/load-directory yas/root-directory); Laden der eigenen Schnipsel
 }}}
 
 === Installation mit package-install in Emacs ===
@@ -75,6 +76,45 @@ MELPA enthält einen sehr aktuellen Schnappschuss von YASnippet. Siehe auch http
 == Anleitung == 
 
 Eine detaillierte Anleitung für YASnippet gibt es [http://capitaomorte.github.io/yasnippet/#how-to-use-yasnippet hier] auf Englisch unter /How to use YASnippet/.
+
+Zum Schreiben von eigenen Schnipseln gibt es dort auch eine sehr ausführliche [http://capitaomorte.github.io/yasnippet/snippet-development.html Anleitung], auch auf Englisch.
+
+== Beispiel für LaTex == 
+
+Übersetzt von http://tex.stackexchange.com/questions/51204/working-with-templates/51250#51250:
+
+Die folgenden Schritte zeigen, wie man einen Schnipsel für %%LaTex%% erstellt:
+
+# Öffne zuerst eine tex-Datei, um in den %%LaTeX%%-mode zu gelangen
+# <code>M-x yas/new-snippet</code>
+# Gib einen Namen für den neuen Schnipsel ein, beende mit <code>Enter</code>.
+# Jetzt kann man das Schnipsel bearbeiten. Dazu löscht man zunächst alles durch <code>C-x h</code> und anschließend <code>C-w</code>.
+
+Jetzt hat man einen leeren Schnipsel. Füge nun den folgenden Text in die Datei ein. Das Schnipsel sollte direkt nach <code>\end{document}</code> enden und nicht mit einer neuen Zeile:
+
+{{{
+    # -*- mode: snippet -*-
+    # name: article
+    # key: arttemp
+    # --
+    \documentclass{article}
+
+    \usepackage[${1:english}]{babel}
+
+    \title{${2:Title}}
+    \author{${3:Author}}
+
+    \begin{document}
+    \maketitle
+
+    $0
+
+    \end{document}
+}}}
+    
+Mit einem anschließenden <code>C-c C-c</code> wird der neue Schnipsel gesichert und steht zur Verwendung bereit.
+Man kann es jetzt verwenden, indem man in einer tex-Datei <code>arttemp</code> eingibt, und direkt danach <code>Tab</code>. Man beachte, wie mit <code>$1</code>, <code>$2</code>, <code>$3</code> und <code>$0</code> Sprungmarken definiert werden, von denen die ersten drei einen Standardwert besitzen. Dieser kann direkt überschrieben werden, wenn der Cursor auf der entsprechendenPosition ist. Hier kann man sehen, wie das Schnipsel verwendet wird:
+http://i.stack.imgur.com/jDBbw.gif
 
 == Noch mehr Vorlagen ==
 
@@ -120,7 +160,7 @@ Außerdem gibt es vier Pakete, um Vorlagen automatisch zu erstellen:
 
 Übernommen von http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
 
-Note: yasnippet von git (version 0.8) (new yas-* instead of yas/* functions and variable names)
+Notiz: YASnippet von git (version 0.8) (new yas-* instead of yas/* functions and variable names)
 
 {{{
 ;;; use popup menu for yas-choose-value
@@ -152,7 +192,7 @@ Note: yasnippet von git (version 0.8) (new yas-* instead of yas/* functions and 
 }}}
 
 == ido-complete yasnippet keys ==
-Evaluate this snippet:
+Man führe folgenden Quelltext aus:
 {{{
 ;; Completing point by some yasnippet key
 (defun yas-ido-expand ()
@@ -177,9 +217,11 @@ Evaluate this snippet:
         (insert key)
         (yas-expand)))))
 }}}
-and map yas-ido-expand with a chord, e.g.:
+und lege <code>yas-ido-expand</code> auf eine gewünschte Tastenkombination, z.B auf <code>C-Tab</code>:
 
+{{{
     (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+}}}
 
 Viel Spaß ;)
 
