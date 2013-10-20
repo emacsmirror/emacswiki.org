@@ -2,7 +2,7 @@
 == Beschreibung ==
 
 *YASnippet* (Yet Another Snippet, zu Deutsch etwa "Noch ein Schnipsel") ist ein Vorlagensystem für Emacs. 
-Es ermöglicht, ein getipptes Schlagwort automatisch durch eine Textvorlage zu ersetzen. Dies ist äußerst praktisch, wenn man häufig vorkommende Textfragmente im Quellcode einbauen muss. Die Schnipsel können durch Haltemarken erweitert werden, zu denen der Cursor durch Drücken von <code>Tab</code> nacheinander springt.
+Es ermöglicht, ein getipptes Schlagwort automatisch durch eine Textvorlage zu ersetzen. Dies ist äußerst praktisch, wenn man häufig vorkommende Textfragmente im Quellcode einbauen muss. Die Schnipsel können durch Haltemarken erweitert werden, zu denen der Cursor nacheinander durch Drücken von <code>Tab</code> springt.
 
 Die Vorlagen von YASnippet werden auch Schnipsel (engl.: /snippet/) genannt. In diesem [https://yasnippet.googlecode.com/files/yas_demo.avi Video] wird die Installation und die Funktionsweise von YASnippet verdeutlicht (Avi, etwa 70MB).
 
