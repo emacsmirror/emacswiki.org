@@ -26,13 +26,13 @@
 ;;; Commentary:
 
 ;; Mismatches of html tags are highlighted with the face html-check-frag-error-face.
-;; You can go to the next mismatch with html-check-frag-next.
+;; You can go to the next mismatch with html-check-frag.
 ;;
 ;; Installation:
-;; Put html-check-frag-next.el into your load-path and add the following line into
+;; Put html-check-frag.el into your load-path and add the following line into
 ;; your emacs start-up file (e.g. "~/.emacs"):
 ;;
-;; (require 'html-check-frag-next)
+;; (require 'html-check-frag)
 ;;
 ;; If you want to start html-check-frag-mode together with html-mode then also add:
 ;;
@@ -53,7 +53,7 @@ Note that the stack contents has reverse order.
 You should look at (reverse html-check-frag-debug).")
 (make-variable-buffer-local 'html-check-frag-debug)
 
-(defvar html-check-frag-void-tags '("!doctype" "area" "base" "br" "col" "embed" "hr" "img" "input" "keygen" "link" "meta" "param" "source" "track" "wbr")
+(defvar html-check-frag-void-tags '("?xml" "!doctype" "area" "base" "br" "col" "embed" "hr" "img" "input" "keygen" "link" "meta" "param" "source" "track" "wbr")
   "Void tags not needed to be marked as <.../>.
 Note, everything should be lower case here. Even !DOCTYPE should actually be !doctpype in this list.")
 
@@ -90,7 +90,7 @@ the (almost) the same meaning as for
 	void
 	found ;; temporary
 	value ;; temporary
-	(re "\\(?:<\\(/\\)?\\([[:alpha:]!][[:alnum:]]*\\)\\|\\(>\\)\\)")
+	(re "\\(?:<\\(/\\)?\\([[:alpha:]!?][[:alnum:]]*\\)\\|\\(>\\)\\)")
 	(search-regexp (or (and backward 'search-backward-regexp) 'search-forward-regexp))
 	)
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
@@ -278,15 +278,43 @@ the (almost) the same meaning as for
      (signal (car err) (cdr err))
      )))
 
+(defun html-check-frag-next-e (e)
+  "TODO: for usage with keymap."
+  (with-current-buffer (window-buffer (posn-window (event-start e)))
+    (html-check-frag-next)))
+
+(defun html-check-frag-next ()
+  "Find next html tag marked with `html-check-frag-error-face'. Search starts from point."
+  (interactive)
+  (let ((old-point (point)) wrapped)
+    (while (and
+	    (progn
+	      (goto-char (or (and wrapped (min old-point (next-overlay-change (point))))
+			     (next-overlay-change (point))))
+	      (when (= (point) (point-max))
+		(goto-char (point-min))
+		(setq wrapped t))
+	      (null (and wrapped (= (point) old-point))))
+	    (null (loop for ol in (overlays-at (point))
+			thereis (eq (overlay-get ol 'face) 'html-check-frag-error-face)))))))
+
+(defvar html-check-frag-map)
+(setq html-check-frag-map (make-sparse-keymap))
+(define-key html-check-frag-map [down-mouse-1] 'html-check-frag-next-e)
+(put 'html-check-frag-map 'risky-local-variable t)
+
+
 (define-minor-mode html-check-frag-mode
   "Check xml-fragments at point and decorate tags.
 To be used with html-mode as major mode."
-  :lighter (:propertize html-check-frag-lighter face html-check-frag-error-face)
+  :lighter (:propertize html-check-frag-lighter face html-check-frag-error-face
+			local-map html-check-frag-map
+			help-echo "mouse-1: next error")
   (declare (special html-check-frag-lighter html-check-frag-err))
   (if html-check-frag-mode
       (progn
 	(setq-local html-check-frag-err nil)
-	(setq-local html-check-frag-lighter "")
+	(setq-local html-check-frag-lighter "")	
 	(jit-lock-register 'html-check-frag-region))
     (remove-overlays (point-min) (point-max) 'face 'html-check-frag-error-face)
     (jit-lock-unregister 'html-check-frag-region)
@@ -295,4 +323,4 @@ To be used with html-mode as major mode."
     ))
 
 (provide 'html-check-frag)
-;;; html-search-for-tag-syntax.el ends here
+;;; html-check-frag.el ends here
