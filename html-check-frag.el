@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; Mismatches of html tags are highlighted with the face html-check-frag-error-face.
-;; You can go to the next mismatch with html-check-frag-next.
+;; You can go to the next mismatch with html-check-frag.
 ;;
 ;; Installation:
 ;; Put html-check-frag.el into your load-path and add the following line into
@@ -61,7 +61,7 @@ Note, everything should be lower case here. Even !DOCTYPE should actually be !do
   "Return non-nil if point is inside string comment or the character at point is quoted."
   (save-excursion
     (save-match-data
-      (let ((parserState (syntax-ppss pos)))
+      (let ((parserState (syntax-ppss (if (= (char-after pos) ?<) (1+ pos) pos))))
 	(or (nth 3 parserState) ;; inside string
 	    (nth 4 parserState) ;; inside comment
 	    (nth 5 parserState))) ;; ?< is quoted
@@ -91,7 +91,7 @@ the (almost) the same meaning as for
 	found ;; temporary
 	value ;; temporary
 	(re "\\(?:<\\(/\\)?\\([[:alpha:]!?][[:alnum:]]*\\)\\|\\(>\\)\\)")
-	(search-regexp (or (and backward 'search-backward-regexp) 'search-forward-regexp))
+	(search-regexp (or (and backward '(search-backward-regexp . search-forward-regex)) '(search-forward-regexp . search-backward-regexp)))
 	)
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
 			   (prog1 
@@ -100,14 +100,14 @@ the (almost) the same meaning as for
 			     (modify-syntax-entry ?> ")" html-search-for-tag-syntax)
 			     (modify-syntax-entry ?= "." html-search-for-tag-syntax) ;; for parsing attributes
 			     ))
-      (while (and (apply search-regexp (list re bound noerror))
+      (while (and (setq beg (apply (car search-regexp) (list re bound noerror)))
 		  (setq beg (match-beginning 0))
 		  (html-invalid-context-p beg)))
       (when (and beg (match-beginning 3));; point is actually in the middle of a tag
 	(goto-char (match-beginning 3))
-	(while (and (search-backward-regexp re nil noerror)
+	(while (and (setq beg (apply (cdr search-regexp) (list re nil noerror)))
 		    (setq beg (match-beginning 0))
-		    (html-invalid-context-p)))
+		    (html-invalid-context-p beg)))
 	(if (or (null beg) (match-beginning 3))
 	    (progn 
 	      (put 'error-html-tag 'error-conditions '(error error-html))
@@ -258,7 +258,7 @@ the (almost) the same meaning as for
 			   (deco-err 'mismatch tag-from-stack))
 			 ))))
 		  (if html-check-frag-err
-		      (setq-local html-check-frag-lighter (concat " " (upcase (symbol-name (plist-get html-check-frag-err :type)))))
+		      (setq-local html-check-frag-lighter  (concat " " (upcase (symbol-name (plist-get html-check-frag-err :type)))))
 		    (setq-local html-check-frag-lighter "")))
 	      (error-html
 	       (setq b (nth 2 scan-err))
@@ -280,6 +280,7 @@ the (almost) the same meaning as for
 
 (defun html-check-frag-next-e (e)
   "TODO: for usage with keymap."
+  (interactive "e")
   (with-current-buffer (window-buffer (posn-window (event-start e)))
     (html-check-frag-next)))
 
@@ -298,18 +299,20 @@ the (almost) the same meaning as for
 	    (null (loop for ol in (overlays-at (point))
 			thereis (eq (overlay-get ol 'face) 'html-check-frag-error-face)))))))
 
-(defvar html-check-frag-map)
-(setq html-check-frag-map (make-sparse-keymap))
-(define-key html-check-frag-map [down-mouse-1] 'html-check-frag-next-e)
-(put 'html-check-frag-map 'risky-local-variable t)
+(defvar html-check-frag-lighter-map)
+(setq html-check-frag-lighter-map (make-sparse-keymap))
+(define-key html-check-frag-lighter-map (kbd "<mode-line> <html-check-frag-mode> <down-mouse-1>") 'html-check-frag-next-e)
+(put 'html-check-frag-lighter-map 'risky-local-variable t)
 
 
 (define-minor-mode html-check-frag-mode
   "Check xml-fragments at point and decorate tags.
 To be used with html-mode as major mode."
   :lighter (:propertize html-check-frag-lighter face html-check-frag-error-face
-			local-map html-check-frag-map
-			help-echo "mouse-1: next error")
+			local-map html-check-frag-lighter-map
+			;; help-echo "mouse-1: next error" ;; does not work yet
+			)
+  :keymap html-check-frag-lighter-map
   (declare (special html-check-frag-lighter html-check-frag-err))
   (if html-check-frag-mode
       (progn
