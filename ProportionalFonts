@@ -1,3 +1,5 @@
+Newer versions of Emacs include the `variable-pitch-mode' minor mode, which changes a buffer to use proportional fonts.
+
 = Proportional Fonts =
 
 See also [Lisp:dynamic-fonts.el].
