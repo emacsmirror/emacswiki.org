@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; Mismatches of html tags are highlighted with the face html-check-frag-error-face.
-;; You can go to the next mismatch with html-check-frag.
+;; You can go to the next mismatch with html-check-frag-next.
 ;;
 ;; Installation:
 ;; Put html-check-frag.el into your load-path and add the following line into
