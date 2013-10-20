@@ -13,6 +13,161 @@ C, C++, [CSharpMode C#], [PerlMode Perl], [PythonMode Python], [RubyMode Ruby], 
 
 Zu finden ist YASnippet auf http://github.com/capitaomorte/yasnippet
 
+== Anleitung == 
+
+Eine detaillierte Anleitung für YASnippet gibt es [http://capitaomorte.github.io/yasnippet/#how-to-use-yasnippet hier] auf Englisch unter /How to use YASnippet/.
+
+Zum Schreiben von eigenen Schnipseln gibt es dort auch eine sehr ausführliche [http://capitaomorte.github.io/yasnippet/snippet-development.html Anleitung], auch auf Englisch.
+
+=== Beispiel für LaTex === 
+
+Übersetzt von http://tex.stackexchange.com/questions/51204/working-with-templates/51250#51250:
+
+Die folgenden Schritte zeigen, wie man einen Schnipsel für %%LaTex%% erstellt:
+
+# Öffne zuerst eine tex-Datei, um in den %%LaTeX%%-mode zu gelangen
+# <code>M-x yas/new-snippet</code>
+# Gib einen Namen für den neuen Schnipsel ein, beende mit <code>Enter</code>.
+# Jetzt kann man das Schnipsel bearbeiten. Dazu löscht man zunächst alles durch <code>C-x h</code> und anschließend <code>C-w</code>.
+
+Jetzt hat man einen leeren Schnipsel. Füge nun den folgenden Text in die Datei ein. Das Schnipsel sollte direkt nach <code>\end{document}</code> enden und nicht mit einer neuen Zeile:
+
+{{{
+    # -*- mode: snippet -*-
+    # name: article
+    # key: arttemp
+    # --
+    \documentclass{article}
+
+    \usepackage[${1:english}]{babel}
+
+    \title{${2:Title}}
+    \author{${3:Author}}
+
+    \begin{document}
+    \maketitle
+
+    $0
+
+    \end{document}
+}}}
+    
+Mit einem anschließenden <code>C-c C-c</code> wird der neue Schnipsel gesichert und steht zur Verwendung bereit.
+Man kann es jetzt verwenden, indem man in einer tex-Datei <code>arttemp</code> eingibt, und direkt danach <code>Tab</code>. Man beachte, wie mit <code>$1</code>, <code>$2</code>, <code>$3</code> und <code>$0</code> Sprungmarken definiert werden, von denen die ersten drei einen Standardwert besitzen. Dieser kann direkt überschrieben werden, wenn der Cursor an der entsprechenden Position steht. Hier sieht man, wie dieser Schnipsel verwendet wird:
+http://i.stack.imgur.com/jDBbw.gif
+
+=== Noch mehr Vorlagen ===
+
+Hier gibt es eine größere Auswahl an Vorlagen von [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Andy Stewart].
+
+Und hier gibt es noch mehr: http://coderepos.org/share/browser/config/yasnippet
+
+Hier gibt es einige Vorlagen für die JSP Standard Tag Bibliothek: http://github.com/eentzel/yasnippet-jstl/
+
+Außerdem gibt es vier Pakete, um Vorlagen automatisch zu erstellen:
+
+* [https://github.com/mlf176f2/r-autoyas.el R-autoyas] -- Erstellt Vorlagen für R im ess-mode
+
+* ElAutoyas -- Erstellt Vorlagen für den emacs-lisp-mode.
+
+* Lisp:auto-yasnippet.el -- Erstellt schnell und einfach "Wegwerf"-Vorlagen.
+
+* [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Erstellt Vorlagen für den php-mode
+
+=== Auswahl einer Vorlage mit helm (anything.el) ===
+
+Helm ist ein Modus für Emacs, der einem die tägliche Arbeit erleichtern soll. Die folgende Funktion verknüpft YASnippet und Helm.
+
+  (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+    "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+    (interactive)
+    (setq display-fn (or display-fn 'identity))
+    (if (require 'helm-config)
+        (let (tmpsource cands result rmap)
+          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+          (setq tmpsource
+                (list
+                 (cons 'name prompt)
+                 (cons 'candidates cands)
+                 '(action . (("Expand" . (lambda (selection) selection))))
+                 ))
+          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+          (if (null result)
+              (signal 'quit "user quit!")
+            (cdr (assoc result rmap))))
+      nil))
+
+=== Popup Menü für yas-choose-value ===
+
+Übernommen von http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
+
+Notiz: YASnippet aus git-Installation (Version 0.8) (yas-* anstatt von yas/* Functionen und Variablen-N)
+
+{{{
+;;; use popup menu for yas-choose-value
+(require 'popup)
+
+;; add some shotcuts in popup menu mode
+(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
+(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
+(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
+(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
+(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
+
+(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
+  (when (featurep 'popup)
+    (popup-menu*
+     (mapcar
+      (lambda (choice)
+        (popup-make-item
+         (or (and display-fn (funcall display-fn choice))
+             choice)
+         :value choice))
+      choices)
+     :prompt prompt
+     ;; start isearch mode immediately
+     :isearch t
+     )))
+
+(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
+}}}
+
+=== ido-complete yasnippet keys ===
+
+Man führe folgenden Quelltext aus:
+{{{
+;; Completing point by some yasnippet key
+(defun yas-ido-expand ()
+  "Lets you select (and expand) a yasnippet key"
+  (interactive)
+    (let ((original-point (point)))
+      (while (and
+              (not (= (point) (point-min) ))
+              (not
+               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+        (backward-word 1))
+    (let* ((init-word (point))
+           (word (buffer-substring init-word original-point))
+           (list (yas-active-keys)))
+      (goto-char original-point)
+      (let ((key (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s)) list)))
+        (if (= (length key) 1)
+            (setq key (pop key))
+          (setq key (ido-completing-read "key: " list nil nil word)))
+        (delete-char (- init-word original-point))
+        (insert key)
+        (yas-expand)))))
+}}}
+und lege <code>yas-ido-expand</code> auf eine gewünschte Tastenkombination, z.B auf <code>C-Tab</code>:
+
+{{{
+    (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+}}}
+
+Viel Spaß ;)
+
 == Installationsanweisungen ==
 
 === Standardinstallation ===
@@ -73,158 +228,6 @@ In die Datei <code>~/.emacs</code> trägt man dann folgendes ein:
 
 In einem modernen Emacs ist der Befehl <code>M-x list-packages</code> der empfohlene Weg um Pakete aufzulisten und zu installieren. 
 MELPA enthält einen sehr aktuellen Schnappschuss von YASnippet. Siehe auch http://melpa.milkbox.net/#installing (Englisch).
-
-== Anleitung == 
-
-Eine detaillierte Anleitung für YASnippet gibt es [http://capitaomorte.github.io/yasnippet/#how-to-use-yasnippet hier] auf Englisch unter /How to use YASnippet/.
-
-Zum Schreiben von eigenen Schnipseln gibt es dort auch eine sehr ausführliche [http://capitaomorte.github.io/yasnippet/snippet-development.html Anleitung], auch auf Englisch.
-
-== Beispiel für LaTex == 
-
-Übersetzt von http://tex.stackexchange.com/questions/51204/working-with-templates/51250#51250:
-
-Die folgenden Schritte zeigen, wie man einen Schnipsel für %%LaTex%% erstellt:
-
-# Öffne zuerst eine tex-Datei, um in den %%LaTeX%%-mode zu gelangen
-# <code>M-x yas/new-snippet</code>
-# Gib einen Namen für den neuen Schnipsel ein, beende mit <code>Enter</code>.
-# Jetzt kann man das Schnipsel bearbeiten. Dazu löscht man zunächst alles durch <code>C-x h</code> und anschließend <code>C-w</code>.
-
-Jetzt hat man einen leeren Schnipsel. Füge nun den folgenden Text in die Datei ein. Das Schnipsel sollte direkt nach <code>\end{document}</code> enden und nicht mit einer neuen Zeile:
-
-{{{
-    # -*- mode: snippet -*-
-    # name: article
-    # key: arttemp
-    # --
-    \documentclass{article}
-
-    \usepackage[${1:english}]{babel}
-
-    \title{${2:Title}}
-    \author{${3:Author}}
-
-    \begin{document}
-    \maketitle
-
-    $0
-
-    \end{document}
-}}}
-    
-Mit einem anschließenden <code>C-c C-c</code> wird der neue Schnipsel gesichert und steht zur Verwendung bereit.
-Man kann es jetzt verwenden, indem man in einer tex-Datei <code>arttemp</code> eingibt, und direkt danach <code>Tab</code>. Man beachte, wie mit <code>$1</code>, <code>$2</code>, <code>$3</code> und <code>$0</code> Sprungmarken definiert werden, von denen die ersten drei einen Standardwert besitzen. Dieser kann direkt überschrieben werden, wenn der Cursor an der entsprechenden Position steht. Hier sieht man, wie dieser Schnipsel verwendet wird:
-http://i.stack.imgur.com/jDBbw.gif
-
-== Noch mehr Vorlagen ==
-
-Hier gibt es eine größere Auswahl an Vorlagen von [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Andy Stewart].
-
-Und hier gibt es noch mehr: http://coderepos.org/share/browser/config/yasnippet
-
-Hier gibt es einige Vorlagen für die JSP Standard Tag Bibliothek: http://github.com/eentzel/yasnippet-jstl/
-
-Außerdem gibt es vier Pakete, um Vorlagen automatisch zu erstellen:
-
-* [https://github.com/mlf176f2/r-autoyas.el R-autoyas] -- Erstellt Vorlagen für R im ess-mode
-
-* ElAutoyas -- Erstellt Vorlagen für den emacs-lisp-mode.
-
-* Lisp:auto-yasnippet.el -- Erstellt schnell und einfach "Wegwerf"-Vorlagen.
-
-* [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Erstellt Vorlagen für den php-mode
-
-== Auswahl einer Vorlage mit helm (anything.el) ==
-
-  (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
-    "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
-    (interactive)
-    (setq display-fn (or display-fn 'identity))
-    (if (require 'helm-config)
-        (let (tmpsource cands result rmap)
-          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
-          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
-          (setq tmpsource
-                (list
-                 (cons 'name prompt)
-                 (cons 'candidates cands)
-                 '(action . (("Expand" . (lambda (selection) selection))))
-                 ))
-          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
-          (if (null result)
-              (signal 'quit "user quit!")
-            (cdr (assoc result rmap))))
-      nil))
-
-== Popup Menü für yas-choose-value ==
-
-Übernommen von http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
-
-Notiz: YASnippet von git (version 0.8) (new yas-* instead of yas/* functions and variable names)
-
-{{{
-;;; use popup menu for yas-choose-value
-(require 'popup)
-
-;; add some shotcuts in popup menu mode
-(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
-(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
-(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
-(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
-(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
-
-(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
-  (when (featurep 'popup)
-    (popup-menu*
-     (mapcar
-      (lambda (choice)
-        (popup-make-item
-         (or (and display-fn (funcall display-fn choice))
-             choice)
-         :value choice))
-      choices)
-     :prompt prompt
-     ;; start isearch mode immediately
-     :isearch t
-     )))
-
-(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
-}}}
-
-== ido-complete yasnippet keys ==
-Man führe folgenden Quelltext aus:
-{{{
-;; Completing point by some yasnippet key
-(defun yas-ido-expand ()
-  "Lets you select (and expand) a yasnippet key"
-  (interactive)
-    (let ((original-point (point)))
-      (while (and
-              (not (= (point) (point-min) ))
-              (not
-               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
-        (backward-word 1))
-    (let* ((init-word (point))
-           (word (buffer-substring init-word original-point))
-           (list (yas-active-keys)))
-      (goto-char original-point)
-      (let ((key (remove-if-not
-                  (lambda (s) (string-match (concat "^" word) s)) list)))
-        (if (= (length key) 1)
-            (setq key (pop key))
-          (setq key (ido-completing-read "key: " list nil nil word)))
-        (delete-char (- init-word original-point))
-        (insert key)
-        (yas-expand)))))
-}}}
-und lege <code>yas-ido-expand</code> auf eine gewünschte Tastenkombination, z.B auf <code>C-Tab</code>:
-
-{{{
-    (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
-}}}
-
-Viel Spaß ;)
 
 == Diskussion ==
 
