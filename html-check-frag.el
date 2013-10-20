@@ -301,7 +301,7 @@ the (almost) the same meaning as for
 
 (defvar html-check-frag-lighter-map)
 (setq html-check-frag-lighter-map (make-sparse-keymap))
-(define-key html-check-frag-lighter-map (kbd "<mode-line> <html-check-frag-mode> <down-mouse-1>") 'html-check-frag-next-e)
+(define-key html-check-frag-lighter-map (kbd "<mode-line> <down-mouse-1>") 'html-check-frag-next-e)
 (put 'html-check-frag-lighter-map 'risky-local-variable t)
 
 
