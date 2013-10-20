@@ -1,6 +1,6 @@
 Lisp:flymake-cursor.el
 
-The normal operation of flymake allows the user to see the error message for a particular line by “hovering” the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
+The normal operation of flymake allows the user to see the error message for a particular line by “hovering” the mouse over the line. This is inconvenient for people who try to use the keyboard for all input and for those who use the nox / no-window Emacs. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
 
 This works in any language that flymake supports. Here's an example of it working with flymake-for-javascript: 
 
