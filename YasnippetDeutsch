@@ -29,7 +29,7 @@ Um das gewöhnliche <code>yasnippet-*.tar.bz2</code>-Archiv zu installieren, lä
 
 === Mit yasnippet-bundle.el ===
 
-Für ein schnelles Testen von Yasnippet lädt man sich die einfachere "bundle" Version von der selben [https://code.google.com/p/yasnippet/ Seite] herunter. Die Installationsanleitung findet man im eingangs erwähnten [https://yasnippet.googlecode.com/files/yas_demo.avi Video].
+Für ein schnelles Testen von YASnippet lädt man sich die einfachere "bundle" Version von der selben [https://code.google.com/p/yasnippet/ Seite] herunter. Die Installationsanleitung findet man im eingangs erwähnten [https://yasnippet.googlecode.com/files/yas_demo.avi Video].
 Wenn man jedoch plant, sich eigene Vorlagen zu erstellen (was sehr wahrscheinlich ist), oder bestehende zu ändern, so sollte man die normale Installation durchführen.
 
 # Herunterladen von <code>yasnippet-bundle-*.el</code> als <code>tar gz</code> Archiv. Dieses entpacken.
