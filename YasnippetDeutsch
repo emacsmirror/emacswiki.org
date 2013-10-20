@@ -1,0 +1,177 @@
+[[de:YasnippetDeutsch]]
+== Description ==
+
+*YASnippet* is a template system for Emacs. It allows you to type an
+abbreviation and automatically expand it into function
+templates. 
+
+See what it looks like: http://www.youtube.com/watch?v=ZCGmZK4V7Sg.
+
+Bundled language templates includes: C, C++, [CSharpMode C#], [PerlMode Perl], [PythonMode Python], [RubyMode Ruby],
+[SqlMode SQL], LaTeX, [NxhtmlMode HTML], [CascadingStyleSheetMode CSS] and more. The snippet syntax is inspired from [http://manual.macromates.com/en/snippets TextMate's] syntax, you can even
+[http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets import] most !TextMate templates to YASnippet.
+
+Hosted at http://github.com/capitaomorte/yasnippet
+
+== Installation instructions ==
+
+=== Standard install ===
+
+To install the normal archive, download and unpack the latest <code>yasnippet-*.tar.bz2</code>. to a suitable directory like <code>~/.emacs.d/packages/</code> and add the following in your <code>~/.emacs</code> InitFile:
+
+{{{
+    (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
+    (require 'yasnippet) ;; not yasnippet-bundle
+    (yas-global-mode 1)
+}}}
+
+=== With yasnippet-bundle.el ===
+
+To quickly tryout Yasnippet, download the a simpler "bundle" version.
+If you plan to modify the existing templates or make your own, you should
+download the "normal" package.
+
+1. Download <code>yasnippet-bundle-*.el tar gz</code> and unpack it.
+
+2. You'll get a file named <code>yasnippet-bundle.el</code>, put it in <code>~/.emacs.d/packages/</code> (create that directory if not exists).
+
+3. Open the file in Emacs, and type <code>Alt+x eval-buffer</code>.
+
+That's it. Now, open any file, you'll see a menu "YASnippet".  You can
+pull the menu to insert a template. Or, you can type a pre-defined
+abbrev and press TAB to expand it! To have Emacs load YASnippet automatically 
+when it starts, put the following in your <code>~/.emacs</code> file:
+
+{{{
+(add-to-list 'load-path "~/.emacs.d/packages")
+(require 'yasnippet-bundle)
+}}}
+
+== User contributed templates ==
+
+See [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate few  templates] I wrote.
+-- AndyStewart
+
+See http://coderepos.org/share/browser/config/yasnippet for another repository.
+
+
+Here are some templates for the JSP Standard Tag Library: http://github.com/eentzel/yasnippet-jstl/
+[new]
+There are four packages to automatically create yasnippets:
+
+* [https://github.com/mlf176f2/r-autoyas.el R-autoyas] -- Creates automatic snippets for R in ess-mode
+
+* ElAutoyas -- Creates automatic snippets for emacs-lisp-mode.
+
+* Lisp:auto-yasnippet.el -- Quickly creates disposable yasnippets.
+
+* [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Creates snippets for php-mode
+
+== Select snippet using helm (anything.el) ==
+
+  (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+    "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+    (interactive)
+    (setq display-fn (or display-fn 'identity))
+    (if (require 'helm-config)
+        (let (tmpsource cands result rmap)
+          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+          (setq tmpsource
+                (list
+                 (cons 'name prompt)
+                 (cons 'candidates cands)
+                 '(action . (("Expand" . (lambda (selection) selection))))
+                 ))
+          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+          (if (null result)
+              (signal 'quit "user quit!")
+            (cdr (assoc result rmap))))
+      nil))
+
+== Popup menu for yas-choose-value ==
+
+Taken from http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
+
+Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and variable names)
+
+{{{
+;;; use popup menu for yas-choose-value
+(require 'popup)
+
+;; add some shotcuts in popup menu mode
+(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
+(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
+(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
+(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
+(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
+
+(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
+  (when (featurep 'popup)
+    (popup-menu*
+     (mapcar
+      (lambda (choice)
+        (popup-make-item
+         (or (and display-fn (funcall display-fn choice))
+             choice)
+         :value choice))
+      choices)
+     :prompt prompt
+     ;; start isearch mode immediately
+     :isearch t
+     )))
+
+(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
+}}}
+
+== ido-complete yasnippet keys ==
+Evaluate this snippet:
+{{{
+;; Completing point by some yasnippet key
+(defun yas-ido-expand ()
+  "Lets you select (and expand) a yasnippet key"
+  (interactive)
+    (let ((original-point (point)))
+      (while (and
+              (not (= (point) (point-min) ))
+              (not
+               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+        (backward-word 1))
+    (let* ((init-word (point))
+           (word (buffer-substring init-word original-point))
+           (list (yas-active-keys)))
+      (goto-char original-point)
+      (let ((key (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s)) list)))
+        (if (= (length key) 1)
+            (setq key (pop key))
+          (setq key (ido-completing-read "key: " list nil nil word)))
+        (delete-char (- init-word original-point))
+        (insert key)
+        (yas-expand)))))
+}}}
+and map yas-ido-expand with a chord, e.g.:
+
+    (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+
+enjoy ;)
+
+== Discussion ==
+
+[new]
+YASnippet has recently entered version 0.6.x. For this version many of the tweaks in Lisp:yasnippet-config.el are probably invalid or unnecessary. See the [http://yasnippet.googlecode.com/svn/trunk/doc/changelog.html changelog]
+-- JoaoTavora
+
+[new]
+This version of Lisp:yasnippet-config.el works fine with 0.6.x. -- [[rubikitch]]
+
+[new]
+I created a new method of importing TexMate templates entirely in emacs lisp.  Perhaps later it might be integrated into yasnippet itself.  Here is the code Lisp: [[textmate-to-yas.el]]  -- MatthewFidler
+
+[new]
+
+I have changed the startup mechanism so it doesn't load every single snippet upon startup.  Only loaded on demand.  [[yas-jit.el]]
+
+
+----
+CategoryTemplates
