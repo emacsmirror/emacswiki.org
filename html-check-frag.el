@@ -91,7 +91,7 @@ the (almost) the same meaning as for
 	found ;; temporary
 	value ;; temporary
 	(re "\\(?:<\\(/\\)?\\([[:alpha:]!?][[:alnum:]]*\\)\\|\\(>\\)\\)")
-	(search-regexp (or (and backward '(search-backward-regexp . search-forward-regex)) '(search-forward-regexp . search-backward-regexp)))
+	(search-regexp (or (and backward '(search-backward-regexp . search-forward-regexp)) '(search-forward-regexp . search-backward-regexp)))
 	)
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
 			   (prog1 
@@ -279,13 +279,16 @@ the (almost) the same meaning as for
      )))
 
 (defun html-check-frag-next-e (e)
-  "TODO: for usage with keymap."
+  "`html-check-frag-next' for usage with a keymap."
   (interactive "e")
-  (with-current-buffer (window-buffer (posn-window (event-start e)))
-    (html-check-frag-next)))
+  (with-current-buffer (window-buffer (select-window (posn-window (event-start e))))
+    (html-check-frag-region)
+    (html-check-frag-next)
+    ))
 
 (defun html-check-frag-next ()
-  "Find next html tag marked with `html-check-frag-error-face'. Search starts from point."
+  "Go to the end of the next text marked with the face property `html-check-frag-error-face'.
+Search starts from point."
   (interactive)
   (let ((old-point (point)) wrapped)
     (while (and
@@ -297,33 +300,34 @@ the (almost) the same meaning as for
 		(setq wrapped t))
 	      (null (and wrapped (= (point) old-point))))
 	    (null (loop for ol in (overlays-at (point))
-			thereis (eq (overlay-get ol 'face) 'html-check-frag-error-face)))))))
+			thereis (and (eq (overlay-get ol 'face) 'html-check-frag-error-face)
+				     (goto-char (overlay-end ol)))))))))
 
 (defvar html-check-frag-lighter-map)
 (setq html-check-frag-lighter-map (make-sparse-keymap))
-(define-key html-check-frag-lighter-map (kbd "<mode-line> <down-mouse-1>") 'html-check-frag-next-e)
+(define-key html-check-frag-lighter-map (kbd "<mode-line> <S-mouse-1>") 'html-check-frag-next-e)
 (put 'html-check-frag-lighter-map 'risky-local-variable t)
 
 
 (define-minor-mode html-check-frag-mode
-  "Check xml-fragments at point and decorate tags.
-To be used with html-mode as major mode."
-  :lighter (:propertize html-check-frag-lighter face html-check-frag-error-face
-			local-map html-check-frag-lighter-map
-			;; help-echo "mouse-1: next error" ;; does not work yet
-			)
-  :keymap html-check-frag-lighter-map
+  "Check html-fragments around point and decorate tags.
+To be used with html-mode as major mode.
+If you get a red lighter TAG or MISSING or MISSMATCH you can
+get to the next bad tag by pressing S-mouse-1 on it.
+This mouse event actually runs `html-check-frag-next'."
+  :lighter (:eval (propertize html-check-frag-lighter
+			      'keymap html-check-frag-lighter-map
+			      'face 'html-check-frag-error-face))
   (declare (special html-check-frag-lighter html-check-frag-err))
   (if html-check-frag-mode
       (progn
 	(setq-local html-check-frag-err nil)
-	(setq-local html-check-frag-lighter "")	
+	(setq-local html-check-frag-lighter "")
 	(jit-lock-register 'html-check-frag-region))
     (remove-overlays (point-min) (point-max) 'face 'html-check-frag-error-face)
     (jit-lock-unregister 'html-check-frag-region)
     (setq-local html-check-frag-err nil)
-    (unintern 'html-search-for-tag-syntax obarray)
-    ))
+    (unintern 'html-search-for-tag-syntax obarray)))
 
 (provide 'html-check-frag)
 ;;; html-check-frag.el ends here
