@@ -5,8 +5,8 @@
 ;; Author: Harley Gorrell <harley@mahalito.net>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Created: 2003-03-17 18:50:12 Harley Gorrell
-;; Version: 2.1
-;; Last-Updated: 2013-08-02 19:04:00
+;; Version: 2.2
+;; Last-Updated: 2013-10-21 19:04:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
@@ -35,7 +35,7 @@
 ;; along with this program; see the file COPYING.
 ;; If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary: 
+;;; Commentary:
 ;;
 ;;; Commentary:
 ;; * Handy functions for looking at system logs.
@@ -89,25 +89,25 @@
 ;;  `syslog-log-file-directory'
 ;;    The directory in which log files are stored.
 ;;    default = "/var/log/"
-;;  `syslog-ip-face'
+;;  `syslog-ip'
 ;;    Face for IPs
 ;;    default = (quote ((t :underline t :slant italic ...)))
-;;  `syslog-hour-face'
+;;  `syslog-hour'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :inherit font-lock-type-face)))
-;;  `syslog-error-face'
+;;  `syslog-error'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :foreground "red")))
-;;  `syslog-warn-face'
+;;  `syslog-warn'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :foreground "goldenrod")))
-;;  `syslog-info-face'
+;;  `syslog-info'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :foreground "deep sky blue")))
-;;  `syslog-debug-face'
+;;  `syslog-debug'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :foreground "medium spring green")))
-;;  `syslog-su-face'
+;;  `syslog-su'
 ;;    Face for IPs
 ;;    default = (quote ((t :weight bold :foreground "firebrick")))
 ;;
@@ -120,7 +120,7 @@
 ;; Put syslog-mode.el in a directory in your load-path, e.g. ~/.emacs.d/
 ;; You can add a directory to your load-path with the following line in ~/.emacs
 ;; (add-to-list 'load-path (expand-file-name "~/elisp"))
-;; where ~/elisp is the directory you want to add 
+;; where ~/elisp is the directory you want to add
 ;; (you don't need to do this for ~/.emacs.d - it's added by default).
 ;;
 ;; Add the following to your ~/.emacs startup file.
@@ -130,7 +130,7 @@
 
 
 ;;; Change log:
-;;	
+;;
 ;; 21-03-2013    Joe Bloggs
 ;;    Added functions and keybindings for filtering
 ;;    lines by regexps or dates, and for highlighting,
@@ -374,85 +374,74 @@ With prefix arg: remove lines between dates."
   (search-forward-regexp syslog-boot-start-regexp (point-max) t)
   (beginning-of-line))
 
-(defvar syslog-ip-face 'syslog-ip-face)
-
-(defcustom syslog-ip-face
+(defface syslog-ip
   '((t :underline t :slant italic :weight bold))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-(defcustom syslog-hour-face
+(defface syslog-hour
   '((t :weight bold  :inherit font-lock-type-face))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-(defcustom syslog-error-face
+(defface syslog-error
   '((t  :weight bold :foreground "red"))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-(defcustom syslog-warn-face
+(defface syslog-warn
   '((t  :weight bold :foreground "goldenrod"))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-(defcustom syslog-info-face
+(defface syslog-info
   '((t  :weight bold :foreground "deep sky blue"))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-
-(defcustom syslog-debug-face
+(defface syslog-debug
   '((t  :weight bold :foreground "medium spring green"))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
-(defcustom syslog-su-face
+(defface syslog-su
   '((t  :weight bold :foreground "firebrick"))
   "Face for IPs"
-  :group 'syslog
-  :type 'sexp)
+  :group 'syslog)
 
 ;; Keywords
 ;; Todo: Seperate the keywords into a list for each format, rather
 ;; than one for all.
 (defvar syslog-font-lock-keywords
   '(
-    ;; Hours: 17:36:00 
-    ("\\(?:^\\|[[:space:]]\\)\\([[:digit:]]\\{1,2\\}:[[:digit:]]\\{1,2\\}\\(:[[:digit:]]\\{1,2\\}\\)?\\)\\(?:$\\|[[:space:]]\\)" . (1 syslog-hour-face append))
+    ;; Hours: 17:36:00
+    ("\\(?:^\\|[[:space:]]\\)\\([[:digit:]]\\{1,2\\}:[[:digit:]]\\{1,2\\}\\(:[[:digit:]]\\{1,2\\}\\)?\\)\\(?:$\\|[[:space:]]\\)" 1 'syslog-hour append)
     ;; Date
-    ("\\(?:^\\|[[:space:]]\\)\\([[:digit:]]\\{1,2\\}/[[:digit:]]\\{1,2\\}/[[:digit:]]\\{2,4\\}\\)\\(?:$\\|[[:space:]]\\)" . (1 syslog-hour-face append))
+    ("\\(?:^\\|[[:space:]]\\)\\([[:digit:]]\\{1,2\\}/[[:digit:]]\\{1,2\\}/[[:digit:]]\\{2,4\\}\\)\\(?:$\\|[[:space:]]\\)" 1 'syslog-hour append)
     ;; Dates: May  9 15:52:34
-    ("^\\(\\(?:[[:alpha:]]\\{3\\}\\)?[[:space:]]*[[:alpha:]]\\{3\\}\\s-+[0-9]+\\s-+[0-9:]+\\)" (1 font-lock-type-face t))
+    ("^\\(\\(?:[[:alpha:]]\\{3\\}\\)?[[:space:]]*[[:alpha:]]\\{3\\}\\s-+[0-9]+\\s-+[0-9:]+\\)" 1 'font-lock-type-face t)
     ;; Su events
-    ("\\(su:.*$\\)" . (1 syslog-su-face t))
-    ("\\(sudo:.*$\\)" . (1 syslog-su-face t))    
+    ("\\(su:.*$\\)" 1 'syslog-su t)
+    ("\\(sudo:.*$\\)" 1 'syslog-su t)
     ("\\[[^]]*\\]" . 'font-lock-comment-face)
     ;; IPs
-    ("[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}" (0 syslog-ip-face append))
-    ("[Ee][Rr][Rr]\\(?:[Oo][Rr]\\)?" . (0 syslog-error-face append))
-    ("[Ii][Nn][Ff][Oo]" . (0 syslog-info-face append))
-    ("STARTUP" . (0 syslog-info-face append))
-    ("CMD" . (0 syslog-info-face append))
-    ("[Ww][Aa][Rr][Nn]\\(?:[Ii][Nn][Gg]\\)?" . (0 syslog-warn-face append))
-    ("[Dd][Ee][Bb][Uu][Gg]" . (0 syslog-debug-face append))
-    ("(EE)" . (0 syslog-error-face append))
-    ("(WW)" . (0 syslog-warn-face append))
-    ("(II)" . (0 syslog-info-face append))
-    ("(NI)" . (0 syslog-warn-face append))
-    ("(!!)" . (0 syslog-debug-face append))
-    ("(--)" . (0 syslog-debug-face append))
-    ("(\\*\\*)" . (0 syslog-debug-face append))
-    ("(==)" . (0 syslog-debug-face append))
-    ("(\\+\\+)" . (0 syslog-debug-face append)))
+    ("[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}\\.[[:digit:]]\\{1,3\\}" 0 'syslog-ip append)
+    ("[Ee][Rr][Rr]\\(?:[Oo][Rr]\\)?" 0 'syslog-error append)
+    ("[Ii][Nn][Ff][Oo]" 0 'syslog-info append)
+    ("STARTUP" 0 'syslog-info append)
+    ("CMD" 0 'syslog-info append)
+    ("[Ww][Aa][Rr][Nn]\\(?:[Ii][Nn][Gg]\\)?" 0 'syslog-warn append)
+    ("[Dd][Ee][Bb][Uu][Gg]" 0 'syslog-debug append)
+    ("(EE)" 0 'syslog-error append)
+    ("(WW)" 0 'syslog-warn append)
+    ("(II)" 0 'syslog-info append)
+    ("(NI)" 0 'syslog-warn append)
+    ("(!!)" 0 'syslog-debug append)
+    ("(--)" 0 'syslog-debug append)
+    ("(\\*\\*)" 0 'syslog-debug append)
+    ("(==)" 0 'syslog-debug append)
+    ("(\\+\\+)" 0 'syslog-debug append))
   "Expressions to hilight in `syslog-mode'.")
-
 
 ;;; Setup functions
 (defun syslog-find-file-func ()
