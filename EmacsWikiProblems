@@ -456,8 +456,13 @@ The two consecutive bare links that triggered the error were already on the page
 
 [new]
 Fixed. -- Alex
-----
-CategoryEmacsWikiSite
+
+== GNU Arch Wiki
+
+"Arch version control" page, " gnuarch-wiki" goes to the wrong web site.
 
 [new]
-"Arch version control" page, " gnuarch-wiki" goes to the wrong web site.
+Unfortunately, that's a GNU Arch Wiki Problem, not ours. If you go to [http://www.gnu.org/software/gnu-arch/ the official GNU Arch] page and click on _User-community wiki_, you are taken to the same site. -- Alex
+
+----
+CategoryEmacsWikiSite
