@@ -58,7 +58,7 @@ subsequent hits.
 
 
 
-
+[:isearchp-replace-on-demand]
 * The default value of `isearchp-on-demand-action-function' is
 function `isearchp-replace-on-demand', which ''replaces the search
 hit''.  This means that you can replace (or delete) chosen search
@@ -98,7 +98,27 @@ stops at the search limit, if reached).
 hits (up to the search limit).
 
 
+* When you use on-demand replacement (with `C-M-RET') the replacement text can be either inserted literally, as is, or interpreted as in `query-replace-regexp'.  In the latter case, you can use `##\&##', `##\=\N##', `##\###', `##\,##' and `##\?##'.
 
+** For example, suppose you use a regexp-search pattern of ##`\(e\)\|a'## and a replacement pattern of ##`\,(if \1 "a" "e")'##.  Each `C-M-RET' will then swap `e' for `a' and vice versa.
+
+** See the doc for `query-replace-regexp' and node `Regexp Replace' of the Emacs manual for more information.
+
+** (Note that `##\?##' is supported, but it is not very useful in this context, because it prompts you to edit the result each time you hit `C-M-RET'.  Instead, use `C-u C-M-RET' whenever you want to change (edit) the replacement pattern.)
+
+
+[:isearchp-toggle-literal-replacement]
+* You can use `##C-M-`##' (`isearchp-toggle-literal-replacement') anytime during Isearch to toggle whether replacement text is used literally or interpreted per the special regexp-replacement constructs.
+
+** Note that the use of the special regexp replacement patterns is unrelated to the kind of incremental search: literal string search or regexp search.  Just remember that the way to switch on/off the special behavior of `##\&##' and so on is to use `##C-M-`##'.
+
+
+[:isearchp-noprompt-action-function]
+* The value of variable `isearchp-noprompt-action-function' is a function that is invoked automatically, after you visit each search hit.  The function is called with no arguments.  It cannot use the minibuffer, but it can modify buffer contents.  The variable is reset to `nil' when you quit Isearch.  As an example of use, command `isearchp-replace-on-demand' with a negative prefix arg sets this to `isearchp-replace-match', which causes automatic replacement each time you visit a search hit.
+
+
+[:isearchp-nomodify-action-hook]
+* Hook `isearchp-nomodify-action-hook' (Emacs 22+ only) is also run after each search visit.  Its functions also must accept the same arguments as `isearchp-act-on-demand'.  The functions can use the minibuffer, but they must not update the buffer text (in a way noticeable by Isearch), or else that will likely lead to a call-stack overflow.  This is because they are called with Isearch suspended during `isearch-update' (which can itself be invoked by the action...).
 
 
 
