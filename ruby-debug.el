@@ -46,15 +46,44 @@
   
   )
 
-(defun rubyd-show-line ()
-  "Open the buffer (or the file if needed) of the last line displayed by the debugger."
+(defconst rubyd-debug-regexp "  \\([^:]+\\):\\([[:digit:]]+\\):"
+  "Regexp used by inf-ruby for helping this script. ")
+
+(defun rubyd-show-line-buffer ()
+  "Open the buffer (or the file if needed) of the last line displayed by the debugger.
+
+This works finding the clues at the inf-ruby buffer."
   (interactive)
   (save-excursion
     (with-current-buffer inf-ruby-buffer
       (goto-char (point-max))
-      (search-backward-regexp "  \\([^:]+\\):\\([[:digit:]]+\\):" nil t)
-      (let* ((filename (match-string 1))
-	     (linenum (string-to-number (match-string 2)))
+      (when (search-backward-regexp rubyd-debug-regexp nil t)
+	(rubyd-show-line (match-string 0))
+	)
+      )
+    )
+  )
+
+
+(defun rubyd-preoutput-fnc (proc-ans)
+  "This is a function used for inserting to the hook variable `comint-preoutput-filter-functions'.
+
+This shows the results and the line of code recently executed by `rubyd-show-line'."
+  ;; (with-current-buffer inf-ruby-buffer
+  ;;   (goto-char (point-max))
+  ;;   (insert proc-ans)
+  ;;   )
+  (rubyd-show-line proc-ans)
+  proc-ans
+  )
+
+(defun rubyd-show-line (proc-ans)
+  "Open the buffer (or the file if needed) of the last line displayed by the debugger.
+
+This can be used for adding to the `comint-preoutput-filter-functions' hook variable."
+  (if (string-match rubyd-debug-regexp proc-ans)	
+      (let* ((filename (match-string 1 proc-ans))
+	     (linenum (string-to-number (match-string 2 proc-ans)))
 	     (buff (get-buffer (file-name-nondirectory filename)))
 	     )      
 	
@@ -67,11 +96,10 @@
 	(with-current-buffer buff
 	  (goto-line linenum)	  
 	  )
-
+	
 	;; Returning to the Inferior Ruby
-	(switch-to-buffer-other-window inf-ruby-buffer)
+	(switch-to-buffer-other-window inf-ruby-buffer)	  
 	)
-      )
     )
   )
 
@@ -96,7 +124,6 @@ This command accept an optional parameter described as follow at the help comman
      "next"
      )
    )
-  (rubyd-show-line)  
   )
 
 (defun rubyd-step (&optional lines)
@@ -116,7 +143,6 @@ This command accept an optional parameter described as follow at the help comman
      "step"
      )
    )
-  (rubyd-show-line)  
   )
 
 
@@ -133,24 +159,46 @@ This command accept an optional parameter described as follow at the help comman
   (rubyd-command (concat "undisplay " (number-to-string num)))
   )
 
+(defun rubyd-reset ()
+  (interactive)
+  (when (y-or-n-p "Are you sure you want to reset the debugger?")
+      (rubyd-command "reset")
+    )
+  )
+					; ____________________
+
 (defun rubyd-command (command)
   "Send the COMMAND to the ruby inferior buffer."
   (with-current-buffer inf-ruby-buffer
     (goto-char (point-max))
     (insert command)
+    ;;(comint-send-string (inf-ruby-proc) command)
     (comint-send-input)
     )
   )
 
+(defvar rubyd-activated nil
+  "rubyd-debug has been activated?
+
+Activate with `rubyd-debug-activate' and deactivate with `rubyd-debug-deactivate'.")
+
 (defun rubyd-debug-activate ()
   "Activate keybindings for using ruby-debug with this inf-ruby buffer."
   (interactive)
-  (define-key inf-ruby-mode-map "s" 'rubyd-show-line)
-  (define-key inf-ruby-mode-map "n" 'rubyd-next)
-  (define-key inf-ruby-mode-map "i" 'rubyd-step)
-  (define-key inf-ruby-mode-map "d" 'rubyd-display)
-  (define-key inf-ruby-mode-map "D" 'rubyd-undisplay)
-  (message "ruby-debug: Activated keybindings. Press C-c C-n for deactivating it and write freely")
+  (if rubyd-activated
+      (message "ruby-debug: keybindings has been activated already")
+    (progn
+      (define-key inf-ruby-mode-map "s" 'rubyd-show-line-buffer)
+      (define-key inf-ruby-mode-map "n" 'rubyd-next)
+      (define-key inf-ruby-mode-map "i" 'rubyd-step)
+      (define-key inf-ruby-mode-map "d" 'rubyd-display)
+      (define-key inf-ruby-mode-map "D" 'rubyd-undisplay)
+      (define-key inf-ruby-mode-map "r" 'rubyd-reset)
+      (add-hook 'comint-preoutput-filter-functions 'rubyd-preoutput-fnc nil t)
+      (message "ruby-debug: Activated keybindings. Press C-c C-n for deactivating it and write freely")
+      (set (make-local-variable 'rubyd-activated) t)
+      )
+    )
   )
 
 (defun rubyd-debug-deactivate ()
@@ -160,8 +208,11 @@ This command accept an optional parameter described as follow at the help comman
   (define-key inf-ruby-mode-map "n" nil)
   (define-key inf-ruby-mode-map "i" nil)
   (define-key inf-ruby-mode-map "d" nil)
-  (define-key inf-ruby-mode-map "D" 'rubyd-undisplay)
+  (define-key inf-ruby-mode-map "D" 'nil)
+  (define-key inf-ruby-mode-map "r" 'nil)
+  (remove-hook 'comint-preoutput-filter-functions 'rubyd-preoutput-fnc t)
   (message "ruby-debug: Keybindings deactivated. Press C-c C-s for restarting.")
+  (set (make-local-variable 'rubyd-activated) nil)	
   )
 
 (define-key inf-ruby-mode-map (kbd "C-c C-s") 'rubyd-debug-activate)
