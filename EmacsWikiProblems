@@ -450,6 +450,9 @@ The error message says:
 
 This is an anti-spam measure.
 Replacing the comma with the word "and" fixed it. Now the two links are no longer adjacent to each other and no longer match the regular expression. -- AlexSchroeder
+[new]
+I am having the same problem on http://www.emacswiki.org/emacs/AutoCompleteSources. I was trying to update the link for ac-math project and download pages but was stoped.
+The two consecutive bare links that triggered the error were already on the page and not part of edit. --Sam
 
 ----
 CategoryEmacsWikiSite
