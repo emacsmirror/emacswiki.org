@@ -22,3 +22,6 @@ Auto-completion for Inf-Ruby (IRB) buffers.
 == Tweak Company Mode for instant completion ==
    (setq company-idle-delay 0.1)
    (setq company-minimum-prefix-length 2)
+
+----
+RubyLanguage
