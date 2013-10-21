@@ -18,6 +18,9 @@ Then add this to your .emacs file:
         (require 'ruby-debug)
 </code>
 
+
+Remember that you need the inf-ruby script. Take a look at the [https://github.com/nonsequitur/inf-ruby nonsequitur's inf-ruby page], there will explain how to download and install.
+
 == Usage ==
 
 There is two mode:
@@ -35,6 +38,30 @@ Once activated, you can use these keys for sending a ruby debugger command:
 ; d : `display' command.
 ; D : `undisplay' command.
 ; s : `rubyd-show-line' ruby-debug command. This will show you the last line evaluated by the ruby debugger.
+
+=== Debugging in Ruby ===
+
+First, start `inf-ruby' and load every ruby script you need.
+
+Then, in the middle of any Ruby code you can use the <code>require 'debug'</code> instruction where you want to stop the execution and start the debugger.
+
+For example:
+
+<code>
+def foo()
+    require 'debug'
+    print "hi world!"
+    print "This is a test! :-)" 
+end
+</code>
+
+As soon as you call the `foo' function, ruby will stop at the require instruction starting the debugger and waiting for commands. There You can use the `help' command to read which one are available and how to use them.
+
+If you press `C-c C-s' you will activate the ruby-debug keybindings. Pressing the `n' key will do a step by step execution, with the `s' key a "step into" and with `d' you can enter an expression for evaluating every time you do a step.
+
+In case you need to evaluate an expression only once or write a command by yourself in the middle of the debugging, you can press `C-c C-n' to deactivate the keybindings (still the functions using the `M-x' are available) and write as usual, then start again using `C-c C-s'.
+
+When you finish, use the `C-c C-n' to deactivate the keybindings and write normally.
 
 ----
 RubyLanguage RubyMode
