@@ -1,0 +1,40 @@
+== Ruby Debug ==
+
+When using the debug module in the middle of any ruby script for searching a bug, the inferior ruby don't help you out and you have to type and type.
+
+Also, it doesn't search the file and line where the trace is going on. 
+
+
+So, this elisp script was created for showing the file and line taking advantage of the debug capabilites and default features for emacs and giving some keybindings for easy debugging with one keypress.
+
+== Instalation ==
+
+Download from the Lisp:ruby-debug.el the code and save it in any reachable directory. See the `load-path' variable if you want to know which directory are we talking about.
+
+Then add this to your .emacs file:
+
+<code>
+        ;; (add-to-list 'load-path "/the/path/to/your/ruby-debug/script") ;; If you placed elsewhere the `load-path' says.
+        (require 'ruby-debug)
+</code>
+
+== Usage ==
+
+There is two mode:
+
+; activated : Where some keybindings are defined and ready for using. In this mode you cannot write with ease: for example, key `n' is defined for executing `rubyd-next' function, so you cannot press the `n' key when writing. You should use this when starting the ruby debugger.
+; deactivated: Where ruby-debug keybindings are cleared. With this mode you can write as usual and return to "normal mode".
+
+
+For activating the ruby-debug, press `C-c C-s'. And for deactivating use `C-c C-n'.
+
+Once activated, you can use these keys for sending a ruby debugger command:
+
+; n : `next' debug command.
+; i : `step' (into) debug command.
+; d : `display' command.
+; D : `undisplay' command.
+; s : `rubyd-show-line' ruby-debug command. This will show you the last line evaluated by the ruby debugger.
+
+----
+RubyLanguage RubyMode
