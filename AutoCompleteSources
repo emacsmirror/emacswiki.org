@@ -6,12 +6,12 @@ Lisp:ac-lilypond.el is my (finally working) contribution to LilyPond-mode source
 
 == LaTeX and Unicode Math Input ==
 
-[[https://ac-math.googlecode.com/|ac-math]] provides three sources, one for LaTeX command completion, one for LaTeX math symbols and the another one for Unicode input of math characters. A comprehensive list of math symbols is implemented (more than 2500).
+[[https://github.com/vitoshka/ac-math|ac-math]] provides three sources, one for LaTeX command completion, one for LaTeX math symbols and the another one for Unicode input of math characters. A comprehensive list of math symbols is implemented (more than 2500).
 
 [[image:https://ac-math.googlecode.com/svn/trunk/latex-symbols.png]]
 [[image:https://ac-math.googlecode.com/svn/trunk/unicode-math.png]]
 
-Direct download [[https://ac-math.googlecode.com/svn/trunk/ac-math.el|ac-math.el]]
+Direct download [[https://raw.github.com/vitoshka/ac-math/master/ac-math.el|ac-math.el]]
 
 == Auctex ==
 
