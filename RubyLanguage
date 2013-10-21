@@ -1,18 +1,28 @@
 Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 
 * RubyMode
-* RubyOnRails
 * EmacsLispForRuby
 * ReLisp (another ruby/emacs bridge)
 * LangHelp
 * GonzuiForEmacs
 * FlymakeRuby
 * RubyBlockMode
-* [NxhtmlMode nXhtml]
 * RubyTestMode
+* [[ruby-debug]] For a more easy way for debugging in ruby.
+
+== Documentation ==
+Utilities for consulting the documentation using Ri or other tools.
+
 * RiEl
 * [http://www.emacswiki.org/cgi-bin/emacs/YARI YARI] (Yet Another Ri Interface)
-* [[ruby-debug]] For a more easy way for debugging in ruby.
+
+== Ruby on Rails ==
+Tools specifically used for helping you with developing in [http://rubyonrails.org/ Ruby on Rails].
+
+
+* RubyOnRails
+* [NxhtmlMode nXhtml]
+
 
 ----
 CategoryProgramming
