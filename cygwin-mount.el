@@ -214,8 +214,7 @@ The result is either \"/\" or \"/<string>/\"."
         (fullname (cygwin-mount-get-full-progname cygwin-mount-program)))
     (if (null fullname)
         (error "Cannot find the program '%s', please check 'cygwin-mount-cygwin-bin-directory'!" cygwin-mount-program)
-      (save-excursion
-        (set-buffer buf)
+      (with-current-buffer buf
         
         (or
 	 (progn
@@ -295,8 +294,7 @@ function is current buffer must be the buffer named
   (if (or (eq (process-status proc) 'exit)
 	  (eq (process-status proc) 'signal))
       (let ((buf (get-buffer-create cygwin-mount-buffername)))
-	(save-excursion
-	  (set-buffer buf)
+	(with-current-buffer buf
           (setq cygwin-mount-table--internal (cygwin-mount-parse-mount)))
 	(kill-buffer buf)
 	(message "Build of mount table completed"))))
@@ -314,11 +312,10 @@ really done by `cygwin-mount-sentinel'."
           ;; asynchron building
           (let ((proc (start-process "mount" cygwin-mount-buffername fullname)))
             (set-process-sentinel proc 'cygwin-mount-sentinel)
-            (process-kill-without-query proc))
+            (set-process-query-on-exit-flag proc nil))
         ;; synchron building
         (let ((buf (get-buffer-create cygwin-mount-buffername)))
-          (save-excursion
-            (set-buffer buf)
+          (with-current-buffer buf
             (erase-buffer)
             (call-process fullname nil buf)
             (prog1
