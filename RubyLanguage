@@ -12,6 +12,7 @@ Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 * RubyTestMode
 * RiEl
 * [http://www.emacswiki.org/cgi-bin/emacs/YARI YARI] (Yet Another Ri Interface)
+* [[ruby-debug]] For a more easy way for debugging in ruby.
 
 ----
 CategoryProgramming
