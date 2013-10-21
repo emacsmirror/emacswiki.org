@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 17 09:08:16 2013 (-0700)
+;; Last-Updated: Sun Oct 20 17:10:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3383
+;;     Update #: 3386
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -309,10 +309,10 @@
 ;;  * When you use on-demand replacement (with `C-M-RET') the
 ;;    replacement text can be either inserted literally, as is, or
 ;;    interpreted as in `query-replace-regexp'.  In the latter case,
-;;    you can use `\&`, `\=\N', `\#', `\,' and `\?'.
+;;    you can use `\&', `\=\N', `\#', `\,' and `\?'.
 ;;
 ;;    For example, suppose you use a regexp-search pattern of
-;;    "\(e\)\|a" and a replacement pattern of "\,(if \1 "a" "e")".
+;;    `\(e\)\|a' and a replacement pattern of `\,(if \1 "a" "e")'.
 ;;    Each `C-M-RET' will then swap `e' for `a' and vice versa.
 ;;
 ;;    See the doc for `query-replace-regexp' and node `Regexp Replace'
@@ -332,31 +332,6 @@
 ;;    unrelated to the kind of incremental search: literal string
 ;;    search or regexp search.  Just remember that the way to switch
 ;;    on/off the special behavior of `\&' and so on is to use `C-M-`'.
-;;
-;;  * Note the following difference between query-replace and
-;;    on-demand replacement during Isearch: `C-M-RET' moves on to the
-;;    next search hit after replacing only if the result of replacing
-;;    no longer matches the replacement pattern.
-;;
-;;    If the text after replacement still matches the replacement
-;;    pattern then `C-M-RET' does not move on to the next search hit.
-;;    To move to the next hit in this context, just use the search key
-;;    (e.g. `C-s').  Otherwise, repeating the replacement action just
-;;    acts on the current hit over and over.
-;;
-;;    For example, if your search pattern is "ea" and the replacement
-;;    is also "ea", then `C-M-RET' carries out the replacement, but
-;;    search does not move to the next hit.
-;;
-;;    A more interesting example: Suppose the regexp-search pattern is
-;;    "\(e\)\|a" and the replacement pattern is "\,(if \1 "a" "e")".
-;;    In query-replace this would swap `e' for `a' and vice versa,
-;;    advancing to the next hit after each replacement.  With
-;;    on-demand replacement, `C-M-RET' swaps `e' for `a'.  But since
-;;    the result, `a', still matches the replacement pattern,
-;;    `C-M-RET' does not advance after replacment, and a second
-;;    `C-M-RET' at the same hit then swaps that resulting `a' for an
-;;    `e', and so on.  Just use `C-M-RET C-M-s C-M-RET...'.
 ;;
 ;;  * The value of variable `isearchp-noprompt-action-function' is a
 ;;    function that is invoked automatically, after you visit each
