@@ -32,6 +32,8 @@ Using <code>C-u M-q</code> to fill the same text, I get this:
     bound to newline.  This will insert |
     a line break.                       |
 
+The same block-fill is achieved by <code>M-1 M-q</code> which is faster to type.
+
 == Not Breaking ==
 
 The `fill-nobreak-predicate' hook lets you avoid line breaks at certain places.  For example if you're *French*, you might be used to typing a space in front of colons, question marks, exclamation marks, etc.  [http://blog.empyree.org/?2004/01/31/181-internationalisation-punctuation-support]  This might lead to the following problem:
