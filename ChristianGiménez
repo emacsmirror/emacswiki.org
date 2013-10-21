@@ -10,6 +10,7 @@
 * [[Org-Notify-El-es]] : For notifying the coming DEADLINES using [[XCowsayEl-es]].
 * SyslogMode : A modified version for adding more font-locks. See Lisp:syslog-mode.el for more information.
 * Lisp:jabber-rotative-presence.el : Changes status at Jabber.el every single minute. Messages are in spanish!!! :-S
+* [[ruby-debug]] : For helping me out when debugging with Ruby. 
 
 === On GNA! ===
 http://gna.org/images/Water.theme/gnalogo.png
