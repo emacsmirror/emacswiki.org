@@ -1,5 +1,5 @@
 ;;; rcirc-random-names.el -- randomize names
-;; Copyright 2009  Alex Schroeder
+;; Copyright 2009-2013  Alex Schroeder
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -313,16 +313,47 @@ and store it in the hashtable."
     result))
 
 (defun rcirc-markup-random-names (sender response)
-  "Replace all names from `rcirc-random-names' with a random pick
-from the same list. Unless we're the sender, in which case we
-need to do the reverse."
-  (let ((case-fold-search nil))
-    (dolist (name rcirc-random-names)
-      (goto-char (point-min))
-      (while (re-search-forward (concat "\\b" name "\\b") nil t)
-	(replace-match (rcirc-get-name name))))))
-  
+  "Replace all the nicks with picks from `rcirc-random-names'."
+  (with-syntax-table rcirc-nick-syntax-table
+    (while (re-search-forward "\\w+" nil t)
+      (let ((name (gethash (match-string-no-properties 0)
+			   rcirc-random-name-mapping)))
+	(when name
+	  (put-text-property (match-beginning 0) (match-end 0)
+			     'display name))))))
+
 (add-to-list 'rcirc-markup-text-functions 'rcirc-markup-random-names)
+
+(defadvice rcirc-facify (before rcirc-facify-random-names activate)
+  "Add random names to other nicks based on `rcirc-random-names'."
+  (when (and (eq face 'rcirc-other-nick)
+             (not (string= string "")))
+    (setq string (propertize string 'display
+			     (rcirc-get-name
+			      (substring-no-properties string))))))
+
+(defadvice rcirc-completion-at-point
+  (after rcirc-completion-at-point-random-names activate)
+  "Add the random names used to the possible completions."
+  ;; shortcut: we're looking at nicks, not commands, if the first
+  ;; value doesn't start with / -- also remember that ad-return-value
+  ;; is (list beg (point) table)
+  (unless (eq (aref (first (third ad-return-value)) 0) ?/)
+    (let (names)
+      (maphash (lambda (key value) (setq names (cons value names)))
+	       rcirc-random-name-mapping)
+      (setf (third ad-return-value)
+	    (append names (third ad-return-value))))))
+
+(defadvice rcirc-process-input-line
+  (before rcirc-process-input-line-random-names activate)
+  "Before sending something, let's replace random names with nicks again.
+This is slow an inefficient, but it only happens when you send something."
+  ;; don't use rcirc-nick-syntax-table since we're looking for
+  ;; `rcirc-random-names'
+  (maphash (lambda (nick name)
+	     (setq line (replace-regexp-in-string name nick line t t)))
+	   rcirc-random-name-mapping))
 
 (provide 'rcirc-random-names)
 ;; rcirc-random-names.el ends here
