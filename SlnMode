@@ -1,12 +1,16 @@
-Lisp:sln-mode.el
+There are two different, unrelated sln-mode libraries: 
+* an add-on library for ProjectBufferMode
+* a major mode for editing Microsoft Visual Studio Solution (*.sln) files
 
+== sln-mode being an add-on library for ProjectBufferMode ==
+Lisp:sln-mode.el
 
 /This is an add-on library for/ ProjectBufferMode.
 
 This library provides a function to create a project-buffer extracting
 the information from a SLN file and its associated VCPROJ.
 
-== Installation ==
+=== Installation ===
 
 sln-mode is an add-on to ProjectBufferMode; therefore you must first install ProjectBufferMode and then
 add the following lines to your init file:
@@ -16,23 +20,27 @@ add the following lines to your init file:
 
 `find-sln' is the command to execute to open a 'sln project'.
 
-== Documentation about the project-buffer-mode ==
+=== Documentation about the project-buffer-mode ===
 
 Check ProjectBufferMode for more documentation about it.
 
-== Note about build / clean / run and debug actions ==
+=== Note about build / clean / run and debug actions ===
 
 The command line are different between a 2005 and a 2008 project; by
 default it will use the 2005 configuration mode; use the prefix
 argument to switch to the 2008 mode.
 
-==  It's a viewer ==
+===  It's a viewer ===
 
 sln-mode is currently just a viewer. It doesn't currently have any
 support for modifying/writting a SLN file.
 
 Note that it doens't have to stay that way if people really need this
 feature. ;-)
+
+
+== sln-mode being a major mode for editing *.sln files ==
+A major mode for editing Microsoft Visual Studio Solution (*.sln) files. The project home is [https://github.com/sensorflo/sln-mode sln-mode] on github. Direct link to the source: [https://raw.github.com/sensorflo/sln-mode/master/sln-mode.el sln-mode.el].
 
 ----
 CategoryProgramming
