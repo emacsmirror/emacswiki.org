@@ -112,6 +112,7 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircDbusNotification]]: use the dbus bindings for notifications
 ; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
 ; [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
+; [[rcircRandomNames]]: change all the nicks to random names
 
 /For developers:/
 
