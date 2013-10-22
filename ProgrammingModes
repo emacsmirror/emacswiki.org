@@ -94,6 +94,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * ShMode -- Unix shell scripts (including bash, csh, etc)
 * SkillMode
 * SlimeMode -- for Lisp code
+* SlnMode -- for Microsoft Visual Studio Solution (.sln) files
 * [[SMLMode]] -- an Emacs mode for editing Standard Meta-Language.
 * SnobolMode -- SNOBOL
 * TclMode -- Tcl/Tk
