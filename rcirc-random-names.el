@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'rcirc)
+
 (defvar rcirc-random-names
   '("Jacob" "Michael" "Ethan" "Joshua" "Daniel" "Alexander" "Anthony"
     "William" "Christopher" "Matthew" "Jayden" "Andrew" "Joseph" "David"
@@ -314,19 +316,21 @@ and store it in the hashtable."
 
 (defun rcirc-markup-random-names (sender response)
   "Replace all the nicks with picks from `rcirc-random-names'."
-  (with-syntax-table rcirc-nick-syntax-table
-    (while (re-search-forward "\\w+" nil t)
-      (let ((name (gethash (match-string-no-properties 0)
-			   rcirc-random-name-mapping)))
-	(when name
-	  (put-text-property (match-beginning 0) (match-end 0)
-			     'display name))))))
+  (when rcirc-random-names-mode
+    (with-syntax-table rcirc-nick-syntax-table
+      (while (re-search-forward "\\w+" nil t)
+	(let ((name (gethash (match-string-no-properties 0)
+			     rcirc-random-name-mapping)))
+	  (when name
+	    (put-text-property (match-beginning 0) (match-end 0)
+			       'display name)))))))
 
 (add-to-list 'rcirc-markup-text-functions 'rcirc-markup-random-names)
 
 (defadvice rcirc-facify (before rcirc-facify-random-names activate)
   "Add random names to other nicks based on `rcirc-random-names'."
-  (when (and (eq face 'rcirc-other-nick)
+  (when (and rcirc-random-names-mode
+	     (eq face 'rcirc-other-nick)
              (not (string= string "")))
     (setq string (propertize string 'display
 			     (rcirc-get-name
@@ -338,7 +342,8 @@ and store it in the hashtable."
   ;; shortcut: we're looking at nicks, not commands, if the first
   ;; value doesn't start with / -- also remember that ad-return-value
   ;; is (list beg (point) table)
-  (unless (eq (aref (first (third ad-return-value)) 0) ?/)
+  (when (and rcirc-random-names-mode
+	     (not (eq (aref (first (third ad-return-value)) 0) ?/)))
     (let (names)
       (maphash (lambda (key value) (setq names (cons value names)))
 	       rcirc-random-name-mapping)
@@ -351,9 +356,15 @@ and store it in the hashtable."
 This is slow an inefficient, but it only happens when you send something."
   ;; don't use rcirc-nick-syntax-table since we're looking for
   ;; `rcirc-random-names'
-  (maphash (lambda (nick name)
-	     (setq line (replace-regexp-in-string name nick line t t)))
-	   rcirc-random-name-mapping))
+  (when rcirc-random-names-mode
+    (maphash (lambda (nick name)
+	       (setq line (replace-regexp-in-string name nick line t t)))
+	     rcirc-random-name-mapping)))
+
+(define-minor-mode rcirc-random-names-mode
+  "This name replaces all the nicks in your IRC channels with random names."
+  :lighter " Rnd"
+  :global t)
 
 (provide 'rcirc-random-names)
 ;; rcirc-random-names.el ends here
