@@ -1,0 +1,9 @@
+This is an [[rcirc]] extension. It replaces all the nicks with random names pulled from a list.
+It adds nick completion as well, so other channel members should not be able tell you are doing it.
+
+[[image:rcircRandomNamesScreenshot]]
+
+Maybe this will provide the illusion of a 50:50 gender presence online.
+It's probably also confusing as hell.
+
+Lisp:rcirc-random-names.el
