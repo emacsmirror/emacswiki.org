@@ -543,13 +543,9 @@ that form should be displayed.")
 ;;; x| Assignment Operators | = += -= *= /= %= >>= <<= &= ^= =            | right-to-left |
 ;;;  | Comma                | ,                                           | left-to-right |
 
-
 (defsubst hif-nexttoken ()
   "Pop the next token from token-list into the let variable \"hif-token\"."
-  (prog1
-      (setq hif-token (pop hif-token-list))
-    (message "token:%S" hif-token)))
-
+  (setq hif-token (pop hif-token-list)))
 
 (defsubst if-valid-identifier (id)
   (not (or (numberp id)
