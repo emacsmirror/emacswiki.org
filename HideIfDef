@@ -11,12 +11,12 @@ You can make your buffer read-only while hide-ifdef-hiding by setting
 `hide-ifdef-read-only' to a non-nil value.
 
 Luke Lee note:
-I've extensively rewrite the original hideif.el for the following:
+An extensively rewrite version is now uploaded. Here I list some of the enhancements:
 * Automatically find and add #define macros when hiding
 * Complete C expression with operator precedence implemented
 * Hex/octal/decimal number supported
 * Bit shift operation supported
-* Stringification/ string concatenation / token concatenation supported
+* Stringification / string concatenation / token concatenation supported
 * Argumented macro expansion supported, even for complicated and rarely used token replacement syntax
 {{{
 #define TESTVAL1 0x123
@@ -55,10 +55,28 @@ after hiding, it will become
 #error correct
 #endif
 }}}
-* GNU C compatibility
+* GNU C compatibility, i.e. "..." in macro argument supported. 
+Ex. #define macro(arg1, arg2...) arg1 + arg2
 * hide/unhide a region
-* Evaluate a macro, just mark the region you want to evalute and press &lt;Ctrl-C&gt; &lt;@&gt; &lt;e&gt;
+* Evaluate a macro, just mark the region you want to evalute and press "C-c @ e"
 * When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
+
+Tips:
+* All C files share the same macro database (i.e. hide-ifdef-env). 
+* Goto your "config.h" file and hide it, it will extract all #defines.
+* Goto each of your .h file in the order that C compiler compiles your C file, hide each .h file one by one. (TODO: project support, auto search for .h files)
+* To save your current macro database, you need to deploy "session" package and add the following into your init.el file:
+{{{
+(unless (assoc 'hide-ifdef-env session-globals-include)
+  (push '(hide-ifdef-env 100000 t) session-globals-include))
+}}}
+* To exclude some patterns (to reduce the size of macro database), for example, if you want to exclude all macros started with "DOC_", put the following into your init.el:
+{{{
+(setf hide-ifdef-exclude-define-regexp-pattern "DOC_.*")
+}}}
+
+Compatibility note:
+The original "semantic" hack no longer work.
 
 Lisp:hideif.el
 ----
