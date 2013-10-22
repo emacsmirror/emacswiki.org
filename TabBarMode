@@ -31,7 +31,7 @@ source code]] from AquamacsEmacs, but it might not work with standard Emacs.
 Note that tabbar mode as implemented in Emacs is a bit different than tabs in
 web browsers or IDEs. In a web browser, each window may have several tabs, and
 each window's tabs stay with that window. Namely, you cannot have Window A's tab
-jump to window B, unless you drag it over (Firefox 3 support this, for
+jump to window B, unless you drag it over (Firefox 3 supports this, for
 example. Safari 3.2 does not.).  However, the tabs implemented in emacs with
 tabbar mode is more like a GUI-based display of buffer listing, displayed on top
 of the window.  In particular, tabs does not stick to a particular emacs's
@@ -84,9 +84,9 @@ possible groups: “emacs” and “user”.
 
  (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
    "Returns the name of the tab group names the current buffer belongs to.
- There are two groups: Emacs buffers (those whose name starts with “*”, plus
+ There are two groups: Emacs buffers (those whose name starts with '*', plus
  dired buffers), and the rest.  This works at least with Emacs v24.2 using
- tabbar.el v1.7.
+ tabbar.el v1.7."
    (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
                ((eq major-mode 'dired-mode) "emacs")
                (t "user")))
