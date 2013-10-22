@@ -327,10 +327,11 @@ and store it in the hashtable."
 
 (add-to-list 'rcirc-markup-text-functions 'rcirc-markup-random-names)
 
-(defadvice rcirc-facify (before rcirc-facify-random-names activate)
-  "Add random names to other nicks based on `rcirc-random-names'."
+(defadvice rcirc-facify (before rcirc-facify-random-names first activate)
+  "Add random names to nicks based on `rcirc-random-names'."
   (when (and rcirc-random-names-mode
-	     (eq face 'rcirc-other-nick)
+	     (or (eq face 'rcirc-other-nick)
+		 (eq face 'rcirc-my-nick))
              (not (string= string "")))
     (setq string (propertize string 'display
 			     (rcirc-get-name
