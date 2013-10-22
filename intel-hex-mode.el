@@ -92,7 +92,7 @@
   "Highlighting patterns for Intel Hex mode")
 
 ;;; Key map
-(defvar intel-hex-mode-map ()
+(defvar intel-hex-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'intel-hex-update-line-checksum)
     (define-key map "\C-c\C-b" 'intel-hex-update-buffer-checksum)
