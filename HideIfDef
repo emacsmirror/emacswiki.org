@@ -11,7 +11,8 @@ You can make your buffer read-only while hide-ifdef-hiding by setting
 `hide-ifdef-read-only' to a non-nil value.
 
 Luke Lee note:
-An extensively rewrite version is now uploaded. Here I list some of the enhancements:
+
+An extensively rewritten version is uploaded. Here I list some of the enhancements:
 * Automatically find and add #define macros when hiding
 * Complete C expression with operator precedence implemented
 * Hex/octal/decimal number supported
@@ -76,6 +77,7 @@ Tips:
 }}}
 
 Compatibility note:
+
 The original "semantic" hack no longer work.
 
 Lisp:hideif.el
