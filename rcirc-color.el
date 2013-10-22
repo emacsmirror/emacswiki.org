@@ -1,5 +1,5 @@
 ;;; rcirc-color.el -- color nicks
-;; Copyright 2005, 2006, 2007, 2008, 2010, 2012  Alex Schroeder
+;; Copyright 2005-2013  Alex Schroeder
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -74,7 +74,7 @@ If you set this variable to a non-nil value, an md5 hash is
 computed based on the nickname and the first twelve bytes are
 used to determine the color: #rrrrggggbbbb.")
 
-(defadvice rcirc-facify (before rcirc-facify-colors activate)
+(defadvice rcirc-facify (before rcirc-facify-colors last activate)
   "Add colors to other nicks based on `rcirc-colors'."
   (when (and (eq face 'rcirc-other-nick)
              (not (string= string "")))
