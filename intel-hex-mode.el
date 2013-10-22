@@ -292,6 +292,7 @@ and returns its value, or zero"
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
 (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
+(add-to-list 'auto-mode-alist '("\\.a43\\'" . intel-hex-mode))
 
 (provide 'intel-hex-mode)
 ;;; intel-hex-mode.el ends here
