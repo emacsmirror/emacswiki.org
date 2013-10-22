@@ -6,7 +6,6 @@
 ;;      Daniel LaLiberte <liberte@holonexus.org>
 ;; Maintainer: FSF
 ;; Keywords: c, outlines
-;; Rewrite by Luke Lee in 2013.
 
 ;; This file is part of GNU Emacs.
 
@@ -99,7 +98,7 @@
 ;; Written by Brian Marick, at Gould, Computer Systems Division, Urbana IL.
 ;; Extensively modified by Daniel LaLiberte (while at Gould).
 ;;
-;; Rewrite by Luke Lee in 2013.
+;; Extensively modified by Luke Lee in 2013.
 
 ;;; Code:
 
@@ -547,7 +546,10 @@ that form should be displayed.")
 
 (defsubst hif-nexttoken ()
   "Pop the next token from token-list into the let variable \"hif-token\"."
-  (setq hif-token (pop hif-token-list)))
+  (prog1
+      (setq hif-token (pop hif-token-list))
+    (message "token:%S" hif-token)))
+
 
 (defsubst if-valid-identifier (id)
   (not (or (numberp id)
@@ -629,9 +631,10 @@ that form should be displayed.")
                    ;; lookup tok returns an atom
                    (list rep)))
 
-                ((= 1 (hif-defined tok)) ;; defined (hif-defined tok)=1, but empty (hif-lookup tok)=nil, thus remove this token
-                 (setq remains (delete tok remains))
-                 nil)
+                ;;[2013-10-22 16:06:12 +0800] Must keep the token, removeing this token might results in a incomplete expression which cannot be parsed.
+                ;;((= 1 (hif-defined tok)) ;; defined (hif-defined tok)=1, but empty (hif-lookup tok)=nil, thus remove this token
+                ;; (setq remains (delete tok remains))
+                ;; nil)
 
                 (t ;; usual IDs
                  (list tok))))))
@@ -1866,4 +1869,4 @@ If prefixed, it will also hide #ifdefs themselves."
 
 (provide 'hideif)
 
-;;; hideif.el ends here 
+;;; hideif.el ends here
