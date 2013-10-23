@@ -37,6 +37,7 @@ You can use these libraries to highlight text in a buffer:
 * HighlightSymbol -- highlight the current symbol throughout the buffer
 * PulseRegion -- Gently blink the background color around a region of text
 * TextMarker -- uses XRefMode
+* OnScreen -- Highlight the last visible screenful when scrolling
 
 ----
 CategoryFaces
