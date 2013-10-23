@@ -318,12 +318,15 @@ and store it in the hashtable."
   "Replace all the nicks with picks from `rcirc-random-names'."
   (when rcirc-random-names-mode
     (with-syntax-table rcirc-nick-syntax-table
-      (while (re-search-forward "\\w+" nil t)
-	(let ((name (gethash (match-string-no-properties 0)
-			     rcirc-random-name-mapping)))
-	  (when name
-	    (put-text-property (match-beginning 0) (match-end 0)
-			       'display name)))))))
+      (while (and (re-search-forward "\\w+" nil t)
+		  ;; don't markup output of rcirc-do-realname
+		  (not (looking-at " →")))
+	(unless (get-text-property (match-beginning 0) 'random-name )
+	  (let ((name (gethash (match-string-no-properties 0)
+			       rcirc-random-name-mapping)))
+	    (when name
+	      (put-text-property (match-beginning 0) (match-end 0)
+				 'display name))))))))
 
 (add-to-list 'rcirc-markup-text-functions 'rcirc-markup-random-names)
 
@@ -361,6 +364,26 @@ This is slow an inefficient, but it only happens when you send something."
     (maphash (lambda (nick name)
 	       (setq line (replace-regexp-in-string name nick line t t)))
 	     rcirc-random-name-mapping)))
+
+(defun-rcirc-command realname (args)
+  "Reveal somebody's real name, or list all the entries
+in `rcirc-random-name-mapping'."
+  (interactive)
+  (setq args (split-string args))
+  (rcirc-do-realname (first args) process target))
+
+(defun rcirc-do-realname (nick process target)
+  "Implement /REALNAME."
+  (let (names)
+    (if nick
+	(setq names (list (concat nick " → "
+				  (gethash nick rcirc-random-name-mapping))))
+      (maphash (lambda (key value)
+		 (setq names (cons (concat key " → " value)
+				   names)))
+	       rcirc-random-name-mapping))
+    (rcirc-print process (rcirc-nick process) "NOTICE" target
+		 (mapconcat 'identity names "; "))))
 
 (define-minor-mode rcirc-random-names-mode
   "This name replaces all the nicks in your IRC channels with random names."
