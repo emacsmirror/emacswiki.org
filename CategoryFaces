@@ -46,6 +46,7 @@ Here are some of the pages in CategoryFaces.
 ** HighlightSymbol – Highlight the current [[symbol]] throughout the buffer
 ** HighlightParentheses – Highlight parentheses surrounding [[point]]
 ** PulseRegion - Fancy temporary pulsing of the region
+** OnScreen - Highlight the last visible screenful when scrolling
 * HowtoChangeFrameColors
 * [[Icicles - Other Search Commands#SearchingTextProperties|Icicles - Search for Properties]] -- Search for text that has certain [[overlay]] or [[text property|text properties]]; navigate among zones of text with faces.
 * ListColors -- Show colors having defined color names.
