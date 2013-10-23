@@ -34,7 +34,7 @@ Put this in your [[init file]]:
     "Create tags file."
     (interactive "DDirectory: ")
     (shell-command
-     (format "%s -f %s/TAGS -e -R %s" path-to-ctags dir-name (directory-file-name dir-name)))
+     (format "ctags -f %s -e -R %s" path-to-ctags (directory-file-name dir-name)))
   )
 
 Then, once it has been evaluated, you can invoke it via `m-x create-tags'
@@ -105,7 +105,10 @@ If you happen to need to use two separate tags programs (like rtags and ctags) t
 * [http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
 * Lisp:etags-u.el is able to update/remove file from TAGS file, and have minor mode for updating after saving a file. Removes file from TAGS when file is deleted(works with dired too). Uses relative path by default, but that behavior can be changed.
 * RecursiveTags for more tips on generating tags in recursive directories.
-
+== More ==
+* Lisp:EmacsTags
+* Lisp:EtagsTable
+* Lisp:TagsFile
 ----
 CategoryExternalUtilities
 CategoryNavigation
