@@ -3,7 +3,15 @@ It adds nick completion as well, so other channel members should not be able tel
 
 [[image:rcircRandomNamesScreenshot]]
 
+Code:
+
+* Lisp:rcirc-random-names.el
+
 Maybe this will provide the illusion of a 50:50 gender presence online.
 It's probably also confusing as hell.
 
-Lisp:rcirc-random-names.el
+To alleviate the confusion, there's the realname command:
+
+* ##/realname NAME## will show you the appropriate nick to random name mapping.
+
+* ##/realname## by itself will show you all the nick to random name mappings.
