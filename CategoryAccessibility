@@ -63,6 +63,7 @@ The packages enumerated in the following sections, while not specifically claime
 * CrosshairHighlighting -- making the cursor location more apparent by highlighting current line and column; track cursor or show cross hairs momentarily.
 * HighlightCurrentLine
 * HighlightCurrentColumn
+* OnScreen -- guide your eyes while scrolling
 
 === Major Packages - Multi-file ===
 
