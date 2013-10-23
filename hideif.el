@@ -102,8 +102,7 @@
 
 ;;; Code:
 
-(require 'cc-mode)
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 (defgroup hide-ifdef nil
   "Hide selected code within `ifdef'."
@@ -885,7 +884,7 @@ that form should be displayed.")
    ((stringp a)
     (concat "\"" a "\""))
    (t
-    (error "Invalid token to symbolify"))))
+    (error "Invalid token to stringify"))))
 
 (defun intern-safe (str)
   (if (stringp str)
@@ -961,6 +960,7 @@ we ignore them all here."
       (ash a (- 0 b))
     (lsh a (- 0 b))))
 
+
 (defalias 'hif-multiply      (hif-mathify-binop *))
 (defalias 'hif-divide        (hif-mathify-binop /))
 (defalias 'hif-modulo        (hif-mathify-binop %))
@@ -977,6 +977,7 @@ we ignore them all here."
 (defalias 'hif-logand        (hif-mathify-binop logand))
 (defalias 'hif-shiftleft     (hif-mathify-binop shiftleft))
 (defalias 'hif-shiftright    (hif-mathify-binop shiftright))
+
 
 (defun hif-comma (&rest expr)
   "Evaluate a list of expr, return the result of the last item"
@@ -1036,11 +1037,7 @@ we ignore them all here."
                    (list l a))  (butlast l))
          (last l)))
 
-;; Perform token replacement and re-parse
-;;  If we did not re-parse the macro body itself, the following condition currently produce incorrect result:
-;;  #define macro(a,b,c...) a+b*c
-;;  macro( 1,2,3,4,5 ) will produce 1+2*(3,4,5) = 11. It should be (1+2*3,4,5) = 5.
-;;  The reason is because the comma ',' changed the precedence sequence. Therefore we need to reparse.
+;; Perform token replacement:
 (defun hif-macro-supply-arguments (macro-name actual-parms)
   "Expand a macro function, replace 'actual-parms' to the function body."
   (let* ((SA                   (assoc macro-name hide-ifdef-env))
@@ -1172,7 +1169,6 @@ we ignore them all here."
   (looking-at hif-else-regexp))
 (defun hif-looking-at-elif ()
   (looking-at hif-elif-regexp))
-
 
 
 (defun hif-ifdef-to-endif ()
@@ -1626,7 +1622,6 @@ It does not do the work that's pointless to redo on a recursive entry."
 
 ;;===%%SF%% hide-ifdef-hiding (End)  ===
 
-
 ;;===%%SF%% exports (Start)  ===
 
 (defun hide-ifdef-toggle-read-only ()
@@ -1864,5 +1859,9 @@ If prefixed, it will also hide #ifdefs themselves."
     (if hide-ifdef-hiding (hide-ifdefs))))
 
 (provide 'hideif)
+
+;; Local variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:
 
 ;;; hideif.el ends here
