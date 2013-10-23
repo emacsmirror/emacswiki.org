@@ -4,6 +4,7 @@ You can use these libraries to highlight text in a buffer:
 * HiLock -- highlight phrases or regular expressions
 * [[Icicles]] -- highlight regexps: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
 * MarkerPens -- highlight and unhighlight the region
+* OnScreen -- Highlight the last visible screenful when scrolling
 
 
 
@@ -37,7 +38,6 @@ You can use these libraries to highlight text in a buffer:
 * HighlightSymbol -- highlight the current symbol throughout the buffer
 * PulseRegion -- Gently blink the background color around a region of text
 * TextMarker -- uses XRefMode
-* OnScreen -- Highlight the last visible screenful when scrolling
 
 ----
 CategoryFaces
