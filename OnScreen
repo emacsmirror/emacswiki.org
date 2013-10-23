@@ -6,3 +6,6 @@ You can use different configurations for different modes by making variables buf
 This library was inspired by a similar feature of the "Conqueror" web browser.
 
  Homepage: https://github.com/michael-heerdegen/on-screen.el
+
+----
+CategoryAccessibility
