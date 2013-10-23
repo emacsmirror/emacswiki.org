@@ -1,0 +1,8 @@
+Scrolling can be distracting because your eyes may lose  orientation.  This library implements a minor mode that highlights the previously visible buffer part after each scroll.  This is nice when you read larger texts in Emacs, like Emails in Gnus or webpages in w3m.
+
+There are different highlighting methods available, from unintrusive fringe markers to transparent overlays.
+You can use different configurations for different modes by making variables buffer local - see the Commentary section of the header.
+
+This library was inspired by a similar feature of the "Conqueror" web browser.
+
+ Homepage: https://github.com/michael-heerdegen/on-screen.el
