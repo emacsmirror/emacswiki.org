@@ -8,19 +8,19 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 15 09:26:03 2013 (-0700)
+;; Last-Updated: Wed Oct 23 18:05:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1231
+;;     Update #: 1233
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `eyedropper', `faces', `faces+',
-;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `hexrgb',
-;;   `highlight', `info', `info+', `isearch+', `isearch-prop',
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `eyedropper', `faces',
+;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `help+20',
+;;   `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
 ;;   `ring', `second-sel', `simple+', `strings', `thingatpt',
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/23 dadams
+;;     Bind C-x t s to either doremi-custom-themes+ or doremi-color-themes+.
 ;; 2013/09/15 dadams
 ;;     Do not bind help-on-click/key here.  Do not require help+(20).el for that.
 ;; 2013/09/01 dadams
@@ -342,7 +344,7 @@
                             ;; doremi-frame-height+, doremi-frame-horizontally+,
                             ;; doremi-frame-vertically+
 (require 'doremi-cmd nil t) ;; (no error if not found): doremi-buffers+, doremi-bookmarks+,
-                            ;; doremi-color-themes+,
+                            ;; doremi-color-themes+, doremi-custom-themes+
 
 (when (< emacs-major-version 21)
   ;; (require 'help+20 nil t) ;; (no error if not found): help-on-click/key
@@ -602,7 +604,9 @@
     (define-key doremi-map "g" 'doremi-global-marks+) ; Global mark              `C-x t g'
     (define-key doremi-map "m" 'doremi-marks+) ; Mark                            `C-x t m'
     (define-key doremi-map "r" 'doremi-bookmarks+) ; `r' for Reading books       `C-x t r'
-    (define-key doremi-map "s" 'doremi-color-themes+) ; `s' for color Schemes    `C-x t s'
+    (define-key doremi-map "s" (if (fboundp 'doremi-custom-themes+)
+                                   'doremi-custom-themes+
+                                 'doremi-color-themes+)) ; `s' for color Schemes `C-x t s'
     (define-key doremi-map "w" 'doremi-window-height+))) ; Window                `C-x t w'
 
 (eval-after-load "frame-cmds"
