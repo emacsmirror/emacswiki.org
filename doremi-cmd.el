@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Tue Jul 23 15:52:01 2013 (-0700)
+;; Last-Updated: Wed Oct 23 18:20:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 340
+;;     Update #: 371
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -75,20 +75,22 @@
 ;;    defined in library `frame-cmds.el'.
 ;;
 ;;
-;;  User option defined here:
+;;  User options defined here:
 ;;
-;;    `doremi-color-themes'.
+;;    `doremi-color-themes', `doremi-custom-themes' (Emacs 24+).
 ;;
 ;;  Commands defined here:
 ;;
 ;;    `doremi-bookmarks+', `doremi-buffers+', `doremi-color-themes+',
-;;    `doremi-global-marks+', `doremi-marks+',
-;;    `doremi-window-height+', `doremi-window-width+'.
+;;    `doremi-custom-themes+' (Emacs 24+), `doremi-global-marks+',
+;;    `doremi-marks+', `doremi-window-height+',
+;;    `doremi-window-width+'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `doremi-buffers-1', `doremi-color-themes-1',
-;;    `doremi-global-marks-1', `doremi-marks-1'.
+;;    `doremi-custom-themes-1' (Emacs 24+), `doremi-global-marks-1',
+;;    `doremi-marks-1'.
 ;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
@@ -114,7 +116,7 @@
 ;;   (define-key doremi-map "g" 'doremi-global-marks+)
 ;;   (define-key doremi-map "m" 'doremi-marks+)
 ;;   (define-key doremi-map "r" 'doremi-bookmarks+) ; reading books?
-;;   (define-key doremi-map "s" 'doremi-color-themes+) ; color schemes
+;;   (define-key doremi-map "s" 'doremi-custom-themes+) ; custom schemes
 ;;   (define-key doremi-map "w" 'doremi-window-height+)
 ;;
 ;;  Customize the menu. Uncomment this to try it out.
@@ -122,9 +124,9 @@
 ;;   (defvar menu-bar-doremi-menu (make-sparse-keymap "Do Re Mi"))
 ;;   (define-key global-map [menu-bar doremi]
 ;;     (cons "Do Re Mi" menu-bar-doremi-menu))
-;;   (define-key menu-bar-doremi-menu [doremi-color-themes]
-;;     '(menu-item "Color Themes" . doremi-color-themes+
-;;       :help "Successively cycle among color themes: `up'/`down'"))
+;;   (define-key menu-bar-doremi-menu [doremi-custom-themes]
+;;     '(menu-item "Custom Themes" . doremi-custom-themes+
+;;       :help "Successively cycle among custom themes: `up'/`down'"))
 ;;   (define-key menu-bar-doremi-menu [doremi-global-marks]
 ;;     '(menu-item "Global Marks" . doremi-global-marks+
 ;;       :help "Successively cycle among global marks: `up'/`down'")))
@@ -146,6 +148,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/23 dadams
+;;     Added: doremi-custom-themes, doremi-custom-themes+, doremi-custom-themes-1.
+;;     Thx to Kawabata Taichi.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookie for defgroup.
 ;; 2010/03/09 dadams
@@ -214,6 +219,8 @@
 ;; Quiet the byte-compiler.
 (defvar color-theme-initialized)
 (defvar color-themes)
+(defvar custom-enabled-themes)          ; In `custom.el'.
+(defvar doremi-custom-themes)           ; Here, Emacs 24+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -251,6 +258,16 @@ Don't forget to mention your Emacs and library versions."))
 (defcustom doremi-color-themes ()
   "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)
+
+;; Replace this by your favorite custom themes.
+;;
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+  (defcustom doremi-custom-themes ()
+    "*List of custom themes to cycle through using `doremi-custom-themes+'."
+    :type '(repeat (restricted-sexp :match-alternatives (custom-theme-p)))
+    :group 'doremi-misc-commands))
  
 ;;; Commands (Interactive Functions)
 
@@ -303,6 +320,48 @@ restored."
           nil                           ; ignored
           nil                           ; ignored
           doremi-color-themes))         ; themes to cycle through
+
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+  (defun doremi-custom-themes+ ()
+    "Successively cycle among custom themes.
+The themes used for cycling are those in option `doremi-custom-themes'.
+
+You can use `C-g' to quit and cancel changes made so far.  Note,
+however, that some things might not be restored.  `C-g' can only
+disable any themes that you applied.  It cannot restore other
+customizations that enabling a theme might have overruled.
+
+Note: Having a lot of frames present can slow down this command
+considerably."
+    (interactive)
+    (let ((orig-themes  custom-enabled-themes))
+      (unless doremi-custom-themes
+        (setq doremi-custom-themes  (custom-available-themes)))
+      (condition-case nil
+          (doremi-custom-themes-1)
+        ((quit error)
+         (condition-case nil
+             (progn (mapc #'disable-theme custom-enabled-themes)
+                    (mapc #'enable-theme orig-themes))
+           (error nil))))))
+
+  (defun doremi-custom-themes-1 ()
+    "Helper function for `doremi-custom-themes+'."
+    (doremi (lambda (theme)             ; Enable it (SETTER-FN)
+              (condition-case nil
+                  (progn (mapc #'disable-theme custom-enabled-themes)
+                         (if (custom-theme-p theme)
+                             (enable-theme theme)
+                           (load-theme theme t))
+                         (run-hooks 'doremi-custom-theme-hook))
+                (error (condition-case nil (disable-theme theme) (error nil))))
+              theme)                    ; Return it, for next iteration.
+            (car (last doremi-custom-themes)) ; Start with last theme
+            nil                         ; Ignored (INCR)
+            nil                         ; Ignored (GROWTH-FN)
+            doremi-custom-themes)))
 
 ;;;###autoload
 (defun doremi-bookmarks+ ()
