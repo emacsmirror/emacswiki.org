@@ -75,7 +75,7 @@ For Emacs 23:
 C-c C-f	"sys" -- this works, and describes the "sys" module in a separate Emacs help buffer.
 : If I define function "zoot", help doesn't on it -- it's only for global things.
 
-(Andreas Röhler: which is a bug. Please report bugs and feature requests at https://bugs.launchpad.net/python-mode)
+(Andreas Röhler: No: inside current buffer it jumps to definition, no need for a help buffer.)
 
 == Integrating python-mode's pdbtrack with xpdb and making it aware of generator expressions ==
 
