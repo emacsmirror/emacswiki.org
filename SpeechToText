@@ -1,19 +1,49 @@
+=== Speech Recognition Engines ===
+
+These are the programs implementing the actual speech recognition:
+* !DragonDictate (Windows only) http://www.ddwin.com/dictate.htm
+* Dragon !NaturallySpeaking (Windows only) http://www.ddwin.com/natural.htm
+** Natlink is a Python library that interfaces with it. http://qh.antenna.nl/unimacro/index.html
+* CMU Sphinx http://www.speech.cs.cmu.edu/sphinx 
+
+=== Interfaces for Emacs ===
+
 There are several packages for driving Emacs through voice input, including:
 
-* vr-mode (http://emacs-vr-mode.sourceforge.net/)
+==== a2x ====
+Allows use of !DragonDictate from an X window system.
+http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html
 
+==== voicekey ====
+A voice-controlled keyboard for GNU/Linux built on sphinx. 
+http://sourceforge.net/projects/voicekey/
+
+==== VoiceCode ====
+VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink).
+http://sourceforge.net/apps/mediawiki/voicecode/
+
+==== Dormant ====
+
+===== vr-mode =====
+Emacs interface to Dragon !NaturallySpeaking. 
+http://emacs-vr-mode.sourceforge.net/
+[new]
+The last release announcement (as of Oct 2013) was in 2007...
+http://sourceforge.net/mailarchive/forum.php?forum_name=emacs-vr-mode-announce
 [new]
 :: It seems that vr does only work with Emacs on W32. Is there any equivalent using Dragon Naturally Speaking in a virtual network? I know something like this existed.
-[new]
 
-* Ascii2x (http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html)
-* EmacsListen
-* ShortTalk
-* JohnWiegley has http://www.gci-net.com/users/j/johnw/Emacs/obsolete/dictation.el
+===== ShortTalk and EmacsListen =====
+EmacsListen is an implemention of ShortTalk. It is based on vr-mode.
+
+http://shorttalk-emacs.sourceforge.net/
+[new:XueFuqiao:2013-04-20 06:26 UTC]
+EmacsListen is unmaintained.  The latest commit in its [http://shorttalk-emacs.cvs.sourceforge.net/viewvc/shorttalk-emacs/shorttalk-emacs/ CVS Repository] was in 2004.  -- XueFuqiao
+
+==== Dead ====
+* JohnWiegley has http://www.gci-net.com/users/j/johnw/Emacs/obsolete/dictation.el [www.gci-net.com timeout, Oct 2013]
 * http://www.codevox.com/alsopbvkit.phtml - with a downloadable kit [returns 404, right now, 9. okt. 2005]
-* http://www.speech.cs.cmu.edu/sphinx (http://sourceforge.net/projects/voicekey/ is a voice-controlled keyboard for GNU/Linux built on sphinx)
-* http://home.hetnet.nl/~vandamhans/commander/commanderindex.htm
-* VoiceCode
+* http://home.hetnet.nl/~vandamhans/commander/commanderindex.htm [redirects to a generic hosting homepage, Oct 2013]
 
 === Microphones ===
 * It is very important to have a very good noise-canceling microphone.   One source I have come across is the compatibility list of (the NON-FREE) dragon naturally speaking software -- go for the few that meet their highest rating (six stars).
