@@ -32,12 +32,12 @@ This shell script starts emacs and attaches gdb to it.
  #!/bin/sh
  if [[ "$1" == "--debug" ]]; then
      shift
-     /usr/local/bin/emacs $* &amp;
+     /usr/local/bin/emacs $* &
      EMACS_PID=$!
      cd /usr/local/src/emacs-20.7/src/
-     gnome-terminal --termname xterm --use-factory --start-factory-server --title "Debug Emacs" --execute gdb /usr/local/bin/emacs $EMACS_PID &amp;
+     gnome-terminal --termname xterm --use-factory --start-factory-server --title "Debug Emacs" --execute gdb /usr/local/bin/emacs $EMACS_PID &
  else
-     /usr/local/bin/emacs $* &amp;
+     /usr/local/bin/emacs $* &
  fi
 
 ==== What to do to analyze Emacs once you are connected ====
