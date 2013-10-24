@@ -1,0 +1,8 @@
+Why does DefTheme redirect here?
+
+It's a separate package, and was only introduced in Emacs 23.
+
+I'm intrigued by how the "trival" information in the old DefTheme page that is not currently part of ColorTheme (since, again, DefTheme and ColorTheme are separate packages) was deep-sixed.
+
+-- MichaelPaulukonis 2013-10-24 20:57 UTC
+
