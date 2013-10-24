@@ -96,9 +96,7 @@ self-evaluating in all versions of Emacs.
 
 The following script runs on Linux and Windows. It should also run on Mac X.
 
-(The first line is supposed to be "    :;exec emacs -batch -l   "$0" -f : "$@" --no-site-file -q  # -*- Emacs-Lisp -*-  ".)
 
-    The script starts on the line below this one.
     :;exec emacs -batch -l   "$0" -f : "$@" --no-site-file -q  # -*- Emacs-Lisp -*-
     ;     @emacs -batch -l "%~f0" -f :  %*  --no-site-file -q  & goto :EOF
     ;
@@ -121,8 +119,6 @@ The following script runs on Linux and Windows. It should also run on Mac X.
         (error nil) )
       (save-buffer) )
     ;:EOF
-
-(A warning that the sesquicolon in the first line above, and in the example down below, has been rendered in the past with an extra chunk of HTML embedded in it, that is, first the colon, then the text 'class="comment"', then a greater-than sign and then the semicolon. If it happens again, please try to ignore that. The first two lines are supposed to be rendered with most of the arguments lined up on top of each other, the same except for the percents and dollar signs.)
 
 1) What this means is that the first two lines, especially noting the sesquicolon trick, lets this get handled
 properly by both CMD and COMMAND, so it should be fine in the Microsoft world,  and that it also runs in bash, and sh.  dash seems to take it, too.
@@ -155,8 +151,6 @@ DOS statements, even label statements, with a semicolon still allows it to run, 
 invisible to Scheme (and eLisp).  Hence scripts that run in emacs + windows + unix + Mac OS X.
 
 Here is another one - - if you ever need a random number on the fly, emacs can provide it.
-
-    The script starts on the line below this one.
 
     :;exec emacs -batch -l   "$0" "$@" --no-site-file -q  # -*- Emacs-Lisp -*-
     ;     @emacs -batch -l "%~f0"  %*  --no-site-file -q  & goto :EOF
