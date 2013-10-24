@@ -1,0 +1,4 @@
+I have a change to the Elisp-to-HTML rendering the wiki uses. Too see the code, search for ##elisp_formatting## in the [http://www.emacswiki.org/emacs/config config] file.
+
+-- AlexSchroeder 2013-10-24 12:52 UTC
+
