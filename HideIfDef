@@ -58,6 +58,7 @@ after hiding, it will become
 }}}
 * GNU C compatibility, i.e. "..." in macro argument supported. 
 Ex. #define macro(arg1, arg2...) arg1 + arg2
+* Self-referencing macros detected, even indirectly. As GNU cpp does.
 * hide/unhide a region
 * Evaluate a macro, just mark the region you want to evalute and press "C-c @ e"
 * When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
