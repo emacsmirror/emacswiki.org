@@ -1,53 +1,31 @@
 [[zh:é¢è²ä¸»é¢]]
 
-Emacs 24+ comes with a different system for color themes - see  DefTheme for details
+This page is about color themes and custom themes.
 
-Color theme is an Emacs-Lisp package with more than 50 color themes
-for your use.  For questions about color-theme, see
-'''ColorThemeQuestions'''.  
+EmacsLisp library <tt>color-theme.el</tt> provides many predefined '''[::color theme]s'''
+for your use, and you can easily define additional themes.  For questions about color-theme, see ColorThemeQuestions.  The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).
+See the color-theme web page at http://www.nongnu.org/color-theme for how to get
+started <tt>color-theme.el</tt>.
 
-The ColorTheme package has not been updated in several years, though it still works.
-
-In order not to clean up this page, please visit ColorTheme webpage
-at http://www.nongnu.org/color-theme for instructions on getting
-started.
-
-(Note that byte compiling this on non-Windows may fail.  Convert the
-line endings from CRLF to LF. skip@pobox.com 2004-03-12)
-
-[new:XavierMaillard:2009-04-15 20:48 UTC]
-if it is still the case, [https://savannah.nongnu.org/bugs/?group=color-theme&func=additem report it as a bug] so we can track it down.
-
-Latest release is 6.6.0 -- See our webpage for download instructions.
-
-You also have the possibility to have your own theme repository with: color-theme-directory
-You can prune the default theme distribution by setting color-theme-load-all-themes to nil. Thus it won't load the default themes.
-
-Future plans:
-
-* split color-theme-library.el in small pieces (one theme per file)
-* Improve load
-* Add a custom widget to select your theme
-* Use new way to define a color-theme
-* Improve submission process
- and way way more things.
-* Add a FAQ, a gentoo ebuild file
-* Add CREDITS.themes as a thank-you list
-
-I am also trying to build a small website using OrgMode
-----
+Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s''', which are similar to color themes. Emacs 24 added a [[Customize]] interface for custom themes.
 
 
-[new]
-Will the individual color-themes work with the new version?  I have a couple.. btw, are you accepting new themes?
+Custom themes are similar to color themes, but:
 
-[new]
-Absolutely. You can still submit them to me and I will add them. What do you mean with your first question ? If you mean having separate file for each color-theme, the answer is yes. There is no problem I am aware of.
+* Emacs (24+) provides a Customize interface for custom themes.
 
-[new]
-The next major release (6.6.0) should contain numerous new themes.
+* You cannot ''undo'' the application of custom themes, to return to the state before applying a theme.  You can only ''disable'' custom themes, not undo to a non-theme state.  That is, you can swap one custom theme for another, but any non-theme state before applying a custom theme is lost. With color themes, on the other hand, you can restore a pre-theme state.
 
-== Installing ==
+
+
+
+
+
+
+
+== Installing Library Color Theme ==
+
+[Possibly not up-to-date.  See http://www.nongnu.org/color-theme for the latest information.]
 
 Put the file color-theme.el and the folder "themes" (with the files color-theme-example.el and color-theme-library.el) in a directory on your LoadPath. The main function to
 use is `color-theme-select'. It creates the Color Theme Selection
@@ -94,39 +72,24 @@ Change lines 589 and 590 in color-theme.el to:
 
 Note the "tools" vs "Tools". 
 
-This is now installed in the CVS.
 
 
-== Emacs 21 and More Recent ==
-color-theme.el now also supports all the new attributes in Emacs 21,
-and it even tries to do the right thing for Emacs 20 and XEmacs 21: It
-resolves :inherit attributes and adds :italic and :bold attributes
-where necessary.
-The amount of compatibility functions, dirty hacks and work-arounds
-has been reduced considerably.
 
-: If you find that &lt;code&gt;M-x color-theme-select&lt;/code&gt; fails with an error like the following:
-&lt;pre&gt;
-face-attribute: Wrong type argument: symbolp, (quote font-lock-builtin-face)
-&lt;/pre&gt;
-try using this alternate definition of &lt;code&gt;color-theme-face-attr-construct&lt;/code&gt;:
 
-    (defun color-theme-face-attr-construct (face frame)
-       (if (atom face)
-           (custom-face-attributes-get face frame)
-         (if (and (consp face) (eq (car face) 'quote))
-             (custom-face-attributes-get (cadr face) frame)
-           (custom-face-attributes-get (car face) frame))))
 
-This is now installed in the CVS.
-
-== Choosing a Color Theme by Choosing from a Menu ==
+== Choosing a Color Theme from a Menu ==
 
 Choosing a color theme by name is only convenient if you already know what color scheme a given name represents.  After installing Color Theme, you can pick and choose from a menu.  This menu can be accessed via `M-x color-theme-select'.
 
-== Choosing a Color Theme by Cycling Among Themes ==
 
-An alternative way to choose a color theme is to cycle among a set of themes, applying each in turn, and stop when you find one you like -- '''''WYSIWYG'''''.
+
+
+
+
+
+== Choosing a Color Theme or Custom Theme by Cycling ==
+
+An alternative way to choose a theme is to cycle among a set of themes, applying each in turn, and stop when you find one you like -- '''''WYSIWYG'''''.
 
 Here are four alternative ways to cycle among color themes in a list. For illustration, they all use the same list.
 
@@ -138,12 +101,32 @@ Here are four alternative ways to cycle among color themes in a list. For illust
                               'color-theme-subtle-blue 'color-theme-snowish
                               'color-theme-sitaramv-nt 'color-theme-wheat))
 
+
+
+
+
+
 [:DoReMiColorThemes]
-=== Do Re Mi: Cycling with Arrow Keys or Mouse Wheel ===
+[:doremi-color-themes]
+[:doremi-custom-themes]
 
-`##M-x doremi-color-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]] `doremi-color-themes', which is the set of color themes to cycle among. By default, ''all'' color themes are included. You can use `##doremi-color-themes+##' to preview color themes: use `C-g' to cancel changes and return to what you had before. (This is equivalent to picking pseudo-theme ##[Reset]##, which also means that sometimes not everything is restored.) This is part of library <tt>[[doremi-cmd.el]]</tt>.
+=== Do Re Mi: Cycling Color Themes and Custom Themes ===
 
-Also worth mentioning, if you define your own color theme, are the commands in library <tt>[[doremi-frm.el]]</tt> that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
+You can cycle among color themes or custom themes using library DoReMi. This feature is part of library <tt>[[doremi-cmd.el]]</tt>.
+
+Use `##M-x doremi-color-themes+##' or `##M-x doremi-custom-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]]s `doremi-color-themes' and `doremi-custom-themes', which is the set of color or custom themes to cycle among.  By default, ''all'' color or custom themes are included. 
+
+You can use these commands to preview themes: use `C-g' to cancel changes and return to what you had before.
+
+* For color themes, `C-g' is equivalent to picking pseudo-theme ##[Reset]##, which also means that sometimes not everything is restored, but most is. 
+
+* Unfortunately, Emacs custom themes ''cannot'' be undone this way, to return to a non-theme state prior to applying a theme. For `doremi-custom-themes+', `C-g' just disables each of the themes that you cycled through.  This does not, however, restore any non-theme customizations in effect before cycling. The appearance of the last theme applied remains, for the existing frames, even though that theme has been disabled and will have no effect on new frames etc.
+
+Also worth mentioning, if you define your own themes, are the commands in library <tt>[[doremi-frm.el]]</tt> that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
+
+
+
+
 
 
 [:IciclesColorThemes]
@@ -643,8 +626,23 @@ MaverickWoo has compiled one such gallery at http://code.google.com/p/gnuemacsco
 We now have another gallery on http://www.flickr.com/groups/emacs/. Please share your screenshots.
 
 [new]
-Now you can use the [http://color-theme-select.heroku.com/ (color-theme-select)] web site to preview many color themes ~130, and create your own. -- vic
+You can use the [http://color-theme-select.heroku.com/ (color-theme-select)] web site to preview many color themes ~130, and create your own. -- vic
 
+
+
+== Future Plans ==
+
+* split ##color-theme-library.el## in small pieces (one theme per file)
+* Improve load
+* Add a custom widget to select your theme
+* Use new way to define a color-theme
+* Improve submission process
+ and way way more things.
+* Add a FAQ, a gentoo ebuild file
+* Add ##CREDITS.themes## as a thank-you list
+* Build a small website about color themes using OrgMode.
+
+-- XavierMaillard
 
 ----
 CategoryFaces CategoryCustomize
