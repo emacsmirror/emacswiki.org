@@ -10,23 +10,6 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
-== Is there a way to get recent changes RSS with summaries and diffs? ==
-
-<WikiRss> "Note, many of these options in the query string can be combined and configured to your preference."
-
-But there doesn't seem to be an option in the query corresponding to summary.
-
-[new]
-A simple http://www.emacswiki.org/emacs?action=rss;diff=1 should be enough. Summaries instead of page content is the default. -- AlexSchroeder
-[new]
-I don't see any diffs at that link. It seems full=0 corresponds to summary, somehow it hides the diff=1 parameter.
-[new]
-Looking more carefully, I see that you are right. If you provide full=1 it will /replace/ the summary in the description with something else. By default, that's going to be the page content. You can switch off the page content and switch on the diff, but you've still lost the summary. That looks like a bug... Time passes... [http://git.savannah.gnu.org/cgit/oddmuse.git/commit/?id=50b71adf2d58fef3e6325ad4bad643b5d93335eb Fixed]! Thanks for the heads up. This should work, now:
-http://www.emacswiki.org/emacs/?action=rss;full=1;page=0;diff=1
--- Alex
-[new]
-Great, thanks
-
 == "New" entries do not appear correctly ==
 
 I modified [[LineNumbers]] and that somehow broke the page appearance; now it's full of "[new]" strings (it wasn't before my edit).
