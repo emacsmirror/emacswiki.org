@@ -579,6 +579,159 @@ and the corresponding ispell-dictionary.")
     )
   )
 </pre>
+
+== Extending org-mode search features ==
+With this extension of org-mode you can use links <code> [[buffer:yourBuffer::yourSearchExpression]] </code>. Here, <code> yourBuffer </code>. must be a buffer (not a file).
+But, you can open the file of interest beforehand.
+The first character of <code> yourSearchExpression </code>. can be an operator.
+If it is a <code> + </code> then <code> yourBuffer </code>. is searched forward starting at the current point position.
+If it is a <code> - </code> then <code> yourBuffer </code>. is searched backward starting at the current point position. If no operator is given then the buffer is searched forward starting at the beginning of the buffer. Other operators can easily be implemented.
+
+The good thing is that you can easily pre-define your searches in the org-file.
+
+That becomes handy if you need the search of this type again later on.
+
+I have added the high-lighting quite recently. Therefore, if you encounter problems. Just give me a note.
+<pre>
+;; stolen from isearch:
+(defface search-highlight-face 
+  '((((class color) (min-colors 88) (background light))
+     ;; The background must not be too dark, for that means
+     ;; the character is hard to see when the cursor is there.
+     (:background "magenta3" :foreground "lightskyblue1"))
+    (((class color) (min-colors 88) (background dark))
+     (:background "palevioletred2" :foreground "brown4"))
+    (((class color) (min-colors 16))
+     (:background "magenta4" :foreground "cyan1"))
+    (((class color) (min-colors 8))
+     (:background "magenta4" :foreground "cyan1"))
+    (t (:inverse-video t)))
+  "Face for highlighting search matches."
+  :group 'search-highlight)
+
+(defface search-highlight-other-face 
+  '((((class color) (min-colors 88) (background light))
+     (:background "paleturquoise"))
+    (((class color) (min-colors 88) (background dark))
+     (:background "paleturquoise4"))
+    (((class color) (min-colors 16))
+     (:background "turquoise3"))
+    (((class color) (min-colors 8))
+     (:background "turquoise3"))
+    (t (:underline t)))
+  "Face for lazy highlighting of matches other than the current one."
+  :group 'search-highlight)
+(defun search-highlight (se &rest opt)
+  "Like the group of `search-forward' commands with highlighting of the matches.
+Note, that this function should only be used in commands since it is directly visible.
+The window of the current buffer must be alive and should be visible.
+Options:
+
+:back non-nil: search backward instead of forward
+
+:re non-nil: SE is regular expression
+
+:noerror non-nil: issue error when not found
+
+:bound bound of search
+
+:count search that many times (defaults to 1)
+
+:face use this face to highlight
+
+:others non-nil: highlight also other matches within visible area of buffer
+
+:recenter recenter point in window vertically (before highlighting others)
+"
+  (interactive "sSearch expression:")
+  (search-highlight-cleanup) ;; If anything went wrong prevously.
+  (let* (ol
+	 (regexp? (when (plist-get opt :re) "-regexp"))
+	 (cmd (intern-soft (concat "search"
+				   (if (plist-get opt :back) "-backward" "-forward")
+				   regexp?
+				   )))
+	 e)
+    (when (funcall cmd se (plist-get opt :bound) (plist-get opt :noerror) (plist-get opt :count))
+      (setq ol (make-overlay (match-beginning 0) (match-end 0)))
+      (overlay-put ol 'face 'search-highlight-face))
+    (when (plist-get opt :recenter) (recenter))
+    (if (plist-get opt :others)
+	(save-excursion
+	  (goto-char (window-start))
+	  (setq e (window-end nil t))
+	  (setq cmd (intern-soft (concat "search-forward" regexp?)))
+	  (while (funcall cmd se e t)
+	    (unless (= (match-beginning 0) (overlay-start ol))
+	      (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+			   'face 'search-highlight-other-face)))))
+    (add-hook 'pre-command-hook 'search-highlight-cleanup t t)))
+
+(defun search-highlight-cleanup ()
+  "Remove highlights for search-highlight-mode."
+  (interactive)
+  (remove-hook 'pre-command-hook 'search-highlight-cleanup t)
+  (remove-overlays 0 (buffer-size)
+		   'face 'search-highlight-face)
+  (remove-overlays 0 (buffer-size)
+		   'face 'search-highlight-other-face))
+
+(defun org-at-buffer ()
+  "Check whether point is at [[buffer:BUFFER::SEARCH]].
+BUFFER is just the name of an existing buffer.
+You can make sure that the buffer exists by [[file:...]].
+::RE is an optional regular expression.
+The first character of SEARCH may be an operator:
+
++ Start at current point and search forward.
+
+- Start at current point and search backward.
+
+If the operator is missing the buffer is searched for RE starting at the beginning of BUFFER.
+"
+  (save-excursion
+    (let ((pt (point))
+	  b e
+	  name
+	  re)
+      (when (search-backward "[[buffer:" (line-beginning-position) 'noErr)
+	(forward-char)
+	(setq b (+ (point) (length "[buffer:")))
+	(forward-sexp) ;; actual link
+	(setq e (1- (point)))
+	(when (looking-at "\\[") ;; optional description
+	  (forward-sexp))
+	(when (>= (point) pt)
+	  (goto-char b)
+	  (if (search-forward "::" e 'noErr)
+	      (setq
+	       name (buffer-substring-no-properties b (match-beginning 0))
+	       re (buffer-substring-no-properties (match-end 0) e)
+	       )
+	    (setq name (buffer-substring-no-properties b e)))
+	  (switch-to-buffer-other-window name)
+	  (when re
+	    (if (and (> (length re) 0) (find (aref re 0) "+-"))
+		(let ((op (aref re 0)))
+		  (setq re (substring re 1))
+		  (cond
+		   ((= op ?+)
+		    (when (= (point) (point-max))
+		      (goto-char (point-min)))
+		    (search-highlight re :re t :noerror t :others t :recenter t))
+		   ((= op ?-)
+		    (when (= (point) (point-min))
+		      (goto-char (point-max)))
+		    (search-highlight re :back t :re t :noerror t :others t :recenter t))
+		   (t
+		    (error "Unexpected op."))))
+	      (goto-char (point-min))
+	      (search-highlight re :re t :noerror t :others t :recenter t)))
+	  t)))))
+(add-to-list 'org-open-at-point-functions 'org-at-buffer)
+
+</pre>
+
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
 
