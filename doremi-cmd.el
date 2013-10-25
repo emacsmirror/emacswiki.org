@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Wed Oct 23 18:20:47 2013 (-0700)
+;; Last-Updated: Fri Oct 25 16:29:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 371
+;;     Update #: 469
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `doremi', `mwheel', `ring'.
+;;   `cus-theme', `doremi', `mwheel', `ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,7 +77,8 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `doremi-color-themes', `doremi-custom-themes' (Emacs 24+).
+;;    `doremi-color-themes', `doremi-custom-themes' (Emacs 24+),
+;;    `doremi-themes-update-flag'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -148,6 +149,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/25 dadams
+;;     Added: doremi-themes-update-flag.
+;;     doremi-custom-themes: Use custom-available-themes, not custom-theme-p.
+;;     doremi-(color|custom)-themes+: Added prefix arg - flips theme-saving flag.
+;;     doremi-custom-themes+: Pass initial-theme to doremi-custom-themes-1.
+;;                            Move chosen theme to the front.
+;;                            Added message to echo final choice.
+;;     doremi-custom-themes-1: Start with first theme, or last if no cycling yet.
 ;; 2013/10/23 dadams
 ;;     Added: doremi-custom-themes, doremi-custom-themes+, doremi-custom-themes-1.
 ;;     Thx to Kawabata Taichi.
@@ -244,6 +253,28 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "doremi-cmd")
   )
 
+;;;###autoload
+(defcustom doremi-themes-update-flag nil
+  "*Non-nil means choosing a theme saves the updated list of themes.
+This applies to commands `doremi-custom-themes+' and
+`doremi-color-themes+' and their respective options,
+`doremi-custom-themes' and `doremi-color-themes'.
+
+A prefix arg to the command flips the option value for the duration of
+the command.")
+
+;; Replace this by your favorite custom themes.
+;;
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+  (defcustom doremi-custom-themes ()
+    "*List of custom themes to cycle through using `doremi-custom-themes+'."
+    :type '(repeat (restricted-sexp
+                    :match-alternatives
+                    ((lambda (symb) (memq symb (custom-available-themes))))))
+    :group 'doremi-misc-commands))
+
 ;; Replace this by your favorite color themes. Each must be a defined function.
 ;; By default, this includes all color themes defined globally (`color-themes').
 ;;
@@ -258,21 +289,73 @@ Don't forget to mention your Emacs and library versions."))
 (defcustom doremi-color-themes ()
   "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)
-
-;; Replace this by your favorite custom themes.
-;;
-;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
-;; has `custom-available-themes'.
-(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
-  (defcustom doremi-custom-themes ()
-    "*List of custom themes to cycle through using `doremi-custom-themes+'."
-    :type '(repeat (restricted-sexp :match-alternatives (custom-theme-p)))
-    :group 'doremi-misc-commands))
  
 ;;; Commands (Interactive Functions)
 
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+  (defun doremi-custom-themes+ (&optional flip)
+    "Successively cycle among custom themes.
+The themes used for cycling are those in option `doremi-custom-themes'.
+
+You can use `C-g' to quit and cancel changes made so far.  Note,
+however, that some things might not be restored.  `C-g' can only
+disable any themes that you applied.  It cannot restore other
+customizations that enabling a theme might have overruled.
+
+Note: Having a lot of frames present can slow down this command
+considerably.
+
+Option `doremi-themes-update-flag' determines whether the updated
+value of `doremi-custom-themes' is saved.  A prefix arg to this command
+flips the option value for the command duration."
+    (interactive "P")
+    ;; Delete `nil' that gets added by `enable-theme'.
+    (let ((orig-themes  (delq nil (copy-sequence custom-enabled-themes))))
+      (unless doremi-custom-themes
+        (setq doremi-custom-themes  (custom-available-themes)))
+      (condition-case nil
+          (progn
+            (doremi-custom-themes-1 (car orig-themes))
+            ;; `enable-theme' -> `custom-reevaluate-setting' adds `nil'.
+            (setq doremi-custom-themes  (delq nil doremi-custom-themes))
+            ;; Move chosen theme to the front.
+            (setq doremi-custom-themes  (delq (car custom-enabled-themes)
+                                              doremi-custom-themes))
+            (setq doremi-custom-themes  (cons (car custom-enabled-themes)
+                                              doremi-custom-themes))
+            (message "Chosen theme: `%s'" (car doremi-custom-themes))
+            (when (or (and flip        (not doremi-themes-update-flag))
+                      (and (not flip)  doremi-themes-update-flag))
+              (customize-save-variable 'doremi-custom-themes
+                                       doremi-custom-themes)))
+        ((quit error)
+         (condition-case nil
+             (progn (mapc #'disable-theme custom-enabled-themes)
+                    (mapc #'enable-theme orig-themes))
+           (error nil))))))
+
+  (defun doremi-custom-themes-1 (initial-theme)
+    "Helper function for `doremi-custom-themes+'."
+    (doremi (lambda (theme)             ; Enable it (SETTER-FN)
+              (condition-case nil
+                  (progn
+                    (mapc #'disable-theme custom-enabled-themes)
+                    (if (custom-theme-p theme)
+                        (enable-theme theme)
+                      (load-theme theme t))
+                    (run-hooks 'doremi-custom-theme-hook))
+                (error (condition-case nil (disable-theme theme) (error nil))))
+              theme)                    ; Return it, for next iteration.
+            ;; Start with the first theme, or the last one if no cycling done yet.
+            (or initial-theme  (car (last doremi-custom-themes)))
+            nil                         ; Ignored (INCR)
+            nil                         ; Ignored (GROWTH-FN)
+            doremi-custom-themes)))     ; ENUM - enumeration
+
 ;;;###autoload
-(defun doremi-color-themes+ ()
+(defun doremi-color-themes+ (&optional flip)
   "Successively cycle among color themes.
 The themes used for cycling are those in option `doremi-color-themes'.
 
@@ -280,8 +363,12 @@ You can use `C-g' to quit and cancel changes made so far.
 Alternatively, after using `doremi-color-themes+' you can use
 `color-theme-select' and choose pseudo-theme `[Reset]' - that does the
 same thing.  Note that in either case, some things might not be
-restored."
-  (interactive)
+restored.
+
+Option `doremi-themes-update-flag' determines whether the updated
+value of `doremi-color-themes' is saved.  A prefix arg to this command
+flips the option value for the command duration."
+  (interactive "P")
   (unless (prog1 (require 'color-theme nil t)
             (when (and (fboundp 'color-theme-initialize)
                        (not color-theme-initialized))
@@ -310,7 +397,12 @@ restored."
                        (symbol-function 'color-theme-snapshot)
                      (color-theme-make-snapshot))))
     (condition-case nil
-        (doremi-color-themes-1)
+        (progn
+          (doremi-color-themes-1)
+          (when (or (and flip        (not doremi-themes-update-flag))
+                    (and (not flip)  doremi-themes-update-flag))
+            (customize-save-variable 'doremi-color-themes
+                                     doremi-color-themes)))
       (quit (funcall snapshot)))))
 
 (defun doremi-color-themes-1 ()
@@ -320,48 +412,6 @@ restored."
           nil                           ; ignored
           nil                           ; ignored
           doremi-color-themes))         ; themes to cycle through
-
-;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
-;; has `custom-available-themes'.
-(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
-  (defun doremi-custom-themes+ ()
-    "Successively cycle among custom themes.
-The themes used for cycling are those in option `doremi-custom-themes'.
-
-You can use `C-g' to quit and cancel changes made so far.  Note,
-however, that some things might not be restored.  `C-g' can only
-disable any themes that you applied.  It cannot restore other
-customizations that enabling a theme might have overruled.
-
-Note: Having a lot of frames present can slow down this command
-considerably."
-    (interactive)
-    (let ((orig-themes  custom-enabled-themes))
-      (unless doremi-custom-themes
-        (setq doremi-custom-themes  (custom-available-themes)))
-      (condition-case nil
-          (doremi-custom-themes-1)
-        ((quit error)
-         (condition-case nil
-             (progn (mapc #'disable-theme custom-enabled-themes)
-                    (mapc #'enable-theme orig-themes))
-           (error nil))))))
-
-  (defun doremi-custom-themes-1 ()
-    "Helper function for `doremi-custom-themes+'."
-    (doremi (lambda (theme)             ; Enable it (SETTER-FN)
-              (condition-case nil
-                  (progn (mapc #'disable-theme custom-enabled-themes)
-                         (if (custom-theme-p theme)
-                             (enable-theme theme)
-                           (load-theme theme t))
-                         (run-hooks 'doremi-custom-theme-hook))
-                (error (condition-case nil (disable-theme theme) (error nil))))
-              theme)                    ; Return it, for next iteration.
-            (car (last doremi-custom-themes)) ; Start with last theme
-            nil                         ; Ignored (INCR)
-            nil                         ; Ignored (GROWTH-FN)
-            doremi-custom-themes)))
 
 ;;;###autoload
 (defun doremi-bookmarks+ ()
