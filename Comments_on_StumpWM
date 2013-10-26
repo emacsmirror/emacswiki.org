@@ -30,3 +30,38 @@ This implies that <code>:break</code> is not a good idea in any case.  But it sh
 
 -- Bernard Hurley 2013-10-26 02:44 UTC
 
+
+----
+
+==Problems with code==
+The lines that look like:
+
+    (setf stumpwm:*top-level-error-action* :break)
+
+
+Should be deleted.  This is what the documentation has to say about <code>*top-level-error-action*</code>:
+
+{{{
+STUMPWM:*TOP-LEVEL-ERROR-ACTION*
+  [symbol]
+
+*TOP-LEVEL-ERROR-ACTION* names a special variable:
+  Value: :ABORT
+  Documentation:
+    If an error is encountered at the top level, in
+    STUMPWM-INTERNAL-LOOP, then this variable decides what action
+    shall be taken. By default it will print a message to the screen
+    and to *standard-output*.
+    
+    Valid values are :message, :break, :abort. :break will break to the
+    debugger. This can be problematic because if the user hit's a
+    mapped key the ENTIRE keyboard will be frozen and you will have
+    to login remotely to regain control. :abort quits stumpmwm.
+}}}
+
+This implies that <code>:break</code> is not a good idea in any case.  But it should not be set in a function like this in any case.  If you really want to do this you can use a <code>let</code> since <code>*top-level-error-action*</code> is a special variable it's value will be propagated to any functions you call.
+
+<code>(in-package :stumpwm)</code> should be added to the top of the extra file.  The present code will work provided <code>*default-package*</code> has the value <code>:stumpwm</code>, which is not it's default value.
+
+-- Bernard Hurley 2013-10-26 02:45 UTC
+
