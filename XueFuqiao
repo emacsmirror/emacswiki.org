@@ -18,7 +18,7 @@ emacsen and EmacsWiki.  My daily life becomes very interesting.
 
 You can contact me using (please send plain text mail, not HTML):
 [code]
-(concat (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") " AT " "gmail" "." "com")
+(concat (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") " AT " (rot13 "tznvy") "." "com")
 [/code]
 
 Feel free to ask anything about Emacs :)
