@@ -9,8 +9,7 @@ If you've enabled multi-threading, add this code to your .stumpwmrc for interact
 (load "/path/to/slime/swank-loader.lisp")
 (swank-loader:init)
 (defcommand swank () ()
-  (setf stumpwm:*top-level-error-action* :break)
-  (swank:create-server :port 4005
+    (swank:create-server :port 4005
                        :style swank:*communication-style*
                        :dont-close t)
   (echo-string (current-screen) 
@@ -37,11 +36,7 @@ This is an example of how you can use stumpwm commands to call emacs functions.
 
 If, like me, you have installed slime through quicklisp then then /path/to/slime/swank-loader.lisp will not be fixed.  The code in the SLIME section works but it would have to be changed every time slime is updated.  However in this case you can use quicklisp itself to load swank, by replacing the first two lines of code with:
 
-{{{
-;;
-(ql:quickload :swank)
-;;
-}}}
+    (ql:quickload :swank)
 
 === Code to put in .emacs or .init.d ===
 
@@ -79,17 +74,13 @@ If you are using quicklisp you will need the code like the following in your Ema
 
 The usual way to connect to the swank server in emacs is with code like:
 
-{{{
-	(slime-connect "127.0.0.1" "4005")
-}}}
+    (slime-connect "127.0.0.1" "4005")
 
 Two things are worth noticing.  The first is that the port doesn't have to be 4005, it just has to be the same as the one defined in stumpwm.  With a multi-threaded Common Lisp like sbcl this means that you can have more than one swank server running.  The second thing to notice is that you don't have to use the localhost IP number, 127.0.0.1.  This means that an attacker could control your window manager from another machine.  You may wish to adjust the firewall settings on your machine to take this into account.
 
 If your machine is a laptop that you use on many different networks, you may not wish to automatically start the swank server when stumpwm starts up.  If you replace the call to swank on the last line of the code with:
 
-{{{
-	(define-key *root-map* (kbd "C-s") "swank")
-}}}
+    (define-key *root-map* (kbd "C-s") "swank")
 
 Then the key sequence "C-t C-s", which you can change if you like, will be bound to the command to start the server, but the server will not start up automatically.
 
@@ -99,7 +90,6 @@ Even better, you can amend the code for the command "swank" so that it toggles t
 (let ((server-running nil))
   (defcommand swank () ()
     "Toggle the swank server on/off"
-    (setf stumpwm:*top-level-error-action* :break)
     (if server-running
 	(progn
 	  (swank:stop-server 4005)
@@ -150,23 +140,19 @@ Since Swank is a fairly big package, it would be a good idea not to load it ever
 
 The "obvious" solution doesn't work.  If you write:
 
-{{{
-  (ql:quickload :swank)
-  (swank:create-server :port 4005 ...
-}}}
+    (ql:quickload :swank)
+    (swank:create-server :port 4005 ...
 
 inside a function, you come across the problem that Common Lisp first loads and parses a form and only then interprets it.  In a case like this, it will not know that swank:create-server exists when it first sees it as swank will not have been loaded.  If you are using SBCL then the problem is even more complicated as it incrementally compiles forms as they are loaded.  This is one of the few places where this behaviour of SBCL makes a real difference.
 
 === The Usual Solution ===
 
-In most versions of Common Lisp, you can simply intern the symbol create-server as follows:
+In most versions of Common Lisp, you can simply intern the symbol <code>create-server</code> as follows:
 
-{{{
-   (ql:quickload :swank)
-   (funcall (intern "create-server" :swank) :port 4005 ....
-}}}
+    (ql:quickload :swank)
+    (funcall (intern "create-server" :swank) :port 4005 ....
 
-Then Lisp knows that create-swank is a function when the form is being loaded, and when the form is interpreted, swank has already loaded so the code does what you expect.  However, as explained below, this doesn't work for SBCL.
+Then Lisp knows that <code>create-swank</code> is a function when the form is being loaded, and when the form is interpreted, <code>swank</code> has already loaded so the code does what you expect.  However, as explained below, this doesn't work for SBCL.
 
 === The Solution for SBCL ===
 
@@ -174,7 +160,8 @@ Since SBCL tries to compile a form when it is first loaded, this solution will n
 
 {{{
 ;; swank.lisp -*- Mode: Lisp -*-
-
+(in-package :stumpwm)
+;;
 ;; Load swank
 (ql:quickload :swank)
 ;;
@@ -183,7 +170,6 @@ Since SBCL tries to compile a form when it is first loaded, this solution will n
   ;;
   (defcommand swank () ()
     "Toggle the swank server on/off."
-    (setf stumpwm:*top-level-error-action* :break)
     (if server-running
         (progn
           (swank:stop-server 4005)
@@ -211,7 +197,6 @@ Then in your .stumpwmrc put some code like:
 (defcommand swank () ()
   "Turn on the swank server the first time.
 Load a file that re-defines swank and then calls it."
-  (setf stumpwm:*top-level-error-action* :break)
   ;; Be careful with the quotes!
   (run-shell-command  "stumpish 'eval (load \"/path/to/swank.lisp\")'")
   (echo-string
@@ -221,7 +206,7 @@ Load a file that re-defines swank and then calls it."
 (define-key *root-map* (kbd "C-s") "swank")
 }}}
 
-This looks like magic, but it isn't!  To understand what is happening you have to distinguish between a Common Lisp function and the (interned) name that Lisp uses to refer to it.  There are two functions that both appear to be called "swank."  The first is defined in .stumpwmrc and when you first use this name to call a function it is called.  However it loads a file with another function definition, and the code in the file says that from now on the name "swank" shall refer to the new function.  The old function still exists, as a Lisp object and runs to completion. (If you don't believe me you can test this by making it display something after the new function has been defined!)  Once the old function has completed, there will no longer be any references to it and it will eventually be garbage-collected.
+This looks like magic, but it isn't!  To understand what is happening you have to distinguish between a Common Lisp function and the (interned) name that Lisp uses to refer to it.  There are two functions that both appear to be called <code>swank</code>.  The first is defined in .stumpwmrc and when you first use this name to call a function it is called.  However it loads a file with another function definition, and the code in the file says that from now on the name "swank" shall refer to the new function.  The old function still exists, as a Lisp object and runs to completion displaying a message after the new function has been defined!  Once the old function has completed, there will no longer be any references to it and it will eventually be garbage-collected.
 
 == Using stumpwm-mode with quicklisp ==
 
