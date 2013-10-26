@@ -621,6 +621,8 @@ I have added the high-lighting quite recently. Therefore, if you encounter probl
     (t (:underline t)))
   "Face for lazy highlighting of matches other than the current one."
   :group 'search-highlight)
+
+(require 'cl)
 (defun search-highlight (se &rest opt)
   "Like the group of `search-forward' commands with highlighting of the matches.
 Note, that this function should only be used in commands since it is directly visible.
@@ -662,7 +664,7 @@ Options:
 	  (setq e (window-end nil t))
 	  (setq cmd (intern-soft (concat "search-forward" regexp?)))
 	  (while (funcall cmd se e t)
-	    (unless (= (match-beginning 0) (overlay-start ol))
+	    (unless (and ol (= (match-beginning 0) (overlay-start ol)))
 	      (overlay-put (make-overlay (match-beginning 0) (match-end 0))
 			   'face 'search-highlight-other-face)))))
     (add-hook 'pre-command-hook 'search-highlight-cleanup t t)))
