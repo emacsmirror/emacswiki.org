@@ -964,8 +964,7 @@ Thx -- DrewAdams
 
 The library apropos-fn+var.el doesn't work in Emacs 24.3 due to apropos-macrop being missing.  I'm not sure when this happened but it's definitely not in 24.3! However the file subr.el contains the function macrop which I assume does the same thing.  To get it working I have temporarily added the following to my startup file:
 
-    (defun apropos-macrop (object)
-       (macrop object))
+    (defalias 'apropos-macrop 'macrop)
 
 Thanks -- [[Bernard Hurley]]
 
