@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 18 14:08:19 2013 (-0700)
+;; Last-Updated: Sun Oct 27 13:27:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23447
+;;     Update #: 23452
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -22,18 +22,19 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `dired', `dired+', `dired-aux', `dired-x',
-;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `dired', `dired+', `dired-aux',
+;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
+;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -223,7 +224,7 @@
 ;;    `icicle-customize-apropos-options-of-type',
 ;;    `icicle-customize-apropos-opts-w-val-satisfying',
 ;;    `icicle-customize-face', `icicle-customize-icicles-group',
-;;    `icicle-cycle-expand-to-common-match',
+;;    `icicle-custom-theme', `icicle-cycle-expand-to-common-match',
 ;;    `icicle-cycle-image-file-thumbnail',
 ;;    `icicle-cycle-incremental-completion',
 ;;    `icicle-dabbrev-completion', `icicle-delete-file',
@@ -764,6 +765,8 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
+;;    `icicle-custom-themes', `icicle-custom-themes-accumulate-flag',
+;;    `icicle-custom-themes-update-flag',
 ;;    `icicle-default-cycling-mode',
 ;;    `icicle-default-in-prompt-format-function',
 ;;    `icicle-default-thing-insertion', `icicle-default-value',
