@@ -960,6 +960,17 @@ Remember too that from the wiki page for the Lisp code you can just click the pa
 Thx -- DrewAdams
 
 ---
+[new:BernardHurley:Sun Oct 27 08:05:05 GMT 2013]
+
+The library apropos-fn+var.el doesn't work in Emacs 24.3 due to apropos-macrop being missing.  I'm not sure when this happened but it's definitely not in 24.3! However the file subr.el contains the function macrop which I assume does the same thing.  To get it working I have temporarily added the following to my startup file:
+
+    (defun apropos-macrop (object)
+       (macrop object))
+
+Thanks -- [[Bernard Hurley]]
+
+
+---
 
 
 ----
