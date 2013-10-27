@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Oct 14 20:53:03 2013 (-0700)
+;; Last-Updated: Sun Oct 27 13:39:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5742
+;;     Update #: 5756
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -96,6 +96,8 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
+;;    `icicle-custom-themes', `icicle-custom-themes-accumulate-flag',
+;;    `icicle-custom-themes-update-flag',
 ;;    `icicle-default-in-prompt-format-function',
 ;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
 ;;    `icicle-default-value', `icicle-define-alias-commands-flag',
@@ -1971,6 +1973,33 @@ options to be saved automatically, you can set this to the function
 \(symbol) `ignore'.  If you want to use your own function to somehow
 save the current value, you can set this to your function."
   :type 'function :group 'Icicles-Miscellaneous)
+
+
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+
+  (defcustom icicle-custom-themes ()
+    "*List of custom themes to cycle through using `icicle-custom-theme'."
+    :type '(repeat (restricted-sexp
+                    :match-alternatives
+                    ((lambda (symb) (memq symb (custom-available-themes))))))
+    :group 'Icicles-Miscellaneous)
+
+  (defcustom icicle-custom-themes-accumulate-flag nil
+    "*Non-nil does not disable other custom themes when cycling to a theme.
+Note: Setting this to non-nil can considerably slow down cycling.  The
+more themes you cycle through, the slower it gets."
+    :type 'boolean :group 'Icicles-Miscellaneous)
+
+  (defcustom icicle-custom-themes-update-flag nil
+    "*Non-nil means choosing a custom theme saves the updated list of themes.
+This applies to commands `icicle-custom-theme' and
+`icicle-color-theme' and their respective options
+`icicle-custom-themes' and `icicle-color-themes'.
+
+A prefix to `icicle-custom-theme' flips the option value for the
+current invocation of the command."))
 
 (defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s)" default))
   "*Function that formats the default value to include in the prompt.
