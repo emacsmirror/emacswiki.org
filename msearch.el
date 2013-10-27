@@ -31,7 +31,7 @@
 ;; Installation:
 ;; Put msearch.el into your load-path and add the following line into
 ;; your emacs start-up file (e.g. "~/.emacs"):
-;; (require 'msearch.el)
+;; (require 'msearch)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changes:
