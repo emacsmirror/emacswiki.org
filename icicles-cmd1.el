@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Sep  2 16:26:02 2013 (-0700)
+;; Last-Updated: Sun Oct 27 13:43:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25969
+;;     Update #: 25988
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -178,9 +178,10 @@
 ;;    (+)`icicle-customize-apropos-opts-w-val-satisfying',
 ;;    (+)`icicle-customize-face',
 ;;    (+)`icicle-customize-face-other-window',
-;;    `icicle-customize-icicles-group', `icicle-dabbrev-completion',
-;;    (+)`icicle-delete-file', (+)`icicle-delete-window',
-;;    (+)`icicle-describe-option-of-type', `icicle-describe-process',
+;;    `icicle-customize-icicles-group', (+)`icicle-custom-theme',
+;;    `icicle-dabbrev-completion', (+)`icicle-delete-file',
+;;    (+)`icicle-delete-window', (+)`icicle-describe-option-of-type',
+;;    `icicle-describe-process',
 ;;    (+)`icicle-describe-var-w-val-satisfying',
 ;;    (+)`icicle-delete-windows', (+)`icicle-directory-list',
 ;;    (+)`icicle-dired', `icicle-dired-chosen-files',
@@ -1181,7 +1182,8 @@ if there is a suitable one already."
                    my-obarray
                    (or (eq icicle-dabbrev--last-completion-buffer (current-buffer))
                        (and (window-minibuffer-p (selected-window))
-                            (eq icicle-dabbrev--last-completion-buffer (window-buffer (minibuffer-selected-window)))))
+                            (eq icicle-dabbrev--last-completion-buffer
+                                (window-buffer (minibuffer-selected-window)))))
                    dabbrev--last-abbreviation
                    (>= (length abbrev) (length dabbrev--last-abbreviation))
                    (string= dabbrev--last-abbreviation
@@ -6710,11 +6712,12 @@ state just before this command invocation, but to some previous
 snapshot.
 
 To use this command, you must have loaded library `color-theme.el',
-available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
+available from http://www.nongnu.org/color-theme.  See also:
+http://www.emacswiki.org/ColorTheme."   ; Doc string
   (lambda (theme)
-    (when (string= "" theme) (icicle-user-error "No theme name entered (empty input)"))
+    (when (string= "" theme) (icicle-user-error "No color theme name entered (empty input)"))
     (funcall  (intern theme)))          ; Action function: just call the theme.
-  "Theme: " icicle-color-themes nil t nil ; `completing-read' args
+  "Color theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil
   ((icicle-delete-candidate-object  'icicle-color-themes) ; Bindings
@@ -6753,6 +6756,76 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                                          (bury-buffer "[Quit]" "Bury this buffer."))
                                        color-themes))))
   (color-theme-snapshot))               ; Undo code
+
+
+;; Emacs 22-23 `cus-themes.el' has no `provide', and only Emacs 24 version
+;; has `custom-available-themes'.
+(when (condition-case nil (require 'cus-theme nil t) (error nil)) ; Emacs 24+
+
+  (icicle-define-command icicle-custom-theme ; Command name
+    "Change custom theme.
+The themes used as candidates are those in option `icicle-custom-themes'.
+
+You can use \\<minibuffer-local-completion-map>\
+`\\[icicle-delete-candidate-object]' during completion to remove the current
+candidate from the list of Icicles custom themes.
+
+You can use `C-g' to quit and cancel changes by the command.  Note,
+however, that some things might not be restored.  `C-g' can only
+disable any themes that you applied.  It cannot restore other
+customizations that enabling a theme might have overruled.  This is a
+limitation of Emacs custom themes: you can disable them, but you
+cannot restore non-theme settings in effect before enabling a theme.
+Color themes (and command `icicle-color-theme') do not have this
+limitation.
+
+Note: Having a lot of frames present can slow down this command
+considerably.
+
+Option `icicle-custom-themes-accumulate-flag' determines whether
+cycling accumulates themes or disables all themes other than the
+current one.  Note: A non-nil value (accumulating) can considerably
+slow down cycling.
+
+Option `icicle-custom-themes-update-flag' determines whether the
+updated value of `icicle-custom-themes' is saved.  A prefix arg to
+this command flips the option value for the current invocation of the
+command."                               ; Doc string
+    (lambda (theme)                     ; Action function: enable theme.
+      (when (string= "" theme) (icicle-user-error "No theme name entered (empty input)"))
+      (setq theme  (intern theme))
+      (condition-case nil
+          (progn (unless icicle-custom-themes-accumulate-flag
+                   (mapc #'disable-theme (delete theme custom-enabled-themes)))
+                 (unless (memq theme custom-enabled-themes) ; Don't enable if already enabled.
+                   (if (custom-theme-p theme) (enable-theme theme) (load-theme theme t)))
+                 (run-hooks 'icicle-custom-theme-hook))
+        (error (condition-case nil (disable-theme theme) (error nil))))
+      theme)                            ; Return it (but not necessary).
+    "Custom theme: "                    ; `completing-read' args
+    (mapcar (lambda (thm) (list (symbol-name thm))) icicle-custom-themes) nil t nil
+    (if (boundp 'custom-theme-history) 'custom-theme-history 'icicle-custom-theme-history)
+    nil nil
+    ((flip         current-prefix-arg)  ; Bindings
+     (orig-themes  (delq nil (copy-sequence custom-enabled-themes)))
+     (icicle-delete-candidate-object
+      (lambda (thm) (setq icicle-custom-themes  (delq (intern thm) icicle-custom-themes)))))
+    (unless icicle-custom-themes        ; First code
+      (setq icicle-custom-themes  (custom-available-themes)))
+    (condition-case nil                 ; Undo code
+        (progn (mapc #'disable-theme custom-enabled-themes)
+               (mapc #'enable-theme orig-themes))
+      (error nil))
+    (when custom-enabled-themes         ; Last code
+      ;; `enable-theme' -> `custom-reevaluate-setting' adds `nil'.
+      (setq icicle-custom-themes  (delq nil icicle-custom-themes))
+      ;; Move chosen theme to the front.
+      (setq icicle-custom-themes  (delete (car custom-enabled-themes) icicle-custom-themes))
+      (setq icicle-custom-themes  (cons (car custom-enabled-themes) icicle-custom-themes))
+      (message "Theme: `%s'" (car icicle-custom-themes))
+      (when (or (and flip        (not icicle-custom-themes-update-flag))
+                (and (not flip)  icicle-custom-themes-update-flag))
+        (customize-save-variable 'icicle-custom-themes icicle-custom-themes)))))
 
 
 ;; Make delete-selection mode recognize yanking, so it replaces region text.
