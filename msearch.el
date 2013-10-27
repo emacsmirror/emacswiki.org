@@ -88,6 +88,7 @@
 
 ;;; Code:
 
+(require 'cus-face)
 (defcustom msearch-face 'msearch-level-1 ;; was '(background-color . "yellow")
   "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
   :type 'custom-face
