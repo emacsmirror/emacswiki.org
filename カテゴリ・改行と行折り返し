@@ -1,3 +1,4 @@
+[[en:CategoryFilling]]
 「行折り返し/フィリング（Filling）」 は、「行の折り返し」（word-wrap）を指すEmacs用語です。具体的には、1行が長くなりすぎて画面からはみだししてしまう前に、その行を複数行に分割することを指します。
 
 パラグラフを折り返す方法としては、次のようなものが一般的です。
@@ -38,4 +39,3 @@
 * FillingComments
 * UndoFilling
 * ErcFilling -- filling [[ERC]]'s buffers
-
