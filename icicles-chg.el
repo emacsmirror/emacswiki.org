@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Oct 18 14:07:01 2013 (-0700)
+;; Last-Updated: Sun Oct 27 13:41:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10226
+;;     Update #: 10231
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/10/27 dadams
+;;     Added: icicle-custom-theme (Emacs 24+).
 ;; 2013/09/02 dadams
 ;;     Added: icicle-dabbrev--last-completion-buffer, icicle-dabbrev--last-obarray.
 ;;     icicle-dabbrev-completion: Use those Icicles vars - dabbrev.el versions removed in Emacs 24.
@@ -6782,6 +6784,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/10/27 dadams
+;;     Added: icicle-custom-themes, icicle-custom-themes-accumulate-flag,
+;;            icicle-custom-themes-update-flag.  (All for Emacs 24+ only.)
 ;; 2013/09/02 dadams
 ;;     icicle-top-level-key-bindings:
 ;;       Reverted change of 2013/03/18: icicle-dabbrev-completion is for Emacs 24 too now.
