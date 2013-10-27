@@ -1,26 +1,27 @@
 ;;; apropos-fn+var.el --- Apropos for functions and variables
-;; 
+;;
 ;; Filename: apropos-fn.el
 ;; Description: Apropos for functions and variables
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
-;; Version: 
-;; Last-Updated: Sat Jan  5 08:40:46 2013 (-0800)
+;; Version:
+;; Package-Requires: ()
+;; Last-Updated: Sun Oct 27 08:25:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 180
+;;     Update #: 195
 ;; URL: http://www.emacswiki.org/apropos-fn+var.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `naked'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
+;;
+;;; Commentary:
 ;;
 ;;  Standard `apropos' commands `apropos-variable' and
 ;;  `apropos-command' do not distinguish, by command name, between the
@@ -41,18 +42,20 @@
 ;;                       `apropos-option' does here).
 ;;  `apropos-print'    - Identifies user options with label `Option'.
 ;;
-;; 
+;;
 ;;  Slightly different versions of `apropos-function' and
 ;;  `apropos-variable' were posted by Kevin Rodgers to bug-gnu-emacs,
 ;;  Tue, 06 Sep 2005 14:34:54 -0600.  Kevin didn't actually redefine
 ;;  `apropos-variable' (he would never do that ;-)), but he provided
 ;;  the new definition.  I redefined `apropos-print' and added button
 ;;  type `apropos-option'.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
+;; 2013/10/27 dadams
+;;     apropos-print: Updated for Emacs 24.4+: apropos-macrop -> macrop.
 ;; 2012/05/11 dadams
 ;;     apropos-print: Updated for Emacs 24.
 ;; 2012/03/31 dadams
@@ -73,26 +76,26 @@
 ;;     Made arg to apropos-function and apropos-variable mandatory.
 ;; 2005/11/28 dadams
 ;;     Redefined apropos-variable. Defined apropos-option as old version.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'apropos)
@@ -136,7 +139,7 @@ while a list of strings is used as a word list."
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
 ;;; Allow for non user-option variables too.
 ;;; Rename original command as `apropos-option'.
-;;; 
+;;;
 (or (fboundp 'apropos-option)
 (fset 'apropos-option (symbol-function 'apropos-variable)))
 
@@ -165,7 +168,7 @@ words, search for matches for any two (or more) of those words."
 
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
 ;;; Use label "Option" for user options.
-;;; 
+;;;
 (cond ((< emacs-major-version 22)       ; Emacs 20 and 21.
        (defun apropos-print (do-keys spacing)
          "Output result of apropos searching into buffer `*Apropos*'.
@@ -257,12 +260,11 @@ alphabetically by symbol name; but this function also sets
                                       apropos-item))
                  (if apropos-symbol-face
                      (put-text-property point1 point2 'face apropos-symbol-face))
-                 (apropos-print-doc 'describe-function 1 (if (commandp symbol)
-                                                             "Command"
-                                                           (if (apropos-macrop symbol)
-                                                               "Macro"
-                                                             "Function"))
-                                    t)
+                 (apropos-print-doc
+                  'describe-function
+                  1
+                  (if (commandp symbol) "Command" (if (apropos-macrop symbol) "Macro" "Function"))
+                  t)
                  ;; We used to use customize-variable-other-window instead
                  ;; for a customizable variable, but that is slow.
                  ;; It is better to show an ordinary help buffer
@@ -388,16 +390,16 @@ If non-nil TEXT is a string that will be printed as a heading."
                           (put-text-property (- (point) 3) (point)
                                              'face apropos-keybinding-face))))
                  (terpri)
-                 (apropos-print-doc 2 (if (commandp symbol)
-                                          'apropos-command
-                                        (if (apropos-macrop symbol)
-                                            'apropos-macro
-                                          'apropos-function))
-                                    (not nosubst))
-                 (apropos-print-doc 3 (if (user-variable-p symbol)
-                                          'apropos-option
-                                        'apropos-variable)
-                                    (not nosubst))
+                 (apropos-print-doc
+                  2
+                  (if (commandp symbol)
+                      'apropos-command
+                    (if (apropos-macrop symbol) 'apropos-macro 'apropos-function))
+                  (not nosubst))
+                 (apropos-print-doc
+                  3
+                  (if (user-variable-p symbol) 'apropos-option 'apropos-variable)
+                  (not nosubst))
                  (apropos-print-doc 7 'apropos-group t)
                  (apropos-print-doc 6 'apropos-face t)
                  (apropos-print-doc 5 'apropos-widget t)
@@ -512,16 +514,19 @@ If non-nil TEXT is a string that will be printed as a heading."
                                                        apropos-keybinding-face
                                                      'apropos-keybinding))))
                    (terpri))
-                 (apropos-print-doc 2 (if (commandp symbol)
-                                          'apropos-command
-                                        (if (apropos-macrop symbol)
-                                            'apropos-macro
-                                          'apropos-function))
-                                    (not nosubst))
-                 (apropos-print-doc 3 (if (user-variable-p symbol)
-                                          'apropos-option
-                                        'apropos-variable)
-                                    (not nosubst))
+                 (apropos-print-doc
+                  2
+                  (if (commandp symbol)
+                      'apropos-command
+                    ;; Emacs 24.4 moved `apropos-macrop' to `macrop'.
+                    (if (if (fboundp 'macrop) (macrop symbol) (apropos-macrop symbol))
+                        'apropos-macro
+                      'apropos-function))
+                  (not nosubst))
+                 (apropos-print-doc
+                  3
+                  (if (user-variable-p symbol) 'apropos-option 'apropos-variable)
+                  (not nosubst))
                  (apropos-print-doc 7 'apropos-group t)
                  (apropos-print-doc 6 'apropos-face t)
                  (apropos-print-doc 5 'apropos-widget t)
