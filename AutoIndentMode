@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.108
+* <b>Version </b> --  0.109
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -72,12 +72,12 @@ If you only want this on for a single mode, you would add the following to
 ~/.emacs
 
 {{{
-  (add-hook 'emacs-lisp-mode-hook 'auto-indent-minor-mode)
+  (add-hook 'emacs-lisp-mode-hook 'auto-indent-mode)
 }}}
 
 
 You could always turn on the minor mode with the command
-<tt>auto-indent-minor-mode</tt>
+<tt>auto-indent-mode</tt>
 == Auto-indent and repositories ==
 auto-indent-mode will now be more conservative when it determines
 that you are in a repository.  It will only indent the local area you
@@ -370,6 +370,7 @@ to the major mode's conventions.
 === Internal Variables ===
 == History ==
 
+* <b>26-Oct-2013 </b> --   Fixed documentation. See Issue #28 (Matthew L. Fidler)
 * <b>03-Oct-2013 </b> --   Set the indent variables globally (should fix Issue #27). Also makes these variables stick after auto-indent is turned off. (Matthew L. Fidler)
 * <b>25-Aug-2013 </b> --   Upload and change version (Matthew L. Fidler)
 * <b>16-Aug-2013 </b> --   Changed last-command to this-command. Now the new yank engine actually runs. (Issue #6 and Issue #23) (Matthew L. Fidler)
