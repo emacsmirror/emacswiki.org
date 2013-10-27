@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Fri Oct 25 16:29:00 2013 (-0700)
+;; Last-Updated: Sun Oct 27 08:06:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 469
+;;     Update #: 481
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -78,6 +78,7 @@
 ;;  User options defined here:
 ;;
 ;;    `doremi-color-themes', `doremi-custom-themes' (Emacs 24+),
+;;    `doremi-custom-themes-accumulate-flag' (Emacs 24+),
 ;;    `doremi-themes-update-flag'.
 ;;
 ;;  Commands defined here:
@@ -149,6 +150,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/27 dadams
+;;     Added: doremi-custom-themes-accumulate-flag.
+;;     doremi-custom-themes-1: Respect doremi-custom-themes-accumulate-flag.
 ;; 2013/10/25 dadams
 ;;     Added: doremi-themes-update-flag.
 ;;     doremi-custom-themes: Use custom-available-themes, not custom-theme-p.
@@ -230,6 +234,7 @@
 (defvar color-themes)
 (defvar custom-enabled-themes)          ; In `custom.el'.
 (defvar doremi-custom-themes)           ; Here, Emacs 24+
+(defvar doremi-custom-themes-accumulate-flag) ; Here, Emacs 24+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -273,7 +278,13 @@ the command.")
     :type '(repeat (restricted-sexp
                     :match-alternatives
                     ((lambda (symb) (memq symb (custom-available-themes))))))
-    :group 'doremi-misc-commands))
+    :group 'doremi-misc-commands)
+
+  (defcustom doremi-custom-themes-accumulate-flag nil
+    "*Non-nil does not disable other custom themes when cycling to a theme.
+Note: Setting this to non-nil can considerably slow down cycling.  The
+more themes you cycle through, the slower it gets."
+    :type 'boolean :group 'doremi-misc-commands))
 
 ;; Replace this by your favorite color themes. Each must be a defined function.
 ;; By default, this includes all color themes defined globally (`color-themes').
@@ -306,6 +317,11 @@ customizations that enabling a theme might have overruled.
 
 Note: Having a lot of frames present can slow down this command
 considerably.
+
+Option `doremi-custom-themes-accumulate-flag' determines whether
+cycling accumulates themes or disables all themes other than the
+current one.  Note: A non-nil value (accumulating) can considerably
+slow down cycling.
 
 Option `doremi-themes-update-flag' determines whether the updated
 value of `doremi-custom-themes' is saved.  A prefix arg to this command
@@ -341,7 +357,8 @@ flips the option value for the command duration."
     (doremi (lambda (theme)             ; Enable it (SETTER-FN)
               (condition-case nil
                   (progn
-                    (mapc #'disable-theme custom-enabled-themes)
+                    (unless doremi-custom-themes-accumulate-flag
+                      (mapc #'disable-theme custom-enabled-themes))
                     (if (custom-theme-p theme)
                         (enable-theme theme)
                       (load-theme theme t))
