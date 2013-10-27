@@ -88,10 +88,9 @@
 
 ;;; Code:
 
-(require 'cus-face)
 (defcustom msearch-face 'msearch-level-1 ;; was '(background-color . "yellow")
   "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
-  :type 'custom-face
+  :type 'face
   :group 'msearch)
 
 (defcustom msearch-max-length 1000
@@ -185,7 +184,7 @@
   (eval-when-compile (nreverse
 		      (loop for f in (face-list) if (string-match "msearch-level-" (symbol-name f)) collect f)))
   "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
-  :type 'list
+  :type '(repeat face)
   :group 'msearch)
 
 (eval-when-compile
