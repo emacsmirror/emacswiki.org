@@ -1,0 +1,520 @@
+
+
+== Library Information ==
+/auto-indent-mode.el/ --- Auto indent Minor mode
+
+* <b>Filename </b> --  [[auto-indent-mode.el]]
+* <b>Description </b> --  Auto Indent text on Yank/Paste
+* <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
+* <b>Maintainer </b> --  Matthew L. Fidler
+* <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
+* <b>Version </b> --  0.108
+* <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  1467
+* <B>URL </B> --  https://github.com/mlf176f2/auto-indent-mode.el/
+* <b>Keywords </b> --  Auto Indentation
+* <b>Compatibility </b> --  Tested with Emacs 23.x
+
+== Possible Dependencies ==
+
+None
+
+== About auto-indent-mode ==
+Provides auto-indentation minor mode for Emacs.  This allows the
+following: 
+
+* Return automatically indents the code appropriately (if enabled)
+
+* Pasting/Yanking indents the appropriately
+
+* Killing line will take off unneeded spaces (if enabled)
+
+* On visit file, indent appropriately, but DONT SAVE. (Pretend like
+nothing happened, if enabled)
+
+* On save, optionally unttabify, remove trailing white-spaces, and
+definitely indent the file (if enabled).
+
+* !TextMate behavior of keys if desired (see below)
+
+* Deleting the end of a line will shrink the whitespace to just one
+(if desired and enabled)
+
+* Automatically indent balanced parenthetical expression, or sexp, if desired
+<tt>auto-indent-current-pairs</tt> or <tt>auto-indent-next-pair</tt> is set
+to be true (disabled by default).  This is not immediate but occurs
+after a bit to allow better responsiveness in emacs.
+
+* Attempts to set the indentation level (number of spaces for an
+indent) for a major-mode.
+
+All of these options can be customized. (customize auto-indent)
+== Installing auto-indent-mode ==
+
+To use put this in your load path and then put the following in your emacs
+file:
+{{{
+  (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
+  (require 'auto-indent-mode)
+}}}
+
+If you (almost) always want this on, add the following to ~/.emacs:
+
+{{{
+   (auto-indent-global-mode)
+}}}
+
+
+Excluded modes are defined in <tt>auto-indent-disabled-modes-list</tt>
+
+If you only want this on for a single mode, you would add the following to
+~/.emacs
+
+{{{
+  (add-hook 'emacs-lisp-mode-hook 'auto-indent-mode)
+}}}
+
+
+You could always turn on the minor mode with the command
+<tt>auto-indent-mode</tt>
+== Auto-indent and repositories ==
+auto-indent-mode will now be more conservative when it determines
+that you are in a repository.  It will only indent the local area you
+are editing.  This can be changed to be conservative everywhere by:
+{{{
+  (setq auto-indent-indent-style 'conservative)
+}}}
+
+You can revert to the old behavior of aggressive by:
+
+{{{
+  (setq auto-indent-indent-style 'aggressive)
+}}}
+
+
+== Setting the number of spaces for indenting major modes ==
+While this is controlled by the major mode, as a convenience,
+auto-indent-mode attempts to set the default number of spaces for an
+indentation for specific major mode.  
+
+This is done by:
+# Making local variables of all the variables specified in
+<tt>auto-indent-known-indent-level-variables</tt> and setting them to
+auto-indent's <tt>auto-indent-assign-indent-level</tt>
+# Looking to see if major mode variables
+<tt>major-mode-indent-level</tt> and <tt>major-mode-basic-offset</tt> variables
+are present.  If either of these variables are present,
+<tt>auto-indent-mode</tt> sets these variables to the default
+<tt>auto-indent-assign-indent-level</tt>.   
+
+== TextMate Meta-Return behavior ==
+If you would like !TextMate behavior of Meta-RETURN going to the
+end of the line and then inserting a newline, as well as
+Meta-shift return going to the end of the line, inserting a
+semi-colon then inserting a newline, use the following:
+
+{{{
+  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
+  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<M-S-return>")
+  (require 'auto-indent-mode)
+  (auto-indent-global-mode)
+}}}
+
+This may or may not work on your system.  Many times emacs cannot
+distinguish between M-RET and M-S-RET, so if you don't mind a
+slight redefinition use:
+
+{{{
+  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
+  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<C-M-return>")
+  (require 'auto-indent-mode)
+  (auto-indent-global-mode)
+}}}
+
+If you want to insert something other than a semi-colon (like a
+colon) in a specific mode, say colon-mode, do the following:
+
+{{{
+  (add-hook 'colon-mode-hook (lambda () (setq auto-indent-eol-char ":")))
+}}}
+== Notes about autopair-mode and yasnippet compatibility ==
+If you wish to use this with autopairs and yasnippet, please load
+this library first.
+== Using specific functions from auto-indent-mode ==
+
+Also if you wish to just use specific functions from this library
+that is possible as well.
+
+To have the auto-indentation delete characters use:
+
+{{{
+  
+  (autoload 'auto-indent-delete-char "auto-indent-mode" "" t)
+  (define-key global-map [remap delete-char] 'auto-indent-delete-char)
+  
+  (autoload 'auto-indent-kill-line "auto-indent-mode" "" t)
+  (define-key global-map [remap kill-line] 'auto-indent-kill-line)
+
+}}}
+
+
+However, this does not honor the excluded modes in
+<tt>auto-indent-disabled-modes-list</tt>
+
+
+== Making certain modes perform tasks on paste/yank. ==
+Sometimes, like in R, it is convenient to paste c:\ and change it to
+c:/.  This can be accomplished by modifying the
+<tt>auto-indent-after-yank-hook</tt>.
+
+The code for changing the paths is as follows:
+
+{{{
+  (defun kicker-ess-fix-path (beg end)
+    "Fixes ess path"
+    (save-restriction
+      (save-excursion
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (when (looking-at "[A-Z]:\\\\")
+          (while (search-forward "\\" nil t)
+            (replace-match "/"))))))
+  
+  (defun kicker-ess-turn-on-fix-path ()
+    (interactive)
+    (when (string= "S" ess-language)
+      (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-path t t)))
+  (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-path)
+}}}
+
+Another R-hack is to take of the ">" and "+" of a command line
+copy. For example copying:
+
+<pre>
+> ## set up
+ > availDists <- c(Normal<tt>"rnorm", Exponential</tt>"rexp")
+ > availKernels <- c("gaussian", "epanechnikov", "rectangular",
+ + "triangular", "biweight", "cosine", "optcosine")
+</pre>
+
+
+Should give the following code on paste:
+
+<pre>
+## set up
+ availDists <- c(Normal<tt>"rnorm", Exponential</tt>"rexp")
+ availKernels <- c("gaussian", "epanechnikov", "rectangular",
+ "triangular", "biweight", "cosine", "optcosine")
+</pre>
+
+
+This is setup by the following code snippet:
+
+{{{
+  (defun kicker-ess-fix-code (beg end)
+    "Fixes ess path"
+    (save-restriction
+      (save-excursion
+        (save-match-data
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "^[ \t]*[>][ \t]+" nil t)
+            (replace-match "")
+            (goto-char (point-at-eol))
+            (while (looking-at "[ \t\n]*[+][ \t]+")
+              (replace-match "\n")
+              (goto-char (point-at-eol))))))))
+  
+  (defun kicker-ess-turn-on-fix-code ()
+    (interactive)
+    (when (string= "S" ess-language)
+      (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-code t t)))
+(add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
+}}}
+
+== Auto-indent and org-mode ==
+Auto-indent does not technically turn on for org-mode.  Instead the
+following can be added/changed:
+
+# <tt>org-indent-mode</tt> is turned on when <tt>auto-indent-start-org-indent</tt> 
+is true.
+# The return behavior is changed to newline and indent in code blocks
+when <tt>auto-indent-fix-org-return</tt> is true.
+# The backspace behavior is changed to auto-indent's backspace when
+<tt>auto-indent-delete-backward-char</tt> is true.  This only works in
+code blocks. 
+# The home beginning of line behavior is changed to auto-indent's
+when <tt>auto-indent-fix-org-move-beginning-of-line</tt> is true.
+# The yank/paste behavior is changed to auto-indent in a code block
+when <tt>auto-indent-fix-org-yank</tt> is true.
+# The auto-filling activity in source-code blocks can break your code
+depending on the language.  When <tt>auto-indent-fix-org-auto-fill</tt> is
+true, auto-filling is turned off in<tt>org-mode</tt> source blocks.
+== FAQ ==
+=== Why isn't my mode indenting? ===
+Some modes are excluded for compatability reasons, such as
+text-modes.  This is controlled by the variable
+<tt>auto-indent-disabled-modes-list</tt>
+=== Why isn't my specific mode have the right number of spaces? ===
+Actually, the number of spaces for indentation is controlled by the
+major mode. If there is a major-mode specific variable that controls
+this offset, you can add this variable to
+<tt>auto-indent-known-indent-level-variables</tt> to change the indentation
+for this mode when auto-indent-mode starts.
+
+See:
+
+* [http://www.pement.org/emacs_tabs.htm Understanding GNU Emacs and tabs]
+* [http://kb.iu.edu/data/abde.html In Emacs how can I change tab sizes?]
+==== How do I add a variable to the auto-indent tab offset? ====
+You can add the variable by using =M-x customize-group
+auto-indent-mode= and then add the variable to
+<tt>auto-indent-known-indent-levels</tt>.  Another way is to use lisp:
+
+{{{
+  (add-to-list 'auto-indent-known-indent-levels 'c-basic-offset)
+}}}
+
+==== How do I change the auto-indent default offset? ====
+You can change auto-indent's default offset by:
+
+{{{
+  (setq auto-indent-assign-indent-level 4) ; Changes the indent level to
+                                          ; 4 spaces instead of 2.
+}}}
+
+==== How do I turn of auto-indent assignment? ====
+When auto-indent finds a tab-size variable, it assigns the indentation
+level to the globally defined <tt>auto-indent-assign-indent-level</tt>.  If
+you do not want this to happen you can turn it off by
+{{{
+  (setq auto-indent-assign-indent-level-variables nil)
+}}}
+
+=== Why is auto-indent-mode changing tabs to spaces ===
+I prefer tabs instead of spaces.  You may prefer the other way.  The
+options to change this are:
+
+{{{
+  (setq auto-indent-mode-untabify-on-yank-or-paste nil)
+}}}
+
+to keep tabs upon paste.
+
+{{{
+  (setq auto-indent-untabify-on-visit-file nil) ; Already disabled
+}}}
+
+
+To keep tabs upon visiting a file.
+
+{{{
+  (setq auto-indent-untabify-on-save-file nil)
+}}}
+
+to turn off changing tabs to spaces on file save.
+
+{{{
+  (setq auto-indent-backward-delete-char-behavior nil) ; Just delete one character.
+}}}
+
+So that backspace doesn't change tabs to spaces.
+
+If you wish to be more extreme you can also change spaces to tabs by:
+
+{{{
+  (setq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
+}}}
+
+to keep tabs upon paste.
+
+{{{
+  (setq auto-indent-untabify-on-visit-file 'tabify) ; I would suggest
+                                          ; leaving this off.
+}}}
+
+
+To keep tabs upon visiting a file.
+
+{{{
+  (setq auto-indent-untabify-on-save-file 'tabify)
+}}}
+
+
+=== Argh -- Auto-indent is messing with my indentation.  What can I do? ===
+If you do not like the default indentation style of a particular
+mode, sometimes you may adjust the indetation by hand.  Then you
+press the return button and all your hard work is erased.  This can
+be quite frustrating.  
+
+What is happening, is that auto-indent is fixing the current line's
+indentation and then indenting the next line on pressing enter.  This
+can be turned off customizing the <tt>auto-indent-newline-function</tt> to
+
+{{{
+  (setq auto-indent-newline-function 'newline-and-indent) 
+}}}
+
+This will insert a newline and then indent.  Not reindent according
+to the major mode's conventions.
+
+
+== Functions ==
+=== Interactive Functions ===
+
+=== Internal Functions ===
+== Variables ==
+=== Customizable Variables ===
+
+=== Internal Variables ===
+== History ==
+
+* <b>03-Oct-2013 </b> --   Set the indent variables globally (should fix Issue #27). Also makes these variables stick after auto-indent is turned off. (Matthew L. Fidler)
+* <b>25-Aug-2013 </b> --   Upload and change version (Matthew L. Fidler)
+* <b>16-Aug-2013 </b> --   Changed last-command to this-command. Now the new yank engine actually runs. (Issue #6 and Issue #23) (Matthew L. Fidler)
+* <b>16-Aug-2013 </b> --   Changed auto-indent's yank engine to be in the post-command-hook. May fix Issue #24 and Issue #6 (Matthew L. Fidler)
+* <b>15-Aug-2013 </b> --   Added unindent block close. Its based on each's mode's syntax table (hopefully they are correct). Should also address Issue #24. (Matthew L. Fidler)
+* <b>29-Jul-2013 </b> --   Should fix Issue #21. (Matthew L. Fidler)
+* <b>25-Jul-2013 </b> --   Push again. (Matthew L. Fidler)
+* <b>25-Jul-2013 </b> --   Fix issue #20. Add tabify region and buffer options. (Matthew L. Fidler)
+* <b>24-Jul-2013 </b> --   Updated FAQ for readme.org 6-Jul-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Updated documentation for a better description of assigning the indent level across modes. (Matthew L. Fidler)
+* <b>15-May-2013 </b> --   Made the indentation selective. Should fix Issue #15. 9-May-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Changed the AI indicator to be used at all times. That way it doesn't interfere with the diminish package. I believe that is the standard way to take off mode lines. (Matthew L. Fidler)
+* <b>18-Mar-2013 </b> --   Should fix issue #14 (Matthew L. Fidler)
+* <b>18-Mar-2013 </b> --   Add bug fix for Issue #13 (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Push again after merging minibuffer fix (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Remove all starred comments. (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Fixed Github Issue #11. Org-readme doesn't like the starred variable names (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Figured out the duplicated information was caused by a starred variable. This convention is now depreciated, and caused an error with org-readme. Therefore, it has been changed. (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Push new version. I believe that the strange duplication issue is fixed. (Matthew L. Fidler)
+* <b>13-Mar-2013 </b> --   Attempt to fix issue #11 (Matthew L. Fidler)
+* <b>05-Dec-2012 </b> --   Added support for new ergoemacs-mode. Also provided updated bug-fix for indent-region (Matthew L. Fidler)
+* <b>19-Nov-2012 </b> --   Bug fix for aligning parenthetical region when a yasnippet is active (It messes up yasnippet expansions.) (Matthew L. Fidler)
+* <b>12-Nov-2012 </b> --   Bug fix for overflows and !NaNs (Matthew L. Fidler)
+* <b>17-Oct-2012 </b> --   Bug fix for yanking in org-mode.  (Matthew L. Fidler)
+* <b>17-Oct-2012 </b> --   Now auto-indent-mode can suppress auto-fill in source code blocks. Small bug fix for yanking. (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Add auto-indent on yank support for org-mode code buffers (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Removed History section from texinfo file. (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Fix header readme by using the latest version of org-readme. (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Took out documentation that started with a star since it messes up org-readme. (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Trying to fix header (Matthew L. Fidler)
+* <b>12-Oct-2012 </b> --   Added better org-mode support for code-blocks. (Matthew L. Fidler)
+* <b>12-Sep-2012 </b> --   Fixed commentary section. (Matthew L. Fidler)
+* <b>12-Sep-2012 </b> --   Changed yasnippet checking to be compatible with yasnippet 0.8's function renaming. (Matthew L. Fidler)
+* <b>21-Aug-2012 </b> --   Attempt to fix documentation with updated org-readme. (Matthew L. Fidler)
+* <b>21-Aug-2012 </b> --   Added <tt>auto-indent-next-pair-timer-interval-max</tt> and a bug fix to the interval-growth algorithm. (Matthew L. Fidler)
+* <b>21-Aug-2012 </b> --   Attempt to change documentation. (Matthew L. Fidler)
+* <b>21-Aug-2012 </b> --   Changed the default <tt>auto-indent-next-pairt-timer-interval-do-not-grow</tt> to nil.  (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Drop Readme.md (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Another documentation revision. (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Documentation update. (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Added a generic function to change the number of spaces for an indentation. Should fix issue #4. (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Clarified documentation (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Added some documentation about major mode indentation issues. 7-Aug-2012 Matthew L. Fidler Last-Updated: Sun Aug 5 12:36:11 2012 (-0500) #1411 (Matthew L. Fidler) Changed a mistake in the documentation; Autoindenting of balanced sexps are not supported by default but need to be enabled. (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Added ability to turn off dynamic growth of timers per mode. The algorithm to change has not been perfected yet. (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Fixed a bug introduced by cleaning typos. Changing again. (Matthew L. Idler)
+* <b>03-Aug-2012 </b> --   Save indentation settings on exit emacs. (Matthew L. Fidler)
+* <b>03-Aug-2012 </b> --   Fixed Documentation, and a few minor bugs caught by linting. (Matthew L. Fidler)
+* <b>30-Jul-2012 </b> --   Made the Fix for issue #3 more specific to org tables. (Matthew L. Fidler)
+* <b>30-Jul-2012 </b> --   Actual Fix for Issue #3. Now the delete character may not work in org-mode. (Matthew L. Fidler)
+* <b>23-Jul-2012 </b> --   Fix Issue #3. Thanks harrylove for pointing it out. (Matthew L. Fidler)
+* <b>02-Jul-2012 </b> --   Have an mode-based timer normalized to the number of lines used for next parenthetical indentation. (Matthew L. Fidler)
+* <b>26-Jun-2012 </b> --   Bug fix for point-shift involved in <tt>auto-indent-after-yank-hook</tt> (Matthew L. Fidler)
+* <b>13-Jun-2012 </b> --   Added <tt>auto-indent-after-yank-hook</tt> (Matthew L. Fidler)
+* <b>18-May-2012 </b> --   Changed <tt>auto-indent-next-pair</tt> to be off by default. (Matthew L. Fidler)
+* <b>13-Mar-2012 </b> --   Made timer for parenthetical statements customizable. (Matthew L. Fidler)
+* <b>06-Mar-2012 </b> --   Speed enhancements for parenthetical statements. (Matthew L. Fidler)
+* <b>05-Mar-2012 </b> --   Bug fix for autopair-backspace. (Matthew L. Fidler)
+* <b>05-Mar-2012 </b> --   Have backspace cancel parenthetical alignment timer canceling (Matthew L. Fidler)
+* <b>29-Feb-2012 </b> --   Bug fix for paren handling. (Matthew L. Fidler)
+* <b>29-Feb-2012 </b> --   Made the handling of pairs a timer-based function so it doesn't interfere with work flow. (Matthew L. Fidler)
+* <b>29-Feb-2012 </b> --   Better handling of pairs. (Matthew L. Fidler)
+* <b>28-Feb-2012 </b> --   Added subsequent-whole-line from Le Wang's fork. (Matthew L. Fidler)
+* <b>14-Feb-2012 </b> --   Fixing issue #2 (Matthew L. Fidler)
+* <b>01-Feb-2012 </b> --   Added makefile-gmake-mode to the excluded auto-indent modes. (Matthew L. Fidler)
+* <b>22-Dec-2011 </b> --   Added bug fix for home-key (Matthew L. Fidler)
+* <b>21-Dec-2011 </b> --   Added another smart delete case. (Matthew L. Fidler)
+* <b>14-Dec-2011 </b> --   Went back to last known working <tt>auto-indent-def-del-forward-char</tt> and deleted message. (Matthew L. Fidler)
+* <b>14-Dec-2011 </b> --   Another Paren (Matthew L. Fidler)
+* <b>14-Dec-2011 </b> --   Paren Bug Fix. (Matthew L. Fidler)
+* <b>14-Dec-2011 </b> --   Changed the <tt>auto-indent-kill-remove-extra-spaces</tt> default to nil so that you copy-paste what you expect. (us041375)
+* <b>10-Dec-2011 </b> --   Bug fix for annoying old debugging macros. (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Added autoload cookie. (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Bug fix for duplicate macros (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Added (( and )) to the automatically delete extra whitespace at the end of a function list. (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Added <tt>auto-indent-alternate-return-function-for-end-of-line-then-newline</tt> option (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Added a possibility of adding a space if necessary. (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Smarter delete end of line character enhancements. (Matthew L. Fidler)
+* <b>08-Dec-2011 </b> --   Changed default options. (Matthew L. Fidler)
+* <b>29-Nov-2011 </b> --   Bug Fix in <tt>auto-indent-mode-pre-command-hook</tt> (Matthew L. Fidler)
+* <b>28-Nov-2011 </b> --   Bugfix for auto-indent-mode (Matthew L. Fidler)
+* <b>21-Nov-2011 </b> --   Changed <tt>auto-indent-after-begin-or-finish-sexp</tt> to be called after every other hook has been run. That way autopair-mode should be indented correctly. (Matthew L. Fidler)
+* <b>18-Nov-2011 </b> --   Added <tt>auto-indent-after-begin-or-finish-sexp</tt> (Matthew L. Fidler)
+* <b>08-Apr-2011 </b> --   Bug fix for when Yasnippet is disabled. Now will work with it disabled or enabled. (!MatthewL. Fidler)
+* <b>08-Mar-2011 </b> --   Changed <tt>auto-indent-delete-line-char-remove-extra-spaces</tt> to nil by default. (Matthew L. Fidler)
+* <b>16-Feb-2011 </b> --   Added a just one space function for pasting (Matthew L. Fidler)
+* <b>15-Feb-2011 </b> --   Removed the deactivation of advices when this mode is turned off. I think it was causing some issues. (Matthew L. Fidler)
+* <b>10-Feb-2011 </b> --   Added check to make sure not trying to paste on indent for <tt>auto-indent-disabled-modes-list</tt>  (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Swap <tt>backward-delete-char</tt> with <tt>backward-delete-char-untabify</tt>. Also use <tt>auto-indent-backward-delete-char-behavior</tt> when auto-indent-mode is active.  (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Added definition of <tt>cua-copy-region</tt> to advised functions (I thought it would have been taken care of with <tt>kill-ring-save</tt>)  (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Added option to delete indentation when copying or cutting regions using <tt>kill-region</tt> and <tt>kill-ring-save</tt>. Also changed <tt>auto-indent-kill-line-remove-extra-spaces</tt> to <tt>auto-indent-kill-remove-extra-spaces</tt>  (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Made sure that auto-indent-kill-line doesn't use the kill-line advice. (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --    (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Another kill-line bug-fix. (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Fixed the kill-line bug (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   yank engine bug fix. (Matthew L. Fidler)
+* <b>03-Feb-2011 </b> --   Bug fix for determining if the function is a yank (Matthew L. Fidler)
+* <b>02-Feb-2011 </b> --   Added kill-line bug-fix from Le Wang. Also there is a the bug of when called as a function, you need to check for disabled modes every time.  (Matthew L. Fidler)
+* <b>02-Feb-2011 </b> --   Added interactive requriment again. This time tried to back-guess if the key has been hijacked. If so assume it was called interactively.  (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Took out the interactive requirement again. Causes bugs like org-delete-char below. (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Bug fix for org-delete-char (and possibly others). Allow delete-char to have auto-indent changed behavior when the command lookup is the same as the delete command (as well as if it is called interactively) (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Added bugfix to kill-line advice and function (from Le Wang) (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Added cua-paste and cua-paste-pop (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Added auto-indent on move up and down with the arrow keys. (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Added a keyboard engine that indents instead of using hooks and advices. (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Removed the interactivity in the hooks. They are definitely not interactive. (Matthew L. Fidler)
+* <b>01-Feb-2011 </b> --   Added Le Wang's fixes: 
+* Many functions are checked for interactivity
+* Kill-line prefix argument is fixed
+* Kill region when region is active is controled by auto-indent-kill-line-kill-region-when-active
+* Kill-line when at eol has more options
+* Change auto-indent-indentation-function to auto-indent-newline-function  (Matthew L. Fidler)
+* <b>31-Jan-2011 </b> --   Removed indirect reference to <tt>shrink-whitespaces</tt>. Thanks Le Wang (Matthew L. Fidler)
+* <b>31-Jan-2011 </b> --   Added explicit requirement for functions (Matthew L. Fidler)
+* <b>18-Jan-2011 </b> --   Added support to turn on <tt>org-indent-mode</tt> when inside an org-file. (Matthew L. Fidler)
+* <b>12-Jan-2011 </b> --   Added fix for ortbl-minor-mode. Now it will work when orgtbl-minor mode is enabled. (Matthew L. Fidler)
+* <b>09-Dec-2010 </b> --   Bugfix. Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end. (Matthew L. Fidler)
+02-Dec-2010    Matthew L. Fidler
+
+Last-Updated: Thu Dec  2 13:02:02 2010 (-0600) #411 (Matthew L. Fidler)
+Made ignoring of modes with indent-relative and
+indent-relative-maybe apply to indenting returns as well.
+* <b>02-Dec-2010 </b> --   Removed auto-indent on paste/yank for modes with indent-relative and indent-relative-maybe. This has annoyed me forever. (Matthew L. Fidler)
+* <b>02-Dec-2010 </b> --   Added an advice to delete-char. When deleting a new-line character, shrink white-spaces afterward. (Matthew L. Fidler)
+* <b>02-Dec-2010 </b> --   Speed enhancement by checking for yasnippets only on indentation. (Matthew L. Fidler)
+* <b>29-Nov-2010 </b> --   Bug fix to allow authotkey files to save. (Matthew L. Fidler)
+* <b>29-Nov-2010 </b> --   Change auto-indent-on-save to be disabled by default. (Matthew L. Fidler)
+* <b>22-Nov-2010 </b> --   Yasnippet bug-fix. (Matthew L. Fidler)
+* <b>22-Nov-2010 </b> --   auto-indent bug fix for save on save buffer hooks. (Matthew L. Fidler)
+* <b>16-Nov-2010 </b> --   Added conf-windows-mode to ignored modes. (Matthew L. Fidler)
+* <b>15-Nov-2010 </b> --   Bugfix for deletion of whitespace (Matthew L. Fidler)
+* <b>15-Nov-2010 </b> --   Bugfix for post-command-hook. (Matthew L. Fidler)
+* <b>15-Nov-2010 </b> --   Added diff-mode to excluded modes for auto-indentaion. (Matthew L. Fidler)
+* <b>15-Nov-2010 </b> --   Added fundamental mode to excluded modes for auto-indentation. (Matthew L. Fidler)
+* <b>13-Nov-2010 </b> --   Bug fix try #3 (Matthew L. Fidler)
+* <b>13-Nov-2010 </b> --   Anothe bug-fix for yasnippet. (Matthew L. Fidler)
+* <b>13-Nov-2010 </b> --   Bug fix for auto-indent-mode. Now it checks to make sure that <tt>last-command-event</tt> is non-nil.  (Matthew L. Fidler)
+* <b>11-Nov-2010 </b> --   Put back processes in. Made the return key handled by pre and post-command-hooks. (Matthew L. Fidler)
+* <b>11-Nov-2010 </b> --   Took out processes such as *R* or *eshell* (Matthew L. Fidler)
+* <b>09-Nov-2010 </b> --   Bug fix when interacting with the SVN version of yasnippet. It will not perform the line indentation when Yasnippet is running.  (Matthew L. Fidler)
+* <b>09-Nov-2010 </b> --   Made sure that the auto-paste indentation doesn't work in minibuffer. (Matthew L. Fidler)
+* <b>09-Nov-2010 </b> --   When <tt>auto-indent-pre-command-hook</tt> is inactivated by some means, add it back. (Matthew L. Fidler)
+* <b>09-Nov-2010 </b> --   Added snippet-mode to excluded modes. Also turned off the kill-line by default. (Matthew L. Fidler)
+* <b>07-Nov-2010 </b> --   Added the possibility of !TextMate type returns. (Matthew L. Fidler)
+* <b>07-Nov-2010 </b> --   Bug fix where backspace on indented region stopped working.Added !TextMate (Matthew L. Fidler)
+* <b>07-Nov-2010 </b> --   Another small bug fix. (Matthew L. Fidler)
+* <b>07-Nov-2010 </b> --   Added bugfix and also allow movement on blank lines to be automatically indented to the correct position.  (Matthew L. Fidler)
+* <b>06-Nov-2010 </b> --   Initial release.  (Matthew L. Fidler)
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
