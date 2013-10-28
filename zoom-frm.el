@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Sep 29 19:14:17 2013 (-0700)
+;; Last-Updated: Mon Oct 28 14:02:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 308
+;;     Update #: 314
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -28,11 +28,12 @@
 ;;  Commands to zoom into and out of text.  They zoom a frame or a
 ;;  buffer, so that the text appears larger or smaller.
 ;;
-;;  Command `zoom-in/out' (Emacs 23 or later only) does both kinds of
-;;  zooming.  It can behave like command `text-scale-adjust', zooming
-;;  a buffer wherever it is displayed, or it can zoom an entire single
-;;  frame (all of its windows).  Hit `C-u' at any time while using
-;;  `zoom-in/out' to toggle between buffer and frame zooming.
+;;  Commands `zoom-in', `zoom-out', and `zoom-in/out' do both kinds of
+;;  zooming.  They can behave like command `text-scale-adjust',
+;;  zooming a buffer wherever it is displayed, or they can zoom an
+;;  entire single frame (all of its windows).  Hit `C-u' at any time
+;;  while using these commands to toggle between buffer and frame
+;;  zooming.
 ;;
 ;;  Because it is a more general replacement for `text-scale-adjust',
 ;;  I suggest you bind `zoom-in/out' to the keys bound by default to
