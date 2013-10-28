@@ -112,15 +112,15 @@ Here are four alternative ways to cycle among color themes in a list. For illust
 
 === Do Re Mi: Cycling Color Themes and Custom Themes ===
 
-You can cycle among color themes or custom themes using library DoReMi. This feature is part of library <tt>[[doremi-cmd.el]]</tt>.
+You can cycle among color themes or custom themes using library '''DoReMi'''.  This feature is part of library <tt>[[doremi-cmd.el]]</tt>.
 
-Use `##M-x doremi-color-themes+##' or `##M-x doremi-custom-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]]s `doremi-color-themes' and `doremi-custom-themes', which is the set of color or custom themes to cycle among.  By default, ''all'' color or custom themes are included. 
+Use command `##M-x doremi-color-themes+##' or `##M-x doremi-custom-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]]s `doremi-color-themes' and `doremi-custom-themes', which is the set of color or custom themes to cycle among.  By default, ''all'' color or custom themes are included. 
 
 You can use these commands to preview themes: use `C-g' to cancel changes and return to what you had before.
 
 * For color themes, `C-g' is equivalent to picking pseudo-theme ##[Reset]##, which also means that sometimes not everything is restored, but most is. 
 
-* Unfortunately, Emacs custom themes ''cannot'' be undone this way, to return to a non-theme state prior to applying a theme. For `doremi-custom-themes+', `C-g' just disables each of the themes that you cycled through.  This does not, however, restore any non-theme customizations in effect before cycling. The appearance of the last theme applied remains, for the existing frames, even though that theme has been disabled and will have no effect on new frames etc.
+* Unfortunately, Emacs custom themes ''cannot'' be undone this way, to return to a non-theme state prior to applying a theme. For <tt>`doremi-custom-themes+'</tt>, `C-g' just disables each of the themes that you cycled through.  This does not, however, restore any non-theme customizations in effect before cycling. The appearance of the last theme applied remains, for the existing frames, even though that theme has been disabled and will have no effect on new frames etc.
 
 Also worth mentioning, if you define your own themes, are the commands in library <tt>[[doremi-frm.el]]</tt> that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
 
@@ -132,7 +132,9 @@ Also worth mentioning, if you define your own themes, are the commands in librar
 [:IciclesColorThemes]
 === Icicles: Completion and Cycling of Color Themes ===
 
-You can use '''[[Icicles]]''' command `icicle-color-theme' to cycle among color themes. This is similar to that provided by [[#DoReMiColorThemes]] (above), but you can also ''complete'' the color-theme names. Just as for `##doremi-color-themes+##', `C-g' undoes your changes. Option `icicle-color-themes' is similar to option `doremi-color-themes' -- customize it to define the list of themes to choose from (default: all themes). See '''[[Icicles]]'''. 
+You can use '''[[Icicles]]''' command `icicle-color-theme' or `icicle-custom-theme' to cycle among color themes or Emacs custom themes, respectively. This functionality is similar to that provided by [[#DoReMiColorThemes]] (above), but you can also ''complete'' the color-theme names, which means also that you can narrow the set of themes that you cycle among.  (You can also sort the set in various ways.)
+
+Just as for the corresponding DoReMi commands, `C-g' undoes your changes.  Options `icicle-color-themes' and `icicle-custom-themes' are similar to options `doremi-color-themes' and `doremi-custom-themes', respectively -- customize them to define the lists of themes to choose from (default: all themes).  See '''[[Icicles]]'''. 
 
 
 === Cycling by Repeating a Command ===
