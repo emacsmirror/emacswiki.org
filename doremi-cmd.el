@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Sun Oct 27 08:06:06 2013 (-0700)
+;; Last-Updated: Sun Oct 27 19:41:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 481
+;;     Update #: 486
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -325,7 +325,7 @@ slow down cycling.
 
 Option `doremi-themes-update-flag' determines whether the updated
 value of `doremi-custom-themes' is saved.  A prefix arg to this command
-flips the option value for the command duration."
+flips the option value for the current invocation of the command."
     (interactive "P")
     ;; Delete `nil' that gets added by `enable-theme'.
     (let ((orig-themes  (delq nil (copy-sequence custom-enabled-themes))))
@@ -384,7 +384,11 @@ restored.
 
 Option `doremi-themes-update-flag' determines whether the updated
 value of `doremi-color-themes' is saved.  A prefix arg to this command
-flips the option value for the command duration."
+flips the option value for the current invocation of the command.
+
+To use this command, you must have loaded library `color-theme.el',
+available from http://www.nongnu.org/color-theme.  See also:
+http://www.emacswiki.org/ColorTheme."
   (interactive "P")
   (unless (prog1 (require 'color-theme nil t)
             (when (and (fboundp 'color-theme-initialize)
