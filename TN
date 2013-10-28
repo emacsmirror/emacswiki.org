@@ -521,63 +521,82 @@ The dictionary to be used for flyspell or ispell is then recognized automagicall
 <pre>
 (require 'ispell) ;; for variables ispell-dictionary and so on
 
-(defvar swL-alist '(
-		    ("\\selectlanguage{english}" . "en_US")
-		    ("\\selectlanguage{ngerman}" . "de_DE"))
+(defcustom swl-regexp "^\\\\\\(?:selectlanguage{\\([[:alnum:]]+\\)}\\|usepackage\\[\\(?:[[:alnum:]]+,\\)\\([[:alnum:]]+\\)\\]{babel}\\)"
+  "Regular expression for `swl-mode' to detect language changes.
+The first matching sub-expression defines the new language. It should match one of the languages given in `swl-alist'.
+This variable is buffer local. This way you can make it mode-dependent with the help of mode-hooks."
+  :group 'swl
+  :type 'regexp)
+(make-variable-buffer-local 'swl-regexp)
+
+(defcustom swl-alist '(
+		    ("english" . "en_US")
+		    ("ngerman" . "de_DE")
+		    ("russian" . "ru"))
   "List of language switchers.
 Each language switcher is a cons of a string that introduces a new language
-and the corresponding ispell-dictionary.")
-(make-variable-buffer-local 'swL-alist)
+and the corresponding `ispell-dictionary'."
+  :group 'swl
+  :type '(repeat cons))
+(make-variable-buffer-local 'swl-alist)
 
-(defun swL-jit-handler (b e)
+(defun first-match-substring ()
+  "Get the first non-nil result of (`match-string-noproperties' i) for i=1,...,last subexpr."
+  (loop for i from 1 below (/ (length (match-data)) 2)
+	thereis (match-string-no-properties i)))
+
+(defun swl-jit-handler (b e)
   "(Re-)scan buffer for language switches."
   (save-excursion
     (with-silent-modifications
-      (let ((re (concat "^" (regexp-opt (mapcar 'car swL-alist))))
-	    lang)
+      (let (lang)
 	(goto-char b)
 	(beginning-of-line -1) ;; One line back to force overlapping with old formatted region.
 	(setq b (point))
 	(unless (setq lang (get-text-property (point) :ispell-dictionary))
 	  ;; No dictionary found at the starting point of the region.
-	  (if (search-backward-regexp re nil 'noErr)
-	      (setq lang (cdr (assoc-string (match-string-no-properties 0) swL-alist))
+	  (if (search-backward-regexp swl-regexp nil 'noErr)
+	      (setq lang (cdr (assoc-string (first-match-substring) swl-alist))
 		    b (1+ (match-beginning 0)))
-	    (setq lang swL-default-dictionary
+	    (setq lang swl-default-dictionary
 		  b (point-min))))
 	;; Now we have the real starting point b for formatting and a
 	;; non-nil language lang.
-	(while (search-forward-regexp re e 'noErr)
+	(while (search-forward-regexp swl-regexp e 'noErr)
 	  (put-text-property b (match-beginning 0) :ispell-dictionary lang)
 	  (setq b (1+ (match-beginning 0))
-		lang (cdr (assoc-string (match-string-no-properties 0) swL-alist))))
+		lang (cdr (assoc-string (first-match-substring) swl-alist))))
 	(put-text-property b e :ispell-dictionary lang)
 	))))
 
-(defun swL-eye ()
+(defun swl-eye ()
   "Switching `ispell-local-dictionary' depending on the text property :ispell-dictionary"
   (let ((newLang (get-text-property (point) :ispell-dictionary))
-	(curLang (or ispell-local-dictionary ispell-dictionary swL-default-dictionary)))
+	(curLang (or ispell-local-dictionary ispell-dictionary swl-default-dictionary)))
     (unless (string= newLang curLang)
       (ispell-change-dictionary newLang)
       )))
-	      
-(define-minor-mode swL-mode "Switch ispell-dictionary corresponding to the entries in `swL-alist'." nil " swL" nil
-  (if swL-mode
+
+(defvar swl-default-dictionary nil
+  "Default buffer-local dictionary for `swl-mode' (switch language mode).
+It does not make sense to change the default value since it automatically from `ispell-local-dictionary' or `ispell-dictionary'.")
+(make-variable-buffer-local 'swl-default-dictionary)
+
+(define-minor-mode swl-mode "Switch `ispell-dictionary' corresponding to the entries in `swl-alist'." nil " swl" nil
+  (if swl-mode
       (progn
-	(setq-local swL-default-dictionary
-		    (or
-		     ispell-local-dictionary
-		     ispell-dictionary
-		     "default"))
-	(jit-lock-register 'swL-jit-handler)
-	(add-hook 'post-command-hook 'swL-eye 'append t)
+	(setq swl-default-dictionary
+	      (or
+	       ispell-local-dictionary
+	       ispell-dictionary
+	       "default"))
+	(jit-lock-register 'swl-jit-handler)
+	(add-hook 'post-command-hook 'swl-eye 'append t)
 	)
-    (jit-lock-unregister 'swL-jit-handler)
-    (remove-hook 'post-command-hook 'swL-eye t)
-    (unintern 'swL-default-dictionary)
-    )
-  )
+    (jit-lock-unregister 'swl-jit-handler)
+    (remove-hook 'post-command-hook 'swl-eye t)
+    (unintern 'swl-default-dictionary)
+    ))
 </pre>
 
 == Extending org-mode search features ==
