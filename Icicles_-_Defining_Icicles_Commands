@@ -281,6 +281,7 @@ Several top-level '''Icicles''' commands have been defined using
 [:icicle-command-abbrev]
 [:icicle-command-abbrev-command]
 [:icicle-completing-yank]
+[:icicle-custom-theme]
 [:icicle-delete-file]
 [:icicle-delete-windows]
 [:icicle-describe-option-of-type]
@@ -388,11 +389,12 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-choose-visible-faces'''' -- Choose list of visible faces
 * '''`icicle-clear-history'''' -- Clear entries from minibuffer histories
 * '''`icicle-clear-current-history'''' -- Clear current history entries
-* '''`icicle-color-theme'''' -- Change color theme
+* '''`icicle-custom-theme'''' -- Change Emacs custom theme
 * '''`icicle-comint-command'''' -- Reuse a previous command in ComintMode
 * '''`icicle-command-abbrev'''' -- Execute command or command abbreviation
 * '''`icicle-command-abbrev-command'''' -- Execute command from abbreviation
 * '''`icicle-completing-yank'''' -- Yank text using completion
+* '''`icicle-color-theme'''' -- Change color theme
 * '''`icicle-delete-file'''' -- Delete a file or directory
 * '''`icicle-delete-windows'''' -- Delete [[window]]s showing a buffer anywhere
 * '''`icicle-describe-option-of-type'''' -- Describe [[option]] of a given type
