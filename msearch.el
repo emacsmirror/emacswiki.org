@@ -84,6 +84,9 @@
 ;;
 ;; 2013-08-22, TN:
 ;; Freezing of highlights, swtich on msearch for the window with event posn
+;;
+;; 2013-10-23, TN:
+;; Optional msearch for double-click and dragging.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -116,75 +119,81 @@
   :group 'msearch-faces)
 
 (defface msearch-level-2 ;; originally copied from font-lock-variable-name-face
-    '((((class color) (min-colors 16) (background light)) (:foreground "DarkGoldenrod" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark))  (:foreground "LightGoldenrod" :background "Yellow"))
-      (((class color) (min-colors 8)  (background light)) (:foreground "yellow" :background "Yellow"))
-      (((class color) (min-colors 8)  (background dark))  (:foreground "yellow" :bold t))
-      (t (:bold t)))
+  '((((class color) (min-colors 16) (background light)) (:foreground "DarkGoldenrod" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark))  (:foreground "LightGoldenrod" :background "Yellow"))
+    (((class color) (min-colors 8)  (background light)) (:foreground "yellow" :background "Yellow"))
+    (((class color) (min-colors 8)  (background dark))  (:foreground "yellow" :bold t))
+    (t (:bold t)))
   "Face used for level 2 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-3 ;; originally copied from font-lock-keyword-face
-    '((((class color) (min-colors 88) (background light)) (:foreground "Purple" :background "Yellow"))
-      (((class color) (min-colors 88) (background dark))  (:foreground "Cyan1" :background "Yellow"))
-      (((class color) (min-colors 16) (background light)) (:foreground "Purple" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark))  (:foreground "Cyan" :background "Yellow"))
-      (((class color) (min-colors 8)  (background light)) (:foreground "purple" :bold t))
-      (((class color) (min-colors 8)  (background dark))  (:foreground "cyan" :bold t))
-      (t (:bold t)))
+  '((((class color) (min-colors 88) (background light)) (:foreground "Purple" :background "Yellow"))
+    (((class color) (min-colors 88) (background dark))  (:foreground "Cyan1" :background "Yellow"))
+    (((class color) (min-colors 16) (background light)) (:foreground "Purple" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark))  (:foreground "Cyan" :background "Yellow"))
+    (((class color) (min-colors 8)  (background light)) (:foreground "purple" :bold t))
+    (((class color) (min-colors 8)  (background dark))  (:foreground "cyan" :bold t))
+    (t (:bold t)))
   "Face used for level 3 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-4   ;; originally copied from font-lock-comment-face
-    '((((class color) (min-colors 88) (background light)) (:foreground "Firebrick" :background "Yellow"))
-      (((class color) (min-colors 88) (background dark))  (:foreground "chocolate1" :background "Yellow"))
-      (((class color) (min-colors 16) (background light)) (:foreground "red" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark))  (:foreground "red1" :background "Yellow"))
-      (((class color) (min-colors 8) (background light))  (:foreground "red" :bold t))
-      (((class color) (min-colors 8) (background dark))   (:foreground "red" :bold t))
-      (t (:bold t)))
+  '((((class color) (min-colors 88) (background light)) (:foreground "Firebrick" :background "Yellow"))
+    (((class color) (min-colors 88) (background dark))  (:foreground "chocolate1" :background "Yellow"))
+    (((class color) (min-colors 16) (background light)) (:foreground "red" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark))  (:foreground "red1" :background "Yellow"))
+    (((class color) (min-colors 8) (background light))  (:foreground "red" :bold t))
+    (((class color) (min-colors 8) (background dark))   (:foreground "red" :bold t))
+    (t (:bold t)))
   "Face used for level 4 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-5 ;; originally copied from font-lock-type-face
-    '((((class color) (min-colors 16) (background light)) (:foreground "ForestGreen" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen" :background "Yellow"))
-      (((class color) (min-colors 8)) (:foreground "green"))
-      (t (:bold t)))
+  '((((class color) (min-colors 16) (background light)) (:foreground "ForestGreen" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen" :background "Yellow"))
+    (((class color) (min-colors 8)) (:foreground "green"))
+    (t (:bold t)))
   "Face used for level 5 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-6 ;; originally copied from font-lock-constant-face
-    '((((class color) (min-colors 16) (background light)) (:foreground "CadetBlue" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "Aquamarine" :background "Yellow"))
-      (((class color) (min-colors 8)) (:foreground "magenta"))
-      (t (:bold t)))
+  '((((class color) (min-colors 16) (background light)) (:foreground "CadetBlue" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "Aquamarine" :background "Yellow"))
+    (((class color) (min-colors 8)) (:foreground "magenta"))
+    (t (:bold t)))
   "Face used for level 6 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-7 ;; originally copied from font-lock-builtin-face
-    '((((class color) (min-colors 16) (background light)) (:foreground "Orchid" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSteelBlue" :background "Yellow"))
-      (((class color) (min-colors 8)) (:foreground "blue"))
-      (t (:bold t)))
+  '((((class color) (min-colors 16) (background light)) (:foreground "Orchid" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "LightSteelBlue" :background "Yellow"))
+    (((class color) (min-colors 8)) (:foreground "blue"))
+    (t (:bold t)))
   "Face used for level 7 headlines."
   :group 'msearch-faces)
 
 (defface msearch-level-8 ;; originally copied from font-lock-string-face
-    '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown" :background "Yellow"))
-      (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon" :background "Yellow"))
-      (((class color) (min-colors 8)) (:foreground "green"))
-      (t (:bold t)))
+  '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown" :background "Yellow"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon" :background "Yellow"))
+    (((class color) (min-colors 8)) (:foreground "green"))
+    (t (:bold t)))
   "Face used for level 8 headlines."
   :group 'msearch-faces)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defcustom msearch-faces
   (eval-when-compile (nreverse
 		      (loop for f in (face-list) if (string-match "msearch-level-" (symbol-name f)) collect f)))
   "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
   :type '(repeat face)
+  :group 'msearch)
+
+(defcustom msearch-events '(drag-mouse-1-handler-list down-mouse-1-handler-list)
+  "Events for which msearch should be registered.
+Note, customization of this variable has no influence on buffers already used with msearch."
+  :type '(repeat (choice (const :tag "Dragging" drag-mouse-1-handler-list)
+			 (const :tag "Double-click" down-mouse-1-handler-list)))
   :group 'msearch)
 
 (eval-when-compile
@@ -214,7 +223,7 @@
     (msearch-lock-word b e msearch-word msearch-face))
    ((listp msearch-word)
     (loop for wordFace in msearch-word do
-	 (msearch-lock-word b e (car wordFace) (cdr wordFace))))))
+	  (msearch-lock-word b e (car wordFace) (cdr wordFace))))))
 
 (defun msearch-cleanup (&optional all)
   "Remove overlays of msearch and deactivate msearch-lock-function."
@@ -243,21 +252,28 @@ the next face from msearch-faces for next highlighting."
   (setq msearch-face (nth msearch-face-idx msearch-faces))
   (setq msearch-word (cons (cons "" msearch-face) msearch-word)))
 
-(defvar drag-mouse-1-handler-list (list (key-binding (kbd "<drag-mouse-1>")))
-  "List of event handlers for <drag-mouse-1> events.
-Don't set this directly. Use the function
-register-drag-mouse-1-handler instead.")
-(make-variable-buffer-local 'drag-mouse-1-handler-list)
+(defmacro msearch-install-handler (e)
+  "Install handler list for event with name E (a string)."
+  (let ((handler-key (kbd (concat "<" e ">")))
+	(handler-list (intern (concat e "-handler-list")))
+	(handler (intern (concat e "-handler"))))
+    `(progn
+      (defvar ,handler-list (when (key-binding ,handler-key) (list (key-binding ,handler-key)))
+	 ,(concat "List of event handlers for <" e "> events."))
+      (make-variable-buffer-local ',handler-list)
 
-(defun drag-mouse-1-handler (e)
-  "Generic handler for <drag-mouse-1> events."
-  (interactive "e")
-  (let ((n drag-mouse-1-handler-list))
-    (while n
-      (apply (car n) (list e))
-      (setq n (cdr n)))))
+      (defun ,handler (e)
+	 ,(concat "Generic handler for <" e "> events.")
+	 (interactive "e")
+	 (let ((n ,handler-list))
+	   (while n
+	     (apply (car n) (list e))
+	     (setq n (cdr n)))))
 
-(global-set-key (kbd "<drag-mouse-1>") 'drag-mouse-1-handler)
+      (global-set-key ,handler-key ',handler))))
+
+(msearch-install-handler "drag-mouse-1")
+(msearch-install-handler "down-mouse-1")
 
 (defun msearch-set-word (word)
   "Set word to be highlighted."
@@ -272,26 +288,35 @@ register-drag-mouse-1-handler instead.")
 (defun msearch-event-handler (e)
   "Must be bound to a mouse event."
   (interactive "e")
-  (let ((start (posn-point (event-start e)))
-	(end (posn-point (event-end e))))
-    (if (> start end)
-	(let ((tmp start)) (setq start end) (setq end tmp)))
-    (if (> (- end start) msearch-max-length)
-	(setq end (+ start msearch-max-length)))
-    (let ((new-word (buffer-substring-no-properties start end))
-	  (slaves msearch-slaves)
-	  slaves-released
-	  (curbuf (current-buffer)))
-      (msearch-set-word new-word)
-      (save-excursion
-	(while slaves
-	  (if (get-buffer (car slaves))
-	      (progn
-		(set-buffer (car slaves))
-		(if msearch-mode
-		    (msearch-set-word new-word))))
-	  (setq slaves (cdr slaves))
-	  )))))
+  (let (start end (modifiers (event-modifiers e)))
+    (cond
+     ((member 'drag modifiers)
+      (setq 
+       start (posn-point (event-start e))
+       end (posn-point (event-end e))))
+     ((and (member 'double modifiers) (member 'down modifiers))
+      (setq
+       start (region-beginning)
+       end (region-end))))
+    (when start
+      (if (> start end)
+	  (let ((tmp start)) (setq start end) (setq end tmp)))
+      (if (> (- end start) msearch-max-length)
+	  (setq end (+ start msearch-max-length)))
+      (let ((new-word (buffer-substring-no-properties start end))
+	    (slaves msearch-slaves)
+	    slaves-released
+	    (curbuf (current-buffer)))
+	(msearch-set-word new-word)
+	(save-excursion
+	  (while slaves
+	    (if (get-buffer (car slaves))
+		(progn
+		  (set-buffer (car slaves))
+		  (if msearch-mode
+		      (msearch-set-word new-word))))
+	    (setq slaves (cdr slaves))
+	    ))))))
 
 (defun internal-buffer-p (buf-or-name)
   (let (buf bufname)
@@ -307,7 +332,7 @@ register-drag-mouse-1-handler instead.")
     (while p
       (unless (internal-buffer-p (car p))
 	(add-to-list 'buflist (car p) 'append))
-	(setq p (cdr p)))
+      (setq p (cdr p)))
     buflist))
 
 (defun msearch-enslave-buffer (buf)
@@ -350,7 +375,7 @@ The slave buf is released when msearch of the master is switched off."
   '("MSearch"
     ["Switch Off msearch" msearch-mode 't]
     ("Unhighlight" ["Current" msearch-cleanup 't]
-		     ["All" msearch-cleanup-all 't])
+     ["All" msearch-cleanup-all 't])
     ["Freeze Highlights" msearch-freeze 't]
     ["Help On msearch" msearch-help 't]
     ["Enslave Buffer" msearch-enslave-buffer 't]
@@ -368,13 +393,14 @@ The slave buf is released when msearch of the master is switched off."
 	(set (make-local-variable 'msearch-word) nil)
 	(set (make-local-variable 'msearch-old-word) "")
 	(set (make-local-variable 'msearch-slaves) nil)
-	(add-to-list 'drag-mouse-1-handler-list 'msearch-event-handler))
+	(dolist (l msearch-events)
+	  (add-to-list l 'msearch-event-handler t)))
     (msearch-cleanup)
     (kill-local-variable 'msearch-word)
     (kill-local-variable 'msearch-old-word)
     (kill-local-variable 'msearch-slaves)
-    (setq drag-mouse-1-handler-list
-	  (delete 'msearch-event-handler drag-mouse-1-handler-list))
+    (dolist (l msearch-events)
+      (delete 'msearch-event-handler l))
     ))
 
 (defun msearch-mode-event (event)
