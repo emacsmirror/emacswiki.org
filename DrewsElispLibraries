@@ -61,8 +61,8 @@ The newest of my libraries are these (in alphabetical order):
 
 * <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
 * <tt>[[bookmark+.el]]</tt> and associated libraries-- extensions to standard library `bookmark' -- see '''[[Bookmark+]]'''
+* <tt>[[cmds-menu.el]]</tt> -- add a '''Recent Commands''' submenu to menu-bar '''Tools''' menu -- see RecentCommandsMenu
 * <tt>[[col-highlight.el]]</tt> -- highlight the current column; see HighlightCurrentColumn
-* <tt>[[cmds-menu.el]]</tt> -- add '''Recent Commands''' submenu to menu-bar '''Tools''' menu
 * <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
 * <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see '''CustomizingAndSaving'''
@@ -129,7 +129,8 @@ I make minor changes to some libraries often, so check for the latest versions.
 ** <tt>[[bookmark+-doc.el]]</tt> -- doc
 * <tt>[[browse-kill-ring+.el]]</tt> -- extensions to library `browse-kill-ring'
 * <tt>[[buff-menu+.el]]</tt> -- extensions to standard BufferMenu -- see '''BufferMenuPlus''' (not yet updated for Emacs 24 -- you can use it in 24 with the Emacs 23 ##buff-menu.el##, from here: http://ftp.gnu.org/gnu/emacs/)
-* <tt>[[cmds-menu.el]]</tt> -- add '''Recent Commands''' submenu to menu-bar '''Tools''' menu
+* <tt>[[cmds-menu.el]]</tt> -- add a '''Recent Commands''' submenu to menu-bar '''Tools''' menu -- see RecentCommandsMenu
+
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
 * <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see CustomizingAndSaving
 * <tt>[[def-face-const.el]]</tt> -- macro for defining [[face]]s & their variables; see also '''DefineFaceConstant''' (this library is now obsolete; just use `defface')
