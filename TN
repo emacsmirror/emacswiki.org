@@ -510,12 +510,12 @@ In the users initialization there should be the lines:
 </pre>
 == Multiple languages in one buffer (e.g. flyspell in latex-document with \selectlanguage) ==
 The following piece of code lightens the input of multilingual text. It switches the ispell-dictionary in dependence of the language at the current point position.
-The points in the buffer where the language switches are recognized by predefined strings at the beginning of line (see variable swL-alist).
+The points in the buffer where the language switches are recognized by predefined strings at the beginning of line (see variables swl-regexp and swl-alist).
 
 Paste the following into your .emacs.el file (or wherever your configuration is).
-Adapt the variable swL-alist to your needs.
+Adapt the variables swl-regexp and swl-alist to your needs.
 Currently, detecting between english and ngerman in babel-latex documents is configured.
-Then open your document and start swL-mode by M-x swL-mode.
+Then open your document and start swl-mode by M-x swl-mode. (You can  do this automatically by a mode-hook, such as latex-mode-hook.)
 The dictionary to be used for flyspell or ispell is then recognized automagically in dependence of the point-position.
 
 <pre>
