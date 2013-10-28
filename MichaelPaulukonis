@@ -52,11 +52,29 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
 
 === deftheme ===
-* DefTheme
 * notes on how I can't get the cyberpunk theme to auto-load from .emacs
-** in both instances?
-** or only one?
+** at home only? because it's working at work.
 ** will other themes auto-load?
+
+==== Theme handling system ====
+<code>deftheme</code> is the theme-handling system introduced in Emacs 23, and enhanced in Emacs 24.
+As such, it is something of a replacement for ColorTheme.
+
+[quote]Emacs 24 finally introduced a new standard way of dealing with color themes (based on Emacs’s built-in customize facility). While it doesn’t have a proper name (as far as I know) it’s commonly referred to as the deftheme facility, since deftheme is the name of the macro you’d use to create such a theme. -[[http://batsov.com/articles/2012/02/19/color-theming-in-emacs-reloaded/ source]][/quote]
+
+==== provided themes ====
+By default Emacs24 comes with several themes.
+
+==== Adding new themes ====
+You can add more.... somehow....
+
+==== See Also ====
+* Further information at http://batsov.com/articles/2012/02/19/color-theming-in-emacs-reloaded/
+* http://emacsfodder.github.io/blog/notes-on-deftheme/
+
+==== standalone page ====
+* This was [[http://www.emacswiki.org/emacs/?action=browse;id=DefTheme;revision=2 its own page]] for a while, but selected elements were merged into the page for the ColorTheme package.
+** but added were some notes on how `deftheme` ("Custom Themes") differed from ColorTheme` (can't roll-back changes applied in `deftheme` for instance).
 
 === re-org(ing) my init-file(s) ===
 * IN-PROGRESS as of 2013.07
