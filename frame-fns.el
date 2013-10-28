@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:14:37 2013 (-0700)
+;; Last-Updated: Mon Oct 28 14:10:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 223
+;;     Update #: 224
 ;; URL: http://www.emacswiki.org/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
@@ -302,8 +302,8 @@ The optional FRAME argument is as for function `get-buffer-window'."
 Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
   (save-window-excursion
     (when frame (select-frame frame))
-    (let ((visible-bell  t)) (ding do-not-terminate))) ; Flash.
-  (let ((visible-bell  nil)) (ding do-not-terminate))) ; Bell.
+    (let ((visible-bell  t)) (ding 'DO-NOT-TERMINATE))) ; Flash.
+  (let ((visible-bell  nil)) (ding 'DO-NOT-TERMINATE))) ; Bell.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
