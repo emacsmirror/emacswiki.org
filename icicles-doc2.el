@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Aug  5 07:35:42 2013 (-0700)
+;; Last-Updated: Mon Oct 28 11:16:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29399
+;;     Update #: 29413
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -602,10 +602,10 @@
 ;;     of a search.
 ;;
 ;;  2. You limit the search context in a second way, by providing some
-;;     information, such as a regexp or a character property (text or
-;;     overlay property), that defines zones of text that you want to
-;;     search.  You can use (lax) completion against previous input to
-;;     enter the regexp or the character property.  In some cases, the
+;;     information, such as a regexp or a text or overlay property,
+;;     that defines zones of text that you want to search.  You can
+;;     use (lax) completion against previous input to enter the regexp
+;;     or the text or overlay property.  In some cases, the
 ;;     information (e.g. regexp) to define the search context is
 ;;     provided automatically by the search command; for example,
 ;;     `icicle-occur' assumes that you want to search lines.
@@ -1442,19 +1442,17 @@
 ;;
 ;;  Instead of providing a context regexp, for commands
 ;;  `icicle-search-char-property', `icicle-search-overlay-property',
-;;  and `icicle-search-text-property' (`C-c "') ["] you provide a
-;;  character property (e.g. `face') and its value
+;;  and `icicle-search-text-property' (`C-c "') ["] you provide a text
+;;  or overlay property (e.g. `face') and its value
 ;;  (e.g. `font-lock-function-name-face').  All zones of text that
 ;;  have that property with that value become the completion
 ;;  candidates (search hits).  As always, you can filter this set of
 ;;  candidates by typing input in the minibuffer.
 ;;
-;;  By a "character property" is meant either a text property or an
-;;  overlay property.  `icicle-search-char-property' searches both
-;;  kinds of character property; `icicle-search-overlay-property'
-;;  searches only overlay properties; and
-;;  `icicle-search-text-property' (`C-c "' ["]) searches only text
-;;  properties.
+;;  `icicle-search-char-property' searches either or both kinds of
+;;  property: text or overlay; `icicle-search-overlay-property'
+;;  searches only overlay properties; `icicle-search-text-property'
+;;  (`C-c "' ["]) searches only text properties.
 ;;
 ;;  For example, if you use `icicle-search-char-property' with a
 ;;  `face' property value `highlight', then the text searched includes
@@ -1470,12 +1468,12 @@
 ;;  zones of text that are distinguished by their `face' values.
 ;;
 ;;  As with other Icicles search commands, a prefix argument controls
-;;  whether these character-property commands search the current
+;;  whether these property-searching commands search the current
 ;;  buffer, selected bookmarks, selected files, or selected buffers.
 ;;  However, keep in mind that, since in this case you are searching
-;;  character properties, you will find search hits only for buffers
-;;  that already have such properties, for example, buffers that have
-;;  been fontified.
+;;  text or overlay properties, you will find search hits only for
+;;  buffers that already have such properties, for example, buffers
+;;  that have been fontified.
 ;;
 ;;(@* "Icicles Imenu")
 ;;  ** Icicles Imenu **
@@ -5945,7 +5943,18 @@
 ;;    defined.
 ;;
 ;;  * User option `icicle-color-themes' is a list of color themes to
-;;    cycle through when you use command `icicle-color-theme'.
+;;    cycle through when you use command `icicle-color-theme'.  You
+;;    need library `color-theme.el' to use this command.
+;;
+;;  * Option `icicle-custom-themes' is a list of Emacs custom themes
+;;    to cycle through when you use command `icicle-custom-theme'.
+;;    (This is available only for Emacs 24 and later.)  Option
+;;    `icicle-custom-themes-accumulate-flag' determines whether such
+;;    cycling keeps the effects of previously applied themes or
+;;    replaces each theme with the next one.  Option
+;;    `icicle-custom-themes-update-flag' determines whether the
+;;    command automatically saves changes made.  A prefix argument
+;;    flips this option value for the invocation of the command.
 ;;
 ;;  * User option `icicle-saved-completion-sets' is a persistent list
 ;;    of named sets of completion candidates.  You can switch among
@@ -8390,6 +8399,7 @@
 ;;  `icicle-command-abbrev' - Execute command or command abbreviation
 ;;  `icicle-command-abbrev-command' - Execute command from abbrev
 ;;  `icicle-completing-yank' - Yank text using completion
+;;  `icicle-custom-theme' - Change Emacs custom theme
 ;;  `icicle-delete-file'  - Delete a file or directory
 ;;  `icicle-delete-windows' - Delete windows showing a buffer anywhere
 ;;  `icicle-describe-option-of-type' - Describe option of a given type
