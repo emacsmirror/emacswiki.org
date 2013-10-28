@@ -68,6 +68,10 @@ By default Emacs24 comes with several themes.
 ==== Adding new themes ====
 You can add more.... somehow....
 
+==== Switching Themes ====
+* Switching themes does not //roll-back// changes applied in a theme. You need to disable the current (or any previously applied) themes to have a blank slate.
+*[[http://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters order matters]]
+
 ==== See Also ====
 * Further information at http://batsov.com/articles/2012/02/19/color-theming-in-emacs-reloaded/
 * http://emacsfodder.github.io/blog/notes-on-deftheme/
