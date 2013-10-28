@@ -130,8 +130,8 @@ completion candidates that match the current input.  This is `nil', by default.
 [:completion-ignore-case]
 [:read-file-name-completion-ignore-case]
 [:read-buffer-completion-ignore-case]
-[:case-fold-WikiModes]
-==== Case Sensitivity - Options completion-ignore-case, read-file-name-completion-ignore-case, read-buffer-completion-ignore-case, case-fold-WikiModes ====
+[:case-fold-search]
+==== Case Sensitivity - Options completion-ignore-case, read-file-name-completion-ignore-case, read-buffer-completion-ignore-case, case-fold-search ====
 
 The following standard user options control
 whether completion distinguishes between uppercase and lowercase
@@ -144,11 +144,11 @@ later)
 later)
 
 In addition, you can ''toggle'' case-sensitivity at any time using
-'''`C-A'''' (that is, '''`C-S-a'''') in the minibuffer.  This toggles '''`case-fold-WikiModes'''' and `completion-ignore-case'.  With a [[prefix argument]], it also toggles `read-file-name-completion-ignore-case' and `read-buffer-completion-ignore-case'.
+'''`C-A'''' (that is, '''`C-S-a'''') in the minibuffer.  This toggles '''`case-fold-search'''' and `completion-ignore-case'.  With a [[prefix argument]], it also toggles `read-file-name-completion-ignore-case' and `read-buffer-completion-ignore-case'.
 
-More precisely, it toggles the default value of `case-fold-WikiModes', and then it sets the other variables to the value of
-`case-fold-WikiModes'.  Because the ''default value'' of
-`case-fold-WikiModes' is changed, ''all [[buffer]]s are affected''.
+More precisely, it toggles the default value of `case-fold-search', and then it sets the other variables to the value of
+`case-fold-search'.  Because the ''default value'' of
+`case-fold-search' is changed, ''all [[buffer]]s are affected''.
 Note that because some '''Icicles''' [[command]]s bind one or more of these
 variables, toggling case-sensitivity during command execution will not
 necessarily toggle their global values.
@@ -765,22 +765,22 @@ cannot also be used for key completion in the minibuffer.
 
 
 ----
-[:icicle-iWikiModes-complete-keys]
-==== Option icicle-iWikiModes-complete-keys ====
+[:icicle-isearch-complete-keys]
+==== Option icicle-isearch-complete-keys ====
 
-Option '''`icicle-iWikiModes-complete-keys'''' is the list of keys for
-`icicle-iWikiModes-complete'.  By default, these keys are `M-TAB',
+Option '''`icicle-isearch-complete-keys'''' is the list of keys for
+`icicle-isearch-complete'.  By default, these keys are `M-TAB',
 `##ESC TAB##' and `C-M-TAB'.
 
 
 
 
 ----
-[:icicle-iWikiModes-history-insert-keys]
-==== icicle-iWikiModes-history-insert-keys ====
+[:icicle-isearch-history-insert-keys]
+==== icicle-isearch-history-insert-keys ====
 
-Option '''`icicle-iWikiModes-history-insert-keys'''' is the list of keys
-for `icicle-iWikiModes-history'.  By default, the list contains
+Option '''`icicle-isearch-history-insert-keys'''' is the list of keys
+for `icicle-isearch-history'.  By default, the list contains
 only '''`M-o''''.
 
 
@@ -1307,7 +1307,7 @@ the right thing" when it comes to candidate transformation.
 
 The value of this option can be changed by program locally, for use
 in particular contexts.  For example, when you use `##C-c `##'
-(`icicle-WikiModes-generic') in a `*shell*' buffer, '''Icicles''' uses this
+(`icicle-search-generic') in a `*shell*' buffer, '''Icicles''' uses this
 variable with a value of `icicle-remove-duplicates', to remove
 duplicate shell commands from your input history list.  Lisp
 programmers can use this variable to transform the list of
@@ -1341,7 +1341,7 @@ behavior.  To apropos-complete and exit the minibuffer, use
 
 Non-`nil' user option '''`icicle-buffer-ignore-space-prefix-flag'''' means to
 ignore [[buffer]]-name completion candidates that start with a space.
-You can ''toggle'' `icicle-buffer-ignore-space-prefix-flag' using '''`##M-_##'''' in the minibuffer (except during `icicle-WikiModes').
+You can ''toggle'' `icicle-buffer-ignore-space-prefix-flag' using '''`##M-_##'''' in the minibuffer (except during `icicle-search').
 
 
 ----
@@ -1351,7 +1351,7 @@ You can ''toggle'' `icicle-buffer-ignore-space-prefix-flag' using '''`##M-_##'''
 Non-`nil' user option '''`icicle-test-for-remote-files-flag'''' means
 that '''Icicles''' tests for remote file names; `nil' means that it does
 not.  You can ''toggle'' this using `##C-^##' in the minibuffer (except
-during '''Icicles''' WikiModes).  Turning off remote file-name testing means that you ''cannot use remote files with Tramp''; it disables
+during '''Icicles''' search).  Turning off remote file-name testing means that you ''cannot use remote files with Tramp''; it disables
 Tramp's remote file-name handling and completion.  This can, for ''local files'', slightly speed up [[Icicles - Icompletion|incremental completion]]
 and the highlighting of the part of your current input that does
 not complete (see `<tt>[[#icicle-highlight-input-completion-failure]]</tt>').
@@ -1375,7 +1375,7 @@ during completion using '''`##C-x :##''''.
 
 Non-`nil' user option '''`icicle-regexp-quote-flag'''' reduces apropos
 completion to simple ''substring completion'' and '''Icicles''' regexp
-WikiModes to ''literal WikiModes''.  Regexp [[Icicles - Special Characters in Input Patterns|special characters]] are no longer recognized as special in this case;
+search to ''literal search''.  Regexp [[Icicles - Special Characters in Input Patterns|special characters]] are no longer recognized as special in this case;
 they simply match themselves.  You probably do ''not'' want to
 customize this option.  Instead, you can ''toggle'' it at any time
 using '''`##C-`##'''' in the minibuffer.
@@ -1454,144 +1454,144 @@ library <tt>[[levenshtein.el]]</tt>.  See [[Icicles - Fuzzy Completion#NOffCompl
 
 
 ----
-[:icicle-WikiModes-main-regexp-current]
-[:icicle-WikiModes-main-regexp-others]
-[:icicle-WikiModes-current-input]
-[:icicle-WikiModes-context-level-1]
-[:icicle-WikiModes-context-level-2]
-[:icicle-WikiModes-context-level-3]
-[:icicle-WikiModes-context-level-4]
-[:icicle-WikiModes-context-level-5]
-[:icicle-WikiModes-context-level-6]
-[:icicle-WikiModes-context-level-7]
-[:icicle-WikiModes-context-level-8]
-==== Faces icicle-WikiModes-main-regexp-current, icicle-WikiModes-main-regexp-others, icicle-WikiModes-current-input, icicle-WikiModes-context-level-1 to 8 ====
+[:icicle-search-main-regexp-current]
+[:icicle-search-main-regexp-others]
+[:icicle-search-current-input]
+[:icicle-search-context-level-1]
+[:icicle-search-context-level-2]
+[:icicle-search-context-level-3]
+[:icicle-search-context-level-4]
+[:icicle-search-context-level-5]
+[:icicle-search-context-level-6]
+[:icicle-search-context-level-7]
+[:icicle-search-context-level-8]
+==== Faces icicle-search-main-regexp-current, icicle-search-main-regexp-others, icicle-search-current-input, icicle-search-context-level-1 to 8 ====
 
-Top-level command `icicle-WikiModes' uses several faces to highlight
-found text that matches your input.  Faces '''`icicle-WikiModes-main-regexp-current'''' and '''`icicle-WikiModes-main-regexp-others''''
-highlight what your WikiModes-[[context regexp]] (entered with `RET')
-matches.  The former highlights the current [[WikiModes context]]; the latter highlights all other WikiModes contexts.
+Top-level command `icicle-search' uses several faces to highlight
+found text that matches your input.  Faces '''`icicle-search-main-regexp-current'''' and '''`icicle-search-main-regexp-others''''
+highlight what your search-[[context regexp]] (entered with `RET')
+matches.  The former highlights the current [[search context]]; the latter highlights all other search contexts.
 
-Face '''`icicle-WikiModes-current-input'''' highlights what your
-current input matches (typically another regexp); that is, it highlights a match within a WikiModes context.  Faces '''`icicle-WikiModes-context-level-1'''' through
-'''`icicle-WikiModes-context-level-8'''' highlight the first eight regexp
-subgroup matches, within a WikiModes context.  This highlighting is
-done whenever `<tt>[[#icicle-WikiModes-highlight-context-levels-flag]]</tt>' is
-non-`nil' and the WikiModes context corresponds to the entire regexp.  See [[Icicles - WikiModes Commands, Overview]].
+Face '''`icicle-search-current-input'''' highlights what your
+current input matches (typically another regexp); that is, it highlights a match within a search context.  Faces '''`icicle-search-context-level-1'''' through
+'''`icicle-search-context-level-8'''' highlight the first eight regexp
+subgroup matches, within a search context.  This highlighting is
+done whenever `<tt>[[#icicle-search-highlight-context-levels-flag]]</tt>' is
+non-`nil' and the search context corresponds to the entire regexp.  See [[Icicles - Search Commands, Overview]].
 
 
 ----
-[:icicle-WikiModes-highlight-context-levels-flag]
-==== Option icicle-WikiModes-highlight-context-levels-flag ====
+[:icicle-search-highlight-context-levels-flag]
+==== Option icicle-search-highlight-context-levels-flag ====
 
-User option '''`icicle-WikiModes-highlight-context-levels-flag''''
+User option '''`icicle-search-highlight-context-levels-flag''''
 controls highlighting of regexp subgroup matches within the
-WikiModes context.  Non-`nil' (the default value) means highlight
-them.  See [[Icicles - WikiModes Commands, Overview]].
+search context.  Non-`nil' (the default value) means highlight
+them.  See [[Icicles - Search Commands, Overview]].
 
 
 ----
-[:icicle-WikiModes-highlight-threshold]
-==== Option icicle-WikiModes-highlight-threshold ====
+[:icicle-search-highlight-threshold]
+==== Option icicle-search-highlight-threshold ====
 
-User option '''`icicle-WikiModes-highlight-threshold'''' controls
-highlighting with face `<tt>[[#icicle-WikiModes-main-regexp-others]]</tt>': this
+User option '''`icicle-search-highlight-threshold'''' controls
+highlighting with face `<tt>[[#icicle-search-main-regexp-others]]</tt>': this
 many matches, maximum, are highlighted.  If `t' then there is no
 maximum (no limit).  If zero, then only the
-current match is highlighted.  See [[Icicles - WikiModes Commands, Overview]].
+current match is highlighted.  See [[Icicles - Search Commands, Overview]].
 
 
 ----
-[:icicle-WikiModes-highlight-all-current-flag]
-==== Option icicle-WikiModes-highlight-all-current-flag ====
+[:icicle-search-highlight-all-current-flag]
+==== Option icicle-search-highlight-all-current-flag ====
 
-Non-`nil' user option '''`icicle-WikiModes-highlight-all-current-flag''''
-means highlight what your current input matches inside ''all'' main WikiModes hits at
+Non-`nil' user option '''`icicle-search-highlight-all-current-flag''''
+means highlight what your current input matches inside ''all'' main search hits at
 the ''same time''.  If `<tt>[[#icicle-expand-input-to-common-match]]</tt>'
 is '''##3##''' or '''##4##''' (which means your input can be automatically prefix- or apropos-expanded, respectively),
 then what is highlighted for each input match is 
-the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the WikiModes area.  Otherwise, only the exact input match is highlighted.
+the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  Otherwise, only the exact input match is highlighted.
 
-The default value of `icicle-WikiModes-highlight-all-current-flag' is `nil', because non-`nil' can
-impact performance negatively if there are many WikiModes contexts -- the highlighting is
+The default value of `icicle-search-highlight-all-current-flag' is `nil', because non-`nil' can
+impact performance negatively if there are many search contexts -- the highlighting is
 updated with each input change.  You can ''toggle'' the value at any time using command
-`icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the minibuffer (except during file-name completion).  See [[Icicles - WikiModes Commands, Overview]].
+`icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the minibuffer (except during file-name completion).  See [[Icicles - Search Commands, Overview]].
 
 ----
-[:icicle-WikiModes-replace-common-match-flag]
-==== Option icicle-WikiModes-replace-common-match-flag ====
+[:icicle-search-replace-common-match-flag]
+==== Option icicle-search-replace-common-match-flag ====
 
-If, in addition to `<tt>[[#icicle-expand-input-to-common-match]]</tt>' causing your input to be expanded and `<tt>[[#icicle-WikiModes-highlight-all-current-flag]]</tt>' being non-`nil', option
-'''`icicle-WikiModes-replace-common-match-flag'''' is also non-`nil', then
-a WikiModes replacement replaces the [[Icicles - Expanded-Common-Match Completion|expanded common match]].
-Otherwise, it replaces only the exact match.  You can ''toggle'' `icicle-WikiModes-replace-common-match-flag' at any time using '''`##M-;##'''' in the minibuffer.
+If, in addition to `<tt>[[#icicle-expand-input-to-common-match]]</tt>' causing your input to be expanded and `<tt>[[#icicle-search-highlight-all-current-flag]]</tt>' being non-`nil', option
+'''`icicle-search-replace-common-match-flag'''' is also non-`nil', then
+a search replacement replaces the [[Icicles - Expanded-Common-Match Completion|expanded common match]].
+Otherwise, it replaces only the exact match.  You can ''toggle'' `icicle-search-replace-common-match-flag' at any time using '''`##M-;##'''' in the minibuffer.
 
 
 
 ----
-[:icicle-WikiModes-cleanup-flag] [:icicle-WikiModes-highlight-cleanup]
-==== Option icicle-WikiModes-cleanup-flag ====
+[:icicle-search-cleanup-flag] [:icicle-search-highlight-cleanup]
+==== Option icicle-search-cleanup-flag ====
 
-Non-`nil' user option '''`icicle-WikiModes-cleanup-flag'''' 
-means that `icicle-WikiModes' highlighting is removed after the
-WikiModes.  This is the default behavior. If you set this to `nil' then you can remove WikiModes
+Non-`nil' user option '''`icicle-search-cleanup-flag'''' 
+means that `icicle-search' highlighting is removed after the
+search.  This is the default behavior. If you set this to `nil' then you can remove search
 highlighting manually later using command
-'''`icicle-WikiModes-highlight-cleanup''''.  You can ''toggle'' this WikiModes
+'''`icicle-search-highlight-cleanup''''.  You can ''toggle'' this search
 highlight removal at any time using command
-'''`icicle-toggle-WikiModes-cleanup'''', which is bound to '''`##C-.##'''' in the minibuffer during '''Icicles''' WikiModes.
+'''`icicle-toggle-search-cleanup'''', which is bound to '''`##C-.##'''' in the minibuffer during '''Icicles''' search.
 
-One use of `nil' `icicle-WikiModes-cleanup-flag' is to ''highlight'' regexp matches throughout a region or buffer (or multiple files or...).  In that capacity, '''Icicles''' WikiModes functions act like some of the highlighting commands in my library <tt>[[highlight.el]]</tt> (see HighLight).  Note that when `icicle-WikiModes-cleanup-flag' is `nil', ''all'' '''Icicles''' WikiModes highlighting remains: last-visited
-WikiModes context, other context matches, current-input matches, and even
+One use of `nil' `icicle-search-cleanup-flag' is to ''highlight'' regexp matches throughout a region or buffer (or multiple files or...).  In that capacity, '''Icicles''' search functions act like some of the highlighting commands in my library <tt>[[highlight.el]]</tt> (see HighLight).  Note that when `icicle-search-cleanup-flag' is `nil', ''all'' '''Icicles''' search highlighting remains: last-visited
+search context, other context matches, current-input matches, and even
 regexp subgroups.  The faces for these are, respectively:
 
-* `icicle-WikiModes-main-regexp-current'
-* `icicle-WikiModes-main-regexp-others'
-* `icicle-WikiModes-highlight-input-matches-here' (everywhere, if
-`icicle-WikiModes-highlight-all-current-flag' is non-`nil')
-* `icicle-WikiModes-context-level-1' through `icicle-WikiModes-context-level-8'
+* `icicle-search-main-regexp-current'
+* `icicle-search-main-regexp-others'
+* `icicle-search-highlight-input-matches-here' (everywhere, if
+`icicle-search-highlight-all-current-flag' is non-`nil')
+* `icicle-search-context-level-1' through `icicle-search-context-level-8'
 
 
 ----
-[:icicle-WikiModes-whole-word-flag]
-==== Option icicle-WikiModes-whole-word-flag ====
+[:icicle-search-whole-word-flag]
+==== Option icicle-search-whole-word-flag ====
 
-Non-`nil' user option '''`icicle-WikiModes-whole-word-flag'''' means that
-whole-word WikiModes is done.  You can use `M-q' while WikiModesing to toggle this option; the newvalue takes effect for the next complete WikiModes.
+Non-`nil' user option '''`icicle-search-whole-word-flag'''' means that
+whole-word search is done.  You can use `M-q' while searching to toggle this option; the newvalue takes effect for the next complete search.
 
-Whole-word WikiModesing here means that
+Whole-word searching here means that
 matches can contain embedded strings of non word-constituent
 chars (they are skipped over, when matching, included in the
 match), and any leading or trailing word-constituent chars in
-the WikiModes string are dropped (ignored for matching, not
+the search string are dropped (ignored for matching, not
 included in the match).  This means, for instance, that you can
 match `foo-bar' as a word, even in contexts (such as EmacsLisp)
 where `-' is not a word-constituent character.  Similarly, you
 can include embedded whitespace in a "word", e.g., `##foo bar##'.
 
-See also [[Icicles - WikiModes Commands, Overview]].
+See also [[Icicles - Search Commands, Overview]].
 
 ----
-[:icicle-WikiModes-replace-whole-candidate-flag]
-==== Option icicle-WikiModes-replace-whole-candidate-flag ====
+[:icicle-search-replace-whole-candidate-flag]
+==== Option icicle-search-replace-whole-candidate-flag ====
 
-If user option '''`icicle-WikiModes-replace-whole-candidate-flag''''
+If user option '''`icicle-search-replace-whole-candidate-flag''''
  is `nil', then whatever matches your ''current input'' is replaced,
-  within the current WikiModes context, when you perform replacement
- during '''Icicles''' WikiModesing (e.g. `S-C-RET').  If the value is
- non-`nil' (the default value), then the entire ''WikiModes context'' is
+  within the current search context, when you perform replacement
+ during '''Icicles''' searching (e.g. `S-C-RET').  If the value is
+ non-`nil' (the default value), then the entire ''search context'' is
  replaced, instead.  You can use '''`##M-_##'''' at any time during
- WikiModesing and replacing, to ''toggle'' the value.  See [[Icicles - WikiModes-And-Replace]].
+ searching and replacing, to ''toggle'' the value.  See [[Icicles - Search-And-Replace]].
 
 ----
-[:icicle-WikiModes-replace-literally-flag]
-==== Option icicle-WikiModes-replace-literally-flag ====
+[:icicle-search-replace-literally-flag]
+==== Option icicle-search-replace-literally-flag ====
 
-User option '''`icicle-WikiModes-replace-literally-flag'''' determines
-whether '''Icicles''' WikiModes-and-replace replaces text literally or
+User option '''`icicle-search-replace-literally-flag'''' determines
+whether '''Icicles''' search-and-replace replaces text literally or
 interprets '''`##\##'''' specially in the replacement text, as in
 `query-replace-regexp'.  Non-`nil' means to treat replacement text
 literally.  The default value is `nil'.  You can use '''`##M-`##'''' to
-''toggle'' this at any time during '''Icicles''' WikiModes.   See [[Icicles - WikiModes-And-Replace]].
+''toggle'' this at any time during '''Icicles''' search.   See [[Icicles - Search-And-Replace]].
 
 
 ----
@@ -1599,10 +1599,10 @@ literally.  The default value is `nil'.  You can use '''`##M-`##'''' to
 ==== Option icicle-ignore-comments-flag ====
 
 * Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
-`icicle-WikiModes-thing' and related commands
-(e.g. `icicle-WikiModes-xml-element') ignore comments.  That is,
+`icicle-search-thing' and related commands
+(e.g. `icicle-search-xml-element') ignore comments.  That is,
 they hide comments temporarily while they scan the [[region]] or
-buffer for things of the given type to serve as WikiModes contexts
+buffer for things of the given type to serve as search contexts
 (completion candidates).  This prevents them, for example, from
 presenting as a candidate a [[sexp]] or a [[list]] that is commented
 out.  You can toggle this option anytime using '''`##C-M-;##'''' in the
@@ -1612,13 +1612,13 @@ current command again.
 
 
 ----
-[:icicle-WikiModes-hook]
-==== Option icicle-WikiModes-hook ====
+[:icicle-search-hook]
+==== Option icicle-search-hook ====
 
-User option '''`icicle-WikiModes-hook'''' is a list of functions to be
-run after WikiModesing and moving to an `icicle-WikiModes' match,
+User option '''`icicle-search-hook'''' is a list of functions to be
+run after searching and moving to an `icicle-search' match,
 whether you move there by `RET', `C-RET', `C-next', or
-`C-prior'.   See [[Icicles - WikiModes Commands, Overview]].
+`C-prior'.   See [[Icicles - Search Commands, Overview]].
 
 
 
@@ -1645,7 +1645,7 @@ with a non-negative [[numeric prefix argument]] automatically names a [[bookmark
 ==== Option icicle-bookmark-refresh-cache-flag ====
 
 User option '''`icicle-bookmark-refresh-cache-flag'''' determines
-whether commands such as `icicle-bookmark' and `icicle-WikiModes-bookmark'
+whether commands such as `icicle-bookmark' and `icicle-search-bookmark'
 refresh the bookmark-list cache.  The default value of `t',
 meaning refresh, ensures that the set of
 bookmark candidates is always up-to-date, but you can improve
@@ -1705,7 +1705,7 @@ Options '''`icicle-file-match-regexp'''',
      "nil if FILE is in a `vc-directory-exclusion-list' directory."
      (or (not (boundp 'vc-directory-exclusion-list))
          (not (consp vc-directory-exclusion-list))
-         (not (let ((case-fold-WikiModes  completion-ignore-case))
+         (not (let ((case-fold-search  completion-ignore-case))
                 (catch 'nevfp
                   (dolist (dir  vc-directory-exclusion-list)
                     (when (string-match
@@ -1770,12 +1770,12 @@ Options `icicle-buffer-skip-hook' and
 '''`icicle-find-file-of-content-skip-hook'''' are lists of hook
 functions.  They are used by commands `icicle-buffer' and
 `icicle-find-file' (for Emacs 23 and later) to test a candidate buffer name or file
-name, respectively.  You can use them to skip content-WikiModesing of certain buffers and files when completing buffer and file names using [[multi-completion]]
+name, respectively.  You can use them to skip content-searching of certain buffers and files when completing buffer and file names using [[multi-completion]]
 
 The functions are passed to `run-hook-with-args-until-success',
 so they are called in order until one returns non-`nil'.  If any
 function returns non-`nil' then the buffer or file content is
-not WikiModesed.  This is relevant only when your multi-completion
+not searched.  This is relevant only when your multi-completion
 input has a second, content-matching part.
 
 
@@ -1867,8 +1867,8 @@ used.  You can match against any parts of the multi-completion.
 The default value is `t'.  (By contrast, you cannot match the
 text controlled by option `icicle-show-annotations-flag'.)
 
-For example, for command `icicle-WikiModes', the name of the buffer associated with each completion candidate is added
-to the candidate and highlighted. You can match against the buffer name, as well as the WikiModes hit within the buffer. 
+For example, for command `icicle-search', the name of the buffer associated with each completion candidate is added
+to the candidate and highlighted. You can match against the buffer name, as well as the search hit within the buffer. 
 
 Note that even when the value of this option is `nil',
 you can often see the multi-completion information in the [[mode line]] when you
@@ -1884,9 +1884,9 @@ the next command).
 ==== Option icicle-kill-visited-buffers-flag ====
 
 Non-`nil' user option '''`icicle-kill-visited-buffers-flag'''' means
-kill [[buffer]]s visited temporarily to WikiModes files.  This applies
+kill [[buffer]]s visited temporarily to search files.  This applies
 to commands such as `<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file]]</tt>',
-which WikiModes
+which search
 files that match your completion input.  If non-`nil' then any
 such buffers for files that you do not actually choose are
 killed when the command is finished.  If `nil' then they are not
@@ -1975,29 +1975,29 @@ want to use a much larger number than the default value in
 vanilla Emacs.
 
 ----
-[:icicle-regexp-WikiModes-ring-max] [:icicle-WikiModes-ring-max]
-==== Options icicle-WikiModes-ring-max, icicle-regexp-WikiModes-ring-max ====
+[:icicle-regexp-search-ring-max] [:icicle-search-ring-max]
+==== Options icicle-search-ring-max, icicle-regexp-search-ring-max ====
 
-User options '''`icicle-regexp-WikiModes-ring-max'''' and
-'''`icicle-WikiModes-ring-max'''' act as `regexp-WikiModes-ring-max' and
-`WikiModes-ring-max', respectively, when you are in ''Icicle'' mode.
-(When you exit ''Icicle'' mode, `regexp-WikiModes-ring-max' and
-`WikiModes-ring-max' are restored.)  The reason for having these
+User options '''`icicle-regexp-search-ring-max'''' and
+'''`icicle-search-ring-max'''' act as `regexp-search-ring-max' and
+`search-ring-max', respectively, when you are in ''Icicle'' mode.
+(When you exit ''Icicle'' mode, `regexp-search-ring-max' and
+`search-ring-max' are restored.)  The reason for having these
 options is that with '''Icicles''' you will likely want to use a much
-longer WikiModes history.  By default, these are as large as
-possible (virtually unlimited).   See [[Icicles - IWikiModes Enhancements]].
+longer search history.  By default, these are as large as
+possible (virtually unlimited).   See [[Icicles - Isearch Enhancements]].
 
 '''Suggestion:''' If you use SaveHist (recommended), then
 customize `savehist-additional-variables' to include variables
-`WikiModes-ring' and `regexp-WikiModes-ring', so that your ''WikiModes
+`search-ring' and `regexp-search-ring', so that your ''search
 histories will be saved between Emacs sessions''.
 
 [:clear-option]
-'''Note:''' You can clear (empty) a given WikiModes history with command
+'''Note:''' You can clear (empty) a given search history with command
 '''`clear-option''''' (aka '''`icicle-reset-option-to-nil'''').  For example, to clear the
-regular-expression WikiModes history, do this: `##C-u M-x clear-option RET regexp-WikiModes-ring RET##' (the `C-u' is needed because this variable is not a user option). If you use my library <tt>[[misc-cmds.el]]</tt>, you can clear WikiModes
-histories easier, using commands `clear-WikiModes-history',
-`clear-regexp-WikiModes-history', and `clear-WikiModes-histories'.   See [[Icicles - IWikiModes Enhancements]].
+regular-expression search history, do this: `##C-u M-x clear-option RET regexp-search-ring RET##' (the `C-u' is needed because this variable is not a user option). If you use my library <tt>[[misc-cmds.el]]</tt>, you can clear search
+histories easier, using commands `clear-search-history',
+`clear-regexp-search-history', and `clear-search-histories'.   See [[Icicles - Isearch Enhancements]].
 
 ----
 [:icicle-completion-history-max-length] [:icicle-C-l-uses-completion-flag]
@@ -2073,7 +2073,28 @@ defined.
 ==== Option icicle-color-themes ====
 
 User option '''`icicle-color-themes'''' is a list of color themes to
-[[Icicles - Cycling Completions|cycle]] through when you use command `icicle-color-theme'.
+[[Icicles - Cycling Completions|cycle]] through when you use command `icicle-color-theme'.    You
+need library [[ColorTheme|color-theme.el]] to use this command.
+
+
+----
+[:icicle-custom-themes]
+[:icicle-custom-theme]
+[:icicle-custom-themes-accumulate-flag]
+[:icicle-custom-themes-update-flag]
+==== Options icicle-custom-themes, icicle-custom-themes-accumulate-flag, icicle-custom-themes-update-flag ====
+
+Option '''`icicle-custom-themes'''' is a list of Emacs custom themes
+to cycle through when you use command '''`icicle-custom-theme''''.
+(This is available only for Emacs 24 and later.)  Option
+'''`icicle-custom-themes-accumulate-flag'''' determines whether such
+cycling keeps the effects of previously applied themes or
+replaces each theme with the next one.  Option
+'''`icicle-custom-themes-update-flag'''' determines whether the
+command automatically saves changes made.  A [[prefix argument]]
+flips this option value for the invocation of the command.
+
+
 
 ----
 [:icicle-saved-completion-sets]
@@ -2291,7 +2312,7 @@ User options '''`icicle-pp-eval-expression-print-length'''' and
 ==== Option icicle-guess-commands-in-path ====
 
 Non-`nil' option '''`icicle-guess-commands-in-path'''' means
-that all executable files (or all files, if option `shell-completion-execonly' is `nil') in your WikiModes path are included among the completion candidates whenever a shell command is read.  The particular non-nil value determines when this list of commands is updated from your current WikiModes
+that all executable files (or all files, if option `shell-completion-execonly' is `nil') in your search path are included among the completion candidates whenever a shell command is read.  The particular non-nil value determines when this list of commands is updated from your current search
 path. The default value is `nil'.  (The computed commands are cached in '''`icicle-shell-command-candidates-cache''''.)
 See [[Icicles - Shell-Command Enhancements#icicle-guess-commands-in-path|Icicles - Shell-Command Enhancements]].
 
