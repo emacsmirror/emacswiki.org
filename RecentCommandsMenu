@@ -1,0 +1,12 @@
+Library <tt>[[cmds-menu.el]]</tt>
+adds a '''Recent Commands''' submenuto the [[menu bar]] '''Tools''' menu by library <tt>[[cmds-menu.el]]</tt>.  It holds the most recent commands you have invoked using `M-x'.
+
+Loading the library is sufficient to add the submenu, so just put this in your [[init file]]:
+
+    (require 'cmds-menu)
+
+
+
+
+----
+CategoryMenus
