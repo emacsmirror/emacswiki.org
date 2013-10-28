@@ -332,7 +332,7 @@ All '''Icicles''' search commands operate in the same general way:
 part that follows the [[cursor]].  If the ''[[region]]'' is active, however,
 then the search is confined to the region. Some '''Icicles''' search commands let you search across ''multiple buffers'', ''multiple files'', or ''multiple bookmarks'', including region bookmarks. Searching within one or more such regions of text is a '''_first way_''' to ''limit the context'' of a search.
 
-# You limit the search context in a '''_second way_''', by providing some information, such as a ''regexp'' or a ''[[character property]]'' ([[text property]] or [[overlay]] property), that defines zones of text that you want to search.  You can use ([[lax]]) completion against previous input to enter the regexp or the character property. In some cases, the information (e.g. regexp) to define the search context is provided automatically by the search command; for example, `icicle-occur' assumes that you want to search [[line]]s.
+# You limit the search context in a '''_second way_''', by providing some information, such as a ''regexp'' or a [[text property|text]] or [[overlay]] property, that defines zones of text that you want to search.  You can use ([[lax]]) completion against previous input to enter the regexp or the text or overlay property. In some cases, the information (e.g. regexp) to define the search context is provided automatically by the search command; for example, `icicle-occur' assumes that you want to search [[line]]s.
 
 # If you use a regexp to define the search context, and if that
 regexp has ''subgroups'', that is, subexpressions of the form
