@@ -6,10 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Version:
-;; Last-Updated: Sat Jul 20 19:53:06 2013 (-0700)
+;; Last-Updated: Tue Oct 29 15:19:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 656
+;;     Update #: 667
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -148,6 +147,7 @@
 (define-key bookmark-map "I"      'bookmark-insert-location)                          ; `C-x p I'
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x p K' (also `C-x r K', `C-x p c K')
 (define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create)                  ; `C-x p L'
+(define-key bookmark-map "m"      'bmkp-bookmark-set-confirm-overwrite)               ; `C-x p m'
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)                           ; `C-x p N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x p q' (also `C-x 4 j j')
@@ -223,7 +223,8 @@
 (define-key bmkp-set-map "F"    'bmkp-make-function-bookmark)                  ; `C-x p c F'
 (define-key bmkp-set-map "K"    'bmkp-set-desktop-bookmark)                    ; `C-x p c K'
 (define-key bmkp-set-map "\C-k" 'bmkp-wrap-bookmark-with-last-kbd-macro)       ; `C-x p C-k'
-(define-key bmkp-set-map "m"    'bookmark-set)                                 ; `C-x p c m'
+(define-key bmkp-set-map "m"    'bmkp-bookmark-set-confirm-overwrite)          ; `C-x p c m'
+(define-key bmkp-set-map "M"    'bookmark-set)                                 ; `C-x p c M'
 (define-key bmkp-set-map "s"    'bmkp-set-sequence-bookmark)                   ; `C-x p c s'
 (define-key bmkp-set-map "u"    'bmkp-url-target-set)                          ; `C-x p c u'
 (define-key bmkp-set-map "\M-w" 'bmkp-set-snippet-bookmark)                    ; `C-x p c M-w'
@@ -735,7 +736,7 @@
 (defun bmkp-menu-bar-set-bookmark ()
   "Set a bookmark, prompting for the name."
   (interactive)
-  (call-interactively #'bookmark-set))
+  (call-interactively #'bmkp-bookmark-set-confirm-overwrite))
   
 (define-key bmkp-set-bookmark-menu [bmkp-make-function-bookmark]
   '(menu-item "Function Bookmark..." bmkp-make-function-bookmark
