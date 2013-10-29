@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Oct 28 11:16:18 2013 (-0700)
+;; Last-Updated: Tue Oct 29 16:34:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29413
+;;     Update #: 29416
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1946,9 +1946,10 @@
 ;;  bookmark, so `C-x r m' lets you either set or jump to any
 ;;  bookmark.  `C-x r m' is the vanilla Emacs key for setting a
 ;;  bookmark.  In Icicle mode it is bound by default to command
-;;  `icicle-bookmark-cmd'. (By default, whatever keys are normally
-;;  bound to `bookmark-set' are remapped in Icicle mode to
-;;  `icicle-bookmark-cmd'.)
+;;  `icicle-bookmark-cmd'.  By default, whatever keys are normally
+;;  bound to `bookmark-set' and `bmkp-bookmark-set-confirm-overwrite'
+;;  (from library `Bookmark+') are remapped in Icicle mode to
+;;  `icicle-bookmark-cmd'.
 ;;
 ;;  * With no prefix arg or a plain prefix arg (`C-u'), `C-x r m' acts
 ;;    like `icicle-bookmark-set'.  This is similar to `bookmark-set',
