@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Oct 27 13:39:12 2013 (-0700)
+;; Last-Updated: Tue Oct 29 15:56:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5756
+;;     Update #: 5760
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,9 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `kmacro', `levenshtein', `regexp-opt', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `cl', `cus-theme', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
+;;   `fuzzy-match', `hexrgb', `kmacro', `levenshtein', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1998,8 +1998,8 @@ This applies to commands `icicle-custom-theme' and
 `icicle-color-theme' and their respective options
 `icicle-custom-themes' and `icicle-color-themes'.
 
-A prefix to `icicle-custom-theme' flips the option value for the
-current invocation of the command."))
+A prefix argument to `icicle-custom-theme' flips the option value for
+the current invocation of the command."))
 
 (defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s)" default))
   "*Function that formats the default value to include in the prompt.
@@ -4342,6 +4342,8 @@ toggle Icicle mode off and then back on."
      t)                                 ; `C-x j j', `C-x p b', `C-x r b'
     (bookmark-jump-other-window    icicle-bookmark-other-window
      t)                                 ; `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'
+    (bmkp-bookmark-set-confirm-overwrite  icicle-bookmark-cmd
+     (fboundp 'bmkp-bookmark-set-confirm-overwrite))                      ; `C-x r m'
     (bookmark-set                  icicle-bookmark-cmd                 t) ; `C-x r m'
     (customize-apropos             icicle-customize-apropos            t)
     (customize-apropos-faces       icicle-customize-apropos-faces      t)
