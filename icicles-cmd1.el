@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 27 13:43:53 2013 (-0700)
+;; Last-Updated: Tue Oct 29 16:28:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25988
+;;     Update #: 26003
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -18,13 +18,13 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `naked',
-;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `doremi',
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `regexp-opt', `ring', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4365,7 +4365,8 @@ Raises an error if VARIABLE's value is not a number."
           (symbol-value variable)
           increment))
 
-(defun icicle-bookmark-cmd (&optional parg) ; Bound to what `bookmark-set' is bound to (`C-x r m').
+(defun icicle-bookmark-cmd (&optional parg) ; Bound to what `bookmark-set' and
+                                        ; `bmkp-bookmark-set-confirm-overwrite' are bound to (`C-x r m').
   "Set bookmark or visit bookmark(s).
 With a negative prefix arg, visit bookmark(s), using
   `icicle-bookmark-other-window' (see that command for more info).
@@ -4410,10 +4411,11 @@ Otherwise, set a bookmark, as follows:
     that has the same name.
 
 By default, Icicle mode remaps all key sequences that are normally
-bound to `bookmark-set' to `icicle-bookmark-cmd'.  If you do not want
-this remapping, then customize option `icicle-top-level-key-bindings'.
-In particular, you might prefer to remap `bookmark-set' to
-`icicle-bookmark-set' (see Note, above)."
+bound to `bookmark-set' (and `bmkp-bookmark-set-confirm-overwrite', if
+defined) to `icicle-bookmark-cmd'.  If you do not want this remapping,
+then customize option `icicle-top-level-key-bindings'.  In particular,
+you might prefer to remap `bookmark-set' to `icicle-bookmark-set' (see
+Note, above)."
   (interactive "P")
   (if (and parg  (< (prefix-numeric-value parg) 0))
       (icicle-bookmark-other-window)
@@ -4428,12 +4430,16 @@ In particular, you might prefer to remap `bookmark-set' to
                           "\n" " " (substring def-name 0 (min icicle-bookmark-name-length-max
                                                               (length def-name))))))
         (message "Setting bookmark `%s'" trim-name) (sit-for 2)
-        (bookmark-set trim-name (and parg  (or (consp parg)  (zerop (prefix-numeric-value parg)))))))))
+        (funcall (if (fboundp 'bmkp-bookmark-set-confirm-overwrite) ; Defined in `bookmark+-1.el'.
+                     #'bmkp-bookmark-set-confirm-overwrite
+                   #'bookmark-set)
+                 (and parg  (or (consp parg)  (zerop (prefix-numeric-value parg)))))))))
 
 (defun icicle-bookmark-set (&optional name parg interactivep) ; `C-x r m'
-  "With `Bookmark+', this is `bookmark-set' with Icicles multi-completions.
-In particular, you can use (lax) completion for the bookmark name.
-Without `Bookmark+', this is the same as vanilla Emacs `bookmark-set'.
+  "Without `Bookmark+', this is the same as vanilla Emacs `bookmark-set'.
+With `Bookmark+', this is `bmkp-bookmark-set-confirm-overwrite' with
+Icicles multi-completions.  In particular, you can use (lax)
+completion for the bookmark name.
 
 With `Bookmark+':
 
@@ -4547,6 +4553,11 @@ instead of those for the current buffer."
                                                                          'bookmark-history
                                                                        'icicle-bookmark-history))))))
              (when (string-equal bname "") (setq bname  defname))
+             (when (and interactivep  (boundp 'bmkp-bookmark-set-confirms-overwrite-p)
+                        bmkp-bookmark-set-confirms-overwrite-p  (atom parg)
+                        (bmkp-get-bookmark-in-alist bname 'NOERROR)
+                        (not (y-or-n-p (format "Overwirte bookmark `%s'? " bname))))
+               (error "OK, canceled"))
              (bookmark-store bname (cdr record) (consp parg))
              (when (and interactivep  bmkp-prompt-for-tags-flag)
                (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
