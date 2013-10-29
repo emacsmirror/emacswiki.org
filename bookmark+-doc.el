@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 30 19:10:21 2013 (-0700)
+;; Last-Updated: Tue Oct 29 15:46:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14711
+;;     Update #: 14716
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -378,11 +378,11 @@
 ;;       library `w32-browser.el'.)
 ;;
 ;;     - You can use (lax) completion when you set a bookmark using
-;;       `bookmark-set' (`C-x r m'), choosing from existing bookmarks
-;;       for the same buffer.  This makes it easy to update a nearby
-;;       bookmark (e.g. relocate it).  With a numeric prefix argument
-;;       (or if there are no bookmarks for the buffer), you can choose
-;;       from all bookmarks.
+;;       `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'), choosing
+;;       from existing bookmarks for the same buffer.  This makes it
+;;       easy to update a nearby bookmark (e.g. relocate it).  With a
+;;       numeric prefix argument (or if there are no bookmarks for the
+;;       buffer), you can choose from all bookmarks.
 ;;
 ;;     - You can edit a bookmark: its name and file name/location, its
 ;;       tags, or its complete defining internal Lisp record.
@@ -1287,12 +1287,12 @@
 ;;
 ;;  * Define a command that restores the bookmark-list state.
 ;;
-;;  When you use `C-x r m' (`bookmark-set') in buffer `*Bookmark
-;;  List*' to create a bookmark-list bookmark, the current sort order,
-;;  filter, regexp pattern, title, and omit list are saved as part of
-;;  the bookmark.  (These concepts are described below - see
-;;  (@> "Bookmark List Display").)  Jumping to such a bookmark
-;;  restores all of these.
+;;  When you use `C-x r m' (`bmkp-bookmark-set-confirm-overwrite') in
+;;  buffer `*Bookmark List*' to create a bookmark-list bookmark, the
+;;  current sort order, filter, regexp pattern, title, and omit list
+;;  are saved as part of the bookmark.  (These concepts are described
+;;  below - see (@> "Bookmark List Display").)  Jumping to such a
+;;  bookmark restores all of these.
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
 ;;  but without creating another bookmark - use `c'
@@ -3260,19 +3260,21 @@
 ;;  any number of Dired bookmarks.
 ;;
 ;;  A single key can set a bookmark or visit bookmarks.  This key is
-;;  whatever command `bookmark-set' would normally be bound to -
-;;  e.g. `C-x r m'.  A prefix arg controls what it does.  If negative
-;;  (`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark
-;;  using `bookmark-set' (Bookmark+ version), as follows:
+;;  whatever command `bmkp-bookmark-set-confirm-overwrite' would
+;;  normally be bound to - e.g. `C-x r m'.  A prefix arg controls what
+;;  it does.  If negative (`M--'), jump to (browse) bookmarks.
+;;  Otherwise, set a bookmark using
+;;  `bmkp-bookmark-set-confirm-overwrite', as follows:
 ;;
 ;;  * Numeric prefix arg (non-negative): No prompt.  Use the buffer
 ;;    name plus the text of the region (if active) or the current line
 ;;    as the bookmark name.  Quickest way to set a bookmark.
 ;;
-;;  * No prefix arg: same as `bookmark-set' (prompt for name).
+;;  * No prefix arg: same as `bmkp-bookmark-set-confirm-overwrite'
+;;    (prompt for name).
 ;;
-;;  * Plain `C-u': same as `bookmark-set' (prompt for name, no
-;;    bookmark overwrite.
+;;  * Plain `C-u': same as `bmkp-bookmark-set-confirm-overwrite'
+;;    (prompt for name, no bookmark overwrite.
 ;;
 ;;  During completion of a bookmark name, many features of the
 ;;  bookmark-list display (see (@> "The Bookmark List Display")) are
