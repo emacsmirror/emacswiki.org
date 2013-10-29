@@ -105,3 +105,6 @@ Agreed. AutoHotKey does let the Emacs user at keys not otherwise available. ....
     #IfWinActive
 
 Note the "IfWinActive" lines.  This is how to say "Only do this for Emacs". For one thing, they keep stray F2 strokes from going to other windows.  For another, I can use AutoHotKey to define entirely different meanings to Control-Capslock for Excel, FireFox, whatever... -- TomBaker
+
+
+One thing to add is that AutoHotKey and Autoit are derived from the same code base, so AutoHotKey tips here may work well with AutoIt. -- TomBaker
