@@ -92,7 +92,7 @@ CapsLock::AppsKey
 to make it a Super key---very useful in Emacs if you define your own keybindings.
 --JonasOster
 
-Agreed. AutoHotKey does let the Emacs user at keys not otherwise available. .....  I always like a "Macro" key in the lower left corner of my keyboard, as typing "Control-X e" is a little cumbersome.  I used to remap Control-Z for that, but that keystroke is pretty useful for other things and I defined F2 as a "Macro" key.  But AutoHotKey let's me define Control-Capslock as "F2".
+Agreed. AutoHotKey does let the Emacs user at keys not otherwise available. .....  I always like a "Macro" key in the lower left corner of my keyboard, as typing "Control-X e" is a little cumbersome.  I used to remap Control-Z for that, but that keystroke is pretty useful for other things and I defined F2 as a "Macro" key.  But AutoHotKey lets me define Control-Capslock as "F2".
 
     ;- Occasionally, control Capslock to be emacs macro key.
     ;  (Note that, inside emacs, f1 l doesn't seem to see the
@@ -104,7 +104,7 @@ Agreed. AutoHotKey does let the Emacs user at keys not otherwise available. ....
      return
     #IfWinActive
 
-Note the "IfWinActive" lines.  This is how to say "Only do this for Emacs". For one thing, they keep stray F2 strokes from going to other windows.  For another, I can use AutoHotKey to define entirely different meanings to Control-Capslock for Excel, FireFox, whatever... -- TomBaker
+Note the IfWinActive lines.  This is how to say "Only do this for Emacs". For one thing, they keep stray F2 strokes from going to other windows.  For another, I can use AutoHotKey to define entirely different meanings to Control-Capslock for Excel, FireFox, whatever... -- TomBaker
 
 
 One thing to add is that AutoHotKey and Autoit are derived from the same code base, so AutoHotKey tips here may work well with AutoIt. -- TomBaker
