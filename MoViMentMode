@@ -1,5 +1,5 @@
 [[de:English]]
-MoViMentMode is a minor mode that provides vi-like cursor movement that's easy on the fingers. With MoViMentMode enabled, you can move the cursor like so -
+MoViMentMode is a minor mode that provides vi-like cursor movement that's easy on the fingers. With MoViMentMode enabled, you can move the cursor like so.
 
         M-l
    
@@ -7,7 +7,7 @@ MoViMentMode is a minor mode that provides vi-like cursor movement that's easy o
    
         M-k
 
-Pressing the 'shift' key while moving the cursor this way will move the cursor by line/page.
+Prefixing these keybindings with the shift key will move the cursor by line/page. Prefixing them with the control key will cause the cursor to 'jump' (see ##mo-vi-ment-jump-length##).
 
 == Installation ==
 Via MELPA:
