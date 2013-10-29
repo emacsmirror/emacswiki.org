@@ -1,16 +1,16 @@
-;;; cmds-menu.el --- Menu-bar menu of recently invoked commands.
+;;; cmds-menu.el --- `Recent Commands' submenu for the menu-bar `Tools' menu.
 ;;
 ;; Filename: cmds-menu.el
-;; Description: Menu-bar menu of recently invoked commands.
+;; Description: `Recent Commands' submenu for the menu-bar `Tools' menu.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2013, Drew Adams, all rights reserved.
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 19 14:09:59 2013 (-0700)
+;; Last-Updated: Tue Oct 29 10:45:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 47
+;;     Update #: 48
 ;; URL: http://www.emacswiki.org/cmds-menu.el
 ;; Doc URL:
 ;; Keywords: convenience, command, menu
