@@ -50,7 +50,7 @@ If anyone decides to implement one of these, or finds an already existing implem
 * [http://www.stata.com/ Stata] support for [http://orgmode.org/worg/org-contrib/babel/index.html org-babel].
 * Add ido-completion option to `org-goto-interface' variable for `org-goto' function. Also allow selection of org file to navigate.
 * Directory name caching for ido - like [http://www.skamphausen.de/cgi-bin/ska/CDargs cdargs] for bash, or [[FileNameCache]] but for directories (and with user chosen aliases).
-* Some way of getting emacs to handle hooks more robustly. It's really annoying when your config file won't load fully because some function that you put on one of the built-in hooks is not longer valid, and you then have to do a load of debugging to track it down. Would be much nicer if emacs just skipped over the dodgy function, reported the error, and then continued.
+* Some way of getting emacs to handle hooks more robustly. It's really annoying when your config file won't load fully because some function that you put on one of the built-in hooks is no longer valid, and you then have to do a load of debugging to track it down. Would be much nicer if emacs just skipped over the dodgy function, reported the error, and then continued.
 * More c-level string matching functions, e.g. for finding longest common substring. This would be useful for building more powerful code analysis tools for example.
 
 == Mail Box ==
