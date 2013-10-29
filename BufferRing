@@ -47,14 +47,15 @@ bug hunting and polishing left. I welcome anyone to try it.
 
 please contact me with problems or suggestions [[codermattie]].
 
-Version 0.1.0 20011-03-26
+Version 0.1.0 2011-03-26
 
   * complete the interface by adding a function to delete buffer rings from the global torus
 
 Version 0.1.1 2013-10-29
 
-  * some bad bugs were fixed. It now works well with my heavy use. I wish the code
-    was prettier but the functionality is now solid.
+* major bug-fixes in both the dyn-ring implementation in insert and buffer-ring fixes to id
+  buffers by a unique id embedded in the buffer instead of the name of the buffer which is
+  subject to change.
 
 == Download ==
 
