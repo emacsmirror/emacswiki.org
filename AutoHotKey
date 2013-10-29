@@ -104,7 +104,42 @@ Agreed. AutoHotKey does let the Emacs user at keys not otherwise available. ....
      return
     #IfWinActive
 
-Note the ##IfWinActive## lines.  This is how to say "Only do this for Emacs". For one thing, they keep stray F2 strokes from going to other windows.  For another, I can use AutoHotKey to define entirely different meanings to Control-Capslock for Excel, FireFox, whatever... -- TomBaker
+Note the ##IfWinActive## lines.  This is how to say "Only do this for Emacs". For one thing, they keep stray F2 strokes from going to other windows.  For another, I can use ##AutoHotKey## to define entirely different meanings to Control-Capslock for Excel, ##FireFox##, whatever... -- TomBaker
 
 
-One thing to add is that AutoHotKey and Autoit are derived from the same code base, so AutoHotKey tips here may work well with AutoIt. -- TomBaker
+Another great thing, that complements Emacs and all its use of modifiers, is the way that ##AutoHotKey## can handle them.  Example -- My laptop decided to have its HOME and END keys crowded onto the same keys as ##PgUp## and ##PgDn##; that is, HOME is actually  ##Fn##+##PgUp##, and END is actually ##Fn##+##PgDn##.  Well, that should have worked, technically, but I use Home and End all the time and need to reach them (1) without modifiers and (2) by feeling for them with my fingers.  So I mapped them onto the F8 and F9 keys, so the gap between F8 and F9 can be found by feel.  So I had this for a long time in my .emacs file....
+
+    ; Good things here is that F8/F9 have a space between them
+    ; on Laptop, and most keyboards, so the finger can search for it.
+    ; Then we have ctrl combo, so we get BOF/END, and then Shift with
+    ; that, so we get selection moves, and Alt-or-Meta so we can move
+    ; other buffer.
+    (define-key global-map [ f8 ]           [home])
+    (define-key global-map [ f9 ]           [end] )
+    (define-key global-map [ S-f8 ]           [S-home])
+    (define-key global-map [ S-f9 ]           [S-end] )
+    (define-key global-map [ C-f8 ]           [C-home])
+    (define-key global-map [ C-f9 ]           [C-end] )
+    (define-key global-map [ S-C-f8 ]           [S-C-home])
+    (define-key global-map [ S-C-f9 ]           [S-C-end] )
+    (define-key global-map [ M-f8 ]           [M-home])
+    (define-key global-map [ M-f9 ]           [M-end] )
+
+But ##AutoHotKey## will apply modifiers after the fact, so I took that out of .emacs and put this into my .ahk file...
+
+    f8::Home
+    f9::End
+
+Actually, the Quick Time Player needed F8 and F9 as UP and DOWN, so I put this other stuff in front of that.  
+
+    #IfWinActive ahk_class QuickTimePlayerMain
+    $f8::send {down}
+    $f9::send {up}
+    #IfWinActive
+    f8::Home
+    f9::End
+
+(If I remember correctly, the dollar signs keep it from recursing in this case.)  --  TomBaker
+
+
+One thing to add is that AutoHotKey and Autoit are derived from the same code base, so AutoHotKey tips here may work well with ##AutoIt##. -- TomBaker
