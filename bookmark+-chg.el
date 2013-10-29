@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct  7 16:31:54 2013 (-0700)
+;; Last-Updated: Tue Oct 29 15:42:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15436
+;;     Update #: 15445
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/10/29 dadams
+;;     Added: bmkp-pop-to-readable-marker, bmkp-readable-marker, bmkp-bookmark-set-confirm-overwrite,
+;;            bmkp-bookmark-set-confirms-overwrite-p.
+;;     bookmark-set: Ask for overwrite confirmation if plain prefix arg and bookmark exists.
+;;     bmkp-menu-bar-set-bookmark: Use bmkp-bookmark-set-confirm-overwrite, not bookmark-set.
 ;; 2013/10/07 dadams
 ;;     bmkp-edit-bookmark-records-send: Move to line of current bmk, if only one.
 ;; 2013/08/09 dadams
@@ -1368,6 +1373,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2013/10/29 dadams
+;;     Bind bookmark-set's previous keys to bmkp-bookmark-set-confirm-overwrite.
+;;     Bind bookmark-set to C-x r M, not C-x r m.
+;;     bmkp-menu-bar-set-bookmark: Use bmkp-bookmark-set-confirm-overwrite, not bookmark-set.
 ;; 2013/07/20 dadams
 ;;     Moved items to new submenus: New/Update and Delete.
 ;; 2013/06/30 dadams
