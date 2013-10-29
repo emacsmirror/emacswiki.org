@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(defconst buffer-ring-version "0.1.0" "buffer-ring version")
+(defconst buffer-ring-version "0.1.1" "buffer-ring version")
 (require 'dynamic-ring)
 
 ;;
@@ -77,12 +77,15 @@
    Search the buffer torus for a ring NAME and return it if found
    or nil otherwise.
   "
-  (let
-    ((found (dyn-ring-find buffer-ring-torus
-              (lambda ( buffer-ring )
-                (when (string-equal (bfr-ring-name buffer-ring) name) t)) )))
+  (lexical-let*
+    ((search-name name)
+     (found (dyn-ring-find buffer-ring-torus
+              (lambda ( found-name )
+                (if (string= search-name (car (dyn-ring-element-value found-name)))
+                  t
+                  nil))) ))
     (when found
-      (car found)) ))
+      (bfr-ring-ring (car found))) ))
 
 (defun bfr-torus-get-ring ( name )
   "bfr-torus-get-ring NAME
@@ -103,51 +106,106 @@
       ;; name and a ring. insert the ring into the global ring.
       (progn
         (message "Creating a new ring \"%s\"" name)
-        (setq buffer-ring-default name)
-        (dyn-ring-insert buffer-ring-torus (dyn-ring-make-element (make-bfr-ring name))) )) ))
+        (let
+          ((new-ring (dyn-ring-make-element (make-bfr-ring name))))
+
+          (dyn-ring-insert buffer-ring-torus new-ring)
+          (bfr-ring-ring new-ring))) ) ))
 
 ;;
 ;; buffer ring functions
 ;;
 
-(defun bfr-ring-buffer-ptr ( buffer )
-  "bfring-buffer-ptr BUFFER
+(defun bfr-make-buffer-id ()
+  (number-to-string (random 500)))
 
-   make sure BUFFER is a string so that it will still point to a
-   buffer when a buffer is destroyed and re-created.
-  "
-  (if (bufferp buffer)
-    (buffer-name buffer)
-    buffer))
+(defun bfr-set-buffer-id ( buffer id )
+  (with-current-buffer buffer
+    (set (make-local-variable 'buffer-ring-id) id)))
 
-(defun bfr-ring-find-buffer ( buffer-ring buffer-name )
-  "bfr-ring-find-buffer RING BUFFER
+(defun bfr-get-buffer-id ( buffer )
+  (with-current-buffer buffer
+    (if (boundp 'buffer-ring-id)
+      buffer-ring-id
+      nil)))
 
-   Search buffer RING for BUFFER. return the buffer ring element
+(defun bfr-buffer-has-id-p ( buffer )
+  (with-current-buffer buffer
+    (boundp 'buffer-ring-id)))
+
+(defun bfr-find-buffer-for-id ( id )
+  (catch 'buffer-name
+    (dolist (this-buffer (buffer-list))
+      (with-current-buffer this-buffer
+        (when (and (bfr-buffer-has-id-p this-buffer) (string= id buffer-ring-id))
+          (throw 'buffer-name this-buffer)) ))
+    nil))
+
+(defun bfr-buffer-ring-name ( buffer )
+  (with-current-buffer buffer
+    buffer-ring-name))
+
+(defun bfr-ring-find-buffer ( buffer-ring id )
+  "bfr-ring-find-buffer RING ID
+
+   Search buffer RING for ID. return the buffer ring element
    if found, otherwise nil.
   "
   (let
     ((found (dyn-ring-find buffer-ring
               (lambda ( ring-element )
-                (when (string-equal (dyn-ring-element-value ring-element) buffer-name) t)) )))
-    (when found
-      (car found)) ))
+                (when (string-equal (dyn-ring-element-value ring-element) id) t)) )))
+    (if found
+      (car found)
+      nil) ))
 
-(defun bfr-ring-add-buffer ( buffer-ring buffer )
+(defun bfr-ring-find-unused-id ( ring )
+  (let
+    ((tentative-id nil))
+
+    (catch 'free-id
+      (dolist (attempt-count '(1 2 3 4 5))
+        (setq tentative-id (bfr-make-buffer-id))
+
+        (unless (bfr-ring-find-buffer ring tentative-id)
+          (throw 'free-id tentative-id)))
+      nil) ))
+
+(defun bfr-ring-add-buffer ( ring-name buffer )
   "bfr-ring-add-buffer RING BUFFER
 
    Add BUFFER to buffer RING. If the buffer is already in the ring return
    the existing buffer element, or a new one inserted in the buffer RING.
   "
-  (let*
-    ((buffer-ptr     (bfr-ring-buffer-ptr buffer))
-     (buffer-element (bfr-ring-find-buffer (bfr-ring-ring buffer-ring) buffer-ptr)))
+  (catch 'abort
+    (when (bfr-buffer-has-id-p (current-buffer))
+      (message "buffer %s is already in ring \"%s\"" (buffer-name)
+        (bfr-buffer-ring-name (current-buffer)))
 
-    (if buffer-element
-      (progn
-        (message "buffer %s is already in ring \"%s\"" (buffer-name) (bfr-ring-name buffer-ring))
-        buffer-element)
-      (dyn-ring-insert (bfr-ring-ring buffer-ring) (dyn-ring-make-element buffer-ptr))) ))
+      (throw 'abort nil))
+
+    (with-current-buffer buffer
+      ;; create the buffer ring object
+      (set (make-local-variable 'buffer-ring) (bfr-torus-get-ring ring-name))
+
+      ;; set the name of the ring for interface purposes
+      (set (make-local-variable 'buffer-ring-name) ring-name)
+
+      (let
+        ((found-id (bfr-ring-find-unused-id buffer-ring)))
+
+        (unless found-id
+          (message "could not find a unused id for buffer after several attempts. aborting.")
+          (throw 'abort nil))
+
+        (bfr-set-buffer-id (current-buffer) found-id))
+
+      (set (make-local-variable 'buffer-ring-modeline) (concat " Ring (" ring-name ") "))
+
+      (set (make-local-variable 'buffer-ring-element)
+        (dyn-ring-insert buffer-ring
+          (dyn-ring-make-element (bfr-get-buffer-id (current-buffer)))) ) )
+    t))
 
 (defun bfr-in-ring-p ( &optional buffer )
   "bfr-in-ring-p &optional BUFFER
@@ -155,8 +213,16 @@
    return t if BUFFER is in a ring. The argument is optional,
    it defaults to the current buffer.
   "
-  (with-current-buffer (or buffer (current-buffer))
-    (and (local-variable-p 'buffer-ring) (local-variable-p 'buffer-ring-this-buffer))))
+  (bfr-buffer-has-id-p (or buffer (current-buffer)) ))
+
+(defun bfr-get-ring-name ( &optional buffer )
+  (let
+    ((use-buffer (or buffer (current-buffer)) ))
+
+    (if (bfr-in-ring-p use-buffer)
+      (with-current-buffer use-buffer
+        buffer-ring-name)
+      nil) ))
 
 (defun bfr-ring-size ( &optional buffer )
   "bfr-ring-size &optional BUFFER
@@ -167,7 +233,7 @@
   "
   (with-current-buffer (or buffer (current-buffer))
     (if (bfr-in-ring-p buffer)
-      (dyn-ring-size (bfr-ring-ring buffer-ring))
+      (dyn-ring-size buffer-ring)
       -1) ))
 
 ;;
@@ -182,16 +248,18 @@
   "
   (interactive "sAdd to ring ? ")
 
-  (if (boundp 'buffer-ring)
-    (message
-      "This buffer is already in ring %s, delete it before adding it to another ring"
-      (bfr-ring-name buffer-ring))
+  (if (bfr-in-ring-p (current-buffer))
     (progn
-      (set (make-local-variable 'buffer-ring) (bfr-torus-get-ring name))
-      (set (make-local-variable 'buffer-ring-this-buffer) (bfr-ring-add-buffer buffer-ring (current-buffer)))
-      (set (make-local-variable 'buffer-ring-modeline) (concat " Ring (" name ") "))
-
-      (add-hook 'kill-buffer-hook 'buffer-ring-delete t t))) )
+      (message
+        "This buffer is already in ring %s, delete it before adding it to another ring"
+        buffer-ring-name)
+      nil)
+    (progn
+      (if (bfr-ring-add-buffer name (current-buffer))
+        (progn
+          (add-hook 'kill-buffer-hook 'buffer-ring-delete t t)
+          t)
+        nil)) ))
 
 (defun buffer-ring-delete ()
   "buffer-ring-delete
@@ -202,13 +270,12 @@
   (interactive)
   (if (bfr-in-ring-p)
     (progn
-      (dyn-ring-delete (bfr-ring-ring buffer-ring) buffer-ring-this-buffer)
+      (dyn-ring-delete buffer-ring buffer-ring-element)
 
       (kill-local-variable 'buffer-ring)
-      (kill-local-variable 'buffer-ring-this-buffer)
-      (kill-local-variable 'buffer-ring-modeline)
+      (kill-local-variable 'buffer-ring-element)
 
-      (remove-hook 'kill-buffer-hook 'bfr-del-buffer t))
+      (remove-hook 'kill-buffer-hook 'buffer-ring-delete t))
     (message "This buffer is not in a ring")))
 
 (defun buffer-ring-list-buffers ()
@@ -218,32 +285,36 @@
   "
   (interactive)
 
-  (if (boundp 'buffer-ring)
+  (if (bfr-in-ring-p)
     (let
-      ((buffer-list nil))
+      ((buffer-list-string nil))
 
-      (dyn-ring-map
-        (bfr-ring-ring buffer-ring)
-        (lambda ( name )
-          (setq buffer-list
-            (if buffer-list
-              (concat name "," buffer-list)
-              name))))
+      (dyn-ring-map buffer-ring
+        (lambda ( bfr-in-ring-p )
+          (setq discovered-buffer (bfr-find-buffer-for-id bfr-id))
+          (if buffer-list-string
+            (setq buffer-list-string (concat discovered-buffer "," buffer-list-string))
+            (setq buffer-list-string discovered-buffer)) ) )
 
-    (message "buffers in [%s]: %s" (bfr-ring-name buffer-ring) buffer-list))
-    (message "This buffer is not in a ring.")) )
+      (message "buffers in [%s]: %s" bfr-ring-name buffer-list) )
+    (message "This buffer is not in a ring.") ))
+
+(defun bfr-switch-to-buffer-by-id ( id )
+  (let
+    ((target-buffer (bfr-find-buffer-for-id id) ))
+
+    (if target-buffer
+      (switch-to-buffer target-buffer)
+      (message "buffer to switch to not found .. very bad")) ))
 
 (defun bfr-rotate-buffer-ring ( direction )
   (if (bfr-in-ring-p)
-    (let
-      ((ring (bfr-ring-ring buffer-ring)))
-
-      (if (< (dyn-ring-size ring) 2)
-        (message "There is only one buffer in the ring.")
-        (progn
-          (funcall direction ring)
-          (switch-to-buffer (dyn-ring-value ring))) ))
-    (message "This buffer is not in a ring") ))
+    (if (< (dyn-ring-size buffer-ring) 2)
+      (message "There is only one buffer in the ring.")
+      (progn
+        (funcall direction buffer-ring)
+        (bfr-switch-to-buffer-by-id (dyn-ring-value buffer-ring)) ))
+    (message "buffer not in ring.")) )
 
 (defun buffer-ring-prev-buffer ()
   "buffer-ring-prev-buffer
@@ -284,17 +355,19 @@
 
 (defun bfr-rotate-buffer-torus ( direction )
   (if (< (dyn-ring-size buffer-ring-torus) 2)
-    (message "There is only one buffer ring; ignoring the rotate command")
+    (message "There is only one buffer ring; ignoring the rotate global ring command")
     ;; rotate past any empties
     (if (dyn-ring-rotate-until
           buffer-ring-torus
           direction
           (lambda ( buffer-ring )
-            (not (dyn-ring-empty-p buffer-ring))))
+            (not (dyn-ring-empty-p (cdr buffer-ring)))))
       (progn
         (message "switching to ring %s" (bfr-current-name))
-        (switch-to-buffer (dyn-ring-value (bfr-current-ring))))
+        (let
+          ((current-head (dyn-ring-value (cdr (dyn-ring-value buffer-ring-torus)))))
 
+          (bfr-switch-to-buffer-by-id current-head) ))
       (message "All of the buffer rings are empty. Keeping the current ring position")) ))
 
 (defun buffer-torus-next-ring ()
@@ -349,8 +422,6 @@
       (dyn-ring-map (bfr-current-ring) (lambda ( buffer-name )
                                          buffer-name)) )
     (dyn-ring-delete buffer-ring-torus (car buffer-ring-torus)) ))
-
-(buffer-torus-delete-ring)
 
 (provide 'buffer-ring)
 ;;; buffer-ring.el ends here
