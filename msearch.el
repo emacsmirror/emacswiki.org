@@ -87,6 +87,10 @@
 ;;
 ;; 2013-10-23, TN:
 ;; Optional msearch for double-click and dragging.
+;;
+;; 2013-10-29, TN
+;; Include proposal of Peter Harlan (Option case-fold-search)
+;; word/symbol limits
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -99,6 +103,21 @@
 (defcustom msearch-max-length 1000
   "Maximal length of search string."
   :type 'integer
+  :group 'msearch)
+
+(defcustom msearch-case-fold-search-start 'case-fold-search
+  "You can select whether msearch is case sensitive or not in the msearch menu.
+With this variable you determine the setting when you enter msearch-mode."
+  :type '(choice (const :tag "On" t)
+		 (const :tag "Off" nil)
+		 (const :tag "Default behavior" case-fold-search))
+  :group 'msearch)
+
+(defcustom msearch-full-word/symbol-start nil
+  ""
+  :type '(choice (const :tag "None" nil)
+		 (const :tag "Word consistent" '("\\<" . "\\>"))
+		 (const :tag "Symbol consistent" '("\\_<" . "\\_>")))
   :group 'msearch)
 
 (defvar msearch-face-idx 0)
@@ -202,6 +221,18 @@ Note, customization of this variable has no influence on buffers already used wi
   (defvar msearch-slaves)
   (defvar msearch-mode-menu-bar-map))
 
+(defun msearch-check-limits (limits)
+  "Check wether the previous match obeys the limit check. E.g. limits == (\"\\\\<\" . \"\\\\>\")."
+  (let ((match-b (match-beginning 0))
+	(match-e (match-end 0))
+	(inhibit-changing-match-data t))
+    (save-excursion
+      (goto-char match-b)
+      (and
+       (looking-at (car limits))
+       (progn (goto-char match-e)
+       (looking-at (cdr limits)))))))
+
 (defun msearch-lock-word (b e word face)
   "Highlight all matches of mouse-selection within the visible region."
   (when (and (stringp word) (> (length word) 0))
@@ -209,7 +240,10 @@ Note, customization of this variable has no influence on buffers already used wi
     (save-excursion
       (goto-char b)
       (while (search-forward word e 'noError)
-	(unless (get-char-property (match-beginning 0) 'msearch)
+	(if (and
+	     (or (null msearch-full-word/symbol)
+		 (msearch-check-limits msearch-full-word/symbol))
+	     (null (get-char-property (match-beginning 0) 'msearch)))
 	  (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
 	    (overlay-put ov 'face face)
 	    (overlay-put ov 'msearch 't)))
@@ -217,13 +251,15 @@ Note, customization of this variable has no influence on buffers already used wi
 
 (defun msearch-lock-function (b e)
   "Highlight all matches of mouse-selection within the visible region."
+  (declare (special msearch-case-fold-search))
   (remove-overlays b e 'msearch 't) ;; remove old highlighting
-  (cond
-   ((stringp msearch-word)
-    (msearch-lock-word b e msearch-word msearch-face))
-   ((listp msearch-word)
-    (loop for wordFace in msearch-word do
-	  (msearch-lock-word b e (car wordFace) (cdr wordFace))))))
+  (let ((case-fold-search (eval msearch-case-fold-search)))
+    (cond
+     ((stringp msearch-word)
+      (msearch-lock-word b e msearch-word msearch-face))
+     ((listp msearch-word)
+      (loop for wordFace in msearch-word do
+	    (msearch-lock-word b e (car wordFace) (cdr wordFace)))))))
 
 (defun msearch-cleanup (&optional all)
   "Remove overlays of msearch and deactivate msearch-lock-function."
@@ -370,26 +406,58 @@ The slave buf is released when msearch of the master is switched off."
 (defvar msearch-mode-map (make-sparse-keymap)
   "Menu for msearch mode.")
 
-(easy-menu-define msearch-mode-menu msearch-mode-map
+(easy-menu-define nil msearch-mode-map
   "Menu for msearch mode."
   '("MSearch"
-    ["Switch Off msearch" msearch-mode 't]
-    ("Unhighlight" ["Current" msearch-cleanup 't]
-     ["All" msearch-cleanup-all 't])
-    ["Freeze Highlights" msearch-freeze 't]
-    ["Help On msearch" msearch-help 't]
-    ["Enslave Buffer" msearch-enslave-buffer 't]
-    ["Release Buffer" msearch-release-buffer 't]
-    ["Release All Buffers" msearch-release-all 't]
-    ["Set msearch word" msearch-set-word 't]
+    ["Switch Off msearch" msearch-mode t]
+    ("Unhighlight" ["Current" msearch-cleanup t]
+     ["All" msearch-cleanup-all t])
+    ("Case-fold-search"
+     ["On" (setq msearch-case-fold-search t)
+      :style radio
+      :selected (equal msearch-case-fold-search t)
+      :help "msearch is not case sensitive"]
+     ["Off" (setq msearch-case-fold-search nil)
+      :style radio
+      :selected (null msearch-case-fold-search)
+      :help "msearch is case sensitive"]
+     ["Default" (setq msearch-case-fold-search 'case-fold-search)
+      :style radio
+      :selected (eq msearch-case-fold-search 'case-fold-search)
+      :help "Use the setting of `case-fold-search' (which see)."])
+    ("Consistence"
+     ["Word" (setq msearch-full-word/symbol '("\\<" . "\\>"))
+      :style radio
+      :selected (equal msearch-full-word/symbol '("\\<" . "\\>"))]
+     ["Symbol" (setq msearch-full-word/symbol '("\\_<" . "\\_>"))
+      :style radio
+      :selected (equal msearch-full-word/symbol '("\\_<" . "\\_>"))]
+     ["None" (setq msearch-full-word/symbol nil)
+      :style radio
+      :selected (null msearch-full-word/symbol)])
+    ["Freeze Highlights" msearch-freeze]
+    ["Help On msearch" msearch-help]
+    ["Enslave Buffer" msearch-enslave-buffer]
+    ["Release Buffer" msearch-release-buffer]
+    ["Release All Buffers" msearch-release-all]
+    ["Set msearch word" msearch-set-word]
     ))
+
+(defvar msearch-case-fold-search nil)
+(make-variable-buffer-local 'msearch-case-fold-search)
+
+(defvar msearch-full-word/symbol nil)
+(make-variable-buffer-local 'msearch-full-word/symbol)
 
 (define-minor-mode msearch-mode
   "Mouse-drag high-lightes all corresponding matches within the current buffer."
   :lighter " msearch"
   :keymap (list (cons [menu-bar] msearch-mode-menu-bar-map))
+  (declare (special msearch-case-fold-search))
   (if msearch-mode
       (progn
+	(setq msearch-case-fold-search msearch-case-fold-search-start)
+	(setq msearch-full-word/symbol msearch-full-word/symbol-start)
 	(set (make-local-variable 'msearch-word) nil)
 	(set (make-local-variable 'msearch-old-word) "")
 	(set (make-local-variable 'msearch-slaves) nil)
