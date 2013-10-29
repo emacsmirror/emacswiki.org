@@ -147,5 +147,8 @@ Using emacs-mailto-handler as above, this function can be used to start composit
           (wl-draft good-headers nil nil body)))))
 </pre>
 
+== Mu4e ==
+[[Mu4e|mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
+
 ----
 CategoryMail
