@@ -421,9 +421,9 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-S-DEL C-x ( C-y C-9 C-x e##||duplicate line 10 times||
 ||##C-u C-x e##||run last and append more commands||
 ||##C-u F3##||same as previous||
-||##C-k C-k C-d##||delete current macro from ring||
-||##C-k C-k C-p##||switch to previous macro in ring||
-||##C-k C-k C-n##||switch to next macro in ring||
+||##C-x C-k C-d##||delete current macro from ring||
+||##C-x C-k C-p##||switch to previous macro in ring||
+||##C-x C-k C-n##||switch to next macro in ring||
 ||##C-x C-k e C-x e##||edit current||
 ||##C-x C-k C-e##||same as previous||
 ||##C-x C-k n <NAME>##||give current NAME||
