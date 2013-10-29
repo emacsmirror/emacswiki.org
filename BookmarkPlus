@@ -8,6 +8,13 @@ The internal bookmark format (data structure) used by '''Bookmark+''' is compati
 
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
 
+
+
+
+
+
+
+
 [:Quick-Start]
 == Quick Start ==
 
@@ -30,6 +37,11 @@ Some keys you can use in [[DiredMode]]:
 
 * Bookmark the Dired directory, its current markings, etc.: `C-x r m'
 * Bookmark each of the marked files: `M-b' (you need '''[[Dired+]]''' for this)
+
+
+
+
+
 
 
 
@@ -71,6 +83,8 @@ independent of the highlighting provided by ##bookmark+-lit.el##.)
 For this optional crosshairs feature you
 also need library <tt>[[crosshairs.el]]</tt>, which in turn requires
 libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, and <tt>[[vline.el]]</tt>.  Library ##hl-line## comes with vanilla Emacs.  You also need Emacs 22 or later for this feature.
+
+
 
 
 
@@ -311,7 +325,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 according to ''Windows file associations''.  (You will also need
 library <tt>[[w32-browser.el]]</tt>.)
 
-* You can use (lax) ''[[completion]] when you set'' a bookmark using `bookmark-set' (`C-x r m'),
+* You can use (lax) ''[[completion]] when you set'' a bookmark using  `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'),
 choosing from existing bookmarks for the same buffer.  This
 makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric prefix argument]] (or if there are no bookmarks for the buffer), you can choose from all bookmarks.
 
@@ -1350,7 +1364,7 @@ There are two ways to do this:
 bookmark-list bookmark.
 * Define a command that restores the bookmark-list state.
 
-When you use `C-x r m' (`bookmark-set') in buffer `##*Bookmark List*##' to
+When you use `C-x r m' (`bmkp-bookmark-set-confirm-overwrite') in buffer `##*Bookmark List*##' to
 create a bookmark-list bookmark, the current sort order, filter, regexp pattern, title, and omit
 list are saved as part of the bookmark.  (These concepts are
 described below --- see [[#BookmarkListDisplay]].)  Jumping to
@@ -3621,17 +3635,16 @@ becomes a bookmarks browser.  For example, `C-x j d' browses among
 any number of Dired bookmarks.
 
 A single key can ''set'' a bookmark or ''visit'' bookmarks.  This key is
-whatever command `bookmark-set' would normally be bound to -- e.g. `C-x r m'.  A [[prefix argument]] controls what it does.  If negative
-(`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark using `bookmark-set' ('''Bookmark+''' version),
-as follows:
+whatever command `bmkp-bookmark-set-confirm-overwrite' would normally be bound to -- e.g. `C-x r m'.  A [[prefix argument]] controls what it does.  If negative
+(`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark using `bmkp-bookmark-set-confirm-overwrite', as follows:
 
 * Numeric prefix arg (non-negative): No prompt.  Use the buffer
   name plus the text of the region (if active) or the current line
   as the bookmark name.  Quickest way to set a bookmark.
 
-* No prefix arg: same as `bookmark-set' (prompt for name).
+* No prefix arg: same as `bmkp-bookmark-set-confirm-overwrite' (prompt for name).
 
-* Plain `C-u': same as `bookmark-set' (prompt for name, no
+* Plain `C-u': same as `bmkp-bookmark-set-confirm-overwrite' (prompt for name, no
 bookmark overwrite.
 
 During completion of a bookmark name, most features of the
