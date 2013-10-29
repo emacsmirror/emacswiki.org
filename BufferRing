@@ -51,6 +51,11 @@ Version 0.1.0 20011-03-26
 
   * complete the interface by adding a function to delete buffer rings from the global torus
 
+Version 0.1.1 2013-10-29
+
+  * some bad bugs were fixed. It now works well with my heavy use. I wish the code
+    was prettier but the functionality is now solid.
+
 == Download ==
 
 * [[dynamic-ring.el]]
