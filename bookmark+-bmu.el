@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Oct  7 15:43:41 2013 (-0700)
+;; Last-Updated: Tue Oct 29 15:33:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2575
+;;     Update #: 2583
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -17,9 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `bookmark', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
+;;   `apropos', `apropos+', `avoid', `bookmark', `cmds-menu',
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -257,13 +257,13 @@
 ;;    `bmkp-bmenu-before-hide-unmarked-alist',
 ;;    `bmkp-bmenu-define-command-menu', `bmkp-bmenu-filter-function',
 ;;    `bmkp-bmenu-filter-pattern', `bmkp-bmenu-filter-timer',
-;;    `bmkp-bmenu-first-time-p', `bmkp-flagged-bookmarks',
-;;    `bmkp-bmenu-header-lines', `bmkp-bmenu-highlight-menu',
-;;    `bmkp-bmenu-line-overlay', `bmkp-bmenu-mark-menu',
-;;    `bmkp-bmenu-marked-bookmarks', `bmkp-bmenu-marks-width',
-;;    `bmkp-bmenu-menubar-menu', `bmkp-bmenu-omit-menu',
-;;    `bmkp-bmenu-show-menu', `bmkp-bmenu-sort-menu',
-;;    `bmkp-bmenu-tags-menu', `bmkp-bmenu-title',
+;;    `bmkp-bmenu-first-time-p', `bmkp-bmenu-header-lines',
+;;    `bmkp-bmenu-highlight-menu', `bmkp-bmenu-line-overlay',
+;;    `bmkp-bmenu-mark-menu', `bmkp-bmenu-marked-bookmarks',
+;;    `bmkp-bmenu-marks-width', `bmkp-bmenu-menubar-menu',
+;;    `bmkp-bmenu-omit-menu', `bmkp-bmenu-show-menu',
+;;    `bmkp-bmenu-sort-menu', `bmkp-bmenu-tags-menu',
+;;    `bmkp-bmenu-title', `bmkp-flagged-bookmarks',
 ;;    `bmkp-last-bmenu-bookmark'.
 ;;
 ;;
@@ -823,15 +823,15 @@ Bookmark names thus begin in this column number (since zero-based).")
 Quitting the list or the Emacs session resets this to t.
 The first time the list is displayed, it is set to nil.")
 
-(defvar bmkp-flagged-bookmarks ()
-  "Alist of bookmarks that are flagged for deletion in `*Bookmark List*'.")
-
 (defvar bmkp-bmenu-marked-bookmarks ()
   "Names of the marked bookmarks.
 This includes possibly omitted bookmarks, that is, bookmarks listed in
 `bmkp-bmenu-omitted-bookmarks'.")
 
 (defvar bmkp-bmenu-title "" "Latest title for `*Bookmark List*' display.")
+
+(defvar bmkp-flagged-bookmarks ()
+  "Alist of bookmarks that are flagged for deletion in `*Bookmark List*'.")
 
 ;; This is a general variable.  It is in this file because it is used only in the bmenu code.
 (defvar bmkp-last-bmenu-bookmark nil "The name of the last bookmark current in the bookmark list.")
@@ -1384,7 +1384,7 @@ Create/Set Bookmarks (anywhere)
 \\[bmkp-autofile-set]\t- Set and autoname a bookmark for a file
 \\[bmkp-file-target-set]\t- Set a bookmark for a file
 \\[bmkp-url-target-set]\t- Set a bookmark for a URL
-\\[bookmark-set]\t\t- Set a bookmark here
+\\[bmkp-bookmark-set-confirm-overwrite]\t\t- Set a bookmark here
 \\[bmkp-set-desktop-bookmark]\t\t- Set a bookmark for the current desktop
 \\[bmkp-set-bookmark-file-bookmark]\t\t- Set a bookmark for a bookmark file
 \\[bmkp-set-snippet-bookmark]\t- Save the region text as a snippet bookmark
