@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Oct 29 15:30:03 2013 (-0700)
+;; Last-Updated: Wed Oct 30 11:21:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6997
+;;     Update #: 6998
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2051,7 +2051,7 @@ a text property.  Point is irrelevant and unaffected."
 ;;     `bookmark-make-record' comes up with, as the list of default values.
 ;;  4. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
 ;;  5. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
-;;  6. Ask for confirmation if `C-u' and NAME names an existing bookmark.
+;;  6. Ask for confirmation if (a) not plain `C-u' and (b) NAME names an existing bookmark.
 ;;  7. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
 ;;  8. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
 ;;  9. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
