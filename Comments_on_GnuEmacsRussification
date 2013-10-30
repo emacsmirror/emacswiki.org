@@ -1,0 +1,10 @@
+thanks a lot for your emacs settings! couple notes:
+1) in emacs 24.3.1 we need get rid depricated func call (codepage-setup 1251)
+2) "(setq default-process-coding-system
+   (if (string> (substring emacs-version 0 2) "21") '(koi8-r . koi8-r) 'koi8-r))"
+replace by "(setq default-process-coding-system 'koi8-r)"
+]
+sorry , I'm not emacs expert
+
+-- oneivan 2013-10-30 07:28 UTC
+
