@@ -1,3 +1,8 @@
-*Helm* is the successor of [[Anything]]. It's a generic framework for quickly accessing stuff within Emacs. Or: an "incremental completion and selection narrowing framework for Emacs." Source [https://github.com/emacs-helm/helm available from GitHub].
+*Helm* is the successor of [[Anything]]. It's a generic framework for quickly accessing stuff within Emacs. Or: an "incremental completion and selection narrowing framework for Emacs."
+
+* Source [https://github.com/emacs-helm/helm available from GitHub]
+* Documentation on its own [https://github.com/emacs-helm/helm/wiki Helm Wiki]
+
+Other packages:
 
 * HelmSwoop -- like [OccurMode occur], but /live/
