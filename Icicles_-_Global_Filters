@@ -108,15 +108,8 @@ then the predicate `commandp' first filters all of the available
     (commandp c))
 
 That does about the same thing as `commandp', but its argument is
-a completion candidate as displayed, that is, a string, not a symbol in the `[[obarray]]'.
-
-Now suppose you type `M-x forw TAB'.  If Icomplete mode is on then
-your input is expanded to the common match `forward-'.  If off it
-is expanded to only `forward'.  Why?  Because when it is off your
-input is matched against all symbol names, before checking those
-that match to see if they name commands.  The common match among
-all symbol names is `forward', not `forward-'.  See
-[[Icicles - Expanded-Common-Match Completion]]
+a completion candidate as displayed, that is, a string, not a symbol in the `[[obarray]]'.  See
+[[Icicles - Expanded-Common-Match Completion]].
 
 And here's a gotcha to keep in mind if you use either
 '''`icicle-must-pass-predicate'''' or
