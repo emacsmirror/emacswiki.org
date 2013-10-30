@@ -26,4 +26,4 @@ Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.n
 
 CardDav is a IETF standards-track protocol designed from the ground up for keeping PIM clients in sync with a contacts server. It has emerged as the most generic and open standard for contacts synchronization. Apple Addressbook can connect to a CardDav server for synchronization. Gmail can act as a contacts server (you can think of the contacts UI in gmail as google's CardDav client). CardDav is based on vCard format for storing individual contact information.
 
-As of April 2013 ASynK (http://karra-asynk.appspot.com/) has released experimental CardDAV support. You can read more about it at the github page (https://github.com/skarra/ASynK/tree/carddav)
+As of April 2013 ASynK (http://karra-asynk.appspot.com/) supports bidirectional BBDB <-> CardDAV (at least with BBDB3). See also the github page (https://github.com/skarra/ASynK/). This works with both Owncloud and Apple's carddav server (as well as Google Contacts).
