@@ -130,6 +130,8 @@ But ##AutoHotKey## will apply modifiers after the fact, so I took that out of .e
     f8::Home
     f9::End
 
+That is all that is needed to make chords like Control + Alt +F8 work. ##AutoHotKey## does the right thing in cases like that.
+
 Actually, the Quick Time Player needed F8 and F9 as UP and DOWN, so I put this other stuff in front of that.  
 
     #IfWinActive ahk_class QuickTimePlayerMain
