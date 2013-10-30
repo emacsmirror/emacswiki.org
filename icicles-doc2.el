@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Oct 29 16:34:06 2013 (-0700)
+;; Last-Updated: Wed Oct 30 10:04:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29416
+;;     Update #: 29418
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9275,15 +9275,8 @@
 ;;
 ;;  That does about the same thing as `commandp', but its argument is
 ;;  a completion candidate as displayed, that is, a string, not a
-;;  symbol in the `obarray'.
-;;
-;;  Now suppose you type `M-x forw TAB'.  If Icomplete mode is on then
-;;  your input is expanded to the common match `forward-'.  If off it
-;;  is expanded to only `forward'.  Why?  Because when it is off your
-;;  input is matched against all symbol names, before checking those
-;;  that match to see if they name commands.  The common match among
-;;  all symbol names is `forward', not `forward-'.  See
-;;  (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion")
+;;  symbol in the `obarray'.  See
+;;  (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion").
 ;;
 ;;  And here's a gotcha to keep in mind if you use either
 ;;  `icicle-must-pass-predicate' or
