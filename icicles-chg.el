@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Oct 29 16:23:48 2013 (-0700)
+;; Last-Updated: Wed Oct 30 09:47:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10238
+;;     Update #: 10247
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1815,6 +1815,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/10/30 dadams
+;;     icicle-fuzzy-candidates, icicle(-unsorted(-file-name))-(prefix|apropos)-candidates:
+;;       Always set icicle-common-match-string - to nil or to icicle-expanded-common-match.
+;;       For prefix completion, icicle-expanded-common-match if icicle-must-pass-after-match-predicate.
 ;; 2013/08/03 dadams
 ;;     Added: icicle-dirs-and-latest-use-first-p, icicle-latest-use-first-p.
 ;;     Renamed: icicle-last-(accessed|modified)-first-p to icicle-latest-(access|modification)-first-p,
