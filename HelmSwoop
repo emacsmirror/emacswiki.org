@@ -1,6 +1,3 @@
+Type a pattern and all the matching lines are shown in another buffer. Add more words to cull the list. Quickly move through the locations in that list by moving up and down. Uses [[Helm]]. Source is [https://github.com/ShingoFukuyama/helm-swoop available on GitHub].
+
 [[image:https://lh5.googleusercontent.com/-8Fx3koxu6BE/UnCY2VzWCxI/AAAAAAAABM8/FdQnVatXtl8/w742-h490-no/helm-swoop.gif|Helm Swoop|https://github.com/ShingoFukuyama/helm-swoop]]
-
-[https://github.com/ShingoFukuyama/helm-swoop Available on GitHub].
-
-----
-[[Helm]]
