@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Aug  3 10:10:51 2013 (-0700)
+;; Last-Updated: Wed Oct 30 09:46:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14042
+;;     Update #: 14085
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,10 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `naked', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `cus-theme',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-opt', `icicles-var', `kmacro', `levenshtein',
+;;   `naked', `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1164,7 +1165,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
     result))
 
 (defun icicle-handle-default-for-prompt (prompt default include)
-  "Return PROMPT, possibly changed to format or remove DEFAULT value.
+  "Return PROMPT, possibly changed to format or remove the DEFAULT value.
 Argument INCLUDE:
  * nil means do not include DEFAULT in prompt.  Remove it if there.
  * non-nil means include DEFAULT, formatted according to
@@ -3949,9 +3950,9 @@ INPUT is a string.  Each candidate is a string."
                                   (or (not icicle-must-pass-after-match-predicate)
                                       (funcall icicle-must-pass-after-match-predicate cand)))))
                          candidates)))))
-          (when (consp filtered-candidates)
-            (setq icicle-common-match-string  (icicle-expanded-common-match input filtered-candidates)))
-          (unless filtered-candidates  (setq icicle-common-match-string  nil))
+          (setq icicle-common-match-string  (and filtered-candidates
+                                                 (not (eq icicle-expand-input-to-common-match 0))
+                                                 (icicle-expanded-common-match input filtered-candidates)))
           filtered-candidates))
     (quit (top-level))))                ; Let `C-g' stop it.
 
@@ -3998,18 +3999,21 @@ over all candidates."
                                  (or (not icicle-must-pass-after-match-predicate)
                                      (funcall icicle-must-pass-after-match-predicate cand)))))
                         candidates)))))
-        (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
-          (let ((common-prefix
-                 (if (icicle-not-basic-prefix-completion-p)
-                     (icicle-completion-try-completion input m-c-table minibuffer-completion-predicate
-                                                       ;; $$$$$$ (- (point) (field-beginning)))
-                                                       (length input)
-                                                       (and (fboundp 'completion--field-metadata)
-                                                            (completion--field-metadata ; Emacs 24
-                                                             (field-beginning))))
-                   (try-completion input m-c-table minibuffer-completion-predicate))))
-            (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
-        (unless filtered-candidates  (setq icicle-common-match-string  nil))
+        (setq icicle-common-match-string
+              (and filtered-candidates
+                   (not (eq icicle-expand-input-to-common-match 0))
+                   (let ((common-prefix
+                          (if (icicle-not-basic-prefix-completion-p)
+                              (icicle-completion-try-completion input m-c-table minibuffer-completion-predicate
+                                                                ;; $$$$$$ (- (point) (field-beginning)))
+                                                                (length input)
+                                                                (and (fboundp 'completion--field-metadata)
+                                                                     (completion--field-metadata ; Emacs 24
+                                                                      (field-beginning))))
+                            (try-completion input m-c-table minibuffer-completion-predicate))))
+                     (if icicle-must-pass-after-match-predicate
+                         (icicle-expanded-common-match input filtered-candidates)
+                       (if (eq t common-prefix) input common-prefix)))))
         filtered-candidates)
     (quit (top-level))))                ; Let `C-g' stop it.
 
@@ -4071,22 +4075,26 @@ over all candidates."
                                  (or (not icicle-must-pass-after-match-predicate)
                                      (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
-          (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
-            (let ((common-prefix
-                   (if (icicle-not-basic-prefix-completion-p)
-                       (icicle-completion-try-completion input minibuffer-completion-table
-                                                         minibuffer-completion-predicate
-                                                         (length input)
-                                                         (and (fboundp 'completion--field-metadata)
-                                                              (completion--field-metadata ; Emacs 24
-                                                               (field-beginning))))
-                     (try-completion input minibuffer-completion-table pred))))
-              ;; If common prefix matches an empty directory, use that dir as the sole completion.
-              (when (and (stringp common-prefix)
-                         (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
-                (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
-              (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
-          (unless filtered-candidates  (setq icicle-common-match-string  nil))
+          (setq icicle-common-match-string
+                (and filtered-candidates
+                     (not (eq icicle-expand-input-to-common-match 0))
+                     (let ((common-prefix
+                            (if (icicle-not-basic-prefix-completion-p)
+                                (icicle-completion-try-completion input minibuffer-completion-table
+                                                                  minibuffer-completion-predicate
+                                                                  (length input)
+                                                                  (and (fboundp 'completion--field-metadata)
+                                                                       (completion--field-metadata ; Emacs 24
+                                                                        (field-beginning))))
+                              (try-completion input minibuffer-completion-table pred))))
+
+                       ;; If common prefix matches an empty directory, use that dir as the sole completion.
+                       (when (and (stringp common-prefix)
+                                  (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
+                         (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
+                       (if icicle-must-pass-after-match-predicate
+                           (icicle-expanded-common-match input filtered-candidates)
+                         (if (eq t common-prefix) input common-prefix)))))
           filtered-candidates)
       (quit (top-level)))))             ; Let `C-g' stop it.
 
@@ -4191,9 +4199,9 @@ over all candidates."
                                    (or (not icicle-must-pass-after-match-predicate)
                                        (funcall icicle-must-pass-after-match-predicate cand)))))
                           candidates)))))
-          (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
-            (setq icicle-common-match-string  (icicle-expanded-common-match input filtered-candidates)))
-          (unless filtered-candidates  (setq icicle-common-match-string  nil))
+          (setq icicle-common-match-string  (and filtered-candidates
+                                                 (not (eq icicle-expand-input-to-common-match 0))
+                                                 (icicle-expanded-common-match input filtered-candidates)))
           filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
 
@@ -4253,10 +4261,9 @@ over all candidates."
                                      (or (not icicle-must-pass-after-match-predicate)
                                          (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
-          (unless (eq icicle-expand-input-to-common-match 0)
-            (setq icicle-common-match-string (and (consp filtered-candidates)
-                                                  (icicle-expanded-common-match input filtered-candidates))))
-          (unless filtered-candidates  (setq icicle-common-match-string  nil))
+          (setq icicle-common-match-string  (and filtered-candidates
+                                                 (not (eq icicle-expand-input-to-common-match 0))
+                                                 (icicle-expanded-common-match input filtered-candidates)))
           filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
 
