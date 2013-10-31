@@ -82,5 +82,6 @@ You skipped a part of the tutorial, E1f. Check under "Connecting to OFTC with yo
 When using emacs24, I am no longer seeing the openssl process running on my system so I assume it uses
 a built-in tls library. The certificate isn't passed in the SSL session either. -- vled
 
+Emacs24 doesn't bother validating the server certificate when using the built-in TLS support either, so the NSA could be right there in the middle and you'd never know. :( --seanl
 ----
 [[ERC]]
