@@ -35,6 +35,7 @@ files.
 * LustyExplorer -- Dynamic filesystem explorer and buffer switcher
 * OpenFilesInDifferentWays -- different ways to find and open files
 * OrgAnnotateFile -- annotate a file with org syntax
+* [http://www.loveshack.ukfsn.org/emacs/ protect-files.el] -- read-only for selected directories and whole trees
 * RevertBuffer -- Restore buffer contents from the file system
 * SaveAsHtml -- save a buffer as HTML
 * ShadowFile -- having several copies of files that have to be kept in sync.
