@@ -78,41 +78,42 @@ To test the idea out, and also to provide a few useful commands, I wrote librari
 
 For example, these are some of the commands defined in '''<tt>[[doremi-frm.el]]</tt>''' and '''<tt>[[doremi-cmd.el]]</tt>''' :
 
-* `'''<code>doremi-window-width</code>'''' and `'''<code>doremi-window-height</code>'''' -- Change ''width'' and ''height'' of a window incrementally.
-* `'''<code>doremi-frame-width</code>'''' and `'''<code>doremi-frame-height</code>'''' -- Change ''width'' and ''height'' of a frame incrementally.
-* `'''<code>doremi-frame-horizontally</code>'''' and `'''<code>doremi-frame-vertically</code>'''' -- Move frame incrementally ''left'', ''right'', ''up'', and ''down''.
-* `'''<code>doremi-color-themes</code>'''' -- Successively cycle among ''color themes''.
-* `'''<code>doremi-fg</code>'''', `'''<code>doremi-bg</code>'''' -- Change frame foreground or background color by incrementing/decrementing its ''RGB'' (red, green, blue) or ''HSV'' (hue, saturation, value) components. [''Tip:'' To increment/decrement ''CMY'' (cyan, magenta, yellow) components, just decrement/increment ''RGB'' components, respectively -- the two sequences are complementary.]
+* `'''<tt>doremi-window-width+</tt>'''' and `'''<tt>doremi-window-height+</tt>'''' -- Change ''width'' and ''height'' of a window incrementally.
+* `'''##doremi-frame-width+##'''' and `'''##doremi-frame-height+##'''' -- Change ''width'' and ''height'' of a frame incrementally.
+* `'''##doremi-frame-horizontally+##'''' and `'''##doremi-frame-vertically+##'''' -- Move frame incrementally ''left'', ''right'', ''up'', and ''down''.
+* `'''##doremi-color-themes+##'''' -- Cycle among ''color themes''.
+* `'''##doremi-custom-themes+##'''' -- Cycle among Emacs custom themes.
+* `'''<tt>doremi-fg+</tt>'''', `'''<tt>doremi-bg+</tt>'''' -- Change frame foreground or background color by incrementing/decrementing its ''RGB'' (red, green, blue) or ''HSV'' (hue, saturation, value) components. [''Tip:'' To increment/decrement ''CMY'' (cyan, magenta, yellow) components, just decrement/increment ''RGB'' components, respectively -- the two sequences are complementary.]
 
 :: You can also access these commands from the '''Text Properties''' menu. See '''FaceMenuPlus''' and '''<tt>[[facemenu+.el]]</tt>'''.
 
 :: See also '''[[Icicles]]''', commands `icicle-frame-bg' and `icicle-frame-fg', for similar commands, but which also support [[Completion]], including ''regexp'' matching.
 
-* `'''<code>doremi-all-frames-fg</code>'''', `'''<code>doremi-all-frames-bg</code>'''' -- Same as `doremi-fg' and `doremi-bg', but change the foreground and background of '''''all''''' frames at the same time.
+* `'''<tt>doremi-all-frames-fg+</tt>'''', `'''<tt>doremi-all-frames-bg+</tt>'''' -- Same as `##doremi-fg+##' and <tt>`doremi-bg+'</tt>, but change the foreground and background of '''''all''''' frames at the same time.
 
-* `'''<code>doremi-face-fg</code>'''', `'''<code>doremi-face-bg</code>'''' -- Change foreground and background colors of a face by incrementing/decrementing its ''RGB'' or ''HSV'' components. [''Tip:'' Again, ''CMY'' is just the opposite of ''RGB''.] A popup frame shows you sample text in the face as it changes, as well as sample text in the previous value of the face. 
+* `'''##doremi-face-fg+##'''', `'''##doremi-face-bg+##'''' -- Change foreground and background colors of a face by incrementing/decrementing its ''RGB'' or ''HSV'' components. [''Tip:'' Again, ''CMY'' is just the opposite of ''RGB''.] A popup frame shows you sample text in the face as it changes, as well as sample text in the previous value of the face. 
 
 :: You can also access these commands from the '''Text Properties''' menu. In the case of the popup mouse menu, you can just point the mouse to text with a given face, to change that face (foreground or background) incrementally -- no need to know the face name beforehand. See '''FaceMenuPlus''' and '''<tt>[[facemenu+.el]]</tt>'''.
 
-* `'''<code>doremi-all-faces-fg</code>'''', `'''<code>doremi-all-faces-bg</code>'''' -- Same as `doremi-face-fg' and `doremi-face-bg', but change '''''all''''' faces at the same time. You can use this, for example,  to modify a color scheme slightly, making everything a bit redder (`r') or lighter (`v') or less AngryFruitSalad (`s') or using different hues (`h').
+* `'''<tt>doremi-all-faces-fg+</tt>'''', `'''<tt>doremi-all-faces-bg+</tt>'''' -- Same as `doremi-face-fg' and `doremi-face-bg', but change '''''all''''' faces at the same time. You can use this, for example,  to modify a color scheme slightly, making everything a bit redder (`r') or lighter (`v') or less AngryFruitSalad (`s') or using different hues (`h').
 
 
-* `'''<code>doremi-frame-font-size</code>'''', `'''<code>doremi-buffer-font-size</code>'''' -- Change frame font size or buffer text size, incrementally. That is, ''Zoom'' the page. See also '''<tt>[[zoom-frm.el]]</tt>''' for alternatives.
-* `'''<code>doremi-font</code>'''' -- Successively cycle among fonts, choosing by name. See also '''[[Icicles]]''', command `icicle-font', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
-* `'''<code>doremi-frame-configs</code>'''' -- Cycle among frame configurations. See [[#FrameConfigCycling]], below.
-* `'''<code>doremi-thumbnail-frames</code>'''' -- Cycle among frames using a "fisheye": successively thumbify all frames but one -- see FisheyeWithThumbs.
-* `'''<code>doremi-buffers</code>'''' -- Successively cycle among existing ''buffers''. See also '''[[Icicles]]''', command `icicle-buffer', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
-* `'''<code>doremi-bookmarks</code>'''' -- Successively cycle among ''[[bookmark]]s''. See also '''[[Icicles]]''', command `icicle-bookmark', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
-* `'''<code>doremi-marks</code>'''' -- Successively cycle among ''marks'' in the `mark-ring'.
-* `'''<code>doremi-global-marks</code>'''' -- Successively cycle among ''marks'' in the `global-mark-ring'.
+* `'''##doremi-frame-font-size+##'''', `'''##doremi-buffer-font-size+##'''' -- Change frame font size or buffer text size, incrementally. That is, ''Zoom'' the page. See also '''<tt>[[zoom-frm.el]]</tt>''' for alternatives.
+* `'''##doremi-font+##'''' -- Cycle among fonts, choosing by name. See also '''[[Icicles]]''', command `icicle-font', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
+* `'''##doremi-frame-configs+##'''' -- Cycle among frame configurations. See [[#FrameConfigCycling]], below.
+* `'''##thumfr-doremi-thumbnail-frames+##'''' -- Cycle among frames using a "fisheye": successively thumbify all frames but one -- see FisheyeWithThumbs.
+* `'''<tt>doremi-buffers+</tt>'''' -- Cycle among existing ''buffers''. See also '''[[Icicles]]''', command `icicle-buffer', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
+* `'''##doremi-bookmarks+##'''' -- Cycle among ''[[bookmark]]s''. See also '''[[Icicles]]''', command `icicle-bookmark', for a similar command, but which also supports [[Completion]], including ''regexp'' matching.
+* `'''<tt>doremi-marks+</tt>'''' -- Cycle among ''marks'' in the `mark-ring'.
+* `'''<tt>doremi-global-marks+</tt>'''' -- Cycle among ''marks'' in the `global-mark-ring'.
 
 '''<tt>[[doremi-frm.el]]</tt>''' also has some commands that don't cycle:
 
-* `'''<code>doremi-increment-color-component</code>'''' -- Increment a component (R,G,B,H,S, or V) of a given color. This just returns another color that is redder, greener, and so on, than the input color.
+* `'''##doremi-increment-color-component+##'''' -- Increment a component (R,G,B,H,S, or V) of a given color. This just returns another color that is redder, greener, and so on, than the input color.
 
-* `'''<code>doremi-undo-last-frame-color-change</code>'''' -- Undo the last frame color change made by `doremi-fg' or `doremi-bg'. Use it again to ''redo'' -- it toggles between the last two values.
+* `'''<code>doremi-undo-last-frame-color-change</code>'''' -- Undo the last frame color change made by `##doremi-fg+##' or `##doremi-bg+##'. Use it again to ''redo'' -- it toggles between the last two values.
 
-* `'''<code>doremi-undo-last-face-change</code>'''' -- Undo the last face change made by `doremi-face-fg' or `doremi-face-bg'. Use it again to ''redo'' -- it toggles between the last two values.
+* `'''<code>doremi-undo-last-face-change</code>'''' -- Undo the last face change made by `##doremi-face-fg+##' or `##doremi-face-bg+##'. Use it again to ''redo'' -- it toggles between the last two values.
 
 When I say "choosing from a list", above, that doesn't sound very hot, does it? The important thing to keep in mind is that you ''see what you get'' while you're choosing: the property value is ''applied as you choose''. All you have to do is stop pressing the arrow key or stop turning the mouse wheel. ''Choosing and applying are the same act.''
 
@@ -185,7 +186,7 @@ The examples here are in three sections, corresponding to the kinds of setter fu
 
 Here you go:
 
-  (defun doremi-frame-height (&optional increment frame)
+  (defun doremi-frame-height+ (&optional increment frame)
     "Change height of current frame incrementally."
     (interactive "p")
     (doremi (lambda (new-val) (set-frame-height frame new-val) new-val)
@@ -202,7 +203,7 @@ Piece of cake, no?
 
 What would we have to change, to create a command that ''moves'' a frame left and right, instead of changing its height? The `setter-fn' would be a function that sets the <code>left</code> frame-position parameter; it would still take the new value (a different kind of value) as argument and return this value. The `init-val' would be the initial (current) frame position (<code>left</code>).
 
-  (defun doremi-frame-horizontally (&optional increment frame)
+  (defun doremi-frame-horizontally+ (&optional increment frame)
     "Move current frame left/right incrementally."
     (interactive "P")
     (unless increment (setq increment (or increment 10))) ; 1 pixel is too small
@@ -222,15 +223,15 @@ What would we have to change, to create a command that ''moves'' a frame left an
     (when (member (car unread-command-events)
                   (list doremi-up-key doremi-down-key
                         doremi-boost-up-key doremi-boost-down-key))
-      (doremi-frame-vertically increment frame)))
+      (doremi-frame-vertically+ increment frame)))
 
 Again, the increment is flipped here to make things more intuitive (left arrow moves the frame to the left).
 
 '''''*Note:*'''''
 
-# Ignore the last part of this definition for now: <code>(when (member...) (doremi-frame-vertically...)))</code>. What it does is let you use all four arrow keys to move the frame in any direction -- see [[#AllFourArrows]].
+# Ignore the last part of this definition for now: ##(when (member...) (doremi-frame-vertically+...)))##. What it does is let you use all four arrow keys to move the frame in any direction -- see [[#AllFourArrows]].
 
-# Dealing properly with frame position is a bit complicated here, because if the  position is off the display then the `top' and `left' values are not integers, but lists. This example command just repositions the frame at the screen edge if it is initially off-screen. The actual '''<tt>[[doremi-frm.el]]</tt>''' commands `doremi-frame-horizontally' and `doremi-frame-vertically') are more complex and adjust for this. They wrap movement around the display borders: if a frame is moved off the display at the right, continuing to move it to the right brings it back onto the display at the left, and so on. To do this, they are not simple absolute setter functions that let `doremi' increment simply; they are incremental growth functions (see [[#IncrementorFunctions]]) that know how to increment a value such as <code>(left + -300)</code>.
+# Dealing properly with frame position is a bit complicated here, because if the  position is off the display then the `top' and `left' values are not integers, but lists. This example command just repositions the frame at the screen edge if it is initially off-screen. The actual '''<tt>[[doremi-frm.el]]</tt>''' commands `##doremi-frame-horizontally+##' and `##doremi-frame-vertically+##') are more complex and adjust for this. They wrap movement around the display borders: if a frame is moved off the display at the right, continuing to move it to the right brings it back onto the display at the left, and so on. To do this, they are not simple absolute setter functions that let `doremi' increment simply; they are incremental growth functions (see [[#IncrementorFunctions]]) that know how to increment a value such as <code>(left + -300)</code>.
 
 
 [:IncrementorFunctions]
@@ -259,13 +260,13 @@ Here's a suitable <code>enlarge-frame</code> function, good for a one-shot growt
 In this case, there is no special reason to choose absolute or relative value setting -- either will do fine. However, suppose you wanted to increase the font size? The font size is not recorded as a numerical quantity; it is a ''string'' value, recorded as part of the font name. In this case, `doremi' cannot just increment the value numerically. So, a custom incremental growth function is called for -- see library '''<tt>[[frame-cmds.el]]</tt>''' for command `enlarge-font'. (For the same reason, non-numerical `top' and `left' frame positions could be usefully dealt with using a relative value-setting version of `move-frame-horizontally'.)
 
 [:AdjustBgRgbHsv]
-I don't include all the code here, but `doremi-bg' is another command that uses a growth function (`doremi-increment-background-color'). It lets you progressively adjust the background color of a frame by incrementing its '''RGB''' (red `r', green `g', blue `b') or '''HSV''' components (hue `h', saturation `s', value `v'. (Saturation is the "purity" of a color; value is its brightness.) There are also commands for adjusting each of these components separately. All of these commands are in library '''<tt>[[doremi-frm.el]]</tt>'''. 
+I don't include all the code here, but <tt>`doremi-bg+'</tt> is another command that uses a growth function (`##doremi-increment-background-color##'). It lets you progressively adjust the background color of a frame by incrementing its '''RGB''' (red `r', green `g', blue `b') or '''HSV''' components (hue `h', saturation `s', value `v'. (Saturation is the "purity" of a color; value is its brightness.) There are also commands for adjusting each of these components separately. All of these commands are in library '''<tt>[[doremi-frm.el]]</tt>'''. 
 
 ''Note:'' '''CMY''' (cyan, magenta, yellow) is just the opposite of RGB -- incrementing one decrements the other, and vice versa. For example, to increment yellow, just decrement blue.
 
-Here is the core definition of command `doremi-bg':
+Here is the core definition of command <tt>`doremi-bg+'</tt>:
 
-  (defun doremi-bg (component &optional increment)
+  (defun doremi-bg+ (component &optional increment)
     "Change frame background color incrementally."
     (interactive "cAdjust red, green, blue, hue, saturation, or value? [rgbhsv]: \nP")
     (setq increment (if increment (prefix-numeric-value increment) 1))
@@ -277,9 +278,9 @@ Here is the core definition of command `doremi-bg':
     (let ((next-component (pop unread-command-events)))
       (frame-update-face-colors (selected-frame)) ; update the way faces display
       (when (member next-component '(?r ?g ?b ?h ?s ?v))
-        (doremi-bg next-component increment))))
+        (doremi-bg+ next-component increment))))
 
-The last part of this definition, <code>(when (member...) (doremi-bg...)))</code>, just lets you switch to a different color component (`r', `g', `b', `h', `s', `v') on the fly, so you can change them all without having to call `doremi-bg' repeatedly. See [[#AllFourArrows]] for an analogous treatment for moving frames using all four arrow keys.
+The last part of this definition, <tt>(when (member...) (doremi-bg+...)))</tt>, just lets you switch to a different color component (`r', `g', `b', `h', `s', `v') on the fly, so you can change them all without having to call <tt>`doremi-bg+'</tt> repeatedly. See [[#AllFourArrows]] for an analogous treatment for moving frames using all four arrow keys.
 
 Recall that the only difference between an incremental growth function and an absolute setter function is that the former does the incrementation itself, whereas the latter depends on `doremi' to do the incrementation. Generally, absolute setter functions are simpler. You use incremental growth functions when one of the following is true:
 
@@ -300,9 +301,9 @@ It's convenient to make the sequence circular, so that when you fall off one end
 
 Library <tt>[[ring+.el]]</tt> provides additional functionality to that in standard library <code>ring.el</code>, including function `convert-to-sequence'. That function lets '''Do Re Mi''' work with ''any Emacs-Lisp sequence structure (list, array, string, vector)'', by first converting it to a ring. Function `<code>ring-insert+extend</code>' in <tt>[[ring+.el]]</tt> is used by '''Do Re Mi''' to let you insert new items in a ring without losing old ones -- it is the basis of `doremi' argument `allow-new-p'.
 
-Here's a command from '''<tt>[[doremi-cmd.el]]</tt>''' that cycles color themes. The `enum' argument is a list, `doremi-color-themes', of commands that change the current color theme. The `init-val' argument is one of the commands in the list. The setter function just calls one of these commands.  That's all there is to it. (See ColorTheme for more on color themes.)
+Here's a simplified version of a command from '''<tt>[[doremi-cmd.el]]</tt>''' that cycles color themes. The `enum' argument is a list, <tt>`doremi-color-themes+'</tt>, of commands that change the current color theme. The `init-val' argument is one of the commands in the list. The setter function just calls one of these commands.  That's all there is to it. (See ColorTheme for more about color themes.)
 
-  (defun doremi-color-themes ()
+  (defun doremi-color-themes+ ()
     "Successively cycle among color themes."
     (interactive)
     (doremi (lambda (newval) (funcall newval) newval) ; call a theme command
@@ -314,7 +315,7 @@ Here's a command from '''<tt>[[doremi-cmd.el]]</tt>''' that cycles color themes.
 Here's a command to cycle through a list of background colors, until you get the color you want. (You can then set this value as a customization option if you want to save it.) In this case, a list of all the available colors is the `enum' argument: <code>(x-defined-colors)</code>.  The starting point is the current background color.  The setter function just sets the background color (once).
 
 
-  (defun doremi-bg-color-name ()
+  (defun doremi-bg-color-name+ ()
     "Successively cycle among background colors, choosing by name."
     (interactive)
     (let ((fr (selected-frame)))
@@ -326,9 +327,9 @@ Here's a command to cycle through a list of background colors, until you get the
               t)
       (frame-update-face-colors fr)))  ; update the way faces display with new bg
 
-Now, <code>(x-defined-colors)</code> may not really be what you want here. Try it, and you will see that the order of the colors you scale through is not ideal. That's because this list is sorted by name, not color component. A better approach is that taken by command `doremi-bg' and its derivatives -- there, the ''RGB'' or ''HSV'' components of the background are incremented/decremented. See [[#AdjustBgRgbHsv]].
+Now, <code>(x-defined-colors)</code> may not really be what you want here. Try it, and you will see that the order of the colors you scale through is not ideal. That's because this list is sorted by name, not color component. A better approach is that taken by command <tt>`doremi-bg+'</tt> and its derivatives -- there, the ''RGB'' or ''HSV'' components of the background are incremented/decremented. See [[#AdjustBgRgbHsv]].
 
-An approach similar to `doremi-bg-color-name' is needed for choosing a font (not just changing the font size), because we again are dealing with a set of discrete values, not just numbers. With a suitable command, you can play the scale of fonts, stopping when you get to the font note you like. Again, in this example, the list of fonts might not be in an ideal order. You can try using an enumeration list like <code>(x-list-fonts "*")</code> or <code>(append w32-fixed-font-alist (list (generate-fontset-menu)))</code> (on Windows), but a shorter list means a lot less running the scales. 
+An approach similar to <tt>`doremi-bg-color-name+'</tt> is needed for choosing a font (not just changing the font size), because we again are dealing with a set of discrete values, not just numbers. With a suitable command, you can play the scale of fonts, stopping when you get to the font note you like. Again, in this example, the list of fonts might not be in an ideal order. You can try using an enumeration list like <code>(x-list-fonts "*")</code> or <code>(append w32-fixed-font-alist (list (generate-fontset-menu)))</code> (on Windows), but a shorter list means a lot less running the scales. 
 
   (defun doremi-font ()
     "Successively cycle among fonts, choosing by name
@@ -354,7 +355,7 @@ The '''Do Re Mi''' commands in '''<tt>[[doremi-frm.el]]</tt>''' let you cycle th
 
 Or, suppose that you moved or resized frames using '''Do Re Mi''' commands. It would be useful to be able to get back to a previous frame configuration without going all around Robinson's barn again.
 
-That's the motivation behind command `doremi-frame-configs'. Each of the '''Do Re Mi''' frame commands memorizes the current frame configuration in a ring, `doremi-frame-config-ring' (what, ''another'' ring?), and `doremi-frame-configs' is a ''Do Re Mi command'' that lets you cycle among those configurations. (This is beginning to sound incestuous...)
+That's the motivation behind command `##doremi-frame-configs+##'. Each of the '''Do Re Mi''' frame commands memorizes the current frame configuration in a ring, `doremi-frame-config-ring' (what, ''another'' ring?), and `##doremi-frame-configs+##' is a ''Do Re Mi command'' that lets you cycle among those configurations. (This is beginning to sound incestuous...)
 
 What's more, besides saving the current frame configuration on ring `doremi-frame-config-ring', each of the '''Do Re Mi''' frame commands saves it in the register `frame-config-register', which has `C-l' as its name. So, another way to get back to the previous frame configuration is to use `C-x r f C-l' (jump to register `C-l'). And command `save-frame-config' lets you save the current frame configuration to both the `frame-config-register' and the `doremi-frame-config-ring'.
 
@@ -365,15 +366,15 @@ What's more, besides saving the current frame configuration on ring `doremi-fram
 
 Just for fun, try it out: 
 
-# `M-x doremi-frame-horizontally' in some frame
+# `##M-x doremi-frame-horizontally+##' in some frame
 # Use all four arrows [[[#1]]] to move the frame all around your display.
 # Stop playing around! Do `C-g' or `C-f' or something to stop fiddling with that frame.
-# `M-x doremi-frame-configs' to "undo", or replay, the frame movements you just recorded! Forward and backward, cycle as long as you like.
+# `##M-x doremi-frame-configs+##' to "undo", or replay, the frame movements you just recorded! Forward and backward, cycle as long as you like.
 
 [:1]
-[1] Did I forget to mention that `doremi-frame-horizontally' and `doremi-frame-vertically' each let you do what the other does -- that they each let you use all four arrows to move a frame in any direction? You can also use the mouse wheel to move any direction (just use an arrow to change between back & forth and up & down). See [[#AllFourArrows]] for more on using all four arrows. 
+[1] Did I forget to mention that `##doremi-frame-horizontally+##' and `##doremi-frame-vertically+##' each let you do what the other does -- that they each let you use all four arrows to move a frame in any direction? You can also use the mouse wheel to move any direction (just use an arrow to change between back & forth and up & down). See [[#AllFourArrows]] for more on using all four arrows. 
 
-Similarly, you can use all four arrows to combine `doremi-frame-width' and `doremi-frame-height'. And `doremi-bg', likewise, lets you change the color component (red, green, blue, hue, saturation, value) that you are adjusting, on the fly. Try making a "movie" using all of these commands.
+Similarly, you can use all four arrows to combine `##doremi-frame-width+##' and `##doremi-frame-height+##'. And `##doremi-bg+##', likewise, lets you change the color component (red, green, blue, hue, saturation, value) that you are adjusting, on the fly. Try making a "movie" using all of these commands.
 
 [:HowFrameUndoWorks]
 === So, How Does This Frame-Config Undo Stuff Work? ===
@@ -381,19 +382,19 @@ Similarly, you can use all four arrows to combine `doremi-frame-width' and `dore
 For the curious, this is how the current frame configuration is saved by each of the '''Do Re Mi''' frame functions:
 
   (mapcar 'doremi-push-frame-config-for-command
-          '(doremi-bg doremi-bg-blue doremi-bg-brightness doremi-bg-color-name
-            doremi-bg-cyan doremi-bg-green doremi-bg-hue doremi-bg-magenta
-            doremi-bg-red doremi-bg-saturation doremi-bg-value doremi-bg-yellow 
-            doremi-buffer-font-size doremi-fg doremi-fg-blue
-            doremi-fg-brightness doremi-fg-color-name doremi-fg-cyan
-            doremi-fg-green doremi-fg-hue doremi-fg-magenta doremi-fg-red 
-            doremi-fg-saturation doremi-fg-value doremi-fg-yellow 
-            doremi-face-bg doremi-face-fg doremi-font doremi-frame-font-size
-            doremi-frame-height doremi-frame-width
+          '(doremi-bg+ doremi-bg-blue+ doremi-bg-brightness+ doremi-bg-color-name+
+            doremi-bg-cyan+ doremi-bg-green+ doremi-bg-hue+ doremi-bg-magenta+
+            doremi-bg-red+ doremi-bg-saturation+ doremi-bg-value+ doremi-bg-yellow+ 
+            doremi-buffer-font-size+ doremi-fg+ doremi-fg-blue+
+            doremi-fg-brightness+ doremi-fg-color-name+ doremi-fg-cyan+
+            doremi-fg-green+ doremi-fg-hue+ doremi-fg-magenta+ doremi-fg-red+ 
+            doremi-fg-saturation+ doremi-fg-value+ doremi-fg-yellow+ 
+            doremi-face-bg+ doremi-face-fg+ doremi-font+ doremi-frame-font-size+
+            doremi-frame-height+ doremi-frame-width+
             doremi-increment-background-color doremi-increment-face-bg-color
-            doremi-increment-face-fg-color enlarge-font
-            doremi-frame-horizontally doremi-frame-vertically
-            doremi-undo-last-face-change doremi-undo-last-frame-color-change))
+            doremi-increment-face-fg-color enlarge-font+
+            doremi-frame-horizontally+ doremi-frame-vertically+
+            doremi-undo-last-face-change+ doremi-undo-last-frame-color-change+))
 
 (This is only done if user option `doremi-push-frame-config-for-cmds-flag' is non-nil.)
 
@@ -401,11 +402,11 @@ Function `doremi-push-frame-config-for-command' just wraps a command with code t
 
   (defun doremi-push-frame-config-for-command (command)
     "Advise COMMAND so that it saves frame configuration.
-  You can restore previous frame configurations with \\[doremi-frame-configs]."
+  You can restore previous frame configurations with \\[doremi-frame-configs+]."
     (eval
      `(defadvice ,command (around doremi-push-frame-config-for-command activate)
         "Saves frame configuration. You can restore previous frame configuration \
-  with \\[doremi-frame-configs]."
+  with \\[doremi-frame-configs+]."
         (doremi-push-current-frame-config)
         (frame-configuration-to-register frame-config-register)
         ad-do-it   ; The COMMAND code is executed here.
@@ -413,7 +414,7 @@ Function `doremi-push-frame-config-for-command' just wraps a command with code t
           (message
            (substitute-command-keys
              (format "Use `\\[jump-to-frame-config-register]' (`C-x r j %c') or \
-  `\\[doremi-frame-configs]' to restore frames as before (undo)." 
+  `\\[doremi-frame-configs+]' to restore frames as before (undo)." 
                      frame-config-register)))))))
 
 Function `doremi-push-current-frame-config' does just what it says -- except that it doesn't save the `buffer-list' and `minibuffer' frame properties, because they just get in the way: two otherwise equivalent frame configurations can have different settings for these properties, and we don't care to notice those differences.
@@ -426,9 +427,9 @@ Function `doremi-push-current-frame-config' does just what it says -- except tha
       (unless (ring-member doremi-frame-config-ring curr-conf)
         (ring-insert doremi-frame-config-ring curr-conf))))
 
-So, here at long last is the code for `doremi-frame-configs', which you can probably foresee by now:
+So, here at long last is the code for `##doremi-frame-configs+##', which you can probably foresee by now:
 
-  (defun doremi-frame-configs ()
+  (defun doremi-frame-configs+ ()
     "Cycle among frame configurations recorded in `doremi-frame-config-ring'."
     (interactive)
     (doremi (lambda (newval)
@@ -462,16 +463,16 @@ Library '''<tt>[[doremi-mac.el]]</tt>''' provides a macro, `define-doremi', to m
 [:DefineDoremiExample]
 === Examples: Defining Frame Commands, Revisited ===
 
-  (define-doremi frame-height
+  (define-doremi frame-height+
     "Change height of current frame incrementally."        ; doc string
     "Set Frame Height"                                     ; command menu name
     (lambda (new-val)                                      ; setter function
       (set-frame-height (selected-frame) new-val) new-val)
     (frame-height (selected-frame)))                       ; initial value
 
-This automatically defines a command `doremi-frame-height', adds a '''Do Re Mi''' menu to the menu-bar and adds the new command, with name '''Set Frame Height''', to the menu.
+This automatically defines a command `##doremi-frame-height+##', adds a '''Do Re Mi''' menu to the menu-bar and adds the new command, with name '''Set Frame Height''', to the menu.
 
-The commands you define using the macro also call two hook functions, so they can do something before or after the call to `doremi'. For example, recall command `doremi-bg-color-name' (see [[#ChoiceEnumeration]]). After calling `doremi', it calls <code>(frame-update-face-colors (selected-frame))</code> to update the way faces display with new background.
+The commands you define using the macro also call two hook functions, so they can do something before or after the call to `doremi'. For example, recall command `##doremi-bg-color-name+##' (see [[#ChoiceEnumeration]]). After calling `doremi', it calls <code>(frame-update-face-colors (selected-frame))</code> to update the way faces display with new background.
 
 Here is how you can define such a command using `define-doremi':
 
@@ -484,7 +485,7 @@ Here is how you can define such a command using `define-doremi':
     (x-defined-colors)                                          ; cycle enumeration
     t)                                                          ; add current color
 
-  ;; The new command `doremi-bg-color-name' runs this hook after running `doremi':
+  ;; The new command `doremi-bg-color-name+' runs this hook after running `doremi':
   (setq define-doremi-after-hook
         '(lambda () (frame-update-face-colors (selected-frame))))
 
@@ -518,16 +519,16 @@ Here, BTW, is a screenshot of the '''Do Re Mi''' menu:
 [new:DrewAdams:2004-12-24 22:20 UTC]
 : '''''This has now been done:'' you can now use all four arrows''', and the mouse wheel, to manipulate things in two dimensions. The following pairs of commands, which use up/down and left/right arrows, now work together, so you can use all four arrows to move a frame around or change its dimensions:
 
-** `doremi-frame-horizontally' and `doremi-frame-vertically’
-** `doremi-frame-width' and `doremi-frame-height'
+** `##doremi-frame-horizontally+##' and `##doremi-frame-vertically+##’
+** `##doremi-frame-width+##' and `##doremi-frame-height+##'
 
 : So why have two commands for moving, and two for resizing? Why not just a single, four-arrow command for each of the 2D operations moving and resizing? In effect, that's what you do have, it's just that you can start with either dimension. And each command in a pair is associated with a prompt letting you know which dimension you're currently using. When one command of a pair "hands-off" to the other, the prompt switches from "Use left and right or mouse wheel to adjust value" to "Use up and down..." or vice versa.
 
-: How was this programmed? Actually, all I did was call the other command of each of these pairs, at the end of the first command, whenever the first command would otherwise be ended with the arrow appropriate for the other command. For example, if you "end" command `doremi-frame-width' with an up or down arrow, the last thing it does is call `doremi-frame-height'. Simple, and a bit weird...
+: How was this programmed? Actually, all I did was call the other command of each of these pairs, at the end of the first command, whenever the first command would otherwise be ended with the arrow appropriate for the other command. For example, if you "end" command `##doremi-frame-width+##' with an up or down arrow, the last thing it does is call `##doremi-frame-height+##'. Simple, and a bit weird...
 
-: Here is the modified definition of `doremi-frame-width. The only addition is the last few lines: when the `doremi' command ends with an up or down arrow, we just call `doremi-frame-height'. A similar change is made to the end of `doremi-frame-height', in order to call `doremi-frame-width.
+: Here is the modified definition of `##doremi-frame-width+##. The only addition is the last few lines: when the `doremi' command ends with an up or down arrow, we just call `##doremi-frame-height+##'. A similar change is made to the end of `##doremi-frame-height+##', in order to call `##doremi-frame-width+##.
 
-     (defun doremi-frame-width (&optional increment frame)
+     (defun doremi-frame-width+ (&optional increment frame)
        "Change width of current frame incrementally."
        (interactive "p")
        (let ((doremi-up-key 'left)           ; Rebind, so keys are more intuitive for width.
@@ -540,7 +541,7 @@ Here, BTW, is a screenshot of the '''Do Re Mi''' menu:
        (when (member (car unread-command-events)
                      (list doremi-up-key doremi-down-key
                            doremi-boost-up-key doremi-boost-down-key))
-         (doremi-frame-height increment frame)))
+         (doremi-frame-height+ increment frame)))
 
 [new]
 
@@ -582,9 +583,9 @@ Allow doremi-up-key, doremi-down-key, etc, to be lists (sets) of keys, any of wh
 * What about *direct* buffer-switching (that is, the buffer is switched to directly and not when you have pressed RET) using either the arrow keys or the mouse wheel? Hmm, maybe this already exist on some other page on the wiki... -- MaDa
 
 [new:DrewAdams:2004-12-24 22:20 UTC]
-: Since you asked, I added `doremi-buffers' in library '''<tt>[[doremi-cmd.el]]</tt>'''. Here it is:
+: Since you asked, I added <tt>`doremi-buffers+'</tt> in library '''<tt>[[doremi-cmd.el]]</tt>'''. Here it is:
 
-     (defun doremi-buffers ()
+     (defun doremi-buffers+ ()
        "Successively cycle among existing buffers."
        (interactive)
        (doremi (lambda (newval) (switch-to-buffer newval 'norecord) newval)
@@ -622,7 +623,7 @@ Allow doremi-up-key, doremi-down-key, etc, to be lists (sets) of keys, any of wh
 
 : (Man, you '''''are''''' lazy! If you're that lazy, you won't play with the code to improve it. Get some exercise: scroll up, young man. ;)) 
 
-: BTW, if you like `doremi-buffers', check out SwBuff or '''[[Icicles]]'''. SwBuff also provides direct manipulation, and both SwBuff and '''Icicles''' give you various ways to include or exclude various buffers based, for example, on their names (regexp matching). -- DrewAdams
+: BTW, if you like <tt>`doremi-buffers+'</tt>, check out SwBuff or '''[[Icicles]]'''. SwBuff also provides direct manipulation, and both SwBuff and '''Icicles''' give you various ways to include or exclude various buffers based, for example, on their names (regexp matching). -- DrewAdams
 
 
 
@@ -672,7 +673,7 @@ That works, thank you for the help! This is a very useful tool when dealing with
 
 
 [new]
-hi, thanks for your good tools - doremi. When I use M-x doremi-bg, COMPONENT can only be r/g/b/h/s/v, can it be
+hi, thanks for your good tools - doremi. When I use ##M-x doremi-bg+##, COMPONENT can only be r/g/b/h/s/v, can it be
 rgb or hsv? I think rgb or hsv can make me select color I like more quickly. 
 another question, I found below statement in your many packages:
 <pre>
@@ -735,7 +736,7 @@ Second, but, I saw "lists of defined" in many packages on emacswiki, they all up
 
 Incrementing (decrementing) all of R, G, B equally at the same time is essentially the same thing as incrementing (decrementing) the V component. If you are increasing the red, blue, and green light equally, then you are increasing the brightness.
 
-I just don't see the use case for such equal incrementing. If you convince me of a use case, I'll consider it. Or you could define such a command yourself. Just look at the code defining `doremi-bg-blue' and `doremi-bg'. Essentially, the code would call, in a single command invocation, `doremi-increment-background-color' for each of the components you want to change.
+I just don't see the use case for such equal incrementing. If you convince me of a use case, I'll consider it. Or you could define such a command yourself. Just look at the code defining <tt>`doremi-bg-blue+'</tt> and <tt>`doremi-bg+'</tt>. Essentially, the code would call, in a single command invocation, <tt>`doremi-increment-background-color'</tt> for each of the components you want to change.
 
 2. I can't speak for others. AFAIK, the only tool support for this is the code by ThierryVolpiatto that I mentioned. I believe I am the main one who includes such lists in EmacsLisp files. I was certainly the first, but perhaps there are some others now who have adopted the idea. In any case, I update the lists manually.
 
@@ -748,7 +749,7 @@ oh, I do not mean that, what I want is not increasing the red, blue, and green  
 Increasing of R,G,B is not mean increasing R,G,B equally, it like moving cursor on the colors square, iterate all colors.
 Sorry for my poor english, :(, could you understand my meaning?
 
-2. There have command doremi-bg-color-name and doremi-face-bg in doremi, but do not have doremi-fg-color-name, doremi-face-fg-color-name, 
+2. There have command ##doremi-bg-color-name+## and ##doremi-face-bg+## in doremi, but do not have ##doremi-fg-color-name+##, ##doremi-face-fg-color-name+##, 
 I think it's useful, could you add it to doremi? -- [[ahei]]
 
 
@@ -766,7 +767,7 @@ I think it's useful, could you add it to doremi? -- [[ahei]]
 
 (I moved your report about the Download link to EmacsWikiProblems. That page is reached by the `Problems' link at the top of each wiki page.)
 
-I'll think about `C-g'. It seems like there was a reason why I didn't do that, but I don't remember what it was. Anyway, you also have `doremi-undo-last-frame-color-change' and `doremi-undo-last-face-change', as ways to undo changes. They let you bounce back and forth between the changed appearance and the previous one, to compare. And `doremi-frame-configs' lets you repeatedly undo other kinds of frame changes.
+I'll think about `C-g'. It seems like there was a reason why I didn't do that, but I don't remember what it was. Anyway, you also have `doremi-undo-last-frame-color-change' and `doremi-undo-last-face-change', as ways to undo changes. They let you bounce back and forth between the changed appearance and the previous one, to compare. And `##doremi-frame-configs+##' lets you repeatedly undo other kinds of frame changes.
 
 See above, on this page -- search for `undo'. For some frame changes, you also have `C-x 5 2', which will give you a copy of the frame without the changes. -- DrewAdams
 
@@ -797,7 +798,7 @@ all color point on color palette ground.Your implemented is not my want, but I t
 color.I can not describe my meaning use my poor english clearly, you only use your wisdom to understand my meaning, :)
 
 2.
-C-g dose not work in doremi-bg-color-name+ and doremi-face-bg-color-name+.
+C-g dose not work in ##doremi-bg-color-name+## and ##doremi-face-bg-color-name+##.
 -- [[ahei]]
 
 [new:DrewAdams:2009-11-10 16:56 UTC]
@@ -853,7 +854,7 @@ let us number color point on color palette, now color palette like this:
 16 17 18 19 20
 21 22 23 24 25
 </pre>
-my meaning is: how can I iterate colors on color palette from 1 to 25, increment with 1, that is 1,2,3,4,5,6,...,21,22,23,24,25. Use your color palette, I can do this, just put cursor to color point 1, and then hold down Shift key, then move cursor from 1 to 25, but, your color palette is slow when I start it every time, how can I do that in other way? Use doremi, I can iterate part of all colors, e.g. use doremi-bg+, then choose blue component, but It only iterate part color points, not all, maybe 2,7,12,17,22, also maybe 5,10,15 20,25, also may be 1,2,3,4,5 when use red component, also maybe 1,2,8,13,19,24,24 when use red,blue,green component together.
+my meaning is: how can I iterate colors on color palette from 1 to 25, increment with 1, that is 1,2,3,4,5,6,...,21,22,23,24,25. Use your color palette, I can do this, just put cursor to color point 1, and then hold down Shift key, then move cursor from 1 to 25, but, your color palette is slow when I start it every time, how can I do that in other way? Use doremi, I can iterate part of all colors, e.g. use ##doremi-bg+##, then choose blue component, but It only iterate part color points, not all, maybe 2,7,12,17,22, also maybe 5,10,15 20,25, also may be 1,2,3,4,5 when use red component, also maybe 1,2,8,13,19,24,24 when use red,blue,green component together.
 
 In a word, what I want is iterate all colors from 1 to 25, increment with 1. -- [[ahei]]
  
@@ -917,7 +918,7 @@ Guide your search for a particular color by using hue, saturation, and value sep
 [new]
 1. Increment 1 is only one of my examples, not I preferred, users can iterate all of colors with increment they like.
 
-2. yeah, I also think palette is the best tools to choose color, is intuitive, but M-x palette and M-x facemenup-paste-to-face-fg-at-point is slow, and doremi-face-bg-color-name+ is fast, so I want use doremi to iterate all of colors.
+2. yeah, I also think palette is the best tools to choose color, is intuitive, but ##M-x palette## and ##M-x facemenup-paste-to-face-fg-at-point## is slow, and ##doremi-face-bg-color-name+## is fast, so I want use doremi to iterate all of colors.
 
 
 [new:DrewAdams:2009-11-17 15:14 UTC]
