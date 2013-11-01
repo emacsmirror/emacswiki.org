@@ -14,7 +14,7 @@ instance, in a Ruby on Rails project, you may be interested in all
 you could set `ffip-find-options' to "-not -regex \".*vendor.*\"".
 
 All these variables may be overridden on a per-directory basis in
-your .dir-locals.el.  See (info "(Emacs) Directory Variables") for
+your .dir-locals.el.  See [[Manual:Directory Variables]] for
 details.
 
 Available at [http://marmalade-repo.org/packages/find-file-in-project Marmalade Repo]
