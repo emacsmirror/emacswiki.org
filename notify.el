@@ -6,6 +6,7 @@
 ;; Modified by Andrey Kotlarski <m00naticus@gmail.com>
 ;; Modified by Andrew Gwozdziewycz <git@apgwoz.com>
 ;; Modified by Aidan Gauland <aidalgol@no8wireless.co.nz> October 2011
+;; Modified by Olivier Sirven <the.slaa@gmail.com> November 2013
 ;; Keywords: extensions, convenience, lisp
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -106,6 +107,7 @@ May be overridden with key-value additional arguments to `notify'.")
   "Notify TITLE, BODY with a growl"
   (call-process "growlnotify" nil 0 nil
                 "-a" (get 'notify-defaults :app)
+                "-n" (get 'notify-defaults :category)
                 "-t" (notify-via-growl-stringify title)
                 "-m" (notify-via-growl-stringify body)))
 
