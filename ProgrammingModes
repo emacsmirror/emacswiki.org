@@ -86,7 +86,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * PureMode -- mode for editing and running Pure scripts
 * QuackMode -- alternative for PLT Scheme's <nowiki>DrScheme</nowiki>
 * R-Mode -- mode for R language, a part of EssMode
-* RubyMode
+* RubyMode -- see also EnhancedRubyMode
 * SawFishMode
 * ScalaMode
 * SchemeMode
