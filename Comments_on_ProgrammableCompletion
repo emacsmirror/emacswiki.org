@@ -1,0 +1,14 @@
+= Bugs =
+
+Within EShell, pcomplete seems to not work for me on XP when sitting at a UNC path such as:
+
+    //evon620c/c$/home/work/HPCMS/HPCMS 6.0/Agent/common/s $ cd ~/dow
+
+pressing TAB here gives the error "Text is read-only".  Anyone verify this?  -- PatrickAnderson
+
+This will be because the standard eshell-prompt-regexp expects there to be only a single $ before your command.  I use ##"^[^#\n]* [#$] "## instead.  Note that you'll need to escape any $ signs in the eshell command line, eg., ##cd //evon620c/c\$/home/##  -- RohanHart
+
+This same issue appears even without a $ in the path if the directory to be completed starts with ~ and eshell-cmpl-ignore-case is true, using emacs 24  -- TuomasKuismin
+
+-- Anonymous 2013-11-01 22:54 UTC
+
