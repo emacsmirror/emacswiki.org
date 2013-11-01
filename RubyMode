@@ -13,9 +13,8 @@ To enable ruby-mode for most all ruby files, add this to your initialization fil
   (add-to-list 'auto-mode-alist
                '("\\(Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
-See also RubyOnRails.
+See also RubyOnRails, EnhancedRubyMode
 
 ----
 RubyLanguage ProgrammingModes
-
 
