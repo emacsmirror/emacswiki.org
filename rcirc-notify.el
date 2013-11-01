@@ -19,6 +19,9 @@
 ;; MA 02111-1307 USA
 ;;
 ;;;; Changelog:
+;; * 2013/11/01 - Add name option to growlnotify command 
+;;                - Olivier Sirven
+;;
 ;; * 2013/08/25 - Adjust formatting for compatibility with
 ;;                package.el - Steve Purcell
 ;;
@@ -126,7 +129,7 @@ same person."
     ((executable-find "growlnotify.com")
      (start-process "page-me" "*debug*" "growlnotify.com" "/a:Emacs" "/n:IRC" msg))
     ((executable-find "growlnotify")
-     (start-process "page-me" "*debug*" "growlnotify" "-a" "Emacs" "-m" msg))
+     (start-process "page-me" "*debug*" "growlnotify" "-a" "Emacs" "-n" "irc" "-m" msg))
     ((executable-find "osascript")
      (apply 'start-process `("page-me" nil
 			     "osascript"
