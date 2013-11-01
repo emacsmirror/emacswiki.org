@@ -42,7 +42,4 @@ pcomplete-default-completion-function gets called when you don't have a function
 Body should be of the form (pcomplete-here (... list of completions ...))
 
 ----
-Do newer versions of JavaCompletion use pcomplete? The copy from 2004 does not.
-
-----
 CategoryCode CategoryCompletion
