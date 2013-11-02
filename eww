@@ -1,0 +1,10 @@
+Emacs Web Wowser (eww) is a browser entirely written in elisp and based on shr.el.  It is part of the next Emacs (24.4) release.  It even supports some basic CSS and HTML5.
+
+== See also ==
+* [[emacs-w3m]]
+* [[w3]]
+
+== Web links ==
+* http://lars.ingebrigtsen.no/2013/06/eww.html -- Announcement by the original author.
+
+CategoryHypermedia
