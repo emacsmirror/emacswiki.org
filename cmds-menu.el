@@ -8,9 +8,9 @@
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 29 10:45:25 2013 (-0700)
+;; Last-Updated: Sat Nov  2 08:35:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 48
+;;     Update #: 50
 ;; URL: http://www.emacswiki.org/cmds-menu.el
 ;; Doc URL:
 ;; Keywords: convenience, command, menu
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/02 dadams
+;;     Removed autoload cookie.
 ;; 2013/10/19 dadams
 ;;     Created.
 ;;
@@ -98,7 +100,6 @@ If this is nil then show command names in full."
 
 (defvar recent-cmds-menu (make-sparse-keymap "Recent Commands")
   "`Recent Commands' submenu of `Tools' menu-bar menu.")
-;;;###autoload
 (defalias 'recent-cmds-menu (symbol-value 'recent-cmds-menu))
 
 (define-key menu-bar-tools-menu [recent-cmds]
