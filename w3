@@ -2,7 +2,7 @@
 is a web browser completely written in elisp which runs entirely (and only) within
 Emacs.  
 
-For most users who want to browse the web from within Emacs, [[emacs-w3m]] will be a better solution, not least because it is quite a bit faster, and as as of May 2010 probably offers a more bug-free browsing experience.
+For most users who want to browse the web from within Emacs, [[emacs-w3m]] will be a better solution, not least because it is quite a bit faster, and as as of May 2010 probably offers a more bug-free browsing experience. Another alternative would be [[eww]], which is written entirely in elisp like  W3.
 
 However w3 is very featureful for a text-mode browser, and since it is implemented entirely in Emacs Lisp, it can be extended in ways that w3m cannot.  
 
