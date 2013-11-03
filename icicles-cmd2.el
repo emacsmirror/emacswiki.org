@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Oct 18 14:14:03 2013 (-0700)
+;; Last-Updated: Sat Nov  2 16:47:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6583
+;;     Update #: 6591
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -18,13 +18,14 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
-;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `doremi',
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `regexp-opt', `ring', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1516,7 +1517,7 @@ returned."
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
       nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (prog1 (setq face-names  (delete "" face-names)) ; Last code - return the list of faces.
         (when (interactive-p) (message "Faces: %S" face-names))))
 
     (icicle-define-command icicle-choose-invisible-faces
@@ -1542,7 +1543,7 @@ returned."
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
       nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (prog1 (setq face-names  (delete "" face-names)) ; Last code - return the list of faces.
         (when (interactive-p) (message "Faces: %S" face-names))))
 
     (icicle-define-command icicle-choose-visible-faces
@@ -1568,7 +1569,7 @@ returned."
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
       nil                               ; Undo code.
-      (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
+      (prog1 (setq face-names  (delete "" face-names)) ; Last code - return the list of faces.
         (when (interactive-p) (message "Faces: %S" face-names))))
 
     (defun icicle-show-only-faces (&optional start end faces)
@@ -1866,7 +1867,7 @@ to match (no prompting)."               ; Doc string
      (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
      (appendp (eq synonyms-append-result-flag (and (wholenump num-arg)  (/= 16 num-arg))))
      (icicle-sort-function 'icicle-case-insensitive-string-less-p))
-    (synonyms-ensure-synonyms-read-from-cache)) ; Fill `synonyms-obarray' initially, for completion.
+    (synonyms-ensure-synonyms-read-from-cache)) ; First code: initialize `synonyms-obarray', for completion.
 
   (icicle-define-command icicle-insert-thesaurus-entry ; Command name
     "Insert an entry from a thesaurus.
@@ -2896,8 +2897,8 @@ See also: `icicle-apropos-value'."      ; Doc string
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
-  (progn
-    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+  (progn                                ; First code
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
     (message "Gathering variable descriptions...")))
 
@@ -2965,8 +2966,8 @@ See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
-  (progn
-    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+  (progn                                ; First code
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
     (message "Gathering function descriptions...")))
 
@@ -3042,8 +3043,8 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
-  (progn
-    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+  (progn                                ; First code
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
     (message "Gathering property lists...")))
 
@@ -3126,8 +3127,8 @@ See also: `icicle-apropos-value'."      ; Doc string
    (icicle-list-use-nth-parts          '(1))
    (icicle-candidate-help-fn           'icicle-doc-action)
    (pref-arg                           current-prefix-arg))
-  (progn
-    (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+  (progn                                ; First code
+    (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
     (message "Gathering documentation...")))
 
