@@ -1,29 +1,29 @@
 ;;; ls-lisp+.el --- Enhancements of standard library `ls-lisp.el'.
-;; 
+;;
 ;; Filename: ls-lisp+.el
 ;; Description: Enhancements of standard library `ls-lisp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
-;; Version: 
+;; Version: 0
 ;; Package-Requires: ((files+ "0"))
-;; Last-Updated: Tue Jul 23 16:35:47 2013 (-0700)
+;; Last-Updated: Sun Nov  3 08:11:42 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 195
+;;     Update #: 216
 ;; URL: http://www.emacswiki.org/ls-lisp+.el
 ;; Doc URL: http://emacswiki.org/LsLisp
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `files+', `misc-fns', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Enhancements of standard library `ls-lisp.el'.
 ;;
 ;;  If you use MS Windows, MS-DOS, or MacOS, then you will likely want
@@ -44,16 +44,34 @@
 ;;
 ;;    files 276 total 27359
 ;;
+;;  This library also lets you use wildcards in the file names in an
+;;  explicit cons arg to `dired'.  It thus provides a bug fix for
+;;  Emacs bug #7027.
+;;
 ;;  This library also provides a fix for bug #2801 for Emacs 21 and 22
 ;;  for the case where switches `F' and `R' are both provided.  This
 ;;  is fixed in vanilla Emacs 23.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `ls-lisp.el' have
+;;              been REDEFINED HERE:
+;;
+;;  `ls-lisp--insert-directory' - Different 2nd header line.
+;;  `insert-directory' - If wildcard, set FILE to `default-directory'
+;;                       if no dir component.  Include number of files
+;;                       in 2nd header line.
+;;  `ls-lisp-insert-directory' - If FILE nil, use `default-directory'.
+;;                               Do nothing if FILE is "".
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
-;; 2013/07/13 dadams
-;;     insert-directory: Add mouse-face to file count text starting at bol, not +2.
+;; 2013/11/03 dadams
+;;     Added: redefinition of ls-lisp--insert-directory, for Emacs 24.4.
+;;     insert-directory: If wildcard, set FILE to `default-directory' if FILE has no dir component.
+;;                       (+ Miscellaneous changes made a while ago.)
+;;     ls-lisp-insert-directory: FILE can be null for Emacs 23+.
 ;; 2010/11/23 dadams
 ;;     ls-lisp-insert-directory: Finish last fix - second call to ls-lisp-format.
 ;; 2010/11/16 dadams
@@ -80,24 +98,24 @@
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (or (and (= emacs-major-version 20)
@@ -120,12 +138,130 @@
 
 
 
+
 ;; REPLACE ORIGINAL in `ls-lisp.el'
 ;;
-;; In the second header line: include the number of files and subdirs in the directory.
+;; 1. If wildcard, set FILE to `default-directory' if FILE has no dir component.
+;; 2. In second header line: include the number of files and subdirs in the directory.
 ;;
-(defun insert-directory (file switches &optional wildcard full-directory-p)
-  "Insert directory listing for FILE, formatted according to SWITCHES.
+(when (fboundp 'ls-lisp--insert-directory) ; Emacs 24.4+
+  (defun ls-lisp--insert-directory (orig-fun file switches &optional wildcard full-directory-p)
+    "Insert directory listing for FILE, formatted according to SWITCHES.
+Leaves point after the inserted text.
+SWITCHES may be a string of options, or a list of strings.
+Optional third arg WILDCARD means treat FILE as shell wildcard.
+Optional fourth arg FULL-DIRECTORY-P means file is a directory and
+switches do not contain `d', so that a full listing is expected.
+
+This version of the function comes from `ls-lisp.el'.
+If the value of `ls-lisp-use-insert-directory-program' is non-nil then
+this advice just delegates the work to ORIG-FUN (the normal `insert-directory'
+function from `files.el').
+But if the value of `ls-lisp-use-insert-directory-program' is nil
+then it runs a Lisp emulation.
+
+The Lisp emulation does not run any external programs or shells.  It
+supports ordinary shell wildcards if `ls-lisp-support-shell-wildcards'
+is non-nil; otherwise, it interprets wildcards as regular expressions
+to match file names.  It does not support all `ls' switches -- those
+that work are: A a B C c F G g h i n R r S s t U u X.  The l switch
+is assumed to be always present and cannot be turned off."
+    (if ls-lisp-use-insert-directory-program
+        (funcall orig-fun
+                 file switches wildcard full-directory-p)
+      ;; We need the directory in order to find the right handler.
+      (let ((handler (find-file-name-handler (expand-file-name file)
+                                             'insert-directory))
+            (orig-file file)
+            wildcard-regexp)
+        (if handler
+            (funcall handler 'insert-directory file switches
+                     wildcard full-directory-p)
+          ;; Remove --dired switch
+          (if (string-match "--dired " switches)
+              (setq switches (replace-match "" nil nil switches)))
+          ;; Convert SWITCHES to a list of characters.
+          (setq switches (delete ?\  (delete ?- (append switches nil))))
+          ;; Sometimes we get ".../foo*/" as FILE.  While the shell and
+          ;; `ls' don't mind, we certainly do, because it makes us think
+          ;; there is no wildcard, only a directory name.
+          (if (and ls-lisp-support-shell-wildcards
+                   (string-match "[[?*]" file)
+                   ;; Prefer an existing file to wildcards, like
+                   ;; dired-noselect does.
+                   (not (file-exists-p file)))
+              (progn
+                (or (not (eq (aref file (1- (length file))) ?/))
+                    (setq file (substring file 0 (1- (length file)))))
+                (setq wildcard t)))
+          (if wildcard
+
+              (setq wildcard-regexp
+                    (if ls-lisp-support-shell-wildcards
+                        (wildcard-to-regexp (file-name-nondirectory file))
+                      (file-name-nondirectory file))
+                    file             (or (file-name-directory file)  default-directory))
+            (if (memq ?B switches) (setq wildcard-regexp "[^~]\\'")))
+          (condition-case err
+              (ls-lisp-insert-directory
+               file switches (ls-lisp-time-index switches)
+               wildcard-regexp full-directory-p)
+            (invalid-regexp
+             ;; Maybe they wanted a literal file that just happens to
+             ;; use characters special to shell wildcards.
+             (if (equal (cadr err) "Unmatched [ or [^")
+                 (progn
+                   (setq wildcard-regexp (if (memq ?B switches) "[^~]\\'")
+                         file (file-relative-name orig-file))
+                   (ls-lisp-insert-directory
+                    file switches (ls-lisp-time-index switches)
+                    nil full-directory-p))
+               (signal (car err) (cdr err)))))
+          ;; Try to insert the amount of free space.
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward "^total" nil t)
+              (beginning-of-line)
+              (let ((counted  (save-match-data (count-dired-files))))
+                (if (zerop counted)
+                    (insert "files 0/0 ")
+                  (insert "files " (number-to-string counted)
+                          "/" (number-to-string
+                               (- (length (directory-files default-directory
+                                                           nil nil t)) 2))
+                          " ")))
+              (goto-char (point-min))
+              (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
+              (replace-match "space used" nil nil nil 1)
+              (let ((available (and (fboundp 'get-free-disk-space)
+                                    (get-free-disk-space ".")))
+                    (map (make-sparse-keymap))
+                    (inhibit-field-text-motion t)) ; Just to be sure, for eol.
+                (define-key map [mouse-2]
+                  'dired-mouse-describe-listed-directory)
+                (define-key map "\r" 'dired-describe-listed-directory)
+                (when available (end-of-line) (insert " available " available))
+                (add-text-properties
+                 (save-excursion (beginning-of-line) (line-beginning-position))
+                 (1- (match-beginning 1))
+                 `(mouse-face highlight keymap ,map
+                   help-echo "Files shown / total files in directory \
+\[RET, mouse-2: more info]"))
+                (add-text-properties (match-beginning 1) (line-end-position)
+                                     `(mouse-face highlight keymap ,map
+                                       help-echo "Kbytes used in directory, Kbytes \
+available on disk [RET, mouse-2: more info]"))))))))))
+
+
+
+;; REPLACE ORIGINAL in `ls-lisp.el'
+;;
+;; 1. If wildcard, set FILE to `default-directory' if FILE has no dir component.
+;; 2. In second header line: include the number of files and subdirs in the directory.
+;;
+(unless (fboundp 'ls-lisp--insert-directory) ; Emacs < 24.4.
+  (defun insert-directory (file switches &optional wildcard full-directory-p)
+    "Insert directory listing for FILE, formatted according to SWITCHES.
 Leaves point after the inserted text.
 SWITCHES may be a string of options, or a list of strings.
 Optional third arg WILDCARD means treat FILE as shell wildcard.
@@ -146,89 +282,97 @@ supports ordinary shell wildcards if `ls-lisp-support-shell-wildcards'
 is non-nil; otherwise, it interprets wildcards as regular expressions
 to match file names.  It does not support all `ls' switches -- those
 that work are: A a c i r S s t u U X g G B C R n and F partly."
-  (if ls-lisp-use-insert-directory-program
-      (funcall original-insert-directory ; Free here.  Defined in `ls-lisp.el'.
-	       file switches wildcard full-directory-p)
-    ;; We need the directory in order to find the right handler.
-    (let ((handler (find-file-name-handler (expand-file-name file)
-					   'insert-directory))
-	  (orig-file file)
-	  wildcard-regexp)
-      (if handler
-	  (funcall handler 'insert-directory file switches
-		   wildcard full-directory-p)
-	;; Remove --dired switch
-	(if (string-match "--dired " switches)
-	    (setq switches (replace-match "" nil nil switches)))
-	;; Convert SWITCHES to a list of characters.
-	(setq switches (delete ?\  (delete ?- (append switches nil))))
-	;; Sometimes we get ".../foo*/" as FILE.  While the shell and
-	;; `ls' don't mind, we certainly do, because it makes us think
-	;; there is no wildcard, only a directory name.
-	(if (and ls-lisp-support-shell-wildcards
-		 (string-match "[[?*]" file)
-		 ;; Prefer an existing file to wildcards, like
-		 ;; dired-noselect does.
-		 (not (file-exists-p file)))
-	    (progn
-	      (or (not (eq (aref file (1- (length file))) ?/))
-		  (setq file (substring file 0 (1- (length file)))))
-	      (setq wildcard t)))
-	(if wildcard
-	    (setq wildcard-regexp
-		  (if ls-lisp-support-shell-wildcards
-		      (wildcard-to-regexp (file-name-nondirectory file))
-		    (file-name-nondirectory file))
-		  file (file-name-directory file))
-	  (if (memq ?B switches) (setq wildcard-regexp "[^~]\\'")))
-	(condition-case err
-	    (ls-lisp-insert-directory
-	     file switches (ls-lisp-time-index switches)
-	     wildcard-regexp full-directory-p)
-	  (invalid-regexp
-	   ;; Maybe they wanted a literal file that just happens to
-	   ;; use characters special to shell wildcards.
-	   (if (equal (cadr err) "Unmatched [ or [^")
-	       (progn
-		 (setq wildcard-regexp (if (memq ?B switches) "[^~]\\'")
-		       file (file-relative-name orig-file))
-		 (ls-lisp-insert-directory
-		  file switches (ls-lisp-time-index switches)
-		  nil full-directory-p))
-	     (signal (car err) (cdr err)))))
-	(save-excursion
-	  (goto-char (point-min))
-          (while (re-search-forward "^total" nil t)
-            (beginning-of-line)
-            (let ((counted  (save-match-data (count-dired-files))))
-              (if (zerop counted)
-                  (insert "files 0/0 ")
-                (insert "files " (number-to-string counted)
-                        "/" (number-to-string
-                             (- (length (directory-files default-directory
-                                                         nil nil t)) 2))
-                        " ")))
+    (if ls-lisp-use-insert-directory-program
+        (funcall original-insert-directory ; Free here.  Defined in `ls-lisp.el'.
+                 file switches wildcard full-directory-p)
+      ;; We need the directory in order to find the right handler.
+      (let ((handler (find-file-name-handler (expand-file-name file)
+                                             'insert-directory))
+            (orig-file file)
+            wildcard-regexp)
+        (if handler
+            (funcall handler 'insert-directory file switches
+                     wildcard full-directory-p)
+          ;; Remove --dired switch
+          (if (string-match "--dired " switches)
+              (setq switches (replace-match "" nil nil switches)))
+          ;; Convert SWITCHES to a list of characters.
+          (setq switches (delete ?\  (delete ?- (append switches nil))))
+          ;; Sometimes we get ".../foo*/" as FILE.  While the shell and
+          ;; `ls' don't mind, we certainly do, because it makes us think
+          ;; there is no wildcard, only a directory name.
+          (if (and ls-lisp-support-shell-wildcards
+                   (string-match "[[?*]" file)
+                   ;; Prefer an existing file to wildcards, like
+                   ;; dired-noselect does.
+                   (not (file-exists-p file)))
+              (progn
+                (or (not (eq (aref file (1- (length file))) ?/))
+                    (setq file (substring file 0 (1- (length file)))))
+                (setq wildcard t)))
+          (if wildcard
+              (setq wildcard-regexp  (if ls-lisp-support-shell-wildcards
+                                         (wildcard-to-regexp (file-name-nondirectory file))
+                                       (file-name-nondirectory file))
+                    file             (or (file-name-directory file) default-directory))
+            (if (memq ?B switches) (setq wildcard-regexp "[^~]\\'")))
+          (condition-case err
+              (if (< emacs-major-version 21)
+                  (condition-case err2
+                      ;; First try for Francis Wright's version of `ls-lisp.el'.
+                      ;; Its signature is the same for Emacs 20 as for Emacs > 20 and is the same as
+                      ;; for vanilla Emacs > Emacs 20.
+                      (ls-lisp-insert-directory file switches (ls-lisp-time-index switches)
+                                                wildcard-regexp full-directory-p)
+                    (wrong-number-of-arguments ; Vanilla `ls-lisp.el' for Emacs 20.
+                     (ls-lisp-insert-directory file switches wildcard-regexp full-directory-p)))
+                (ls-lisp-insert-directory
+                 file switches (ls-lisp-time-index switches)
+                 wildcard-regexp full-directory-p))
+            (invalid-regexp
+             ;; Maybe they wanted a literal file that just happens to
+             ;; use characters special to shell wildcards.
+             (if (equal (cadr err) "Unmatched [ or [^")
+                 (progn
+                   (setq wildcard-regexp (if (memq ?B switches) "[^~]\\'")
+                         file (file-relative-name orig-file))
+                   (ls-lisp-insert-directory
+                    file switches (ls-lisp-time-index switches)
+                    nil full-directory-p))
+               (signal (car err) (cdr err)))))
+          (save-excursion
             (goto-char (point-min))
-            (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
-            (replace-match "space used" nil nil nil 1)
-            (let ((available (and (fboundp 'get-free-disk-space)
-                                  (get-free-disk-space ".")))
-                  (map (make-sparse-keymap))
-                  (inhibit-field-text-motion t)) ; Just to be sure, for eol. 
-              (define-key map [mouse-2]
-                'dired-mouse-describe-listed-directory)
-              (define-key map "\r" 'dired-describe-listed-directory)
-              (when available (end-of-line) (insert " available " available))
-              (add-text-properties
-               (save-excursion (beginning-of-line) (line-beginning-position))
-               (1- (match-beginning 1))
-               `(mouse-face highlight keymap ,map
-                 help-echo "Files shown / total files in directory \
+            (while (re-search-forward "^total" nil t)
+              (beginning-of-line)
+              (let ((counted  (save-match-data (count-dired-files))))
+                (if (zerop counted)
+                    (insert "files 0/0 ")
+                  (insert "files " (number-to-string counted)
+                          "/" (number-to-string
+                               (- (length (directory-files default-directory
+                                                           nil nil t)) 2))
+                          " ")))
+              (goto-char (point-min))
+              (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
+              (replace-match "space used" nil nil nil 1)
+              (let ((available (and (fboundp 'get-free-disk-space)
+                                    (get-free-disk-space ".")))
+                    (map (make-sparse-keymap))
+                    (inhibit-field-text-motion t)) ; Just to be sure, for eol.
+                (define-key map [mouse-2]
+                  'dired-mouse-describe-listed-directory)
+                (define-key map "\r" 'dired-describe-listed-directory)
+                (when available (end-of-line) (insert " available " available))
+                (add-text-properties
+                 (save-excursion (beginning-of-line) (line-beginning-position))
+                 (1- (match-beginning 1))
+                 `(mouse-face highlight keymap ,map
+                   help-echo "Files shown / total files in directory \
 \[RET, mouse-2: more info]"))
-              (add-text-properties (match-beginning 1) (line-end-position)
-                                   `(mouse-face highlight keymap ,map
-                                     help-echo "Kbytes used in directory, Kbytes \
-available on disk [RET, mouse-2: more info]")))))))))
+                (add-text-properties (match-beginning 1) (line-end-position)
+                                     `(mouse-face highlight keymap ,map
+                                       help-echo "Kbytes used in directory, Kbytes \
+available on disk [RET, mouse-2: more info]"))))))))))
 
 
 ;; REPLACE ORIGINAL in `ls-lisp.el'.
@@ -438,10 +582,13 @@ SWITCHES is a *list* of characters.  TIME-INDEX is the time index into
 file-attributes according to SWITCHES.  WILDCARD-REGEXP is nil or an *Emacs
 regexp*.  FULL-DIRECTORY-P means file is a directory and SWITCHES does
 not contain `d', so that a full listing is expected."
-    (when (> (length file) 0)           ; Do nothing for empty FILE, "".
+    (when (or (null file) (> (length file) 0)) ; Do nothing for empty FILE, "".
       (if (or wildcard-regexp full-directory-p)
-          (let* ((dir (if file (file-name-as-directory file) default-directory))
-                 (default-directory dir) ; so that file-attributes works
+
+          (let* ((dir               (if file
+                                        (file-name-as-directory file)
+                                      default-directory))
+                 (default-directory  dir) ; so that file-attributes works
                  (file-alist
                   (directory-files-and-attributes dir nil wildcard-regexp t
                                                   (if (memq ?n switches)
