@@ -1,0 +1,8 @@
+rec-mode is a mode for browsing and editing recfiles, which are text files containing data structured in fields and records. It is part of the [http://www.gnu.org/software/recutils GNU Recutils] suite.
+
+Recfiles are text-based databases which are easy to read and write manually using a text editor. At the same time they feature enough structure so they can be read, edited and processed automatically by programs.  Despite its simplicity they support quite advanced database related functionality such as data integrity, encryption, foreign keys, grouping, aggregate functions, etc.
+
+The mode provides a navigation mode to browse the rec data and also several edition modes.  Font-lock, field folding, data integrity, and more...  The mode is documented in a [http://www.gnu.org/software/recutils/rec-mode-manual texinfo manual].
+
+----
+CategoryDatabase
