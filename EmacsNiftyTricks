@@ -142,7 +142,11 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
                             (set-face-background 'default "black")))
 
 * Removing interface bars: customize ##(tool-bar-mode -1)##, ##(scroll-bar-mode -1)##  and ##(menu-bar-mode -1)## permanently hide them. See ActiveMenu for for another less persistent solution for menu bar. To get rid of title bar given by OS, run Emacs in full screen by commandline option -fs or --fullscreen. See the page FullScreen for more details and, for example, Windows specific methods.
-* To remove start-up messages, put ##(setq inhibit-splash-screen t)## and (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") in your init-file.
+* To remove start-up messages, put ##(setq inhibit-splash-screen t)## and (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") in your init-file.  Or just add
+
+    (eval-after-load "startup" '(fset 'display-startup-echo-area-message (lambda ())))
+
+to get rid of it everywhere.
 * `M-x transient-mark-mode' in GnuEmacs (and `zmacs-region' in [[XEmacs]]) to make it highlight the active region (and lots of other nifty stuff too!)
 * Make [[XEmacs]]' menus look like Gtk, add these to your ##~/.Xresources##:
 
