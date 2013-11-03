@@ -449,6 +449,37 @@ Tested with emacs 23.2.
 
 -- Alexis
 
+If need filtering URLs (e.g. adf.ly, 4sq.com) and username, try this: 
+https://github.com/hayamiz/twittering-mode/pull/73#issuecomment-27641530
+
+Code is from Alexis' and cvmat's:
+{{{
+;;;; Filtering.
+(defvar twittering-filter-users '()
+  "*List of strings containing usernames (without '@' prefix) whose tweets should not be displayed in timeline.")
+(defvar twittering-filter-tweets '()
+  "*List of strings containing phrases which will prevent a tweet containing one of those phrases from being displayed in timeline.")
+
+(defun twittering-filters-apply ()
+  (setq non-matching-statuses '())
+  (dolist (status twittering-new-tweets-statuses)
+    (setq matched-tweets 0)
+    (dolist (pat twittering-filter-users)
+      (if (string-match pat (cdr (assoc 'user-screen-name status)))
+          (setq matched-tweets (+ 1 matched-tweets))))
+    (dolist (pat twittering-filter-tweets)
+      (if (string-match pat (twittering-make-fontified-tweet-text-with-entity status))
+          (setq matched-tweets (+ 1 matched-tweets))))
+    (if (= 0 matched-tweets)
+        (setq non-matching-statuses (append non-matching-statuses `(,status)))))
+  (setq new-statuses non-matching-statuses))
+(add-hook 'twittering-new-tweets-hook 'twittering-filters-apply)
+
+(setq twittering-filter-tweets '("http://4sq.com/.*" "http://adf.ly/.*" "I liked a @YouTube video"))
+}}}
+
+-- kuanyui
+
 [new]
 Are there commands to view lists of (i) people who you're following and (ii) people who're following you? For that matter, is there any manual?
 
