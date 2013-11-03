@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 26 22:58:26 2013 (-0700)
+;; Last-Updated: Thu Oct 31 11:16:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 7111
+;;     Update #: 7113
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -20,12 +20,13 @@
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `dired', `dired+', `dired-aux',
-;;   `dired-x', `ffap', `fit-frame', `frame-fns', `help+20', `info',
-;;   `info+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cmds-menu', `dired', `dired+',
+;;   `dired-aux', `dired-x', `ffap', `fit-frame', `frame-fns',
+;;   `help+20', `info', `info+', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `second-sel',
+;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2358,15 +2359,15 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-capitalize-recursive]
   '(menu-item "Capitalize" diredp-capitalize-recursive
     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-    :help "Capitalize (initial caps) the names of all marked files"))
+    :help "Capitalize the names of all marked files, including in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-downcase-recursive]
   '(menu-item "Downcase" diredp-downcase-recursive
     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-    :help "Rename marked files to lowercase names"))
+    :help "Rename marked files, including in marked subdirs, to lowercase names"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-upcase-recursive]
   '(menu-item "Upcase" diredp-upcase-recursive
     :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-    :help "Rename marked files to uppercase names"))
+    :help "Rename marked files, including in marked subdirs, to uppercase names"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-move-recursive]
     '(menu-item "Move to..." diredp-do-move-recursive
       :help "Move marked files, including in marked subdirs, to a given directory"))
@@ -2380,7 +2381,7 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "List the files marked here and in marked subdirs, recursively"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-copy-filename-as-kill-recursive]
     '(menu-item "Copy File Names (to Paste)" diredp-copy-filename-as-kill-recursive
-      :help "Copy names of marked files here and in marked subdirs, to `kill-ring'"))
+      :help "Copy names of files marked here and in marked subdirs, to `kill-ring'"))
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-insert-subdirs-recursive]
   '(menu-item "Insert Subdirs" diredp-insert-subdirs-recursive
     :help "Insert the marked subdirectories, gathered recursively"))
