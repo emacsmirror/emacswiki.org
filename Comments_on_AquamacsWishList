@@ -5,3 +5,10 @@ So i can see my code at 200 line number in Left side split view, while i write n
 
 -- [http://geosukarno.com GEO] 2013-11-02 22:36 UTC
 
+
+----
+
+@GEO: Have you tried `C-x 4 c'  (`clone-indirect-buffer-other-window')?
+
+-- npostavs 2013-11-03 03:31 UTC
+
