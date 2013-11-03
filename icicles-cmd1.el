@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Oct 29 16:28:02 2013 (-0700)
+;; Last-Updated: Sun Nov  3 14:55:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26003
+;;     Update #: 26036
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -255,6 +255,8 @@
 ;;    (+)`icicle-string-list', (+)`icicle-toggle-option',
 ;;    (+)`icicle-visit-marked-file-of-content',
 ;;    (+)`icicle-visit-marked-file-of-content-other-window',
+;;    (+)`icicle-visit-marked-file-of-content-recursive',
+;;    (+)`icicle-visit-marked-file-of-content-recursive-other-window',
 ;;    `icicle-widget-file-complete',
 ;;    (+)`icicle-yank-maybe-completing',
 ;;    (+)`icicle-yank-pop-commands', `icicle-zap-to-char',
@@ -311,14 +313,16 @@
 ;;    `icicle-remove-saved-set-action',
 ;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-as-command',
-;;    `icicle-shell-dynamic-complete-as-environment-variable'.
+;;    `icicle-shell-dynamic-complete-as-environment-variable',
+;;    (+)`icicle-visit-marked-file-of-content-1'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-dabbrev--last-completion-buffer',
 ;;    `icicle-dabbrev--last-obarray', `icicle-locate-file-action-fn',
 ;;    `icicle-locate-file-no-symlinks-p',
-;;    `icicle-locate-file-use-locate-p'.
+;;    `icicle-locate-file-use-locate-p', `icicle-vmfoc-other-win-p',
+;;    `icicle-vmfoc-recursive-p'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dabbrev.el' have
@@ -3984,7 +3988,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
   nil nil                               ; First code, undo code
   (setq this-command  icicle-new-last-cmd) ; Last code: this will update `last-command'.
-  'NON-INTERACTIVE)                     ; This is not a real command.
+  'NOT-INTERACTIVE-P)                   ; Not a real command - just a helper function.
 
 (defun icicle-command-abbrev-record (abbrev command)
   "Record ABBREV and COMMAND in `icicle-command-abbrev-alist'."
@@ -4003,7 +4007,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
               (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
             ""))
   obarray (and icompletep  pred) t nil 'icicle-kmacro-history nil nil
-  ((last-command                            last-command) ; Save and restore the last command.
+  ((last-command                            last-command) ; Save and restore the last command. (Bindings.)
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (lambda (fn)
@@ -6297,7 +6301,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                  (bufs         (cond ((equal "" content-pat)
                                       (dolist (buf  bufs)
                                         ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
-                                        ;; Bound in `icicle-visit-marked-file-of-content(-other-window)'.
+                                        ;; Bound in `icicle-visit-marked-file-of-content-1'.
                                         (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                    (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                           (add-to-list 'new-bufs--to-kill buf)))
@@ -6310,7 +6314,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                            (goto-char (point-min))
                                                            (re-search-forward content-pat nil t)))))
                                            ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
-                                           ;; Bound in `icicle-visit-marked-file-of-content(-other-window)'.
+                                           ;; Bound in `icicle-visit-marked-file-of-content-1'.
                                            (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                       (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
@@ -6349,7 +6353,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                           (save-excursion
                                                             (goto-char (point-min))
                                                             (re-search-forward content-pat nil t)))))
-                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
+                                           ;; Bound in `icicle-visit-marked-file-of-content-1'.
                                            (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                       (not (memq buf existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
@@ -6469,7 +6474,15 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
-(icicle-define-command icicle-visit-marked-file-of-content ; Command name
+(defvar icicle-vmfoc-other-win-p nil
+  "Flag bound in `icicle-visit-marked-file-of-content*'.
+Non-nil means use other window.")
+
+(defvar icicle-vmfoc-recursive-p nil
+  "Flag bound in `icicle-visit-marked-file-of-content*'.
+Non-nil means act on files marked in subdirs, defined recursively.")
+
+(defun icicle-visit-marked-file-of-content ()
   "Visit a marked file whose content matches a regexp.
 The marked files are examined, and those whose file names and/or
 contents match your multi-completion input are available as candidate
@@ -6480,53 +6493,49 @@ information.  You must be in Dired mode to use this command.
 When this command is finished, any unused buffers that were created
 for content matching are killed, if option
 `icicle-kill-visited-buffers-flag' is non-nil.  But a prefix argument
-flips the behavior specified by that option." ; Doc string
-  (lambda (buf)                         ; Action function.  Free var here: NEW-BUFS--TO-KEEP.
-    (push (switch-to-buffer (icicle-transform-multi-completion buf))
-          new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
-  prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
-  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names) nil
-  (icicle-buffer-bindings               ; Bindings
-   ((prompt                                 (icicle-buffer-name-prompt "Visit file"))
-    (icicle-show-multi-completion-flag      t) ; Override user setting.
-    (icicle-multi-completing-p              t)
-    (icicle-list-use-nth-parts              '(1))
-    (init-pref-arg                          current-prefix-arg)
-    (existing-bufs                          (buffer-list))
-    (new-bufs--to-kill                      ())
-    (new-bufs--to-keep                      ())
-    (icicle-candidate-help-fn               'icicle-buffer-cand-help))
-   ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
-    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
-    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
-    (icicle-apropos-complete-match-fn       nil)
-    (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
-    (icicle-bufflist                        (save-excursion
-                                              (let* ((files  (dired-get-marked-files
-                                                              nil nil
-                                                              (lambda (file) (not (file-directory-p file)))))
-                                                     (bufs   ()))
-                                                (dolist (file  files) (push (find-file-noselect file) bufs))
-                                                bufs)))))
-  (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
-         (icicle-bind-buffer-candidate-keys)
-         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
-         (icicle-highlight-lighter)
-         (message "Matching file contents..."))
-  nil                                   ; Undo code
-  (progn (icicle-unbind-buffer-candidate-keys) ; Last code
-         (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
-                   (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
-           (dolist (buf  new-bufs--to-kill)
-             (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+flips the behavior specified by that option."
+  (interactive)
+  (let ((icicle-vmfoc-other-win-p  nil)
+        (icicle-vmfoc-recursive-p  nil))
+    (icicle-visit-marked-file-of-content-1)))
 
-(icicle-define-command icicle-visit-marked-file-of-content-other-window ; Command name
+(defun icicle-visit-marked-file-of-content-other-window ()
   "Visit a marked file whose content matches a regexp, in another window.
 Same as `icicle-visit-marked-file-of-content' except it uses a
-different window.  You must be in Dired to use this command." ; Doc string
+different window.  You must be in Dired mode to use this command."
+  (interactive)
+  (let ((icicle-vmfoc-other-win-p  t)
+        (icicle-vmfoc-recursive-p  nil))
+    (icicle-visit-marked-file-of-content-1)))
+
+(defun icicle-visit-marked-file-of-content-recursive ()
+  "Visit a marked file whose content matches a regexp.
+Like `icicle-visit-marked-file-of-content', but include also the files
+marked in marked subdirs, recursively.
+
+You need library `dired+.el' for this command, and you must be in
+Dired mode to use it."
+  (interactive)
+  (let ((icicle-vmfoc-other-win-p  nil)
+        (icicle-vmfoc-recursive-p  t))
+    (icicle-visit-marked-file-of-content-1)))
+
+(defun icicle-visit-marked-file-of-content-recursive-other-window ()
+  "Visit a marked file whose content matches a regexp, in another window.
+Like `icicle-visit-marked-file-of-content-other-window', but include
+also the files marked in marked subdirs, recursively.
+
+You need library `dired+.el' for this command, and you must be in
+Dired mode to use it."
+  (interactive)
+  (let ((icicle-vmfoc-other-win-p  t)
+        (icicle-vmfoc-recursive-p  t))
+    (icicle-visit-marked-file-of-content-1)))
+
+(icicle-define-command icicle-visit-marked-file-of-content-1
+  "Helper for `icicle-visit-marked-file-of-content*'." ; Doc string
   (lambda (buf)                         ; Action function.  Free var here: NEW-BUFS--TO-KEEP.
-    (push (switch-to-buffer-other-window (icicle-transform-multi-completion buf))
+    (push (funcall act-fn (icicle-transform-multi-completion buf))
           new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
@@ -6540,6 +6549,9 @@ different window.  You must be in Dired to use this command." ; Doc string
     (existing-bufs                          (buffer-list))
     (new-bufs--to-kill                      ())
     (new-bufs--to-keep                      ())
+    (act-fn                                 (if icicle-vmfoc-other-win-p
+                                                'switch-to-buffer-other-window
+                                              'switch-to-buffer))
     (icicle-candidate-help-fn               'icicle-buffer-cand-help))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
@@ -6547,13 +6559,19 @@ different window.  You must be in Dired to use this command." ; Doc string
     (icicle-apropos-complete-match-fn       nil)
     (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
     (icicle-bufflist                        (save-excursion
-                                              (let* ((files  (dired-get-marked-files
-                                                              nil nil
-                                                              (lambda (file) (not (file-directory-p file)))))
+                                              (let* ((files  (if (and icicle-vmfoc-recursive-p
+                                                                      (fboundp 'diredp-get-files))
+                                                                 (diredp-get-files)
+                                                               (dired-get-marked-files
+                                                                nil nil
+                                                                (lambda (file)
+                                                                  (not (file-directory-p file))))))
                                                      (bufs   ()))
                                                 (dolist (file  files) (push (find-file-noselect file) bufs))
                                                 bufs)))))
-  (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
+  (progn (when (and icicle-vmfoc-recursive-p  (not (fboundp 'diredp-get-files)))
+           (icicle-user-error "You need library `dired+.el' for this command"))
+         (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -6563,7 +6581,8 @@ different window.  You must be in Dired to use this command." ; Doc string
          (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
                    (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
            (dolist (buf  new-bufs--to-kill)
-             (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+             (unless (memq buf new-bufs--to-keep) (kill-buffer buf)))))
+  'NOT-INTERACTIVE-P)                   ; Not a real command - just a helper function.
 
 (icicle-define-command icicle-insert-buffer
   "Multi-command version of `insert-buffer'.
@@ -7988,7 +8007,7 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-command icicle-remove-file-from-recentf-list
   "Remove file from `recentf-list' - the list of recently used files."
   icicle-remove-from-recentf-candidate-action
-  "Remove from recent files list, `recentf-list': "
+  "Remove from recent files list, `recentf-list': " ; `completing-read' args
   (mapcar #'list (progn (unless (boundp 'recentf-list) (require 'recentf))
                         (when (fboundp 'recentf-mode) (recentf-mode 99))
                         (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
@@ -7996,7 +8015,7 @@ Ido-like behavior."                     ; Doc string
   nil (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs 23.
            (confirm-nonexistent-file-or-buffer))
   nil 'file-name-history (car recentf-list) nil
-  ((icicle-use-candidates-only-once-flag  t)))
+  ((icicle-use-candidates-only-once-flag  t))) ; Bindings
 
 (defun icicle-remove-from-recentf-candidate-action (file)
   "Action function for command `icicle-remove-file-from-recentf-list'."
@@ -8008,7 +8027,7 @@ Ido-like behavior."                     ; Doc string
   "Action function used in `icicle-locate-file-1'.")
 
 (defvar icicle-locate-file-no-symlinks-p nil
-  "Flag bound in `icicle-locate-file* for use by `icicle-files-within'.")
+  "Flag bound in `icicle-locate-file*' for use by `icicle-files-within'.")
 
 (defvar icicle-locate-file-use-locate-p nil
   "Flag bound to non-nil in `icicle-locate(-other-window)'.
@@ -8209,7 +8228,7 @@ could temporarily set `icicle-file-predicate' to:
 (defun icicle-locate-file-no-symlinks ()
   "Same as `icicle-locate-file', except do not follow symlinks."
   (interactive)
-  (let ((icicle-locate-file-action-fn      'icicle-locate-file-other-window-action)
+  (let ((icicle-locate-file-action-fn      'icicle-locate-file-action)
         (icicle-locate-file-no-symlinks-p  t))
     (icicle-locate-file-1)))
 
@@ -8313,7 +8332,7 @@ could temporarily set `icicle-file-predicate' to:
          (unless icicle-locate-file-use-locate-p
            (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
            (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
-  'NON-INTERACTIVE)                     ; This is not a real command.
+  'NOT-INTERACTIVE-P)                   ; Not a real command - just a helper function.
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;
@@ -8620,7 +8639,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
    (face-names                            ()))
   (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
   nil                                   ; Undo code
-  (prog1 (setq face-names  (nreverse (delete "" face-names))) ; Last code - return list of faces
+  (prog1 (setq face-names  (nreverse (delete "" face-names))) ; Last code - return the list of faces.
     (when (interactive-p) (message "Faces: %S" face-names))))
 
 (icicle-define-command icicle-buffer-list ; Command name
@@ -8697,7 +8716,7 @@ the behavior."                          ; Doc string
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
    (icicle-use-candidates-only-once-flag  t))
   nil nil                               ; First code, undo code
-  (prog1 (setq buf-names  (nreverse (delete "" buf-names))) ; Last code - return the list of buffers
+  (prog1 (setq buf-names  (nreverse (delete "" buf-names))) ; Last code - return the list of buffers.
     (when (interactive-p) (message "Buffer names: %S" buf-names))))
 
 (icicle-define-command icicle-bookmark-list ; Command name
@@ -8833,7 +8852,7 @@ Non-interactively:
                                                          (funcall (intern (format "bmkp-%s-alist-only"
                                                                                   type)))))))))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
-  (prog1 (setq chosen-bmks  (nreverse (delete "" chosen-bmks))) ; Last code - return the list.
+  (prog1 (setq chosen-bmks  (nreverse (delete "" chosen-bmks))) ; Last code - return the list of bookmarks.
     (icicle-bookmark-cleanup)
     (when (interactive-p)
       (message "Bookmarks: %S" (if names-only-p chosen-bmks (mapcar #'car chosen-bmks))))))
@@ -8916,7 +8935,7 @@ Ido-like behavior."                     ; Doc string
     ))
   (icicle-bind-file-candidate-keys)     ; First code
   nil                                   ; Undo code
-  (prog1 (setq file-names  (nreverse (delete "" file-names))) ; Last code - return list of files
+  (prog1 (setq file-names  (nreverse (delete "" file-names))) ; Last code - return the list of files.
     (icicle-unbind-file-candidate-keys)
     (when (interactive-p) (message "Files: %S" file-names))))
 
@@ -9014,7 +9033,7 @@ Ido-like behavior."                     ; Doc string
   (progn (icicle-bind-file-candidate-keys) ; First code
          (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)))
   nil                                   ; Undo code
-  (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
+  (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of directories.
     (icicle-unbind-file-candidate-keys)
     (setq icicle-proxy-candidates  ())
     (when (interactive-p) (message "Directories: %S" dir-names))))
