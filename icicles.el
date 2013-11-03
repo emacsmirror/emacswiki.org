@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 27 13:27:42 2013 (-0700)
+;; Last-Updated: Sat Nov  2 16:39:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23452
+;;     Update #: 23457
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -23,10 +23,10 @@
 ;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `dired', `dired+', `dired-aux',
-;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
+;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
 ;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
@@ -412,6 +412,8 @@
 ;;    `icicle-untag-a-file', `icicle-vardoc',
 ;;    `icicle-visit-marked-file-of-content',
 ;;    `icicle-visit-marked-file-of-content-other-window',
+;;    `icicle-visit-marked-file-of-content-recursive',
+;;    `icicle-visit-marked-file-of-content-recursive-other-window',
 ;;    `icicle-where-is', `icicle-widget-file-complete',
 ;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
 ;;    `icicle-zap-to-char', `toggle', `synonyms',
@@ -1086,8 +1088,7 @@
 ;;    `icicle-lisp-vanilla-completing-read',
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-1',
 ;;    `icicle-locate-file-action',
-;;    `icicle-locate-file-other-window-action',
-;;    `icicle-locate-file-use-locate-p', `icicle-looking-at-p',
+;;    `icicle-locate-file-other-window-action', `icicle-looking-at-p',
 ;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-color-candidate',
 ;;    `icicle-make-face-candidate', `icicle-make-frame-alist',
@@ -1251,6 +1252,7 @@
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
 ;;    `icicle-var-val-satisfies-type-p',
+;;    `icicle-visit-marked-file-of-content-1',
 ;;    `icicle-widget-color-complete', `icicle-widgetp',
 ;;    `icicle-WYSIWYG-font'.
 ;;
@@ -1338,7 +1340,8 @@
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-last-thing-type',
 ;;    `icicle-locate-file-action-fn',
-;;    `icicle-locate-file-no-symlinks-p', `icicle-lighter-truncation',
+;;    `icicle-locate-file-no-symlinks-p',
+;;    `icicle-locate-file-use-locate-p', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuf-act-on-all-menu-map',
 ;;    `icicle-minibuf-candidate-set-menu-map',
@@ -1406,7 +1409,8 @@
 ;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-vardoc-last-initial-cand-set',
-;;    `icicle-variable-name-history',
+;;    `icicle-variable-name-history', `icicle-vmfoc-other-win-p',
+;;    `icicle-vmfoc-recursive-p',
 ;;    `icicle-whole-candidate-as-text-prop-p',
 ;;    `lacarte-menu-items-alist'.
 ;;
