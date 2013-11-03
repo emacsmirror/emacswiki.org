@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Oct 30 09:47:59 2013 (-0700)
+;; Last-Updated: Sun Nov  3 14:59:49 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10247
+;;     Update #: 10261
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/11/03 dadams
+;;     Added: icicle-visit-marked-file-of-content-recursive(-other-window),
+;;            icicle-visit-marked-file-of-content-1, icicle-vmfoc-other-win-p, icicle-vmfoc-recursive-p
+;;     icicle-visit-marked-file-of-content(-other-window): Use icicle-visit-marked-file-of-content-1.
+;;     icicle-locate-file-no-symlinks: Fixed typo: action function is not *-other-window.
+;; 2013/10/31 dadams
+;;     icicle-visit-marked-file-of-content*: Use diredp-get-files, so handle recursively marked files.
 ;; 2013/10/29 dadams
 ;;     icicle-bookmark-cmd: Use bmkp-bookmark-set-confirm-overwrite, not bookmark-set, if defined.
 ;;     icicle-bookmark-set: Added code from Bookmark+ bookmark-set, for confirmation query if exists.
@@ -5522,8 +5529,7 @@
 ;;     icicle-narrow-candidates:
 ;;       Use minibuffer-history-variable, not regexp-history.  Thx to Jost for bug report.
 ;; 2007/01/20 dadams
-;;     icicle-mouse-(choose-completion|candidate-action):
-;;       Use icicle-transform-multi-completion.
+;;     icicle-mouse-(choose-completion|candidate-action): Use icicle-transform-multi-completion.
 ;; 2007/01/15 dadams
 ;;     Added: icicle-change(-alternative)-sort-order, icicle-reverse-sort-order,
 ;;            icicle-current-sort-order, icicle-sort-*.
@@ -5580,6 +5586,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/11/03 dadams
+;;     Added icicle-visit-marked-file-of-content-recursive(-other-window) to
+;;       icicle-dired-recursive-marked-menu-map.
+;;     Bound icicle-visit-marked-file-of-content-recursive(-other-window) to M-+ C-F, M-+ C-O.
 ;; 2013/06/18 dadams
 ;;     icicle-define-icicle-maps: Moved icicle-toggle-WYSIWYG-Completions.  Added :keys.
 ;; 2013/04/24 dadams
