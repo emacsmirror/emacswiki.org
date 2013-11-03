@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Oct 30 09:46:48 2013 (-0700)
+;; Last-Updated: Sat Nov  2 16:26:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14085
+;;     Update #: 14086
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5047,6 +5047,10 @@ This transformation has nothing to do with that performed by
   "Transform display CANDIDATE according to `icicle-list-use-nth-parts'.
 If CANDIDATE is not a multi-completion, return CANDIDATE unchanged.
 Return the possibly transformed candidate."
+  ;; Note: For Emacs 20, `split-string' trims off an empty string before or after the join string.
+  ;;       That means that for Emacs 20, if the input starts with the join string then the first
+  ;;       part of the input is ignored.  So for example, with `(1)' as the join part, you get the
+  ;;       second part, not the first part, if the first part is empty.  This is not correct behavior.
   (if (and icicle-list-use-nth-parts  (not (equal "" candidate)))
       (let ((parts  (split-string candidate icicle-list-join-string)))  (icicle-join-nth-parts parts))
     candidate))
