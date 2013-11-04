@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  3 14:15:42 2013 (-0800)
+;; Last-Updated: Mon Nov  4 08:33:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7191
+;;     Update #: 7199
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -497,6 +497,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/04 dadams
+;;     Renamed Bookmarks submenus to Bookmark.
+;;     Added Bookmark Dired Buffer to Dir menu.
 ;; 2013/11/03 dadams
 ;;     Created submenus of Multiple menu: Bookmarks, Search.
 ;;     Created submenus of Multiple > Marked Here and Below menu:
@@ -2040,12 +2043,12 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Sign this file")))
 
 
-;; `Single' > `Bookmarks' menu.
+;; `Single' > `Bookmark' menu.
 ;;
 (when (require 'bookmark+ nil t)
-  (defvar diredp-menu-bar-immediate-bookmarks-menu (make-sparse-keymap "Bookmarks"))
+  (defvar diredp-menu-bar-immediate-bookmarks-menu (make-sparse-keymap "Bookmark"))
   (define-key diredp-menu-bar-immediate-menu [bookmark]
-    (cons "Bookmarks" diredp-menu-bar-immediate-bookmarks-menu))
+    (cons "Bookmark" diredp-menu-bar-immediate-bookmarks-menu))
 
   (define-key diredp-menu-bar-immediate-bookmarks-menu [diredp-set-tag-value-this-file]
     '(menu-item "Set Tag Value..." diredp-set-tag-value-this-file
@@ -2268,11 +2271,11 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Grep..." diredp-do-grep :help "Grep marked, next N, or all files shown"))
 
 
-;; `Multiple' > `Bookmarks' menu.
+;; `Multiple' > `Bookmark' menu.
 ;;
-(defvar diredp-menu-bar-operate-bookmarks-menu (make-sparse-keymap "Bookmarks"))
+(defvar diredp-menu-bar-operate-bookmarks-menu (make-sparse-keymap "Bookmark"))
 (define-key diredp-menu-bar-operate-menu [bookmark]
-  (cons "Bookmarks" diredp-menu-bar-operate-bookmarks-menu))
+  (cons "Bookmark" diredp-menu-bar-operate-bookmarks-menu))
 
 (when (require 'bookmark+ nil t)
   (define-key diredp-menu-bar-operate-bookmarks-menu [diredp-do-set-tag-value]
@@ -2482,11 +2485,11 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Run `grep' on the marked files, including those in marked subdirs"))
 
 
-;; `Multiple' `Marked Here and Below' > `Bookmarks' menu.
+;; `Multiple' `Marked Here and Below' > `Bookmark' menu.
 ;;
-(defvar diredp-menu-bar-bookmarks-recursive-menu (make-sparse-keymap "Bookmarks"))
+(defvar diredp-menu-bar-bookmarks-recursive-menu (make-sparse-keymap "Bookmark"))
 (define-key diredp-menu-bar-recursive-marked-menu [bookmarks]
-  (cons "Bookmarks" diredp-menu-bar-bookmarks-recursive-menu))
+  (cons "Bookmark" diredp-menu-bar-bookmarks-recursive-menu))
 (define-key diredp-menu-bar-bookmarks-recursive-menu
     [diredp-do-bookmark-in-bookmark-file-recursive]
     '(menu-item "Bookmark in Bookmark File" diredp-do-bookmark-in-bookmark-file-recursive
@@ -2736,6 +2739,8 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
+(define-key diredp-menu-bar-subdir-menu [bookmark-dired]
+  '(menu-item "Bookmark Dired Buffer..." bookmark-set :help "Bookmark this Dired buffer"))
 (define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
   '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--")) ; --------------------
