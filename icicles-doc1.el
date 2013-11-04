@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Sep 22 15:54:04 2013 (-0700)
+;; Last-Updated: Mon Nov  4 08:07:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27873
+;;     Update #: 27878
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8126,11 +8126,20 @@
 ;;  specify patterns for file names to exclude from content-searching
 ;;  when you provide a content-matching pattern to `icicle-find-file'.
 ;;
-;;  In Dired there is a related content-matching multi-command,
-;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
-;;  `C-F', and `C-S-o', aka `C-O' for other-window), which you can use
-;;  to visit marked files and subdirectories whose content matches a
-;;  regexp.
+;;  In Dired, there are related content-matching multi-commands that
+;;  you can use to visit marked files and subdirectories whose content
+;;  matches a regexp.
+;;
+;;  * `icicle-visit-marked-file-of-content', bound to `C-S-f', aka
+;;    `C-F', and `C-S-o', aka `C-O', for other-window
+;;
+;;  * `icicle-visit-marked-file-of-content-recursive', bound to `M-+
+;;    C-F', and `M-+ C-O' for other-window
+;;
+;;  The latter visit not only the files that are marked in the current
+;;  directory, but also those that are marked in any marked
+;;  subdirectories, and sub-subdirectories etc., recursively.  They
+;;  are available only if you also use library `Dired+'.
 ;;
 ;;  (Prior to Emacs 23, `icicle-find-file' is an alias for
 ;;  `icicle-find-file-no-search', which does not search file content.)
