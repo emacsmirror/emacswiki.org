@@ -20,7 +20,7 @@ Then you can access WebDAV files by specifying magic file name like:
 
 [[jemarch]] offered the following on #emacs:
 
-<source lisp>
+<pre>
 ;; openxchange interaction routines
 (require 'eldav)
 
@@ -46,7 +46,7 @@ Then you can access WebDAV files by specifying magic file name like:
       (with-temp-buffer
         (insert (eldav-get webdav-ical-file))
         (icalendar-import-buffer openxchange-diary-file t)))))
-</source>
+</pre>
 
 == Editing EmacsWiki ==
 
