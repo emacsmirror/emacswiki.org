@@ -26,6 +26,10 @@ Feel free to ask anything about Emacs :)
 == My Emacs Screenshot ==
 [[image:XFQScreenShotPage]]
 
+== RSI ==
+
+RepeatedStrainInjury -- ErgoemacsKeybindings helps me a lot!
+
 == Wish List==
 * Implement a version control system in EmacsLisp.
 * Extended text-properties (to make overlays obsolete) in Emacs.
