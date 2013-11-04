@@ -309,6 +309,7 @@ candidate file it is visited read-only.)
 
 
 
+[:icicle-visit-marked-file-of-content-recursive]
 [:icicle-visit-marked-file-of-content]
 [:icicle-find-file-of-content]
 [:MatchFileContent]
@@ -357,10 +358,17 @@ You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-fin
 when you provide a content-matching pattern to
 `icicle-find-file'.
 
-In [[Dired]] there is a related content-matching multi-command,
-`icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
-'''`C-F'''', and `C-S-o', aka '''`C-O'''' for other-window), which you can use
-to visit marked files and subdirectories whose content matches a [[regexp]].
+In [[Dired]], there are related content-matching multi-commands that you can use to visit marked files and subdirectories whose content matches a [[regexp]].
+
+* `icicle-visit-marked-file-of-content', bound to `C-S-f', aka '''`C-F'''', and `C-S-o', aka '''`C-O'''', for other-window
+
+* `icicle-visit-marked-file-of-content-recursive', bound to '''`##M-+ C-F##'''', and '''`##M-+ C-O##'''' for other-window
+
+The latter visit not only the files that are marked in the current
+directory, but also those that are ''marked in any marked
+subdirectories, and sub-subdirectories etc., '''recursively'''''.  They
+are available only if you also use library '''[[Dired+]]'''.
+
 
 (Prior to Emacs 23, `icicle-find-file' is an alias for
 `icicle-find-file-no-search', which does not search file content.)
