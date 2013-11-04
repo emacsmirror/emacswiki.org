@@ -4,7 +4,7 @@ Reingold is the co-author of ''Calendrical Calculations'' (ISBN 0521777526).  Th
 
 According to the book's preface,[http://emr.cs.iit.edu/home/reingold/calendar-book/second-edition/CUP-preface.pdf], academic interest in an EmacsLisp implementation of the calendar fuctions for Gregorian, Islamic, and Hebrew calendars prompted an article[http://emr.cs.iit.edu/~reingold/calendar.ps] in 1990 and a reimplementation of the source code in CommonLisp.  The addition of Mayan and French Revolutionary calendars to Emacs prompted a second article[http://emr.cs.iit.edu/~reingold/calendar2.ps] in 1993.
 
-Reingold is professor of computer science at the Illinois Institute of Technology, and his homepage at Illinois Tech is:
+Reingold is professor of computer science at the Illinois Institute of Technology and an emeritus professor at the University of Illinois at Urbana-Champaign.   His homepage at Illinois Tech is:
 
 * http://emr.cs.iit.edu/~reingold/
 
