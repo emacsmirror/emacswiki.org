@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov  4 08:33:38 2013 (-0800)
+;; Last-Updated: Mon Nov  4 09:27:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7199
+;;     Update #: 7205
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -500,6 +500,8 @@
 ;; 2013/11/04 dadams
 ;;     Renamed Bookmarks submenus to Bookmark.
 ;;     Added Bookmark Dired Buffer to Dir menu.
+;;     Alias dired-toggle-marks to dired-do-toggle for Emacs 20, instead of backwards for others.
+;;     Use dired-toggle-marks everywhere instead of dired-do-toggle.
 ;; 2013/11/03 dadams
 ;;     Created submenus of Multiple menu: Bookmarks, Search.
 ;;     Created submenus of Multiple > Marked Here and Below menu:
@@ -1135,7 +1137,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 ;;; Variables
 
 ;; `dired-do-toggle' was renamed to `dired-toggle-marks' after Emacs 20.
-(when (fboundp 'dired-toggle-marks) (defalias 'dired-do-toggle 'dired-toggle-marks))
+(unless (fboundp 'dired-toggle-marks) (defalias 'dired-toggle-marks 'dired-do-toggle))
 
 ;;; This is duplicated in `diff.el' and `vc.el'.
 ;;;###autoload
@@ -2591,7 +2593,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (if (> emacs-major-version 21)
       '(menu-item "Toggle Marked/Unmarked" dired-toggle-marks
         :help "Mark unmarked files, unmark marked ones")
-    '(menu-item "Toggle Marked/Unmarked" dired-do-toggle
+    '(menu-item "Toggle Marked/Unmarked" dired-toggle-marks
       :help "Mark unmarked files, unmark marked ones")))
 (define-key diredp-menu-bar-mark-menu [separator-mark] '("--")) ; ------------------------------
 
@@ -5765,19 +5767,16 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
     (set-buffer-modified-p old-modified-p) ; So no `%*' appear in mode-line.
     count))
 
-;; `dired-do-toggle' was renamed to `dired-toggle-marks' after Emacs 20.
-;; That's why we aliased it to `dired-toggle-marks' at the top of the file.
-;;
 ;;;###autoload
 (defun diredp-omit-unmarked ()          ; Not bound
   "Omit lines of unmarked files.  Return the number of lines omitted."
   (interactive)
   (let ((old-modified-p  (buffer-modified-p))
         count)
-    (dired-do-toggle)
+    (dired-toggle-marks)
     (message "Omitting unmarked lines...")
     (setq count  (diredp-omit-marked))
-    (dired-do-toggle)                   ; Marks all except `.', `..'
+    (dired-toggle-marks)                ; Marks all except `.', `..'
     (set-buffer-modified-p old-modified-p) ; So no `%*' appear in mode-line.
     count))
 
@@ -7378,7 +7377,7 @@ With non-nil prefix arg, mark them instead."
             (goto-char end)
             (setq end    (line-end-position))
             (narrow-to-region start end)
-            (dired-do-toggle)
+            (dired-toggle-marks)
             (when details-hidden-p (dired-details-hide)))
         (narrow-to-region start end)
         (dired-toggle-marks))))
@@ -8107,7 +8106,7 @@ Marking
 
 * \\[dired-mark]\t\t- Mark this
 * \\[dired-unmark]\t\t- Unmark this
-* \\[dired-do-toggle]\t- Toggle marked/unmarked
+* \\[dired-toggle-marks]\t- Toggle marked/unmarked
 * \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
 * \\[dired-unmark-all-marks]\t\t- Unmark all
 * \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
