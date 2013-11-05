@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  5 09:47:55 2013 (-0800)
+;; Last-Updated: Tue Nov  5 10:16:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7236
+;;     Update #: 7244
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -387,7 +387,7 @@
 ;;    `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
-;;    `diredp-get-files-for-dir', `diredp-get-marked-subdirs',
+;;    `diredp-get-files-for-dir', `diredp-get-subdirs',
 ;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
 ;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-internal-do-deletions', `diredp-list-files',
@@ -499,9 +499,10 @@
 ;;; Change Log:
 ;;
 ;; 2013/11/05 dadams
-;;     Added: diredp-get-marked-subdirs.
+;;     Added: diredp-get-subdirs.
 ;;     diredp-get-files, diredp-get-files-for-dir, diredp-marked-here:
 ;;       Added optional arg NIL-IF-NONE-P.
+;;     diredp-get-files: Pass INCLUDE-DIRS-P to diredp-files-within.
 ;; 2013/11/04 dadams
 ;;     Renamed Bookmarks submenus to Bookmark.
 ;;     Added Bookmark Dired Buffer to Dir menu.
@@ -3524,10 +3525,14 @@ Markings and current Dired switches are preserved."
 
 ;;; Actions on marked files and subdirs, recursively.
 
-(defun diredp-get-marked-subdirs (&optional ignore-marks-p predicate)
-  "Return marked subdirs from this Dired buffer and marked subdirs, recursively.
-Arguments are the same as for `diredp-get-files' (which see).
-Only directories that are actually marked are included."
+(defun diredp-get-subdirs (&optional ignore-marks-p predicate)
+  "Return subdirs from this Dired buffer and from marked subdirs, recursively.
+If optional arg IGNORE-MARKS-P is non-nil then include all
+subdirectories.  Otherwise, include only those that are marked.
+
+Non-nil optional arg PREDICATE means include only subdirectory names
+for which the PREDICATE returns non-nil.  PREDICATE must accept a file
+name as its only required argument."
   (diredp-get-files ignore-marks-p
                     (if predicate
                         `(lambda (name) (and (file-directory-p name)  (funcall ,predicate name)))
@@ -3552,8 +3557,9 @@ can hit `l' to see the list of files that will be included (using
 Icicles.  Otherwise, directories in `vc-directory-exclusion-list' are
 skipped.)
 
-Non-nil IGNORE-MARKS-P means ignore all Dired markings:
-just get all of the files in the current directory.
+Non-nil IGNORE-MARKS-P means ignore all Dired markings: just get all
+of the files in the current directory (and all of the subdirectories,
+if INCLUDE-DIRS-P is non-nil).
 
 Non-nil PREDICATE means include only file names for which the
 PREDICATE returns non-nil.  PREDICATE must accept a file name as its
@@ -3567,11 +3573,12 @@ Non-nil DONT-ASKP means do not ask the user whether to use marked
 instead of all.  Act as if the user was asked and replied `y'.
 
 Non-nil optional arg ONLY-MARKED-P means collect only marked files,
-instead of collecting all files if none are marked."
+instead of collecting all files if none are marked.  This argument is
+ignored if IGNORE-MARKS-P is non-nil."
   (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
     (if ignore-marks-p
         (diredp-files-within (directory-files default-directory 'FULL diredp-re-no-dot)
-                             () nil nil predicate)
+                             () nil include-dirs-p predicate)
       ;; Pass FILES and ASKP to `diredp-get-files-for-dir', so we don't have to use them as
       ;; free vars there.  But that means that they each need to be a cons cell that we can
       ;; modify, so we can get back the updated info.
