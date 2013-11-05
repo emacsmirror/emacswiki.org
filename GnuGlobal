@@ -3,7 +3,9 @@ The GNU GLOBAL package is highly recommended for using a single tags file, cover
 
 * http://www.gnu.org/software/global/
 
-The package comes with gtags.el that integrates it seamlessly into Emacs.  [http://elpa.gnu.org/packages GNU ELPA] also has a package [http://elpa.gnu.org/packages/ggtags.html ggtags.el] for using GNU Global in emacs.
+The package comes with gtags.el that integrates it seamlessly into Emacs.  
+
+In 2013, [http://elpa.gnu.org/packages GNU ELPA] includes a package [http://elpa.gnu.org/packages/ggtags.html ggtags.el] for integrating GNU Global with Emacs, which provides an intuitive UI for navigating between multiple matches along with many other features. Check [https://github.com/leoliu/ggtags the project page] for full feature list.
 
 ===Cycling through GNU Global result===
 The gtags.el package doesn't cycle through gtags result.  Here's some code for doing it.
