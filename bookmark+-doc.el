@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 29 15:46:28 2013 (-0700)
+;; Last-Updated: Tue Nov  5 15:20:50 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14716
+;;     Update #: 14717
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3203,6 +3203,9 @@
 ;;
 ;;  The first three values highlight only the bookmark being set or
 ;;  jumped to.
+;;
+;;  Be aware that, depending on the setting, highlighting can take a
+;;  while.
  
 ;;(@* "Using Highlighted Bookmarks")
 ;;  ** Using Highlighted Bookmarks **
