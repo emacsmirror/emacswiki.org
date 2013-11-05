@@ -49,3 +49,4 @@ http://www\.facebook\.com/profile.php\?id=\d+ # 2013-09-27 We've had a lot of bo
 \blow.*card\b # 2013-09-30 Comments on 2013-05-07 and others
 ckzweb\.com # 2013-10-07 categoryforum
 islalom\.com # 2013-11-04 categoryforum
+garden-equipment.com # 2013-11-05 categoryforum
