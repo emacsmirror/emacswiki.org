@@ -3549,7 +3549,8 @@ You can choose any of these values for either option:
 The first three values highlight only the bookmark being set or
 jumped to.
 
-
+Be aware that, depending on the setting, highlighting can take a
+while.
 
 
 
