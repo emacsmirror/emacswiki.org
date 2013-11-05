@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov  4 09:27:28 2013 (-0800)
+;; Last-Updated: Tue Nov  5 09:47:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7205
+;;     Update #: 7236
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -387,8 +387,9 @@
 ;;    `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
-;;    `diredp-get-files-for-dir', `diredp-hide-details-if-dired'
-;;    (Emacs 24.4+), `diredp-hide/show-details' (Emacs 24.4+),
+;;    `diredp-get-files-for-dir', `diredp-get-marked-subdirs',
+;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
+;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-internal-do-deletions', `diredp-list-files',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
@@ -497,6 +498,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/05 dadams
+;;     Added: diredp-get-marked-subdirs.
+;;     diredp-get-files, diredp-get-files-for-dir, diredp-marked-here:
+;;       Added optional arg NIL-IF-NONE-P.
 ;; 2013/11/04 dadams
 ;;     Renamed Bookmarks submenus to Bookmark.
 ;;     Added Bookmark Dired Buffer to Dir menu.
@@ -3519,7 +3524,18 @@ Markings and current Dired switches are preserved."
 
 ;;; Actions on marked files and subdirs, recursively.
 
-(defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p dont-askp)
+(defun diredp-get-marked-subdirs (&optional ignore-marks-p predicate)
+  "Return marked subdirs from this Dired buffer and marked subdirs, recursively.
+Arguments are the same as for `diredp-get-files' (which see).
+Only directories that are actually marked are included."
+  (diredp-get-files ignore-marks-p
+                    (if predicate
+                        `(lambda (name) (and (file-directory-p name)  (funcall ,predicate name)))
+                      #'file-directory-p)
+                    'INCLUDE-DIRS-P 'DONT-ASKP 'ONLY-MARKED-P))
+
+(defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p
+                         dont-askp only-marked-p)
   "Return file names from this Dired buffer and subdirectories, recursively.
 The name are those that are marked in the current Dired buffer, or all
 files in the directory if none are marked.  Marked subdirectories are
@@ -3540,14 +3556,18 @@ Non-nil IGNORE-MARKS-P means ignore all Dired markings:
 just get all of the files in the current directory.
 
 Non-nil PREDICATE means include only file names for which the
-PREDICATE returns non-nil.
+PREDICATE returns non-nil.  PREDICATE must accept a file name as its
+only required argument.
 
 Non-nil INCLUDE-DIRS-P means include marked subdirectory names (but
 also handle those subdirs recursively, picking up their marked files
 and subdirs).
 
 Non-nil DONT-ASKP means do not ask the user whether to use marked
-instead of all.  Act as if the user was asked and replied `y'."
+instead of all.  Act as if the user was asked and replied `y'.
+
+Non-nil optional arg ONLY-MARKED-P means collect only marked files,
+instead of collecting all files if none are marked."
   (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
     (if ignore-marks-p
         (diredp-files-within (directory-files default-directory 'FULL diredp-re-no-dot)
@@ -3556,7 +3576,7 @@ instead of all.  Act as if the user was asked and replied `y'."
       ;; free vars there.  But that means that they each need to be a cons cell that we can
       ;; modify, so we can get back the updated info.
       (let ((files  (list 'DUMMY)))     ; The files picked up will be added to this list.
-        (diredp-get-files-for-dir default-directory files askp include-dirs-p)
+        (diredp-get-files-for-dir default-directory files askp include-dirs-p only-marked-p)
         (setq files  (cdr files))       ; Remove `DUMMY' from the modifed list.
         (if (or dont-askp
                 (not (car askp))
@@ -3575,47 +3595,56 @@ instead of all.  Act as if the user was asked and replied `y'."
                                          () nil include-dirs-p predicate)))))
           (nreverse files))))))
 
-(defun diredp-get-files-for-dir (dir accum askp &optional include-dirs-p)
-  "Return file names for directory DIR and subdirectories, recursively.
-Pick up names of all marked files in DIR if it has a Dired buffer, or
-all files in DIR if not.  Handle subdirs recursively (only marked
-subdirs, if Dired).
+(defun diredp-get-files-for-dir (directory accum askp &optional include-dirs-p only-marked-p)
+  "Return marked file names for DIRECTORY and subdirectories, recursively.
+Pick up names of all marked files in DIRECTORY if it has a Dired
+buffer, or all files in DIRECTORY if not.  Handle subdirs recursively
+\(only marked subdirs, if Dired).
 
 ACCUM is an accumulator list: the files picked up in this call are
 nconc'd to it.
 
 ASKP is a one-element list, the element indicating whether to ask the
 user about respecting Dired markings.  It is set here to `t' if there
-is a Dired buffer for DIR.
+is a Dired buffer for DIRECTORY.
 
 Non-nil optional arg INCLUDE-DIRS-P means include marked subdirectory
 names (but also handle those subdirs recursively).
 
-If there is more than one Dired buffer for DIR then raise an error."
-  (dolist (file  (if (not (dired-buffers-for-dir (expand-file-name dir)))
-                     (directory-files dir 'FULL diredp-re-no-dot)
-                   (when (cadr (dired-buffers-for-dir (expand-file-name dir)))
-                     (error "More than one Dired buffer for `%s'" dir))
-                   (unless (equal dir default-directory) (setcar askp  t))
-                   (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
-                     (diredp-marked-here))))
+Non-nil optional arg ONLY-MARKED-P means collect only marked files,
+instead of collecting all files if none are marked.
+
+If there is more than one Dired buffer for DIRECTORY then raise an
+error."
+  (dolist (file  (if (not (dired-buffers-for-dir (expand-file-name directory)))
+                     (and (not only-marked-p)
+                          (directory-files directory 'FULL diredp-re-no-dot))
+                   (when (cadr (dired-buffers-for-dir (expand-file-name directory)))
+                     (error "More than one Dired buffer for `%s'" directory))
+                   (unless (equal directory default-directory) (setcar askp  t))
+                   (with-current-buffer (car (dired-buffers-for-dir
+                                              (expand-file-name directory)))
+                     (diredp-marked-here only-marked-p))))
     (if (not (file-directory-p file))
         (setcdr (last accum) (list file))
       (when include-dirs-p (setcdr (last accum) (list file)))
-      (diredp-get-files-for-dir file accum askp include-dirs-p))))
+      (diredp-get-files-for-dir file accum askp include-dirs-p only-marked-p))))
 
-(defun diredp-marked-here ()
+(defun diredp-marked-here (&optional only-marked-p)
   "Marked files and subdirs in this Dired buffer, or all if none are marked.
-Directories `.' and `..' are excluded."
+Directories `.' and `..' are excluded.
+Non-nil optional arg ONLY-MARKED-P means return nil if none are
+marked."
   ;; If no file is marked, exclude `(FILENAME)': the unmarked file at cursor.
   ;; If there are no marked files as a result, return all files and subdirs in the dir.
-  (let ((ff  (condition-case nil        ; Ignore error if on `.' or `..' and no file is marked.
+  (let ((ff  (condition-case nil ; Ignore error if on `.' or `..' and no file is marked.
                  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
                (error nil))))
     (cond ((eq t (car ff))  (cdr ff))   ; Single marked
           ((cadr ff)        ff)         ; Multiple marked
-          (t                (directory-files ; None marked
-                             default-directory 'FULL diredp-re-no-dot 'NOSORT)))))
+          (t                (and (not only-marked-p)
+                                 (directory-files ; None marked
+                                  default-directory 'FULL diredp-re-no-dot 'NOSORT))))))
 
 (defun diredp-y-or-n-files-p (prompt files &optional predicate)
   "PROMPT user with a \"y or n\" question about a list of FILES.
