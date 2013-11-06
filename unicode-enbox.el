@@ -1,14 +1,14 @@
 ;;; unicode-enbox.el --- Surround a string with box-drawing characters
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-enbox
 ;; URL: http://raw.github.com/rolandwalker/unicode-enbox/master/unicode-enbox.el
-;; Version: 0.1.3
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.1.4
+;; Last-Updated:  6 Nov 2013
 ;; EmacsWiki: UnicodeEnbox
-;; Package-Requires: ((string-utils "0.0.1") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((string-utils "0.3.2") (ucs-utils "0.7.6") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;; Keywords: extensions, interface
 ;;
 ;; Simplified BSD License
@@ -57,8 +57,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -121,7 +121,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf
 (require 'cl)
@@ -196,8 +196,10 @@
 ;;;###autoload
 (defgroup unicode-enbox nil
   "Surround a string with box-drawing characters."
-  :version "0.1.3"
-  :link '(emacs-commentary-link "unicode-enbox")
+  :version "0.1.4"
+  :link '(emacs-commentary-link :tag "Commentary" "unicode-enbox")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/unicode-enbox")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/UnicodeEnbox")
   :prefix "unicode-enbox-"
   :group 'extensions)
 
@@ -207,6 +209,15 @@
                                (list 'const (car x)))
                            unicode-enbox-box-drawing-characters))
   :group 'unicode-enbox)
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 ;;; utility functions
 
