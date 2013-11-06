@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/flyspell-lazy
 ;; URL: http://raw.github.com/rolandwalker/flyspell-lazy/master/flyspell-lazy.el
-;; Version: 0.6.4
-;; Last-Updated:  7 Dec 2012
+;; Version: 0.6.6
+;; Last-Updated: 28 Oct 2013
 ;; EmacsWiki: FlyspellLazy
 ;; Keywords: spelling
 ;;
@@ -70,15 +70,16 @@
 ;;     ~/.emacs
 ;;
 ;;         (defadvice flyspell-small-region (around flyspell-small-region-no-sit-for activate)
-;;           (flet ((sit-for (&rest _ignored) t))
+;;           (flyspell-lazy--with-mocked-function 'sit-for t
 ;;             ad-do-it))
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -182,19 +183,18 @@
 ;;; requirements
 
 (eval-and-compile
-  ;; for flet/cl-flet*, callf, callf2, setf
-  (require 'cl)
-  (unless (fboundp 'cl-flet*)
-    (defalias 'cl-flet* 'flet)
-    (put 'cl-flet* 'lisp-indent-function 1)
-    (put 'cl-flet* 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+  ;; for callf, callf2, setf
+  (require 'cl))
 
 ;;; declarations
 
-(declare-function flyspell-overlay-p             "flyspell.el")
-(declare-function flyspell-minibuffer-p          "flyspell.el")
-(declare-function flyspell-word                  "flyspell.el")
-(declare-function ispell-set-spellchecker-params "ispell.el"  )
+(declare-function flyspell-auto-correct-previous-hook "flyspell.el")
+(declare-function flyspell-minibuffer-p               "flyspell.el")
+(declare-function flyspell-overlay-p                  "flyspell.el")
+(declare-function flyspell-post-command-hook          "flyspell.el")
+(declare-function flyspell-pre-command-hook           "flyspell.el")
+(declare-function flyspell-word                       "flyspell.el")
+(declare-function ispell-set-spellchecker-params      "ispell.el"  )
 
 (eval-when-compile
   (defvar flyspell-changes)
@@ -206,9 +206,9 @@
 ;;;###autoload
 (defgroup flyspell-lazy nil
   "Improve flyspell responsiveness using idle timers."
-  :version "0.6.4"
+  :version "0.6.6"
   :link '(emacs-commentary-link :tag "Commentary" "flyspell-lazy")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/flyspell-lazy")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/flyspell-lazy")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/FlyspellLazy")
   :prefix "flyspell-lazy-"
   :group 'flyspell
@@ -296,6 +296,18 @@ Spellchecking is also disabled in the minibuffer."
 
 ;;; macros
 
+(defmacro flyspell-lazy--with-mocked-function (func ret-val &rest body)
+  "Execute BODY, mocking FUNC (a symbol) to unconditionally return RET-VAL.
+
+This is portable to versions of Emacs without dynamic `flet`."
+  (declare (debug t) (indent 2))
+  (let ((o (gensym "--function--")))
+    `(let ((,o (symbol-function ,func)))
+       (fset ,func #'(lambda (&rest _ignored) ,ret-val))
+       (unwind-protect
+           (progn ,@body)
+         (fset ,func ,o)))))
+
 (eval-and-compile
   (if (and
        (boundp 'flyspell-lazy-debug)
@@ -320,6 +332,15 @@ in GNU Emacs 24.1 or higher."
      `(called-interactively-p ,kind))
     (t
      '(called-interactively-p))))
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 ;;; utility functions
 
@@ -727,9 +748,9 @@ This is the primary driver for `flyspell-lazy'."
                       (put 'flyspell-lazy-last-text 'stripped nil)
                       (with-timeout (1 (message "Spellcheck interrupted"))
                         (if flyspell-lazy-single-ispell
-                            (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
-                                       (flyspell-accept-buffer-local-defs (&rest _ignored) t))
-                              (flyspell-region start end))
+                            (flyspell-lazy--with-mocked-function 'ispell-set-spellchecker-params t
+                              (flyspell-lazy--with-mocked-function 'flyspell-accept-buffer-local-defs t
+                                (flyspell-region start end)))
                           (flyspell-region start end)))))
                   (pop flyspell-changes))
                 (flyspell-lazy-debug-progn
@@ -773,9 +794,9 @@ This is the primary driver for `flyspell-lazy'."
                             (point))))
               (with-timeout (1 (message "Spellcheck interrupted"))
                 (if flyspell-lazy-single-ispell
-                    (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
-                               (flyspell-accept-buffer-local-defs (&rest _ignored) t))
-                      (flyspell-region start end))
+                            (flyspell-lazy--with-mocked-function 'ispell-set-spellchecker-params t
+                              (flyspell-lazy--with-mocked-function 'flyspell-accept-buffer-local-defs t
+                                (flyspell-region start end)))
                   (flyspell-region start end))))))))))
 
 ;; todo not in use - this is difficult to fit into the flyspell model
@@ -843,9 +864,9 @@ would usually be skipped."
           (let ((font-lock-fontify-buffer-function 'font-lock-default-fontify-buffer))
             (font-lock-fontify-buffer)))
         (if flyspell-lazy-single-ispell
-            (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
-                       (flyspell-accept-buffer-local-defs (&rest _ignored) t))
-              (flyspell-buffer))
+            (flyspell-lazy--with-mocked-function 'ispell-set-spellchecker-params t
+              (flyspell-lazy--with-mocked-function 'flyspell-accept-buffer-local-defs t
+                (flyspell-buffer)))
           ;; else
           (flyspell-buffer))))))
 
@@ -864,7 +885,7 @@ would usually be skipped."
 ;;
 ;; LocalWords: FlyspellLazy aspell setq args prog flyspell's flet
 ;; LocalWords: callf setf flylz nils defsubsts defsubst checkable
-;; LocalWords: inflooping punct flet devel
+;; LocalWords: inflooping punct devel
 ;;
 
 ;;; flyspell-lazy.el ends here
