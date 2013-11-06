@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ignoramus
 ;; URL: http://raw.github.com/rolandwalker/ignoramus/master/ignoramus.el
-;; Version: 0.6.8
-;; Last-Updated: 22 May 2013
+;; Version: 0.7.0
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: Ignoramus
 ;; Keywords: convenience, tools
 ;;
@@ -73,10 +73,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -176,6 +177,7 @@
   (defvar shell-completion-fignore)
   (defvar speedbar-directory-unshown-regexp)
   (defvar speedbar-file-unshown-regexp)
+  (defvar vc-directory-exclusion-list)
   (defvar comint-completion-fignore))
 
 ;;; variables
@@ -258,6 +260,18 @@ A directory prefix is a leading absolute path component.")
 (defvar ignoramus-datafile-computed-dirprefixes nil
   "A computed value based on `ignoramus-datafile-dirprefix'.")
 
+(defvar ignoramus-datafile-computed-basenames-regexp nil
+  "A computed value based on `ignoramus-datafile-basename'.")
+
+(defvar ignoramus-datafile-computed-completepaths-regexp nil
+  "A computed value based on `ignoramus-datafile-completepath'.")
+
+(defvar ignoramus-datafile-computed-prefixes-regexp nil
+  "A computed value based on `ignoramus-datafile-prefix'.")
+
+(defvar ignoramus-datafile-computed-dirprefixes-regexp nil
+  "A computed value based on `ignoramus-datafile-dirprefix'.")
+
 ;;; customizable variables
 
 ;;;###autoload
@@ -271,9 +285,9 @@ A directory prefix is a leading absolute path component.")
 ;;;###autoload
 (defgroup ignoramus nil
   "Ignore backups, build files, et al."
-  :version "0.6.8"
+  :version "0.7.0"
   :link '(emacs-commentary-link :tag "Commentary" "ignoramus")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/ignoramus")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/ignoramus")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Ignoramus")
   :prefix "ignoramus-"
   :group 'tools
@@ -541,6 +555,8 @@ fully-qualified pathname."
     ".pc"                                  ; quilt
     ".project"                             ; eclipse
     ".projectile"                          ; emacs projectile
+    ".prove"                               ; perl
+    ".puppet-bak"                          ; puppet
     ".recentf"                             ; emacs recentf
     ".redcar"                              ; redcar
     ".rspec"                               ; rails
@@ -597,6 +613,7 @@ fully-qualified pathname."
     "install_manifest.txt"                 ; cmake
     "InstalledFiles"                       ; ruby
     "Makefile.in"                          ; automake
+    "Makefile.old"                         ; perl
     "MCVS"                                 ; meta-CVS
     "META.yml"                             ; perl
     "MERGE_MSG"                            ; git
@@ -605,6 +622,9 @@ fully-qualified pathname."
     "nbbuild"                              ; netbeans
     "nbdist"                               ; netbeans
     "nosetests.xml"                        ; python
+    "nytprof"                              ; perl
+    "nytprof.out"                          ; perl
+    "perltidy.ERR"                         ; perl
     "pm_to_blib"                           ; perl
     "Profile"                              ; various
     "profile"                              ; various
@@ -616,6 +636,7 @@ fully-qualified pathname."
     "slprj"                                ; matlab
     "SQUASH_MSG"                           ; git
     "TAGS"                                 ; ctags/etags
+    "TAG_EDITMSG"                          ; git
     "tags"                                 ; ctags/etags
     "TestResult"                           ; visualstudio
     "testresult"                           ; visualstudio
@@ -650,6 +671,7 @@ fully-qualified pathname."
     "\\`Icon.?\\'"                            ; OS X thumbnails
     "\\`\\..*\\.sw[a-z]\\'"                   ; vim
     "\\`\\.yas.*\\.el\\'"                     ; emacs yasnippet
+    "\\`\\..*~undo-tree~\\'"                  ; emacs undo-tree
     "\\`bzr_log\\.[[:alnum:]]+\\'"            ; emacs
     "\\`hg-editor-[[:alnum:]]+\\.txt\\'"      ; emacs
     "\\`svn-commit\\.tmp\\'"                  ; emacs
@@ -662,6 +684,24 @@ The string to match comprises only the last element of a
 fully-qualified pathname."
   :type '(repeat regexp)
   :group 'ignoramus-patterns)
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+(unless (fboundp 'string-prefix-p)
+  ;; added in 23.x
+  (defun string-prefix-p (str1 str2 &optional ignore-case)
+    "Return non-nil if STR1 is a prefix of STR2.
+If IGNORE-CASE is non-nil, the comparison is done without paying attention
+to case differences."
+    (eq t (compare-strings str1 nil nil
+                           str2 0 (length str1) ignore-case))))
 
 ;;; utility functions
 
@@ -764,11 +804,17 @@ character for that system."
           ignoramus-boring-file-regexp))
   (when ignoramus-boring-file-regexp
     (setq ignoramus-boring-file-regexp (mapconcat 'identity ignoramus-boring-file-regexp "\\|")))
-  (setq ignoramus-datafile-computed-basenames (ignoramus--extract-strings ignoramus-datafile-basename))
+
+  (setq ignoramus-datafile-computed-basenames     (ignoramus--extract-strings ignoramus-datafile-basename))
   (setq ignoramus-datafile-computed-completepaths (ignoramus--extract-pathstrings ignoramus-datafile-completepath))
-  (setq ignoramus-datafile-computed-prefixes (ignoramus--extract-pathstrings ignoramus-datafile-prefix))
-  (setq ignoramus-datafile-computed-dirprefixes (mapcar 'ignoramus-ensure-trailing-slash
-                                                        (ignoramus--extract-pathstrings ignoramus-datafile-dirprefix))))
+  (setq ignoramus-datafile-computed-prefixes      (ignoramus--extract-pathstrings ignoramus-datafile-prefix))
+  (setq ignoramus-datafile-computed-dirprefixes   (mapcar 'ignoramus-ensure-trailing-slash
+                                                          (ignoramus--extract-pathstrings ignoramus-datafile-dirprefix)))
+
+  (setq ignoramus-datafile-computed-basenames-regexp       (regexp-opt ignoramus-datafile-computed-basenames))
+  (setq ignoramus-datafile-computed-completepaths-regexp   (regexp-opt ignoramus-datafile-computed-completepaths))
+  (setq ignoramus-datafile-computed-prefixes-regexp        (regexp-opt ignoramus-datafile-computed-prefixes))
+  (setq ignoramus-datafile-computed-dirprefixes-regexp     (regexp-opt ignoramus-datafile-computed-dirprefixes)))
 
 
 ;;; configuration action plugins
@@ -878,7 +924,7 @@ character for that system."
 ;;; principal external interface
 
 ;;;###autoload
-(defun ignoramus-matches-datafile (file)
+(defun ignoramus-matches-datafile (file &optional file-basename expanded)
   "Return non-nil if FILE is used for data storage by a known Lisp library.
 
 This function identifies specific files used for persistence by
@@ -886,28 +932,41 @@ tramp, semantic, woman, etc.
 
 If a Lisp library is loaded after ignoramus, its files may not
 be recognized, in which case `ignoramus-compute-common-regexps'
-maybe called."
+maybe called.
+
+FILE-BASENAME may also be given as an optimization, in case the
+caller has already computed the basename.
+
+As an optimization, EXPANDED may be set to t to indicate that FILE
+has already been expanded."
   (when (stringp file)
     (unless ignoramus-boring-file-regexp
       (ignoramus-compute-common-regexps))
-    (setq file (expand-file-name file))
-    (let* ((file-basename (file-name-nondirectory file))
-           (case-convert (if ignoramus-case-insensitive 'downcase 'identity))
-           (converted-file (funcall case-convert file))
-           (converted-file-basename (funcall case-convert file-basename)))
+    (when (file-remote-p file)
+      (setq file (substring file (length (file-remote-p file))))
+      (setq expanded nil))
+    (unless expanded
+      (setq file (expand-file-name file)))
+    (unless file-basename
+      (setq file-basename (file-name-nondirectory file)))
+    (let ((case-fold-search ignoramus-case-insensitive))
       (catch 'known
-        (dolist (basename ignoramus-datafile-computed-basenames)
-          (when (equal (funcall case-convert basename) converted-file-basename)
-            (throw 'known (list file 'basename basename file-basename))))
-        (dolist (completepath ignoramus-datafile-computed-completepaths)
-          (when (equal (funcall case-convert completepath) converted-file)
-            (throw 'known (list file 'completepath completepath file))))
-        (dolist (prefix ignoramus-datafile-computed-prefixes)
-          (when (string-prefix-p prefix file ignoramus-case-insensitive)
-            (throw 'known (list file 'prefix (expand-file-name prefix) file))))
-        (dolist (dirprefix ignoramus-datafile-computed-dirprefixes)
-          (when (string-prefix-p dirprefix file ignoramus-case-insensitive)
-            (throw 'known (list file 'dirprefix dirprefix file))))))))
+        (when (string-match-p ignoramus-datafile-computed-basenames-regexp file-basename)
+          (dolist (basename ignoramus-datafile-computed-basenames)
+            (when (compare-strings basename nil nil file-basename nil nil ignoramus-case-insensitive)
+              (throw 'known (list file 'basename basename file-basename)))))
+        (when (string-match-p ignoramus-datafile-computed-completepaths-regexp file)
+          (dolist (completepath ignoramus-datafile-computed-completepaths)
+            (when (compare-strings completepath nil nil file nil nil ignoramus-case-insensitive)
+              (throw 'known (list file 'completepath completepath file)))))
+        (when (string-match-p ignoramus-datafile-computed-prefixes-regexp file)
+          (dolist (prefix ignoramus-datafile-computed-prefixes)
+            (when (string-prefix-p prefix file ignoramus-case-insensitive)
+              (throw 'known (list file 'prefix (expand-file-name prefix) file)))))
+        (when (string-match-p ignoramus-datafile-computed-dirprefixes-regexp file)
+          (dolist (dirprefix ignoramus-datafile-computed-dirprefixes)
+            (when (string-prefix-p dirprefix file ignoramus-case-insensitive)
+              (throw 'known (list file 'dirprefix dirprefix file)))))))))
 
 ;;;###autoload
 (defun ignoramus-register-datafile (symbol-or-string type &optional unregister)
@@ -933,14 +992,22 @@ SYMBOL-OR-STRING."
   (ignoramus-compute-common-regexps))
 
 ;;;###autoload
-(defun ignoramus-boring-p (file)
-  "Return non-nil if ignoramus thinks FILE is uninteresting."
+(defun ignoramus-boring-p (file &optional file-basename expanded)
+  "Return non-nil if ignoramus thinks FILE is uninteresting.
+
+FILE-BASENAME may also be given as an optimization, in case the
+caller has already computed the basename.
+
+As an optimization, EXPANDED may be set to t to indicate that FILE
+has already been expanded."
   (unless ignoramus-boring-file-regexp
     (ignoramus-compute-common-regexps))
+  (unless file-basename
+    (setq file-basename (file-name-nondirectory file)))
   (let ((case-fold-search ignoramus-case-insensitive))
-    (or (string-match-p ignoramus-boring-file-regexp (file-name-nondirectory file))
+    (or (string-match-p ignoramus-boring-file-regexp file-basename)
         (and ignoramus-use-known-datafiles
-             (ignoramus-matches-datafile file)))))
+             (ignoramus-matches-datafile file file-basename expanded)))))
 
 ;;;###autoload
 (defun ignoramus-setup (&optional actions)
