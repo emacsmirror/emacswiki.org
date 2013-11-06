@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/back-button
 ;; URL: http://raw.github.com/rolandwalker/back-button/master/back-button.el
-;; Version: 0.6.4
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.6.6
+;; Last-Updated: 24 Oct 2013
 ;; EmacsWiki: BackButton
 ;; Keywords: convenience, navigation, interface
-;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.7.2") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -25,7 +25,8 @@
 ;;
 ;;     press the arrows in the toolbar to navigate marks
 ;;
-;;     or use C-x C-Space as usual
+;;     or use C-x C-Space as usual, then try C-x C-<right>
+;;     to reverse the operation
 ;;
 ;; Explanation
 ;;
@@ -77,7 +78,7 @@
 ;; When the smartrep package is installed, the C-x prefix need not
 ;; be used for consecutive back-button commands.
 ;;
-;; When the visible-marks package is installed, marks will be
+;; When the visible-mark package is installed, marks will be
 ;; made visible in the current buffer during navigation.
 ;;
 ;; See Also
@@ -94,10 +95,9 @@
 ;;     convention, but not universal.
 ;;
 ;;     The function `back-button-push-mark-local-and-global' may be
-;;     useful to call from Lisp.  It is essentially a replacement for
-;;     `push-mark' which unconditionally pushes onto the global mark
-;;     ring, functionality which is not possible using vanilla
-;;     `push-mark'.
+;;     useful to call from Lisp.  It is a replacement for `push-mark'
+;;     which unconditionally pushes onto the global mark ring,
+;;     functionality which is not possible using vanilla `push-mark'.
 ;;
 ;;     Theoretically, `back-button-push-mark-local-and-global' could
 ;;     cause issues with Lisp code which depends on the convention that
@@ -106,10 +106,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: smartrep.el, nav-flash.el, visible-mark.el,
 ;;                      ucs-utils.el
@@ -206,7 +207,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for decf, callf, position
 (require 'cl)
@@ -216,6 +217,8 @@
 (require 'visible-mark nil t)
 (require 'ucs-utils    nil t)
 
+;;; declarations
+
 (declare-function ucs-utils-char                    "ucs-utils.el")
 (declare-function smartrep-define-key               "smartrep.el")
 (declare-function visible-mark-initialize-overlays  "visible-mark.el")
@@ -224,7 +227,6 @@
 (declare-function back-button-push-mark             "back-button.el")
 
 (eval-when-compile
-  ;; declarations for byte compiler
   (defvar visible-mark-mode)
   (defvar visible-mark-overlays))
 
@@ -233,8 +235,10 @@
 ;;;###autoload
 (defgroup back-button nil
   "Visual navigation through mark rings."
-  :version "0.6.4"
-  :link '(emacs-commentary-link "back-button")
+  :version "0.6.6"
+  :link '(emacs-commentary-link :tag "Commentary" "back-button")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/back-button")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/BackButton")
   :prefix "back-button-"
   :group 'convenience
   :group 'navigation)
@@ -245,8 +249,8 @@
 Set to nil or the empty string to disable the mode-line
 lighter for `back-button-mode'."
   :type 'string
-  :risky t
   :group 'back-button)
+(put 'back-button-mode-lighter 'risky-local-variable t)
 
 (defcustom back-button-less-feedback nil
   "Give less echo area feedback."
@@ -333,8 +337,8 @@ Set to nil or the empty string to disable smartrep for
 
 The default binding overrides `pop-global-mark'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -343,8 +347,8 @@ The format for key sequences is as defined by `kbd'."
 (defcustom back-button-global-backward-keystrokes '("C-x <C-left>")
   "List of key sequences to invoke `back-button-global-backward'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -353,8 +357,8 @@ The format for key sequences is as defined by `kbd'."
 (defcustom back-button-global-forward-keystrokes '("C-x <C-right>")
   "List of key sequences to invoke `back-button-global-forward'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -363,8 +367,8 @@ The format for key sequences is as defined by `kbd'."
 (defcustom back-button-local-keystrokes '("C-x <SPC>")
   "List of key sequences to invoke `back-button-local'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -373,8 +377,8 @@ The format for key sequences is as defined by `kbd'."
 (defcustom back-button-local-backward-keystrokes '("C-x <left>")
   "List of key sequences to invoke `back-button-local-backward'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -383,8 +387,8 @@ The format for key sequences is as defined by `kbd'."
 (defcustom back-button-local-forward-keystrokes '("C-x <right>")
   "List of key sequences to invoke `back-button-local-forward'.
 
-The key bindings are effect when `back-button-mode' minor mode is
-active.
+The key bindings are in effect when `back-button-mode' minor mode
+is active.
 
 The format for key sequences is as defined by `kbd'."
   :type '(repeat string)
@@ -419,6 +423,16 @@ The format for key sequences is as defined by `kbd'."
 (defvar back-button-lighter-keymap-property 'keymap
   "Which property sets the lighter keymap")
 
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
 ;;; keymaps
 
 (defvar back-button-mode-map (make-sparse-keymap) "Keymap for `back-button-mode' minor-mode.")
@@ -426,6 +440,9 @@ The format for key sequences is as defined by `kbd'."
 (let ((smart-keys nil))
   (dolist (cmd back-button-commands)
     (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
+      (when (and (not (string-match-p "mouse\\|wheel\\|button" k))
+                 (not (get cmd :advertised-binding)))
+        (put cmd :advertised-binding (read-kbd-macro k)))
       (if (and (featurep 'smartrep)
                (stringp back-button-smartrep-prefix)
                (> (length back-button-smartrep-prefix) 0)
@@ -445,7 +462,7 @@ The format for key sequences is as defined by `kbd'."
 
 (when back-button-show-toolbar-buttons
 
-  (define-key-after tool-bar-map [separator-backb] menu-bar-separator)
+  (define-key-after tool-bar-map [separator-backb] (if (boundp 'menu-bar-separator) menu-bar-separator "--"))
 
   (tool-bar-add-item "left-arrow"
                      'back-button-global-backward
@@ -482,13 +499,29 @@ The format for key sequences is as defined by `kbd'."
 (defvar back-button-lighter-map  (let ((map (make-sparse-keymap))
                                        (menu-map (make-sparse-keymap "Back Button")))
                                    (define-key menu-map [customize]                   '(menu-item "Customize"      (lambda (e) (interactive "e") (customize-group 'back-button))))
-                                   (define-key menu-map [separator-2]                 '(menu-item "--"))
-                                   (define-key menu-map [local-forward]               '(menu-item "Local Forward"  back-button-local-forward))
-                                   (define-key menu-map [local-back]                  '(menu-item "Local Back"     back-button-local-backward))
-                                   (define-key menu-map [forward]                     '(menu-item "Forward"        back-button-global-forward))
-                                   (define-key menu-map [back]                        '(menu-item "Back"           back-button-global-backward))
-                                   (define-key menu-map [separator-1]                 '(menu-item "--"))
                                    (define-key menu-map [turn-off-back-button-mode]   '(menu-item "Turn Off Back Button Mode"  back-button-mode))
+                                   (define-key menu-map [separator-1]                 '(menu-item "--"))
+                                   (define-key menu-map [local-forward]               (append '(menu-item "Local Forward" back-button-local-forward)
+                                                                                              ;; force advertised binding because of smartrep
+                                                                                              (when (get 'back-button-local-forward :advertised-binding)
+                                                                                                (list :keys
+                                                                                                      (format-kbd-macro
+                                                                                                       (get 'back-button-local-forward :advertised-binding))))))
+                                   (define-key menu-map [local-back]                  (append '(menu-item "Local Back" back-button-local-backward)
+                                                                                              (when (get 'back-button-local-backward :advertised-binding)
+                                                                                                (list :keys
+                                                                                                      (format-kbd-macro
+                                                                                                       (get 'back-button-local-backward :advertised-binding))))))
+                                   (define-key menu-map [forward]                     (append '(menu-item "Forward" back-button-global-forward)
+                                                                                              (when (get 'back-button-global-forward :advertised-binding)
+                                                                                                (list :keys
+                                                                                                      (format-kbd-macro
+                                                                                                       (get 'back-button-global-forward :advertised-binding))))))
+                                   (define-key menu-map [back]                        (append '(menu-item "Back" back-button-global-backward)
+                                                                                              (when (get 'back-button-global-backward :advertised-binding)
+                                                                                                (list :keys
+                                                                                                      (format-kbd-macro
+                                                                                                       (get 'back-button-global-backward :advertised-binding))))))
                                    (define-key map (kbd "<mode-line> <wheel-up>"     ) 'back-button-global-backward)
                                    (define-key map (kbd "<mode-line> <wheel-down>"   ) 'back-button-global-forward)
                                    (define-key map (kbd "<mode-line> <C-wheel-up>"   ) 'back-button-local-backward)
@@ -513,9 +546,15 @@ The format for key sequences is as defined by `kbd'."
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; aliases et al
 
@@ -868,8 +907,8 @@ This command is much like the reverse of `pop-global-mark'."
 ;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
-;; LocalWords:  BackButton smartrep NOMSG CONSECUTIVES fset nomsg
-;; LocalWords:  callf imenu
+;; LocalWords: BackButton smartrep NOMSG CONSECUTIVES fset nomsg
+;; LocalWords: callf imenu utils pcache devel flet
 ;;
 
 ;;; back-button.el ends here
