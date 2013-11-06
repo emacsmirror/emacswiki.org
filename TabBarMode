@@ -89,7 +89,7 @@ possible groups: “emacs” and “user”.
  tabbar.el v1.7."
    (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
                ((eq major-mode 'dired-mode) "emacs")
-               (t "user")))
+               (t "user"))))
  (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 
 Another tabbar-buffer-groups example, based on the original
