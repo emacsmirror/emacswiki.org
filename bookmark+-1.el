@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Oct 30 11:21:45 2013 (-0700)
+;; Last-Updated: Tue Nov  5 15:57:52 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6998
+;;     Update #: 7011
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -117,6 +117,7 @@
 ;;    `bmkp-choose-navlist-from-bookmark-list',
 ;;    `bmkp-choose-navlist-of-type', `bmkp-compilation-target-set',
 ;;    `bmkp-compilation-target-set-all', `bmkp-copy-tags',
+;;    `bmkp-create-dired-bookmarks-recursive',
 ;;    `bmkp-crosshairs-highlight', `bmkp-cycle',
 ;;    `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
 ;;    `bmkp-cycle-bookmark-list',
@@ -2052,13 +2053,14 @@ a text property.  Point is irrelevant and unaffected."
 ;;  4. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
 ;;  5. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
 ;;  6. Ask for confirmation if (a) not plain `C-u' and (b) NAME names an existing bookmark.
-;;  7. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
-;;  8. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
-;;  9. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
-;; 10. Run `bmkp-after-set-hook'.
+;;  7. Added optional args INTERACTIVEP and NO-UPDATE-P.
+;;  8. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
+;;  9. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
+;; 10. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
+;; 11. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload (autoload 'bookmark-set "bookmark+")
-(defun bookmark-set (&optional name parg interactivep) ; `C-x r M', `C-x p c M'
+(defun bookmark-set (&optional name parg interactivep no-update-p) ; `C-x r M', `C-x p c M'
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
@@ -2118,7 +2120,10 @@ A prefix argument changes the behavior as follows:
 
 Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it removes
 only the first instance of a bookmark with that name from the list of
-bookmarks)."
+bookmarks).
+
+From Lisp code, non-nil optional arg NO-UPDATE-P means do not
+refresh/rebuild the bookmark-list display."
   (interactive (list nil current-prefix-arg t))
   (unwind-protect
        (progn
@@ -2156,9 +2161,9 @@ bookmarks)."
                            nil 'bookmark-history)))
            (when (and interactivep  bmkp-bookmark-set-confirms-overwrite-p  (atom parg)
                       (bmkp-get-bookmark-in-alist bname 'NOERROR)
-                      (not (y-or-n-p (format "Overwirte bookmark `%s'? " bname))))
+                      (not (y-or-n-p (format "Overwrite bookmark `%s'? " bname))))
              (error "OK, canceled"))
-           (bookmark-store bname (cdr record) (consp parg) nil (not interactivep)) ; And refresh list. (?)
+           (bookmark-store bname (cdr record) (consp parg) no-update-p (not interactivep))
            (when (and interactivep  bmkp-prompt-for-tags-flag)
              (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
            (case (and (boundp 'bmkp-auto-light-when-set)  bmkp-auto-light-when-set)
@@ -8652,6 +8657,52 @@ BOOKMARK is a bookmark name or a bookmark record."
       (save-excursion (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (goto-char (bookmark-get-position bookmark))))
 
+;;;###autoload (autoload 'bmkp-create-dired-bookmarks-recursive "bookmark+")
+(defun bmkp-create-dired-bookmarks-recursive (ignore-marks-p &optional msg-p)
+  "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively.
+Create a Dired bookmark for this directory and for each of its marked
+subdirectories.  Handle each of the marked subdirectory similarly:
+bookmark it and its marked subdirectories, and so on, recursively.
+Name each of these Dired bookmarks with the Dired buffer name.
+
+After creating the Dired bookmarks, create a sequence bookmark, named
+`DIRBUF and subdirs', where DIRBUF is the name of the original buffer.
+This bookmark represents the whole Dired tree rooted in the directory
+where you invoked the command.  Jumping to this sequence bookmark
+restores all of the Dired buffers making up the tree, by jumping to
+each of their bookmarks.
+
+With a prefix arg, bookmark the marked and unmarked subdirectory Dired
+buffers, recursively, that is, ignore markings.
+
+Note:
+
+* If there is more than one Dired buffer for a given subdirectory then
+  only the first such is used.
+
+* This command creates new bookmarks.  It never updates or overwrites
+  an existing bookmark."
+  (interactive "P\np")
+  (unless (featurep 'dired+) (error "You need library `dired+.el' for this command"))
+  (diredp-ensure-mode)
+  (let ((sdirs   (diredp-get-subdirs ignore-marks-p))
+        (snames  ()))
+    (when (and msg-p  sdirs) (message "Checking descendent directories..."))
+    (dolist (dir  (cons default-directory sdirs))
+      (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
+        (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
+          (let ((bname  (bookmark-buffer-name))
+                (count  2))
+            (while (and (bmkp-get-bookmark-in-alist bname 'NOERROR)
+                        (setq bname  (format "%s[%d]" bname count))))
+            (bookmark-set bname nil nil 'NO-UPDATE-P) ; Inhibit updating displayed list.
+            (push bname snames)))))
+    (let ((bname  (format "%s and subdirs" (bookmark-buffer-name)))
+          (count  2))
+      (while (and (bmkp-get-bookmark-in-alist bname 'NOERROR)
+                  (setq bname  (format "%s[%d]" bname count))))
+      (bmkp-set-sequence-bookmark bname (nreverse snames) -1 'MSGP))
+    (bmkp-refresh/rebuild-menu-list nil)))
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action)
   "Read the name of a bookmark of type TYPE, with completion.
