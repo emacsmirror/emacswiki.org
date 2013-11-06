@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/minimal-session-saver
 ;; URL: http://raw.github.com/rolandwalker/minimal-session-saver/master/minimal-session-saver.el
-;; Version: 0.6.0
-;; Last-Updated: 15 Oct 2012
+;; Version: 0.6.2
+;; Last-Updated: 29 Oct 2013
 ;; EmacsWiki: MinimalSessionSaver
 ;; Keywords: tools, frames, project
 ;;
@@ -32,9 +32,12 @@
 ;; files.  Not window configuration, nor point position.
 ;;
 ;; Giving a universal prefix argument to any of the interactive
-;; session-management commands prompts for the session-state file
-;; location, allowing minimal-session-saver to be used as a (very)
-;; minimal project manager.
+;; session-management commands causes a prompt for the session-state
+;; file location, allowing minimal-session-saver to be used as a
+;; (very) minimal project manager.
+;;
+;; When frame-bufs.el is present, the session associated with a
+;; particular frame can be stored and recovered.
 ;;
 ;; To use minimal-session-saver, place the minimal-session-saver.el
 ;; library somewhere Emacs can find it, and add the following to your
@@ -42,12 +45,12 @@
 ;;
 ;;     (require 'minimal-session-saver)
 ;;
-;; Five interactive commands are provided to manage sessions:
+;; Several interactive commands are provided to manage sessions:
 ;;
 ;;     minimal-session-saver-store
 ;;     minimal-session-saver-load
-;;     minimal-session-saver-store-frame
-;;     minimal-session-saver-load-frame
+;;     minimal-session-saver-store-frame         ; requires frame-bufs.el
+;;     minimal-session-saver-load-frame          ; requires frame-bufs.el
 ;;     minimal-session-saver-add-buffer
 ;;     minimal-session-saver-remove-buffer
 ;;     minimal-session-saver-mark-stored-buffers
@@ -69,10 +72,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: frame-bufs.el
 ;;
@@ -125,15 +129,55 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, assert, incf, remove-if, remove-if-not
 (require 'cl)
+
+;;; declarations
 
 (eval-when-compile
   (defvar minimal-session-saver-store-on-exit))
 
 (declare-function frame-bufs-add-buffer "frame-bufs.el")
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+(unless (fboundp 'locate-user-emacs-file)
+  (unless (boundp 'user-emacs-directory)
+    (defvar user-emacs-directory "~/.emacs.d/"
+      "Directory beneath which additional per-user Emacs-specific files are placed."))
+  (defun locate-user-emacs-file (new-name &optional old-name)
+    "Return an absolute per-user Emacs-specific file name.
+If OLD-NAME is non-nil and ~/OLD-NAME exists, return ~/OLD-NAME.
+Else return NEW-NAME in `user-emacs-directory', creating the
+directory if it does not exist."
+    (convert-standard-filename
+     (let* ((home (concat "~" (or init-file-user "")))
+            (at-home (and old-name (expand-file-name old-name home))))
+       (if (and at-home (file-readable-p at-home))
+           at-home
+         ;; Make sure `user-emacs-directory' exists,
+         ;; unless we're in batch mode or dumping Emacs
+         (or noninteractive
+             purify-flag
+             (file-accessible-directory-p
+              (directory-file-name user-emacs-directory))
+             (let ((umask (default-file-modes)))
+               (unwind-protect
+                   (progn
+                     (set-default-file-modes ?\700)
+                     (make-directory user-emacs-directory))
+                 (set-default-file-modes umask))))
+         (abbreviate-file-name
+          (expand-file-name new-name user-emacs-directory)))))))
 
 ;;; customizable variables
 
@@ -150,8 +194,10 @@ SYMBOL and VALUE are passed to `custom-set-default'."
 ;;;###autoload
 (defgroup minimal-session-saver nil
   "Very lean session saver."
-  :version "0.6.0"
-  :link '(emacs-commentary-link "minimal-session-saver")
+  :version "0.6.2"
+  :link '(emacs-commentary-link :tag "Commentary" "minimal-session-saver")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/minimal-session-saver")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/MinimalSessionSaver")
   :prefix "minimal-session-saver-"
   :group 'tools)
 
@@ -236,9 +282,15 @@ The following aliases will be installed
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; utility functions
 
