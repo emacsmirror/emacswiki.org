@@ -1,7 +1,7 @@
 If you want to use spaces instead of tabs when indenting, put the following in your <tt>[InitFile .emacs]</tt> file:
-
-    (setq-default indent-tabs-mode nil)
-
+{{{
+(setq-default indent-tabs-mode nil)
+}}}
 You may also customize the `indent-tabs-mode' variable instead, obviously. If you want to remove tabs in an existing file, mark the whole buffer using ##C-x h## and use ##M-x untabify##. (##M-x tabify## does the opposite ...)
 
 Discussion on whether this is a good idea: TabsAreEvil (or not).
@@ -20,37 +20,37 @@ So, '##C-q <tab>##' does the trick. -- DrewAdams
 
 == Smart inference of indentation style ==
 
-I prefer NoTabs, but sometimes I work on a project that does use tab indentation.  I don't want to cause problems for these source files.  As a result, I use the following snippit to default to no tabs, but to use tabs if that's what a pre-existing file is primarily using for indentation:
+I prefer NoTabs, but sometimes I work on a project that does use tab indentation.  I don't want to cause problems for these source files.  As a result, I use the following snippet to default to no tabs, but to use tabs if that's what a pre-existing file is primarily using for indentation:
+{{{
+(defun how-many-region (begin end regexp &optional interactive)
+  "Print number of non-trivial matches for REGEXP in region.                    
+Non-interactive arguments are Begin End Regexp"
+  (interactive "r\nsHow many matches for (regexp): \np")
+  (let ((count 0) opoint)
+    (save-excursion
+      (setq end (or end (point-max)))
+      (goto-char (or begin (point)))
+      (while (and (< (setq opoint (point)) end)
+                  (re-search-forward regexp end t))
+        (if (= opoint (point))
+            (forward-char 1)
+          (setq count (1+ count))))
+      (if interactive (message "%d occurrences" count))
+      count)))
 
-    (defun how-many-region (begin end regexp &optional interactive)
-      "Print number of non-trivial matches for REGEXP in region.                    
-    Non-interactive arguments are Begin End Regexp"
-      (interactive "r\nsHow many matches for (regexp): \np")
-      (let ((count 0) opoint)
-        (save-excursion
-          (setq end (or end (point-max)))
-          (goto-char (or begin (point)))
-          (while (and (< (setq opoint (point)) end)
-                      (re-search-forward regexp end t))
-            (if (= opoint (point))
-                (forward-char 1)
-              (setq count (1+ count))))
-          (if interactive (message "%d occurrences" count))
-          count)))
-
-    (defun infer-indentation-style ()
-      ;; if our source file uses tabs, we use tabs, if spaces spaces, and if        
-      ;; neither, we use the current indent-tabs-mode                               
-      (let ((space-count (how-many-region (point-min) (point-max) "^  "))
-            (tab-count (how-many-region (point-min) (point-max) "^\t")))
-        (if (> space-count tab-count) (setq indent-tabs-mode nil))
-        (if (> tab-count space-count) (setq indent-tabs-mode t))))
-
+(defun infer-indentation-style ()
+  ;; if our source file uses tabs, we use tabs, if spaces spaces, and if        
+  ;; neither, we use the current indent-tabs-mode                               
+  (let ((space-count (how-many-region (point-min) (point-max) "^  "))
+        (tab-count (how-many-region (point-min) (point-max) "^\t")))
+    (if (> space-count tab-count) (setq indent-tabs-mode nil))
+    (if (> tab-count space-count) (setq indent-tabs-mode t))))
+}}}
 [in my c-mode hook, or whatever other mode I want to have smart indentation]
-
-    (setq indent-tabs-mode nil)
-    (infer-indentation-style)
-
+{{{
+(setq indent-tabs-mode nil)
+(infer-indentation-style)
+}}}
 [new]
 You might also want to check out GuessStyle
 
