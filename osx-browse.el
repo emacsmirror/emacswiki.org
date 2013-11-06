@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/osx-browse
 ;; URL: http://raw.github.com/rolandwalker/osx-browse/master/osx-browse.el
-;; Version: 0.8.6
-;; Last-Updated: 22 Oct 2012
+;; Version: 0.8.8
+;; Last-Updated: 26 Oct 2013
 ;; EmacsWiki: OSXBrowse
 ;; Keywords: hypermedia, external
-;; Package-Requires: ((browse-url-dwim "0.6.2"))
+;; Package-Requires: ((string-utils "0.3.2") (browse-url-dwim "0.6.6"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -95,10 +95,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Requires: browse-url-dwim.el
 ;;
@@ -198,8 +199,10 @@
 ;;;###autoload
 (defgroup osx-browse nil
   "Web browsing helpers for OS X."
-  :version "0.8.6"
-  :link '(emacs-commentary-link "osx-browse")
+  :version "0.8.8"
+  :link '(emacs-commentary-link :tag "Commentary" "osx-browse")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/osx-browse")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/OSXBrowse")
   :prefix "osx-browse-"
   :group 'external
   :group 'hypermedia)
@@ -310,11 +313,24 @@ The format for key sequences is as defined by `kbd'."
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 (unless (fboundp 'string-utils-has-darkspace-p)
   ;; simplified version of function from string-utils.el
