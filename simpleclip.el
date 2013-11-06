@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/simpleclip
 ;; URL: http://raw.github.com/rolandwalker/simpleclip/master/simpleclip.el
-;; Version: 0.2.2
-;; Last-Updated: 27 Nov 2012
+;; Version: 1.0.0
+;; Last-Updated: 25 Oct 2013
 ;; Keywords: convenience
 ;;
 ;; Simplified BSD License
@@ -86,10 +86,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -168,9 +169,9 @@
 ;;;###autoload
 (defgroup simpleclip nil
   "Simplified access to the system clipboard."
-  :version "0.2.2"
+  :version "1.0.0"
   :link '(emacs-commentary-link :tag "Commentary" "simpleclip")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/simpleclip")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/simpleclip")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Simpleclip")
   :prefix "simpleclip-"
   :group 'convenience)
