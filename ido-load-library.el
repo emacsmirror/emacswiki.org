@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ido-load-library
 ;; URL: http://raw.github.com/rolandwalker/ido-load-library/master/ido-load-library.el
-;; Version: 0.1.2
-;; Last-Updated:  5 Oct 2012
+;; Version: 0.2.0
+;; Last-Updated: 28 Oct 2013
 ;; EmacsWiki: IdoLoadLibrary
-;; Package-Requires: ((persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((persistent-soft "0.8.8") (pcache "0.2.3"))
 ;; Keywords: maint, completion
 ;;
 ;; Simplified BSD License
@@ -32,8 +32,8 @@
 ;;
 ;;     (require 'ido-load-library)
 ;;
-;; The interactive command `ido-load-library' is then available,
-;; though not bound to any key.  It can be executed via
+;; The interactive command `ido-load-library' is provided, though
+;; not bound to any key.  It can be executed via
 ;;
 ;;     M-x ido-load-library
 ;;
@@ -46,7 +46,7 @@
 ;;     (defalias 'load-library 'ido-load-library)
 ;;
 ;; The interactive command `ido-load-library-find' is also
-;; available.  Like `ido-load-library', it searches your
+;; provided.  Like `ido-load-library', it searches your
 ;; `load-path', but instead of loading the selected library,
 ;; it visits the file in a buffer.
 ;;
@@ -62,8 +62,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -124,7 +124,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, incf, assert, remove-if, remove-if-not
 (require 'cl)
@@ -142,8 +142,10 @@
 ;;;###autoload
 (defgroup ido-load-library nil
   "Load-library alternative using `ido-completing-read'."
-  :version "0.1.2"
-  :link '(emacs-commentary-link "ido-load-library")
+  :version "0.2.0"
+  :link '(emacs-commentary-link :tag "Commentary" "ido-load-library")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/ido-load-library")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/IdoLoadLibrary")
   :prefix "ido-load-library-"
   :group 'abbreviations
   :group 'convenience)
@@ -182,6 +184,13 @@ of the persistent data store."
 (defvar library-name-history nil "History of library names entered in the minibuffer.")
 
 ;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 (defun persistent-softest-store (symbol value location &optional expiration)
   "Call `persistent-soft-store' but don't fail when library not present."
