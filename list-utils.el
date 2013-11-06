@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/list-utils
 ;; URL: http://raw.github.com/rolandwalker/list-utils/master/list-utils.el
-;; Version: 0.3.0
-;; Last-Updated: 29 Oct 2012
+;; Version: 0.4.2
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: ListUtils
 ;; Keywords: extensions
 ;;
@@ -19,14 +19,21 @@
 ;;     (require 'list-utils)
 ;;
 ;;     (list-utils-flatten '(1 2 (3 4 (5 6 7))))
+;;     ;; '(1 2 3 4 5 6 7)
+;;
+;;     (list-utils-depth '(1 2 (3 4 (5 6 7))))
+;;     ;; 3
 ;;
 ;;     (let ((cyclic-list '(1 2 3 4 5 6 7)))
 ;;       (nconc cyclic-list (cdr cyclic-list))
-;;       (list-utils-flatten cyclic-list))
+;;       (list-utils-make-linear-inplace cyclic-list))
+;;     ;; '(1 2 3 4 5 6 7)
 ;;
 ;;     (list-utils-cyclic-p '(1 2 3))
+;;     ;; nil
 ;;
 ;;     (list-utils-plist-del '(:one 1 :two 2 :three 3) :two)
+;;     ;; '(:one 1 :three 3)
 ;;
 ;; Explanation
 ;;
@@ -65,12 +72,21 @@
 ;;     `list-utils-safe-length'
 ;;     `list-utils-safe-equal'
 ;;     `list-utils-depth'
+;;     `list-utils-flat-length'
 ;;     `list-utils-flatten'
+;;     `list-utils-alist-or-flat-length'
 ;;     `list-utils-alist-flatten'
 ;;     `list-utils-insert-before'
 ;;     `list-utils-insert-after'
 ;;     `list-utils-insert-before-pos'
 ;;     `list-utils-insert-after-pos'
+;;     `list-utils-and'
+;;     `list-utils-not'
+;;     `list-utils-xor'
+;;     `list-utils-uniq'
+;;     `list-utils-dupes'
+;;     `list-utils-singlets'
+;;     `list-utils-partition-dupes'
 ;;     `list-utils-plist-reverse'
 ;;     `list-utils-plist-del'
 ;;
@@ -81,15 +97,15 @@
 ;;
 ;; Notes
 ;;
-;;     This library includes an implementation of the classic LISP
+;;     This library includes an implementation of the classic Lisp
 ;;     `tconc' which is outside the "list-utils-" namespace.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3           : yes
+;;     GNU Emacs version 22.2           : yes, with some limitations
 ;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
@@ -98,7 +114,19 @@
 ;;
 ;; TODO
 ;;
-;;     should list-utils-make-improper accept nil as a special case?
+;;     @@@ spin out hash-table tests into separate library
+;;
+;;     test cyclic inputs to all
+;;     test improper inputs to all
+;;     test single-element lists as inputs to all
+;;     test cyclic single-element lists as inputs to all
+;;
+;;     should list-utils-make-improper-inplace accept nil as a special case?
+;;
+;;     could do -copy/-inplace variants for more functions, consider doing
+;;     so for flatten
+;;
+;;     list* returns a non-list on single elt, our function throws an error
 ;;
 ;;; License
 ;;
@@ -146,14 +174,89 @@
 ;;; declarations
 
 (declare-function list-utils-cyclic-length "list-utils.el")
+(declare-function string-utils-compress-whitespace "string-utils.el")
 
 ;;;###autoload
 (defgroup list-utils nil
   "List-manipulation utility functions."
-  :version "0.3.0"
-  :link '(emacs-commentary-link "list-utils")
+  :version "0.4.2"
+  :link '(emacs-commentary-link :tag "Commentary" "list-utils")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/list-utils")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/ListUtils")
   :prefix "list-utils-"
   :group 'extensions)
+
+;;; compatibility functions
+
+(unless (fboundp 'string-utils-compress-whitespace)
+  (defvar string-utils-whitespace
+    (concat (apply 'vector (delq nil (mapcar #'(lambda (x) (decode-char 'ucs x)) '(#x00009 #x0000a #x0000b #x0000c #x0000d #x00020 #x00085 #x00088 #x00089 #x0008a #x000a0 #x01680 #x0180e #x02000 #x02001 #x02002 #x02003 #x02004 #x02005 #x02006 #x02007 #x02008 #x02009 #x0200a #x0200b #x02028 #x02029 #x0202f #x0205f #x02060 #x03000 #x0feff #xe0020)))))
+    "Definition of whitespace characters used by string-utils.
+
+Includes Unicode whitespace characters.")
+  ;; simplified version of function from string-utils
+  (defun string-utils-compress-whitespace (str-val &optional whitespace-type separator)
+    "Return STR-VAL with all contiguous whitespace compressed to a single space.
+WHITESPACE-TYPE is ignored.
+SEPARATOR is the string with which to replace any whitespace."
+    (callf or separator " ")
+    (let ((whitespace-regexp (concat "[" string-utils-whitespace "]")))
+      (save-match-data
+        (replace-regexp-in-string (concat whitespace-regexp "+") separator
+                                  str-val)))))
+
+;;; hash-table tests
+
+(defun list-utils-htt-= (x y)
+  "A comparison function in which `=' floats and integers are identical.
+
+Non-numeric arguments are permitted and will be compared by `equal'.
+
+A hash-table-test is defined with the same name."
+  (if (and (numberp x)
+           (numberp y))
+      (= x y)
+    ;; else
+    (equal x y)))
+
+(define-hash-table-test 'list-utils-htt-=
+                        'list-utils-htt-=
+                        #'(lambda (x)
+                            (sxhash (if (numberp x)
+                                        (float x)
+                                      ;; else
+                                      x))))
+
+(defun list-utils-htt-case-fold-equal (x y)
+  "A string comparison function which ignores case.
+
+Non-string arguments are permitted, and will be compared after
+stringification by `format'.
+
+A hash-table-test is defined with the same name."
+  (compare-strings (if x (format "%s" x) "") nil nil
+                   (if y (format "%s" y) "") nil nil
+                   'ignore-case))
+
+(define-hash-table-test 'list-utils-htt-case-fold-equal
+                        'list-utils-htt-case-fold-equal
+                        #'(lambda (x)
+                            (sxhash (upcase (if x (format "%s" x) "")))))
+
+(defun list-utils-htt-ignore-whitespace-equal (x y)
+  "A string comparison function which ignores whitespace.
+
+Non-string arguments are permitted, and will be compared after
+stringification by `format'.
+
+A hash-table-test is defined with the same name."
+  (string-equal (string-utils-compress-whitespace (if x (format "%s" x) "") nil "")
+                (string-utils-compress-whitespace (if y (format "%s" y) "") nil "")))
+
+(define-hash-table-test 'list-utils-htt-ignore-whitespace-equal
+                        'list-utils-htt-ignore-whitespace-equal
+                        #'(lambda (x)
+                            (sxhash (string-utils-compress-whitespace (if x (format "%s" x) "") nil ""))))
 
 ;;; tconc - this section of code is in the public domain
 
@@ -413,8 +516,8 @@ If LIST is completely linear, return 0."
   "Return non-nil if LIST contains any cyclic structures.
 
 If optional PERFECT is set, only return non-nil if LIST is a
-perfect non-branching cycle in the last element points to the
-first."
+perfect non-branching cycle in which the last element points
+to the first."
   (let ((cycle (list-utils-cyclic-subseq list)))
     (when (or (not perfect)
               (not (list-utils-linear-subseq list (list-utils-cyclic-length cycle))))
@@ -444,6 +547,23 @@ elements, like `safe-length'."
     (let ((cycle-length (list-utils-cyclic-length list)))
       (+ cycle-length
          (safe-length (list-utils-linear-subseq list cycle-length))))))
+
+;;;###autoload
+(defun list-utils-flat-length (list)
+  "Count simple elements from the beginning of LIST.
+
+Stop counting when a cons is reached.  nil is not a cons,
+and is considered to be a \"simple\" element.
+
+If the car of LIST is a cons, return 0."
+  (let ((counter 0))
+    (ignore-errors
+        (catch 'saw-depth
+          (dolist (elt list)
+            (when (consp elt)
+              (throw 'saw-depth t))
+            (incf counter))))
+  counter))
 
 ;;;###autoload
 (defun list-utils-make-linear-copy (list &optional tree)
@@ -576,8 +696,9 @@ flattens circular list structures."
              (list-utils-flatten (cdr list))))
 
     ((listp list)
-     (cons (car list)
-           (list-utils-flatten (cdr list))))
+     (let ((extent (list-utils-flat-length list)))
+       (append (subseq list 0 extent)
+               (list-utils-flatten (nthcdr extent list)))))
 
     (t
      (list list))))
@@ -658,7 +779,285 @@ LIST is modified and the new value is returned."
       (callf list-utils-make-improper-inplace list)))
   list)
 
+;;;###autoload
+(defun list-utils-and (list1 list2 &optional test hint flip)
+  "Return the elements of LIST1 which are present in LIST2.
+
+This is similar to `cl-intersection' (or `intersection') from
+the cl library, except that `list-utils-and' preserves order,
+does not uniquify the results, and exhibits more predictable
+performance for large lists.
+
+Order will follow LIST1.  Duplicates may be present in the result
+as in LIST1.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+the list to be hashed (LIST2 unless FLIP is set).
+
+When optional FLIP is set, the sense of the comparison is
+reversed.  When FLIP is set, LIST2 will be the guide for the
+order of the result, and will determine whether duplicates may
+be returned.  Since this function preserves duplicates, setting
+FLIP can change the number of elements in the result.
+
+Performance: `list-utils-and' and friends use a general-purpose
+hashing approach.  `intersection' and friends use pure iteration.
+Iteration can be much faster in a few special cases, especially
+when the number of elements is small.  In other scenarios,
+iteration can be much slower.  Hashing has no worst-case
+performance scenario, although it uses much more memory.  For
+heavy-duty list operations, performance may be improved by
+`let'ing `gc-cons-threshold' to a high value around sections that
+make frequent use of this function."
+  (when flip
+    (psetq list1 list2 list2 list1))
+  (cond
+    ((null list1)
+     list2)
+    ((null list2)
+     list1)
+    ((equal list1 list2)
+     list1)
+    (t
+     (let ((saw (make-hash-table
+                 :test (or test 'equal)
+                 :size (or hint (safe-length (if flip list1 list2))))))
+       (mapc #'(lambda (elt)
+                 (puthash elt t saw))
+             list2)
+       (delq nil (mapcar #'(lambda (elt)
+                             (when (gethash elt saw)
+                               elt))
+                         list1))))))
+
+;;;###autoload
+(defun list-utils-not (list1 list2 &optional test hint flip)
+  "Return the elements of LIST1 which are not present in LIST2.
+
+This is similar to `cl-set-difference' (or `set-difference') from
+the cl library, except that `list-utils-not' preserves order and
+exhibits more predictable performance for large lists.  Order will
+follow LIST1.  Duplicates may be present as in LIST1.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+the list to be hashed (LIST2 unless FLIP is set).
+
+When optional FLIP is set, the sense of the comparison is
+reversed, returning elements of LIST2 which are not present in
+LIST1.  When FLIP is set, LIST2 will be the guide for the order
+of the result, and will determine whether duplicates may be
+returned.
+
+Performance: see notes under `list-utils-and'."
+  (when flip
+    (psetq list1 list2 list2 list1))
+  (cond
+    ((null list1)
+     nil)
+    ((null list2)
+     list1)
+    ((equal list1 list2)
+     nil)
+    ;; Todo, for some cases iteration is faster, but is there any
+    ;; heuristic for following this path that isn't itself too
+    ;; expensive? Example where iteration is faster:
+    ;; list1 is (1 2 3), list2 is (1 2 3 ... 1000)
+    ;; ((and nil
+    ;;       (setq member-fn (cdr (assq test list-utils-fast-member-fns))))
+    ;;  (delq nil (mapcar #'(lambda (elt)
+    ;;                        (unless (funcall member-fn elt list2)
+    ;;                          elt))
+    ;;                    list1)))
+    (t
+     (let ((saw (make-hash-table
+                 :test (or test 'equal)
+                 :size (or hint (safe-length list2)))))
+       (mapc #'(lambda (elt)
+                 (puthash elt t saw))
+             list2)
+       (delq nil (mapcar #'(lambda (elt)
+                             (unless (gethash elt saw)
+                               elt))
+                         list1))))))
+
+;;;###autoload
+(defun list-utils-xor (list1 list2 &optional test hint flip)
+  "Return elements which are only present in either LIST1 or LIST2.
+
+This is similar to `cl-set-exclusive-or' (or `set-exclusive-or')
+from the cl library, except that `list-utils-xor' preserves order,
+and exhibits more predictable performance for large lists.  Order
+will follow LIST1, then LIST2.  Duplicates may be present as in
+LIST1 or LIST2.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+the list to be hashed (LIST2 unless FLIP is set).
+
+When optional FLIP is set, the sense of the comparison is
+reversed, causing order and duplicates to follow LIST2, then
+LIST1.
+
+Performance: see notes under `list-utils-and'."
+  (append (list-utils-not list1 list2 test hint flip)
+          (list-utils-not list2 list1 test nil  flip)))
+
+;;;###autoload
+(defun list-utils-uniq (list &optional test hint)
+  "Return a uniquified copy of LIST, preserving order.
+
+This is similar to `cl-remove-duplicates' (or `remove-duplicates')
+from the cl library, except that `list-utils-uniq' preserves order,
+and exhibits more predictable performance for large lists.  Order
+will follow LIST.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+LIST.
+
+Performance: see notes under `list-utils-and'."
+  (let ((saw (make-hash-table
+              :test (or test 'equal)
+              :size (or hint (safe-length list)))))
+    (delq nil (mapcar #'(lambda (elt)
+                          (unless (gethash elt saw)
+                            (progn
+                              (puthash elt t saw)
+                              elt)))
+                      list))))
+
+;;;###autoload
+(defun list-utils-dupes (list &optional test hint)
+  "Return only duplicated elements from LIST, preserving order.
+
+Duplicated elements may still exist in the result: this function
+removes singlets.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+LIST.
+
+Performance: see notes under `list-utils-and'."
+  (let ((saw (make-hash-table
+              :test (or test 'equal)
+              :size (or hint (safe-length list)))))
+    (mapc #'(lambda (elt)
+              (puthash elt (if (gethash elt saw) 2 1) saw))
+          list)
+    (delq nil (mapcar #'(lambda (elt)
+                          (when (> (gethash elt saw) 1)
+                            elt))
+                      list))))
+
+;;;###autoload
+(defun list-utils-singlets (list &optional test hint)
+  "Return only singlet elements from LIST, preserving order.
+
+Duplicated elements may not exist in the result.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+LIST.
+
+Performance: see notes under `list-utils-and'."
+  (let ((saw (make-hash-table
+              :test (or test 'equal)
+              :size (or hint (safe-length list)))))
+    (mapc #'(lambda (elt)
+              (puthash elt (if (gethash elt saw) 2 1) saw))
+          list)
+    (delq nil (mapcar #'(lambda (elt)
+                          (when (= (gethash elt saw) 1)
+                            elt))
+                      list))))
+
+;;;###autoload
+(defun list-utils-partition-dupes (list &optional test hint)
+  "Partition LIST into duplicates and singlets, preserving order.
+
+The return value is an alist with two keys: 'dupes and 'singlets.
+The two values of the alist are lists which, if combined, comprise
+a complete copy of the elements of LIST.
+
+Duplicated elements may still exist in the 'dupes partition.
+
+TEST is an optional comparison function in the form of a
+hash-table-test.  The default is `equal'.  Other valid values
+include `eq' (built-in), `eql' (built-in), `list-utils-htt-='
+\(numeric), `list-utils-htt-case-fold-equal' (case-insensitive).
+See `define-hash-table-test' to define your own tests.
+
+HINT is an optional micro-optimization, predicting the size of
+LIST.
+
+Performance: see notes under `list-utils-and'."
+  (let ((saw (make-hash-table
+              :test (or test 'equal)
+              :size (or hint (safe-length list)))))
+    (mapc #'(lambda (elt)
+              (puthash elt (if (gethash elt saw) 2 1) saw))
+          list)
+    (list (cons 'dupes
+                (delq nil (mapcar #'(lambda (elt)
+                                      (when (> (gethash elt saw) 1)
+                                        elt))
+                                  list)))
+          (cons 'singlets
+                (delq nil (mapcar #'(lambda (elt)
+                                      (when (= (gethash elt saw) 1)
+                                        elt))
+                                  list))))))
+
 ;;; alists
+
+;;;###autoload
+(defun list-utils-alist-or-flat-length (list)
+  "Count simple or cons-cell elements from the beginning of LIST.
+
+Stop counting when a proper list of non-zero length is reached.
+
+If the car of LIST is a list, return 0."
+  (let ((counter 0))
+    (ignore-errors
+        (catch 'saw-depth
+          (dolist (elt list)
+            (when (and (consp elt)
+                       (not (list-utils-cons-cell-p elt)))
+              (throw 'saw-depth t))
+            (incf counter))))
+  counter))
 
 ;;;###autoload
 (defun list-utils-alist-flatten (list)
@@ -690,8 +1089,9 @@ pair."
              (list-utils-alist-flatten (cdr list))))
 
     ((listp list)
-     (cons (car list)
-           (list-utils-alist-flatten (cdr list))))
+     (let ((extent (list-utils-alist-or-flat-length list)))
+       (append (subseq list 0 extent)
+               (list-utils-alist-flatten (nthcdr extent list)))))
 
     (t
      (list list))))
@@ -736,7 +1136,8 @@ This functionality overlaps with the undocumented `cl-do-remf'."
 ;; End:
 ;;
 ;; LocalWords: ListUtils ARGS alist utils nconc tconc defstruct setf
-;; LocalWords: plists PLIST setq autoloading plist callf
+;; LocalWords: plists PLIST setq autoloading plist callf alists
+;; LocalWords: inplace
 ;;
 
 ;;; list-utils.el ends here
