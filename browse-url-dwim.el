@@ -1,15 +1,15 @@
 ;;; browse-url-dwim.el --- Context-sensitive external browse URL or Internet search
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/browse-url-dwim
 ;; URL: http://raw.github.com/rolandwalker/browse-url-dwim/master/browse-url-dwim.el
-;; Version: 0.6.4
-;; Last-Updated: 22 Oct 2012
+;; Version: 0.6.6
+;; Last-Updated: 26 Oct 2013
 ;; EmacsWiki: BrowseUrlDwim
 ;; Keywords: hypermedia
-;; Package-Requires: ((string-utils "0.0.3"))
+;; Package-Requires: ((string-utils "0.3.2"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -96,10 +96,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: string-utils.el
 ;;
@@ -123,9 +124,6 @@
 ;;; License
 ;;
 ;;     Simplified BSD License
-;;
-;;     Copyright (c) 2012, Roland Walker
-;;     All rights reserved.
 ;;
 ;;     Redistribution and use in source and binary forms, with or
 ;;     without modification, are permitted provided that the following
@@ -168,11 +166,13 @@
 
 (require 'string-utils nil t)
 
-(autoload 'thing-at-point         "thingatpt"   "Return the THING at point."                       nil)
-(autoload 'url-generic-parse-url  "url-parse"   "Return an URL-struct of the parts of URL."        nil)
-(autoload 'url-normalize-url      "url-util"    "Return a 'normalized' version of URL."            nil)
-(autoload 'url-hexify-string      "url-util"    "Return a new string that is STRING URI-encoded."  nil)
-(autoload 'browse-url             "browse-url"  "Ask a WWW browser to load a URL."                 t)
+(autoload 'thing-at-point              "thingatpt"   "Return the THING at point."                       nil)
+(autoload 'thing-at-point-looking-at   "thingatpt"   "Return non-nil if point is in or just after a match for REGEXP." nil)
+(autoload 'thing-at-point-url-at-point "thingatpt"   "Return the URL around or before point."           nil)
+(autoload 'url-generic-parse-url       "url-parse"   "Return an URL-struct of the parts of URL."        nil)
+(autoload 'url-normalize-url           "url-util"    "Return a 'normalized' version of URL."            nil)
+(autoload 'url-hexify-string           "url-util"    "Return a new string that is STRING URI-encoded."  nil)
+(autoload 'browse-url                  "browse-url"  "Ask a WWW browser to load a URL."                 t)
 
 ;;; declarations
 
@@ -191,8 +191,10 @@
 ;;;###autoload
 (defgroup browse-url-dwim nil
   "Context-sensitive external browse URL or Internet search."
-  :version "0.6.4"
-  :link '(emacs-commentary-link "browse-url-dwim")
+  :version "0.6.6"
+  :link '(emacs-commentary-link :tag "Commentary" "browse-url-dwim")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/browse-url-dwim")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/BrowseUrlDwim")
   :prefix "browse-url-dwim-"
   :group 'external
   :group 'browse-url
@@ -383,11 +385,40 @@ associated prompt.")
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; compatibility functions
+
+(unless (fboundp 'use-region-p)
+  ;; added in 23.x
+  (unless (boundp 'use-empty-active-region)
+    (defvar use-empty-active-region nil
+      "Whether \"region-aware\" commands should act on empty regions."))
+  (defun use-region-p ()
+  "Return t if the region is active and it is appropriate to act on it."
+  (and (region-active-p)
+       (or use-empty-active-region (> (region-end) (region-beginning))))))
+
+(unless (fboundp 'region-active-p)
+  ;; added in 23.x
+  (defun region-active-p ()
+  "Return t if Transient Mark mode is enabled and the mark is active."
+  (and transient-mark-mode mark-active)))
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 (unless (fboundp 'string-utils-has-darkspace-p)
   ;; simplified version of function from string-utils.el
@@ -423,26 +454,29 @@ determining whether to add a scheme."
   (unless (stringp url)
     (setq url (if url (format "%s" url) "")))
   (callf substring-no-properties url)
-  (let ((parsed nil))
+  (let ((parsed nil)
+        (struct-offset))
     (setq url
           (catch 'url
             ;; must have non-whitespace
             (when (not (string-utils-has-darkspace-p url))
               (throw 'url nil))
             (setq parsed (url-generic-parse-url url))
+            (setq struct-offset (if (symbolp (aref parsed 0)) 1 0))
             ;; add scheme when missing, if text otherwise looks like a URL
-            (when (and (not (aref parsed 1))
-                       (string-match-p (concat "\\`[^/]+\\." (regexp-opt browse-url-dwim-permitted-tlds) "\\(/\\|\\'\\)") url))
+            (when (and (not (aref parsed (+ 0 struct-offset)))
+                       (string-match-p (concat "\\`[^/]+\\." "\\(?:" (regexp-opt browse-url-dwim-permitted-tlds) "\\)" "\\(/\\|\\'\\)") url))
               (callf2 concat add-scheme url)
-              (setq parsed (url-generic-parse-url url)))
+              (setq parsed (url-generic-parse-url url))
+              (setq struct-offset (if (symbolp (aref parsed 0)) 1 0)))
             ;; invalid scheme
             (when (and (not any-scheme)
-                       (not (member (aref parsed 1) browse-url-dwim-permitted-schemes)))
+                       (not (member (aref parsed (+ 0 struct-offset)) browse-url-dwim-permitted-schemes)))
               (throw 'url nil))
             ;; no hostname or invalid hostname
-            (when (and (member (aref parsed 1) browse-url-dwim-host-mandatary-schemes)
-                       (or (not (aref parsed 4))
-                           (not (string-match-p "\\." (aref parsed 4)))))
+            (when (and (member (aref parsed (+ 0 struct-offset)) browse-url-dwim-host-mandatary-schemes)
+                       (or (not (aref parsed (+ 3 struct-offset)))
+                           (not (string-match-p "\\." (aref parsed (+ 3 struct-offset))))))
               (throw 'url nil))
             (throw 'url url))))
   (when url
@@ -482,14 +516,19 @@ If no prospective URL is found, returns nil."
   (require 'thingatpt nil t)
   (let ((thing-at-point-short-url-regexp (concat (if (boundp 'thing-at-point-short-url-regexp)
                                                      thing-at-point-short-url-regexp
-                                                   "[-A-Za-z0-9]+\\.[-A-Za-z0-9.]+[^]\t\n\"'<>[^`{}]*[^]\t\n\"'<>[^`{}.,;]+")
+                                                   "[-A-Za-z0-9]+\\.[-A-Za-z0-9.]+[^]\t\n \"'<>[^`{}]*[^]\t\n \"'<>[^`{}.,;]+")
                                                  "?\\."
-                                                 (regexp-opt browse-url-dwim-permitted-tlds)
+                                                 "\\(?:" (regexp-opt browse-url-dwim-permitted-tlds) "\\)"
                                                  "\\(?:/[^ \t\r\f\n]+\\)?"))
         (case-fold-search t))
-    (or (and (use-region-p)
-             (browse-url-dwim-coerce-to-web-url (buffer-substring-no-properties (region-beginning) (region-end))))
-        (browse-url-dwim-coerce-to-web-url (thing-at-point 'url)))))
+    (or
+     (and (use-region-p)
+          (browse-url-dwim-coerce-to-web-url (buffer-substring-no-properties (region-beginning) (region-end))))
+     ;; invoke thing-at-point in various ways to make it work with various revisions
+     (browse-url-dwim-coerce-to-web-url (ignore-errors (thing-at-point 'url)))
+     (and (ignore-errors (thing-at-point-looking-at thing-at-point-short-url-regexp))
+          (browse-url-dwim-coerce-to-web-url (buffer-substring-no-properties (match-beginning 0) (match-end 0))))
+     (browse-url-dwim-coerce-to-web-url (ignore-errors (thing-at-point-url-at-point 'lax))))))
 
 (defun browse-url-dwim-get-url (&optional always-prompt prompt-string fallback-default)
   "Find a Web URL by context or user input.
