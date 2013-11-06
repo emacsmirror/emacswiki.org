@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/hardhat
 ;; URL: http://raw.github.com/rolandwalker/hardhat/master/hardhat.el
-;; Version: 0.4.0
-;; Last-Updated: 22 May 2013
+;; Version: 0.4.2
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: Hardhat
-;; Package-Requires: ((ignoramus "0.6.2"))
+;; Package-Requires: ((ignoramus "0.7.0"))
 ;; Keywords: convenience
 ;;
 ;; Simplified BSD License
@@ -92,10 +92,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: ignoramus.el
 ;;
@@ -107,13 +108,9 @@
 ;;
 ;; Bugs
 ;;
-;;     This is alpha-quality software; bugs are expected.
-;;
 ;;     More exceptions are certainly needed in `hardhat-fullpath-editable-regexps'
 ;;
 ;; TODO
-;;
-;;     include more build-dirs for python and ruby
 ;;
 ;;; License
 ;;
@@ -183,9 +180,9 @@ SYMBOL and VALUE are passed to `custom-set-default'."
 ;;;###autoload
 (defgroup hardhat nil
   "Protect against clobbering user-writable files."
-  :version "0.4.0"
+  :version "0.4.2"
   :link '(emacs-commentary-link :tag "Commentary" "hardhat")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/hardhat")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/hardhat")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Hardhat")
   :prefix "hardhat-"
   :group 'convenience)
@@ -196,8 +193,8 @@ SYMBOL and VALUE are passed to `custom-set-default'."
 Set to nil or the empty string to disable the mode-line
 lighter for `hardhat-mode'."
   :type 'string
-  :risky t
   :group 'hardhat)
+(put 'hardhat-mode-lighter 'risky-local-variable t)
 
 (defcustom hardhat-less-feedback nil
   "Give less echo area feedback."
@@ -433,7 +430,7 @@ All patterns are case-insensitive."
 ;; todo @@@ more editable exceptions needed here
 (defcustom hardhat-fullpath-editable-regexps '(
                                                "~/\\.cpan/CPAN/MyConfig\\.pm\\'"
-                                               "/\\.git/\\(?:COMMIT_EDITMSG\\|MERGE_MSG\\|SQUASH_MSG\\|rebase-merge/git-rebase-todo\\|description\\|hooks/\\|config\\|GHI_ISSUE\\)\\'"
+                                               "/\\.git/\\(?:COMMIT_EDITMSG\\|MERGE_MSG\\|SQUASH_MSG\\|TAG_EDITMSG\\|rebase-merge/git-rebase-todo\\|description\\|hooks/\\|config\\|GHI_ISSUE\\)\\'"
                                                ;; "~/\\.cabal/"
                                                ;; "~/perl5/perlbrew/"
                                                ;; "~/\\.npm/"
@@ -541,6 +538,25 @@ in GNU Emacs 24.1 or higher."
      `(called-interactively-p ,kind))
     (t
      '(called-interactively-p))))
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+(unless (fboundp 'with-demoted-errors)
+  ;; added in 23.x
+  (defmacro with-demoted-errors (&rest body)
+  "Run BODY and demote any errors to simple messages."
+  (declare (debug t) (indent 0))
+  (let ((err (make-symbol "err")))
+    `(condition-case ,err
+         (progn ,@body)
+       (error (message "Error: %S" ,err) nil)))))
 
 ;;; utility functions
 
