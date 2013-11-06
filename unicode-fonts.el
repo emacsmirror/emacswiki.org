@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-fonts
 ;; URL: http://raw.github.com/rolandwalker/unicode-fonts/master/unicode-fonts.el
-;; Version: 0.3.6
-;; Last-Updated: 22 May 2013
+;; Version: 0.3.8
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: UnicodeFonts
 ;; Keywords: i18n, faces, frames, wp, interface
-;; Package-Requires: ((font-utils "0.6.8") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((font-utils "0.7.0") (ucs-utils "0.7.6") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -22,9 +22,9 @@
 ;;
 ;;     Install these fonts
 ;;
-;;        http://users.teilar.gr/~g1951d/Symbola706.zip
-;;        http://www.quivira-font.com/files/Quivira.ttf
-;;        http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
+;;         http://users.teilar.gr/~g1951d/Symbola706.zip
+;;         http://www.quivira-font.com/files/Quivira.ttf
+;;         http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
 ;;
 ;;     Remove Unifont from your system.
 ;;
@@ -59,6 +59,9 @@
 ;;     each Unicode block  ---to--->   a font with good coverage
 ;;
 ;; and makes the settings available via the customization interface.
+;;
+;; This library provides font mappings for 205 of the 216 blocks in
+;; the Unicode 6.3 standard with displayable characters.
 ;;
 ;; To use unicode-fonts, place the unicode-fonts.el file somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
@@ -119,6 +122,12 @@
 ;; If you are using a language written in Chinese or Arabic script,
 ;; try customizing `unicode-fonts-skip-font-groups' to control which
 ;; script you see, and send a friendly bug report.
+;;
+;; Color Emoji are enabled by default when using the Native Mac port
+;; on OS X.  This can be disabled by customizing each relevant mapping,
+;; or by turning off all multicolor glyphs here:
+;;
+;;     M-x customize-variable RET unicode-fonts-skip-font-groups RET
 ;;
 ;; See Also
 ;;
@@ -182,6 +191,22 @@
 ;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=
 ;;
 ;;         Padauk                        ; Myanmar
+;;
+;;     From https://code.google.com/p/myanmar3source/downloads/list
+;;
+;;         Myanmar3                      ; Myanmar
+;;
+;;     From http://www.yunghkio.com/unicode/
+;;
+;;         Yunghkio                      ; Myanmar
+;;
+;;     From https://code.google.com/p/tharlon-font/downloads/list
+;;
+;;         TharLon                       ; Myanmar
+;;
+;;     From http://sourceforge.net/projects/prahita/files/Myanmar%20Unicode%20Fonts/MasterpieceUniSans/
+;;
+;;         Masterpiece Uni Sans          ; Myanmar
 ;;
 ;;     From http://sarovar.org/projects/samyak/
 ;;
@@ -255,10 +280,46 @@
 ;;
 ;;         Conakry                       ; N'ko
 ;;
+;;     From http://uni.hilledu.com/download-ribenguni
+;;
+;;         Ribeng                        ; Chakma
+;;
+;;     From http://www.virtualvinodh.com/downloads
+;;
+;;         Adinatha Tamil Brahmi         ; Brahmi
+;;
+;;     From https://code.google.com/p/noto/
+;;
+;;         Noto Sans                     ; Turkish Lira Sign (and others)
+;;
+;;     From http://ftp.gnu.org/gnu/freefont/
+;;
+;;         FreeMono, etc (FreeFont)      ; Kayah Li (and others)
+;;
+;;     From http://ulikozok.com/aksara-batak/batak-font/
+;;
+;;         Batak-Unicode                 ; Batak
+;;
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=Mingzat
+;;
+;;         Mingzat                       ; Lepcha
+;;
+;;     From http://phjamr.github.io/miao.html#install
+;;
+;;         Miao Unicode                  ; Miao, Lisu
+;;
+;;     From http://scholarsfonts.net/cardofnt.html
+;;
+;;         Cardo                         ; Historical Languages
+;;
+;;     From http://sourceforge.net/projects/junicode/files/junicode/
+;;
+;;         Junicode                      ; Historical Languages
+;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -305,11 +366,7 @@
 ;;
 ;; TODO
 ;;
-;;     @@@@@@@ test again on windows with new font-utils
-;;
 ;;     (set-language-environment "UTF-8") ?
-;;
-;;     add coverage comments to all mapping entries
 ;;
 ;;     Remove very old Microsoft entries (eg Monotype.com which was
 ;;     renamed Andale)
@@ -401,7 +458,7 @@
     ("unicode-ssp"         #xE0000   #xEFFFF)           ; plane  14
     ("unicode-pua-a"       #xF0000   #xFFFFF)           ; plane  15
     ("unicode-pua-b"       #x100000  #x10FFFF))         ; plane  16
-  "Alist of Unicode 6.1 planes.")
+  "Alist of Unicode 6.3 planes.")
 
 (defconst unicode-fonts-blocks
   '(("Aegean Numbers"                                  #x10100  #x1013F)
@@ -624,12 +681,13 @@
     ("Yi Radicals"                                     #xA490   #xA4CF)
     ("Yi Syllables"                                    #xA000   #xA48F)
     ("Yijing Hexagram Symbols"                         #x4DC0   #x4DFF))
-  "Alist of Unicode 6.1 blocks.")
+  "Alist of Unicode 6.3 blocks.")
 
 (defvar unicode-fonts-known-font-characteristics
   '(("Abadi MT Condensed"             :licenses (microsoft))
     ("Abyssinica SIL"                 :licenses (free))
-    ("Adobe Arabic"                   :licenses (adobe) :arabic 'standard)
+    ("Adinatha Tamil Brahmi"          :licenses (free))
+    ("Adobe Arabic"                   :licenses (adobe) :arabic standard)
     ("Adobe Hebrew"                   :licenses (adobe))
     ("Adobe Minion Web"               :licenses (microsoft))
     ("Aegean"                         :licenses (free))
@@ -641,14 +699,14 @@
     ("Akkadian"                       :licenses (free))
     ("Aksara Bali"                    :licenses (free))
     ("Akshar Unicode"                 :licenses (free))
-    ("Al Bayan"                       :licenses (apple) :arabic 'standard)
-    ("Aleem Urdu Unicode"             :licenses (free) :arabic 'urdu)
+    ("Al Bayan"                       :licenses (apple) :arabic standard)
+    ("Aleem Urdu Unicode"             :licenses (free) :arabic urdu)
     ("Algerian"                       :licenses (microsoft))
     ("Almanac MT"                     :licenses (microsoft))
     ("American Typewriter"            :licenses (apple))
     ("American Uncial"                :licenses (microsoft))
     ("Analecta"                       :licenses (free))
-    ("Andale Mono"                    :spacing 'mono :licenses (apple microsoft))
+    ("Andale Mono"                    :spacing mono :licenses (apple microsoft))
     ("Andalus"                        :licenses (microsoft))
     ("Andy"                           :licenses (microsoft))
     ("Angsana New"                    :licenses (microsoft))
@@ -658,34 +716,34 @@
     ("Apple Braille"                  :licenses (apple))
     ("Apple Casual"                   :licenses (apple))
     ("Apple Chancery"                 :licenses (apple))
-    ("Apple Color Emoji"              :licenses (apple))
+    ("Apple Color Emoji"              :licenses (apple) :color multi)
     ("Apple Gothic"                   :licenses (apple))
-    ("Apple LiGothic"                 :licenses (apple) :chinese 'traditional)
-    ("Apple LiSung"                   :licenses (apple) :chinese 'traditional)
-    ("Apple Myungjo"                  :licenses (apple) :glyph-quality 'low)
+    ("Apple LiGothic"                 :licenses (apple) :chinese traditional)
+    ("Apple LiSung"                   :licenses (apple) :chinese traditional)
+    ("Apple Myungjo"                  :licenses (apple) :glyph-quality low)
     ("Apple SD Gothic Neo"            :licenses (apple))
     ("Apple Symbols"                  :licenses (apple))
-    ("Arabic Transparent"             :licenses (microsoft) :arabic 'standard)
-    ("Arabic Typesetting"             :licenses (microsoft) :arabic 'standard)
+    ("Arabic Transparent"             :licenses (microsoft) :arabic standard)
+    ("Arabic Typesetting"             :licenses (microsoft) :arabic standard)
     ("Arial Black"                    :licenses (apple microsoft))
     ("Arial Hebrew"                   :licenses (apple))
     ("Arial Narrow Special"           :licenses (microsoft))
     ("Arial Narrow"                   :licenses (apple microsoft))
     ("Arial Rounded MT Bold"          :licenses (apple microsoft))
     ("Arial Special"                  :licenses (microsoft))
-    ("Arial Unicode MS"               :licenses (apple microsoft) :arabic 'standard)
+    ("Arial Unicode MS"               :licenses (apple microsoft) :arabic standard)
     ("Arial"                          :licenses (apple microsoft))
     ("Augsburger Initials"            :licenses (microsoft))
     ("Avenir Next Condensed"          :licenses (apple))
     ("Avenir Next"                    :licenses (apple))
     ("Avenir"                         :licenses (apple))
     ("Ayuthaya"                       :licenses (apple))
-    ("BabelStone Han"                 :chinese 'simplified :licenses (free))
+    ("BabelStone Han"                 :chinese simplified :licenses (free))
     ("BabelStone Phags-pa Book"       :licenses (free))
-    ("Baghdad"                        :licenses (apple) :arabic 'standard)
+    ("Baghdad"                        :licenses (apple) :arabic standard)
     ("Bangla MN"                      :licenses (apple))
     ("Bangla Sangam MN"               :licenses (apple))
-    ("Baoli SC"                       :licenses (apple) :chinese 'simplified)
+    ("Baoli SC"                       :licenses (apple) :chinese simplified)
     ("Baskerville Old Face"           :licenses (microsoft))
     ("Baskerville"                    :licenses (apple))
     ("Batak-Unicode"                  :licenses (free))
@@ -695,7 +753,7 @@
     ("Bell MT"                        :licenses (microsoft))
     ("Berlin Sans FB"                 :licenses (microsoft))
     ("Bernard MT Condensed"           :licenses (microsoft))
-    ("Biau Kai"                       :licenses (apple) :chinese 'traditional)
+    ("Biau Kai"                       :licenses (apple) :chinese traditional)
     ("Bickley Script"                 :licenses (microsoft))
     ("Big Caslon"                     :licenses (apple))
     ("Blackadder ITC"                 :licenses (microsoft))
@@ -707,7 +765,6 @@
     ("Bookshelf Symbol 7"             :licenses (microsoft))
     ("Bradley Hand ITC"               :licenses (microsoft))
     ("Braggadocio"                    :licenses (microsoft))
-    ("Brahmi"                         :licenses (free))
     ("BriemScript"                    :licenses (microsoft))
     ("Britannic Bold"                 :licenses (microsoft))
     ("Broadway"                       :licenses (microsoft))
@@ -715,12 +772,13 @@
     ("BrowalliaUPC"                   :licenses (microsoft))
     ("Brush Script MT"                :licenses (microsoft))
     ("Brush Script Std"               :licenses (apple))
-    ("Calibri"                        :licenses (microsoft) :cleartype 't)
+    ("Calibri"                        :licenses (microsoft) :cleartype t)
     ("Californian FB"                 :licenses (microsoft))
     ("Calisto MT"                     :licenses (microsoft))
-    ("Cambria Math"                   :licenses (microsoft) :cleartype 't :buggy-before-vista t)
+    ("Cambria Math"                   :licenses (microsoft) :cleartype t :buggy-before-vista t)
     ("Cambria"                        :licenses (microsoft))
     ("Candara"                        :licenses (microsoft))
+    ("Cardo"                          :licenses (free))
     ("Cariadings"                     :licenses (microsoft))
     ("Castellar"                      :licenses (microsoft))
     ("Centaur"                        :licenses (microsoft))
@@ -739,7 +797,7 @@
     ("Colonna MT"                     :licenses (microsoft))
     ("Comic Sans MS"                  :licenses (apple microsoft))
     ("Conakry"                        :licenses (free))
-    ("Consolas"                       :spacing 'mono :licenses (microsoft) :cleartype 't)
+    ("Consolas"                       :spacing mono :licenses (microsoft) :cleartype t)
     ("Constantia"                     :licenses (microsoft))
     ("Contemporary Brush"             :licenses (microsoft))
     ("Cooper Black"                   :licenses (microsoft))
@@ -750,27 +808,27 @@
     ("Cordia New"                     :licenses (microsoft))
     ("CordiaUPC"                      :licenses (microsoft))
     ("Corsiva Hebrew"                 :licenses (apple))
-    ("Courier New"                    :spacing 'mono :licenses (apple microsoft))
+    ("Courier New"                    :spacing mono :licenses (apple microsoft))
     ("Courier"                        :licenses (apple))
     ("Curlz MT"                       :licenses (microsoft))
-    ("DFKai-SB"                       :chinese 'traditional :licenses (microsoft))
+    ("DFKai-SB"                       :chinese traditional :licenses (microsoft))
     ("Dai Banna SIL Book"             :licenses (free))
     ("Dai Banna SIL Light"            :licenses (free))
     ("Daicing Xiaokai"                :licenses (free))
     ("Damascus"                       :licenses (apple))
     ("DaunPenh"                       :licenses (microsoft))
     ("David"                          :licenses (microsoft))
-    ("DecoType Naskh"                 :licenses (apple) :arabic 'naskh)
-    ("DejaVu Sans Mono"               :spacing 'mono :licenses (free) :arabic 'standard)
-    ("DejaVu Sans"                    :licenses (free) :arabic 'standard)
-    ("DejaVu Serif"                   :licenses (free) :arabic 'standard)
+    ("DecoType Naskh"                 :licenses (apple) :arabic naskh)
+    ("DejaVu Sans Mono"               :spacing mono :licenses (free) :arabic standard)
+    ("DejaVu Sans"                    :licenses (free) :arabic standard)
+    ("DejaVu Serif"                   :licenses (free) :arabic standard)
     ("Desdemona"                      :licenses (microsoft))
     ("Devanagari MT"                  :licenses (apple))
     ("Devanagari Sangam MN"           :licenses (apple))
     ("Didot"                          :licenses (apple))
     ("DilleniaUPC"                    :licenses (microsoft))
     ("Directions MT"                  :licenses (microsoft))
-    ("Diwani Letter"                  :licenses (microsoft) :decorative t :arabic 'standard)
+    ("Diwani Letter"                  :licenses (microsoft) :decorative t :arabic standard)
     ("DokChampa"                      :licenses (microsoft))
     ("Dotum"                          :licenses (microsoft))
     ("Doulos SIL"                     :licenses (free))
@@ -780,7 +838,7 @@
     ("Edwardian Script ITC"           :licenses (microsoft))
     ("Eeyek Unicode"                  :licenses (free))
     ("Elephant"                       :licenses (microsoft))
-    ("Elham"                          :licenses (free) :arabic 'farsi)
+    ("Elham"                          :licenses (free) :arabic farsi)
     ("Engravers MT"                   :licenses (microsoft))
     ("Engravers"                      :licenses (microsoft))
     ("Enviro"                         :licenses (microsoft))
@@ -794,8 +852,8 @@
     ("Euphemia UCAS"                  :licenses (apple))
     ("Euphemia"                       :licenses (microsoft))
     ("Eurostile"                      :licenses (microsoft))
-    ("FangSong"                       :spacing 'mono :chinese 'simplified :licenses (microsoft))
-    ("Farsi Simple Bold"              :licenses (microsoft) :arabic 'farsi)
+    ("FangSong"                       :spacing mono :chinese simplified :licenses (microsoft))
+    ("Farsi Simple Bold"              :licenses (microsoft) :arabic farsi)
     ("Felix Titling"                  :licenses (microsoft))
     ("Fine Hand"                      :licenses (microsoft))
     ("Fixed Miriam Transparent"       :licenses (microsoft))
@@ -805,16 +863,19 @@
     ("Forte"                          :licenses (microsoft))
     ("FrankRuehl"                     :licenses (microsoft))
     ("Franklin Gothic"                :licenses (microsoft))
+    ("FreeMono"                       :licenses (free))
+    ("FreeSans"                       :licenses (free))
+    ("FreeSerif"                      :licenses (free))
     ("FreesiaUPC"                     :licenses (microsoft))
     ("Freestyle Script"               :licenses (microsoft))
     ("French Script MT"               :licenses (microsoft))
     ("Futura"                         :licenses (microsoft apple))
-    ("GB18030 Bitmap"                 :licenses (apple) :chinese 'simplified :glyph-quality 'low)
+    ("GB18030 Bitmap"                 :licenses (apple) :chinese simplified :glyph-quality low)
     ("Gabriola"                       :licenses (microsoft))
     ("Garamond MT"                    :licenses (microsoft))
     ("Garamond"                       :licenses (microsoft))
     ("Gautami"                        :licenses (microsoft))
-    ("Geeza Pro"                      :licenses (apple) :arabic 'standard)
+    ("Geeza Pro"                      :licenses (apple) :arabic standard)
     ("Geneva CY"                      :licenses (apple))
     ("Geneva"                         :licenses (apple))
     ("Gentium Plus Compact"           :licenses (free))
@@ -840,14 +901,14 @@
     ("Gurmukhi Sangam MN"             :licenses (apple))
     ("Hacen Sudan"                    :licenses (free))
     ("Haettenschweiler"               :licenses (microsoft))
-    ("HanaMinA"                       :licenses (free) :chinese 'traditional)
+    ("HanaMinA"                       :licenses (free) :chinese traditional)
     ("HanaMinB"                       :licenses (free))
     ("Harlow Solid"                   :licenses (microsoft))
     ("Harrington"                     :licenses (microsoft))
-    ("HeadLineA"                      :licenses (apple) 'decorative t)
-    ("Hei"                            :licenses (apple) :chinese 'simplified)
-    ("Heiti SC"                       :licenses (apple) :chinese 'simplified)
-    ("Heiti TC"                       :licenses (apple) :chinese 'traditional)
+    ("HeadLineA"                      :licenses (apple) decorative t)
+    ("Hei"                            :licenses (apple) :chinese simplified)
+    ("Heiti SC"                       :licenses (apple) :chinese simplified)
+    ("Heiti TC"                       :licenses (apple) :chinese traditional)
     ("Helvetica CY"                   :licenses (apple))
     ("Helvetica Neue"                 :licenses (apple))
     ("Helvetica"                      :licenses (apple))
@@ -864,7 +925,7 @@
     ("Hiragino Sans GB"               :licenses (apple))
     ("Hoefler Text"                   :licenses (apple))
     ("Holidays MT"                    :licenses (microsoft))
-    ("Homa"                           :licenses (free) :arabic 'farsi)
+    ("Homa"                           :licenses (free) :arabic farsi)
     ("Impact"                         :licenses (apple microsoft))
     ("Imprint MT Shadow"              :licenses (microsoft))
     ("InaiMathi"                      :licenses (apple))
@@ -876,10 +937,11 @@
     ("Jokerman"                       :licenses (microsoft))
     ("Jomolhari"                      :licenses (free))
     ("Juice ITC"                      :licenses (microsoft))
-    ("Kai"                            :licenses (apple) :chinese 'simplified)
+    ("Junicode"                       :licenses (free))
+    ("Kai"                            :licenses (apple) :chinese simplified)
     ("KaiTi"                          :licenses (microsoft))
     ("Kailasa"                        :licenses (apple))
-    ("Kaiti SC"                       :licenses (apple) :chinese 'simplified)
+    ("Kaiti SC"                       :licenses (apple) :chinese simplified)
     ("Kalinga"                        :licenses (microsoft))
     ("Kannada MN"                     :licenses (apple))
     ("Kannada Sangam MN"              :licenses (apple))
@@ -897,42 +959,43 @@
     ("KodchiangUPC"                   :licenses (microsoft))
     ("Kokila"                         :licenses (microsoft))
     ("Kokonor"                        :licenses (apple))
-    ("Koodak"                         :licenses (free) :arabic 'farsi)
+    ("Koodak"                         :licenses (free) :arabic farsi)
     ("Kristen ITC"                    :licenses (microsoft))
     ("Krungthep"                      :licenses (apple))
-    ("Kufi Extended Outline"          :licenses (microsoft) :decorative t :arabic 'standard)
-    ("Kufi Outline Shaded"            :licenses (microsoft) :decorative t :arabic 'standard)
-    ("Kufi Standard GK"               :licenses (apple) :arabic 'standard)
+    ("Kufi Extended Outline"          :licenses (microsoft) :decorative t :arabic standard)
+    ("Kufi Outline Shaded"            :licenses (microsoft) :decorative t :arabic standard)
+    ("Kufi Standard GK"               :licenses (apple) :arabic standard)
     ("Kunstler Script"                :licenses (microsoft))
     ("LCD"                            :licenses (microsoft))
     ("Lanna Alif"                     :licenses (free))
-    ("Lantinghei SC"                  :licenses (apple) :chinese 'simplified)
-    ("Lantinghei TC"                  :spacing 'mono :licenses (apple) :chinese 'traditional)
+    ("Lantinghei SC"                  :licenses (apple) :chinese simplified)
+    ("Lantinghei TC"                  :spacing mono :licenses (apple) :chinese traditional)
     ("Lao MN"                         :licenses (apple))
     ("Lao Sangam MN"                  :licenses (apple))
     ("Lao UI"                         :licenses (microsoft))
     ("Latha"                          :licenses (microsoft))
     ("Leelawadee"                     :licenses (microsoft))
     ("Levenim MT"                     :licenses (microsoft))
-    ("LiHei Pro"                      :licenses (apple) :chinese 'traditional)
-    ("LiSong Pro"                     :licenses (apple) :chinese 'traditional)
-    ("Libian SC"                      :licenses (apple) :chinese 'simplified)
+    ("LiHei Pro"                      :licenses (apple) :chinese traditional)
+    ("LiSong Pro"                     :licenses (apple) :chinese traditional)
+    ("Libian SC"                      :licenses (apple) :chinese simplified)
     ("LilyUPC"                        :licenses (microsoft))
+    ("Lisu Unicode"                   :licenses (free))
     ("Lucida Blackletter"             :licenses (microsoft))
     ("Lucida Bright Math"             :licenses (microsoft))
     ("Lucida Bright"                  :licenses (microsoft))
     ("Lucida Calligraphy"             :licenses (microsoft) :decorative t)
-    ("Lucida Console"                 :spacing 'mono :licenses (microsoft))
+    ("Lucida Console"                 :spacing mono :licenses (microsoft))
     ("Lucida Fax"                     :licenses (microsoft))
     ("Lucida Grande"                  :licenses (apple))
     ("Lucida Handwriting"             :licenses (microsoft) :decorative t)
     ("Lucida Sans Typewriter"         :licenses (microsoft))
     ("Lucida Sans Unicode"            :licenses (microsoft))
     ("Lucida Sans"                    :licenses (microsoft))
-    ("MPH 2B Damase"                  :licenses (free) :arabic 'standard)
-    ("MS Gothic"                      :spacing 'mono :licenses (microsoft))
+    ("MPH 2B Damase"                  :licenses (free) :arabic standard)
+    ("MS Gothic"                      :spacing mono :licenses (microsoft))
     ("MS LineDraw"                    :licenses (microsoft))
-    ("MS Mincho"                      :spacing 'mono :licenses (microsoft))
+    ("MS Mincho"                      :spacing mono :licenses (microsoft))
     ("MS Outlook"                     :licenses (microsoft))
     ("MS PGothic"                     :licenses (microsoft))
     ("MS PMincho"                     :licenses (microsoft))
@@ -953,6 +1016,7 @@
     ("Marion"                         :licenses (apple))
     ("Marker Felt"                    :licenses (apple) :decorative t)
     ("Marlett"                        :licenses (microsoft))
+    ("Masterpiece Uni Sans"           :licenses (free))
     ("Matisse ITC"                    :licenses (microsoft))
     ("Matura MT Script Capitals"      :licenses (microsoft))
     ("McZee"                          :licenses (microsoft))
@@ -962,22 +1026,24 @@
     ("Meiryo"                         :licenses (microsoft))
     ("Menlo"                          :licenses (apple))
     ("Mercurius Script MT"            :licenses (microsoft))
+    ("Miao Unicode"                   :licenses (free))
     ("Microsoft Himalaya"             :licenses (microsoft))
-    ("Microsoft JhengHei"             :chinese 'traditional :licenses (microsoft))
+    ("Microsoft JhengHei"             :chinese traditional :licenses (microsoft))
     ("Microsoft New Tai Lue"          :licenses (microsoft))
     ("Microsoft PhagsPa"              :licenses (microsoft))
-    ("Microsoft Sans Serif"           :licenses (apple microsoft) :arabic 'standard)
+    ("Microsoft Sans Serif"           :licenses (apple microsoft) :arabic standard)
     ("Microsoft Tai Le"               :licenses (microsoft))
-    ("Microsoft Uighur"               :licenses (microsoft) :arabic 'uighur)
-    ("Microsoft YaHei"                :chinese 'simplified :licenses (microsoft))
+    ("Microsoft Uighur"               :licenses (microsoft) :arabic uighur)
+    ("Microsoft YaHei"                :chinese simplified :licenses (microsoft))
     ("Microsoft Yi Baiti"             :licenses (microsoft))
-    ("MingLiU"                        :spacing 'mono :chinese 'traditional :licenses (microsoft))
+    ("MingLiU"                        :spacing mono :chinese traditional :licenses (microsoft))
+    ("Mingzat"                        :licenses (free))
     ("Minion Web"                     :licenses (microsoft))
-    ("Miriam Fixed"                   :spacing 'mono :licenses (microsoft))
+    ("Miriam Fixed"                   :spacing mono :licenses (microsoft))
     ("Miriam"                         :licenses (microsoft))
     ("Mistral"                        :licenses (microsoft))
     ("Modern No. 20"                  :licenses (microsoft))
-    ("Monaco"                         :spacing 'mono :licenses (apple))
+    ("Monaco"                         :spacing mono :licenses (apple))
     ("Mongolian Baiti"                :licenses (microsoft))
     ("Monlam Uni Sans Serif"          :licenses (free))
     ("Monotype Corsiva"               :licenses (microsoft))
@@ -986,16 +1052,18 @@
     ("Mshtakan"                       :licenses (apple))
     ("Mukti Narrow"                   :licenses (free))
     ("Musica"                         :licenses (free))
+    ("Myanmar3"                       :licenses (free))
     ("Myanmar MN"                     :licenses (apple))
     ("Myanmar Sangam MN"              :licenses (apple))
+    ("Myanmar Text"                   :licenses (microsoft))
     ("NSimSun"                        :licenses (microsoft))
-    ("Nadeem"                         :licenses (apple) :arabic 'standard)
+    ("Nadeem"                         :licenses (apple) :arabic standard)
     ("Nanum Brush Script"             :licenses (apple))
     ("Nanum Gothic"                   :licenses (apple))
     ("Nanum Myeongjo"                 :licenses (apple))
     ("Nanum Pen Script"               :licenses (apple))
     ("Narkisim"                       :licenses (microsoft))
-    ("Nazli"                          :licenses (free) :arabic 'farsi)
+    ("Nazli"                          :licenses (free) :arabic farsi)
     ("New Caledonia"                  :licenses (microsoft))
     ("New Peninim MT"                 :licenses (apple))
     ("News Gothic MT"                 :licenses (microsoft))
@@ -1003,19 +1071,20 @@
     ("Niagara Solid"                  :licenses (microsoft))
     ("Niagara"                        :licenses (microsoft))
     ("Noteworthy"                     :licenses (apple))
+    ("Noto Sans"                      :licenses (free))
     ("Nuosu SIL"                      :licenses (free))
     ("Nyala"                          :licenses (microsoft))
     ("OCR A Extended"                 :licenses (microsoft))
     ("OCR-B-Digits"                   :licenses (microsoft))
     ("OCRB"                           :licenses (microsoft))
-    ("Old Antic Bold"                 :licenses (microsoft) :decorative t :arabic 'standard)
+    ("Old Antic Bold"                 :licenses (microsoft) :decorative t :arabic standard)
     ("Old English Text MT"            :licenses (microsoft))
     ("Onyx"                           :licenses (microsoft))
     ("Optima"                         :licenses (apple))
     ("Oriya MN"                       :licenses (apple))
     ("Oriya Sangam MN"                :licenses (apple))
-    ("Osaka"                          :spacing 'mono :licenses (apple))
-    ("PC Myungjo"                     :spacing 'mono :licenses (apple))
+    ("Osaka"                          :spacing mono :licenses (apple))
+    ("PC Myungjo"                     :spacing mono :licenses (apple))
     ("PMingLiU"                       :licenses (microsoft))
     ("PT Sans"                        :licenses (apple))
     ("Padauk"                         :licenses (free))
@@ -1044,15 +1113,16 @@
     ("Ransom"                         :licenses (microsoft))
     ("Ravie"                          :licenses (microsoft))
     ("RefSpecialty"                   :licenses (microsoft))
+    ("Ribeng"                         :licenses (free))
     ("Rockwell Condensed"             :licenses (microsoft))
     ("Rockwell"                       :licenses (microsoft))
     ("Rod"                            :licenses (microsoft))
-    ("Roya"                           :licenses (free) :arabic 'farsi)
+    ("Roya"                           :licenses (free) :arabic farsi)
     ("Runic MT Condensed"             :licenses (microsoft))
-    ("ST Fangsong"                    :licenses (apple) :chinese 'simplified)
-    ("ST Heiti"                       :licenses (apple) :chinese 'simplified)
-    ("ST Kaiti"                       :licenses (apple) :chinese 'simplified)
-    ("ST Song"                        :licenses (apple) :chinese 'simplified)
+    ("ST Fangsong"                    :licenses (apple) :chinese simplified)
+    ("ST Heiti"                       :licenses (apple) :chinese simplified)
+    ("ST Kaiti"                       :licenses (apple) :chinese simplified)
+    ("ST Song"                        :licenses (apple) :chinese simplified)
     ("STIX General"                   :licenses (apple free))
     ("STIX Integrals D"               :licenses (apple free))
     ("STIX Integrals Sm"              :licenses (apple free))
@@ -1087,10 +1157,10 @@
     ("Siddhanta"                      :licenses (free))
     ("Signs MT"                       :licenses (microsoft))
     ("Silom"                          :licenses (apple))
-    ("SimHei"                         :spacing 'mono :chinese 'simplified :licenses (microsoft))
-    ("SimSun"                         :spacing 'mono :chinese 'simplified :licenses (microsoft apple))
-    ("Simplified Arabic Fixed"        :spacing 'mono :licenses (microsoft) :arabic 'standard)
-    ("Simplified Arabic"              'mono :licenses (microsoft) :arabic 'standard)
+    ("SimHei"                         :spacing mono :chinese simplified :licenses (microsoft))
+    ("SimSun"                         :spacing mono :chinese simplified :licenses (microsoft apple))
+    ("Simplified Arabic Fixed"        :spacing mono :licenses (microsoft) :arabic standard)
+    ("Simplified Arabic"              mono :licenses (microsoft) :arabic standard)
     ("Sinhala MN"                     :licenses (apple))
     ("Sinhala Sangam MN"              :licenses (apple))
     ("Skia"                           :licenses (apple))
@@ -1104,7 +1174,7 @@
     ("Sylfaen"                        :licenses (microsoft))
     ("Symbol"                         :licenses (apple microsoft))
     ("Symbola"                        :licenses (free))
-    ("Tahoma"                         :licenses (apple microsoft) :arabic 'standard)
+    ("Tahoma"                         :licenses (apple microsoft) :arabic standard)
     ("Tai Heritage Pro"               :licenses (free))
     ("Tamil MN"                       :licenses (apple))
     ("Tamil Sangam MN"                :licenses (apple))
@@ -1112,13 +1182,14 @@
     ("Telugu Sangam MN"               :licenses (apple))
     ("Tempo Grunge"                   :licenses (microsoft))
     ("Tempus Sans ITC"                :licenses (microsoft))
-    ("Terafik"                        :licenses (free) :arabic 'farsi)
+    ("Terafik"                        :licenses (free) :arabic farsi)
+    ("TharLon"                        :licenses (free))
     ("Thonburi"                       :licenses (apple))
     ("Times New Roman Special"        :licenses (microsoft))
     ("Times New Roman"                :licenses (apple microsoft))
     ("Times"                          :licenses (apple))
-    ("Titr"                           :licenses (free) :arabic 'farsi)
-    ("Traditional Arabic"             :licenses (microsoft) :arabic 'standard)
+    ("Titr"                           :licenses (free) :arabic farsi)
+    ("Traditional Arabic"             :licenses (microsoft) :arabic standard)
     ("Transport MT"                   :licenses (microsoft))
     ("Trebuchet MS"                   :licenses (apple microsoft))
     ("Tuladha Jejeg"                  :licenses (free))
@@ -1137,25 +1208,26 @@
     ("Vixar ASCI"                     :licenses (microsoft))
     ("Vladimir Script"                :licenses (microsoft))
     ("Vrinda"                         :licenses (microsoft))
-    ("Wawati SC"                      :chinese 'simplified :licenses (apple))
-    ("Wawati TC"                      :chinese 'traditional :licenses (apple))
+    ("Wawati SC"                      :chinese simplified :licenses (apple))
+    ("Wawati TC"                      :chinese traditional :licenses (apple))
     ("Webdings"                       :licenses (apple microsoft))
-    ("Weibei SC"                      :chinese 'simplified :licenses (apple))
-    ("Weibei TC"                      :chinese 'traditional :licenses (apple))
-    ("WenQuanYi Zen Hei Mono"         :spacing 'mono :licenses (free) :chinese 'simplified)
-    ("WenQuanYi Zen Hei"              :licenses (free) :chinese 'simplified)
+    ("Weibei SC"                      :chinese simplified :licenses (apple))
+    ("Weibei TC"                      :chinese traditional :licenses (apple))
+    ("WenQuanYi Zen Hei Mono"         :spacing mono :licenses (free) :chinese simplified)
+    ("WenQuanYi Zen Hei"              :licenses (free) :chinese simplified)
     ("Westminster"                    :licenses (microsoft))
     ("Wide Latin"                     :licenses (microsoft))
     ("Wingdings 2"                    :licenses (apple microsoft))
     ("Wingdings 3"                    :licenses (apple microsoft))
     ("Wingdings"                      :licenses (apple microsoft))
-    ("Xingkai SC"                     :chinese 'simplified :licenses (apple) :decorative t)
-    ("Yuanti SC"                      :chinese 'simplified :licenses (apple))
-    ("Yuppy SC"                       :chinese 'simplified :licenses (apple))
-    ("Yuppy TC"                       :chinese 'traditional :licenses (apple))
+    ("Xingkai SC"                     :chinese simplified :licenses (apple) :decorative t)
+    ("Yuanti SC"                      :chinese simplified :licenses (apple))
+    ("Yunghkio"                       :licenses (free))
+    ("Yuppy SC"                       :chinese simplified :licenses (apple))
+    ("Yuppy TC"                       :chinese traditional :licenses (apple))
     ("Zapf Dingbats"                  :licenses (apple))
     ("Zapfino"                        :licenses (apple))
-    ("unifont"                        :licenses (free) :glyph-quality 'low)
+    ("unifont"                        :licenses (free) :glyph-quality low)
     ))
 
 ;;; customizable variables
@@ -1163,9 +1235,9 @@
 ;;;###autoload
 (defgroup unicode-fonts nil
   "Configure Unicode fonts."
-  :version "0.3.6"
+  :version "0.3.8"
   :link '(emacs-commentary-link :tag "Commentary" "unicode-fonts")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/unicode-fonts")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/unicode-fonts")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/UnicodeFonts")
   :prefix "unicode-fonts-"
   :group 'i18n
@@ -1180,7 +1252,7 @@
                                               (eq window-system 'mac)))
   "Whether the 'prepend argument to `set-fontset-font' works.
 
-Whether this argument works is depending on your operating system
+Whether this argument works is dependent on your operating system
 and the font backend used by your Emacs build.
 
 This defaults to nil when using the Cocoa or native Mac font
@@ -1242,10 +1314,14 @@ Leave the list empty for no per-font exclusions."
   :type '(repeat string)
   :group 'unicode-fonts-tweaks)
 
-(defcustom unicode-fonts-skip-font-groups (if (and (eq window-system 'w32)
-                                                   (< window-system-version 6))
-                                              '(buggy-before-vista decorative low-quality-glyphs)
-                                            '(decorative low-quality-glyphs))
+(defcustom unicode-fonts-skip-font-groups (cond
+                                            ((and (eq window-system 'w32)
+                                                  (< window-system-version 6))
+                                             '(buggy-before-vista decorative low-quality-glyphs multicolor))
+                                            ((eq window-system 'mac)
+                                             '(decorative low-quality-glyphs))
+                                            (t
+                                             '(decorative low-quality-glyphs multicolor)))
   "Skip over groups of fonts listed here.
 
 This can be used to speed startup time, and also to enforce
@@ -1259,22 +1335,23 @@ with regard to enforcing style.
 It may help you get started.
 
 Leave the list empty for no per-group exclusions."
-  :type '(set  (const :tag "Simplified Chinese Script"           'chinese-simplified)
-               (const :tag "Traditional Chinese Script"          'chinese-traditional)
-               (const :tag "Standard Arabic Script"              'arabic-standard)
-               (const :tag "Farsi Arabic Script"                 'arabic-farsi)
-               (const :tag "Naskh Arabic Script"                 'arabic-naskh)
-               (const :tag "Urdu Arabic Script"                  'arabic-urdu)
-               (const :tag "Available only from Microsoft"       'microsoft-only)
-               (const :tag "Available from Microsoft and others" 'microsoft)
-               (const :tag "Non-ClearType"                       'non-cleartype)
-               (const :tag "Available only from Apple"           'apple-only)
-               (const :tag "Available from Apple and others"     'apple)
-               (const :tag "Free"                                'free)
-               (const :tag "Non-free"                            'non-free)
-               (const :tag "Decorative"                          'decorative)
-               (const :tag "Low Quality Glyphs"                  'low-quality-qlyphs)
-               (const :tag "Buggy Display Before Vista"          'buggy-before-vista))
+  :type '(set  (const :tag "Simplified Chinese Script"           chinese-simplified)
+               (const :tag "Traditional Chinese Script"          chinese-traditional)
+               (const :tag "Standard Arabic Script"              arabic-standard)
+               (const :tag "Farsi Arabic Script"                 arabic-farsi)
+               (const :tag "Naskh Arabic Script"                 arabic-naskh)
+               (const :tag "Urdu Arabic Script"                  arabic-urdu)
+               (const :tag "Available only from Microsoft"       microsoft-only)
+               (const :tag "Available from Microsoft and others" microsoft)
+               (const :tag "Non-ClearType"                       non-cleartype)
+               (const :tag "Available only from Apple"           apple-only)
+               (const :tag "Available from Apple and others"     apple)
+               (const :tag "Multicolor Glyphs"                   multicolor)
+               (const :tag "Free"                                free)
+               (const :tag "Non-free"                            non-free)
+               (const :tag "Decorative"                          decorative)
+               (const :tag "Low Quality Glyphs"                  low-quality-glyphs)
+               (const :tag "Buggy Display Before Vista"          buggy-before-vista))
   :group 'unicode-fonts-tweaks)
 
 ;;;###autoload
@@ -1317,7 +1394,7 @@ Set to nil to disable."
 
 (defcustom unicode-fonts-block-font-mapping
   '(("Aegean Numbers"                                   (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 57/57
                                                          "Quivira"
                                                          ))
     ("Alchemical Symbols"                               (
@@ -1325,23 +1402,30 @@ Set to nil to disable."
                                                          "Quivira"
                                                          ))
     ("Alphabetic Presentation Forms"                    (
-                                                         "DejaVu Sans:width=condensed"
-                                                         "Arial Unicode MS"
-                                                         "Quivira"
+                                                         "DejaVu Sans:width=condensed"  ; 58/58
+                                                         "Arial Unicode MS"             ; 57/58
+                                                         "Cardo"                        ; 58/58
+                                                         "Quivira"                      ; 58/58
+                                                         "FreeMono"                     ; 52/58
                                                          ))
     ("Ancient Greek Musical Notation"                   (
                                                          "Musica"
+                                                         "Aegean"                       ; 70/70
+                                                         "Cardo"                        ; 70/70
                                                          "Symbola"
                                                          "Quivira"
                                                          ))
     ("Ancient Greek Numbers"                            (
                                                          "Apple Symbols"
-                                                         "Aegean"
+                                                         "Cardo"                        ; 75/75
+                                                         "Aegean"                       ; 75/75
                                                          "Quivira"
                                                          ))
     ("Ancient Symbols"                                  (
-                                                         "Aegean"
-                                                         "Quivira"
+                                                         "Cardo"                        ; 12/12
+                                                         "Analecta"                     ; 12/12
+                                                         "Aegean"                       ; 12/12
+                                                         "Quivira"                      ; 12/12
                                                          ))
     ;; ("Arabic Extended-A"                             (""))                           ; todo
     ;; ("Arabic Mathematical Alphabetic Symbols"        (""))                           ; todo
@@ -1354,22 +1438,23 @@ Set to nil to disable."
                                                          "Andalus"
                                                          "Arabic Typesetting"
                                                          "Adobe Arabic"                 ; 171/611
-                                                         "DecoType Naskh"               ; 57/611
-                                                         "Al Bayan"                     ; 62/611
-                                                         "DejaVu Sans Mono"             ; 72/611
-                                                         "DejaVu Sans:width=condensed"  ; 98/611
-                                                         "MPH 2B Damase"                ; 24/611
+                                                         "DecoType Naskh"               ;  57/611
+                                                         "Al Bayan"                     ;  62/611
+                                                         "DejaVu Sans Mono"             ;  72/611
+                                                         "DejaVu Sans:width=condensed"  ;  98/611
+                                                         "MPH 2B Damase"                ;  24/611
                                                          "Code2000"                     ; 155/611
                                                          ))
     ("Arabic Presentation Forms-B"                      (
-                                                         "DejaVu Sans Mono"             ; 140/140
-                                                         "Geeza Pro"                    ; 140/140
-                                                         "Adobe Arabic"                 ; 125/140
+                                                         "DejaVu Sans Mono"             ; 140/141
+                                                         "Geeza Pro"                    ; 140/141
+                                                         "Adobe Arabic"                 ; 125/141
                                                          "Arial Unicode MS"
                                                          "Microsoft Sans Serif"
                                                          "Kufi Standard GK"
-                                                         "DejaVu Sans:width=condensed"  ; 140/140
-                                                         "DecoType Naskh"               ; 89/140
+                                                         "DejaVu Sans:width=condensed"  ; 140/141
+                                                         "FreeMono"                     ; 141/141
+                                                         "DecoType Naskh"               ;  89/141
                                                          ))
     ("Arabic Supplement"                                (
                                                          "Courier New"
@@ -1390,11 +1475,11 @@ Set to nil to disable."
                                                          "Courier New"
                                                          "Simplified Arabic Fixed"
                                                          "Simplified Arabic"
-                                                         "Adobe Arabic"                 ; 209/252
+                                                         "Adobe Arabic"                 ; 209/254
                                                          "Geeza Pro"
-                                                         "Baghdad"                      ; 81/252
+                                                         "Baghdad"                      ;  81/254
                                                          "Damascus"
-                                                         "Al Bayan"                     ; 79/252
+                                                         "Al Bayan"                     ;  79/254
                                                          "Andalus"
                                                          "Arabic Typesetting"
                                                          "Traditional Arabic"
@@ -1409,6 +1494,7 @@ Set to nil to disable."
                                                          "Kufi Standard GK"
                                                          "DecoType Naskh"
                                                          "Koodak"
+                                                         "FreeMono"                     ; 212/254
                                                          ))
     ("Armenian"                                         (
                                                          "Mshtakan"
@@ -1417,6 +1503,7 @@ Set to nil to disable."
                                                          "Quivira"
                                                          "MPH 2B Damase"
                                                          "Arial Unicode MS"
+                                                         "FreeMono"                     ; 87/87
                                                          ))
     ("Arrows"                                           (
                                                          "DejaVu Sans Mono"
@@ -1426,6 +1513,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ;  77/112
                                                          ))
     ("Avestan"                                          (
                                                          "Ahuramzda"
@@ -1436,7 +1524,9 @@ Set to nil to disable."
     ;; ("Bamum Supplement"                              (""))                           ; todo
     ;; ("Bamum"                                         (""))                           ; todo
     ;; ("Basic Latin"                                   (""))                           ; covered by the default font
-    ;; ("Batak"                                         (""))                           ; todo
+    ("Batak"                                            (
+                                                         "Batak-Unicode"                ; 56/56
+                                                         ))
     ("Bengali"                                          (
                                                          "Bangla Sangam MN"
                                                          "Vrinda"
@@ -1447,6 +1537,7 @@ Set to nil to disable."
                                                          ))
     ("Block Elements"                                   (
                                                          "DejaVu Sans Mono"
+                                                         "FreeMono"                     ; 32/32
                                                          "DejaVu Sans:width=condensed"
                                                          "Apple Symbols"
                                                          "Symbola"
@@ -1478,16 +1569,20 @@ Set to nil to disable."
                                                          ))
     ("Box Drawing"                                      (
                                                          "DejaVu Sans Mono"
+                                                         "FreeMono"                     ; 128/128
                                                          "DejaVu Sans"
                                                          "Symbola"
                                                          "Quivira"
                                                          ))
-    ;; ("Brahmi"                                        (""))
+    ("Brahmi"                                           (
+                                                         "Adinatha Tamil Brahmi"        ; 45/108
+                                                         ))
     ("Braille Patterns"                                 (
                                                          "Quivira"
                                                          "DejaVu Sans:width=condensed"
                                                          "Apple Symbols"
                                                          "Symbola"
+                                                         "FreeMono"                     ; 256/256
                                                          ))
     ("Buginese"                                         (
                                                          "MPH 2B Damase"
@@ -1649,10 +1744,12 @@ Set to nil to disable."
                                                          "BabelStone Han"               ; 222/222
                                                          ))
     ("Carian"                                           (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 49/49
                                                          "Quivira"
                                                          ))
-    ;; ("Chakma"                                        (""))                           ; todo
+    ("Chakma"                                           (
+                                                         "Ribeng"                       ; 67/67
+                                                         ))
     ("Cham"                                             (                               ; todo quality free alternative
                                                          "Code2000"
                                                          ))
@@ -1660,15 +1757,17 @@ Set to nil to disable."
                                                          "Plantagenet Cherokee"
                                                          "MPH 2B Damase"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 85/85
                                                          ))
     ("Combining Diacritical Marks Supplement"           (
-                                                         "Consolas"                     ; 13/128
-                                                         "Courier New"                  ;  4/128
-                                                         "Doulos SIL"                   ; 14/128
-                                                         "DejaVu Sans:width=condensed"  ;  6/128
-                                                         "Segoe UI"                     ;  6/128
-                                                         "Tahoma"                       ; 13/128
-                                                         "Code2000"                     ; 13/128
+                                                         "Cardo"                        ; 28/43
+                                                         "FreeSerif"                    ; 33/43
+                                                         "Junicode"                     ; 26/43
+                                                         "Doulos SIL"                   ; 14/43
+                                                         "DejaVu Sans:width=condensed"  ;  6/43
+                                                         "Noto Sans"                    ; 13/43
+                                                         "Segoe UI"                     ; 13/43
+                                                         "Code2000"                     ; 13/43
                                                          ))
     ("Combining Diacritical Marks for Symbols"          (
                                                          "Cambria Math"                 ; 22/33
@@ -1677,14 +1776,18 @@ Set to nil to disable."
     ("Combining Diacritical Marks"                      (
                                                          "Monaco"
                                                          "Consolas"
+                                                         "Noto Sans"                    ; 112/112
                                                          "Cambria Math"                 ; 110/112
                                                          "Courier New"
                                                          "DejaVu Sans:width=condensed"
                                                          "DejaVu Sans Mono"
+                                                         "Cardo"                        ; 112/112
+                                                         "Junicode"                     ; 109/112
                                                          "Tahoma"
                                                          "Microsoft Sans Serif"
                                                          "Arial"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 112/112
                                                          ))
     ("Combining Half Marks"                             (
                                                          "Monaco"
@@ -1699,6 +1802,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 39/39
                                                          ))
     ("Counting Rod Numerals"                            (
                                                          "WenQuanYi Zen Hei Mono"       ; 18/18
@@ -1715,15 +1819,17 @@ Set to nil to disable."
                                                          ))
     ("Currency Symbols"                                 (
                                                          "Monaco"
-                                                         "Consolas"                     ; 22/
+                                                         "Consolas"                     ; 22/27
                                                          "DejaVu Sans Mono"
                                                          "DejaVu Sans:width=condensed"
+                                                         "Noto Sans"                    ; 23/27
                                                          "Apple Symbols"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 23/27
                                                          ))
     ("Cypriot Syllabary"                                (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 55/55
                                                          "Code2001"                     ; 55/55
                                                          ))
     ("Cyrillic Extended-A"                              (
@@ -1736,6 +1842,7 @@ Set to nil to disable."
                                                          "Consolas"                     ; 20/40
                                                          "Courier New"
                                                          "Calibri"
+                                                         "Noto Sans"                    ; 40/40
                                                          "DejaVu Sans:width=condensed"
                                                          "Doulos SIL"                   ; 34/40
                                                          "Symbola"
@@ -1746,6 +1853,7 @@ Set to nil to disable."
                                                          "Monaco"                       ; 191/256
                                                          "DejaVu Sans Mono"             ; 180/256
                                                          "DejaVu Sans:width=condensed"  ; 256/256
+                                                         "Noto Sans"                    ; 256/256
                                                          "Courier New"                  ; 118/256
                                                          "Calibri"                      ; 255/256
                                                          "Microsoft Sans Serif"         ; 246/256
@@ -1753,6 +1861,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"             ; 226/256
                                                          "Doulos SIL"                   ; 220/256
                                                          "Symbola"                      ; 256/256
+                                                         "FreeMono"                     ; 251/256
                                                          "Charcoal CY"                  ; 94/256
                                                          "Geneva CY"                    ; 94/256
                                                          ))
@@ -1774,7 +1883,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          ))
     ("Dingbats"                                         (
-                                                         ;; "Apple Color Emoji"
+                                                         "Apple Color Emoji"
                                                          "DejaVu Sans Mono"             ; 144/191
                                                          "Zapf Dingbats"                ; 174/191
                                                          "DejaVu Sans:width=condensed"  ; 174/191
@@ -1792,7 +1901,7 @@ Set to nil to disable."
                                                          "Aegyptus"
                                                          ))
     ("Emoticons"                                        (
-                                                         ;; "Apple Color Emoji"
+                                                         "Apple Color Emoji"
                                                          "Symbola"
                                                          "Quivira"
                                                          ))
@@ -1802,9 +1911,12 @@ Set to nil to disable."
                                                          ))
     ("Enclosed Alphanumerics"                           (
                                                          ;; "Aqua Kana"
-                                                         "Arial Unicode MS"
-                                                         "Quivira"
+                                                         "Junicode"                     ; 160/160
+                                                         "Arial Unicode MS"             ; 139/160
+                                                         "Quivira"                      ; 160/160
+                                                         "Code2000"                     ; 160/160
                                                          "BabelStone Han"               ; 160/160
+                                                         "WenQuanYi Zen Hei Mono"       ; 160/160
                                                          ))
     ("Enclosed CJK Letters and Months"                  (
                                                          "WenQuanYi Zen Hei Mono"       ; 202/254
@@ -1853,6 +1965,7 @@ Set to nil to disable."
                                                          "DejaVu Sans:width=condensed"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 101/111
                                                          ))
     ("Geometric Shapes"                                 (
                                                          "DejaVu Sans Mono"
@@ -1860,6 +1973,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 96/96
                                                          ))
     ("Georgian Supplement"                              (
                                                          "DejaVu Serif:width=condensed" ; 83/88
@@ -1880,15 +1994,21 @@ Set to nil to disable."
                                                          "Quivira"
                                                          ))
     ("Gothic"                                           (
-                                                         "Analecta"
-                                                         "Quivira"
+                                                         "Analecta"                     ; 27/27
+                                                         "Junicode"                     ; 27/27
+                                                         "MPH 2B Damase"                ; 27/27
+                                                         "FreeSerif"                    ; 27/27
                                                          "Code2001"                     ; 27/27
+                                                         "Quivira"                      ; 27/27
                                                          ))
     ("Greek Extended"                                   (
                                                          "Consolas"                     ; 232/233
                                                          "DejaVu Sans Mono"
                                                          "Courier New"
+                                                         "Noto Sans"                    ; 233/233
                                                          "DejaVu Sans:width=condensed"
+                                                         "Cardo"                        ; 233/233
+                                                         "Junicode"                     ; 233/233
                                                          "Microsoft Sans Serif"
                                                          "Gentium Plus Compact"
                                                          "Gentium Plus"
@@ -1896,18 +2016,23 @@ Set to nil to disable."
                                                          "Arial"
                                                          "Tahoma"
                                                          "Doulos SIL"
+                                                         "Aegean"                       ; 233/233
                                                          "Quivira"
+                                                         "FreeMono"                     ; 233/233
                                                          ))
     ("Greek and Coptic"                                 (
                                                          "Consolas"                     ; 127/134
                                                          "DejaVu Sans Mono"             ; 110/134
                                                          "DejaVu Sans:width=condensed"  ; 134/134
+                                                         "Noto Sans"                    ; 127/134
                                                          "Calibri"                      ; 127/134
                                                          "Microsoft Sans Serif"         ; 112/134
                                                          "Gentium Plus Compact"
                                                          "Gentium Plus"
                                                          "Lucida Console"               ; 73/134
                                                          "Arial Unicode MS"             ; 105/134
+                                                         "Cardo"                        ; 134/134
+                                                         "Aegean"                       ; 134/134
                                                          "Symbola"                      ; 134/134
                                                          "Quivira"                      ; 134/134
                                                          ))
@@ -1951,7 +2076,9 @@ Set to nil to disable."
     ("Hangul Jamo Extended-A"                           (
                                                          "UnBatang"
                                                          ))
-    ;; ("Hangul Jamo Extended-B"                        (""))                           ; todo
+    ("Hangul Jamo Extended-B"                           (
+                                                         "UnBatang"                     ; 68/72
+                                                         ))
     ("Hangul Jamo"                                      (
                                                          "UnBatang"                     ; 186/186
                                                          "WenQuanYi Zen Hei Mono"       ; 146/186
@@ -1992,6 +2119,7 @@ Set to nil to disable."
                                                          "Levenim MT"
                                                          "Narkisim"
                                                          "Rod"
+                                                         "Cardo"                        ; 87/87
                                                          "Courier New"
                                                          "Adobe Hebrew"                 ; 54/87
                                                          "Microsoft Sans Serif"
@@ -2020,12 +2148,15 @@ Set to nil to disable."
                                                          "Consolas"                     ; 96/96
                                                          "DejaVu Sans Mono"             ; 96/96
                                                          "Courier New"
+                                                         "Noto Sans"                    ; 96/96
                                                          "Arial Unicode MS"
                                                          "Arial"
                                                          "Tahoma"
                                                          "Microsoft Sans Serif"
+                                                         "Cardo"                        ; 96/96
                                                          "Symbola"                      ; 96/96
                                                          "Quivira"                      ; 96/96
+                                                         "FreeMono"                     ; 96/96
                                                          ))
     ("Ideographic Description Characters"               (
                                                          "SimHei"
@@ -2111,8 +2242,9 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          "BabelStone Han"               ; 96/96
                                                          ))
-    ("Kayah Li"                                         (                               ; todo quality free alternative
+    ("Kayah Li"                                         (
                                                          "Code2000"
+                                                         "FreeMono"                     ; 48/48
                                                          ))
     ("Kharoshthi"                                       (
                                                          "MPH 2B Damase"
@@ -2164,12 +2296,18 @@ Set to nil to disable."
     ;;                                                  ))
     ("Latin Extended-C"                                 (
                                                          "DejaVu Sans:width=condensed"
+                                                         "Noto Sans"                    ; 21/32
                                                          "Cambria Math"
                                                          "Quivira"
                                                          ))
     ("Latin Extended-D"                                 (
-                                                         "Quivira"
-                                                         "Code2000"
+                                                         "FreeMono"                     ;   5/134  ; this will give poor results if existence-checks is set to 'first
+                                                         "DejaVu Sans Mono"             ;  14/134
+                                                         "DejaVu Sans:width=condensed"  ;  62/134
+                                                         "Junicode"                     ;  97/134
+                                                         "Cardo"                        ;  93/134
+                                                         "Quivira"                      ; 134/134
+                                                         "Code2000"                     ; 114/134
                                                          ))
     ;; ("Latin-1 Supplement"                            (                               ; hopefully well-covered by the default font
     ;;                                                   "Monaco"
@@ -2179,7 +2317,9 @@ Set to nil to disable."
     ;;                                                   "DejaVu Sans:width=condensed"
     ;;                                                   "Quivira"
     ;;                                                  ))
-    ;; ("Lepcha"                                        (""))                           ; todo
+    ("Lepcha"                                           (
+                                                         "Mingzat"                      ; 74/74
+                                                         ))
     ("Letterlike Symbols"                               (
                                                          "Apple Symbols"                ; 77/80
                                                          "Cambria Math"                 ; 67/80
@@ -2193,23 +2333,25 @@ Set to nil to disable."
                                                          "MPH 2B Damase"
                                                          ))
     ("Linear B Ideograms"                               (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 123/123
                                                          "Code2001"                     ; 123/123
                                                          ))
     ("Linear B Syllabary"                               (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 88/88
                                                          "Code2001"                     ; 88/88
                                                          ))
     ("Lisu"                                             (
-                                                         "Quivira"
+                                                         "Miao Unicode"                 ; 48/48
+                                                         "Lisu Unicode"                 ; 48/48
+                                                         "Quivira"                      ; 48/48
                                                          ))
     ;; ("Low Surrogates"                                (""))                           ; no displayable characters
     ("Lycian"                                           (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 29/29
                                                          "Quivira"
                                                          ))
     ("Lydian"                                           (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 27/27
                                                          "Quivira"
                                                          ))
     ("Mahjong Tiles"                                    (
@@ -2240,6 +2382,7 @@ Set to nil to disable."
                                                          "Code2000"                     ; 256/256
                                                          "Symbola"                      ; 256/256
                                                          "Quivira"                      ; 256/256
+                                                         "FreeMono"                     ; 242/256
                                                          ))
     ;; ("Meetei Mayek Extensions"                       ("")                            ; todo
     ("Meetei Mayek"                                     (
@@ -2252,7 +2395,9 @@ Set to nil to disable."
     ("Meroitic Hieroglyphs"                             (
                                                          "Aegyptus"
                                                          ))
-    ;; ("Miao"                                          (""))                           ; todo
+    ("Miao"                                             (
+                                                         "Miao Unicode"                 ; 133/133
+                                                         ))
     ("Miscellaneous Mathematical Symbols-A"             (
                                                          "Apple Symbols"
                                                          "Symbola"                      ; 48/48
@@ -2267,7 +2412,7 @@ Set to nil to disable."
                                                          "Quivira"                      ; 128/128
                                                          ))
     ("Miscellaneous Symbols and Pictographs"            (
-                                                         ;; "Apple Color Emoji"         ; 533/533
+                                                         "Apple Color Emoji"            ; 533/533
                                                          "Symbola"                      ; 533/533
                                                          "Quivira"                      ; 157/533
                                                          ))
@@ -2276,10 +2421,15 @@ Set to nil to disable."
                                                          "Quivira"
                                                          ))
     ("Miscellaneous Symbols"                            (
-                                                         "Apple Symbols"
-                                                         "Arial Unicode MS"
-                                                         "Symbola"
-                                                         "Quivira"
+                                                         "Apple Symbols"                ; 256/256
+                                                         "DejaVu Sans Mono"             ; 149/256
+                                                         "DejaVu Sans:width=condensed"  ; 187/256
+                                                         "Arial Unicode MS"             ; 106/256
+                                                         "Symbola"                      ; 220/256
+                                                         "Quivira"                      ; 256/256
+                                                         "MS Reference Sans Serif"      ;  33/256
+                                                         "Cardo"                        ;  31/256
+                                                         "Code2000"                     ; 183/256
                                                          ))
     ("Miscellaneous Technical"                          (
                                                          "Apple Symbols"
@@ -2309,14 +2459,20 @@ Set to nil to disable."
                                                          "Quivira"
                                                          ))
     ("Myanmar Extended-A"                               (
-                                                         "Myanmar Sangam MN"
-                                                         "Padauk"
+                                                         "Padauk"                       ; 28/28
+                                                         "TharLon"                      ; 28/28
+                                                         "Yunghkio"                     ; 28/28
                                                          ))
     ("Myanmar"                                          (
-                                                         "Myanmar Sangam MN"
-                                                         "Myanmar MN"
-                                                         "Padauk"
-                                                         "Code2000"
+                                                         "Myanmar Sangam MN"            ;  85/160
+                                                         "Myanmar MN"                   ;  85/160
+                                                         "Myanmar Text"
+                                                         "TharLon"                      ; 160/160
+                                                         "Yunghkio"                     ; 160/160
+                                                         "Myanmar3"                     ;  85/160
+                                                         "Masterpiece Uni Sans"         ;  90/160
+                                                         "Padauk"                       ; 160/160
+                                                         "Code2000"                     ; 156/160
                                                          ))
     ("NKo"                                              (
                                                          "Conakry"                      ; 59/59
@@ -2330,9 +2486,11 @@ Set to nil to disable."
     ("Number Forms"                                     (
                                                          "DejaVu Sans:width=condensed"  ; 55/58
                                                          "Arial Unicode MS"             ; 48/58
+                                                         "Junicode"                     ; 58/58
                                                          "Symbola"                      ; 58/58
                                                          "Quivira"                      ; 58/58
                                                          "Code2000"                     ; 54/58
+                                                         "FreeMono"                     ; 45/58
                                                          ))
     ("Ogham"                                            (
                                                          "DejaVu Sans:width=condensed"
@@ -2342,12 +2500,15 @@ Set to nil to disable."
                                                          "Code2000"
                                                          ))
     ("Old Italic"                                       (
-                                                         "Aegean"
-                                                         "Quivira"
+                                                         "DejaVu Sans:width=condensed"  ; 35/35
+                                                         "Cardo"                        ; 35/35
                                                          "Code2001"                     ; 35/35
+                                                         "Aegean"                       ; 35/35
+                                                         "Quivira"                      ; 35/35
+                                                         "FreeMono"                     ; 35/35
                                                          ))
     ("Old Persian"                                      (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 50/50
                                                          "Code2001"                     ; 50/50
                                                          ))
     ("Old South Arabian"                                (
@@ -2362,6 +2523,7 @@ Set to nil to disable."
                                                          "Arial Unicode MS"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 11/11
                                                          ))
     ("Oriya"                                            (
                                                          "Oriya Sangam MN"
@@ -2381,11 +2543,11 @@ Set to nil to disable."
                                                          "Code2000"                     ; 56/56
                                                          ))
     ("Phaistos Disc"                                    (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 46/46
                                                          "Code2001"                     ; 46/46
                                                          ))
     ("Phoenician"                                       (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 29/29
                                                          "Quivira"
                                                          "Code2001"                     ; 27/29
                                                          ))
@@ -2393,6 +2555,7 @@ Set to nil to disable."
                                                          "Consolas"                     ; 64/64
                                                          "Calibri"                      ; 64/64
                                                          "Courier New"                  ; 64/64 ; todo a better OSX choice
+                                                         "Noto Sans"                    ; 64/64
                                                          "Quivira"                      ; 64/64
                                                          "DejaVu Sans Mono"             ; 37/64
                                                          "DejaVu Sans:width=condensed"  ; 38/64
@@ -2402,6 +2565,7 @@ Set to nil to disable."
                                                          "Monaco"
                                                          "Consolas"                     ; 128/128
                                                          "Calibri"                      ; 128/128
+                                                         "Noto Sans"                    ; 128/128
                                                          "Quivira"                      ; 128/128
                                                          "Courier New"                  ; 128/128
                                                          "DejaVu Sans:width=condensed"
@@ -2411,13 +2575,52 @@ Set to nil to disable."
                                                          "Symbola"
                                                          "Quivira"
                                                          ))
-    ;; ("Private Use Area"                              (""))
+    ;; ("Private Use Area"                              (
+    ;;                                                   "UnBatang"                     ; 2,048/6,400
+    ;;                                                   "Jomolhari"                    ; 1,537/6,400
+    ;;                                                   "Code2000"                     ; 1,373/6,400 conflicts MUFI
+    ;;                                                   "Siddhanta"                    ; 1,292/6,400
+    ;;                                                   "Cardo"                        ; 1,209/6,400 MUFI
+    ;;                                                   "Unidings"                     ; 1,024/6,400 conflicts MUFI
+    ;;                                                   "Junicode"                     ;   841/6,400 MUFI
+    ;;                                                   "BabelStone Han"               ;   665/6,400
+    ;;                                                   "Quivira"                      ;   589/6,400
+    ;;                                                   "Code2001"                     ;   362/6,400
+    ;;                                                   "MS Reference Sans Serif"      ;   312/6,400
+    ;;                                                   "Doulos SIL"                   ;   229/6,400
+    ;;                                                   "Webdings"                     ;   223/6,400
+    ;;                                                   "Wingdings"                    ;   223/6,400
+    ;;                                                   "Wingdings 2"                  ;   217/6,400
+    ;;                                                   "Wingdings 3"                  ;   208/6,400
+    ;;                                                   "Symbol"                       ;   188/6,400
+    ;;                                                   "MS Reference Specialty"       ;   170/6,400
+    ;;                                                   "Abyssinica SIL"               ;   137/6,400
+    ;;                                                   "Bookshelf Symbol 7"           ;   111/6,400
+    ;;                                                   "Lanna Alif"                   ;    94/6,400
+    ;;                                                   "Aksara Bali"                  ;    53/6,400
+    ;;                                                   "MPH 2B Damase"                ;    49/6,400
+    ;;                                                   "Arial Unicode MS"             ;    43/6,400
+    ;;                                                   "Marlett"                      ;    35/6,400
+    ;;                                                   "DejaVu Sans"                  ;    31/6,400
+    ;;                                                   "Lucida Console"               ;    23/6,400
+    ;;                                                   "Hacen Sudan"                  ;    20/6,400
+    ;;                                                   "Lucida Sans Unicode"          ;    16/6,400
+    ;;                                                   "Samyak Devanagari"            ;    10/6,400
+    ;;                                                   "Khmer Mondulkiri"             ;    10/6,400
+    ;;                                                   "Khmer Busra MOE"              ;    10/6,400
+    ;;                                                   "Khmer Busra"                  ;    10/6,400
+    ;;                                                   "BabelStone Phags-pa Book"     ;     7/6,400
+    ;;                                                   "Samyak"                       ;     6/6,400
+    ;;                                                   ))
     ("Rejang"                                           (                               ; todo quality free alternative
                                                          "Code2000"
                                                          ))
     ;; ("Rumi Numeral Symbols"                          (""))
     ("Runic"                                            (
-                                                         "Quivira"
+                                                         "Junicode"                     ; 81/81
+                                                         "FreeMono"                     ; 81/81
+                                                         "Quivira"                      ; 81/81
+                                                         "Cardo"                        ; 81/81
                                                          ))
     ("Samaritan"                                        (
                                                          "Quivira"
@@ -2462,6 +2665,7 @@ Set to nil to disable."
                                                          "DejaVu Sans:width=condensed"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 5/5
                                                          "BabelStone Han"               ; 5/5
                                                          ))
     ;; ("Sundanese Supplement"                          ())                             ; todo
@@ -2470,10 +2674,13 @@ Set to nil to disable."
                                                          "Hacen Sudan"
                                                          ))
     ("Superscripts and Subscripts"                      (
-                                                         "Cambria Math"                 ; 32/42
-                                                         "Consolas"
-                                                         "Symbola"
-                                                         "Quivira"
+                                                         "Consolas"                     ; 27/42
+                                                         "Cambria Math"                 ; 28/42
+                                                         "DejaVu Sans Mono"             ; 42/42
+                                                         "DejaVu Sans:width=condensed"  ; 42/42
+                                                         "Symbola"                      ; 42/42
+                                                         "Quivira"                      ; 42/42
+                                                         "FreeMono"                     ; 34/42
                                                          ))
     ("Supplemental Arrows-A"                            (
                                                          "Apple Symbols"
@@ -2481,6 +2688,7 @@ Set to nil to disable."
                                                          "DejaVu Sans:width=condensed"
                                                          "Symbola"
                                                          "Quivira"
+                                                         "FreeMono"                     ; 10/16
                                                          ))
     ("Supplemental Arrows-B"                            (
                                                          "Apple Symbols"
@@ -2495,11 +2703,24 @@ Set to nil to disable."
                                                          "Quivira"                      ; 256/256
                                                          ))
     ("Supplemental Punctuation"                         (
-                                                         "Symbola"
-                                                         "Quivira"
-                                                         "Code2000"
+                                                         "DejaVu Sans Mono"             ;  6/60  ; this will give poor results if existence-checks is set to 'first
+                                                         "Cardo"                        ; 43/60
+                                                         "Aegean"                       ; 43/60
+                                                         "Symbola"                      ; 60/60
+                                                         "Quivira"                      ; 60/60
+                                                         "Code2000"                     ; 49/60
                                                          ))
-    ;; ("Supplementary Private Use Area-A"              (""))
+    ;; ("Supplementary Private Use Area-A"              (
+    ;;                                                   "Aegean"                       ; 3,600/65,534
+    ;;                                                   "Aegyptus"                     ; 7,243/65,534
+    ;;                                                   "Jomolhari"                    ;   659/65,534
+    ;;                                                   "Cardo"                        ;   480/65,534 MUFI
+    ;;                                                   "Code2001"                     ;   292/65,534
+    ;;                                                   "Symbola"                      ;   190/65,534
+    ;;                                                   "Analecta"                     ;   102/65,534
+    ;;                                                   "Musica"                       ;    43/65,534
+    ;;                                                   "Akkadian"                     ;    17/65,534
+    ;;                                                   ))
     ;; ("Supplementary Private Use Area-B"              (""))
     ("Syloti Nagri"                                     (
                                                          "MPH 2B Damase"
@@ -2520,7 +2741,10 @@ Set to nil to disable."
                                                          ))
     ("Tai Le"                                           (
                                                          "Microsoft Tai Le"
-                                                         "MPH 2B Damase"
+                                                         "TharLon"                      ; 35/35
+                                                         "Yunghkio"                     ; 35/35
+                                                         "MPH 2B Damase"                ; 35/35
+                                                         "FreeSerif"                    ; 35/35
                                                          ))
 
     ("Tai Tham"                                         (
@@ -2585,11 +2809,11 @@ Set to nil to disable."
                                                          "Quivira"
                                                          ))
     ("Transport and Map Symbols"                        (
-                                                         ;; "Apple Color Emoji"
+                                                         "Apple Color Emoji"
                                                          "Symbola"
                                                          ))
     ("Ugaritic"                                         (
-                                                         "Aegean"
+                                                         "Aegean"                       ; 31/31
                                                          "Code2001"                     ; 31/31
                                                          ))
     ("Unified Canadian Aboriginal Syllabics Extended"   (
@@ -2687,7 +2911,8 @@ are given, each is tried in order."
     ("Circled Times"                                  "Circled Times"                               ("Arial Unicode MS"                  ))
 
     ;; Currency Symbols block
-    ("Livre Tournois Sign"                            #x20CF                                        ("Symbola"                           ))
+    ("Livre Tournois Sign"                            "Turkish Lira Sign"                           ("Symbola" "Noto Sans"               ))
+    (#x20BB                                           #x20CF                                        ("Symbola"                           ))
     ("Drachma Sign"                                   "Drachma Sign"                                ("DejaVu Sans Mono"                  ))
     ("German Penny Sign"                              "German Penny Sign"                           ("DejaVu Sans Mono"                  ))
     ("New Sheqel Sign"                                "New Sheqel Sign"                             ("DejaVu Sans Mono"                  ))
@@ -2922,6 +3147,9 @@ error."
         (push name unicode-fonts-skipped-fonts-computed))
       (when (and (memq 'apple-only unicode-fonts-skip-font-groups)
                  (equal '(apple) (plist-get props :licenses)))
+        (push name unicode-fonts-skipped-fonts-computed))
+      (when (and (memq 'multicolor unicode-fonts-skip-font-groups)
+                 (eq 'multi (plist-get props :color)))
         (push name unicode-fonts-skipped-fonts-computed))
       (when (and (memq 'microsoft unicode-fonts-skip-font-groups)
                  (memq 'microsoft (plist-get props :licenses)))
