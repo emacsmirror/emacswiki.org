@@ -5,9 +5,9 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/truthy
 ;; URL: http://raw.github.com/rolandwalker/truthy/master/truthy.el
-;; Version: 0.2.6
-;; Last-Updated:  6 Nov 2012
-;; Package-Requires: ((list-utils "0.1.2"))
+;; Version: 0.2.8
+;; Last-Updated:  1 Nov 2013
+;; Package-Requires: ((list-utils "0.4.2"))
 ;; EmacsWiki: Truthy
 ;; Keywords: extensions
 ;;
@@ -69,8 +69,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -133,11 +133,19 @@
 (declare-function object-p "eieio.el")
 (declare-function process-live-p "subr.el")
 (declare-function ring-elements "ring.el")
+(declare-function posnp "subr.el")
 
 (eval-when-compile
   (defvar eieio-unbound))
 
 ;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 (unless (fboundp 'process-live-p)
   (defun process-live-p (process)
@@ -146,6 +154,14 @@ A process is considered alive if its status is `run', `open',
 `listen', `connect' or `stop'."
     (memq (process-status process)
           '(run open listen connect stop))))
+
+(unless (fboundp 'posnp)
+  (defun posnp (obj)
+    "Return non-nil if OBJ appears to be a valid `posn' object."
+    (and (windowp (car-safe obj))
+         (atom (car-safe (setq obj (cdr obj))))
+         (integerp (car-safe (car-safe (setq obj (cdr obj)))))
+         (integerp (car-safe (cdr obj))))))
 
 ;;; external interface
 
@@ -285,7 +301,11 @@ The function `truthy-l' is provided as shorthand for
           (functionp (cdr obj)))
      (catch 'truthy
        (dolist (elt (cdddr obj))
-         (when (or length
+         (when (or (and length
+                        (if (and (>= emacs-major-version 24)
+                                 (>= emacs-minor-version 3))
+                            (> (length (cdddr obj)) 1)
+                          t))
                    (and shallow elt)
                    (truthy elt))
            (throw 'truthy obj)))
@@ -320,6 +340,15 @@ The function `truthy-l' is provided as shorthand for
                    (truthy elt))
            (throw 'truthy obj)))
        nil))
+
+    ;; posn object
+    ((posnp obj)
+     (when (or length
+               (and (or (and shallow (posn-point obj))
+                        (truthy (posn-point obj) shallow length))
+                    (or (and shallow (posn-window obj))
+                        (truthy (posn-window obj) shallow length))))
+       obj))
 
     ;; number
     ((numberp obj)
