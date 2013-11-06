@@ -5,9 +5,9 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/string-utils
 ;; URL: http://raw.github.com/rolandwalker/string-utils/master/string-utils.el
-;; Version: 0.2.8
-;; Last-Updated: 8 Nov 2012
-;; Package-Requires: ((list-utils "0.1.2"))
+;; Version: 0.3.2
+;; Last-Updated: 22 Oct 2013
+;; Package-Requires: ((list-utils "0.4.2"))
 ;; EmacsWiki: StringUtils
 ;; Keywords: extensions
 ;;
@@ -65,14 +65,18 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: list-utils.el, obarray-fns.el
 ;;
 ;; Bugs
+;;
+;;     (defun string-utils-test-func nil "doc" (keymap 95))
+;;     (string-utils-stringify-anything (symbol-function 'string-utils-test-func))
 ;;
 ;;     Some objects such as window-configuration are completely
 ;;     opaque and won't be stringified usefully.
@@ -139,7 +143,7 @@
 
 ;;; requirements
 
-;; for callf, callf2, assert, loop
+;; for callf, callf2, assert, loop, decf, incf
 (require 'cl)
 
 (require 'eieio nil t)
@@ -151,13 +155,15 @@
 
 ;;; declarations
 
-(declare-function object-name-string "eieio.el")
-(declare-function ring-elements      "ring.el")
+(declare-function eieio-object-name-string "eieio.el")
+(declare-function ring-elements            "ring.el")
+(declare-function list-utils-flat-length   "list-utils.el")
 
 ;; variables
 
 (defvar string-utils-whitespace (concat
                                  (apply 'vector
+                                    (delq nil              ; for Emacs 22, some chars will be missing
                                         (mapcar #'(lambda (x)
                                                     (decode-char 'ucs x))
                                                 '(#x0000d  ; "Carriage Return (CR)"
@@ -193,13 +199,43 @@
                                                   #x02060  ; "Word Joiner"
                                                   #x0feff  ; "Zero Width No-Break Space"
                                                   #x0200b  ; "Zero Width Space"
-                                                  ))))
+                                                  )))))
   "Definition of whitespace characters used by string-utils.
 
 Includes Unicode whitespace characters.")
 
 (defvar string-utils-whitespace-ascii " \n\t\r\f" "ASCII-only whitespace characters used by string-utils.")
 (defvar string-utils-whitespace-syntax "\\s-"     "Whitespace regular expression according to `syntax-table'.")
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+(unless (fboundp 'list-utils-flat-length)
+  (defun list-utils-flat-length (list)
+    "Count simple elements from the beginning of LIST.
+
+Stop counting when a cons is reached.  nil is not a cons,
+and is considered to be a \"simple\" element.
+
+If the car of LIST is a cons, return 0."
+    (let ((counter 0))
+      (ignore-errors
+        (catch 'saw-depth
+          (dolist (elt list)
+            (when (consp elt)
+              (throw 'saw-depth t))
+            (incf counter))))
+      counter)))
+
+(when (and (fboundp 'object-name-string)
+           (not (fboundp 'eieio-object-name-string)))
+  (fset 'eieio-object-name-string 'object-name-string))
 
 ;;; utility functions
 
@@ -243,8 +279,20 @@ an ordinary string."
     ;; character
     ((and
       ints-are-chars
+      (fboundp 'characterp)
       (characterp obj))
      (string obj))
+
+    ;; character (22.x Emacs)
+    ((and
+      ints-are-chars
+      (not (fboundp 'characterp))
+      (integerp obj)
+      (> obj 0)
+      (<= obj #x3FFFFF))
+     (if (decode-char 'ucs obj)
+         (string (decode-char 'ucs obj))
+       ""))
 
     ;; number
     ((numberp obj)
@@ -274,6 +322,7 @@ an ordinary string."
 
     ;; network process
     ((and (processp obj)
+          (fboundp 'process-type)
           (eq 'network (process-type obj)))
      (let ((contact (process-contact obj t)))
        (cond
@@ -290,6 +339,7 @@ an ordinary string."
 
     ;; serial process
     ((and (processp obj)
+          (fboundp 'process-type)
           (eq 'serial (process-type obj)))
      (let ((contact (process-contact obj t)))
        (format "%s" (or (plist-get contact :name)
@@ -302,15 +352,19 @@ an ordinary string."
 
     ;; ring
     ((ring-p obj)
-     (string-utils-stringify-anything (ring-elements obj) separator ints-are-chars record-separator))
+     (let ((output nil))
+       (dolist (elt (ring-elements obj))
+         (push (string-utils-stringify-anything elt separator ints-are-chars record-separator) output))
+       (mapconcat 'identity (nreverse output) separator)))
 
     ;; EIEIO object
     ((and (fboundp 'object-p)
           (object-p obj))
-     (object-name-string obj))
+     (eieio-object-name-string obj))
 
     ;; font object
-    ((fontp obj)
+    ((and (fboundp 'fontp)
+          (fontp obj))
      (string-utils-stringify-anything (or (font-get obj :name)
                                           (font-get obj :family)
                                           "") separator ints-are-chars record-separator))
@@ -367,8 +421,10 @@ an ordinary string."
 
     ;; compiled byte-code
     ((byte-code-function-p obj)
-     (mapconcat #'(lambda (x)
-                    (string-utils-stringify-anything x separator ints-are-chars record-separator)) (append obj nil) separator))
+     (let ((output nil))
+       (dolist (elt (append obj nil))
+         (push (string-utils-stringify-anything elt separator ints-are-chars record-separator) output))
+       (mapconcat 'identity (nreverse output) separator)))
 
     ;; keymap, function, frame-configuration
     ((or (keymapp obj)
@@ -385,20 +441,34 @@ an ordinary string."
     ;; list
     ((listp obj)
      (let* ((measurer (if (fboundp 'list-utils-safe-length) 'list-utils-safe-length 'safe-length))
-            (len (funcall measurer obj)))
-       (if (and (consp obj)
-                (> len 0)
-                (not (listp (nthcdr len obj))))
-           ;; cons or improper list would choke mapconcat
-           (string-utils-stringify-anything (append (subseq obj 0 len) (list (nthcdr len obj))) separator ints-are-chars record-separator)
-         ;; else
-         ;; accumulate output
-         (let ((output nil))
-           (push (string-utils-stringify-anything (car obj) separator ints-are-chars record-separator) output)
-           (when (> len 1)
-             ;; the subseq is to break cyclic lists
-             (push (string-utils-stringify-anything (subseq obj 1 len) separator ints-are-chars record-separator) output))
-           (mapconcat 'identity (nreverse output) separator)))))
+            (len (funcall measurer obj))
+            (cracked (subseq obj 0 len))                   ; break cycles
+            (flat-extent (list-utils-flat-length cracked))
+            (output nil))
+
+       (cond
+
+         ;; cons or improper list, take care on last element
+         ((and (consp obj)
+               (> len 0)
+               (not (listp (nthcdr len obj))))
+          (dolist (elt cracked)
+            (push (string-utils-stringify-anything elt separator ints-are-chars record-separator) output))
+          (push (string-utils-stringify-anything (nthcdr len obj) separator ints-are-chars record-separator) output))
+
+         ;; flat list. logic looks a little odd, does the odd thing that I wanted on keymaps
+         ((> flat-extent 1)
+          (decf flat-extent)
+          (dolist (elt (subseq cracked 0 flat-extent))
+            (push (string-utils-stringify-anything elt separator ints-are-chars record-separator) output))
+          (push (string-utils-stringify-anything (nthcdr flat-extent cracked) separator ints-are-chars record-separator) output))
+
+         ;; general case
+         (t
+          (dolist (elt cracked)
+            (push (string-utils-stringify-anything elt separator ints-are-chars record-separator) output))))
+
+       (mapconcat 'identity (nreverse output) separator)))
 
     ;; defstruct
     ((and (vectorp obj)
@@ -529,8 +599,10 @@ ends of all lines throughout STR-VAL."
             str-val)))))
 
 ;;;###autoload
-(defun string-utils-compress-whitespace (str-val &optional whitespace-type)
-  "Return STR-VAL with all contiguous whitespace compressed to one space.
+(defun string-utils-compress-whitespace (str-val &optional whitespace-type separator)
+  "Return STR-VAL with all contiguous whitespace compressed to SEPARATOR.
+
+The default value of SEPARATOR is a single space: \" \".
 
 If optional WHITESPACE-TYPE is 'ascii or t, use an ASCII-only
 definition of whitespace characters.  If WHITESPACE-TYPE is
@@ -538,6 +610,7 @@ definition of whitespace characters.  If WHITESPACE-TYPE is
 `syntax-table'.  Otherwise, use a broad, Unicode-aware
 definition of whitespace from `string-utils-whitespace'."
   (assert (memq whitespace-type '(ascii ascii-only t syntax unicode nil)) nil "Bad WHITESPACE-TYPE")
+  (callf or separator " ")
   (let* ((string-utils-whitespace (if (memq whitespace-type '(ascii ascii-only t))
                                       string-utils-whitespace-ascii
                                     string-utils-whitespace))
@@ -545,7 +618,7 @@ definition of whitespace from `string-utils-whitespace'."
                                 string-utils-whitespace-syntax
                               (concat "[" string-utils-whitespace "]"))))
     (save-match-data
-      (replace-regexp-in-string (concat whitespace-regexp "+") " "
+      (replace-regexp-in-string (concat whitespace-regexp "+") separator
          str-val))))
 
 ;;;###autoload
@@ -852,15 +925,24 @@ It defaults to the UCS character \"Horizontal Ellipsis\", or
   (callf or ellipsis (if (char-displayable-p (decode-char 'ucs #x2026)) (string (decode-char 'ucs #x2026)) "..."))
   (save-match-data
     (let* ((parsed (url-generic-parse-url url))
-           (host (aref parsed 4))
-           (scheme (aref parsed 1))
+           (struct-offset (if (symbolp (aref parsed 0)) 1 0))
+           (scheme (aref parsed (+ 0 struct-offset)))
+           (host   (aref parsed (+ 3 struct-offset)))
+           (target (aref parsed (+ 5 struct-offset)))
            (prefix "")
            (rest-of-string url))
+      ;; fix host?target parse on older Emacs
+      (when (and (= (length target) 0)
+                 (string-match "\\`\\([^?]+\\)\\?\\(.+\\)\\'" host))
+             (setq target (match-string 2 host))
+             (setq host (match-string 1 host)))
       (cond
         ((> (length host) 0)
-          (string-match (concat "\\`\\(.*?" (regexp-quote host) "[/?]*\\)") rest-of-string)
-          (setq prefix (match-string 1 rest-of-string))
-          (setq rest-of-string (replace-match "" t t rest-of-string 1)))
+         (string-match (concat "\\`\\(.*?" (regexp-quote host) "[/?]*\\)") rest-of-string)
+         (setq prefix (match-string 1 rest-of-string))
+         (setq rest-of-string (if (> (length target) 0)
+                                  (replace-regexp-in-string "\\`[/?]*" "" target)
+                                (replace-match "" t t rest-of-string 1))))
         ((> (length scheme) 0)
          (string-match (concat "\\`\\(" (regexp-quote scheme) "[/:]*\\)") rest-of-string)
          (setq prefix (match-string 1 rest-of-string))
