@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  5 10:16:15 2013 (-0800)
+;; Last-Updated: Tue Nov  5 10:30:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7244
+;;     Update #: 7246
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -3542,9 +3542,9 @@ name as its only required argument."
 (defun diredp-get-files (&optional ignore-marks-p predicate include-dirs-p
                          dont-askp only-marked-p)
   "Return file names from this Dired buffer and subdirectories, recursively.
-The name are those that are marked in the current Dired buffer, or all
-files in the directory if none are marked.  Marked subdirectories are
-handled recursively in the same way.
+The names are those that are marked in the current Dired buffer, or
+all files in the directory if none are marked.  Marked subdirectories
+are handled recursively in the same way.
 
 If there is some included subdirectory that has a Dired buffer with
 marked files, then (unless DONT-ASKP is non-nil) ask the user whether
