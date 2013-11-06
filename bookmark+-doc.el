@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov  5 15:20:50 2013 (-0800)
+;; Last-Updated: Tue Nov  5 16:13:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14717
+;;     Update #: 14745
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -267,6 +267,9 @@
 ;;       which subdirectories are inserted, and which (sub)directories
 ;;       are hidden.
 ;;
+;;     - Dired-tree bookmarks.  A set of Dired bookmarks that
+;  ;     represent a directory hierarchy and are opened together.
+;;
 ;;     - Bookmark-list bookmarks.  You can bookmark the current state
 ;;       of buffer `*Bookmark List*' - a list of bookmarks.  Jumping
 ;;       to such a bookmark restores the recorded sort order,
@@ -310,8 +313,8 @@
 ;;
 ;;     In particular, note that you can use the following kinds of
 ;;     bookmarks to quickly switch among different projects (sets of
-;;     bookmarks): Dired, bookmark-list, bookmark-file, and desktop
-;;     bookmarks.
+;;     bookmarks): Dired, Dired tree, bookmark-list, bookmark-file,
+;;     and desktop bookmarks.
 ;;
 ;;  * Additional ways to bookmark.
 ;;
@@ -446,8 +449,8 @@
 ;;     In addition, mode-specific bookmarking commands are bound in
 ;;     some other modes: Occur, Compilation (including Grep),
 ;;     Buffer-menu, Gnus, Info, Man, Woman, W3M, and Dired (if you use
-;;     Dired+).  These keys let you set or jump to bookmarks specific
-;;     to the modes.
+;;     library `Dired+').  These keys let you set or jump to bookmarks
+;;     specific to the modes.
 ;;
 ;;  * Helpful help.
 ;;
@@ -528,9 +531,9 @@
 ;;     version) and options `bmkp-new-bookmark-default-names' and
 ;;     `bmkp-default-bookmark-name'.
 ;;
-;;  * Synergy with Icicles.
+;;  * Synergy with `Icicles'.
 ;;
-;;     - Icicles works with Bookmark+ to provide enhanced bookmark
+;;     - `Icicles' works with Bookmark+ to provide enhanced bookmark
 ;;       jumping (visiting), setting, and help.  It gives you a
 ;;       bookmark browser, and lets you bookmark and tag files on the
 ;;       fly.  See (@> "Use Bookmark+ with Icicles") and
@@ -854,12 +857,12 @@
 ;;  organizing them (e.g. into projects), whether or not you ever use
 ;;  the bookmarks as a way to visit them.
 ;;
-;;  For example, if you use Dired+ (library `dired+.el'), then you can
-;;  use `M-b' (`diredp-do-bookmark') in Dired to create an autofile
-;;  bookmark for each of the marked files in the Dired buffer.  Even
-;;  if you never use those bookmarks for navigating to the files, you
-;;  can use them with tags to organize the files and thus operate on
-;;  subsets of them.
+;;  For example, if you use `Dired+' (library `dired+.el'), then you
+;;  can use `M-b' (`diredp-do-bookmark') in Dired to create an
+;;  autofile bookmark for each of the marked files in the Dired
+;;  buffer.  Even if you never use those bookmarks for navigating to
+;;  the files, you can use them with tags to organize the files and
+;;  thus operate on subsets of them.
 ;;
 ;;  By default, you create bookmarks without tags and add tags to them
 ;;  later.  If you prefer, you can customize option
@@ -1057,6 +1060,17 @@
 ;;  Command `bmkp-bmenu-make-sequence-from-marked' creates a sequence
 ;;  bookmark from the marked bookmarks in the bookmark-list display,
 ;;  in their current order.
+;;
+;;  Command `bmkp-create-dired-bookmarks-recursive' creates a Dired
+;;  bookmark for the current Dired buffer and each of its marked
+;;  subdirectories.  Each of those subdirectories is handled
+;;  similarly, and so on, recursively.  And it creates a sequence
+;;  bookmark that includes all of these Dired bookmarks, so that it
+;;  represents a tree (hierarchy) of Dired buffers that are opened
+;;  together.  This provides an alternative to inserting all of the
+;;  relevant subdirectories into the same Dired buffer.  With a prefix
+;;  argument, all of the descendent Dired buffers are included,
+;;  whether or not they are marked.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
 ;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
@@ -1375,9 +1389,9 @@
 ;;(@* "Bookmarking the Marked Files in Dired")
 ;;  *** Bookmarking the Marked Files in Dired ***
 ;;
-;;  If you use Dired+ (library `dired+.el'), then you can bookmark all
-;;  of the marked files in a Dired buffer at once, as autofiles, even
-;;  if you normally do not or cannot visit those files in Emacs.
+;;  If you use `Dired+' (library `dired+.el'), then you can bookmark
+;;  all of the marked files in a Dired buffer at once, as autofiles,
+;;  even if you normally do not or cannot visit those files in Emacs.
 ;;  These keys are available in Dired:
 ;;
 ;;    `M-b'                   - Bookmark each marked file
@@ -1674,7 +1688,7 @@
 ;;  bookmark names, regardless of directory.  And since the bookmark
 ;;  names reflect only the relative file names, it is not so easy to
 ;;  distinguish two autofiles with the same name but in different
-;;  directories.  (Icicles can help here, BTW.)
+;;  directories.  (`Icicles' can help here, BTW.)
 ;;
 ;;  There is a `bmkp-find-file-' command that corresponds to each
 ;;  `bmkp-autofile-' command.  For example,
@@ -1723,14 +1737,14 @@
 ;;  In some cases a `C-f' command is quicker; in some cases a `a'
 ;;  command is quicker.
 ;;
-;;  If you use Icicles, then the performance hit for `C-f' when there
-;;  are lots of files in a directory is greatly reduced.  This is
-;;  because Icicles applies the filtering predicate after, not before,
-;;  you type text in the minibuffer.  In other words, instead of
-;;  testing each file in the directory, it tests only the files that
-;;  match your input.  (In addition, if you use Icicles then you get
-;;  multi-command versions of each of these bookmark commands, which
-;;  means that you can visit more than one file per command
+;;  If you use `Icicles', then the performance hit for `C-f' when
+;;  there are lots of files in a directory is greatly reduced.  This
+;;  is because `Icicles' applies the filtering predicate after, not
+;;  before, you type text in the minibuffer.  In other words, instead
+;;  of testing each file in the directory, it tests only the files
+;;  that match your input.  (In addition, if you use `Icicles' then
+;;  you get multi-command versions of each of these bookmark commands,
+;;  which means that you can visit more than one file per command
 ;;  invocation.)
  
 ;;(@* "Tagging Files")
@@ -1758,14 +1772,14 @@
 ;;  bound by default to `C-x p t - a', similarly lets you remove
 ;;  specified tags from a file.
 ;;
-;;  If you also use library Icicles, then you can act on multiple
+;;  If you also use library `Icicles', then you can act on multiple
 ;;  files during the same command (a "multi-command").  You can thus
 ;;  all at once tag a set of files the same way, or act on a set of
-;;  files that are tagged similarly.  Icicles also lets you create
+;;  files that are tagged similarly.  `Icicles' also lets you create
 ;;  autofiles or add or remove tags, on the fly, whenever you use
 ;;  commands (e.g. `C-x C-f') that access files.
 ;;
-;;  If you also use library Dired+ (`dired+.el') then you can use
+;;  If you also use library `Dired+' (`dired+.el') then you can use
 ;;  `C-+' to add tags to the marked files and `C--' to remove tags
 ;;  from them.  You can use `C-M-+' and `C-M--' to do the same thing
 ;;  for the current file.  You can also use items from the Dired menus
@@ -1830,7 +1844,7 @@
 ;;    hierarchy.  The completion candidates are file names, not
 ;;    bookmark names.
 ;;
-;;  If you use Icicles, there are similar sets of commands, but they
+;;  If you use `Icicles', there are similar sets of commands, but they
 ;;  all let you act on multiple files at the same time
 ;;  (multi-commands).  For example, you can delete (or byte-compile
 ;;  or...) a set of files according to their tags.
@@ -1964,7 +1978,7 @@
 ;;  can also use it in combination with other Bookmark+ features, such
 ;;  as tagging.
 ;;
-;;  As a shortcut, in Dired (if you use library Dired+), `C-M-b'
+;;  As a shortcut, in Dired (if you use library `Dired+'), `C-M-b'
 ;;  creates a bookmark-file bookmark.  The bookmark file that it
 ;;  records contains autofile bookmarks to each of the files that was
 ;;  marked in Dired at the time it was created.  Jumping to that
@@ -2231,13 +2245,13 @@
 ;;  define an arbitrary set of files as a project and then open them
 ;;  in Dired at any time to operate on them.
 ;;
-;;  If you use Dired+ (library `dired+.el'), then a similar feature is
-;;  available for the marked files and directories: You can use
+;;  If you use `Dired+' (library `dired+.el'), then a similar feature
+;;  is available for the marked files and directories: You can use
 ;;  `C-M-*' in Dired to open a separate Dired buffer for them only.
 ;;  You can of course then bookmark that resulting Dired buffer, if
 ;;  you like.
 ;;
-;;  If you use Icicles, then whenever you use a command that reads a
+;;  If you use `Icicles', then whenever you use a command that reads a
 ;;  file (or directory) name, you can use `M-|' during file-name
 ;;  completion to open Dired on the currently matching set of file
 ;;  names.  That is, this is the same kind of special Dired buffer
@@ -2443,7 +2457,7 @@
 ;;  `tag2', which represents the set of tags `beta', `delta'.
 ;;
 ;;  See also (@> "Use Bookmark+ with Icicles") - the same technique is
-;;  used in Icicles for sorting bookmarks as completion candidates.
+;;  used in `Icicles' for sorting bookmarks as completion candidates.
  
 ;;(@* "Bookmarks for Specific Files or Buffers")
 ;;  ** Bookmarks for Specific Files or Buffers **
@@ -3242,7 +3256,7 @@
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
 ;;
-;;  Icicles (http://www.emacswiki.org/cgi-bin/wiki/Icicles) enhances
+;;  `Icicles' (http://www.emacswiki.org/cgi-bin/wiki/Icicles) enhances
 ;;  your use of Bookmark+ in several ways.
 ;;
 ;;  When jumping to a bookmark, you can narrow the completion
@@ -3255,10 +3269,10 @@
 ;;  (e.g. regexps) - so-called "progressive completion".  And take the
 ;;  complement (e.g., bookmarks whose names do not match
 ;;  `foo.*2010.*bar').  (This is not special to bookmarks; it is
-;;  standard Icicles practice.)
+;;  standard `Icicles' practice.)
 ;;
 ;;  In Icicle mode, several of the Bookmark+ keys are remapped to
-;;  corresponding Icicles multi-commands.  A bookmark jump key thus
+;;  corresponding `Icicles' multi-commands.  A bookmark jump key thus
 ;;  becomes a bookmarks browser.  For example, `C-x j d' browses among
 ;;  any number of Dired bookmarks.
 ;;
@@ -3287,7 +3301,8 @@
 ;;  * Candidates are highlighted in the `*Completions*' window
 ;;    according to their bookmark type.
 ;;
-;;  * Candidates are Icicles multi-completions with up to three parts:
+;;  * Candidates are `Icicles' multi-completions with up to three
+;;    parts:
 ;;
 ;;     a. the bookmark name
 ;;     b. the bookmark file or buffer name
@@ -3313,24 +3328,24 @@
 ;;  * You can sort completion candidates using the Bookmark+ sort
 ;;    orders.  Use `C-,' to cycle among sort orders.
 ;;
-;;  * You can use Icicles candidate-help keys (`C-M-RET', `C-M-down',
-;;    etc.) to get detailed information about the current bookmark
-;;    candidate.  `C-u C-M-RET' shows the complete, internal info
-;;    defining the bookmark.  And without doing anything, summary info
-;;    about the current candidate is available in the mode line of
-;;    buffer `*Completions*'.
+;;  * You can use `Icicles' candidate-help keys (`C-M-RET',
+;;    `C-M-down', etc.) to get detailed information about the current
+;;    bookmark candidate.  `C-u C-M-RET' shows the complete, internal
+;;    info defining the bookmark.  And without doing anything, summary
+;;    info about the current candidate is available in the mode line
+;;    of buffer `*Completions*'.
 ;;
-;;  * You can use Icicles candidate-action keys (`C-RET', `C-mouse-2',
-;;    `C-down', etc.) to visit any number of bookmarks.  For example,
-;;    holding down `C-down' cycles among the current bookmark
-;;    candidates, opening each in turn.
+;;  * You can use `Icicles' candidate-action keys (`C-RET',
+;;    `C-mouse-2', `C-down', etc.) to visit any number of bookmarks.
+;;    For example, holding down `C-down' cycles among the current
+;;    bookmark candidates, opening each in turn.
 ;;
 ;;  * You can use `S-delete' to delete the bookmark named by the
 ;;    current candidate.  You can delete any number of bookmarks this
 ;;    way, during a single invocation of a bookmark command.
 ;;
-;;  * You can define Icicles sets of bookmarks, persistent or not, and
-;;    act on their members in various ways.
+;;  * You can define `Icicles' sets of bookmarks, persistent or not,
+;;    and act on their members in various ways.
 ;;
 ;;  During file-name completion, you can do any of the following on
 ;;  the fly:
