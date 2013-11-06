@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/persistent-soft
 ;; URL: http://raw.github.com/rolandwalker/persistent-soft/master/persistent-soft.el
-;; Version: 0.8.6
-;; Last-Updated:  5 Oct 2012
+;; Version: 0.8.8
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: PersistentSoft
 ;; Keywords: data, extensions
-;; Package-Requires: ((pcache "0.2.3") (list-utils "0.2.0"))
+;; Package-Requires: ((pcache "0.2.3") (list-utils "0.4.2"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -28,14 +28,14 @@
 ;;
 ;; Explanation
 ;;
-;; This is a (trivial) wrapper around pcache.el, providing "soft"
-;; fetch and store routines which never throw an error, but instead
-;; return nil on failure.
+;; This is a wrapper around pcache.el, providing "soft" fetch and
+;; store routines which never throw an error, but instead return
+;; nil on failure.
 ;;
 ;; There is no end-user interface for this library.  It is only
 ;; useful from other Lisp code.
 ;;
-;; The following functions are provided
+;; The following functions are provided:
 ;;
 ;;     `persistent-soft-store'
 ;;     `persistent-soft-fetch'
@@ -65,8 +65,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -80,6 +80,10 @@
 ;;     rewritten to use eieio directly or recast as a patch to pcache.
 ;;
 ;; TODO
+;;
+;;     Setting print-quoted doesn't seem to influence EIEIO.
+;;     It doesn't seem right that the sanitization stuff
+;;     is needed.
 ;;
 ;;     Detect terminal type as returned by (selected-terminal)
 ;;     as unserializable.
@@ -127,19 +131,19 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 (eval-and-compile
-  (defvar pcache-directory)
-  ;; for callf, flet/cl-flet
-  (require 'cl)
-  (unless (fboundp 'cl-flet)
-    (defalias 'cl-flet 'flet)
-    (put 'cl-flet 'lisp-indent-function 1)
-    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+  ;; for callf
+  (require 'cl))
 
 (require 'pcache     nil t)
 (require 'list-utils nil t)
+
+;;; declarations
+
+(eval-when-compile
+  (defvar pcache-directory))
 
 (declare-function pcache-get                 "pcache.el")
 (declare-function pcache-has                 "pcache.el")
@@ -155,8 +159,10 @@
 ;;;###autoload
 (defgroup persistent-soft nil
   "Persistent storage, returning nil on failure."
-  :version "0.8.6"
-  :link '(emacs-commentary-link "persistent-soft")
+  :version "0.8.8"
+  :link '(emacs-commentary-link :tag "Commentary" "persistent-soft")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/persistent-soft")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/PersistentSoft")
   :prefix "persistent-soft-"
   :group 'extensions)
 
@@ -168,6 +174,28 @@
 ;;; variables
 
 (defvar persistent-soft-inhibit-sanity-checks nil "Turn off sanitization of data at store-time.")
+
+;;; macros
+
+(defmacro persistent-soft--with-mocked-function (func ret-val &rest body)
+  "Execute BODY, mocking FUNC (a symbol) to unconditionally return RET-VAL.
+
+This is portable to versions of Emacs without dynamic `flet`."
+  (declare (debug t) (indent 2))
+  (let ((o (gensym "--function--")))
+    `(let ((,o (symbol-function ,func)))
+       (fset ,func #'(lambda (&rest _ignored) ,ret-val))
+       (unwind-protect
+           (progn ,@body)
+         (fset ,func ,o)))))
+
+(defmacro persistent-soft--with-suppressed-messages (&rest body)
+  "Execute BODY, suppressing all output to \"message\".
+
+This is portable to versions of Emacs without dynamic `flet`."
+  (declare (debug t) (indent 0))
+  `(persistent-soft--with-mocked-function 'message t
+     ,@body))
 
 ;;; utility functions
 
@@ -241,7 +269,8 @@ by setting `persistent-soft-inhibit-sanity-checks'."
          (framep data)
          (overlayp data)
          (processp data)
-         (fontp data)
+         (and (fboundp 'fontp)
+              (fontp data))
          (window-configuration-p data)
          (frame-configuration-p data)
          (markerp data))
@@ -263,7 +292,7 @@ by setting `persistent-soft-inhibit-sanity-checks'."
      nil)
     (t
      (condition-case nil
-         (cl-flet ((message (&rest args) t))
+         (persistent-soft--with-suppressed-messages
            (pcache-repository location))
        (error nil)))))
 
@@ -290,10 +319,10 @@ Returns nil on failure, without throwing an error."
              (stringp location)
              (persistent-soft-location-readable location))
     (let ((repo (ignore-errors
-                  (cl-flet ((message (&rest args) t))
+                  (persistent-soft--with-suppressed-messages
                     (pcache-repository location)))))
       (when (and repo (ignore-errors
-                        (cl-flet ((message (&rest args) t))
+                        (persistent-soft--with-suppressed-messages
                           (pcache-has repo symbol))))
         t))))
 
@@ -308,10 +337,10 @@ Returns nil on failure, without throwing an error."
              (stringp location)
              (persistent-soft-location-readable location))
     (let ((repo (ignore-errors
-                  (cl-flet ((message (&rest args) t))
+                  (persistent-soft--with-suppressed-messages
                     (pcache-repository location)))))
       (and repo (ignore-errors
-                  (cl-flet ((message (&rest args) t))
+                  (persistent-soft--with-suppressed-messages
                     (pcache-get repo symbol)))))))
 
 ;;;###autoload
@@ -320,12 +349,14 @@ Returns nil on failure, without throwing an error."
   (when (and (featurep 'pcache)
              (stringp location))
     (let ((repo (ignore-errors
-                  (cl-flet ((message (&rest args) t))
-                    (pcache-repository location)))))
+                  (persistent-soft--with-suppressed-messages
+                    (pcache-repository location))))
+          (print-level nil)
+          (print-length nil))
       (when repo
         (condition-case nil
-          (cl-flet ((message (&rest args) t))
-            (pcache-save repo 'force)
+            (persistent-soft--with-suppressed-messages
+              (pcache-save repo 'force)
             t)
           (error nil))))))
 
@@ -344,13 +375,13 @@ on failure, without throwing an error."
     (callf or expiration (round (* 60 60 24 persistent-soft-default-expiration-days)))
     (callf persistent-soft--sanitize-data value)
     (let ((repo (ignore-errors
-                (cl-flet ((message (&rest args) t))
-                  (pcache-repository location))))
+                  (persistent-soft--with-suppressed-messages
+                    (pcache-repository location))))
           (print-level nil)
           (print-length nil))
       (and repo (ignore-errors
-                (cl-flet ((message (&rest args) t))
-                  (pcache-put repo symbol value expiration)))))))
+                  (persistent-soft--with-suppressed-messages
+                    (pcache-put repo symbol value expiration)))))))
 
 (provide 'persistent-soft)
 
@@ -365,7 +396,7 @@ on failure, without throwing an error."
 ;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
-;; LocalWords:  pcache eieio callf
+;; LocalWords:  pcache eieio callf mydatastore utils devel flet EIEIO
 ;;
 
 ;;; persistent-soft.el ends here
