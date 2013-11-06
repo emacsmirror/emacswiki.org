@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/dynamic-fonts
 ;; URL: http://raw.github.com/rolandwalker/dynamic-fonts/master/dynamic-fonts.el
-;; Version: 0.6.2
-;; Last-Updated: 14 Oct 2012
+;; Version: 0.6.4
+;; Last-Updated: 22 Oct 2013
 ;; EmacsWiki: DynamicFonts
 ;; Keywords: faces, frames
-;; Package-Requires: ((font-utils "0.6.8") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((font-utils "0.7.0") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -40,8 +40,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -94,7 +94,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 (autoload 'font-utils-first-existing-font "font-utils" "Return the (normalized) first existing font name from FONT-NAMES.")
 
@@ -103,8 +103,10 @@
 ;;;###autoload
 (defgroup dynamic-fonts nil
   "Set faces based on available fonts."
-  :version "0.6.2"
-  :link '(emacs-commentary-link "dynamic-fonts")
+  :version "0.6.4"
+  :link '(emacs-commentary-link :tag "Commentary" "dynamic-fonts")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/dynamic-fonts")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/DynamicFonts")
   :prefix "dynamic-fonts-"
   :group 'faces)
 
@@ -174,19 +176,30 @@ default for variable-width faces."
                                                      "Envy Code R"
                                                      "Andale Mono"
                                                      "Lucida Sans Typewriter"
+                                                     "monoOne"
                                                      "Lucida Typewriter"
                                                      "Panic Sans"                   ; based on Bitstream Vera
                                                      "Bitstream Vera Sans Mono"
+                                                     "HyperFont"
+                                                     "PT Mono"
+                                                     "Ti92Pluspc"
                                                      "Excalibur Monospace"
                                                      "Courier New"
                                                      "Courier"
                                                      "Cousine"
+                                                     "Fira Mono"
                                                      "Lekton"
                                                      "Ubuntu Mono"
                                                      "Liberation Mono"
                                                      "BPmono"
+                                                     "Free Mono"
                                                      "Anonymous Pro"
+                                                     "ProFont"
                                                      "ProFontWindows"
+                                                     "Latin Modern Mono"
+                                                     "Code 2002"
+                                                     "ProggyCleanTT"
+                                                     "ProggyTinyTT"
                                                      )
 "A list of monospace fonts in order of preference.
 
@@ -222,7 +235,7 @@ order of preference:
           (setq font-name (font-utils-first-existing-font (list font-name))) ; normalize
           (when (eq face 'default)
             (let ((args (list t t)))
-              (when (< emacs-major-version 24)
+              (when (not (and (>= emacs-major-version 24) (>= emacs-minor-version 1)))
                 (pop args))
               (apply 'set-frame-font font-name args)))
           (set-face-attribute face nil :family font-name)
