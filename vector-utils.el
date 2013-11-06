@@ -1,12 +1,12 @@
 ;;; vector-utils.el --- Vector-manipulation utility functions
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/vector-utils
 ;; URL: http://raw.github.com/rolandwalker/vector-utils/master/vector-utils.el
-;; Version: 0.1.0
-;; Last-Updated: 15 Oct 2012
+;; Version: 0.1.2
+;; Last-Updated: 24 Oct 2013
 ;; EmacsWiki: VectorUtils
 ;; Keywords: extensions
 ;;
@@ -31,9 +31,9 @@
 ;; programming in Emacs Lisp.
 ;;
 ;; Furthermore (when programming in Emacs Lisp), be aware that the
-;; modification of a vector is not permitted: only vector elements may
-;; be changed.  All "modification" operations herein can only work by
-;; making copies, which is not efficient.
+;; modification of a vector is not permitted: only vector *elements*
+;; may be changed.  All "modification" operations herein can only
+;; work by making copies, which is not efficient.
 ;;
 ;; The following functions are provided:
 ;;
@@ -53,10 +53,10 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3           : yes
+;;     GNU Emacs version 22.2           : yes
 ;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
@@ -108,7 +108,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for assert, subseq
 (require 'cl)
@@ -118,8 +118,10 @@
 ;;;###autoload
 (defgroup vector-utils nil
   "Vector-manipulation utility functions."
-  :version "0.1.0"
-  :link '(emacs-commentary-link "vector-utils")
+  :version "0.1.2"
+  :link '(emacs-commentary-link :tag "Commentary" "vector-utils")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/vector-utils")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/VectorUtils")
   :prefix "vector-utils-"
   :group 'extensions)
 
