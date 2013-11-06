@@ -182,6 +182,9 @@ same name but in different directories.
 [:DiredBookmarks]
 * '''Dired bookmarks.''' You can bookmark a ''[[DiredMode|Dired]]'' buffer, recording and restoring its `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
+[:DiredTreeBookmarks]
+* '''Dired-tree bookmarks.''' A set of [[DiredMode|Dired]]bookmarks that represent a directory hierarchy and are opened together.
+
 [:BookmarkListBookmarks]
 * '''Bookmark-list bookmarks.'''  You can bookmark the current state of buffer `##*Bookmark List*##' -- a ''list of bookmarks''.  Jumping to such a bookmark restores the recorded [[#SortingBookmarks|sort]] order, [[#FilteringBookmarks|filter]], markings, title, and [[#OmittingBookmarks|omit list]].
 
@@ -223,7 +226,7 @@ any Emacs session.
 
 In particular, note that you can use the following kinds of bookmarks
 to quickly switch among different ''projects'' (sets of bookmarks):
-Dired, bookmark-list, bookmark-file, and desktop bookmarks.
+Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
 
 
 
@@ -406,8 +409,7 @@ setting bookmarks is bound to a prefix in `bookmark-map'.)
 
 In addition, mode-specific bookmarking commands are bound in
 some other modes: Occur, Compilation (including Grep),
-Buffer-menu, Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use
-'''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
+Buffer-menu, Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use library '''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
 to the modes.
 
 
@@ -1110,6 +1112,18 @@ its existing members, according to the prefix arg (which is passed to `bmkp-set-
 Command '''`bmkp-bmenu-make-sequence-from-marked'''' creates a
 sequence from the marked bookmarks in the bookmark-list display, in their
 current order.
+
+Command '''`bmkp-create-dired-bookmarks-recursive'''' creates a Dired
+bookmark for the current Dired buffer and each of its marked
+subdirectories.  Each of those subdirectories is handled
+similarly, and so on, recursively.  And it creates a sequence
+bookmark that includes all of these Dired bookmarks, so that it
+represents a tree (hierarchy) of Dired buffers that are opened
+together.    This
+provides an alternative to inserting all of the relevant
+subdirectories into the same Dired buffer.  With a [[prefix argument]], all of the descendent Dired
+buffers are included, whether or not they are marked.
+
 
 A '''variable-list''' bookmark saves and restores the values of a set of
 variables.  Command '''`bmkp-set-variable-list-bookmark'''' prompts you
