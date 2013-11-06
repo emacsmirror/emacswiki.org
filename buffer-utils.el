@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/buffer-utils
 ;; URL: http://raw.github.com/rolandwalker/buffer-utils/master/buffer-utils.el
-;; Version: 0.0.3
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.1.0
+;; Last-Updated: 21 Oct 2013
 ;; EmacsWiki: BufferUtils
 ;; Keywords: extensions
 ;;
@@ -57,10 +57,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;    No external dependencies
 ;;
@@ -106,10 +107,12 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, loop, gensym
 (require 'cl)
+
+;;; declarations
 
 (declare-function buffer-utils-system-bury-buffer "buffer-utils.el")
 (declare-function window-normalize-buffer         "window.el")
@@ -131,6 +134,18 @@ which is being obsoleted.")
 ;;          ... do something here...)
 
 (fset 'buffer-utils-system-bury-buffer (symbol-function 'bury-buffer))
+
+;;; compatibility functions
+
+(unless (fboundp 'with-demoted-errors)
+  ;; added in 23.x
+  (defmacro with-demoted-errors (&rest body)
+    "Run BODY and demote any errors to simple messages."
+    (declare (debug t) (indent 0))
+    (let ((err (make-symbol "err")))
+      `(condition-case ,err
+           (progn ,@body)
+         (error (message "Error: %S" ,err) nil)))))
 
 ;;; macros
 
@@ -179,8 +194,10 @@ The size cutoff is defined by the variable
 BUFFER is optional, and defaults to the current buffer."
   (callf or buffer (current-buffer))
   (with-current-buffer buffer
-    (or (/= (point-min) 1)
-        (/= (point-max) (1+ (buffer-size))))))
+    (if (fboundp 'buffer-narrowed-p)
+        (buffer-narrowed-p)
+      (or (/= (point-min) 1)
+          (/= (point-max) (1+ (buffer-size)))))))
 
 ;;;###autoload
 (defun buffer-utils-in-mode (buffer mode &optional derived)
@@ -292,7 +309,7 @@ See `bury-buffer' and `unrecord-window-buffer'."
 ;; End:
 ;;
 ;; LocalWords: BufferUtils ARGS alist utils nonlocally callf WIN's
-;; LocalWords: fsets fset flet
+;; LocalWords: fsets fset flet devel gensym
 ;;
 
 ;;; buffer-utils.el ends here
