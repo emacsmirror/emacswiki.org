@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/button-lock
 ;; URL: http://raw.github.com/rolandwalker/button-lock/master/button-lock.el
-;; Version: 0.9.10
-;; Last-Updated: 14 Sep 2012
+;; Version: 1.0.0
+;; Last-Updated: 21 Oct 2013
 ;; EmacsWiki: ButtonLockMode
 ;; Keywords: mouse, button, hypermedia, extensions
 ;;
@@ -156,10 +156,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -279,7 +280,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, callf2, defun*, union
 (require 'cl)
@@ -291,8 +292,10 @@
 ;;;###autoload
 (defgroup button-lock nil
   "Clickable text defined by regular expression."
-  :version "0.9.10"
-  :link '(emacs-commentary-link "button-lock")
+  :version "1.0.0"
+  :link '(emacs-commentary-link :tag "Commentary" "button-lock")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/button-lock")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/ButtonLockMode")
   :prefix "button-lock-"
   :group 'navigation
   :group 'mouse
@@ -353,8 +356,8 @@ Set this value to nil to disable."
 Set to nil or the empty string to disable the mode-line
 lighter for `button-lock-mode'."
   :type 'string
-  :risky t
   :group 'button-lock)
+(put 'button-lock-mode-lighter 'risky-local-variable t)
 
 ;;; faces
 
@@ -399,9 +402,15 @@ This variable should be set by calling
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; compatibility functions
 
@@ -786,7 +795,7 @@ become visible in a tooltip depending on your Emacs setup.
 to the user via `display-local-help',
 
 :KBD-HELP-MULTILINE is applied to the non-standard
-'kbd-help-multline text property.
+'kbd-help-multiline text property.
 
 :GROUPING designates a subgroup in the pattern match to receive
 the new text properties.  Subgroups, delimited by parentheses,
@@ -1060,7 +1069,8 @@ deactivated and reactivated."
 ;; End:
 ;;
 ;; LocalWords: ButtonLockMode mouseable mybutton keymap propertize
-;; LocalWords: callf cperl nonsticky
+;; LocalWords: callf cperl nonsticky setq fixmee devel uncompiled
+;; LocalWords: MULTILINE multiline Koppelman Bader
 ;;
 
 ;;; button-lock.el ends here
