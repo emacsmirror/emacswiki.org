@@ -1,14 +1,14 @@
 ;;; unicode-progress-reporter.el --- Progress-reporter with fancy characters
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-progress-reporter
 ;; URL: http://raw.github.com/rolandwalker/unicode-progress-reporter/master/unicode-progress-reporter.el
-;; Version: 0.5.3
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.5.4
+;; Last-Updated:  6 Nov 2013
 ;; EmacsWiki: UnicodeProgressReporter
-;; Package-Requires: ((emacs "24.1.0") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((emacs "24.1.0") (ucs-utils "0.7.6") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;; Keywords: interface
 ;;
 ;; GPLv3 License
@@ -40,8 +40,6 @@
 ;;
 ;;     M-x customize-group RET unicode-progress-reporter RET
 ;;
-;;     (unicode-progress-reporter-test)
-;;
 ;; Notes
 ;;
 ;;     redefines `progress-reporter-do-update'
@@ -50,8 +48,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3 and lower : no
 ;;
 ;;     Requires ucs-utils.el
@@ -78,14 +76,15 @@
 ;;; Code:
 ;;
 
-;;; requires
-
-(eval-when-compile
-  ;; declarations for byte compiler
-  (defvar unicode-progress-reporter-type))
+;;; requirements
 
 (autoload 'ucs-utils-vector "ucs-utils" "Return a vector corresponding to SEQUENCE of UCS names or characters.")
 (autoload 'ucs-utils-char   "ucs-utils" "Return the character corresponding to NAME, a UCS name.")
+
+;;; declarations
+
+(eval-when-compile
+  (defvar unicode-progress-reporter-type))
 
 ;;; variables
 
@@ -162,6 +161,7 @@
 
 ;;; utility functions
 
+;;;###autoload
 (defun unicode-progress-reporter-redefine-spinner (symbol value)
   "Set `progress-reporter--pulse-characters'.
 
@@ -239,11 +239,14 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
 ;;;###autoload
 (defgroup unicode-progress-reporter nil
   "Progress-reporter with fancy characters."
-  :version "0.5.3"
-  :link '(emacs-commentary-link "unicode-progress-reporter")
+  :version "0.5.4"
+  :link '(emacs-commentary-link :tag "Commentary" "unicode-progress-reporter")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/unicode-progress-reporter")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/UnicodeProgressReporter")
   :prefix "unicode-progress-reporter-"
   :group 'faces)
 
+;;;###autoload
 (defcustom unicode-progress-reporter-type "Horizontal Blocks"
   "Type of spinner characters to use for progress-reporter."
   :type `(choice ,@(mapcar #'(lambda (x)
