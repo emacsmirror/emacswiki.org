@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 29 15:42:16 2013 (-0700)
+;; Last-Updated: Tue Nov  5 16:01:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 15445
+;;     Update #: 15448
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/11/05 dadams
+;;     Added: bmkp-create-dired-bookmarks-recursive.
+;;     bookmark-set: Added optional arg NO-UPDATE-P - pass it to bookmark-store.
 ;; 2013/10/29 dadams
 ;;     Added: bmkp-pop-to-readable-marker, bmkp-readable-marker, bmkp-bookmark-set-confirm-overwrite,
 ;;            bmkp-bookmark-set-confirms-overwrite-p.
