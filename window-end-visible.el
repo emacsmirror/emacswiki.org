@@ -1,12 +1,12 @@
 ;;; window-end-visible.el --- Find the last visible point in a window
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/window-end-visible
 ;; URL: http://raw.github.com/rolandwalker/window-end-visible/master/window-end-visible.el
-;; Version: 0.0.3
-;; Last-Updated: 7 Sep 2012
+;; Version: 0.1.0
+;; Last-Updated: 29 Oct 2013
 ;; EmacsWiki: WindowEndVisible
 ;; Keywords: extensions
 ;;
@@ -57,7 +57,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -103,11 +107,10 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf
-(eval-when-compile
-  (require 'cl))
+(require 'cl)
 
 ;;; variables
 
@@ -198,6 +201,7 @@ PARTIALLY is as documented at `pos-visible-in-window-p'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords:  WindowEndVisible ARGS alist callf
