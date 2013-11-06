@@ -339,5 +339,22 @@ in my python-mode-hook.
 invoking the command pretty-prints the hole buffer, you can invoke undo if something went
 wrong, and the cursor stays put.
 
+=== Unicode on Mac OS X === 
+When using Emacs 24.1 on Mac OS X compiled via homebrew. The python-shell always used US-ASCII as encoding. To fix it I used:
+<pre>
+(setenv "LC_CTYPE" "UTF-8")
+</pre>
+
+To determine your encoding in the python-shell use:
+<pre>
+>>> import sys; sys.stdout.encoding
+'US-ASCII'
+</pre>
+
+Not having the right encoding set leads to errors in ipython:
+<pre>
+ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
+</pre>
+
 ----
 Categories: CategoryProgramming, ProgrammingModes
