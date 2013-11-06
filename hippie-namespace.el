@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/hippie-namespace
 ;; URL: http://raw.github.com/rolandwalker/hippie-namespace/master/hippie-namespace.el
-;; Version: 0.5.6
-;; Last-Updated: 25 Oct 2012
+;; Version: 0.5.8
+;; Last-Updated: 25 Oct 2013
 ;; EmacsWiki: HippieNamespace
 ;; Keywords: convenience, lisp, tools, completion
 ;;
@@ -95,10 +95,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Uses if present: expand-region.el
 ;;
@@ -177,8 +178,10 @@
 ;;;###autoload
 (defgroup hippie-namespace nil
   "Special treatment for namespace prefixes in `hippie-expand'."
-  :version "0.5.6"
-  :link '(emacs-commentary-link "hippie-namespace")
+  :version "0.5.8"
+  :link '(emacs-commentary-link :tag "Commentary" "hippie-namespace")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/hippie-namespace")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/HippieNamespace")
   :prefix "hippie-namespace-"
   :group 'hippie-expand
   :group 'abbreviations
@@ -221,8 +224,8 @@ Set to nil or a very large number if you don't want a limit."
 Set to nil or the empty string to disable the mode-line
 lighter for `hippie-namespace-mode'."
   :type 'string
-  :risky t
   :group 'hippie-namespace)
+(put 'hippie-namespace-mode-lighter 'risky-local-variable t)
 
 (defcustom hippie-namespace-less-feedback nil
   "Give less echo area feedback."
@@ -312,9 +315,15 @@ Set this value to nil to disable."
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; compatibility functions
 
