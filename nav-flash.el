@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/nav-flash
 ;; URL: http://raw.github.com/rolandwalker/nav-flash/master/nav-flash.el
-;; Version: 1.0.8
-;; Last-Updated: 25 Oct 2012
+;; Version: 1.1.0
+;; Last-Updated: 25 Oct 2013
 ;; EmacsWiki: NavFlash
 ;; Keywords: extensions, navigation, interface
 ;;
@@ -64,10 +64,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -131,8 +132,10 @@
 ;;;###autoload
 (defgroup nav-flash nil
   "Briefly highlight the current line."
-  :version "1.0.8"
-  :link '(emacs-commentary-link "nav-flash")
+  :version "1.1.0"
+  :link '(emacs-commentary-link :tag "Commentary" "nav-flash")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/nav-flash")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/NavFlash")
   :prefix "nav-flash-"
   :group 'navigation
   :group 'extensions)
