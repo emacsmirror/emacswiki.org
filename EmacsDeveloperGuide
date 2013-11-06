@@ -43,6 +43,6 @@
 
 == Q & A ==
 
-Q: How do I convert Lisp_Object of type Lisp_String to char*?
+Q: How to convert Lisp_Object of type Lisp_String to char*?
 
 A: XSTRING(O)->data or better SSDATA(O). Defined in src/lisp.h (SSDATA (Lisp_Object string))
