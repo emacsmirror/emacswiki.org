@@ -94,7 +94,7 @@ Good. I'm not quite finished, though.
 
 ----
 
-If you need to bulk upload a ton of files from the command line, [http://oddmuse.org/wiki/Automatic_Posting_and_Uploading there are tools] to help you out. The only tricky element is that you need to provide the secret that bypasses the bot filter: -F uihnscuskc=1 should do the trick. Also make sure to sleep for 5s between invokations of *curl* or *wikiput*.
+If you need to bulk upload a ton of files from the command line, [http://oddmuse.org/wiki/Automatic_Posting_and_Uploading there are tools] to help you out. The only tricky element is that you need to provide the secret that bypasses the bot filter: -F uihnscuskc=1 (for curl) or -z uihnscuskc for wikiput should do the trick. Also make sure to sleep for 5s between invokations of *curl* or *wikiput*.
 
 -- AlexSchroeder 2013-11-06 20:49 UTC
 
