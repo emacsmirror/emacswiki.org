@@ -1,14 +1,14 @@
 ;;; unicode-whitespace.el --- teach whitespace-mode about fancy characters
 ;;
-;; Copyright (c) 2012 Roland Walker
+;; Copyright (c) 2012-13 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-whitespace
 ;; URL: http://raw.github.com/rolandwalker/unicode-whitespace/master/unicode-whitespace.el
-;; Version: 0.2.3
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.2.4
+;; Last-Updated:  6 Nov 2013
 ;; EmacsWiki: UnicodeWhitespace
-;; Package-Requires: ((ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
+;; Package-Requires: ((ucs-utils "0.7.6") (persistent-soft "0.8.8") (pcache "0.2.3"))
 ;; Keywords: faces, wp, interface
 ;;
 ;; Simplified BSD License
@@ -25,8 +25,8 @@
 ;;
 ;; Explanation
 ;;
-;; Unicode-whitespace makes `whitespace-mode' Unicode-aware in two
-;; different ways:
+;; Unicode-whitespace makes the built-in `whitespace-mode' Unicode-aware
+;; in two different ways:
 ;;
 ;;     1. Recognizing Unicode whitespace characters in your buffer,
 ;;        such as "No-Break Space" or "Hair Space".
@@ -97,8 +97,8 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
@@ -203,7 +203,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 (require 'whitespace)
 
@@ -238,8 +238,10 @@
 ;;;###autoload
 (defgroup unicode-whitespace nil
   "Teach whitespace-mode about fancy characters."
-  :version "0.2.3"
-  :link '(emacs-commentary-link "unicode-whitespace")
+  :version "0.2.4"
+  :link '(emacs-commentary-link :tag "Commentary" "unicode-whitespace")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/unicode-whitespace")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/UnicodeWhitespace")
   :prefix "unicode-whitespace-"
   :group 'i18n
   :group 'faces)
@@ -583,9 +585,24 @@ See `unicode-whitespace-toggle-echo' to activate."
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
+
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
 ;;; utility functions
 
