@@ -1,0 +1,48 @@
+/This wiki page was started by a newbie Emacs developer. Supplement this article, but avoid duplicating information./
+
+== Recommended readings ==
+
+* Project homepage at [http://savannah.gnu.org/projects/emacs/ Savannah]
+* [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/INSTALL.BZR INSTALL.BZR] file from source checkout
+* Documents from [http://bzr.savannah.gnu.org/lh/emacs/trunk/files/head:/etc/ etc directory], e.g. [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/CONTRIBUTE CONTRIBUTE], [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/DEBUG DEBUG]
+* <pre>(info "(elisp) Tips") </pre>
+* [http://www.gnu.org/prep/standards/ GNU coding standards]
+* [https://www.gnu.org/prep/maintain/html_node/Legal-Matters.html#Legal-Matters GNU Legal matters]
+* [[BzrForEmacsDevs]]
+
+== Revisions vs releases ==
+
+ bzr tags | grep -i emacs
+
+ EMACS_19_34          15863
+ EMACS_20_1           19949
+ EMACS_20_2           19961
+ EMACS_20_3           23080
+ EMACS_20_4           24950
+ EMACS_21_1_BASE      39536
+ EMACS_22_1           77438.1.337
+ EMACS_22_2           77438.1.2849
+ EMACS_22_3           77438.1.3273
+ EMACS_22_BRANCHPOINT 77438
+ EMACS_23_1           ?
+ EMACS_23_1_BASE      96168
+ EMACS_23_2           99634.2.165
+ EMACS_23_3           99634.2.879
+ EMACS_23_4           99634.2.1025
+ emacs-24.0.96        107781.1.132
+ emacs-24.0.97        107781.1.221
+ emacs-24.1           107781.1.251
+ emacs-24.2           107781.1.340
+ emacs-24.2.90        110764.1.188
+ emacs-24.2.91        110764.1.276
+ emacs-24.2.92        110764.1.402
+ emacs-24.2.93        110764.1.467
+ emacs-24.3           110764.1.562
+ emacs-24.3-base      107781.1.382
+ emacs-24.3-rc1       110764.1.556
+
+== Q & A ==
+
+Q: How do I convert Lisp_Object of type Lisp_String to char*?
+
+A: XSTRING(O)->data or better SSDATA(O). Defined in src/lisp.h (SSDATA (Lisp_Object string))
