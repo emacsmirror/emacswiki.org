@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/syntactic-sugar
 ;; URL: http://raw.github.com/rolandwalker/syntactic-sugar/master/syntactic-sugar.el
-;; Version: 0.9.2
-;; Last-Updated: 30 Oct 2012
+;; Version: 0.9.4
+;; Last-Updated:  1 Nov 2013
 ;; EmacsWiki: SyntacticSugar
 ;; Package-Requires:
 ;; Keywords: extensions
@@ -76,10 +76,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : yes
+;;     GNU Emacs version 22.2           : yes
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;; Bugs
 ;;
@@ -128,8 +129,10 @@
 ;;;###autoload
 (defgroup syntactic-sugar nil
   "Effect-free forms for clarification"
-  :version "0.9.2"
-  :link '(emacs-commentary-link "syntactic-sugar")
+  :version "0.9.4"
+  :link '(emacs-commentary-link :tag "Commentary" "syntactic-sugar")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/syntactic-sugar")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/SyntacticSugar")
   :prefix "syntactic-sugar-"
   :group 'extensions)
 
