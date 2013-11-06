@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/fixmee
 ;; URL: http://raw.github.com/rolandwalker/fixmee/master/fixmee.el
-;; Version: 0.8.2
-;; Last-Updated: 16 Nov 2012
+;; Version: 0.8.4
+;; Last-Updated: 30 Oct 2013
 ;; EmacsWiki: FixmeeMode
 ;; Keywords: navigation, convenience
-;; Package-Requires: ((button-lock "0.9.8") (nav-flash "1.0.0") (back-button "0.6.0") (smartrep "0.0.3") (string-utils "0.0.6") (tabulated-list "0"))
+;; Package-Requires: ((button-lock "1.0.0") (nav-flash "1.0.0") (back-button "0.6.0") (smartrep "0.0.3") (string-utils "0.3.2") (tabulated-list "0"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -113,10 +113,11 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
-;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : no
+;;     GNU Emacs version 22.2           : yes, with some limitations
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     Requires: button-lock.el
 ;;               tabulated-list.el (included with Emacs 24.x)
@@ -268,14 +269,29 @@
   (defvar tabulated-list-printer)
   (defvar button-lock-mode))
 
+(unless (boundp 'special-mode-map)
+  ;; backwards compat, needed for tabulated-list in Emacs 22
+  (defvar special-mode-map
+    (let ((map (make-sparse-keymap)))
+      (suppress-keymap map)
+      (define-key map "q" 'quit-window)
+      (define-key map " " 'scroll-up-command)
+      (define-key map "\C-?" 'scroll-down-command)
+      (define-key map "?" 'describe-mode)
+      (define-key map "h" 'describe-mode)
+      (define-key map ">" 'end-of-buffer)
+      (define-key map "<" 'beginning-of-buffer)
+      (define-key map "g" 'revert-buffer)
+      map)))
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup fixmee nil
   "Navigate to \"fixme\" notices in code."
-  :version "0.8.2"
+  :version "0.8.4"
   :link '(emacs-commentary-link :tag "Commentary" "fixmee")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/fixmee")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/fixmee")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/FixmeeMode")
   :prefix "fixmee-"
   :group 'navigation
@@ -299,8 +315,8 @@ that defines comments in its syntax table."
 Set to nil or the empty string to disable the mode-line
 lighter for `fixmee-mode'."
   :type 'string
-  :risky t
   :group 'fixmee)
+(put 'fixmee-mode-lighter 'risky-local-variable t)
 
 (defcustom fixmee-less-feedback nil
   "Give less echo area feedback."
@@ -620,6 +636,65 @@ Expressed as an element of `fixmee-notice-list'.")
   "If non-nil, `fixmee--listview-mode' shows notices from the current buffer only.")
 (make-variable-buffer-local 'fixmee--listview-local-only)
 
+;;; compatibility functions
+
+(unless (fboundp 'string-match-p)
+  ;; added in 23.x
+  (defun string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+(unless (fboundp 'back-button-push-mark-local-and-global)
+  (fset 'back-button-push-mark (symbol-function 'push-mark))
+  (defun back-button-push-mark-local-and-global (&optional location nomsg activate consecutives)
+  "Push mark at LOCATION, and unconditionally add to `global-mark-ring'.
+
+This function differs from `push-mark' in that `global-mark-ring'
+is always updated.
+
+LOCATION is optional, and defaults to the current point.
+
+NOMSG and ACTIVATE are as documented at `push-mark'.
+
+When CONSECUTIVES is set to 'limit and the new mark is in the same
+buffer as the first entry in `global-mark-ring', the first entry
+in `global-mark-ring' will be replaced.  Otherwise, a new entry
+is pushed onto `global-mark-ring'.
+
+When CONSECUTIVES is set to 'allow-dupes, it is possible to push
+an exact duplicate of the current topmost mark onto `global-mark-ring'."
+  (callf or location (point))
+  (back-button-push-mark location nomsg activate)
+  (when (or (eq consecutives 'allow-dupes)
+            (not (equal (mark-marker)
+                        (car global-mark-ring))))
+    (when (and (eq consecutives 'limit)
+               (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
+      (move-marker (car global-mark-ring) nil)
+      (pop global-mark-ring))
+    (push (copy-marker (mark-marker)) global-mark-ring)
+    (when (> (length global-mark-ring) global-mark-ring-max)
+      (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
+      (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))))
+
+(unless (fboundp 'string-utils-trim-whitespace)
+  (defun string-utils-trim-whitespace (str-val &optional whitespace-type multi-line)
+  "Return STR-VAL with leading and trailing whitespace removed.
+
+WHITESPACE-TYPE is ignored.
+
+If optional MULTI-LINE is set, trim spaces at starts and
+ends of all lines throughout STR-VAL."
+  (let* ((string-utils-whitespace " \t\n\r\f")
+         (whitespace-regexp (concat "[" string-utils-whitespace "]"))
+         (start-pat (if multi-line "^" "\\`"))
+         (end-pat   (if multi-line "$" "\\'")))
+    (save-match-data
+      (replace-regexp-in-string (concat start-pat whitespace-regexp "+") ""
+         (replace-regexp-in-string (concat whitespace-regexp "+" end-pat) ""
+            str-val))))))
+
 ;;; keymaps
 
 (defvar fixmee-mode-map (make-sparse-keymap) "Keymap for `fixmee-mode' minor-mode.")
@@ -784,58 +859,6 @@ in GNU Emacs 24.1 or higher."
      `(called-interactively-p ,kind))
     (t
      '(called-interactively-p))))
-
-;;; compatibility functions
-
-(unless (fboundp 'back-button-push-mark-local-and-global)
-  (fset 'back-button-push-mark (symbol-function 'push-mark))
-  (defun back-button-push-mark-local-and-global (&optional location nomsg activate consecutives)
-  "Push mark at LOCATION, and unconditionally add to `global-mark-ring'.
-
-This function differs from `push-mark' in that `global-mark-ring'
-is always updated.
-
-LOCATION is optional, and defaults to the current point.
-
-NOMSG and ACTIVATE are as documented at `push-mark'.
-
-When CONSECUTIVES is set to 'limit and the new mark is in the same
-buffer as the first entry in `global-mark-ring', the first entry
-in `global-mark-ring' will be replaced.  Otherwise, a new entry
-is pushed onto `global-mark-ring'.
-
-When CONSECUTIVES is set to 'allow-dupes, it is possible to push
-an exact duplicate of the current topmost mark onto `global-mark-ring'."
-  (callf or location (point))
-  (back-button-push-mark location nomsg activate)
-  (when (or (eq consecutives 'allow-dupes)
-            (not (equal (mark-marker)
-                        (car global-mark-ring))))
-    (when (and (eq consecutives 'limit)
-               (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
-      (move-marker (car global-mark-ring) nil)
-      (pop global-mark-ring))
-    (push (copy-marker (mark-marker)) global-mark-ring)
-    (when (> (length global-mark-ring) global-mark-ring-max)
-      (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
-      (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))))
-
-(unless (fboundp 'string-utils-trim-whitespace)
-  (defun string-utils-trim-whitespace (str-val &optional whitespace-type multi-line)
-  "Return STR-VAL with leading and trailing whitespace removed.
-
-WHITESPACE-TYPE is ignored.
-
-If optional MULTI-LINE is set, trim spaces at starts and
-ends of all lines throughout STR-VAL."
-  (let* ((string-utils-whitespace " \t\n\r\f")
-         (whitespace-regexp (concat "[" string-utils-whitespace "]"))
-         (start-pat (if multi-line "^" "\\`"))
-         (end-pat   (if multi-line "$" "\\'")))
-    (save-match-data
-      (replace-regexp-in-string (concat start-pat whitespace-regexp "+") ""
-         (replace-regexp-in-string (concat whitespace-regexp "+" end-pat) ""
-            str-val))))))
 
 ;;; utility functions
 
