@@ -3,6 +3,7 @@
 == Recommended readings ==
 
 * Project homepage at [http://savannah.gnu.org/projects/emacs/ Savannah]
+* Before asking search the mailing lists, [http://emacs.1067599.n5.nabble.com/ nabble] is really good at it.
 * [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/INSTALL.BZR INSTALL.BZR] file from source checkout
 * Documents from [http://bzr.savannah.gnu.org/lh/emacs/trunk/files/head:/etc/ etc directory], e.g. [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/CONTRIBUTE CONTRIBUTE], [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/DEBUG DEBUG]
 * <code>(info "(elisp) Tips")</code>
