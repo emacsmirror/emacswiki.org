@@ -752,6 +752,115 @@ If the operator is missing the buffer is searched for RE starting at the beginni
 (add-to-list 'org-open-at-point-functions 'org-at-buffer)
 
 </pre>
+== Grepping without dependence on external programs ==
+Call M-x elgrep for grepping the files in one directory for a regular expression.
+With prefix-arg elgrep recurses into sub-directories.
+Output goes into a grep-buffer with all its features.
+<pre>
+(defvar elgrep-file-name-re-hist nil
+  "History of file-name regular expressions for `elgrep' (which see).")
+(defvar elgrep-re-hist nil
+  "History of regular expressions for `elgrep' (which see).")
+
+(defun elgrep (dir file-name-re re &rest options)
+  "Grep files via emacs lisp (no dependence on external grep).
+Return list of filematches.
+
+Each filematch is a cons (file . matchdata).
+file is the file name.
+matchdata is a list of matches
+Each match is a plist of :match, :context, :line, :beg and :end.
+options is a plist
+Flags:
+
+:abs absolute file names
+t: full absolute file names;
+nil: (default) file names relative to default-directory of the last visited buffer
+
+:interactive
+t: call as interactive
+
+:cBeg context begin (line beginning)
+Lines before match defaults to 0
+
+:cEnd context end (line end)
+Lines behind match defaults to 0
+
+:recursive
+t: also grep recursively subdirectories in dir
+"
+  (interactive (append (list (read-directory-name "Directory:")
+			     (read-regexp "File-name regexp:" (car-safe elgrep-file-name-re-hist) 'elgrep-file-name-re-hist)
+			     (read-regexp "Emacs regexp:" (car-safe elgrep-re-hist) 'elgrep-re-hist))
+		       (when current-prefix-arg (list :recursive t))))
+  (unless dir
+    (setq dir default-directory))
+  (setq dir (concat (directory-file-name (substitute-in-file-name dir)) "/"))
+  (with-current-buffer (get-buffer-create "*elgrep*")
+    (let ((files (directory-files dir (plist-get options :abs) file-name-re))
+	  filematches
+	  (inhibit-read-only t))
+      (loop for file in files do
+	    (unless (directory-p file)
+	      (erase-buffer)
+	      (insert-file-contents (if (plist-get options :abs) file (concat dir file)))
+	      (let (filematch
+		    (last-line-number 1)
+		    (last-pos (point-min)))
+		(goto-char (point-min))
+		(while (search-forward-regexp re nil 'noErr)
+		  (let* ((n (/ (length (match-data)) 2))
+			 (matchdata (loop for i from 0 below n
+					  collect
+					  (list :match (match-string-no-properties i)
+						:context (buffer-substring-no-properties
+							  (line-beginning-position (plist-get options :cBeg))
+							  (line-end-position (plist-get options :cEnd)))
+						:line (prog1 
+							  (setq last-line-number
+								(+ last-line-number -1
+								   (save-excursion
+								     (save-restriction
+								       (narrow-to-region last-pos (point))
+								       (goto-char (point-min))
+								       (- (buffer-size) (forward-line (buffer-size)))))))
+							(setq last-pos (point)))
+						:beg (match-beginning i)
+						:end (match-end i)))))
+		    (setq filematch (cons matchdata filematch))))
+		(when filematch
+		  (setq filematches (cons (cons file (nreverse filematch)) filematches))))))
+      (setq filematches (nreverse filematches))
+      (when (plist-get options :recursive)
+	(setq files (loop for file in (directory-files dir)
+			  if (and (eq (car (file-attributes (concat dir file))) t) (null (string-match "^\\.[.]?$" file)))
+			  collect file))
+	(dolist (file files)
+	  (setq filematches
+		(append
+		 (if (plist-get options :abs)
+		     (apply 'elgrep (concat dir file) file-name-re re options)
+		   (let ((files (apply 'elgrep (concat dir file) file-name-re re options)))
+		     ;;(debug)
+		     (loop for f on files do
+			   (setcar f (cons (concat file "/" (caar f)) (cdar f))))
+		     files))
+		 filematches))))
+      (when (and filematches (or (plist-get options :interactive) (called-interactively-p 'any)))
+	(unless (plist-get options :abs)
+	  (setq default-directory dir))
+	(delete-region (point-min) (point-max))
+	(dolist (filematch filematches)
+	  (let ((fname (car filematch)))
+	    (dolist (match (cdr filematch))
+	      (dolist (part match)
+		(insert (format "%s:%d:%s\n" fname (plist-get part :line) (plist-get part :context)))
+		))))
+	(grep-mode)
+	(display-buffer (current-buffer)))
+      filematches)))
+</pre>
+
 
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
