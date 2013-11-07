@@ -60,7 +60,7 @@
 
 
 ;; 进入子目录的时候使用同一个buffer
-(toggle-dired-find-file-reuse-dir 1)
+(toggle-diredp-find-file-reuse-dir 1)
 ;; 让 dired 可以递归的拷贝和删除目录
 (setq dired-recursive-copies 'always)
 (setq dired-recursive-deletes 'always)
