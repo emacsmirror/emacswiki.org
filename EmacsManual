@@ -25,6 +25,8 @@ You can also provide some *context*. If we're linking to [[Manual:macros]], for 
 * ##Manual:macros (emacs)## -> Manual:macros (emacs)
 * ##[[Manual:point]] (lisp)## -> [[Manual:point]] (lisp)
 
+The context provided just needs to match somewhere in the link or description of the particular entry you want to refer to.
+
 This features uses the
 [http://www.emacswiki.org/cgi-bin/info-ref info-ref] script.
 You can download the [http://www.emacswiki.org/emacs/info-ref.dat database] used.
