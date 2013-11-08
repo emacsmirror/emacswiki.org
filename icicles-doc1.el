@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Nov  4 08:07:08 2013 (-0800)
+;; Last-Updated: Fri Nov  8 08:20:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27878
+;;     Update #: 27881
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4173,8 +4173,10 @@
 ;;  For a long time Icicles had only the equivalent of values 3 and 4,
 ;;  and I consider them the most useful.  Sometimes you will want to
 ;;  temporarily turn off expansion for apropos completion.  You can do
-;;  that using `C-"' in the minibuffer: it toggles between 3 and 4 (by
-;;  default - see option `icicle-incremental-completion-alt').
+;;  that using `C-"' in the minibuffer: it toggles between any two of
+;;  the behaviors (3 and 4, by default - see option
+;;  `icicle-expand-input-to-common-match-alt').  You can use `C-M-"'
+;;  in the minibuffer to cycle among all behaviors.
 ;;
 ;;  See Also:
 ;;
