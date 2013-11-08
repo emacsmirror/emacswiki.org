@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 15 11:16:28 2013 (-0700)
+;; Last-Updated: Thu Nov  7 20:35:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3255
+;;     Update #: 3295
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -18,11 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `easymenu', `faces', `faces+',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
+;;   `faces', `faces+', `fit-frame', `frame-fns', `help+20', `info',
+;;   `info+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,8 +77,9 @@
 ;;
 ;;    `hlt-choose-default-face', `hlt-copy-props', `hlt-eraser',
 ;;    `hlt-eraser-mouse', `hlt-hide-default-face', `hlt-highlight',
-;;    `hlt-highlight-all-prop', `hlt-highlighter',
-;;    `hlt-highlighter-mouse', `hlt-highlight-property-with-value',
+;;    `hlt-highlight-all-prop', `hlt-highlight-enclosing-list',
+;;    `hlt-highlighter', `hlt-highlighter-mouse',
+;;    `hlt-highlight-property-with-value',
 ;;    `hlt-highlight-regexp-region', `hlt-highlight-regexp-to-end',
 ;;    `hlt-highlight-region', `hlt-highlight-single-quotations',
 ;;    `hlt-mouse-copy-props', `hlt-mouse-face-each-line',
@@ -498,6 +500,8 @@
 ;;                   'hlt-previous-highlight)
 ;;   (global-set-key [(shift control ?n)]  ; Emacs 21 or later
 ;;                   'hlt-next-highlight)
+;;   (global-set-key [(control meta shift ?s)]
+;;                   'hlt-highlight-enclosing-list)
 ;;
 ;;  You might also want to bind command `hlt-choose-default-face',
 ;;  which you can use to change the current default highlighting face.
@@ -551,6 +555,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/11/07 dadams
+;;     Added: hlt-highlight-enclosing-list.
 ;; 2013/09/15 dadams
 ;;     Soft-require font-lock+.el (Emacs 22+).
 ;; 2013/07/24 dadams
@@ -1395,6 +1401,29 @@ Other arguments:
     (set-buffer-modified-p modified-p))
   (setq hlt-last-face  new-face)
   (when msg-p (message "Replacing overlay highlighting face `%s'... done." old-face)))
+
+;;;###autoload
+(defun hlt-highlight-enclosing-list (arg &optional face mousep)
+  "Highlight the ARGth level sexp enclosing point.
+ARG is the numeric prefix value.
+
+A negative prefix arg prompts you for the face to use.  This face is
+used by default from then on.  You can also choose the default face
+using command `hlt-choose-default-face'.  The same face is used as the
+default for all `hlt-*' functions.
+
+When used in Lisp code:
+ MOUSEP non-nil means use propert `mouse-face', not `face'."
+  (interactive (list (prefix-numeric-value current-prefix-arg)
+                     (if (< (prefix-numeric-value current-prefix-arg) 0)
+                         (call-interactively #'hlt-choose-default-face)
+                       hlt-last-face)))
+  (unless arg (setq arg  1))
+  (set-mark (save-excursion (up-list (- arg)) (point)))
+  (up-list arg)
+  (unless face (setq face  hlt-last-face))
+  (hlt-highlight-region nil nil face 'MSGP mousep)
+  (setq mark-active  nil))
 
 ;;;###autoload
 (defun hlt-highlight-single-quotations (&optional face)
