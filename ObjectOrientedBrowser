@@ -19,5 +19,9 @@ anything about `modules'. That is, when I'm using it on a Python
 project, it crams *all* the classes in the project into a single
 namespace, and too bad if you have collisions. -- ChrisArmstrong
 
+[new]
+This package seems defunct now (Nov 2013). Attempting to create a new environment in GNU Emacs 24.3.1 results in error <tt>wrong type argument: numberp, t</tt>. Are there any alternatives? -- fb 2013-11-08 16:36 UTC
+
+
 ----
 CategoryProgrammerUtils
