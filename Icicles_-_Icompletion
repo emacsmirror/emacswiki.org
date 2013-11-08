@@ -187,8 +187,10 @@ completion.
 For a long time '''Icicles''' had only the equivalent of values ##3## and ##4##,
 and I consider them the most useful.  Sometimes you will want to
 temporarily turn off expansion for apropos completion.  You can do
-that using '''`##C-"##'''' in the minibuffer: it toggles between ##3## and ##4## (by
-default - see option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-alt|icicle-incremental-completion-alt]]</tt>'''').
+that using '''`##C-"##'''' in the minibuffer: it toggles between 
+any two of the behaviors (##3## and ##4##, by
+default - see option '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-alt|icicle-expand-input-to-common-match-alt]]</tt>'''').  You can use '''`##C-M-"##''''
+in the minibuffer to cycle among all behaviors.
 
 See Also:
 
