@@ -114,7 +114,7 @@ lets you type ahead before any candidate redisplay occurs.
 
 You can cycle incremental completion at any time (changing `icicle-incremental-completion' among `nil', 
 `t', and `always') using command `icicle-cycle-incremental-completion', which is bound to
-'''`C-#'''' in the minibuffer.  If the number of completion candidates
+'''`<tt>C-#</tt>'''' in the minibuffer.  If the number of completion candidates
 is very large, then use `<tt>C-#</tt>' to turn off incremental completion -- that will save time by not updating `*Completions*'. See also
 [[Icicles - Large Candidate Sets]] for other ways to deal with a large number of candidates.
 
@@ -237,7 +237,7 @@ User options '''`<tt>[[Icicles - Customization and General Tips#icicle-increment
 If either `icicle-incremental-completion' or
 `icicle-highlight-input-completion-failure' is `nil', then no
 such highlighting is done.  Remember that you can cycle
-incremental completion on and off using `C-#' in the minibuffer.
+incremental completion on and off using `<tt>C-#</tt>' in the minibuffer.
 
 Because this highlighting can have a negative impact on
 performance, you can fine-tune when you want it to occur.  The
