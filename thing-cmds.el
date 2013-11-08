@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Wed Oct  2 09:41:22 2013 (-0700)
+;; Last-Updated: Thu Nov  7 19:51:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 726
+;;     Update #: 728
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -66,6 +66,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/07 dadams
+;;     mark-enclosing-sexp-(forward|backward): 2nd arg to mark-enclosing sexp just needs to be t.
 ;; 2013/10/02 dadams
 ;;     thgcmd-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;; 2013/09/08 dadams
@@ -381,7 +383,7 @@ This command does not work if point is in a string or a comment."
   "`mark-enclosing-sexp' leaving point at region end."
   (interactive "P")
   (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
-      (mark-enclosing-sexp nil (prefix-numeric-value arg))
+      (mark-enclosing-sexp nil t)
     (mark-enclosing-sexp (prefix-numeric-value arg) t)))
 
 ;;;###autoload
@@ -389,7 +391,7 @@ This command does not work if point is in a string or a comment."
   "`mark-enclosing-sexp' leaving point at region start."
   (interactive "P")
   (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
-      (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
+      (mark-enclosing-sexp nil t)
     (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
 
 (when (> emacs-major-version 20)        ; `hide-comnt.el' is for Emacs 21+.
