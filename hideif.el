@@ -1574,6 +1574,7 @@ Return a list of the arguments, if '...' exists the first arg will be hif-etc."
                          ;; or we save the tokens, parse it after parameter replacement
                          (expr (and tokens
                                     (or (and hif-simple-token-only
+                                             (listp tokens)
                                              (= (length tokens) 1)
                                              (hif-parse-if-exp tokens))
                                         `(hif-define-macro ,parmlist ,tokens))))
@@ -1581,9 +1582,10 @@ Return a list of the arguments, if '...' exists the first arg will be hif-etc."
                                   (assoc (intern name) hide-ifdef-env))))
                     (and name
                          (if SA
-                             (setcdr SA expr) ;; Lazy evaluation, eval only if hif-lookup find it
+                             (or (setcdr SA expr) t) ;; Lazy evaluation, eval only if hif-lookup find it
                            ;; define it anyway, even if nil it's still in list and therefore considerred defined
                            (push (cons (intern name) expr) hide-ifdef-env)))))
+            ;; #undef
             (and name
                  (hif-undefine-symbol (intern name))))))
        t))
@@ -1742,7 +1744,8 @@ Turn off hiding by calling `show-ifdefs'."
 (defun hif-find-ifdef-block ()
   "Utility for hide and show `ifdef-block'.
 Return as (TOP . BOTTOM) the extent of ifdef block."
-  (if (fboundp 'c-backward-conditional-with-else)
+  (if (and (fboundp 'c-backward-conditional-with-else)
+           (fboundp 'c-forward-conditional-with-else))
       ;;Use my modified functions in cc-mode.
       (save-excursion
         (cons
@@ -1834,7 +1837,7 @@ If prefixed, it will also hide #ifdefs themselves."
   "Compress the define list ENV into a list of defined symbols only."
   (let ((new-defs nil))
     (dolist (def env new-defs)
-      (if (hif-lookup (car def)) (push (car env) new-defs)))))
+      (if (hif-lookup (car def)) (push (car def) new-defs)))))
 
 (defun hide-ifdef-set-define-alist (name)
   "Set the association for NAME to `hide-ifdef-env'."
