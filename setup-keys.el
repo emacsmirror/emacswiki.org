@@ -8,19 +8,19 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 23 18:05:02 2013 (-0700)
+;; Last-Updated: Thu Nov  7 20:32:17 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1233
+;;     Update #: 1236
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cmds-menu', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `eyedropper', `faces',
-;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `highlight', `info', `info+', `isearch+',
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `cus-theme',
+;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
+;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
+;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
 ;;   `ring', `second-sel', `simple+', `strings', `thingatpt',
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/07 dadams
+;;     Bind hlt-highlight-enclosing-list to C-M-S.
 ;; 2013/10/23 dadams
 ;;     Bind C-x t s to either doremi-custom-themes+ or doremi-color-themes+.
 ;; 2013/09/15 dadams
@@ -671,7 +673,8 @@
     (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)                     ; `C-x S-mouse-2'
     (when (fboundp 'next-single-char-property-change) ; Emacs 21+
       (global-set-key [(shift control ?p)] 'hlt-previous-highlight)            ; `C-S-p'
-      (global-set-key [(shift control ?n)] 'hlt-next-highlight))))             ; `C-S-n'
+      (global-set-key [(shift control ?n)] 'hlt-next-highlight))               ; `C-S-n'
+    (global-set-key [(control meta shift ?s)] 'hlt-highlight-enclosing-list))) ; `C-M-S'
 
 (eval-after-load "highlight-symbol"
   '(progn
