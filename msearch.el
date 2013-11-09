@@ -252,13 +252,23 @@ Instead of match-data the limits can also be given explicitely with MATCH-B and 
 	   (progn (goto-char match-e)
 		  (looking-at (cdr limits))))))))
 
-(defun msearch-truncate-word (word &optional n)
-  "If WORD is longer than N then replace its middle by \"...\". N defaults to 10."
+(defun msearch-truncate-word (word &optional n face)
+  "If WORD is longer than N then replace its middle by \"...\". N defaults to 10.
+If face is non-nil the real string parts are propertised in face FACE."
   (unless n (setq n 10))
   (if (> (length word) n)
-      (let ((pos (/ (- (length word) n) 2)))
-	(concat (substring word 0 pos) "..." (substring word (- (length word) pos))))
-    word))
+      (let* ((pos (/ (- (length word) n) 2))
+	     (b (substring word 0 pos))
+	     (e (substring word (- (length word) pos))))
+	(when face
+	  (setq b (propertize b 'face face)
+		e (propertize e 'face face)))
+	(concat b
+		"..."
+		e))
+    (if face
+	(propertize word 'face face)
+      word)))
 
 (defun msearch-lock-word (b e word face)
   "Highlight all matches of mouse-selection within the visible region."
@@ -370,7 +380,7 @@ the next face from msearch-faces for next highlighting."
 	    (curbuf (current-buffer)))
 	(msearch-set-word new-word)
 	(unless (msearch-check-limits msearch-full-word/symbol start end)
-	  (message "Msearch string %S at point not meeting boundary conditions." (msearch-truncate-word new-word)))
+	  (message (concat "Msearch string \"" (msearch-truncate-word new-word 10 msearch-face) "\" at point not meeting boundary conditions.")))
 	(save-excursion
 	  (while slaves
 	    (if (get-buffer (car slaves))
