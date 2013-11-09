@@ -20,11 +20,17 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; Keywords: mouse search selection (highlight occurences of mouse selection)
-
+;;
+;; Features that might be required by this library:
+;; 
+;; cl (common lisp package)
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;;; Commentary:
-
+;; 
 ;; After activating the minor mode "msearch-mode" mouse-dragging over
-;; some text highlightes all matches of this text in the current
+;; some text highlights all matches of this text in the current
 ;; buffer. Msearch-mode can be (de)activated by (un)checking msearch
 ;; in the minor-mode menu of the mode line.
 ;;
@@ -32,7 +38,7 @@
 ;; Put msearch.el into your load-path and add the following line into
 ;; your emacs start-up file (e.g. "~/.emacs"):
 ;; (require 'msearch)
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changes:
 ;;
@@ -91,8 +97,11 @@
 ;; 2013-10-29, TN
 ;; Include proposal of Peter Harlan (Option case-fold-search)
 ;; word/symbol limits
+;;
+;; 2013-11-09 TZA
+;; Implement most of Peter Harlan's proposals.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;
 ;;; Code:
 
 (defcustom msearch-face 'msearch-level-1 ;; was '(background-color . "yellow")
@@ -215,23 +224,33 @@ Note, customization of this variable has no influence on buffers already used wi
 			 (const :tag "Double-click" down-mouse-1-handler-list)))
   :group 'msearch)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; end of customizations
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(eval-when-compile
+  (require 'cl))
+
 (eval-when-compile
   (defvar msearch-word) ;; word or list of cons (word . face) to be highlighted
   (defvar msearch-old-word)
   (defvar msearch-slaves)
   (defvar msearch-mode-menu-bar-map))
 
-(defun msearch-check-limits (limits)
-  "Check wether the previous match obeys the limit check. E.g. limits == (\"\\\\<\" . \"\\\\>\")."
-  (let ((match-b (match-beginning 0))
-	(match-e (match-end 0))
-	(inhibit-changing-match-data t))
-    (save-excursion
-      (goto-char match-b)
-      (and
-       (looking-at (car limits))
-       (progn (goto-char match-e)
-       (looking-at (cdr limits)))))))
+(defun msearch-check-limits (limits &optional match-b match-e)
+  "Check wether the previous match obeys the limit check. E.g. limits == (\"\\\\<\" . \"\\\\>\").
+Returns always t if limits is nil.
+Instead of match-data the limits can also be given explicitely with MATCH-B and MATCH-E"
+  (or (null limits)
+      (let ((inhibit-changing-match-data t))
+	(unless match-b (setq match-b (match-beginning 0)))
+	(unless match-e (setq match-e (match-end 0)))
+	(save-excursion
+	  (goto-char match-b)
+	  (and
+	   (looking-at (car limits))
+	   (progn (goto-char match-e)
+		  (looking-at (cdr limits))))))))
 
 (defun msearch-lock-word (b e word face)
   "Highlight all matches of mouse-selection within the visible region."
@@ -240,14 +259,12 @@ Note, customization of this variable has no influence on buffers already used wi
     (save-excursion
       (goto-char b)
       (while (search-forward word e 'noError)
-	(if (and
-	     (or (null msearch-full-word/symbol)
-		 (msearch-check-limits msearch-full-word/symbol))
-	     (null (get-char-property (match-beginning 0) 'msearch)))
+	(when (and
+	       (msearch-check-limits msearch-full-word/symbol)
+	       (null (get-char-property (match-beginning 0) 'msearch)))
 	  (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
 	    (overlay-put ov 'face face)
-	    (overlay-put ov 'msearch 't)))
-	))))
+	    (overlay-put ov 'msearch 't)))))))
 
 (defun msearch-lock-function (b e)
   "Highlight all matches of mouse-selection within the visible region."
@@ -344,6 +361,8 @@ the next face from msearch-faces for next highlighting."
 	    slaves-released
 	    (curbuf (current-buffer)))
 	(msearch-set-word new-word)
+	(unless (msearch-check-limits msearch-full-word/symbol start end)
+	  (message "Msearch string at point not meeting boundary conditions."))
 	(save-excursion
 	  (while slaves
 	    (if (get-buffer (car slaves))
@@ -373,7 +392,7 @@ the next face from msearch-faces for next highlighting."
 
 (defun msearch-enslave-buffer (buf)
   "Let the current buffer be the master of buf.
-Msearch-strings of the current buffer are also high-lighted in buf.
+Msearch-strings of the current buffer are also highlighted in buf.
 The slave buf is released when msearch of the master is switched off."
   (interactive
    (list (let ((buflist (mapcar 'buffer-name (cdr (user-buffer-list)))))
@@ -406,41 +425,47 @@ The slave buf is released when msearch of the master is switched off."
 (defvar msearch-mode-map (make-sparse-keymap)
   "Menu for msearch mode.")
 
+(defmacro msearch-setq (var val)
+  "Like `setq' but runs (jit-lock-refontify) afterwards."
+  `(progn
+     (setq ,var ,val)
+     (jit-lock-refontify)))
+
 (easy-menu-define nil msearch-mode-map
   "Menu for msearch mode."
   '("MSearch"
     ["Switch Off msearch" msearch-mode t]
     ("Unhighlight" ["Current" msearch-cleanup t]
      ["All" msearch-cleanup-all t])
-    ("Case-fold-search"
-     ["On" (setq msearch-case-fold-search t)
+    ("Ignore Case for Search"
+     ["On" (msearch-setq msearch-case-fold-search t)
       :style radio
       :selected (equal msearch-case-fold-search t)
       :help "msearch is not case sensitive"]
-     ["Off" (setq msearch-case-fold-search nil)
+     ["Off" (msearch-setq msearch-case-fold-search nil)
       :style radio
       :selected (null msearch-case-fold-search)
       :help "msearch is case sensitive"]
-     ["Default" (setq msearch-case-fold-search 'case-fold-search)
+     ["Default" (msearch-setq msearch-case-fold-search 'case-fold-search)
       :style radio
       :selected (eq msearch-case-fold-search 'case-fold-search)
       :help "Use the setting of `case-fold-search' (which see)."])
-    ("Consistence"
-     ["Word" (setq msearch-full-word/symbol '("\\<" . "\\>"))
+    ("Search String Boundaries"
+     ["Word" (msearch-setq msearch-full-word/symbol '("\\<" . "\\>"))
       :style radio
       :selected (equal msearch-full-word/symbol '("\\<" . "\\>"))]
-     ["Symbol" (setq msearch-full-word/symbol '("\\_<" . "\\_>"))
+     ["Symbol" (msearch-setq msearch-full-word/symbol '("\\_<" . "\\_>"))
       :style radio
       :selected (equal msearch-full-word/symbol '("\\_<" . "\\_>"))]
-     ["None" (setq msearch-full-word/symbol nil)
+     ["None" (msearch-setq msearch-full-word/symbol nil)
       :style radio
       :selected (null msearch-full-word/symbol)])
     ["Freeze Highlights" msearch-freeze]
-    ["Help On msearch" msearch-help]
     ["Enslave Buffer" msearch-enslave-buffer]
     ["Release Buffer" msearch-release-buffer]
     ["Release All Buffers" msearch-release-all]
     ["Set msearch word" msearch-set-word]
+    ["Help" msearch-help]
     ))
 
 (defvar msearch-case-fold-search nil)
@@ -450,9 +475,13 @@ The slave buf is released when msearch of the master is switched off."
 (make-variable-buffer-local 'msearch-full-word/symbol)
 
 (define-minor-mode msearch-mode
-  "Mouse-drag high-lightes all corresponding matches within the current buffer."
+  "Mouse-drag highlights all corresponding matches within the current buffer.
+There are several options in the customization group msearch
+that control the behavior of `msearch-mode'.
+See <M-x customize-group msearch> for further details."
   :lighter " msearch"
   :keymap (list (cons [menu-bar] msearch-mode-menu-bar-map))
+  :link (custom-group-link group)
   (declare (special msearch-case-fold-search))
   (if msearch-mode
       (progn
@@ -481,7 +510,7 @@ The slave buf is released when msearch of the master is switched off."
 
 (define-key mode-line-mode-menu [msearch-mode]
   `(menu-item ,(purecopy "msearch") msearch-mode-event
-	      :help ,(purecopy "MSearch mode: Mouse-drag high-lightes all corresponding matches within the current buffer.")
+	      :help ,(purecopy "MSearch mode: Mouse-drag highlights all corresponding matches within the current buffer.")
 	      :button (:toggle . msearch-mode)))
 
 (provide 'msearch)
