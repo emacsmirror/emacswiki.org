@@ -252,6 +252,14 @@ Instead of match-data the limits can also be given explicitely with MATCH-B and 
 	   (progn (goto-char match-e)
 		  (looking-at (cdr limits))))))))
 
+(defun msearch-truncate-word (word &optional n)
+  "If WORD is longer than N then replace its middle by \"...\". N defaults to 10."
+  (unless n (setq n 10))
+  (if (> (length word) n)
+      (let ((pos (/ (- (length word) n) 2)))
+	(concat (substring word 0 pos) "..." (substring word (- (length word) pos))))
+    word))
+
 (defun msearch-lock-word (b e word face)
   "Highlight all matches of mouse-selection within the visible region."
   (when (and (stringp word) (> (length word) 0))
@@ -362,7 +370,7 @@ the next face from msearch-faces for next highlighting."
 	    (curbuf (current-buffer)))
 	(msearch-set-word new-word)
 	(unless (msearch-check-limits msearch-full-word/symbol start end)
-	  (message "Msearch string at point not meeting boundary conditions."))
+	  (message "Msearch string %S at point not meeting boundary conditions." (msearch-truncate-word new-word)))
 	(save-excursion
 	  (while slaves
 	    (if (get-buffer (car slaves))
