@@ -12,3 +12,33 @@ This makes it easier to trace back how a variable gets its current value through
 
 If you find msearch useful for your own work I would be pleased to read about it. Just leave some note below.
 
+----
+== Bug reports / error correction ==
+Peter made me aware of some bugs/misbehavings of msearch:
+
+* Spelling: "lightes" -> "lights".
+* Consistency: "high-lights" -> "highlights".
+* Installation: mention "(required 'cl)" also (or don't depend on cl).
+* Document assigning msearch-case-fold-search-start.  The current
+  documentation brought up by "C-h m" is "Mouse-drag high-lightes all
+  corresponding matches within the current buffer."  but doesn't tell
+  the user which variables control its behavior.
+* Document word vs. symbol mode.  Maybe just have "word mode", and if
+  the user wants to customize a variable specifying what constitutes
+  word characters then they can
+* When changing option in menu, it would be nice if the change applied
+  to the buffer(s).
+* It's consistent but a little confusing when in word mode to select
+  part of a word and have what you selected not be highlighted
+  (because it's not a complete word).  I don't know of a good way to
+  solve this and it's acceptable the way it is.
+  It would be logical in word mode that if you highlighted the first
+  part of a word that it would highlight that and everything else that
+  was also the first part of a word, and similarly for the middle and
+  ends.  So if you hilighted "ab" in "abcde" it would highlight the
+  first two letters of "abacus" and "ab" but not the "ab" in "tab".
+  This may be more complicated than you want to get into.
+ * The menu item name "case-fold-search" is an Emacs-internal variable name but not very friendly to the user; even Emacs itself uses "Ignore Case for Search" in its menu; I think  
+ "Ignore Case" would be a good name for the Msearch menu item.
+* In the menu I would say "Word Mode" instead of "Consistence".  The latter is logical but maybe a confusing term.
+* The "Help On msearch" menu item could be just "Help" and be at the end.
