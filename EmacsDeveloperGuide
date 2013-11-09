@@ -48,3 +48,8 @@
 Q: How to convert Lisp_Object of type Lisp_String to char*?
 
 A: XSTRING(O)->data or better SSDATA(O). Defined in src/lisp.h (SSDATA (Lisp_Object string))
+
+Q: It's so hard to find out since what version a given defun is available. Why isn't it mentioned in the docs of a function?
+
+A: Dmitri Paduchikh: It's not so difficult actually. Emacs distro includes NEWS files for all
+the releases, so you can do <code>$ grep with-silent-modifications NEWS*</code>
