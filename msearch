@@ -14,7 +14,7 @@ If you find msearch useful for your own work I would be pleased to read about it
 
 ----
 == Bug reports / error correction ==
-Peter made me aware of some bugs/misbehavings of msearch:
+Peter made me aware of some bugs/misbehaviour of msearch:
 
 * Spelling: "lightes" -> "lights".
 * Consistency: "high-lights" -> "highlights".
