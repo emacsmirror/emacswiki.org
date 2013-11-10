@@ -1,3 +1,70 @@
+== Maximize window on startup ==
+
+Use the ##-mm## command line option: ##emacs -mm##, or add ##Emacs.fullscreen: maximized## to ~/.Xdefaults (on linux) to ensure window is maximized to fit screen on startup (useful if like me you try to run emacs on your new tiny notebook with your old config files, only to find you can't see the minibuffer).
+
+
+=== Microsoft Windows ===
+
+On MS Windows systems, create a shortcut to start emacs, open its property
+sheet, and add the command line option (-mm) to the "Target" field.
+
+Or add the following to your [[init file]] 
+
+<pre>
+(add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
+</pre>
+-- PatrickAnderson
+
+
+=== KDE ===
+
+KDE users see KdeMaximized.
+
+
+---------------
+
+
+== Set Frame Size Programmatically ==
+
+Elisp commands to set the frame size and position: ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, ##set-frame-position##. This lets you do something like this:
+
+    (if window-system
+      (set-frame-size (selected-frame) 80 24))
+
+
+=== geometry ===
+
+Use the ##-geometry## command line option, e.g., ##-geometry 80x24## will
+start Emacs at 80 characters wide by 24 characters high.
+
+
+=== default-frame-alist ===
+
+Also see the documentation of [[option]] `default-frame-alist'. You can [[Customize]] this variable  to specify the frame width and height you want (in characters).
+
+Or you can do this in your [[init file]]:
+
+    (add-to-list 'default-frame-alist '(height . 24))
+    (add-to-list 'default-frame-alist '(width . 80))
+
+
+=== X resources ===
+
+Under X, simply use X resources to define defaults for Emacs (or any
+other program). The exact mechanisms for this differ, but generally,
+you have your X session run xrdb on some file in your home directory,
+which is where you'd store your defaults. Common names for this file
+are .Xresources (this is basically standard on newer computers) and
+.Xdefaults (think 1991-ish). -- EraEriksson
+
+Here's an example for your ~/.Xresources (or .Xdefaults):
+
+    Emacs*geometry:     80x24
+
+
+---------------------
+
+
 [:ChangeInteractively]
 == Change Frame Size Interactively or Automatically ==
 
@@ -21,70 +88,6 @@ NicFerrier has also written some frame sizing stuff [[http://marmalade-repo.org/
 
 * FisheyeWithThumbs for commands to temporarily shrink frames to thumbnail size.
 
-== Maximize window on startup ==
-
-Use the ##-mm## command line option: ##emacs -mm##, or add ##Emacs.fullscreen: maximized## to ~/.Xdefaults (on linux) to ensure window is maximized to fit screen on startup (useful if like me you try to run emacs on your new tiny notebook with your old config files, only to find you can't see the minibuffer).
-
-KDE users see KdeMaximized.
-
-== Set Frame Size Programmatically ==
-
-Elisp commands to set the frame size and position: ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, ##set-frame-position##. This lets you do something like this:
-
-    (if window-system
-      (set-frame-size (selected-frame) 80 24))
-
-=== geometry ===
-
-Use the ##-geometry## command line option, e.g., ##-geometry 80x24## will
-start Emacs at 80 characters wide by 24 characters high.
-
-On MS Windows systems, create a shortcut to start emacs, open its property
-sheet, and add the command line option to the "Target" field.
-
-On Windows systems, if you want to startup with Emacs maximised, you can
-do so by adding the following to your [[init file]]
-
-    (w32-send-sys-command #xf030)
-
-[new]
-Note, I (LawrenceMitchell) find that this doesn't always work perfectly,
-it's best if you have this right at the end of your init file, after everything
-else has been loaded.
-
-[new]
-: Why not use `after-init-hook'? -- EdwardOConnor
-
-=== default-frame-alist ===
-
-Also see the documentation of [[option]] `default-frame-alist'. You can [[Customize]] this variable  to specify the frame width and height you want (in characters).
-
-Or you can do this in your [[init file]]:
-
-    (add-to-list 'default-frame-alist '(height . 24))
-    (add-to-list 'default-frame-alist '(width . 80))
-
-
-=== making the changes persistent across sessions ===
-
-Lisp:frame-restore.el is a mess.  Just use this instead:
-<pre>
-(add-hook 'after-init-hook '(lambda () (w32-send-sys-command ?\xf030)))
-</pre>
--- PatrickAnderson
-
-=== X resources ===
-
-Under X, simply use X resources to define defaults for Emacs (or any
-other program). The exact mechanisms for this differ, but generally,
-you have your X session run xrdb on some file in your home directory,
-which is where you'd store your defaults. Common names for this file
-are .Xresources (this is basically standard on newer computers) and
-.Xdefaults (think 1991-ish). -- EraEriksson
-
-Here's an example for your ~/.Xresources (or .Xdefaults):
-
-    Emacs*geometry:     80x24
 
 ----
 CategoryFrames CategoryDisplay FrameModes CategoryGlossary
