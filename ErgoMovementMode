@@ -45,7 +45,8 @@ to get to the original key binding.
 It might be a good idea long termwise to use something reminding of the corresponding bindings in viper/vi instead of the above bindings.
 
 == See Also ==
-[[esdf-mode]]
+* ErgoEmacs
+* [[esdf-mode]]
 
 ----
 CategoryKeys
