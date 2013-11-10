@@ -1,1 +1,7 @@
-#REDIRECT [[ergoemacs]]
+ErgoEmacs is an Emacs distribution.
+
+The main feature is a set of keybindings that is based on ergonomics, plus patches and additional packages that makes Emacs work well out of the box on Microsoft Windows.
+
+The home page is http://ergoemacs.org
+
+Developer home page is at: [[http://code.google.com/p/ergoemacs/ Ergoemacs Google Code]]
