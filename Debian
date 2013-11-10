@@ -5,3 +5,6 @@ Debian is a source and binary distribution of the GNU/Linux system.
 See EmacsForDebian for Emacs related things on the Debian system.
 
 On the wiki here you can use a shortcut like DebianPackage:emacs21 to link to a http://packages.debian.org search (for all versions of the package, stable, unstable, testing).
+
+== See Also ==
+EmacsSnapshotAndDebian - for details about how to get a very up to date Emacs for Debian
