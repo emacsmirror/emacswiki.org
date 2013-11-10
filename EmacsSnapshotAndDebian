@@ -1,19 +1,24 @@
-Following are the steps and packages required to compile Emacs from git on Debian.
+There are good packages for Emacs Snapshot (a daily snapshot of the latest HEAD in the source repository) and also for Emacs 24 releases.
 
+== APT Packages ==
+The APT repository at http://emacs.naquadah.org/ has precompiled emacs-snapshot packages available for a few different architectures and Debian releases.
 
-== Getting Latest Source==
+It is rebuilt daily (normally) and can be installed with a package manager (like aptitude).
 
-I also feel this page might be a misnomer since its not a "snapshot" which is a term normally reserved for a repository which is maintained as "stable" for people to use.  It's about building directly from the head of the git repository.
+You //may// need some of the dependencies listed below. 
+
+=== Problems ===
+I was having problems with installing emacs-snapshot on Debian Wheezy due to unsatisfiable libmagick-dependencies. The problem was solved by apt-pinning; basically taking two missing libraries from Debian unstable repositories. John H. Robinson has written [http://jaqque.sbih.org/kplug/apt-pinning.html noob-friendly guide to apt-pinning].
+
+== Ubuntu PPA ==
+There is also an [[https://launchpad.net/~cassou/+archive/emacs|Ubuntu PPA]].
+
+== Installing from source on Debian and Debian alikes ==
+You can use git to get the source:
 
     git clone --depth 1 git://git.sv.gnu.org/emacs.git
 
-Both commands will create a directory named emacs and put the source in it.
-
-== Required Packages ==
-
-To install base libraries:
-
-sudo aptitude install build-essential
+=== Required Packages ===
 
 The following packages are available through apt-get/aptitude and might need to be installed. Check the output from the configure stage described below.
 
@@ -32,28 +37,26 @@ The following packages are available through apt-get/aptitude and might need to 
 * librsvg2-dev
 * libotf-dev
 
-== Build ==
+=== Building from the source ===
+In order to build after installing required dependencies:
 
-In order to build after installing required dependencies.
+{{{
+cd emacs
+./autogen.sh
+./configure
+make bootstrap
+sudo make install
+}}}
 
-    ./autogen.sh
-    ./configure
-    make bootstrap
-    sudo make install
+A good alternative is to not do a root install:
 
-== Update ==
+{{{
+mkdir ~/emacs-20131123 # for example
+cd emacs
+./autogen.sh
+./configure --prefix=/home/me/emacs-20131123 # for example
+make bootstrap
+make install
+}}}
 
-To update the emacs code from the repositories perform the following command line commands:
-
-CVS : cvs upd
-
-GIT : git pull
-
-and then do a make and install as described in the Build section above.
-
-== Alternatives ==
-
-There is also a precompiled emacs-snapshot package available at http://emacs.naquadah.org/.
-It is rebuilt regularly and can be installed with a package mananger (like aptitude).
-
-I was having problems with installing emacs-snapshot on Debian Wheezy due to unsatisfiable libmagick-dependencies. The problem was solved by apt-pinning; basically taking two missing libraries from Debian unstable repositories. John H. Robinson has written [http://jaqque.sbih.org/kplug/apt-pinning.html noob-friendly guide to apt-pinning].
+Then use {{{~/emacs-20131123/bin/emacs}}} to start it.
