@@ -2,7 +2,7 @@ There are two [MajorMode MajorMode]s for editing [WikiPedia:Scala_%28programming
 
 The old scala-mode works on emacs 23 and newer. It is available from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
 
-The new scala-mode2 requires emacs 24 (or newer). It is available from https://github.com/hvesalai/scala-mode2
+The new scala-mode2 requires emacs 24 (or newer). It is available from https://github.com/hvesalai/scala-mode2 . Scala-mode2 does not contain support for sbt. Instead, sbt support is available separately in https://github.com/hvesalai/sbt-mode
 
 There is also a minor-mode for editing scala programs that use the [WikiPedia:Scalatra Scalatra] web application framework. The mode is available at https://github.com/hvesalai/scalatra-mode
 
