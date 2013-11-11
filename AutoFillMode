@@ -35,10 +35,10 @@ To automatically fill comments but not code in ProgrammingModes, something like 
                        (not (eq (get-text-property (point) 'face)
                                 'font-lock-comment-face))))))
 
-Or you could define this and call it in your hooks as needed, which seems to work more reliably for me:
+Or you could define this and call it in your programming mode hooks as needed, which seems to work more reliably for me:
 
     (defun comment-auto-fill ()
-      (setq comment-auto-fill-only-comments t)
+      (setq-local comment-auto-fill-only-comments t)
       (auto-fill-mode 1))
 
 FillingComments mentions this approach and should probably be merged with this page.
