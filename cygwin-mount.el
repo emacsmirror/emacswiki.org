@@ -1,4 +1,3 @@
-[[ja:JAP]]
 ;;; cygwin-mount.el --- Teach EMACS about cygwin styles and mount points.
 
 ;; Copyright (C) 1997 Michael Cook <mcook@xemacs.org>.
