@@ -5,8 +5,8 @@
 ;; Author: Thierry Volpiatto <thierry.volpiatto@gmail.com>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyright (C) 2008, 2009 Thierry Volpiatto, all rights reserved
-;; Version: 1.1
-;; Last-Updated: 07/08/2013 01:28:00
+;; Version: 1.2
+;; Last-Updated: 2013-10-21 01:28:00
 ;; URL: https://github.com/vapniks/helm-delicious
 ;; Keywords: 
 ;; Compatibility: Gnus Emacs 24.3
@@ -96,7 +96,12 @@
 (defvar helm-c-delicious-api-url-add
   "https://api.del.icio.us/v1/posts/add?&url=%s&description=%s&tags=%s"
   "Url used to add bookmarks to delicious")
-(defvar helm-c-delicious-cache-file "~/.delicious.cache")
+
+(defcustom helm-c-delicious-cache-file "~/.delicious.cache"
+  "The location of the cache file for `helm-delicious'."
+  :group 'helm
+  :type 'file)
+
 (defvar helm-delicious-user nil
   "Your Delicious login")
 (defvar helm-delicious-password nil
@@ -259,8 +264,8 @@ finding the path of your .authinfo file that is normally ~/.authinfo."
       (helm-wget-retrieve-delicious))
     (setq tag-list (helm-delicious-get-all-tags-from-cache))
     (loop for i in tag-list
-       for len = (length i) 
-       when (> len tag-len) do (setq tag-len len))
+          for len = (length i) 
+          when (> len tag-len) do (setq tag-len len))
     (with-temp-buffer
       (insert-file-contents helm-c-delicious-cache-file)
       (setq gen-alist (xml-get-children
@@ -268,13 +273,11 @@ finding the path of your .authinfo file that is normally ~/.authinfo."
                                               (point-max)))
                        'post)))
     (loop for i in gen-alist
-       for tag = (xml-get-attribute i 'tag)
-       for desc = (xml-get-attribute i 'description)
-       for url = (xml-get-attribute i 'href)
-       for interval = (- tag-len (length tag))
-       collect (cons (concat "[" tag "]"
-                             (make-string (+ 2 interval) ? ) desc)
-                     url))))
+          for tag = (xml-get-attribute i 'tag)
+          for desc = (xml-get-attribute i 'description)
+          for url = (xml-get-attribute i 'href)
+          for interval = (- tag-len (length tag))
+          collect (cons (concat "[" tag "] " desc) url))))
 
 ;;;###autoload
 (defun w3m-add-delicious-bookmark (description tag)
@@ -343,7 +346,7 @@ to Delicious"
   (replace-regexp-in-string
    "\"" "" (cdr (assoc elm helm-c-delicious-cache))))
 
-(defun helm-c-delicious-browse-bookmark (elm &optional browser new-tab)
+(defun helm-c-delicious-browse-bookmark (x &optional browser new-tab)
   "Action function for helm-delicious"
   (let* ((fn (case browser
                (firefox 'browse-url-firefox)
@@ -351,7 +354,8 @@ to Delicious"
                (w3m 'w3m-browse-url)
                (t 'browse-url)))
          (arg (and (eq fn 'w3m-browse-url) new-tab)))
-    (funcall fn (helm-c-delicious-bookmarks-get-value elm) arg)))
+    (dolist (elm (helm-marked-candidates))
+      (funcall fn (helm-c-delicious-bookmarks-get-value elm) arg))))
 
 (defun helm-c-highlight-delicious-bookmarks (books)
   "Highlight all Delicious bookmarks"
