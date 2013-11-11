@@ -1,12 +1,10 @@
-See also: EmacsForDebian and EmacsSnapshotAndDebian
-
-== Snapshot packages for Ubuntu ==
+== Snapshot Packages for Ubuntu ==
 
 There is a snapshot package PPA based on http://emacs.naquadah.org/ available at: https://launchpad.net/~cassou/+archive/emacs
 
-And official emacs-snapshot package is available at https://launchpad.net/~ubuntu-elisp/+archive/ppa
+An official emacs-snapshot package is available at https://launchpad.net/~ubuntu-elisp/+archive/ppa
 
-== Fixing scrollbars ==
+== Fixing Scrollbars ==
 
 Globally
 
@@ -15,3 +13,9 @@ Globally
 To deactivate them only for Emacs use
 
     LIBOVERLAY_SCROLLBAR=0 emacs
+
+
+== See Also ==
+
+EmacsForDebian,  EmacsSnapshotAndDebian
+
