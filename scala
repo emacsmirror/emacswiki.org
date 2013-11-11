@@ -1,11 +1,15 @@
 [[http://scala-lang.org|Scala]] is a functional programming language emerging as a popular upgrade path for Java programmers.
 
-== Packages ==
-There are 2 ScalaMode packages, Scala Mode is available in [[Marmalade]] and [[https://github.com/hvesalai/scala-mode2|Scala2 mode]] is available only in [[Melpa]] right now.
+== Using the Emacs Package System ==
+There are 2 ScalaMode packages, Scala Mode is available in [[Marmalade]] and [[https://github.com/hvesalai/scala-mode2|Scala2 mode]] is available only in [[MELPA]].
 
 Scala2 mode includes [[http://www.scala-sbt.org/|SBT]] support, syntax highlighting and indenting support.
 
-== Older instructions == 
+
+
+
+
+== Without Using the Emacs Package System == 
 In order to use scala in emacs, you must first use the mode distributed with scala under misc/scala-tool-support/emacs/. I like to place all my emacs file under one subdirectory and then add all directories under it to the load path (see below emacs code for this!).  So paste those emacs file in a directory called scala-mode!
 
  (progn
