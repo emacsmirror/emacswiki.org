@@ -1,10 +1,60 @@
-There are two [MajorMode MajorMode]s for editing [WikiPedia:Scala_%28programming_language%29 Scala] programs.
+There are two major modes for editing Scala programs.
+For more about Scala, see [WikiPedia:Scala_%28programming_language%29 Scala on Wikipedia] and the [http://scala-lang.org Scala website].
 
-The old scala-mode works on emacs 23 and newer. It is available from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
+The old scala-mode works on emacs 23 and newer. It is available from [[Marmalade]] and from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
 
-The new scala-mode2 requires emacs 24 (or newer). It is available from https://github.com/hvesalai/scala-mode2 . Scala-mode2 does not contain support for sbt. Instead, sbt support is available separately in https://github.com/hvesalai/sbt-mode
+The new scala-mode2 requires emacs 24 (or newer). It is available from [[MELPA]] and from https://github.com/hvesalai/scala-mode2
 
-There is also a minor-mode for editing scala programs that use the [WikiPedia:Scalatra Scalatra] web application framework. The mode is available at https://github.com/hvesalai/scalatra-mode
+Scala Mode 2 may or may not contain SBT support, the information on this wiki is conflicting. Please replace this paragraph with the corrected info if you know better.
+More about SBT, see the [http://www.scala-sbt.org/ SBT website].
+In either case, SBT support is available separately from https://github.com/hvesalai/sbt-mode
+
+There is also a minor-mode for editing scala programs that use the Scalatra web application framework (see WikiPedia:Scalatra). The mode is available at https://github.com/hvesalai/scalatra-mode
+
+== Without Using the Emacs Package System == 
+
+Here is an example configuration:
+
+{{{
+ (progn
+    (cd "~/.emacs.d/src")
+    (normal-top-level-add-subdirs-to-load-path)) ;;add all subdirectories of ~/.emacs.d/src to load path
+  
+  (setq exec-path (append exec-path (list "/home/seth/.opt/scala/bin" ))) ;;change to location of scala bin!!! necessary for comint.
+  (require 'scala-mode-auto)
+  (require 'ensime)
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+  (eval-after-load "scala-mode" 
+   '(progn
+      (define-key scala-mode-map (kbd "<f9>") 'ensime-builder-build)
+      (define-key scala-mode-map (kbd "<f10>") 'ensime-inf-switch)))
+
+    (eval-after-load "scala-mode" 
+      '(progn
+         (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+         (define-key scala-mode-map (kbd "<f9>") 'scala-run)
+         (define-key scala-mode-map (kbd "RET") 'newline-and-indent)
+         ))
+
+   (defun scala-run () 
+      (interactive)   
+     (ensime-sbt-action "run")
+     (ensime-sbt-action "~compile")
+ (let ((c (current-buffer)))
+      (switch-to-buffer-other-window
+     (get-buffer-create (ensime-sbt-build-buffer-name)))
+   (switch-to-buffer-other-window c))) 
+   (setq exec-path
+          (append exec-path (list "~/.opt/scala/bin"))) ;;REPLACE THIS with the directory of your scalac executable!
+}}}
+
+I then use [http://aemon.com/file_dump/ensime_manual.html ensime] and [http://code.google.com/p/simple-build-tool/wiki/Setup sbt]. 
+
+Ok, so create a random file in the source directory created by sbt that contains some random code.
+Run ensime-config-project, follow instructions, etc. It should suggest that the project is of type sbt.
+Now, run the command 'ensime' -- it should connect with ensime. Now, type C-c C-v s, this will start the scala sbt process. I suggest opening it in another frame by using 'C-x 5 2'. 
+ 
+And you can now hit f9 to run your code - ok, so you have to hit it twice for some reason!
 
 ----
 CategoryModes
