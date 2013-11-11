@@ -1,92 +1,70 @@
-== Maximize window on startup ==
-
-Use the ##-mm## command line option: ##emacs -mm##, or add ##Emacs.fullscreen: maximized## to ~/.Xdefaults (on linux) to ensure window is maximized to fit screen on startup (useful if like me you try to run emacs on your new tiny notebook with your old config files, only to find you can't see the minibuffer).
+You can specify [[frame]] size and position at any time, including at Emacs startup and interactively, incrementally.
 
 
-=== Microsoft Windows ===
 
-On MS Windows systems, create a shortcut to start emacs, open its property
-sheet, and add the command line option (-mm) to the "Target" field.
+== At Emacs Startup ==
 
-Or add the following to your [[init file]] 
+Possibilities:
 
-<pre>
-(add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
-</pre>
--- PatrickAnderson
+* Use command line options
 
+** '''##-mm##''':  Maximize the first frame.  E.g, use this as the ##Target## of an MS Windows shortcut: ##runemacs -mm##. 
 
-=== KDE ===
+** '''##-geometry##''': Set the first frame's dimensions. E.g., ##emacs -geometry 80x24## for a frame 80 chars wide and 24 chars high.
 
-KDE users see KdeMaximized.
+* Use file '''##~/.Xresources##''' or '''##~/.Xdefaults##''' (X Window on GNU/Linux or UNIX). E.g., ##Emacs*geometry: 80x24## for a frame 80 chars wide and 24 chars high.
 
+* For window manager KDE on GNU/Linux, see KdeMaximized.
 
----------------
+* Customize [[option]] '''`initial-frame-alist'''' or '''`default-frame-alist'''' (the latter affects more frames than just the first frame).
 
 
-== Set Frame Size Programmatically ==
-
-Elisp commands to set the frame size and position: ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, ##set-frame-position##. This lets you do something like this:
-
-    (if window-system
-      (set-frame-size (selected-frame) 80 24))
 
 
-=== geometry ===
-
-Use the ##-geometry## command line option, e.g., ##-geometry 80x24## will
-start Emacs at 80 characters wide by 24 characters high.
 
 
-=== default-frame-alist ===
 
-Also see the documentation of [[option]] `default-frame-alist'. You can [[Customize]] this variable  to specify the frame width and height you want (in characters).
 
-Or you can do this in your [[init file]]:
+== Programmatically (e.g., in your init file) ==
+
+* Maximize:
+
+    (add-hook 'after-init-hook '(lambda () (w32-send-sys-command #xf030)))
+
+* Arbitrary frame size and position: Use functions ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, and ##set-frame-position##.  For example:
+
+    (when window-system (set-frame-size (selected-frame) 80 24))
+
+* Set size parameters of `initial-frame-alist' or `default-frame-alist'. E.g.,
 
     (add-to-list 'default-frame-alist '(height . 24))
     (add-to-list 'default-frame-alist '(width . 80))
 
 
-=== X resources ===
-
-Under X, simply use X resources to define defaults for Emacs (or any
-other program). The exact mechanisms for this differ, but generally,
-you have your X session run xrdb on some file in your home directory,
-which is where you'd store your defaults. Common names for this file
-are .Xresources (this is basically standard on newer computers) and
-.Xdefaults (think 1991-ish). -- EraEriksson
-
-Here's an example for your ~/.Xresources (or .Xdefaults):
-
-    Emacs*geometry:     80x24
 
 
----------------------
+
+
+
 
 
 [:ChangeInteractively]
-== Change Frame Size Interactively or Automatically ==
+== Both Interactively and Programmatically ==
 
-DrewAdams has written various libraries that let you resize [[frame]]s:
+These libraries let you resize frames either interactively or by program:
 
-* <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> let you ''shrink-wrap'' frames to fit their selected [[window]] ([[buffer]]) or all of their windows (buffers). 
-
-: Command `fit-frame' (usually bound to `##C-x C-_##') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
-automatically, but you have control over this calculation with user variables. Alternatively, with a prefix argument, `fit-frame' prompts you for an absolute width and height. A
-negative prefix argument uses the `fill-column' value for the width.
-These packages also let you configure Emacs to ''automatically'' fit ''all'' frames.
+* <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> let you shrink-wrap frames to fit their selected [[window]] ([[buffer]]) or all of their windows (buffers). See [[Shrink-Wrapping Frames]].
 
 * <tt>[[frame-cmds.el]]</tt> lets you ''tile'', ''maximize'', or ''restore'' (toggle maximize) frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
 
-NicFerrier has also written some frame sizing stuff [[http://marmalade-repo.org/packages/framesize|see Marmalade's FrameSize package]]. It uses key-chord by default.
+* <tt>[[frame-cmds.el]]</tt> -- incrementally resize a frame using the arrow keys or mouse wheel.
 
-'''See Also:'''
-* Libraries <tt>[[frame-cmds.el]]</tt> and <tt>[[doremi-frm.el]]</tt> have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
+* <tt>[[doremi-frm.el]]</tt>  -- incrementally resize a frame using the arrow keys or mouse wheel.
 
-* [[Shrink-Wrapping Frames]] for more information about <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt>.
+* <tt>[[thumb-frm.el]]</tt> -- Commands to "iconify" frames to thumbnail size and restore them.  See FisheyeWithThumbs.
 
-* FisheyeWithThumbs for commands to temporarily shrink frames to thumbnail size.
+* [[http://marmalade-repo.org/packages/framesize|FrameSize]] -- Functions to changing font-size on a frame.
+
 
 
 ----
