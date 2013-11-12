@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:04:14 2013 (-0700)
+;; Last-Updated: Mon Nov 11 20:59:50 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 710
+;;     Update #: 717
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -46,9 +46,11 @@
 ;;    `insert-directory' - Add file count in Dired for each dir.
 ;;    `switch-to-buffer-other-frame'  - Use `read-buffer'.
 ;;                                      Return the buffer switched to.
+;;                                      (Emacs 20-23 only)
 ;;    `switch-to-buffer-other-window' -
 ;;       Use `read-buffer'.
 ;;       Raise frame of selected window (for non-nil `pop-up-frames').
+;;       (Emacs 20-23 only)
 ;;
 ;;  Load this library after loading the standard library `files.el'.
 ;;  However, if you use MS Windows, MS-DOS, or MacOS, then you will
@@ -66,6 +68,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/11 dadams
+;;     switch-to-buffer-other-(frame|window): Do not redefine for Emacs 24+.
+;;                                            Removed autoload cookies.
 ;; 2013/07/13 dadams
 ;;     insert-directory: Add mouse-face to file count text starting at bol, not +2.
 ;;     update-dired-files-count: Do nothing if the files-count line should be hidden.
@@ -266,13 +271,13 @@ rather than FUN itself, to `minibuffer-setup-hook'."
           t)))
 
 
-;; REPLACES ORIGINAL in `files.el':
+;; REPLACES ORIGINAL in `files.el' (Emacs < 24):
 ;; Use `read-buffer' (not "B...") in the interactive spec.
 ;; Raise frame of selected window. This has an effect for non-nil `pop-up-frames'.
 ;;
-;;;###autoload
-(defun switch-to-buffer-other-window (buffer &optional norecord)
-  "Select buffer BUFFER in another window.
+(when (< emacs-major-version 24)
+  (defun switch-to-buffer-other-window (buffer &optional norecord)
+    "Select buffer BUFFER in another window.
 If BUFFER does not identify an existing buffer, then this function
 creates a buffer with that name.
 
@@ -287,27 +292,27 @@ Returns the buffer switched to.
 
 This uses function `display-buffer' as a subroutine; see its
 documentation for additional customization information."
-  (interactive
-   (list (read-buffer "Switch to buffer in other window: "
-                      (if (fboundp 'another-buffer) ; Defined in `misc-fns.el'.
-                          (another-buffer nil t)
-                        (other-buffer (current-buffer))))
-         nil))
-  (let ((pop-up-windows           t)
-        ;; Don't let these interfere.
-        (same-window-buffer-names ())
-        (same-window-regexps      ()))
-    (prog1 (pop-to-buffer buffer t norecord)
-      (raise-frame (window-frame (selected-window))))))
+    (interactive
+     (list (read-buffer "Switch to buffer in other window: "
+                        (if (fboundp 'another-buffer) ; Defined in `misc-fns.el'.
+                            (another-buffer nil t)
+                          (other-buffer (current-buffer))))
+           nil))
+    (let ((pop-up-windows           t)
+          ;; Don't let these interfere.
+          (same-window-buffer-names ())
+          (same-window-regexps      ()))
+      (prog1 (pop-to-buffer buffer t norecord)
+        (raise-frame (window-frame (selected-window)))))))
 
 
-;; REPLACES ORIGINAL in `files.el':
+;; REPLACES ORIGINAL in `files.el' (Emacs < 24):
 ;; Use `read-buffer' (not "B...") in the interactive spec.
 ;; Return the buffer switched to.
 ;;
-;;;###autoload
-(defun switch-to-buffer-other-frame (buffer &optional norecord)
-  "Switch to buffer BUFFER in another frame.
+(when (< emacs-major-version 24)
+  (defun switch-to-buffer-other-frame (buffer &optional norecord)
+    "Switch to buffer BUFFER in another frame.
 The same frame will be used only if there is no other choice.
 Optional second arg NORECORD non-nil means
 do not put this buffer at the front of the list of recently selected ones.
@@ -316,16 +321,16 @@ Returns the buffer switched to.
 
 This uses function `display-buffer' as a subroutine; see its
 documentation for additional customization information."
-  (interactive (list (read-buffer "Switch to buffer in other frame: "
-                                  (if (fboundp 'another-buffer)
-                                      (another-buffer nil t)
-                                    (other-buffer (current-buffer))))))
-  (let ((pop-up-frames t)
-        ;; Don't let these interfere.
-        (same-window-buffer-names ())
-        (same-window-regexps      ()))
-    (prog1 (pop-to-buffer buffer t norecord)
-      (raise-frame (window-frame (selected-window))))))
+    (interactive (list (read-buffer "Switch to buffer in other frame: "
+                                    (if (fboundp 'another-buffer)
+                                        (another-buffer nil t)
+                                      (other-buffer (current-buffer))))))
+    (let ((pop-up-frames t)
+          ;; Don't let these interfere.
+          (same-window-buffer-names ())
+          (same-window-regexps      ()))
+      (prog1 (pop-to-buffer buffer t norecord)
+        (raise-frame (window-frame (selected-window)))))))
 
 
 ;; REPLACES ORIGINAL in `files.el':
