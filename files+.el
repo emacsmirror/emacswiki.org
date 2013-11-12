@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 11 20:59:50 2013 (-0800)
+;; Last-Updated: Mon Nov 11 21:15:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 717
+;;     Update #: 722
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -41,6 +41,7 @@
 ;;
 ;;    `display-buffer-other-frame' - Use `read-buffer'.
 ;;                                   Do not select the buffer.
+;;                                   (Emacs 20-23 only)
 ;;    `find-file-read-args' - In Dired, use file at cursor as default
 ;;                            (Emacs 22 & 23.1 only).
 ;;    `insert-directory' - Add file count in Dired for each dir.
@@ -69,8 +70,8 @@
 ;;; Change Log:
 ;;
 ;; 2013/11/11 dadams
-;;     switch-to-buffer-other-(frame|window): Do not redefine for Emacs 24+.
-;;                                            Removed autoload cookies.
+;;     switch-to-buffer-other-(frame|window), display-buffer-other-frame:
+;;       Do not redefine for Emacs 24+.  Removed autoload cookies.
 ;; 2013/07/13 dadams
 ;;     insert-directory: Add mouse-face to file count text starting at bol, not +2.
 ;;     update-dired-files-count: Do nothing if the files-count line should be hidden.
@@ -333,26 +334,26 @@ documentation for additional customization information."
         (raise-frame (window-frame (selected-window)))))))
 
 
-;; REPLACES ORIGINAL in `files.el':
+;; REPLACES ORIGINAL in `files.el' (Emacs 20-23):
 ;; Use `read-buffer' (not "B...") in the interactive spec.
 ;; Rewrote, using `switch-to-buffer-other-frame' and `select-frame-set-input-focus'.
 ;; Return the window displaying the buffer.
 ;;
-;;;###autoload
-(defun display-buffer-other-frame (buffer)
-  "Show BUFFER in another frame, but don't select it.
+(when (< emacs-major-version 24)
+  (defun display-buffer-other-frame (buffer)
+    "Display BUFFER in another frame.
 See documentation of `display-buffer' for more information."
-  (interactive (list (read-buffer "Switch to buffer in other frame: "
-                                  (if (fboundp 'another-buffer)
-                                      (another-buffer nil t)
-                                    (other-buffer (current-buffer))))))
-  (let ((win                       (selected-window))
-        (same-window-buffer-names  ())
-        (same-window-regexps       ()))
-    (switch-to-buffer-other-frame buffer)
-    (select-window win)
-    (select-frame-set-input-focus (window-frame win))
-    win))
+    (interactive (list (read-buffer "Display buffer in other frame: "
+                                    (if (fboundp 'another-buffer)
+                                        (another-buffer nil t)
+                                      (other-buffer (current-buffer))))))
+    (let ((win                       (selected-window))
+          (same-window-buffer-names  ())
+          (same-window-regexps       ()))
+      (switch-to-buffer-other-frame buffer)
+      (select-window win)
+      (select-frame-set-input-focus (window-frame win))
+      win)))
 
 
 ;; REPLACES ORIGINAL in `files.el':
