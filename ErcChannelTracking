@@ -5,7 +5,7 @@ Channel tracking is enabled by default. To disable it, use M-x customize-variabl
 Channel tracking is for keeping track of activity in channels which are currently not visible on some frame/window.
 It is defined as global minor mode in erc-track.el.
 It uses `global-mode-string' as an indicator. global-mode-string is used in nearly every mode-line in different emacs modes, so you will
-see active channels even in windows which belong to buffers which are not in erc-mode. Be sure to set `erc-track-position-in-mode-line` to `t` - else erc-track will stuff itself into the mode-lines-modes instead.
+see active channels even in windows which belong to buffers which are not in erc-mode. Be sure to set `erc-track-position-in-mode-line' to `t' - else erc-track will stuff itself into the mode-lines-modes instead.
 
 A mode-line with active channels in them might look like this:
 
