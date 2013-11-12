@@ -1,4 +1,2 @@
-I didn't really find what I was expected about backup on Emacs so I started a project to handle easily backup, using git to store changes and helm to retrieve easily those changes. Currently it doesn't support windows but I will worry about that in next milestone.
 
--- [http://https://github.com/antham/ antham] 2013-11-12 23:40 UTC
 
