@@ -1,0 +1,13 @@
+Emacs Web Wowser (eww) は、elisp だけで書かれた、shr.el ベースのウェブブラウザです。Emacs の次のリリース (24.4) に含まれる予定です。基本的な CSS や HTML5 もサポートします。
+
+* コード: http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/eww.el
+
+== 関連項目 ==
+* [[emacs-w3m]]
+* [[w3]]
+
+== ウェブリンク ==
+* http://lars.ingebrigtsen.no/2013/06/eww.html -- 原作者によるアナウンス
+
+CategoryHypermedia
+CategoryWebBrowser
