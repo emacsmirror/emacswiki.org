@@ -1,13 +1,16 @@
 == Code ==
 
 <pre>
-(add-hook 'rcirc-print-hooks 'my-rcirc-print-hook)
 (setq alert "/usr/share/sounds/gaim/alert.wav")
 (defun my-rcirc-print-hook (process sender response target text)
   (when (and (string-match (regexp-quote (rcirc-nick process)) text)
 	     (not (string= (rcirc-nick process) sender))
 	     (not (string= (rcirc-server-name process) sender)))
     (start-process "beep" nil "aplay" (expand-file-name alert))))
+
+(add-hook 'rcirc-print-hooks 'my-rcirc-print-hook)
+;; Starting from Emacs 24.3 rcirc-print-hooks is deprecated use rcirc-print-functions instead
+(add-hook 'rcirc-print-functions 'my-rcirc-print-hook)
 </pre>
 
 
