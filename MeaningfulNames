@@ -20,7 +20,10 @@ package prefix, verb, subject.  This is also true for
 
 ''I agree that Emacs does not follow this strategy. I do not know what solutions are available. My only thought is a MeaningfulNames package that provides aliases that do follow the ''Humane Interface'' patterns.''
 
-Isn't this <em>object</em>-verb?
+> Isn't this <em>object</em>-verb?
 Subject-verb would be buffer-die rather than buffer-kill.
+
+> Yes this is <em>object</em>-verb which makes a lot of difference. The noun-verb approach referred to by MeatBall is discussed in the context of user interfaces. One of the main arguments for the noun-verb order rather than the verb-noun is that choosing a verb then a noun introduces a mode (the verb selected), which does not happens if the sequence is noun-verb, because selecting a noun usually does not introduce a mode. When programming a convention like verb-object matches the usual order of words in a sentance and is probably fine.
+
 ----
 CategoryCode
