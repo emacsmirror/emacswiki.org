@@ -464,7 +464,7 @@ Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</c
 
 == Color coding (multiple) emacs server instances ==
 
-You can start different emacs server instances w/ different color schemes (so you instantly know which one your using).
+You can start different emacs server instances w/ different color schemes (so you instantly know which one you're using).
 
 This works to set the background color:
 
