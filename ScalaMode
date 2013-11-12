@@ -5,15 +5,13 @@ The old scala-mode works on emacs 23 and newer. It is available from [[Marmalade
 
 The new scala-mode2 requires emacs 24 (or newer). It is available from [[MELPA]] and from https://github.com/hvesalai/scala-mode2
 
-Scala Mode 2 may or may not contain SBT support, the information on this wiki is conflicting. Please replace this paragraph with the corrected info if you know better.
-More about SBT, see the [http://www.scala-sbt.org/ SBT website].
-In either case, SBT support is available separately from https://github.com/hvesalai/sbt-mode
+SBT support for scala-mode2 is available as a separate mode from https://github.com/hvesalai/sbt-mode
 
 There is also a minor-mode for editing scala programs that use the Scalatra web application framework (see WikiPedia:Scalatra). The mode is available at https://github.com/hvesalai/scalatra-mode
 
 == Without Using the Emacs Package System == 
 
-Here is an example configuration:
+Here is an example configuration using the old scala-mode with ensime. However ensime now suggests using scala-mode2.
 
 {{{
 (setq exec-path (append exec-path (list "/home/seth/.opt/scala/bin" ))) ;;change to location of scala bin!!! necessary for comint.
