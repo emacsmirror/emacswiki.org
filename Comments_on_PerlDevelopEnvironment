@@ -1,6 +1,6 @@
 == Beware of Permissions when Installing PDE ==
 
-Beware if, like me, you try to install the Perl Development Environment (pde) on a system-wide emacs. I tried
+Beware if, like me, you try to install the [http://www.emacswiki.org/emacs/PerlDevelopEnvironment|Perl Development Environment (pde)] on a system-wide emacs. I tried
 
    ./Build.PL --elispdir=/usr/local/share/emacs/site-lisp/pde
    ./Build test
