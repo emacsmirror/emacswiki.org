@@ -71,7 +71,7 @@ Editing: I create a new version of pastebin.el, supporting fetch and deletion, h
 
 [new:NicFerrier:2013-01-21 17:47 UTC] Get in touch with me via github? I'd be quite happy to assign you the repo for pastebin.el
 
-[new:Anonymous:2013-11-13 11:31 UTC]
+[new]
 You can put your API-key in a text file rather than inserting it directly in your emacs init-file. I have the following in a file called my-pastbin.el.
 {{{
 ;; my-pasbin.el
