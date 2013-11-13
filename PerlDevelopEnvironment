@@ -70,3 +70,6 @@ The manual of Emacs::PDE is in lisp/doc/pde.info. For novices, there is a tutori
 
 =Bugs=
 If you find some bugs, or you have problems or ideas, please let me know.
+
+[new:ColinBaxter:2013-11-13 12:41 UTC]
+Beware of permissions when installing pde. See the [http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Comments] page.
