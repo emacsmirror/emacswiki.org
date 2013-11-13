@@ -1,0 +1,34 @@
+== Access your Pastebin API-key in a Text File ==
+
+You can access your pastebin API-key from a text file rather than inserting it directly in your emacs init-file. I have the following in a file called my-pastbin.el.
+{{{
+;; my-pasbin.el
+(require 'pastebin)
+;; Strip any newline from file containing API-key
+(defun pastebin--trim-trailing-newlines (string)
+ (while (string-match "\\(.*\\)\\(\n\\|\r\\)$" string)
+  (setq string (substring string 0 -1))) 
+  string)
+;;
+;;;###autoload
+(defun pastebin-unique-developer-api-key-from-file (filename)
+  "A way to set the API key from the contents of a text file."
+  (interactive)
+  (setq pastebin-unique-developer-api-key
+        (and (file-exists-p filename)
+             (pastebin--trim-trailing-newlines
+              (with-temp-buffer
+                (insert-file-contents filename)
+                (buffer-substring-no-properties (point-min) (point-max)))))))
+;;
+(pastebin-unique-developer-api-key-from-file "/path/to/text/file/containing/pastebin/API/key")
+;;
+(setq pastebin-user-name "username")
+(setq pastebin-password "password")
+(pastebin-login)
+;;
+(provide 'my-pastebin)
+}}}
+I then call my-pastbin via M-x load-libray RET my-pastbin RET. You could load it from your emacs init-file of course. The guts of my-pastebin.el have been shamelessly stolen from [http://www.emacswiki.org/emacs/thesaurus.el thesaurus.el].
+
+-- [http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter] 
