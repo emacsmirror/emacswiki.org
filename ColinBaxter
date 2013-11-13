@@ -8,6 +8,7 @@ I came to Emacs late in life, after using just about every rubbish editor and wo
 
 == Contributions to EmacsWiki ==
 #  [[http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Beware of Permissions when Installing PDE]]
+#  [[http://www.emacswiki.org/emacs/Comments_on_pastebin|Access your Pastebin API-key from a Text File]]
 
 == Emacs Projects ==
 # Even though it is byte-compiled, my init-file is far too long. I am working on moving to a modular form of Emacs initialisation.
