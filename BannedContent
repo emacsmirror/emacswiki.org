@@ -54,3 +54,4 @@ insur[a-z]*(quote|world) # 2013-11-10
 \bcasino\b # 2013-11-11 Comments on 2013-05-07
 coverageservice # 2013-11-11 Comments on InstallingPackages
 freequotesguide # 2013-11-11 Comments on EmacsWikiProblems
+insurance # 2013-11-13 Comments on 2013-04-24
