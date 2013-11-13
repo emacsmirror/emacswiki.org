@@ -1,6 +1,6 @@
 == Access your Pastebin API-key from a Text File ==
 
-You can access your pastebin API-key from a text file rather than inserting it directly in your emacs init-file. I have the following in a file called my-pastbin.el.
+You can access your pastebin API-key from a text file rather than inserting it directly in your emacs init-file, as given by [http://www.emacswiki.org/emacs/pastebin|pastebin]. I have the following in a file called my-pastbin.el.
 {{{
 ;; my-pasbin.el
 (require 'pastebin)
