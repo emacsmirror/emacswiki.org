@@ -114,9 +114,22 @@ While this input method is active, the variable
     (princ "Flips text upside down.
 E.g. hello world -> plɹoʍ ollǝɥ")))
 
-(provide 'fliptext)
-
 (register-input-method "fliptext" "UTF-8" 'fliptext-input-activate "ɐ"
                        "Input method for \"flipping characters upside down\".")
+
+;;;###autoload
+(defun fliptext-flip-region (beg end)
+  "Replace region with a version that can be read upside down."
+  (interactive "r")
+  (let* ((str (buffer-substring-no-properties beg end))
+         (new (concat
+               (reverse
+                (mapcar
+                 (lambda (x) (or (dassoc (downcase x) fliptext-rules-alist) x))
+                 str)))))
+    (delete-region beg end)
+    (insert new)))
+
+(provide 'fliptext)
 
 ;;; fliptext.el ends here
