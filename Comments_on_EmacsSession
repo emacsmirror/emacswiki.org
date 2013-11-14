@@ -1,0 +1,17 @@
+I've been using session for many years. I also use it to restore my project specific settings in a per-project basis. Here is how it works:
+Add the following code segment into your emacs init script. It will search ".emacs.session" file in the directory where you start Emacs.
+
+{{{
+(unless (daemonp)
+  (custom-set-variables '(session-save-file ".emacs.session"))
+
+  (let ((local-session (concat default-directory session-save-file)))
+    (if (file-exists-p local-session)
+        (progn
+          (custom-set-variables '(session-save-file local-session))
+          (message (concat "Local session file set to \"" session-save-file "\".")))
+      (custom-set-variables '(session-save-file (concat "~/" session-save-file))))))
+}}}
+
+-- Luke Lee 2013-11-14 01:55 UTC
+
