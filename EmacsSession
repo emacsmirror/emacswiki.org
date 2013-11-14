@@ -69,6 +69,26 @@ However, it doesn't automatically reveal folded sections.  Here is the fix:
 
 Can this mode replace savehist, saveplace and desktop all at once and advantageneously ? Sounds like it is really capable and as I do not like restoring all the files and things like that, that could help just activating one mode for all this stuff
 
+-- Anonymous
+
+I've been using session for many years. I also use it to restore my project specific settings in a per-project basis. Here is how it works:
+Add the following code segment into your .emacs init script. It will search ".emacs.session" file in the directory where you start Emacs.
+
+{{{
+;;; Local session.
+(unless (daemonp)
+  (custom-set-variables '(session-save-file ".emacs.session"))
+
+  (let ((local-session (concat default-directory session-save-file)))
+    (if (file-exists-p local-session)
+        (progn
+          (custom-set-variables '(session-save-file local-session))
+          (message (concat "Local session file set to \"" session-save-file "\".")))
+      (custom-set-variables '(session-save-file (concat "~/" session-save-file))))))
+}}}
+
+-- Luke Lee
+
 ----
 
 CategoryPersistence
