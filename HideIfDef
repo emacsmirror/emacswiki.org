@@ -65,13 +65,13 @@ Tips:
 * All C files share the same macro database (i.e. hide-ifdef-env). 
 * Goto your "config.h" file and hide it, it will extract all #defines.
 * Goto each of your .h file in the order that C compiler compiles your C file, hide each .h file one by one. (TODO: project support, auto search for .h files)
-* To save your current macro database, you need to deploy "session" package (http://emacs-session.sourceforge.net/) and add the following into your init.el file:
+* To save your current macro database, you need to deploy "session" package (http://emacs-session.sourceforge.net/) and add the following into your emacs init script:
 {{{
 (unless (assoc 'hide-ifdef-env session-globals-include)
   (push '(hide-ifdef-env 100000 t) session-globals-include))
 }}}
 * Support exclusion of some macro-name patterns (to reduce the size of macro database). 
-For example, if you want to exclude all macros started with "DOC_", put the following into your init.el:
+For example, if you want to exclude all macros started with "DOC_", put the following into your emacs init script:
 {{{
 (setf hide-ifdef-exclude-define-regexp-pattern "DOC_.*")
 }}}
