@@ -58,14 +58,14 @@ after hiding, it will become
 Ex. #define macro(arg1, arg2...) arg1 + arg2
 * Self-referencing macros detected, even indirectly. As GNU cpp does.
 * hide/unhide a region
-* Evaluate a macro, just mark the region you want to evalute and press "C-c @ e"
+* Evaluate a macro, just mark the region you want to evalute and press `C-c @ e'.
 * When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
 
 Tips:
 * All C files share the same macro database (i.e. hide-ifdef-env). 
 * Goto your "config.h" file and hide it, it will extract all #defines.
 * Goto each of your .h file in the order that C compiler compiles your C file, hide each .h file one by one. (TODO: project support, auto search for .h files)
-* To save your current macro database, you need to deploy "session" package (http://emacs-session.sourceforge.net/) and add the following into your emacs init script:
+* To save your current macro database, you need to deploy [[EmacsSession]] package and add the following into your emacs init script:
 {{{
 (unless (assoc 'hide-ifdef-env session-globals-include)
   (push '(hide-ifdef-env 100000 t) session-globals-include))
