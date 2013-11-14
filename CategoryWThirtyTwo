@@ -59,7 +59,7 @@ Help:
 Installation:
 
 * [[EmacsW32]] -- an enhancement and an installation program for Emacs on MS-Windows. '''Note 1:''' It is also a run time environment including keyboard adjustments, printing etc. '''Note 2:''' It can also extract the Emacs MS-Windows binaries .tar.gz file (using 7-zip internally).
-* [[EmacsPortable]] -- Another enhancement and installation program for Emacs on MS-windows especially customized for PortableApplications.  
+* [[EmacsPortableApp]] -- Another enhancement and installation program for Emacs on MS-windows especially customized for PortableApplications.  
 * MsWindowsInstallation -- Installation guidelines when not using !EmacsW32
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
 * The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.  You can also use [http://cheeso.members.winisp.net/srcview.aspx?dir=Tar&file=Tar.cs this simple Tar program in C#]
