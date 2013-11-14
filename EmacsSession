@@ -45,6 +45,7 @@ Sometimes, I use OrgMode. But org-mark-ring is a circular object. Use the follow
 
 -- AlexSchroeder
 
+[new]
 There is a function in session that's not really persistence related -- `session-jump-to-last-change' <C-x C-/>.  This is the singular most useful function of any Emacs add-on to me.  It moves the point to the last modified location.  Keep calling it and you will visit all the locations you've made modifications.  Absolutely brilliant.  Unobstrusive, unlike highlight-changes-mode.
 
 However, it doesn't automatically reveal folded sections.  Here is the fix:
@@ -66,11 +67,12 @@ However, it doesn't automatically reveal folded sections.  Here is the fix:
 
 -- LeWang
 
-
+[new]
 Can this mode replace savehist, saveplace and desktop all at once and advantageneously ? Sounds like it is really capable and as I do not like restoring all the files and things like that, that could help just activating one mode for all this stuff
 
 -- Anonymous
 
+[new]
 I've been using session for many years. I also use it to restore my project specific settings in a per-project basis. Here is how it works:
 Add the following code segment into your .emacs init script. It will search ".emacs.session" file in the directory where you start Emacs.
 
