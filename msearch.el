@@ -100,6 +100,9 @@
 ;;
 ;; 2013-11-09 TZA
 ;; Implement most of Peter Harlan's proposals.
+;;
+;; 2013-11-14 TZA
+;; Customization for radio button "Word Mode".
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
@@ -123,10 +126,17 @@ With this variable you determine the setting when you enter msearch-mode."
   :group 'msearch)
 
 (defcustom msearch-full-word/symbol-start nil
-  ""
+  "Initial setting for the boundary conditions of the search string."
   :type '(choice (const :tag "None" nil)
 		 (const :tag "Word consistent" '("\\<" . "\\>"))
 		 (const :tag "Symbol consistent" '("\\_<" . "\\_>")))
+  :group 'msearch)
+
+(defcustom msearch-menu-word/symbol nil
+  "Entry in the msearch menu to determine the search string boundaries."
+  :type '(choice (const :tag "Submenu offering word or symbol boundaries or no boundary condition")
+		 (const :tag "Radio button to toggle word boundaries" word)
+		 (const :tag "Radio button to toggle symbol boundaries" symbol))
   :group 'msearch)
 
 (defvar msearch-face-idx 0)
@@ -469,6 +479,7 @@ The slave buf is released when msearch of the master is switched off."
       :selected (eq msearch-case-fold-search 'case-fold-search)
       :help "Use the setting of `case-fold-search' (which see)."])
     ("Search String Boundaries"
+     :visible (null msearch-menu-word/symbol)
      ["Word" (msearch-setq msearch-full-word/symbol '("\\<" . "\\>"))
       :style radio
       :selected (equal msearch-full-word/symbol '("\\<" . "\\>"))]
@@ -478,6 +489,8 @@ The slave buf is released when msearch of the master is switched off."
      ["None" (msearch-setq msearch-full-word/symbol nil)
       :style radio
       :selected (null msearch-full-word/symbol)])
+    ["Word Mode" (msearch-setq msearch-full-word/symbol (unless msearch-full-word/symbol '("\\<" . "\\>"))) :visible (eq msearch-menu-word/symbol 'word) :style toggle :selected  msearch-full-word/symbol]
+    ["Symbol Mode" (msearch-setq msearch-full-word/symbol (unless msearch-full-word/symbol '("\\_<" . "\\_>"))) :visible (eq msearch-menu-word/symbol 'symbol) :style toggle :selected  msearch-full-word/symbol]
     ["Freeze Highlights" msearch-freeze]
     ["Enslave Buffer" msearch-enslave-buffer]
     ["Release Buffer" msearch-release-buffer]
