@@ -24,7 +24,6 @@ An extensively rewritten version is uploaded. Here I list some of the enhancemen
 #define TESTVAL2 291 // 0x123
 
 #define CONCAT(x,y) x ## y
-#define CONCAT2(x,y) CONCAT(x,y)
 
 #if CONCAT( TESTVAL1=,=TESTVAL2 )
 #error correct
@@ -44,7 +43,6 @@ after hiding, it will become
 #define TESTVAL2 291 // 0x123
 
 #define CONCAT(x,y) x ## y
-#define CONCAT2(x,y) CONCAT(x,y)
 
 #if CONCAT( TESTVAL1=,=TESTVAL2 )
 #error correct
@@ -67,7 +65,7 @@ Tips:
 * All C files share the same macro database (i.e. hide-ifdef-env). 
 * Goto your "config.h" file and hide it, it will extract all #defines.
 * Goto each of your .h file in the order that C compiler compiles your C file, hide each .h file one by one. (TODO: project support, auto search for .h files)
-* To save your current macro database, you need to deploy "session" package and add the following into your init.el file:
+* To save your current macro database, you need to deploy "session" package (http://emacs-session.sourceforge.net/) and add the following into your init.el file:
 {{{
 (unless (assoc 'hide-ifdef-env session-globals-include)
   (push '(hide-ifdef-env 100000 t) session-globals-include))
