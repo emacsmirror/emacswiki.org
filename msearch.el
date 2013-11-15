@@ -267,15 +267,16 @@ Instead of match-data the limits can also be given explicitely with MATCH-B and 
 If face is non-nil the real string parts are propertised in face FACE."
   (unless n (setq n 10))
   (if (> (length word) n)
-      (let* ((pos (/ (- (length word) n) 2))
-	     (b (substring word 0 pos))
-	     (e (substring word (- (length word) pos))))
-	(when face
-	  (setq b (propertize b 'face face)
-		e (propertize e 'face face)))
-	(concat b
-		"..."
-		e))
+      (progn 
+	(setq n (/ n 2))
+	(let* ((b (substring word 0 n))
+	       (e (substring word (- (length word) n))))
+	  (when face
+	    (setq b (propertize b 'face face)
+		  e (propertize e 'face face)))
+	  (concat b
+		  "..."
+		  e)))
     (if face
 	(propertize word 'face face)
       word)))
