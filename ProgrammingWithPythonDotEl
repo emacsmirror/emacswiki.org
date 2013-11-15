@@ -33,7 +33,7 @@ ElDoc,
 
 == CEDET ==
 
-[[CEDET]] is now part of emacs (but I still recommend getting the latest version). It includes things, like completion, and folding, such that some things here may not be required.
+[[CEDET]] is now part of emacs (but I still recommend getting the latest version). It includes things like completion and folding, so that some things here may not be required.
 
 == Indentation and folding ===
 
