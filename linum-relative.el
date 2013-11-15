@@ -1,11 +1,13 @@
-;;; linum-relative.el --- display relative line number in the left margin
+;;; linum-relative.el --- display relative line number in emacs.
 
-;; Copyright 2012 Yen-Chin,Lee
+;; Copyright (c) 2013 Yen-Chin, Lee.
 ;;
 ;; Author: coldnew <coldnew.tw@gmail.com>
 ;; Keywords: converience
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/download/linum-relative.el
-;; Version: 0.2
+;; X-URL: http://github.com/coldnew/linum-relative
+;; Version: 0.3
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,23 +24,21 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Commentary:
+
+;; ![Screenshot](https://github.com/coldnew/linum-relative/raw/master/screenshot/screenshot1.jpg)
 ;;
-;; Display relative line numbers for the current buffer.
+;; linum-relative lets you display relative line numbers for current buffer.
 ;;
 
-;;; Usage:
-;; Put this file into your load-path and the following into your ~/.emacs:
-;;   (require 'linum-relative)
+;;; Installation:
 
-;;; Changelog
+;; If you have `melpa` and `emacs24` installed, simply type:
 ;;
-;; 2012/09/05
-;; Added linum-relative-toggle command.
+;;         M-x package-install linum-relative
 ;;
-;; 2012/09/03 merge patch from Raffaele Ricciardi
-;; Added linum-relative-plusp-offset.
-;; Made linum-relative-current-symbol optional.
-;; Minor refactorings.
+;; In your .emacs
+;;
+;;         (require 'linum-relative)
 
 ;;; Code:
 
@@ -57,7 +57,8 @@
 
 (defvar linum-relative-current-symbol "0"
   "The symbol you want to show on the current line, by default it is 0.
-   You can use any string like \"->\". ")
+   You can use any string like \"->\". If this variable is empty string,
+linum-releative will show the real line number at current line.")
 
 (defvar linum-relative-plusp-offset 0
   "Offset to use for positive relative line numbers.")
@@ -73,14 +74,16 @@
 ;;;; Functions
 (defun linum-relative (line-number)
   (let* ((diff1 (abs (- line-number linum-relative-last-pos)))
-	 (diff (if (minusp diff1)
-		   diff1
-		 (+ diff1 linum-relative-plusp-offset)))
-	 (current-p (= diff linum-relative-plusp-offset))
-	 (current-symbol (if (and linum-relative-current-symbol current-p)
-			     linum-relative-current-symbol
-			   (number-to-string diff)))
-	 (face (if current-p 'linum-relative-current-face 'linum)))
+         (diff (if (minusp diff1)
+                   diff1
+                 (+ diff1 linum-relative-plusp-offset)))
+         (current-p (= diff linum-relative-plusp-offset))
+         (current-symbol (if (and linum-relative-current-symbol current-p)
+                             (if (string= "" linum-relative-current-symbol)
+                                 (number-to-string line-number)
+                               linum-relative-current-symbol)
+                           (number-to-string diff)))
+         (face (if current-p 'linum-relative-current-face 'linum)))
     (propertize (format linum-relative-format current-symbol) 'face face)))
 
 (defun linum-relative-toggle ()
