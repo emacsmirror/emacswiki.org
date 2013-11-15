@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 15 10:06:55 2013 (-0800)
+;; Last-Updated: Fri Nov 15 14:51:18 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3318
+;;     Update #: 3349
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -113,9 +113,9 @@
 ;;    `hlt-mouse-toggle-link-highlighting',
 ;;    `hlt-mouse-toggle-property-highlighting',
 ;;    `hlt-nonempty-region-p', `hlt-props-to-copy/yank',
-;;    `hlt-read-props-completing', `hlt-region-or-buffer-limits',
-;;    `hlt-set-intersection', `hlt-set-union', `hlt-subplist',
-;;    `hlt-unhighlight-for-overlay'.
+;;    `hlt-read-face-name', `hlt-read-props-completing',
+;;    `hlt-region-or-buffer-limits', `hlt-set-intersection',
+;;    `hlt-set-union', `hlt-subplist', `hlt-unhighlight-for-overlay'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -384,10 +384,10 @@
 ;;  text.  The basic commands for hiding and showing are
 ;;  `hlt-hide-default-face' and `hlt-show-default-face', which you can
 ;;  use to hide and show the face last used for highlighting.  With a
-;;  prefix argument, you are prompted for a different face to hide; it
-;;  then becomes the default face for highlighting.  You can also
-;;  change the default highlighting face at any time using command
-;;  `hlt-choose-default-face'.
+;;  prefix argument, you are prompted for a different face to hide or
+;;  show; it then becomes the default face for highlighting.  You can
+;;  also change the default highlighting face at any time using
+;;  command `hlt-choose-default-face'.
 ;;
 ;;(@* "Hiding and Showing Text - Icicles Multi-Commands")
 ;;  *** Hiding and Showing Text - Icicles Multi-Commands ***
@@ -560,7 +560,8 @@
 ;;
 ;; 2013/11/15 dadams
 ;;     Added: hlt-unhighlight-regexp-region, hlt-unhighlight-regexp-to-end,
-;;            hlt-+/--highlight-regexp-read-args, hlt-+/--highlight-regexp-region.
+;;            hlt-+/--highlight-regexp-read-args, hlt-+/--highlight-regexp-region,
+;;            hlt-read-face-name.
 ;;     hlt-highlight-regexp-(region|to-end):
 ;;       Use hlt-+/--highlight-regexp-read-args and hlt-+/--highlight-regexp-region.
 ;; 2013/11/07 dadams
@@ -929,10 +930,18 @@ Either a list of properties (symbols) or `t', meaning all properties."
 
 ;;; Misc Functions - Emacs 20+ ---------------------------------------
 
+(defun hlt-read-face-name (prompt)
+  "Read a face name using completion.  Return its face symbol.
+Accommodate brain-dead vanilla Emacs PROMPT arg across Emacs versions."
+  (save-match-data
+    (when (and (> emacs-major-version 21)  (string-match "\\(:\\s *$\\|:?\\s +$\\)" prompt))
+      (setq prompt  (substring prompt 0 (- (length (match-string 0 prompt)))))))
+  (read-face-name prompt))
+
 ;;;###autoload
 (defun hlt-choose-default-face (face)
   "Choose a face for highlighting."
-  (interactive (list (read-face-name "Use highlighting face: ")))
+  (interactive (list (hlt-read-face-name "Use highlighting face: ")))
   (setq hlt-last-face  face)
   (when (interactive-p) (message "Highlighting will now use face `%s'" face)))
 
@@ -1105,10 +1114,11 @@ You can use command `hlt-choose-default-face' to choose a different face."
   "Highlight either the region/buffer or new input that you type.
 Use the region if active, or the buffer otherwise.
 
-If *all* of the following are true, the apply the last-used face as a
-text property to the next and subsequent chars that you type, and add
-that face to a facemenu menu (`Text Properties' or one of its
+If *ALL* of the following are true then apply the last-used face as a
+text property to the next and subsequent characters that you type, and
+add that face to a Facemenu menu (`Text Properties' or one of its
 submenus):
+
  * You call this command interactively.
  * You use no prefix arg.
  * Option `prop-use-overlays-flag' is nil
@@ -1117,19 +1127,19 @@ submenus):
 Otherwise, the behavior respects `hlt-use-overlays-flag' and depends
 on the optional arguments, as follows:
 
- Optional args START and END are the limits of the area to act on.
+ Args START and END are the limits of the area to act on.
   They default to the region limits.  If the region is not active or
   it is empty, then use the whole buffer.
 
- Optional 3rd arg FACE is the face to use.
+ Third arg FACE is the face to use.
   Interactively, this is the last face that was used for highlighting.
   (You can use command `hlt-choose-default-face' to choose a different face.)
 
- Optional 4th arg MSG-P non-nil means to display a progress message.
+ Fourth arg MSG-P non-nil means to display a progress message.
   Interactively, MSG-P is t.
 
-Optional 5th arg MOUSE-P non-nil means use property `mouse-face', not
- `face'.  Interactively, MOUSE-P is provided by the prefix arg."
+ Fifth arg MOUSE-P non-nil means use `mouse-face', not `face'.
+  Interactively, MOUSE-P is provided by the prefix arg."
   (interactive `(,@(hlt-region-or-buffer-limits) nil t ,current-prefix-arg))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                              (setq start  (car start-end)
@@ -1211,6 +1221,7 @@ both overlays and text properties."
 (defun hlt-highlight-regexp-region (&optional start end regexp face msg-p mouse-p nth)
   "Highlight regular expression REGEXP in region/buffer.
 Use the region if active, or the buffer otherwise.
+
 Optional args START and END are the limits of the area to act on.
   They default to the region limits.
 Optional 4th arg FACE is the face to use.
@@ -1359,7 +1370,7 @@ Optional args START and END are the limits of the area to act on.
   They default to the region limits.
 Optional arg MOUSE-P non-nil means use `mouse-face' property, not
   `face'.  Interactively, MOUSE-P is provided by the prefix arg."
-  (interactive `(,(read-face-name "Remove highlight overlays that use face: ")
+  (interactive `(,(hlt-read-face-name "Remove highlight overlays that use face: ")
                   ,@(hlt-region-or-buffer-limits) ,current-prefix-arg))
   (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
@@ -1410,8 +1421,8 @@ Other arguments:
  Optional arg MSG-P non-nil means display a progress message.
  Optional arg MOUSE-P non-nil means use `mouse-face' property, not
   `face'.  Interactively, MOUSE-P is provided by the prefix arg."
-  (interactive `(,(read-face-name "Replace face in region highlights. Old face: ")
-                 ,(read-face-name "New face: ")
+  (interactive `(,(hlt-read-face-name "Replace face in region highlights. Old face: ")
+                 ,(hlt-read-face-name "New face: ")
                  ,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                              (setq start  (car start-end)
@@ -1440,7 +1451,7 @@ using command `hlt-choose-default-face'.  The same face is used as the
 default for all `hlt-*' functions.
 
 When used in Lisp code:
- MOUSEP non-nil means use propert `mouse-face', not `face'."
+ MOUSEP non-nil means use property `mouse-face', not `face'."
   (interactive (list (prefix-numeric-value current-prefix-arg)
                      (if (< (prefix-numeric-value current-prefix-arg) 0)
                          (call-interactively #'hlt-choose-default-face)
@@ -1462,7 +1473,7 @@ Otherwise, use the last face used for highlighting.
  You can also use command `hlt-choose-default-face' to choose a different face."
   (interactive "P")
   (if face
-      (setq face  (read-face-name "Use highlighting face: ") hlt-last-face face)
+      (setq face  (hlt-read-face-name "Use highlighting face: ") hlt-last-face face)
     (setq face  hlt-last-face))
   (apply #'hlt-highlight-regexp-region
          (append (hlt-region-or-buffer-limits)
@@ -1484,7 +1495,7 @@ Optional arg MSG-P non-nil means display a progress message."
                              (setq start  (car start-end)
                                    end    (cadr start-end))))
   (if face
-      (setq face  (read-face-name "Use highlighting face: ") hlt-last-face face)
+      (setq face  (hlt-read-face-name "Use highlighting face: ") hlt-last-face face)
     (setq face  hlt-last-face))
   (when msg-p (message "Putting mouse face `%s' on each line..." face))
   (let ((buffer-read-only           nil)
@@ -1680,7 +1691,7 @@ With a prefix argument, prompt for the highlighting face to show.
 Otherwise, show the last face used for highlighting.
  You can also use command `hlt-choose-default-face' to choose a different face."
     (interactive (list (if current-prefix-arg
-                           (read-face-name "Show highlighting face: ")
+                           (hlt-read-face-name "Show highlighting face: ")
                          hlt-last-face)))
     (hlt-listify-invisibility-spec)
     (remove-from-invisibility-spec face))
@@ -1770,7 +1781,7 @@ START and END are the limits of the area to act on. They default to
   the region limits."
     (interactive `(,@(hlt-region-or-buffer-limits)
                    ,(if current-prefix-arg
-                        (read-face-name "Hide highlighting face: ")
+                        (hlt-read-face-name "Hide highlighting face: ")
                         hlt-last-face)))
     (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                                (setq start  (car start-end)
@@ -1834,6 +1845,9 @@ you can use command `hlt-choose-default-face' to choose a different face.
 If `hlt-act-on-any-face-flag' is non-nil, then the target face can be
 any face you choose.  Otherwise, it must be a face that has been used
 for highlighting.
+
+With a prefix argument, go to the next `mouse-face' property with
+FACE, not the next `face' property.
 
 If `hlt-use-overlays-flag' is non-nil, then overlay highlighting is
 targeted.  If `hlt-use-overlays-flag' is not `only', then
@@ -1957,6 +1971,9 @@ Interactively, you are prompted for PROP and VALUES.  For VALUES you
   can enter either a list or a single, non-list value.  A list is
   always interpreted as a list of values, not as a single list value.
   Using `RET' with no input means highlight for any non-nil value.
+
+With a prefix argument, use the `mouse-face' property with FACE for
+highlighting, not the `face' property.
 
 Optional args START and END are the limits of the area to act on.
   They default to the region limits (buffer, if no active region).
@@ -2095,6 +2112,10 @@ This is intended to be used on `post-command-hook'."
                                            msg-p mouse-p pos)
     "Alternately highlight/unhighlight all text that has property PROP.
 Highlighting is done using overlays.
+
+With a prefix argument, use the `mouse-face' property with FACE for
+highlighting, not the `face' property.
+
 Optional arg POS is a buffer position.  If it is the same as the
   position recorded in `hlt-prop-highlighting-state', then do not
   toggle.  In any case, update `hlt-prop-highlighting-state' with POS.
