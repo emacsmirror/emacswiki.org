@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov  7 20:35:30 2013 (-0800)
+;; Last-Updated: Fri Nov 15 10:06:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3295
+;;     Update #: 3318
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -89,8 +89,9 @@
 ;;    `hlt-toggle-link-highlighting',
 ;;    `hlt-toggle-property-highlighting',
 ;;    `hlt-toggle-use-overlays-flag', `hlt-unhighlight-all-prop',
-;;    `hlt-unhighlight-region', `hlt-unhighlight-region-for-face',
-;;    `hlt-yank-props'.
+;;    `hlt-unhighlight-regexp-region',
+;;    `hlt-unhighlight-regexp-to-end', `hlt-unhighlight-region',
+;;    `hlt-unhighlight-region-for-face', `hlt-yank-props'.
 ;;
 ;;  User options (variables) defined here:
 ;;
@@ -103,9 +104,11 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `hlt-add-listifying', `hlt-add-to-invisibility-spec',
-;;    `hlt-delete-highlight-overlay', `hlt-highlight-faces-in-buffer',
-;;    `hlt-flat-list', `hlt-highlight-faces-in-buffer',
+;;    `hlt-+/--highlight-regexp-read-args',
+;;    `hlt-+/--highlight-regexp-region', `hlt-add-listifying',
+;;    `hlt-add-to-invisibility-spec', `hlt-delete-highlight-overlay',
+;;    `hlt-highlight-faces-in-buffer', `hlt-flat-list',
+;;    `hlt-highlight-faces-in-buffer',
 ;;    `hlt-listify-invisibility-spec',
 ;;    `hlt-mouse-toggle-link-highlighting',
 ;;    `hlt-mouse-toggle-property-highlighting',
@@ -555,6 +558,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/11/15 dadams
+;;     Added: hlt-unhighlight-regexp-region, hlt-unhighlight-regexp-to-end,
+;;            hlt-+/--highlight-regexp-read-args, hlt-+/--highlight-regexp-region.
+;;     hlt-highlight-regexp-(region|to-end):
+;;       Use hlt-+/--highlight-regexp-read-args and hlt-+/--highlight-regexp-region.
 ;; 2013/11/07 dadams
 ;;     Added: hlt-highlight-enclosing-list.
 ;; 2013/09/15 dadams
@@ -1014,6 +1022,47 @@ overlays for the last face and text properties for all faces."
           (setq buffer-read-only  read-only)
           (set-buffer-modified-p modified-p))))))
 
+;;; (defun hlt-unhighlight-for-overlay (overlay start end &optional face)
+;;;   "Remove OVERLAY highlighting from START to END.
+;;; Acts only on an OVERLAY that was created by library `highlight'.
+;;; If OVERLAY extends beyond the region from START to END, then replace
+;;; it with two overlays: one that ends at START and the other that starts
+;;; at END.  Otherwise, delete OVERLAY.
+;;; Optional arg FACE is a face symbol.  If non-nil, then delete only
+;;; overlays with that FACE."
+;;;   (let ((oface   (overlay-get overlay 'hlt-highlight))
+;;;         (ostart  (overlay-start overlay))
+;;;         (oend    (overlay-end   overlay)))
+;;;     (when (and oface  (or (not face)  (eq face oface)))
+;;;       (delete-overlay overlay)
+;;;       (when (< ostart start) (hlt-highlight-region ostart start face))
+;;;       (when (> oend end) (hlt-highlight-region end oend face)))))
+
+;; This version has an implementation similar to `remove-overlays' in Emacs 22+.
+(defun hlt-unhighlight-for-overlay (overlay start end &optional face)
+  "Remove OVERLAY highlighting from START to END.
+Acts only on an OVERLAY that was created by library `highlight'.
+OVERLAY might be moved or split or both.
+
+Optional arg FACE is a face symbol.  If non-nil, then remove only
+highlighting with that FACE."
+  ;; (overlay-recenter end)                ; Speed up loops over overlays.
+  (when (< end start) (setq start (prog1 end (setq end start))))
+  (let ((oface   (overlay-get overlay 'hlt-highlight))
+        (ostart  (overlay-start overlay))
+        (oend    (overlay-end   overlay)))
+    (when (and oface  (or (not face)  (eq face oface)))
+      ;; Either push OVERLAY outside region or split it to exclude region
+      ;; or delete it (if it is entirely contained in region).
+      (if (< ostart start)
+          (if (<= oend end)
+              (move-overlay overlay ostart start)
+            (move-overlay (copy-overlay overlay) ostart start)
+            (move-overlay overlay end oend))
+        (if (> oend end)
+            (move-overlay overlay end oend)
+          (delete-overlay overlay))))))
+
 ;;;###autoload
 (defun hlt-highlighter-mouse ()
   "Same as `hlt-highlighter', but for binding to a menu item."
@@ -1120,117 +1169,6 @@ Optional 5th arg MOUSE-P non-nil means use property `mouse-face', not
       (message "Highlighting... done. %s" remove-msg))))
 
 ;;;###autoload
-(defun hlt-highlight-regexp-region (&optional start end regexp face msg-p mouse-p nth)
-  "Highlight regular expression REGEXP in region/buffer.
-Use the region if active, or the buffer otherwise.
-Optional args START and END are the limits of the area to act on.
-  They default to the region limits.
-Optional 4th arg FACE is the face to use.
-  Interactively, this is the last face that was used for highlighting.
-  (You can use command `hlt-choose-default-face' to choose a different face.)
-Optional 5th arg MSG-P:
-  t means to treat this as an interactive call when deciding to
-    display all messages.
-  non-nil & non-t means to display only error and warning messages.
-Optional 6th arg MOUSE-P non-nil means to use `mouse-face' property,
-  not `face'.  Interactively, this is provided by the prefix arg.
-Optional 7th arg NTH determines which regexp subgroup is highlighted.
-  If nil or 0, the entire regexp is highlighted.  Otherwise, the NTH
-  regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
-  (NTH is not available interactively.)"
-  (interactive
-   `(,@(hlt-region-or-buffer-limits)
-     ,(if (fboundp 'icicle-read-string-completing)
-          (icicle-read-string-completing "Regexp to highlight: "
-                                         hlt-last-regexp
-                                         (lambda (c) (string-match "regexp" (symbol-name c)))
-                                         (if (and (boundp 'hi-lock-mode)  hi-lock-mode)
-                                             'hi-lock-regexp-history
-                                           'regexp-history))
-            (read-string "Regexp to highlight: "
-                         nil (if (and (boundp 'hi-lock-mode)  hi-lock-mode)
-                                 'hi-lock-regexp-history
-                               'regexp-history)
-                         hlt-last-regexp))
-       nil t ,current-prefix-arg)) ; interactive-p means to display all msgs.
-  (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
-                             (setq start  (car start-end)
-                                   end    (cadr start-end))))
-  (unless regexp (setq regexp  hlt-last-regexp))
-  (unless (stringp regexp)      ; Else re-search-forward gets an error
-    (error "HIGHLIGHT-REGEXP-REGION: REGEXP arg is not a string: `%S'" regexp))
-  (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
-  (let ((reg-size  (abs (- end start))))
-    (when (and msg-p
-               (> reg-size hlt-max-region-no-warning)
-               (not (progn
-                      (and (fboundp 'flash-ding) ; In `frame-fns.el'
-                           (flash-ding 'no-terminate-macros (selected-frame)))
-                      (y-or-n-p (substitute-command-keys
-                                 (format "Lots of highlighting slows \
-things down.  Do you really want to highlight up to %d chars?  "
-                                         reg-size))))))
-      (error "OK, highlighting was cancelled")))
-  (when (eq t msg-p) (message (concat "Highlighting occurrences of `" regexp "'...")))
-  (let ((hits-p  nil))
-    (save-excursion
-      (goto-char start)
-      (while (and (< start end)  (not (eobp))  (re-search-forward regexp end t)
-                  (setq hits-p  t))
-        (condition-case nil
-            (progn (forward-char 1) (setq start  (1+ (point))))
-          (end-of-buffer (setq start  end)))
-        (hlt-highlight-region (match-beginning (or nth  0))
-                              (match-end (or nth  0)) face nil mouse-p)))
-    (when (eq t msg-p)
-      (if hits-p
-          (message "Highlighting occurrences of `%s' done.  %s" regexp
-                   (substitute-command-keys
-                    "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting."))
-        (message "No occurrences of `%s'" regexp))))
-  (setq hlt-last-regexp  regexp))
-
-;;;###autoload
-(defun hlt-highlight-regexp-to-end (regexp &optional face msg-p mouse-p nth)
-  "Highlight text after cursor that matches REGEXP.
-The behavior respects `hlt-use-overlays-flag' and depends on the
-optional arguments, as follows:
-
- Optional 2nd arg FACE is the face to use.
-  Interactively, this is the last face that was used for highlighting.
-  (You can use command `hlt-choose-default-face' to choose a different
-  face.)
-
- Optional 3rd arg MSG-P non-nil means to display a progress message.
-  Interactively, MSG-P is t.
-
- Optional 4th arg MOUSE-P non-nil means use property `mouse-face', not
- `face'.  Interactively, MOUSE-P is provided by the prefix arg.
-
- Optional 5th arg NTH determines which regexp subgroup is highlighted.
-  If nil or 0, the entire regexp is highlighted.  Otherwise, the NTH
-  regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
-  (NTH is not available interactively.)"
-  (interactive
-   (list (read-string "Regexp to highlight after cursor: " nil
-                      (if (and (boundp 'hi-lock-mode)  hi-lock-mode)
-                          'hi-lock-regexp-history
-                        'regexp-history)
-                      hlt-last-regexp)
-         nil t current-prefix-arg))
-  (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
-  (let ((remove-msg
-         (and msg-p  (substitute-command-keys
-                      "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting."))))
-    (when msg-p
-      (message "Highlighting occurrences of `%s' after cursor..." regexp))
-    (hlt-highlight-regexp-region (point) (point-max) regexp face
-                                 (and msg-p  'error-msgs-only) mouse-p nth)
-    (when msg-p
-      (message "Highlighting occurrences of `%s' done.  %s" regexp remove-msg)))
-  (setq hlt-last-regexp  regexp))
-
-;;;###autoload
 (defun hlt-unhighlight-region (&optional start end face msg-p mouse-p)
   "Remove all highlighting in region or buffer.
 Use the region if active, or the buffer otherwise.
@@ -1270,6 +1208,136 @@ both overlays and text properties."
   (when msg-p (message "Removing highlighting... done.")))
 
 ;;;###autoload
+(defun hlt-highlight-regexp-region (&optional start end regexp face msg-p mouse-p nth)
+  "Highlight regular expression REGEXP in region/buffer.
+Use the region if active, or the buffer otherwise.
+Optional args START and END are the limits of the area to act on.
+  They default to the region limits.
+Optional 4th arg FACE is the face to use.
+  Interactively, this is the last face that was used for highlighting.
+  (You can use command `hlt-choose-default-face' to choose a different face.)
+Optional 5th arg MSG-P:
+  t means to treat this as an interactive call when deciding to
+    display all messages.
+  non-nil & non-t means to display only error and warning messages.
+Optional 6th arg MOUSE-P non-nil means to use `mouse-face' property,
+  not `face'.  Interactively, this is provided by the prefix arg.
+Optional 7th arg NTH determines which regexp subgroup is highlighted.
+  If nil or 0, the entire regexp is highlighted.  Otherwise, the NTH
+  regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
+  (NTH is not available interactively.)"
+  (interactive (hlt-+/--highlight-regexp-read-args "" 'REGION))
+  (hlt-+/--highlight-regexp-region nil start end regexp face msg-p mouse-p nth))
+
+;;;###autoload
+(defun hlt-unhighlight-regexp-region (&optional start end regexp face msg-p mouse-p nth)
+  "Unhighlight text matching regular expression REGEXP in region/buffer.
+This is like `hlt-highlight-regexp-region' (which see), but opposite.
+Where `hlt-highlight-regexp-region' highlights REGEXP matches, this
+unhighlights the matches."
+  (interactive (hlt-+/--highlight-regexp-read-args "UN" 'REGION))
+  (hlt-+/--highlight-regexp-region 'UNHIGHLIGHT start end regexp face msg-p mouse-p nth))
+
+;;;###autoload
+(defun hlt-highlight-regexp-to-end (regexp &optional face msg-p mouse-p nth)
+  "Highlight text after cursor that matches REGEXP.
+The behavior respects `hlt-use-overlays-flag' and depends on the
+optional arguments, as follows:
+
+ Optional 2nd arg FACE is the face to use.
+  Interactively, this is the last face that was used for highlighting.
+  (You can use command `hlt-choose-default-face' to choose a different
+  face.)
+
+ Optional 3rd arg MSG-P non-nil means to display a progress message.
+  Interactively, MSG-P is t.
+
+ Optional 4th arg MOUSE-P non-nil means use property `mouse-face', not
+ `face'.  Interactively, MOUSE-P is provided by the prefix arg.
+
+ Optional 5th arg NTH determines which regexp subgroup is highlighted.
+  If nil or 0, the entire regexp is highlighted.  Otherwise, the NTH
+  regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
+  (NTH is not available interactively.)"
+  (interactive (hlt-+/--highlight-regexp-read-args "" nil))
+  (hlt-+/--highlight-regexp-region nil (point) (point-max) regexp face msg-p mouse-p nth))
+
+;;;###autoload
+(defun hlt-unhighlight-regexp-to-end (regexp &optional face msg-p mouse-p nth)
+  "UNhighlight text after cursor that matches REGEXP.
+This is like `hlt-highlight-regexp-to-end' (which see), but opposite.
+Where `hlt-highlight-regexp-to-end' highlights REGEXP matches, this
+unhighlights the matches."
+  (interactive (hlt-+/--highlight-regexp-read-args "UN" nil))
+  (hlt-+/--highlight-regexp-region 'UNHIGHLIGHT
+                                   (point) (point-max) regexp face msg-p mouse-p nth))
+
+(defun hlt-+/--highlight-regexp-read-args (un regionp)
+  "Read arguments for `hlt-(un)highlight-regexp-(region|to-end)'."
+  (let ((prompt  (format "Regexp to %shighlight%s: " un (if regionp "" " after cursor"))))
+    `(,@(and regionp  (hlt-region-or-buffer-limits))
+      ,(if (fboundp 'icicle-read-string-completing)
+           (icicle-read-string-completing prompt
+                                          hlt-last-regexp
+                                          (lambda (c) (string-match "regexp" (symbol-name c)))
+                                          (if (and (boundp 'hi-lock-mode)  hi-lock-mode)
+                                              'hi-lock-regexp-history
+                                            'regexp-history))
+           (read-string prompt nil
+                        (if (and (boundp 'hi-lock-mode)  hi-lock-mode)
+                            'hi-lock-regexp-history
+                          'regexp-history)
+                        hlt-last-regexp))
+      nil t ,current-prefix-arg)))
+
+(defun hlt-+/--highlight-regexp-region (unhighlightp start end regexp face msg-p mouse-p nth)
+  "Helper for `hlt-(un)highlight-regexp-region'.
+Non-nil UNHIGHLIGHTP means unhighlight.  Otherwise, highlight.
+The other arguments are as for `hlt-highlight-regexp-region'."
+  (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
+                             (setq start  (car start-end)
+                                   end    (cadr start-end))))
+  (unless regexp (setq regexp  hlt-last-regexp))
+  (unless (stringp regexp)              ; Else re-search-forward gets an error
+    (error "HLT-%sHIGHLIGHT-REGEXP-REGION: REGEXP arg is not a string: `%S'"
+           (if unhighlightp "UN" "") regexp))
+  (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
+  (when (and msg-p  (not unhighlightp))
+    (let ((reg-size  (abs (- end start))))
+      (when (and (> reg-size hlt-max-region-no-warning)
+                 (not (progn
+                        (and (fboundp 'flash-ding) ; In `frame-fns.el'
+                             (flash-ding 'no-terminate-macros (selected-frame)))
+                        (y-or-n-p (substitute-command-keys
+                                   (format "Lots of highlighting slows \
+things down.  Do you really want to highlight up to %d chars?  "
+                                           reg-size))))))
+        (error "OK, highlighting was cancelled"))))
+  (when (eq t msg-p)
+    (message "%sighlighting occurrences of `%s'..." (if unhighlightp "UNh" "H") regexp))
+  (let ((hits-p  nil))
+    (save-excursion
+      (goto-char start)
+      (while (and (< start end)  (not (eobp))  (re-search-forward regexp end t)
+                  (setq hits-p  t))
+        (condition-case nil
+            (progn (forward-char 1) (setq start  (1+ (point))))
+          (end-of-buffer (setq start  end)))
+        (funcall (if unhighlightp #'hlt-unhighlight-region #'hlt-highlight-region)
+                 (match-beginning (or nth  0))
+                 (match-end (or nth  0)) face nil mouse-p)))
+    (when (eq t msg-p)
+      (if hits-p
+          (message "%sighlighting occurrences of `%s' done.  %s" (if unhighlightp "UNh" "H")
+                   regexp
+                   (if (not unhighlightp)
+                       (substitute-command-keys
+                        "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")
+                     ""))
+        (message "No occurrences of `%s'" regexp))))
+  (setq hlt-last-regexp  regexp))
+
+;;;###autoload
 (defun hlt-unhighlight-region-for-face (&optional face start end mouse-p)
   "Remove any highlighting in the region that uses FACE.
 Same as `hlt-unhighlight-region', but removes only highlighting
@@ -1307,47 +1375,6 @@ overlays with that FACE."
   (let ((highlight-face  (overlay-get overlay 'hlt-highlight)))
     (when (and highlight-face  (or (not face)  (eq face highlight-face)))
       (delete-overlay overlay))))
-
-;;; (defun hlt-unhighlight-for-overlay (overlay start end &optional face)
-;;;   "Remove OVERLAY highlighting from START to END.
-;;; Acts only on an OVERLAY that was created by library `highlight'.
-;;; If OVERLAY extends beyond the region from START to END, then replace
-;;; it with two overlays: one that ends at START and the other that starts
-;;; at END.  Otherwise, delete OVERLAY.
-;;; Optional arg FACE is a face symbol.  If non-nil, then delete only
-;;; overlays with that FACE."
-;;;   (let ((oface   (overlay-get overlay 'hlt-highlight))
-;;;         (ostart  (overlay-start overlay))
-;;;         (oend    (overlay-end   overlay)))
-;;;     (when (and oface  (or (not face)  (eq face oface)))
-;;;       (delete-overlay overlay)
-;;;       (when (< ostart start) (hlt-highlight-region ostart start face))
-;;;       (when (> oend end) (hlt-highlight-region end oend face)))))
-
-;; This version has an implementation similar to `remove-overlays' in Emacs 22+.
-(defun hlt-unhighlight-for-overlay (overlay start end &optional face)
-  "Remove OVERLAY highlighting from START to END.
-Acts only on an OVERLAY that was created by library `highlight'.
-OVERLAY might be moved or split or both.
-
-Optional arg FACE is a face symbol.  If non-nil, then remove only
-highlighting with that FACE."
-  ;; (overlay-recenter end)                ; Speed up loops over overlays.
-  (when (< end start) (setq start (prog1 end (setq end start))))
-  (let ((oface   (overlay-get overlay 'hlt-highlight))
-        (ostart  (overlay-start overlay))
-        (oend    (overlay-end   overlay)))
-    (when (and oface  (or (not face)  (eq face oface)))
-      ;; Either push OVERLAY outside region or split it to exclude region
-      ;; or delete it (if it is entirely contained in region).
-      (if (< ostart start)
-          (if (<= oend end)
-              (move-overlay overlay ostart start)
-            (move-overlay (copy-overlay overlay) ostart start)
-            (move-overlay overlay end oend))
-        (if (> oend end)
-            (move-overlay overlay end oend)
-          (delete-overlay overlay))))))
 
 (unless (fboundp 'copy-overlay)         ; Defined in Emacs 22+.
   (defun copy-overlay (o)
