@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 15 22:16:22 2013 (-0800)
+;; Last-Updated: Fri Nov 15 22:49:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3364
+;;     Update #: 3384
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -217,18 +217,28 @@
 ;;  instead of a face, if you like.  A mouse face shows up only when
 ;;  the mouse pointer is over it.
 ;;
-;;  The commands you will use the most often are probably
+;;  The commands with `region' in their name act on the text in the
+;;  active region.  If the region is not active then they act on the
+;;  text in the whole buffer.  The commands with `to-end' in their
+;;  name act on the text from point to the end of the buffer.  See
+;;  also (@* "What Gets Highlighted: Region, Buffer, New Text You Type").
+;;
+;;  The commands you will use the most often are perhaps
 ;;  `hlt-highlight', `hlt-highlighter', `hlt-next-highlight', and
 ;;  `hlt-previous-highlight'.  You might also often use the various
 ;;  commands to hide and show highlighted text.
 ;;
-;;  You can use command `hlt-highlight' to highlight the region,
-;;  highlight a regexp throughout the region, or unhighlight the
-;;  region, depending on the prefix argument.  It combines most of the
-;;  behavior of commands `hlt-highlight-regexp-region',
-;;  `hlt-highlight-region', and `hlt-unhighlight-region'.  Command
-;;  `hlt-highlight-regexp-to-end' highlights a regexp from the text
-;;  cursor position to the end of the buffer.
+;;  You can use command `hlt-highlight' to highlight or unhighlight
+;;  the region, or to highlight or unhighlight a regexp throughout the
+;;  region, depending on the prefix argument.  It combines the
+;;  behaviors of commands `hlt-highlight-region',
+;;  `hlt-unhighlight-region', `hlt-highlight-regexp-region', and
+;;  `hlt-highlight-regexp-region'.  I suggest that you bind
+;;  `hlt-highlight' to a key - I use `C-x C-y'.
+;;
+;;  Commands `hlt-highlight-regexp-to-end' and
+;;  `hlt-unhighlight-regexp-to-end' highlight and unhighlight a regexp
+;;  from point to the end of the buffer, respectively.
 ;;
 ;;  Command `hlt-highlighter' lets you highlight text by simply
 ;;  dragging the mouse, just as you would use a highlighter (marker).
@@ -273,15 +283,17 @@
 ;;  `hlt-next-highlight' and `hlt-previous-highlight' to navigate
 ;;  among highlights of a given face.
 ;;
-;;  You can unhighlight the region using command
-;;  `hlt-unhighlight-region' (or using `C--' with `hlt-highlight').
-;;  If you use overlay highlighting, then you can use command
-;;  `hlt-unhighlight-region-for-face' to unhighlight the region for an
-;;  individual highlighting face - other highlighting faces remain.
+;;  You can unhighlight the region/buffer or a regexp in the
+;;  region/buffer using command `hlt-unhighlight-region' or
+;;  `hlt-unhighlight-regexp-region'.  If you use overlay highlighting
+;;  then you can use command `hlt-unhighlight-region-for-face' to
+;;  unhighlight the region/buffer for an individual highlighting face
+;;  - other highlighting faces remain.
 ;;
-;;  You can replace a highlighting face in the region by another,
-;;  using command `hlt-replace-highlight-face'.  With a prefix
-;;  argument, property `mouse-face' is used, not property `face'.
+;;  You can replace a highlighting face in the region/buffer by
+;;  another, using command `hlt-replace-highlight-face'.  With a
+;;  prefix argument, property `mouse-face' is used, not property
+;;  `face'.
 ;;
 ;;  Command `hlt-eraser' lets you delete highlighting by dragging the
 ;;  mouse.  However, its behavior is different for overlays and text
@@ -456,10 +468,11 @@
 ;;(@* "What Gets Highlighted: Region, Buffer, New Text You Type")
 ;;  ** What Gets Highlighted: Region, Buffer, New Text You Type **
 ;;
-;;  All mention of the "region" in this commentary should really say
-;;  "region or buffer".  If the region is active and non-empty, then
-;;  only the text in the region is targeted by the commands in this
-;;  library.  This lets you easily control the scope of operations.
+;;  Most mention of the "region" in this commentary should really say
+;;  "active region or buffer".  If the region is active and non-empty,
+;;  then only the text in the region is targeted by the commands in
+;;  this library.  This lets you easily control the scope of
+;;  operations.
 ;;
 ;;  If the region is not active or it is empty, then:
 ;;
@@ -496,13 +509,11 @@
 ;;  some suggested bindings (`C-x C-y', `C-x mouse-2', `C-x
 ;;  S-mouse-2', `C-S-p', and `C-S-n', respectively):
 ;;
-;;   (define-key ctl-x-map [(control ?y)] 'hlt-highlight)
-;;   (define-key ctl-x-map [(down-mouse-2)] 'hlt-highlighter)
+;;   (define-key ctl-x-map [(control ?y)]     'hlt-highlight)
+;;   (define-key ctl-x-map [(down-mouse-2)]   'hlt-highlighter)
 ;;   (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)
-;;   (global-set-key [(shift control ?p)]  ; Emacs 21 or later
-;;                   'hlt-previous-highlight)
-;;   (global-set-key [(shift control ?n)]  ; Emacs 21 or later
-;;                   'hlt-next-highlight)
+;;   (global-set-key [(shift control ?p)]     'hlt-previous-highlight)
+;;   (global-set-key [(shift control ?n)]     'hlt-next-highlight)
 ;;   (global-set-key [(control meta shift ?s)]
 ;;                   'hlt-highlight-enclosing-list)
 ;;
@@ -547,10 +558,11 @@
 ;;(@* "Acknowledgement")
 ;;  **  Acknowledgement **
 ;;
-;;  Parts of this library are based on a library of the same name
-;;  written and copyrighted by Dave Brennan, brennan@hal.com, in 1992.
-;;  I haven't been able to locate that file, so my change log is the
-;;  only record I have of what our relative contributions are.
+;;  Some parts of this library were originally based on a library of
+;;  the same name written and copyrighted by Dave Brennan,
+;;  brennan@hal.com, in 1992.  I haven't been able to locate that
+;;  file, so my change log is the only record I have of what our
+;;  relative contributions are.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
