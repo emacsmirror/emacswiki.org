@@ -109,19 +109,30 @@ probably want to use it on files where you don't use font-locking.
 
 You can use any [[face]] to highlight, and you can highlight using the `mouse-face' property instead of the `face' property. A mouse face shows up only when the mouse pointer is over it.
 
+The commands with `region' in their name act on the text in the
+[[active region]].  If the region is not active then they act on the
+text in the whole [[buffer]].  The commands with `to-end' in their
+name act on the text from point to the end of the buffer.  See
+also [[#WhatGetsHighlighted|What Gets Highlighted: Region, Buffer, New Text You Type]], below.
 
-The commands you will use the most often are probably '''`hlt-highlight'''', '''`hlt-highlighter', `hlt-next-highlight'''', and '''`hlt-previous-highlight''''. You might also often use the various
+The commands you will use the most often are perhaps '''`hlt-highlight'''', '''`hlt-highlighter', `hlt-next-highlight'''', and '''`hlt-previous-highlight''''. You might also often use the various
 commands to hide and show highlighted text.
 
 [:hlt-highlight]
 [:hlt-highlight-region]
+[:hlt-unhighlight-region]
 [:hlt-highlight-regexp-region]
+[:hlt-unhighlight-regexp-region]
 [:hlt-highlight-regexp-to-end] 
-You can use command '''`hlt-highlight'''' to ''highlight'' the [[region]],
-highlight a ''regexp'' throughout the region, or ''unhighlight'' the
-region, depending on the prefix argument.  It combines most of the
-behavior of commands `hlt-highlight-regexp-region',
-`hlt-highlight-region', and `hlt-unhighlight-region'. (Bind this to, for instance, `C-x C-y'.) Command '''`hlt-highlight-regexp-to-end'''' highlights a regexp from [[point]] ([[cursor]] position) to the end of the buffer.  Command '''`hlt-replace-face'''' replaces a face used for highlighting by another throughout the region.
+[:hlt-unhighlight-regexp-to-end] 
+You can use command '''`hlt-highlight'''' to highlight or ''un''highlight the [[region]], or to 
+highlight or ''un''highlight a ''regexp'' throughout the region, depending on the prefix argument.  It combines the
+behaviors of commands `hlt-highlight-region', `hlt-unhighlight-region', `hlt-highlight-regexp-region',
+and `hlt-unhighlight-regexp-region'. 
+I suggest that you bind `hlt-highlight' to a key --- I use `C-x C-y'.
+
+Commands '''`hlt-highlight-regexp-to-end'''' and '''`hlt-unhighlight-regexp-to-end''''  highlight and unhighlight a regexp from [[point]] to the end of the buffer, respectively.  
+
 
 [:hlt-highlighter]
 Command '''`hlt-highlighter'''' lets you highlight text by simply
@@ -166,14 +177,14 @@ among highlights of a given face. (Bind these to, for instance, `S-C-n' and `S-C
 
 [:hlt-unhighlight-region]
 [:hlt-unhighlight-region-for-face]
-You can unhighlight the region using command
-'''`hlt-unhighlight-region'''' (or using '''`##C--##'''' with `hlt-highlight').
-You can use command
-'''`hlt-unhighlight-region-for-face'''' to unhighlight the region for an
+You can unhighlight the region/buffer or a regexp in the region/buffer using command
+'''`hlt-unhighlight-region'''' or '''`hlt-unhighlight-regexp-region''''.  If you use overlay highlighting then 
+you can use command
+'''`hlt-unhighlight-region-for-face'''' to unhighlight the region/buffer for an
 individual highlighting face -- other highlighting faces remain.
 
 [:hlt-replace-face]
-You can replace a highlighting face in the region by another,
+You can replace a highlighting face in the region/buffer by another,
 using command '''`hlt-replace-highlight-face''''.  With a prefix
 argument, property `mouse-face' is used, not property `face'.
 
@@ -256,6 +267,12 @@ want to navigate among faces other than those used for
 highlighting.  You can control this using option
 '''`hlt-act-on-any-face-flag'''', which you can toggle at any time using
 command '''`hlt-toggle-act-on-any-face-flag''''.
+
+
+
+
+
+
 
 == Hiding and Showing Text ==
 
@@ -363,10 +380,15 @@ that is sensitive to whether text is visible or invisible.  One
 caveat: Emacs faces are not saved when you save your file.
 
 
+
+
+
+
+[:WhatGetsHighlighted]
 == What Gets Highlighted: Region, Buffer, New Text You Type ==
 
-All mention of the "region" in this commentary should really say
-"region or buffer".  If the [[region]] is active and non-empty, then
+Most mention of the "region" in this commentary should really say
+"[[active region]] or [[buffer]]".  If the region is active and non-empty, then
 only the text in the region is targeted by the commands in this
 library.  This lets you easily control the scope of operations.
 
@@ -377,6 +399,9 @@ If the region is not active or it is empty, then:
 
 - Otherwise, the face is applied to the entire ''buffer'' (or the
   current restriction, if the buffer is narrowed).
+
+
+
 
 
 
@@ -396,6 +421,10 @@ In most cases, you will be able to highlight text, but sooner or
 later font-lock will erase that highlighting when it refontifies
 the buffer.  If `hlt-use-overlays-flag' is non-`nil', there is no
 such problem : font-lock has no effect on overlays.
+
+
+
+
 
 
 == Suggested bindings ==
