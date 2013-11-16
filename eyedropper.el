@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Jul 23 16:00:16 2013 (-0700)
+;; Last-Updated: Fri Nov 15 16:54:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 180
+;;     Update #: 187
 ;; URL: http://www.emacswiki.org/eyedropper.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -84,6 +84,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/15 dadams
+;;     eyedrop-(fore|back)ground-at-point: Return nil if unspecified-(fg|bg).
 ;; 2012/08/12 dadams
 ;;     eyedrop-(background|foreground)-at-mouse: Ignore a switch-frame event.
 ;; 2011/01/04 dadams
@@ -214,18 +216,21 @@ Non-nil optional arg MSG-P means display an informative message."
   (interactive "p")
   ;; `eyedrop-face-at-point' alone is not sufficient.  It only gets named faces.
   ;; Need also pick up any face properties that are not associated with named faces.
-  (let* ((face (or (eyedrop-face-at-point)
-                   (get-char-property (point) 'read-face-name)
-                   (get-char-property (point) 'face)))
-         (bg (cond ((and face (symbolp face))
-                    (condition-case nil
-                        (face-background face nil 'default) ; Emacs 22.
-                      (error (or (face-background face) ; Emacs 20
-                                 (cdr (assq 'background-color (frame-parameters)))))))
-                   ((consp face)
-                    (cond ((memq 'background-color face) (cdr (memq 'background-color face)))
-                          ((memq ':background face) (cadr (memq ':background face)))))
-                   (t nil))))           ; Invalid face value.
+  (let* ((face  (or (eyedrop-face-at-point)
+                    (get-char-property (point) 'read-face-name)
+                    (get-char-property (point) 'face)))
+         (bg    (cond ((and face (symbolp face))
+                       (condition-case nil
+                           (face-background face nil 'default) ; Emacs 22+.
+                         (error (or (face-background face) ; Emacs 20
+                                    (cdr (assq 'background-color (frame-parameters)))))))
+                      ((consp face)
+                       (cond ((memq 'background-color face)
+                              (cdr (memq 'background-color face)))
+                             ((memq ':background face)
+                              (cadr (memq ':background face)))))
+                      (t nil)))         ; Invalid face value.
+         (bg    (and bg  (not (member bg '("unspecified-fg" "unspecified-bg"))))))
     (when msg-p
       (if bg (eyedrop-color-message bg) (message "No background color here")))
     bg))
@@ -240,18 +245,21 @@ Non-nil optional arg MSG-P means display an informative message."
   (interactive "p")
   ;; `eyedrop-face-at-point' alone is not sufficient.  It only gets named faces.
   ;; Need also pick up any face properties that are not associated with named faces.
-  (let* ((face (or (eyedrop-face-at-point)
-                   (get-char-property (point) 'read-face-name)
-                   (get-char-property (point) 'face)))
-         (fg (cond ((and face (symbolp face))
-                    (condition-case nil
-                        (face-foreground face nil 'default) ; Emacs 22.
-                      (error (or (face-foreground face) ; Emacs 20
-                                 (cdr (assq 'foreground-color (frame-parameters)))))))
-                   ((consp face)
-                    (cond ((memq 'foreground-color face) (cdr (memq 'foreground-color face)))
-                          ((memq ':foreground face) (cadr (memq ':foreground face)))))
-                   (t nil))))           ; Invalid face value.
+  (let* ((face  (or (eyedrop-face-at-point)
+                    (get-char-property (point) 'read-face-name)
+                    (get-char-property (point) 'face)))
+         (fg    (cond ((and face (symbolp face))
+                       (condition-case nil
+                           (face-foreground face nil 'default) ; Emacs 22+.
+                         (error (or (face-foreground face) ; Emacs 20
+                                    (cdr (assq 'foreground-color (frame-parameters)))))))
+                      ((consp face)
+                       (cond ((memq 'foreground-color face)
+                              (cdr (memq 'foreground-color face)))
+                             ((memq ':foreground face)
+                              (cadr (memq ':foreground face)))))
+                      (t nil)))         ; Invalid face value.
+         (fg    (and fg  (not (member fg '("unspecified-fg" "unspecified-bg"))))))
     (when msg-p
       (if fg (eyedrop-color-message fg) (message "No foreground color here")))
     fg))
