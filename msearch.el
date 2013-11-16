@@ -220,12 +220,13 @@ With this variable you determine the setting when you enter msearch-mode."
   :group 'msearch-faces)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defcustom msearch-faces
-  (eval-when-compile (nreverse
-		      (loop for f in (face-list) if (string-match "msearch-level-" (symbol-name f)) collect f)))
-  "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
-  :type '(repeat face)
-  :group 'msearch)
+(eval-when-compile
+  (defcustom msearch-faces
+    (nreverse
+     (loop for f in (face-list) if (string-match "msearch-level-" (symbol-name f)) collect f))
+    "Face for highlighting matchings of mouse-selected text. See also msearch-mode."
+    :type '(repeat face)
+    :group 'msearch))
 
 (defcustom msearch-events '(drag-mouse-1-handler-list down-mouse-1-handler-list)
   "Events for which msearch should be registered.
