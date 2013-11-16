@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 15 14:51:18 2013 (-0800)
+;; Last-Updated: Fri Nov 15 22:16:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3349
+;;     Update #: 3364
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -564,6 +564,7 @@
 ;;            hlt-read-face-name.
 ;;     hlt-highlight-regexp-(region|to-end):
 ;;       Use hlt-+/--highlight-regexp-read-args and hlt-+/--highlight-regexp-region.
+;;     hlt-highlight: Change use of prefix arg.  Include hlt-unhighlight-regexp-region.
 ;; 2013/11/07 dadams
 ;;     Added: hlt-highlight-enclosing-list.
 ;; 2013/09/15 dadams
@@ -1094,20 +1095,33 @@ highlighting with that FACE."
 
 ;;;###autoload
 (defun hlt-highlight (&optional prefix) ; Suggested binding: `C-x C-y'.
-  "Highlight region, regexp (PREFIX +), or unhighlight region (PREFIX -).
-PREFIX arg non-negative means `hlt-highlight-regexp-region'
-PREFIX arg negative means `hlt-unhighlight-region'
-PREFIX arg nil means `hlt-highlight-region'.
+  "Highlight or unhighlight.
 If the region is not active or it is empty, then use the whole buffer.
 The face used is the last face that was used for highlighting.
-You can use command `hlt-choose-default-face' to choose a different face."
+You can use command `hlt-choose-default-face' to choose a different face.
+
+This is several commands rolled into one, depending on the prefix arg:
+
+* No prefix arg: highlight all text in region/buffer
+* Plain prefix arg (`C-u') or zero prefix arg (`C-0'): UNhighlight all
+* Positive prefix arg (`C-1'): highlight regexp matches
+* Negative prefix arg (`C--'): UNhighlight regexp matches
+
+You can also used the individual commands:
+
+* `hlt-highlight-region'          - same as no prefix arg
+* `hlt-unhighlight-region'        - same as `C-u' or `C-0'
+* `hlt-highlight-regexp-region'   - same as `C-1'
+* `hlt-unhighlight-regexp-region' - same as `C--'"
   (interactive "P")
-  (setq current-prefix-arg  nil)         ; No mouse-p.
-  (if prefix
-      (if (natnump (prefix-numeric-value prefix))
-          (call-interactively 'hlt-highlight-regexp-region)
-        (save-excursion (call-interactively 'hlt-unhighlight-region)))
-    (call-interactively 'hlt-highlight-region)))
+  (setq current-prefix-arg  nil)        ; No MOUSE-P for calls to individual cmds.
+  (cond ((not prefix) (call-interactively 'hlt-highlight-region))
+        ((or (consp prefix)  (zerop (prefix-numeric-value prefix)))
+         (save-excursion (call-interactively 'hlt-unhighlight-region)))
+        ((> (prefix-numeric-value prefix) 0)
+         (call-interactively 'hlt-highlight-regexp-region))
+        ((< (prefix-numeric-value prefix) 0)
+         (save-excursion (call-interactively 'hlt-unhighlight-regexp-region)))))
 
 ;;;###autoload
 (defun hlt-highlight-region (&optional start end face msg-p mouse-p)
@@ -1121,7 +1135,7 @@ submenus):
 
  * You call this command interactively.
  * You use no prefix arg.
- * Option `prop-use-overlays-flag' is nil
+ * Option `hlt-use-overlays-flag' is nil
  * The last property used for highlighting was `face'.
 
 Otherwise, the behavior respects `hlt-use-overlays-flag' and depends
@@ -1174,7 +1188,7 @@ on the optional arguments, as follows:
     (setq buffer-read-only  read-only)
     (set-buffer-modified-p modified-p))
   (let ((remove-msg  (substitute-command-keys
-                      "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")))
+                      "`\\[universal-argument] \\[hlt-highlight]' to remove highlighting")))
     (when (and msg-p  (or (hlt-nonempty-region-p)  mouse-p))
       (message "Highlighting... done. %s" remove-msg))))
 
@@ -1343,7 +1357,7 @@ things down.  Do you really want to highlight up to %d chars?  "
                    regexp
                    (if (not unhighlightp)
                        (substitute-command-keys
-                        "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")
+                        "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting")
                      ""))
         (message "No occurrences of `%s'" regexp))))
   (setq hlt-last-regexp  regexp))
@@ -2042,7 +2056,7 @@ Optional 8th arg MOUSE-P non-nil means use the `mouse-face' property,
         (error (hlt-unhighlight-region start end face)
                (error (error-message-string highlight-property-with-value)))))
     (let ((remove-msg  (substitute-command-keys
-                        "`\\[negative-argument] \\[hlt-highlight]' to remove highlighting.")))
+                        "`\\[universal-argument] \\[hlt-highlight]' to remove highlighting")))
       (when (and msg-p  (or (hlt-nonempty-region-p)  mouse-p))
         (message "Highlighting... done. %s" remove-msg))))
 
