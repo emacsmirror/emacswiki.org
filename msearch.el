@@ -265,8 +265,10 @@ Instead of match-data the limits can also be given explicitely with MATCH-B and 
 
 (defun msearch-truncate-word (word &optional n face)
   "If WORD is longer than N then replace its middle by \"...\". N defaults to 10.
-If face is non-nil the real string parts are propertised in face FACE."
+If face is non-nil the real string parts are propertised in face FACE.
+Furthermore, newlines and tabs are replaced by spaces and multiple spaces are reduced to one."
   (unless n (setq n 10))
+  (setq word (replace-regexp-in-string "[\n[:blank:]]+" " " word))
   (if (> (length word) n)
       (progn 
 	(setq n (/ n 2))
