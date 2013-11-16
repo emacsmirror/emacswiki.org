@@ -1,0 +1,18 @@
+I am Cory Koch, I enjoy using Emacs, and I use it every day. 
+I started using Emacs in 2011 and started learning Elisp in 2013. I have used Emacs for Java/Groovy, shell, and python
+as well as Elisp, Lisp development, and everything else.
+
+I also use emacs for managing my finances, and plan on writing a 
+major mode for it sometime soon.
+
+Currently I am using it to help streamline the work that I do at my
+current job. Which mainly centers around data entry into spreadsheets,
+managing the different versions and moving them around. I also use
+org-mode for managing the meeting minutes and am working on some
+functions for moving around tasks to different lists (for instance
+moving all [x] checked items to a finished list and placing them all
+under a common time stamp).
+
+I wrote [https://github.com/ckoch786/prayer-times][prayer-times] for the [http://lispinsummerprojects.org/][Lisp in Summer Project] 2013. It was not
+my main project but rather just something that I was hacking
+together on the side and submitted so I could submit something :). I plan on participating next year as well.
