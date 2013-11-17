@@ -2,3 +2,18 @@ The problem with browse-kill-ring is that when my frame is split into two window
 
 -- user19865 2013-06-02 03:46 UTC
 
+
+----
+
+some enhancements added to browse-kill-ring
+
+- fix delete frame related problem.
+- if emacs version is 24+, browse-kill-ring works with query-replace properly.
+- works with delete-selection-mode.
+
+you can get source from here
+
+https://github.com/browse-kill-ring/browse-kill-ring
+
+-- skyer9 2013-11-17 05:29 UTC
+
