@@ -22,13 +22,12 @@ See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
 This function acts like `find-tag-other-window' but lets the point on current buffer:
 
 {{{
-(defun view-tag-other-window (arg)
+;;; View tags other window
+(defun view-tag-other-window (tagname &optional next-p regexp-p)
   "Same as `find-tag-other-window' but doesn't move the point"
-  (interactive "P")
+  (interactive (find-tag-interactive "View tag other window: "))
   (let ((window (get-buffer-window)))
-    (if arg
-        (find-tag-other-window nil t)
-      (call-interactively 'find-tag-other-window))
+    (find-tag-other-window tagname next-p regexp-p)
     (recenter 0)
     (select-window window)))
 }}}
