@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Nov  2 16:47:43 2013 (-0700)
+;; Last-Updated: Sun Nov 17 15:40:42 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6591
+;;     Update #: 6675
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -105,6 +105,8 @@
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-map',
 ;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
 ;;    (+)`icicle-object-action', (+)`icicle-occur',
+;;    (+)`icicle-occur-dired-marked',
+;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
 ;;    `icicle-read-color-wysiwyg', `icicle-save-string-to-variable',
@@ -119,6 +121,7 @@
 ;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
 ;;    (+)`icicle-search-defs-full', (+)`icicle-search-dired-bookmark',
+;;    (+)`icicle-search-dired-marked',
 ;;    (+)`icicle-search-dired-marked-recursive',
 ;;    (+)`icicle-search-file', (+)`icicle-search-file-bookmark',
 ;;    (+)`icicle-search-generic', (+)`icicle-search-gnus-bookmark',
@@ -222,6 +225,7 @@
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1',
+;;    `icicle-search-dired-marked-recursive-1.',
 ;;    `icicle-search-file-found-p', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
@@ -3518,13 +3522,21 @@ then customize option `icicle-top-level-key-bindings'."
          (unless (consp (bmkp-region-alist-only)) (icicle-user-error "No bookmarked regions"))
          (call-interactively #'icicle-select-bookmarked-region))))
 
-(defun icicle-search-generic ()         ; Bound to `C-c `'.
+(defun icicle-search-generic (&optional prefix-arg) ; Bound to `M-x M-s M-s' and `C-c `'.
   "Run `icicle-search-command'.  By default, this is `icicle-search'.
 In Compilation and Grep modes, this is `icicle-compilation-search'.
 In Comint, Shell, GUD, and Inferior Lisp modes, this is
-   `icicle-comint-search'."
-  (interactive)
-  (call-interactively icicle-search-command))
+   `icicle-comint-search'.
+
+The value of `icicle-search-command' is called interactively, with
+`icicle-pref-arg' bound to the raw prefix argument used for
+`icicle-search-generic'.
+
+By default, this is bound to `C-c `' and `M-s M-s M-s'.  More precisly
+for the latter: it is bound to `icicle-search-key-prefix' followed by
+`M-s'."
+  (interactive "P")
+  (let ((icicle-pref-arg  prefix-arg)) (call-interactively icicle-search-command)))
 
 (defun icicle-search (beg end scan-fn-or-regexp require-match ; Bound to `M-s M-s M-s', `C-c `'.
                       &optional where &rest args)
@@ -3616,6 +3628,12 @@ chosen.  This is the same as command `icicle-search-file'.
   . in Dired, search the marked files
   . in a `buffer-menu' or `ibuffer' buffer, search the marked buffers
   . in a bookmark list buffer, search the marked bookmarks
+
+Command `icicle-search-generic' invokes interactively the command that
+is the value of variable `icicle-search-command'.  By default, this is
+`icicle-search'.  By default, `icicle-search-generic' is bound to `M-s
+M-s M-s' and `C-c `'.  More precisly for the former: it is bound to
+the value of `icicle-search-key-prefix' followed by `M-s'.
 
 
 Navigation and Help
@@ -3881,35 +3899,36 @@ This command is intended for use only in Icicle mode."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp)  scan-fn-or-regexp))
-  (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn  'icicle-search-action))
-        (icicle-candidate-help-fn           (or icicle-candidate-help-fn    'icicle-search-help))
-        (icicle-all-candidates-list-alt-action-fn
-         (or icicle-all-candidates-list-alt-action-fn  'icicle-search-replace-all-search-hits))
-        (icicle-candidate-alt-action-fn
-         (or icicle-candidate-alt-action-fn  'icicle-search-replace-search-hit))
-        (icicle-scan-fn-or-regexp           scan-fn-or-regexp) ; Used free in `M-,'.
-        (icicle-update-input-hook           (list 'icicle-search-highlight-all-input-matches))
-        (icicle-search-ecm                  nil)
-        (icicle-searching-p                 t)
-        (icicle-search-replacement          nil)
-        (icicle-current-input               "")
-        (icicle-list-nth-parts-join-string  "\t")
-        (icicle-list-join-string            "\t")
-        ;; $$$$$$ (icicle-list-end-string   "")
-        ;; In general, we do not assume that `C-0' implies the use of multi-completions.
-        (icicle-multi-completing-p          (and current-prefix-arg
-                                                 (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                                 icicle-show-multi-completion-flag))
-        (icicle-list-use-nth-parts          '(1))
-        (icicle-sort-comparer               nil)
+  (let* ((icicle-candidate-action-fn         (or icicle-candidate-action-fn  'icicle-search-action))
+         (icicle-candidate-help-fn           (or icicle-candidate-help-fn    'icicle-search-help))
+         (icicle-all-candidates-list-alt-action-fn
+          (or icicle-all-candidates-list-alt-action-fn  'icicle-search-replace-all-search-hits))
+         (icicle-candidate-alt-action-fn
+          (or icicle-candidate-alt-action-fn  'icicle-search-replace-search-hit))
+         (icicle-scan-fn-or-regexp           scan-fn-or-regexp) ; Used free in `M-,'.
+         (icicle-update-input-hook           (list 'icicle-search-highlight-all-input-matches))
+         (icicle-search-ecm                  nil)
+         (icicle-searching-p                 t)
+         (icicle-search-replacement          nil)
+         (icicle-current-input               "")
+         (icicle-list-nth-parts-join-string  "\t")
+         (icicle-list-join-string            "\t")
+         ;; $$$$$$ (icicle-list-end-string   "")
+         ;; In general, we do not assume that `C-0' implies the use of multi-completions.
+         (current-prefix-arg                 (or icicle-pref-arg  current-prefix-arg))
+         (icicle-multi-completing-p          (and current-prefix-arg
+                                                  (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                                  icicle-show-multi-completion-flag))
+         (icicle-list-use-nth-parts          '(1))
+         (icicle-sort-comparer               nil)
 
-        ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would inhibit
-        ;; sorting, because we would be depending on the alist order.
-        ;;    (icicle-inhibit-sort-p          t)
+         ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would inhibit
+         ;; sorting, because we would be depending on the alist order.
+         ;;    (icicle-inhibit-sort-p          t)
 
-        (icicle-no-match-hook               icicle-no-match-hook)
-        (completion-ignore-case             case-fold-search)
-        (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
+         (icicle-no-match-hook               icicle-no-match-hook)
+         (completion-ignore-case             case-fold-search)
+         (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
     (add-hook 'icicle-no-match-hook (lambda () (when (overlayp icicle-search-current-overlay)
                                                  (delete-overlay icicle-search-current-overlay))))
     (setq icicle-search-final-choice
@@ -3963,25 +3982,26 @@ The arguments are for use by `completing-read' to read the regexp.
 
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
-  (cond ((consp current-prefix-arg)
-         (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
-         (message "Searching multiple bookmarks...") (sit-for 1)
-         ;; $$$$$$ Originally, we just did this: (bmkp-region-alist-only)).  Now we let users choose.
-         (let ((icicle-show-Completions-initially-flag  t)
-               (icicle-prompt
-                "Choose bookmarks to search (`RET' when done): "))
-           (save-selected-window (icicle-bookmark-list))))
+  (let ((current-prefix-arg  (or icicle-pref-arg  current-prefix-arg)))
+    (cond ((consp current-prefix-arg)
+           (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
+           (message "Searching multiple bookmarks...") (sit-for 1)
+           ;; $$$$$$ Originally, we just did this: (bmkp-region-alist-only)).  Now we let users choose.
+           (let ((icicle-show-Completions-initially-flag  t)
+                 (icicle-prompt
+                  "Choose bookmarks to search (`RET' when done): "))
+             (save-selected-window (icicle-bookmark-list))))
 
-        ((= 0 (prefix-numeric-value current-prefix-arg)) (icicle-search-modes))
-        ((wholenump current-prefix-arg)
-         (message "Searching multiple buffers...") (sit-for 1)
-         (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
-        (current-prefix-arg
-         (message "Searching multiple files...") (sit-for 1)
-         (let ((icicle-show-Completions-initially-flag  t)
-               (icicle-prompt                           "Choose file to search (`RET' when done): "))
-           (save-selected-window (icicle-file-list))))
-        (t nil)))
+          ((= 0 (prefix-numeric-value current-prefix-arg)) (icicle-search-modes))
+          ((wholenump current-prefix-arg)
+           (message "Searching multiple buffers...") (sit-for 1)
+           (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
+          (current-prefix-arg
+           (message "Searching multiple files...") (sit-for 1)
+           (let ((icicle-show-Completions-initially-flag  t)
+                 (icicle-prompt                           "Choose file to search (`RET' when done): "))
+             (save-selected-window (icicle-file-list))))
+          (t nil))))
 
 (defun icicle-search-choose-buffers (files-only-p)
   "Choose multiple buffers to search.
@@ -3992,8 +4012,7 @@ candidates."
             (let ((icicle-buffer-require-match-flag  'partial-match-ok)
                   (current-prefix-arg                files-only-p)
                   (icicle-prompt
-                   (format "Choose %sbuffer to search (`RET' when done): "
-                           (if files-only-p "file " ""))))
+                   (format "Choose %sbuffer to search (`RET' when done): " (if files-only-p "file " ""))))
               (save-selected-window (icicle-buffer-list))))))
 
 ;;; $$$$$$ (defun icicle-search-read-word ()
@@ -5897,8 +5916,9 @@ future search commands, not the current one.)"
              (icicle-file-list))
            args)))
 
-(defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m'.
-                                           &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`'.
+(defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match &rest args)
+                                        ; Bound to `M-s M-s m'.
+                                        ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in `*Bookmark List*'.
   "Search the files of the marked bookmarks in `*Bookmark List*'.
 Same as using `C-0' with `icicle-search' in `*Bookmark List*'.
 Arguments are the same as for `icicle-search', but without arguments
@@ -5913,11 +5933,58 @@ BEG, END, and WHERE."
   (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args)))
 
+(defun icicle-occur-dired-marked-recursive (ignore-marks-p)
+                                        ; Bound to `C-S-s', aka `C-S', in Dired with Dired+.
+  "Search lines of marked files, including in marked subdirs, recursively.
+This is the same as `icicle-search-dired-marked-recursive' (which
+see), with a regexp of `.*'.  That is, the search contexts are lines
+\(as for `occur' and `grep').  Like `icicle-occur-dired-marked' , but
+include also the files marked in marked subdirs, recursively.
+
+In Dired this is bound by default to `M-+ C-S-o', aka `M-+ C-O'
+\(letter `O', not zero).  It is also bound to `M-s M-s M'.
+
+You need library `Dired+' for this command."
+  (interactive
+   (progn
+     (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
+     (diredp-get-confirmation-recursive) ; Make user confirm, since this can explore *lots* of files.
+     (list current-prefix-arg)))
+  (icicle-search-dired-marked-recursive-1 'RECURSIVE ignore-marks-p ".*" t ()))
+
+(defun icicle-occur-dired-marked (ignore-marks-p) ; Bound to `C-S-o', aka `C-O', in Dired with Dired+.
+  "Search lines of marked files using Icicles search.
+This is the same as `icicle-search-dired-marked' (which see), with a
+regexp of `.*'.  That is, the search contexts are lines (as for
+`occur' and `grep').
+
+With a prefix arg, ignore Dired markings: search all files in the
+directory.  (Non-interactively, do this if argument IGNORE-MARKS-P is
+non-nil.)
+
+Otherwise, search only the marked files in the directory, or all of
+the files if none are marked.
+
+In Dired this is bound by default to `C-S-o', aka `C-O' (letter `O',
+not zero).  It is also bound to `M-s M-s M'.
+
+See also `icicle-occur-dired-marked-recursive', which is bound to `M-+
+C-S-o', aka `M-+ C-O' \(letter `O') in Dired.
+
+You need library `Dired+' for this command."
+  (interactive
+   (progn
+     (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
+     (diredp-get-confirmation-recursive) ; Make user confirm, since this can explore *lots* of files.
+     (list current-prefix-arg)))
+  (icicle-search-dired-marked-recursive-1 nil ignore-marks-p ".*" t ()))
+
 (defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match &rest args)
                                         ; Bound to `M-s M-s m' in Dired with Dired+.
-                                        ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
+                                        ; Bound also to `M-0 M-s M-s M-s', `C-0 C-c `' in Dired with Dired+.
   "Search marked files in Dired, including in marked subdirs, recursively.
-You need library `Dired+' for this command.
+Like `icicle-search-dired-marked' , but include also the files marked
+in marked subdirs, recursively.
 
 With a prefix arg, ignore Dired markings: search all files in the
 directory.  (Non-interactively, do this if argument IGNORE-MARKS-P is
@@ -5939,14 +6006,22 @@ directories are searched, regardless of whether directories might have
 Dired buffers with marked files.  That is, Dired buffers are ignored
 if you do not confirm using them.
 
-This is bound by default to `M-s M-s m' in Dired.  This is the same as
-using `C-0' with `icicle-search' in Dired, that is, `C-0 M-s M-s M-s'
-or `C-0 C-c `', but in that case you cannot use the prefix arg to
-ignore markings.
+This is the mode-specific Icicles search command for Dired, so it is
+bound to `M-s M-s m'.  That is the same as using a zero prefix arg
+\(e.g. `M-0') with `icicle-search', that is, `M-0 M-s M-s M-s' or `C-0
+C-c `'.  (But if you use `M-0' for the prefix arg then you cannot use
+it to ignore markings.)
+
+This is also bound by default to `M-+ C-S' in Dired.
+
+See also `icicle-occur-dired-marked-recursive', bound to `M-+ C-S-o',
+aka `M-+ C-O' (letter `O', not zero), in Dired.
 
 Non-interactively, the arguments other than IGNORE-MARKS-P are the
 same as for `icicle-search', but without arguments BEG, END, and
-WHERE."
+WHERE.
+
+You need library `Dired+' for this command."
   (interactive
    (progn
      (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
@@ -5956,12 +6031,56 @@ WHERE."
             (icicle-search-read-word)
             (icicle-search-read-context-regexp))
        ,(not icicle-show-multi-completion-flag))))
-  (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
-  (unless (eq major-mode 'dired-mode) (icicle-user-error "This command must be called from a Dired buffer"))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (diredp-get-files ignore-marks-p) args))
+  (icicle-search-dired-marked-recursive-1 'RECURSIVE ignore-marks-p scan-fn-or-regexp require-match args))
 
-(defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
-                                     &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
+(defun icicle-search-dired-marked (ignore-marks-p scan-fn-or-regexp require-match &rest args)
+                                        ; Bound to `C-S-s', aka `C-S', in Dired.
+  "Search marked files in Dired using Icicles search.
+You need library `Dired+' for this command.
+
+With a prefix arg, ignore Dired markings: search all files in the
+directory.  (Non-interactively, do this if argument IGNORE-MARKS-P is
+non-nil.)
+
+Otherwise, search only the marked files in the directory, or all of
+the files if none are marked.
+
+This is bound by default to `C-S-s', aka `C-S', in Dired.  See also
+`icicle-search-dired-marked-recursive', bound to `M-+ C-S' (and other
+keys) in Dired.
+
+Non-interactively, the arguments other than IGNORE-MARKS-P are the
+same as for `icicle-search', but without arguments BEG, END, and
+WHERE.
+
+You need library `Dired+' for this command."
+  (interactive
+   (progn
+     (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
+     (diredp-get-confirmation-recursive) ; Make user confirm, since this can explore *lots* of files.
+     `(,current-prefix-arg
+       ,(if icicle-search-whole-word-flag
+            (icicle-search-read-word)
+            (icicle-search-read-context-regexp))
+       ,(not icicle-show-multi-completion-flag))))
+  (icicle-search-dired-marked-recursive-1 nil ignore-marks-p scan-fn-or-regexp require-match args))
+
+(defun icicle-search-dired-marked-recursive-1 (recursivep ignore-marks-p scan-fn-or-regexp require-match args)
+  "Helper for `icicle-(search|occur)-dired-marked*'."
+  (when (and recursivep  (not (fboundp 'diredp-get-files)))
+    (icicle-user-error "You need library `dired+.el' for this command"))
+  (unless (or (and (fboundp 'derived-mode-p)  (derived-mode-p 'dired-mode))
+              (eq major-mode 'dired-mode))
+    (icicle-user-error "This command must be called from a Dired buffer"))
+  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+         (if (and recursivep (fboundp 'diredp-get-files))
+             (diredp-get-files ignore-marks-p)
+           (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file)))))
+         args))
+
+(defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match &rest args)
+                                        ; Bound to `M-s M-s m' in Ibuffer.
+                                        ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
   "Search the marked buffers in Ibuffer, in order.
 Same as using `C-0' with `icicle-search' in Ibuffer.
 Arguments are the same as for `icicle-search', but without arguments
@@ -5976,8 +6095,9 @@ BEG, END, and WHERE."
     (unless marked-bufs (setq marked-bufs  (list (ibuffer-current-buffer t))))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
-(defun icicle-search-buff-menu-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in buff menu
-                                       &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' there.
+(defun icicle-search-buff-menu-marked (scan-fn-or-regexp require-match &rest args)
+                                        ; Bound to `M-s M-s m' in buff menu
+                                        ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in `*Buffer List*'.
   "Search the marked buffers in Buffer Menu, in order.
 Same as using `C-0' with `icicle-search' in `*Buffer List*'.
 Arguments are the same as for `icicle-search', but without arguments
