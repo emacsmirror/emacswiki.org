@@ -66,6 +66,11 @@
 
 
 ;; History:
+;; 2013-11-17  S. Irie
+;;         * Fix the time entry not properly generated on Emacs 24
+;;         * Use `user-error' if available
+;;         * Version 1.19
+;;
 ;; 2013-10-19  S. Irie
 ;;         * Fix package.el/MELPA issue ("---" in the first line required)
 ;;         * Version 1.18
@@ -112,7 +117,7 @@
 
 ;;; Code:
 
-(defvar redo-version "1.18"
+(defvar redo-version "1.19"
   "Version number for the Redo+ package.")
 
 (defvar last-buffer-undo-list nil
@@ -127,6 +132,12 @@
 ;; Emacs 21 variable
 (defvar undo-no-redo nil)
 
+(defun redo-error (format &rest args)
+  "Call `user-error' if available.  Otherwise, use `error' instead."
+  (if (fboundp 'user-error)
+      (apply 'user-error format args)
+    (apply 'error format args)))
+
 (defun redo (&optional count)
   "Redo the the most recent undo.
 Prefix arg COUNT means redo the COUNT most recent undos.
@@ -134,9 +145,9 @@ If you have modified the buffer since the last redo or undo,
 then you cannot redo any undos before then."
   (interactive "*p")
   (if (eq buffer-undo-list t)
-      (error "No undo information in this buffer"))
+      (redo-error "No undo information in this buffer"))
   (if (eq last-buffer-undo-list nil)
-      (error "No undos to redo"))
+      (redo-error "No undos to redo"))
   (or (eq last-buffer-undo-list buffer-undo-list)
       ;; skip one undo boundary and all point setting commands up
       ;; until the next undo boundary and try again.
@@ -145,9 +156,9 @@ then you cannot redo any undos before then."
 	(while (and p (integerp (car-safe p)))
 	  (setq p (cdr-safe p)))
 	(eq last-buffer-undo-list p))
-      (error "Buffer modified since last undo/redo, cannot redo"))
+      (redo-error "Buffer modified since last undo/redo, cannot redo"))
   (and (eq (cdr buffer-undo-list) pending-undo-list)
-       (error "No further undos to redo in this buffer"))
+       (redo-error "No further undos to redo in this buffer"))
   ;; This message seems to be unnecessary because the echo area
   ;; is rewritten before the screen is updated.
   ;;(or (eq (selected-window) (minibuffer-window))
@@ -177,7 +188,9 @@ then you cannot redo any undos before then."
 	     ;; this information only in redo entries.
 	     (when (and (not modified) (buffer-file-name))
 	       (let* ((time (nth 5 (file-attributes (buffer-file-name))))
-		      (elt (cons (car time) (cadr time))))
+		      (elt (if (cddr time) ;; non-nil means length > 2
+			       time                           ;; Emacs 24
+			     (cons (car time) (cadr time))))) ;; Emacs 21-23
 		 (if (eq (car-safe (car prev)) t)
 		     (setcdr (car prev) elt)
 		   (setcdr prev (cons (cons t elt) p)))))
