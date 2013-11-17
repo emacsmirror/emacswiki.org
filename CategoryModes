@@ -52,6 +52,7 @@ Other pages (could this please be split in major and minor modes?):
 * DfMode -- show space left on devices in the mode line
 * DiaryMode
 * DiredMode
+* DoListMode -- freely editable do list based on org-mode
 * DrelaMode -- mode for editing input files to a suite of popular aerodynamics codes
 * EbuildMode -- mode for Gentoo specific files, like ebuilds and eclasses
 * EevMode -- lets you to interpret e-scripts(execute shell commands/follow EmacsLisp hyperlinks in a buffer)
