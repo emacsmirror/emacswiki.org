@@ -45,6 +45,7 @@
     map)
   "")
 
+;;;###autoload
 (defun list-processes+ (&optional query-only)
   ""
   (interactive "P")
