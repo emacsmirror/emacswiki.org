@@ -19,4 +19,4 @@ for all pages related to todo lists.
 * [http://www.datenterrorist.de/index.php?itemid=1437 TODO comment buffer] -- Get a buffer with all TODO, FIXME and XXX comments and their filenames
 * TodoStack -- a stack as a todo list.  Don't laugh.  Once you get used to it, it can have its uses.
 * TodoTxtMode -- major mode for editing (an extension of) the todo.txt format.
-* DoListMode -- major mode for editing a todo list, based on org-mode but an alternative approach
+* DoListMode -- major mode for editing a todo list, based on org-mode but an alternative approach.
