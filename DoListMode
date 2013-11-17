@@ -10,3 +10,8 @@ It keeps urgent tasks near the top of the file to maximise
 visibility and supports deferred and recurring tasks.
 
 Available as package dkdo from the melpa emacs package archive at http://melpa.milkbox.net. The source repository is https://github.com/davidkeegan/dkdo.
+
+----
+CategoryTodo
+
+
