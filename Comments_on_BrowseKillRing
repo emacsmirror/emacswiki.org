@@ -7,9 +7,9 @@ The problem with browse-kill-ring is that when my frame is split into two window
 
 some enhancements added to browse-kill-ring
 
-- fix delete frame related problem.
-- if emacs version is 24+, browse-kill-ring works with query-replace properly.
-- works with delete-selection-mode.
+* fix delete frame related problem.
+* if emacs version is 24+, browse-kill-ring works with query-replace properly.
+* works with delete-selection-mode.
 
 you can get source from here
 
