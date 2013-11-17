@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Nov  3 14:55:59 2013 (-0800)
+;; Last-Updated: Sun Nov 17 15:30:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26036
+;;     Update #: 26043
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6482,7 +6482,7 @@ Non-nil means use other window.")
   "Flag bound in `icicle-visit-marked-file-of-content*'.
 Non-nil means act on files marked in subdirs, defined recursively.")
 
-(defun icicle-visit-marked-file-of-content ()
+(defun icicle-visit-marked-file-of-content () ; Bound to `C-S-f', aka `C-F', in Dired.
   "Visit a marked file whose content matches a regexp.
 The marked files are examined, and those whose file names and/or
 contents match your multi-completion input are available as candidate
@@ -6499,7 +6499,7 @@ flips the behavior specified by that option."
         (icicle-vmfoc-recursive-p  nil))
     (icicle-visit-marked-file-of-content-1)))
 
-(defun icicle-visit-marked-file-of-content-other-window ()
+(defun icicle-visit-marked-file-of-content-other-window () ; Bound to `C-M-S-f', aka `C-M-F', in Dired.
   "Visit a marked file whose content matches a regexp, in another window.
 Same as `icicle-visit-marked-file-of-content' except it uses a
 different window.  You must be in Dired mode to use this command."
@@ -6508,7 +6508,7 @@ different window.  You must be in Dired mode to use this command."
         (icicle-vmfoc-recursive-p  nil))
     (icicle-visit-marked-file-of-content-1)))
 
-(defun icicle-visit-marked-file-of-content-recursive ()
+(defun icicle-visit-marked-file-of-content-recursive () ; Bound to `M-+ C-S-f', aka `M-+ C-F', in Dired.
   "Visit a marked file whose content matches a regexp.
 Like `icicle-visit-marked-file-of-content', but include also the files
 marked in marked subdirs, recursively.
@@ -6521,6 +6521,7 @@ Dired mode to use it."
     (icicle-visit-marked-file-of-content-1)))
 
 (defun icicle-visit-marked-file-of-content-recursive-other-window ()
+                                        ; Bound to `M-+ C-M-S-f', aka `M-+ C-M-F', in Dired.
   "Visit a marked file whose content matches a regexp, in another window.
 Like `icicle-visit-marked-file-of-content-other-window', but include
 also the files marked in marked subdirs, recursively.
