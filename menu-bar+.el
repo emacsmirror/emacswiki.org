@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 19 14:13:18 2013 (-0700)
+;; Last-Updated: Mon Nov 18 08:14:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3705
+;;     Update #: 3707
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -18,11 +18,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
-;;   `help+20', `info', `info+', `menu-bar', `misc-cmds', `misc-fns',
-;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
+;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -130,6 +130,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/-8 dadams
+;;     Added comment-region-lines to menu-bar-edit-region-menu.
 ;; 2013/10/19 dadams
 ;;     Soft-require cmds-menu.el.
 ;; 2013/07/24 dadams
@@ -958,7 +960,11 @@ A prefix argument means justify as well as fill."
   '(menu-item "Tabify" tabify
     :help "Convert multiple spaces in the region to tabs when possible"))
 (define-key menu-bar-edit-region-menu [comment-region]
-  '(menu-item "(Un)Comment" comment-region :help "Comment or uncomment each line in the region"))
+  '(menu-item "(Un)Comment" comment-region :help "Comment or uncomment the region"))
+(when (fboundp 'comment-region-lines)
+  (define-key menu-bar-edit-region-menu [comment-region-lines]
+    '(menu-item "(Un)Comment Lines" comment-region-lines
+      :help "Comment or uncomment each line in the region")))
 (define-key menu-bar-edit-region-menu [center-region]
   '(menu-item "Center" center-region
     :help "Center each nonblank line that starts in the region"))
