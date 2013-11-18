@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  1 08:12:45 2013 (-0700)
+;; Last-Updated: Mon Nov 18 08:02:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3108
+;;     Update #: 3114
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -32,20 +32,21 @@
 ;;    `beginning-or-indentation', `chgrp', `chmod', `chown',
 ;;    `clear-regexp-search-history', `clear-regexp-search-ring'
 ;;    `clear-search-history', `clear-search-ring',
-;;    `clear-search-histories', `count-chars-in-region',
-;;    `delete-extra-windows-for-buffer', `delete-lines',
-;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
-;;    `end-of-visual-line+.', `forward-char-same-line',
-;;    `forward-overlay', `goto-previous-mark',
-;;    `indent-rigidly-tab-stops', `indirect-buffer',
-;;    `kill-buffer-and-its-windows', `list-colors-nearest',
-;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `old-rename-buffer',
-;;    `recenter-top-bottom', `recenter-top-bottom-1',
-;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
-;;    `region-to-file', `resolve-file-name',
-;;    `revert-buffer-no-confirm', `selection-length', `undo-repeat'
-;;    (Emacs 24.3+), `view-X11-colors'.
+;;    `clear-search-histories', `comment-region-lines',
+;;    `count-chars-in-region', `delete-extra-windows-for-buffer',
+;;    `delete-lines', `delete-window-maybe-kill-buffer.',
+;;    `end-of-line+', `end-of-visual-line+.',
+;;    `forward-char-same-line', `forward-overlay',
+;;    `goto-previous-mark', `indent-rigidly-tab-stops',
+;;    `indirect-buffer', `kill-buffer-and-its-windows',
+;;    `list-colors-nearest', `list-colors-nearest-color-at',
+;;    `mark-buffer-after-point', `mark-buffer-before-point',
+;;    `old-rename-buffer', `recenter-top-bottom',
+;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
+;;    `region-length', `region-to-buffer', `region-to-file',
+;;    `resolve-file-name', `revert-buffer-no-confirm',
+;;    `selection-length', `undo-repeat' (Emacs 24.3+),
+;;    `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -61,6 +62,7 @@
 ;;   (define-key ctl-x-map [home]     'mark-buffer-before-point)
 ;;   (define-key ctl-x-map [end]      'mark-buffer-after-point)
 ;;   (define-key ctl-x-map "\M-f"     'region-to-file)
+;;   (define-key ctl-x-map [(control ?\;)] 'comment-region-lines)
 ;;   (global-set-key [C-S-f1]         'region-to-buffer)
 ;;   (global-set-key [C-S-backspace]  'region-to-file)
 ;;   (global-set-key [home]           'backward-line-text)
@@ -83,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/18 dadams
+;;     Added: comment-region-lines.
 ;; 2013/09/01 dadams
 ;;     Added: undo-repeat.
 ;; 2013/08/22 dadams
@@ -739,6 +743,15 @@ With negative prefix arg, deletion is backward."
         (delete-region beg (point)))
       (when (eq (following-char) ?\n) (delete-char 1))
       (move-to-column column))))
+
+;;;###autoload
+(defun comment-region-lines (beg end &optional arg)
+  "Like `comment-region' (which see), but comment/uncomment whole lines."
+  (interactive "*r\nP")
+  (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
+  (let ((bol  (save-excursion (goto-char beg) (line-beginning-position)))
+        (eol  (save-excursion (goto-char end) (line-end-position))))
+    (comment-region bol eol arg)))
 
 ;;;(defvar default-pr-switches "-fl68"
 ;;;  "*String of default switches to pass to `pr'.
