@@ -28,6 +28,14 @@ Emacs 23 Cygwin instructions
 # Restart Emacs.
 # It should just work.
 
+ntEmacs 24 :
+
+# Set up png support, you'll have to look elsewhere for instructions on this.
+# Install ghostscript and add the bin and lib directories to your path.
+# Get xpdf for windows and put the executables somewhere on your path.
+# Set this in your .emacs: (setq doc-view-ghostscript-program "gswin32c")
+# That should be it.
+
 [new]
 I like to visit/read pdf-files in emacs, but one (or two) thing(s) that I miss: to save/load (automatically) the current/saved position or pagenumber.
 And if possible also the slice that I had set. -- Michael
