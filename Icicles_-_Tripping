@@ -116,14 +116,13 @@ navigate.
 [:icicle-locate]
 [:icicle-locate-file]
 [:icicle-occur]
+[:icicle-occur-dired-marked-recursive]
 [:icicle-recent-file]
 [:icicle-search]
 [:icicle-search-bookmarks-together]
 [:icicle-search-bookmark]
 [:icicle-search-bookmark-list-bookmark]
 [:icicle-search-dired-bookmark]
-[:icicle-search-file-bookmark]
-[:icicle-search-gnus-bookmark]
 [:icicle-search-info-bookmark]
 [:icicle-search-local-file-bookmark]
 [:icicle-search-man-bookmark]
@@ -134,6 +133,8 @@ navigate.
 [:icicle-search-char-property]
 [:icicle-search-dired-marked-recursive]
 [:icicle-search-file]
+[:icicle-search-file-bookmark]
+[:icicle-search-gnus-bookmark]
 [:icicle-search-ibuffer-marked]
 [:icicle-search-keywords]
 [:icicle-search-overlay-property]
@@ -239,6 +240,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-locate'''' , '''`icicle-locate-file'''' -- Trip among files
 * '''`icicle-occur'''' ('''`##C-c '##'''') -- Trip among `occur' hits
    (`icicle-search' among single-line hits)
+* '''`icicle-occur-dired-marked-recursive'''' ('''`M-s M-s M'''') -- Search marked in Dired
 * '''`icicle-recent-file'''' -- Trip among [[RecentFiles|recent files]]
 * '''`icicle-search'''' ('''`##C-c `##'''') -- Trip among [[regexp]] search hits
 * '''`icicles-search-bookmarks-together'''' ('''`##C-u C-c `##''''),
@@ -259,7 +261,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 * '''`icicle-search-char-property'''' -- Trip among buffer strings with
   some [[text property]] or [[overlay]] property
-* '''`icicle-search-dired-marked-recursive''''   -- Search marked files in Dired
+* '''`icicle-search-dired-marked-recursive'''' ('''`M-s M-s m'''')  -- Search marked files in Dired
 * '''`icicle-search-file''''           -- Search multiple files
 * '''`icicle-search-ibuffer-marked'''' -- Search marked buffers in [[IbufferMode|Ibuffer]]
 * '''`icicle-search-keywords'''' ('''`##C-c ^##'''') -- Trip among keyword search hits
@@ -282,7 +284,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 
 
-(You need library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.  You need library '''[[Dired+]]''' for `icicle-search-dired-marked-recursive'.)
+(You need library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.  You need library '''[[Dired+]]''' for `icicle-occur-dired-marked-recursive' and `icicle-search-dired-marked-recursive'.)
 
 
 
