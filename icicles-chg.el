@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Nov  3 14:59:49 2013 (-0800)
+;; Last-Updated: Sun Nov 17 16:02:49 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10261
+;;     Update #: 10286
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -951,6 +951,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/11/17 dadams
+;;     Added: icicle-occur-dired-marked, icicle-occur-dired-marked-recursive,
+;;            icicle-search-dired-marked, icicle-search-dired-marked-recursive-1.
+;;     icicle-search-generic: Added optional PREFIX-ARG argument.  Bind icicle-pref-arg to it.
+;;     icicle-search, icicle-search-where-arg:
+;;       Bind current-prefix-arg to icicle-pref-arg, so can get pref arg from icicle-search-generic.
+;;     icicle-search-dired-marked*: Use icicle-search-dired-marked-recursive-1.
 ;; 2013/10/18 dadams
 ;;     Added: icicle-imenu-help.
 ;;     icicle-imenu: Bind icicle-candidate-help-fn to icicle-imenu-help.
@@ -5586,6 +5593,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/11/17 dadams
+;;     icicle-define-icicle-maps:
+;;       Add icicle-(search|occur)-dired-marked to menus.
+;;       Bind icicle-visit-marked-file-of-content-other-window to C-M-F, not C-S-o.
+;;       Bind icicle-occur-dired-marked to C-S-o and icicle-search-dired-marked to C-S-s.
+;;       Bind icicle-search-dired-marked-recursive to M-+ C-S-s.
+;;       Bind icicle-occur-dired-marked-recursive to M-+ C-S-o and to M-s M-s M.
+;;       Bind icicle-visit-marked-file-of-content-recursive-other-window to M-+ C-M-S-f, not C-S-o.
 ;; 2013/11/03 dadams
 ;;     Added icicle-visit-marked-file-of-content-recursive(-other-window) to
 ;;       icicle-dired-recursive-marked-menu-map.
