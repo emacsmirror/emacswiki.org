@@ -25,8 +25,7 @@ Two of the commands described here, `icicle-compilation-search' and `icicle-comi
 if the current [[major mode]] is a compilation mode (for `icicle-compilation-search') or an
 interactive interpreter mode such as `shell-mode' or Lisp interactive mode (for `icicle-comint-search').
 
-: ['''Programmer Note:''' Actually, the way this works is that '''`[tt]C-c `'[tt]'''  is
-bound to `icicle-search-generic', which calls the command that is the value of internal [[variable]] `icicle-search-command'.
+: ['''Programmer Note:''' Actually, the way this works is that '''`[tt]C-c `'[tt]'''  and `M-s M-s M-s' are bound to `icicle-search-generic', which calls the command that is the value of internal [[variable]] `icicle-search-command'.
 You can use this mechanism to provide custom '''Icicles''' search
 commands for particular buffers.]
 
