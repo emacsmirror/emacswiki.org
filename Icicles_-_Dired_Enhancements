@@ -35,12 +35,17 @@ minibuffer input.  See [[Icicles - Multi-Completions#icicle-visit-marked-file-of
 
 
 
+
+
+
+
 [:icicle-search-dired-marked-recursive]
 [:SearchAndReplace]
 == Search-and-Replace Marked Files ==
 
 
-If you also use library '''[[Dired+]]''' then '''`M-s M-s m'''' (`icicle-search-dired-marked-recursive')  in Dired uses [[Icicles - Search Commands, Overview#IciclesSearchKeyBindings|Icicles search]] (and on-demand replace) on the marked files.
+If you also use library '''[[Dired+]]''' then you can use command
+'''`icicle-search-dired-marked-recursive'''' to use [[Icicles - Search Commands, Overview#IciclesSearchKeyBindings|Icicles search]] (and on-demand replacement) on the marked files.
 
 Each marked subdirectory is handled recursively in the same way:
 If it has a Dired buffer then its marked files are searched, or
@@ -57,10 +62,33 @@ ignored if you do not confirm using them.
 
 Command `icicle-search-dired-marked-recursive' runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
 
-You can similarly use `M-s M-s m' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
+Command '''`icicle-search-dired-marked-recursive'''' is the
+mode-specific '''Icicles''' search command for Dired mode.  As such, it
+is bound to '''`M-s M-s m'''', '''`M-0 M-s M-s M-s'''', and `##C-0 C-c `##'.  Like
+all [[Dired+]] recursive-marks commands, it is also on prefix key
+`##M-+##', as `##M-+ C-S-s##' (aka '''`##M-+ C-S##'''').
+
+There is a similar command, '''`icicle-search-dired-marked'''', which
+searches only the files marked in the current directory.  It does
+''not'' recurse to pick up the files marked in marked descendent
+directories.  It is bound to `C-S-s', aka '''`C-S''''.
+
+There are two simpler '''Icicles''' search commands similar to these,
+'''`icicle-occur-dired-marked-recursive'''' and
+'''`icicle-occur-dired-marked'''', bound to '''`M-s M-s M'''' or `##M-+ C-S-o##'
+(aka '''`##M-+ C-O##'''') and `C-S-o' (aka '''`C-O''''), respectively.  These run
+`icicle-occur' on the marked files, which means that the search
+contexts are the lines in the files (similar to `grep').
+
+
+
+
+
+
+[`M-s M-s m' is the key sequence for ''mode-specific'' '''Icicles''' search.  You can similarly use it in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
 search all marked buffers using '''Icicles''' search, and in your
 bookmark list (buffer `##*Bookmark List*##') to search all
-marked bookmark targets (you need library '''[[Bookmark+]]''' for this).  Also, '''`C-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
+marked bookmark targets (you need library '''[[Bookmark+]]''' for this).  Also, '''`M-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
 
 
 
