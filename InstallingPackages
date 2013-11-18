@@ -40,9 +40,5 @@ to connect to network)...
 
 There exist hundreds of Emacs Lisp libraries. Many of these can be installed using a *package manager* such as [[ELPA]], [[MELPA]] or [[Marmalade]].
 
-Some packages exist whose only purpose is to update another single package:
-
-* Lisp:icicles-install.el -- Download and optionally byte-compile Icicles
-
 ----
 CategoryDotEmacs.
