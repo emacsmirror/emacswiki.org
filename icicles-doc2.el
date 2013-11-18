@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Oct 30 10:04:35 2013 (-0700)
+;; Last-Updated: Sun Nov 17 17:23:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29418
+;;     Update #: 29449
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -492,7 +492,8 @@
 ;;  Remember too that you can also invoke some of these same commands
 ;;  using a prefix arg with the generic `icicle-search' keys.  For
 ;;  example, you can invoke the commands bound to `M-s M-s m' using a
-;;  zero prefix arg with `icicle-search' - e.g., `C-0 M-s M-s M-s'.
+;;  zero prefix arg with `icicle-search' - e.g., `C-0 M-s M-s M-s' or
+;;  `C-0 C-c `'.
 ;;
 ;;  Here are the suffix keys on the `M-s M-s' prefix key:
 ;;
@@ -534,7 +535,9 @@
 ;;  `m'       `icicle-search-buff-menu-marked' - Search marked buffers
 ;;  `m'       `icicle-search-ibuffer-marked'   - Search marked buffers
 ;;  `m'       `icicle-search-dired-marked-recursive' - Search Dired
-;;            marked files
+;;            marked files, including in subdirectories
+;;  `M'       `icicle-occur-dired-marked-recursive' - Search lines of
+;;            Dired marked files, including in subdirectories
 ;;  `o'       `icicle-occur' (aka `icicle-search-lines') - An `occur'
 ;;            with incremental completion (`C-c '')
 ;;  `O'       `icicle-search-overlay-property' - Search text having a
@@ -1420,11 +1423,11 @@
 ;;  such as `shell-mode' or Lisp interactive mode (for
 ;;  `icicle-comint-search').
 ;;
-;;  [Programmer Note: Actually, the way this works is that `C-c `' is
-;;  bound to `icicle-search-generic', which calls the command that is
-;;  the value of internal variable `icicle-search-command'.  You can
-;;  use this mechanism to provide custom Icicles search commands for
-;;  particular buffers.]
+;;  [Programmer Note: Actually, the way this works is that `C-c `' and
+;;  `M-s M-s M-s' are bound to `icicle-search-generic', which calls
+;;  the command that is the value of internal variable
+;;  `icicle-search-command'.  You can use this mechanism to provide
+;;  custom Icicles search commands for particular buffers.]
 ;;
 ;;  Besides the commands described in this section, there are Icicles
 ;;  search commands for navigating tags-file definitions and searching
@@ -2592,9 +2595,9 @@
 ;;(@* "Search-and-Replace Marked Files")
 ;;  ** Search-and-Replace Marked Files **
 ;;
-;;  If you also use library `Dired+' then `M-s M-s m'
-;;  (`icicle-search-dired-marked-recursive') in Dired uses Icicles
-;;  search (and on-demand replace) on the marked files.
+;;  If you also use library `Dired+' then you can use command
+;;  `icicle-search-dired-marked-recursive' to use Icicles search (and
+;;  on-demand replacement) on the marked files.
 ;;
 ;;  Each marked subdirectory is handled recursively in the same way:
 ;;  If it has a Dired buffer then its marked files are searched, or
@@ -2617,13 +2620,32 @@
 ;;  then use `C-~' to remove all of its occurrences from the set of
 ;;  hits.
 ;;
-;;  You can similarly use `M-s M-s m' in Ibuffer or Buffer Menu to
-;;  search all marked buffers using Icicles search, and in your
-;;  bookmark list (buffer `*Bookmark List*') to search all marked
-;;  bookmark targets (you need library `Bookmark+' for this).  Also,
-;;  `C-0 M-s M-s M-s' and `C-0 C-c `' are bound to the same command.
-;;  (But you cannot pass a separate prefix arg in those cases, since
-;;  `C-0' is already used.)
+;;  Command `icicle-search-dired-marked-recursive' is the
+;;  mode-specific Icicles search command for Dired mode.  As such, it
+;;  is bound to `M-s M-s m', `M-0 M-s M-s M-s', and `C-0 C-c `'.  Like
+;;  all `Dired+' recursive-marks commands, it is also on prefix key
+;;  `M-+', as `M-+ C-S-s' (aka `M-+ C-S').
+;;
+;;  There is a similar command, `icicle-search-dired-marked', which
+;;  searches only the files marked in the current directory.  It does
+;;  not recurse to pick up the files marked in marked descendent
+;;  directories.  It is bound to `C-S-s', aka `C-S'.
+;;
+;;  There are two simpler Icicles search commands similar to these,
+;;  `icicle-occur-dired-marked-recursive' and
+;;  `icicle-occur-dired-marked', bound to `M-s M-s M' or `M-+ C-S-o'
+;;  (aka `M-+ C-O') and `C-S-o' (aka `C-O'), respectively.  These run
+;;  `icicle-occur' on the marked files, which means that the search
+;;  contexts are the lines in the files (similar to `grep').
+;;
+;;  [`M-s M-s m' is the key sequence for mode-specific Icicles search.
+;;  You can similarly use it in Ibuffer or Buffer Menu to search all
+;;  marked buffers using Icicles search, and in your bookmark list
+;;  (buffer `*Bookmark List*') to search all marked bookmark targets
+;;  (you need library `Bookmark+' for this).  Also, `M-0 M-s M-s M-s'
+;;  and `C-0 C-c `' are bound to the same command.  (But you cannot
+;;  pass a separate prefix arg in those cases, since `C-0' is already
+;;  used.)]
 ;;
 ;;(@* "Save Marked Names as Completion Candidates")
 ;;  ** Save Marked Names as Completion Candidates **
@@ -5383,13 +5405,13 @@
 ;;
 ;;    The value of this option can be changed by program locally, for
 ;;    use in particular contexts.  For example, when you use
-;;    `icicle-search-generic' (`C-c `') in a *shell* buffer, Icicles
-;;    uses this variable with a value of `icicle-remove-duplicates',
-;;    to remove duplicate shell commands from your input history list.
-;;    Lisp programmers can use this variable to transform the list of
-;;    candidates in any way they like.  A typical use is to remove
-;;    duplicates, by binding it to `icicle-remove-duplicates' or
-;;    `icicle-remove-dups-if-extras'.
+;;    `icicle-search-generic' (`M-s M-s M-s' or `C-c `') in a *shell*
+;;    buffer, Icicles uses this variable with a value of
+;;    `icicle-remove-duplicates', to remove duplicate shell commands
+;;    from your input history list.  Lisp programmers can use this
+;;    variable to transform the list of candidates in any way they
+;;    like.  A typical use is to remove duplicates, by binding it to
+;;    `icicle-remove-duplicates' or `icicle-remove-dups-if-extras'.
 ;;
 ;;  * User options `icicle-require-match-flag',
 ;;    `icicle-buffer-require-match-flag', and
