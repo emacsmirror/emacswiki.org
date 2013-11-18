@@ -1306,7 +1306,7 @@ minibuffer.  Although this is a user option, you probably do
 the right thing" when it comes to candidate transformation.
 
 The value of this option can be changed by program locally, for use
-in particular contexts.  For example, when you use `##C-c `##'
+in particular contexts.  For example, when you use '''`M-s M-s M-s'''' or  '''`##C-c `##''''
 (`icicle-search-generic') in a `*shell*' buffer, '''Icicles''' uses this
 variable with a value of `icicle-remove-duplicates', to remove
 duplicate shell commands from your input history list.  Lisp
