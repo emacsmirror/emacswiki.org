@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Nov  8 08:20:08 2013 (-0800)
+;; Last-Updated: Sun Nov 17 16:15:39 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27881
+;;     Update #: 27885
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6306,6 +6306,7 @@
 ;;  * `icicle-occur' (`C-c '')         - Trip among `occur' hits
 ;;                                       (`icicle-search' among
 ;;                                       single-line hits)
+;;  * `icicle-occur-dired-marked-recursive' - Search marked in Dired
 ;;  * `icicle-recent-file'             - Trip among recent files
 ;;  * `icicle-search' (`C-c `')        - Trip among regexp search hits
 ;;  * `icicle-search-bookmarks-together' (`C-u C-c `'),
@@ -6346,7 +6347,8 @@
 ;;
 ;;  (You need library library `Bookmark+' for
 ;;  `icicle-search-bookmark-list-marked'.  You need library `Dired+'
-;;  for `icicle-search-dired-marked-recursive'.)
+;;  for `icicle-occur-dired-marked-recursive' and
+;;  `icicle-search-dired-marked-recursive'.)
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
@@ -8133,10 +8135,10 @@
 ;;  matches a regexp.
 ;;
 ;;  * `icicle-visit-marked-file-of-content', bound to `C-S-f', aka
-;;    `C-F', and `C-S-o', aka `C-O', for other-window
+;;    `C-F', and `C-M-S-f', aka `C-M-F', for other-window
 ;;
 ;;  * `icicle-visit-marked-file-of-content-recursive', bound to `M-+
-;;    C-F', and `M-+ C-O' for other-window
+;;    C-F', and `M-+ C-M-F' for other-window
 ;;
 ;;  The latter visit not only the files that are marked in the current
 ;;  directory, but also those that are marked in any marked
