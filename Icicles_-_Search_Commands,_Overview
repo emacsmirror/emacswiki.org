@@ -156,6 +156,7 @@ Here is a screenshot that shows some of the highlighting features of `icicle-sea
 [:icicle-imenu-user-option]
 [:icicle-imenu-user-option-full]
 [:icicle-occur]
+[:icicle-occur-dired-marked-recursive]
 [:icicle-search]
 [:icicle-search-buffer]
 [:icicle-search-buff-menu-marked]
@@ -225,7 +226,7 @@ the list below).
 Remember too that you can also invoke some of these same commands
 using a prefix arg with the generic `icicle-search' keys.  For
 example, you can invoke the commands bound to `M-s M-s m' using a
-zero prefix arg with `icicle-search' -- e.g., `C-0 M-s M-s M-s'.
+zero prefix arg with `icicle-search' -- e.g., `C-0 M-s M-s M-s'  or `##C-0 C-c `##'.
 
 Here are the suffix keys on the `M-s M-s' prefix key:
 
@@ -256,7 +257,9 @@ Here are the suffix keys on the `M-s M-s' prefix key:
 * '''`m'''' -- `icicle-search-bookmark-list-marked' -- Marked bookmarks
 * '''`m'''' -- `icicle-search-buff-menu-marked' -- Search BufferMenu marked buffers
 * '''`m'''' -- `icicle-search-ibuffer-marked' -- Search [[Ibuffer]] marked buffers
-* '''`m'''' -- `icicle-search-dired-marked-recursive' -- Search [[Dired]] marked files
+* '''`m'''' -- `icicle-search-dired-marked-recursive' -- Search [[Dired]] marked files, including in subdirectories
+* '''`M'''' -- `icicle-occur-dired-marked-recursive' -- Search lines of Dired marked files, including in subdirectories
+
 * '''`o'''' -- `icicle-occur' (aka `icicle-search-lines') -- An `occur' with [[Icicles - Icompletion|incremental completion]] ('''`##C-c '##'''')
 * '''`O'''' -- `icicle-search-overlay-property' -- Search text having a given [[overlay]] property
 * '''`p'''' -- `icicle-search-paragraphs' -- Search Emacs paragraphs as contexts
