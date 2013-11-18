@@ -32,7 +32,7 @@ Where to get it:
 ** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
 *** Source code checked out from latest Bazaar repository
 *** Both stable and bleeding edge nightly build binaries
-*** Update about every two months
+*** Last update 2011.11
 ** **2009-11-04** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
 *** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32 and image libraries. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].
