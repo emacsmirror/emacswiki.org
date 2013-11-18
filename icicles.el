@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  2 16:39:35 2013 (-0700)
+;; Last-Updated: Sun Nov 17 16:00:49 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23457
+;;     Update #: 23462
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -309,7 +309,9 @@
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
-;;    `icicle-occur', `icicle-ORIG-bbdb-complete-mail',
+;;    `icicle-occur', `icicle-occur-dired-marked',
+;;    `icicle-occur-dired-marked-recursive',
+;;    `icicle-ORIG-bbdb-complete-mail',
 ;;    `icicle-ORIG-bbdb-complete-name',
 ;;    `icicle-ORIG-comint-dynamic-complete',
 ;;    `icicle-ORIG-comint-dynamic-complete-filename',
@@ -342,7 +344,7 @@
 ;;    `icicle-search-bookmarks-together', `icicle-search-buffer',
 ;;    `icicle-search-buff-menu-marked', `icicle-search-char-property',
 ;;    `icicle-search-defs', `icicle-search-defs-full',
-;;    `icicle-search-dired-bookmark',
+;;    `icicle-search-dired-bookmark', `icicle-search-dired-marked',
 ;;    `icicle-search-dired-marked-recursive', `icicle-search-file',
 ;;    `icicle-search-file-bookmark', `icicle-search-generic',
 ;;    `icicle-search-gnus-bookmark',
@@ -1193,6 +1195,7 @@
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1',
+;;    `icicle-search-dired-marked-recursive-1',
 ;;    `icicle-search-file-found-p', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
