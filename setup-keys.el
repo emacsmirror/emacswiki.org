@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov  7 20:32:17 2013 (-0800)
+;; Last-Updated: Mon Nov 18 08:11:33 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1236
+;;     Update #: 1242
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/18 dadams
+;;     Bind C-x C-; to comment-region-lines instead of comment-region.
+;;     Do not require simple+.el.
 ;; 2013/11/07 dadams
 ;;     Bind hlt-highlight-enclosing-list to C-M-S.
 ;; 2013/10/23 dadams
@@ -324,7 +327,6 @@
                             ;; mouse-show-hide-mark-unmark, other-window-or-frame,
                             ;; show-*Help*-buffer, show-hide, shrink-frame*
 (require 'mouse+ nil t) ;; (no error if not found): mouse-tear-off-window, mouse-flash-position
-(require 'simple+ nil t) ;; (no error if not found): comment-region
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight, hlt-highlighter,
                            ;; hlt-eraser, hlt-(next|previous)-highlight
 (when (fboundp 'define-minor-mode) ;; (no error if not found): *-at-point,
@@ -647,13 +649,12 @@
 ;;
 ;; So you can do it with one hand.
 (define-key ctl-x-map [(control ?z)] 'delete-window)                           ; `C-x C-z'
-; Defined in `simple.el'.
-(define-key ctl-x-map [(control ?\;)] 'comment-region)                         ; `C-x C-;'
 
 (eval-after-load "misc-cmds"
   '(progn
     (define-key ctl-x-map [home] 'mark-buffer-before-point)                    ; `C-x home'
     (define-key ctl-x-map [end]  'mark-buffer-after-point)                     ; `C-x end'
+    (define-key ctl-x-map [(control ?\;)] 'comment-region-lines)               ; `C-x C-;'
     (define-key ctl-x-map "\M-f" 'region-to-file)                              ; `C-x M-f'
     (define-key ctl-x-map "L"    'goto-longest-line)                           ; `C-x L'
     (when (fboundp 'undo-repeat) (global-set-key [remap undo] 'undo-repeat)))) ; `C-x u' etc.
