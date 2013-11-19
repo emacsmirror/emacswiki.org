@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Nov 17 15:30:01 2013 (-0800)
+;; Last-Updated: Tue Nov 19 10:09:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26043
+;;     Update #: 26049
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6890,16 +6890,17 @@ You need library `second-sel.el' for this command."
     (condition-case nil
         (ad-disable-advice 'yank-pop 'around 'kill-ring-browse-maybe)
       (error nil)))
-  (cond ((memq last-command secondary-selection-yank-secondary-commands)
-         (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
-         (yank-pop-secondary arg))
-        ((memq last-command secondary-selection-yank-commands)
-         (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
-         (yank-pop arg))
-        (t
-         (icicle-completing-yank)
-         ;; Need to do this because `icicle-completing-yank' sets it to `yank'.
-         (setq this-command  'icicle-yank-pop-commands))))
+  (let ((enable-recursive-minibuffers  t))
+    (cond ((memq last-command secondary-selection-yank-secondary-commands)
+           (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
+           (yank-pop-secondary arg))
+          ((memq last-command secondary-selection-yank-commands)
+           (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
+           (yank-pop arg))
+          (t
+           (icicle-completing-yank)
+           ;; Need to do this because `icicle-completing-yank' sets it to `yank'.
+           (setq this-command  'icicle-yank-pop-commands)))))
 
 
 ;; Make delete-selection mode recognize yanking, so it replaces region text.
@@ -6929,7 +6930,8 @@ candidates to yank in different ways (repeat)
   icicle-insert-for-yank                ; Action function
   "Insert: " (mapcar #'list kills-in-order) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kills-in-order) nil
-  ((icicle-transform-function       'icicle-remove-duplicates) ; Bindings
+  ((enable-recursive-minibuffers    t)
+   (icicle-transform-function       'icicle-remove-duplicates) ; Bindings
    (icicle-sort-comparer            nil)
    (selection-ring                  (if (not current-prefix-arg)
                                         'kill-ring
