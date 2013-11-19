@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 17 16:00:49 2013 (-0800)
+;; Last-Updated: Tue Nov 19 09:31:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23462
+;;     Update #: 23465
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1129,7 +1129,6 @@
 ;;    `icicle-ORIG-minibuffer-default-add-completions',
 ;;    `icicle-ORIG-read-char-by-name', `icicle-ORIG-read-color',
 ;;    `icicle-ORIG-read-face-name',
-;;    `icicle-ORIG-read-file-name-default',
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
@@ -1151,8 +1150,7 @@
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive',
 ;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
-;;    `icicle-read-file-name', `icicle-read-file-name-default',
-;;    `icicle-read-from-minibuffer',
+;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-regexp', `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
@@ -1381,7 +1379,6 @@
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-read-char-history',
-;;    `icicle-read-file-name-internal-fn' (Emacs 24+),
 ;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
 ;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
 ;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
