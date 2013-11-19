@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Nov 17 15:22:28 2013 (-0800)
+;; Last-Updated: Tue Nov 19 09:26:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9802
+;;     Update #: 9803
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3520,8 +3520,6 @@ if `icicle-change-region-background-flag' is non-nil."
                                                (setq read-file-name-function
                                                      'icicle-read-file-name)))
       (fset 'read-file-name             'icicle-read-file-name)) ; Emacs 20, 21
-    (when (fboundp 'read-file-name-default) ; Emacs 24+
-      (fset 'read-file-name-default       'icicle-read-file-name-default))
     (when (fboundp 'icicle-read-number)
       (fset 'read-number                'icicle-read-number))
     (unless (> emacs-major-version 22)
@@ -3562,8 +3560,6 @@ if `icicle-change-region-background-flag' is non-nil."
                                                      'icicle-read-file-name))
                                             icicle-orig-read-file-name-fn))
       (fset 'read-file-name             'icicle-ORIG-read-file-name)) ; Emacs 20, 21
-    (when (fboundp 'icicle-ORIG-read-file-name-default) ; Emacs 24+
-      (fset 'read-file-name-default       'icicle-ORIG-read-file-name-default))
     (when (fboundp 'icicle-ORIG-read-number)
       (fset 'read-number                'icicle-ORIG-read-number))
     (when (fboundp 'icicle-ORIG-shell-command) ; Emacs < 23
