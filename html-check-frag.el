@@ -95,24 +95,23 @@ the (almost) the same meaning as for
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
 			   (prog1 
 			       (setq-local html-search-for-tag-syntax (copy-syntax-table))
-			     (modify-syntax-entry ?< "(" html-search-for-tag-syntax)
-			     (modify-syntax-entry ?> ")" html-search-for-tag-syntax)
+			     (modify-syntax-entry ?< "(>" html-search-for-tag-syntax)
+			     (modify-syntax-entry ?> ")<" html-search-for-tag-syntax)
 			     (modify-syntax-entry ?= "." html-search-for-tag-syntax) ;; for parsing attributes
 			     ))
       (while (and (setq beg (apply (if backward 're-search-backward 're-search-forward) (list re bound noerror)))
 		  (setq beg (match-beginning 0))
 		  (html-invalid-context-p beg)))
       (when (and beg (match-beginning 3));; point is actually in the middle of a tag
-	(goto-char (match-beginning 3))
-	(while (and (setq beg (re-search-backward re nil noerror))
-		    (setq beg (match-beginning 0))
-		    (html-invalid-context-p beg)))
-	(if (or (null beg) (match-beginning 3))
-	    (progn 
-	      (put 'error-html-tag 'error-conditions '(error error-html))
-	      (put 'error-html-tag 'error-message "Error during html fragment check")
-	      (signal 'error-html-tag (list "Lonely > at:" (match-beginning 3))))
-	  ))
+	(goto-char (match-end 3))
+	(condition-case err
+	    (progn (backward-sexp)
+		   (setq beg (point)))
+	  (scan-error (setq beg nil)))
+	(unless (and beg (looking-at re))
+	  (put 'error-html-tag 'error-conditions '(error error-html))
+	  (put 'error-html-tag 'error-message "Error during html fragment check")
+	  (signal 'error-html-tag (list "Lonely > at:" (match-beginning 3)))))
       (when beg ;; matching head tag found
 	(if (match-string 1)
 	    (setq closes t)
