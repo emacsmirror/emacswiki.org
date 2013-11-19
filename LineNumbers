@@ -161,6 +161,29 @@ Here's an approach based on the previous suggestion of using `linum-before-numbe
  (defun my-linum-format (line-number)
    (propertize (format my-linum-format-string line-number) 'face 'linum))
 
+[new]
+Here's a better approach. Every buffer has it's own format variable and the separator use the mode-line face.
+
+{{{
+(unless window-system
+  (add-hook 'linum-before-numbering-hook
+	    (lambda ()
+	      (setq-local linum-format-fmt
+			  (let ((w (length (number-to-string
+					    (count-lines (point-min) (point-max))))))
+			    (concat "%" (number-to-string w) "d"))))))
+
+(defun linum-format-func (line)
+  (concat
+   (propertize (format linum-format-fmt line) 'face 'linum)
+   (propertize " " 'face 'mode-line)))
+
+(unless window-system
+  (setq linum-format 'linum-format-func))
+}}}
+
+Screenshot:
+http://i.imgur.com/4tSuye3.png
 
 == Linum: Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]
