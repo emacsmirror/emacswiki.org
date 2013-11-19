@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Nov 17 16:02:49 2013 (-0800)
+;; Last-Updated: Tue Nov 19 09:31:21 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10286
+;;     Update #: 10294
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1829,6 +1829,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/11/19 dadams
+;;     Removed: icicle-ORIG-read-file-name-default and icicle-read-file-name-default.
 ;; 2013/10/30 dadams
 ;;     icicle-fuzzy-candidates, icicle(-unsorted(-file-name))-(prefix|apropos)-candidates:
 ;;       Always set icicle-common-match-string - to nil or to icicle-expanded-common-match.
@@ -5593,6 +5595,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/11/19 dadams
+;;     icicle-(redefine|restore)-std-completion-fns:
+;;       Remove use of icicle-read-file-name-default and icicle-ORIG-read-file-name-default.
 ;; 2013/11/17 dadams
 ;;     icicle-define-icicle-maps:
 ;;       Add icicle-(search|occur)-dired-marked to menus.
@@ -7665,6 +7670,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/11/19 dadams
+;;     Removed: icicle-read-file-name-internal-fn.
 ;; 2013/09/21 dadams
 ;;     icicle-universal-argument-map: Updated for Emacs 24.4 (snapshot from 9/20).
 ;; 2013/05/13 dadams
