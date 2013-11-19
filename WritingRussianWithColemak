@@ -1,3 +1,6 @@
+== Introduction ==
+It's an input method described here, but there could be another ways to solve this.
+
 == Installation ==
 ~/.emacs: <code>(load-file "~/.emacs.d/cyrillic-colemak.el")</code>
 
