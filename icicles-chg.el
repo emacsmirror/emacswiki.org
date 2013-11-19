@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Nov 19 09:31:21 2013 (-0800)
+;; Last-Updated: Tue Nov 19 10:08:12 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10294
+;;     Update #: 10295
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/11/19 dadams
+;;     icicle-yank-pop-commands, icicle-completing-yank: Bind enable-recursive-minibuffers to t.
 ;; 2013/11/03 dadams
 ;;     Added: icicle-visit-marked-file-of-content-recursive(-other-window),
 ;;            icicle-visit-marked-file-of-content-1, icicle-vmfoc-other-win-p, icicle-vmfoc-recursive-p
