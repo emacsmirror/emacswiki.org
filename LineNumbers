@@ -186,6 +186,8 @@ Here's a better approach. Every buffer has it's own format variable and the sepa
 
 http://i.imgur.com/4tSuye3.png
 
+[Here is a screenshot: MyScreenShotPage?]
+
 == Linum: Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]
 Since most editors number the last line of a file even if it is empty (ie. no characters after the last eol char), I kept having to think about how many lines are in the file. Even Emacs lists the line number in the mode line, but no number appears in the margin. The below patch fixes this:
