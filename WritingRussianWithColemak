@@ -2,7 +2,7 @@
 ~/.emacs: <code>(load-file "~/.emacs.d/cyrillic-colemak.el")</code>
 
 ~/.emacs.d/cyrillic-colemak.el:
-<pre>
+<code>
 ;; cyrillic-colemak input method, based on cyrillic-dvorak
 (require 'quail)
 (quail-define-package
@@ -21,8 +21,7 @@
  ("F" ?У) ("G" ?Е) ("C" ?С) ("R" ?Ы) ("L" ?Г) ("?" ?,) ("+" ?+) ("A" ?Ф) ("O"
  ?Ж) ("E" ?Л) ("U" ?Ш) ("I" ?Д) ("D" ?П) ("H" ?Р) ("T" ?А) ("N" ?О) ("S" ?В)
  ("_" ?_) ("|" ?/) (":" ?З) ("Q" ?Й) ("J" ?Н) ("K" ?Т) ("X" ?Ч) ("B" ?И) ("M"
- ?Ь) ("W" ?Ц) ("V" ?М) ("Z" ?Я))
-</pre>
+ ?Ь) ("W" ?Ц) ("V" ?М) ("Z" ?Я))</code>
 
 == github repository ==
 [https://github.com/defanor/cyrillic-colemak|cyrillic-colemak]
