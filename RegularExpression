@@ -1,4 +1,4 @@
-[[es:ExpresiÃ³n_Regular]]
+[[es:Expresión_Regular]]
 A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "re") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
 See [[Manual:Regexps]]. Examples:
 
