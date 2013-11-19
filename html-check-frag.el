@@ -307,6 +307,9 @@ Search starts from point."
 (define-key html-check-frag-lighter-map (kbd "<mode-line> <S-mouse-1>") 'html-check-frag-next-e)
 (put 'html-check-frag-lighter-map 'risky-local-variable t)
 
+(defvar html-check-frag-lighter ""
+  "Lighter for html-check-frag-mode.")
+(make-variable-buffer-local 'html-check-frag-lighter)
 
 (define-minor-mode html-check-frag-mode
   "Check html-fragments around point and decorate tags.
