@@ -156,6 +156,10 @@ Some slight support for EDE with projany is at:
 
 * http://panix.com/~tehom/my-code/projany/ede.el
 
+== Projectile ==
+
+[[Projectile]] "provides easy project management and navigation." A project is a folder containing a special file. Currently *git*, *mercurial* and *bazaar* repositories are considered projects by default. You can also manually designate a folder as a project.
+
 ----
 CategoryDotEmacs
 CategoryProgrammerUtils
