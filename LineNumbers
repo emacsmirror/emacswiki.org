@@ -182,7 +182,8 @@ Here's a better approach. Every buffer has it's own format variable and the sepa
   (setq linum-format 'linum-format-func))
 }}}
 
-Screenshot:
+<b>Example screenshot:</b>
+
 http://i.imgur.com/4tSuye3.png
 
 == Linum: Numbering the last line of the buffer ==
