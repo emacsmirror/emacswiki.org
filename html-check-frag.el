@@ -91,7 +91,6 @@ the (almost) the same meaning as for
 	found ;; temporary
 	value ;; temporary
 	(re "\\(?:<\\(/\\)?\\([[:alpha:]!?][[:alnum:]]*\\)\\|\\(>\\)\\)")
-	(search-regexp (or (and backward '(search-backward-regexp . search-forward-regexp)) '(search-forward-regexp . search-backward-regexp)))
 	)
     (with-syntax-table (or (and (boundp 'html-search-for-tag-syntax) (syntax-table-p html-search-for-tag-syntax) html-search-for-tag-syntax)
 			   (prog1 
@@ -100,12 +99,12 @@ the (almost) the same meaning as for
 			     (modify-syntax-entry ?> ")" html-search-for-tag-syntax)
 			     (modify-syntax-entry ?= "." html-search-for-tag-syntax) ;; for parsing attributes
 			     ))
-      (while (and (setq beg (apply (car search-regexp) (list re bound noerror)))
+      (while (and (setq beg (apply (if backward 're-search-backward 're-search-forward) (list re bound noerror)))
 		  (setq beg (match-beginning 0))
 		  (html-invalid-context-p beg)))
       (when (and beg (match-beginning 3));; point is actually in the middle of a tag
 	(goto-char (match-beginning 3))
-	(while (and (setq beg (apply (cdr search-regexp) (list re nil noerror)))
+	(while (and (setq beg (re-search-backward re nil noerror))
 		    (setq beg (match-beginning 0))
 		    (html-invalid-context-p beg)))
 	(if (or (null beg) (match-beginning 3))
