@@ -44,24 +44,22 @@ watchxk # 2013-09-15 categoryforum
 http://www.ez-days.com/ # 2013-09-25 categoryforum
 http://www\.facebook\.com/profile.php\?id=\d+ # 2013-09-27 We've had a lot of bogus comments with user names linked to Facebook profiles. Please remove the link in question in order to save the page.
 \baccutane\b # 2013-09-28 Comments on 2013-05-07
-\bonline-colleges?\b # 2013-09-28 Comments on EmacsWikiProblems
 \blow.*card\b # 2013-09-30 Comments on 2013-05-07 and others
 ckzweb\.com # 2013-10-07 categoryforum
 islalom\.com # 2013-11-04 categoryforum
 garden-equipment.com # 2013-11-05 categoryforum
-insur[a-z]*(quote|world|online) # 2013-11-10
-coverageservice # 2013-11-11 Comments on InstallingPackages
+insur[a-z]*(quote|world) # 2013-11-10
 freequotesguide # 2013-11-11 Comments on EmacsWikiProblems
 insurance # 2013-11-13 Comments on 2013-04-24
-graduateonlineprograms # 2013-11-14 Comments on 2013-05-07
 poker # 2013-11-14 Comments on InstallingPackages
 allgamesinonesite # 2013-11-16 Comments on 2013-05-07
 zumurphy # 2013-11-17 Comments on 2013-04-24
-bestcoverageonline # 2013-11-17 Comments on InstallingPackages
 insurersexpert # 2013-11-17 Comments on EmacsWikiProblems
-autocoverage # 2013-11-18 Comments on JianliZhao
 casino # 2013-11-18 Comments on EmacsWikiProblems
 bestquote # 2013-11-19 Comments on 2013-05-07
-mymedicationsonline # 2013-11-20 Comments on 2013-05-07
 findyourinsurer # 2013-11-19 Comments on 2013-04-24
 online # 2013-11-20 Comments on JianliZhao
+college # 2013-09-28 Comments on EmacsWikiProblems
+graduate # 2013-11-14 Comments on 2013-05-07
+coverage # 2013-11-18 Comments on JianliZhao
+medication # 2013-11-20 Comments on 2013-05-07
