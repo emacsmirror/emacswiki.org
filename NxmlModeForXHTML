@@ -17,7 +17,7 @@ There are a few things you have to do differently if you are authoring web pages
 
 * Tags (possibly with attributes) without content <nowiki>(like <meta foo="bar">)</nowiki> have to be written with a slash before the close: <meta foo="bar" />.  The space before the slash is suggested for compatibility with current HTML browsers.
 
-* If you want to use named entities like &amp;nbsp;, which are defined in the XHTML specification, then you have to refer to that DTD explicitly at the start of your document, or declare the entities there.  If you don't nxml-mode will complain that &amp;nbsp; is undefined.  Or you can use numeric references instead, such as &amp;#160; or just insert the correct character in your document in whatever encoding you are using (e.g iso-8859-1).  If you are using utf-8, then xmlunicode.el and unichars.el (http://nwalsh.com/emacs/xmlchars/) are a big help when inserting such characters.
+* If you want to use named entities like &nbsp;, which are defined in the XHTML specification, then you have to refer to that DTD explicitly at the start of your document, or declare the entities there.  If you don't nxml-mode will complain that &nbsp; is undefined.  Or you can use numeric references instead, such as &#160; or just insert the correct character in your document in whatever encoding you are using (e.g iso-8859-1).  If you are using utf-8, then xmlunicode.el and unichars.el (http://nwalsh.com/emacs/xmlchars/) are a big help when inserting such characters.
 
 ** *Question: Could you tell exactly what should be entered to refer to that DTD?*
 
