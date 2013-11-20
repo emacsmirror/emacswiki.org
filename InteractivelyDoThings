@@ -361,15 +361,17 @@ Fixed: use local varible
 ibuffer mode doesn't come with an option to use ido-find-file, so here's a simple adaptation of ibuffer-find-file that uses ido instead of read-file:
 
 {{{
-(defun ibuffer-ido-find-file ()
+(defun ibuffer-ido-find-file (file &optional wildcards)
   "Like `ido-find-file', but default to the directory of the buffer at point."
   (interactive
-   (let ((default-directory (let ((buf (ibuffer-current-buffer)))
-			      (if (buffer-live-p buf)
-				  (with-current-buffer buf
-				    default-directory)
-				default-directory))))
-     (ido-find-file-in-dir default-directory))))
+   (let ((default-directory
+           (let ((buf (ibuffer-current-buffer)))
+             (if (buffer-live-p buf)
+                 (with-current-buffer buf
+                   default-directory)
+               default-directory))))
+     (list (ido-read-file-name "Find file: " default-directory) t)))
+  (find-file file wildcards))
 }}}
 
 To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)## should work, if you haven't required it do 
@@ -381,6 +383,8 @@ To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-m
 }}}
 
 -- BrandonWMaister
+
+-- new definition of ##ibuffer-ido-find-file## by TreyHarris to suppress wrong type argument errors that could happen in some circumstances.
 
 
 
