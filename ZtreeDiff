@@ -1,3 +1,18 @@
-Yet another directory compare/merge tool, inspired by tools like Beyond Compare
+Yet another directory compare/merge tool, inspired by commercial tools like Beyond Compare.
 
 https://github.com/fourier/ztree#ztree-diff
+
+=== Functionality==
+Implemented recursive directory comparison while comparing on per-file basis. The per-file comparison performed with external *GNU diff* tool.
+Supported features:
+* Two trees in one buffer
+* Colors differentiation for absent, different or identical files
+* Operations: 
+** Run Ediff on different files with the *RET* key
+** Copy files or directories with the *C* key
+** Delete files or directories with the *D* key
+** Hide/Show identical files with the *H* key
+** Full rescan with the *F5* key
+
+Screenshot:
+[[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_xterm.png]]
