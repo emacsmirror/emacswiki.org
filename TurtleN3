@@ -1,0 +1,13 @@
+There are two modes for editing Turtle/N3 (semantic web) formats:
+* https://github.com/kurtjx/n3-mode-for-emacs‎
+* https://bitbucket.org/nxg/ttl-mode
+
+Both are fairly poor.
+
+I'm looking for features like this Eclipse-based editor:
+https://github.com/AKSW/Xturtle/wiki/Editor-Features
+and editing SPARQL.
+
+Any takers or feedback?
+
+(also posted to newsgroup: http://article.gmane.org/gmane.emacs.help/94543)
