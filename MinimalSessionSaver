@@ -27,6 +27,25 @@ An additional command
 
 installs shorter command aliases for the above.
 
+==Options==
+
+
+<pre>
+minimal-session-saver-data-file
+    Path to store/retrieve the set of visited files.
+
+minimal-session-saver-install-short-aliases
+    Install short aliases such as `mss-load' for `minimal-session-saver-load'.
+
+minimal-session-saver-less-feedback
+    Give less echo area feedback.
+
+minimal-session-saver-store-on-exit
+    Automatically store the session data every time you quit Emacs.
+</pre>
+
+
+
 ==Availability==
 
 minimal-session-saver.el is available at github:
