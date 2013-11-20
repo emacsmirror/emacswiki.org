@@ -56,6 +56,7 @@ See also CategoryVersionControl.
 * EdiffUrl -- Compare buffer to a web URL.
 * EmergeDiff -- Graphical interface to `diff'.
 * DircmpMode -- Compare two directories recursively. Display a list of all differing files in a single buffer. Invoke Ediff on any pair of files compared.
+* ZtreeDiff -- Yet another directory compare/merge tool
 
 == Project Management ==
 
