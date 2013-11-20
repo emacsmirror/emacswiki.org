@@ -4,3 +4,10 @@ I'd like to see this functionality added to the official Emacs distribution; unt
 
 -- Pete Harlan 2013-11-14 01:11 UTC
 
+
+----
+
+Thank you Pete Harlan, for the very constructive and helpful discussion on msearch! I think it improved msearch a lot. Almost everything (except the partial word feature) we spoke about can now be configured via customization.
+
+-- TN 2013-11-20 17:07 UTC
+
