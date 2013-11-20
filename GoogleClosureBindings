@@ -1,0 +1,67 @@
+Find the latest keybindings here: https://github.com/joeheyming/closure-emacs
+
+[:overview]
+== Why do I need these keybindings? ==
+Google closure requires a lot of boiler plate code to be written.  It was easier to me to have emacs bindings to auto generate functions without having to type the module name so many times.
+
+Example
+
+    /**
+      * @constructor
+      * @extends {your.company.module.widget.something.Bar}
+      * @implements {your.company.module.widget.something.BarInterface}
+      * @param {string} model The model.
+    your.company.module.widget.something.FooBar = function(model) {
+    }
+This code is very annoying to type out the whole thing.  Its much better to have comment generation and namespace generation based on the current module you are looking at.
+
+== What else do I need? ==
+This module works in conjunction with [[Js2Mode|Js2Mode]].
+
+[:bindings]
+== List of current bindings ==
+The keybindings all begin with super-c (c for closure)
+
+* super c a-f -> closure-abstract-function:
+** insert an abstract function at the cursor
+* super c a-r -> closure-add-require-line
+** Look at the current module under the cursor, and try to add it to the list of require lines at the top of the file.
+* super c c-c -> closure-insert-current-class
+** Insert the current class name at the cursor.
+* super c c-f -> closure-constructor-function
+** Insert the template for a constructor method based on the current module.
+* super c g-b -> closure-insert-goog-base
+** Insert goog.base. with the correct parameters at the top of the current function you are in.
+* super c n-a -> closure-attribute-prefix
+** Insert a new attribute at the cursor for the current module.
+* super c n-f -> closure-new-function
+** Insert a new function at the cursor for the current module.
+* super c s-c -> closure-super-jump
+** Go to the current super class.
+* super c s-f -> closure-super-function
+** Insert a new function at the cursor, but add /** inheritDoc */ and goog.base
+* super c s-g -> closure-insert-singleton-getter
+** Insert the singleton getter function at the cursor.
+* super c s-r -> closure-sort-require-lines
+** Sort the require lines in the current module.
+* super c u-e -> closure-update-extends
+** If you change @extends, run this function and it will update goog.inherits as well as add the require line.
+* super c u-j -> closure-update-javadoc
+** Update the javadoc with the current function parameters (if changed) and add @private or @return if needed.
+* super c a-e -> closure-foreach-array
+** Insert a goog.array.forEach at the cursor. If an appropriate expression is found under the cursor, we try to use it as the first argument to the forEach function.
+* super c a-t -> closure-foreach-array-this
+** Insert a goog.array.forEach (bound to this) at the cursor. If an appropriate expression is found under the cursor, we try to use it as the first argument to the forEach function.
+* super c o-e -> closure-foreach-object
+** Insert a goog.object.forEach at the cursor. If an appropriate expression is found under the cursor, we try to use it as the first argument to the forEach function.
+* super c o-t -> closure-foreach-object-this
+** Insert a goog.object.forEach (bound to this) at the cursor. If an appropriate expression is found under the cursor, we try to use it as the first argument to the forEach function.
+
+= Installation =
+* put closure-emacs.el somewhere in your emacs load path
+* add these lines to your .emacs file:
+** (require 'closure-emacs)
+* Create a file under ~/.emacs-closure-projects
+* Put your path to the google closure library:
+** E.g. ~/git/closure-library/closure
+** Put the path to your closure projects.
