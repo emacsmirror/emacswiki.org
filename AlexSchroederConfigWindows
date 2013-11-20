@@ -2,7 +2,7 @@
 ;; Copy to the following URL from time to time:
 ;; http://www.emacswiki.org/cgi-bin/wiki?action=edit;id=AlexSchroederConfigWindows
 ;; This is free software.
-;; Currently for GNU Emacs 24.2.1 (i386-mingw-nt5.1.2600) of 2012-08-29 on MARVIN
+;; Currently for GNU Emacs 24.3.1 (i386-mingw-nt6.1.7601) of 2013-03-17 on MARVIN
 
 ;; ▇█▓▒░◕~◕░▒▓█▇
 
@@ -11,7 +11,8 @@
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
 (add-to-list 'exec-path "C:/Programme/cygwin/bin")
 (add-to-list 'exec-path "C:/Programme/GnuWin32/bin")
-(add-to-list 'exec-path "C:/Programme/Growl for Windows")
+(add-to-list 'exec-path "C:/Program Files (x86)/Growl for Windows")
+(add-to-list 'exec-path "c:/Users/asc/AppData/Local/GitHub/PortableGit_015aa71ef18c047ce8509ffb2f9e4bb0e3e73f13/bin"); git
 (setenv "RSH" "SSH")
 
 (let (seen)
@@ -99,6 +100,16 @@
       ps-spool-duplex t
       ps-print-header nil
       ps-use-face-background t)
+
+;;; Helm
+;; (add-to-list 'load-path "c:/Users/asc/Documents/GitHub/helm")
+;; (when (require 'helm-config nil t)
+;;   (helm-mode 1)
+;;   (global-set-key (kbd "C-x b") 'helm-mini)
+;;   (add-to-list 'load-path "c:/Users/asc/Documents/GitHub/helm-swoop")
+;;   (autoload 'helm-swoop "helm-swoop" nil t)
+;;   (global-set-key (kbd "C-c o") 'helm-occur)
+;;   (define-key isearch-mode-map (kbd "C-o") 'helm-swoop-from-isearch))
 
 ;; iswitchb
 (iswitchb-mode 1)
@@ -303,8 +314,7 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "pista" sql-password "pista" sql-database "PISTA_11")
-;; (setq sql-user "ci" sql-password "cipw" sql-database "BSICRM.VD_5164")
+(setq sql-user "pista" sql-password "pista" sql-database "pista")
 ;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
 ;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
 
@@ -670,20 +680,10 @@ Each line consists of a lastname, a tab, and a firstname."
 		       "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#eclipse-de" "#osgi" "#eclipse-scout"
-	 "#eclipse-hudson" "#emacswiki"))
-	;; ("irc.sorcery.net" :channels ("#StargazersWorld"))
-	;; ("irc.magicstar.net" :channels ("#rpgnet"))
+	 "#emacs" "#sql" "#eclipse-de" "#eclipse-scout" "#emacswiki" "#emacs-ops"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse")))
-      ;; ("ircnet.eversible.com" :channels ("#drsrm"))
-      ;; ("irc.ch.euirc.net" :channels ("#tanelorn"))
-      ;; irc.de.euirc.net
-      ;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
-      ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
-      ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
-      ;; "#openbsd" "#hcoop" "#scrum" "#eclipse"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot" "AL-76")
+      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot" "AL-76" "enometh")
       rcirc-activity-string ""
       frame-title-format '("%b " rcirc-activity-string)
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
@@ -763,6 +763,9 @@ Each line consists of a lastname, a tab, and a firstname."
 (eval-after-load 'rcirc '(require 'rcirc-notify nil t))
 (eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
 (eval-after-load 'rcirc '(require 'rcirc-groups nil t))
+(eval-after-load 'rcirc '(require 'rcirc-help nil t))
+;; (eval-after-load 'rcirc '(when (require 'rcirc-random-names nil t)
+;; 			   (rcirc-random-names-mode 1)))
 
 ;; Windows doesn't like "*foo*" filenames
 (eval-after-load 'rcirc
@@ -789,12 +792,6 @@ This is used for the initial name given to IRC buffers."
 	    (rcirc-track-minor-mode 1)
 	    (abbrev-mode 1)
 	    (local-set-key (kbd "M-q") 'rcirc-unfill)))
-
-(defadvice my-invisible-preference (after rcirc-connect activate)
-  "When connecting to a server, set the user mode to +i (invisible)."
-  (let ((process ad-return-value)
-	(nick (or nick rcirc-default-nick)))
-    (rcirc-send-string process (concat "MODE " nick " +i"))))
 
 ;; rcirc occur
 
@@ -1115,33 +1112,46 @@ cells by columns first."
 
 ;;; isearch & occur
 
-(defun isearch-occur ()
-  "Invoke `occur' from within isearch."
-  (interactive)
-  (let ((case-fold-search isearch-case-fold-search))
-    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+;; (defun isearch-occur ()
+;;   "Invoke `occur' from within isearch."
+;;   (interactive)
+;;   (let ((case-fold-search isearch-case-fold-search))
+;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
 
-(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+;; (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 (defun isearch-highlight-phrase ()
   "Invoke `highligh-phrase' from within isearch."
   (interactive)
   (let ((case-fold-search isearch-case-fold-search))
-    (highlight-phrase (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+    (highlight-phrase (if isearch-regexp isearch-string (regexp-quote isearch-string))))
+  (message "Use `unhighlight-regexp' to remove highlighting."))
 
 (define-key isearch-mode-map (kbd "C-h") 'isearch-highlight-phrase)
 
 ;;; org
 
-;; (add-to-list 'load-path "~/elisp/org-4.31")
 (require 'org-install nil t)
-(setq org-CUA-compatible t)
+
+;; Make windmove work in org-mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+
 (define-key global-map "\C-cl" 'org-store-link)
+
 (add-hook 'org-mode-hook 'my-org-init)
+
 (defun my-org-init ()
-  (require 'typopunct)
-  (typopunct-change-language 'english)
-  (typopunct-mode 1))
+  (when (require 'typopunct nil t)
+    (save-excursion
+      (goto-char (point-min))
+      (if (> (count-matches (regexp-opt '("der" "die" "das") 'words)) 3)
+	  (typopunct-change-language 'deutsch)
+	(typopunct-change-language 'english))
+      (typopunct-mode 1))))
+
 (setq org-export-html-style "<style type='text/css'>
 body {
   font-family: Garamond, Cochin, 'Bookman Old Style', serif;
@@ -1257,14 +1267,6 @@ br.page {
                                                  ; on windows.
 (server-start 1)
 
-;;; Identica Mode
-
-(when (require 'netrc nil t)
-  (autoload 'identica-mode "identica-mode" nil t)
-  (let ((identica (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
-    (setq identica-username (netrc-get identica "login")
-	  identica-password (netrc-get identica "password"))))
-
 ;;; automatic additions
 
 (put 'narrow-to-region 'disabled nil)
@@ -1302,3 +1304,31 @@ Use `reverse-region' to reverse the lines in the region."
 	(when chars
 	  (apply 'insert chars))
 	(newline)))))
+
+(defun round-floating-points (start end)
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "-?[0-9]*\\.[0-9]+" nil t)
+      (replace-match (number-to-string
+		      (round
+		       (string-to-number (match-string 0))))))))
+
+(defun user-code-insert (code-type-id start end)
+  (interactive "sCode Type ID: \nr")
+  (goto-char start)
+  (setq end (copy-marker end))
+  (while (re-search-forward "\\(.*\\) / \\(.*\\)  \\(.*\\)\n" end t)
+    (let ((de (match-string 1))
+	  (en (match-string 2))
+	  (key (match-string 3))
+	  (case-replace nil))
+      (replace-match (format (concat "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (pista_seq.nextval,  246, '%s', %s, '%s');\n"
+				     "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (pista_seq.currval, 1303, '%s', %s, '%s');\n")
+			     de code-type-id key en code-type-id key) t)))
+  (insert "\n"
+	  "prompt Default für \n"
+	  "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (,  246, 'Default  für neue E570 Apparate', 114733, '');\n"
+	  "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (, 1303, 'Default  for new E570 devices', 114733, '');\n"
+	  "\n"))
