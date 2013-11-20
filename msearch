@@ -10,7 +10,7 @@ Usually, there are hundreds of variables and equations in such code.
 Msearch allows to swiftly change the search string only using the mouse.
 This makes it easier to trace back how a variable gets its current value through a sequence of equations and assignments.
 
-If you find msearch useful for your own work I would be pleased to read about it. Just leave some note below.
+See the [[http://www.emacswiki.org/emacs/Comments_on_msearch|Talk Page]] for user comments about msearch.
 
 ----
 == Bug reports / error correction ==
@@ -23,7 +23,7 @@ Peter made me aware of some bugs/misbehaviour of msearch:
   documentation brought up by "C-h m" is "Mouse-drag high-lightes all
   corresponding matches within the current buffer."  but doesn't tell
   the user which variables control its behavior.
-* WONTFIX (I consider this as an essential feature for programming): Document word vs. symbol mode.  Maybe just have "word mode", and if
+* DONE (this can now be customized): Document word vs. symbol mode.  Maybe just have "word mode", and if
   the user wants to customize a variable specifying what constitutes
   word characters then they can
 * DONE: When changing option in menu, it would be nice if the change applied
