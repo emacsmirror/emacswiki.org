@@ -12,4 +12,8 @@ TabInTabular -rebind the TAB key to operate more other programs operate within t
 
 [http://www.emacswiki.org/emacs/DiaryMode#toc18 iCal-in-Emacs]: mostly a python script that will download icals and make it easy to import them into emacs diary. Primary resource on [http://svn.quodlibetor.com/wsvn/Hacks/py/ical-in-emacs/#_py_ical-in-emacs my subversion]
 ----
+[new:TreyHarris:2013-11-20 18:03 UTC]
+FYI: I replaced your definition of ##ibuffer-ido-find-file## in InteractivelyDoThings with one that took wildcard args because sometimes you could get an error message with your definition.
+-- TreyHarris
+----
 CategoryHomepage
