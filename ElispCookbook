@@ -83,12 +83,11 @@ Buffers:
 
 Reversing a string:
 
-    (string-to-list "foo")
-    ==> (102 111 111)
-    (reverse (string-to-list "foo"))
-    ==> (111 111 102)
-    (apply #'string (reverse (string-to-list "foo")))
-    ==> "oof"
+    (defun string-reverse (str)
+      "Reverse the str where str is a string"
+      (apply #'string 
+	     (reverse 
+	      (string-to-list str))))
 
 See CharacterProcessing and StringModification. See [[tr]] for an example mixing strings and characters.
 
