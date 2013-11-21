@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 18 08:02:22 2013 (-0800)
+;; Last-Updated: Thu Nov 21 11:08:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3114
+;;     Update #: 3116
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -85,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/21 dadams
+;;     comment-region-lines: Do not comment current line if bolp.
 ;; 2013/11/18 dadams
 ;;     Added: comment-region-lines.
 ;; 2013/09/01 dadams
@@ -750,7 +752,9 @@ With negative prefix arg, deletion is backward."
   (interactive "*r\nP")
   (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
   (let ((bol  (save-excursion (goto-char beg) (line-beginning-position)))
-        (eol  (save-excursion (goto-char end) (line-end-position))))
+        (eol  (if (bolp)
+                  (point)
+                (save-excursion (goto-char end) (line-end-position)))))
     (comment-region bol eol arg)))
 
 ;;;(defvar default-pr-switches "-fl68"
