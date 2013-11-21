@@ -73,10 +73,10 @@ Buffers:
       (let ((elength (length ending)))
         (string= (substring s (- 0 elength)) ending)))
 
-    (defun string/starts-with (s arg)
-      "returns non-nil if string S starts with ARG.  Else nil."
-      (cond ((>= (length s) (length arg))
-             (string-equal (substring s 0 (length arg)) arg))
+    (defun string/starts-with (s begins)
+      "returns non-nil if string S starts with BEGINS.  Else nil."
+      (cond ((>= (length s) (length begins))
+             (string-equal (substring s 0 (length begins)) begins))
             (t nil)))
 
 === Processing characters ===
