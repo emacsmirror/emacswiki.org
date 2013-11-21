@@ -67,7 +67,7 @@ between `nil' and its previous non-`nil' value, using command
 Generally, highlighting you add is temporary: it is not saved when
 you write your buffer todisk.  However, Emacs has a curious and
 unfamiliar feature called "formatted" or "enriched" text mode,
-which does record highlighting permanently.  See [[Manual:Enriched Text]].
+which does record highlighting permanently.  See [[Manual:Enriched Mode]].
 
 To save highlighting permanently, do the following:
 
