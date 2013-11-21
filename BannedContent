@@ -50,11 +50,9 @@ islalom\.com # 2013-11-04 categoryforum
 garden-equipment.com # 2013-11-05 categoryforum
 insur[a-z]*(quote|world) # 2013-11-10
 freequotesguide # 2013-11-11 Comments on EmacsWikiProblems
-insurance # 2013-11-13 Comments on 2013-04-24
 poker # 2013-11-14 Comments on InstallingPackages
 allgamesinonesite # 2013-11-16 Comments on 2013-05-07
 zumurphy # 2013-11-17 Comments on 2013-04-24
-insurersexpert # 2013-11-17 Comments on EmacsWikiProblems
 casino # 2013-11-18 Comments on EmacsWikiProblems
 bestquote # 2013-11-19 Comments on 2013-05-07
 findyourinsurer # 2013-11-19 Comments on 2013-04-24
@@ -63,4 +61,4 @@ college # 2013-09-28 Comments on EmacsWikiProblems
 graduate # 2013-11-14 Comments on 2013-05-07
 coverage # 2013-11-18 Comments on JianliZhao
 medication # 2013-11-20 Comments on 2013-05-07
-insurer # 2013-11-21 Comments on 2013-04-24
+insur(er|ance) # 2013-11-21 Comments on 2013-04-24
