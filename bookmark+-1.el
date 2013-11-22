@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Nov  5 15:57:52 2013 (-0800)
+;; Last-Updated: Thu Nov 21 23:01:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7011
+;;     Update #: 7052
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6705,56 +6705,73 @@ If TRUTH is nil, return nil."
 ;;  *** Indirect Bookmarking Functions ***
 
 ;;;###autoload (autoload 'bmkp-url-target-set "bookmark+")
-(defun bmkp-url-target-set (url &optional prefix-only-p name/prefix no-update-p msg-p)
+(defun bmkp-url-target-set (url &optional arg name/prefix no-overwrite-p no-update-p msg-p)
                                         ; Bound globally to `C-x p c u'.
   "Set a bookmark for a URL.  Return the bookmark.
 Interactively you are prompted for the URL.  Completion is available.
 Use `M-n' to pick up the url at point as the default.
 
-You are also prompted for the bookmark name.  But with a prefix arg,
-you are prompted only for a bookmark-name prefix.  In that case, the
-bookmark name is the prefix followed by the URL.
+You are also prompted for the bookmark name.  But with a non-negative
+prefix arg, you are prompted only for a bookmark-name prefix.  In that
+case, the bookmark name is the prefix followed by the URL.
 
 When entering a bookmark name you can use completion against existing
 names.  This completion is lax, so you can easily edit an existing
 name.  See `bookmark-set' for particular keys available during this
 input.
 
+If you use a numeric prefix arg, such as `C-1', instead of plain
+`C-u', then a new bookmark is created if a bookmark of the same name
+already exists: an existing bookmark is not overwritten.  You can thus
+have multiple bookmarks with the same name, which target different
+URLs.
+
+Summary of prefix argument behavior:
+
+* None:        Provide full bookmark name. Overwrite existing bookmark
+* Plain `C-u': Provide name prefix only.   Overwrite existing bookmark
+* N >= 0:      Provide name prefix only.   Do not overwrite.
+* N < 0:       Provide full bookmark name. Do not overwrite.
+
 Non-interactively:
-* Non-nil PREFIX-ONLY-P means NAME/PREFIX is a bookmark-name prefix.
+* Numeric ARG >= 0 means NAME/PREFIX is a bookmark-name prefix.
 * NAME/PREFIX is the bookmark name or its prefix (the suffix = URL).
+* Non-nil NO-OVERWRITE-P means do not overwrite an existing bookmark.
 * Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
   display.
 * Non-nil MSG-P means display a status message."
   (interactive
-   (list (if (require 'ffap nil t)
-             (ffap-read-file-or-url "URL: " (or (bmkp-thing-at-point 'url)
-                                                (and (fboundp 'url-get-url-at-point)
-                                                     (url-get-url-at-point))))
-           (let ((icicle-unpropertize-completion-result-flag  t))
-             (read-file-name "URL: " nil (or (bmkp-thing-at-point 'url)
-                                             (and (fboundp 'url-get-url-at-point)
-                                                  (url-get-url-at-point))))))
-         current-prefix-arg
-         (if current-prefix-arg
-             (read-string "Prefix for bookmark name: ")
-           (bmkp-completing-read-lax "Bookmark name"))
-         nil
-         'MSG))
+   (let* ((icicle-unpropertize-completion-result-flag  t)
+          (default-url                                 (or (bmkp-thing-at-point 'url)
+                                                           (and (fboundp 'url-get-url-at-point)
+                                                                (url-get-url-at-point))))
+          (parg                                        current-prefix-arg)
+          (prefix-only                                 (and parg  (natnump (prefix-numeric-value parg))))
+          (no-overw                                    (and parg  (atom current-prefix-arg))))
+     (list (if (require 'ffap nil t)
+               (ffap-read-file-or-url "URL: " default-url)
+             (read-file-name "URL: " nil default-url))
+           prefix-only
+           (if prefix-only
+               (read-string "Prefix for bookmark name: ")
+             (bmkp-completing-read-lax "Bookmark name"))
+           no-overw
+           nil
+           'MSG)))
   (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (if (eq major-mode 'w3m-mode)
                                             'bmkp-make-w3m-record
                                           `(lambda () (bmkp-make-url-browse-record ',url))))
         bmk failure)
     (condition-case err
-        (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
-                                   (cdr (bookmark-make-record))  nil  no-update-p  (not msg-p)))
+        (setq bmk  (bookmark-store (if arg (concat name/prefix url) name/prefix)
+                                   (cdr (bookmark-make-record))  no-overwrite-p  no-update-p  (not msg-p)))
       (error (setq failure  err)))
     (when failure (error "Failed to create bookmark for `%s':\n%s\n" url failure))
     bmk))                               ; Return the bookmark.
 
 ;;;###autoload (autoload 'bmkp-file-target-set "bookmark+")
-(defun bmkp-file-target-set (file &optional prefix-only-p name/prefix no-overwrite no-update-p msg-p)
+(defun bmkp-file-target-set (file &optional arg name/prefix no-overwrite no-update-p msg-p)
                                         ; Bound to `C-x p c f'
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
@@ -6762,45 +6779,59 @@ Interactively you are prompted for FILE.  Completion is available.
 You can use `M-n' to pick up the file name at point, or if none then
 the visited file.
 
-You are also prompted for the bookmark name.  But with a prefix arg,
-you are prompted only for a bookmark-name prefix.  In that case, the
-bookmark name is the prefix followed by the non-directory part of
-FILE.
+You are also prompted for the bookmark name.  But with a non-negative
+prefix arg, you are prompted only for a bookmark-name prefix.  In that
+case, the bookmark name is the prefix followed by the non-directory
+part of FILE.
 
 When entering a bookmark name you can use completion against existing
 names.  This completion is lax, so you can easily edit an existing
 name.  See `bookmark-set' for particular keys available during this
 input.
 
+If you use a numeric prefix arg, such as `C-1', instead of plain
+`C-u', then a new bookmark is created if a bookmark of the same name
+already exists: an existing bookmark is not overwritten.  You can thus
+have multiple bookmarks with the same name, which target different
+URLs.
+
+Summary of prefix argument behavior:
+
+* None:        Provide full bookmark name. Overwrite existing bookmark
+* Plain `C-u': Provide name prefix only.   Overwrite existing bookmark
+* N >= 0:      Provide name prefix only.   Do not overwrite.
+* N < 0:       Provide full bookmark name  Do not overwrite.
+
 Non-interactively:
- - Non-nil optional arg PREFIX-ONLY-P means prompt for a name prefix.
- - Optional arg NAME/PREFIX is the name or name prefix string.
- - Optional arg NO-OVERWRITE is passed to `bookmark-store': non-nil
-   means do not overwrite an existing bookmark that has the same name.
- - Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
-   display.
- - Non-nil optional arg MSG-P means show a warning message if file
-   does not exist."
+* Numeric ARG >= 0 means NAME/PREFIX is a bookmark-name prefix.
+* NAME/PREFIX is the bookmark name or its prefix.
+* Non-nil NO-OVERWRITE-P means do not overwrite an existing bookmark.
+* Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+  display.
+* Non-nil MSG-P means show a warning message if file does not exist."
   (interactive
-   (list (let ((icicle-unpropertize-completion-result-flag  t))
-           (read-file-name "File: " nil
+   (let* ((icicle-unpropertize-completion-result-flag  t)
+          (parg                                        current-prefix-arg)
+          (prefix-only                                 (and parg  (natnump (prefix-numeric-value parg))))
+          (no-overw                                    (and parg  (atom current-prefix-arg))))
+     (list (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
                                  (ffap-guesser))
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
-         current-prefix-arg
-         (if current-prefix-arg
-             (read-string "Prefix for bookmark name: ")
-           (bmkp-completing-read-lax "Bookmark name"))
-         nil
-         nil
-         'MSG))
+     prefix-only
+     (if prefix-only
+         (read-string "Prefix for bookmark name: ")
+       (bmkp-completing-read-lax "Bookmark name"))
+     no-overw
+     nil
+     'MSG))
   (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (bmkp-make-record-for-target-file file))
-        bmk  failure)
+        bmk failure)
     (condition-case err
-        (setq bmk  (bookmark-store (if prefix-only-p
+        (setq bmk  (bookmark-store (if arg
                                        (concat name/prefix (file-name-nondirectory file))
                                      name/prefix)
                                    (cdr (bookmark-make-record))  no-overwrite  no-update-p  (not msg-p)))
