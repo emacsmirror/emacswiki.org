@@ -115,11 +115,31 @@ I really like this idea, because it's dumb to make me hit C-x C-s all the time b
 			  (basic-save-buffer)))))
 	(add-hook 'auto-save-hook 'full-auto-save)
 
-[new]
-What about to save file when emacs frame loose focus? -- VitalieLazu
+== Save on Loss of Input Focus ==
 
 [new]
-You could, as I did, tell emacs to do full-auto-save when it receives the USR1 signal.
+There are new hooks for gain/loss of focus: <code>focus-in-hook</code> and <code>focus-out-hook.</code>
+
+As of this writing (2013-11-21) they are on trunk and (with luck) they be part of the 24.4 release.
+
+If you are running a version of Emacs with these hooks, you can add
+
+  (defun save-all ()
+    (interactive)
+    (save-some-buffers t))
+
+  (add-hook 'focus-out-hook 'save-all)
+
+to your .emacs file and it should save all files on loss of focus.
+
+*Two things to note:*
+
+These hooks fire when any Emacs frame gains or loses focus. This means that if you Alt-Tab or Alt-` between Emacs frames, the focus-out-hook and focus-in-hook will run. (MacOS and Windows have a concept of application-level focus, but X apparently does not. These hooks apply at the frame level so they can work on all three platforms.)
+
+These hooks are intended for use by the end-user, not for use in packages. If you set these hooks for other people, they're likely to be annoyed. (Particularly if they are debugging Emacs itself or working in a "focus follows mouse" environment where merely mousing over a window switches focus to it.)
+
+[new]
+Another approach is tell emacs to do full-auto-save when it receives the USR1 signal.
   
   (define-key special-event-map [sigusr1]
         (lambda ()
