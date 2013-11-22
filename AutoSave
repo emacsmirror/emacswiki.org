@@ -117,7 +117,8 @@ I really like this idea, because it's dumb to make me hit C-x C-s all the time b
 
 == Save on Loss of Input Focus ==
 
-[new]
+=== Focus Hooks ===
+
 There are new hooks for gain/loss of focus: <code>focus-in-hook</code> and <code>focus-out-hook.</code>
 
 As of this writing (2013-11-21) they are on trunk and (with luck) they be part of the 24.4 release.
@@ -138,7 +139,8 @@ These hooks fire when any Emacs frame gains or loses focus. This means that if y
 
 These hooks are intended for use by the end-user, not for use in packages. If you set these hooks for other people, they're likely to be annoyed. (Particularly if they are debugging Emacs itself or working in a "focus follows mouse" environment where merely mousing over a window switches focus to it.)
 
-[new]
+=== User-Defined Signals ===
+
 Another approach is tell emacs to do full-auto-save when it receives the USR1 signal.
   
   (define-key special-event-map [sigusr1]
