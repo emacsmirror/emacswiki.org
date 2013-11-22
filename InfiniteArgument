@@ -1,6 +1,6 @@
 An InfiniteArgument can be prefixed to KeyboardMacros but not to an InteractiveFunction.
 
-A macro can be executed in Emacs with the UniversalArgument, `C-u', to repeat the macro four times, or `C-u 9' to repeat it nine times, with `C-u -' (which is equivalent to `negative-argument' available from `M--') for negative (in the opposite direction) one time, or with `C-u - 5' to repeat the macro negatively (in the opposite direction) 5 times.  To repeat a macro an infinite number of times use `C-u 0'.  This will repeat the macro until the function quits (for example, by ending the reach of the buffer) or if the user cancels the command with a `keyboard-quit' of `C-g' (see CancelingInEmacs).
+A macro can be executed in Emacs with the UniversalArgument, `C-u', to repeat the macro four times, or `C-u 9' to repeat it nine times, with `C-u -' (which is equivalent to `negative-argument' available from `M--') for negative (in the opposite direction) one time, or with `C-u - 5' to repeat the macro negatively (in the opposite direction) 5 times.  To repeat a macro an infinite number of times use `C-u 0'.  This will repeat the macro until the function quits (for example, by reaching the end of the buffer) or if the user cancels the command with a `keyboard-quit' of `C-g' (see CancelingInEmacs).
 
 See also RepeatingCommands.
 
