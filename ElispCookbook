@@ -83,7 +83,7 @@ Buffers:
 
 Reversing a string:
 
-    (defun string-reverse (str)
+    (defun string/reverse (str)
       "Reverse the str where str is a string"
       (apply #'string 
 	     (reverse 
