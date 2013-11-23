@@ -47,6 +47,7 @@ These are some additional input methods that do not come with Emacs:
 * Neo-Akkadian Cuneiform: Lisp:akkadian.el
 * Glagolitic: Lisp:glagolitic.el
 * Coptic: Lisp:coptic.el
+* Chinese: EimForChinese
 
 It's convenient for people who speak in korean or japanese or etc... to use only the internal emacs input method ([[mule]]) without scim, nabi, Microsoft IME, etc...
 
