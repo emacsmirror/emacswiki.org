@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:06:30 2013 (-0700)
+;; Last-Updated: Sat Nov 23 11:18:18 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 136
+;;     Update #: 150
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -52,7 +52,7 @@
 ;;
 ;;  Option `modelinepos-empty-region-flag' determines whether to show
 ;;  the active-region indication when the active region is empty.  By
-;;  default it is nil, meaning do not indicate an empty active region.
+;;  default it is t, meaning indicate an empty active region.
 ;;
 ;;  Note: Loading this library changes the default definition of
 ;;        `mode-line-position'.
@@ -79,6 +79,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/23 dadams
+;;     Added: modelinepos-empty-region-p.
+;;     Use modelinepos-empty-region-p to decide whether region is empty.
+;;     modelinepos-empty-region-flag: Change default value to t.
 ;; 2013/04/19 dadams
 ;;     Added: modelinepos-empty-region-flag.  Use it in mode-line-position.
 ;; 2013/02/01 dadams
@@ -153,7 +157,7 @@ Value `chars+lines' means print the number of characters and the number of lines
   :group 'Modeline :group 'Convenience :group 'Help)
 
 ;;;###autoload
-(defcustom modelinepos-empty-region-flag nil
+(defcustom modelinepos-empty-region-flag t
   "*Non-nil means indicate an active region even when empty."
   :type 'boolean :group 'Modeline :group 'Convenience :group 'Help)
 
@@ -174,6 +178,24 @@ of the buffer is shown."
   :global t :group 'editing-basics :group 'Modeline
   :group 'Convenience :group 'Help)
 
+(defun modelinepos-empty-region-p ()
+  "Return non-nil if region is active and empty.
+But does not return nil-nil if this is true but you are selecting with
+the mouse.  This is to prevent highlighting in the mode line whenever
+you press `mouse-1' without dragging at least one character."
+  ;; Fragile hack: Starting with Emacs 24, the region is considered empty as soon as
+  ;; you press `mouse-1' (`down-mouse-1').  That causes modeline highlighting each time
+  ;; you just click `mouse-1', i.e., without dragging it.
+  ;;
+  ;; The hack is to check whether `echo-keystrokes' is 0.  `mouse-drag-track' binds
+  ;; `echo-keystrokes' to 0, and that seems to be the only way to tell whether we are
+  ;; in `mouse-drag-track'.  If the Emacs code for that changes then this might break.
+  (and transient-mark-mode  mark-active
+       (or (if (> emacs-major-version 23)
+               (and (not (eq 0 echo-keystrokes))  modelinepos-empty-region-flag)
+             modelinepos-empty-region-flag)
+           (/= (region-beginning) (region-end)))))
+
 
 
 ;; REPLACES ORIGINAL defined in `bindings.el'.
@@ -188,15 +210,10 @@ delete others, mouse-3: delete this"))
                     `((-3 ,(propertize "%p" 'help-echo help-echo))
                       (size-indication-mode
                        (8 ,(propertize
-                            (if (and transient-mark-mode  mark-active
-                                     (or modelinepos-empty-region-flag
-                                         (/= (region-beginning) (region-end))))
+                            (if (modelinepos-empty-region-p)
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
-                            'face (and transient-mark-mode  mark-active
-                                       (or modelinepos-empty-region-flag
-                                           (/= (region-beginning) (region-end)))
-                                       'modelinepos-region)
+                            'face (and (modelinepos-empty-region-p)  'modelinepos-region)
                             'help-echo help-echo)))
                       (line-number-mode
                        ((column-number-mode
@@ -230,15 +247,10 @@ delete others, mouse-3: delete this"))
                                      'help-echo "Buffer position, mouse-1: Line/col menu"))
                       (size-indication-mode
                        (8 ,(propertize
-                            (if (and transient-mark-mode  mark-active
-                                     (or modelinepos-empty-region-flag
-                                         (/= (region-beginning) (region-end))))
+                            (if (modelinepos-empty-region-p)
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
-                            'face (and transient-mark-mode  mark-active
-                                       (or modelinepos-empty-region-flag
-                                           (/= (region-beginning) (region-end)))
-                                       'modelinepos-region)
+                            'face (and (modelinepos-empty-region-p)  'modelinepos-region)
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
                             'help-echo "Buffer position, mouse-1: Line/col menu")))
