@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 23 11:18:18 2013 (-0800)
+;; Last-Updated: Sat Nov 23 11:38:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 150
+;;     Update #: 153
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -180,7 +180,7 @@ of the buffer is shown."
 
 (defun modelinepos-empty-region-p ()
   "Return non-nil if region is active and empty.
-But does not return nil-nil if this is true but you are selecting with
+But do not return non-nil if this is true but you are selecting with
 the mouse.  This is to prevent highlighting in the mode line whenever
 you press `mouse-1' without dragging at least one character."
   ;; Fragile hack: Starting with Emacs 24, the region is considered empty as soon as
