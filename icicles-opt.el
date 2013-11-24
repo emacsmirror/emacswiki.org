@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Oct 29 15:56:00 2013 (-0700)
+;; Last-Updated: Sat Nov 23 16:35:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5760
+;;     Update #: 5763
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2371,14 +2371,16 @@ You can toggle this option at any time from the minibuffer using
   :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-find-file-of-content-skip-hook nil
-  "*Hook run by `icicle-find-file-of-content' on each matching file name.
+  "*Hook run by `icicle-file' on each matching file name.
 Also run by `icicle-buffer' on the names of files that are included
 from the set of recent files or from the Emacs file cache.
 
 If any function returns non-nil then the file content is not searched.
 Use this to skip visiting and trying to search non-text files, such as
 PDFs and images, or files that might be time-consuming to access, such
-as compressed files."
+as compressed files.
+
+This option has no effect for Emacs versions prior to Emacs 23."
   :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-functions-to-redefine
