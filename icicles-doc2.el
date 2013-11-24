@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Nov 17 17:23:31 2013 (-0800)
+;; Last-Updated: Sat Nov 23 15:25:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29449
+;;     Update #: 29452
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5742,7 +5742,7 @@
 ;;  * Options `icicle-buffer-skip-hook' and
 ;;    `icicle-find-file-of-content-skip-hook' are lists of hook
 ;;    functions.  They are used by commands `icicle-buffer' and
-;;    `icicle-find-file' (for Emacs 23 and later) to test a candidate
+;;    `icicle-file' (for Emacs 23 and later) to test a candidate
 ;;    buffer name or file name, respectively.  You can use them to
 ;;    skip content-searching of certain buffers and files when
 ;;    completing buffer and file names using multi-completion.
@@ -5832,11 +5832,11 @@
 ;;
 ;;  * Non-`nil' user option `icicle-kill-visited-buffers-flag' means
 ;;    kill buffers visited temporarily to search files.  This applies
-;;    to commands such as `icicle-find-file', which search files that
-;;    match your completion input.  If non-`nil' then any such buffers
-;;    for files that you do not actually choose are killed when the
-;;    command is finished.  If `nil' then they are not killed.  This
-;;    option applies only to Emacs 23 and later.
+;;    to commands such as `icicle-file' (for Emacs 23 or later), which
+;;    search files that match your completion input.  If non-`nil'
+;;    then any such buffers for files that you do not actually choose
+;;    are killed when the command is finished.  If `nil' then they are
+;;    not killed.  This option applies only to Emacs 23 and later.
 ;;
 ;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
@@ -6386,12 +6386,12 @@
 ;;    that it ignores version-control directories.
 ;;
 ;;  * For Emacs 23 and later, if you use commands such as
-;;    `icicle-find-file' and `icicle-visit-marked-file-of-content',
-;;    which let you match a file name and/or file content, remember
-;;    that it is far quicker to match a name than it is to search
-;;    content.  The more you match names to narrow the set of files
-;;    whose contents need to be searched, the quicker matching will
-;;    be.  Remember too that option `icicle-kill-visited-buffers-flag'
+;;    `icicle-file' and `icicle-visit-marked-file-of-content', which
+;;    let you match a file name and/or file content, remember that it
+;;    is far quicker to match a name than it is to search content.
+;;    The more you match names to narrow the set of files whose
+;;    contents need to be searched, the quicker matching will be.
+;;    Remember too that option `icicle-kill-visited-buffers-flag'
 ;;    controls whether to keep or kill any file buffers that were
 ;;    searched but whose files did not ultimately choose.  Keeping
 ;;    them is essentially caching them.
