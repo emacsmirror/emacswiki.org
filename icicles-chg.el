@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Nov 19 10:08:12 2013 (-0800)
+;; Last-Updated: Sat Nov 23 16:38:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10295
+;;     Update #: 10312
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/11/23 dadams
+;;     Added: icicle-find-file-abs-of-content, icicle-find-file-abs-of-content-other-window.
+;;     Renamed: *-find-file-absolute(-other-window) to icicle-find-file-abs-no-search(-other-window).
+;;     Redefine icicle-find-file-absolute(-other-window) as *-no-search* or *-of-content*.
+;;     icicle-find-file-of-content(-other-window):
+;;       Just set FILE (no FIL2 binding).
+;;       First code: Reset current-prefix-arg to nil, so can use it anew in action function.
+;;                   Added msg: Gathering files...
+;;     icicle-file-of-content-apropos-complete-match:
+;;       Handle date for absolute file names (icicle-find-file-abs-of-content).
+;;     icicle-make-file+date-candidate: Removed final space after %T.
 ;; 2013/11/19 dadams
 ;;     icicle-yank-pop-commands, icicle-completing-yank: Bind enable-recursive-minibuffers to t.
 ;; 2013/11/03 dadams
