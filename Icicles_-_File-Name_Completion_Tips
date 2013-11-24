@@ -184,7 +184,7 @@ Another, cleaner way to skip certain directories is to [[Customize]] or `let'-bi
 [:MatchFileNamesBeforeContent]
 ==== Match File Names Before File Content ====
 
-For Emacs 23 and later, if you use commands such as '''`<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file]]<tt>'''' and
+For Emacs 23 and later, if you use commands such as '''`<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-file]]<tt>'''' and
 '''`icicle-visit-marked-file-of-content'''', which let you match a
 file ''name'' and/or file ''content'', remember that it is far quicker
 to match a name than it is to search content.  The more you match names to
