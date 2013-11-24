@@ -96,6 +96,20 @@ Completion should present a list of expansions such as this:
 
 With those 4 tools Emacs would have just as good completion as Eclipse.
 
+== Class/interface only tag index ==
+
+For my modest needs (quickly hop around the substantial android source tree) I just wanted a simple etags generator that would index class and interface names, including inner classes and interfaces. I wrote a little java program to do the job - https://gist.github.com/kbsriram/7632814
+
+{{{
+$ javac Gen.java
+$ java Gen ~/android-sdk-macosx/sources/android-19
+$ ls -lh tags
+-rw-r--r--  1 kbs  staff   1.6M Nov 24 13:46 tags
+$ du -sh ~/android-sdk-macosx/sources/android-19
+ 97M	/Users/kbs/android-sdk-macosx/sources/android-19
+}}}
+
+This Works For Me(tm) - I'll leave it out here in case someone else finds it handy.
 
 ----
 CategoryCompletion CategoryJava
