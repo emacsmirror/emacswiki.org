@@ -288,14 +288,14 @@ An additional feature of `icicle-find-file-absolute' (`C-x C-f' with a prefix ar
 are directory names are highlighted in buffer `*Completions*'
 using face `icicle-special-candidate'.
 
-An additional feature of command `icicle-find-file' (`C-x C-f'
-with no prefix arg) is that if you use a prefix arg when acting on
+An additional feature of commands `icicle-find-file' and
+`icicle-find-file-absolute' is that if you use a prefix arg when acting on
 an individual file-name candidate then the file is visited in
 read-only mode.  The same invocation of `C-x C-f' can thus open
 multiple files, some in read-only mode, some not.
 
 (There is also multi-command '''`icicle-find-file-read-only'''', unbound
-by default, which is the same as `icicle-find-file' but with the
+by default, which is the same as `icicle-find-file-no-search' but with the
 prefix arg behavior flipped: with no prefix arg when you act on a
 candidate file it is visited read-only.)
 
@@ -315,17 +315,19 @@ candidate file it is visited read-only.)
 [:MatchFileContent]
 ==== Match File Names and File Content Too ====
 
-Starting with Emacs 23, command '''`icicle-find-file'''' (that is,
-`icicle-file' with no [[prefix argument]]) is an alias for command
-'''`icicle-find-file-of-content'''', which lets you
+Starting with Emacs 23, commands '''`icicle-find-file''''  and
+'''`icicle-find-file-absolute'''' (that is,
+`icicle-file' with or without a [[prefix argument]]) are aliases for commands
+'''`icicle-find-file-of-content'''' and
+'''`icicle-find-file-abs-of-content'''', which let you
 optionally provide a [[regexp]] pattern to match against file
-''content''.  In this it is similar to the buffer-switching
+'''''content'''''.  In this they are similar to the buffer-switching
 multi-command `icicle-buffer'.
 
 If you provide a pattern to match file content
 then all files whose names match the file-name part of your input
 are searched for the content pattern.  '''Icicles''' looks only for a single
-content-match within each file it tests.  Choose a candidate file
+content-match within each file it tests.  Choosing a candidate file
 just visits it normally --- it does not move to that tested match or
 to any other content-match position.  Matching is used only to
 filter candidate files.
@@ -356,7 +358,7 @@ option for the command duration.
 
 You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content-searching
 when you provide a content-matching pattern to
-`icicle-find-file'.
+`C-x C-f'.
 
 In [[Dired]], there are related content-matching multi-commands that you can use to visit marked files and subdirectories whose content matches a [[regexp]].
 
@@ -370,8 +372,10 @@ subdirectories, and sub-subdirectories etc., '''recursively'''''.  They
 are available only if you also use library '''[[Dired+]]'''.
 
 
-(Prior to Emacs 23, `icicle-find-file' is an alias for
-`icicle-find-file-no-search', which does not search file content.)
+(For Emacs versions prior to Emacs 23, `icicle-find-file' and
+`icicle-find-file-absolute' are aliases for
+`icicle-find-file-no-search' and `icicle-find-file-abs-no-search', which do not search file content.  That is, `C-x C-f' matches only
+file ''names'', not also file ''content''.)
 
 See also [[Icicles - Searching Named Containers]].
 
@@ -513,6 +517,12 @@ of a performance penalty -- you pay for what you get.
 However, even if you do not have command `locate', there of having your cake and eating it too.
 You can gather all of the file names in your file system ''once'', and
 save that list of completion candidates to a ''cache file on disk'', as a snapshot.  See [[Icicles - Persistent Completions]] for how to do this.
+
+
+
+
+
+
 
 
 
