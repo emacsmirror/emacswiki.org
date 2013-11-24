@@ -7,13 +7,15 @@ Implemented recursive directory comparison while comparing on per-file basis. Th
 Supported features:
 * Two trees in one buffer
 * Colors differentiation for absent, different or identical files
-* Operations: 
+* Hotkeys/Operations: 
 ** Run Ediff on different files with the *RET* key
 ** Copy files or directories with the *C* key
 ** Delete files or directories with the *D* key
 ** Hide/Show identical files with the *H* key
 ** Full rescan with the *F5* key
 ** Fast jump between panels with *TAB*
+** Backspace - jump to upper directory, double backspace  - close current directory
+** *Space*/*RET* to expand/collapse directory
 
 Screenshot:
 [[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_xterm.png]]
