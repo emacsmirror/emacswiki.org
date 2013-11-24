@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 19 09:31:05 2013 (-0800)
+;; Last-Updated: Sat Nov 23 15:29:40 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23465
+;;     Update #: 23466
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -254,7 +254,11 @@
 ;;    `icicle-execute-extended-command',
 ;;    `icicle-execute-named-keyboard-macro', `icicle-face-list',
 ;;    `icicle-file', `icicle-file-list', `icicle-file-other-window',
-;;    `icicle-find-file', `icicle-find-file-absolute',
+;;    `icicle-find-file', `icicle-find-file-abs-no-search',
+;;    `icicle-find-file-abs-no-search-other-window',
+;;    `icicle-find-file-abs-of-content',
+;;    `icicle-find-file-abs-of-content-other-window',
+;;    `icicle-find-file-absolute',
 ;;    `icicle-find-file-absolute-other-window',
 ;;    `icicle-find-file-all-tags',
 ;;    `icicle-find-file-all-tags-other-window',
