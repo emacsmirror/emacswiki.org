@@ -37,6 +37,9 @@ If you want to know more about '''Icicles''' by reading instead of just trying, 
 One good way to start with '''Icicles''' is to explore [[menu bar|menu-bar]] menus 
 '''[[Icicles - Icicles Menu|Icicles]]''' and '''[[Icicles - Minibuf Menu|Minibuf]]'''.  You can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.
 
+
+
+
 [:IciclesMenuBarMenu]
 [:MinibufMenuBarMenu]
 Menu '''Icicles''' is available all of the time (that is, whenever you are in ''Icicle'' mode). Menu '''Minibuf''' is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
@@ -47,6 +50,7 @@ same menu, '''Icicles''', by default they are spread among appropriate
 existing menus such as '''File''' and '''Edit''', on '''Icicles''' submenus.
 Whether this is done is controlled by user [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus-flag|icicle-touche-pas-aux-menus-flag]]</tt>''''.  When it is done, menu-bar menu
 '''Icicles''' contains only menu items that do not fit elsewhere.
+
 
 
 
@@ -108,6 +112,8 @@ off ''Icicle'' mode and Emacs behaves as usual (vanilla).
 
 To best understand what '''Icicles''' offers you, you need to think a bit
 differently about minibuffer completion.
+
+
 
 
 
@@ -184,6 +190,9 @@ different ways to interact with the current set of matches (completion
 candidates).  To exploit the possibilities of filtering a set
 dynamically by pattern matching, '''Icicles''' provides different features
 that work together.
+
+
+
 
 
 
@@ -279,6 +288,9 @@ defining '''Icicles''' multi-commands or otherwise making some special use
 of '''Icicles''' features.  None of these libraries are required in order to
 use '''Icicles''', but they are recommended because of the synergy they
 provide.  See [[Icicles - Libraries#Optional|Recommended Libraries]].
+
+
+
 
 
 
@@ -660,6 +672,8 @@ See [[Icicles - Bookmark Enhancements#UsingTaggedFiles|Using Tagged Files]].
 
 
 
+
+
 [:RecursiveMinibuffers]
 [:TopLevelToMinibufferAndBack]
 == Top Level to Minibuffer ... and Back Again ==
@@ -750,6 +764,8 @@ appearance of the depth indicator.
 
 
 
+
+[:CancelingMinibufferInteraction]
 === Canceling Minibuffer Interaction ===
 
 Whether or not the minibuffer is active, '''`C-g'''' cancels the current
@@ -891,6 +907,9 @@ it twice.
 
 
 
+
+
+
 [:CycleCandidates]
 == Cycle Completion Candidates ==
 
@@ -939,6 +958,8 @@ See [[Icicles - Cycling Completions]] for more about cycling completion candidat
 
 
 
+
+
 [:DisplayCandidates]
 == Display Completion Candidates ==
 
@@ -951,6 +972,8 @@ When you cycle among matching candidates as described above, if buffer `##*Compl
 [[image:iciclesscreenshot]]
 
 See [[Icicles - Completions Display]] for more about using the `##*Completions*##' window.
+
+
 
 
 
