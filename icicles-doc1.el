@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Nov 17 16:15:39 2013 (-0800)
+;; Last-Updated: Sat Nov 23 16:49:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27885
+;;     Update #: 27897
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8072,33 +8072,36 @@
 ;;  highlighted in buffer `*Completions*' using face
 ;;  `icicle-special-candidate'.
 ;;
-;;  An additional feature of command `icicle-find-file' (`C-x C-f'
-;;  with no prefix arg) is that if you use a prefix arg when acting on
-;;  an individual file-name candidate then the file is visited in
-;;  read-only mode.  The same invocation of `C-x C-f' can thus open
-;;  multiple files, some in read-only mode, some not.
+;;  An additional feature of commands `icicle-find-file' and
+;;  `icicle-find-file-absolute' is that if you use a prefix arg when
+;;  acting on an individual file-name candidate then the file is
+;;  visited in read-only mode.  The same invocation of `C-x C-f' can
+;;  thus open multiple files, some in read-only mode, some not.
 ;;
 ;;  (There is also multi-command `icicle-find-file-read-only', unbound
-;;  by default, which is the same as `icicle-find-file' but with the
-;;  prefix arg behavior flipped: with no prefix arg when you act on a
-;;  candidate file it is visited read-only.)
+;;  by default, which is the same as `icicle-find-file-no-search' but
+;;  with the prefix arg behavior flipped: with no prefix arg when you
+;;  act on a candidate file it is visited read-only.)
 ;;
 ;;(@* "Match File Names and File Content Too")
 ;;  *** Match File Names and File Content Too ***
 ;;
-;;  Starting with Emacs 23, command `icicle-find-file' (that is,
-;;  `icicle-file' with no prefix arg) is an alias for command
-;;  `icicle-find-file-of-content', which lets you optionally provide a
-;;  regexp pattern to match against file content.  In this it is
-;;  similar to the buffer-switching multi-command `icicle-buffer'.
+;;  Starting with Emacs 23, commands `icicle-find-file' and
+;;  `icicle-find-file-absolute' (that is, `icicle-file' with or
+;;  without a prefix arg) are aliases for commands
+;;  `icicle-find-file-of-content' and
+;;  `icicle-find-file-abs-of-content', which let you optionally
+;;  provide a regexp pattern to match against file content.  In this
+;;  they are similar to the buffer-switching multi-command
+;;  `icicle-buffer'.
 ;;
 ;;  If you provide a pattern to match file content then all files
 ;;  whose names match the file-name part of your input are searched
 ;;  for the content pattern.  Icicles looks only for a single
-;;  content-match within each file it tests.  Choose a candidate file
-;;  just visits it normally - it does not move to that tested match or
-;;  to any other content-match position.  Matching is used only to
-;;  filter candidate files.
+;;  content-match within each file it tests.  Choosing a candidate
+;;  file just visits it normally - it does not move to that tested
+;;  match or to any other content-match position.  Matching is used
+;;  only to filter candidate files.
 ;;
 ;;  However, if your input includes a content-matching part that
 ;;  matches, that part is automatically added to the Isearch regexp
@@ -8128,7 +8131,7 @@
 ;;
 ;;  You can use option `icicle-find-file-of-content-skip-hook' to
 ;;  specify patterns for file names to exclude from content-searching
-;;  when you provide a content-matching pattern to `icicle-find-file'.
+;;  when you provide a content-matching pattern to `C-x C-f'.
 ;;
 ;;  In Dired, there are related content-matching multi-commands that
 ;;  you can use to visit marked files and subdirectories whose content
@@ -8145,8 +8148,11 @@
 ;;  subdirectories, and sub-subdirectories etc., recursively.  They
 ;;  are available only if you also use library `Dired+'.
 ;;
-;;  (Prior to Emacs 23, `icicle-find-file' is an alias for
-;;  `icicle-find-file-no-search', which does not search file content.)
+;;  (For Emacs versions prior to Emacs 23, `icicle-find-file' and
+;;  `icicle-find-file-absolute' are aliases for
+;;  `icicle-find-file-no-search' and `icicle-find-file-abs-no-search',
+;;  which do not search file content.  That is, `C-x C-f' matches only
+;;  file names, not also file content.)
 ;;
 ;;  See also (@> "Chapter & Verse: Searching Named Containers").
 ;;
