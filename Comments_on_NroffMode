@@ -1,0 +1,7 @@
+This mode really sucks as compared to GVim. Syntax highlighting, the main USP
+of this mode, is really atrocious for any but the most simplistic markup. It
+is beyond all comparison with the default TeX mode. Is Nroff-mode really an
+orphan mode used only by manpage writers?
+
+-- admin 2013-11-25 19:41 UTC
+
