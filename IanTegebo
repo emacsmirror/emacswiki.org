@@ -4,6 +4,12 @@ I use Emacs.
 
 * [[Flavors]] - formalizing large customizations of Emacs
 
+= Notes =
+
+* ElispStaticAnalysis
+** http://people.cs.aau.dk/~normark/emacs-lisp/emacs-lisp-static-analysis/index.html
+** "Down with Emacs Lisp: Dynamic Scope Analysis"
+
 = Emacs Lisp Pages of Interest =
 
 * [[rx]] - I appreciated Perl's ##/x## modifier, so this approach is appealing.
