@@ -42,6 +42,8 @@ Can "Custom Themes" meet the needs of "flavors" mentioned above?
 :[quote]In theory, a theme file can also contain other Lisp forms, which
 would be evaluated when loading the theme, but that is "bad form".[/quote]
 
+Right now, I think the things I'm referring to as "flavors" need to be mutually exclusive; they're going to define conflicting keybindings and different behavior for the same things and thus cannot be expected to work if layered on top of one another.  That said, perhaps "flavors" is not such a good term because it doesn't denote mutual exclusion.
+
 == Next Steps ==
 
 * Do people think this would be useful?
