@@ -134,5 +134,8 @@ I wrote a new function to fix this and make the line number recognition enhanced
 [new:DrewAdams:2012-08-31 03:35 UTC]
 Maybe I'm missing something, but it sounds like you are reporting an Emacs (Tramp) bug here, together with a workaround/fix.  If so, why don't you report the bug to the Tramp maintainer?  `M-x report-emacs-bug' -- DrewAdams
 
+== Make ffap open a Java source file from import statement =
+
+You can open a Java source file or directory from the import statement in Java.  The location of the source must be known to work via <code>ffap-java/source-directories</code>.  The source should be either a directory name that contains the sources, or a jar archive name that contains the sources.   Download the source [https://github.com/cinsk/emacs-scripts/blob/master/ffap-java.el here]. -- [SeongKookShin cinsk]
 ----
 CategoryFiles OpenFilesInDifferentWays
