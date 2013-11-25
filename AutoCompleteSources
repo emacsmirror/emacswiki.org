@@ -13,6 +13,29 @@ Lisp:ac-lilypond.el is my (finally working) contribution to LilyPond-mode source
 
 Direct download [[https://raw.github.com/vitoshka/ac-math/master/ac-math.el|ac-math.el]]
 
+For Emacs24 and installing ac-math from Melpa (with list-packages), adding these lines in my init.el seems working with AucTeX already installed:
+<pre>
+(require 'package)
+(package-initialize)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+
+(require 'ac-math) 
+(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+
+ (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+   (setq ac-sources
+         (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+                 ac-sources))
+   )
+(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+(global-auto-complete-mode t)
+ 
+(setq ac-math-unicode-in-math-p t)
+</pre>
+
 == Auctex ==
 
 [[https://github.com/monsanto/auto-complete-auctex|auto-complete-auctex]] uses auctex's parsing to give up-to-date, accurate completions of commands, environments, bib entries, and labels.
