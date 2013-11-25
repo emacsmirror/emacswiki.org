@@ -60,6 +60,12 @@ Ex. #define macro(arg1, arg2...) arg1 + arg2
 * hide/unhide a region
 * Evaluate a macro, just mark the region you want to evalute and press `C-c @ e'.
 * When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
+* Prevent hiding *.h files from re-inclusion protection for their top-level #ifdefs. Originally if we hide a .h file with such kind of protection, for the first time it will extract all the #defines in the *.h file but when you tried the 2nd time it will hide everything leave only an
+{{{
+#ifdef __XXX_HEADER__...
+#endif
+}}}
+for the whole .h file. Now with customization option `hide-ifdef-expand-re-inclusion-protection' (default 't) it will expand the top level if-part.
 
 Tips:
 * All C files share the same macro database (i.e. hide-ifdef-env). 
