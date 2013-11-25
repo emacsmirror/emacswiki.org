@@ -4,7 +4,7 @@
 ;;
 ;; Author: Phil S.
 ;;
-;; Compatibility: GNU Emacs 24
+;; Compatibility: GNU Emacs 24.3
 ;;
 ;; Installation:
 ;; (eval-after-load 'image-mode '(require 'image-dimensions-minor-mode))
