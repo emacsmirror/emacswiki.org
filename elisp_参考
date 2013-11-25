@@ -1,0 +1,14 @@
+emacs参考手册也叫作elisp或 lispref 手册， 是用于emacs扩展语言的文档.
+
+gnuemacs有 emacsManual, emacsLispIntr, EmacsLispReference,三个手册，从Emacs22开始包含它们三个。
+
+最好的方式是直接在emacs里使用手册。你能使用帮助菜单或 <tt>C-h i</tt> 查看它们和其他文档。如果你的Emacs没有包含这些，你必须下载他们， 所有的手册的各种格式在线都能找到：
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/manual/elisp.html
+* 也可能用 GnuPress打印
+
+在 debian GNU/linux上，如果你找不到elisp部分，或者提示错误：info file elisp does not exist", 这样你需要：
+# 在 /etc/apt/source.list 上激活 non free 部分
+# 安装 emacs-common-non-dfsg 包
+
