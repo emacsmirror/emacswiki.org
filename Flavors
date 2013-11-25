@@ -1,0 +1,48 @@
+= Why "Flavors"? =
+
+I'm trying to understand how large, fairly cohesive user-customizations via .emacs.d can be standardized as "flavors".   The point would be to:
+* facilitate both the creation and maintenance of such large scale customizations
+* make it easier for users to install and switch between them
+* extract commonality into libraries
+
+== Status Quo ==
+
+As far as I can tell, the myriad emacs.d's out there define and follow a variety of patterns.  These days, there's certainly a lot functionality being pulled into libraries.  Dealing with the "end user" customization in concert with such efforts seem poorly defined at the moment.  Customize has been around for a long time and appears to not (by itself) be sufficient for what (and how) people want to customize.
+
+I've found a few efforts for structuring init files:
+
+* DotEmacsModular - put things into separate files, load them recursively
+* DotEmacsStructuring - use "feature switches" to selectively turn stuff on/off
+* CategoryCustomize - pointers to particular areas of customization/"flavorfication"
+* CustomizingBoth - some ideas and advice on "portability" of such configuration
+* EmacsImplementations - different implementations are definitely different flavors, but let's consider them out of scope (for the moment)
+* CustomFile - allows you to separate the output of "customize"
+* InitSplit - appears to be in the spirit of CustomFile, but finer grained
+* [[CustomizingAndSaving#CustomizePlus|CustomizePlus]] - helps manage state around customize
+
+== Possible "Flavors" ==
+
+; flavor : A customization of an Emacs implementation significant enough to warrant its own documentation.
+
+* [[Prelude]]
+* [http://github.com/technomancy/emacs-starter-kit Emacs Start Kit (ESK)]
+* [https://github.com/rdallasgray/graphene Graphene]
+* Some more on [http://ergoemacs.org/misc/list_of_emacs_starter_kits.html Xah's site]
+* ...
+
+== Next Steps ==
+
+* Do people think this would be useful?
+* Is "flavor" a reasonable term for these things?
+* If Customize is good enough, how can we make it more obvious how to package and share a set of customizations?
+* Have I overlooked any relevant efforts?
+
+=== Ideas for Formalization ===
+
+* Continue using packages (esk, ergoemacs, and graphene all have packages)
+* Provide a "switching" function (probably too difficult to get 100% right)
+* Where applicable, define common:
+** file system layout
+** function/var/package naming schemes
+* Help/Documentation conventions, e.g. overview of novel keybindings, changes to default behavior
+
