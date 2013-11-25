@@ -1,6 +1,6 @@
 ;;; image-dimensions-minor-mode.el
 ;;
-;; Adds the image dimensions in the mode line, when viewing an image.
+;; Display the image dimensions in the mode line, when viewing an image.
 ;;
 ;; Author: Phil S.
 ;;
