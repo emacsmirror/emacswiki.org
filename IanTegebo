@@ -2,15 +2,12 @@ I use Emacs.
 
 = Emacs Lisp Pages of Interest =
 
-* [[rx]] - I'd appreciated Perl's ##/x## modifier, so this approach seems useful as well.
+* [[rx]] - I appreciated Perl's ##/x## modifier, so this approach is appealing.
 * StateMachine
 * CoRoutines (also ConcurrentEmacs)
 * LaterDo
 * HashMap
 * [[deferred.el]]
-
-[new]
-Welcome to the wiki! :) -- AlexSchroeder
 
 ----
 CategoryHomepage
