@@ -3547,6 +3547,7 @@ See `icicle-Completions-display-min-input-chars' and the other variables I menti
 
 </pre>
 
+[:cua-mode]
 For some reason `S-TAB' works as key completion even in minibuffer for me. 
 It is bound to `icicle-generic-S-tab' (checked with `C-h k'). Icicle-apropos-complete works properly when called by M-x or from Minibuf menu.
 
