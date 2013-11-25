@@ -65,7 +65,7 @@ Ex. #define macro(arg1, arg2...) arg1 + arg2
 #ifdef __XXX_HEADER_INCLUDED__...
 #endif
 }}}
-for the whole .h file. Now with customization option `hide-ifdef-expand-re-inclusion-protection' (default 't) it will expand the top level if-part.
+for the whole .h file. Now with customization option `hide-ifdef-expand-re-inclusion-protection' it will expand the top level if-part if this option is set to 't (default).
 
 Tips:
 * All C files share the same macro database (i.e. hide-ifdef-env). 
