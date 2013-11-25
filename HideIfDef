@@ -62,7 +62,7 @@ Ex. #define macro(arg1, arg2...) arg1 + arg2
 * When hiding #if..#endif themselves, consecutive "..." "..." will be merged as a single "..."
 * Prevent hiding *.h files from re-inclusion protection for their top-level #ifdefs. Originally if we hide a .h file with such kind of protection, for the first time it will extract all the #defines in the *.h file but when you tried the 2nd time it will hide everything leave only an
 {{{
-#ifdef __XXX_HEADER__...
+#ifdef __XXX_HEADER_INCLUDED__...
 #endif
 }}}
 for the whole .h file. Now with customization option `hide-ifdef-expand-re-inclusion-protection' (default 't) it will expand the top level if-part.
