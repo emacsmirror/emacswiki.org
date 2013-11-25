@@ -57,6 +57,8 @@ GitDwim defines context-aware commands.
 
 GitCommitMode helps with editing and manipulating commit messages.
 
+*git-link* create a URL for a buffer's location in its [[GitHub]]/Bitbucket/Gitorious/... repository based on current line or active region ([https://github.com/sshaw/git-link Homepage])
+
 == Also see ==
 
 * EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
