@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 15 22:49:04 2013 (-0800)
+;; Last-Updated: Sun Nov 24 19:10:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3384
+;;     Update #: 3393
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -570,6 +570,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/11/24 dadams
+;;     Use equal, not eq, for face comparisons, since the value could be a property list.
 ;; 2013/11/15 dadams
 ;;     Added: hlt-unhighlight-regexp-region, hlt-unhighlight-regexp-to-end,
 ;;            hlt-+/--highlight-regexp-read-args, hlt-+/--highlight-regexp-region,
@@ -1055,7 +1057,7 @@ overlays for the last face and text properties for all faces."
 ;;;   (let ((oface   (overlay-get overlay 'hlt-highlight))
 ;;;         (ostart  (overlay-start overlay))
 ;;;         (oend    (overlay-end   overlay)))
-;;;     (when (and oface  (or (not face)  (eq face oface)))
+;;;     (when (and oface  (or (not face)  (equal face oface)))
 ;;;       (delete-overlay overlay)
 ;;;       (when (< ostart start) (hlt-highlight-region ostart start face))
 ;;;       (when (> oend end) (hlt-highlight-region end oend face)))))
@@ -1073,7 +1075,7 @@ highlighting with that FACE."
   (let ((oface   (overlay-get overlay 'hlt-highlight))
         (ostart  (overlay-start overlay))
         (oend    (overlay-end   overlay)))
-    (when (and oface  (or (not face)  (eq face oface)))
+    (when (and oface  (or (not face)  (equal face oface)))
       ;; Either push OVERLAY outside region or split it to exclude region
       ;; or delete it (if it is entirely contained in region).
       (if (< ostart start)
@@ -1230,7 +1232,7 @@ both overlays and text properties."
             hi-face)
         (while (< beg end)
           (when (setq hi-face  (get-text-property beg 'hlt-highlight))
-            (when (or (null face)  (eq hi-face face))
+            (when (or (null face)  (equal hi-face face))
               ;; $$$ Really, we should remove only the part of the `face'
               ;;     property that belongs to Highlight, and set the value to be
               ;;     the same as it is, but without hlt-last-face.
@@ -1410,7 +1412,7 @@ Optional arg MOUSE-P non-nil means use `mouse-face' property, not
 Optional arg FACE is a face symbol.  If non-nil, then delete only
 overlays with that FACE."
   (let ((highlight-face  (overlay-get overlay 'hlt-highlight)))
-    (when (and highlight-face  (or (not face)  (eq face highlight-face)))
+    (when (and highlight-face  (or (not face)  (equal face highlight-face)))
       (delete-overlay overlay))))
 
 (unless (fboundp 'copy-overlay)         ; Defined in Emacs 22+.
@@ -1458,7 +1460,7 @@ Other arguments:
         (modified-p   (buffer-modified-p)))
     (setq buffer-read-only  nil)
     (dolist (ov  (overlays-in start end))
-      (when (eq old-face (overlay-get ov (if mouse-p 'mouse-face 'face)))
+      (when (equal old-face (overlay-get ov (if mouse-p 'mouse-face 'face)))
         (overlay-put ov (if mouse-p 'mouse-face 'face) new-face)
         (overlay-put ov 'hlt-highlight                 new-face)))
     (setq buffer-read-only  read-only-p)
@@ -1829,8 +1831,8 @@ START and END are the limits of the area to act on. They default to
               (let ((overlays  (overlays-at zone-beg)))
                 (while overlays
                   (when (and (or hlt-act-on-any-face-flag
-                                 (eq face (overlay-get (car overlays) 'hlt-highlight)))
-                             (eq face (overlay-get (car overlays) 'face)))
+                                 (equal face (overlay-get (car overlays) 'hlt-highlight)))
+                             (equal face (overlay-get (car overlays) 'face)))
                     (overlay-put (car overlays) 'invisible
                                  (hlt-add-listifying
                                   (overlay-get (car overlays) 'invisible)
@@ -1838,10 +1840,10 @@ START and END are the limits of the area to act on. They default to
                   (when overlays (setq overlays  (cdr overlays))))))
             (when (and (not (eq hlt-use-overlays-flag 'only))
                        (or hlt-act-on-any-face-flag
-                           (eq face (get-text-property (point) 'hlt-highlight)))
-                       ;; $$$$$$ (eq face (get-text-property (point) 'face)))
+                           (equal face (get-text-property (point) 'hlt-highlight)))
+                       ;; $$$$$$ (equal face (get-text-property (point) 'face)))
                        (let ((pt-faces  (get-text-property (point) 'face)))
-                         (if (consp pt-faces) (memq face pt-faces) (eq face pt-faces))))
+                         (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
               (put-text-property zone-beg zone-end 'invisible
                                  (hlt-add-listifying
                                   (get-text-property zone-beg 'invisible)
@@ -1901,7 +1903,7 @@ When called non-interactively:
           (orig-point  (point))
           (beg         start))
       (while (and (not (if backward-p (bobp) (eobp)))
-                  (not (eq face face-found))
+                  (not (equal face face-found))
                   (not (= beg end)))
         (save-restriction
           (narrow-to-region beg end)
@@ -1916,20 +1918,20 @@ When called non-interactively:
           (let ((overlays  (overlays-at (point))))
             (while overlays
               (when (and (or hlt-act-on-any-face-flag
-                             (eq face (overlay-get (car overlays) 'hlt-highlight)))
-                         (eq face (overlay-get (car overlays) 'face)))
+                             (equal face (overlay-get (car overlays) 'hlt-highlight)))
+                         (equal face (overlay-get (car overlays) 'face)))
                 (setq face-found  face
                       overlays    ()))
               (when overlays (setq overlays  (cdr overlays))))))
         (when (and (not face-found)
                    (not (eq hlt-use-overlays-flag 'only))
                    (or hlt-act-on-any-face-flag
-                       (eq face (get-text-property (point) 'hlt-highlight)))
-                   ;; $$$$$$ (eq face (get-text-property (point) 'face)))
+                       (equal face (get-text-property (point) 'hlt-highlight)))
+                   ;; $$$$$$ (equal face (get-text-property (point) 'face)))
                    (let ((pt-faces  (get-text-property (point) 'face)))
-                     (if (consp pt-faces) (memq face pt-faces) (eq face pt-faces))))
+                     (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
           (setq face-found  face)))
-      (unless (or (and (eq face face-found)  (not (eq (point) orig-point)))  no-error-p)
+      (unless (or (and (equal face face-found)  (not (eq (point) orig-point)))  no-error-p)
         (goto-char orig-point)
         (error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
     (unless (interactive-p)
