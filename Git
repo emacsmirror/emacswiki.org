@@ -57,7 +57,7 @@ GitDwim defines context-aware commands.
 
 GitCommitMode helps with editing and manipulating commit messages.
 
-*git-link* create a URL for a buffer's location in its [[GitHub]]/Bitbucket/Gitorious/... repository based on current line or active region ([https://github.com/sshaw/git-link Homepage])
+*git-link*  creates a URL representing the current buffer's location in its [[GitHub]]/Bitbucket/Gitorious/... repository at the current line number or active region ([https://github.com/sshaw/git-link Homepage])
 
 == Also see ==
 
