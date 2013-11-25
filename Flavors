@@ -15,6 +15,7 @@ I've found a few efforts for structuring init files:
 * DotEmacsStructuring - use "feature switches" to selectively turn stuff on/off
 * CategoryCustomize - pointers to particular areas of customization/"flavorfication"
 * CustomizingBoth - some ideas and advice on "portability" of such configuration
+** Also see CustomizeByPlatform
 * EmacsImplementations - different implementations are definitely different flavors, but let's consider them out of scope (for the moment)
 * CustomFile - allows you to separate the output of "customize"
 * InitSplit - appears to be in the spirit of CustomFile, but finer grained
@@ -45,4 +46,3 @@ I've found a few efforts for structuring init files:
 ** file system layout
 ** function/var/package naming schemes
 * Help/Documentation conventions, e.g. overview of novel keybindings, changes to default behavior
-
