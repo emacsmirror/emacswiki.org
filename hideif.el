@@ -1,6 +1,6 @@
 ;;; hideif.el --- hides selected code within ifdef
 
-;; Copyright (C) 1988, 1994, 2001-2012, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 1988, 1994, 2001-2013  Free Software Foundation, Inc.
 
 ;; Author: Brian Marick
 ;;      Daniel LaLiberte <liberte@holonexus.org>
@@ -35,9 +35,9 @@
 ;; M-x hide-ifdefs  or C-c @ h
 ;;
 ;; Hide-ifdef suppresses the display of code that the preprocessor wouldn't
-;; pass through.  The support of constant expressions in #if lines is
-;; limited to identifiers, parens, and the operators: &&, ||, !, and
-;; "defined".  Please extend this.
+;; pass through.  Support complete C/C++ expression and precedence.
+;; It will automatically scans for new #define symbols and macros on the way
+;; parsing.
 ;;
 ;; The hidden code is marked by ellipses (...).  Be
 ;; cautious when editing near ellipses, since the hidden text is
@@ -98,10 +98,12 @@
 ;; Written by Brian Marick, at Gould, Computer Systems Division, Urbana IL.
 ;; Extensively modified by Daniel LaLiberte (while at Gould).
 ;;
-;; Extensively modified by Luke Lee in 2013.
+;; Extensively modified by Luke Lee in 2013 to support complete C expression
+;; evaluation and argumented macro expansion.
 
 ;;; Code:
 
+(require 'cc-mode)
 (eval-when-compile (require 'cl))
 
 (defgroup hide-ifdef nil
@@ -127,16 +129,34 @@
   "Non-nil means shadow text instead of hiding it."
   :type 'boolean
   :group 'hide-ifdef
-  :version "23.1")
-
-(defcustom hide-ifdef-exclude-define-regexp-pattern nil
-  "Ignore #define name if that name match this exclusion pattern."
-  :group 'hide-ifdef)
+  :version "24.5")
 
 (defface hide-ifdef-shadow '((t (:inherit shadow)))
   "Face for shadowing ifdef blocks."
   :group 'hide-ifdef
-  :version "23.1")
+  :version "24.5")
+
+(defcustom hide-ifdef-exclude-define-regexp-pattern nil
+  "Ignore #define name if that name match this exclusion pattern."
+  :type 'string
+  :group 'hide-ifdef)
+
+(defcustom hide-ifdef-expand-re-inclusion-protection t
+  "When hiding header files, always expand the re-inclusion protecting ifdefs.
+Most header files are wrapped with ifdefs to prevent re-inclusion:
+  #ifdef _XXX_HEADER_FILE_INCLUDED_
+  #define _XXX_HEADER_FILE_INCLUDED_
+  ...
+  #endif
+hence if we try to hide ifdefs, it will hide everything when we tried
+the second time since _XXX_HEADER_FILE_INCLUDED_ already defined."
+  :type 'boolean
+  :group 'hide-ifdef)
+
+(defcustom hide-ifdef-header-regexp-pattern "^.*\\.[hH]\\([hH]\\|[xX][xX]\\|[pP][pP]\\)?"
+  "C/C++ header file name patterns. Effective only if 'hide-ifdef-expand-re-inclusion-protection' is t."
+  :type 'string
+  :group 'hide-ifdef)
 
 
 (defvar hide-ifdef-mode-submap
@@ -384,19 +404,23 @@ that form should be displayed.")
   "Prepend (var value) pair to hide-ifdef-env."
   (setq hide-ifdef-env (cons (cons var value) hide-ifdef-env)))
 
-(defun hif-table-lookup (var table)
-  (let* ((sa (assoc var table))
-         (val (cdr sa)))
-    (if (null sa)
-        hif-undefined-symbol
-      val)))
+(declare-function semantic-c-hideif-lookup  "semantic/bovine/c" (var))
+(declare-function semantic-c-hideif-defined "semantic/bovine/c" (var))
 
 (defun hif-lookup (var)
-  ;; (message "hif-lookup %s" var)
-  (hif-table-lookup var hide-ifdef-env))
+  (or (when (bound-and-true-p semantic-c-takeover-hideif)
+	(semantic-c-hideif-lookup var))
+      (let ((val (assoc var hide-ifdef-env)))
+	(if val
+	    (cdr val)
+	  hif-undefined-symbol))))
 
 (defun hif-defined (var)
-   (if (assoc var hide-ifdef-env) 1 0))
+  (cond
+   ((bound-and-true-p semantic-c-takeover-hideif)
+    (semantic-c-hideif-defined var))
+   ((assoc var hide-ifdef-env) 1)
+   (t 0)))
 
 ;;===%%SF%% evaluation (End)  ===
 
@@ -405,28 +429,29 @@ that form should be displayed.")
 ;;===%%SF%% parsing (Start)  ===
 ;;;  The code that understands what ifs and ifdef in files look like.
 
-(defconst hif-cpp-prefix "\\(^\\|\r\\)[ \t]*#[ \t]*")
+(defconst hif-cpp-prefix    "\\(^\\|\r\\)[ \t]*#[ \t]*")
 (defconst hif-ifxdef-regexp (concat hif-cpp-prefix "if\\(n\\)?def"))
 (defconst hif-ifndef-regexp (concat hif-cpp-prefix "ifndef"))
-(defconst hif-ifx-regexp (concat hif-cpp-prefix "if\\(n?def\\)?[ \t]+"))
-(defconst hif-elif-regexp (concat hif-cpp-prefix "elif"))
-(defconst hif-else-regexp (concat hif-cpp-prefix "else"))
-(defconst hif-endif-regexp (concat hif-cpp-prefix "endif"))
+(defconst hif-ifx-regexp    (concat hif-cpp-prefix "if\\(n?def\\)?[ \t]+"))
+(defconst hif-elif-regexp   (concat hif-cpp-prefix "elif"))
+(defconst hif-else-regexp   (concat hif-cpp-prefix "else"))
+(defconst hif-endif-regexp  (concat hif-cpp-prefix "endif"))
 (defconst hif-ifx-else-endif-regexp
   (concat hif-ifx-regexp "\\|" hif-elif-regexp "\\|" hif-else-regexp "\\|" hif-endif-regexp))
 (defconst hif-macro-expr-prefix-regexp (concat hif-cpp-prefix "\\(if\\(n?def\\)?\\|elif\\|define\\)[ \t]+"))
 
-(defconst hif-white     "[ \t]*")
-(defconst hif-define    (concat hif-cpp-prefix "\\(define\\|undef\\)"))
-(defconst hif-id        (concat "[A-Za-z_][0-9A-Za-z_]*"))
-(defconst hif-macroname (concat hif-white "\\(" hif-id "\\)" hif-white
-                                "\\("
-                                "(" hif-white
-                                  "\\(" hif-id "\\)?" hif-white
-                                  "\\(" "," hif-white hif-id hif-white "\\)*"
-                                  "\\(\\.\\.\\.\\)?" hif-white
-                                ")"
-                                "\\)?" ))
+(defconst hif-white         "[ \t]*")
+(defconst hif-define        (concat hif-cpp-prefix "\\(define\\|undef\\)"))
+(defconst hif-id            (concat "[A-Za-z_][0-9A-Za-z_]*"))
+(defconst hif-macroname     (concat hif-white "\\(" hif-id "\\)" hif-white
+                                    "\\("
+                                    "(" hif-white
+                                      "\\(" hif-id "\\)?" hif-white
+                                      "\\(" "," hif-white hif-id hif-white "\\)*"
+                                      "\\(\\.\\.\\.\\)?" hif-white
+                                    ")"
+                                    "\\)?" ))
+;;(defconst hif-header-regexp "^.*\\.[hH]\\([hH]\\|[xX][xX]\\|[pP][pP]\\)?")
 
 ;; Used to store the current token and the whole token list during parsing.
 ;; Only bound dynamically.
@@ -1088,7 +1113,7 @@ we ignore them all here."
                 (substitute (car actual-parms) formal macro-body)))
         (setq actual-parms (cdr actual-parms)))
 
-      ;; Replacement completed, flattern the whole token list,
+      ;; Replacement completed, flatten the whole token list,
       (setq macro-body (flatten macro-body))
 
       ;; Stringification and token concatenation happens here
@@ -1392,6 +1417,8 @@ Point is left unchanged."
 ;;;  When hif-possibly-hide returns, point is at the end of the
 ;;;  possibly-hidden range.
 
+(defvar hif-recurse-level 0)
+
 (defun hif-recurse-on (start end &optional dont-go-eol)
   "Call `hide-ifdef-guts' after narrowing to end of START line and END line."
   (save-excursion
@@ -1400,9 +1427,10 @@ Point is left unchanged."
       (unless dont-go-eol
         (end-of-line))
       (narrow-to-region (point) end)
-      (hide-ifdef-guts))))
+      (let ((hif-recurse-level (1+ hif-recurse-level)))
+        (hide-ifdef-guts)))))
 
-(defun hif-possibly-hide ()
+(defun hif-possibly-hide (expand-reinclusion)
   "Called at #ifX expression, this hides those parts that should be hidden.
 It uses the judgment of `hide-ifdef-evaluator'."
   ;; (message "hif-possibly-hide") (sit-for 1)
@@ -1410,12 +1438,15 @@ It uses the judgment of `hide-ifdef-evaluator'."
          (test (hif-canonicalize hif-ifx-regexp))
          (range (hif-find-range))
          (elifs (hif-range-elif range))
+         (if-part t) ;; everytime we start from if-part
          (complete nil))
     ;; (message "test = %s" test) (sit-for 1)
 
     (hif-hide-line (hif-range-end range))
+
     (while (not complete)
-      (if (hif-not (funcall hide-ifdef-evaluator test))
+      (if (and (not (and expand-reinclusion if-part))
+               (hif-not (funcall hide-ifdef-evaluator test)))
           ;; ifX/elif is FALSE
           (if elifs
               ;; Case 3 - Hide the #ifX and eval #elif
@@ -1446,11 +1477,11 @@ It uses the judgment of `hide-ifdef-evaluator'."
         (cond (elifs
                ;; Luke fix: distinguish from #elif..#elif to #elif..#else [2013-08-30 14:10:40 +0800]
                (let ((elif (car elifs)))
-                   ;; hide all elifs
-                   (hif-hide-line elif)
-                   (hide-ifdef-region elif (1- (hif-range-end range)))
-                   (hif-recurse-on (hif-range-start range)
-                                   elif)))
+                 ;; hide all elifs
+                 (hif-hide-line elif)
+                 (hide-ifdef-region elif (1- (hif-range-end range)))
+                 (hif-recurse-on (hif-range-start range)
+                                 elif)))
               ((hif-range-else range)
                ;; Case 1 - Hide #elif and #else blocks, recurse #ifX
                (hif-hide-line (hif-range-else range))
@@ -1463,7 +1494,8 @@ It uses the judgment of `hide-ifdef-evaluator'."
                ;; Case 2 - No #else, just recurse #ifX
                (hif-recurse-on (hif-range-start range)
                                (hif-range-end range))))
-        (setq complete t)))
+        (setq complete t))
+      (setq if-part nil))
 
     ;; complete = t
     (hif-hide-line (hif-range-start range)) ; Always hide start.
@@ -1590,17 +1622,20 @@ Return a list of the arguments, if '...' exists the first arg will be hif-etc."
                  (hif-undefine-symbol (intern name))))))
        t))
 
-(defun hif-add-new-defines (&optional min max)
-  "Scan and add all #define macros between min .. max"
-  (interactive)
-  (while (hif-find-define min max)
-    (setf min (point)))
-  (if max (goto-char max)
-    (goto-char (point-max))))
-
 ;;(defun mark-region (min max)
 ;;  (set-mark (or max (point-max)))
 ;;  (goto-char min))
+
+(defun hif-add-new-defines (&optional min max)
+  "Scan and add all #define macros between min .. max"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      ;; (mark-region min max) ;; for debugging
+      (while (hif-find-define min max)
+        (setf min (point)))
+      (if max (goto-char max)
+        (goto-char (point-max))))))
 
 (defun hide-ifdef-guts ()
   "Does most of the work of `hide-ifdefs'.
@@ -1608,17 +1643,18 @@ It does not do the work that's pointless to redo on a recursive entry."
   ;; (message "hide-ifdef-guts")
   (save-excursion
     (let ((case-fold-search nil)
+          (expand-header (and hide-ifdef-expand-re-inclusion-protection
+                              (string-match hide-ifdef-header-regexp-pattern
+                                            (buffer-name (current-buffer)))
+                              (zerop hif-recurse-level)))
           min max)
       (goto-char (point-min))
       (setf min (point))
       (loop do
             (setf max (hif-find-any-ifX))
-            (save-excursion
-              (save-restriction
-                ;; (mark-region min max) ;; for debugging
-                (hif-add-new-defines min max)))
+            (hif-add-new-defines min max)
             (if max
-                (hif-possibly-hide))
+                (hif-possibly-hide expand-header))
             (setf min (point))
             while max))))
 
@@ -1783,7 +1819,7 @@ If prefixed, it will also hide #ifdefs themselves."
   (interactive "r")
   (let ((hide-ifdef-lines current-prefix-arg))
     (if mark-active
-        (progn
+        (let ((hif-recurse-level (1+ hif-recurse-level)))
           (hif-recurse-on start end t)
           (setq mark-active nil))
       (unless hide-ifdef-mode (hide-ifdef-mode 1))
