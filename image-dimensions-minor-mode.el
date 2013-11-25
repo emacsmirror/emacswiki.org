@@ -21,12 +21,12 @@
    (require 'image-mode)
    (require 'cl) ;; destructuring-bind
    (when (not image-dimensions-minor-mode-dimensions)
-	 (let ((image (image-get-display-property)))
-	   (when image
-		 (setq image-dimensions-minor-mode-dimensions
-			   (destructuring-bind (width . height)
-				   (image-size image :pixels)
-				 (format " (%dx%d)" width height)))))))
+     (let ((image (image-get-display-property)))
+       (when image
+         (setq image-dimensions-minor-mode-dimensions
+               (destructuring-bind (width . height)
+                   (image-size image :pixels)
+                 (format " (%dx%d)" width height)))))))
  
  (defun image-mode-hook ()
    (image-dimensions-minor-mode 1))
