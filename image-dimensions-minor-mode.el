@@ -1,10 +1,10 @@
 ;;; image-dimensions-minor-mode.el
 ;;
-;; Display the image dimensions in the mode line, when viewing an image.
+;; Adds the image dimensions in the mode line, when viewing an image.
 ;;
 ;; Author: Phil S.
 ;;
-;; Compatibility: GNU Emacs 24.3
+;; Compatibility: GNU Emacs 24
 ;;
 ;; Installation:
 ;; (eval-after-load 'image-mode '(require 'image-dimensions-minor-mode))
@@ -21,6 +21,10 @@
 ;;          (:eval (concat (buffer-name) " (Emacs) " dired-directory))
 ;;          ("%b (Emacs)"))))
 
+(eval-when-compile (require 'cl-macs))
+
+(declare-function image-get-display-property "image-mode")
+
 (defvar-local image-dimensions-minor-mode-dimensions nil
   "Buffer-local image dimensions for `image-dimensions-minor-mode'")
 
@@ -28,13 +32,11 @@
   "Displays the image dimensions in the mode line."
   :init-value nil
   :lighter image-dimensions-minor-mode-dimensions
-  (require 'image-mode)
-  (require 'cl) ;; destructuring-bind
   (when (not image-dimensions-minor-mode-dimensions)
     (let ((image (image-get-display-property)))
       (when image
         (setq image-dimensions-minor-mode-dimensions
-              (destructuring-bind (width . height)
+              (cl-destructuring-bind (width . height)
                   (image-size image :pixels)
                 (format " (%dx%d)" width height)))))))
 
