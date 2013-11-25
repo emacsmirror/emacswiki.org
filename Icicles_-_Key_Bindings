@@ -612,14 +612,12 @@ buffers in iconified frames.
 
 
 
-
+[:icicle-goto-kill-failed-input]
 The following minibuffer binding moves the [[cursor]] to the start of
 the part of your input, if any, that is highlighted because it does not match any
 completion candidate (see option '''<tt>‘[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]’</tt>''').  Repeating this
 command kills the rest of the line, removing the highlighted
 mismatched input.
-
-[:icicle-goto-kill-failed-input]
 
 * '''`C-M-l'''' -- `icicle-goto/kill-failed-input'
 
@@ -629,12 +627,11 @@ The remaining input matches at least one candidate.
 
 
 
+[:icicle-retrieve-previous-input]
+[:icicle-retrieve-next-input]
 The following minibuffer bindings can be used to get rid of a
 completion inserted during cycling, and retrieve what you last
 typed during completion or any previous completion inputs:
-
-[:icicle-retrieve-previous-input]
-[:icicle-retrieve-next-input]
 
 * '''`C-l'''' -- `icicle-retrieve-previous-input'
 * '''`C-S-l'''' ('''`C-L'''') -- `icicle-retrieve-next-input'
