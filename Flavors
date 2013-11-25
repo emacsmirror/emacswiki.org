@@ -7,7 +7,7 @@ I'm trying to understand how large, fairly cohesive user-customizations via .ema
 
 == Status Quo ==
 
-As far as I can tell, the myriad emacs.d's out there define and follow a variety of patterns.  These days, there's certainly a lot functionality being pulled into libraries.  Dealing with the "end user" customization in concert with such efforts seem poorly defined at the moment.  Customize has been around for a long time and appears to not (by itself) be sufficient for what (and how) people want to customize.
+As far as I can tell, the myriad emacs.d's out there define and follow a variety of patterns.  These days, there's certainly a lot functionality being pulled into libraries.  Dealing with the "end user" customization in concert with such efforts seem poorly defined at the moment.  Customize has been around for a long time and appears to not (by itself) be sufficient for what (and how) people want to customize.  That said, "Custom Themes" may be sufficient.
 
 I've found a few efforts for structuring init files:
 
@@ -30,6 +30,17 @@ I've found a few efforts for structuring init files:
 * [https://github.com/rdallasgray/graphene Graphene]
 * Some more on [http://ergoemacs.org/misc/list_of_emacs_starter_kits.html Xah's site]
 * ...
+
+=== Custom Themes ===
+
+Can "Custom Themes" meet the needs of "flavors" mentioned above?
+* They are not mutually exclusive
+* Not allowed to set "custom-enable-themes"
+* Has some compositional features
+* Defines a (top-level?) theme, "user"
+* Arbitrary forms are discouraged (elisp) 14.6 Custom Themes
+:[quote]In theory, a theme file can also contain other Lisp forms, which
+would be evaluated when loading the theme, but that is "bad form".[/quote]
 
 == Next Steps ==
 
