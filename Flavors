@@ -1,9 +1,9 @@
 = Why "Flavors"? =
 
 I'm trying to understand how large, fairly cohesive user-customizations via .emacs.d can be standardized as "flavors".   The point would be to:
-* facilitate both the creation and maintenance of such large scale customizations
-* make it easier for users to install and switch between them
-* extract commonality into libraries
+* Facilitate both the creation and maintenance of such large scale customizations
+* Make it easier for users to install and switch between them
+* Extract commonality into libraries
 
 == Status Quo ==
 
