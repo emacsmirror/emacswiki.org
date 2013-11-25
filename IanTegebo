@@ -1,5 +1,9 @@
 I use Emacs.
 
+= RFCs/Proposals =
+
+* Flavors - formalizing large customizations of Emacs
+
 = Emacs Lisp Pages of Interest =
 
 * [[rx]] - I appreciated Perl's ##/x## modifier, so this approach is appealing.
