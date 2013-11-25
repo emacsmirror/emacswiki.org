@@ -29,9 +29,9 @@ To make this mode local to the buffer, use ##(make-variable-buffer-local 'show-p
 To change the color/face:
 
     (require 'paren)
-    (set-face-background 'show-paren-match-face (face-background 'default))
-    (set-face-foreground 'show-paren-match-face "#def")
-    (set-face-attribute 'show-paren-match-face nil :weight 'extra-bold)
+    (set-face-background 'show-paren-match (face-background 'default))
+    (set-face-foreground 'show-paren-match "#def")
+    (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 
 == How to show the matching paren when it is offscreen ==
 
