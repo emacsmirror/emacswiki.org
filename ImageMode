@@ -1,0 +1,7 @@
+`image-mode' is a standard library since Emacs 22, enabling (GUI) Emacs frames to render the image in the buffer, when visiting an image file.
+
+The user can toggle between the rendered view and the textual content of the image file.
+
+Lisp:image-dimensions-minor-mode.el
+
+CategoryModes MultimediaModes
