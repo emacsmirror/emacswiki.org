@@ -23,3 +23,33 @@ Here is the modification to have only the three last folders printed entirely.
 
 -- philippe 2013-11-25 14:46 UTC
 
+
+----
+
+Sorry for the bad markup above, I am new to the wiki.
+
+After testing on emacs 24.2.1 it seems that the function eshell-prompt-function does not work as advertised. It only fold the three first folder in pwd . Here is the modification to have only the three last folders printed entirely.
+
+<pre>
+(setq eshell-prompt-function
+      (lambda()
+        (concat (getenv "USER") "@" (getenv "HOST") ":"
+                ((lambda (p-lst)
+                   (if (> (length p-lst) 3)
+                       (concat
+                        (mapconcat (lambda (elm) (substring elm 0 1))
+                                   (butlast p-lst 3)
+                                   "/")
+                        "/"
+                        (mapconcat (lambda (elm) elm)
+                                   (last p-lst 3)
+                                   "/"))
+                     (mapconcat (lambda (elm) elm)
+                                p-lst
+                                "/")))
+                 (split-string (eshell/pwd) "/"))
+                (if (= (user-uid) 0) " # " " $ "))))
+</pre>
+
+-- philippe 2013-11-25 14:49 UTC
+
