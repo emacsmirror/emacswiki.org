@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Nov 23 16:38:53 2013 (-0800)
+;; Last-Updated: Sun Nov 24 17:45:49 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10312
+;;     Update #: 10313
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1842,6 +1842,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/11/24 dadams
+;;     icicle-read-face-name: Updated for Emacs 24.
 ;; 2013/11/19 dadams
 ;;     Removed: icicle-ORIG-read-file-name-default and icicle-read-file-name-default.
 ;; 2013/10/30 dadams
