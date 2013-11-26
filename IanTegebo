@@ -11,6 +11,7 @@ I use Emacs.
 ** "Down with Emacs Lisp: Dynamic Scope Analysis"
 * Shims
 ** What are the ways to preserve backwards compatibility between versions of Emacs?
+*** ElispCompatibility - not much help
 
 = Emacs Lisp Pages of Interest =
 
