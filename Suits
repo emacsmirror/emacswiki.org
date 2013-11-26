@@ -1,4 +1,4 @@
-= RFC: Suits (was [[Flavors]]) =
+= RFC: Suits (was Flavors) =
 
 ; suit : that part of emacs that we eventually "grow into".
 
@@ -9,3 +9,7 @@ Suits:
 * can be "tailored" to the individual
 
 Ideally, one can programmatically determine what portion of an emacs install has been "tailored" by the user.  This means you want to separate misc changes from the (possibly) large, shareable ones provided by "suits".  This will help support any feature that benefits from understanding what portion of the system came from the distribution, packages, "suit", or "tailorings".  Customize currently makes no distinction between values set by a third party library and those made by the individual user (AFAICT).
+
+= See Also =
+
+* [[Flavors]] - previous proposal
