@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Nov 24 17:45:49 2013 (-0800)
+;; Last-Updated: Tue Nov 26 09:26:52 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10313
+;;     Update #: 10315
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/11/26 dadams
+;;     icicle-execute-extended-command: Temporarily bind SPC to minibuffer-complete-word.
 ;; 2013/11/23 dadams
 ;;     Added: icicle-find-file-abs-of-content, icicle-find-file-abs-of-content-other-window.
 ;;     Renamed: *-find-file-absolute(-other-window) to icicle-find-file-abs-no-search(-other-window).
