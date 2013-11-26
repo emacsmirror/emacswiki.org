@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Nov 23 16:49:55 2013 (-0800)
+;; Last-Updated: Tue Nov 26 09:44:21 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27897
+;;     Update #: 27907
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2924,7 +2924,7 @@
 ;;
 ;;  There is a slight difference in behavior between Icicles commands
 ;;  and some other Emacs commands when you accept input after `M-*' or
-;;  `SPC'.  When possible, Icicles accepts your input and passes it
+;;  `S-SPC'.  When possible, Icicles accepts your input and passes it
 ;;  immediately to the top level, bypassing any intermediate recursive
 ;;  minibuffer levels that are waiting for input.  However, Emacs
 ;;  commands that are defined with literal-string `interactive' specs,
@@ -6928,7 +6928,16 @@
 ;;  With the default value of option `icicle-top-level-key-bindings',
 ;;  `M-x' is bound to `icicle-execute-extended-command' whenever you
 ;;  are in Icicle mode.  If you never use it as a multi-command, you
-;;  will not notice any difference from `execute-extended-command'.
+;;  will not notice much difference from `execute-extended-command'.
+;;  As always in Icicles, characters such as `?' self-insert, however.
+;;
+;;  But because Emacs command names typically do not contain spaces
+;;  (though they can!), `SPC' is not self-inserting for
+;;  `icicle-execute-extended-command'.  This is the only exception to
+;;  the rule in Icicles.  For `M-x' with prefix completion, a space
+;;  character performs word-at-a-time completion, just as it does in
+;;  vanilla Emacs.  In other words, in this exceptional case, `SPC'
+;;  acts the same as `M-SPC'.
 ;;
 ;;(@* "Examples of Using Multi `M-x'")
 ;;  *** Examples of Using Multi `M-x' ***
