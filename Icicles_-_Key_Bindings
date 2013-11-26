@@ -533,6 +533,12 @@ typing `C-q' to quote them.
 [:icicle-insert-newline-in-minibuffer]
 * '''`C-j'''' (newline) -- see also `C-o', above, and [[Icicles - Multi-Completions]]
 
+The only exception to this rule is that for `M-x'
+(`icicle-execute-extended-command') with prefix completion, `SPC'
+does the same thing as for vanilla Emacs: it completes the command
+name a word at a time.
+
+
 
 
 
