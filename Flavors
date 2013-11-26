@@ -69,3 +69,4 @@ Further, it may be that custom themes can still be used as part of "suits"; them
 = See Also =
 
 * [[Suits]] - the next iteration emphasizing mutual exclusivity, use of custom themes
+* [http://tychoish.com/rhizome/make-emacs-better/ tycho's thoughts] on new user adoption (don't agree about needing more than elisp, save maybe FFI for C)
