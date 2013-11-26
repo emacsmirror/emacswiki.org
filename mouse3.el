@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 08:02:11 2013 (-0700)
+;; Last-Updated: Tue Nov 26 07:59:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1475
+;;     Update #: 1501
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -309,6 +309,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/11/26 dadams
+;;     *-region-popup-x-popup-panes, *-region-popup-copy-submenu, *-region-popup-highlight-submenu:
+;;       Added hlt-(copy|yank)-props.
+;;     mouse3-region-popup-remove/replace-items: Added hlt-yank-props.
 ;; 2013/07/24 dadams
 ;;     mouse3-nonempty-region-p: Simplified and require also transient-mark-mode.
 ;; 2013/07/23 dadams
@@ -521,6 +525,8 @@ If nil, or if `mouse3-region-popup-x-popup-panes' is nil, use
                                                       (current-kill 1))
                                                     (delete-region start end)
                                                     (yank)))
+         ,@(and (fboundp 'hlt-highlight-region) ; Defined in `highlight.el'.
+                '(("Yank Copied Text Properties" . hlt-yank-props)))
          ("--")
          ("Kill Rectangle"                      . kill-rectangle)
          ("Delete Rectangle"                    . delete-rectangle)
@@ -548,6 +554,8 @@ restore it by yanking."
     ("Copy"
      ("Copy as Kill"                            . kill-ring-save)
      ("Copy to Register"                        . copy-to-register)
+     ,@(and (fboundp 'hlt-highlight-region) ; Defined in `highlight.el'.
+            '(("Copy Text Properties"           . hlt-copy-props)))
      ("--")
      ("Copy Rectangle to Register"              . copy-rectangle-to-register))
     ("Register"
@@ -656,7 +664,10 @@ restore it by yanking."
               ("Highlight"                      . hlt-highlight-region)
               ("Highlight Regexp"               . hlt-highlight-regexp-region)
               ("Unhighlight"                    . hlt-unhighlight-region)
-              ("Unhighlight for Face"           . hlt-unhighlight-region-for-face))))
+              ("Unhighlight for Face"           . hlt-unhighlight-region-for-face)
+              ("--")
+              ("Copy Text Properties"           . hlt-copy-props)
+              ("Yank Copied Text Properties"    . hlt-yank-props))))
     ("Print"
      ("PostScript Print"                        . ps-print-region)
      ("PostScript Print with Faces"             . ps-print-region-with-faces)
@@ -730,25 +741,27 @@ not use this option.  Instead, set option
 
 ;;;###autoload
 (defconst mouse3-region-popup-remove/replace-items ; These are individual menu items: no submenu.
-    `((kill        menu-item "Kill"   kill-region
+    `((kill           menu-item "Kill"   kill-region
        :visible (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
-      (delete      menu-item "Delete" delete-region
+      (delete         menu-item "Delete" delete-region
        :visible (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
-      (yank        menu-item "Yank (Replace)" (lambda (start end)
-                                                "Replace selected text by last text killed."
-                                                (interactive "r")
-                                                (when (string= (buffer-substring-no-properties
-                                                                (point) (mark))
-                                                               (car kill-ring))
-                                                  (current-kill 1))
-                                                (delete-region start end)
-                                                (yank))
+      (yank           menu-item "Yank (Replace)" (lambda (start end)
+                                                   "Replace selected text by last text killed."
+                                                   (interactive "r")
+                                                   (when (string= (buffer-substring-no-properties
+                                                                   (point) (mark))
+                                                                  (car kill-ring))
+                                                     (current-kill 1))
+                                                   (delete-region start end)
+                                                   (yank))
        :keys ,(if (fboundp 'naked-key-description)
                   (naked-key-description (car (where-is-internal 'yank)))
                   (key-description (car (where-is-internal 'yank)))) ; "C-y"
        :help "Replace selected text by last text killed."
        :visible (not buffer-read-only)
-       :enable (and kill-ring  (mouse3-nonempty-region-p))))
+       :enable (and kill-ring  (mouse3-nonempty-region-p)))
+      (hlt-yank-props menu-item "Yank Copied Text Properties" hlt-yank-props ; Defined in `highlight.el'.
+       :visible (and (not buffer-read-only)  (fboundp 'hlt-yank-props)  hlt-copied-props)))
   "Menu items for removing or replacing the mouse selection.")
 
 ;;;###autoload
@@ -794,7 +807,13 @@ restore it by yanking."
       (keymap
        (copy-as-kill          menu-item "Copy as Kill" kill-ring-save)
        (copy-to-register      menu-item "Copy to Register" copy-to-register)
-       (sep-copy "--")
+       (sep-copy-props "--")
+       (hlt-copy-props        menu-item "Copy Text Properties" hlt-copy-props
+        :visible (fboundp 'hlt-copy-props)) ; Defined in `highlight.el'.
+       (hlt-yank-props        menu-item "Yank Copied Text Properties" hlt-yank-props
+        :visible (fboundp 'hlt-yank-props) ; Defined in `highlight.el'.
+        :enable (and (not buffer-read-only)  hlt-copied-props))
+       (sep-copy-register "--")
        (copy-rect-to-register menu-item "Copy Rectangle to Register" copy-rectangle-to-register))
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for copying the mouse selection.")
@@ -968,7 +987,13 @@ restore it by yanking."
        (hlt-highlight-region            menu-item "Highlight" hlt-highlight-region)
        (hlt-highlight-regexp-region     menu-item "Highlight Regexp" hlt-highlight-regexp-region)
        (hlt-unhighlight-region          menu-item "Unhighlight" hlt-unhighlight-region)
-       (hlt-unhighlight-region-for-face menu-item "Unhighlight for Face" hlt-unhighlight-region-for-face))
+       (hlt-unhighlight-region-for-face menu-item "Unhighlight for Face" hlt-unhighlight-region-for-face)
+       (sep-copy-props "--")
+       (hlt-copy-props                  menu-item "Copy Text Properties" hlt-copy-props
+        :visible (fboundp 'hlt-copy-props)) ; Defined in `highlight.el'.
+       (hlt-yank-props                  menu-item "Yank Copied Text Properties" hlt-yank-props
+        :visible (fboundp 'hlt-yank-props) ; Defined in `highlight.el'.
+        :enable (and (not buffer-read-only)  hlt-copied-props)))
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for highlighting or unhighlighting text in the mouse selection.")
 
