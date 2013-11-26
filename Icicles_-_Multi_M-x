@@ -32,10 +32,16 @@ Command '''`icicle-execute-extended-command'''' is simply a multi-command versio
 With the default value of [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''', `M-x' is bound to
 `icicle-execute-extended-command' whenever you are in ''Icicle'' mode.
-If you never use it as a multi-command, you will not notice any
-difference from `execute-extended-command'.
+If you never use it as a multi-command, you will not notice much
+difference from `execute-extended-command'.  As always in '''Icicles''' characters such as `?' self-insert, however.
 
-
+But because Emacs command names typically do not contain spaces
+(though they can!), `SPC' is ''not'' self-inserting for
+`icicle-execute-extended-command'.  This is the only exception to
+the rule in '''Icicles'''.  For `M-x' with prefix completion, a space
+character performs word-at-a-time completion, just as it does in
+vanilla Emacs.  In other words, in this exceptional case, `SPC'
+acts the same as `M-SPC'.
 
 
 
