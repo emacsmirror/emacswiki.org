@@ -5,7 +5,7 @@
 Be sure to use the **--reject** parameter:
 
 <pre>
-wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
+wget --reject "*search=*","*action=*", \
 "Comments*","RecentChanges" --html-extension --backup-converted \
 --page-requisites --convert-links -e robots=off -w 4 -r -l5 -np <url>
 </pre>
