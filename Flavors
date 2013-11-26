@@ -46,6 +46,8 @@ Right now, I think the things I'm referring to as "flavors" need to be mutually 
 
 I think I now prefer the term "suit", as in one wears only one '''EmacsSuit''' that you can have tailored over time. More importantly, it'll have a nice logo.
 
+Further, it may be that custom themes can still be used as part of "suits"; themes are supposed to compose and thus could be the unit of functionality that suits can share between themselves.  As long as suits separate the (possibly) "colliding" portion from the composable theme-stuff, I think we can build on prior work and go forward.  From a package perspective, both "themes" and "suits" would be separate, but suits would depend on themes, not vice versa. 
+
 == Next Steps ==
 
 * Do people think this would be useful?
