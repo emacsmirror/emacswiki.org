@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Nov 23 15:25:00 2013 (-0800)
+;; Last-Updated: Tue Nov 26 09:38:37 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29452
+;;     Update #: 29453
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6879,6 +6879,11 @@
 ;;
 ;;    `C-j' (newline) - see also `C-o', above, and
 ;;                      (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
+;;
+;;  The only exception to this rule is that for `M-x'
+;;  (`icicle-execute-extended-command') with prefix completion, `SPC'
+;;  does the same thing as for vanilla Emacs: it completes the command
+;;  name a word at a time.
 ;;
 ;;  The following minibuffer bindings are made to clear minibuffer
 ;;  input, making them handy for editing and removing completions
