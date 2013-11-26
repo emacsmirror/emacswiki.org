@@ -1145,6 +1145,18 @@ After you define the contexts, you type text in the minibuffer to filter the con
 <pre>
 
 </pre>
+
+----
+<pre>
+
+</pre>
+I've experienced some difficulties in using icicles with cua.  Huge thanks to Drew for helping me understand and work around this issue.  Specificially, when the region is active in the minibuffer, and when cua-mode is enabled, self-inserting keys are bound to cua-replace-region, and the DEL key is bound to cua-delete-region.  The region can become active when cycling through completions.  This causes rather odd behaviour where you can only delete part of the text in the minibuffer, and cannot add new text to the minibuffer after cycling.  
+A workaround is to set `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate' to the same value, so that the region doesn't become active in the minibuffer.  
+See also [[IciclesIssuesClosed#cua-mode]] for more discussion on cua-mode interactions.
+<pre>
+
+</pre>
+
 ----
 <pre>
 
