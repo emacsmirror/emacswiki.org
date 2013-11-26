@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Nov 23 14:50:37 2013 (-0800)
+;; Last-Updated: Tue Nov 26 09:27:16 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26126
+;;     Update #: 26135
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3735,8 +3735,10 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                        (and key
                                                             (format "  %s" (icicle-key-description key))))))))
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
-  nil  nil                              ; First code, undo code
-  (setq this-command  icicle-new-last-cmd)) ; Last code: this will update `last-command'
+  (define-key minibuffer-local-must-match-map " " 'minibuffer-complete-word) ; First code
+  nil                                   ; Undo code
+  (progn (define-key minibuffer-local-must-match-map " " 'icicle-self-insert) ; Last code
+         (setq this-command  icicle-new-last-cmd))) ; This will update `last-command'.
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
 ;;                 `icicle-new-last-cmd' and `icicle-orig-must-pass-after-match-pred' are bound in
