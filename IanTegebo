@@ -9,6 +9,8 @@ I use Emacs.
 * ElispStaticAnalysis
 ** http://people.cs.aau.dk/~normark/emacs-lisp/emacs-lisp-static-analysis/index.html
 ** "Down with Emacs Lisp: Dynamic Scope Analysis"
+* Shims
+** What are the ways to preserve backwards compatibility between versions of Emacs?
 
 = Emacs Lisp Pages of Interest =
 
