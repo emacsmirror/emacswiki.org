@@ -20,6 +20,7 @@ I've found a few efforts for structuring init files:
 * CustomFile - allows you to separate the output of "customize"
 * InitSplit - appears to be in the spirit of CustomFile, but finer grained
 * [[CustomizingAndSaving#CustomizePlus|CustomizePlus]] - helps manage state around customize
+* [http://www.gnuvola.org/software/personal-elisp/ personal-elisp] - maybe very applicable, investigating
 
 == Possible "Flavors" ==
 
