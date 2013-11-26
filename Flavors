@@ -5,6 +5,8 @@ I'm trying to understand how large, fairly cohesive user-customizations via .ema
 * Make it easier for users to install and switch between them
 * Extract commonality into libraries
 
+'''NOTE:''' Most long-time Emacs users are expected to not care very much about this kind of effort. 
+
 == Status Quo ==
 
 As far as I can tell, the myriad emacs.d's out there define and follow a variety of patterns.  These days, there's certainly a lot functionality being pulled into libraries.  Dealing with the "end user" customization in concert with such efforts seem poorly defined at the moment.  Customize has been around for a long time and appears to not (by itself) be sufficient for what (and how) people want to customize.  That said, "Custom Themes" may be sufficient.
