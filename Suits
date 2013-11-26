@@ -13,3 +13,4 @@ Ideally, one can programmatically determine what portion of an emacs install has
 = See Also =
 
 * [[Flavors]] - previous proposal
+* [http://www.gnuvola.org/software/personal-elisp/ personal-elisp] - another approach I'm still exploring
