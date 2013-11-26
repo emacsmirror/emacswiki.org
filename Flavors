@@ -44,6 +44,8 @@ would be evaluated when loading the theme, but that is "bad form".[/quote]
 
 Right now, I think the things I'm referring to as "flavors" need to be mutually exclusive; they're going to define conflicting keybindings and different behavior for the same things and thus cannot be expected to work if layered on top of one another.  That said, perhaps "flavors" is not such a good term because it doesn't denote mutual exclusion.
 
+I think I now prefer the term suit, as in one wears only one Emacs Suit that you can have tailored over time. More importantly, it'll have a nice logo.
+
 == Next Steps ==
 
 * Do people think this would be useful?
