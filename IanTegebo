@@ -7,7 +7,7 @@ I use Emacs.
 = Notes =
 
 * ElispStaticAnalysis
-** http://people.cs.aau.dk/~normark/emacs-lisp/emacs-lisp-static-analysis/index.html
+** http://people.cs.aau.dk/~normark/emacs-lisp/emacs-lisp-static-analysis/index.html Kurt Normark (2006?)
 ** "Dynamic Scope Analysis for Emacs Lisp" - Matthias Neubauer 2000
 ** DownWithEmacsLisp - "Down with Emacs Lisp: Dynamic Scope Analysis" - Matthias Neubauer and Michael Sperber 2001
 * Shims
