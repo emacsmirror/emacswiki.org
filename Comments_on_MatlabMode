@@ -45,7 +45,7 @@ Thanks,
 
 ----
 
-I have no idea. You seem to be using a different color theme. I'm using the standard colors. I'd suggest starting with running emacs -q and emacs -Q to and loading bits and pieces of your init file until you find the statements that make it work -- and the statements that break it.
+I have no idea. You seem to be using a different color theme. Perhaps ##M-x customize-face RET font-lock-comment-face RET## will help? I'm using the standard colors. I'd suggest starting with running emacs -q and emacs -Q to and loading bits and pieces of your init file until you find the statements that make it work -- and the statements that break it.
 
 -- AlexSchroeder 2013-11-27 22:35 UTC
 
