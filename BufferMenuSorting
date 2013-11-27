@@ -47,5 +47,7 @@ To permanently customize the default listing order of buffer menu, set `Buffer-m
 [new]
 You can easily sort on any column, in both directions, if you use BufferMenuPlus. If you instead use the vanilla BufferMenu, you can still sort the list in a couple of ways. -- DrewAdams
 
+[This](https://gist.github.com/offby1/1163610) lets you sort by directory name.  I find this handy when working on a bunch of unrelated projects. -- EricHanchrow
+
 ----
 CategoryBufferSwitching
