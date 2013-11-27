@@ -42,3 +42,10 @@ Thanks,
 
 -- Anonymous 2013-11-27 22:21 UTC
 
+
+----
+
+I have no idea. You seem to be using a different color theme. I'm using the standard colors. I'd suggest starting with running emacs -q and emacs -Q to and loading bits and pieces of your init file until you find the statements that make it work -- and the statements that break it.
+
+-- AlexSchroeder 2013-11-27 22:35 UTC
+
