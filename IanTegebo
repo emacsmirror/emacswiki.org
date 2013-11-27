@@ -8,7 +8,8 @@ I use Emacs.
 
 * ElispStaticAnalysis
 ** http://people.cs.aau.dk/~normark/emacs-lisp/emacs-lisp-static-analysis/index.html
-** "Down with Emacs Lisp: Dynamic Scope Analysis"
+** "Dynamic Scope Analysis for Emacs Lisp" - Matthias Neubauer 2000
+** DownWithEmacsLisp - "Down with Emacs Lisp: Dynamic Scope Analysis" - Matthias Neubauer and Michael Sperber 2001
 * Shims
 ** What are the ways to preserve backwards compatibility between versions of Emacs?
 *** ElispCompatibility - not much help
