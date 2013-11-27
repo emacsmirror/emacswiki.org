@@ -44,7 +44,10 @@ More information about eshell :
 ** EshellLnkFileSupport -- support for Windows shortcut
 * EshellAndEmacsServer -- Use eshell like a shell in a terminal-emulator
 
-A somewhat similar project -- [[oneliner]]:
+Elsewhere:
+* [http://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/ Eshell completion for git, bzr, and hg]
+
+A somewhat similar project:
 * http://sourceforge.net/projects/oneliner-elisp/ , http://oneliner-elisp.sourceforge.net/ : "Oneliner integrates UNIX shell with Emacs text editor. Oneliner provides various syntax for integration. (e.g. You can connect 'shell pipe' and 'Emacs buffer' directly with simple syntax.)"
 
 ----
