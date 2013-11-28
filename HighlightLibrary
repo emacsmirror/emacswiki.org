@@ -65,7 +65,7 @@ between `nil' and its previous non-`nil' value, using command
 == Temporary or Permanent Highlighting ==
 
 Generally, highlighting you add is temporary: it is not saved when
-you write your buffer todisk.  However, Emacs has a curious and
+you write your buffer to disk.  However, Emacs has a curious and
 unfamiliar feature called "formatted" or "enriched" text mode,
 which does record highlighting permanently.  See [[Manual:Enriched Mode]].
 
@@ -109,7 +109,46 @@ probably want to use it on files where you don't use font-locking.
 
 You can use any [[face]] to highlight, and you can highlight using the `mouse-face' property instead of the `face' property. A mouse face shows up only when the mouse pointer is over it.
 
-The commands with `region' in their name act on the text in the
+
+[:hlt-choose-default-face]
+The main command to choose a face to use for highlighting (or for
+unhighlighting) is '''`hlt-choose-default-face''''.  It reads a face
+name, with completion.
+
+But you can alternatively choose a ''color'' name instead of a face
+name.  The completion candidates are annotated in buffer
+`*Completions*' with `Face' or `Color', to help you identify them.
+
+[:hlt-auto-face-foreground]
+If you choose a color instead of a face then an unnamed pseudo
+face is created and used.  It has the chosen color as ''background'',
+and its foreground color is determined by the value of [[user option]]
+'''`hlt-auto-face-foreground''''.  If that option is `nil' then
+highlighting does not change the existing foreground color.
+Otherwise, the option value is the foreground color used for highlighting.
+
+[:hlt-next-face]
+[:hlt-previous-face]
+[:CyclingFaces]
+Another way to choose the highlighting face is to use command
+'''`hlt-next-face'''' or '''`hlt-previous-face''''.  These ''cycle'' among a
+smaller set of faces and background colors, the elements in the
+list value of option `hlt-auto-face-backgrounds'.  You can use a
+numeric [[prefix argument]] with these commands to choose any of the
+elements by its absolute position in the list.
+
+
+[:hlt-auto-face-backgrounds]
+[:hlt-auto-faces-flag]
+Choosing the default highlighting face using
+`hlt-choose-default-face', `hlt-next-face', or `hlt-previous-face'
+affects the ''next'' highlighting or unhighlighting operation.  You
+can also choose to ''automatically cycle'' among the faces defined by
+`hlt-auto-face-backgrounds', with each (un)highlighting command
+using the next face in the list.  To choose this behavior,
+customize option '''`hlt-auto-faces-flag'''' to non-`nil'.
+
+The commands with '''`region'''' in their name act on the text in the
 [[active region]].  If the region is not active then they act on the
 text in the whole [[buffer]].  The commands with `to-end' in their
 name act on the text from point to the end of the buffer.  See
@@ -139,6 +178,18 @@ Command '''`hlt-highlighter'''' lets you highlight text by simply
 dragging the mouse, just as you would use a highlighter (marker).
 You can thus highlight text the same way that you drag the mouse
 to define the region. (Bind this to, for instance, `C-x mouse-2'.)
+
+
+[:hlt-eraser]
+Command '''`hlt-eraser'''' lets you delete highlighting by dragging the
+mouse.  However, its behavior is quite different for overlays and
+text properties, and it is perhaps different from you expect.    If
+option '''`hlt-use-overlays-flag'''' is not '''`only'''' then it removes
+text-property highlighting for '''''*ALL*''''' faces (not just highlighting faces).
+
+A [[prefix argument|prefix arg]] for `hlt-highlighter' and `hlt-eraser' acts the same as for `hlt-next-face': it lets you choose the face to use.  It has no effect for `hlt-eraser' unless `hlt-use-overlays-flag' is `only', in which case it erases the ##N##th face in
+`hlt-auto-face-backgrounds', where ##N## is the prefix arg.
+
 
 
 [:hlt-highlight-all-prop]
@@ -187,12 +238,6 @@ individual highlighting face -- other highlighting faces remain.
 You can replace a highlighting face in the region/buffer by another,
 using command '''`hlt-replace-highlight-face''''.  With a prefix
 argument, property `mouse-face' is used, not property `face'.
-
-[:hlt-eraser]
-Command '''`hlt-eraser'''' lets you delete highlighting by dragging the
-mouse.  However, its behavior is quite different for overlays and
-text properties, and it is perhaps different from you expect -' see
-the `hlt-eraser' doc string. (Bind this to, for instance, `C-x S-mouse-2'.)
 
 [:hlt-highlight-single-quotations]
 Command '''`hlt-highlight-single-quotations'''' highlights single-quoted text in the region.  For example, Emacs commands and keys between <code>`</code> and <code>'</code>: `foobar'.
@@ -429,7 +474,13 @@ such problem : font-lock has no effect on overlays.
 
 == Suggested bindings ==
 
-Library `highlight' makes no key bindings.  Here are some suggested
+Library `highlight' binds many of its commands to keys on the
+[[prefix key]] '''`C-x X''''.  It also  adds menu items to the `Region'
+submenu of the '''Edit''' menu-bar menu, if you have a '''Region'''
+submenu.  To obtain this menu, load library <tt>[[menu-bar+.el]]</tt>.
+
+
+Library `highlight.el' makes no other key bindings.  Here are some additional, suggested
 bindings (`C-x y', `C-x mouse-2', `C-x S-mouse-2', `S-C-p', and
 `S-C-n'):
 
@@ -438,10 +489,6 @@ bindings (`C-x y', `C-x mouse-2', `C-x S-mouse-2', `S-C-p', and
  (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)
  (global-set-key [(shift control ?p)]     'hlt-previous-highlight) ; Emacs 21+
  (global-set-key [(shift control ?n)]     'hlt-next-highlight) ; Emacs 21+
-
-You might also want to bind `hlt-choose-default-face', which you
-can use to change the current default highlighting face.
-
 
 
 
