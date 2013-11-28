@@ -16,6 +16,7 @@ Supported features:
 ** Fast jump between panels with *TAB*
 ** Backspace - jump to upper directory, double backspace  - close current directory
 ** *Space*/*RET* to expand/collapse directory
+** Quick view the current file with *v" key
 
 Screenshot:
 [[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_xterm.png]]
