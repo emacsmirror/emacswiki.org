@@ -62,7 +62,7 @@ In X, Emacs 23 seems to pop up a graphical window to ask you the keyphrase. How 
 I found the cause for it. The graphical window appears if you run <code>gpg</code> with the <code>--use-agent</code> option. EasyPG adds it (see <code>epg.el</code>) if it sees an environment variable like this one: <code>GPG_AGENT_INFO=/tmp/seahorse-nDQm50/S.gpg-agent:6321:1</code> (check that with the <code>env</code> command). And you have this variable if for instance you have the program <code>seahorse</code> installed and running (which is the case in Ubuntu). If you uninstall Seahorse, the prompt will always be text instead of graphical. You may have to relogin to X to force Seahorse to close. --[[DanielClemente]]
 ----
 [new]
-I have the same problem. And in console emacs23 can pop up nothing, so it hang there, you have to use "C-g" quit it. For my gentoo system, I compile the package 'pinentry' without gtk qt3 ncurses. It caused emacs23 hang both in X or console. I notice that pinentry did not have the readline USE in recent version.
+I have the same problem. And in console emacs23 can pop up nothing, so it hang there, you have to use "C-g" quit it. For my gentoo system, I compile the package 'pinentry' without gtk qt3 ncurses. It caused emacs23 hang both in X or console. I notice that pinentry did not have the readline USE in recent  version.
 
 I found the thread to fix it.
 http://www.nabble.com/gnupg-interface-td17242718.html
