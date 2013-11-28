@@ -44,3 +44,4 @@ files.
 * [[Unicad]] -- Universal Charset Auto Detector -- automatically detect file coding-system
 * [[uniquify]] -- give more useful buffer names for similarly named files than `generate-new-buffer-name' does (like `file<1>')
 * UsePackage -- describe the downloading and configuration of a package, with a remote autoload-like mechanism that can unpack tarballs
+* Lisp:arview.el -- extract and view archives in the temporary directory
