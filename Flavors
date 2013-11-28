@@ -22,6 +22,7 @@ I've found a few efforts for structuring init files:
 * CustomFile - allows you to separate the output of "customize"
 * [https://github.com/emacsattic/bind-key bind-key] - for managing personal keybindings
 * InitSplit - appears to be in the spirit of CustomFile, but finer grained
+* [https://github.com/laynor/smotitah smotitah] - Another configuration framework for emacs
 * [[CustomizingAndSaving#CustomizePlus|CustomizePlus]] - helps manage state around customize
 * [http://www.gnuvola.org/software/personal-elisp/ personal-elisp] - maybe very applicable, investigating
 * [http://tychoish.com/documentation/managing-emacs-configuraiton-and-lisp-systems/ tychoish's approach] - a documented approach
