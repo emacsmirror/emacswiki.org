@@ -21,3 +21,9 @@ available at https://github.com/laynor/emacs-conf/blob/master/packages/sm-packag
 https://github.com/jonathanchu/emacs-powerline
 
 Another variant based on the original powerline.
+
+=== another version ===
+
+https://github.com/Dewdrops/powerline
+
+Forked from Donald Ephraim Curtis' version and provides better Evil integration.
