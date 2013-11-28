@@ -14,5 +14,8 @@ from now".  Does anyone met this also?// -- Jun Ge[mailto:gejun@cs.iastate.edu]
 [new]
 No idea, but I did not know about this mode so I wrote pause.el in [NxhtmlMode nXhtml].
 
+[new]
+You should use `type-break-query-mode` in your case.
+
 ----
 CategoryModes
