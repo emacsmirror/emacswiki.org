@@ -1,7 +1,7 @@
 [[es:ÁreaElisp]]
 [[fr:SectionElisp]]
 [[en:ElispArea]]
-Auf diesem Wik kann man elisp Dateien ganz einfach erstellen, indem man
+Auf diesem Wiki kann man elisp Dateien ganz einfach erstellen, indem man
 
 * [Self:action=elisp-area Alle Dateien, alphabetisch]
 * [Self:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24 Letzte Änderungen an den Dateien]
