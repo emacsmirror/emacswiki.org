@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Nov 27 09:15:26 2013 (-0800)
+;; Last-Updated: Thu Nov 28 09:55:12 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14104
+;;     Update #: 14108
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2227,9 +2227,9 @@ choose proxy candidate `*point face name*' to use the face at point."
                                ipc))
                         icicle-proxy-candidates))
                faces)
-           ;; Undo Emacs 22 brain-dead treatment of PROMPT arg.
-           (when (save-match-data (string-match ": $" prompt))
-             (setq prompt  (substring prompt 0 -2)))
+           (save-match-data             ; Undo Emacs 22+ brain-dead treatment of PROMPT arg.
+             (when (string-match "\\(:\\s *$\\|:?\\s +$\\)" prompt)
+               (setq prompt  (substring prompt 0 (- (length (match-string 0 prompt)))))))
            ;; Try to get a face name from the buffer.
            (when (memq (intern-soft (icicle-thing-at-point 'symbol)) (face-list))
              (setq faces  (list (intern-soft (icicle-thing-at-point 'symbol)))))
@@ -2347,9 +2347,9 @@ choose proxy candidate `*point face name*' to use the face at point."
                                ipc))
                         icicle-proxy-candidates))
                faces)
-           ;; Undo vanilla Emacs brain-dead treatment of PROMPT arg.
-           (when (save-match-data (string-match ": $" prompt))
-             (setq prompt  (substring prompt 0 -2)))
+           (save-match-data             ; Undo Emacs 22+ brain-dead treatment of PROMPT arg.
+             (when (string-match "\\(:\\s *$\\|:?\\s +$\\)" prompt)
+               (setq prompt  (substring prompt 0 (- (length (match-string 0 prompt)))))))
            ;; Try to get a face name from the buffer.
            (when (memq (intern-soft (icicle-thing-at-point 'symbol)) (face-list))
              (setq faces  (list (intern-soft (icicle-thing-at-point 'symbol)))))
