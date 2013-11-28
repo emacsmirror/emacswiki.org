@@ -1,5 +1,11 @@
 Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
+= web-mode.el = 
+
+Major mode for editing web templates: HTML files embedding parts (CSS / JavaScript) and blocks (server and client side). web-mode.el is autonomous and is compatible with many template engines (PHP / Jsp / Erb / Django / Twig / Handlebars / Aspx). Actively maintained by François-Xavier Bois.
+
+* http://web-mode.org
+
 = multi-web-mode.el =
 
 Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina. (Yes, it is actively maintained)
@@ -62,11 +68,7 @@ Seems to need the following in emacs 24 since make-local hook has been removed:
 
 This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See IndirectBuffers.
 
-= web-mode.el = 
 
-Major Mode for PHP templates. Features: Syntax Highligthing and indentation according to the type of bloc ( PHP/ASPX/JSP/HTML/JS/CSS). Maintained by François-Xavier Bois. For PHP templates files. 
-
-* http://web-mode.org
 
 ----
 CategoryModes
