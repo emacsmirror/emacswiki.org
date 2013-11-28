@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 24 19:10:00 2013 (-0800)
+;; Last-Updated: Thu Nov 28 15:54:41 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3393
+;;     Update #: 3453
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -61,6 +61,7 @@
 ;;    (@> "Commands That Won't Work in Emacs 20")
 ;;    (@> "To Do")
 ;;  (@> "Change log")
+;;  (@> "Key Bindings")
 ;;  (@> "Menus")
 ;;  (@> "Variables and Faces")
 ;;  (@> "Misc Functions - Emacs 20+")
@@ -83,9 +84,10 @@
 ;;    `hlt-highlight-regexp-region', `hlt-highlight-regexp-to-end',
 ;;    `hlt-highlight-region', `hlt-highlight-single-quotations',
 ;;    `hlt-mouse-copy-props', `hlt-mouse-face-each-line',
-;;    `hlt-next-highlight', `hlt-paste-props',
-;;    `hlt-previous-highlight', `hlt-replace-highlight-face',
-;;    `hlt-show-default-face', `hlt-toggle-act-on-any-face-flag',
+;;    `hlt-next-face', `hlt-next-highlight', `hlt-paste-props',
+;;    `hlt-previous-face', `hlt-previous-highlight',
+;;    `hlt-replace-highlight-face', `hlt-show-default-face',
+;;    `hlt-toggle-act-on-any-face-flag',
 ;;    `hlt-toggle-link-highlighting',
 ;;    `hlt-toggle-property-highlighting',
 ;;    `hlt-toggle-use-overlays-flag', `hlt-unhighlight-all-prop',
@@ -95,8 +97,10 @@
 ;;
 ;;  User options (variables) defined here:
 ;;
-;;    `hlt-act-on-any-face-flag', `hlt-default-copy/yank-props',
-;;    `hlt-max-region-no-warning', `hlt-use-overlays-flag'.
+;;    `hlt-act-on-any-face-flag', `hlt-auto-face-backgrounds',
+;;    `hlt-auto-face-foreground', `hlt-auto-faces-flag',
+;;    `hlt-default-copy/yank-props', `hlt-max-region-no-warning',
+;;    `hlt-use-overlays-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -113,13 +117,15 @@
 ;;    `hlt-mouse-toggle-link-highlighting',
 ;;    `hlt-mouse-toggle-property-highlighting',
 ;;    `hlt-nonempty-region-p', `hlt-props-to-copy/yank',
-;;    `hlt-read-face-name', `hlt-read-props-completing',
-;;    `hlt-region-or-buffer-limits', `hlt-set-intersection',
-;;    `hlt-set-union', `hlt-subplist', `hlt-unhighlight-for-overlay'.
+;;    `hlt-read-bg/face-name', `hlt-read-props-completing',
+;;    `hlt-region-or-buffer-limits', `hlt-remove-if-not',
+;;    `hlt-set-intersection', `hlt-set-union', `hlt-subplist',
+;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `hlt-copied-props', `hlt-last-face', `hlt-last-regexp',
+;;    `hlt-copied-props', `hlt-face-nb', `hlt-last-face',
+;;    `hlt-last-regexp', `hlt-map',
 ;;    `hlt-previous-use-overlays-flag-value',
 ;;    `hlt-prop-highlighting-state'.
  
@@ -174,7 +180,7 @@
 ;; ** "Temporary or Permanent Highlighting" **
 ;;
 ;;  Generally, highlighting you add is temporary: it is not saved when
-;;  you write your buffer todisk.  However, Emacs has a curious and
+;;  you write your buffer to disk.  However, Emacs has a curious and
 ;;  unfamiliar feature called "formatted" or "enriched" text mode,
 ;;  which does record highlighting permanently.  See the Emacs manual,
 ;;  node `Requesting Formatted Text'.
@@ -217,6 +223,37 @@
 ;;  instead of a face, if you like.  A mouse face shows up only when
 ;;  the mouse pointer is over it.
 ;;
+;;  The main command to choose a face to use for highlighting (or for
+;;  unhighlighting) is `hlt-choose-default-face'.  It reads a face
+;;  name, with completion.
+;;
+;;  But you can alternatively choose a color name instead of a face
+;;  name.  The completion candidates are annotated in buffer
+;;  `*Completions*' with `Face' or `Color', to help you identify them.
+;;
+;;  If you choose a color instead of a face then an unnamed pseudo
+;;  face is created and used.  It has the chosen color as background,
+;;  and its foreground color is determined by the value of user option
+;;  `hlt-auto-face-foreground'.  If that option is nil then
+;;  highlighting does not change the existing foreground color.
+;;  Otherwise, the option value is the foreground color used for
+;;  highlighting.
+;;
+;;  Another way to choose the highlighting face is to use command
+;;  `hlt-next-face' or `hlt-previous-face'.  These cycle among a
+;;  smaller set of faces and background colors, the elements in the
+;;  list value of option `hlt-auto-face-backgrounds'.  You can use a
+;;  numeric prefix argument with these commands to choose any of the
+;;  elements by its absolute position in the list.
+;;
+;;  Choosing the default highlighting face using
+;;  `hlt-choose-default-face', `hlt-next-face', or `hlt-previous-face'
+;;  affects the next highlighting or unhighlighting operation.  You
+;;  can also choose to automatically cycle among the faces defined by
+;;  `hlt-auto-face-backgrounds', with each (un)highlighting command
+;;  using the next face in the list.  To choose this behavior,
+;;  customize option `hlt-auto-faces-flag' to non-nil.
+;;
 ;;  The commands with `region' in their name act on the text in the
 ;;  active region.  If the region is not active then they act on the
 ;;  text in the whole buffer.  The commands with `to-end' in their
@@ -244,6 +281,19 @@
 ;;  dragging the mouse, just as you would use a highlighter (marker).
 ;;  You can thus highlight text the same way that you drag the mouse
 ;;  to define the region.
+;;
+;;  Command `hlt-eraser' lets you delete highlighting by dragging the
+;;  mouse.  However, its behavior is different for overlays and text
+;;  properties, and it is perhaps different from you expect.  If
+;;  option `hlt-use-overlays-flag' is not `only' then it removes
+;;  text-property highlighting for *ALL* faces (not just highlighting
+;;  faces).
+;;
+;;  A prefix arg for `hlt-highlighter' and `hlt-eraser' acts the same
+;;  as for `hlt-next-face': it lets you choose the face to use.  It
+;;  has no effect for `hlt-eraser' unless `hlt-use-overlays-flag' is
+;;  `only', in which case it erases the Nth face in
+;;  `hlt-auto-face-backgrounds', where N is the prefix arg.
 ;;
 ;;  If you use Emacs 21 or later, you can use various commands that
 ;;  highlight and unhighlight text that has certain text properties
@@ -294,10 +344,6 @@
 ;;  another, using command `hlt-replace-highlight-face'.  With a
 ;;  prefix argument, property `mouse-face' is used, not property
 ;;  `face'.
-;;
-;;  Command `hlt-eraser' lets you delete highlighting by dragging the
-;;  mouse.  However, its behavior is different for overlays and text
-;;  properties - see the `hlt-eraser' doc string.
 ;;
 ;;(@* "Copy and Yank (Paste) Text Properties")
 ;;  ** Copy and Yank (Paste) Text Properties **
@@ -501,12 +547,13 @@
 ;;(@* "Suggested Bindings")
 ;;  ** Suggested Bindings **
 ;;
-;;  This library adds menu items to the Region submenu of the Edit
-;;  menu-bar menu, if you have a Region submenu.  To obtain this menu,
-;;  load library `menu-bar+.el'.
+;;  Library `highlight.el' binds many of its commands to keys on the
+;;  prefix key `C-x X'.  It also adds menu items to the `Region'
+;;  submenu of the `Edit' menu-bar menu, if you have a `Region'
+;;  submenu.  To obtain this menu, load library `menu-bar+.el'.
 ;;
-;;  Otherwise, library `highlight.el' makes no key bindings.  Here are
-;;  some suggested bindings (`C-x C-y', `C-x mouse-2', `C-x
+;;  Library `highlight.el' makes no other key bindings.  Here are some
+;;  additional, suggested bindings (`C-x C-y', `C-x mouse-2', `C-x
 ;;  S-mouse-2', `C-S-p', and `C-S-n', respectively):
 ;;
 ;;   (define-key ctl-x-map [(control ?y)]     'hlt-highlight)
@@ -516,9 +563,6 @@
 ;;   (global-set-key [(shift control ?n)]     'hlt-next-highlight)
 ;;   (global-set-key [(control meta shift ?s)]
 ;;                   'hlt-highlight-enclosing-list)
-;;
-;;  You might also want to bind command `hlt-choose-default-face',
-;;  which you can use to change the current default highlighting face.
 ;;
 ;;(@* "See Also")
 ;;  ** See Also **
@@ -570,6 +614,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/11/28 dadams
+;;     Renamed hlt-read-face-name to hlt-read-bg/face-name, and rewrote:
+;;       Added optional DEFAULT arg, read also color names.  No longer use read-face-name.
+;;       (So no longer soft-require faces+.el.)
+;;     hlt-choose-default-face: Read color names also.
+;;     hlt-eraser, hlt-highlighter: Added optional arg FACE-NB.  Show message.
+;;     hlt-highlight-region: If hlt-auto-faces-flag, use hlt-next-face.
 ;; 2013/11/24 dadams
 ;;     Use equal, not eq, for face comparisons, since the value could be a property list.
 ;; 2013/11/15 dadams
@@ -794,8 +845,6 @@
 
 (require 'easymenu) ;; easy-menu-add-item
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
-(when (< emacs-major-version 21) (require 'faces+ nil t)) ;; (no error if not found):
-                                                          ;; read-face-name
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
 (when (> emacs-major-version 21) (require 'font-lock+ nil t)) ;; (no error if not found)
 ;; (require 'icicles nil t)   ;; (no error if not found): icicle-define-command,
@@ -807,6 +856,57 @@
 (defvar hi-lock-mode)
 (defvar hlt-act-on-any-face-flag)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+ 
+;;(@* "Key Bindings")
+
+;;; Key Bindings -----------------------------------------------------
+
+(defvar hlt-map nil "Keymap containing bindings for highlighting commands.")
+
+(define-prefix-command 'hlt-map)
+(define-key ctl-x-map "X" hlt-map)
+
+(define-key hlt-map [(down-mouse-2)]            'hlt-highlighter)
+(define-key hlt-map [(S-down-mouse-2)]          'hlt-eraser)
+(define-key hlt-map [(C-S-down-mouse-2)]        'hlt-copy-props)
+(define-key hlt-map [(C-S-mouse-2)]             'ignore)
+(define-key hlt-map [(C-down-mouse-2)]          'hlt-yank-props)
+(define-key hlt-map [(C-mouse-2)]               'ignore)
+(define-key hlt-map [(down-mouse-1)]            'hlt-mouse-copy-props)
+(define-key hlt-map "\C-\M-s"                   'hlt-highlight-enclosing-list)
+(define-key hlt-map "\M-w"                      'hlt-copy-props)
+(define-key hlt-map "\C-y"                      'hlt-yank-props)
+(define-key hlt-map "c"                         'hlt-choose-default-face)
+(define-key hlt-map "n"                         'hlt-next-face)
+(define-key hlt-map "p"                         'hlt-previous-face)
+(define-key hlt-map "r"                         'hlt-replace-highlight-face)
+
+(define-key hlt-map "h"                         nil) ; Prefix key
+(define-key hlt-map "hh"                        'hlt-highlight)
+(define-key hlt-map "hr"                        'hlt-highlight-region)
+(define-key hlt-map "hx"                        'hlt-highlight-regexp-region)
+(define-key hlt-map "he"                        'hlt-highlight-regexp-to-end)
+(define-key hlt-map "u"                         nil) ; Prefix key
+(define-key hlt-map "ur"                        'hlt-unhighlight-region)
+(define-key hlt-map "ux"                        'hlt-unhighlight-regexp-region)
+(define-key hlt-map "ue"                        'hlt-unhighlight-regexp-to-end)
+(define-key hlt-map "uf"                        'hlt-unhighlight-region-for-face)
+
+(when (> emacs-major-version 20)        ; Emacs 21+
+  (define-key hlt-map "-"                       'hlt-hide-default-face)
+  (define-key hlt-map "+"                       'hlt-show-default-face)
+  (define-key hlt-map "t"                       nil) ; Prefix key
+  (define-key hlt-map "to"                      'hlt-toggle-use-overlays-flag)
+  (define-key hlt-map "ta"                      'hlt-toggle-act-on-any-face-flag)
+  (define-key hlt-map "tp"                      'hlt-toggle-property-highlighting)
+  (define-key hlt-map "tl"                      'hlt-toggle-link-highlighting)
+  (define-key hlt-map [(shift control ?p)]      'hlt-previous-highlight)
+  (define-key hlt-map [(shift control ?n)]      'hlt-next-highlight)
+  (define-key hlt-map "hv"                      'hlt-highlight-property-with-value)
+  (define-key hlt-map "hp"                      'hlt-highlight-all-prop)
+  (define-key hlt-map "up"                      'hlt-unhighlight-all-prop))
  
 ;;(@* "Menus")
 
@@ -885,6 +985,64 @@ Don't forget to mention your Emacs and library versions."))
     "*Face for minibuffer prompts."
     :group 'basic-faces))
 
+(defun hlt-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
+
+(defun hlt-tty-colors ()
+  "Colors available for use with Emacs in a terminal (`emacs -nw')."
+  (hlt-remove-if-not #'x-color-defined-p
+                     (if (fboundp 'tty-color-alist)
+                         (mapcar #'car (tty-color-alist))
+                       '("blue" "green" "cyan" "red" "magenta" "brown" "lightgray" "darkgray"
+                         "yellow" "white" "lightblue" "lightgreen" "lightcyan" "lightred"
+                         "lightmagenta"))))
+
+(defcustom hlt-auto-face-backgrounds
+  (let ((tty-cols   (hlt-tty-colors))
+        (tty-faces  (hlt-remove-if-not #'facep '(highlight isearch isearch-fail lazy-highlight
+                                                 mode-line mode-line-inactive next-error
+                                                 nobreak-space secondary-selection tooltip
+                                                 trailing-whitespace))))
+    (if (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+        (append tty-cols  '("DeepPink" "MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1")
+                tty-faces (hlt-remove-if-not #'facep '(header-line mode-line-highlight)))
+      (append tty-cols tty-faces)))
+  "*Colors or faces rotated among for the next highlighting face.
+A face specifies the face to use.
+
+A color name or RGB hex string specifies only the background color to
+use.  The foreground color is then determined by option
+`hlt-auto-face-foreground'.
+
+This option has no effect if option `hlt-auto-faces-flag' is nil."
+  :type '(repeat (choice
+                  (color :tag "Background color" :value "yellow")
+                  (face  :tag "Face" :value "highlight")))
+  :group 'highlight)
+
+(defcustom hlt-auto-face-foreground nil
+  "*Foreground color for pseudo faces created from a chosen background.
+The value is either a color (name or #RGB hex triplet) or nil.  A nil
+value means that highlighting does not change the existing foreground
+color."
+  :type '(choice
+          color
+          (const :tag "Unspecified: respect current foreground" nil))
+  :group 'highlight)
+
+(defcustom hlt-auto-faces-flag nil
+    "*Non-nil means highlighting can automatically choose faces.
+Highlighting action can use the next background color or face in
+`hlt-auto-face-backgrounds'.  When a given item in the list is a color
+name, not a face, `hlt-auto-face-foreground' is used as the
+corresponding foreground.
+
+This option has no effect on unhighlighting."
+    :type 'boolean :group 'highlight)
+
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
   (defface hlt-property-highlight '((((background dark)) (:background "Navy"))
                                     (t (:background "Wheat")))
@@ -934,8 +1092,19 @@ Either a list of properties (symbols) or `t', meaning all properties."
           (repeat (symbol :tag "Property")))
   :group 'highlight)
 
+(defvar hlt-face-nb 0 
+  "Current index into `hlt-auto-face-backgrounds'.
+This variable is always buffer-local.")
+(make-variable-buffer-local 'hlt-face-nb)
+
+(defvar hlt-last-face 'highlight
+  "The last face used by highlight commands.
+The value can also be an alist with two entries:
+\(`background-color' . COLOR) and
+\(`foreground-color' . hlt-auto-face-foreground).")
+
 (defvar hlt-last-regexp nil "The last regexp highlighted.")
-(defvar hlt-last-face 'highlight "The last face used by highlight commands.")
+
 (defvar hlt-previous-use-overlays-flag-value nil "Previous value of `hlt-use-overlays-flag'.")
 
 (defvar hlt-copied-props ()
@@ -945,27 +1114,119 @@ Either a list of properties (symbols) or `t', meaning all properties."
 
 ;;; Misc Functions - Emacs 20+ ---------------------------------------
 
-(defun hlt-read-face-name (prompt)
-  "Read a face name using completion.  Return its face symbol.
-Accommodate brain-dead vanilla Emacs PROMPT arg across Emacs versions."
-  (save-match-data
-    (when (and (> emacs-major-version 21)  (string-match "\\(:\\s *$\\|:?\\s +$\\)" prompt))
-      (setq prompt  (substring prompt 0 (- (length (match-string 0 prompt)))))))
-  (read-face-name prompt))
+(defun hlt-read-bg/face-name (prompt &optional default)
+  "Read a face name or color name using completion.
+A color name can also be a hex RGB triplet prefixed by `#'.
+To allow this, completion is lax.
+
+Prompt with PROMPT.
+Optional arg DEFAULT is a face name used if the user enters nothing.
+
+Return the corresponding face.  But if a color name is chosen then
+return a face spec composed of the color name as `background-color'
+and the value of `hlt-auto-face-foreground' as `foreground-color'."
+  (save-match-data (when (string-match "\\(:\\s *$\\|:?\\s +$\\)" prompt)
+                     (setq prompt  (substring prompt 0 (- (length (match-string 0 prompt)))))))
+  (unless default (setq default  (if (facep hlt-last-face)
+                                     (symbol-name hlt-last-face)
+                                   (and (consp hlt-last-face)
+                                        (cdr (assq 'background-color hlt-last-face))))))
+  (unless (stringp default) (setq default  (format "%s" default)))
+  (let ((prompt                        (if default
+                                           (format "%s (default `%s'): " prompt default)
+                                         (format "%s: " prompt)))
+        (faces                         ())
+        (completion-annotate-function  (lambda (fc)
+                                         (if (facep (intern fc)) "  Face" "  Color")))
+        (colors                        (mapcar #'list (if window-system
+                                                          (x-defined-colors)
+                                                        (hlt-tty-colors)))))
+    (mapatoms (lambda (sy) (when (facep sy) (push (list (symbol-name sy)) faces))))
+    (let ((bg/face  (completing-read prompt (append faces colors) nil nil ; Lax, to allow #RGB
+                                     nil 'face-name-history default)))
+      (if (facep (intern bg/face))
+          (intern bg/face)
+        `((background-color . ,bg/face) (foreground-color . ,hlt-auto-face-foreground))))))
 
 ;;;###autoload
 (defun hlt-choose-default-face (face)
-  "Choose a face for highlighting."
-  (interactive (list (hlt-read-face-name "Use highlighting face: ")))
+  "Choose a face for highlighting.
+Set `hlt-last-face' to the face, and return it.
+
+You can choose a face name or a color name.  If a color is chosen, it
+is used for the face background.  The face foreground is determined by
+the value of `hlt-auto-face-foreground'."
+  (interactive
+   (list (hlt-read-bg/face-name "Choose background color or face: "
+                                (and (symbolp hlt-last-face)  (symbol-name hlt-last-face)))))
   (setq hlt-last-face  face)
-  (when (interactive-p) (message "Highlighting will now use face `%s'" face)))
+  (when (interactive-p) (message "Highlighting will now use `%s'" face))
+  face)
 
 ;;;###autoload
-(defun hlt-highlighter (start-event)    ; Suggested binding: `C-x mouse-2'.
+(defun hlt-next-face (&optional face-nb msgp)
+  "Choose the next face for highlighting and unhighlighting.
+Use `hlt-auto-face-backgrounds' and `hlt-auto-face-foreground'.
+
+A non-negative numeric prefix arg N means use the Nth entry of
+`hlt-auto-face-backgrounds'.  Counting is 0-based.
+
+A negative numeric prefix arg N means count from the end, not the
+beginning, of `hlt-auto-face-backgrounds': -1 means the last entry, -2
+means the next-to-last, etc. (counting from the end is 1-based, not
+0-based).
+
+From LISP, if the first argument is `previous' then choose the
+previous face, not the next one."
+  (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))
+                     t))
+  (let* ((len      (length hlt-auto-face-backgrounds))
+         (nb       -1)
+         (nb       (and (not (integerp face-nb))
+                        (catch 'hlt-next-face
+                          (let ((last-bg/f  (if (facep hlt-last-face)
+                                                hlt-last-face
+                                              (cdr (assq 'background-color hlt-last-face)))))
+                            (dolist (bg/f  hlt-auto-face-backgrounds)
+                              (setq nb  (1+ nb))
+                              (when (equal bg/f last-bg/f) (throw 'hlt-next-face nb))))
+                          nil))))
+    (setq hlt-face-nb    (mod (if nb
+                                  (if (eq face-nb t) (1- nb) (1+ nb))
+                                (or (and (integerp face-nb)  face-nb)  1))
+                              len)
+          hlt-last-face  (let ((bg/f  (nth hlt-face-nb hlt-auto-face-backgrounds)))
+                           (if (facep bg/f)
+                               bg/f 
+                             `((background-color . ,bg/f)
+                               (foreground-color . ,hlt-auto-face-foreground)))))
+    (when msgp (message "Highlighting will now use face `%s'" hlt-last-face))
+    hlt-last-face))
+
+;;;###autoload
+(defun hlt-previous-face (&optional face-nb msgp)
+  "Like `hlt-next-face', but previous, not next.
+Use of a numeric prefix arg is the same as for `hlt-next-face'."
+  (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))
+                     t))
+  (hlt-next-face (if face-nb  (- face-nb) t) msgp))
+
+;;;###autoload
+(defun hlt-highlighter (start-event &optional face-nb) ; Suggested binding: `C-x mouse-2'.
   "Highlight the text you drag the mouse over.
 The face used is the last face that was used for highlighting.
-You can use command `hlt-choose-default-face' to choose a different face."
-  (interactive "e")
+You can use command `hlt-choose-default-face' to choose the default
+face to use.
+
+If `hlt-auto-faces-flag' is non-nil then this command cycles to the
+next color/face.  This is the case even if you do not drag the
+mouse (empty highlight).  A message tells you what the face is.
+
+A numeric prefix arg N means use the face represented by the Nth entry
+of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
+  (interactive "e\np")
+  (when (or hlt-auto-faces-flag  current-prefix-arg)
+    (hlt-next-face (and current-prefix-arg  face-nb)))
   (save-excursion
     (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like isearch turn off.
     (let* ((original-window  (selected-window))
@@ -1000,19 +1261,30 @@ You can use command `hlt-choose-default-face' to choose a different face."
                      (put-text-property start-point end-point 'font-lock-ignore t)
                      ))))
           (setq buffer-read-only  read-only)
-          (set-buffer-modified-p modified-p))))))
+          (set-buffer-modified-p modified-p)))))
+  (message "Highlighted with face `%s'"hlt-last-face))
 
 ;;;###autoload
-(defun hlt-eraser (start-event)         ; Suggested binding: `C-x S-mouse-2'.
+(defun hlt-eraser (start-event &optional face-nb) ; Suggested binding: `C-x S-mouse-2'.
   "Erase highlights that you click or drag the mouse over.
 If `hlt-use-overlays-flag' is non-nil, then remove overlay
 highlighting for the last face that was used for highlighting.  (You
 can use command `hlt-choose-default-face' first to choose a different
-face.)  If `hlt-use-overlays-flag' is not `only', then remove
-text-property highlighting for *ALL* faces (not just highlighting
-faces).  This means, in particular, that a value of nil erases both
-overlays for the last face and text properties for all faces."
-  (interactive "e")
+face.)  
+
+If `hlt-use-overlays-flag' is not `only', then remove text-property
+highlighting for *ALL* faces (not just highlighting faces).  This
+means, in particular, that a value of nil erases both overlays for the
+last face and text properties for all faces.
+
+With a numeric prefix arg N, if `hlt-use-overlays-flag' is `only',
+erase the face represented by the Nth entry of
+`hlt-auto-face-backgrounds' (uses `hlt-next-face')."
+  (interactive "e\np")
+  (when (and (eq 'only hlt-use-overlays-flag)
+             (or hlt-auto-faces-flag  current-prefix-arg)
+             face-nb)
+    (hlt-next-face (and current-prefix-arg  face-nb)))
   (save-excursion
     (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like isearch turn off.
     (let* ((original-window  (selected-window))
@@ -1044,7 +1316,8 @@ overlays for the last face and text properties for all faces."
                 (remove-text-properties
                  start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
           (setq buffer-read-only  read-only)
-          (set-buffer-modified-p modified-p))))))
+          (set-buffer-modified-p modified-p)))))
+  (message "Unhighlighted `%s'"hlt-last-face))
 
 ;;; (defun hlt-unhighlight-for-overlay (overlay start end &optional face)
 ;;;   "Remove OVERLAY highlighting from START to END.
@@ -1169,6 +1442,7 @@ on the optional arguments, as follows:
  Fifth arg MOUSE-P non-nil means use `mouse-face', not `face'.
   Interactively, MOUSE-P is provided by the prefix arg."
   (interactive `(,@(hlt-region-or-buffer-limits) nil t ,current-prefix-arg))
+  (when hlt-auto-faces-flag (hlt-next-face))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                              (setq start  (car start-end)
                                    end    (cadr start-end))))
@@ -1398,7 +1672,7 @@ Optional args START and END are the limits of the area to act on.
   They default to the region limits.
 Optional arg MOUSE-P non-nil means use `mouse-face' property, not
   `face'.  Interactively, MOUSE-P is provided by the prefix arg."
-  (interactive `(,(hlt-read-face-name "Remove highlight overlays that use face: ")
+  (interactive `(,(hlt-read-bg/face-name "Remove highlight overlays that use face: ")
                   ,@(hlt-region-or-buffer-limits) ,current-prefix-arg))
   (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
@@ -1449,8 +1723,8 @@ Other arguments:
  Optional arg MSG-P non-nil means display a progress message.
  Optional arg MOUSE-P non-nil means use `mouse-face' property, not
   `face'.  Interactively, MOUSE-P is provided by the prefix arg."
-  (interactive `(,(hlt-read-face-name "Replace face in region highlights. Old face: ")
-                 ,(hlt-read-face-name "New face: ")
+  (interactive `(,(hlt-read-bg/face-name "Replace face in region highlights. Old face: ")
+                 ,(hlt-read-bg/face-name "New face: ")
                  ,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                              (setq start  (car start-end)
@@ -1501,7 +1775,7 @@ Otherwise, use the last face used for highlighting.
  You can also use command `hlt-choose-default-face' to choose a different face."
   (interactive "P")
   (if face
-      (setq face  (hlt-read-face-name "Use highlighting face: ") hlt-last-face face)
+      (setq face  (hlt-read-bg/face-name "Use highlighting face: ") hlt-last-face face)
     (setq face  hlt-last-face))
   (apply #'hlt-highlight-regexp-region
          (append (hlt-region-or-buffer-limits)
@@ -1523,7 +1797,7 @@ Optional arg MSG-P non-nil means display a progress message."
                              (setq start  (car start-end)
                                    end    (cadr start-end))))
   (if face
-      (setq face  (hlt-read-face-name "Use highlighting face: ") hlt-last-face face)
+      (setq face  (hlt-read-bg/face-name "Use highlighting face: ") hlt-last-face face)
     (setq face  hlt-last-face))
   (when msg-p (message "Putting mouse face `%s' on each line..." face))
   (let ((buffer-read-only           nil)
@@ -1719,7 +1993,7 @@ With a prefix argument, prompt for the highlighting face to show.
 Otherwise, show the last face used for highlighting.
  You can also use command `hlt-choose-default-face' to choose a different face."
     (interactive (list (if current-prefix-arg
-                           (hlt-read-face-name "Show highlighting face: ")
+                           (hlt-read-bg/face-name "Show highlighting face: ")
                          hlt-last-face)))
     (hlt-listify-invisibility-spec)
     (remove-from-invisibility-spec face))
@@ -1809,7 +2083,7 @@ START and END are the limits of the area to act on. They default to
   the region limits."
     (interactive `(,@(hlt-region-or-buffer-limits)
                    ,(if current-prefix-arg
-                        (hlt-read-face-name "Hide highlighting face: ")
+                        (hlt-read-bg/face-name "Hide highlighting face: ")
                         hlt-last-face)))
     (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                                (setq start  (car start-end)
