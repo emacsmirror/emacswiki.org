@@ -1,6 +1,6 @@
 == Emacs, Xemacs and related packages in debian ==
 
-* Debian emacs documentation is (as of 2013-06-05) in package `*emacs24-common-non-dfsg*` if C-h i isn't working for you.
+* Debian emacs documentation is (as of 2013-06-05) in package `*emacs24-common-non-dfsg*` if `C-h i' isn't working for you.
 
 * Debian package `emacs-goodies-el': Miscellaneous add-ons for Emacs at https://alioth.debian.org/projects/pkg-goodies-el
 
