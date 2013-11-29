@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Nov 26 09:27:16 2013 (-0800)
+;; Last-Updated: Fri Nov 29 09:23:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26135
+;;     Update #: 26159
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1773,8 +1773,9 @@ considered."
              (icicle-show-Completions-initially-flag      t)
              (icicle-candidate-alt-action-fn
               (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "symbol"))))
-             (icicle-all-candidates-list-alt-action-fn ; M-|'
-              (or icicle-all-candidates-list-alt-action-fn alt-fn
+             (icicle-all-candidates-list-alt-action-fn ; `M-|'
+              (or icicle-all-candidates-list-alt-action-fn
+                  alt-fn
                   (icicle-alt-act-fn-for-type "symbol")))
              (predicate
               (or predicate
@@ -1851,7 +1852,7 @@ Same as `icicle-customize-face' except it uses a different window."
                 (icicle-candidate-alt-action-fn
                  (or icicle-candidate-alt-action-fn
                      (setq alt-fn  (icicle-alt-act-fn-for-type "face"))))
-                (icicle-all-candidates-list-alt-action-fn ; M-|'
+                (icicle-all-candidates-list-alt-action-fn ; `M-|'
                  (or icicle-all-candidates-list-alt-action-fn
                      alt-fn
                      (icicle-alt-act-fn-for-type "face"))))
@@ -1920,7 +1921,7 @@ This is an Icicles command - see command `icicle-mode'."
                 (alt-fn                                nil)
                 (icicle-candidate-alt-action-fn
                  (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "face"))))
-                (icicle-all-candidates-list-alt-action-fn ; M-|'
+                (icicle-all-candidates-list-alt-action-fn ; `M-|'
                  (or icicle-all-candidates-list-alt-action-fn
                      alt-fn
                      (icicle-alt-act-fn-for-type "face"))))
@@ -2186,11 +2187,9 @@ separate the words (any strings, in fact, including regexps) using
            (mapatoms (lambda (symb) (when (fboundp symb) (put symb 'icicle-special-candidate t))))
            (let ((icicle-fancy-candidates-p  t)
                  (icicle-candidate-alt-action-fn
-                  (or icicle-candidate-alt-action-fn
-                      (icicle-alt-act-fn-for-type "symbol")))
-                 (icicle-all-candidates-list-alt-action-fn
-                  (or icicle-all-candidates-list-alt-action-fn
-                      (icicle-alt-act-fn-for-type "symbol"))))
+                  (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "symbol")))
+                 (icicle-all-candidates-list-alt-action-fn ; `M-|'
+                  (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "symbol"))))
              (completing-read "Apropos symbol (regexp or words): " obarray
                               nil nil nil 'regexp-history)))
       (mapatoms (lambda (symb) (put symb 'icicle-special-candidate nil))))
@@ -2230,8 +2229,8 @@ See `icicle-apropos' for a description of PATTERN."
                      (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
                                                                     (icicle-alt-act-fn-for-type "variable")))
-                     (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
-                                                                    (icicle-alt-act-fn-for-type "variable"))))
+                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
+                      (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "variable"))))
                 (completing-read
                  (concat "Apropos variable (regexp" (and (>= emacs-major-version 22)  " or words")
                          "): ")
@@ -2263,7 +2262,7 @@ See `icicle-apropos' for a description of PATTERN."
      (let ((apropos-do-all  nil)
            (icicle-candidate-alt-action-fn
             (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "option")))
-           (icicle-all-candidates-list-alt-action-fn
+           (icicle-all-candidates-list-alt-action-fn ; `M-|'
             (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "option"))))
        (when (and (> emacs-major-version 21)  (require 'apropos nil t)
                   (string= (regexp-quote pattern) pattern)
@@ -2292,7 +2291,7 @@ See `icicle-apropos' for a description of PATTERN."
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                   (icicle-alt-act-fn-for-type "function")))
-                     (icicle-all-candidates-list-alt-action-fn
+                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
                       (or icicle-all-candidates-list-alt-action-fn
                           (icicle-alt-act-fn-for-type "function"))))
                 (completing-read
@@ -2320,7 +2319,7 @@ See `icicle-apropos' for a description of PATTERN."
              (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
              (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
                                                             (icicle-alt-act-fn-for-type "command")))
-             (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn
+             (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn ; `M-|'
                                                             (icicle-alt-act-fn-for-type "command"))))
         (list (completing-read
                (concat "Apropos command (regexp" (and (>= emacs-major-version 22)  " or words")
@@ -2371,7 +2370,7 @@ using face `icicle-special-candidate'."
                                                                    (if icicle-fancy-candidates-p
                                                                        "variable"
                                                                      "option"))))
-                     (icicle-all-candidates-list-alt-action-fn
+                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
                       (or icicle-all-candidates-list-alt-action-fn
                           (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "variable" "option")))))
                 (completing-read
@@ -2429,7 +2428,7 @@ of strings is used as a word list."
                                                                     (if icicle-fancy-candidates-p
                                                                         "function"
                                                                       "command"))))
-                     (icicle-all-candidates-list-alt-action-fn
+                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
                       (or icicle-all-candidates-list-alt-action-fn
                           (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "function" "command")))))
                 (completing-read
@@ -3716,7 +3715,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
    (icicle--last-toggle-transforming-msg    icicle-toggle-transforming-message)
    (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
@@ -3756,7 +3755,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
          (icicle-toggle-transforming-message        icicle--last-toggle-transforming-msg) ; Restore - FREE HERE
          ;; Rebind alternative action functions to nil, so we don't override the command we call.
          (icicle-candidate-alt-action-fn            nil)
-         (icicle-all-candidates-list-alt-action-fn  nil)
+         (icicle-all-candidates-list-alt-action-fn  nil) ; `M-|'
          ;; Rebind `icicle-candidate-action-fn' to a function that calls the candidate command on a single
          ;; argument that it reads.  This is used only if the command itself reads an input argument with
          ;; completion.  When that is the case, you can use completion on that input, and if you do that,
@@ -3894,7 +3893,7 @@ You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as ann
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
    (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
    (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
@@ -3930,7 +3929,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
          (icicle-must-pass-after-match-predicate    icicle-orig-must-pass-after-match-pred)
          ;; Rebind alternative action functions to nil, so we don't override command we call.
          (icicle-candidate-alt-action-fn            nil)
-         (icicle-all-candidates-list-alt-action-fn  nil)
+         (icicle-all-candidates-list-alt-action-fn  nil) ; `M-|'
          (not-cmdp                                  (not (commandp abbrev-or-cmd)))
          (regexp                                    (and (or not-cmdp  icicle-command-abbrev-priority-flag)
                                                          (icicle-command-abbrev-regexp abbrev-or-cmd)))
@@ -3991,7 +3990,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (alt-fn                            nil)
    (icicle-candidate-alt-action-fn    (or icicle-candidate-alt-action-fn
                                           (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
    (icicle-add-proxy-candidates-flag  nil) ; No abbrevs - just commands here.
    (last-command                      last-command) ; Save and restore the last command.
@@ -4027,7 +4026,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))))
 
 (when (locate-library "kmacro")
@@ -4114,7 +4113,7 @@ candidates, as follows:
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option")))))
 
 (icicle-define-command icicle-clear-history
@@ -4233,7 +4232,7 @@ With a prefix arg, all variables are candidates." ; Doc string
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option")))))
 
 (when (and icicle-define-alias-commands-flag  (not (fboundp 'toggle)))
@@ -4268,7 +4267,7 @@ candidates, as follows:
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option")))))
 
 (defun icicle-binary-option-p (symbol)
@@ -4298,7 +4297,7 @@ This command needs library `doremi.el'." ; Doc string
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option"))))
   (unless (require 'doremi nil t)       ; First code
     (icicle-user-error "You need library `doremi.el' for this command")))
@@ -4333,7 +4332,7 @@ This command needs library `doremi.el'." ; Doc string
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn
         (setq alt-fn  (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn
         (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
   (unless (require 'doremi nil t)       ; First code
@@ -5843,7 +5842,7 @@ the frames will be called `*Help*[2]' for use with this command." ; Doc string
    (alt-fn              nil)
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "frame"))))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "frame")))))
 
 (defun icicle-select-frame-by-name (name &optional frame-alist)
@@ -5967,7 +5966,7 @@ Otherwise, use only windows from the selected frame."
    (icicle-inhibit-try-switch-buffer      t)
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))))
 
 (defun icicle-delete-window (bufferp)   ; Bound to `C-x 0' in Icicle mode.
@@ -6649,7 +6648,7 @@ Save the updated option."               ; Doc string
   ((icicle-use-candidates-only-once-flag  t) ; Bindings
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer"))))
   (unless icicle-buffer-extras (icicle-user-error "`icicle-extra-buffers' is empty"))) ; First code
 
@@ -7139,7 +7138,7 @@ can use the following keys:
    ((switches               (and current-prefix-arg
                                  (read-string "Dired listing switches: " dired-listing-switches)))
     (icicle-file-sort       (or icicle-file-sort  'icicle-dirs-first-p))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
   (icicle-bind-file-candidate-keys)     ; First code
@@ -7154,7 +7153,7 @@ can use the following keys:
    ((switches               (and current-prefix-arg
                                  (read-string "Dired listing switches: " dired-listing-switches)))
     (icicle-file-sort       (or icicle-file-sort  'icicle-dirs-first-p))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
   (icicle-bind-file-candidate-keys)     ; First code
@@ -7314,9 +7313,10 @@ Ido-like behavior."                     ; Doc string
                                                '(list file))))
     (icicle-abs-file-candidates         (mapcar icicle-full-cand-fn
                                                 (directory-files default-directory 'FULL nil 'NOSORT)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion files))))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p          current-prefix-arg)
@@ -7361,9 +7361,10 @@ Ido-like behavior."                     ; Doc string
                                                '(list file))))
     (icicle-abs-file-candidates         (mapcar icicle-full-cand-fn
                                                 (directory-files default-directory 'FULL nil 'NOSORT)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion files))))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p          current-prefix-arg)
@@ -7718,7 +7719,8 @@ can use the following keys:
       (new-bufs--to-keep                      ())
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))))
     (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
            (setq current-prefix-arg  nil) ; Reset so can use it in action function.
            (icicle-highlight-lighter)
@@ -7793,7 +7795,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
       (new-bufs--to-keep                      ())
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))))
     (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
            (setq current-prefix-arg  nil) ; Reset so can use it in action function.
            (icicle-highlight-lighter)
@@ -7940,7 +7943,7 @@ Ido-like behavior."                     ; Doc string
 
     prompt icicle-abs-file-candidates nil ; `completing-read' args
     (confirm-nonexistent-file-or-buffer)
-    nil 'file-name-history (if (eq major-mode 'dired-mode) ; `read-file-name' args
+    nil 'file-name-history (if (eq major-mode 'dired-mode)
                                (condition-case nil ; E.g. error because not on file line (ignore)
                                    (abbreviate-file-name (dired-get-file-for-visit))
                                  (error nil))
@@ -7971,7 +7974,8 @@ Ido-like behavior."                     ; Doc string
       (new-bufs--to-keep                      ())
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))
       (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
       (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))
       ))
@@ -8032,7 +8036,7 @@ Ido-like behavior."                     ; Doc string
 
     prompt icicle-abs-file-candidates nil ; `completing-read' args
     (confirm-nonexistent-file-or-buffer)
-    nil 'file-name-history (if (eq major-mode 'dired-mode) ; `read-file-name' args
+    nil 'file-name-history (if (eq major-mode 'dired-mode)
                                (condition-case nil ; E.g. error because not on file line (ignore)
                                    (abbreviate-file-name (dired-get-file-for-visit))
                                  (error nil))
@@ -8063,7 +8067,8 @@ Ido-like behavior."                     ; Doc string
       (new-bufs--to-keep                      ())
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))
       (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
       (icicle-candidate-properties-alist  (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))
       ))
@@ -8267,7 +8272,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-properties-alist      (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p              current-prefix-arg)
     (icicle-list-use-nth-parts              (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion files))))))))
@@ -8310,7 +8315,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-properties-alist      (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p              current-prefix-arg)
     (icicle-list-use-nth-parts              (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion files))))))))
@@ -8635,7 +8640,7 @@ could temporarily set `icicle-file-predicate' to:
                                                         (directory-files dir 'full icicle-re-no-dot 'NOSORT)))
                                   (lambda (dir) (directory-files dir 'full icicle-re-no-dot 'NOSORT)))
                                 dirs))))))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion files))))))))
@@ -8756,9 +8761,10 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (unless (require 'etags nil t) (error "`etags.el' is required"))
@@ -8793,9 +8799,10 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
     (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (unless (require 'etags nil t) (error "`etags.el' is required"))
@@ -8952,7 +8959,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
    (icicle-use-candidates-only-once-flag  t)
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "face")))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "face")))
    (face-names                            ()))
   (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
@@ -9030,7 +9037,7 @@ the behavior."                          ; Doc string
             (delete '("turned OFF") icicle-sort-orders-alist)))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn ; M-|'
+   (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
    (icicle-use-candidates-only-once-flag  t))
   nil nil                               ; First code, undo code
