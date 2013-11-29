@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Nov 28 09:56:23 2013 (-0800)
+;; Last-Updated: Fri Nov 29 09:27:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10316
+;;     Update #: 10321
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/11/29 dadams
+;;     icicle-find-file(-abs)(-no-search|of-content)*, icicle-find-file-in-tags-table*:
+;;       icicle-all-candidates-list-alt-action-fn needs to icicle-transform-multi-completion each file.
 ;; 2013/11/26 dadams
 ;;     icicle-execute-extended-command: Temporarily bind SPC to minibuffer-complete-word.
 ;; 2013/11/23 dadams
