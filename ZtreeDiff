@@ -8,7 +8,7 @@ Supported features:
 * Two trees in one buffer
 * Colors differentiation for absent, different or identical files
 * Hotkeys/Operations: 
-** Run Ediff on different files with the *RET* or *Space* key, or run simple diff with *d* key
+** Run Ediff on different files with the *RET*, or run simple diff with *d* or *Space* key
 ** Copy files or directories with the *C* key
 ** Delete files or directories with the *D* key
 ** Hide/Show identical files with the *H* key
