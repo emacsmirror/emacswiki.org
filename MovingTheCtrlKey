@@ -311,14 +311,24 @@ REGEDIT4
 </pre>
 
 
-This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation. The Synaptics touchpad driver for Windows reads the unmodified scancodes while 'PalmTouch' is active, so if you switch Ctrl and Capslock you will also have to turn off PalmTouch if you want to send 'Ctrl-Taps' using the touchpad.
+This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation. 
+
+To undo the changes, you can just delete the Scancode Map value, or run a .reg script with the following:
+<pre>
+REGEDIT4
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=-
+</pre>
+
+Note: the Synaptics touchpad driver for Windows reads the unmodified scancodes while 'PalmTouch' is active, so if you switch Ctrl and Capslock you will also have to turn off PalmTouch if you want to send 'Ctrl-Taps' using the touchpad.
 
 [new]
 You can instead make similar changes to
 <pre>
 [HKEY_CURRENT_USER\Keyboard Layout]
 </pre>
-which makes the change for just the current user only.
+which makes the change for just the current user only. 
+
 
 ===Keymap===
 There is a small piece of software called '''keymap''' which modifies the registry.
