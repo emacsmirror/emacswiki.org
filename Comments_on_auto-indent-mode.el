@@ -23,3 +23,11 @@ How could I make this happen?
 Thanks in advance.
 
 -- Federico
+
+----
+
+See IndentingC -- you need to switch to a different style.
+Example: ## (setq c-default-style "linux")##.
+
+-- AlexSchroeder 2013-11-29 12:50 UTC
+
