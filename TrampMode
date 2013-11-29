@@ -137,8 +137,7 @@ To connect to a very old system I had to switch the remote, default LANG to a ''
 
 == Tips and tricks ==
 
-[:AdHocMultiHops]
-=== The NEW (Emacs 24.3+) ad-hoc multi-hop syntax -- the replacement for multi: ===
+=== [:AdHocMultiHops]The NEW (Emacs 24.3+) ad-hoc multi-hop syntax -- the replacement for multi: ===
 
 Note that some of the Tips and tricks below still refer to the old ##multi:## syntax, which was removed in Emacs 23 (in Emacs 23 you must configure proxies manually to facilitate multi-hops).
 
