@@ -20,3 +20,6 @@ Supported features:
 
 Screenshot:
 [[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_xterm.png]]
+
+Screenshot with diff command called (*d* hotkey):
+[[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_simplediff_xterm.png]]
