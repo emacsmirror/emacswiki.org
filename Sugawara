@@ -36,6 +36,11 @@ Question: Is it intentional that the highlighting doesn't appear if there is an 
 
 -- [[Sugawara]]
 
+[new:JeremyMoore:2013-11-29 14:37 UTC]
+I've converted anything-yaetags over to Lisp:helm-yaetags.el, it took nothing more than a find and replace of "anything" -> "helm". Hope that's OK with you. Also, many thanks for the original version! I've been using it for a while now and I really like it.
+
+-- JeremyMoore
+
 -----
 
 Welcome ! -- [[Matsuyama]]
