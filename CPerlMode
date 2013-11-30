@@ -291,7 +291,7 @@ To hook ElDoc into CPerlMode, you can use:
       (car
        (let ((cperl-message-on-help-error nil))
          (cperl-get-help))))
-
+    
     (add-hook 'cperl-mode-hook
               (lambda ()
                 (set (make-local-variable 'eldoc-documentation-function)
