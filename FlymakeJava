@@ -1,5 +1,4 @@
 [[ja:FlymakeJava-ja]]
-[[ja:DlymakeJava-ja]]
 == You will need these lines in your .emacs file ==
 <pre>(require 'flymake)
 (add-hook 'java-mode-hook 'flymake-mode-on)
