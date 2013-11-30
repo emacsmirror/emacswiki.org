@@ -1,0 +1,71 @@
+== 次の 2行を .emacs ファイルに追加してください ==
+<pre>(require 'flymake)
+(add-hook 'java-mode-hook 'flymake-mode-on)
+</pre>
+
+== 単一ファイルでのアドホック ==
+一つひとつの Java ファイルで flymake を使うには、flymake-simple-cleanup 関数とともに、以下の init 関数を利用してください。
+
+<pre>(defun my-java-flymake-init ()
+  (list "javac" (list (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-with-folder-structure))))
+</pre>
+
+そして、この関数を使うには次の関数を追加します。
+<pre>(add-to-list 'flymake-allowed-file-name-masks '("\\.java$" my-java-flymake-init flymake-simple-cleanup))
+</pre>
+
+== Make を使った Java シンタックスチェック ==
+
+こちらは、Java のソースファイルに対して flymake.el を実行するように設定するコマンドです。
+
+<pre>make -s -C ~/src/java/hello/ CHK_SOURCES=/tmp/../hello.java SYNTAX_CHECK_MODE=1 check-syntax
+</pre>
+
+これを機能させるには、MakeFile に次の数行を追加します。
+
+<pre>.PHONY: check-syntax
+
+check-syntax:
+	javac -Xlint $(CHK_SOURCES)
+</pre>
+
+次のコードも追加しておくと良いでしょう。"make test-fast" とタイプすることで、コンパイルを実行し、最後に更新された Java プログラムを実行します。
+
+<pre>RECENT_JAVA := $(shell ls -1t *.java | head -1)
+
+test-fast: $(basename $(RECENT_JAVA)).run
+
+%.run:	%.class
+	java $(basename $<)
+%.class:	%.java
+	javac $<
+</pre>
+
+
+Flymake が正しく実行されるように、以下のコードを ~/.emacs.d/init.el ファイルに追記します。
+
+<pre>(when (require 'flymake)
+  (set-variable 'flymake-log-level 9)
+  (setq flymake-start-syntax-check-on-newline nil)
+  (setq flymake-no-changes-timeout 10)
+  (add-hook 'java-mode-hook 'flymake-mode-on))
+</pre>
+
+== JDEE を使った Java シンタックスチェック ==
+
+JavaDevelopmentEnvironment を使用しているなら、 JdeeFlymake をチェックしてください。
+
+- NascifAbousalhNeto
+
+(JdeeFlymake and the[http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] did not work for me and after some hacking I came up with a workable situation: FlyMakeJdeeEclipse
+
+- jwickers
+
+I have also posted some instructions on how you can tweak the ECJ options to be a little more useful, and how to integrate this with another checker such as check style: http://jwickers.wordpress.com/2008/10/13/tweaking-flymake-for-java/
+
+If you are not using jdee, but still want to run flymake for java you can try to use [http://www.khelekore.org/~robo/ecj-flymake/|ecj flymake]
+
+
+----
+FlyMake CategoryJava
