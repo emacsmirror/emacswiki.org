@@ -1,26 +1,13 @@
 *Mike Mattie*
 
-I am a programmer currently residing in Seattle Wa - USA. I have been using Emacs since ~1999. I started coding
-in elisp at the end of 2007. 
-
 In the course of maintaining my creeping Emacs configuration I am factoring
 the least idiosyncratic bits from my configuration and posting them. I hope others may derive some
 benefit from reading or using my forays in Emacs.
 
 == Contact ==
 
-My E-Mail is codermattie@myopera.com
-
-I check it frequently now, every couple of days or so.
-
-== GNUPG ==
-I use GnuPG to sign the elisp files I post, and for e-mail if people are so inclined.
-
-*My key ID*
-
-B9012279
-
-can be obtained from pgp.mit.edu
+If you want my e-mail or are interested in getting in touch reach me at xmppnet.de jabber protocol
+username codermattie.
 
 == Projects ==
 
@@ -28,6 +15,10 @@ can be obtained from pgp.mit.edu
 * [[BufferRing]]
 * [[Submerge]]
 * [[ParserCompiler]]
+
+== Full Config ==
+
+http://lispblivet.sx/gitweb/?p=emacs-config.git;a=tree;f=emacs;hb=refs/heads/website
 
 == Snippets ==
 
