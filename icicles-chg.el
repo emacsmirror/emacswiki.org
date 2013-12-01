@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Nov 29 09:27:32 2013 (-0800)
+;; Last-Updated: Sun Dec  1 08:08:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10321
+;;     Update #: 10334
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/12/01 dadams
+;;     icicle-execute-extended-command-1: Restore SPC to self inserting, for recursive minibuffers.
+;;     icicle-find-file-abs-of-content: Pass nil as OTHER-WINDOW-P arg to *-find-file-or-expand-dir
 ;; 2013/11/29 dadams
 ;;     icicle-find-file(-abs)(-no-search|of-content)*, icicle-find-file-in-tags-table*:
 ;;       icicle-all-candidates-list-alt-action-fn needs to icicle-transform-multi-completion each file.
@@ -3911,14 +3914,13 @@
 ;;       Added optional arg not-interactive-p.
 ;;     Quiet the byte compiler for Emacs versions before 22.
 ;; 2007/10/14 dadams
-;;     icicle-define(-file)-command:
-;;       Updated generated doc to reflect icicle-act-before-cycle-flag.
+;;     icicle-define(-file)-command: Updated generated doc to reflect icicle-act-before-cycle-flag.
 ;; 2007/05/01 dadams
 ;;     icicle-define(-file)-command: Reset icicle-candidate-action-fn after reading input.
 ;; 2007/04/15 dadams
 ;;     icicle-define(-file)-command:
 ;;       Simplified action fn: Removed unwind-protect and outer condition-case,
-;;       so don't return error msg now, and only set minibuf focus if succeed.
+;;         so don't return error msg now, and only set minibuf focus if succeed.
 ;;     icicle-define(-file)-command, icicle-try-switch-buffer: Removed "%s" from handlers.
 ;; 2007/02/06 dadams
 ;;     icicle-define(-file)-command: Mention mouse bindings in command doc strings.
