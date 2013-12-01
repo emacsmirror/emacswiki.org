@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 23 15:29:40 2013 (-0800)
+;; Last-Updated: Fri Nov 29 13:47:50 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23466
+;;     Update #: 23468
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -330,7 +330,11 @@
 ;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
 ;;    `icicle-read-buffer', `icicle-read-color',
 ;;    `icicle-read-color-wysiwyg', `icicle-read-kbd-macro',
-;;    `icicle-recent-file', `icicle-recent-file-other-window',
+;;    `icicle-recent-file', `icicle-recent-file-no-search',
+;;    `icicle-recent-file-no-search-other-window',
+;;    `icicle-recent-file-of-content',
+;;    `icicle-recent-file-of-content-other-window',
+;;    `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
@@ -1058,8 +1062,9 @@
 ;;    `icicle-highlight-input-noncompletion',
 ;;    `icicle-highlight-input-noncompletion-rest',
 ;;    `icicle-highlight-lighter', `icicle-historical-alphabetic-p',
-;;    `icicle-imenu-command-p', `icicle-imenu-help',
-;;    `icicle-imenu-in-buffer-p', `icicle-imenu-macro-p',
+;;    `icicle-image-file-p', `icicle-imenu-command-p',
+;;    `icicle-imenu-help', `icicle-imenu-in-buffer-p',
+;;    `icicle-imenu-macro-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-increment-cand-nb+signal-end',
 ;;    `icicle-Info-apropos-complete-match',
