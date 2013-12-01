@@ -371,6 +371,9 @@ directory, but also those that are ''marked in any marked
 subdirectories, and sub-subdirectories etc., '''recursively'''''.  They
 are available only if you also use library '''[[Dired+]]'''.
 
+See also [[#VisitRecentFiles|`icicle-recent-file']], which likewise lets you match both
+(absolute) file names and file contents.
+
 
 (For Emacs versions prior to Emacs 23, `icicle-find-file' and
 `icicle-find-file-absolute' are aliases for
@@ -433,18 +436,22 @@ You can toggle this option using `C-x /'.
 [:VisitFilesForEmacsTags]
 ==== Visit Recent Files or Files for Emacs Tags ====
 
-Commands '''`icicle-find-file-in-tags-table'''' and
-'''`icicle-find-file-in-tags-table-other-window'''' let you visit files
-that are listed in the current Emacs [[TagsFile|tags table]].  You can think of these
-potential completion candidates as all of the files in a ''project
-defined by the tags table''.
-
 You can use '''`icicle-recent-file'''' to open any file that you have
 visited recently, perhaps in a previous Emacs session.
 
 Because '''Icicles''' lets you easily sort and filter candidates,
 consider customizing [[option]] `recentf-max-saved-items' to a large
 number, such as 1000.  The default number (20) is very small because it assumes that you will access the candidates using a menu.
+
+`icicle-recent-file' is like `icicle-find-file-absolute': file
+names are absolute, and (for Emacs 23 and later) you can match both
+file names and file contents.
+
+Commands '''`icicle-find-file-in-tags-table'''' and
+'''`icicle-find-file-in-tags-table-other-window'''' let you visit files
+that are listed in the current Emacs [[TagsFile|tags table]].  You can think of these
+potential completion candidates as all of the files in a ''project
+defined by the tags table''.
 
 
 
