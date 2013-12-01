@@ -2,7 +2,12 @@
 
 gforth.el provides auto-indent, documentation search and an interactive environment.
 
-gforth.el is typically included with an install of gForth (GNU Forth).
+gforth.el is typically included with an install of [http://www.gnu.org/software/gforth gForth (GNU Forth)].
+
+One online version is available at [http://www.complang.tuwien.ac.at/forth/gforth.el] - dated to 2003, which is not the most current.
+There is 2008 version on github: [https://github.com/smtlaissezfaire/gforth.el/blob/master/gforth.el]
+
+Historically, the mode was originally known as <code>forth.el</code> when started in 1988, but was since renamed.
 
 == Basic Setup ==
 
