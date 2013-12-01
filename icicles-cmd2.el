@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Nov 17 15:40:42 2013 (-0800)
+;; Last-Updated: Sun Dec  1 15:43:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6675
+;;     Update #: 6679
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -225,7 +225,7 @@
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
 ;;    `icicle-search-define-candidates-1',
-;;    `icicle-search-dired-marked-recursive-1.',
+;;    `icicle-search-dired-marked-recursive-1',
 ;;    `icicle-search-file-found-p', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
@@ -7784,8 +7784,14 @@ information."
       (icicle-complete-keys-1 [menu-bar])))
 
   (defun icicle-this-command-keys-prefix ()
-    "Return the prefix of the currently invoked key sequence."
-    (let ((this-key  (this-command-keys))) (substring this-key 0 (1- (length this-key)))))
+    "Return the prefix of the currently invoked key sequence.
+But if this command is `icicle-complete-keys' then return [].
+This is so that if `icicle-complete-keys' is on a prefix key that
+prefix is ignored. "
+    (let* ((this-key  (this-command-keys))
+           (prefix    (substring this-key 0 (1- (length this-key)))))
+      (when (eq this-command 'icicle-complete-keys) (setq prefix []))
+      prefix))
 
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
   ;;
