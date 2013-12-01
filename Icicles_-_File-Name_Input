@@ -374,12 +374,6 @@ are available only if you also use library '''[[Dired+]]'''.
 See also [[#VisitRecentFiles|`icicle-recent-file']], which likewise lets you match both
 (absolute) file names and file contents.
 
-
-(For Emacs versions prior to Emacs 23, `icicle-find-file' and
-`icicle-find-file-absolute' are aliases for
-`icicle-find-file-no-search' and `icicle-find-file-abs-no-search', which do not search file content.  That is, `C-x C-f' matches only
-file ''names'', not also file ''content''.)
-
 See also [[Icicles - Searching Named Containers]].
 
 
