@@ -805,7 +805,9 @@ jump directly all the way up to the top level, instead of hitting
 `##C-]##' once for each minibuffer level?
 
 Answer: use '''`C-M-T'''' (that is, `C-M-S-t'), which is bound to
-'''`icicle-top-level''''.
+'''`icicle-top-level''''.  That brings you directly to the top level
+("without passing GO"), but it first allows '''Icicles''' [[multi-command]]s
+to perform any necessary cleanup.
 
 So you have three degrees of canceling when you are in the
 minibuffer: `C-g' (cancel the current command), `##C-]##' (cancel the
