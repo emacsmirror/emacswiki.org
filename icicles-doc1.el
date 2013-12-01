@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Nov 26 09:44:21 2013 (-0800)
+;; Last-Updated: Sun Dec  1 14:30:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27907
+;;     Update #: 27917
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1157,7 +1157,9 @@
 ;;  `C-]' once for each minibuffer level?
 ;;
 ;;  Answer: use `C-M-T' (that is, `C-M-S-t'), which is bound to
-;;  `icicle-top-level'.
+;;  `icicle-top-level'.  That brings you directly to the top level
+;;  ("without passing GO"), but it first allows Icicles multi-commands
+;;  to perform any necessary cleanup.
 ;;
 ;;  So you have three degrees of canceling when you are in the
 ;;  minibuffer: `C-g' (cancel the current command), `C-]' (cancel the
@@ -8157,11 +8159,9 @@
 ;;  subdirectories, and sub-subdirectories etc., recursively.  They
 ;;  are available only if you also use library `Dired+'.
 ;;
-;;  (For Emacs versions prior to Emacs 23, `icicle-find-file' and
-;;  `icicle-find-file-absolute' are aliases for
-;;  `icicle-find-file-no-search' and `icicle-find-file-abs-no-search',
-;;  which do not search file content.  That is, `C-x C-f' matches only
-;;  file names, not also file content.)
+;;  See also `icicle-recent-file', which likewise lets you match both
+;;  (absolute) file names and file contents -
+;;  (@* "Visit Recent Files or Files for Emacs Tags")
 ;;
 ;;  See also (@> "Chapter & Verse: Searching Named Containers").
 ;;
@@ -8199,12 +8199,6 @@
 ;;(@* "Visit Recent Files or Files for Emacs Tags")
 ;;  *** Visit Recent Files or Files for Emacs Tags ***
 ;;
-;;  Commands `icicle-find-file-in-tags-table' and
-;;  `icicle-find-file-in-tags-table-other-window' let you visit files
-;;  that are listed in the current Emacs tags table.  You can think of
-;;  these potential completion candidates as all of the files in a
-;;  project defined by the tags table.
-;;
 ;;  You can use `icicle-recent-file' to open any file that you have
 ;;  visited recently, perhaps in a previous Emacs session.
 ;;
@@ -8213,6 +8207,16 @@
 ;;  number, such as 1000.  The default number (20) is very small
 ;;  because it assumes that you will access the candidates using a
 ;;  menu.
+;;
+;; `icicle-recent-file' is like `icicle-find-file-absolute': file
+;; names are absolute, and (for Emacs 23 and later) you can match both
+;; file names and file contents.
+;;
+;;  Commands `icicle-find-file-in-tags-table' and
+;;  `icicle-find-file-in-tags-table-other-window' let you visit files
+;;  that are listed in the current Emacs tags table.  You can think of
+;;  these potential completion candidates as all of the files in a
+;;  project defined by the tags table.
 ;;
 ;;(@* "Find Files Anywhere, Without Knowing Where")
 ;;  *** Find Files Anywhere, Without Knowing Where ***
