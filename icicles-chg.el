@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec  1 08:08:04 2013 (-0800)
+;; Last-Updated: Sun Dec  1 12:38:13 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10334
+;;     Update #: 10352
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,8 +86,14 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2013/12/01 dadams
+;;     Added: icicle-recent-file-of-content, icicle-recent-file-of-content-other-window.
+;;     Renamed: *-recent-file(-other-window) to icicle-recent-file-no-search(-other-window).
+;;     Redefine icicle-recent-file(-other-window) as *-of-content* or *-no-search*, per Emacs version.
 ;;     icicle-execute-extended-command-1: Restore SPC to self inserting, for recursive minibuffers.
 ;;     icicle-find-file-abs-of-content: Pass nil as OTHER-WINDOW-P arg to *-find-file-or-expand-dir
+;;     icicle-find-file(-abs)-of-content*, :
+;;       1. Do the cleanup also for undo code, not just last code.
+;;       2. Just kill-buffer, instead of visiting and doing restore-buffer-modified-p first.
 ;; 2013/11/29 dadams
 ;;     icicle-find-file(-abs)(-no-search|of-content)*, icicle-find-file-in-tags-table*:
 ;;       icicle-all-candidates-list-alt-action-fn needs to icicle-transform-multi-completion each file.
@@ -3741,6 +3747,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/12/01 dadams
+;;     icicle-define-command, icicle-define-file-command:
+;;       Wrap FIRST-SEXP, minibuf read (with UNDO-SEXP), and LAST-SEXP in a catch, to ensure LAST-SEXP.
+;;       This is important for progressive completion, to, e.g., remove temporarily created buffers.
 ;; 2013/04/17 dadams
 ;;     icicle-buffer-bindings: For icicle-bufflist: use icicle-buffer-prefix-arg-filtering.
 ;; 2013/04/15 dadams
@@ -3963,6 +3973,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/12/01 dadams
+;;     icicle-top-level: Throw to the catch icicle-top-level, which is now defined for multi-commands.
 ;; 2013/09/21 dadams
 ;;     Added: icicle-universal-argument--mode.
 ;;     icicle-(digit|negative|universal)-argument, : Updated for Emacs 24.4 (snapshot of 9/20).
@@ -6845,6 +6857,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/12/01 dadams
+;;     Added: icicle-image-file-p.
+;;     icicle-find-file-of-content-skip-hook: Use icicle-image-file-p, not nil, as default.
 ;; 2013/10/29 dadams
 ;;     icicle-top-level-key-bindings: Remap  bmkp-bookmark-set-confirm-overwrite to icicle-bookmark-cmd
 ;; 2013/10/27 dadams
