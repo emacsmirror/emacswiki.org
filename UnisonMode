@@ -1,3 +1,10 @@
 == Introduction ==
 
 A simple mode that currenly only gives syntax highlighting to file synchronization progam [http://www.cis.upenn.edu/~bcpierce/unison/ unison's] configuration files. Source is available at [https://github.com/impaktor/unison-mode github].
+
+== Install ==
+Download the source code to your load-path, and put the following in your configuration file:
+{{{
+(autoload 'unison-mode "unison-mode" "my unison mode" t)
+(setq auto-mode-alist (append '(("\\.prf$" . unison-mode)) auto-mode-alist))
+}}}
