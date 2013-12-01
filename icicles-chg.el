@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec  1 12:38:13 2013 (-0800)
+;; Last-Updated: Sun Dec  1 15:44:12 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10352
+;;     Update #: 10353
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -978,6 +978,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/12/01 dadams
+;;     icicle-this-command-keys-prefix: Use [] as prefix key if this command is icicle-complete-keys.
 ;; 2013/11/17 dadams
 ;;     Added: icicle-occur-dired-marked, icicle-occur-dired-marked-recursive,
 ;;            icicle-search-dired-marked, icicle-search-dired-marked-recursive-1.
