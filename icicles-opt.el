@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Nov 23 16:35:19 2013 (-0800)
+;; Last-Updated: Sun Dec  1 08:13:54 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5763
+;;     Update #: 5775
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -214,8 +214,9 @@
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-compute-shell-command-candidates',
-;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
-;;    `icicle-thing-at-point', `icicle-widgetp'.
+;;    `icicle-edmacro-parse-keys', `icicle-image-file-p',
+;;    `icicle-kbd', `icicle-remap', `icicle-thing-at-point',
+;;    `icicle-widgetp'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -2370,8 +2371,21 @@ You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-directory]'."
   :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
 
-(defcustom icicle-find-file-of-content-skip-hook nil
+(defun icicle-image-file-p (filename)
+  "Return non-nil if FILENAME names an image file.
+The regexp value of `image-file-name-regexp' is used for the test.
+Returns nil if library `image-file.el' cannot be loaded, so use this
+only for Emacs 23 and later."
+  (and (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+       (fboundp 'image-file-name-regexp)
+       (require 'image-file nil t)
+       (icicle-string-match-p (image-file-name-regexp) filename)))
+
+(defcustom icicle-find-file-of-content-skip-hook #'icicle-image-file-p
   "*Hook run by `icicle-file' on each matching file name.
+The function is applied to the file-name candidate (after transforming
+it, if it is a multi-completion).
+
 Also run by `icicle-buffer' on the names of files that are included
 from the set of recent files or from the Emacs file cache.
 
@@ -2380,7 +2394,9 @@ Use this to skip visiting and trying to search non-text files, such as
 PDFs and images, or files that might be time-consuming to access, such
 as compressed files.
 
-This option has no effect for Emacs versions prior to Emacs 23."
+This option has no effect for Emacs versions prior to Emacs 23.
+
+See also option `icicle-buffer-skip-hook'."
   :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-functions-to-redefine
@@ -2893,7 +2909,10 @@ will not work."
 This applies to commands such as `icicle-find-file-of-content', which
 search files that match your completion input.  If non-nil then any
 such buffers for files that you do not actually choose are killed when
-the command is finished.  If nil then they are not killed."
+the command is finished.  If nil then they are not killed.
+
+However, note that for some commands a prefix argument can reverse the
+sense of this flag."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Files :group 'Icicles-Matching)
 
 (when (boundp 'kmacro-ring)             ; Emacs 22+
