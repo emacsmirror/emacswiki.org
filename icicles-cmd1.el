@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Nov 29 09:23:00 2013 (-0800)
+;; Last-Updated: Sun Dec  1 08:03:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26159
+;;     Update #: 26196
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3786,6 +3786,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                  ;; to be `cmd' during the `C-RET' part, but `last-command' must not be `cmd'
                  ;; during the `next' part.
                  (this-command                            cmd))
+             (define-key minibuffer-local-must-match-map " " 'icicle-self-insert) ; Restore `SPC'.
              (call-interactively cmd 'record-it)))
           ;; Should not happen, since `icicle-e*-e*-command' calls `completing-read' with non-nil REQUIRE arg.
           (t (error "Not a command: `%s'" cmd-name)))
@@ -7274,7 +7275,7 @@ can use the following keys:
 
 These options, when non-nil, control candidate matching and filtering:
 
- `icicle-file-extras'           - Extra file names to display
+ `icicle-file-extras'           - Extra absolute file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
@@ -7684,7 +7685,7 @@ can use the following keys:
             (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
               (with-current-buffer created-buf
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
-                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (setq new-bufs--to-kill  (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
@@ -7760,7 +7761,7 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
             (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
               (with-current-buffer created-buf
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
-                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (setq new-bufs--to-kill  (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
@@ -7893,7 +7894,7 @@ requires library `Bookmark+')\\<minibuffer-local-completion-map>:
 
 These options, when non-nil, control candidate matching and filtering:
 
- `icicle-file-extras'           - Extra file names to display
+ `icicle-file-extras'           - Extra absolute file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
@@ -7910,7 +7911,7 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-    (lambda (file)
+    (lambda (file)                      ; Action function
       (setq file  (icicle-transform-multi-completion file)
             file  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
       (let* ((r-o        (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
@@ -7927,12 +7928,11 @@ Ido-like behavior."                     ; Doc string
             (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
               (with-current-buffer created-buf
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
-                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (setq new-bufs--to-kill  (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
-        (icicle-find-file-or-expand-dir file #'icicle-find-file-abs-of-content
-                                        r-o 'OTHER-WINDOW-P)
+        (icicle-find-file-or-expand-dir file #'icicle-find-file-abs-of-content r-o nil)
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
         (dolist (fil  wildfiles)
@@ -8002,7 +8002,7 @@ Ido-like behavior."                     ; Doc string
   (put 'icicle-find-file-abs-of-content-other-window 'icicle-Completions-window-max-height 200)
   (icicle-define-command icicle-find-file-abs-of-content-other-window ; Bound (indirectly) to `C-u C-x 4 f'.
     "Same as `icicle-find-file-abs-of-content' except uses another window." ; Doc string
-    (lambda (file)
+    (lambda (file)                      ; Action function
       (setq file  (icicle-transform-multi-completion file)
             file  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
       (let* ((r-o        (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
@@ -8019,7 +8019,7 @@ Ido-like behavior."                     ; Doc string
             (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
               (with-current-buffer created-buf
                 (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
-                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (setq new-bufs--to-kill  (delete created-buf new-bufs--to-kill))
                 (kill-buffer created-buf)))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
@@ -8049,18 +8049,18 @@ Ido-like behavior."                     ; Doc string
       (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
       (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
-      (icicle-full-cand-fn                `(lambda (file)
-                                            (setq file  (if (file-directory-p file)
-                                                            (file-name-as-directory file)
-                                                          file))
-                                            ,(if icicle-pref-arg
-                                                 '(icicle-make-file+date-candidate file)
-                                                 '(list file))))
-      (icicle-abs-file-candidates         (mapcar icicle-full-cand-fn
-                                                  (directory-files default-directory 'FULL nil 'NOSORT)))
+      (icicle-full-cand-fn                    `(lambda (file)
+                                                (setq file  (if (file-directory-p file)
+                                                                (file-name-as-directory file)
+                                                              file))
+                                                ,(if icicle-pref-arg
+                                                     '(icicle-make-file+date-candidate file)
+                                                     '(list file))))
+      (icicle-abs-file-candidates             (mapcar icicle-full-cand-fn
+                                                      (directory-files default-directory 'FULL nil 'NOSORT)))
       (icicle-show-multi-completion-flag      t) ; Override user setting.
-      (icicle-multi-completing-p          t)
-      (icicle-list-use-nth-parts          '(1))
+      (icicle-multi-completing-p              t)
+      (icicle-list-use-nth-parts              '(1))
       (icicle-transform-before-sort-p         t)
       (existing-bufs                          (buffer-list))
       (new-bufs--to-kill                      ())
@@ -8069,8 +8069,8 @@ Ido-like behavior."                     ; Doc string
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ")
                                                    (mapcar #'icicle-transform-multi-completion files))))))
-      (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
-      (icicle-candidate-properties-alist  (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))
+      (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
+      (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))
       ))
     (progn                              ; First code
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
@@ -8426,7 +8426,7 @@ can use the following keys:
 Directories in `icicle-ignored-directories' are ignored (skipped).  In
 addition, these options control candidate matching and filtering:
 
- `icicle-file-extras'           - Extra file names to display
+ `icicle-file-extras'           - Extra absolute file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
@@ -8520,7 +8520,7 @@ can use the following keys:
 
 These Icicles options control candidate matching and filtering:
 
- `icicle-file-extras'           - Extra file names to display
+ `icicle-file-extras'           - Extra absolute file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
@@ -8721,7 +8721,7 @@ can use the following keys:
 
 These options, when non-nil, control candidate matching and filtering:
 
- `icicle-file-extras'           - Extra file names to display
+ `icicle-file-extras'           - Extra absolute file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
