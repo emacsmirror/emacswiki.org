@@ -65,7 +65,7 @@ Other pages (could this please be split in major and minor modes?):
 * FreexMode -- a personal wiki on steroids
 * FvwmMode -- major mode to edit FVWM configuration files
 * GlassesMode -- change the way StudlyCaps/CamelCase is displayed
-* GnuplotMode -- mode to edit gnuplot files
+* GnuplotModes -- modes to edit gnuplot files
 * GoLispMode -- analyze, cross-reference, and jump around lisp files
 * HamsterMode -- mode for editing hamster scripts
 * HexlMode -- hex editing and display mode
