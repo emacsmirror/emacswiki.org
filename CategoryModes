@@ -141,6 +141,7 @@ Other pages (could this please be split in major and minor modes?):
 * TtcnMode -- edit TTCN code in Emacs.
 * TupMode
 * UnicodeEncoding -- describes oc-unicode
+* UnisonMode -- Syntax highlighting for file synchronization program [http://www.cis.upenn.edu/~bcpierce/unison/ unison]
 * [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightMode] -- Minor mode provides visual feedback on some operations: undo, yank and etc.
 * VersionControl -- and various similar implementations
 * WajigMode -- An interface for wajig
