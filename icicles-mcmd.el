@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Sep 21 12:01:58 2013 (-0700)
+;; Last-Updated: Sun Dec  1 10:02:43 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 19294
+;;     Update #: 19298
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,12 +17,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
-;;   `levenshtein', `mouse3', `mwheel', `naked', `regexp-opt',
-;;   `ring', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `cus-theme', `doremi',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-fn', `icicles-opt', `icicles-var',
+;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
+;;   `naked', `regexp-opt', `ring', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -8375,10 +8375,15 @@ it is the only frame or a standalone minibuffer frame."
               (delete-window (selected-window)))))))))
 
 (defun icicle-top-level ()
-  "Remove `*Completions*' window and call `top-level'."
+  "Remove `*Completions*' window.  Return to top level.
+Try to throw to `icicle-top-level' (`catch' is for multi-commands).
+If that fails, call `top-level'."
   (interactive)
   (icicle-remove-Completions-window 'FORCE)
-  (top-level))
+  (condition-case nil
+      (throw 'icicle-top-level 'TOP)
+    (no-catch (top-level))
+    (error nil)))
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-remove-buffer-cands-for-mode (&optional derivedp keep-p)
