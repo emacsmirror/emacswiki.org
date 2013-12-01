@@ -1,0 +1,3 @@
+== Unison Mode==
+
+A simple mode that currenly only gives syntax highlighting to file synchronization progam [http://www.cis.upenn.edu/~bcpierce/unison/ unison's] configuration files. Source is available at [https://github.com/impaktor/unison-mode github].
