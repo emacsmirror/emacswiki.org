@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Nov 28 09:55:12 2013 (-0800)
+;; Last-Updated: Sun Dec  1 12:14:50 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14108
+;;     Update #: 14119
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -352,6 +352,7 @@
   (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23)
 
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
+(defvar crm-separator)                  ; In `crm.el'
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
 (defvar doremi-boost-up-keys)           ; In `doremi.el'
 (defvar doremi-down-keys)               ; In `doremi.el'
