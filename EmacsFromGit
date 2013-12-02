@@ -30,8 +30,7 @@ git clone http://repo.or.cz/r/emacs.git
 
 You can also browse the repository at http://repo.or.cz/w/emacs.git.
 
-Mirrors of the above git repository exist on
-[http://github.com/emacsmirror/emacs github].
+Mirrors of the above git repository exist on [https://github.com/mirrors/emacs github].
 
 With git-1.8 and ##contrib/remote-helpers/git-remote-bzr## you can clone directly from a Bazaar branch
 <pre>
