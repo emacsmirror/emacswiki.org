@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec  1 14:30:38 2013 (-0800)
+;; Last-Updated: Sun Dec  1 16:40:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27917
+;;     Update #: 27930
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -491,8 +491,14 @@
 ;;
 ;;  Beyond that, the most important thing to know about Icicles is
 ;;  that you can get help on Icicle mode during minibuffer input.  You
-;;  do that either by using item Help of the menu-bar Icicles menu or
+;;  can do that by using item Help of the menu-bar Icicles menu or
 ;;  Minibuf menu, or by hitting `M-?' (`icicle-minibuffer-help').
+;;
+;;  (To see the keys that are bound when you are in the minibuffer,
+;;  you can also use `M-S-TAB', which completes keys in the
+;;  minibuffer.  If your window manager steals `M-S-TAB' then try `ESC
+;;  S-TAB' or customize option
+;;  `icicle-key-complete-keys-for-minibuffer'.)
 ;;
 ;;  You now know enough to use Icicles.  If you have doc-phobia or are
 ;;  easily overwhelmed by explanations, then *read no more* - just try
@@ -2050,6 +2056,8 @@
 ;;  Icicles key completion is also available in the minibuffer, but
 ;;  there, since `S-TAB' performs apropos completion of your input,
 ;;  the key that initiates key completion is `M-S-TAB', not `S-TAB'.
+;;  (If your window manager steals `M-S-TAB' then try `ESC S-TAB' or
+;;  customize option `icicle-key-complete-keys-for-minibuffer'.)
 ;;
 ;;  See (@> "Key Completion") for more about Icicles key completion.
 ;;
@@ -6710,14 +6718,15 @@
 ;;  In the minibuffer, `S-TAB' performs apropos completion of your
 ;;  typed input.  So it is not available for key completion.  But you
 ;;  can still complete keys in the minibuffer.  You just use `M-S-TAB'
-;;  instead of `S-TAB'.
+;;  instead of `S-TAB'.  (If your window manager steals `M-S-TAB' then
+;;  try `ESC S-TAB'.)
 ;;
-;;  (And just as the actual keys that perform key completion outside
+;;  And just as the actual keys that perform key completion outside
 ;;  the minibuffer are customizable using option
 ;;  `icicle-key-complete-keys', so too for the key-completion keys in
 ;;  the minibuffer: It is actually the keys defined by option
 ;;  `icicle-key-complete-keys-for-minibuffer' that are used -
-;;  `M-S-TAB' is just the key used by default.)
+;;  `M-S-TAB' is just the key used by default.
 ;;
 ;;(@* "Three-Key Emacs")
 ;;  ** Three-Key Emacs **
@@ -9275,7 +9284,7 @@
 ;;  unavailable for Emacs.  They normally do not grab `ESC TAB', which
 ;;  in Emacs is typically the same ase `M-TAB'.  For this reason,
 ;;  Icicles also binds `icicle-isearch-complete' to both `ESC TAB' and
-;;  `C-M-TAB'.  (Note: For MS Windows, you can use
+;;  `C-M-TAB'.  (Note: For some versions of MS Windows, you can use
 ;;  (w32-register-hot-key (icicle-kbd "M-tab")) to allow Emacs to use
 ;;  `M-TAB'.)
 ;;
