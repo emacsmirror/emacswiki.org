@@ -309,13 +309,14 @@ contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customizati
 
 In the [[minibuffer]], `S-TAB' performs [[apropos completion]] of your
 typed input.  So it is not available for key completion.  But you
-can still complete keys in the minibuffer.  You just use '''`M-S-TAB'''' instead of `S-TAB'.
+can still complete keys in the minibuffer.  You just use '''`M-S-TAB'''' instead of `S-TAB'.  (If your window manager steals `M-S-TAB' then
+try `ESC S-TAB'.)
 
-(And just as the actual keys that perform key completion outside
+And just as the actual keys that perform key completion outside
 the minibuffer are customizable using [[option]] `<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>', so too for the key-completion keys in
 the minibuffer: It is actually the keys defined by option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>'''' that are used --
-`M-S-TAB' is just the key used by default.)
+`M-S-TAB' is just the key used by default.
 
 
 
