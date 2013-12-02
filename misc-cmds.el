@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 28 08:45:51 2013 (-0800)
+;; Last-Updated: Sun Dec  1 19:08:39 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3118
+;;     Update #: 3124
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -45,8 +45,9 @@
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
 ;;    `region-length', `region-to-buffer', `region-to-file',
 ;;    `resolve-file-name', `revert-buffer-no-confirm',
-;;    `selection-length', `undo-repeat' (Emacs 24.3+),
-;;    `view-X11-colors'.
+;;    `selection-length', `switch-to-alternate-buffer',
+;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
+;;    24.3+), `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -85,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/01 dadams
+;;     Added: switch-to-alternate-buffer(-other-window).
 ;; 2013/11/28 dadams
 ;;     comment-region-lines: Fix last fix.
 ;; 2013/11/21 dadams
@@ -1249,6 +1252,34 @@ With prefix arg, clear also the simple search history."
   (interactive)
   (setq regexp-search-ring ())
   (setq search-ring nil))
+
+;;;###autoload
+(defun switch-to-alternate-buffer (buffer &optional norecord force-same-window)
+  "Like `switch-to-buffer', but also kill the current buffer."
+  (interactive (let ((prompt  "Switch to buffer: "))
+                 (list (if (fboundp 'read-buffer-to-switch)
+                           (read-buffer-to-switch prompt)
+                         (read-buffer prompt (other-buffer (current-buffer)) nil))
+                       nil
+                       'FORCE-SAME-WINDOW)))
+  (let ((buf-to-kill  (current-buffer)))
+    (switch-to-buffer buffer)
+    (kill-buffer buf-to-kill))
+  buffer)
+
+;;;###autoload
+(defun switch-to-alternate-buffer-other-window (buffer &optional norecord)
+  "Like `switch-to-buffer-other-window', but also kill the current buffer."
+  (interactive (let ((prompt  "Switch to buffer in other window: "))
+                 (list (if (fboundp 'read-buffer-to-switch)
+                           (read-buffer-to-switch prompt)
+                         (read-buffer prompt (other-buffer (current-buffer)) nil))
+                       nil
+                       'FORCE-SAME-WINDOW)))
+  (let ((buf-to-kill  (current-buffer)))
+    (switch-to-buffer buffer)
+    (kill-buffer buf-to-kill))
+  buffer)
 
 ;;;###autoload
 (defun revert-buffer-no-confirm ()
