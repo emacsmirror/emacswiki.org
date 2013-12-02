@@ -319,6 +319,12 @@ to this:
 
 : No. As the name says, it only changes the indention.
 
+
+:: I use an external tool called "indent" to do such aggressive beautification. You can bind it to a key sequence or add to ##before-save-hook## -- Anonymous
+<pre>
+(shell-command-on-region (point-min) (point-max) "indent"  t t "*Shell Error Output*")
+</pre>
+
 I wanted Tab to call indent-region if anything is selected, and c-indent-command if not. So, after a late irc.freenode.net#emacs session. Here's what fledermaus, cgray and _sprintf came up with:
 
     ;;Setting Tab to indent region if anything is selected
