@@ -172,6 +172,7 @@ Apropos-complete your input.
 
 
 [:icicle-key-complete-keys]
+[:icicle-key-complete-keys-for-minibuffer]
 [:icicle-completing-read+insert-keys]
 [:icicle-read+insert-file-name-keys]
 [:icicle-search-from-isearch-keys]
@@ -180,6 +181,7 @@ The following options, with names ending in '''`-keys'''', cover
 miscellaneous actions that make use of the minibuffer in some way.
 
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB'''') [[Icicles - Key Completion|Complete key sequences]].
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>'''' ('''`M-S-TAB'''') [[Icicles - Key Completion|Complete key sequences]] in the [[minibuffer]].
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|icicle-completing-read+insert-keys]]</tt>'''' ('''`C-M-S-c'''')  Completion on demand.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' ('''`C-M-S-f'''')  Completion on demand for file names.
 
