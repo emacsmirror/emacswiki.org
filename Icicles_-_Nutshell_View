@@ -13,7 +13,11 @@
 
 Load library '''<tt>[[icicles.el]]</tt>''', turn on ''Icicle'' mode, and you're good to go. You can turn ''Icicle'' mode off or on at any time with command '''`icy-mode''''.    When you turn it off, you're back in vanilla Emacs.
 
-Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You do that either by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##M-?##'''' (`icicle-minibuffer-help').
+Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You can do that by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##M-?##'''' (`icicle-minibuffer-help').
+
+(To see the keys that are bound when you are in the minibuffer,
+you can also use `M-S-TAB', which ''completes keys'' in the
+minibuffer.  If your window manager steals `M-S-TAB' then try `ESC S-TAB' or customize [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>''''.)
 
 You now know enough to use '''Icicles'''. If you have doc-phobia or are easily overwhelmed by explanations, then ''read no more'' -- just try it!  
 
@@ -1733,6 +1737,8 @@ Instead of clicking a completion candidate with `mouse-2', you can of course typ
 '''Icicles''' key completion is also available in the [[minibuffer]], but
 there, since `S-TAB' performs [[apropos completion]] of your input,
 the key that initiates key completion is '''`M-S-TAB'''', not `S-TAB'.
+(If your window manager steals `M-S-TAB' then try `ESC S-TAB' or
+customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>''''.)
 
 See [[Icicles - Key Completion]] for more about completing [[key sequence]]s.
 
