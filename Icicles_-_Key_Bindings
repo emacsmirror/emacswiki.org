@@ -293,11 +293,23 @@ commands and the current toggle values.
 
 The following key will always cancel all minibuffer input.  No
 matter whether you have recursive minibuffers, it always returns
-you directly to the Emacs top level.
+you directly to the Emacs top level ("without passing GO"), but it
+first allows '''Icicles''' [[multi-command]]s to perform any necessary
+cleanup.
 
 [:icicle-top-level]
 * '''`C-M-T'''' (aka `C-M-S-t') -- `icicle-top-level'
 
+
+The following key performs '''Icicles'''  [[Icicles - Key Completion|key completion]] in the [[minibuffer]].
+
+* '''`M-S-TAB'''' -- `icicle-complete-keys'
+
+You can also use this ''to see all of the keys that are currently
+available in the minibuffer'', whether or not completion is
+available, and regardless of completion candidate type.  `M-S-TAB'
+does this by default, but you can change this by customizing
+option '''<tt>‘[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]’</tt>'''.
 
 The following key bindings are made for the minibuffer completion
 keymaps.  They are in effect whenever you are using the minibuffer
