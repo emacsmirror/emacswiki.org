@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Nov 26 09:38:37 2013 (-0800)
+;; Last-Updated: Sun Dec  1 16:29:44 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29453
+;;     Update #: 29463
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5002,11 +5002,14 @@
 ;;    keys implement `S-TAB'.
 ;;
 ;;  * Option `icicle-key-complete-keys-for-minibuffer' is the list of
-;;    keys to bind to `icicle-complete-keys' in the minibuffer
-;;    keymaps.  By default, this is the singleton list ([M-backtab]),
-;;    which means `M-S-TAB'.  `S-TAB' itself is of course used (by
-;;    default) for apropos completion of your minibuffer input, so it
-;;    cannot also be used for key completion in the minibuffer.
+;;    keys that Icicles binds to `icicle-complete-keys' in the
+;;    minibuffer keymaps.  By default, this is the singleton list
+;;    ([M-backtab]), which means `M-S-TAB'.  `S-TAB' itself is of
+;;    course used (by default) for apropos completion of your
+;;    minibuffer input, so it cannot also be used for key completion
+;;    in the minibuffer.  If your window manager steals `M-S-TAB' then
+;;    customize this option to choose another key, or try `ESC S-TAB'
+;;    (equivalent to `M-S-TAB').
 ;;
 ;;  * Option `icicle-isearch-complete-keys' is the list of keys for
 ;;    `icicle-isearch-complete'.  By default, these keys are `M-TAB',
@@ -6640,9 +6643,22 @@
 ;;
 ;;  The following key will always cancel all minibuffer input.  No
 ;;  matter whether you have recursive minibuffers, it always returns
-;;  you directly to the Emacs top level.
+;;  you directly to the Emacs top level ("without passing GO"), but it
+;;  first allows Icicles multi-commands to perform any necessary
+;;  cleanup.
 ;;
 ;;    `C-M-T' (aka `C-M-S-t') - `icicle-top-level'
+;;
+;;  The following key performs Icicles key completion in the
+;;  minibuffer.
+;;
+;;    `M-S-TAB' - `icicle-complete-keys'
+;;
+;;  You can also use this to see all of the keys that are currently
+;;  available in the minibuffer, whether or not completion is
+;;  available, and regardless of completion candidate type.  `M-S-TAB'
+;;  does this by default, but you can change this by customizing
+;;  option `icicle-key-complete-keys-for-minibuffer'.
 ;;
 ;;  The following key bindings are made for the minibuffer completion
 ;;  keymaps.  They are in effect whenever you are using the minibuffer
@@ -7372,6 +7388,8 @@
 ;;
 ;;  * `icicle-key-complete-keys'                             (`S-TAB')
 ;;    Complete key sequences.
+;;  * `icicle-key-complete-keys-for-minibuffer'            (`M-S-TAB')
+;;    Complete key sequences in the minibuffer.
 ;;  * `icicle-completing-read+insert-keys'                 (`C-M-S-c')
 ;;    Completion on demand.
 ;;  * `icicle-read+insert-file-name-keys'                  (`C-M-S-f')
