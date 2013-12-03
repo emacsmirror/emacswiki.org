@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Tue Nov 19 09:28:06 2013 (-0800)
+;; Last-Updated: Tue Dec  3 12:23:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1730
+;;     Update #: 1732
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1075,9 +1075,9 @@ Augmented by `icicle-read-char-maybe-completing' and
 Several Emacs-Lisp mode key bindings are used.")
 (unless icicle-read-expression-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map (icicle-kbd "C-M-i")   'lisp-complete-symbol) ; `ESC TAB', `C-M-i'
-    (define-key map (icicle-kbd "C-i")     'lisp-indent-line) ; `C-i', `TAB'
-    (define-key map (icicle-kbd "ESC tab") 'lisp-complete-symbol) ; `ESC tab'
+    (define-key map (icicle-kbd "C-M-i")   'indent-lisp-line) ; `ESC TAB', `C-M-i'
+    (define-key map (icicle-kbd "C-i")     'lisp-complete-symbol) ; `C-i', `TAB'
+    (define-key map (icicle-kbd "ESC tab") 'indent-lisp-line) ; `ESC tab'
     (define-key map (icicle-kbd "C-M-x")   'eval-defun) ; `ESC C-x', `C-M-x'
     (define-key map (icicle-kbd "C-M-q")   'indent-pp-sexp) ; `ESC C-q', `C-M-q'
     ;;(define-key map (icicle-kbd "DEL") 'backward-delete-char-untabify)
