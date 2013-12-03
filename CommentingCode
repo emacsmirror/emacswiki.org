@@ -67,6 +67,24 @@ whole line, if we are currently not at the end of the line. This does the trick:
             (comment-dwim arg)))
 
       (global-set-key "\M-;" 'comment-dwim-line)
+[new]
+The above version requires the region to start at the beginning of a line - this version corrects that. 
+Source: http://stackoverflow.com/a/20064658/243392
+
+    (defun comment-eclipse ()
+      (interactive)
+      (let ((start (line-beginning-position))
+            (end (line-end-position)))
+        (when (region-active-p)
+          (setq start (save-excursion
+                        (goto-char (region-beginning))
+                        (beginning-of-line)
+                        (point))
+                end (save-excursion
+                      (goto-char (region-end))
+                      (end-of-line)
+                      (point))))
+        (comment-or-uncomment-region start end)))
 
 = Questions =
 
