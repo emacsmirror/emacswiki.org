@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec  3 12:32:01 2013 (-0800)
+;; Last-Updated: Tue Dec  3 13:27:36 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10355
+;;     Update #: 10361
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/12/03 dadams
+;;     Added: icicle-find-file-abs-1.
+;;     icicle-find-file-abs-of-content(-other-window), icicle-recent-file-of-content(-other-window):
+;;       Use icicle-find-file-abs-1.
+;;     icicle-completing-yank: Typo - paren too early.
 ;; 2013/12/01 dadams
 ;;     Added: icicle-recent-file-of-content, icicle-recent-file-of-content-other-window.
 ;;     Renamed: *-recent-file(-other-window) to icicle-recent-file-no-search(-other-window).
