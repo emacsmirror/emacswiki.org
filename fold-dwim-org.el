@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler & Shane Celis
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Oct  5 12:19:45 2010 (-0500)
-;; Version: 0.5
+;; Version: 0.6
 ;; Package-Requires: ((fold-dwim "1.2"))
 ;; Last-Updated: Fri Dec  2 08:57:02 2011 (-0600)
 ;;           By: Matthew L. Fidler
@@ -22,6 +22,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 3-Dec-2013    Matthew L. Fidler  
+;;    Last-Updated: Fri Dec  2 08:57:02 2011 (-0600) #108 (Matthew L. Fidler)
+;;    Fix looking-at-end-of-line.  See Issue #6.
 ;; 19-Nov-2013    Matthew L. Fidler  
 ;;    Last-Updated: Fri Dec  2 08:57:02 2011 (-0600) #108 (Matthew L. Fidler)
 ;;    Version bump after integrating LaTex folding.
@@ -259,7 +262,7 @@ You can customize the key through `fold-dwim-org/trigger-key-block'."
                (when fold-dwim-org-strict
                    (progn
                      (back-to-indentation)
-                     (and (not (looking-at-end-of-line))
+                     (and (not (looking-at "$"))
                           (forward-char 1))))
                (point))))
         (when (fold-dwim-org/should-fold-p last-point ref-point (point))
