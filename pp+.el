@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:48:59 2013 (-0700)
+;; Last-Updated: Tue Dec  3 12:26:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 213
+;;     Update #: 215
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -50,6 +50,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/03 dadams
+;;     Swap TAB and M-TAB, so the 1st completes Lisp symbols and the 2nd indents.
 ;; 2013/02/15 dadams
 ;;     pp-eval-expression:
 ;;       Bind deactivate-mark to nil, like fix for Emacs bug #13724.
@@ -117,10 +119,10 @@
   "`read-expression-map' with some Emacs-Lisp key bindings.")
 (unless pp-read-expression-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map "\M-\t" 'lisp-complete-symbol)
-    (define-key map "\t" 'lisp-indent-line)
+    (define-key map "\M-\t" 'lisp-indent-line)
+    (define-key map "\t" 'lisp-complete-symbol)
     (define-key map "\e\C-q" 'indent-sexp)
-    (define-key map "\e\t" 'lisp-complete-symbol)
+    (define-key map "\e\t" 'lisp-indent-line)
     (define-key map "\e\C-x" 'eval-defun)
     (define-key map "\e\C-q" 'indent-pp-sexp)
     ;;(define-key map "\177" 'backward-delete-char-untabify)
