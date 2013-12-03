@@ -27,7 +27,7 @@ test.js:2:1:'console' was used before it was defined.
 Windows:
 
 <pre>
-$ ~/.emacs.d/jslint-reporter.bar test.js
+$ ~/.emacs.d/jslint-reporter.bat test.js
 test.js:2:1:'console' was used before it was defined.
 </pre>
 
