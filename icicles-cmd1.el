@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Dec  1 12:30:22 2013 (-0800)
+;; Last-Updated: Tue Dec  3 13:28:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26238
+;;     Update #: 26256
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -296,6 +296,7 @@
 ;;    `icicle-delete-file-or-directory', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
+;;    `icicle-find-file-abs-1',
 ;;    `icicle-file-of-content-apropos-complete-match',
 ;;    `icicle-find-file-or-expand-dir',
 ;;    `icicle-find-first-tag-action',
@@ -548,6 +549,13 @@
 (defvar color-theme-initialized)        ; In `color-theme.el'
 (defvar cookie-cache)
 (defvar custom-enabled-themes)          ; In `custom.el' (Emacs 24+)
+(defvar dabbrev-case-fold-search)       ; In `dabbrev.el'
+(defvar dabbrev-case-replace)           ; In `dabbrev.el'
+(defvar dabbrev-abbrev-char-regexp)     ; In `dabbrev.el'
+(defvar dabbrev--check-other-buffers)   ; In `dabbrev.el'
+(defvar dabbrev--last-abbreviation)     ; In `dabbrev.el'
+(defvar dabbrev--last-abbrev-location)  ; In `dabbrev.el'
+(defvar dabbrev-upcase-means-case-search) ; In `dabbrev.el'
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -6952,8 +6960,8 @@ candidates to yank in different ways (repeat)
                                       (if (boundp 'browse-kill-ring-alternative-ring)
                                           browse-kill-ring-alternative-ring
                                         (if (boundp 'secondary-selection-ring)
-                                            'secondary-selection-ring)
-                                        'kill-ring)))
+                                            'secondary-selection-ring
+                                          'kill-ring))))
    (icicle-candidate-alt-action-fn  `(lambda (seln) ; Add selection to the front of the other ring.
                                       ;; FREE here: BROWSE-KILL-RING-ALTERNATIVE-PUSH-FUNCTION,
                                       ;;            BROWSE-KILL-RING-ALTERNATIVE-RING.
@@ -7550,6 +7558,16 @@ behavior.  Instead, it always visits the chosen directory."
                  (if other-window-p #'find-file-other-window #'find-file))))
       (funcall fn file-or-dir 'WILDCARDS))))
 
+(defun icicle-find-file-abs-1 (file-or-dir read-only-p other-window-p)
+  "Helper for Icicles commands that find files using `completing-read'.
+FILE-OR-DIR is the target file or directory name.
+Non-nil READ-ONLY-P means visit the file in read-only mode.
+Non-nil OTHER-WINDOW-P means visit the file in another window."
+  (let ((fn  (if read-only-p
+                 (if other-window-p #'find-file-read-only-other-window #'find-file-read-only)
+               (if other-window-p #'find-file-other-window #'find-file))))
+    (funcall fn file-or-dir 'WILDCARDS)))
+
 
 (put 'icicle-find-file-read-only 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-read-only ()    ; Bound to `C-x C-r' in Icicle mode.
@@ -7957,7 +7975,8 @@ Ido-like behavior."                     ; Doc string
               (kill-buffer created-buf))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
-        (icicle-find-file-or-expand-dir file #'icicle-find-file-abs-of-content r-o nil)
+        (icicle-find-file-abs-1 file r-o nil)
+
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
         (dolist (fil  wildfiles)
@@ -8057,8 +8076,7 @@ Ido-like behavior."                     ; Doc string
               (kill-buffer created-buf))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
-        (icicle-find-file-or-expand-dir file #'icicle-find-file-abs-of-content-other-window
-                                        r-o 'OTHER-WINDOW-P)
+        (icicle-find-file-abs-1 file r-o 'OTHER-WINDOW-P)
 
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -8240,7 +8258,7 @@ Ido-like behavior."                     ; Doc string
               (kill-buffer created-buf))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
-        (icicle-find-file-or-expand-dir file #'icicle-recent-file-of-content r-o nil)
+        (icicle-find-file-abs-1 file r-o nil)
 
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -8342,8 +8360,7 @@ Ido-like behavior."                     ; Doc string
               (kill-buffer created-buf))))
 
         ;; Visit properly (mode, vars, handlers, hooks).
-        (icicle-find-file-or-expand-dir file #'icicle-recent-file-of-content-other-window
-                                        r-o 'OTHER-WINDOW-P)
+        (icicle-find-file-abs-1 file r-o 'OTHER-WINDOW-P)
 
         ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
