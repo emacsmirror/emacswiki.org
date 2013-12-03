@@ -13,10 +13,10 @@
 ;; Author: Fred White <fwhite@alum.mit.edu>
 ;; Adapted-by: Dave Love <d.love@dl.ac.uk>
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
-;;           : Randolph Fritz <rfritz@u.washington.edu>
+;;           : Randolph M. Fritz <randolph@panix.com>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.12 (2010-10-18)
-;; Serial Version: %Id: 41%
+;; Version: 1.4.13 (2013-06-29)
+;; Serial Version: %Id: 42%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
