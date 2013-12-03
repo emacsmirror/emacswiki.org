@@ -50,8 +50,8 @@ See URL `https://github.com/FND/jslint-reporter'."
                           (flycheck-mode)))
 </pre>
 
-9. Restart Emacs to make sure everything loads fine.
+7. Restart Emacs to make sure everything loads fine.
 
-10. Test by opening above <code>test.js</code>.
+8. Test by opening above <code>test.js</code>.
 
 [[image:JslintFlycheckOnWindowsScreenshot]]
