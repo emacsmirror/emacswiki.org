@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec  3 12:26:24 2013 (-0800)
+;; Last-Updated: Tue Dec  3 12:29:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 215
+;;     Update #: 216
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -51,7 +51,7 @@
 ;;; Change Log:
 ;;
 ;; 2013/12/03 dadams
-;;     Swap TAB and M-TAB, so the 1st completes Lisp symbols and the 2nd indents.
+;;     pp-read-expression-map: Swap TAB and M-TAB, so 1st completes Lisp symbols.
 ;; 2013/02/15 dadams
 ;;     pp-eval-expression:
 ;;       Bind deactivate-mark to nil, like fix for Emacs bug #13724.
