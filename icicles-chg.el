@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec  1 15:44:12 2013 (-0800)
+;; Last-Updated: Tue Dec  3 12:32:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10353
+;;     Update #: 10355
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7711,6 +7711,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/12/03 dadams
+;;     icicle-read-expression-map: Swap TAB and M-TAB, so TAB completes Lisp symbols.
 ;; 2013/11/19 dadams
 ;;     Removed: icicle-read-file-name-internal-fn.
 ;; 2013/09/21 dadams
