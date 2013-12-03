@@ -15,40 +15,25 @@ $ cd ~/.emacs.d/jslint-reporter
 $ node wrapper.js --upgrade
 </pre>
 
-4. Create an executable script:
+4. From EShell (CategoryEshell) test jslint-reporter
 
-* UNIX, <code>~/.emacs.d/jslint-reporter.sh</code>:
-
-<pre>
-#!/bin/sh
-node "`dirname \"$0\"`/jslint-reporter/wrapper.js" "$@"
-</pre>
-
-* Windows, <code>~/.emacs.d/jslint-reporter.js</code> (temp file is a [http://stackoverflow.com/questions/18748164/process-exit0-output-disappears workaround]):
+Unix:
 
 <pre>
-@ECHO OFF
-node c:\Temp\jslint-reporter-master\jslint-reporter-master\wrapper.js >"%TEMP%"\jslint-reporter.out 2>&1 %*
-TYPE "%TEMP%"\jslint-reporter.out
-</pre>
-
-5. Create a test file <code>test.js</code>:
-
-<pre>
-// Test
-console.log("Hello world!");
-</pre>
-
-6. From EShell (CategoryEshell) test jslint-reporter <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
-
-<pre>
-$ ~/.emacs.d/jslint-reporter.bat test.js
+$ ~/.emacs.d/jslint-reporter test.js
 test.js:2:1:'console' was used before it was defined.
 </pre>
 
-7. Install [https://github.com/flycheck/flycheck Flycheck].
+Windows:
 
-8. Add to <code>~/.emacs</code> <em>(on Windows replace <code>.sh</code> with <code>.bat</code>):</em>
+<pre>
+$ ~/.emacs.d/jslint-reporter.bar test.js
+test.js:2:1:'console' was used before it was defined.
+</pre>
+
+5. Install [https://github.com/flycheck/flycheck Flycheck].
+
+6. Add to <code>~/.emacs</code> <em>(on Windows <code>"~/.emacs.d/jslint-reporter.bat"</code>):</em>
 
 <pre>
 (require 'flycheck)
@@ -56,7 +41,7 @@ test.js:2:1:'console' was used before it was defined.
   "A JavaScript syntax and style checker based on JSLint Reporter.
 
 See URL `https://github.com/FND/jslint-reporter'."
-  :command ("~/.emacs.d/jslint-reporter.sh" source)
+  :command ("~/.emacs.d/jslint-reporter" source)
   :error-patterns
   ((error line-start (1+ nonl) ":" line ":" column ":" (message) line-end))
   :modes (js-mode js2-mode js3-mode))
