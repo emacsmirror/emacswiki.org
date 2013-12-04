@@ -20,7 +20,6 @@
 ^212\.107\.116\.232  # for spamming KeyboardMacros
 ^168\.62\.169\.221 # for spamming KeyboardMacros
 ^193\.105\.210\.30 # 2013-06-19 KeyboardMacros
-^87\.91\.151\.104  # 2013-06-19 KeyboardMacros
 ^46\.161\.41\.225 # 2013-09-14 KeyboardMacros
 ^31\.184\.238\.163 # 2013-06-19 KeyboardMacros
 \.amazonaws\.com  # for spamming various pages in April and May 2012
@@ -79,48 +78,17 @@ newemailcenter # spamming SiteMap Discussion
 ^88-190-61-195\.rev\.poneytelecom\.eu # 2013-08-23 SiteMap Discussion
 ^46\.119\.117\.90 # 2013-08-23 WikiModeDiscussion
 ^88-190-61-187\.rev\.poneytelecom\.eu # 2013-08-29 categoryforum
-^46-237-26-251\.pppoe\.yaroslavl\.ru # 2013-09-02 IciclesDiscussion
 ^88-190-61-104\.rev\.poneytelecom\.eu # 2013-09-08 categoryforum
-^178\.187\.255\.119 # 2013-09-10 ColemakKeyboard
 ^88-190-61-93\.rev\.poneytelecom\.eu # 2013-09-10 categoryforum
 ^27\.159\.235\.1 # 2013-09-21 KeyboardMacros
 ^88-190-61-93\.poneytelecom\.eu # 2013-09-25 categoryforum
 \.poneytelecom\.eu # 2013-10-08 categoryforum and others
-^114\.79\.148\.154\.dvois\.com # 2013-10-18 AnIntroductionToTheEmacsEditor
 ^user186\.mbenzforums\.net # 2013-11-04 categoryforum
 ^208\.177\.76\.14\.ptr\.us\.xo\.net # 2013-11-05 categoryforum
-^36\.248\.127\.188 # 2013-11-10 Icicles - Key Binding Discussion
-^194\.105\.50\.17 # 2013-11-10 Comments on InstallingPackages
 ^194\.150\.160\.3 # 2013-11-11 Comments on EmacsWikiProblems
-^116-103-116-216\.static\.tierzero\.net # 2013-11-14 Comments on 2013-05-07
-^208\.52\.180\.81 # 2013-11-14 Comments on 2013-05-07
 ^91\.189\.35\.213\.sta\.estpak\.ee # 2013-11-16 Comments on 2013-05-07
 ^moe\.gallup\.com # 2013-11-16 Comments on 2013-05-07
-^199\.116\.173\.7 # 2013-11-17 Comments on 2013-04-24
-^5ED436A7\.cm-7-5a\.dynamic\.ziggo\.nl # 2013-11-17 Comments on 2013-04-24
-^e179189121\.adsl\.alicedsl\.de # 2013-11-17 Comments on 2013-04-24
-^host154-182-static\.205-37-b\.business\.telecomitalia\.it # 2013-11-17 Comments on 2013-04-24
 ^nat-gw0\.billbird\.pl # 2013-11-17 Comments on 2013-04-24
-^113\.196\.70\.7\.LL\.static\.sparqnet\.net # 2013-11-17 Comments on InstallingPackages
-^77-20-200-190-dynip\.superkabel\.de # 2013-11-17 Comments on InstallingPackages
-^host197-86-static\.114-81-b\.business\.telecomitalia\.it # 2013-11-17 Comments on InstallingPackages
-^mail\.lingen\.me # 2013-11-17 Comments on InstallingPackages
-^customer-189-254-87-227-sta\.uninet-ide\.com\.mx # 2013-11-17 Comments on EmacsWikiProblems
-^66-249-167-247\.static-ip\.telepacific\.net # 2013-11-18 Comments on JianliZhao
-^99-195-150-107\.dyn\.centurytel\.net # 2013-11-18 Comments on JianliZhao
-^180\.244\.12\.13 # 2013-11-18 Comments on EmacsWikiSuggestions
 ^203\.125\.120\.109 # 2013-11-19 Comments on InstallingPackages
-^75\.78\.176\.112 # 2013-11-19 Comments on 2013-04-24
-^70\.96\.228\.67 # 2013-11-19 Comments on InstallingPackages
-^546B653E\.cm-12-4b\.dynamic\.ziggo\.nl # 2013-11-20 Comments on 2013-05-07
 ^mail\.coker\.com # 2013-11-20 Comments on 2013-05-07
 ^urdur\.rhi\.hi\.is # 2013-11-23 Comments on EmacsWikiProblems
-^vance002\.net\.gov\.bc\.ca # 2013-11-23 Comments on EmacsWikiProblems
-^he5\.newnet-marketing\.de # 2013-11-25 Comments on EmacsWikiProblems
-^107\.18\.110\.196 # 2013-11-25 Comments on 2013-04-24
-^wsip-98-174-228-245\.ph\.ph\.cox\.net # 2013-11-25 Comments on 2013-04-24
-^manning1\.torservers\.net # 2013-11-28 KeyboardMacros
-^195\.211\.94\.11 # 2013-11-30 Comments on EmacsWikiProblems
-^v10023\.1blu\.de # 2013-11-30 Comments on EmacsWikiProblems
-^200\.62\.179\.154 # 2013-12-01 Comments on 2013-04-24
-^217\.193\.140\.179 # 2013-12-01 Comments on 2013-04-24
