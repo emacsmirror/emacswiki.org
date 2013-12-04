@@ -1,12 +1,7 @@
 portrait:http://emacswiki.org/pics/emacs.png
 GNU Emacs is a text editor for Über-Geeks.
-
-Or: GNU Emacs is the [[extensible]], customizable, SelfDocumenting real-time
+GNU Emacs is the [[extensible]], customizable, SelfDocumenting real-time
 display editor.
-
-* [http://www.gnu.org/software/emacs/ Homepage]
-* [http://www.gnu.org/software/emacs/#Obtaining Download]
-* WikiPedia:Emacs -- extensive overview, with historical description and up-to-date reference links
 
 GNU stands for "GNU's Not Unix," and it represents the work of the
 FreeSoftwareFoundation (FSF) and its founder RichardStallman.  Part of
@@ -18,7 +13,11 @@ found in the implementation of the operating system known as GNU/Linux.
 
 See EmacsHistory for its history.
 
-The latest release of GNU Emacs is 24.1.  The GNU Emacs software is
+* [http://www.gnu.org/software/emacs/ Homepage]
+* [http://www.gnu.org/software/emacs/#Obtaining Download]
+* WikiPedia:Emacs -- extensive overview, with historical description and up-to-date reference links
+
+The latest release of GNU Emacs is 24.3.  The GNU Emacs software is
 subject to version 3 of the GnuGeneralPublicLicense.
 
 FSF Emacs or GNU Emacs?
@@ -27,7 +26,7 @@ FSF Emacs or GNU Emacs?
 
 says
 
-   GNU Emacs 22.1.1 (i686-pc-linux-gnu, GTK+ Version 2.8.20) of 2007-06-04 on cyd
+   GNU Emacs 24.3.1 (i686-apple-darwin, NS apple-appkit-1038.36) of 2013-03-13 on bob.porkrind.org
 
 So now you know.
 
