@@ -11,14 +11,19 @@ __How to Vote__
 
 __Things to Remember (Things to avoid) __
 
-# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
 # Speak for yourself (not your friends).  Always increment the upvote by one.
+# Don't downvote
+# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
 # No Third-Party packages.   
 # Specify packages that ship with Vanilla GNU Emacs
 # Avoid Major modes like Org or Programming modes.  
 # Avoid packages like Gnus
 # Give preference to minor modes (that you enable globally)
+
+__Use Talk page__
+
+If you feel like adding an extra note to your vote, use [[Comments_on_FrequentlyEnabledPackages_Emacs244_Survey]].
 
 __Survey__
 
