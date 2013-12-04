@@ -1,5 +1,5 @@
 == Definition ==
-ConcurrentEmacs is a page about performing actions "in the background" without resorting to OperatingSystem level threads.  See: NoThreading
+This is a page about performing actions "in the background" without resorting to OperatingSystem level threads.  See: NoThreading
 
 == Justification ==
 Emacs is the start of a great Operating System, but sometimes blocks the entire interface instead of just the buffer with pending IO.
