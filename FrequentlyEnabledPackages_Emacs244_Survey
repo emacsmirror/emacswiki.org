@@ -27,7 +27,11 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
+<<<<<<< ancestor
+Number of people surveyed: 25
+=======
 Number of people surveyed: 26
+>>>>>>> other
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -35,24 +39,32 @@ Number of people surveyed: 26
 | <50>                                               |                     |
 | abbrev-mode                                        |                   7 |
 | auto-encryption-mode                               |                   3 |
+<<<<<<< you
+| auto-fill-mode                                     |                   7 |
+| blink-cursor-mode                                  |                  24 |
+||||||| ancestor
+| auto-fill-mode                                     |                   6 |
+| blink-cursor-mode                                  |                  24 |
+=======
 | auto-fill-mode                                     |                   6 |
 | blink-cursor-mode                                  |                  25 |
+>>>>>>> other
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                  18 |
 | compilation-minor-mode                             |                   2 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   11 |
-| desktop-save-mode                                  |                   5 |
+| delete-selection-mode                              |                   12 |
+| desktop-save-mode                                  |                   6 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                   9 |
 | display-time-mode                                  |                   5 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                   11 |
+| eldoc-mode                                         |                   12 |
 | electric-indent-mode                               |                   3 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   2 |
-| flyspell-mode                                      |                   10 |
+| flyspell-mode                                      |                   11 |
 | global-cwarn-mode                                  |                   1 |
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   4 |
@@ -63,16 +75,16 @@ Number of people surveyed: 26
 | hs-minor-mode                                      |                   3 |
 | ibuffer                                            |                  15 |
 | icomplete-mode                                     |                   8 |
-| ido-everywhere                                     |                   5 |
-| ido-mode                                           |                  17 |
+| ido-everywhere                                     |                   6 |
+| ido-mode                                           |                  18 |
 | imenu                                              |                   3 |
 | ispell-minor-mode                                  |                   5 |
 | kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   5 |
+| line-number-mode                                   |                   6 |
 | linum-mode                                         |                   3 |
 | org-capture                                        |                   4 |
 | org-src-mode                                       |                   2 |
-| recentf-mode                                       |                   9 |
+| recentf-mode                                       |                   10 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
 | savehist-mode                                      |                   9 |
@@ -83,11 +95,11 @@ Number of people surveyed: 26
 | size-indication-mode                               |                   4 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   2 |
-| transient-mark-mode                                |                   8 |
-| uniquify                                           |                  17 |
+| transient-mark-mode                                |                   9 |
+| uniquify                                           |                  18 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                   8 |
-| windmove                                           |                   9 |
+| which-function-mode                                |                   9 |
+| windmove                                           |                   10 |
 | winner-mode                                        |                  11 |
 }}}
 
