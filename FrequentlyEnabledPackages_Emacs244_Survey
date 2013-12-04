@@ -27,11 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-<<<<<<< ancestor
-Number of people surveyed: 25
-=======
 Number of people surveyed: 26
->>>>>>> other
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -39,16 +35,10 @@ Number of people surveyed: 26
 | <50>                                               |                     |
 | abbrev-mode                                        |                   7 |
 | auto-encryption-mode                               |                   3 |
-<<<<<<< you
 | auto-fill-mode                                     |                   7 |
 | blink-cursor-mode                                  |                  24 |
-||||||| ancestor
-| auto-fill-mode                                     |                   6 |
-| blink-cursor-mode                                  |                  24 |
-=======
 | auto-fill-mode                                     |                   6 |
 | blink-cursor-mode                                  |                  25 |
->>>>>>> other
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                  18 |
 | compilation-minor-mode                             |                   2 |
