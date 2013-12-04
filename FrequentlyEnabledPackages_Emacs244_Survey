@@ -28,19 +28,27 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 11
+Number of people surveyed: 12
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   2 |
+<<<<<<< you
+| auto-complete                                      |                   3 |
+| column-number-mode                                 |                   7 |
+||||||| ancestor
+| auto-complete                                      |                   2 |
+| column-number-mode                                 |                   6 |
+=======
 | auto-complete                                      |                   2 |
 | bs-show                                            |                   1 |
 | column-number-mode                                 |                   6 |
+>>>>>>> other
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   4 |
+| delete-selection-mode                              |                   5 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   2 |
 | dired-x                                            |                   4 |
@@ -49,14 +57,16 @@ Number of people surveyed: 11
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
+| expand-region                                      |                   1 |
 | flyspell-mode                                      |                   3 |
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   2 |
-| global-linnum-mode                                 |                   3 |
+| global-linnum-mode                                 |                   4 |
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
 | hippie-exp                                         |                   4 |
 | ibuffer                                            |                   8 |
+| icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   3 |
 | ido-mode                                           |                   8 |
 | imenu                                              |                   1 |
@@ -66,16 +76,19 @@ Number of people surveyed: 11
 | paredit                                            |                   2 |
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   3 |
-| saveplace                                          |                   4 |
-| show-paren-mode                                    |                  10 |
+| saveplace                                          |                   5 |
+| show-paren-mode                                    |                  11 |
 | size-indication-mode                               |                   2 |
+| subword-mode                                       |                   1 |
+| switch-window                                      |                   1 |
 | uniquify                                           |                   5 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   2 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   6 |
-| winner-mode                                        |                   4 |
+| winner-mode                                        |                   5 |
 }}}
+
 
 __How to keep the Table sorted__
 
