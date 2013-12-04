@@ -12,9 +12,8 @@ __Things to Remember (Things to avoid) __
 
 # Speak for yourself (not your friends).  Always increment the upvote by one.
 # C-h f on that entry should work  (For example, Use ido-mode instead of saying ido).  This is to avoid multiple entries that point to the same package.
-# No Third-Party packages
-# Avoid Major modes like Org or Programming modes.  Give preference to minor modes (that are enabled globally)
-
+# No Third-Party packages.   Specify packages that ship with Vanilla GNU Emacs
+# Avoid Major modes like Org or Programming modes.  Avoid packages like Gnus.  Give preference to minor modes (that are enabled globally)
 
 __How to keep the Table sorted__
 
@@ -25,15 +24,6 @@ The table is in Org-mode format.  If you add lots of packages, here is a recipe 
 # With cursor on the table, C-c C-c
 # Put your cursor on Column-1 and do M-x org-table-sort-lines. Choose [a] alphabetic when prompted.
 # Copy back the table here.
-
-__Guidelines__
-
-# Avoid mentioning big packages like Gnus, Org ec.  Global minor modes are good candidates to plug in to this list.. The intention is here to collect information on packages that are useful for ALL users.  
-
-
-# If you want to qualify your vote with an extra comment, please add it to the Talk page.
-
-# No Third-Party packages.  Please mention libraries that are part of Gnu Emacs only. 
 
 __Background information__
 
