@@ -6,25 +6,16 @@ Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061
 
 __How to Vote__
 
-# If you use a package that is in the list, please upvote it by incrementing its vote by 1.  
+# If you use a package that is in the list, upvote it by incrementing its vote by 1.  
 # If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.  
 
 __Things to Remember (Things to avoid) __
 
+# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
 # Speak for yourself (not your friends).  Always increment the upvote by one.
 # C-h f on that entry should work  (For example, Use ido-mode instead of saying ido).  This is to avoid multiple entries that point to the same package.
 # No Third-Party packages.   Specify packages that ship with Vanilla GNU Emacs
 # Avoid Major modes like Org or Programming modes.  Avoid packages like Gnus.  Give preference to minor modes (that are enabled globally)
-
-__How to keep the Table sorted__
-
-The table is in Org-mode format.  If you add lots of packages, here is a recipe to keep the table sorted.
-
-# Copy the table to *scratch* buffer.
-# M-x orgtbl-mode
-# With cursor on the table, C-c C-c
-# Put your cursor on Column-1 and do M-x org-table-sort-lines. Choose [a] alphabetic when prompted.
-# Copy back the table here.
 
 __Background information__
 
@@ -74,8 +65,15 @@ __Survey__
 | windmove                                           |                   1 |
 | winner-mode                                        |                   1 |
 
-
-
-
-
 }}}
+
+__How to keep the Table sorted__
+
+The table is in Org-mode format.  If you add lots of packages, here is a recipe to keep the table sorted.
+
+# Copy the table to *scratch* buffer.
+# M-x orgtbl-mode
+# With cursor on the table, C-c C-c
+# Put your cursor on Column-1 and do M-x org-table-sort-lines. Choose [a] alphabetic when prompted.
+# Copy back the table here.
+
