@@ -28,21 +28,21 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 21
+Number of people surveyed: 22
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   5 |
-| auto-complete                                      |                   9 |
+| auto-complete                                      |                  10 |
 | auto-encryption-mode                               |                   2 |
 | auto-fill-mode                                     |                   4 |
 | blink-cursor-mode                                  |                  21 |
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                  15 |
 | compilation-minor-mode                             |                   2 |
-| cua-mode                                           |                   1 |
+| cua-mode                                           |                   2 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   9 |
 | desktop-save-mode                                  |                   2 |
@@ -50,7 +50,7 @@ Number of people surveyed: 21
 | dired-x                                            |                   8 |
 | display-time-mode                                  |                   4 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                   8 |
+| eldoc-mode                                         |                   9 |
 | electric-indent-mode                               |                   3 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   2 |
@@ -64,12 +64,12 @@ Number of people surveyed: 21
 | gnus-dired-mode                                    |                   1 |
 | hide-ifdef-mode                                    |                   1 |
 | hippie-exp                                         |                   6 |
-| hs-minor-mode                                      |                   1 |
+| hs-minor-mode                                      |                   2 |
 | ibuffer                                            |                  13 |
 | icicle-mode                                        |                   1 |
-| icomplete-mode                                     |                   6 |
+| icomplete-mode                                     |                   7 |
 | ido-everywhere                                     |                   4 |
-| ido-mode                                           |                  16|
+| ido-mode                                           |                  16 |
 | imenu                                              |                   2 |
 | ispell-minor-mode                                  |                   4 |
 | kill-whole-line                                    |                   1 |
@@ -78,26 +78,26 @@ Number of people surveyed: 21
 | org-capture-mode                                   |                   4 |
 | org-src-mode                                       |                   2 |
 | paredit                                            |                   6 |
-| recentf-mode                                       |                   6 |
+| recentf-mode                                       |                   7 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
-| savehist-mode                                      |                   6 |
+| savehist-mode                                      |                   7 |
 | saveplace                                          |                   7 |
 | server-mode                                        |                   2 |
 | shell-dirtrack-mode                                |                   1 |
-| show-paren-mode                                    |                  17 |
+| show-paren-mode                                    |                  18 |
 | size-indication-mode                               |                   3 |
 | subword-mode                                       |                   2 |
 | switch-window                                      |                   1 |
 | tooltip-mode                                       |                   1 |
-| transient-mark-mode                                |                   4 |
-| uniquify                                           |                   12 |
+| transient-mark-mode                                |                   5 |
+| uniquify                                           |                  13 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   6 |
 | whitespace-global-mode                             |                   2 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   7 |
-| winner-mode                                        |                   9 |
+| winner-mode                                        |                  10 |
 }}}
 
 __How to keep the Table sorted__
