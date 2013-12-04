@@ -1,0 +1,20 @@
+{{{
+
+| column-number-mode       | 1 |
+| desktop-save-mode        | 1 |
+| electric-indent-mode     | 1 |
+| electric-pair-mode       | 1 |
+| global-goto-address-mode | 1 |
+| global-hi-lock-mode      | 1 |
+| gnus-dired-mode          | 1 |
+| icomplete-mode           | 1 |
+| ido-mode                 | 1 |
+| savehist-mode            | 1 |
+| show-paren-mode          | 1 |
+| url-handler-mode         | 1 |
+| which-function-mode      | 1 |
+| whitespace-global-modes  | 1 |
+
+
+
+}}}
