@@ -9,3 +9,13 @@ There is no way to make this post sticky. I've added it to [[News]], however.
 
 -- AlexSchroeder 2013-12-04 07:26 UTC
 
+
+----
+
+Some questions:
+
+# I read on the mailing-list that iswitchb was deprecated. [http://article.gmane.org/gmane.emacs.devel/166061] Now what?
+# What about suggested default settings such as dired-recursive-deletes, dired-recursive-copies, dired-dwim-target?
+
+-- AlexSchroeder 2013-12-04 13:12 UTC
+
