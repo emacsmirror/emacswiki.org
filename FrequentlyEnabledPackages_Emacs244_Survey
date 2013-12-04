@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 12
+Number of people surveyed: 13
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -37,19 +37,20 @@ Number of people surveyed: 12
 | abbrev-mode                                        |                   2 |
 | auto-complete                                      |                   3 |
 | bs-show                                            |                   1 |
-| column-number-mode                                 |                   7 |
+| column-number-mode                                 |                   8 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   5 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   2 |
 | dired-x                                            |                   4 |
-| display-time                                       |                   1 |
+| display-time                                       |                   2 |
 | eldoc-mode                                         |                   6 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
 | expand-region                                      |                   1 |
+| ffap-bindings                                      |                   1 |
 | flyspell-mode                                      |                   3 |
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   2 |
@@ -69,13 +70,13 @@ Number of people surveyed: 12
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   3 |
 | saveplace                                          |                   5 |
-| show-paren-mode                                    |                  11 |
+| show-paren-mode                                    |                  12 |
 | size-indication-mode                               |                   2 |
 | subword-mode                                       |                   1 |
 | switch-window                                      |                   1 |
-| uniquify                                           |                   5 |
+| uniquify                                           |                   6 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                   2 |
+| which-function-mode                                |                   3 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   6 |
 | winner-mode                                        |                   5 |
