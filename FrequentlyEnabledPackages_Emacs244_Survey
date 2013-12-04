@@ -19,6 +19,7 @@ __Guidelines__
 
 # Avoid mentioning big packages like Gnus, Org ec.  Global minor modes are good candidates to plug in to this list.. The intention is here to collect information on packages that are useful for ALL users.  
 
+
 # If you want to qualify your vote with an extra comment, please add it to the Talk page.
 
 # No Third-Party packages.  Please mention libraries that are part of Gnu Emacs only. 
