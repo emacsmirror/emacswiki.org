@@ -13,9 +13,12 @@ __Things to Remember (Things to avoid) __
 
 # Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
 # Speak for yourself (not your friends).  Always increment the upvote by one.
-# C-h f on that entry should work  (For example, Use ido-mode instead of saying ido).  This is to avoid multiple entries that point to the same package.
-# No Third-Party packages.   Specify packages that ship with Vanilla GNU Emacs
-# Avoid Major modes like Org or Programming modes.  Avoid packages like Gnus.  Give preference to minor modes (that are enabled globally)
+# C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
+# No Third-Party packages.   
+# Specify packages that ship with Vanilla GNU Emacs
+# Avoid Major modes like Org or Programming modes.  
+# Avoid packages like Gnus
+# Give preference to minor modes (that you enable globally)
 
 __Survey__
 
