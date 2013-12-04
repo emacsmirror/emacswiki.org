@@ -25,10 +25,12 @@ Introspection: EmacsDebugger seems like it must do this, but maybe I'm thinking 
 
 == Practical Approaches to Concurrency in use today ==
 
-//Accept that you can do a lot with just multiple async processes - // this is the [[NodeJs]] approach; a single Emacs can ask another process to do something and use ProcessSentinels and ProcessFilterFunctions to do quite a lot of processing apparently concurrently but really just in an event loop. As long as the ProcessFilterFunction is not too slow this is fine. Elnode takes this approach to making a scalable webserver in EmacsLisp.
+*Accept that you can do a lot with just multiple async processes* -- this is the [[NodeJs]] approach; a single Emacs can ask another process to do something and use ProcessSentinels and ProcessFilterFunctions to do quite a lot of processing apparently concurrently but really just in an event loop. As long as the ProcessFilterFunction is not too slow this is fine. Elnode takes this approach to making a scalable webserver in EmacsLisp.
 
-//Spawn more Emacs processes to do work for you - // [[JohnWiegley]]'s [[Async]] takes this approach, [[Elnode]] has an alternative and [[Elpakit]] another alternative. No one has unified this approach yet.
-  
+*Spawn more Emacs processes to do work for you* -- [[JohnWiegley]]'s [[Async]] takes this approach, [[Elnode]] has an alternative and [[Elpakit]] another alternative. No one has unified this approach yet.
+
+*Defer asynchronous tasks* -- this is what the [https://github.com/kiwanami/emacs-deferred emacs-deferred] library does.
+It provides facilities to manage asynchronous tasks. The API and implementations were translated from JSDeferred and Mochikit.Async in Javascript.
 
 == Research ==
 CoRoutines, jit-lock-stealth*, ECB, Lisp:later-do.el, Lisp:coroutine.el, Lisp:tagbody.el, AsyncEval
