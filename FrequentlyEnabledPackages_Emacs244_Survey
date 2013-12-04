@@ -1,14 +1,20 @@
-As part of Emacs-24.4 release,  [[<nobr>http://thread.gmane.org/gmane.emacs.devel/165883</nobr> emacs-devel is conducting a survey]].  We want to find out  packages/modes that you enable by default.
+As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883</nobr> emacs-devel is conducting a survey]].  We want to find out  packages/modes that you enable by default.
+
+This is a __two part survey__ - 
+
+# Minor mode
+# Major/Derived modes
 
 __Interesting Titbit__
 
-Based on popular demand,   [[<nobr>http://permalink.gmane.org/gmane.emacs.devel/166061</nobr>  Uniquify will be enabled by default]] in Emacs-24.4
+Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061  Uniquify will be enabled by default]] in Emacs-24.4
 
 __How to Vote__
 
 # Increment __Number of People surveyed__
 # If you use a package that is in the list, upvote it by incrementing its vote by 1.
 # If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.
+
 
 __Things to Remember (Things to avoid) __
 
@@ -18,9 +24,8 @@ __Things to Remember (Things to avoid) __
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
 # No Third-Party packages.
 # Specify packages that ship with Vanilla GNU Emacs
-# Avoid Major modes like Org or Programming modes.
-# Avoid packages like Gnus
 # Give preference to minor modes (that you enable globally)
+# Optionally participate in the Major mode/Derived mode survey.
 
 __Use Talk page__
 
@@ -285,6 +290,8 @@ Number of people surveyed: 17
 __ Major/Derived Mode Survey__
 
 Number of people surveyed: 0
+
+{{{
 
 | Major/Derived Modes                                | User Count |
 |----------------------------------------------------+------------|
@@ -584,6 +591,7 @@ Number of people surveyed: 0
 | wordstar-mode                                      |          0 |
 | xesam-mode                                         |          0 |
 
+}}}
 
 __How to keep the Table sorted__
 
