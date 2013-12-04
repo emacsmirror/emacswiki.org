@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 4
+Number of people surveyed: 5
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -38,10 +38,10 @@ Number of people surveyed: 4
 | column-number-mode                                 |                   2 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   2 |
+| delete-selection-mode                              |                   3 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   1 |
-| dired-x                                            |                   1 |
+| dired-x                                            |                   2 |
 | display-time                                       |                   1 |
 | eldoc-mode                                         |                   2 |
 | electric-indent-mode                               |                   2 |
@@ -51,12 +51,12 @@ Number of people surveyed: 4
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   1 |
 | global-linnum-mode                                 |                   2 |
-| global-subword-mode                                |                   3 |
+| global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
-| hippie-exp                                         |                   1 |
-| ibuffer                                            |                   2 |
+| hippie-exp                                         |                   2 |
+| ibuffer                                            |                   3 |
 | icomplete-mode                                     |                   3 |
-| ido-mode                                           |                   3 |
+| ido-mode                                           |                   4 |
 | imenu                                              |                   1 |
 | ispell                                             |                   2 |
 | kill-whole-line                                    |                   1 |
@@ -65,9 +65,9 @@ Number of people surveyed: 4
 | recentf-mode                                       |                   1 |
 | savehist-mode                                      |                   1 |
 | saveplace                                          |                   1 |
-| show-paren-mode                                    |                   3 |
+| show-paren-mode                                    |                   4 |
 | size-indication-mode                               |                   1 |
-| uniquify                                           |                   2 |
+| uniquify                                           |                   3 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   1 |
 | whitespace-global-modes                            |                   1 |
@@ -84,4 +84,3 @@ The table is in Org-mode format.  If you add lots of packages, here is a recipe 
 # With cursor on the table, C-c C-c
 # Put your cursor on Column-1 and do M-x org-table-sort-lines. Choose [a] alphabetic when prompted.
 # Copy back the table here.
-
