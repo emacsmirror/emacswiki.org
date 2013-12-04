@@ -28,31 +28,31 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 13
+Number of people surveyed: 14
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   2 |
-| auto-complete                                      |                   4 |
+| abbrev-mode                                        |                   3 |
+| auto-complete                                      |                   5 |
 | bs-show                                            |                   2 |
-| column-number-mode                                 |                   8 |
+| column-number-mode                                 |                   9 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   6 |
+| delete-selection-mode                              |                   7 |
 | desktop-save-mode                                  |                   2 |
-| dired-hide-details-mode                            |                   2 |
-| dired-x                                            |                   5 |
-| display-time                                       |                   2 |
+| dired-hide-details-mode                            |                   3 |
+| dired-x                                            |                   6 |
+| display-time                                       |                   3 |
 | eldoc-mode                                         |                   7 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   2 |
 | expand-region                                      |                   1 |
-| flyspell-mode                                      |                   3 |
+| flyspell-mode                                      |                   4 |
 | global-goto-address-mode                           |                   1 |
-| global-hi-lock-mode                                |                   2 |
+| global-hi-lock-mode                                |                   3 |
 | global-linnum-mode                                 |                   4 |
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
@@ -60,23 +60,22 @@ Number of people surveyed: 13
 | ibuffer                                            |                   9 |
 | icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   3 |
-| ido-mode                                           |                   9 |
+| ido-mode                                           |                   10|
 | imenu                                              |                   2 |
-| ispell                                             |                   2 |
+| ispell                                             |                   3 |
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
 | paredit                                            |                   3 |
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   3 |
 | saveplace                                          |                   6 |
-| show-paren-mode                                    |                  12 |
+| show-paren-mode                                    |                  13 |
 | size-indication-mode                               |                   3 |
 | subword-mode                                       |                   1 |
 | switch-window                                      |                   1 |
-| uniquify                                           |                   6 |
+| uniquify                                           |                   7 |
 | url-handler-mode                                   |                   1 |
-| visual-line-mode                                     |                   0 |
-| which-function-mode                                |                   3 |
+| which-function-mode                                |                   4 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   7 |
 | winner-mode                                        |                   6 |
