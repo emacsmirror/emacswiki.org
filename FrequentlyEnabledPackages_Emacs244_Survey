@@ -1,6 +1,6 @@
 As part of Emacs-24.4 release, emacs-devel is conducting a survey.  They want to find out the most frequently packages/enabled modes enabled by default in Vanilla Emacs.
 
-# If you use a package that is in the list, please upvote it.  
+# If you use a package that is in the list, please upvote it by incrementing it's vote by 1.  
 # If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.  
 
 The table is in Org-mode format.  If you add lots of packages, here is a recipe to keep the table sorted.
