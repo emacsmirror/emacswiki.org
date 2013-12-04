@@ -9,6 +9,11 @@ __How to Vote__
 # If you use a package that is in the list, please upvote it by incrementing its vote by 1.  
 # If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.  
 
+__Things to Remember (Things to avoid) __
+
+# Speak for yourself (not your friends).  Always increment the upvote by one.
+# C-h f on that entry should work  (For example, Use ido-mode instead of saying ido).  This is to avoid multiple entries that point to the same package.
+
 __How to keep the Table sorted__
 
 The table is in Org-mode format.  If you add lots of packages, here is a recipe to keep the table sorted.
