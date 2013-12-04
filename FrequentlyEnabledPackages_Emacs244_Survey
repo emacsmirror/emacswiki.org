@@ -1,19 +1,34 @@
 {{{
 
-| column-number-mode       | 1 |
-| desktop-save-mode        | 1 |
-| electric-indent-mode     | 1 |
-| electric-pair-mode       | 1 |
-| global-goto-address-mode | 1 |
-| global-hi-lock-mode      | 1 |
-| gnus-dired-mode          | 1 |
-| icomplete-mode           | 1 |
-| ido-mode                 | 1 |
-| savehist-mode            | 1 |
-| show-paren-mode          | 1 |
-| url-handler-mode         | 1 |
-| which-function-mode      | 1 |
-| whitespace-global-modes  | 1 |
+| Modes                    | Upvote |
+|--------------------------+--------|
+| column-number-mode       |      1 |
+| cua-mode                 |      1 |
+| cua-selection-mode       |      1 |
+| delete-selection-mode    |      1 |
+| desktop-save-mode        |      1 |
+| dired-hide-details-mode  |      1 |
+| dired-x                  |      1 |
+| electric-indent-mode     |      1 |
+| electric-pair-mode       |      1 |
+| global-goto-address-mode |      1 |
+| global-hi-lock-mode      |      1 |
+| global-linnum-mode       |      1 |
+| global-subword-mode      |      1 |
+| gnus-dired-mode          |      1 |
+| icomplete-mode           |      1 |
+| ido-mode                 |      1 |
+| iswitchb-mode            |      1 |
+| recentf-mode             |      1 |
+| savehist-mode            |      1 |
+| saveplace                |      1 |
+| show-paren-mode          |      1 |
+| size-indication-mode     |      1 |
+| uniquify                 |      1 |
+| url-handler-mode         |      1 |
+| which-function-mode      |      1 |
+| whitespace-global-modes  |      1 |
+| winner-mode              |      1 |
 
 
 
