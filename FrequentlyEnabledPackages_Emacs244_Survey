@@ -17,8 +17,7 @@ __Things to Remember (Things to avoid) __
 # Don't downvote
 # Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1.  (Only add entries for minor-modes you actually use!)
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
-# No Third-Party packages.
-# Specify packages that ship with Vanilla GNU Emacs
+# '''No Third-Party packages.''' -- specify only packages that ship with Vanilla GNU Emacs
 # Give preference to minor modes (that you enable globally)
 # Optionally participate in the Major mode/Derived mode survey.
 
@@ -35,7 +34,6 @@ Number of people surveyed: 24
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   7 |
-| auto-complete                                      |                  12 |
 | auto-encryption-mode                               |                   3 |
 | auto-fill-mode                                     |                   6 |
 | blink-cursor-mode                                  |                  24 |
@@ -54,30 +52,26 @@ Number of people surveyed: 24
 | electric-indent-mode                               |                   3 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   2 |
-| expand-region                                      |                   3 |
 | flyspell-mode                                      |                   10 |
 | global-cwarn-mode                                  |                   1 |
-| global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   5 |
-| global-linnum-mode                                 |                   4 |
+| global-linum-mode                                  |                   4 |
 | global-subword-mode                                |                   5 |
-| gnus-dired-mode                                    |                   1 |
+| global-whitespace-mode                             |                   3 |
 | hide-ifdef-mode                                    |                   1 |
 | hippie-exp                                         |                   7 |
 | hs-minor-mode                                      |                   2 |
 | ibuffer                                            |                  14 |
-| icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   7 |
 | ido-everywhere                                     |                   5 |
-| ido-mode                                           |                  18 |
+| ido-mode                                           |                  17 |
 | imenu                                              |                   3 |
 | ispell-minor-mode                                  |                   5 |
 | kill-whole-line                                    |                   1 |
 | line-number-mode                                   |                   4 |
 | linum-mode                                         |                   3 |
-| org-capture-mode                                   |                   4 |
+| org-capture                                        |                   4 |
 | org-src-mode                                       |                   2 |
-| paredit                                            |                   6 |
 | recentf-mode                                       |                   9 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
@@ -88,14 +82,11 @@ Number of people surveyed: 24
 | show-paren-mode                                    |                  20 |
 | size-indication-mode                               |                   4 |
 | subword-mode                                       |                   3 |
-| switch-window                                      |                   1 |
 | tooltip-mode                                       |                   2 |
 | transient-mark-mode                                |                   7 |
 | uniquify                                           |                  16 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   7 |
-| whitespace-global-mode                             |                   3 |
-| whitespace-global-modes                            |                   1 |
 | windmove                                           |                   9 |
 | winner-mode                                        |                  11 |
 }}}
