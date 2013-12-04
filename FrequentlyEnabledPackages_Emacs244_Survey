@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 22
+Number of people surveyed: 23
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -37,15 +37,15 @@ Number of people surveyed: 22
 | abbrev-mode                                        |                   6 |
 | auto-complete                                      |                  11 |
 | auto-encryption-mode                               |                   2 |
-| auto-fill-mode                                     |                   4 |
-| blink-cursor-mode                                  |                  21 |
+| auto-fill-mode                                     |                   5 |
+| blink-cursor-mode                                  |                  22 |
 | bs-show                                            |                   2 |
-| column-number-mode                                 |                  15 |
+| column-number-mode                                 |                  16 |
 | compilation-minor-mode                             |                   2 |
 | cua-mode                                           |                   2 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   10 |
-| desktop-save-mode                                  |                   2 |
+| desktop-save-mode                                  |                   3 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                   8 |
 | display-time-mode                                  |                   4 |
@@ -73,8 +73,8 @@ Number of people surveyed: 22
 | imenu                                              |                   2 |
 | ispell-minor-mode                                  |                   4 |
 | kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   2 |
-| linum-mode                                         |                   2 |
+| line-number-mode                                   |                   3 |
+| linum-mode                                         |                   3 |
 | org-capture-mode                                   |                   4 |
 | org-src-mode                                       |                   2 |
 | paredit                                            |                   6 |
@@ -91,7 +91,7 @@ Number of people surveyed: 22
 | switch-window                                      |                   1 |
 | tooltip-mode                                       |                   2 |
 | transient-mark-mode                                |                   6 |
-| uniquify                                           |                  14 |
+| uniquify                                           |                  15 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   6 |
 | whitespace-global-mode                             |                   2 |
