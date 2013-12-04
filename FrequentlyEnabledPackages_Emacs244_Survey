@@ -35,22 +35,21 @@ Number of people surveyed: 13
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   2 |
-| auto-complete                                      |                   3 |
-| bs-show                                            |                   1 |
+| auto-complete                                      |                   4 |
+| bs-show                                            |                   2 |
 | column-number-mode                                 |                   8 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   5 |
+| delete-selection-mode                              |                   6 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   2 |
-| dired-x                                            |                   4 |
+| dired-x                                            |                   5 |
 | display-time                                       |                   2 |
-| eldoc-mode                                         |                   6 |
+| eldoc-mode                                         |                   7 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
-| epa-file-enable                                    |                   1 |
+| epa-file-enable                                    |                   2 |
 | expand-region                                      |                   1 |
-| ffap-bindings                                      |                   1 |
 | flyspell-mode                                      |                   3 |
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   2 |
@@ -58,28 +57,28 @@ Number of people surveyed: 13
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
 | hippie-exp                                         |                   4 |
-| ibuffer                                            |                   8 |
+| ibuffer                                            |                   9 |
 | icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   3 |
-| ido-mode                                           |                   8 |
-| imenu                                              |                   1 |
+| ido-mode                                           |                   9 |
+| imenu                                              |                   2 |
 | ispell                                             |                   2 |
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
-| paredit                                            |                   2 |
+| paredit                                            |                   3 |
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   3 |
-| saveplace                                          |                   5 |
+| saveplace                                          |                   6 |
 | show-paren-mode                                    |                  12 |
-| size-indication-mode                               |                   2 |
+| size-indication-mode                               |                   3 |
 | subword-mode                                       |                   1 |
 | switch-window                                      |                   1 |
 | uniquify                                           |                   6 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   3 |
 | whitespace-global-modes                            |                   1 |
-| windmove                                           |                   6 |
-| winner-mode                                        |                   5 |
+| windmove                                           |                   7 |
+| winner-mode                                        |                   6 |
 }}}
 
 
