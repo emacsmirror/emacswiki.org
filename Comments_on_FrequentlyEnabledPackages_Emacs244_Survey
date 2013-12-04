@@ -56,3 +56,10 @@ I also feel that the list has grown totally out of control. I'm willing to look 
 
 -- AlexSchroeder 2013-12-04 17:01 UTC
 
+
+----
+
+I've removed all the entries with use count 0 and the "major mode survey".  The latter is not really useful in this context and only confusing or a barrier to the actual goal of all of this.
+
+-- Rüdiger 2013-12-04 17:14 UTC
+
