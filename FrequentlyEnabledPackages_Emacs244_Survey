@@ -34,8 +34,8 @@ Number of people surveyed: 22
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   5 |
-| auto-complete                                      |                  10 |
+| abbrev-mode                                        |                   6 |
+| auto-complete                                      |                  11 |
 | auto-encryption-mode                               |                   2 |
 | auto-fill-mode                                     |                   4 |
 | blink-cursor-mode                                  |                  21 |
@@ -44,7 +44,7 @@ Number of people surveyed: 22
 | compilation-minor-mode                             |                   2 |
 | cua-mode                                           |                   2 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   9 |
+| delete-selection-mode                              |                   10 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                   8 |
@@ -78,25 +78,25 @@ Number of people surveyed: 22
 | org-capture-mode                                   |                   4 |
 | org-src-mode                                       |                   2 |
 | paredit                                            |                   6 |
-| recentf-mode                                       |                   7 |
+| recentf-mode                                       |                   8 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
-| savehist-mode                                      |                   7 |
-| saveplace                                          |                   7 |
+| savehist-mode                                      |                   8 |
+| saveplace                                          |                   8 |
 | server-mode                                        |                   2 |
 | shell-dirtrack-mode                                |                   1 |
-| show-paren-mode                                    |                  18 |
+| show-paren-mode                                    |                  19 |
 | size-indication-mode                               |                   3 |
 | subword-mode                                       |                   2 |
 | switch-window                                      |                   1 |
-| tooltip-mode                                       |                   1 |
-| transient-mark-mode                                |                   5 |
-| uniquify                                           |                  13 |
+| tooltip-mode                                       |                   2 |
+| transient-mark-mode                                |                   6 |
+| uniquify                                           |                  14 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   6 |
 | whitespace-global-mode                             |                   2 |
 | whitespace-global-modes                            |                   1 |
-| windmove                                           |                   7 |
+| windmove                                           |                   8 |
 | winner-mode                                        |                  10 |
 }}}
 
