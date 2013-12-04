@@ -28,70 +28,70 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 19
+Number of people surveyed: 20
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   4 |
-| auto-complete                                      |                   7 |
+| abbrev-mode                                        |                   5 |
+| auto-complete                                      |                   8 |
 | auto-encryption-mode                               |                   2 |
-| auto-fill-mode                                     |                   1 |
-| blink-cursor-mode                                  |                   1 |
+| auto-fill-mode                                     |                   2 |
+| blink-cursor-mode                                  |                  21 |
 | bs-show                                            |                   2 |
-| column-number-mode                                 |                  13 |
-| compilation-minor-mode                             |                   1 |
+| column-number-mode                                 |                  14 |
+| compilation-minor-mode                             |                   2 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   9 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                   6 |
+| dired-x                                            |                   7 |
 | display-time-mode                                  |                   4 |
-| edebug-mode                                        |                   1 |
+| edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                   8 |
 | electric-indent-mode                               |                   3 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   2 |
 | expand-region                                      |                   2 |
-| flyspell-mode                                      |                   7 |
+| flyspell-mode                                      |                   8 |
 | global-cwarn-mode                                  |                   1 |
 | global-goto-address-mode                           |                   1 |
-| global-hi-lock-mode                                |                   3 |
+| global-hi-lock-mode                                |                   4 |
 | global-linnum-mode                                 |                   4 |
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
 | hide-ifdef-mode                                    |                   1 |
 | hippie-exp                                         |                   5 |
 | hs-minor-mode                                      |                   1 |
-| ibuffer                                            |                  11 |
+| ibuffer                                            |                  12 |
 | icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   5 |
-| ido-everywhere                                     |                   3 |
-| ido-mode                                           |                  14 |
+| ido-everywhere                                     |                   4 |
+| ido-mode                                           |                  15|
 | imenu                                              |                   2 |
 | ispell-minor-mode                                  |                   3 |
 | kill-whole-line                                    |                   1 |
 | line-number-mode                                   |                   2 |
 | linum-mode                                         |                   1 |
-| org-capture-mode                                   |                   2 |
+| org-capture-mode                                   |                   3 |
 | org-src-mode                                       |                   1 |
 | paredit                                            |                   5 |
-| recentf-mode                                       |                   4 |
+| recentf-mode                                       |                   5 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
 | savehist-mode                                      |                   5 |
-| saveplace                                          |                   6 |
+| saveplace                                          |                   7 |
 | server-mode                                        |                   2 |
 | shell-dirtrack-mode                                |                   1 |
-| show-paren-mode                                    |                  15 |
+| show-paren-mode                                    |                  16 |
 | size-indication-mode                               |                   3 |
 | subword-mode                                       |                   2 |
 | switch-window                                      |                   1 |
 | tooltip-mode                                       |                   1 |
-| transient-mark-mode                                |                   2 |
-| uniquify                                           |                   9 |
+| transient-mark-mode                                |                   3 |
+| uniquify                                           |                   10 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   5 |
 | whitespace-global-mode                             |                   2 |
