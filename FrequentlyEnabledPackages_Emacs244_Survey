@@ -35,9 +35,9 @@ Number of people surveyed: 21
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   5 |
-| auto-complete                                      |                   8 |
+| auto-complete                                      |                   9 |
 | auto-encryption-mode                               |                   2 |
-| auto-fill-mode                                     |                   3 |
+| auto-fill-mode                                     |                   4 |
 | blink-cursor-mode                                  |                  21 |
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                  15 |
@@ -67,21 +67,21 @@ Number of people surveyed: 21
 | hs-minor-mode                                      |                   1 |
 | ibuffer                                            |                  13 |
 | icicle-mode                                        |                   1 |
-| icomplete-mode                                     |                   5 |
+| icomplete-mode                                     |                   6 |
 | ido-everywhere                                     |                   4 |
-| ido-mode                                           |                  15|
+| ido-mode                                           |                  16|
 | imenu                                              |                   2 |
-| ispell-minor-mode                                  |                   3 |
+| ispell-minor-mode                                  |                   4 |
 | kill-whole-line                                    |                   1 |
 | line-number-mode                                   |                   2 |
 | linum-mode                                         |                   2 |
-| org-capture-mode                                   |                   3 |
-| org-src-mode                                       |                   1 |
+| org-capture-mode                                   |                   4 |
+| org-src-mode                                       |                   2 |
 | paredit                                            |                   6 |
-| recentf-mode                                       |                   5 |
+| recentf-mode                                       |                   6 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
-| savehist-mode                                      |                   5 |
+| savehist-mode                                      |                   6 |
 | saveplace                                          |                   7 |
 | server-mode                                        |                   2 |
 | shell-dirtrack-mode                                |                   1 |
@@ -90,14 +90,14 @@ Number of people surveyed: 21
 | subword-mode                                       |                   2 |
 | switch-window                                      |                   1 |
 | tooltip-mode                                       |                   1 |
-| transient-mark-mode                                |                   3 |
-| uniquify                                           |                   11 |
+| transient-mark-mode                                |                   4 |
+| uniquify                                           |                   12 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                   5 |
+| which-function-mode                                |                   6 |
 | whitespace-global-mode                             |                   2 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   7 |
-| winner-mode                                        |                   8 |
+| winner-mode                                        |                   9 |
 }}}
 
 __How to keep the Table sorted__
