@@ -28,7 +28,11 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
+<<<<<<< ancestor
+Number of people surveyed: 16
+=======
 Number of people surveyed: 17
+>>>>>>> other
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -41,14 +45,24 @@ Number of people surveyed: 17
 | auto-complete                                      |                   6 |
 | auto-composition-mode                              |                   0 |
 | auto-compression-mode                              |                   0 |
+<<<<<<< you
+| auto-encryption-mode                               |                   1 |
+| auto-fill-mode                                     |                   1 |
+| auto-fill-mode                                     |                   0 |
+||||||| ancestor
+| auto-encryption-mode                               |                   1 |
+| auto-fill-mode                                     |                   0 |
+| auto-fill-mode                                     |                   0 |
+=======
 | auto-encryption-mode                               |                   2 |
 | auto-fill-mode                                     |                   1 |
+>>>>>>> other
 | auto-image-file-mode                               |                   0 |
 | auto-insert-mode                                   |                   0 |
 | auto-lower-mode                                    |                   0 |
 | auto-raise-mode                                    |                   0 |
 | auto-revert-mode                                   |                   0 |
-| auto-revert-tail-mode                              |                   0 |
+| auto-revert-tail-mode                              |                   1 |
 | auto-save-mode                                     |                   0 |
 | autoarg-kp-mode                                    |                   0 |
 | autoarg-mode                                       |                   0 |
@@ -60,19 +74,35 @@ Number of people surveyed: 17
 | bug-reference-prog-mode                            |                   0 |
 | capitalized-words-mode                             |                   0 |
 | checkdoc-minor-mode                                |                   0 |
+<<<<<<< you
+| column-number-mode                                 |                   12 |
+| compilation-minor-mode                             |                   2 |
+||||||| ancestor
+| column-number-mode                                 |                   11 |
+| compilation-minor-mode                             |                   1 |
+=======
 | column-number-mode                                 |                  12 |
 | compilation-minor-mode                             |                   1 |
+>>>>>>> other
 | compilation-shell-minor-mode                       |                   0 |
 | completion-in-region-mode                          |                   0 |
 | crisp-mode                                         |                   0 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | cvs-minor-mode                                     |                   0 |
+<<<<<<< you
+| cwarn-mode                                         |                   1 |
+| delete-selection-mode                              |                   7 |
+||||||| ancestor
+| cwarn-mode                                         |                   0 |
+| delete-selection-mode                              |                   7 |
+=======
 | cwarn-mode                                         |                   0 |
 | delete-selection-mode                              |                   8 |
+>>>>>>> other
 | desktop-save-mode                                  |                   2 |
 | diff-auto-refine-mode                              |                   0 |
-| diff-minor-mode                                    |                   0 |
+| diff-minor-mode                                    |                   1 |
 | dired-hide-details-mode                            |                   4 |
 | dired-isearch-filenames-mode                       |                   0 |
 | dired-omit-mode                                    |                   0 |
@@ -80,8 +110,8 @@ Number of people surveyed: 17
 | dirtrack-debug-mode                                |                   0 |
 | dirtrack-mode                                      |                   0 |
 | display-battery-mode                               |                   0 |
-| display-time-mode                                  |                   4 |
-| doc-view-minor-mode                                |                   0 |
+| display-time-mode                                  |                   5 |
+| doc-view-minor-mode                                |                   1 |
 | double-mode                                        |                   0 |
 | dynamic-completion-mode                            |                   0 |
 | ede-dired-minor-mode                               |                   0 |
@@ -104,7 +134,7 @@ Number of people surveyed: 17
 | flymake-mode                                       |                   0 |
 | flyspell-mode                                      |                   6 |
 | follow-mode                                        |                   0 |
-| font-lock-mode                                     |                   0 |
+| font-lock-mode                                     |                   1 |
 | foo-mode                                           |                   0 |
 | footnote-mode                                      |                   0 |
 | gdb-enable-debug                                   |                   0 |
@@ -162,14 +192,14 @@ Number of people surveyed: 17
 | iimage-mode                                        |                   0 |
 | image-minor-mode                                   |                   0 |
 | image-transform-mode                               |                   0 |
-| imenu                                              |                   2 |
+| imenu                                              |                   3 |
 | iso-ascii-mode                                     |                   0 |
 | ispell-minor-mode                                  |                   3 |
 | iswitchb-mode                                      |                   0 |
 | jit-lock-debug-mode                                |                   0 |
 | kill-whole-line                                    |                   1 |
 | latex-electric-env-pair-mode                       |                   0 |
-| line-number-mode                                   |                   1 |
+| line-number-mode                                   |                   2 |
 | linum-mode                                         |                   1 |
 | longlines-mode                                     |                   0 |
 | mail-abbrevs-mode                                  |                   0 |
@@ -189,7 +219,11 @@ Number of people surveyed: 17
 | org-capture-mode                                   |                   2 |
 | org-cdlatex-mode                                   |                   0 |
 | org-indent-mode                                    |                   0 |
+<<<<<<< ancestor
+| org-src-mode                                       |                   0 |
+=======
 | org-src-mode                                       |                   1 |
+>>>>>>> other
 | org-table-follow-field-mode                        |                   0 |
 | orgstruct-mode                                     |                   0 |
 | orgtbl-mode                                        |                   0 |
@@ -237,7 +271,7 @@ Number of people surveyed: 17
 | smerge-mode                                        |                   0 |
 | srecode-minor-mode                                 |                   0 |
 | strokes-mode                                       |                   0 |
-| subword-mode                                       |                   2 |
+| subword-mode                                       |                   3 |
 | superword-mode                                     |                   0 |
 | switch-window                                      |                   1 |
 | table-fixed-width-mode                             |                   0 |
