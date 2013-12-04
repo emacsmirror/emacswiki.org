@@ -34,6 +34,7 @@ Number of people surveyed: 6
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
+| abbrev-mode                                        |                   1 |
 | auto-complete                                      |                   1 |
 | column-number-mode                                 |                   3 |
 | cua-mode                                           |                   1 |
@@ -47,14 +48,28 @@ Number of people surveyed: 6
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
+<<<<<<< you
+| flyspell-mode                                      |                   4|
+||||||| ancestor
+| flyspell-mode                                      |                   3 |
+=======
 | flyspell-mode                                      |                   2 |
+>>>>>>> other
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   1 |
 | global-linnum-mode                                 |                   3 |
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
+<<<<<<< you
+| hippie-exp                                         |                   3 |
+| ibuffer                                            |                   4 |
+||||||| ancestor
+| hippie-exp                                         |                   3 |
+| ibuffer                                            |                   3 |
+=======
 | hippie-exp                                         |                   2 |
 | ibuffer                                            |                   4 |
+>>>>>>> other
 | icomplete-mode                                     |                   3 |
 | ido-mode                                           |                   5 |
 | imenu                                              |                   1 |
@@ -62,7 +77,13 @@ Number of people surveyed: 6
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
 | paredit                                            |                   1 |
+<<<<<<< you
+| recentf-mode                                       |                   3 |
+||||||| ancestor
+| recentf-mode                                       |                   2 |
+=======
 | recentf-mode                                       |                   1 |
+>>>>>>> other
 | savehist-mode                                      |                   1 |
 | saveplace                                          |                   1 |
 | show-paren-mode                                    |                   5 |
