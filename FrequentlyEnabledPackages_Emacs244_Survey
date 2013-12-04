@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 14
+Number of people surveyed: 15
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -38,7 +38,7 @@ Number of people surveyed: 14
 | auto-complete                                      |                   5 |
 | auto-fill-mode                                     |                   0 |
 | bs-show                                            |                   2 |
-| column-number-mode                                 |                   9 |
+| column-number-mode                                 |                  10 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   7 |
@@ -60,8 +60,8 @@ Number of people surveyed: 14
 | hippie-exp                                         |                   4 |
 | ibuffer                                            |                   9 |
 | icicle-mode                                        |                   1 |
-| icomplete-mode                                     |                   3 |
-| ido-mode                                           |                   10|
+| icomplete-mode                                     |                   4 |
+| ido-mode                                           |                  11 |
 | imenu                                              |                   2 |
 | ispell                                             |                   3 |
 | kill-whole-line                                    |                   1 |
@@ -70,17 +70,17 @@ Number of people surveyed: 14
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   3 |
 | saveplace                                          |                   6 |
-| show-paren-mode                                    |                  13 |
+| show-paren-mode                                    |                  14 |
 | size-indication-mode                               |                   3 |
 | subword-mode                                       |                   1 |
 | switch-window                                      |                   1 |
-| uniquify                                           |                   7 |
+| uniquify                                           |                   8 |
 | url-handler-mode                                   |                   1 |
 | visual-line-mode                                   |                   0 |
 | which-function-mode                                |                   4 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   7 |
-| winner-mode                                        |                   6 |
+| winner-mode                                        |                   7 |
 }}}
 
 
