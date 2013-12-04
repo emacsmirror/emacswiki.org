@@ -16,10 +16,11 @@ __Background information__
 
 http://thread.gmane.org/gmane.emacs.devel/165883
 
+__Survey__
 
 {{{
 
-| Modes                    | Upvote |
+| Packages/Modes                    | Upvote |
 |--------------------------+--------|
 | column-number-mode       |      1 |
 | cua-mode                 |      1 |
