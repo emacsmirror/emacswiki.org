@@ -35,17 +35,9 @@ Number of people surveyed: 12
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   2 |
-<<<<<<< you
-| auto-complete                                      |                   3 |
-| column-number-mode                                 |                   7 |
-||||||| ancestor
-| auto-complete                                      |                   2 |
-| column-number-mode                                 |                   6 |
-=======
-| auto-complete                                      |                   2 |
+| auto-complete                                      |                  3 |
 | bs-show                                            |                   1 |
-| column-number-mode                                 |                   6 |
->>>>>>> other
+| column-number-mode                                 |                   7 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   5 |
