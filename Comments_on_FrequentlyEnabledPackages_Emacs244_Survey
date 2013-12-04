@@ -45,3 +45,12 @@ Please only add modes if you are using them.  Having every available minor-mode 
 
 -- Rüdiger 2013-12-04 17:00 UTC
 
+
+----
+
+Edit conflicts happen where differences cannot be merged using diff3. They seem unavoidable in a text where people keep editing the same cells of a table unless there is some live synchronization. This wiki uses very optimistic locking which makes it somewhat unsuitable for this kind of survey.
+
+Feel free to rollback or resolve conflicts yourself. Visit the page history and start from there. If you have a username set, you will also see the rollback buttons.
+
+-- AlexSchroeder 2013-12-04 17:01 UTC
+
