@@ -28,24 +28,24 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 23
+Number of people surveyed: 24
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   7 |
-| auto-complete                                      |                  11 |
-| auto-encryption-mode                               |                   2 |
-| auto-fill-mode                                     |                   5 |
-| blink-cursor-mode                                  |                  23 |
+| auto-complete                                      |                  12 |
+| auto-encryption-mode                               |                   3 |
+| auto-fill-mode                                     |                   6 |
+| blink-cursor-mode                                  |                  24 |
 | bs-show                                            |                   2 |
-| column-number-mode                                 |                  16 |
+| column-number-mode                                 |                  17 |
 | compilation-minor-mode                             |                   2 |
 | cua-mode                                           |                   2 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   11 |
-| desktop-save-mode                                  |                   4 |
+| desktop-save-mode                                  |                   5 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                   9 |
 | display-time-mode                                  |                   4 |
@@ -73,7 +73,7 @@ Number of people surveyed: 23
 | imenu                                              |                   3 |
 | ispell-minor-mode                                  |                   5 |
 | kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   3 |
+| line-number-mode                                   |                   4 |
 | linum-mode                                         |                   3 |
 | org-capture-mode                                   |                   4 |
 | org-src-mode                                       |                   2 |
