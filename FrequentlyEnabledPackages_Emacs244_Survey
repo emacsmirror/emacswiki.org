@@ -13,6 +13,8 @@ __Things to Remember (Things to avoid) __
 # Speak for yourself (not your friends).  Always increment the upvote by one.
 # C-h f on that entry should work  (For example, Use ido-mode instead of saying ido).  This is to avoid multiple entries that point to the same package.
 # No Third-Party packages
+# Avoid Major modes like Org or Programming modes.  Give preference to minor modes (that are enabled globally)
+
 
 __How to keep the Table sorted__
 
