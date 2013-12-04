@@ -15,7 +15,7 @@ __Things to Remember (Things to avoid) __
 
 # Speak for yourself (not your friends).  Always increment the upvote by one.
 # Don't downvote
-# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
+# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1.  (Only add entries for minor-modes you actually use!)
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
 # No Third-Party packages.
 # Specify packages that ship with Vanilla GNU Emacs
