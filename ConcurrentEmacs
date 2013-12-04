@@ -201,6 +201,7 @@ unequivocally know whether to use deep or shallow binding.
 
 here's part of a discussion between PatrickAnderson and EliBarzilay about using engines:
 
+<pre>
   > On Jun 11, Patrick Anderson wrote:
     I would like to understand the reason Elisp can't be used to
     implement something like the 'engines' described in
@@ -245,6 +246,7 @@ here's part of a discussion between PatrickAnderson and EliBarzilay about using 
   doable so we're stuck for a long time until some solution that can
   reuse all existing code will be found.  And there is work on that
   direction.
+</pre>
 
 ----
 
