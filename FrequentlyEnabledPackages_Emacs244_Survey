@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 5
+Number of people surveyed: 6
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -38,23 +38,23 @@ Number of people surveyed: 5
 | column-number-mode                                 |                   3 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
-| delete-selection-mode                              |                   3 |
+| delete-selection-mode                              |                   4 |
 | desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   1 |
 | dired-x                                            |                   2 |
 | display-time                                       |                   1 |
-| eldoc-mode                                         |                   2 |
+| eldoc-mode                                         |                   3 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
-| flyspell-mode                                      |                   3 |
+| flyspell-mode                                      |                   2 |
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   1 |
-| global-linnum-mode                                 |                   2 |
+| global-linnum-mode                                 |                   3 |
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
-| hippie-exp                                         |                   3 |
-| ibuffer                                            |                   3 |
+| hippie-exp                                         |                   2 |
+| ibuffer                                            |                   4 |
 | icomplete-mode                                     |                   3 |
 | ido-mode                                           |                   5 |
 | imenu                                              |                   1 |
@@ -62,15 +62,15 @@ Number of people surveyed: 5
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
 | paredit                                            |                   1 |
-| recentf-mode                                       |                   2 |
+| recentf-mode                                       |                   1 |
 | savehist-mode                                      |                   1 |
-| saveplace                                          |                   6 |
+| saveplace                                          |                   1 |
 | show-paren-mode                                    |                   5 |
 | size-indication-mode                               |                   1 |
-| uniquify                                           |                   4 |
+| uniquify                                           |                   3 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   1 |
-| whitespace-global-modes                            |                   2 |
+| whitespace-global-modes                            |                   1 |
 | windmove                                           |                   3 |
 | winner-mode                                        |                   1 |
 }}}
