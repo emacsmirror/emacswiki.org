@@ -1,14 +1,14 @@
-As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel is conducting a survey]].  We want to find out  packages/modes that you enable by default.
+As part of Emacs-24.4 release,  [[<nobr>http://thread.gmane.org/gmane.emacs.devel/165883</nobr> emacs-devel is conducting a survey]].  We want to find out  packages/modes that you enable by default.
 
 __Interesting Titbit__
 
-Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061  Uniquify will be enabled by default]] in Emacs-24.4
+Based on popular demand,   [[<nobr>http://permalink.gmane.org/gmane.emacs.devel/166061</nobr>  Uniquify will be enabled by default]] in Emacs-24.4
 
 __How to Vote__
 
 # Increment __Number of People surveyed__
-# If you use a package that is in the list, upvote it by incrementing its vote by 1.  
-# If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.  
+# If you use a package that is in the list, upvote it by incrementing its vote by 1.
+# If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.
 
 __Things to Remember (Things to avoid) __
 
@@ -16,9 +16,9 @@ __Things to Remember (Things to avoid) __
 # Don't downvote
 # Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
-# No Third-Party packages.   
+# No Third-Party packages.
 # Specify packages that ship with Vanilla GNU Emacs
-# Avoid Major modes like Org or Programming modes.  
+# Avoid Major modes like Org or Programming modes.
 # Avoid packages like Gnus
 # Give preference to minor modes (that you enable globally)
 
@@ -28,20 +28,20 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 15
+Number of people surveyed: 16
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   3 |
+| abbrev-mode                                        |                   4 |
 | allout-mode                                        |                   0 |
 | allout-widgets-mode                                |                   0 |
 | artist-mode                                        |                   0 |
 | auto-complete                                      |                   5 |
 | auto-composition-mode                              |                   0 |
 | auto-compression-mode                              |                   0 |
-| auto-encryption-mode                               |                   0 |
+| auto-encryption-mode                               |                   1 |
 | auto-fill-mode                                     |                   0 |
 | auto-fill-mode                                     |                   0 |
 | auto-image-file-mode                               |                   0 |
@@ -54,15 +54,15 @@ Number of people surveyed: 15
 | autoarg-kp-mode                                    |                   0 |
 | autoarg-mode                                       |                   0 |
 | binary-overwrite-mode                              |                   0 |
-| blink-cursor-mode                                  |                   0 |
+| blink-cursor-mode                                  |                   1 |
 | bs-show                                            |                   2 |
 | buffer-face-mode                                   |                   0 |
 | bug-reference-mode                                 |                   0 |
 | bug-reference-prog-mode                            |                   0 |
 | capitalized-words-mode                             |                   0 |
 | checkdoc-minor-mode                                |                   0 |
-| column-number-mode                                 |                   10 |
-| compilation-minor-mode                             |                   0 |
+| column-number-mode                                 |                   11 |
+| compilation-minor-mode                             |                   1 |
 | compilation-shell-minor-mode                       |                   0 |
 | completion-in-region-mode                          |                   0 |
 | crisp-mode                                         |                   0 |
@@ -74,21 +74,21 @@ Number of people surveyed: 15
 | desktop-save-mode                                  |                   2 |
 | diff-auto-refine-mode                              |                   0 |
 | diff-minor-mode                                    |                   0 |
-| dired-hide-details-mode                            |                   3 |
+| dired-hide-details-mode                            |                   4 |
 | dired-isearch-filenames-mode                       |                   0 |
 | dired-omit-mode                                    |                   0 |
 | dired-x                                            |                   6 |
 | dirtrack-debug-mode                                |                   0 |
 | dirtrack-mode                                      |                   0 |
 | display-battery-mode                               |                   0 |
-| display-time-mode                                  |                   3 |
+| display-time-mode                                  |                   4 |
 | doc-view-minor-mode                                |                   0 |
 | double-mode                                        |                   0 |
 | dynamic-completion-mode                            |                   0 |
 | ede-dired-minor-mode                               |                   0 |
 | ede-minor-mode                                     |                   0 |
-| edebug-mode                                        |                   0 |
-| eldoc-mode                                         |                   7 |
+| edebug-mode                                        |                   1 |
+| eldoc-mode                                         |                   8 |
 | eldoc-post-insert-mode                             |                   0 |
 | electric-indent-local-mode                         |                   0 |
 | electric-indent-mode                               |                   2 |
@@ -100,10 +100,10 @@ Number of people surveyed: 15
 | epa-global-mail-mode                               |                   0 |
 | epa-mail-mode                                      |                   0 |
 | erc-track-minor-mode                               |                   0 |
-| expand-region                                      |                   1 |
+| expand-region                                      |                   2 |
 | file-name-shadow-mode                              |                   0 |
 | flymake-mode                                       |                   0 |
-| flyspell-mode                                      |                   4 |
+| flyspell-mode                                      |                   5 |
 | follow-mode                                        |                   0 |
 | font-lock-mode                                     |                   0 |
 | foo-mode                                           |                   0 |
@@ -149,17 +149,17 @@ Number of people surveyed: 15
 | hide-ifdef-mode                                    |                   0 |
 | highlight-changes-mode                             |                   0 |
 | highlight-changes-visible-mode                     |                   0 |
-| hippie-exp                                         |                   4 |
+| hippie-exp                                         |                   5 |
 | hl-line-mode                                       |                   0 |
 | hs-minor-mode                                      |                   0 |
 | html-autoview-mode                                 |                   0 |
-| ibuffer                                            |                   9 |
+| ibuffer                                            |                   10 |
 | ibuffer-auto-mode                                  |                   0 |
 | icicle-mode                                        |                   1 |
 | icomplete-mode                                     |                   4 |
 | idlwave-shell-electric-debug-mode                  |                   0 |
-| ido-everywhere                                     |                   0 |
-| ido-mode                                           |                  11 |
+| ido-everywhere                                     |                   1 |
+| ido-mode                                           |                  12 |
 | iimage-mode                                        |                   0 |
 | image-minor-mode                                   |                   0 |
 | image-transform-mode                               |                   0 |
@@ -170,7 +170,7 @@ Number of people surveyed: 15
 | jit-lock-debug-mode                                |                   0 |
 | kill-whole-line                                    |                   1 |
 | latex-electric-env-pair-mode                       |                   0 |
-| line-number-mode                                   |                   0 |
+| line-number-mode                                   |                   1 |
 | linum-mode                                         |                   1 |
 | longlines-mode                                     |                   0 |
 | mail-abbrevs-mode                                  |                   0 |
@@ -187,7 +187,7 @@ Number of people surveyed: 15
 | normal-erase-is-backspace-mode                     |                   0 |
 | nroff-electric-mode                                |                   0 |
 | org-beamer-mode                                    |                   0 |
-| org-capture-mode                                   |                   0 |
+| org-capture-mode                                   |                   1 |
 | org-cdlatex-mode                                   |                   0 |
 | org-indent-mode                                    |                   0 |
 | org-src-mode                                       |                   0 |
@@ -197,7 +197,7 @@ Number of people surveyed: 15
 | outline-minor-mode                                 |                   0 |
 | overwrite-mode                                     |                   0 |
 | paragraph-indent-minor-mode                        |                   0 |
-| paredit                                            |                   3 |
+| paredit                                            |                   4 |
 | partial-completion-mode                            |                   0 |
 | pascal-outline-mode                                |                   0 |
 | pc-selection-mode                                  |                   0 |
@@ -205,15 +205,15 @@ Number of people surveyed: 15
 | rcirc-multiline-minor-mode                         |                   0 |
 | rcirc-track-minor-mode                             |                   0 |
 | read-only-mode                                     |                   0 |
-| recentf-mode                                       |                   2 |
-| rectangle-mark-mode                                |                   0 |
+| recentf-mode                                       |                   3 |
+| rectangle-mark-mode                                |                   1 |
 | refill-mode                                        |                   0 |
 | reftex-mode                                        |                   0 |
 | remember-notes-mode                                |                   0 |
 | reveal-mode                                        |                   0 |
 | rst-minor-mode                                     |                   0 |
 | ruler-mode                                         |                   0 |
-| savehist-mode                                      |                   3 |
+| savehist-mode                                      |                   4 |
 | saveplace                                          |                   6 |
 | sc-minor-mode                                      |                   0 |
 | scroll-all-mode                                    |                   0 |
@@ -229,16 +229,16 @@ Number of people surveyed: 15
 | semantic-show-parser-state-mode                    |                   0 |
 | semantic-show-unmatched-syntax-mode                |                   0 |
 | semantic-stickyfunc-mode                           |                   0 |
-| server-mode                                        |                   0 |
+| server-mode                                        |                   1 |
 | sgml-electric-tag-pair-mode                        |                   0 |
 | sh-electric-here-document-mode                     |                   0 |
-| shell-dirtrack-mode                                |                   0 |
+| shell-dirtrack-mode                                |                   1 |
 | show-paren-mode                                    |                  14 |
 | size-indication-mode                               |                   3 |
 | smerge-mode                                        |                   0 |
 | srecode-minor-mode                                 |                   0 |
 | strokes-mode                                       |                   0 |
-| subword-mode                                       |                   1 |
+| subword-mode                                       |                   2 |
 | superword-mode                                     |                   0 |
 | switch-window                                      |                   1 |
 | table-fixed-width-mode                             |                   0 |
@@ -248,10 +248,10 @@ Number of people surveyed: 15
 | thai-word-mode                                     |                   0 |
 | timeclock-mode-line-display                        |                   0 |
 | tool-bar-mode                                      |                   0 |
-| tooltip-mode                                       |                   0 |
+| tooltip-mode                                       |                   1 |
 | tpu-cursor-free-mode                               |                   0 |
 | tpu-edt-mode                                       |                   0 |
-| transient-mark-mode                                |                   0 |
+| transient-mark-mode                                |                   1 |
 | tvi970-set-keypad-mode                             |                   0 |
 | type-break-mode                                    |                   0 |
 | type-break-mode-line-message-mode                  |                   0 |
@@ -271,12 +271,12 @@ Number of people surveyed: 15
 | visual-line-mode                                   |                   0 |
 | vt100-wide-mode                                    |                   0 |
 | which-function-mode                                |                   4 |
-| whitespace-global-mode                             |                   1 |
+| whitespace-global-mode                             |                   2 |
 | whitespace-global-modes                            |                   1 |
 | whitespace-newline-mode                            |                   0 |
 | widget-minor-mode                                  |                   0 |
 | windmove                                           |                   7 |
-| winner-mode                                        |                   7 |
+| winner-mode                                        |                   8 |
 | xesam-minor-mode                                   |                   0 |
 | xterm-mouse-mode                                   |                   0 |
 
