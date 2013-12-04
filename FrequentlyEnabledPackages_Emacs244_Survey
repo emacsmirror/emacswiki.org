@@ -28,11 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-<<<<<<< ancestor
-Number of people surveyed: 9
-=======
-Number of people surveyed: 10
->>>>>>> other
+Number of people surveyed: 11
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -40,11 +36,7 @@ Number of people surveyed: 10
 | <50>                                               |                     |
 | abbrev-mode                                        |                   2 |
 | auto-complete                                      |                   2 |
-<<<<<<< ancestor
-| column-number-mode                                 |                   4 |
-=======
-| column-number-mode                                 |                   5 |
->>>>>>> other
+| column-number-mode                                 |                   6 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   4 |
@@ -52,7 +44,7 @@ Number of people surveyed: 10
 | dired-hide-details-mode                            |                   2 |
 | dired-x                                            |                   4 |
 | display-time                                       |                   1 |
-| eldoc-mode                                         |                   5 |
+| eldoc-mode                                         |                   6 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
@@ -72,31 +64,16 @@ Number of people surveyed: 10
 | linum                                              |                   1 |
 | paredit                                            |                   2 |
 | recentf-mode                                       |                   2 |
-<<<<<<< you
 | savehist-mode                                      |                   3 |
-| saveplace                                          |                   3 |
-| show-paren-mode                                    |                   9 |
-||||||| ancestor
-| savehist-mode                                      |                   2 |
-| saveplace                                          |                   3 |
-| show-paren-mode                                    |                   8 |
-=======
-| savehist-mode                                      |                   2 |
 | saveplace                                          |                   4 |
-| show-paren-mode                                    |                   9 |
->>>>>>> other
+| show-paren-mode                                    |                   10 |
 | size-indication-mode                               |                   2 |
 | uniquify                                           |                   5 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                   2 |
 | whitespace-global-modes                            |                   1 |
-<<<<<<< ancestor
-| windmove                                           |                   4 |
-| winner-mode                                        |                   2 |
-=======
-| windmove                                           |                   5 |
-| winner-mode                                        |                   3 |
->>>>>>> other
+| windmove                                           |                   6 |
+| winner-mode                                        |                   4 |
 }}}
 
 __How to keep the Table sorted__
