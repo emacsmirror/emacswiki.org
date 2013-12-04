@@ -1,3 +1,20 @@
+As part of Emacs-24.4 release, emacs-devel is conducting a survey.  They want to find out the most frequently enabled packages and enabled by default in Vanilla Emacs.
+
+# If you use a package that is in the list, please upvote it.  
+# If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.  
+
+
+__Guidelines__
+
+# Avoid mentioning big packages like Gnus, Org ec.  Global minor modes are good candidates to plug in to this list.. The intention is here to collect information on packages that are useful for ALL users.  
+
+# If you want to qualify your vote with an extra comment, please add it to the Talk page.
+
+Background information:
+
+http://thread.gmane.org/gmane.emacs.devel/165883
+
+
 {{{
 
 | Modes                    | Upvote |
