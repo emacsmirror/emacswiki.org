@@ -35,7 +35,7 @@ Number of people surveyed: 5
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | auto-complete                                      |                   1 |
-| column-number-mode                                 |                   2 |
+| column-number-mode                                 |                   3 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   3 |
@@ -47,7 +47,7 @@ Number of people surveyed: 5
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
-| flyspell-mode                                      |                   2 |
+| flyspell-mode                                      |                   3 |
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   1 |
 | global-linnum-mode                                 |                   2 |
