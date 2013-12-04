@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 14
+Number of people surveyed: 15
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -62,7 +62,7 @@ Number of people surveyed: 14
 | bug-reference-prog-mode                            |                   0 |
 | capitalized-words-mode                             |                   0 |
 | checkdoc-minor-mode                                |                   0 |
-| column-number-mode                                 |                   9 |
+| column-number-mode                                 |                   10 |
 | compilation-minor-mode                             |                   0 |
 | compilation-shell-minor-mode                       |                   0 |
 | completion-in-region-mode                          |                   0 |
@@ -157,10 +157,10 @@ Number of people surveyed: 14
 | ibuffer                                            |                   9 |
 | ibuffer-auto-mode                                  |                   0 |
 | icicle-mode                                        |                   1 |
-| icomplete-mode                                     |                   3 |
+| icomplete-mode                                     |                   4 |
 | idlwave-shell-electric-debug-mode                  |                   0 |
 | ido-everywhere                                     |                   0 |
-| ido-mode                                           |                  10 |
+| ido-mode                                           |                  11 |
 | iimage-mode                                        |                   0 |
 | image-minor-mode                                   |                   0 |
 | image-transform-mode                               |                   0 |
@@ -234,7 +234,7 @@ Number of people surveyed: 14
 | sgml-electric-tag-pair-mode                        |                   0 |
 | sh-electric-here-document-mode                     |                   0 |
 | shell-dirtrack-mode                                |                   0 |
-| show-paren-mode                                    |                  13 |
+| show-paren-mode                                    |                  14 |
 | size-indication-mode                               |                   3 |
 | smerge-mode                                        |                   0 |
 | srecode-minor-mode                                 |                   0 |
@@ -259,7 +259,7 @@ Number of people surveyed: 14
 | type-break-query-mode                              |                   0 |
 | unify-8859-on-decoding-mode                        |                   0 |
 | unify-8859-on-encoding-mode                        |                   0 |
-| uniquify                                           |                   7 |
+| uniquify                                           |                   8 |
 | url-dired-minor-mode                               |                   0 |
 | url-handler-mode                                   |                   1 |
 | use-hard-newlines                                  |                   0 |
