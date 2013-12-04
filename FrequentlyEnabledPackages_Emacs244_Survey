@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 3
+Number of people surveyed: 4
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -37,9 +37,9 @@ Number of people surveyed: 3
 | auto-complete                                      |                   1 |
 | column-number-mode                                 |                   2 |
 | cua-mode                                           |                   1 |
-| cua-selection-mode                                 |                   1 |
+| cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   2 |
-| desktop-save-mode                                  |                   1 |
+| desktop-save-mode                                  |                   2 |
 | dired-hide-details-mode                            |                   1 |
 | dired-x                                            |                   1 |
 | display-time                                       |                   1 |
@@ -51,14 +51,14 @@ Number of people surveyed: 3
 | global-goto-address-mode                           |                   1 |
 | global-hi-lock-mode                                |                   1 |
 | global-linnum-mode                                 |                   2 |
-| global-subword-mode                                |                   2 |
+| global-subword-mode                                |                   3 |
 | gnus-dired-mode                                    |                   1 |
 | hippie-exp                                         |                   1 |
 | ibuffer                                            |                   2 |
-| icomplete-mode                                     |                   2 |
+| icomplete-mode                                     |                   3 |
 | ido-mode                                           |                   3 |
 | imenu                                              |                   1 |
-| ispell                                             |                   1 |
+| ispell                                             |                   2 |
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
 | paredit                                            |                   1 |
@@ -73,7 +73,6 @@ Number of people surveyed: 3
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   3 |
 | winner-mode                                        |                   1 |
-
 }}}
 
 __How to keep the Table sorted__
