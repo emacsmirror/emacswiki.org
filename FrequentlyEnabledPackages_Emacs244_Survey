@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 25
+Number of people surveyed: 26
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -36,11 +36,11 @@ Number of people surveyed: 25
 | abbrev-mode                                        |                   7 |
 | auto-encryption-mode                               |                   3 |
 | auto-fill-mode                                     |                   6 |
-| blink-cursor-mode                                  |                  24 |
+| blink-cursor-mode                                  |                  25 |
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                  18 |
 | compilation-minor-mode                             |                   2 |
-| cua-mode                                           |                   2 |
+| cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   11 |
 | desktop-save-mode                                  |                   5 |
@@ -61,7 +61,7 @@ Number of people surveyed: 25
 | hide-ifdef-mode                                    |                   1 |
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   3 |
-| ibuffer                                            |                  14 |
+| ibuffer                                            |                  15 |
 | icomplete-mode                                     |                   8 |
 | ido-everywhere                                     |                   5 |
 | ido-mode                                           |                  17 |
