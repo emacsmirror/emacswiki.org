@@ -28,7 +28,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Survey__
 
-Number of people surveyed: 9
+Number of people surveyed: 10
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -36,7 +36,7 @@ Number of people surveyed: 9
 | <50>                                               |                     |
 | abbrev-mode                                        |                   2 |
 | auto-complete                                      |                   2 |
-| column-number-mode                                 |                   4 |
+| column-number-mode                                 |                   5 |
 | cua-mode                                           |                   1 |
 | cua-selection-mode                                 |                   2 |
 | delete-selection-mode                              |                   4 |
@@ -44,7 +44,7 @@ Number of people surveyed: 9
 | dired-hide-details-mode                            |                   2 |
 | dired-x                                            |                   3 |
 | display-time                                       |                   1 |
-| eldoc-mode                                         |                   4 |
+| eldoc-mode                                         |                   5 |
 | electric-indent-mode                               |                   2 |
 | electric-pair-mode                                 |                   1 |
 | epa-file-enable                                    |                   1 |
@@ -55,25 +55,25 @@ Number of people surveyed: 9
 | global-subword-mode                                |                   4 |
 | gnus-dired-mode                                    |                   1 |
 | hippie-exp                                         |                   4 |
-| ibuffer                                            |                   7 |
+| ibuffer                                            |                   8 |
 | icomplete-mode                                     |                   3 |
-| ido-mode                                           |                   7 |
+| ido-mode                                           |                   8 |
 | imenu                                              |                   1 |
 | ispell                                             |                   2 |
 | kill-whole-line                                    |                   1 |
 | linum                                              |                   1 |
-| paredit                                            |                   1 |
+| paredit                                            |                   2 |
 | recentf-mode                                       |                   2 |
 | savehist-mode                                      |                   2 |
-| saveplace                                          |                   3 |
-| show-paren-mode                                    |                   8 |
+| saveplace                                          |                   4 |
+| show-paren-mode                                    |                   9 |
 | size-indication-mode                               |                   2 |
-| uniquify                                           |                   4 |
+| uniquify                                           |                   5 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                   1 |
+| which-function-mode                                |                   2 |
 | whitespace-global-modes                            |                   1 |
-| windmove                                           |                   4 |
-| winner-mode                                        |                   2 |
+| windmove                                           |                   5 |
+| winner-mode                                        |                   3 |
 }}}
 
 __How to keep the Table sorted__
