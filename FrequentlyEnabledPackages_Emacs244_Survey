@@ -36,6 +36,7 @@ Number of people surveyed: 14
 | <50>                                               |                     |
 | abbrev-mode                                        |                   3 |
 | auto-complete                                      |                   5 |
+| auto-fill-mode                                     |                   0 |
 | bs-show                                            |                   2 |
 | column-number-mode                                 |                   9 |
 | cua-mode                                           |                   1 |
@@ -75,6 +76,7 @@ Number of people surveyed: 14
 | switch-window                                      |                   1 |
 | uniquify                                           |                   7 |
 | url-handler-mode                                   |                   1 |
+| visual-line-mode                                   |                   0 |
 | which-function-mode                                |                   4 |
 | whitespace-global-modes                            |                   1 |
 | windmove                                           |                   7 |
