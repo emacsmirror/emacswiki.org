@@ -39,11 +39,11 @@ Number of people surveyed: 28
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  27 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  19 |
+| column-number-mode                                 |                  20 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
-| delete-selection-mode                              |                  13 |
+| delete-selection-mode                              |                  14 |
 | desktop-save-mode                                  |                   6 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                   9 |
@@ -73,7 +73,7 @@ Number of people surveyed: 28
 | imenu                                              |                   4 |
 | ispell-minor-mode                                  |                   5 |
 | kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   6 |
+| line-number-mode                                   |                   7 |
 | linum-mode                                         |                   3 |
 | mouse-wheel-mode                                   |                   1 |
 | org-capture                                        |                   4 |
@@ -82,20 +82,19 @@ Number of people surveyed: 28
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  10 |
-| saveplace                                          |                  10 |
-| server-mode                                        |                   4 |
+| saveplace                                          |                  11 |
+| server-mode                                        |                   5 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  24 |
-| size-indication-mode                               |                   4 |
+| show-paren-mode                                    |                  25 |
+| size-indication-mode                               |                   5 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   3 |
-| transient-mark-mode                                |                   11 |
-| uniquify                                           |                  21 |
+| transient-mark-mode                                |                  12 |
+| uniquify                                           |                  22 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  10 |
-| winner-mode                                        |                  12 |
-| winner-mode                                        |                  11 |
+| winner-mode                                        |                  13 |
 }}}
 
 __How to keep the Table sorted__
