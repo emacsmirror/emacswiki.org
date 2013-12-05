@@ -34,7 +34,6 @@ Number of people surveyed: 42
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                  15 |
-| auto-complete-mode                                 |                   1 |
 | auto-composition-mode                              |                   4 |
 | auto-compression-mode                              |                   1 |
 | auto-encryption-mode                               |                   7 |
@@ -63,7 +62,6 @@ Number of people surveyed: 42
 | font-lock-mode                                     |                   4 |
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   3 |
-| global-auto-complete-mode                          |                   1 |
 | global-cwarn-mode                                  |                   2 |
 | global-font-lock-mode                              |                   7 |
 | global-hi-lock-mode                                |                   5 |
