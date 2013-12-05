@@ -51,7 +51,7 @@ Number of people surveyed: 41
 | dired-x                                            |                  13 |
 | display-time-mode                                  |                   7 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  18 |
+| eldoc-mode                                         |                  19 |
 | electric-indent-mode                               |                   4 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   3 |
@@ -82,6 +82,7 @@ Number of people surveyed: 41
 | mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   6 |
 | org-src-mode                                       |                   3 |
+| paredit-mode                                       |                   1 |
 | recentf-mode                                       |                  15 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   2 |
@@ -94,7 +95,7 @@ Number of people surveyed: 41
 | subword-mode                                       |                   4 |
 | tooltip-mode                                       |                   5 |
 | transient-mark-mode                                |                  18 |
-| uniquify                                           |                  31 |
+| uniquify                                           |                  32 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  12 |
 | windmove                                           |                  12 |
