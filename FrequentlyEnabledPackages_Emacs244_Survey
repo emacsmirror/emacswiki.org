@@ -49,9 +49,9 @@ Number of people surveyed: 48
 | delete-selection-mode                              |                  18 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   8 |
-| dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  17 |
-| display-time-mode                                  |                   8 |
+| dired-hide-details-mode                            |                   5 |
+| dired-x                                            |                  18 |
+| display-time-mode                                  |                   9 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  19 |
 | electric-indent-mode                               |                   5 |
@@ -64,7 +64,7 @@ Number of people surveyed: 48
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   3 |
 | global-cwarn-mode                                  |                   2 |
-| global-font-lock-mode                              |                   8 |
+| global-font-lock-mode                              |                   9 |
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   6 |
 | global-subword-mode                                |                   7 |
@@ -72,10 +72,10 @@ Number of people surveyed: 48
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                   9 |
 | hs-minor-mode                                      |                   6 |
-| ibuffer                                            |                  27 |
+| ibuffer                                            |                  28 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  13 |
-| ido-mode                                           |                  32 |
+| ido-mode                                           |                  33 |
 | imenu                                              |                   9 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   4 |
@@ -85,23 +85,23 @@ Number of people surveyed: 48
 | org-capture                                        |                   6 |
 | org-src-mode                                       |                   3 |
 | paredit-mode                                       |                   1 |
-| recentf-mode                                       |                  17 |
+| recentf-mode                                       |                  18 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   3 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  13 |
 | server-mode                                        |                   9 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  36 |
+| show-paren-mode                                    |                  37 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   4 |
 | tooltip-mode                                       |                   8 |
 | transient-mark-mode                                |                  22 |
-| uniquify                                           |                  35 |
+| uniquify                                           |                  36 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  13 |
-| windmove                                           |                  15 |
-| winner-mode                                        |                  16 |
+| windmove                                           |                  16 |
+| winner-mode                                        |                  17 |
 
 }}}
 
