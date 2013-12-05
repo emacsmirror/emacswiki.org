@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 44
+Number of people surveyed: 45
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -41,7 +41,7 @@ Number of people surveyed: 44
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  33 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  33 |
+| column-number-mode                                 |                  34 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   6 |
@@ -49,7 +49,7 @@ Number of people surveyed: 44
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   8 |
 | dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  15 |
+| dired-x                                            |                  16 |
 | display-time-mode                                  |                   8 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  19 |
@@ -71,10 +71,10 @@ Number of people surveyed: 44
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                   9 |
 | hs-minor-mode                                      |                   6 |
-| ibuffer                                            |                  25 |
+| ibuffer                                            |                  26 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  12 |
-| ido-mode                                           |                  30 |
+| ido-mode                                           |                  31 |
 | imenu                                              |                   8 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   3 |
