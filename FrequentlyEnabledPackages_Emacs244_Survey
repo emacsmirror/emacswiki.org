@@ -27,20 +27,22 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 41
+Number of people surveyed: 42
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  14 |
-| auto-composition-mode                              |                   3 |
-| auto-encryption-mode                               |                   6 |
+| abbrev-mode                                        |                  15 |
+| auto-complete-mode                                 |                   1 |
+| auto-composition-mode                              |                   4 |
+| auto-compression-mode                              |                   1 |
+| auto-encryption-mode                               |                   7 |
 | auto-fill-mode                                     |                  13 |
 | auto-image-file-mode                               |                   1 |
-| blink-cursor-mode                                  |                  30 |
+| blink-cursor-mode                                  |                  31 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  30 |
+| column-number-mode                                 |                  31 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   4 |
@@ -56,13 +58,14 @@ Number of people surveyed: 41
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   3 |
 | epa-file-enable                                    |                   3 |
-| file-name-shadow-mode                              |                   4 |
+| file-name-shadow-mode                              |                   5 |
 | flyspell-mode                                      |                  17 |
-| font-lock-mode                                     |                   3 |
+| font-lock-mode                                     |                   4 |
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   3 |
+| global-auto-complete-mode                          |                   1 |
 | global-cwarn-mode                                  |                   2 |
-| global-font-lock-mode                              |                   6 |
+| global-font-lock-mode                              |                   7 |
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   6 |
 | global-subword-mode                                |                   7 |
@@ -79,6 +82,7 @@ Number of people surveyed: 41
 | kill-whole-line                                    |                   3 |
 | line-number-mode                                   |                  12 |
 | linum-mode                                         |                   5 |
+| line-number-mode                                   |                   1 |
 | mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   6 |
 | org-src-mode                                       |                   3 |
@@ -89,12 +93,12 @@ Number of people surveyed: 41
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  13 |
 | server-mode                                        |                   7 |
-| shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  34 |
+| shell-dirtrack-mode                                |                   3 |
+| show-paren-mode                                    |                  35 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   4 |
-| tooltip-mode                                       |                   5 |
-| transient-mark-mode                                |                  18 |
+| tooltip-mode                                       |                   6 |
+| transient-mark-mode                                |                  19 |
 | uniquify                                           |                  32 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  13 |
