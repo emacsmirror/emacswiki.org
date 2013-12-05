@@ -1,5 +1,8 @@
 15:55 <forcer> We already have namespaces! You just prefix
       stuff with namespace-, namespace--, or namespace/!
+16:02 <kensanata> forcer: I agree with you regarding
+      namespaces. Namespaces are a convention and I think
+      elisp shows that that's often good enough.
 16:03 <forcer> kensanata: I was being sarcastic. :-(
 16:03 <kensanata> forcer: Nooooooo!
 
