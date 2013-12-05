@@ -79,3 +79,10 @@ Resolved numerous, accumulated edit conflicts.
 
 -- DrewAdams 2013-12-05 00:01 UTC
 
+
+----
+
+blink-cursor-mode has a lot of votes, but it's enabled by default. Are the votes for setting it to nil? (Count me in if that's the case)
+
+-- David 2013-12-05 02:12 UTC
+
