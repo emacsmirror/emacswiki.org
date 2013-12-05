@@ -41,14 +41,14 @@ Number of people surveyed: 62
 | auto-image-file-mode                               |                   1 |
 | autopair-global-mode                               |                   1 |
 | bbdb                                               |                   1 |
-| blink-cursor-mode                                  |                  34 |
+| blink-cursor-mode                                  |                  35 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   1 |
-| column-number-mode                                 |                  42 |
+| column-number-mode                                 |                  43 |
 | compilation-minor-mode                             |                   4 |
 | cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
-| delete-selection-mode                              |                  20 |
+| delete-selection-mode                              |                  21 |
 | delete-by-moving-to-trash                          |                   1 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   9 |
@@ -56,7 +56,7 @@ Number of people surveyed: 62
 | dired-x                                            |                  22 |
 | display-time-mode                                  |                  11 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  22 |
+| eldoc-mode                                         |                  23 |
 | electric-indent-mode                               |                   6 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   5 |
@@ -65,14 +65,14 @@ Number of people surveyed: 62
 | ffap                                               |                   4 |
 | file-name-shadow-mode                              |                   6 |
 | fill-column-indicator                              |                   1 |
-| flyspell-mode                                      |                  23 |
+| flyspell-mode                                      |                  24 |
 | font-lock-mode                                     |                  10 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   5 |
 | global-cwarn-mode                                  |                   3 |
 | global-font-lock-mode                              |                  13 |
 | global-hi-lock-mode                                |                   5 |
-| global-hl-line-mode                                |                   1 |
+| global-hl-line-mode                                |                   2 |
 | global-linum-mode                                  |                   7 |
 | global-subword-mode                                |                   9 |
 | global-whitespace-mode                             |                   4 |
@@ -82,7 +82,7 @@ Number of people surveyed: 62
 | ibuffer                                            |                  30 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  15 |
-| ido-mode                                           |                  39 |
+| ido-mode                                           |                  40 |
 | imenu                                              |                  10 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   5 |
@@ -104,17 +104,17 @@ Number of people surveyed: 62
 | saveplace                                          |                  16 |
 | server-mode                                        |                  11 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  44 |
+| show-paren-mode                                    |                  45 |
 | size-indication-mode                               |                   8 |
 | subword-mode                                       |                   8 |
 | tooltip-mode                                       |                   8 |
-| transient-mark-mode                                |                  28 |
-| uniquify                                           |                  44 |
+| transient-mark-mode                                |                  29 |
+| uniquify                                           |                  45 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
 | which-function-mode                                |                  15 |
 | windmove                                           |                  18 |
-| winner-mode                                        |                  20 |
+| winner-mode                                        |                  21 |
 }}}
 
 __How to keep the Table sorted__
