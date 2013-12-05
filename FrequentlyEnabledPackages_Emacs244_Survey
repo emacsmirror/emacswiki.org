@@ -32,10 +32,10 @@ Number of people surveyed: 31
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   10 |
+| abbrev-mode                                        |                  10 |
 | auto-composition-mode                              |                   3 |
 | auto-encryption-mode                               |                   6 |
-| auto-fill-mode                                     |                   10 |
+| auto-fill-mode                                     |                  10 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  28 |
 | bs-show                                            |                   3 |
