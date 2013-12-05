@@ -29,14 +29,18 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
+<<<<<<< ancestor
+Number of people surveyed: 64
+=======
 Number of people surveyed: 65
+>>>>>>> other
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 |                                                    |                     |
 | <50>                                               |                     |
-| abbrev-mode                                        |                  17 |
+| abbrev-mode                                        |                  18 |
 | auto-composition-mode                              |                   4 |
 | auto-compression-mode                              |                   3 |
 | auto-encryption-mode                               |                   7 |
@@ -48,7 +52,11 @@ Number of people surveyed: 65
 | blink-cursor-mode                                  |                  36 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   2 |
+<<<<<<< ancestor
+| column-number-mode                                 |                  45 |
+=======
 | column-number-mode                                 |                  46 |
+>>>>>>> other
 | compilation-minor-mode                             |                   4 |
 | cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
@@ -60,15 +68,23 @@ Number of people surveyed: 65
 | dired-x                                            |                  22 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   3 |
-| eldoc-mode                                         |                  23 |
-| electric-indent-mode                               |                   7 |
+| eldoc-mode                                         |                  24 |
+| electric-indent-mode                               |                   8 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   7 |
 | epa-file-enable                                    |                   3 |
-| ffap                                               |                   4 |
+| ffap                                               |                   5 |
 | file-name-shadow-mode                              |                   6 |
+<<<<<<< you
+| flyspell-mode                                      |                  27 |
+| font-lock-mode                                     |                  14 |
+||||||| ancestor
+| flyspell-mode                                      |                  27 |
+| font-lock-mode                                     |                  13 |
+=======
 | flyspell-mode                                      |                  28 |
 | font-lock-mode                                     |                  13 |
+>>>>>>> other
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   5 |
 | global-cwarn-mode                                  |                   3 |
@@ -81,18 +97,38 @@ Number of people surveyed: 65
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                  13 |
 | hs-minor-mode                                      |                   7 |
+<<<<<<< ancestor
+| ibuffer                                            |                  32 |
+=======
 | ibuffer                                            |                  33 |
+>>>>>>> other
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  18 |
 | ido-mode                                           |                  43 |
 | imenu                                              |                  11 |
 | ispell-minor-mode                                  |                   6 |
+<<<<<<< you
+| iswitchb-mode                                      |                   1 |
+| kill-whole-line                                    |                   6 |
+||||||| ancestor
+| kill-whole-line                                    |                   6 |
+=======
 | kill-whole-line                                    |                   7 |
+>>>>>>> other
 | line-number-mode                                   |                  20 |
 | linum-mode                                         |                   8 |
 | mouse-wheel-mode                                   |                   4 |
+<<<<<<< you
+| mouse-avoidance-mode                               |                   1 |
+| org-capture                                        |                  10 |
+| org-mode                                           |                   7 |
+||||||| ancestor
+| org-capture                                        |                   9 |
+| org-mode                                           |                   6 |
+=======
 | org-capture                                        |                   9 |
 | org-mode                                           |                   7 |
+>>>>>>> other
 | org-src-mode                                       |                   5 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
@@ -102,18 +138,32 @@ Number of people surveyed: 65
 | reftex-mode                                        |                   6 |
 | savehist-mode                                      |                  13 |
 | saveplace                                          |                  17 |
+| semantic-mode                                      |                   1 |
 | server-mode                                        |                  12 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  47 |
+| show-paren-mode                                    |                  48 |
 | size-indication-mode                               |                   9 |
 | subword-mode                                       |                   8 |
 | tooltip-mode                                       |                   9 |
+<<<<<<< you
+| tramp                                              |                   1 |
+| transient-mark-mode                                |                  32 |
+| uniquify                                           |                  49 |
+||||||| ancestor
+| transient-mark-mode                                |                  31 |
+| uniquify                                           |                  47 |
+=======
 | transient-mark-mode                                |                  31 |
 | uniquify                                           |                  48 |
+>>>>>>> other
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
 | which-function-mode                                |                  15 |
+<<<<<<< ancestor
+| windmove                                           |                  19 |
+=======
 | windmove                                           |                  20 |
+>>>>>>> other
 | winner-mode                                        |                  22 |
 }}}
 
