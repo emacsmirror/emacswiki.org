@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 46
+Number of people surveyed: 47
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -49,17 +49,17 @@ Number of people surveyed: 46
 | delete-selection-mode                              |                  17 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   8 |
-| dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  16 |
+| dired-hide-details-mode                            |                   5 |
+| dired-x                                            |                  17 |
 | display-time-mode                                  |                   8 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  19 |
 | electric-indent-mode                               |                   5 |
 | electric-layout-mode                               |                   1 |
-| electric-pair-mode                                 |                   3 |
+| electric-pair-mode                                 |                   4 |
 | epa-file-enable                                    |                   3 |
 | file-name-shadow-mode                              |                   6 |
-| flyspell-mode                                      |                  18 |
+| flyspell-mode                                      |                  19 |
 | font-lock-mode                                     |                   5 |
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   3 |
@@ -70,9 +70,9 @@ Number of people surveyed: 46
 | global-subword-mode                                |                   7 |
 | global-whitespace-mode                             |                   4 |
 | hide-ifdef-mode                                    |                   3 |
-| hippie-exp                                         |                   9 |
-| hs-minor-mode                                      |                   6 |
-| ibuffer                                            |                  26 |
+| hippie-exp                                         |                   10 |
+| hs-minor-mode                                      |                   7 |
+| ibuffer                                            |                  28 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  12 |
 | ido-mode                                           |                  31 |
@@ -82,17 +82,17 @@ Number of people surveyed: 46
 | line-number-mode                                   |                  15 |
 | linum-mode                                         |                   6 |
 | mouse-wheel-mode                                   |                   2 |
-| org-capture                                        |                   6 |
+| org-capture                                        |                   7 |
 | org-src-mode                                       |                   3 |
 | paredit-mode                                       |                   1 |
-| recentf-mode                                       |                  17 |
+| recentf-mode                                       |                  18 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   3 |
 | savehist-mode                                      |                  11 |
-| saveplace                                          |                  13 |
-| server-mode                                        |                   9 |
+| saveplace                                          |                  14 |
+| server-mode                                        |                   10 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  36 |
+| show-paren-mode                                    |                  37 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   4 |
 | tooltip-mode                                       |                   8 |
@@ -101,7 +101,7 @@ Number of people surveyed: 46
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  13 |
 | windmove                                           |                  14 |
-| winner-mode                                        |                  16 |
+| winner-mode                                        |                  17 |
 }}}
 
 __How to keep the Table sorted__
