@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 34
+Number of people surveyed: 35
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -45,9 +45,10 @@ Number of people surveyed: 34
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
 | delete-selection-mode                              |                  15 |
+| descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   7 |
 | dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  11 |
+| dired-x                                            |                  12 |
 | display-time-mode                                  |                   6 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  16 |
@@ -58,6 +59,7 @@ Number of people surveyed: 34
 | file-name-shadow-mode                              |                   3 |
 | flyspell-mode                                      |                  14 |
 | font-lock-mode                                     |                   1 |
+| generic-x                                          |                   1 |
 | global-auto-revert                                 |                   2 |
 | global-cwarn-mode                                  |                   2 |
 | global-font-lock-mode                              |                   3 |
@@ -69,7 +71,7 @@ Number of people surveyed: 34
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   5 |
 | ibuffer                                            |                  19 |
-| icomplete-mode                                     |                   10 |
+| icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                   9 |
 | ido-mode                                           |                  24 |
 | imenu                                              |                   5 |
@@ -77,7 +79,7 @@ Number of people surveyed: 34
 | kill-whole-line                                    |                   1 |
 | line-number-mode                                   |                   9 |
 | linum-mode                                         |                   4 |
-| mouse-wheel-mode                                   |                   1 |
+| mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   5 |
 | org-src-mode                                       |                   3 |
 | recentf-mode                                       |                  14 |
@@ -92,7 +94,7 @@ Number of people surveyed: 34
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   4 |
 | transient-mark-mode                                |                  15 |
-| uniquify                                           |                  26 |
+| uniquify                                           |                  27 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  12 |
