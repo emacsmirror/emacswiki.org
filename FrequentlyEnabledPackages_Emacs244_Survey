@@ -29,7 +29,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 64
+Number of people surveyed: 66
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -40,7 +40,7 @@ Number of people surveyed: 64
 | auto-composition-mode                              |                   4 |
 | auto-compression-mode                              |                   3 |
 | auto-encryption-mode                               |                   7 |
-| auto-fill-mode                                     |                  18 |
+| auto-fill-mode                                     |                  19 |
 | auto-image-file-mode                               |                   1 |
 | autoinsert                                         |                   1 |
 | autopair-global-mode                               |                   1 |
@@ -48,7 +48,7 @@ Number of people surveyed: 64
 | blink-cursor-mode                                  |                  36 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   2 |
-| column-number-mode                                 |                  45 |
+| column-number-mode                                 |                  46 |
 | compilation-minor-mode                             |                   4 |
 | cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
@@ -67,7 +67,7 @@ Number of people surveyed: 64
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   4 |
 | file-name-shadow-mode                              |                   6 |
-| flyspell-mode                                      |                  27 |
+| flyspell-mode                                      |                  28 |
 | font-lock-mode                                     |                  13 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   5 |
@@ -79,25 +79,25 @@ Number of people surveyed: 64
 | global-subword-mode                                |                   9 |
 | global-whitespace-mode                             |                   5 |
 | hide-ifdef-mode                                    |                   3 |
-| hippie-exp                                         |                  12 |
+| hippie-exp                                         |                  13 |
 | hs-minor-mode                                      |                   7 |
-| ibuffer                                            |                  32 |
+| ibuffer                                            |                  33 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                  17 |
-| ido-mode                                           |                  42 |
-| imenu                                              |                  10 |
+| ido-everywhere                                     |                  18 |
+| ido-mode                                           |                  43 |
+| imenu                                              |                  11 |
 | ispell-minor-mode                                  |                   6 |
-| kill-whole-line                                    |                   6 |
+| kill-whole-line                                    |                   7 |
 | line-number-mode                                   |                  20 |
 | linum-mode                                         |                   8 |
 | mouse-wheel-mode                                   |                   4 |
 | org-capture                                        |                   9 |
-| org-mode                                           |                   6 |
+| org-mode                                           |                   7 |
 | org-src-mode                                       |                   5 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
 | printing                                           |                   1 |
-| recentf-mode                                       |                  21 |
+| recentf-mode                                       |                  22 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   6 |
 | savehist-mode                                      |                  13 |
@@ -109,11 +109,11 @@ Number of people surveyed: 64
 | subword-mode                                       |                   8 |
 | tooltip-mode                                       |                   9 |
 | transient-mark-mode                                |                  31 |
-| uniquify                                           |                  47 |
+| uniquify                                           |                  48 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
 | which-function-mode                                |                  15 |
-| windmove                                           |                  19 |
+| windmove                                           |                  20 |
 | winner-mode                                        |                  22 |
 }}}
 
