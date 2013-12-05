@@ -49,7 +49,6 @@ Number of people surveyed: 64
 | compilation-minor-mode                             |                   4 |
 | cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
-| customize                                          |                   1 |
 | delete-by-moving-to-trash                          |                   1 |
 | delete-selection-mode                              |                  21 |
 | descr-text                                         |                   1 |
@@ -65,7 +64,6 @@ Number of people surveyed: 64
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   4 |
 | file-name-shadow-mode                              |                   6 |
-| fill-column-indicator                              |                   1 |
 | flyspell-mode                                      |                  27 |
 | font-lock-mode                                     |                  13 |
 | generic-x                                          |                   1 |
