@@ -27,20 +27,20 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 26
+Number of people surveyed: 27
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   9 |
-| auto-composition-mode                              |                   1 |
+| auto-composition-mode                              |                   2 |
 | auto-encryption-mode                               |                   4 |
-| auto-fill-mode                                     |                   7 |
+| auto-fill-mode                                     |                   8 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  26 |
 | bs-show                                            |                   3 |
 | column-number-mode                                 |                  19 |
-| compilation-minor-mode                             |                   2 |
+| compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
 | delete-selection-mode                              |                  13 |
@@ -49,10 +49,10 @@ Number of people surveyed: 26
 | dired-x                                            |                   9 |
 | display-time-mode                                  |                   6 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  13 |
+| eldoc-mode                                         |                  14 |
 | electric-indent-mode                               |                   4 |
 | electric-layout-mode                               |                   1 |
-| electric-pair-mode                                 |                   2 |
+| electric-pair-mode                                 |                   3 |
 | epa-file-enable                                    |                   2 |
 | file-name-shadow-mode                              |                   1 |
 | flyspell-mode                                      |                  11 |
@@ -66,10 +66,10 @@ Number of people surveyed: 26
 | hide-ifdef-mode                                    |                   2 |
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   3 |
-| ibuffer                                            |                  15 |
+| ibuffer                                            |                  16 |
 | icomplete-mode                                     |                   9 |
-| ido-everywhere                                     |                   7 |
-| ido-mode                                           |                  19 |
+| ido-everywhere                                     |                   8 |
+| ido-mode                                           |                  20 |
 | imenu                                              |                   4 |
 | ispell-minor-mode                                  |                   5 |
 | kill-whole-line                                    |                   1 |
@@ -78,21 +78,21 @@ Number of people surveyed: 26
 | mouse-wheel-mode                                   |                   1 |
 | org-capture                                        |                   4 |
 | org-src-mode                                       |                   2 |
-| recentf-mode                                       |                  10 |
+| recentf-mode                                       |                  11 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   1 |
 | savehist-mode                                      |                  10 |
 | saveplace                                          |                  10 |
 | server-mode                                        |                   3 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  22 |
+| show-paren-mode                                    |                  23 |
 | size-indication-mode                               |                   4 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   3 |
-| transient-mark-mode                                |                   9 |
-| uniquify                                           |                  19 |
+| transient-mark-mode                                |                   10 |
+| uniquify                                           |                  20 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                  10 |
+| which-function-mode                                |                  11 |
 | windmove                                           |                  10 |
 | winner-mode                                        |                  12 |
 | winner-mode                                        |                  11 |
