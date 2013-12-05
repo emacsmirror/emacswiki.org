@@ -254,13 +254,16 @@ Here is a simple function to show the current path in the echo area:
         (save-excursion
           (save-restriction
             (widen)
-            (while (condition-case nil
-                       (progn
-                         (nxml-backward-up-element) ; always returns nil
-                         t)       
-                     (error nil))
+            (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                        (condition-case nil
+                            (progn
+                              (nxml-backward-up-element) ; always returns nil
+                              t)
+                          (error nil)))
               (setq path (cons (xmltok-start-tag-local-name) path)))
-            (message "/%s" (mapconcat 'identity path "/"))))))
+            (if (called-interactively-p t)
+                (message "/%s" (mapconcat 'identity path "/"))
+              (format "/%s" (mapconcat 'identity path "/")))))))
 
 Barely tested, improvements welcome. -- EmilioLopes
 
