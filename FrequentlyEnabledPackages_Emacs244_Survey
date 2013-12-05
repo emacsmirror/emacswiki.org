@@ -62,7 +62,6 @@ Number of people surveyed: 64
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   6 |
 | epa-file-enable                                    |                   3 |
-| evil-mode                                          |                   1 |
 | ffap                                               |                   4 |
 | file-name-shadow-mode                              |                   6 |
 | fill-column-indicator                              |                   1 |
@@ -89,12 +88,10 @@ Number of people surveyed: 64
 | kill-whole-line                                    |                   6 |
 | line-number-mode                                   |                  19 |
 | linum-mode                                         |                   8 |
-| matlab                                             |                   1 |
 | mouse-wheel-mode                                   |                   3 |
 | org-capture                                        |                   9 |
 | org-mode                                           |                   4 |
 | org-src-mode                                       |                   5 |
-| paredit-mode                                       |                   4 |
 | per-window-point                                   |                   1 |
 | pc-selection-mode                                  |                   1 |
 | printing                                           |                   1 |
