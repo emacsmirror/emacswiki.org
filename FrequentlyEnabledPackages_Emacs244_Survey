@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 54
+Number of people surveyed: 55
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -47,7 +47,7 @@ Number of people surveyed: 54
 | cl                                                 |                   1 |
 | column-number-mode                                 |                  39 |
 | compilation-minor-mode                             |                   4 |
-| cua-mode                                           |                   3 |
+| cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
 | delete-selection-mode                              |                  20 |
 | delete-by-moving-to-trash                          |                   1 |
@@ -57,7 +57,7 @@ Number of people surveyed: 54
 | dired-x                                            |                  22 |
 | display-time-mode                                  |                  11 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  21 |
+| eldoc-mode                                         |                  22 |
 | electric-indent-mode                               |                   5 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   5 |
@@ -67,7 +67,7 @@ Number of people surveyed: 54
 | file-name-shadow-mode                              |                   6 |
 | fill-column-indicator                              |                   1 |
 | flyspell-mode                                      |                  22 |
-| font-lock-mode                                     |                   8 |
+| font-lock-mode                                     |                   9 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   5 |
 | global-cwarn-mode                                  |                   3 |
@@ -94,7 +94,7 @@ Number of people surveyed: 54
 | org-capture                                        |                   9 |
 | org-mode                                           |                   2 |
 | org-src-mode                                       |                   5 |
-| paredit-mode                                       |                   2 |
+| paredit-mode                                       |                   3 |
 | per-window-point                                   |                   1 |
 | pc-selection-mode                                  |                   1 |
 | printing                                           |                   1 |
