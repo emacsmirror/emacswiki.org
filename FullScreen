@@ -348,7 +348,6 @@ Install using
 {{{
 brew install https://gist.github.com/raw/1946398/e7bbb52a4fe3ae0060e65df3d4a7462730ddc822/emacs.rb --force --HEAD --cocoa --use-git-head
 }}}
-Using a dark background, I get a small square of pale color in the bottom right hand corner. Anyone know why and how to get rid of it?
 ==== Resizing the window ====
 
 If your Emacs does not support fullscreen, it can be faked with the maxframe library, which resizes the window to approximately cover the entire screen.  Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el] for Cocoa/Nextstep Emacs. You can see the original version from [https://github.com/rmm5t/maxframe.el maxframe.el], which works for Windows, X11, and Carbon.
