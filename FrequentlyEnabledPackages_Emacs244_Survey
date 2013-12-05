@@ -27,20 +27,20 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 35
+Number of people surveyed: 36
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  12 |
+| abbrev-mode                                        |                  13 |
 | auto-composition-mode                              |                   3 |
 | auto-encryption-mode                               |                   6 |
-| auto-fill-mode                                     |                  12 |
+| auto-fill-mode                                     |                  13 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  28 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  24 |
+| column-number-mode                                 |                  25 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
@@ -49,7 +49,7 @@ Number of people surveyed: 35
 | desktop-save-mode                                  |                   7 |
 | dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                  12 |
-| display-time-mode                                  |                   6 |
+| display-time-mode                                  |                   7 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  16 |
 | electric-indent-mode                               |                   4 |
@@ -58,7 +58,7 @@ Number of people surveyed: 35
 | epa-file-enable                                    |                   2 |
 | file-name-shadow-mode                              |                   3 |
 | flyspell-mode                                      |                  14 |
-| font-lock-mode                                     |                   1 |
+| font-lock-mode                                     |                   2 |
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   2 |
 | global-cwarn-mode                                  |                   2 |
@@ -76,8 +76,8 @@ Number of people surveyed: 35
 | ido-mode                                           |                  24 |
 | imenu                                              |                   5 |
 | ispell-minor-mode                                  |                   6 |
-| kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   9 |
+| kill-whole-line                                    |                   2 |
+| line-number-mode                                   |                   10 |
 | linum-mode                                         |                   4 |
 | mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   5 |
