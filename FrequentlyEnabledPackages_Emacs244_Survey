@@ -33,14 +33,14 @@ Number of people surveyed: 36
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  13 |
+| abbrev-mode                                        |                  14 |
 | auto-composition-mode                              |                   3 |
 | auto-encryption-mode                               |                   6 |
 | auto-fill-mode                                     |                  13 |
 | auto-image-file-mode                               |                   1 |
-| blink-cursor-mode                                  |                  28 |
+| blink-cursor-mode                                  |                  29 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  25 |
+| column-number-mode                                 |                  26 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   4 |
@@ -58,11 +58,11 @@ Number of people surveyed: 36
 | epa-file-enable                                    |                   2 |
 | file-name-shadow-mode                              |                   3 |
 | flyspell-mode                                      |                  14 |
-| font-lock-mode                                     |                   2 |
+| font-lock-mode                                     |                   3 |
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   2 |
 | global-cwarn-mode                                  |                   2 |
-| global-font-lock-mode                              |                   3 |
+| global-font-lock-mode                              |                   4 |
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   5 |
 | global-subword-mode                                |                   7 |
@@ -70,14 +70,14 @@ Number of people surveyed: 36
 | hide-ifdef-mode                                    |                   2 |
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   5 |
-| ibuffer                                            |                  19 |
+| ibuffer                                            |                  20 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                   9 |
 | ido-mode                                           |                  24 |
 | imenu                                              |                   5 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   2 |
-| line-number-mode                                   |                   10 |
+| line-number-mode                                   |                  11 |
 | linum-mode                                         |                   4 |
 | mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   5 |
@@ -89,12 +89,12 @@ Number of people surveyed: 36
 | saveplace                                          |                  12 |
 | server-mode                                        |                   6 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  29 |
+| show-paren-mode                                    |                  30 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   4 |
-| transient-mark-mode                                |                  15 |
-| uniquify                                           |                  27 |
+| transient-mark-mode                                |                  16 |
+| uniquify                                           |                  28 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  12 |
