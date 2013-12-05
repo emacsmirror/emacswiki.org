@@ -27,7 +27,11 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
+<<<<<<< ancestor
+Number of people surveyed: 30
+=======
 Number of people surveyed: 31
+>>>>>>> other
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
@@ -70,7 +74,11 @@ Number of people surveyed: 31
 | ibuffer                                            |                  17 |
 | icomplete-mode                                     |                   9 |
 | ido-everywhere                                     |                   9 |
+<<<<<<< ancestor
+| ido-mode                                           |                  22 |
+=======
 | ido-mode                                           |                  23 |
+>>>>>>> other
 | imenu                                              |                   4 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   1 |
@@ -84,7 +92,7 @@ Number of people surveyed: 31
 | reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  11 |
-| server-mode                                        |                   5 |
+| server-mode                                        |                   6 |
 | shell-dirtrack-mode                                |                   2 |
 | show-paren-mode                                    |                  27 |
 | size-indication-mode                               |                   7 |
