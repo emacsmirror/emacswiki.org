@@ -184,7 +184,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * WhyDoesElispSuck -- Why people say that EmacsLisp is a bad language, deprecated, not the ideal choice for the future, or <your remark here>...
 * RationalElispPackaging -- Design of a packaging system for Emacs Lisp software.
 * Emacs Internals -- I've been reading the source for a while. Trying to start annotate how to read the source for others. Here's a [http://members.cox.net/nish4111/modules.gif diagram] of how I see it presently. (Not sure if this is correct place to put this?)
-* Namespaces -- various implementations and thoughts regarding namespaces
+* [[Namespaces]] -- various implementations and thoughts regarding namespaces
 
 == Curiosities ==
 
