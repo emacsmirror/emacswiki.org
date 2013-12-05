@@ -1,0 +1,12 @@
+EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, however.
+
+* [https://github.com/chrisbarrett/elisp-namespaces elisp-namespaces] using a `namespace' macro at the beginning of your file
+
+* [http://draketo.de/licht/freie-software/emacs/namespaces-elisp Namespaces in Emacs Lisp] using a `namespace' macro where all your symbols are defined in the macro's body
+
+* [http://nic.ferrier.me.uk/blog/2013_06/adding-namespaces-to-elisp Hatching a plan to add namespaces to EmacsLisp] is a blog post talking about namespaces with some pointers to discussions on [[emacs-devel]].
+
+
+----
+CategoryCode
+
