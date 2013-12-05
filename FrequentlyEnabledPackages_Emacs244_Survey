@@ -27,19 +27,19 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 30
+Number of people surveyed: 31
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                   9 |
+| abbrev-mode                                        |                   10 |
 | auto-composition-mode                              |                   3 |
 | auto-encryption-mode                               |                   6 |
-| auto-fill-mode                                     |                   9 |
+| auto-fill-mode                                     |                   10 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  28 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  22 |
+| column-number-mode                                 |                  23 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
@@ -55,7 +55,7 @@ Number of people surveyed: 30
 | electric-pair-mode                                 |                   3 |
 | epa-file-enable                                    |                   2 |
 | file-name-shadow-mode                              |                   2 |
-| flyspell-mode                                      |                  13 |
+| flyspell-mode                                      |                  14 |
 | font-lock-mode                                     |                   1 |
 | global-auto-revert                                 |                   1 |
 | global-cwarn-mode                                  |                   2 |
@@ -70,7 +70,7 @@ Number of people surveyed: 30
 | ibuffer                                            |                  17 |
 | icomplete-mode                                     |                   9 |
 | ido-everywhere                                     |                   9 |
-| ido-mode                                           |                  22 |
+| ido-mode                                           |                  23 |
 | imenu                                              |                   4 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   1 |
@@ -87,14 +87,14 @@ Number of people surveyed: 30
 | server-mode                                        |                   5 |
 | shell-dirtrack-mode                                |                   2 |
 | show-paren-mode                                    |                  27 |
-| size-indication-mode                               |                   6 |
+| size-indication-mode                               |                   7 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   4 |
 | transient-mark-mode                                |                  13 |
-| uniquify                                           |                  24 |
+| uniquify                                           |                  25 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
-| windmove                                           |                  10 |
+| windmove                                           |                  11 |
 | winner-mode                                        |                  13 |
 }}}
 
