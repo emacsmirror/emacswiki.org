@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 33
+Number of people surveyed: 34
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -60,7 +60,7 @@ Number of people surveyed: 33
 | font-lock-mode                                     |                   1 |
 | global-auto-revert                                 |                   2 |
 | global-cwarn-mode                                  |                   2 |
-| global-font-lock-mode                              |                   2 |
+| global-font-lock-mode                              |                   3 |
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   5 |
 | global-subword-mode                                |                   7 |
@@ -69,7 +69,7 @@ Number of people surveyed: 33
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   5 |
 | ibuffer                                            |                  19 |
-| icomplete-mode                                     |                   9 |
+| icomplete-mode                                     |                   10 |
 | ido-everywhere                                     |                   9 |
 | ido-mode                                           |                  24 |
 | imenu                                              |                   5 |
@@ -80,18 +80,18 @@ Number of people surveyed: 33
 | mouse-wheel-mode                                   |                   1 |
 | org-capture                                        |                   5 |
 | org-src-mode                                       |                   3 |
-| recentf-mode                                       |                  13 |
+| recentf-mode                                       |                  14 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  12 |
 | server-mode                                        |                   6 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  28 |
+| show-paren-mode                                    |                  29 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   4 |
-| transient-mark-mode                                |                  14 |
+| transient-mark-mode                                |                  15 |
 | uniquify                                           |                  26 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
