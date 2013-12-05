@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 60
+Number of people surveyed: 61
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -44,7 +44,7 @@ Number of people surveyed: 60
 | blink-cursor-mode                                  |                  34 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   1 |
-| column-number-mode                                 |                  39 |
+| column-number-mode                                 |                  41 |
 | compilation-minor-mode                             |                   4 |
 | cua-mode                                           |                   4 |
 | cua-selection-mode                                 |                   7 |
@@ -85,9 +85,9 @@ Number of people surveyed: 60
 | ido-mode                                           |                  38 |
 | imenu                                              |                  10 |
 | ispell-minor-mode                                  |                   6 |
-| kill-whole-line                                    |                   4 |
+| kill-whole-line                                    |                   5 |
 | line-number-mode                                   |                  19 |
-| linum-mode                                         |                   6 |
+| linum-mode                                         |                   7 |
 | matlab                                             |                   1 |
 | mouse-wheel-mode                                   |                   3 |
 | org-capture                                        |                   9 |
@@ -104,12 +104,12 @@ Number of people surveyed: 60
 | saveplace                                          |                  15 |
 | server-mode                                        |                  11 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  42 |
-| size-indication-mode                               |                   7 |
+| show-paren-mode                                    |                  43 |
+| size-indication-mode                               |                   8 |
 | subword-mode                                       |                   7 |
 | tooltip-mode                                       |                   8 |
-| transient-mark-mode                                |                  26 |
-| uniquify                                           |                  42 |
+| transient-mark-mode                                |                  27 |
+| uniquify                                           |                  43 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
 | which-function-mode                                |                  15 |
