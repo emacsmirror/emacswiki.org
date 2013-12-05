@@ -19,7 +19,6 @@ __Things to Remember (Things to avoid) __
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
 # '''No Third-Party packages.''' -- specify only packages that ship with Vanilla GNU Emacs
 # Give preference to minor modes (that you enable globally)
-# Optionally participate in the Major mode/Derived mode survey.
 
 __Use Talk page__
 
