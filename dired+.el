@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  5 10:30:57 2013 (-0800)
+;; Last-Updated: Thu Dec  5 10:33:20 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7246
+;;     Update #: 7249
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -498,6 +498,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/05 dadams
+;;     diredp-do-grep-1: Call grep-default-command with arg, if grep+.el is loaded.
 ;; 2013/11/05 dadams
 ;;     Added: diredp-get-subdirs.
 ;;     diredp-get-files, diredp-get-files-for-dir, diredp-marked-here:
@@ -5939,7 +5941,10 @@ files in the Dired buffer."
   "Helper function for `diredp-do-grep'.
 Non-nil optional arg FILES are the files to grep, overriding the files
 choice described for `diredp-do-grep'."
-  (let ((default  (and (fboundp 'grep-default-command)  (grep-default-command))))
+  (let ((default  (and (fboundp 'grep-default-command)
+                       (if (fboundp 'grepp-default-regexp-fn) ; In `grep+.el'.
+                           (grep-default-command (funcall (grepp-default-regexp-fn)))
+                         (grep-default-command)))))
     (read-from-minibuffer
      "grep <pattern> <files> :  "
      (let ((up-to-files  (concat grep-command "   ")))
