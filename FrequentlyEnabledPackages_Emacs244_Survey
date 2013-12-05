@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 47
+Number of people surveyed: 48
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -38,7 +38,7 @@ Number of people surveyed: 47
 | auto-composition-mode                              |                   4 |
 | auto-compression-mode                              |                   1 |
 | auto-encryption-mode                               |                   7 |
-| auto-fill-mode                                     |                  13 |
+| auto-fill-mode                                     |                  14 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  33 |
 | bs-show                                            |                   3 |
@@ -46,10 +46,10 @@ Number of people surveyed: 47
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   6 |
-| delete-selection-mode                              |                  17 |
+| delete-selection-mode                              |                  18 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                   8 |
-| dired-hide-details-mode                            |                   5 |
+| dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                  17 |
 | display-time-mode                                  |                   8 |
 | edebug-mode                                        |                   2 |
@@ -70,38 +70,39 @@ Number of people surveyed: 47
 | global-subword-mode                                |                   7 |
 | global-whitespace-mode                             |                   4 |
 | hide-ifdef-mode                                    |                   3 |
-| hippie-exp                                         |                   10 |
-| hs-minor-mode                                      |                   7 |
-| ibuffer                                            |                  28 |
+| hippie-exp                                         |                   9 |
+| hs-minor-mode                                      |                   6 |
+| ibuffer                                            |                  27 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                  12 |
-| ido-mode                                           |                  31 |
-| imenu                                              |                   8 |
+| ido-everywhere                                     |                  13 |
+| ido-mode                                           |                  32 |
+| imenu                                              |                   9 |
 | ispell-minor-mode                                  |                   6 |
-| kill-whole-line                                    |                   3 |
+| kill-whole-line                                    |                   4 |
 | line-number-mode                                   |                  15 |
 | linum-mode                                         |                   6 |
 | mouse-wheel-mode                                   |                   2 |
-| org-capture                                        |                   7 |
+| org-capture                                        |                   6 |
 | org-src-mode                                       |                   3 |
 | paredit-mode                                       |                   1 |
-| recentf-mode                                       |                  18 |
+| recentf-mode                                       |                  17 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   3 |
 | savehist-mode                                      |                  11 |
-| saveplace                                          |                  14 |
-| server-mode                                        |                   10 |
+| saveplace                                          |                  13 |
+| server-mode                                        |                   9 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  37 |
+| show-paren-mode                                    |                  36 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   4 |
 | tooltip-mode                                       |                   8 |
-| transient-mark-mode                                |                  21 |
-| uniquify                                           |                  34 |
+| transient-mark-mode                                |                  22 |
+| uniquify                                           |                  35 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  13 |
-| windmove                                           |                  14 |
-| winner-mode                                        |                  17 |
+| windmove                                           |                  15 |
+| winner-mode                                        |                  16 |
+
 }}}
 
 __How to keep the Table sorted__
