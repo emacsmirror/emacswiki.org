@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 48
+Number of people surveyed: 49
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -42,7 +42,7 @@ Number of people surveyed: 48
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  33 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  34 |
+| column-number-mode                                 |                  35 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   6 |
@@ -53,7 +53,7 @@ Number of people surveyed: 48
 | dired-x                                            |                  18 |
 | display-time-mode                                  |                   9 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  19 |
+| eldoc-mode                                         |                  20 |
 | electric-indent-mode                               |                   5 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   4 |
@@ -75,7 +75,7 @@ Number of people surveyed: 48
 | ibuffer                                            |                  28 |
 | icomplete-mode                                     |                  10 |
 | ido-everywhere                                     |                  13 |
-| ido-mode                                           |                  33 |
+| ido-mode                                           |                  34 |
 | imenu                                              |                   9 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   4 |
@@ -90,11 +90,11 @@ Number of people surveyed: 48
 | reftex-mode                                        |                   3 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  13 |
-| server-mode                                        |                   9 |
+| server-mode                                        |                   10 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  37 |
+| show-paren-mode                                    |                  38 |
 | size-indication-mode                               |                   7 |
-| subword-mode                                       |                   4 |
+| subword-mode                                       |                   5 |
 | tooltip-mode                                       |                   8 |
 | transient-mark-mode                                |                  22 |
 | uniquify                                           |                  36 |
