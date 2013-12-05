@@ -27,16 +27,16 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 32
+Number of people surveyed: 33
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  11 |
+| abbrev-mode                                        |                  12 |
 | auto-composition-mode                              |                   3 |
 | auto-encryption-mode                               |                   6 |
-| auto-fill-mode                                     |                  11 |
+| auto-fill-mode                                     |                  12 |
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  28 |
 | bs-show                                            |                   3 |
@@ -68,7 +68,7 @@ Number of people surveyed: 32
 | hide-ifdef-mode                                    |                   2 |
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   5 |
-| ibuffer                                            |                  18 |
+| ibuffer                                            |                  19 |
 | icomplete-mode                                     |                   9 |
 | ido-everywhere                                     |                   9 |
 | ido-mode                                           |                  24 |
@@ -78,21 +78,21 @@ Number of people surveyed: 32
 | line-number-mode                                   |                   9 |
 | linum-mode                                         |                   4 |
 | mouse-wheel-mode                                   |                   1 |
-| org-capture                                        |                   4 |
-| org-src-mode                                       |                   2 |
+| org-capture                                        |                   5 |
+| org-src-mode                                       |                   3 |
 | recentf-mode                                       |                  13 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  11 |
-| saveplace                                          |                  11 |
+| saveplace                                          |                  12 |
 | server-mode                                        |                   6 |
 | shell-dirtrack-mode                                |                   2 |
 | show-paren-mode                                    |                  28 |
 | size-indication-mode                               |                   7 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   4 |
-| transient-mark-mode                                |                  13 |
-| uniquify                                           |                  25 |
+| transient-mark-mode                                |                  14 |
+| uniquify                                           |                  26 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  12 |
