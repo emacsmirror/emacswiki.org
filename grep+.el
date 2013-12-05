@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:03:39 2013 (-0700)
+;; Last-Updated: Thu Dec  5 10:28:43 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 640
+;;     Update #: 645
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/05 dadams
+;;     grep-default-command: Made argument &optional, since can be called elsewhere.
 ;; 2013/07/03 dadams
 ;;     grepp-default-regexp-fn: Added arg TAG-DEFAULT (so it is computed only once).
 ;;     grep: Call grepp-default-regexp-fn only once, and pass value to grepp-default-regexp-fn.
@@ -222,9 +224,9 @@ first of these that references a defined function:
 
 ;;; REPLACE ORIGINAL in `grep.el'
 ;;;
-;;; Added argument TAG-DEFAULT, passed from `grep'.
+;;; Added optional argument TAG-DEFAULT, passed from `grep'.  Needs to be optional, in case called elsewhere.
 ;;;
-(defun grep-default-command (tag-default)
+(defun grep-default-command (&optional tag-default)
   (let ((quoted-tag-def  (shell-quote-argument (or tag-default  "")))
 	;; Regexp to match single shell arguments.
         (sh-arg-re     "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
