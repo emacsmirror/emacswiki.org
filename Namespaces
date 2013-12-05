@@ -6,6 +6,23 @@
 16:03 <forcer> kensanata: I was being sarcastic. :-(
 16:03 <kensanata> forcer: Nooooooo!
 
+This is what the manual says:
+
+: "You should choose a short word to
+distinguish your program from other Lisp programs. The
+names of all global variables, constants, and functions
+in your program should begin with that chosen prefix.
+Separate the prefix from the rest of the name with a
+hyphen, `-'.
+: "This practice helps avoid name conflicts,
+since all global variables in Emacs Lisp share the same
+name space, and all functions share another name
+space.
+: "Use two hyphens to separate prefix and name
+if the symbol is not meant to be used by other
+packages."
+: -- [[Manual:Coding Conventions]]
+
 EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, however.
 
 * [https://github.com/chrisbarrett/elisp-namespaces elisp-namespaces] using a `namespace' macro at the beginning of your file
