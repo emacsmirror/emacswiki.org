@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 27
+Number of people surveyed: 28
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
@@ -37,7 +37,7 @@ Number of people surveyed: 27
 | auto-encryption-mode                               |                   4 |
 | auto-fill-mode                                     |                   8 |
 | auto-image-file-mode                               |                   1 |
-| blink-cursor-mode                                  |                  26 |
+| blink-cursor-mode                                  |                  27 |
 | bs-show                                            |                   3 |
 | column-number-mode                                 |                  19 |
 | compilation-minor-mode                             |                   3 |
@@ -80,17 +80,17 @@ Number of people surveyed: 27
 | org-src-mode                                       |                   2 |
 | recentf-mode                                       |                  11 |
 | rectangle-mark-mode                                |                   2 |
-| reftex-mode                                        |                   1 |
+| reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  10 |
 | saveplace                                          |                  10 |
-| server-mode                                        |                   3 |
+| server-mode                                        |                   4 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  23 |
+| show-paren-mode                                    |                  24 |
 | size-indication-mode                               |                   4 |
 | subword-mode                                       |                   3 |
 | tooltip-mode                                       |                   3 |
-| transient-mark-mode                                |                   10 |
-| uniquify                                           |                  20 |
+| transient-mark-mode                                |                   11 |
+| uniquify                                           |                  21 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  10 |
