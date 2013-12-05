@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 37
+Number of people surveyed: 38
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -40,22 +40,22 @@ Number of people surveyed: 37
 | auto-image-file-mode                               |                   1 |
 | blink-cursor-mode                                  |                  29 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  26 |
+| column-number-mode                                 |                  27 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   4 |
 | delete-selection-mode                              |                  15 |
 | descr-text                                         |                   1 |
-| desktop-save-mode                                  |                   7 |
+| desktop-save-mode                                  |                   8 |
 | dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  12 |
+| dired-x                                            |                  13 |
 | display-time-mode                                  |                   7 |
 | edebug-mode                                        |                   2 |
-| eldoc-mode                                         |                  16 |
+| eldoc-mode                                         |                  17 |
 | electric-indent-mode                               |                   4 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   3 |
-| epa-file-enable                                    |                   2 |
+| epa-file-enable                                    |                   3 |
 | file-name-shadow-mode                              |                   3 |
 | flyspell-mode                                      |                  14 |
 | font-lock-mode                                     |                   3 |
@@ -70,33 +70,33 @@ Number of people surveyed: 37
 | hide-ifdef-mode                                    |                   2 |
 | hippie-exp                                         |                   8 |
 | hs-minor-mode                                      |                   5 |
-| ibuffer                                            |                  20 |
+| ibuffer                                            |                  21 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                   9 |
-| ido-mode                                           |                  24 |
-| imenu                                              |                   5 |
+| ido-everywhere                                     |                  10 |
+| ido-mode                                           |                  25 |
+| imenu                                              |                   6 |
 | ispell-minor-mode                                  |                   6 |
-| kill-whole-line                                    |                   2 |
+| kill-whole-line                                    |                   3 |
 | line-number-mode                                   |                  11 |
 | linum-mode                                         |                   4 |
 | mouse-wheel-mode                                   |                   2 |
 | org-capture                                        |                   5 |
 | org-src-mode                                       |                   3 |
-| recentf-mode                                       |                  14 |
+| recentf-mode                                       |                  15 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   2 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  12 |
-| server-mode                                        |                   6 |
+| server-mode                                        |                   7 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  30 |
+| show-paren-mode                                    |                  31 |
 | size-indication-mode                               |                   7 |
-| subword-mode                                       |                   3 |
+| subword-mode                                       |                   4 |
 | tooltip-mode                                       |                   4 |
-| transient-mark-mode                                |                  16 |
-| uniquify                                           |                  28 |
+| transient-mark-mode                                |                  17 |
+| uniquify                                           |                  29 |
 | url-handler-mode                                   |                   1 |
-| which-function-mode                                |                  11 |
+| which-function-mode                                |                  12 |
 | windmove                                           |                  12 |
 | winner-mode                                        |                  13 |
 }}}
