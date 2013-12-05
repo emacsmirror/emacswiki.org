@@ -1,3 +1,8 @@
+15:55 <forcer> We already have namespaces! You just prefix
+      stuff with namespace-, namespace--, or namespace/!
+16:03 <forcer> kensanata: I was being sarcastic. :-(
+16:03 <kensanata> forcer: Nooooooo!
+
 EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, however.
 
 * [https://github.com/chrisbarrett/elisp-namespaces elisp-namespaces] using a `namespace' macro at the beginning of your file
