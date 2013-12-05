@@ -27,55 +27,29 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 43
+Number of people surveyed: 44
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                  15 |
-| auto-composition-mode                              |                   5 |
-| auto-compression-mode                              |                   2 |
-| auto-encryption-mode                               |                   8 |
+| auto-composition-mode                              |                   4 |
+| auto-compression-mode                              |                   1 |
+| auto-encryption-mode                               |                   7 |
 | auto-fill-mode                                     |                  13 |
 | auto-image-file-mode                               |                   1 |
-<<<<<<< you
-| blink-cursor-mode                                  |                  32 |
-| bs-show                                            |                   3 |
-| column-number-mode                                 |                  32 |
-| compilation-minor-mode                             |                   3 |
-| cua-mode                                           |                   3 |
-| cua-selection-mode                                 |                   5 |
-| delete-selection-mode                              |                  16 |
-| descr-text                                         |                   1 |
-| desktop-save-mode                                  |                   8 |
-| dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  14 |
-||||||| ancestor
-| blink-cursor-mode                                  |                  31 |
-| bs-show                                            |                   3 |
-| column-number-mode                                 |                  31 |
-| compilation-minor-mode                             |                   3 |
-| cua-mode                                           |                   3 |
-| cua-selection-mode                                 |                   4 |
-| delete-selection-mode                              |                  15 |
-| descr-text                                         |                   1 |
-| desktop-save-mode                                  |                   8 |
-| dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                  13 |
-=======
 | blink-cursor-mode                                  |                  33 |
-| bs-show                                            |                   4 |
+| bs-show                                            |                   3 |
 | column-number-mode                                 |                  33 |
-| compilation-minor-mode                             |                   4 |
-| cua-mode                                           |                   4 |
-| cua-selection-mode                                 |                   5 |
+| compilation-minor-mode                             |                   3 |
+| cua-mode                                           |                   3 |
+| cua-selection-mode                                 |                   6 |
 | delete-selection-mode                              |                  17 |
-| descr-text                                         |                   2 |
-| desktop-save-mode                                  |                   9 |
-| dired-hide-details-mode                            |                   5 |
+| descr-text                                         |                   1 |
+| desktop-save-mode                                  |                   8 |
+| dired-hide-details-mode                            |                   4 |
 | dired-x                                            |                  15 |
->>>>>>> other
 | display-time-mode                                  |                   8 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  19 |
@@ -83,25 +57,13 @@ Number of people surveyed: 43
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   3 |
 | epa-file-enable                                    |                   3 |
-<<<<<<< ancestor
-| file-name-shadow-mode                              |                   5 |
-=======
 | file-name-shadow-mode                              |                   6 |
->>>>>>> other
 | flyspell-mode                                      |                  17 |
-<<<<<<< ancestor
-| font-lock-mode                                     |                   4 |
-=======
 | font-lock-mode                                     |                   5 |
->>>>>>> other
 | generic-x                                          |                   1 |
 | global-auto-revert                                 |                   3 |
 | global-cwarn-mode                                  |                   2 |
-<<<<<<< ancestor
-| global-font-lock-mode                              |                   7 |
-=======
 | global-font-lock-mode                              |                   8 |
->>>>>>> other
 | global-hi-lock-mode                                |                   5 |
 | global-linum-mode                                  |                   6 |
 | global-subword-mode                                |                   7 |
@@ -109,93 +71,36 @@ Number of people surveyed: 43
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                   9 |
 | hs-minor-mode                                      |                   6 |
-<<<<<<< ancestor
-| ibuffer                                            |                  23 |
-=======
-| ibuffer                                            |                  24 |
->>>>>>> other
+| ibuffer                                            |                  25 |
 | icomplete-mode                                     |                  10 |
-<<<<<<< you
-| ido-everywhere                                     |                  11 |
-| ido-mode                                           |                  29 |
-| imenu                                              |                   7 |
-||||||| ancestor
-| ido-everywhere                                     |                  10 |
-| ido-mode                                           |                  28 |
-| imenu                                              |                   6 |
-=======
-| ido-everywhere                                     |                  10 |
-| ido-mode                                           |                  29 |
-| imenu                                              |                   6 |
->>>>>>> other
+| ido-everywhere                                     |                  12 |
+| ido-mode                                           |                  30 |
+| imenu                                              |                   8 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   3 |
-<<<<<<< ancestor
-| line-number-mode                                   |                  12 |
-=======
-| line-number-mode                                   |                  14 |
->>>>>>> other
+| line-number-mode                                   |                  15 |
 | linum-mode                                         |                   5 |
-<<<<<<< you
 | mouse-wheel-mode                                   |                   2 |
-||||||| ancestor
-| line-number-mode                                   |                   1 |
-| mouse-wheel-mode                                   |                   2 |
-=======
-| mouse-wheel-mode                                   |                   3 |
->>>>>>> other
 | org-capture                                        |                   6 |
 | org-src-mode                                       |                   3 |
 | paredit-mode                                       |                   1 |
-| recentf-mode                                       |                  16 |
+| recentf-mode                                       |                  17 |
 | rectangle-mark-mode                                |                   2 |
 | reftex-mode                                        |                   3 |
 | savehist-mode                                      |                  11 |
 | saveplace                                          |                  13 |
-<<<<<<< ancestor
-| server-mode                                        |                   7 |
-=======
-| server-mode                                        |                   8 |
->>>>>>> other
+| server-mode                                        |                   9 |
 | shell-dirtrack-mode                                |                   3 |
-<<<<<<< you
 | show-paren-mode                                    |                  36 |
 | size-indication-mode                               |                   7 |
-||||||| ancestor
-| show-paren-mode                                    |                  35 |
-| size-indication-mode                               |                   7 |
-=======
-| show-paren-mode                                    |                  36 |
-| size-indication-mode                               |                   8 |
->>>>>>> other
 | subword-mode                                       |                   4 |
-<<<<<<< you
-| tooltip-mode                                       |                   7 |
-| transient-mark-mode                                |                  20 |
-| uniquify                                           |                  33 |
-||||||| ancestor
-| tooltip-mode                                       |                   6 |
-| transient-mark-mode                                |                  19 |
-| uniquify                                           |                  32 |
-=======
-| tooltip-mode                                       |                   6 |
-| transient-mark-mode                                |                  20 |
-| uniquify                                           |                  33 |
->>>>>>> other
+| tooltip-mode                                       |                   8 |
+| transient-mark-mode                                |                  21 |
+| uniquify                                           |                  34 |
 | url-handler-mode                                   |                   1 |
-<<<<<<< you
 | which-function-mode                                |                  13 |
-| windmove                                           |                  13 |
-| winner-mode                                        |                  15 |
-||||||| ancestor
-| which-function-mode                                |                  13 |
-| windmove                                           |                  12 |
-| winner-mode                                        |                  14 |
-=======
-| which-function-mode                                |                  14 |
-| windmove                                           |                  13 |
-| winner-mode                                        |                  14 |
->>>>>>> other
+| windmove                                           |                  14 |
+| winner-mode                                        |                  16 |
 }}}
 
 __How to keep the Table sorted__
