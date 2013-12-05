@@ -27,26 +27,26 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 29
+Number of people surveyed: 30
 {{{
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                   9 |
-| auto-composition-mode                              |                   2 |
-| auto-encryption-mode                               |                   5 |
-| auto-fill-mode                                     |                   8 |
+| auto-composition-mode                              |                   3 |
+| auto-encryption-mode                               |                   6 |
+| auto-fill-mode                                     |                   9 |
 | auto-image-file-mode                               |                   1 |
-| blink-cursor-mode                                  |                  27 |
+| blink-cursor-mode                                  |                  28 |
 | bs-show                                            |                   3 |
-| column-number-mode                                 |                  21 |
+| column-number-mode                                 |                  22 |
 | compilation-minor-mode                             |                   3 |
 | cua-mode                                           |                   3 |
 | cua-selection-mode                                 |                   3 |
 | delete-selection-mode                              |                  15 |
 | desktop-save-mode                                  |                   7 |
 | dired-hide-details-mode                            |                   4 |
-| dired-x                                            |                   10 |
+| dired-x                                            |                  10 |
 | display-time-mode                                  |                   6 |
 | edebug-mode                                        |                   2 |
 | eldoc-mode                                         |                  15 |
@@ -55,12 +55,13 @@ Number of people surveyed: 29
 | electric-pair-mode                                 |                   3 |
 | epa-file-enable                                    |                   2 |
 | file-name-shadow-mode                              |                   2 |
-| flyspell-mode                                      |                  12 |
+| flyspell-mode                                      |                  13 |
 | font-lock-mode                                     |                   1 |
+| global-auto-revert                                 |                   1 |
 | global-cwarn-mode                                  |                   2 |
-| global-font-lock-mode                              |                   1 |
+| global-font-lock-mode                              |                   2 |
 | global-hi-lock-mode                                |                   5 |
-| global-linum-mode                                  |                   4 |
+| global-linum-mode                                  |                   5 |
 | global-subword-mode                                |                   6 |
 | global-whitespace-mode                             |                   3 |
 | hide-ifdef-mode                                    |                   2 |
@@ -69,12 +70,12 @@ Number of people surveyed: 29
 | ibuffer                                            |                  17 |
 | icomplete-mode                                     |                   9 |
 | ido-everywhere                                     |                   9 |
-| ido-mode                                           |                  21 |
+| ido-mode                                           |                  22 |
 | imenu                                              |                   4 |
 | ispell-minor-mode                                  |                   6 |
 | kill-whole-line                                    |                   1 |
-| line-number-mode                                   |                   8 |
-| linum-mode                                         |                   3 |
+| line-number-mode                                   |                   9 |
+| linum-mode                                         |                   4 |
 | mouse-wheel-mode                                   |                   1 |
 | org-capture                                        |                   4 |
 | org-src-mode                                       |                   2 |
@@ -85,12 +86,12 @@ Number of people surveyed: 29
 | saveplace                                          |                  11 |
 | server-mode                                        |                   5 |
 | shell-dirtrack-mode                                |                   2 |
-| show-paren-mode                                    |                  26 |
+| show-paren-mode                                    |                  27 |
 | size-indication-mode                               |                   6 |
 | subword-mode                                       |                   3 |
-| tooltip-mode                                       |                   3 |
-| transient-mark-mode                                |                  12 |
-| uniquify                                           |                  23 |
+| tooltip-mode                                       |                   4 |
+| transient-mark-mode                                |                  13 |
+| uniquify                                           |                  24 |
 | url-handler-mode                                   |                   1 |
 | which-function-mode                                |                  11 |
 | windmove                                           |                  10 |
