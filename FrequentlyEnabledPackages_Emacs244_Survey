@@ -39,8 +39,8 @@ Number of people surveyed: 73
 | auto-composition-mode                              |                   6 |
 | auto-compression-mode                              |                   5 |
 | auto-encryption-mode                               |                   9 |
-| auto-fill-mode                                     |                  21 |
-| auto-image-file-mode                               |                   1 |
+| auto-fill-mode                                      |                  21 |
+| auto-image-file-mode                                |                   1 |
 | autoinsert                                         |                   1 |
 | autopair-global-mode                               |                   1 |
 | bbdb                                               |                   1 |
