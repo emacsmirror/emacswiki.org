@@ -95,12 +95,14 @@ Number of people surveyed: 69
 | org-capture                                        |                  10 |
 | org-mode                                           |                  10 |
 | org-src-mode                                       |                   5 |
+| outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
 | printing                                           |                   1 |
 | recentf-mode                                       |                  23 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   7 |
+| reveal-mode                                        |                   1 |
 | savehist-mode                                      |                  15 |
 | saveplace                                          |                  18 |
 | semantic-mode                                      |                   2 |
@@ -115,6 +117,7 @@ Number of people surveyed: 69
 | uniquify                                           |                  51 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
+| visible-line-mode                                  |                   1 |
 | which-function-mode                                |                  16 |
 | windmove                                           |                  22 |
 | winner-mode                                        |                  23 |
