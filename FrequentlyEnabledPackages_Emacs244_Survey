@@ -29,7 +29,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 68
+Number of people surveyed: 69
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -93,7 +93,7 @@ Number of people surveyed: 68
 | mouse-avoidance-mode                               |                   1 |
 | mouse-wheel-mode                                   |                   5 |
 | org-capture                                        |                  10 |
-| org-mode                                           |                   10 |
+| org-mode                                           |                  10 |
 | org-src-mode                                       |                   5 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
