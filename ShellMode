@@ -230,7 +230,7 @@ I bound it to C-j to easily switch between the two modes:
 
   (define-key term-raw-map (kbd "C-j") 'term-switch-to-shell-mode)
 
-
+[Question] Why not simply shifting between character mode and line mode?  Is there a bigger reason to really shift to a real Shell buffer?
 
 
 
