@@ -78,6 +78,7 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 
 ** ws-trim has been updated to provide compatibility with Emacs 24 (support for Emacs 20 and below has been dropped).
 
+* [https://github.com/lewang/ws-butler ws-butler] - An alternative to ws-trim which leverages highlight-changes-mode to track modified lines.
 
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
 
