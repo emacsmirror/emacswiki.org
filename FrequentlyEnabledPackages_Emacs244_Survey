@@ -35,11 +35,11 @@ Number of people surveyed: 73
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  19 |
+| abbrev-mode                                        |                  20 |
 | auto-composition-mode                              |                   6 |
 | auto-compression-mode                              |                   5 |
 | auto-encryption-mode                               |                   9 |
-| auto-fill-mode                                     |                  20 |
+| auto-fill-mode                                     |                  21  |
 | auto-image-file-mode                               |                   1 |
 | autoinsert                                         |                   1 |
 | autopair-global-mode                               |                   1 |
@@ -48,52 +48,52 @@ Number of people surveyed: 73
 | bs-show                                            |                   4 |
 | cl                                                 |                   3 |
 | column-number-mode                                 |                  52 |
-| compilation-minor-mode                             |                   5 |
+| compilation-minor-mode                             |                   6  |
 | cua-mode                                           |                   8 |
-| cua-selection-mode                                 |                   11 |
+| cua-selection-mode                                 |                  11 |
 | delete-by-moving-to-trash                          |                   1 |
 | delete-selection-mode                              |                  21 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                  12 |
-| dired-hide-details-mode                            |                   7 |
+| dired-hide-details-mode                            |                   8  |
 | dired-x                                            |                  26 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   4 |
-| eldoc-mode                                         |                  27 |
-| electric-indent-mode                               |                   8 |
-| electric-layout-mode                               |                   1 |
-| electric-pair-mode                                 |                   7 |
+| eldoc-mode                                         |                  28  |
+| electric-indent-mode                               |                   9  |
+| electric-layout-mode                               |                   2  |
+| electric-pair-mode                                 |                   8  |
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   5 |
 | file-name-shadow-mode                              |                   7 |
 | flyspell-mode                                      |                  33 |
-| font-lock-mode                                     |                  19 |
+| font-lock-mode                                     |                  20   |
 | generic-x                                          |                   1 |
-| global-auto-revert-mode                            |                   6 |
+| global-auto-revert-mode                            |                   6   |
 | global-cwarn-mode                                  |                   3 |
-| global-font-lock-mode                              |                  19 |
+| global-font-lock-mode                              |                  20   |
 | global-hi-lock-mode                                |                   5 |
 | global-hl-line-mode                                |                   4 |
-| global-linum-mode                                  |                   8 |
-| global-subword-mode                                |                  11 |
-| global-whitespace-mode                             |                   5 |
+| global-linum-mode                                  |                  9   |
+| global-subword-mode                                |                  12   |
+| global-whitespace-mode                             |                   5   |
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                  15 |
 | hs-minor-mode                                      |                   7 |
 | ibuffer                                            |                  37 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                  22 |
+| ido-everywhere                                     |                  23  |
 | ido-mode                                           |                  47 |
 | imenu                                              |                  12 |
 | ispell-minor-mode                                  |                   6 |
 | iswitchb-mode                                      |                   1 |
 | kill-whole-line                                    |                   7 |
-| line-number-mode                                   |                  24 |
+| line-number-mode                                   |                  25  |
 | linum-mode                                         |                   8 |
 | mouse-avoidance-mode                               |                   1 |
-| mouse-wheel-mode                                   |                   5 |
+| mouse-wheel-mode                                   |                   6  |
 | org-capture                                        |                  10 |
-| org-mode                                           |                  13 |
+| org-mode                                           |                  14  |
 | org-src-mode                                       |                   5 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
@@ -113,18 +113,18 @@ Number of people surveyed: 73
 | subword-mode                                       |                   9 |
 | tooltip-mode                                       |                  10 |
 | tramp                                              |                   4 |
-| transient-mark-mode                                |                  36 |
-| uniquify                                           |                  53 |
 | tramp                                              |                   3 |
 | transient-mark-mode                                |                  36 |
-| uniquify                                           |                  53 |
+| transient-mark-mode                                |                  36 |
+| uniquify                                           |                  54  |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   3 |
-| visual-line-mode                                   |                   1 |
+| visual-line-mode                                   |                   2  |
 | which-function-mode                                |                  16 |
 | whitespace-mode                                    |                   1 |
-| windmove                                           |                  23 |
+| windmove                                           |                  24  |
 | winner-mode                                        |                  24 |
+
 }}}
 
 __How to keep the Table sorted__
