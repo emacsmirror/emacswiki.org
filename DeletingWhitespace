@@ -72,6 +72,10 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (if (not (bolp)) (forward-line 1))
             (delete-whitespace-rectangle (point) end nil)))
 
+* [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
+
+== Remove trailing whitespace from only the lines you edit (i.e. the version-control friendly options) ==
+
 * [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.el] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
 ** From the commentary: "This package contains tools to do various sorts of whitespace trimming on buffer lines.  The main part is WS Trim mode, which is a minor mode that automatically trims whitespace on text lines. You can control how thorough this mode should be, e.g. whether all lines or only lines you edit should be trimmed."
@@ -80,12 +84,9 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 
 * [https://github.com/lewang/ws-butler ws-butler] - An alternative to ws-trim which leverages highlight-changes-mode to track modified lines.
 
-* [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
-
 == Show trailing whitespace ==
 
 To ''show'' (highlight) trailing whitespace, see ShowWhiteSpace. There are several ways, depending on what you want and what Emacs version you have.
-
 
 == Remove whitespace at the end of the document ==
 
