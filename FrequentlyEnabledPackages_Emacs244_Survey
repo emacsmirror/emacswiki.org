@@ -117,7 +117,7 @@ Number of people surveyed: 69
 | uniquify                                           |                  51 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   2 |
-| visible-line-mode                                  |                   1 |
+| visual-line-mode                                   |                   1 |
 | which-function-mode                                |                  16 |
 | windmove                                           |                  22 |
 | winner-mode                                        |                  23 |
