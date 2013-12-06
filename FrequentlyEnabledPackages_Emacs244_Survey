@@ -29,7 +29,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 69
+Number of people surveyed: 70
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -46,7 +46,7 @@ Number of people surveyed: 69
 | bbdb                                               |                   1 |
 | blink-cursor-mode                                  |                  36 |
 | bs-show                                            |                   4 |
-| cl                                                 |                   2 |
+| cl                                                 |                   3 |
 | column-number-mode                                 |                  50 |
 | compilation-minor-mode                             |                   5 |
 | cua-mode                                           |                   5 |
@@ -59,14 +59,14 @@ Number of people surveyed: 69
 | dired-x                                            |                  23 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   4 |
-| eldoc-mode                                         |                  26 |
+| eldoc-mode                                         |                  27 |
 | electric-indent-mode                               |                   8 |
 | electric-layout-mode                               |                   1 |
 | electric-pair-mode                                 |                   7 |
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   5 |
 | file-name-shadow-mode                              |                   7 |
-| flyspell-mode                                      |                  30 |
+| flyspell-mode                                      |                  31 |
 | font-lock-mode                                     |                  17 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   6 |
@@ -82,8 +82,8 @@ Number of people surveyed: 69
 | hs-minor-mode                                      |                   7 |
 | ibuffer                                            |                  35 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                  19 |
-| ido-mode                                           |                  44 |
+| ido-everywhere                                     |                  20 |
+| ido-mode                                           |                  45 |
 | imenu                                              |                  10 |
 | ispell-minor-mode                                  |                   6 |
 | iswitchb-mode                                      |                   1 |
@@ -93,34 +93,34 @@ Number of people surveyed: 69
 | mouse-avoidance-mode                               |                   1 |
 | mouse-wheel-mode                                   |                   5 |
 | org-capture                                        |                  10 |
-| org-mode                                           |                  10 |
+| org-mode                                           |                  11 |
 | org-src-mode                                       |                   5 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
 | printing                                           |                   1 |
-| recentf-mode                                       |                  23 |
+| recentf-mode                                       |                  24 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   7 |
 | reveal-mode                                        |                   1 |
-| savehist-mode                                      |                  15 |
+| savehist-mode                                      |                  16 |
 | saveplace                                          |                  18 |
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  13 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  51 |
+| show-paren-mode                                    |                  52 |
 | size-indication-mode                               |                  10 |
 | subword-mode                                       |                   9 |
 | tooltip-mode                                       |                  10 |
-| tramp                                              |                   2 |
+| tramp                                              |                   3 |
 | transient-mark-mode                                |                  35 |
-| uniquify                                           |                  51 |
+| uniquify                                           |                  52 |
 | url-handler-mode                                   |                   1 |
-| visible-bell                                       |                   2 |
+| visible-bell                                       |                   3 |
 | visual-line-mode                                   |                   1 |
 | which-function-mode                                |                  16 |
-| windmove                                           |                  22 |
-| winner-mode                                        |                  23 |
+| windmove                                           |                  23 |
+| winner-mode                                        |                  24 |
 }}}
 
 __How to keep the Table sorted__
