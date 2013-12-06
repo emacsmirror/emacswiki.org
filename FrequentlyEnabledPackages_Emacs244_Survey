@@ -29,7 +29,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 73
+'''Number of people surveyed''': 74
 
 {{{
 
@@ -48,7 +48,7 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  37 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   3 |
-| column-number-mode                                 |                  52 |
+| column-number-mode                                 |                  53 |
 | compilation-minor-mode                             |                   6 |
 | cua-mode                                           |                   8 |
 | cua-selection-mode                                 |                  11 |
@@ -60,7 +60,7 @@ __Minor Mode Survey__
 | dired-x                                            |                  26 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   4 |
-| eldoc-mode                                         |                  28 |
+| eldoc-mode                                         |                  29 |
 | electric-indent-mode                               |                   9 |
 | electric-layout-mode                               |                   2 |
 | electric-pair-mode                                 |                   8 |
@@ -68,13 +68,13 @@ __Minor Mode Survey__
 | ffap                                               |                   5 |
 | file-name-shadow-mode                              |                   7 |
 | flyspell-mode                                      |                  33 |
-| font-lock-mode                                     |                  20 |
+| font-lock-mode                                     |                  21 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   6 |
 | global-cwarn-mode                                  |                   3 |
-| global-font-lock-mode                              |                  20 |
+| global-font-lock-mode                              |                  21 |
 | global-hi-lock-mode                                |                   5 |
-| global-hl-line-mode                                |                   4 |
+| global-hl-line-mode                                |                   5 |
 | global-linum-mode                                  |                   9 |
 | global-subword-mode                                |                  12 |
 | global-whitespace-mode                             |                   5 |
@@ -89,7 +89,7 @@ __Minor Mode Survey__
 | ispell-minor-mode                                  |                   6 |
 | iswitchb-mode                                      |                   1 |
 | kill-whole-line                                    |                   7 |
-| line-number-mode                                   |                  25 |
+| line-number-mode                                   |                  26 |
 | linum-mode                                         |                   8 |
 | mouse-avoidance-mode                               |                   1 |
 | mouse-wheel-mode                                   |                   6 |
@@ -102,7 +102,7 @@ __Minor Mode Survey__
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
 | printing                                           |                   1 |
-| recentf-mode                                       |                  26 |
+| recentf-mode                                       |                  27 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   7 |
 | reveal-mode                                        |                   1 |
@@ -111,22 +111,21 @@ __Minor Mode Survey__
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  13 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  53 |
+| show-paren-mode                                    |                  54 |
 | size-indication-mode                               |                  10 |
 | subword-mode                                       |                   9 |
 | tooltip-mode                                       |                  10 |
 | tramp                                              |                   4 |
 | tramp                                              |                   3 |
-| transient-mark-mode                                |                  36 |
-| transient-mark-mode                                |                  36 |
-| uniquify                                           |                  54 |
+| transient-mark-mode                                |                  37 |
+| uniquify                                           |                  55 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   3 |
 | visual-line-mode                                   |                   2 |
 | which-function-mode                                |                  16 |
 | whitespace-mode                                    |                   1 |
-| windmove                                           |                  24 |
-| winner-mode                                        |                  24 |
+| windmove                                           |                  25 |
+| winner-mode                                        |                  25 |
 
 }}}
 
