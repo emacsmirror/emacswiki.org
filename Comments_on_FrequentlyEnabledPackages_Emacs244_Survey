@@ -100,3 +100,17 @@ The changes for revisions 115 and 116 look like the changes made by a confused p
 
 -- AlexSchroeder 2013-12-05 16:17 UTC
 
+
+----
+
+I incremented the count for cua mode, but I only use it for rectangles. 
+
+    (setq cua-enable-cua-keys nil)
+    (cua-mode t)
+
+Should that have not counted?
+
+I also disable blink-cursor-mode...can't bear it, in fact.
+
+-- [http://oylenshpeegul.wordpress.com/ oylenshpeegul] 2013-12-06 02:31 UTC
+
