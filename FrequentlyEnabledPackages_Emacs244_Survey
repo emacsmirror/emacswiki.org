@@ -47,24 +47,16 @@ Number of people surveyed: 71
 | blink-cursor-mode                                  |                  37 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   3 |
-<<<<<<< ancestor
-| column-number-mode                                 |                  50 |
-=======
-| column-number-mode                                 |                  51 |
->>>>>>> other
+| column-number-mode                                 |                  52 |
 | compilation-minor-mode                             |                   5 |
-| cua-mode                                           |                   6 |
-| cua-selection-mode                                 |                   9 |
+| cua-mode                                           |                   7 |
+| cua-selection-mode                                 |                   10 |
 | delete-by-moving-to-trash                          |                   1 |
 | delete-selection-mode                              |                  21 |
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                  12 |
 | dired-hide-details-mode                            |                   7 |
-<<<<<<< ancestor
-| dired-x                                            |                  23 |
-=======
-| dired-x                                            |                  24 |
->>>>>>> other
+| dired-x                                            |                  26 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   4 |
 | eldoc-mode                                         |                  27 |
@@ -74,48 +66,40 @@ Number of people surveyed: 71
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   5 |
 | file-name-shadow-mode                              |                   7 |
-| flyspell-mode                                      |                  32 |
-| font-lock-mode                                     |                  18 |
+| flyspell-mode                                      |                  33 |
+| font-lock-mode                                     |                  19 |
 | generic-x                                          |                   1 |
 | global-auto-revert-mode                            |                   6 |
 | global-cwarn-mode                                  |                   3 |
-| global-font-lock-mode                              |                  18 |
+| global-font-lock-mode                              |                  19 |
 | global-hi-lock-mode                                |                   5 |
 | global-hl-line-mode                                |                   4 |
 | global-linum-mode                                  |                   8 |
 | global-subword-mode                                |                  11 |
 | global-whitespace-mode                             |                   5 |
 | hide-ifdef-mode                                    |                   3 |
-<<<<<<< ancestor
-| hippie-exp                                         |                  13 |
-=======
-| hippie-exp                                         |                  14 |
->>>>>>> other
+| hippie-exp                                         |                  15 |
 | hs-minor-mode                                      |                   7 |
-| ibuffer                                            |                  36 |
+| ibuffer                                            |                  37 |
 | icomplete-mode                                     |                  10 |
-| ido-everywhere                                     |                  21 |
-| ido-mode                                           |                  46 |
-| imenu                                              |                  11 |
+| ido-everywhere                                     |                  22 |
+| ido-mode                                           |                  47 |
+| imenu                                              |                  12 |
 | ispell-minor-mode                                  |                   6 |
 | iswitchb-mode                                      |                   1 |
 | kill-whole-line                                    |                   7 |
-| line-number-mode                                   |                  23 |
+| line-number-mode                                   |                  24 |
 | linum-mode                                         |                   8 |
 | mouse-avoidance-mode                               |                   1 |
 | mouse-wheel-mode                                   |                   5 |
 | org-capture                                        |                  10 |
-<<<<<<< ancestor
-| org-mode                                           |                  11 |
-=======
-| org-mode                                           |                  12 |
->>>>>>> other
+| org-mode                                           |                  13 |
 | org-src-mode                                       |                   5 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
 | printing                                           |                   1 |
-| recentf-mode                                       |                  25 |
+| recentf-mode                                       |                  26 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   7 |
 | reveal-mode                                        |                   1 |
@@ -128,19 +112,12 @@ Number of people surveyed: 71
 | size-indication-mode                               |                  10 |
 | subword-mode                                       |                   9 |
 | tooltip-mode                                       |                  10 |
-<<<<<<< you
 | tramp                                              |                   4 |
 | transient-mark-mode                                |                  36 |
 | uniquify                                           |                  53 |
-||||||| ancestor
-| tramp                                              |                   3 |
-| transient-mark-mode                                |                  35 |
-| uniquify                                           |                  52 |
-=======
 | tramp                                              |                   3 |
 | transient-mark-mode                                |                  36 |
 | uniquify                                           |                  53 |
->>>>>>> other
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   3 |
 | visual-line-mode                                   |                   1 |
