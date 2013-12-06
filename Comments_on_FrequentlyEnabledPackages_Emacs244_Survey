@@ -117,7 +117,9 @@ I also disable blink-cursor-mode...can't bear it, in fact.
 
 ----
 
-I enable <tt>outline-minor-mode</tt> in <tt>emacs-lisp-mode</tt> and <tt>perl-mode</tt>.  <tt>reveal-mode</tt> goes well with <tt>outline-minor-mode</tt>.  See http://lists.gnu.org/archive/html/help-gnu-emacs/2013-10/msg00327.html
+I enable <tt>outline-minor-mode</tt> in <tt>emacs-lisp-mode</tt> and <tt>perl-mode</tt>.  
+
+<tt>reveal-mode</tt> goes well with <tt>outline-minor-mode</tt>.  See http://lists.gnu.org/archive/html/help-gnu-emacs/2013-10/msg00327.html
 
 Lately, I have been experimenting with <tt>visual-line-mode</tt> on plain text files.
 
