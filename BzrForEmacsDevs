@@ -289,6 +289,10 @@ Next, update your mirror:
       bzr update
       bzr merge ../TASKNAME
 
+Run the tests:
+
+      make check
+
 and then commit
 
       bzr status                  # (recommended) sanity check -- lists changed and unknown files
