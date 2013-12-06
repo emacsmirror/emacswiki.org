@@ -29,9 +29,10 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 73
+'''Number of people surveyed''': 73
 
 {{{
+
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
@@ -39,8 +40,8 @@ Number of people surveyed: 73
 | auto-composition-mode                              |                   6 |
 | auto-compression-mode                              |                   5 |
 | auto-encryption-mode                               |                   9 |
-| auto-fill-mode                                      |                  21 |
-| auto-image-file-mode                                |                   1 |
+| auto-fill-mode                                     |                  21 |
+| auto-image-file-mode                               |                   1 |
 | autoinsert                                         |                   1 |
 | autopair-global-mode                               |                   1 |
 | bbdb                                               |                   1 |
@@ -95,6 +96,8 @@ Number of people surveyed: 73
 | org-capture                                        |                  10 |
 | org-mode                                           |                  14 |
 | org-src-mode                                       |                   5 |
+| orgstruct++-mode                                   |                   1 |
+| orgtbl-mode                                        |                   1 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   1 |
