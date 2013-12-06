@@ -123,5 +123,7 @@ I enable <tt>outline-minor-mode</tt> in <tt>emacs-lisp-mode</tt> and <tt>perl-mo
 
 Lately, I have been experimenting with <tt>visual-line-mode</tt> on plain text files.
 
+In <tt>message-mode</tt> buffers, I have <tt>orgstruct++-mode</tt> and <tt>orgtbl-mode</tt> enabled.
+
 -- Anonymous 2013-12-06 03:35 UTC
 
