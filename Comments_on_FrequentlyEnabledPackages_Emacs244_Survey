@@ -114,3 +114,10 @@ I also disable blink-cursor-mode...can't bear it, in fact.
 
 -- [http://oylenshpeegul.wordpress.com/ oylenshpeegul] 2013-12-06 02:31 UTC
 
+
+----
+
+I enable <tt>outline-minor-mode</tt> in <tt>emacs-lisp-mode</tt> and <tt>perl-mode</tt>.  <tt>reveal-mode</tt> goes well with <tt>outline-minor-mode</tt>.  Lately, I have been experimenting with <tt>visual-line-mode</tt> on non-source files.
+
+-- Anonymous 2013-12-06 03:35 UTC
+
