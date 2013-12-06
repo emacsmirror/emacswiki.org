@@ -19,3 +19,4 @@
 \[url=\s*(http|www) # 2012-12-31 bbCode links usually mean spam
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
 \b(valium|xanax|tramadol|vardenafil|cialis)\b # 2013-08-24 common drugs
+\bcanada\s+goose\b # 2013-12-06 regular spam using a lot of tinyurl URLs
