@@ -29,7 +29,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-Number of people surveyed: 70
+Number of people surveyed: 71
 
 {{{
 | Packages/Modes                                     | Upvote / User count |
@@ -44,10 +44,10 @@ Number of people surveyed: 70
 | autoinsert                                         |                   1 |
 | autopair-global-mode                               |                   1 |
 | bbdb                                               |                   1 |
-| blink-cursor-mode                                  |                  36 |
+| blink-cursor-mode                                  |                  37 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   3 |
-| column-number-mode                                 |                  50 |
+| column-number-mode                                 |                  51 |
 | compilation-minor-mode                             |                   5 |
 | cua-mode                                           |                   5 |
 | cua-selection-mode                                 |                   8 |
@@ -56,7 +56,7 @@ Number of people surveyed: 70
 | descr-text                                         |                   1 |
 | desktop-save-mode                                  |                  12 |
 | dired-hide-details-mode                            |                   7 |
-| dired-x                                            |                  23 |
+| dired-x                                            |                  24 |
 | display-time-mode                                  |                  12 |
 | edebug-mode                                        |                   4 |
 | eldoc-mode                                         |                  27 |
@@ -78,7 +78,7 @@ Number of people surveyed: 70
 | global-subword-mode                                |                  11 |
 | global-whitespace-mode                             |                   5 |
 | hide-ifdef-mode                                    |                   3 |
-| hippie-exp                                         |                  13 |
+| hippie-exp                                         |                  14 |
 | hs-minor-mode                                      |                   7 |
 | ibuffer                                            |                  35 |
 | icomplete-mode                                     |                  10 |
@@ -93,7 +93,7 @@ Number of people surveyed: 70
 | mouse-avoidance-mode                               |                   1 |
 | mouse-wheel-mode                                   |                   5 |
 | org-capture                                        |                  10 |
-| org-mode                                           |                  11 |
+| org-mode                                           |                  12 |
 | org-src-mode                                       |                   5 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
@@ -108,17 +108,18 @@ Number of people surveyed: 70
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  13 |
 | shell-dirtrack-mode                                |                   3 |
-| show-paren-mode                                    |                  52 |
+| show-paren-mode                                    |                  53 |
 | size-indication-mode                               |                  10 |
 | subword-mode                                       |                   9 |
 | tooltip-mode                                       |                  10 |
 | tramp                                              |                   3 |
-| transient-mark-mode                                |                  35 |
-| uniquify                                           |                  52 |
+| transient-mark-mode                                |                  36 |
+| uniquify                                           |                  53 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   3 |
 | visual-line-mode                                   |                   1 |
 | which-function-mode                                |                  16 |
+| whitespace-mode                                    |                   1 |
 | windmove                                           |                  23 |
 | winner-mode                                        |                  24 |
 }}}
