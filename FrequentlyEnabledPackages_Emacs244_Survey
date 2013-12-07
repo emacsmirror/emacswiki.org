@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 83 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 84 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -46,17 +46,17 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   4 |
-| column-number-mode                                 |                  58 |
+| column-number-mode                                 |                  59 |
 | compilation-minor-mode                             |                   6 |
 | cua-mode                                           |                   10 |
 | cua-selection-mode                                 |                  12 |
 | delete-by-moving-to-trash                          |                   2 |
 | delete-selection-mode                              |                  23 |
 | descr-text                                         |                   1 |
-| desktop-save-mode                                  |                  17 |
+| desktop-save-mode                                  |                  18 |
 | dired-hide-details-mode                            |                  11 |
 | dired-x                                            |                  29 |
-| display-time-mode                                  |                  14 |
+| display-time-mode                                  |                  15 |
 | edebug-mode                                        |                   6 |
 | eldoc-mode                                         |                  31 |
 | electric-indent-mode                               |                   9 |
@@ -75,7 +75,7 @@ __Minor Mode Survey__
 | global-hl-line-mode                                |                   7 |
 | global-linum-mode                                  |                   9 |
 | global-subword-mode                                |                  13 |
-| global-whitespace-mode                             |                   5 |
+| global-whitespace-mode                             |                   6 |
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                  18 |
 | hs-minor-mode                                      |                   9 |
@@ -111,18 +111,18 @@ __Minor Mode Survey__
 | shell-dirtrack-mode                                |                   4 |
 | show-paren-mode                                    |                  55 |
 | show-smartparens-global-mode                       |                   1 |
-| size-indication-mode                               |                  11 |
+| size-indication-mode                               |                  12 |
 | smartparens-global-mode                            |                   1 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  11 |
 | tramp                                              |                   5 |
 | tramp                                              |                   3 |
 | transient-mark-mode                                |                  42 |
-| uniquify                                           |                  59 |
+| uniquify                                           |                  60 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   4 |
 | visual-line-mode                                   |                   3 |
-| which-function-mode                                |                  18 |
+| which-function-mode                                |                  19 |
 | whitespace-mode                                    |                   2 |
 | windmove                                           |                  28 |
 | winner-mode                                        |                  28 |
