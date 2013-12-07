@@ -1,0 +1,66 @@
+=Introduction=
+Emacs server mode is intended to keep a single Emacs running for all editing tasks. When you edit a file, rather than start up a new instance of Emacs, you'll instead be thrown into the existing Emacs. This is faster than starting up a new Emacs, and gives you access to all the history, previous edits, etc. rather than starting you each time fresh.
+
+Some time ago on emacs-fu I [http://emacs-fu.blogspot.com/2009/03/windows-and-daemons.html discussed] the setup I used for a better Windows server-mode experience. That setup relied on some features built into the [[EmacsW32]] package to create a more seamless Windows experience. Unfortunately, the [[EmacsW32]] package hasn't been updated in a while. Since I wanted to upgrade to Emacs 24, I spent some time figuring out how to recreate a decent server mode functionality in Windows without the W32 features.
+
+The behavior I like is to have an Emacs icon on my desktop. When I double click the icon, it should throw me into Emacs -- starting an Emacs if necessary, and otherwise re-using the existing Emacs. Here's how to get that behavior.
+
+=Emacs Desktop Shortcut=
+First, create an Emacs shortcut on your desktop, e.g., by dragging "runemacs.exe" from your Emacs bin directory onto your desktop and choosing "Create shortcut here." Then right-click on the shortcut, select Properties and edit the Target to look like this:
+
+ "C:\Program Files (x86)\emacs-24.3\bin\emacsclientw.exe" -n -a "C:\Program Files (x86)\emacs-24.3\bin\runemacs.exe" -e "(make-frame-visible)" 
+
+(Substitute the appropriate path to your own Emacs bin folder.) EmacsClient is a helper program that re-uses an Emacs server if one is available. Here's an explanation of the arguments:
+
+ -n  
+
+This simply tells EmacsClient to exit immediately after starting Emacs.
+
+ -a "C:\Program Files (x86)\emacs-24.3\bin\runemacs.exe"
+
+This specifies an alternate editor to use if an Emacs server is not available. By making our alternate editor "runemacs.exe", we make EmacsClient start up an Emacs if one isn't already running.
+
+ -e "(make-frame-visible)"
+
+This tells EmacsClient to execute the provide Elisp code if it was successful in starting up. In this case, the Elisp code we provide "(make-frame-visible)" causes the existing Emacs server to become visible on the screen if it was hidden.
+
+So we now have a shortcut that will start up Emacs if it is not running, and will otherwise simply make the existing Emacs visible on the screen. 
+
+=Emacs Startup Code=
+There are a few more things we have to do in the .emacs init file to make everything work out. Here's what you need to add to your .emacs file:
+
+    ;;
+    ;;  This makes Emacs ignore the "-e (make-frame-visible)" 
+    ;;  that it gets passed when started by emacsclientw.
+    ;;
+    (add-to-list 'command-switch-alist '("(make-frame-visible)" .
+                 (lambda (s))))
+
+There's a bug in EmacsClient that results in some of the EmacsClient arguments getting passed along to "runemacs.exe" when it is invoked. If left unfixed, this results in Emacs opening a buffer called "(make-frame-visible)" when it starts up for the first time. That's more an annoyance than a real problem, but this hack stops that from happening by deleting the erroneous "(make-frame-visible)" out of the command line arguments.
+
+    ;;
+    ;;  This starts the Emacs server when .emacs gets loaded
+    ;;
+    (require 'server)
+    (if (not (server-running-p)) (server-start))
+
+When Emacs starts up, we need to start the Emacs server, or the next time we use the shortcut we'll just start another server. This takes care of that, and avoids starting another server if one is already started. (This would be a problem if you purposely started another Emacs, say from the command line.)
+
+    ;;
+    ;;  This changes C-x C-c to just hide Emacs until the next
+    ;;  time you use it.  We rebind C-M-c to be the command to
+    ;;  really kill Emacs.
+    ;;
+    (defun my-done ()
+      "Exit server buffers and hide the main Emacs window"
+      (interactive)
+      (server-edit)
+      (make-frame-invisible nil t))
+
+    (global-set-key (kbd "C-x C-c") 'my-done)
+    (global-set-key (kbd "C-M-c") 'save-buffers-kill-emacs)
+
+Once we have our Emacs server up and running, when we're done editing we want to just hide Emacs away rather than actually killing it. So we rebind the usual exit key "C-x C-c" to a function that says we're done using the server and then hides Emacs. It's important to say we're done using the server, because if we started Emacs from another program (say we're using it as our editor in an email program) the other program is probably waiting for Emacs to say it is done executing.
+
+=Conclusion=
+And that's it. The only small drawback to this set up is that the first time you start Emacs you'll get a popup alert "Emacsclient ERROR" saying that EmacsClient couldn't find a server to use. (This happens just before it fails through to calling "runemacs.exe" to start a server.)  EmacsClient has an option that is supposed to mute this error ("--quiet" or "-q") but it doesn't work.
