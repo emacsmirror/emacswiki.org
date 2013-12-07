@@ -49,3 +49,5 @@
 
 ; It's so hard to find out since what version a given defun is available. Why isn't it mentioned in the docs of a function?: Dmitri Paduchikh: It's not so difficult actually. Emacs distro includes NEWS files for all the releases, so you can do <code>
 $ grep with-silent-modifications NEWS*</code>
+
+; How to build Emacs with assertions?: <code>./configure --enable-checking</code>
