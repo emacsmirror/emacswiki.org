@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 84 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 85 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -37,7 +37,7 @@ __Minor Mode Survey__
 | ac-mode                                            |                   1 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
-| auto-encryption-mode                               |                  10 |
+| auto-encryption-mode                               |                  11 |
 | auto-fill-mode                                     |                  25 |
 | auto-image-file-mode                               |                   2 |
 | autoinsert                                         |                   1 |
@@ -46,7 +46,7 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   4 |
-| column-number-mode                                 |                  59 |
+| column-number-mode                                 |                  60 |
 | compilation-minor-mode                             |                   6 |
 | cua-mode                                           |                   10 |
 | cua-selection-mode                                 |                  12 |
@@ -58,15 +58,15 @@ __Minor Mode Survey__
 | dired-x                                            |                  29 |
 | display-time-mode                                  |                  15 |
 | edebug-mode                                        |                   6 |
-| eldoc-mode                                         |                  31 |
+| eldoc-mode                                         |                  32 |
 | electric-indent-mode                               |                   9 |
 | electric-layout-mode                               |                   2 |
 | electric-pair-mode                                 |                   8 |
 | epa-file-enable                                    |                   3 |
 | ffap                                               |                   8 |
 | file-name-shadow-mode                              |                   8 |
-| flyspell-mode                                      |                  37 |
-| font-lock-mode                                     |                  25 |
+| flyspell-mode                                      |                  38 |
+| font-lock-mode                                     |                  26 |
 | generic-x                                          |                   2 |
 | global-auto-revert-mode                            |                   7 |
 | global-cwarn-mode                                  |                   3 |
@@ -81,18 +81,18 @@ __Minor Mode Survey__
 | hs-minor-mode                                      |                   9 |
 | ibuffer                                            |                  40 |
 | icomplete-mode                                     |                  11 |
-| ido-everywhere                                     |                  25 |
-| ido-mode                                           |                  51 |
+| ido-everywhere                                     |                  26 |
+| ido-mode                                           |                  52 |
 | imenu                                              |                  13 |
 | ispell-minor-mode                                  |                   7 |
 | iswitchb-mode                                      |                   3 |
 | kill-whole-line                                    |                   9 |
-| line-number-mode                                   |                  28 |
+| line-number-mode                                   |                  29 |
 | linum-mode                                         |                   9 |
 | mouse-avoidance-mode                               |                   2 |
 | mouse-wheel-mode                                   |                   6 |
 | org-capture                                        |                  11 |
-| org-mode                                           |                  20 |
+| org-mode                                           |                  21 |
 | org-src-mode                                       |                   5 |
 | orgstruct++-mode                                   |                   2 |
 | orgtbl-mode                                        |                   1 |
@@ -100,16 +100,16 @@ __Minor Mode Survey__
 | pc-selection-mode                                  |                   1 |
 | per-window-point                                   |                   2 |
 | printing                                           |                   1 |
-| recentf-mode                                       |                  32 |
+| recentf-mode                                       |                  33 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   8 |
 | reveal-mode                                        |                   2 |
 | savehist-mode                                      |                  17 |
-| saveplace                                          |                  20 |
+| saveplace                                          |                  21 |
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  16 |
 | shell-dirtrack-mode                                |                   4 |
-| show-paren-mode                                    |                  56 |
+| show-paren-mode                                    |                  57 |
 | show-smartparens-global-mode                       |                   1 |
 | size-indication-mode                               |                  12 |
 | smartparens-global-mode                            |                   1 |
@@ -118,7 +118,7 @@ __Minor Mode Survey__
 | tramp                                              |                   5 |
 | tramp                                              |                   3 |
 | transient-mark-mode                                |                  42 |
-| uniquify                                           |                  60 |
+| uniquify                                           |                  61 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   4 |
 | visual-line-mode                                   |                   3 |
