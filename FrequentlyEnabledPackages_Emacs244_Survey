@@ -45,7 +45,7 @@ __Minor Mode Survey__
 | bbdb                                               |                   1 |
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
-| bookmark+-mode                                     |                     |
+| bookmark+-mode                                     |                    1 |
 | cl                                                 |                   5 |
 | column-number-mode                                 |                  62 |
 | compilation-minor-mode                             |                   7 |
