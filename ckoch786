@@ -15,7 +15,7 @@ functions for moving around tasks to different lists (for instance
 moving all [x] checked items to a finished list and placing them all
 under a common time stamp).
 
-I wrote [https://github.com/ckoch786/prayer-times][prayer-times] for the [http://lispinsummerprojects.org/][Lisp in Summer Project] 2013. It was not
+I wrote [https://github.com/ckoch786/prayer-times prayer-times] for the [http://lispinsummerprojects.org/ Lisp in Summer Project] 2013. It was not
 my main project but rather just something that I was hacking
 together on the side and submitted so I could submit something :). I plan on participating next year as well.
 
