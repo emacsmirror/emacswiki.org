@@ -34,8 +34,8 @@ __Minor Mode Survey__
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                  26 |
-| anzu-mode   |  1 |
-| auto-completion-mode      | 1 |
+| anzu-mode                                           |  1 |
+| auto-completion-mode                         | 1 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
 | auto-encryption-mode                               |                  11 |
@@ -65,10 +65,10 @@ __Minor Mode Survey__
 | electric-layout-mode                               |                   2 |
 | electric-pair-mode                                 |                   8 |
 | epa-file-enable                                    |                   3 |
-| erc-mode                                  |  1|
+| erc-mode                                                 |  1|
 | ffap                                               |                   9 |
 | file-name-shadow-mode                              |                   9 |
-| flycheck-mode                         | 1|
+| flycheck-mode                                             | 1|
 | flyspell-mode                                      |                  39 |
 | font-lock-mode                                     |                  29 |
 | generic-x                                          |                   3 |
@@ -88,7 +88,7 @@ __Minor Mode Survey__
 | icomplete-mode                                     |                  12 |
 | ido-everywhere                                     |                  27 |
 | ido-mode                                           |                  55 |
-| ido-ubiquitous-mode      |   1|
+| ido-ubiquitous-mode                              |   1|
 | iflipb                                             |                   1 |
 | imenu                                              |                  15 |
 | ispell-minor-mode                                  |                   7 |
