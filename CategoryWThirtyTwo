@@ -101,6 +101,7 @@ MS Tips and Tricks:
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 * WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
 * WThirtyTwoCtrlShiftNotWorking -- Windows "language bar" shortcuts prevent certain keyboard shortcuts like C-S-)
+* WThirtyTwoServerMode -- How to use Emacs server mode on Windows.
 
 MS applications:
 
