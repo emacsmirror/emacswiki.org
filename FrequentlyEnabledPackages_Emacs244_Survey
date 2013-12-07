@@ -26,14 +26,14 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 87 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 88 [color=red][b] <- start here [/b][/color]
 
 {{{
 
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
-| abbrev-mode                                        |                  24 |
+| abbrev-mode                                        |                  25 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
 | auto-encryption-mode                               |                  11 |
@@ -45,8 +45,8 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   5 |
-| column-number-mode                                 |                  61 |
-| compilation-minor-mode                             |                   6 |
+| column-number-mode                                 |                  62 |
+| compilation-minor-mode                             |                   7 |
 | cua-mode                                           |                  10 |
 | cua-selection-mode                                 |                  12 |
 | delete-by-moving-to-trash                          |                   3 |
@@ -65,11 +65,11 @@ __Minor Mode Survey__
 | ffap                                               |                   9 |
 | file-name-shadow-mode                              |                   8 |
 | flyspell-mode                                      |                  39 |
-| font-lock-mode                                     |                  27 |
+| font-lock-mode                                     |                  28 |
 | generic-x                                          |                   2 |
 | global-auto-revert-mode                            |                   7 |
 | global-cwarn-mode                                  |                   3 |
-| global-font-lock-mode                              |                  26 |
+| global-font-lock-mode                              |                  27 |
 | global-hi-lock-mode                                |                   5 |
 | global-hl-line-mode                                |                   7 |
 | global-linum-mode                                  |                   9 |
@@ -81,12 +81,13 @@ __Minor Mode Survey__
 | ibuffer                                            |                  42 |
 | icomplete-mode                                     |                  12 |
 | ido-everywhere                                     |                  27 |
-| ido-mode                                           |                  53 |
+| ido-mode                                           |                  54 |
+| iflipb                                             |                   1 |
 | imenu                                              |                  15 |
 | ispell-minor-mode                                  |                   7 |
 | iswitchb-mode                                      |                   4 |
 | kill-whole-line                                    |                   9 |
-| line-number-mode                                   |                  29 |
+| line-number-mode                                   |                  30 |
 | linum-mode                                         |                   9 |
 | mouse-avoidance-mode                               |                   3 |
 | mouse-wheel-mode                                   |                   7 |
@@ -108,16 +109,15 @@ __Minor Mode Survey__
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  17 |
 | shell-dirtrack-mode                                |                   4 |
-| show-paren-mode                                    |                  58 |
+| show-paren-mode                                    |                  59 |
 | size-indication-mode                               |                  12 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
-| tramp                                              |                   6 |
-| tramp                                              |                   3 |
-| transient-mark-mode                                |                  43 |
-| uniquify                                           |                  62 |
+| tramp                                              |                  10 |
+| transient-mark-mode                                |                  44 |
+| uniquify                                           |                  63 |
 | url-handler-mode                                   |                   1 |
-| visible-bell                                       |                   5 |
+| visible-bell                                       |                   6 |
 | visual-line-mode                                   |                   4 |
 | which-function-mode                                |                  19 |
 | whitespace-mode                                    |                   2 |
