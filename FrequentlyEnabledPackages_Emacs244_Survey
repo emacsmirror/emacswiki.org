@@ -34,7 +34,6 @@ __Minor Mode Survey__
 |----------------------------------------------------+---------------------|
 | <50>                                               |                     |
 | abbrev-mode                                        |                  24 |
-| ac-mode                                            |                   1 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
 | auto-encryption-mode                               |                  11 |
@@ -110,9 +109,7 @@ __Minor Mode Survey__
 | server-mode                                        |                  17 |
 | shell-dirtrack-mode                                |                   4 |
 | show-paren-mode                                    |                  58 |
-| show-smartparens-global-mode                       |                   2 |
 | size-indication-mode                               |                  12 |
-| smartparens-global-mode                            |                   2 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
 | tramp                                              |                   6 |
