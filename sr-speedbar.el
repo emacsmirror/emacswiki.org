@@ -330,6 +330,7 @@ Default is nil."
   "The last refresh dictionary record of 'sr-speedbar-refresh'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defun sr-speedbar-toggle ()
   "Toggle sr-speedbar window.
 Toggle visibility of sr-speedbar by resizing
@@ -342,6 +343,7 @@ of a speedbar-window.  It will be created if necessary."
       (sr-speedbar-close)
     (sr-speedbar-open)))
 
+;;;###autoload
 (defun sr-speedbar-open ()
   "Create `sr-speedbar' window."
   (interactive)
