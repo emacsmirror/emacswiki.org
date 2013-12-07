@@ -413,7 +413,7 @@ This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs
 # Follow the instructions in the documentation of External.exe.
 
 [:EmacsW32Client]
-=== Using the patched version of EmacsW32 to start Emacs automatically ===
+==== Using the patched version of EmacsW32 to start Emacs automatically ====
 
 The patched version of Emacs + [[EmacsW32]] may start Emacs automatically and opens the given file name.
 Note that in this case you do not have to add server-start to .emacs.
@@ -423,6 +423,9 @@ The patched version of Emacs client does this for you.
 The installation of Emacs + [[EmacsW32]] also does some file associations etc,
 but see also WThirtyTwoFileAssociations.
 
+==== Desktop Shortcut That Maintains a Single Session ====
+
+WThirtyTwoServerMode describes how to set up Windows so that a desktop shortcut will open the same instance of Emacs every time you double-click on the shortcut, and hide Emacs when you exit.
 
 = Opening a New Emacs Frame on the Current Terminal =
 
