@@ -6,23 +6,19 @@ This a new feature that is included in emacs-23.1.
 
 Put
 
+<pre>
 export ALTERNATE_EDITOR=""
+export EDITOR=emacsclient
+</pre>
 
-in your .bashrc
+in your .bashrc, or
 
-or
-
+<pre>
 setenv ALTERNATE_EDITOR ""
+setenv EDITOR emacsclient
+</pre>
 
-in your .cshrc depending on your default shell.
-
-after that using:
-
-emacsclient
-
-(or emacsclient -t)
-
-will automatically start an emacs in daemon mode and connect to it if one is not found running.
+in your .cshrc depending on your default shell.  After that, using <code>emacsclient</code> (or <code>emacsclient -t</code>) will automatically start an emacs in daemon mode and connect to it if one is not found running, and sane programs will know to run <code>emacsclient</code> to start an editor.
 
 == Debian/Ubuntu ==
 
