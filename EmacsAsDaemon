@@ -471,6 +471,11 @@ emacs --daemon=edit --background-color=yellow
 
 But if you try setting the cursor color -- it fails miserably.
 
+[new:PhilHudson:2013-12-08 11:36 UTC]
+I use a different color for the fringe on each instance, set using Custom.
+
+----
+
 Another, more flexible option:
 
 === starting emacs server (daemon) ===
