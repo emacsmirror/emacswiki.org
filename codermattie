@@ -1,4 +1,4 @@
-*Mike Mattie*
+codermattie
 
 In the course of maintaining my creeping Emacs configuration I am factoring
 the least idiosyncratic bits from my configuration and posting them. I hope others may derive some
@@ -6,8 +6,9 @@ benefit from reading or using my forays in Emacs.
 
 == Contact ==
 
-If you want my e-mail or are interested in getting in touch reach me at xmppnet.de jabber protocol
-username codermattie.
+If you want my e-mail or are interested in getting in touch reach me at
+
+jabber: codermattie@xmppnet.de
 
 == Projects ==
 
@@ -18,50 +19,7 @@ username codermattie.
 
 == Full Config ==
 
-http://lispblivet.sx/gitweb/?p=emacs-config.git;a=tree;f=emacs;hb=refs/heads/website
+http://lispblivet.sx/gitweb/?p=emacs-config.git;a=tree;h=refs/heads/master;hb=refs/heads/master
 
-== Snippets ==
-
-Here is a bit of code that automatically kills the buffer after a process exits.
-
-<pre>
-
-(defun run-hooks-with-arg ( hook-list &rest args )
-  "run the hook list with arg"
-  (mapc
-    (lambda ( hook )
-      (apply hook args))
-      hook-list))
-
-;; setup a hook that runs when the term process exits
-(defvar term-process-exit-hook nil
-  "a hook run when the term process exists")
-
-;; infect the term-sentinel function
-(defadvice term-sentinel (around term-sentinel-hook (proc msg))
-  (let
-    ((pbuffer (process-buffer proc))
-     (did-exit (memq (process-status proc) '(signal exit))))
-    ad-do-it
-    (when did-exit (run-hooks-with-arg term-process-exit-hook pbuffer)) ))
-
-;; get rid of the buffer when the process exits
-(add-hook 'term-process-exit-hook (lambda ( pbuffer )
-                                    (kill-buffer pbuffer)))
-
-(ad-activate 'term-sentinel)
-</pre>
-
-To get keybindings right execute this function. When you enter the key sequence it will generate
-the (kbd) call in the buffer. handy for executing after (local-set-key _here_
-
-<pre>
-(defun insert-key-notation ()
-  "inject a complete \(kbd \"sequence\"\) with key notation for a key sequence given by prompt"
-  (interactive)
-  (insert "(kbd \"")
-  (insert (format-kbd-macro (read-key-sequence "Key? " nil t)))
-  (insert "\")"))
-</pre>
 ----
 CategoryHomepage
