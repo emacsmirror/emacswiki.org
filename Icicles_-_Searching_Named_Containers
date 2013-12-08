@@ -11,7 +11,7 @@
 Some '''Icicles''' [[multi-command]]s, such as `icicle-buffer' ('''`C-x b''''),
 `icicle-file' ('''`C-x C-f''''), `icicle-visit-marked-file-of-content'
 ('''`C-F'''' in [[Dired]]), and `icicle-Info-goto-node' ('''`g'''' in [[Info]]),
-access ''containers'' of text ([[buffer]], file, or [[Info]] node) by name.
+access ''containers'' of text ([[buffer]], file, [[Info]] node) by name.
 
 When this is the case, '''Icicles''' provides [[multi-completion]]
 candidates, the first part being the container ''name'' and the second
@@ -25,7 +25,7 @@ verses.
 
 The second multi-completion part (the verse, or content)
 is never shown in `*Completions*', and you can ignore it
-altogether if you want.  If you do not use `C-M-j' and then type a
+altogether if you want.  If you do not use `C-M-j' followed by a
 content-matching pattern, then no content-searching occurs, which
 is of course quicker than searching lots of text.
 
@@ -48,7 +48,7 @@ pattern on the fly as you see the corresponding matches.
 '''[[Icicles - Search Commands, Overview|Icicles search]]''' (e.g., `##C-c `##') has some similarities.  It lets you
 first choose a set of files or buffers to search, then it shows you
 the search hits as you change your content-matching pattern.  But
-you cannot change the set of containers to search incrementally:
+with '''Icicles''' search you cannot change the set of containers to search incrementally:
 you choose them at the outset once and for all, before you start
 to search.
 
@@ -58,15 +58,15 @@ on searching; the aim is just to identify and go to a given
 container.  Searching is just one way to find the right container.
 
 Chapter-&-verse commands access a container in the same way,
-whether or not they have search it contents.  They do not move to
+whether or not they search it contents.  They do not move to
 any search-hit location.  For instance, `icicle-file' (`C-x C-f') simply
-visits the chosen file, just as `find-file' would do.
+visits the chosen file, just as `find-file' would.
 
-But you can search the container once you visit it, using
+But you can search the container after you visit it, using
 `C-M-s' or `C-M-r' ([[regexp]] [[Isearch]]).  Whenever a content search is
-successful the search pattern is added to `regexp-search-ring'
+successful the content search pattern is added to `regexp-search-ring'
 when you hit `S-TAB'.  So when the chapter-&-verse command is finished you can
-immediately search for content matches incrementally.
+immediately search for content matches incrementally (`C-M-s').
 
 (You can also work in the other direction, reusing an Isearch
 regexp as a content-matching regexp.  See
