@@ -57,10 +57,19 @@ Version 0.1.1 2013-10-29
   buffers by a unique id embedded in the buffer instead of the name of the buffer which is
   subject to change.
 
+2013-12-08
+
+ Moving to Git. The buffer-ring stuff now works really well for me even on large numbers
+ of buffers. I have loaded 50-60 buffers or so and not had a problem.
+
+ One nagging issue is handling perl. I put a buffer-ring-add on a cperl buffer hook and for
+  some reason it drives me insane by trying to add twice. I think it has something to
+  do either with cperl strangess (whoda thunk it ?) or some weird lingering trace of
+  perl-mode.
+
 == Download ==
 
-* [[dynamic-ring.el]]
-* [[buffer-ring.el]]
+http://lispblivet.sx/emacs-projects.html#buffer-ring
 
 == Comments ==
 
@@ -98,6 +107,9 @@ Ok, I've Tried using Buffer-Ring with [[Espect]] with some sucess:
  ;; It might be better just to use the
  ;; filters, and to run all current
  ;; buffers through it once espect starts.
+
+I have considered your suggestion. I would very much like to make it work better for people and work with other coders. I will consider a way to do that now. I do
+not have hesitation only constraints on time etc...
 
 ----
 
