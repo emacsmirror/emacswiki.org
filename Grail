@@ -53,7 +53,6 @@ If these places do not exist, they are not placed in load-path. Only what you us
 up in load-path.
 
 <pre>
-1. local/emacs/      The directory containing Emacs packages that over-ride emacs distributed files.
 2. local/elisp/      The directory containing Emacs libraries created and maintained by the user.
 3. dist/             The directory for managing distributed packages
 4. dist/elisp/       The directory containing third-party elisp extensions of Emacs
@@ -61,15 +60,18 @@ up in load-path.
 6. dist{cvs,git,svn} version control managed third party elisp
 </pre>
 
-== ELPA ==
+== Third Party Elisp ==
 
-Once you have installed grail simply execute the command: grail-install-elpa.
-Enjoy the excellent work of Tromney with package-list-packages. Grail will make
-sure that ELPA is installed in the right places.
+ELPA and various other ways of installing third party elisp is done by grail-profiles. When
+you need third party elisp you have to first load it, and second configure it. Grail uses
+a profile file which has a install/load at the top followed by the configuration.
+
+When the profile is discovered by grail it first installs it if necessary, then it loads it into
+load-path, and finally it executes the package configuration.
 
 == Contact the Author ==
 
-Enjoy Grail, and feel free to give feedback, with the contact information provided on [[codermattie]].
+I have a way of contacting me and looking at other projects on [[codermattie]].
 
 I love squasing bugs ! you find them ... I kill them !
 
@@ -82,27 +84,52 @@ also been tested successfully on windows finally !
 Some small bugs have been fixed as well. This release does not have
 any serious code churn indicating that the code-base is maturing well.
 
-Grail is also now hosted on github so others can easily contribute more
-easily.
+== Status: Resuming Development: 2013-12-08 ==
 
-[https://github.com/codermattie/Grail GitHub Project]
+I stopped work on grail for a while due to not feeling well for a extended
+period of time.
+
+I have in the past six months or so resumed development. I was previously
+releasing stable forks. I have not done so again because there is still
+one issue that I think makes it difficult for others to use.
+
+Basically I want Grail to be async so you can see the installation process
+and not just hang Emacs, but that really isn't possible with Emacs.
+
+Getting it to work truly smoothly will require re-coding the install/load/configure
+procedure as a state machine so that I can chain process termination callbacks
+into a load/configure sequence.
+
+This is not quite so bad as it sounds since I do something like that in numerous
+places throughout my config.
+
+Currently I have vastly updated and improved the old code using the old model
+as a precursor to the final step. It has one quirk. Once the first run with Emacs
+is completed, it must be re-run to get *newly* installed packages to load.
+
+I will fix that and then finish with the new model.
+
+If you want to use it now, it certainly works on Linux & Darwin with Emacs24 and
+dev snapshot, and a large config.
+ 
+From now on the best way to get updates to to go to the site where I am updating
+it:
+
+http://lispblivet.sx/emacs-projects.html#grail
+
+It is rough as a web page but I am working alot.
 
 == Testing ==
 
-It works reliably for me on Gentoo & Debian. It was tested on OSX
-previously, but my mac is dead.  If it works for you please let me
-know so I can report the platforms it works on.
+Emacs24,Emacs Snapshot on Linux & Darwin
 
-== The Future ==
-
-At this point the major work is done on this project. What remains is
-documenting the API's and how to use the grail-profile feature set.
 
 == Download ==
 
-* Lisp:grail.el        ([Download:grail.el download])
-* Lisp:grail-fn.el     ([Download:grail-fn.el download])
-* Lisp:grail-profile.el ([Download:grail-profile.el download])
+I have a section for grail in my Emacs projects. The links to the files
+are there.
+
+http://lispblivet.sx/emacs-projects.html#grail
 
 == Install ==
 
@@ -157,10 +184,6 @@ customizations are loaded.
 |-- grail.el                  ;; grail files
 |-- grail-fn.el
 |-- grail-profile.el
-|
-|-- darwin.el      ;; platform specific files, loaded only on Darwin or Gnu/Linux.
-|-- linux.el
-|-- windows.el
 |
 |-- customize-settings.el      ;; where customize scribbles
 |
