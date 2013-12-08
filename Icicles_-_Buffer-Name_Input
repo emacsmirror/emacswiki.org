@@ -150,6 +150,7 @@ configurations: persistent sets of the option values marked (*).
 
 '''See Also:'''
 
+* [[Icicles - Searching Named Containers]]
 * [[Icicles - Customization and General Tips#icicle-buffer-match-regexp|buffer-name options]]
 and [[Icicles - Global Filters]] for information about user options affecting buffer-name completion
 * [[Icicles - Searching Named Containers]] about content-searching
