@@ -14,8 +14,8 @@ jabber: codermattie@xmppnet.de
 
 * [[Grail]]
 * [[BufferRing]]
-* [[Submerge]]
-* [[ParserCompiler]]
+* [[Submerge]] - No longer useful. Try Git.
+* [[ParserCompiler]] - Not likely to maintain in Elisp.
 
 == Full Config ==
 
