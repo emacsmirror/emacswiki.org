@@ -17,7 +17,7 @@ __Things to Remember (Things to avoid) __
 # Don't downvote
 # Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1.  (Only add entries for minor-modes you actually use!)
 # C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
-# '''''NO THIRD-PARTY PACKAGES.''''' -- Specify '''''only''''' packages that ship with vanilla GnuEmacs.  '''''If you don't know''''', use `emacs -Q' and then try `apropos' commands or try to `load-library' the file name or `require' the feature name.  If you cannot find it this way then do ''not'' add it to the list.
+# [color=red][b]'''''NO THIRD-PARTY PACKAGES.''''' -- Specify '''''only''''' packages that ship with vanilla GnuEmacs.  '''''If you don't know''''', use `emacs -Q' and then try `apropos' commands or try to `load-library' the file name or `require' the feature name.  If you cannot find it this way then do ''not'' add it to the list.
 # Give preference to minor modes (that you enable globally)
 
 __Use Talk page__
