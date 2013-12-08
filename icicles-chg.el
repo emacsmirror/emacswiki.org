@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec  3 13:27:36 2013 (-0800)
+;; Last-Updated: Sun Dec  8 09:14:21 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10361
+;;     Update #: 10476
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,44 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/12/07 dadams
+;;     Added:
+;;       icicle-find-file-abs-action-fn, icicle-find-file-action-fn, icicle-new-bufs-to-keep,
+;;       icicle-new-bufs-to-kill, icicle-existing-bufs,
+;;       icicle-find-file-no-search-1 (from w/o *-1) using action fn (and same cleanup for undo),
+;;       icicle-find-file-of-content-1 (from w/o *-1) using action fn,
+;;       icicle-find-file-abs-no-search-1 (from w/o *-1) using action fn,
+;;       icicle-find-file-abs-of-content-1 (from w/o *-1) using action fn,
+;;       icicle-recent-file-no-search-1 (from w/o *-1) using action fn
+;;         (& icicle-pref-arg, not curr, & same cleanup for undo),
+;;       icicle-recent-file-of-content-1 (from w/o *-1) using action fn,
+;;       icicle-locate-file-no-search-1 (from icicle-locate-file-1) using action fn (& same cleanup),
+;;       icicle-locate-file-of-content-1,
+;;       icicle-find-file-abs-read-only, icicle-find-file-abs-read-only-other-window,
+;;       icicle-locate-file-no-search, icicle-locate-file-no-search-other-window,
+;;       icicle-locate-file-no-search-no-symlinks,
+;;       icicle-locate-file-no-search-no-symlinks-other-window,
+;;       icicle-locate-file-of-content, icicle-locate-file-of-content-other-window,
+;;       icicle-locate-file-of-content-no-symlinks,
+;;       icicle-locate-file-of-content-no-symlinks-other-window,
+;;       icicle-locate-no-search, icicle-locate-no-search-other-window, 
+;;       icicle-locate-of-content, icicle-locate-of-content-other-window,
+;;       icicle-find-file-abs-no-search-action-1, icicle-find-file-abs-of-content-action-1,
+;;       icicle-find-file-no-search-action-1, icicle-find-file-of-content-action-1,
+;;       icicle-find-file-no-search-action, icicle-find-file-no-search-other-window-action,
+;;       icicle-find-file-of-content-action, icicle-find-file-of-content-other-window-action,
+;;       icicle-find-file-of-content-ro-action, icicle-find-file-of-content-ro-ow-action,
+;;       icicle-find-file-abs-no-search-action, icicle-find-file-abs-no-search-other-window-action,
+;;       icicle-find-file-abs-no-search-ro-action, icicle-find-file-abs-no-search-ro-ow-action, 
+;;       icicle-find-file-abs-of-content-action, icicle-find-file-abs-of-content-other-window-action,
+;;       icicle-find-file-abs-of-content-ro-action, icicle-find-file-abs-of-content-ro-ow-action.
+;;     icicle-(find-file(-abs)|recent-file|read-only)-(of-content|no-search)(-other-window):
+;;         Redefined as a defun, using *-1 and *-action-fn.
+;;     icicle-locate(-file)(-no-symlinks)(-other-window): defalias now - either of-content|no-search.
+;;     Removed: icicle-locate-file-action-fn, icicle-locate-file(-other-window)-action,
+;;              icicle-find-file-abs-1, icicle-locate-file-1.
+;;     icicle-find-file(-abs)-read-only(-other-window): Define for *-abs-* and *-of-content-* also.
+;;     icicle-buffer-multi-complete: Use new icicle-* vars, so do not bother to test with boundp.
 ;; 2013/12/03 dadams
 ;;     Added: icicle-find-file-abs-1.
 ;;     icicle-find-file-abs-of-content(-other-window), icicle-recent-file-of-content(-other-window):
