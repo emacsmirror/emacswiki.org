@@ -64,6 +64,11 @@ You can control the order of Imenu menu items by customizing [[option]] '''`imen
 
 
 
+
+
+
+
+
 [:IcicleImenu]
 [:ImenuBrowser]
 == Icicles - Imenu for Multiple Buffers, Files, or Bookmarks ==
@@ -95,6 +100,9 @@ See [[Icicles - Search Commands, Overview]].
 
 
 
+
+
+
 == Imenu+ == 
 
 Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
@@ -106,6 +114,8 @@ Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##.
 ** '''Toggle Case-Sensitive Name-Sort'''
 ** '''Toggle Ignoring Commented Defs'''
 ** '''Toggle Sorting'''
+
+* Identifies more EmacsLisp definitions (`defalias' etc.) and more types of definitions.
 
 * New commands:
 ** '''`imenu-add-defs-to-menubar'''' -- Add '''Defs''' imenu to the [[menu bar]] for current local keymap.
