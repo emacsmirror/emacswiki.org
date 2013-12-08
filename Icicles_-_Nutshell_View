@@ -419,7 +419,7 @@ number of files whose content needs to be searched.
 
 Most of the behavior you see in this example is available for most
 '''Icicles''' commands.  The name+content behavior is available for only
-some '''Icicles''' commands.
+some '''Icicles''' commands, including those that choose files, buffers, or some other type of object that has contents (a "container").
 
 '''See Also:'''
 
