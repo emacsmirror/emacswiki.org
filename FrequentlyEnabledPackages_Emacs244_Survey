@@ -133,4 +133,4 @@ The table is in Org-mode format.  If you add lots of packages, here is a recipe 
 # Put your cursor on Column-1 and do M-x org-table-sort-lines. Choose [a] alphabetic when prompted.
 # Copy back the table here.
 
-[[FrequentlyEnabledPackages_Emacs244_Survey_Summary]]
+
