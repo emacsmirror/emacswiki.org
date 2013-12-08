@@ -1,0 +1,15 @@
+__How to summarize the results__
+
+# Update N - The Number of People Surveyed.
+# Copy over the table from [[FrequentlyEnabledPackages_Emacs244_Survey]] in the space below.
+# Copy the results in *scratch* buffer
+# M-x orgtble-mode
+# Put the cursor on Column-2.  M-x org-table-sort-lines [Choose N when prompted]
+# With cursor inside the table, C-u C-c *.  Column-3 will contain the % of users.
+# Paste back the result here.
+
+{{{
+#+CONSTANTS: N=89
+Insert [[FrequentlyEnabledPackages_Emacs244_Survey]] here.
+#+TBLFM: $3= 100.0 * $2/ $N; %d;
+}}}
