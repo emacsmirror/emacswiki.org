@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 89 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 90 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -43,7 +43,7 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   5 |
-| column-number-mode                                 |                  62 |
+| column-number-mode                                 |                  63 |
 | compilation-minor-mode                             |                   7 |
 | cua-mode                                           |                  10 |
 | cua-selection-mode                                 |                  12 |
@@ -53,7 +53,7 @@ __Minor Mode Survey__
 | desktop-save-mode                                  |                  19 |
 | dired-hide-details-mode                            |                  12 |
 | dired-x                                            |                  31 |
-| display-time-mode                                  |                  17 |
+| display-time-mode                                  |                  18 |
 | edebug-mode                                        |                   6 |
 | eldoc-mode                                         |                  35 |
 | electric-indent-mode                               |                   9 |
@@ -68,7 +68,7 @@ __Minor Mode Survey__
 | generic-x                                          |                   3 |
 | global-auto-revert-mode                            |                   7 |
 | global-cwarn-mode                                  |                   3 |
-| global-font-lock-mode                              |                  27 |
+| global-font-lock-mode                              |                  28 |
 | global-hi-lock-mode                                |                   5 |
 | global-hl-line-mode                                |                   8 |
 | global-linum-mode                                  |                   9 |
@@ -83,12 +83,12 @@ __Minor Mode Survey__
 | ido-mode                                           |                  55 |
 | imenu                                              |                  15 |
 | ispell-minor-mode                                  |                   7 |
-| iswitchb-mode                                      |                   4 |
+| iswitchb-mode                                      |                   5 |
 | kill-whole-line                                    |                   9 |
 | line-number-mode                                   |                  30 |
 | linum-mode                                         |                   9 |
 | mouse-avoidance-mode                               |                   3 |
-| mouse-wheel-mode                                   |                   7 |
+| mouse-wheel-mode                                   |                   8 |
 | org-capture                                        |                  12 |
 | org-mode                                           |                  24 |
 | org-src-mode                                       |                   5 |
@@ -106,7 +106,7 @@ __Minor Mode Survey__
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  19 |
 | shell-dirtrack-mode                                |                   4 |
-| show-paren-mode                                    |                  60 |
+| show-paren-mode                                    |                  61 |
 | size-indication-mode                               |                  13 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
