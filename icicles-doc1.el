@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec  1 16:40:30 2013 (-0800)
+;; Last-Updated: Sun Dec  8 14:41:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27930
+;;     Update #: 27975
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -823,7 +823,8 @@
 ;;
 ;;  Most of the behavior you see in this example is available for most
 ;;  Icicles commands.  The name+content behavior is available for only
-;;  some Icicles commands.
+;;  some Icicles commands, including those that choose files, buffers,
+;;  or some other type of object that has contents (a "container").
 ;;
 ;;  See Also:
 ;;
@@ -2321,7 +2322,7 @@
 ;;
 ;;  `C-x C-f' (`icicle-resolve-file-name'), replaces a file name at or
 ;;  near point (in the minibuffer) with its true, absolute name.  (For
-;;  it to work near but not precisely at point, you need library
+;;  it to work near point, as well as at point, you need library
 ;;  `thingatpt+.el'.)  If the file name is relative, it first converts
 ;;  it to absolute (using the default directory).  It then converts an
 ;;  absolute name that is a symbolic link to its target name.  You can
@@ -5603,7 +5604,7 @@
 ;;  Some Icicles multi-commands, such as `icicle-buffer' (`C-x b'),
 ;;  `icicle-file' (`C-x C-f'), `icicle-visit-marked-file-of-content'
 ;;  (`C-F' in Dired), and `icicle-Info-goto-node' (`g' in Info),
-;;  access containers of text (buffer, file, or Info node) by name.
+;;  access containers of text (buffer, file, Info node) by name.
 ;;
 ;;  When this is the case, Icicles provides multi-completion
 ;;  candidates, the first part being the container name and the second
@@ -5617,7 +5618,7 @@
 ;;
 ;;  The second multi-completion part (the verse, or content) is never
 ;;  shown in `*Completions*', and you can ignore it altogether if you
-;;  want.  If you do not use `C-M-j' and then type a content-matching
+;;  want.  If you do not use `C-M-j' followed by a content-matching
 ;;  pattern, then no content-searching occurs, which is of course
 ;;  quicker than searching lots of text.
 ;;
@@ -5640,9 +5641,9 @@
 ;;  Icicles search (e.g., `C-c `') has some similarities.  It lets you
 ;;  first choose a set of files or buffers to search, then it shows
 ;;  you the search hits as you change your content-matching pattern.
-;;  But you cannot change the set of containers to search
-;;  incrementally: you choose them at the outset once and for all,
-;;  before you start to search.
+;;  But with Icicles search you cannot change the set of containers to
+;;  search incrementally: you choose them at the outset once and for
+;;  all, before you start to search.
 
 ;;  For Icicles search commands the emphasis is thus on the content
 ;;  search.  For Icicles chapter-&-verse commands the emphasis is not
@@ -5650,16 +5651,16 @@
 ;;  container.  Searching is just one way to find the right container.
 ;;
 ;;  Chapter-&-verse commands access a container in the same way,
-;;  whether or not they have search it contents.  They do not move to
-;;  any search-hit location.  For instance, `icicle-file' simply
-;;  visits the chosen file, just as `find-file' would do.
+;;  whether or not they search it contents.  They do not move to any
+;;  search-hit location.  For instance, `icicle-file' simply visits
+;;  the chosen file, just as `find-file' would.
 ;;
-;;  But you can search the container once you visit it, using `C-M-s'
+;;  But you can search the container after you visit it, using `C-M-s'
 ;;  or `C-M-r' (regexp Isearch).  Whenever a content search is
-;;  successful the search pattern is added to `regexp-search-ring'
-;;  when you hit `S-TAB'.  So when the chapter-&-verse command is
-;;  finished you can immediately search for content matches
-;;  incrementally.
+;;  successful the content search pattern is added to
+;;  `regexp-search-ring' when you hit `S-TAB'.  So when the
+;;  chapter-&-verse command is finished you can immediately search for
+;;  content matches incrementally (`C-M-s').
 ;;
 ;;  (You can also work in the other direction, reusing an Isearch
 ;;  regexp as a content-matching regexp.  See
@@ -7846,6 +7847,7 @@
 ;;
 ;;  See Also:
 ;;
+;;  * (@> "Chapter & Verse: Searching Named Containers")
 ;;  * (@file :file-name "icicles-doc2.el" :to "Customization and General Tips") and
 ;;    (@file :file-name "icicles-doc2.el" :to "Global Filters") for
 ;;    information about user options affecting buffer-name completion
@@ -7874,9 +7876,10 @@
 ;;  functions, and then it describes the main Icicles commands that
 ;;  read file names.
 ;;
-;;  You do not need to use these Icicles commands to get the benefits
-;;  of Icicles enhancements to `completing-read' and `read-file-name'.
-;;  What these commands offer are additional benefits.
+;;  You do not need to use these Icicles commands to get the general
+;;  benefits of Icicles enhancements to `completing-read' and
+;;  `read-file-name'.  What these commands offer are additional
+;;  benefits.
 ;;
 ;;(@* "Function `read-file-name'")
 ;;  ** Function `read-file-name' **
@@ -8084,36 +8087,42 @@
 ;;  multi-commands `icicle-find-file' and `icicle-find-file-absolute'.
 ;;  With no prefix argument, it matches relative file names; with a
 ;;  prefix argument, it matches absolute names (as ordinary strings).
-;;  With a negative prefix argument, you can match also the
+;;  With a negative prefix argument, you can match also the last
 ;;  modification date.
 ;;
-;;  An additional feature of `icicle-find-file-absolute' (`C-x C-f'
-;;  with a prefix arg) is that candidates that are directory names are
-;;  highlighted in buffer `*Completions*' using face
-;;  `icicle-special-candidate'.
+;;  An additional feature of these commands is that candidates that
+;;  are directory names are highlighted in buffer `*Completions*'
+;;  using face `icicle-special-candidate'.
 ;;
-;;  An additional feature of commands `icicle-find-file' and
-;;  `icicle-find-file-absolute' is that if you use a prefix arg when
-;;  acting on an individual file-name candidate then the file is
-;;  visited in read-only mode.  The same invocation of `C-x C-f' can
-;;  thus open multiple files, some in read-only mode, some not.
+;;  Another feature is that if you use a prefix arg when acting on an
+;;  individual file-name candidate then the file is visited in
+;;  read-only mode.  The same invocation of `C-x C-f' can thus open
+;;  multiple files, some in read-only mode, some not.
 ;;
-;;  (There is also multi-command `icicle-find-file-read-only', unbound
-;;  by default, which is the same as `icicle-find-file-no-search' but
-;;  with the prefix arg behavior flipped: with no prefix arg when you
-;;  act on a candidate file it is visited read-only.)
+;;  (There are also multi-commands `icicle-find-file-read-only' and
+;;  `icicle-find-file-abs-read-only', unbound by default, which are
+;;  the same as `icicle-find-file' and `icicle-find-file-absolute',
+;;  except that they visit files in read-only mode.  For
+;;  `icicle-find-file-read-only', the prefix arg behavior is flipped:
+;;  with a prefix arg when you act on a candidate file it is not
+;;  visited read-only.)
 ;;
 ;;(@* "Match File Names and File Content Too")
 ;;  *** Match File Names and File Content Too ***
 ;;
-;;  Starting with Emacs 23, commands `icicle-find-file' and
-;;  `icicle-find-file-absolute' (that is, `icicle-file' with or
-;;  without a prefix arg) are aliases for commands
-;;  `icicle-find-file-of-content' and
-;;  `icicle-find-file-abs-of-content', which let you optionally
-;;  provide a regexp pattern to match against file content.  In this
-;;  they are similar to the buffer-switching multi-command
-;;  `icicle-buffer'.
+;;  Starting with Emacs 23, the Icicles commands that read file names
+;;  let you optionally provide a regexp pattern to match against file
+;;  content.  In this they are similar to the buffer-switching
+;;  multi-command `icicle-buffer'.
+;;
+;;  Versions of the file-finding commands are also available that do
+;;  not let you search file contents.  Their file names contain
+;;  `-no-search'.  Prior to Emacs 23, these are all that are
+;;  available, so commands such as `icicle-file' are aliased to them.
+;;
+;;  (For Emacs 23 and later, commands such as `icicle-file' are
+;;  actually aliased to commands that let you search content, and
+;;  which have `-of-content' in their name.)
 ;;
 ;;  If you provide a pattern to match file content then all files
 ;;  whose names match the file-name part of your input are searched
@@ -8133,7 +8142,7 @@
 ;;  regexp as a content-matching regexp.  See
 ;;  (@> "Using Completion to Insert Previous Inputs: `M-o'").)
 ;;
-;;  Content-searching is obviously more costly than file-name
+;;  Content-searching is obviously much more costly than file-name
 ;;  matching, so clearly if you can provide some information about the
 ;;  file name, that improves performance.  IOW, the more you can limit
 ;;  the number of files to search, the better.
@@ -8146,12 +8155,14 @@
 ;;
 ;;  This automatic extra-buffers cleanup is controlled by option
 ;;  `icicle-kill-visited-buffers-flag'.  But providing a prefix
-;;  argument to the command flips the behavior specified by that
-;;  option for the command duration.
+;;  argument to `icicle-file' flips the behavior specified by that
+;;  option for the command duration.  (This is not true for the
+;;  commands that read absolute file names.  For them, a prefix
+;;  argument has a different meaning.)
 ;;
 ;;  You can use option `icicle-find-file-of-content-skip-hook' to
 ;;  specify patterns for file names to exclude from content-searching
-;;  when you provide a content-matching pattern to `C-x C-f'.
+;;  when you provide a content-matching pattern.
 ;;
 ;;  In Dired, there are related content-matching multi-commands that
 ;;  you can use to visit marked files and subdirectories whose content
@@ -8168,11 +8179,15 @@
 ;;  subdirectories, and sub-subdirectories etc., recursively.  They
 ;;  are available only if you also use library `Dired+'.
 ;;
-;;  See also `icicle-recent-file', which likewise lets you match both
-;;  (absolute) file names and file contents -
-;;  (@* "Visit Recent Files or Files for Emacs Tags")
+;;  File content-matching is available for all Icicles commands that
+;;  read file names, including `icicle-recent-file',
+;;  `icicle-locate-file', and `icicle-locate'.
 ;;
-;;  See also (@> "Chapter & Verse: Searching Named Containers").
+;;  See Also:
+;;
+;;  * (@> "Visit Recent Files or Files for Emacs Tags")
+;;  * (@> "Find Files Anywhere, Without Knowing Where")
+;;  * (@> "Chapter & Verse: Searching Named Containers")
 ;;
 ;;(@* "Cycling into Subdirectories")
 ;;  *** Cycling into Subdirectories ***
@@ -8217,9 +8232,9 @@
 ;;  because it assumes that you will access the candidates using a
 ;;  menu.
 ;;
-;; `icicle-recent-file' is like `icicle-find-file-absolute': file
-;; names are absolute, and (for Emacs 23 and later) you can match both
-;; file names and file contents.
+;;  `icicle-recent-file' is like `icicle-find-file-absolute': file
+;;  names are absolute, and (for Emacs 23 and later) you can match
+;;  both file names and file contents.
 ;;
 ;;  Commands `icicle-find-file-in-tags-table' and
 ;;  `icicle-find-file-in-tags-table-other-window' let you visit files
@@ -8239,6 +8254,14 @@
 ;;  your file system, `icicle-locate' can be much faster than
 ;;  `icicle-locate-file'.  Otherwise, these two Icicles commands work
 ;;  similarly.
+;;
+;;  `icicle-locate' and `icicle-locate-file' are like
+;;  `icicle-find-file-absolute': file names are absolute, and (for
+;;  Emacs 23 and later) you can match both file names and file
+;;  contents.  Of course, since these commands work with all of the
+;;  files in and under a given directory, this can mean many, many
+;;  files, so generally you will want to use an input pattern that
+;;  also matches file names.
 ;;
 ;;  Since it does not use an index, `icicle-locate-file' looks
 ;;  throughout a given directory, including throughout all of its
@@ -8357,16 +8380,15 @@
 ;;  Finally, although the commands that read absolute file names are
 ;;  essentially ignorant of directory hierarchies and of file names as
 ;;  such, so that they treat their candidates only as simple strings,
-;;  a few of these commands nevertheless define their domain of
+;;  most of these commands nevertheless define their domain of
 ;;  possible file-name candidates relative to some starting directory.
 ;;
-;;  This is the case for `icicle-find-file-absolute' and
-;;  `icicle-locate-file' (and their variants).  For these commands,
-;;  you can use `C-c C-d' (think UNIX command `cd') during completion
-;;  to change the current working directory (`default-directory') on
-;;  the fly.  You are prompted for the directory.  The domain of
-;;  possible candidates is recomputed relative to the new
-;;  `default-directory'.
+;;  This is the case for all commands that read absolute file names,
+;;  except for the `icicle-locate*' family.  You can use `C-c C-d'
+;;  (think UNIX command `cd') during completion to change the current
+;;  working directory (`default-directory') on the fly.  You are
+;;  prompted for the directory.  The domain of possible candidates is
+;;  recomputed relative to the new `default-directory'.
 ;;
 ;;  Use `C-c C-d' this way as many times as you like.  You can use
 ;;  this feature to add file names from different directories to a
