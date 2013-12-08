@@ -208,7 +208,7 @@ level to `icicle-file' or `find-file' or whatever, but this is
 about its use when you are already in the [[minibuffer]].
 
 `C-x C-f' ('''`icicle-resolve-file-name''''), replaces a file name at or
-near point (in the minibuffer) with its true, absolute name.  (For it to work near but not precisely ''at'' point, you need library <tt>[[thingatpt+.el]]</tt>.) If
+near point (in the minibuffer) with its true, absolute name.  (For it to work ''near'' point, as well as ''at'' point, you need library <tt>[[thingatpt+.el]]</tt>.) If
 the file name is relative, it first converts it to absolute (using
 the default directory).  It then converts an absolute name that is
 a symbolic link to its target name.  You can use this anytime in
