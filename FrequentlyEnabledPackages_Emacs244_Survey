@@ -33,7 +33,6 @@ __Minor Mode Survey__
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | abbrev-mode                                        |                  26 |
-| anzu-mode                                          |                   1 |
 | auto-completion-mode                               |                   1 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
@@ -45,7 +44,6 @@ __Minor Mode Survey__
 | bbdb                                               |                   1 |
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
-| bookmark+-mode                                     |                   1 |
 | cl                                                 |                   5 |
 | column-number-mode                                 |                  62 |
 | compilation-minor-mode                             |                   7 |
@@ -67,7 +65,6 @@ __Minor Mode Survey__
 | erc-mode                                           |                   1 |
 | ffap                                               |                   9 |
 | file-name-shadow-mode                              |                   9 |
-| flycheck-mode                                      |                   1 |
 | flyspell-mode                                      |                  39 |
 | font-lock-mode                                     |                  29 |
 | generic-x                                          |                   3 |
@@ -79,7 +76,6 @@ __Minor Mode Survey__
 | global-linum-mode                                  |                   9 |
 | global-subword-mode                                |                  13 |
 | global-whitespace-mode                             |                   6 |
-| helm-mode                                          |                   1 |
 | hide-ifdef-mode                                    |                   3 |
 | hippie-exp                                         |                  19 |
 | hs-minor-mode                                      |                   9 |
@@ -87,8 +83,6 @@ __Minor Mode Survey__
 | icomplete-mode                                     |                  12 |
 | ido-everywhere                                     |                  27 |
 | ido-mode                                           |                  55 |
-| ido-ubiquitous-mode                                |                   1 |
-| iflipb                                             |                   1 |
 | imenu                                              |                  15 |
 | ispell-minor-mode                                  |                   7 |
 | iswitchb-mode                                      |                   4 |
@@ -104,9 +98,7 @@ __Minor Mode Survey__
 | orgtbl-mode                                        |                   2 |
 | outline-minor-mode                                 |                   1 |
 | pc-selection-mode                                  |                   1 |
-| per-window-point                                   |                   2 |
 | printing                                           |                   1 |
-| projectile-mode                                    |                   1 |
 | recentf-mode                                       |                  36 |
 | rectangle-mark-mode                                |                   3 |
 | reftex-mode                                        |                   9 |
@@ -118,7 +110,6 @@ __Minor Mode Survey__
 | shell-dirtrack-mode                                |                   4 |
 | show-paren-mode                                    |                  60 |
 | size-indication-mode                               |                  13 |
-| smartparens-mode                                   |                   1 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
 | tramp                                              |                  11 |
@@ -131,8 +122,6 @@ __Minor Mode Survey__
 | whitespace-mode                                    |                   2 |
 | windmove                                           |                  30 |
 | winner-mode                                        |                  30 |
-| yasnippet-global-mode                              |                   1 |
-
 
 }}}
 
