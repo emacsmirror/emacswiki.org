@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Dec  1 08:13:54 2013 (-0800)
+;; Last-Updated: Sun Dec  1 15:07:11 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5775
+;;     Update #: 5777
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2829,9 +2829,9 @@ The default value includes `M-TAB', which replaces the vanilla binding
 of `isearch-complete'.
 
 It also includes `ESC TAB' and `C-M-TAB', because some operating
-systems intercept `M-TAB' for their own use.  (Note: For MS Windows,
-you can use (w32-register-hot-key [M-tab]) to allow Emacs to use
-`M-TAB'.)"
+systems intercept `M-TAB' for their own use.  (Note: For some versions
+of MS Windows, you can use (w32-register-hot-key [M-tab]) to allow
+Emacs to use `M-TAB'.)"
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-isearch-history-insert-keys '([(meta ?o)]) ; `M-o', like Icicles minibuffer
@@ -2864,8 +2864,8 @@ A list of values that each has the same form as a key-sequence
 argument to `define-key'.
 
 Note: Some operating systems intercept `M-S-TAB' for their own use.
-For MS Windows, you can use (w32-register-hot-key [M-S-tab]) to allow
-Emacs to use `M-S-TAB'."
+For some versions of MS Windows, you can use
+\(w32-register-hot-key [M-S-tab]) to allow Emacs to use `M-S-TAB'."
   :type '(repeat sexp) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-key-descriptions-use-<>-flag nil
