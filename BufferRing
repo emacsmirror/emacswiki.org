@@ -49,23 +49,23 @@ please contact me with problems or suggestions [[codermattie]].
 
 Version 0.1.0 2011-03-26
 
-  * complete the interface by adding a function to delete buffer rings from the global torus
+complete the interface by adding a function to delete buffer rings from the global torus
 
 Version 0.1.1 2013-10-29
 
-* major bug-fixes in both the dyn-ring implementation in insert and buffer-ring fixes to id
-  buffers by a unique id embedded in the buffer instead of the name of the buffer which is
-  subject to change.
+major bug-fixes in both the dyn-ring implementation in insert and buffer-ring fixes to id
+buffers by a unique id embedded in the buffer instead of the name of the buffer which is
+subject to change.
 
 2013-12-08
 
- Moving to Git. The buffer-ring stuff now works really well for me even on large numbers
- of buffers. I have loaded 50-60 buffers or so and not had a problem.
+Moving to Git. The buffer-ring stuff now works really well for me even on large numbers
+of buffers. I have loaded 50-60 buffers or so and not had a problem.
 
- One nagging issue is handling perl. I put a buffer-ring-add on a cperl buffer hook and for
-  some reason it drives me insane by trying to add twice. I think it has something to
-  do either with cperl strangess (whoda thunk it ?) or some weird lingering trace of
-  perl-mode.
+One nagging issue is handling perl. I put a buffer-ring-add on a cperl buffer hook and for
+some reason it drives me insane by trying to add twice. I think it has something to
+do either with cperl strangess (whoda thunk it ?) or some weird lingering trace of
+perl-mode.
 
 == Download ==
 
