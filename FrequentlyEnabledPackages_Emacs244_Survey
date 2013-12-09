@@ -33,7 +33,7 @@ __Minor Mode Survey__
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
 | abbrev-mode                                        |                  28 |
-| auto-completion-mode                               |                   2 |
+| auto-completion-mode                               |                   3 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
 | auto-encryption-mode                               |                  11 |
@@ -63,7 +63,7 @@ __Minor Mode Survey__
 | erc-mode                                           |                   1 |
 | ffap                                               |                   9 |
 | file-name-shadow-mode                              |                   9 |
-| flyspell-mode                                      |                  40 |
+| flyspell-mode                                      |                  41 |
 | font-lock-mode                                     |                  29 |
 | generic-x                                          |                   3 |
 | global-auto-revert-mode                            |                   7 |
@@ -77,10 +77,10 @@ __Minor Mode Survey__
 | hide-ifdef-mode                                    |                   4 |
 | hippie-exp                                         |                  20 |
 | hs-minor-mode                                      |                   10 |
-| ibuffer                                            |                  43 |
+| ibuffer                                            |                  44 |
 | icomplete-mode                                     |                  12 |
-| ido-everywhere                                     |                  28 |
-| ido-mode                                           |                  56 |
+| ido-everywhere                                     |                  29 |
+| ido-mode                                           |                  57 |
 | imenu                                              |                  16 |
 | ispell-minor-mode                                  |                   9 |
 | iswitchb-mode                                      |                   7 |
@@ -117,9 +117,9 @@ __Minor Mode Survey__
 | visible-bell                                       |                   7 |
 | visual-line-mode                                   |                   6 |
 | which-function-mode                                |                  21 |
-| whitespace-mode                                    |                   3 |
+| whitespace-mode                                    |                   4 |
 | windmove                                           |                  30 |
-| winner-mode                                        |                  32 |
+| winner-mode                                        |                  33 |
 
 }}}
 
