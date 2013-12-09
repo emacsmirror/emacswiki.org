@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec  8 09:11:06 2013 (-0800)
+;; Last-Updated: Mon Dec  9 14:00:23 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23499
+;;     Update #: 23502
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -770,10 +770,10 @@
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-prefix-arg-filtering',
-;;    `icicle-buffer-require-match-flag' `icicle-buffer-skip-hook',
-;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
-;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
-;;    `icicle-candidate-width-factor',
+;;    `icicle-buffer-require-match-flag'
+;;    `icicle-buffer-skip-functions', `icicle-buffer-sort',
+;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
+;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -806,10 +806,10 @@
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
-;;    `icicle-file-sort', `icicle-files-ido-like-flag',
+;;    `icicle-file-skip-functions', `icicle-file-sort',
+;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-find-file-expand-directory-flag',
-;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
