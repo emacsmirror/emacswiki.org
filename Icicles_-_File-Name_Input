@@ -364,7 +364,7 @@ commands that read absolute file names.  For them, a prefix
 argument has a different meaning.)
 
 
-You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content-searching
+You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-file-skip-functions|icicle-file-skip-functions]]</tt>'''' to specify patterns for file names to exclude from content-searching
 when you provide a content-matching pattern.
 
 In [[Dired]], there are related content-matching multi-commands that you can use to visit marked files and subdirectories whose content matches a [[regexp]].
