@@ -106,7 +106,7 @@ __Minor Mode Survey__
 | semantic-mode             |                   3 |
 | server-mode               |                  20 |
 | shell-dirtrack-mode       |                   6 |
-| show-paren-mode           |                  64 |
+| show-paren-mode           |                  65 |
 | size-indication-mode      |                  14 |
 | subword-mode              |                  12 |
 | tooltip-mode              |                  14 |
