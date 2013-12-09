@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec  8 09:14:21 2013 (-0800)
+;; Last-Updated: Mon Dec  9 08:45:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10476
+;;     Update #: 10488
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,7 +85,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
-;; 2013/12/07 dadams
+;; 2013/12/09 dadams
+;;     Added:
+;;       icicle-find-file-of-content-in-tags-table, icicle-find-file-no-search-in-tags-table,
+;;       icicle-find-file-of-content-in-tags-table-other-window,
+;;       icicle-find-file-no-search-in-tags-table-other-window,
+;;       icicle-find-file-of-content-in-tags-table-1, icicle-find-file-no-search-in-tags-table-1
+;;     icicle-find-file-in-tags-table(-other-window): use defalias now - either of-content|no-search.
+;; 2013/12/08 dadams
 ;;     Added:
 ;;       icicle-find-file-abs-action-fn, icicle-find-file-action-fn, icicle-new-bufs-to-keep,
 ;;       icicle-new-bufs-to-kill, icicle-existing-bufs,
