@@ -11,5 +11,97 @@ __How to summarize the results__
 {{{
 #+CONSTANTS: N=?
 Insert [[FrequentlyEnabledPackages_Emacs244_Survey]] here.
+| PACKAGES/MODES            | UPVOTE / USER COUNT |
+|---------------------------+---------------------|
+| UNIQUIFY                  |                  69 |
+| column-number-mode        |                  69 |
+| show-paren-mode           |                  67 |
+| ido-mode                  |                  59 |
+| transient-mark-mode       |                  50 |
+| ibuffer                   |                  47 |
+| flyspell-mode             |                  45 |
+| blink-cursor-mode         |                  42 |
+| eldoc-mode                |                  39 |
+| recentf-mode              |                  40 |
+| winner-mode               |                  36 |
+| dired-x                   |                  34 |
+| font-lock-mode            |                  33 |
+| line-number-mode          |                  32 |
+| windmove                  |                  32 |
+| global-font-lock-mode     |                  32 |
+| ido-everywhere            |                  31 |
+| abbrev-mode               |                  31 |
+| auto-fill-mode            |                  31 |
+| org-mode                  |                  29 |
+| delete-selection-mode     |                  26 |
+| saveplace                 |                  26 |
+| which-function-mode       |                  23 |
+| desktop-save-mode         |                  22 |
+| display-time-mode         |                  20 |
+| hippie-exp                |                  20 |
+| server-mode               |                  21 |
+| savehist-mode             |                  11 |
+| global-subword-mode       |                  17 |
+| imenu                     |                  17 |
+| org-capture               |                  15 |
+| size-indication-mode      |                  14 |
+| tooltip-mode              |                  15 |
+| tramp                     |                  14 |
+| auto-encryption-mode      |                  13 |
+| cua-selection-mode        |                  14 |
+| icomplete-mode            |                  13 |
+| dired-hide-details-mode   |                  12 |
+| subword-mode              |                  12 |
+| cua-mode                  |                  12 |
+| file-name-shadow-mode     |                  10 |
+| global-hl-line-mode       |                  11 |
+| hs-minor-mode             |                  11 |
+| kill-whole-line           |                  11 |
+| mouse-wheel-mode          |                  11 |
+| electric-indent-mode      |                  10 |
+| electric-pair-mode        |                  10 |
+| ffap                      |                   9 |
+| global-linum-mode         |                   9 |
+| ispell-minor-mode         |                  10 |
+| linum-mode                |                  11 |
+| reftex-mode               |                   9 |
+| visual-line-mode          |                  10 |
+| auto-compression-mode     |                   8 |
+| global-auto-revert-mode   |                   8 |
+| visible-bell              |                   9 |
+| compilation-minor-mode    |                   7 |
+| global-whitespace-mode    |                   8 |
+| iswitchb-mode             |                   7 |
+| org-src-mode              |                   7 |
+| cl                        |                   7 |
+| edebug-mode               |                   6 |
+| shell-dirtrack-mode       |                   6 |
+| global-hi-lock-mode       |                   5 |
+| rectangle-mark-mode       |                   6 |
+| bs-show                   |                   4 |
+| global-cwarn-mode         |                   4 |
+| hide-ifdef-mode           |                   4 |
+| mouse-avoidance-mode      |                   4 |
+| orgtbl-mode               |                   4 |
+| whitespace-mode           |                   5 |
+| auto-completion-mode      |                   3 |
+| auto-image-file-mode      |                   3 |
+| delete-by-moving-to-trash |                   3 |
+| epa-file-enable           |                   3 |
+| generic-x                 |                   3 |
+| semantic-mode             |                   3 |
+| autoinsert                |                   3 |
+| electric-layout-mode      |                   2 |
+| erc-mode                  |                   2 |
+| orgstruct++-mode          |                   2 |
+| reveal-mode               |                   2 |
+| descr-text                |                   1 |
+| outline-minor-mode        |                   1 |
+| pc-selection-mode         |                   1 |
+| printing                  |                   2 |
+| url-handler-mode          |                   1 |
+
+
+
 #+TBLFM: $3= 100.0 * $2/ $N; %d;
 }}}
