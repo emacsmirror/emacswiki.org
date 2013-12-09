@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Dec  9 08:57:28 2013 (-0800)
+;; Last-Updated: Mon Dec  9 13:58:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27992
+;;     Update #: 27998
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7745,9 +7745,9 @@
 ;;    C-x b C-M-j toto      ; Match buffer contents against `toto'
 ;;    C-x b foo C-M-j toto  ; Match both buffer name and contents
 ;;
-;;  You can use option `icicle-buffer-skip-hook' to specify patterns
-;;  for buffer names to exclude from content-searching when you
-;;  provide a content-matching pattern to `icicle-buffer'.
+;;  You can use option `icicle-buffer-skip-functions' to specify
+;;  patterns for buffer names to exclude from content-searching when
+;;  you provide a content-matching pattern to `icicle-buffer'.
 ;;
 ;;  In addition to the usual Icicles key bindings, during buffer-name
 ;;  completion you can use additional keys, which are defined by
@@ -7800,10 +7800,10 @@
 ;;    candidate.
 ;;
 ;;  When cached or recently used file names are included as
-;;  candidates, option `icicle-find-file-of-content-skip-hook' is used
-;;  to exclude files from content-searching whose names match its
-;;  patterns, similarly to what `icicle-buffer-skip-hook' does for
-;;  buffer names.
+;;  candidates, option `icicle-file-skip-functions' is used to exclude
+;;  files from content-searching whose names match its patterns,
+;;  similarly to what `icicle-buffer-skip-functions' does for buffer
+;;  names.
 ;;
 ;;  During completion, candidate sorting is specific to buffer names.
 ;;  `C-,' cycles among the following sort orders:
@@ -7839,7 +7839,7 @@
 ;;  * `icicle-buffer-predicate' (*)
 ;;  * `icicle-buffer-prefix-arg-filtering'
 ;;  * `icicle-buffer-require-match-flag'
-;;  * `icicle-buffer-skip-hook'
+;;  * `icicle-buffer-skip-functions'
 ;;  * `icicle-buffer-sort' (*)
 ;;
 ;;  You can use option `icicle-buffer-configs' to define buffer
@@ -8160,9 +8160,9 @@
 ;;  commands that read absolute file names.  For them, a prefix
 ;;  argument has a different meaning.)
 ;;
-;;  You can use option `icicle-find-file-of-content-skip-hook' to
-;;  specify patterns for file names to exclude from content-searching
-;;  when you provide a content-matching pattern.
+;;  You can use option `icicle-file-skip-functions' to specify
+;;  patterns for file names to exclude from content-searching when you
+;;  provide a content-matching pattern.
 ;;
 ;;  In Dired, there are related content-matching multi-commands that
 ;;  you can use to visit marked files and subdirectories whose content
