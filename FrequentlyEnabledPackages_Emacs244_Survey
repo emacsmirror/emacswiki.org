@@ -32,7 +32,7 @@ __Minor Mode Survey__
 
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
-| abbrev-mode                                        |                  28 |
+| abbrev-mode                                        |                  29 |
 | auto-completion-mode                               |                   3 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
@@ -112,7 +112,7 @@ __Minor Mode Survey__
 | tooltip-mode                                       |                  12 |
 | tramp                                              |                  13 |
 | transient-mark-mode                                |                  46 |
-| uniquify                                           |                  65 |
+| uniquify                                           |                  66 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   7 |
 | visual-line-mode                                   |                   6 |
