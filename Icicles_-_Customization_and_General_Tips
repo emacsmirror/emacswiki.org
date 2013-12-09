@@ -1766,12 +1766,11 @@ A [[prefix argument]] to `C-x F' or `C-x R' sets the option value to the [[numer
 ----
 [:icicle-buffer-skip-functions]
 [:icicle-file-skip-functions]
-==== Options `icicle-buffer-skip-hook' and `icicle-find-file-of-content-skip-hook' ====
+==== Options `icicle-buffer-skip-functions' and `icicle-file-skip-functions' ====
 
 Options `icicle-buffer-skip-functions' and
 '''`icicle-file-skip-functions'''' are lists of hook
-functions.  They are used by commands `icicle-buffer' and
-`icicle-file' (for Emacs 23 and later) to test a candidate buffer name or file
+functions.  They are used by commands that read buffer names or file names (for Emacs 23 and later) to test a candidate buffer name or file
 name, respectively.  You can use them to skip content-searching of certain buffers and files when completing buffer and file names using [[multi-completion]]
 
 The functions are passed to `run-hook-with-args-until-success',
