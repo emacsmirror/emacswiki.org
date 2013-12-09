@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec  8 14:41:29 2013 (-0800)
+;; Last-Updated: Sun Dec  8 21:34:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27975
+;;     Update #: 27991
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8066,6 +8066,11 @@
 ;;  There are also `-other-window' versions of all of the Icicles
 ;;  commands that read file names.
 ;;
+;;  When using a command that reads an absolute file name, remember
+;;  that, to save space, you can use `C-x .' to toggle hiding of the
+;;  common match portions of the candidates in `*Completions*'.  This
+;;  portion is often a long directory substring.
+;;
 ;;  The Icicles commands that use `completing-read' to read file names
 ;;  have an additional feature: you can use a prefix argument to tell
 ;;  them to combine the last modification date with the file name, as
@@ -8073,11 +8078,6 @@
 ;;  that you can easily look up files whose modification time or date
 ;;  matches some (regexp) criterion, such as being sometime in July
 ;;  2008.
-;;
-;;  When using a command that reads an absolute file name, remember
-;;  that, to save space, you can use `C-x .' to toggle hiding of the
-;;  common match portions of the candidates in `*Completions*'.  This
-;;  portion is often a long directory substring.
 ;;
 ;;(@* "`icicle-file', `icicle-find-file', `icicle-find-file-absolute'")
 ;;  *** `icicle-file', `icicle-find-file', `icicle-find-file-absolute' ***
@@ -8182,6 +8182,27 @@
 ;;  File content-matching is available for all Icicles commands that
 ;;  read file names, including `icicle-recent-file',
 ;;  `icicle-locate-file', and `icicle-locate'.
+;;
+;;  Using a negative prefix argument when you invoke `icicle-file'
+;;  (`C-x C-f'), or any prefix argument when you invoke a command that
+;;  reads absolute file names, means that the completion candidates
+;;  have up to three parts: the file name, followed by the last
+;;  modification date, followed by the file content.
+;;
+;;  For example, these each match files with names matching `ici',
+;;  last modification dates matching `2013', and contents matching
+;;  `define-file':
+;;
+;;    C-- C-x C-f ici C-M-j 2013 C-M-j define-file
+;;
+;;    M-x icicle-locate-file ici C-M-j 2013 C-M-j define-file
+;;
+;;  The parts of your input pattern that match any of these candidate
+;;  parts can be empty.  For example, this matches files with any
+;;  name, whose last modification date matches `2013 07', and whose
+;;  contents match `recent file':
+;;
+;;    C-- C-x C-f C-M-j 2013 07 C-M-j recent file
 ;;
 ;;  See Also:
 ;;
