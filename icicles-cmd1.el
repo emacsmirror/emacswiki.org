@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Dec  8 11:39:52 2013 (-0800)
+;; Last-Updated: Mon Dec  9 08:50:40 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26628
+;;     Update #: 26644
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -224,9 +224,13 @@
 ;;    (+)`icicle-find-file-in-tags-table',
 ;;    (+)`icicle-find-file-in-tags-table-other-window',
 ;;    (+)`icicle-find-file-of-content',
+;;    (+)`icicle-find-file-of-content-in-tags-table',
+;;    (+)`icicle-find-file-of-content-in-tags-table-other-window',
 ;;    (+)`icicle-find-file-of-content-other-window',
 ;;    (+)`icicle-find-file-other-window',
 ;;    (+)`icicle-find-file-no-search',
+;;    (+)`icicle-find-file-no-search-in-tags-table',
+;;    (+)`icicle-find-file-no-search-in-tags-table-other-window',
 ;;    (+)`icicle-find-file-no-search-other-window',
 ;;    (+)`icicle-find-file-read-only',
 ;;    (+)`icicle-find-file-read-only-other-window',
@@ -330,6 +334,8 @@
 ;;    `icicle-find-file-abs-of-content-ro-ow-action',
 ;;    `icicle-find-file-no-search-action',
 ;;    `icicle-find-file-no-search-other-window-action',
+;;    (+)`icicle-find-file-no-search-in-tags-table-1',
+;;    (+)`icicle-find-file-of-content-in-tags-table-1',
 ;;    `icicle-find-file-of-content-ro-action',
 ;;    `icicle-find-file-of-content-ro-ow-action',
 ;;    `icicle-find-file-or-expand-dir',
@@ -8044,13 +8050,12 @@ Ido-like behavior."
   (icicle-define-command icicle-find-file-abs-of-content-1
     "Helper for `icicle-find-file-abs(-other-window)'." ; Doc string
     (lambda (fil) (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
-    prompt icicle-abs-file-candidates nil ; `completing-read' args
-    (confirm-nonexistent-file-or-buffer)
-    nil 'file-name-history (if (eq major-mode 'dired-mode)
-                               (condition-case nil ; E.g. error because not on file line (ignore)
-                                   (abbreviate-file-name (dired-get-file-for-visit))
-                                 (error nil))
-                             default-directory)
+    prompt icicle-abs-file-candidates nil (confirm-nonexistent-file-or-buffer) nil ; `completing-read' args
+    'file-name-history (if (eq major-mode 'dired-mode)
+                           (condition-case nil ; E.g. error because not on file line (ignore)
+                               (abbreviate-file-name (dired-get-file-for-visit))
+                             (error nil))
+                         default-directory)
     nil
     (icicle-file-bindings               ; Bindings
      ((prompt                             "File or dir (absolute): ")
@@ -8207,13 +8212,12 @@ Ido-like behavior."
   (icicle-define-command icicle-recent-file-of-content-1 ; Command name
     "Helper for `icicle-recent-file-of-content(-other-window)'." ; Doc string
     (lambda (fil) (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
-    prompt icicle-abs-file-candidates nil ; `completing-read' args
-    (confirm-nonexistent-file-or-buffer)
-    nil 'file-name-history (if (eq major-mode 'dired-mode)
-                               (condition-case nil ; E.g. error because not on file line (ignore)
-                                   (abbreviate-file-name (dired-get-file-for-visit))
-                                 (error nil))
-                             (car recentf-list))
+    prompt icicle-abs-file-candidates nil (confirm-nonexistent-file-or-buffer) nil ; `completing-read' args
+    'file-name-history (if (eq major-mode 'dired-mode)
+                           (condition-case nil ; E.g. error because not on file line (ignore)
+                               (abbreviate-file-name (dired-get-file-for-visit))
+                             (error nil))
+                         (car recentf-list))
     nil
     (icicle-file-bindings               ; Bindings
      ((prompt                                 "Recent file (absolute): ")
@@ -8486,13 +8490,12 @@ could temporarily set `icicle-file-predicate' to:
   (icicle-define-command icicle-locate-file-of-content-1
     "Helper for `icicle-locate(-file-of-content(-no-symlinks))(-other-window)'." ; Doc string
     (lambda (fil) (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
-    prompt icicle-abs-file-candidates nil ; `completing-read' args
-    (confirm-nonexistent-file-or-buffer)
-    nil 'file-name-history (if (eq major-mode 'dired-mode)
-                               (condition-case nil ; E.g. error because not on file line (ignore)
-                                   (abbreviate-file-name (dired-get-file-for-visit))
-                                 (error nil))
-                             (car recentf-list))
+    prompt icicle-abs-file-candidates nil (confirm-nonexistent-file-or-buffer) nil ; `completing-read' args
+    'file-name-history (if (eq major-mode 'dired-mode)
+                           (condition-case nil ; E.g. error because not on file line (ignore)
+                               (abbreviate-file-name (dired-get-file-for-visit))
+                             (error nil))
+                         (car recentf-list))
     nil
     (icicle-file-bindings               ; Bindings
      ((prompt                                 "File (absolute): ")
@@ -8585,6 +8588,96 @@ could temporarily set `icicle-file-predicate' to:
       (unless icicle-locate-file-use-locate-p
         (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
         (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files)))
+    (funcall cleanup-code)              ; Undo code
+    (funcall cleanup-code)              ; Last code
+    'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
+
+  (put 'icicle-find-file-of-content-in-tags-table 'icicle-Completions-window-max-height 200)
+  (defun icicle-find-file-of-content-in-tags-table ()
+    "Visit a file listed in a tags table.
+By default, the completion candidates are the file names listed in the
+current tags table, but you can substitute other candidates by
+retrieving a saved candidate set.  The default candidates appear as
+they did in the `etags' command that created the tags table, which
+typically means without directory names.
+
+`find-file' is called for the candidate(s) you choose, with the
+directory of the tags file as `default-directory'.
+
+This command is similar to `icicle-find-file-abs-of-content'.  See
+that command for more information."
+    (interactive)
+    (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-of-content-action))
+      (icicle-find-file-of-content-in-tags-table-1)))
+
+
+  (put 'icicle-find-file-of-content-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
+  (defun icicle-find-file-of-content-in-tags-table-other-window ()
+    "Same as `icicle-find-file-of-content-in-tags-table', but uses another window."
+    (interactive)
+    (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-of-content-other-window-action))
+      (icicle-find-file-of-content-in-tags-table-1)))
+
+  (icicle-define-command icicle-find-file-of-content-in-tags-table-1
+    "Helper for `icicle-find-file-in-tags-table(-other-window)'." ; Doc string
+    (lambda (fil)
+      (visit-tags-table-buffer 'same)   ; To pick up `default-directory' of TAGS table.
+      (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
+    prompt icicle-abs-file-candidates nil (confirm-nonexistent-file-or-buffer) ; `completing-read' args
+    nil 'file-name-history (if (eq major-mode 'dired-mode)
+                               (condition-case nil ; E.g. error because not on file line (ignore)
+                                   (abbreviate-file-name (dired-get-file-for-visit))
+                                 (error nil))
+                             default-directory)
+    nil
+    (icicle-file-bindings               ; Bindings
+     ((prompt                                 "File (in tags table): ")
+      (icicle-pref-arg                        current-prefix-arg)
+      (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
+      (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
+      (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
+      (icicle-full-cand-fn                    `(lambda (file)
+                                                (setq file  (if (file-directory-p file)
+                                                                (file-name-as-directory file)
+                                                              file))
+                                                ,(if icicle-pref-arg
+                                                     '(icicle-make-file+date-candidate file)
+                                                     '(list file))))
+      (icicle-abs-file-candidates
+       (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
+                       (mapcar icicle-full-cand-fn (tags-table-files))))
+      (icicle-show-multi-completion-flag      t) ; Override user setting.
+      (icicle-multi-completing-p              t)
+      (icicle-list-use-nth-parts              '(1))
+      (icicle-transform-before-sort-p         t)
+      (icicle-existing-bufs                   (buffer-list))
+      (icicle-new-bufs-to-kill                ())
+      (icicle-new-bufs-to-keep                ())
+      (cleanup-code                     ; Use for both undo code and last code.
+       (lambda ()
+         (icicle-unbind-file-candidate-keys)
+         (when icicle-kill-visited-buffers-flag
+           (dolist (buf  icicle-new-bufs-to-kill)
+;;;              $$$$$$ Why were we calling `restore-buffer-modified-p' before killing?
+;;;              (unless (memq buf icicle-new-bufs-to-keep)
+;;;                (when (buffer-live-p buf) ; Might have been killed, since both undo code and last code.
+;;;                  (with-current-buffer buf
+;;;                    (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
+;;;                    (kill-buffer buf))))))))
+             (when (and (buffer-live-p buf)  (not (memq buf icicle-new-bufs-to-keep))) (kill-buffer buf))))))
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))
+      (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
+      (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))))
+    (progn                              ; First code
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (unless (require 'etags nil t) (error "`etags.el' is required"))
+      (setq current-prefix-arg  nil)    ; Reset, so can use it in action function.
+      (icicle-highlight-lighter)
+      (message "Gathering files...")
+      (icicle-bind-file-candidate-keys))
     (funcall cleanup-code)              ; Undo code
     (funcall cleanup-code)              ; Last code
     'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
@@ -9135,6 +9228,84 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
           (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
 
 
+(put 'icicle-find-file-no-search-in-tags-table 'icicle-Completions-window-max-height 200)
+(defun icicle-find-file-no-search-in-tags-table ()
+  "Visit a file listed in a tags table.
+By default, the completion candidates are the file names listed in the
+current tags table, but you can substitute other candidates by
+retrieving a saved candidate set.  The default candidates appear as
+they did in the `etags' command that created the tags table, which
+typically means without directory names.
+
+`find-file' is called for the candidate(s) you choose, with the
+directory of the tags file as `default-directory'.
+
+This command is similar to `icicle-find-file-abs-no-search'.  See that
+command for more information."
+  (interactive)
+  (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-no-search-action))
+    (icicle-find-file-no-search-in-tags-table-1)))
+
+
+(put 'icicle-find-file-no-search-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
+(defun icicle-find-file-no-search-in-tags-table-other-window ()
+  "Same as `icicle-find-file-no-search-in-tags-table', but uses another window."
+  (interactive)
+  (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-no-search-other-window-action))
+    (icicle-find-file-no-search-in-tags-table-1)))
+
+(icicle-define-command icicle-find-file-no-search-in-tags-table-1
+  "Helper for `icicle-find-file-in-tags-table(-other-window)'." ; Doc string
+  (lambda (fil)
+    (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
+    (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
+  prompt icicle-abs-file-candidates nil ; `completing-read' args
+  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23. 
+  nil 'file-name-history (if (eq major-mode 'dired-mode)
+                             (condition-case nil ; E.g. error because not on file line (ignore)
+                                 (abbreviate-file-name (dired-get-file-for-visit))
+                               (error nil))
+                           default-directory)
+  nil
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                                 "File (in tags table): ")
+    (icicle-pref-arg                        current-prefix-arg)
+    (icicle-full-cand-fn                    `(lambda (file)
+                                              (setq file  (if (file-directory-p file)
+                                                              (file-name-as-directory file)
+                                                            file))
+                                              ,(if icicle-pref-arg
+                                                   '(icicle-make-file+date-candidate file)
+                                                   '(list file))))
+    (icicle-abs-file-candidates
+     (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
+                     (mapcar icicle-full-cand-fn (tags-table-files))))
+    (icicle-show-multi-completion-flag      t) ; Override user setting.
+    (icicle-multi-completing-p              icicle-pref-arg)
+    (icicle-list-use-nth-parts              (and icicle-pref-arg  '(1)))
+    (icicle-transform-before-sort-p         t)
+    (icicle-all-candidates-list-alt-action-fn ; `M-|'
+     (lambda (files) (let ((enable-recursive-minibuffers  t))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion files))))))
+    (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
+    (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))))
+  (progn                                ; First code
+    (when icicle-pref-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
+    (unless (require 'etags nil t) (error "`etags.el' is required"))
+    (setq current-prefix-arg  nil)      ; Reset, so can use it in action function.
+    (icicle-highlight-lighter)
+    (message "Gathering files...")
+    (icicle-bind-file-candidate-keys))
+  (icicle-unbind-file-candidate-keys)   ; Undo code
+  (icicle-unbind-file-candidate-keys)   ; Last code
+  'NOT-INTERACTIVE-P)                   ; Not a real command - just a helper function.
+
+(defun icicle-make-file+date-candidate (file)
+  "Return a multi-completion candidate: FILE + last modification date."
+  (list (list file (format-time-string "%Y %m %d %T" (nth 5 (file-attributes file))))))
+
+
 (defalias 'icicle-find-file (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
                                 'icicle-find-file-of-content
                               'icicle-find-file-no-search))
@@ -9184,139 +9355,17 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
                                           'icicle-locate-of-content-other-window
                                         'icicle-locate-no-search-other-window))
 
+(defalias 'icicle-find-file-in-tags-table
+    (if (fboundp 'icicle-find-file-of-content-in-tags-table) ; Emacs 23+
+        'icicle-find-file-of-content-in-tags-table
+      'icicle-find-file-no-search-in-tags-table))
 
-(put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)
-(icicle-define-command icicle-find-file-in-tags-table ; Command name
-  "Visit a file listed in a tags table.
-By default, the completion candidates are the file names listed in the
-current tags table, but you can substitute other candidates by
-retrieving a saved candidate set.  The default candidates appear as
-they did in the `etags' command that created the tags table, which
-typically means without directory names.
-
-Completion here matches candidates as ordinary strings.  It knows
-nothing of file names per se.  In particular, you cannot use remote
-file-name syntax.  If a candidate is an absolute file name then you
-can complete against any and all parts of the name (including
-directory components).
-
-`find-file' is called for the candidate(s) you choose, with the
-directory of the tags file as `default-directory'.
-
-Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
-
-With a prefix argument, you can choose also by date: Completion
-candidates include the last modification date.
-
-During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
-can use the following keys:
-   C-c +        - create a new directory
-   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
-   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
- * C-x C-t *    - narrow to files with all of the tags you specify
- * C-x C-t +    - narrow to files with some of the tags you specify
- * C-x C-t % *  - narrow to files with all tags matching a regexp
- * C-x C-t % +  - narrow to files with some tags  matching a regexp
- * C-x a +      - add tags to current candidate
- * C-x a -      - remove tags from current candidate
- * C-x m        - access file bookmarks (not just autofiles)
-
-These options, when non-nil, control candidate matching and filtering:
-
- `icicle-file-extras'           - Extra absolute file names to display
- `icicle-file-match-regexp'     - Regexp that file names must match
- `icicle-file-no-match-regexp'  - Regexp file names must not match
- `icicle-file-predicate'        - Predicate file names must satisfy
- `icicle-file-sort'             - Sort function for candidates
-
-For example, to show only names of files larger than 5000 bytes, you
-could temporarily set `icicle-file-predicate' to:
-
-  (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000)))
-
-Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'.
-
-Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."                     ; Doc string
-  (lambda (ff)
-    (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
-    (find-file (icicle-transform-multi-completion ff) 'WILDCARDS)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
-                          (tags-table-files)))
-  nil
-  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23.
-  nil 'file-name-history nil nil
-  (icicle-file-bindings                 ; Bindings
-   ((prompt                             "File (in tags table): ")
-    (icicle-full-cand-fn                `(lambda (file)
-                                          (setq file  (if (file-directory-p file)
-                                                          (file-name-as-directory file)
-                                                        file))
-                                          ,(if current-prefix-arg
-                                               '(icicle-make-file+date-candidate file)
-                                               '(list file))))
-    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
-    (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
-    (icicle-multi-completing-p          current-prefix-arg)
-    (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; `M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ")
-                                                 (mapcar #'icicle-transform-multi-completion files))))))))
-  (progn                                ; First code
-    (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (unless (require 'etags nil t) (error "`etags.el' is required"))
-    (icicle-bind-file-candidate-keys))
-  nil                                   ; Undo code
-  (icicle-unbind-file-candidate-keys))  ; Last code
+(defalias 'icicle-find-file-in-tags-table-other-window
+    (if (fboundp 'icicle-find-file-of-content-in-tags-table) ; Emacs 23+
+        'icicle-find-file-of-content-in-tags-table-other-window
+      'icicle-find-file-no-search-in-tags-table-other-window))
 
 
-(put 'icicle-find-file-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
-(icicle-define-command icicle-find-file-in-tags-table-other-window ; Command name
-  "Same as `icicle-find-file-in-tags-table', but uses another window." ; Doc string
-  (lambda (ff)
-    (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
-    (find-file (icicle-transform-multi-completion ff) 'WILDCARDS)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
-          (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
-                          (tags-table-files)))
-  nil
-  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23.
-  nil 'file-name-history nil nil
-  (icicle-file-bindings                 ; Bindings
-   ((prompt                             "File (in tags table): ")
-    (icicle-full-cand-fn                `(lambda (file)
-                                          (setq file  (if (file-directory-p file)
-                                                          (file-name-as-directory file)
-                                                        file))
-                                          ,(if current-prefix-arg
-                                               '(icicle-make-file+date-candidate file)
-                                               '(list file))))
-    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
-    (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
-    (icicle-multi-completing-p          current-prefix-arg)
-    (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; `M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ")
-                                                 (mapcar #'icicle-transform-multi-completion files))))))))
-  (progn                                ; First code
-    (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (unless (require 'etags nil t) (error "`etags.el' is required"))
-    (icicle-bind-file-candidate-keys))
-  nil                                   ; Undo code
-  (icicle-unbind-file-candidate-keys))  ; Last code
-
-(defun icicle-make-file+date-candidate (file)
-  "Return a multi-completion candidate: FILE + last modification date."
-  (list (list file (format-time-string "%Y %m %d %T" (nth 5 (file-attributes file))))))
 
 (icicle-define-command icicle-string-list ; Command name
   "Choose a list of strings.  The list is returned.
