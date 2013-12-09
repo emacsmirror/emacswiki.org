@@ -26,24 +26,24 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 90 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 91 [color=red][b] <- start here [/b][/color]
 
 {{{
 
 | Packages/Modes                                     | Upvote / User count |
 |----------------------------------------------------+---------------------|
-| abbrev-mode                                        |                  26 |
+| abbrev-mode                                        |                  27 |
 | auto-completion-mode                               |                   1 |
 | auto-composition-mode                              |                   7 |
 | auto-compression-mode                              |                   7 |
 | auto-encryption-mode                               |                  11 |
-| auto-fill-mode                                     |                  27 |
+| auto-fill-mode                                     |                  28 |
 | auto-image-file-mode                               |                   3 |
 | autoinsert                                         |                   1 |
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   5 |
-| column-number-mode                                 |                  63 |
+| column-number-mode                                 |                  64 |
 | compilation-minor-mode                             |                   7 |
 | cua-mode                                           |                  10 |
 | cua-selection-mode                                 |                  12 |
@@ -70,25 +70,25 @@ __Minor Mode Survey__
 | global-cwarn-mode                                  |                   3 |
 | global-font-lock-mode                              |                  28 |
 | global-hi-lock-mode                                |                   5 |
-| global-hl-line-mode                                |                   8 |
+| global-hl-line-mode                                |                   9 |
 | global-linum-mode                                  |                   9 |
-| global-subword-mode                                |                  13 |
+| global-subword-mode                                |                  14 |
 | global-whitespace-mode                             |                   6 |
-| hide-ifdef-mode                                    |                   3 |
+| hide-ifdef-mode                                    |                   4 |
 | hippie-exp                                         |                  19 |
-| hs-minor-mode                                      |                   9 |
+| hs-minor-mode                                      |                   10 |
 | ibuffer                                            |                  43 |
 | icomplete-mode                                     |                  12 |
 | ido-everywhere                                     |                  27 |
 | ido-mode                                           |                  55 |
 | imenu                                              |                  15 |
 | ispell-minor-mode                                  |                   7 |
-| iswitchb-mode                                      |                   5 |
+| iswitchb-mode                                      |                   6 |
 | kill-whole-line                                    |                   9 |
 | line-number-mode                                   |                  30 |
 | linum-mode                                         |                   9 |
 | mouse-avoidance-mode                               |                   3 |
-| mouse-wheel-mode                                   |                   8 |
+| mouse-wheel-mode                                   |                   9 |
 | org-capture                                        |                  12 |
 | org-mode                                           |                  24 |
 | org-src-mode                                       |                   5 |
@@ -105,21 +105,21 @@ __Minor Mode Survey__
 | saveplace                                          |                  23 |
 | semantic-mode                                      |                   2 |
 | server-mode                                        |                  19 |
-| shell-dirtrack-mode                                |                   4 |
+| shell-dirtrack-mode                                |                   5 |
 | show-paren-mode                                    |                  61 |
 | size-indication-mode                               |                  13 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
-| tramp                                              |                  11 |
+| tramp                                              |                  12 |
 | transient-mark-mode                                |                  45 |
 | uniquify                                           |                  64 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   6 |
 | visual-line-mode                                   |                   4 |
-| which-function-mode                                |                  20 |
+| which-function-mode                                |                  21 |
 | whitespace-mode                                    |                   2 |
 | windmove                                           |                  30 |
-| winner-mode                                        |                  30 |
+| winner-mode                                        |                  31 |
 
 }}}
 
