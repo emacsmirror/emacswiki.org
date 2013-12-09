@@ -124,6 +124,7 @@ autohotkey wiki.
 LWin::LAlt
 LAlt::LCtrl
 LCtrl::LWin
+LCtrl up::Send {LCtrl Up}
 
 RAlt::RCtrl
 RWin::RAlt
