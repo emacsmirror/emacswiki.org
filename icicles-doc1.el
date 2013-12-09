@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec  8 21:34:15 2013 (-0800)
+;; Last-Updated: Mon Dec  9 08:57:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27991
+;;     Update #: 27992
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8253,15 +8253,17 @@
 ;;  because it assumes that you will access the candidates using a
 ;;  menu.
 ;;
-;;  `icicle-recent-file' is like `icicle-find-file-absolute': file
-;;  names are absolute, and (for Emacs 23 and later) you can match
-;;  both file names and file contents.
-;;
 ;;  Commands `icicle-find-file-in-tags-table' and
 ;;  `icicle-find-file-in-tags-table-other-window' let you visit files
 ;;  that are listed in the current Emacs tags table.  You can think of
 ;;  these potential completion candidates as all of the files in a
 ;;  project defined by the tags table.
+;;
+;;  `icicle-recent-file' and `icicle-find-file-in-tags-table' are like
+;;  `icicle-find-file-absolute': `completing-read' is used, not
+;;  `read-file-name' (file names are treated as just strings), and
+;;  (for Emacs 23 and later) you can match both file names and file
+;;  contents.
 ;;
 ;;(@* "Find Files Anywhere, Without Knowing Where")
 ;;  *** Find Files Anywhere, Without Knowing Where ***
