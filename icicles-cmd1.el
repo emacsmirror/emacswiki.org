@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Dec  9 08:50:40 2013 (-0800)
+;; Last-Updated: Mon Dec  9 14:00:03 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 26644
+;;     Update #: 26652
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6357,8 +6357,8 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
  `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
- `icicle-buffer-skip-hook'          - Exclude from content searching
- `icicle-find-file-of-content-skip-hook' - Same, cached/recent files
+ `icicle-buffer-skip-functions'     - Exclude from content searching
+ `icicle-file-skip-functions'       - Same, but cached/recent files
 
 For example, to change the default behavior to show only buffers that
 are associated with files, set `icicle-buffer-predicate' to this:
@@ -6504,7 +6504,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                  (bufs         (icicle-remove-if (lambda (buf)
                                                    (or (not (icicle-string-match-p name-pat buf))
                                                        (run-hook-with-args-until-success
-                                                        'icicle-buffer-skip-hook buf)))
+                                                        'icicle-buffer-skip-functions buf)))
                                                  bufs))
                  (bufs         (cond ((equal "" content-pat)
                                       (dolist (buf  bufs)
@@ -6533,16 +6533,16 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                              (isearch-update-ring content-pat 'REGEXP))
                                            found))
                                        bufs))))
-                 (filnames    (and (> icicle-buffer-include-recent-files-nflag 0)
-                                   (require 'recentf nil t)
-                                   (or recentf-list  (recentf-load-list))
-                                   (icicle-recent-files-without-buffers bufs)))
+                 (filnames     (and (> icicle-buffer-include-recent-files-nflag 0)
+                                    (require 'recentf nil t)
+                                    (or recentf-list  (recentf-load-list))
+                                    (icicle-recent-files-without-buffers bufs)))
                  (filnames     (append filnames (and (> icicle-buffer-include-cached-files-nflag 0)
                                                      (icicle-cached-files-without-buffers bufs))))
                  (filnames     (icicle-remove-if (lambda (fil)
                                                    (or (not (icicle-string-match-p name-pat fil))
                                                        (run-hook-with-args-until-success
-                                                        'icicle-find-file-of-content-skip-hook fil)))
+                                                        'icicle-file-skip-functions fil)))
                                                  filnames))
                  (filnames     (if (equal "" content-pat)
                                    filnames
@@ -8700,7 +8700,7 @@ that command for more information."
 ;;;                                       (and (funcall `,predicate filname)
 ;;;                                            (or find-file-run-dired  (not (file-directory-p filname)))
 ;;;                                            (not (run-hook-with-args-until-success
-;;;                                                  'icicle-find-file-of-content-skip-hook filname))
+;;;                                                  'icicle-file-skip-functions filname))
 ;;;                                            (let* ((buf    (find-file-noselect filname))
 ;;;                                                   (found  (with-current-buffer buf
 ;;;                                                             (message "Matching file contents...")
@@ -8740,7 +8740,7 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
            (or (not date-pat)  (not date)  (icicle-string-match-p date-pat date))
            (or find-file-run-dired  (not (file-directory-p file)))
            (or (equal "" content-pat)
-               (and (not (run-hook-with-args-until-success 'icicle-find-file-of-content-skip-hook file))
+               (and (not (run-hook-with-args-until-success 'icicle-file-skip-functions file))
                     (let* ((dir-p   (file-directory-p file))
                            (exists  nil)
                            (buf     (if dir-p
