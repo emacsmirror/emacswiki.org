@@ -1,3 +1,4 @@
+== About the Eighty Column Rule ==
 Well, The sacred 80 column rule states that "Thou shalt not cross 80 columns in thy file." This initially was to make printing easier. Nowadays, the newer editors and users of editors have forgotten this and make it really hard to read code.
 
 : Nowadays, there's good reason for 80 columns as well: If your code indents farther than 80 columns, the function is too complicated (Rule of thumb: Exceptions exist, especially in languages like Java where the method names can be really, really long). To quote the Linux kernel Coding Styles:
@@ -29,11 +30,21 @@ And lines longer than 80 are *really really* annoying.
 Keeping lines short is important.
 
 ----
+
+== Related Emacs Packages ==
+
+=== ColumnMarker ==
 Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition, FindLongLines, and FillColumnIndicator.
 
-ColumnEnforceMode can also be used to keep track of overflow in a subjectively less intrusive way.
+----
+
+=== ColumnEnforceMode ===
+
+ColumnEnforceMode mimics the behavior of the lines-tail style in WhitespaceMode, however ColumnEnforceMode was written to not interfere with other enabled modes, something WhitespaceMode does not do. One of the main benefits is that it works well while using RainbowDelimiters
 
 ----
+
+=== WhitespaceMode ===
 whitespace mode (part of Emacs 23+) has two interesting options you can set in variable whitespace-style:
 
 `lines', will highlight lines that go beyond thw columnus limit defined in `whitespace-line-column'
