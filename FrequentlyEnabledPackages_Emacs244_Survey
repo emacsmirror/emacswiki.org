@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 97 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 98 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -40,22 +40,22 @@ __Minor Mode Survey__
 | auto-fill-mode            |                  30 |
 | auto-image-file-mode      |                   3 |
 | autoinsert                |                   2 |
-| blink-cursor-mode         |                  41 |
+| blink-cursor-mode         |                  42 |
 | bs-show                   |                   4 |
 | cl                        |                   6 |
-| column-number-mode        |                  67 |
+| column-number-mode        |                  68 |
 | compilation-minor-mode    |                   7 |
 | cua-mode                  |                  11 |
 | cua-selection-mode        |                  13 |
 | delete-by-moving-to-trash |                   3 |
-| delete-selection-mode     |                  24 |
+| delete-selection-mode     |                  25 |
 | descr-text                |                   1 |
-| desktop-save-mode         |                  20 |
+| desktop-save-mode         |                  21 |
 | dired-hide-details-mode   |                  12 |
 | dired-x                   |                  33 |
 | display-time-mode         |                  20 |
 | edebug-mode               |                   6 |
-| eldoc-mode                |                  38 |
+| eldoc-mode                |                  39 |
 | electric-indent-mode      |                   9 |
 | electric-layout-mode      |                   2 |
 | electric-pair-mode        |                   9 |
@@ -63,8 +63,8 @@ __Minor Mode Survey__
 | erc-mode                  |                   2 |
 | ffap                      |                   9 |
 | file-name-shadow-mode     |                  10 |
-| flyspell-mode             |                  43 |
-| font-lock-mode            |                  31 |
+| flyspell-mode             |                  44 |
+| font-lock-mode            |                  32 |
 | generic-x                 |                   3 |
 | global-auto-revert-mode   |                   8 |
 | global-cwarn-mode         |                   4 |
@@ -73,14 +73,14 @@ __Minor Mode Survey__
 | global-hl-line-mode       |                  10 |
 | global-linum-mode         |                   9 |
 | global-subword-mode       |                  17 |
-| global-whitespace-mode    |                   6 |
+| global-whitespace-mode    |                   7 |
 | hide-ifdef-mode           |                   4 |
 | hippie-exp                |                  20 |
 | hs-minor-mode             |                  10 |
-| ibuffer                   |                  46 |
+| ibuffer                   |                  47 |
 | icomplete-mode            |                  13 |
-| ido-everywhere            |                  30 |
-| ido-mode                  |                  58 |
+| ido-everywhere            |                  31 |
+| ido-mode                  |                  59 |
 | imenu                     |                  17 |
 | ispell-minor-mode         |                   9 |
 | iswitchb-mode             |                   7 |
@@ -89,37 +89,37 @@ __Minor Mode Survey__
 | linum-mode                |                   9 |
 | mouse-avoidance-mode      |                   4 |
 | mouse-wheel-mode          |                  10 |
-| org-capture               |                  14 |
-| org-mode                  |                  28 |
-| org-src-mode              |                   6 |
+| org-capture               |                  15 |
+| org-mode                  |                  29 |
+| org-src-mode              |                   7 |
 | orgstruct++-mode          |                   2 |
 | orgtbl-mode               |                   4 |
 | outline-minor-mode        |                   1 |
 | pc-selection-mode         |                   1 |
 | printing                  |                   1 |
-| recentf-mode              |                  38 |
+| recentf-mode              |                  39 |
 | rectangle-mark-mode       |                   5 |
 | reftex-mode               |                   9 |
 | reveal-mode               |                   2 |
 | savehist-mode             |                  19 |
-| saveplace                 |                  24 |
+| saveplace                 |                  25 |
 | semantic-mode             |                   3 |
 | server-mode               |                  20 |
 | shell-dirtrack-mode       |                   6 |
-| show-paren-mode           |                  65 |
+| show-paren-mode           |                  66 |
 | size-indication-mode      |                  14 |
 | subword-mode              |                  12 |
 | tooltip-mode              |                  14 |
 | tramp                     |                  14 |
-| transient-mark-mode       |                  48 |
-| uniquify                  |                  68 |
+| transient-mark-mode       |                  49 |
+| uniquify                  |                  69 |
 | url-handler-mode          |                   1 |
 | visible-bell              |                   8 |
-| visual-line-mode          |                   8 |
+| visual-line-mode          |                   9 |
 | which-function-mode       |                  22 |
 | whitespace-mode           |                   4 |
-| windmove                  |                  31 |
-| winner-mode               |                  35 |
+| windmove                  |                  32 |
+| winner-mode               |                  36 |
 
 
 }}}
