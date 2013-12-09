@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Dec  1 15:07:11 2013 (-0800)
+;; Last-Updated: Mon Dec  9 13:58:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5777
+;;     Update #: 5795
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -72,10 +72,10 @@
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-prefix-arg-filtering',
-;;    `icicle-buffer-require-match-flag', `icicle-buffer-skip-hook',
-;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
-;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
-;;    `icicle-candidate-width-factor',
+;;    `icicle-buffer-require-match-flag',
+;;    `icicle-buffer-skip-functions', `icicle-buffer-sort',
+;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
+;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -106,10 +106,10 @@
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
-;;    `icicle-file-sort', `icicle-files-ido-like-flag',
+;;    `icicle-file-skip-functions', `icicle-file-sort',
+;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-find-file-expand-directory-flag',
-;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
@@ -1179,11 +1179,16 @@ You probably do not want to set this globally, but you can."
           (const :tag "Require a full match"               full-match-required))
   :group 'Icicles-Buffers :group 'Icicles-Matching)
 
-(defcustom icicle-buffer-skip-hook nil
+(defcustom icicle-buffer-skip-functions nil
   "*Hook run by `icicle-buffer' on each matching buffer name.
-If a function returns non-nil then the buffer content is not searched.
-Use this to skip visiting and trying to search non-text buffers, such
-as PDFs and images, or buffers that might be time-consuming to access.
+The value is a list of functions.  Each is applied to the buffer-name
+candidate (after transforming it, if it is a multi-completion), until
+one of them returns a non-nil value.
+
+If any of the functions returns non-nil then the buffer content is not
+searched.  Use this to skip visiting and trying to search non-text
+buffers, such as PDFs and images, or buffers that might be
+time-consuming to access.
 
 See also the `icicle-buffer' doc for other ways to filter the set of
 candidate buffers."
@@ -2381,22 +2386,26 @@ only for Emacs 23 and later."
        (require 'image-file nil t)
        (icicle-string-match-p (image-file-name-regexp) filename)))
 
-(defcustom icicle-find-file-of-content-skip-hook #'icicle-image-file-p
-  "*Hook run by `icicle-file' on each matching file name.
-The function is applied to the file-name candidate (after transforming
-it, if it is a multi-completion).
+(defcustom icicle-file-skip-functions '(icicle-image-file-p)
+  "*Hook run by file-visiting commands on each matching file name.
+The value is a list of functions.  Each is applied to the file-name
+candidate (after transforming it, if it is a multi-completion), until
+one of them returns a non-nil value.
+
+If any of the functions returns non-nil then the file content is not
+searched.  Use this to skip visiting and trying to search non-text
+files, such as PDFs and images, or files that might be time-consuming
+to access, such as compressed files.
+
+Note that the file names passed to the hook can be absolute or
+relative, depending on the command used.
 
 Also run by `icicle-buffer' on the names of files that are included
 from the set of recent files or from the Emacs file cache.
 
-If any function returns non-nil then the file content is not searched.
-Use this to skip visiting and trying to search non-text files, such as
-PDFs and images, or files that might be time-consuming to access, such
-as compressed files.
-
 This option has no effect for Emacs versions prior to Emacs 23.
 
-See also option `icicle-buffer-skip-hook'."
+See also option `icicle-buffer-skip-functions'."
   :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-functions-to-redefine
