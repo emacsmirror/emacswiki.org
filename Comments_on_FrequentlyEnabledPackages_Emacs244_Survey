@@ -134,3 +134,18 @@ I also only use cua-mode for its rectangles. And I voted up blink-cursor-mode be
 
 -- Anonymous 2013-12-07 15:01 UTC
 
+
+----
+
+I disable blink-cursor-mode.
+
+global-auto-revert-mode is annoying without setting (setq auto-revert-verbose nil).  I also (setq global-auto-revert-non-file-buffers t).
+
+I love ido-mode (I have ido-ubiquitous-mode so ido is the normal completing-read), but it should definitely not be enabled by default.  It's too confusing for new users.
+
+mouse-avoidance-mode is nice, but it's really annoying how it raises the frame.  I have advice to stop this.
+
+I use uniquify with post-forward.
+
+-- jpkotta 2013-12-09 18:17 UTC
+
