@@ -37,7 +37,7 @@ matches buffer content.  So for example:
 
 : '''##C-x b##'''## f o o ##'''##C-M-j##'''## t o t o## -> Match both buffer name and contents
 
-You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-hook|icicle-buffer-skip-hook]]</tt>'''' to specify patterns
+You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-functions|icicle-buffer-skip-functions]]</tt>'''' to specify patterns
 for buffer names to exclude from content-searching when you
 provide a content-matching pattern to `icicle-buffer'.
 
@@ -100,9 +100,9 @@ buffers that are in iconified frames.
 * '''`S-delete'''' to ''kill'' the buffer named by the current completion
   candidate.
 
-When cached or recently used file names are included as candidates, option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' is used to exclude
+When cached or recently used file names are included as candidates, option '''`<tt>[[Icicles - Customization and General Tips#icicle-file-skip-functions|icicle-file-skip-functions]]</tt>'''' is used to exclude
 files from content-searching whose names match its patterns,
-similarly to what `icicle-buffer-skip-hook' does for buffer names.
+similarly to what `icicle-buffer-skip-functions' does for buffer names.
 
 
 During completion, candidate sorting is specific to buffer names.
@@ -140,7 +140,7 @@ The following [[user option]]s control buffer-name completion.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-predicate|icicle-buffer-predicate]]</tt>'''' (*)
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>''''
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-hook|icicle-buffer-skip-hook]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-functions|icicle-buffer-skip-functions]]</tt>''''
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>'''' (*)
 
 You can use option `icicle-buffer-configs' to define buffer
