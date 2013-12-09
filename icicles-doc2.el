@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec  1 16:29:44 2013 (-0800)
+;; Last-Updated: Mon Dec  9 14:23:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29463
+;;     Update #: 29466
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5742,13 +5742,13 @@
 ;;    A prefix argument to `C-x F' or `C-x R' sets the option value to
 ;;    the numeric prefix argument value.
 ;;
-;;  * Options `icicle-buffer-skip-hook' and
-;;    `icicle-find-file-of-content-skip-hook' are lists of hook
-;;    functions.  They are used by commands `icicle-buffer' and
-;;    `icicle-file' (for Emacs 23 and later) to test a candidate
-;;    buffer name or file name, respectively.  You can use them to
-;;    skip content-searching of certain buffers and files when
-;;    completing buffer and file names using multi-completion.
+;;  * Options `icicle-buffer-skip-functions' and
+;;    `icicle-file-skip-functions' are lists of hook functions.  They
+;;    are used by commands that read buffer names or file names (for
+;;    Emacs 23 and later) to test a candidate buffer name or file
+;;    name, respectively.  You can use them to skip content-searching
+;;    of certain buffers and files when completing buffer and file
+;;    names using multi-completion.
 ;;
 ;;    The functions are passed to `run-hook-with-args-until-success',
 ;;    so they are called in order until one returns non-`nil'.  If any
