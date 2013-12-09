@@ -43,14 +43,14 @@ __Minor Mode Survey__
 | blink-cursor-mode         |                  43 |
 | bs-show                   |                   4 |
 | cl                        |                   6 |
-| column-number-mode        |                  69 |
+| column-number-mode        |                  70 |
 | compilation-minor-mode    |                   7 |
 | cua-mode                  |                  11 |
 | cua-selection-mode        |                  14 |
 | delete-by-moving-to-trash |                   3 |
 | delete-selection-mode     |                  25 |
 | descr-text                |                   1 |
-| desktop-save-mode         |                  21 |
+| desktop-save-mode         |                  22 |
 | dired-hide-details-mode   |                  13 |
 | dired-x                   |                  34 |
 | display-time-mode         |                  20 |
@@ -97,14 +97,14 @@ __Minor Mode Survey__
 | outline-minor-mode        |                   1 |
 | pc-selection-mode         |                   1 |
 | printing                  |                   2 |
-| recentf-mode              |                  40 |
+| recentf-mode              |                  41 |
 | rectangle-mark-mode       |                   5 |
 | reftex-mode               |                   9 |
 | reveal-mode               |                   2 |
 | savehist-mode             |                  20 |
 | saveplace                 |                  25 |
 | semantic-mode             |                   3 |
-| server-mode               |                  20 |
+| server-mode               |                  21 |
 | shell-dirtrack-mode       |                   6 |
 | show-paren-mode           |                  67 |
 | size-indication-mode      |                  15 |
@@ -112,14 +112,14 @@ __Minor Mode Survey__
 | tooltip-mode              |                  14 |
 | tramp                     |                  15 |
 | transient-mark-mode       |                  50 |
-| uniquify                  |                  70 |
+| uniquify                  |                  71 |
 | url-handler-mode          |                   1 |
 | visible-bell              |                   9 |
 | visual-line-mode          |                  10 |
 | which-function-mode       |                  22 |
 | whitespace-mode           |                   4 |
-| windmove                  |                  32 |
-| winner-mode               |                  36 |
+| windmove                  |                  33 |
+| winner-mode               |                  37 |
 
 
 }}}
