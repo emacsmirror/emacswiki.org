@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 91 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 92 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -43,7 +43,7 @@ __Minor Mode Survey__
 | blink-cursor-mode                                  |                  40 |
 | bs-show                                            |                   4 |
 | cl                                                 |                   5 |
-| column-number-mode                                 |                  64 |
+| column-number-mode                                 |                  65 |
 | compilation-minor-mode                             |                   7 |
 | cua-mode                                           |                  10 |
 | cua-selection-mode                                 |                  12 |
@@ -79,18 +79,18 @@ __Minor Mode Survey__
 | hs-minor-mode                                      |                   10 |
 | ibuffer                                            |                  43 |
 | icomplete-mode                                     |                  12 |
-| ido-everywhere                                     |                  27 |
-| ido-mode                                           |                  55 |
+| ido-everywhere                                     |                  28 |
+| ido-mode                                           |                  56 |
 | imenu                                              |                  15 |
-| ispell-minor-mode                                  |                   7 |
-| iswitchb-mode                                      |                   6 |
-| kill-whole-line                                    |                   9 |
-| line-number-mode                                   |                  30 |
+| ispell-minor-mode                                  |                   8 |
+| iswitchb-mode                                      |                   7 |
+| kill-whole-line                                    |                   10 |
+| line-number-mode                                   |                  31 |
 | linum-mode                                         |                   9 |
 | mouse-avoidance-mode                               |                   3 |
 | mouse-wheel-mode                                   |                   9 |
 | org-capture                                        |                  12 |
-| org-mode                                           |                  24 |
+| org-mode                                           |                  25 |
 | org-src-mode                                       |                   5 |
 | orgstruct++-mode                                   |                   2 |
 | orgtbl-mode                                        |                   2 |
@@ -98,7 +98,7 @@ __Minor Mode Survey__
 | pc-selection-mode                                  |                   1 |
 | printing                                           |                   1 |
 | recentf-mode                                       |                  36 |
-| rectangle-mark-mode                                |                   3 |
+| rectangle-mark-mode                                |                   4 |
 | reftex-mode                                        |                   9 |
 | reveal-mode                                        |                   2 |
 | savehist-mode                                      |                  19 |
@@ -110,16 +110,16 @@ __Minor Mode Survey__
 | size-indication-mode                               |                  13 |
 | subword-mode                                       |                  10 |
 | tooltip-mode                                       |                  12 |
-| tramp                                              |                  12 |
+| tramp                                              |                  13 |
 | transient-mark-mode                                |                  45 |
-| uniquify                                           |                  64 |
+| uniquify                                           |                  65 |
 | url-handler-mode                                   |                   1 |
 | visible-bell                                       |                   6 |
-| visual-line-mode                                   |                   4 |
+| visual-line-mode                                   |                   5 |
 | which-function-mode                                |                  21 |
-| whitespace-mode                                    |                   2 |
+| whitespace-mode                                    |                   3 |
 | windmove                                           |                  30 |
-| winner-mode                                        |                  31 |
+| winner-mode                                        |                  32 |
 
 }}}
 
