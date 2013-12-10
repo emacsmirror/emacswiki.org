@@ -6,7 +6,7 @@ Winner Mode is great when you depend a lot on working with Emacs windows.  To re
 
 Activate it with `M-x winner-mode RET' or add the following to your ~/.emacs:
 
-    (when (fboundp 'winner-mode
+    (when (fboundp 'winner-mode)
       (winner-mode 1))
 
 The `fbound' test is for those XEmacs installations that don't have
