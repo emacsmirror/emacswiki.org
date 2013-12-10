@@ -3,7 +3,7 @@
 ;; Copyright (C) 2009 Brian Zwahr
 ;; original Copyright (C) 2007  Dave Benjamin
 
-;; Authors: 
+;; Authors:
 ;; Brian Zwahr <echosa@gmail.com>
 ;; Dave Benjamin <dave@ramenlabs.com>
 ;; Version: 0.3.3
@@ -28,15 +28,15 @@
 ;;; Commentary
 ;;; **********
 
-;; This file provides jira-mode, an emacs major mode for connecting to and 
-;; using a Jira server. (http://www.atlassian.com/software/jira/). This 
-;; jira-mode is far from complete (more below) but is mostly usable as is 
+;; This file provides jira-mode, an emacs major mode for connecting to and
+;; using a Jira server. (http://www.atlassian.com/software/jira/). This
+;; jira-mode is far from complete (more below) but is mostly usable as is
 ;; for the features that are present.
 
-;; Note that some functions/processes can be a bit slow. I believe this has 
+;; Note that some functions/processes can be a bit slow. I believe this has
 ;; something to do with XMLRPC.
 
-;; Also, XMLRPC access to jira is incomplete. Certain Jira features cannot be 
+;; Also, XMLRPC access to jira is incomplete. Certain Jira features cannot be
 ;; used via XMLRPC such as (but not limited to):
 ;; - Changing ticket status
 ;; - Closing/resolving tickets
@@ -64,7 +64,7 @@
 ;; M-x jira-mode will load the major mode into a new buffer named *Jira*.
 ;; You will be asked to login; use the username/password for the Jira server.
 ;; A few internal lists should be populated automatically containing a list
-;; of projects, issue types, etc. 
+;; of projects, issue types, etc.
 
 ;; The following commands/keyboard shorcuts can be used:
 
@@ -84,8 +84,8 @@
 ;; jL - jira-logout
 ;; Q - jira-mode-quit
 
-;; When viewing an issues, pressing o, r, etc. acts upon that issue. 
-;; For instance, while viewing an issue, pressing o will ask for a comment. 
+;; When viewing an issues, pressing o, r, etc. acts upon that issue.
+;; For instance, while viewing an issue, pressing o will ask for a comment.
 ;; That comment will be posted to the issue currently being viewed.
 
 ;; Some prompts have tab completions in the minibuffer/echo area. Try it out to
@@ -103,12 +103,18 @@
   "Jira customization group."
   :group 'applications)
 
-(defgroup jira-faces nil 
+(defgroup jira-faces nil
   "Faces for displaying Jira information."
   :group 'jira)
 
 (defcustom jira-url ""
   "User customizable URL to Jira server."
+  :group 'jira
+  :type 'string
+  :initialize 'custom-initialize-set)
+
+(defcustom jira-username nil
+  "User customizable username for Jira server."
   :group 'jira
   :type 'string
   :initialize 'custom-initialize-set)
@@ -179,7 +185,7 @@
     (define-key jira-mode-map [return] 'jira-return)))
 
 (defun jira-mode ()
-  "A mode for working with the Jira ticketing system. XMLRPC is used via xmlrpc.el. Things run a bit slow, though sometimes they seems to run faster when doing multiple things at once to the same ticket: i.e. retrieve a ticket, its slow, comment the tickets, its faster, refresh the ticket its faster, wait a while then refresh and its slow again. 
+  "A mode for working with the Jira ticketing system. XMLRPC is used via xmlrpc.el. Things run a bit slow, though sometimes they seems to run faster when doing multiple things at once to the same ticket: i.e. retrieve a ticket, its slow, comment the tickets, its faster, refresh the ticket its faster, wait a while then refresh and its slow again.
 
 \\{jira-mode-map}"
   (interactive)
@@ -233,11 +239,10 @@
           (equal summary "")
           (equal description ""))
       (message "Must provide all information!")
-    (progn
-      (setq ticket-alist (list (cons "project" project) 
-                               (cons "type" type) 
-                               (cons "summary" summary) 
-                               (cons "description" description)))
+    (let ((ticket-alist (list (cons "project" project)
+                              (cons "type" type)
+                              (cons "summary" summary)
+                              (cons "description" description))))
       (jira-create-issue ticket-alist))))
 
 (defun jira-refresh-ticket ()
@@ -256,8 +261,7 @@
   (interactive (list (read-string "Assignee: ")))
   (if (equal assignee "")
       (message "Must provide assignee!")
-    (progn
-      (setq ticket-alist (list (cons "assignee" (vector assignee))))
+    (let ((ticket-alist (list (cons "assignee" (vector assignee)))))
       (jira-update-issue jira-current-issue ticket-alist)
       (jira-refresh-ticket))))
 
@@ -265,15 +269,14 @@
   (interactive (list (read-string "Summary: ")))
   (if (equal summary "")
       (message "Must provide summary!")
-    (progn
-      (setq ticket-alist (list (cons "summary" (vector summary))))
+    (let ((ticket-alist (list (cons "summary" (vector summary)))))
       (jira-update-issue jira-current-issue ticket-alist)
       (jira-refresh-ticket))))
 
 (defun jira-start-ticket ()
   (interactive)
-  (setq ticket-alist (list (cons "status" (vector "3"))))
-  (jira-update-issue jira-current-issue ticket-alist))
+  (let ((ticket-alist (list (cons "status" (vector "3")))))
+    (jira-update-issue jira-current-issue ticket-alist)))
 
 (defun jira-store-projects ()
   (setf jira-projects-list (jira-get-projects)))
@@ -359,10 +362,10 @@
     (search-backward " ")))
 
 (defun delete-eob-whitespace ()
-  (end-of-buffer)
+  (goto-char (point-max))
   (delete-horizontal-space)
   (delete-char -1)
-  (beginning-of-buffer))
+  (goto-char (point-min)))
 
 ;; ***********************************
 ;; original functions by Dave Benjamin
@@ -374,7 +377,7 @@
 
 (defun jira-login (username password)
   "Logs the user into JIRA."
-  (interactive (list (read-string "Username: ")
+  (interactive (list (or jira-username (read-string "Username: "))
                      (read-passwd "Password: ")))
   (setq jira-token (jira-call-noauth 'jira1.login username password)))
 
@@ -396,7 +399,7 @@
        (add-text-properties
         (point)
         (save-excursion
-          (insert 
+          (insert
            (cdr (assoc "key" project)))
           (point))
         '(face jira-link-project-face))
@@ -556,6 +559,9 @@
        (put-text-property 0 (length s) 'face 'jira-issue-info-header-face s)
        (insert s))
      (let ((s (if (cdr (assoc "components" issue)) (cdr (assoc "components" issue)) "None")))
+       (or (stringp s)
+           (setq s (mapconcat (lambda (x) (cdr (assoc "name" x)))
+                              s " ")))
        (put-text-property 0 (length s) 'face 'jira-issue-info-face s)
        (insert s "\n\n"))
 
@@ -563,6 +569,9 @@
        (put-text-property 0 (length s) 'face 'jira-issue-info-header-face s)
        (insert s))
      (let ((s (if (cdr (assoc "fixVersions" issue)) (cdr (assoc "fixVersions" issue)) "None")))
+       (or (stringp s)
+           (setq s (mapconcat (lambda (x) (cdr (assoc "name" x)))
+                              s " ")))
        (put-text-property 0 (length s) 'face 'jira-issue-info-face s)
        (insert s "\n\n"))
 
@@ -580,7 +589,7 @@
              (put-text-property 0 (length s) 'face 'jira-comment-header-face s)
              (insert s "\n"))
            (let ((c (jira-strip-cr (cdr (assoc "body" comment)))))
-             
+
              (put-text-property 0 (length c) 'face 'jira-comment-face c)
              (insert c "\n\n"))
            (setf count (1+ count))))))))
@@ -630,7 +639,7 @@
         (add-text-properties
          (point)
          (save-excursion
-           (insert 
+           (insert
             (cdr (assoc "key" issue)))
            (point))
          '(face jira-link-issue-face))
@@ -640,7 +649,7 @@
                         (cdr (assoc "assignee" issue))
                         (cdr (assoc status status-abbrevs))
                         (if priority
-                            (make-string (- 6 (string-to-number priority))
+                            (make-string (max 0 (- 6 (string-to-number priority)))
                                          ?*)
                           "")
                         (cdr (assoc "summary" issue)))))))
@@ -728,8 +737,7 @@
 (defun jira-ensure-token ()
   "Makes sure that a JIRA token has been set, logging in if necessary."
   (unless jira-token
-    (jira-login (read-string "Username: ")
-                (read-passwd "Password: "))))
+    (call-interactively 'jira-login)))
 
 (defun jira-call (method &rest params)
   "Calls an XML-RPC method on the JIRA server (low-level)"
@@ -749,11 +757,11 @@
 ;; Modified by Brian Zwahr to a specific *Jira* buffer, not a temp buffer
 (defmacro jira-with-jira-buffer (&rest body)
   "Sends all output and buffer modifications to *Jira* buffer."
-  `(with-current-buffer "*Jira*" 
+  `(with-current-buffer (get-buffer-create "*Jira*")
      (delete-region (point-min) (point-max))
      (setq truncate-lines t)
      ,@body
-     (beginning-of-buffer)))
+     (goto-char (point-min))))
 
 (provide 'jira)
 ;;; jira.el ends here
