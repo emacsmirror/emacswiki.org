@@ -37,7 +37,7 @@ that match `##toto.*titi##'.
 without navigating through each [[search context]] in turn: ''direct
 access''.
 
-* In Icicles search, replace-all (`##M-|##') means replace all matches of your
+* In '''Icicles''' search, replace-all (`##M-|##') means replace all matches of your
 current input, throughout the search space, not just all
 matches that follow the [[cursor]].   And remember that you
 can (a) activate the [[region]] to limit the search-and-replace
