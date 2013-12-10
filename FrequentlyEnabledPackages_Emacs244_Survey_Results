@@ -1,107 +1,111 @@
 __How to summarize the results__
 
 # Update N - The Number of People Surveyed.
-# Copy over the table from [[FrequentlyEnabledPackages_Emacs244_Survey]] in the space below.
-# Copy the results in <tt>*scratch*</tt> buffer
-# <tt>M-x orgtble-mode</tt>
-# Put the cursor on Column-2.  <tt>M-x org-table-sort-lines</tt> [Choose N when prompted]
-# With cursor inside the table, <tt>C-u C-c *</tt>.  Column-3 will contain the % of users.
+# Replace the table below with that from [[FrequentlyEnabledPackages_Emacs244_Survey]].
+# Copy the results in <code>*scratch*</code> buffer
+# <code>M-x orgtble-mode</code>
+# Put the cursor on Column-2.  <code>M-x org-table-sort-lines</code> [Choose N when prompted]
+# With cursor inside the table, <code>C-u C-c *</code>.  Column-3 will contain the % of users.
 # Paste back the result here.
 
+__Survey Trend__
+
+Here is a quick summary of polling trends.  For ease of interpretation, Horizontal rules are drawn at 50%, 25% and 12% levels.
+
 {{{
-#+CONSTANTS: N=?
-Insert [[FrequentlyEnabledPackages_Emacs244_Survey]] here.
-| PACKAGES/MODES            | UPVOTE / USER COUNT |
-|---------------------------+---------------------|
-| UNIQUIFY                  |                  69 |
-| column-number-mode        |                  69 |
-| show-paren-mode           |                  67 |
-| ido-mode                  |                  59 |
-| transient-mark-mode       |                  50 |
-| ibuffer                   |                  47 |
-| flyspell-mode             |                  45 |
-| blink-cursor-mode         |                  42 |
-| eldoc-mode                |                  39 |
-| recentf-mode              |                  40 |
-| winner-mode               |                  36 |
-| dired-x                   |                  34 |
-| font-lock-mode            |                  33 |
-| line-number-mode          |                  32 |
-| windmove                  |                  32 |
-| global-font-lock-mode     |                  32 |
-| ido-everywhere            |                  31 |
-| abbrev-mode               |                  31 |
-| auto-fill-mode            |                  31 |
-| org-mode                  |                  29 |
-| delete-selection-mode     |                  26 |
-| saveplace                 |                  26 |
-| which-function-mode       |                  23 |
-| desktop-save-mode         |                  22 |
-| display-time-mode         |                  20 |
-| hippie-exp                |                  20 |
-| server-mode               |                  21 |
-| savehist-mode             |                  11 |
-| global-subword-mode       |                  17 |
-| imenu                     |                  17 |
-| org-capture               |                  15 |
-| size-indication-mode      |                  14 |
-| tooltip-mode              |                  15 |
-| tramp                     |                  14 |
-| auto-encryption-mode      |                  13 |
-| cua-selection-mode        |                  14 |
-| icomplete-mode            |                  13 |
-| dired-hide-details-mode   |                  12 |
-| subword-mode              |                  12 |
-| cua-mode                  |                  12 |
-| file-name-shadow-mode     |                  10 |
-| global-hl-line-mode       |                  11 |
-| hs-minor-mode             |                  11 |
-| kill-whole-line           |                  11 |
-| mouse-wheel-mode          |                  11 |
-| electric-indent-mode      |                  10 |
-| electric-pair-mode        |                  10 |
-| ffap                      |                   9 |
-| global-linum-mode         |                   9 |
-| ispell-minor-mode         |                  10 |
-| linum-mode                |                  11 |
-| reftex-mode               |                   9 |
-| visual-line-mode          |                  10 |
-| auto-compression-mode     |                   8 |
-| global-auto-revert-mode   |                   8 |
-| visible-bell              |                   9 |
-| compilation-minor-mode    |                   7 |
-| global-whitespace-mode    |                   8 |
-| iswitchb-mode             |                   7 |
-| org-src-mode              |                   7 |
-| cl                        |                   7 |
-| edebug-mode               |                   6 |
-| shell-dirtrack-mode       |                   6 |
-| global-hi-lock-mode       |                   5 |
-| rectangle-mark-mode       |                   6 |
-| bs-show                   |                   4 |
-| global-cwarn-mode         |                   4 |
-| hide-ifdef-mode           |                   4 |
-| mouse-avoidance-mode      |                   4 |
-| orgtbl-mode               |                   4 |
-| whitespace-mode           |                   5 |
-| auto-completion-mode      |                   3 |
-| auto-image-file-mode      |                   3 |
-| delete-by-moving-to-trash |                   3 |
-| epa-file-enable           |                   3 |
-| generic-x                 |                   3 |
-| semantic-mode             |                   3 |
-| autoinsert                |                   3 |
-| electric-layout-mode      |                   2 |
-| erc-mode                  |                   2 |
-| orgstruct++-mode          |                   2 |
-| reveal-mode               |                   2 |
-| descr-text                |                   1 |
-| outline-minor-mode        |                   1 |
-| pc-selection-mode         |                   1 |
-| printing                  |                   2 |
-| url-handler-mode          |                   1 |
-
-
-
+#+CONSTANTS: N=106
+| Packages/Modes            | Upvote / User count | % Of Users |
+|---------------------------+---------------------+------------|
+| uniquify                  |                  76 |         71 |
+| column-number-mode        |                  74 |         69 |
+| show-paren-mode           |                  70 |         66 |
+| ido-mode                  |                  65 |         61 |
+| transient-mark-mode       |                  55 |         51 |
+|---------------------------+---------------------+------------|
+| ibuffer                   |                  51 |         48 |
+| blink-cursor-mode         |                  47 |         44 |
+| flyspell-mode             |                  46 |         43 |
+| recentf-mode              |                  44 |         41 |
+| eldoc-mode                |                  41 |         38 |
+| winner-mode               |                  39 |         36 |
+| font-lock-mode            |                  38 |         35 |
+| dired-x                   |                  36 |         33 |
+| global-font-lock-mode     |                  35 |         33 |
+| line-number-mode          |                  35 |         33 |
+| org-mode                  |                  35 |         33 |
+| windmove                  |                  35 |         33 |
+| auto-fill-mode            |                  34 |         32 |
+| ido-everywhere            |                  34 |         32 |
+| abbrev-mode               |                  33 |         31 |
+| delete-selection-mode     |                  27 |         25 |
+| saveplace                 |                  27 |         25 |
+|---------------------------+---------------------+------------|
+| which-function-mode       |                  24 |         22 |
+| desktop-save-mode         |                  23 |         21 |
+| server-mode               |                  23 |         21 |
+| display-time-mode         |                  21 |         19 |
+| savehist-mode             |                  21 |         19 |
+| global-subword-mode       |                  20 |         18 |
+| hippie-exp                |                  20 |         18 |
+| imenu                     |                  19 |         17 |
+| org-capture               |                  17 |         16 |
+| tramp                     |                  17 |         16 |
+| tooltip-mode              |                  16 |         15 |
+| auto-encryption-mode      |                  15 |         14 |
+| cua-selection-mode        |                  15 |         14 |
+| size-indication-mode      |                  15 |         14 |
+| subword-mode              |                  14 |         13 |
+| dired-hide-details-mode   |                  13 |         12 |
+| ffap                      |                  13 |         12 |
+| icomplete-mode            |                  13 |         12 |
+|---------------------------+---------------------+------------|
+| file-name-shadow-mode     |                  12 |         11 |
+| global-hl-line-mode       |                  12 |         11 |
+| hs-minor-mode             |                  12 |         11 |
+| kill-whole-line           |                  12 |         11 |
+| mouse-wheel-mode          |                  12 |         11 |
+| visual-line-mode          |                  12 |         11 |
+| cua-mode                  |                  11 |         10 |
+| linum-mode                |                  11 |         10 |
+| auto-compression-mode     |                  10 |          9 |
+| electric-indent-mode      |                  10 |          9 |
+| global-auto-revert-mode   |                  10 |          9 |
+| global-linum-mode         |                  10 |          9 |
+| reftex-mode               |                  10 |          9 |
+| visible-bell              |                  10 |          9 |
+| auto-composition-mode     |                   9 |          8 |
+| compilation-minor-mode    |                   9 |          8 |
+| electric-pair-mode        |                   9 |          8 |
+| global-whitespace-mode    |                   9 |          8 |
+| ispell-minor-mode         |                   9 |          8 |
+| org-src-mode              |                   8 |          7 |
+| iswitchb-mode             |                   7 |          6 |
+| whitespace-mode           |                   7 |          6 |
+| cl                        |                   6 |          5 |
+| edebug-mode               |                   6 |          5 |
+| rectangle-mark-mode       |                   6 |          5 |
+| shell-dirtrack-mode       |                   6 |          5 |
+| global-cwarn-mode         |                   5 |          4 |
+| global-hi-lock-mode       |                   5 |          4 |
+| hide-ifdef-mode           |                   5 |          4 |
+| mouse-avoidance-mode      |                   5 |          4 |
+| orgtbl-mode               |                   5 |          4 |
+| bs-show                   |                   4 |          3 |
+| delete-by-moving-to-trash |                   4 |          3 |
+| erc-mode                  |                   4 |          3 |
+| auto-completion-mode      |                   3 |          2 |
+| auto-image-file-mode      |                   3 |          2 |
+| autoinsert                |                   3 |          2 |
+| epa-file-enable           |                   3 |          2 |
+| generic-x                 |                   3 |          2 |
+| printing                  |                   3 |          2 |
+| semantic-mode             |                   3 |          2 |
+| electric-layout-mode      |                   2 |          1 |
+| orgstruct++-mode          |                   2 |          1 |
+| reveal-mode               |                   2 |          1 |
+| descr-text                |                   1 |          0 |
+| outline-minor-mode        |                   1 |          0 |
+| pc-selection-mode         |                   1 |          0 |
+| url-handler-mode          |                   1 |          0 |
 #+TBLFM: $3= 100.0 * $2/ $N; %d;
 }}}
