@@ -2,7 +2,7 @@ Add your comment here.
 I'm using Distel for my erlang development but the function that is used for completion is printing its output in an ibuffer. I would like to get it in the minibuffer with ido support instead, does anyone know of a way to do it?
 
 Here is the code:
-
+{{{
 (defun erl-complete (node)
   "Complete the module or remote function name at point."
   (interactive (list (erl-target-node)))
@@ -48,6 +48,6 @@ Here is the code:
 	  (message "Error: %s" reason))
 	 (other
 	  (message "Unexpected reply: %S" other))))))
-
+}}}
 -- SpaceOgre 2013-06-18 12:28 UTC
 
