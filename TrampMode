@@ -31,6 +31,11 @@ For [S]XEmacs use the syntax
 
     C-x C-f /[method/user@remotehost]/filename
 
+You can also edit local files as root with either of the following (note the double colon, which is required)
+
+    C-x C-f /su::/etc/hosts
+    C-x C-f /sudo::/etc/hosts
+
 Also,
 
 {{{
