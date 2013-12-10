@@ -71,7 +71,7 @@ __Minor Mode Survey__
 | global-font-lock-mode     |                  32 |
 | global-hi-lock-mode       |                   5 |
 | global-hl-line-mode       |                  12 |
-| global-linum-mode         |                   10 |
+| global-linum-mode         |                  10 |
 | global-subword-mode       |                  19 |
 | global-whitespace-mode    |                   9 |
 | hide-ifdef-mode           |                   5 |
@@ -86,7 +86,7 @@ __Minor Mode Survey__
 | iswitchb-mode             |                   7 |
 | kill-whole-line           |                  12 |
 | line-number-mode          |                  32 |
-| linum-mode                |                   10 |
+| linum-mode                |                  10 |
 | mouse-avoidance-mode      |                   5 |
 | mouse-wheel-mode          |                  11 |
 | org-capture               |                  16 |
