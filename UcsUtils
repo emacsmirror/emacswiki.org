@@ -1,6 +1,11 @@
-==Overview==
+This library provides utilities for manipulating Unicode
+characters, with integrated ability to return fallback characters
+when Unicode display is not possible.
 
-Utilities for manipulating Unicode characters
+Some ambiguities in Emacs' built-in Unicode data are resolved, and
+character support is updated to Unicode 6.1.
+
+In Emacs 24 and above, it can be installed from the [[Marmalade]] repository.
 
 == Quickstart == 
 
@@ -18,14 +23,7 @@ Utilities for manipulating Unicode characters
 
 	(ucs-utils-string "Horizontal Ellipsis" '[["..."]])
 
-==ucs-utils==
-
-This library provides utilities for manipulating Unicode
-characters, with integrated ability to return fallback characters
-when Unicode display is not possible.
-
-Some ambiguities in Emacs' built-in Unicode data are resolved, and
-character support is updated to Unicode 6.1.
+==Available Functions and Commands==
 
 There are three interactive commands
 
