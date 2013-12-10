@@ -3,7 +3,7 @@ __How to summarize the results__
 # Update N - The Number of People Surveyed.
 # Replace the table below with that from [[FrequentlyEnabledPackages_Emacs244_Survey]].
 # Copy the results in <code>*scratch*</code> buffer
-# <code>M-x orgtble-mode</code>
+# <code>M-x orgtbl-mode</code>
 # Put the cursor on Column-2.  <code>M-x org-table-sort-lines</code> [Choose N when prompted]
 # With cursor inside the table, <code>C-u C-c *</code>.  Column-3 will contain the % of users.
 # Paste back the result here.
