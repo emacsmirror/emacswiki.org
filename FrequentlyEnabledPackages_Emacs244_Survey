@@ -26,7 +26,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 101 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 102 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -40,7 +40,7 @@ __Minor Mode Survey__
 | auto-fill-mode            |                  31 |
 | auto-image-file-mode      |                   3 |
 | autoinsert                |                   3 |
-| blink-cursor-mode         |                  44 |
+| blink-cursor-mode         |                  45 |
 | bs-show                   |                   4 |
 | cl                        |                   6 |
 | column-number-mode        |                  71 |
@@ -52,7 +52,7 @@ __Minor Mode Survey__
 | descr-text                |                   1 |
 | desktop-save-mode         |                  23 |
 | dired-hide-details-mode   |                  13 |
-| dired-x                   |                  34 |
+| dired-x                   |                  35 |
 | display-time-mode         |                  20 |
 | edebug-mode               |                   6 |
 | eldoc-mode                |                  40 |
@@ -71,27 +71,27 @@ __Minor Mode Survey__
 | global-font-lock-mode     |                  32 |
 | global-hi-lock-mode       |                   5 |
 | global-hl-line-mode       |                  12 |
-| global-linum-mode         |                   9 |
+| global-linum-mode         |                   10 |
 | global-subword-mode       |                  19 |
-| global-whitespace-mode    |                   8 |
+| global-whitespace-mode    |                   9 |
 | hide-ifdef-mode           |                   5 |
 | hippie-exp                |                  20 |
 | hs-minor-mode             |                  10 |
 | ibuffer                   |                  48 |
 | icomplete-mode            |                  13 |
-| ido-everywhere            |                  32 |
-| ido-mode                  |                  61 |
+| ido-everywhere            |                  33 |
+| ido-mode                  |                  62 |
 | imenu                     |                  19 |
 | ispell-minor-mode         |                   9 |
 | iswitchb-mode             |                   7 |
-| kill-whole-line           |                  11 |
+| kill-whole-line           |                  12 |
 | line-number-mode          |                  32 |
-| linum-mode                |                   9 |
+| linum-mode                |                   10 |
 | mouse-avoidance-mode      |                   5 |
 | mouse-wheel-mode          |                  11 |
-| org-capture               |                  15 |
-| org-mode                  |                  31 |
-| org-src-mode              |                   7 |
+| org-capture               |                  16 |
+| org-mode                  |                  32 |
+| org-src-mode              |                   8 |
 | orgstruct++-mode          |                   2 |
 | orgtbl-mode               |                   4 |
 | outline-minor-mode        |                   1 |
@@ -111,13 +111,13 @@ __Minor Mode Survey__
 | subword-mode              |                  14 |
 | tooltip-mode              |                  14 |
 | tramp                     |                  15 |
-| transient-mark-mode       |                  51 |
-| uniquify                  |                  72 |
+| transient-mark-mode       |                  52 |
+| uniquify                  |                  73 |
 | url-handler-mode          |                   1 |
 | visible-bell              |                   9 |
 | visual-line-mode          |                  11 |
 | which-function-mode       |                  22 |
-| whitespace-mode           |                   5 |
+| whitespace-mode           |                   6 |
 | windmove                  |                  34 |
 | winner-mode               |                  38 |
 
