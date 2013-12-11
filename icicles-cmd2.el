@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Dec  1 15:43:15 2013 (-0800)
+;; Last-Updated: Tue Dec 10 16:50:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6679
+;;     Update #: 6696
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -257,7 +257,8 @@
 ;;    `icicle-orig-frame', `icicle-orig-menu-bar',
 ;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
 ;;    `icicle-orig-show-initially-flag',
-;;    `icicle-orig-sort-orders-alist', `icicle-this-cmd-keys'.
+;;    `icicle-orig-sort-orders-alist', `icicle-search-regexp',
+;;    `icicle-this-cmd-keys'.
 ;;
 ;;
 ;;  Key bindings made by Icicles: See "Key Bindings" in
@@ -4146,12 +4147,16 @@ The arguments are the same as for `icicle-search'."
       (unless already-existed-p (kill-buffer buffer)))
     found))
 
+(defvar icicle-search-regexp nil
+  "Regexp used for the current application of `icicle-search'.")
+
 (defun icicle-search-define-candidates-1 (buffer beg end scan-fn-or-regexp args)
   "Helper function for `icicle-search-define-candidates'.
 BUFFER is a buffer to scan for candidates.
 The other arguments are the same as for `icicle-search'."
   (if (functionp scan-fn-or-regexp)
       (apply scan-fn-or-regexp buffer beg end args)
+    (setq icicle-search-regexp  scan-fn-or-regexp)
     (apply 'icicle-search-regexp-scan buffer beg end scan-fn-or-regexp args)))
 
 (defun icicle-search-regexp-scan (buffer beg end regexp &optional predicate action)
@@ -4478,7 +4483,10 @@ Return non-nil if replacement occurred, nil otherwise."
 current input matches candidate") (sit-for 2))
                       (setq replacement-p  nil))
                      (t
-                      (set-match-data (list (point-min) (point-max)))
+                      ;; Search for original regexp, to set match data so replacements such as `\N' work.
+                      (if (and icicle-search-regexp  (> emacs-major-version 21))
+                          (re-search-forward icicle-search-regexp nil 'move-to-end)
+                        (set-match-data (list (point-min) (point-max))))
                       (icicle-search-replace-match replace-string
                                                    (icicle-search-replace-fixed-case-p
                                                     icicle-search-context-regexp)))))
@@ -4493,6 +4501,10 @@ current input matches candidate") (sit-for 2))
                    (while (and (or first-p  icicle-all-candidates-action)
                                (re-search-forward (or ecm  icicle-current-input) nil 'move-to-end))
                      (setq first-p  nil)
+                      ;; Search for original regexp, to set match data so replacements such as `\N' work.
+                     (when (and icicle-search-regexp  (> emacs-major-version 21))
+                       (goto-char (point-min))
+                       (re-search-forward icicle-search-regexp nil 'move-to-end))
                      (icicle-search-replace-match replace-string
                                                   (icicle-search-replace-fixed-case-p
                                                    icicle-current-input)))))))
