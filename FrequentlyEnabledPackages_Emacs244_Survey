@@ -65,7 +65,6 @@ __Minor Mode Survey__
 | erc-mode                                         |                   5 |
 | ffap                                             |                  15 |
 | file-name-shadow-mode                            |                  14 |
-| flycheck-mode                                    |                   1 |
 | flyspell-mode                                    |                  47 |
 | font-lock-mode                                   |                  41 |
 | generic-x                                        |                   3 |
@@ -111,7 +110,6 @@ __Minor Mode Survey__
 | outline-minor-mode                               |                   1 |
 | pc-selection-mode                                |                   1 |
 | printing                                         |                   4 |
-| rainbow-delimiters-mode                          |                   1 |
 | recentf-mode                                     |                  46 |
 | rectangle-mark-mode                              |                   6 |
 | reftex-mode                                      |                  11 |
@@ -124,11 +122,9 @@ __Minor Mode Survey__
 | show-paren-mode                                  |                  75 |
 | size-indication-mode                             |                  15 |
 | subword-mode                                     |                  14 |
-| TeX-PDF-mode                                     |                   1 |
 | tooltip-mode                                     |                  17 |
 | tramp                                            |                  19 |
 | transient-mark-mode                              |                  60 |
-| undo-tree-mode                                   |                   1 |
 | uniquify                                         |                  79 |
 | url-handler-mode                                 |                   1 |
 | visible-bell                                     |                  12 |
