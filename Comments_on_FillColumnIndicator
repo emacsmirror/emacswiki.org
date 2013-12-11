@@ -10,3 +10,16 @@ Falk
 
 2013-06-02 03:14 UTC
 
+
+----
+
+> However, it would be good if, once loaded, fci-mode was enabled by default for most text and programming modes and disabled for special buffers (like *Messages*, *Buffer List*, *Completions*, etc)
+
+You can do something like this:
+
+(add-hook 'prog-mode-hook 'fci-mode)
+
+As most of programming modes inherited from prog-mode you can got what you want.
+
+-- lexa_ 2013-12-11 16:05 UTC
+
