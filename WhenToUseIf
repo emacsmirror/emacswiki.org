@@ -61,7 +61,7 @@ Example:
 
 If the test is true then a single [[sexp]] is evaluated.  If the test is false then a (possibly empty) sequence of sexps are evaluated, in order.
 
-Such a sequence of sexps is called an "implicit `progn'" in Emacs jargon.  For more about implicit `progn's, see Manual:Sequencing.
+Such a sequence of sexps is called an "implicit `progn'" in Emacs jargon.  For more about implicit `progn's, see Manual:Sequencing .
 
 If you want to evaluate multiple sexps when the result is true, then either use `cond' or use an explicit `progn'.  For example:
 
