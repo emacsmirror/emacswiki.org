@@ -1,7 +1,7 @@
 ;;; goto-chg.el --- goto last change
 ;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2002-2008, David Andersson
+;; Copyright (C) 2002-2008,2012 David Andersson
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@
 ;;
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 16 May 2002
-;; Version: 1.4
+;; Version: 1.5
 ;;
 ;;; Commentary:
 ;;
@@ -47,6 +47,8 @@
 ;;--------------------------------------------------------------------
 ;; History
 ;;
+;; Ver 1.5 2012-12-11 David Andersson
+;;    Autoload and document `goto-last-change-reverse'
 ;; Ver 1.4 2008-09-20 David Andersson
 ;;    Improved property change description; Update comments.
 ;; Ver 1.3 2007-03-14 David Andersson
@@ -70,9 +72,6 @@
 ;;        chronological order. (Naa, highlight-changes-mode does that).
 ;;todo: Inverse indication that a change has been saved or not
 ;;todo: Highlight the range of text involved in the last change?
-;;todo: Function that goes in reverse direction. Either a function
-;;        'goto-next-change' only callable after 'goto-last-change'
-;;        or enter a minor mode similar to isearch.
 ;;todo: See session-jump-to-last-change in session.el?
 ;;todo: Unhide invisible text (e.g. outline mode) like isearch do.
 ;;todo: XEmacs sets last-command to `t' after an error, so you cannot reverse
@@ -209,8 +208,8 @@ that is, it was previously saved or unchanged. Nil otherwise."
 (defun goto-last-change (arg)
 "Go to the point where the last edit was made in the current buffer.
 Repeat the command to go to the second last edit, etc.
-A preceding \\[universal-argument] - (minus) will reverse direction for the next command in
-the sequence, to go back to a more recent edit.
+\nTo go back to more recent edit, the reverse of this command, use \\[goto-last-change-reverse]
+or precede this command with \\[universal-argument] - (minus).
 \nIt does not go to the same point twice even if there has been many edits
 there. I call the minimal distance between distinguishable edits \"span\".
 Set variable `glc-default-span' to control how close is \"the same point\".
@@ -297,8 +296,10 @@ discarded. See variable `undo-limit'."
     (setq glc-probe-depth new-probe-depth)
     (goto-char pos)))
 
-;; ;;;###autoload
+;;;###autoload
 (defun goto-last-change-reverse (arg)
+  "Go back to more recent changes after \\[goto-last-change] have been used.
+See `goto-last-change' for use of prefix argument."
   (interactive "P")
   ;; Negate arg, all kinds
   (cond ((eq arg nil)  (setq arg '-))
