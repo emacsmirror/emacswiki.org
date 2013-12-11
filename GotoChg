@@ -7,7 +7,17 @@ This function uses undo information.
 
 * Lisp:goto-chg.el
 
-Another package that do a similar thing is goto-last-change.el (GotoLastChange) by Kevin Rodgers.
+Sample usage (init file):
+
+   (require 'goto-chg)
+   (global-set-key [(control ?.)] 'goto-last-change)
+   (global-set-key [(control ?,)] 'goto-last-change-reverse)
+
+Alternatives:
+
+Another package that do a similar thing is /goto-last-change.el/ (GotoLastChange) by Kevin Rodgers. (If used repeatedly, to go back to earlier edits, it may misalign the position, not accounting for changes that have shorten or lengthen the text before that point.)
+
+Another alterative is /session-jump-to-last-change/ in the /session.el/ package.
 
 Another package I have not tested is UndoBrowse by DeepakGoel
 
