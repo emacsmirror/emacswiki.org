@@ -1,7 +1,7 @@
 ;;; goto-chg.el --- goto last change
 ;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2002-2008,2012 David Andersson
+;; Copyright (C) 2002-2008,2013 David Andersson
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -47,7 +47,7 @@
 ;;--------------------------------------------------------------------
 ;; History
 ;;
-;; Ver 1.5 2012-12-11 David Andersson
+;; Ver 1.5 2013-12-11 David Andersson
 ;;    Autoload and document `goto-last-change-reverse'
 ;; Ver 1.4 2008-09-20 David Andersson
 ;;    Improved property change description; Update comments.
