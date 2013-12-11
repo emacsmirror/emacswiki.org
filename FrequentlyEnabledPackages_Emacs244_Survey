@@ -34,7 +34,7 @@ __Minor Mode Survey__
 |---------------------------+---------------------|
 | abbrev-mode               |                  34 |
 | auto-completion-mode      |                   3 |
-| auto-composition-mode     |                   10 |
+| auto-composition-mode     |                  10 |
 | auto-compression-mode     |                  12 |
 | auto-encryption-mode      |                  16 |
 | auto-fill-mode            |                  35 |
@@ -53,8 +53,8 @@ __Minor Mode Survey__
 | desktop-save-mode         |                  26 |
 | dired-hide-details-mode   |                  14 |
 | dired-x                   |                  38 |
+| display-battery-mode      |                    1|
 | display-time-mode         |                  24 |
-| display-battery-mode | 1 |
 | edebug-mode               |                   7 |
 | eldoc-mode                |                  42 |
 | electric-indent-mode      |                  11 |
