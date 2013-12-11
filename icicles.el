@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec  9 14:00:23 2013 (-0800)
+;; Last-Updated: Tue Dec 10 16:53:12 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23502
+;;     Update #: 23503
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1439,11 +1439,11 @@
 ;;    `icicle-search-context-level', `icicle-search-context-regexp',
 ;;    `icicle-search-current-overlay', `icicle-search-final-choice',
 ;;    `icicle-search-history', `icicle-search-in-context-fn',
-;;    `icicle-searching-p', `icicle-search-level-overlays',
-;;    `icicle-search-map', `icicle-search-modes',
-;;    `icicle-search-menu-map', `icicle-search-tags-menu-map',
-;;    `icicle-search-overlays', `icicle-search-refined-overlays',
-;;    `icicle-search-replacement',
+;;    `icicle-searching-p', `icicle-search-regexp',
+;;    `icicle-search-level-overlays', `icicle-search-map',
+;;    `icicle-search-modes', `icicle-search-menu-map',
+;;    `icicle-search-tags-menu-map', `icicle-search-overlays',
+;;    `icicle-search-refined-overlays', `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
