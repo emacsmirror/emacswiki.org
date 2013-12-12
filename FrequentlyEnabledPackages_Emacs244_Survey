@@ -26,29 +26,29 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 113 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 114 [color=red][b] <- start here [/b][/color]
 
 {{{
 
 | Packages/Modes                                   | Upvote / User count |
 |--------------------------------------------------+---------------------|
 | abbrev-mode                                      |                  35 |
-| auto-completion-mode                             |                   3 |
+| auto-completion-mode                             |                   4 |
 | auto-composition-mode                            |                  11 |
 | auto-compression-mode                            |                  13 |
 | auto-encryption-mode                             |                  17 |
 | auto-fill-mode                                   |                  36 |
 | auto-image-file-mode                             |                   3 |
-| autoinsert                                       |                   3 |
+| autoinsert                                       |                   4 |
 | blink-cursor-mode                                |                  48 |
 | bs-show                                          |                   4 |
 | cl                                               |                   6 |
-| column-number-mode                               |                  80 |
+| column-number-mode                               |                  81 |
 | compilation-minor-mode                           |                   9 |
 | cua-mode                                         |                  11 |
 | cua-selection-mode                               |                  15 |
 | delete-by-moving-to-trash                        |                   5 |
-| delete-selection-mode                            |                  29 |
+| delete-selection-mode                            |                  30 |
 | descr-text                                       |                   1 |
 | desktop-save-mode                                |                  27 |
 | dired-hide-details-mode                          |                  14 |
@@ -66,12 +66,12 @@ __Minor Mode Survey__
 | ffap                                             |                  15 |
 | file-name-shadow-mode                            |                  14 |
 | flyspell-mode                                    |                  48 |
-| font-lock-mode                                   |                  41 |
+| font-lock-mode                                   |                  42 |
 | generic-x                                        |                   3 |
 | global-auto-revert-mode                          |                  11 |
 | global-cwarn-mode                                |                   5 |
 | global-ede-mode                                  |                   1 |
-| global-font-lock-mode                            |                  38 |
+| global-font-lock-mode                            |                  39 |
 | global-hi-lock-mode                              |                   5 |
 | global-hl-line-mode                              |                  14 |
 | global-linum-mode                                |                  10 |
@@ -85,15 +85,15 @@ __Minor Mode Survey__
 | global-semantic-stickyfunc-mode                  |                   1 |
 | global-semanticdb-minor-mode                     |                   1 |
 | global-subword-mode                              |                  20 |
-| global-visual-line-mode                          |                   1 |
+| global-visual-line-mode                          |                   2 |
 | global-whitespace-mode                           |                   9 |
 | hide-ifdef-mode                                  |                   5 |
 | hippie-exp                                       |                  22 |
 | hs-minor-mode                                    |                  12 |
-| ibuffer                                          |                  53 |
+| ibuffer                                          |                  54 |
 | icomplete-mode                                   |                  14 |
 | ido-everywhere                                   |                  36 |
-| ido-mode                                         |                  70 |
+| ido-mode                                         |                  71 |
 | imenu                                            |                  20 |
 | ispell-minor-mode                                |                  10 |
 | iswitchb-mode                                    |                   7 |
@@ -103,14 +103,14 @@ __Minor Mode Survey__
 | mouse-avoidance-mode                             |                   5 |
 | mouse-wheel-mode                                 |                  14 |
 | org-capture                                      |                  20 |
-| org-mode                                         |                  40 |
+| org-mode                                         |                  41 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   5 |
 | outline-minor-mode                               |                   1 |
 | pc-selection-mode                                |                   1 |
 | printing                                         |                   5 |
-| recentf-mode                                     |                  47 |
+| recentf-mode                                     |                  48 |
 | rectangle-mark-mode                              |                   6 |
 | reftex-mode                                      |                  11 |
 | reveal-mode                                      |                   2 |
@@ -119,7 +119,7 @@ __Minor Mode Survey__
 | semantic-mode                                    |                   4 |
 | server-mode                                      |                  26 |
 | shell-dirtrack-mode                              |                   7 |
-| show-paren-mode                                  |                  75 |
+| show-paren-mode                                  |                  76 |
 | size-indication-mode                             |                  15 |
 | subword-mode                                     |                  14 |
 | tooltip-mode                                     |                  17 |
