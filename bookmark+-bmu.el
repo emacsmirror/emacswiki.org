@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Oct 29 15:33:48 2013 (-0700)
+;; Last-Updated: Wed Dec 11 21:34:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2583
+;;     Update #: 2585
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4499,7 +4499,9 @@ For each number indication:
     ;; It seems that the line number must be present, and not invisible, for dynamic updating
     ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
     ;; effectively gets rid of it (ugly hack).  See Emacs bug #12867.
-    (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Try to move it off the screen.
+    (condition-case nil
+        (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Move it off the screen.
+      (error nil))
     (set (make-local-variable 'mode-line-format)
          '(("" mode-name "\t" mode-line-buffer-identification mode-line-position)))))
 
