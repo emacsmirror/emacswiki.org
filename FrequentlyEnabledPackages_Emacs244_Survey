@@ -26,24 +26,24 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 112 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 113 [color=red][b] <- start here [/b][/color]
 
 {{{
 
 | Packages/Modes                                   | Upvote / User count |
 |--------------------------------------------------+---------------------|
-| abbrev-mode                                      |                  34 |
+| abbrev-mode                                      |                  35 |
 | auto-completion-mode                             |                   3 |
 | auto-composition-mode                            |                  11 |
 | auto-compression-mode                            |                  13 |
 | auto-encryption-mode                             |                  17 |
-| auto-fill-mode                                   |                  35 |
+| auto-fill-mode                                   |                  36 |
 | auto-image-file-mode                             |                   3 |
 | autoinsert                                       |                   3 |
 | blink-cursor-mode                                |                  48 |
 | bs-show                                          |                   4 |
 | cl                                               |                   6 |
-| column-number-mode                               |                  79 |
+| column-number-mode                               |                  80 |
 | compilation-minor-mode                           |                   9 |
 | cua-mode                                         |                  11 |
 | cua-selection-mode                               |                  15 |
@@ -65,7 +65,7 @@ __Minor Mode Survey__
 | erc-mode                                         |                   5 |
 | ffap                                             |                  15 |
 | file-name-shadow-mode                            |                  14 |
-| flyspell-mode                                    |                  47 |
+| flyspell-mode                                    |                  48 |
 | font-lock-mode                                   |                  41 |
 | generic-x                                        |                   3 |
 | global-auto-revert-mode                          |                  11 |
@@ -93,7 +93,7 @@ __Minor Mode Survey__
 | ibuffer                                          |                  53 |
 | icomplete-mode                                   |                  14 |
 | ido-everywhere                                   |                  36 |
-| ido-mode                                         |                  69 |
+| ido-mode                                         |                  70 |
 | imenu                                            |                  20 |
 | ispell-minor-mode                                |                  10 |
 | iswitchb-mode                                    |                   7 |
@@ -103,14 +103,14 @@ __Minor Mode Survey__
 | mouse-avoidance-mode                             |                   5 |
 | mouse-wheel-mode                                 |                  14 |
 | org-capture                                      |                  20 |
-| org-mode                                         |                  39 |
+| org-mode                                         |                  40 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   5 |
 | outline-minor-mode                               |                   1 |
 | pc-selection-mode                                |                   1 |
-| printing                                         |                   4 |
-| recentf-mode                                     |                  46 |
+| printing                                         |                   5 |
+| recentf-mode                                     |                  47 |
 | rectangle-mark-mode                              |                   6 |
 | reftex-mode                                      |                  11 |
 | reveal-mode                                      |                   2 |
@@ -123,9 +123,9 @@ __Minor Mode Survey__
 | size-indication-mode                             |                  15 |
 | subword-mode                                     |                  14 |
 | tooltip-mode                                     |                  17 |
-| tramp                                            |                  19 |
+| tramp                                            |                  20 |
 | transient-mark-mode                              |                  60 |
-| uniquify                                         |                  79 |
+| uniquify                                         |                  80 |
 | url-handler-mode                                 |                   1 |
 | visible-bell                                     |                  12 |
 | visual-line-mode                                 |                  14 |
