@@ -1,0 +1,45 @@
+==About==
+
+Debpaste is an Emacs interface for the [http://paste.debian.net/
+Debian Paste Service].  You can use this package for receiving,
+posting and deleting pastes.
+
+Highlighting is supported.  For example, when you post a paste by
+sending current region from `sh-mode', the paste on the server will be
+highlighted with "bash" syntax.  And everyone, who will receive that
+paste with this package, will get it in `sh-mode'.
+
+Full documentation and source code can be found on
+[http://github.com/alezost/debpaste.el github repo].
+
+==Installation==
+
+The package can be installed from [[MELPA]].
+
+If you want to install it manually, at first you need to install a
+required [[XmlRpc]] package.  And after putting "debpaste.el" into a
+directory from `load-path', you can add some autoloads for the main
+functions to your .emacs:
+
+    (autoload 'debpaste-display-paste "debpaste" nil t)
+    (autoload 'debpaste-paste-region "debpaste" nil t)
+
+==Using==
+
+* Receiving a paste:
+
+::: M-x debpaste-display-paste
+
+* Posting a paste:
+
+** For a selected region:
+::: M-x debpaste-paste-region
+
+** For a whole buffer:
+::: M-x debpaste-paste-buffer
+
+* Deleting a paste:
+::: M-x debpaste-delete-paste
+
+----
+CategoryInterface
