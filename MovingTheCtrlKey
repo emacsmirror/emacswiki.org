@@ -13,6 +13,13 @@ Under Gnome Shell, the same settings can be found under System Settings -> Keybo
 
 [[image:GnomeKeyboardPreferences.png|Gnome Keyboard Preferences]]
 [[image:GnomeKeyboardLayoutOptions.png|Gnome Keyboard Layout Options]]
+Keyboard Preferences
+=== GNome Shell 3.8 ===
+In GNome Shell 3.8 this option is moved to Tweek Tool
+[[image:|Gnome Tweek Tool Icon]]
+Then go to the "Typing" area an search for "Ctrl key position" and select "Swap Ctrl and Caps Lock"
+[[image:|Gnome Tweek Typing Area]]
+[[image:|Gnome Tweek Tool Ctrl Position]]
 
 == KDE Desktop Environment ==
 
