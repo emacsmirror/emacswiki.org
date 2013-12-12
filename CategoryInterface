@@ -61,6 +61,7 @@ Interfaces to code snippet sites on the Internet
 * [[Paste2]] -- Paste or get code with [http://paste2.org paste2.org]
 * [[pastebin]] -- paste code snippets (or whole buffers) to [http://pastebin.com pastebin.com]
 * Lisp:pastebox.el -- Paste to PasteBox-powered pastebins, such as [http://pastebin.ch pastebin.ch]
+* [[Debpaste]] -- Interface for [http://paste.debian.net/ paste.debian.net]
 * [http://repo.or.cz/w/facebook.el.git facebook.el] -- the beginnings of a Facebook interface
 
 Protocols
