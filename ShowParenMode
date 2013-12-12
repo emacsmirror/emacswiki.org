@@ -59,7 +59,7 @@ Not in my emacs: 22.2.1.  Glad to have it though.
 
 [new]
 
-In GNU Emacs 23.2, this information shows up when ``show-paren-mode'' is enabled, but then only directly after typing a closing paren.  If you use the above code, the information will show up every time the point is placed behind a closing paren.
+In GNU Emacs 23.2, this information shows up directly after typing a closing paren, independent of whether ``show-paren-mode'' is enabled or not (see [ParenthesisMatching]).  If you use the above code (and enable ``show-parent-mode''), the information will show up every time the point is placed behind a closing paren.
 
 == Links ==
 
