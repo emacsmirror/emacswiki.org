@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Nov 21 22:58:40 2013 (-0800)
+;; Last-Updated: Wed Dec 11 21:35:20 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 15452
+;;     Update #: 15453
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -966,6 +966,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/12/11 dadams
+;;     bmkp-bmenu-mode-line: Protect %360l (line) hack with condition-case.
 ;; 2013/10/07 dadams
 ;;     bmkp-bmenu-edit-marked: If no marked bmks, mark the current line bmk, to start with.
 ;;                             Use correct buffer when go to point-min.
