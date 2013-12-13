@@ -59,7 +59,13 @@ Not in my emacs: 22.2.1.  Glad to have it though.
 
 [new]
 
-In GNU Emacs 23.2, this information shows up directly after typing a closing paren, independent of whether ``show-paren-mode'' is enabled or not (see [ParenthesisMatching]).  If you use the above code (and enable ``show-parent-mode''), the information will show up every time the point is placed behind a closing paren.
+In GNU Emacs 23.2, this information shows up directly after typing a closing paren, independent of whether ``show-paren-mode'' is enabled or not (see [ParenthesisMatching]).  If you use the above code (and enable ``show-paren-mode''), the information will show up every time the point is placed behind a closing paren.
+
+[new:DrewAdams:2013-12-13 01:37 UTC]
+The information that you are all writing about is from [[user option]] `blink-matching-paren', which is by default `t' (i.e., turned on) in ''all'' Emacs versions.  When it is on and `show-paren-mode' is also on, the information about the matching location off-screen appears (from `blink-matching-paren'), but there is ''no'' blink: no apparent cursor movement (bounce).
+
+IOW, if you turn on `show-paren-mode' and `blink-matching-paren' is on (the default) then you get both highlighting of the matching paren and, when it is off-screen, an [[echo area]] description of the match location. If you turn off `show-paren-mode' but you leave on `blink-matching-paren' then you get the echo-area indication ''and'' the [[cursor]] bounces to the match location.  If you turn on `show-paren-mode' and you turn off `blink-matching-paren' then you get only the match highlighting -- no echo-area description of an off-screen match location. -- DrewAdams
+
 
 == Links ==
 
