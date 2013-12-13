@@ -57,7 +57,7 @@ __Minor Mode Survey__
 | display-time-mode                                |                  24 |
 | ede-minor-mode                                   |                   1 |
 | edebug-mode                                      |                   7 |
-| eldoc-mode                                       |                  42 |
+| eldoc-mode                                       |                  43 |
 | electric-indent-mode                             |                  12 |
 | electric-layout-mode                             |                   3 |
 | electric-pair-mode                               |                  10 |
@@ -66,7 +66,7 @@ __Minor Mode Survey__
 | ffap                                             |                  15 |
 | file-name-shadow-mode                            |                  14 |
 | flyspell-mode                                    |                  48 |
-| font-lock-mode                                   |                  42 |
+| font-lock-mode                                   |                  43 |
 | generic-x                                        |                   3 |
 | global-auto-revert-mode                          |                  11 |
 | global-cwarn-mode                                |                   5 |
@@ -96,9 +96,9 @@ __Minor Mode Survey__
 | ido-mode                                         |                  72 |
 | imenu                                            |                  20 |
 | ispell-minor-mode                                |                  10 |
-| iswitchb-mode                                    |                   7 |
+| iswitchb-mode                                    |                   8 |
 | kill-whole-line                                  |                  12 |
-| line-number-mode                                 |                  39 |
+| line-number-mode                                 |                  40 |
 | linum-mode                                       |                  12 |
 | mouse-avoidance-mode                             |                   5 |
 | mouse-wheel-mode                                 |                  14 |
