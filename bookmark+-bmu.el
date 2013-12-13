@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Dec 11 21:34:08 2013 (-0800)
+;; Last-Updated: Fri Dec 13 08:48:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2585
+;;     Update #: 2592
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4445,7 +4445,8 @@ the same name."
 Starting with Emacs 22, the first element is `font-lock-face'."
   (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
 
-(when (> emacs-major-version 21)
+(when (or (> emacs-major-version 24)    ; Emacs bug #12867 was partially fixed for Emacs 24.3+.
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
   (defun bmkp-bmenu-mode-line-string ()
     "Show, in mode line, information about the current bookmark-list display.
 The information includes the sort order and the number of marked,
@@ -4495,15 +4496,16 @@ For each number indication:
 
   (defun bmkp-bmenu-mode-line ()        ; This works, but it shows the line number also.
     "Set the mode line for buffer `*Bookmark List*'."
-    (set (make-local-variable 'mode-name)         '(:eval (bmkp-bmenu-mode-line-string)))
-    ;; It seems that the line number must be present, and not invisible, for dynamic updating
-    ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
-    ;; effectively gets rid of it (ugly hack).  See Emacs bug #12867.
     (condition-case nil
-        (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Move it off the screen.
-      (error nil))
-    (set (make-local-variable 'mode-line-format)
-         '(("" mode-name "\t" mode-line-buffer-identification mode-line-position)))))
+        (progn
+          (set (make-local-variable 'mode-name) '(:eval (bmkp-bmenu-mode-line-string)))
+          ;; It seems that the line number must be present, and not invisible, for dynamic updating
+          ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
+          ;; effectively gets rid of it (ugly hack).  See Emacs bug #12867.
+          (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Move it off the screen.
+          (set (make-local-variable 'mode-line-format)
+               '(("" mode-name "\t" mode-line-buffer-identification mode-line-position))))
+      (error nil))))
 
 
 ;;(@* "Sorting - Commands")
