@@ -1,0 +1,5 @@
+<B>Some feature to work with interactive applications.</B>
+Is it possible to add some commands which empower eshell to work like term? Eshell is pretty nice (works fast, written in Lisp =) ) but not suitable to run interactive applications. Is it easy to send <UP>, <TAB> etc. to my application run in eshell in terms of expand, taking command from history and so on (i.e. in most cases i'm don't need terminal, but sometimes i need some its behaviour). Now I using term for running my applications and eshell for manipulations with filesystem and so on, but its pretty uncomfortably. I'm not strong enough in lisp and emacs architecture to do this enhancement by myself, or at least to understand whether it is possible to do so. Could you help me in it?
+
+-- davidqo 2013-12-13 08:22 UTC
+
