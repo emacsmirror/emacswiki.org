@@ -336,14 +336,18 @@ makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric 
 * You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
 
 * The mode line shows the number of bookmarks that are marked (`##>##'), flagged for deletion (`##D##'), tagged (`t'), temporary (`X'), annotated (`a'), and modified (unsaved) (`##*##').  It also shows the current sort order.
-
-:: For each of the number indicators (e.g., the number marked):
-
-:: If the current line has the indicator (e.g. `##>##') and there
+For each of the number indicators (e.g., the number marked):
+If the current line has the indicator (e.g. `##>##') and there
 are other lines with the same indicator that are listed after
 the current line, then the indicator shows `N/M', where ''N'' is
 the number indicated through the current line and ''M'' is the
 total number indicated.  Otherwise, it shows just `N'.
+This feature is available starting with Emacs 24.3.  (For
+prior versions I removed it because [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12867|Emacs bug #12867]] can
+cause Emacs to crash.)
+
+
+
 
 
 
