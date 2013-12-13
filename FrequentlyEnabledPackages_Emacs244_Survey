@@ -43,7 +43,7 @@ __Minor Mode Survey__
 | blink-cursor-mode                                |                  48 |
 | bs-show                                          |                   4 |
 | cl                                               |                   7 |
-| column-number-mode                               |                  81 |
+| column-number-mode                               |                  82 |
 | compilation-minor-mode                           |                   9 |
 | cua-mode                                         |                  11 |
 | cua-selection-mode                               |                  15 |
@@ -110,7 +110,7 @@ __Minor Mode Survey__
 | outline-minor-mode                               |                   1 |
 | pc-selection-mode                                |                   1 |
 | printing                                         |                   5 |
-| recentf-mode                                     |                  49 |
+| recentf-mode                                     |                  50 |
 | rectangle-mark-mode                              |                   6 |
 | reftex-mode                                      |                  11 |
 | reveal-mode                                      |                   2 |
