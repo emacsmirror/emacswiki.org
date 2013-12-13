@@ -756,11 +756,37 @@ If the operator is missing the buffer is searched for RE starting at the beginni
 Call M-x elgrep for grepping the files in one directory for a regular expression.
 With prefix-arg elgrep recurses into sub-directories.
 Output goes into a grep-buffer with all its features.
+
+Okay ''without external dependencies'' is no longer entirely true. If pdf files are grepped then pdftotext from poppler is needed.
+
+If you do not give a regular expression it just searches for the files like 'find'.
 <pre>
 (defvar elgrep-file-name-re-hist nil
   "History of file-name regular expressions for `elgrep' (which see).")
 (defvar elgrep-re-hist nil
   "History of regular expressions for `elgrep' (which see).")
+
+(defun elgrep-insert-file-contents (filename &optional visit)
+  "Like `insert-file-contents' but uses `pdftotext' (poppler) for pdf-files (with file extension pdf)."
+  (if (string-match (downcase filename) "\.pdf$")
+      (call-process "pdftotext" filename (current-buffer) visit "-" "-")
+    (insert-file-contents filename visit)))
+
+(defun elgrep-dired-files (files)
+  "Print files in `dired-mode'"
+  (insert "  " default-directory ":\n  elgrep 0\n")
+  (dolist (file files)
+    (let ((a (file-attributes file 'string)))
+      (insert (format "  %s %d %s %s %6d %s %s\n"
+		      (nth 8 a) ; file modes like ls -l
+		      (nth 1 a) ; number of links to file
+		      (nth 2 a) ; uid as string
+		      (nth 3 a) ; gid as string
+		      (nth 7 a) ; size in bytes
+		      (format-time-string "%d. %b %Y" (nth 5 a)) ; modification time
+		      file))))
+  (dired-mode)
+  (dired-build-subdir-alist))
 
 (defun elgrep (dir file-name-re re &rest options)
   "Grep files via emacs lisp (no dependence on external grep).
@@ -768,8 +794,9 @@ Return list of filematches.
 
 Each filematch is a cons (file . matchdata).
 file is the file name.
-matchdata is a list of matches
-Each match is a plist of :match, :context, :line, :beg and :end.
+matchdata is a list of matches.
+Each match is a list of sub-matches.
+Each submatch is a plist of :match, :context, :line, :beg and :end.
 options is a plist
 Flags:
 
@@ -787,12 +814,14 @@ Lines before match defaults to 0
 Lines behind match defaults to 0
 
 :recursive
-t: also grep recursively subdirectories in dir
+t: also grep recursively subdirectories in dir (also if called interactively with prefix arg)
 "
   (interactive (append (list (read-directory-name "Directory:")
 			     (read-regexp "File-name regexp:" (car-safe elgrep-file-name-re-hist) 'elgrep-file-name-re-hist)
-			     (read-regexp "Emacs regexp:" (car-safe elgrep-re-hist) 'elgrep-re-hist))
+			     (read-regexp "Emacs regexp:" nil 'elgrep-re-hist))
 		       (when current-prefix-arg (list :recursive t))))
+  (when (and (stringp re) (= (length re) 0))
+    (setq re))
   (unless dir
     (setq dir default-directory))
   (setq dir (concat (directory-file-name (substitute-in-file-name dir)) "/"))
@@ -802,34 +831,38 @@ t: also grep recursively subdirectories in dir
 	  (inhibit-read-only t))
       (loop for file in files do
 	    (unless (directory-p file)
-	      (erase-buffer)
-	      (insert-file-contents (if (plist-get options :abs) file (concat dir file)))
-	      (let (filematch
-		    (last-line-number 1)
-		    (last-pos (point-min)))
-		(goto-char (point-min))
-		(while (search-forward-regexp re nil 'noErr)
-		  (let* ((n (/ (length (match-data)) 2))
-			 (matchdata (loop for i from 0 below n
-					  collect
-					  (list :match (match-string-no-properties i)
-						:context (buffer-substring-no-properties
-							  (line-beginning-position (plist-get options :cBeg))
-							  (line-end-position (plist-get options :cEnd)))
-						:line (prog1 
-							  (setq last-line-number
-								(+ last-line-number -1
-								   (save-excursion
-								     (save-restriction
-								       (narrow-to-region last-pos (point))
-								       (goto-char (point-min))
-								       (- (buffer-size) (forward-line (buffer-size)))))))
-							(setq last-pos (point)))
-						:beg (match-beginning i)
-						:end (match-end i)))))
-		    (setq filematch (cons matchdata filematch))))
-		(when filematch
-		  (setq filematches (cons (cons file (nreverse filematch)) filematches))))))
+	      (if re
+		  (progn
+		    (erase-buffer)
+		    (elgrep-insert-file-contents (if (plist-get options :abs) file (concat dir file)))
+		    (let (filematch
+			  (last-line-number 1)
+			  (last-pos (point-min)))
+		      (goto-char (point-min))
+		      (while (search-forward-regexp re nil 'noErr)
+			(let* ((n (/ (length (match-data)) 2))
+			       (matchdata (loop for i from 0 below n
+						collect
+						(list :match (match-string-no-properties i)
+						      :context (buffer-substring-no-properties
+								(line-beginning-position (plist-get options :cBeg))
+								(line-end-position (plist-get options :cEnd)))
+						      :line (prog1 
+								(setq last-line-number
+								      (+ last-line-number -1
+									 (save-excursion
+									   (save-restriction
+									     (narrow-to-region last-pos (point))
+									     (goto-char (point-min))
+									     (- (buffer-size) (forward-line (buffer-size)))))))
+							      (setq last-pos (point)))
+						      :beg (match-beginning i)
+						      :end (match-end i)))))
+			  (setq filematch (cons matchdata filematch))))
+		      (when filematch
+			(setq filematches (cons (cons file (nreverse filematch)) filematches)))))
+		;; no re given; just register file with dummy matchdata
+		(setq filematches (cons (list file) filematches)))))
       (setq filematches (nreverse filematches))
       (when (plist-get options :recursive)
 	(setq files (loop for file in (directory-files dir)
@@ -846,18 +879,24 @@ t: also grep recursively subdirectories in dir
 			   (setcar f (cons (concat file "/" (caar f)) (cdar f))))
 		     files))
 		 filematches))))
-      (when (and filematches (or (plist-get options :interactive) (called-interactively-p 'any)))
-	(unless (plist-get options :abs)
-	  (setq default-directory dir))
-	(delete-region (point-min) (point-max))
-	(dolist (filematch filematches)
-	  (let ((fname (car filematch)))
-	    (dolist (match (cdr filematch))
-	      (dolist (part match)
-		(insert (format "%s:%d:%s\n" fname (plist-get part :line) (plist-get part :context)))
-		))))
-	(grep-mode)
-	(display-buffer (current-buffer)))
+      (when (or (plist-get options :interactive) (called-interactively-p 'any))
+	(if filematches
+	    (progn
+	      (unless (plist-get options :abs)
+		(setq default-directory dir))
+	      (delete-region (point-min) (point-max))
+	      (if re
+		  (progn
+		    (dolist (filematch filematches)
+		      (let ((fname (car filematch)))
+			(dolist (match (cdr filematch))
+			  (dolist (part match)
+			    (insert (format "%s:%d:%s\n" fname (plist-get part :line) (plist-get part :context)))
+			    ))))
+		    (grep-mode))
+		(elgrep-dired-files (mapcar 'car filematches)))
+	      (display-buffer (current-buffer)))
+	  (message "elgrep: No matches for \"%s\" in files \"%s\" of dir \"%s\"." re file-name-re dir)))
       filematches)))
 </pre>
 
