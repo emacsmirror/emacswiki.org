@@ -1,8 +1,8 @@
-Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. PhilJackson took over as maintainer for quite some time, and now Magit is collectively maintained by YannHodique, RemiVanicat and PeterWeisberg.
+Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. PhilJackson took over as maintainer for quite some time, and now Magit is collectively maintained by JonasBernoulli, YannHodique, RemiVanicat and PeterWeisberg.
 
-* Get it from: http://magit.github.com/magit/
-* Bugs to project page on github: http://github.com/magit/magit/issues
-* Manual: http://magit.github.com/magit/magit.html
+* Homepage: http://magit.github.io
+* Manual: http://magit.github.io/documentation
+* Issues: http://github.com/magit/magit/issues
 
 == Crash Course ==
 
@@ -10,7 +10,7 @@ Getting started with Magit is really easy:
  
 * M-x magit-status to see git status, and in the status buffer:
 * s to stage files
-* c to commit (type in your commit message then C-c C-c to save the message and commit)
+* c c to commit (type in your commit message then C-c C-c to save the message and commit)
 * b b to switch to a branch
 
 Other handy keys:
@@ -18,65 +18,6 @@ Other handy keys:
 * P P to do a git push
 * F F to do a git pull
 * try to press TAB
-
-After you are hooked check the info manual, it's not that big.
-
-== TRAMP ==
-Version 0.7 (March 2009) of Magit (the version in Debian Squeeze) didn't support TRAMP. Somewhere between there and 1.0 (March 2011) TRAMP support was added. February-August 2009 Ian Eure maintained a [http://atomized.org/2009/01/forked-magit-that-works-with-tramp/ fork] ([https://github.com/ieure/magit github]) that added support for TRAMP. Since more recent versions of the official Magit support TRAMP natively, you should use them. You'll still see some references to Ian's version around the net, they can safely be ignored.
-
-=== Tramp under windows ===
-[new:RodrigoWanderley:dt jun  30 21:25:37 CEST 2008]
-Had to change magit-escape-for-shell to:
-
-  (defun magit-escape-for-shell (str)
-    (if (or (string= str "git")
-        (string-match "^--" str))
-          str
-        (concat "'" (replace-regexp-in-string "'" "'\\''" str) "'")))
-
-To make it work on windows. -- RodrigoWanderley
-
-== mo-git-blame == 
-mo-git-blame is a great addition as a frontend for git blame (which magit currently does not provide)
-
-http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
-
-Update: magit does provide a blame mode called ##magit-blame-mode##
-
-== Removing Highlights on Diff mode==
-[new:MarcoCraveiro:dt Feb  08 10:26:37 GMT 2010]
-Don't really like the highlights on diff mode... Made it optional using:
-
-  (defcustom magit-use-highlights nil
-       "Use highlights in diff buffer."
-       :group 'magit
-       :type 'boolean)
-
-And then changed magit-highlight-section as follows:
-
- (defun magit-highlight-section ()
-    (let ((section (magit-current-section)))
-      -    (when (not (eq section magit-highlighted-section))
-      +    (when (and (not (eq section magit-highlighted-section))
-      +                    magit-use-highlights)
-
--- MarcoCraveiro
-
-A more future-proof solution would be to customize magit-item-highlight face to make it stand out less. 
-These settings look ok-ish with Emacs 24 and the tango-dark theme:
-
- (eval-after-load 'magit
-   '(set-face-attribute 'magit-item-highlight nil :foreground "#ffffff" :background "#3f4747"))
-
--- AnselmHelbig
-
-Or you can simply override magit-highlight-section with an empty implementation:
-
-  (eval-after-load 'magit
-    ;; no highlight
-    (defun magit-highlight-section ())
-
--- Li Feng
 
 == Auto updating the status buffer ==
 If you are using Emacs 24.4 on Linux with inotify support then you can get the status buffer to automatically update on file changes by loading the file magit-inotify.el from ##contrib/## (https://github.com/magit/magit/blob/master/contrib/magit-inotify.el) and activating the ##magit-inotify-mode## minor mode.
