@@ -1,4 +1,4 @@
-top-mode.el can run the Unix program "&lt;tt&gt;top&lt;/tt&gt;" from Emacs.
+top-mode.el can run the Unix program `top' from Emacs.
 
 You can find it here: Lisp:top-mode.el
 
@@ -10,7 +10,7 @@ Nice mode, but lacks many features: face highliting (runnable tasks, own tasks, 
 
 == Installation ==
 
-Load it with &lt;tt&gt;autoload&lt;/tt&gt; or &lt;tt&gt;require&lt;/tt&gt;.
+Load it with `autoload' or `require'.
 The enter
 
  M-x top-mode
@@ -23,7 +23,7 @@ in your emacs configuration file.
 
 == Usage ==
 
-Press &lt;tt&gt;g&lt;/tt&gt; to run top and &lt;tt&gt;q&lt;/tt&gt; to quit.
+Press `g' to run top and `q' to quit.
 Other features are:
 
 * strace a process
@@ -33,16 +33,16 @@ Other features are:
 == Autorefresh ==
 If you want this to auto-refresh like the shell's top, you might add the following to your .emacs. It binds the A key in top-mode to an interactive function. Set the refresh rate in seconds, and turn off by setting the refresh rate to 0.
 
-Note that a refresh rate of 1 is not recommended, as the &lt;tt&gt;top&lt;/tt&gt; function moves point to top's buffer. This leaves little time to render the prompt and let the user change the refresh rate in the minibuffer. 
+Note that a refresh rate of 1 is not recommended, as the `top' function moves point to top's buffer. This leaves little time to render the prompt and let the user change the refresh rate in the minibuffer.
 
-It would be nice if &lt;tt&gt;top&lt;/tt&gt; updated its buffer without moving point, so you could have top in one buffer and work in another.
+It would be nice if `top' updated its buffer without moving point, so you could have top in one buffer and work in another.
 
  (defun top-auto-refresh (rate)
    (interactive "nTop refresh rate (seconds): ")
    (progn
      (cancel-function-timers 'top)
      (if (not (zerop rate))
-         (setq *top-refresh-timer* 
+         (setq *top-refresh-timer*
                (run-with-timer 2 rate 'top)))))
  (define-key top-mode-map "A" 'top-auto-refresh)
 
