@@ -5,4 +5,4 @@ The original gnuplot-mode, compatible with Gnuplot 3.8, last updated december 13
 
 
 == gnuplot-mode (Gnuplot 4.6 compatible) ==
-A more recent version, with syntax highlighting (compatible with most recent Gnuplot 4.6 addtions such as do-for, else, while, if loops ), and compilation buffer usage, for easy navigation between errors. For further information see: [http://astro.berkeley.edu/~mkmcc/software/gnuplot-mode.html gnuplot-mode] and source is available for doenload at [https://github.com/mkmcc/gnuplot-mode github]
+A more recent version, with syntax highlighting (compatible with most recent Gnuplot 4.6 addtions such as do-for, else, while, if loops ), and compilation buffer usage, for easy navigation between errors. For further information see: [http://astro.berkeley.edu/~mkmcc/software/gnuplot-mode.html gnuplot-mode] and source is available for download at [https://github.com/mkmcc/gnuplot-mode github]
