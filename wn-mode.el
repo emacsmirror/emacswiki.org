@@ -57,6 +57,6 @@
   '((t ( :inherit mode-line)))
   "wn-mode modeline face")
 
-(provide wn-mode)
+(provide 'wn-mode)
 
 ;;; wn-mode.el ends here
