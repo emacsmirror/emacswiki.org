@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 13 16:29:13 2013 (-0700)
+;; Last-Updated: Fri Dec 13 18:59:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1664
+;;     Update #: 1704
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `easymenu', `faces', `faces+',
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
 ;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `highlight',
 ;;   `info', `info+', `isearch+', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
@@ -39,7 +39,8 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `occur-highlight-linenum'.
+;;    `occur-highlight-linenum', `replacep-msg-emphasis',
+;;    `replacep-msg-emphasis2'.
 ;;
 ;;  User options defined here:
 ;;
@@ -50,6 +51,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;     `replacep-propertize', `replacep-remove-property',
 ;     `search/replace-default', `usable-region'.
 ;;
 ;;  Internal variable defined here:
@@ -134,6 +136,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/13 dadams
+;;     Added: replacep-msg-emphasis, replacep-msg-emphasis2, replacep-propertize, replacep-remove-property.
+;;     toggle-search/replace-region-as-default, query-replace-read-from, query-replace-read-to,
+;;       query-replace-w-options, read-regexp, occur-read-primary-args:
+;;         Use replacep-propertize on prompt.
+;;     query-replace-read-from, query-replace-read-to, read-regexp, occur-read-primary-args:
+;;       Use replacep-remove-property on minibuffer-prompt-properties.
 ;; 2013/10/13 dadams
 ;;     Corrected handling of evaluable sexp for regexp replacement:
 ;;      query-replace-read-to: Rewrote, based closer on vanilla.
@@ -317,6 +326,7 @@
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
 ;; Quiet the byte compiler.
+(defvar minibuffer-prompt-properties)   ; Emacs 22+.
 (defvar occur-collect-regexp-history)   ; In `replace.el' (Emacs 24+).
 (defvar query-replace-defaults)         ; In `replace.el' (Emacs 22+).
 
@@ -346,6 +356,18 @@ setting the variable and displaying a status message (not MESSAGE)."
                                (t (:foreground "dark blue")))
     "*Face for minibuffer prompts."
     :group 'basic-faces))
+
+(defface replacep-msg-emphasis
+    '((((background dark)) (:foreground "#582725633E74")) ; a dark pink
+      (t (:foreground "Brown")))
+  "*Face used to emphasize (part of) a message."
+   :group 'matching :group 'faces)
+
+(defface replacep-msg-emphasis2
+    '((((background dark)) (:foreground "DarkGreen"))
+      (t (:foreground "Magenta")))
+  "*Face used to emphasize (part of) a message."
+  :group 'matching :group 'faces)
 
 (defvar occur-regexp nil "Search pattern used by `occur' command.") ; Internal variable.
 
@@ -409,7 +431,8 @@ replace commands."
   (interactive "p")
   (setq search/replace-region-as-default-flag  (not search/replace-region-as-default-flag))
   (when msgp (message "Using active region text as default is now %s"
-                      (if search/replace-region-as-default-flag "ON" "OFF"))))
+                      (replacep-propertize (if search/replace-region-as-default-flag "ON" "OFF")
+                                           'face 'replacep-msg-emphasis))))
 
 
 
@@ -441,6 +464,25 @@ See also options `search/replace-region-as-default-flag' and
           (const :tag "No default input search/replacement functions" nil)
           (function :tag "Function of 0 args to provide default for search/replace"))
   :group 'matching)
+
+;; Same as `icicle-propertize', in `icicles-fn.el'.
+(defun replacep-propertize (object &rest properties)
+  "Like `propertize', but for all Emacs versions.
+If OBJECT is not a string, then use `prin1-to-string' to get a string."
+  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
+    (add-text-properties 0 (length new) properties new)
+    new))
+
+;; Same as `icicle-remove-property', in `icicles-fn.el'.
+(defun replacep-remove-property (prop plist)
+  "Remove property PROP from property-list PLIST, non-destructively.
+Returns the modified copy of PLIST."
+  (let ((cpy     plist)
+        (result  ()))
+    (while cpy
+      (unless (eq prop (car cpy)) (setq result  `(,(cadr cpy) ,(car cpy) ,@result)))
+      (setq cpy  (cddr cpy)))
+    (nreverse result)))
 
 (defun usable-region (&optional no-props)
   "Return the region text if the region is active and nonempty.
@@ -509,29 +551,36 @@ If option `replace-w-completion-flag' is non-nil then you can complete
 to a symbol name."
     (if query-replace-interactive
         (car (if regexp-flag regexp-search-ring search-ring))
-      (let* ((default   (search/replace-default (symbol-value query-replace-from-history-variable)))
-             (lastto    (car (symbol-value query-replace-to-history-variable)))
-             (lastfrom  (car (symbol-value query-replace-from-history-variable)))
+      (let* ((default                       (search/replace-default
+                                             (symbol-value query-replace-from-history-variable)))
+             (lastto                        (car (symbol-value query-replace-to-history-variable)))
+             (lastfrom                      (car (symbol-value query-replace-from-history-variable)))
+             (minibuffer-prompt-properties  (replacep-remove-property 'face minibuffer-prompt-properties))
              (from-prompt
               (progn
                 ;; Use second, not first, if the two history items are the same (e.g. shared lists).
                 (when (equal lastfrom lastto)
                   (setq lastfrom  (cadr (symbol-value query-replace-from-history-variable))))
                 (if (and lastto lastfrom)
-                    (format "%s.  OLD (empty means %s -> %s): " string (query-replace-descr lastfrom)
-                            (query-replace-descr lastto))
+                    (format "%s.  OLD (empty means %s -> %s): " string
+                            (replacep-propertize (query-replace-descr lastfrom)
+                                                 'face 'replacep-msg-emphasis)
+                            (replacep-propertize (query-replace-descr lastto)
+                                                 'face 'replacep-msg-emphasis2))
                   (concat string ".  OLD: "))))
              ;; The save-excursion here is in case the user marks and copies
              ;; a region in order to specify the minibuffer input.
              ;; That should not clobber the region for the query-replace itself.
-             (from      (save-excursion
-                          (if replace-w-completion-flag
-                              (completing-read from-prompt obarray nil nil nil
-                                               query-replace-from-history-variable default t)
-                            (if query-replace-interactive
-                                (car (if regexp-flag regexp-search-ring search-ring))
-                              (read-from-minibuffer from-prompt nil nil nil
-                                                    query-replace-from-history-variable default t))))))
+             (from                          (save-excursion
+                                              (if replace-w-completion-flag
+                                                  (completing-read
+                                                   from-prompt obarray nil nil nil
+                                                   query-replace-from-history-variable default t)
+                                                (if query-replace-interactive
+                                                    (car (if regexp-flag regexp-search-ring search-ring))
+                                                  (read-from-minibuffer
+                                                   from-prompt nil nil nil
+                                                   query-replace-from-history-variable default t))))))
         (if (and (zerop (length from)) lastto lastfrom)
             (cons lastfrom lastto)
           ;; Warn if user types \n or \t, but don't reject the input.
@@ -564,21 +613,26 @@ to a symbol name."
 See also `query-replace-read-from'."
     (query-replace-compile-replacement
      (save-excursion
-       (let* ((history-add-new-input  nil)
-              (default                (search/replace-default
-                                       (symbol-value query-replace-to-history-variable)))
-              (to-prompt              (format "%s.  NEW (replacing %s): "
-                                              string (query-replace-descr from)))
+       (let* ((history-add-new-input         nil)
+              (default                       (search/replace-default
+                                              (symbol-value query-replace-to-history-variable)))
+              (minibuffer-prompt-properties  (replacep-remove-property
+                                              'face minibuffer-prompt-properties))
+              (to-prompt                     (format "%s.  NEW (replacing %s): "
+                                                     string
+                                                     (replacep-propertize (query-replace-descr from)
+                                                                          'face 'replacep-msg-emphasis)))
               ;; The save-excursion here is in case the user marks and copies
               ;; a region in order to specify the minibuffer input.
               ;; That should not clobber the region for the query-replace itself.
-              (to                     (save-excursion
-                                        (if replace-w-completion-flag
-                                            (completing-read to-prompt obarray nil nil nil
-                                                             query-replace-to-history-variable default t)
-                                          (read-from-minibuffer
-                                           to-prompt nil nil nil query-replace-to-history-variable
-                                           default t)))))
+              (to                            (save-excursion
+                                               (if replace-w-completion-flag
+                                                   (completing-read
+                                                    to-prompt obarray nil nil nil
+                                                    query-replace-to-history-variable default t)
+                                                 (read-from-minibuffer
+                                                  to-prompt nil nil nil query-replace-to-history-variable
+                                                  default t)))))
          (add-to-history query-replace-to-history-variable to nil t)
          (setq query-replace-defaults  (cons from to))
          to))
@@ -735,7 +789,11 @@ replacement."
          (perform-replace old new t t nil nil nil start end)))
       (STRING
        (if (< emacs-major-version 21) (query-replace old new) (query-replace old new nil start end))))
-    (when (interactive-p) (message "query-replace %s `%s' by `%s'...done" kind old new)))
+    (when (interactive-p)
+      (message "query-replace %s `%s' by `%s'...done"
+               kind
+               (replacep-propertize old 'face 'replacep-msg-emphasis)
+               (replacep-propertize new 'face 'replacep-msg-emphasis))))
   (when (and (boundp 'isearchp-set-region-flag)  isearchp-set-region-flag)
     (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
@@ -840,7 +898,7 @@ replacement."
 ;; 1. Allow DEFAULTS to be a list of strings.
 ;; 2. Prepend DEFAULTS to the vanilla defaults.
 ;;
-;; Not needed for Emacs 24.3+.
+;; $$$$$$ Not needed for Emacs 24.3+, although perhaps I should provide it, to show a propertized default.
 ;;
 ;; $$$$$$ Should we let this return empty input ("") under some conditions?  E.g., if DEFAULTS contains ""?
 ;;
@@ -854,25 +912,32 @@ are prepended to a list of standard default values, which include the
 string at point, the last isearch regexp, the last isearch string, and
 the last replacement regexp."
     (when (and defaults  (atom defaults)) (setq defaults  (list defaults)))
-    (let* ((deflts                 (append
-                                    defaults
-                                    (list (regexp-quote
-                                           (or (funcall
-                                                (or find-tag-default-function
-                                                    (get major-mode 'find-tag-default-function)
-                                                    'find-tag-default))
-                                               ""))
-                                          (car regexp-search-ring)
-                                          (regexp-quote (or (car search-ring)  ""))
-                                          (car (symbol-value query-replace-from-history-variable)))))
-           (deflts                 (delete-dups (delq nil (delete "" deflts))))
-           (history-add-new-input  nil) ; Do not automatically add INPUT to the history, in case it is "".
-           (input                  (read-from-minibuffer
-                                    (if defaults
-                                        (format "%s (default `%s'): " prompt
-                                                (mapconcat 'isearch-text-char-description (car deflts) ""))
-                                      (format "%s: " prompt))
-                                    nil nil nil 'regexp-history deflts t)))
+    (let* ((deflts                        (append
+                                           defaults
+                                           (list
+                                            (regexp-quote
+                                             (or (funcall
+                                                  (or find-tag-default-function
+                                                      (get major-mode 'find-tag-default-function)
+                                                      'find-tag-default))
+                                                 ""))
+                                            (car regexp-search-ring)
+                                            (regexp-quote (or (car search-ring)  ""))
+                                            (car (symbol-value query-replace-from-history-variable)))))
+           (deflts                        (delete-dups (delq nil (delete "" deflts))))
+           (history-add-new-input         nil) ; Do not automatically add INPUT to hist, in case it is "".
+           (minibuffer-prompt-properties  (replacep-remove-property
+                                           'face minibuffer-prompt-properties))
+           (input                         (read-from-minibuffer
+                                           (if defaults
+                                               (format
+                                                "%s (default `%s'): "
+                                                prompt
+                                                (replacep-propertize
+                                                 (mapconcat 'isearch-text-char-description (car deflts) "")
+                                                 'face 'replacep-msg-emphasis))
+                                             (format "%s: " prompt))
+                                           nil nil nil 'regexp-history deflts t)))
       (if (equal input "")
           (or (car defaults)  input)
         (prog1 input (add-to-history 'regexp-history input))))))
@@ -985,7 +1050,6 @@ See options `search/replace-region-as-default-flag',
 
 ;;;###autoload
 (defalias 'list-matching-lines 'occur)
-
 
 
 ;; REPLACE ORIGINAL in `replace.el':
@@ -1266,8 +1330,11 @@ See options `search/replace-region-as-default-flag',
             (if perform-collect
                 (if (zerop (regexp-opt-depth regexp)) ; Perform collect operation
                     "\\&"               ; No subexpression, so collect entire match.
-                  (let ((coll-def  (car occur-collect-regexp-history))) ; Regexp for collection pattern.
-                    (read-string (format "Regexp to collect (default %s): " coll-def)
+                  (let ((coll-def  (car occur-collect-regexp-history)) ; Regexp for collection pattern.
+                        (minibuffer-prompt-properties  (replacep-remove-property
+                                                        'face minibuffer-prompt-properties)))
+                    (read-string (format "Regexp to collect (default %s): "
+                                         (replacep-propertize coll-def 'face 'replacep-msg-emphasis))
                                  nil 'occur-collect-regexp-history coll-def)))
               ;; Otherwise normal occur takes numerical prefix argument.
               (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))))))
