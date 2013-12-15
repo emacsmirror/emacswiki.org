@@ -27,7 +27,7 @@ I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacu
 SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
 
 === rt-liberation.el ===
-rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. Get it at http://yrk.nfshost.com/projects/rt-liberation/
+rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. It comes with a Lisp domain specific language for writing Ticket-SQL queries. [http://www.nongnu.org/rtliber/ get it through Savannah].
 
 If you work with RT and hang around IRC, you might also be interested in [http://yrk.nfshost.com/projects/queue-status/ Queue-Status].
 
