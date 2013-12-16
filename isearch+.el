@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 20 17:10:04 2013 (-0700)
+;; Last-Updated: Mon Dec 16 13:39:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3386
+;;     Update #: 3393
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -522,6 +522,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/12/16 dadams
+;;     isearch-mode: Update for vanilla Emacs 24: set isearch--saved-overriding-local-map.  (Bug#16035)
 ;; 2013/10/16 dadams
 ;;     with-isearch-suspended: Do not (goto-char old-other-end) after BODY if we just replaced text.
 ;; 2013/10/15 dadams
@@ -862,6 +864,7 @@
 (defvar isearch-new-string)              ; In `with-isearch-suspended' (here).
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
 (defvar isearch-push-state-function)     ; In `isearch.el'.
+(defvar isearch--saved-overriding-local-map) ; In `isearch.el'.
 (defvar isearch-start-hscroll)           ; In `isearch.el'.
 (defvar isearch-within-brackets)         ; In `isearch.el'.
 (defvar isearch-wrap-function)           ; In `isearch.el'.
@@ -2005,6 +2008,9 @@ Argument WORD, if t, means search for a sequence of words, ignoring
   (force-mode-line-update)
   (setq overriding-terminal-local-map  isearch-mode-map)
   (run-hooks 'isearch-mode-hook)
+  ;; Remember the initial map, possibly modified by external packages in `isearch-mode-hook'.  (Bug#16035)
+  (when (boundp 'isearch--saved-overriding-local-map)
+    (setq isearch--saved-overriding-local-map overriding-terminal-local-map))
   ;; Pushing initial state used to be before running `isearch-mode-hook', but a hook might set
   ;; `isearch-push-state-function' used in `isearch-push-state' to save mode-specific initial state.
   ;; (Bug#4994)
