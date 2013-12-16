@@ -1,0 +1,605 @@
+== Original Discussion (from BookmarkPlus main page) ==
+
+----
+
+[new]
+I would like to use bookmarks with version control (ClearCase) where i have multiple views (base directories) with the same files/directory structure. What i would like to do is to define file type bookmarks with <i>relative</i> paths where i can easily change the base directory (e.g. select it from a list or keep it stored in a global variable). Is something like this already possible (and i've just not found it)?
+
+I have thought about it a bit and came up with the following ideas:
+
+# Define a new bookmark type. But this use case is maybe not enough to justify another bookmark type.
+# Provide a way to call function type bookmarks with an argument. The argument would then contain the fixed relative path and the function could add the variable base path. Or more general, 
+# if a bookmark function could access its own meta data i.e. its tags, the relative path could be stored in a tag.
+
+Actually 3. sounds like it would provide a very flexible way to extend the built-in functionality of bookmark+.
+
+What do you think? -- KaiTetzlaff
+
+[new:DrewAdams:2010-04-07 16:43 UTC]
+Hi Kai. Each bookmark associated with a file has a ##(filename . "/the/file/name")## entry, where the file name is absolute. Take a look at `C-h v bookmark-alist' to get an idea. Since this info is already part of the bookmark, you don't need to also save such info using tags. And inside every absolute file name (e.g. `##/a/b/c##') hides a relative file name (e.g. `c')! ;-) All you need to do is abstract from the absolute file names to relative names, and for that you have function `file-name-non-directory'.
+
+1. I think what you want is a command that (a) collects all bookmarks whose `filename' entries have files whose relative names match some input pattern, then (b) presents these bookmarks as [[completion]] candidates and (c) jumps to the chosen bookmark. For example:
+
+<pre>
+(defun bookmark-jump-relative-file (relfile &optional localp)
+  "Jump to a bookmark whose file has relative name RELFILE.
+With a prefix arg, only local files are candidates."
+  (interactive "sFile: \nP")
+  (setq relfile  (file-name-nondirectory relfile))
+  (bookmark-jump-other-window
+   (bookmark-completing-read "Jump to bookmark" nil
+                             (if localp
+                                 (bmkp-local-file-alist-only)
+                               (bmkp-file-alist-only))
+</pre>
+
+2. You can also do something along the lines of what you're looking for without any coding. You can see all of the bookmarks that have a particular relative file name, and choose among them. In the `##*Bookmark List*##':
+
+* You can use `##P F##' to show only the bookmarks whose file names match some [[regexp]], which could be the target relative file name -- e.g. `##foo.el##' (or `##/foo.el$##' if you're worried about excluding extra matches in the same line). You can mark all of these bookmarks using `M-m'.
+
+* Or you can mark all bookmarks with matching file names using `##% m##'. The regexp for `##% m##' matches the entire line, bookmark name plus file name (if you are not yet showing file names, use `M-t'), so use a regexp that also matches the bookmark name (e.g. `##.*/foo.el$##').
+
+After you've marked the bookmarks that have the same relative file name, you can act on that set of bookmarks in various ways. You can save the set or bookmark it (e.g. creating a `bookmark-list' bookmark). Returning to the saved set is like using a multiple-choice command for the files in the set. You can search+replace the marked bookmarks (`M-a', `M-q'). You can open [[Dired]] for just those bookmarked files, which can be in different directories (`##M-d >##'). After `##M-d >##', you can bookmark that Dired buffer -- that's another way to come back to this set of files.
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
+
+
+----
+
+[new]
+I am finding this very useful, but it would be nice if there was a quicker way to add tags, e.g. similar to org-mode's C-c C-c C-c method. -- JoeBloggs
+
+[new:DrewAdams:2010-03-25 23:58 UTC]
+Can you describe what you envision? -- DrewAdams
+
+[new:JoeBloggs:2010-04-09 02:09 UTC]
+In org-mode when you press C-c C-c C-c to tag a headline a buffer pops up showing you the already defined tags, with corresponding keys. You then press one of the keys to add the tag, or TAB to define a new tag.
+Perhaps the effort is not worth it. However, just removing the first prompt that you get after pressing T + would speed things up a bit, since I think most people will be wanting to tag the bookmark at point in this case. -- JoeBloggs
+
+[new:DrewAdams:2010-04-09 02:20 UTC]
+I think I understand (but not sure). I think you're describing a context where the bookmark that is the target of the tag is known/implicit/obvious, and in that context there is no need to prompt users for the bookmark to tag. Is that it?
+
+The command bound to `##T +##' is general, not specific to, say, buffer `##*Bookmark List*##", where, in effect, the current line corresponds to a specific bookmark. But in that case, the current-line's bookmark is the default value, so you need only hit `RET' to pick it up. I don't see that as a big thing, I guess, so I don't think it's worth trying to take advantage of that specific context. I suspect you disagree. ;-)
+
+Let me know at least if I've understood the suggestion: Since in a context like the buffer list it's predictable that you want to tag the bookmark on the current line, don't bother to prompt for which bookmark to tag. -- DrewAdams
+
+[new:JoeBloggs:2010-09-23 01:07 UTC]
+Yes you've understood. I set the customization option to prompt for tags when I create a new bookmark which speeds things
+up a bit. 
+
+I like the new highlighting that you've added, and I'm wondering if it's possible to mimic the functionality of
+[[VisibleBookmarks]], i.e. persistent bookmark highlighting, quick jumping to next/previous bookmark in current buffer,
+quick editing of bookmark at point. Then I don't need to use the ##*Bookmark List*## buffer so often.
+
+Also, is there any way to jump straight to the bookmark position instead of the annotations buffer (leaving the annotations buffer visible)?
+
+-- JoeBloggs
+
+
+[new:DrewAdams:2010-09-23 04:07 UTC]
+I think '''Bookmark+''' offers everything that ##bm.el## (VisibleBookmarks) offers, and quite a bit more. See these sections for details: 
+
+* ''Cycling'' -- see [[#CyclingNavlist|Cycling, Navigation List]].  For cycling in the current file or buffer see [[#CyclingCurrentBuffer|Cycling in the Current File/Buffer]] -- use `C-x p down' (or ##up##).  (To cycle among only highlighted bookmarks, you can use `C-x p C-down'. To jump to only a highlighted bookmark, you can use `C-x j h'.)
+
+* ''Quick setting and editing'' -- See [[#AutonamedBookmarks|Autonamed Bookmarks]] -- just use `##C-x p RET##' to set/delete.
+
+* ''Highlighting'' -- See [[#HighlightingBookmarkLocations|Highlighting Bookmark Locations]]. I'm not sure what your question is.  It sounds like you might be looking for [[#HighlightingAutomatically|Highlighting Automatically]], which is essentially equivalent to persistent highlighting.  You can, for instance, auto-highlight only the autonamed (i.e. quick) bookmarks in the current buffer, then cycle among only those.  There are lots of possibilities.
+
+You can obviously bind short keys to the various commands.  All of the commands mentioned are on the keymap `bookmark-map', so you can alternatively just bind that map to some [[prefix key]] that is shorter than `C-x p' -- that way you bind all of the commands at once.
+
+I don't understand your question about jumping and annotations. Please give me a recipe/scenario.  Jumping is always to a bookmark, not its annotation.  Maybe you are looking for option `bookmark-automatically-show-annotations'?  That's a standard option, respected also by '''Bookmark+'''.  If non-`nil', then any associated annotation is displayed, but not if `nil'.  '''Bookmark+''' behaves the same as vanilla Emacs wrt annotations and jumping.
+
+Let me know if something in the doc is unclear or does not seem to correspond to what you are looking for.  I don't want to repeat explanations here without knowing what is unclear etc. -- DrewAdams
+
+[new:JoeBloggs:2010-09-23 20:51 UTC]
+1. OK, I found the cycling and autoname commands, but I can't find any way of altering the annotation and tags without visiting the bookmarks list. 
+
+2. Also, the default bookmark in prompts seems to only be set for bookmarks that were created in this session: 
+if I restart emacs and put point at a pre-made bookmark in a buffer, and then issue a command such as `bmkp-describe-bookmark', there is no default bookmark name in the prompt, so I have to remember the name of the bookmark at point.
+
+3. With regard to jumping and annotations, I want to be able to keep the annotation shown, but have point go to the actual 
+bookmark position. At the moment when I jump to a bookmark (with `bookmark-automatically-show-annotations' set to `t'), 
+point is placed in the annotations buffer instead of the bookmark position. This also happens when I view annotations
+from the bookmark list by pressing `a' or `A': point moves to the annotations buffer, which is useless since it is read-only anyway.
+
+4. Finally `bmkp-specific-buffers-jump' and `bmkp-specific-files-jump' don't work for me: after entering a buffer/file I get prompted for another one and stuck in an infinite loop.
+
+5. I just found another problem; highlighted bookmarks are not always properly marked in the bookmark list. 
+Sometimes I see a purple mark next to them, sometimes not. 
+
+I have made some [[OneKey]] menus for use with '''Bookmark+''', but since it seems to be a work in progress I wont post 
+them till I know the functions and keybindings are not going to change. -- JoeBloggs
+
+
+
+[new:DrewAdams:2010-09-24 07:15 UTC]
+
+1a. Changing an annotation without visiting `##*Bookmark List*##' --- I made `bookmark-edit-annotation' interactive (it is now a command).
+
+1b. Changing a tag without visiting `##*Bookmark List*##' --- I don't understand the question.  You have commands `bmkp-add-tags' (`##T +##'), `bmkp-remove-tags' (`##T -##'), `bmkp-remove-all-tags' (`##T 0##'), `bmkp-remove-tags-from-all' (`##T d##'), `bmkp-rename-tag' (`##T r##'), `bmkp-set-tag-value', and `bmkp-set-tag-value-for-navlist', all of which are available outside `##*Bookmark List*##'.
+
+2. Default bookmark --- Vanilla Emacs uses `bookmark-current-bookmark', the most recently used bookmark in the same file, as the default. I generally use this also, except in the `##*Bookmark List*##', where I use the bookmark of the current line as default. And when reading the name of a bookmark that must belong to a particular type, no default is available if the default chosen as just defined is not in the alist.
+
+However, commands that involve highlighted bookmarks generally use a highlighted bookmark on the same line as point as the default (closest one to point), if any, and otherwise the default described above. I just changed `bmkp-describe-bookmark' (and `bookmark-edit-annotation-mode') to do use this as well.  BTW, starting with Emacs 23 there can be multiple such defaults if there are multiple highlighted bookmarks on the line -- use `M-n'.
+
+3. Selection of annotation(s) buffer --- I agree about this and had been meaning to fix it for a while. I don't really use annotations so I hadn't bothered. (Also, I use `pop-up-frames' on Windows, which means that a new frame gets the focus no matter what.)  Should be better now.
+
+4. `##bmkp-specific-(buffers|file)-jump##' --- Should be fixed now. Thx.
+
+5. Indication of highlighted bookmarks in `##*Bookmark List*##' --- You will need to be more specific (e.g. a recipe). If you mean the one-char pink background indicator, that does not indicate highlighted bookmarks.  It indicates bookmarks that have bookmark-highlight
+''override'' settings (use `C-u C-h RET' to see what the override is).  To indicate all highlighted bookmarks you use `##H S##' or `##H M##', to show only the highlighted bookmarks and to mark the highlighted bookmarks, respectively. 
+
+Thanks for the feedback.  Please try the latest.  I also updated cycling features and made a few other changes.  -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 00:37 UTC]
+
+Thanks for the changes. I made a few more changes shown below (but haven't uploaded them to [[bookmark+.el]]).
+
+1a. Great, thanks
+
+1b. OK, I assumed these were only available in the ##*Bookmark List*## since the keybindings are only defined there.
+
+2. I altered bmkp-default-bookmark-name to return highlighted bookmark at point if available. This is better for me:
+
+<pre>
+(defun bmkp-default-bookmark-name (&optional alist)
+  "Default bookmark name.
+If in buffer `*Bookmark List*' then the current line's bookmark.
+Otherwise, the last-used bookmark in the current buffer.
+
+Non-nil ALIST means return nil unless the default names a bookmark in
+ALIST."
+  (let ((name  (if (equal (buffer-name (current-buffer)) "*Bookmark List*")
+                   (bookmark-bmenu-bookmark)
+		 (or (and (fboundp 'bmkp-default-lighted) (bmkp-default-lighted))
+		     bookmark-current-bookmark))))
+    (when alist (setq name  (car (assoc name alist))))
+    name))
+</pre>
+
+3. I altered bookmark-send-edited-annotation so that after sending annotation, point returns to previous location
+   (previously you had it set to always send you back to the ##*Bookmark List*##):
+
+<pre>
+(defun bookmark-send-edited-annotation ()
+  "Use buffer contents as annotation for a bookmark.
+Lines beginning with `#' are ignored."
+  (interactive)
+  (unless (eq major-mode 'bookmark-edit-annotation-mode)
+    (error "Not in bookmark-edit-annotation-mode"))
+  (goto-char (point-min))
+  (while (< (point) (point-max))
+    (if (looking-at "^#")
+        (bookmark-kill-line t)
+      (forward-line 1)))
+  (let ((annotation  (buffer-substring-no-properties (point-min) (point-max)))
+	(bookmark    bookmark-annotation-name))
+    (bookmark-set-annotation bookmark annotation)
+    (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (kill-buffer-and-window)
+    (bmkp-refresh-menu-list bookmark))) ; So the `a' marker is displayed (updated).
+</pre>
+
+4. Good.
+
+5. OK, I misunderstood the meaning of the indicator. On a related note, is there any way to quickly change the highlighting
+   style of all bookmarks in a buffer at once without going through customize or ##*Bookmark List*##?
+
+6. I've written the following functions for the ##*Bookmark List*## which I find useful. I bind them to `##C-up##' and `##C-down##'
+
+<pre>
+(defun bmkp-bmenu-move-up+describe-this ()
+  "Move up to previous bookmark and then describe it."
+  (interactive)
+  (forward-line -1)
+  (bmkp-bmenu-describe-this-bookmark))
+
+(defun bmkp-bmenu-move-down+describe-this ()
+  "Move down to next bookmark and then describe it."
+  (interactive)
+  (forward-line 1)
+  (bmkp-bmenu-describe-this-bookmark))
+
+(define-key bookmark-bmenu-mode-map (kbd "<C-up>") 'bmkp-bmenu-move-up+describe-this)
+(define-key bookmark-bmenu-mode-map (kbd "<C-down>") 'bmkp-bmenu-move-down+describe-this)
+</pre>
+
+-- JoeBloggs
+
+
+[new:DrewAdams:2010-09-25 16:02 UTC]
+Yes, please do not modify the libraries.  Instead, post your suggestions (as you did) or mail them to me.
+
+1b. Commands whose names start with `bmkp-bmenu' are for `##*Bookmark List*##'.  Commands whose names lack `bmenu' in the prefix are general.  This is a vanilla Emacs convention that I have kept.
+
+2. Different users will prefer different behaviors. I've added an option for this: `bmkp-default-bookmark-name'.  It's default value gives the behavior you prefer.
+
+3. Good catch.  I made a similar change.  I don't think it's a good idea to require confirmation for deleting the buffer and its window, though.  I also changed the commands for accessing bookmarks with annotations, so that only annotated bookmarks are completion candidates.
+
+5. No.  But how hard is it to visit the bookmark list?  I'm open to suggestions, but I don't see this as very important.
+
+6. Hm.  Such commands, with the same bindings, already exist. What am I missing?  See `##bmkp-bmenu-describe-this+move-down##' (`C-down').  Or are you just saying that you prefer to have the description correspond to the current bookmark after the move instead of the current bookmark before the move? -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 19:39 UTC]
+
+5. Here's a couple of functions to do what I want (the second one might be useful for other things):
+
+<pre>
+(defun bmkp-set-lighting-for-bookmarks-in-buffer (buffer style face)
+  "Set the lighting style and face for all bookmarks in BUFFER"
+  (interactive (list (buffer-name)
+		     (cdr (assoc (let ((completion-ignore-case  t))
+				   (completing-read "Style: " bmkp-light-styles-alist
+						    nil t))
+				 bmkp-light-styles-alist))
+		     nil))
+  (let ((face (and (not (member style '(lfringe rfringe none))) ; No face possible for these.
+		   (y-or-n-p "Change face? ") ; Allow nil, for `auto'.
+		   (condition-case nil ; Emacs 22+ accepts a default.
+		       (read-face-name "Face: " default-face)
+		     (wrong-number-of-arguments (read-face-name "Face: ")))))
+	bmks-alist)
+    (dolist (bmk bookmark-alist)
+      (if (bmkp-specific-buffer-p bmk buffer)
+	  (progn (add-to-list 'bmks-alist bmk)
+		 (bmkp-set-lighting-for-bookmark bmk style face (bmkp-lighting-when bmk)))))
+    (bmkp-light-bookmarks bmks-alist)))
+
+(defun bmkp-specific-buffer-p (bookmark buffer)
+  "Return t if BOOKMARK's `buffer-name' is BUFFER.
+But return nil for bookmarks, such as desktops, that are not really
+associated with a buffer, even if they have a `buffer-name' entry.
+It does not matter whether the buffer exists.
+BOOKMARK is a bookmark name or a bookmark record."
+  (let ((buf (bmkp-get-buffer-name bookmark)))
+    (and buf (string= buf buffer)
+         (not (bmkp-desktop-bookmark-p        bookmark))
+         (not (bmkp-bookmark-file-bookmark-p  bookmark))
+         (not (bmkp-sequence-bookmark-p       bookmark))
+         (not (bmkp-function-bookmark-p       bookmark))
+         (not (bmkp-variable-list-bookmark-p  bookmark)))))
+</pre>
+
+6. Yes, I wrote those some time ago and forgot that they were slight alterations of functions you've already written. -- JoeBloggs
+
+
+[new:DrewAdams:2010-09-25 19:48 UTC]
+5. I added something similar and a little more general. -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 21:06 UTC]
+
+5. Great, but it doesn't light them immediately. Needs a call to bmkp-light-bookmarks at the end of the function. -- JoeBloggs
+
+[new:DrewAdams:2010-09-25 21:10 UTC]
+Not an oversight; I want it to be separate. But I've added control via a prefix arg. -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 23:23 UTC]
+This definitely is an oversight: in `##bmkp-set-lighting-for-buffer##' you have used `##bmkp-last-specific-file-alist-only##' when it should be `##bmkp-last-specific-buffer-alist-only##'. -- JoeBloggs
+
+[new:DrewAdams:2010-09-26 01:13 UTC]
+Right. Thanks, should be OK now. -- DrewAdams
+
+
+
+----
+[new]
+I would like to make bookmarks my homepage.  How would I do this? (I use ECB and calling `bookmark-bmenu-list' doesn't seem to work). -- [[baron]]
+
+[new:DrewAdams:2010-10-04 14:57 UTC]
+Not sure I understand. Does `bookmark-bmenu-list' work for you in vanilla Emacs (i.e., without loading '''Bookmark+''')?
+
+* If so, then please report a '''Bookmark+''' bug -- either here or by mailing me. Give a complete recipe, starting with ##emacs -Q##.
+
+* If not, then try to pare down your [[init file]] to find out what the problem is. And perhaps try without your existing bookmarks file (in case it is corrupted).
+
+The first thing to try is removing (e.g. renaming) your bookmarks file. If it works then, then try commenting-out half of the file, then a quarter, etc. until you find the bad bookmark(s). -- DrewAdams
+
+[new]
+Recent changes in bookmark.el (bzr emacs) broke bookmark+, i just see empty list and message "bmkp-bmenu-list-1: Symbol's function definition is void: bookmark-name-from-full-record" in the minibuffer when calling `bookmark-bmenu-list'. -- [[Anonymous]]
+
+[new:DrewAdams:2010-12-10 17:50 UTC]
+Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite wisdom, gratuitously renamed function `##bookmark-name-from##<tt>__-full__</tt>##-record##' to `bookmark-name-from-record' -- presumably to save 5 chars!  Naturally, that breaks any 3rd-party code that uses this very basic function.  Sheesh! -- DrewAdams
+
+
+
+
+
+----
+[new]
+1. is there a source code repo for Bookmark+? It's somewhat onerous to download 7 files manually. 
+
+2. I know you are frame-oriented, but from my perspective, Bookmark+ is the necessary compliment to WorkgroupsForWindows because it allows me to have one tag per workgroup. Maybe I can write a hook to automatically load the bookmark+ bookmarks with the same name as a particular workgroup name. -- TerrenceBrannon
+
+
+[new:DrewAdams:2011-07-05 13:04 UTC]
+[:BulkIciclesDownload]
+1. No.  But you could perhaps create a download script, by copying and adapting one of these scripts for downloading the '''[[Icicles]]''' files:
+[[Icicles - Libraries#BulkIciclesDownload]].
+
+2. I'm not familiar with WorkgroupsForWindows, but why not?  There is nothing [[frame]]-oriented about '''Bookmark+''', BTW.  You're right that I personally use it with frame-oriented code such as OneOnOneEmacs, but '''Bookmark+''' should work fine without such an orientation.  If you run into a problem, please let me know. -- DrewAdams
+
+
+----
+[new:akaihola:2011-12-08 08:51 UTC]
+I haven't used bookmarks in Emacs before, and followed a recommendation to use Bookmark+ instead of the stock bookmark library.
+
+I read through this page, but one thing it fails to state clearly is how to actually create a bookmark inside a file. I eventually did figure out the key combination `C-x r m'. -- akaihola
+
+
+[new:DrewAdams:2011-12-08 14:32 UTC]
+Yes.  This page does not try to be a one-stop description of both '''Bookmark+''' and Emacs bookmarks in general.  I already had a link to the BookMarks page (which gives an overview) in the first sentence, but to make things more clear I now point to the Emacs manual for background info about bookmarks.  Thanks for the feedback. -- DrewAdams
+
+----
+[new]
+Hello, why don't you add a tarball to your page with all the files?  Downloading each separately is silly. -- [[JE]]
+
+[new:]
+Hello.  
+
+Why don't you?  That would be helpful.  While you're at it, why not periodically post multiple tar balls with different sets of files for '''Bookmark+''': for those users who want all the bells and whistles; for those users who want 75% of them; for those users who want just the bare minimum; etc.  I'm sure other users would appreciate your effort.
+
+You might even leverage <tt>[[auto-install-batch-list.el]]</tt>. Here's another thing you might leverage: https://github.com/emacsmirror/bookmark-plus.  And another: http://marmalade-repo.org/packages/bookmark+.  Have fun. -- DrewAdams
+
+
+
+
+----
+[new]
+Hi Drew,
+
+You are an amazing developer, but i think it would be easier for you and of course your users if you can organize your work on some public VC site like github or at least google code. I am particularly interested in your work on dired. Each time I want to update I have to google for dired+plus and then search for all the related files like find-dired+ dired+ sort-dired=menu+ etc, Same story for bookmarks+ and icicles
+
+it would be just so much easier to do
+
+##git clone git@github:drewadams/dired+##
+
+and then to update just
+
+##git pull##
+
+I know you are using some fancy version control marking of your files (all these automatic version,updates,date insertion - btw, how do you do that?) but public repository might also bring you some contributors in addition to organizing your work.
+
+Best, RedBlue.
+
+[new:DrewAdams:2012-02-14 23:53 UTC]
+Sorry, not interested. But I appreciate your taking the time to make the suggestion.
+
+There are plenty of ways to bulk-download a set of files from the wiki, starting with tweaking <tt>[[auto-install-batch-list.el]]</tt> for any set you want. For '''[[Icicles]]''' the work is already done for you: [[Icicles - Libraries#BulkIciclesDownload]]. As mentioned [[#BulkIciclesDownload|above]], you could do the same thing for '''%%BookmarkPlus%%''', if you were interested in that. '''[[Dired+]]''' has no hard dependencies on any of my libraries, and its only soft-dependency (optional) is for <tt>[[misc-fns.el]]</tt>.
+
+Every user of some of my libraries uses a different subset, no doubt.  Some of my libraries can optionally take advantage of others.  Whether someone who wants to use one library also wants to use all or some (which?) of the libraries that it might take advantage of is not obvious.  So much for prepackaging particular combinations.  But it should be trivial to define the set you want using something like <tt>[[auto-install-batch-list.el]]</tt>.  Beyond that, there are apparently some mirrors here and there where you can find some of my stuff in the form you prefer (Git repository).  They are not necessarily up to date, but the code is there.
+
+I don't use anything fancy for version control. I don't even use version control at all for my Emacs files anymore (haven't for a long time).  I use only (1) <tt>[[header2.el]]</tt> and <tt>[[lib-requires.el]]</tt> to update the file header (see AutomaticFileHeaders), and (2) `ediff' to compare and write change logs. -- DrewAdams
+
+[new:RedBlue:]
+
+Cool, [[header2.el]] and [[lib-requires.el]] where what I was missing so much, thanks a bunch. But I am still not very clear about automatic changelog insertion. Ediff doesn't seem to have this functionality. Is it that you insert the timestamps and logs by hand?
+
+And also, how about ELPA? Emacs 24 has it by default, it would be really cool to see all your libraries there.
+
+[new:DrewAdams:2012-02-15 13:54 UTC]
+Yes, I insert change logs by hand, after diffing with `ediff' to remind myself about the changes made.  It takes a human (IMHO), preferably the same person who made the change and soon after making it, to understand and summarize a change in the best way for others (and self) to read later.
+
+I believe someone else is working on putting '''Icicles''' and '''%%BookmarkPlus%%''' into an ELPA repository somewhere.  Dunno when that will be done. -- DrewAdams 
+
+
+----
+[new:JoeBloggs:2012-02-15 20:19 UTC]
+Hi Drew, when I create a gnus bookmark with gnus-bookmark-set it puts it in *Gnus Bookmark List* but not *Bookmark List*.
+Is there another command to create gnus bookmarks that work with bookmarks+ ?
+Also is there a command for creating any type of bookmark (e.g. by prompting for type), or do I have to remember the key bindings for each one seperately?
+If no such function exists could you please tell me the names of all bookmark creation commands so that I can make this function. -- JoeBloggs
+
+
+[new:DrewAdams:2012-02-15 23:33 UTC]
+Hi Joe.  I'm no expert on Gnus.  I don't use it.  However, for '''Bookmark+''', try using just the usual bookmark-setting command, '''`bookmark-set'''', which is bound to `C-x p m', `C-x r m', and `C-x p c m'.  You should be able to bookmark this way from either a Gnus article buffer or Gnus summary buffer.
+
+The general idea is that for a particular type of [[buffer]] or [[major mode]], which has its own kind of bookmark, `bookmark-set' should do the right thing automatically: it should create a bookmark of the proper type.  For example, in [[Dired]], `C-x p m' creates a Dired bookmark; in [[Info]], `C-x p m' creates an Info bookmark; etc.  
+
+The buffer/mode itself knows how to create a bookmark of the proper type, no matter how complex that might be.  For example, for a Dired bookmark, `C-x p m' needs to record the current set of file markings, omissions, etc.  When a specific kind of bookmark is created like this, it records a handler of the proper type.  The handler for a Dired bookmark reestablishes the markings and file omissions, inserted subdirectories, etc.  All of the information needed for that is recorded in the bookmark itself.
+
+If, however, you do want to create a bookmark of a specific type without being in a particular buffer/mode, you can do that using certain '''Bookmark+'''  commands (some of which have default key bindings):
+
+* ##bmkp-autofile-set##
+* ##bmkp-file-target-set##
+* ##bmkp-set-autonamed-bookmark##
+* ##bmkp-set-autonamed-bookmark-at-line##
+* ##bmkp-set-autonamed-regexp-buffer##
+* ##bmkp-set-autonamed-regexp-region##
+* ##bmkp-set-bookmark-file-bookmark##
+* ##bmkp-set-desktop-bookmark##
+* ##bmkp-set-restrictions-bookmark##  --- requires library <tt>[[wide-n.el]]</tt>
+* ##bmkp-set-variable-list-bookmark##
+* ##bmkp-toggle-autonamed-bookmark-set/delete##
+* ##bmkp-url-target-set##
+
+HTH -- DrewAdams 
+
+[new]
+
+OK thanks I guess I should've checked a bit more carefully first. 
+Btw, your gnus bookmarks only seem to work when the corresponding summary mode is already open. With the bookmarks that come with gnus it will automatically open the correct summary buffer if it's not already open (and start gnus if not already started). Is there any way of integrating gnus builtin bookmarks with bookmarks plus? -- JoeBloggs
+
+[new:DrewAdams:2012-02-19 02:23 UTC]
+Hi Joe,
+
+Dunno.  As I said, I'm no expert on Gnus and I don't use it.  Perhaps you'd like to take a look at the gnus code and propose a patch.  Sorry, but this is not a priority for me.  
+
+FWIW, the '''Bookmark+''' code for creating and jumping to Gnus bookmarks is essentially the same as the latest (Emacs 24) vanilla Emacs code in ##gnus-sum.el##, with one minor improvement (no `sit-for' to wait 1 sec if the buffer is not an article buffer).
+
+I have no idea why Gnus apparently has an additional, separate bookmarking facility, or why that is not integrated (yet) with ordinary bookmarks ('''Bookmark+''' or vanilla).  Which was your original question, IIUC.  Perhaps there is some good reason to keep some Gnus bookmarks separate? dunno.
+
+That said, '''Bookmark+''' should recognize and correctly handle the bookmarks created by the Gnus code (which use handler `gnus-summary-bookmark-jump') -- it's pretty much the same code.  I guess the problem seems to be to get your Gnus-code created bookmarks into your standard bookmark file?  Try copying one of them into your bookmark file, to see how it's handled by '''Bookmark+''', as a start.
+
+I can understand your motivation, but please understand that (a) I do not have the time to investigate this and (b) I do not even have Gnus installed (and have no intention of installing it), so implementing and testing something for it in '''Bookmark+''' would be an added chore for me.
+
+For bookmarking alone there are 415 lines of the Gnus code to examine (`##grep bookmark *.el##').  And before that, a thorough understanding of Gnus is probably called for, to understand (a) why it treats bookmarking the way it does, and (b) whether and how some of it might profit from '''Bookmark+''' features etc.
+
+I welcome someone else, such as yourself, making such an effort.  What's needed is to spend some time with Gnus and the Gnus bookmarking code.  Another possibility might be to interest BastienGuerry in taking a look at '''Bookmark+''' -- he apparently wrote ##gnus-bookmark.el##.
+
+(BTW, for something like this it's usually a lot easier to follow up by email.) -- DrewAdams
+
+[new]
+I will look into it, cheers. -- JoeBloggs
+
+[new:DrewAdams:2012-02-28 15:32 UTC]
+Joe, it just occurred to me that maybe the only problem is that '''Bookmark+''' (and vanilla Emacs ##bookmark.el##) don't know about the Gnus bookmark file(s).  IOW, maybe there is no problem handling their bookmarks, but you just have to explicitly load their bookmark file(s).
+
+Can you try that, to see?  Just use `C-x p L' (`bmkp-switch-bookmark-file' to load such a file (you presumably know where it is located; I don't).  Then try to use its bookmarks, to see if they are handled OK.  This should be the first thing to try.  Let me know what you find out.  Be sure to back up your bookmark file(s) before such experimenting, just in case.  
+
+Also, I contacted BastienGuerry by email, who I think wrote the Gnus bookmarks code.  He may be able to help.  If you want to follow up by email, feel free -- that's probably easier than communicating this way.  Thx -- DrewAdams
+
+[new:AndersJohansson:2012-05-16 13:20 UTC]
+One thing that I needed was to have the All Tags list alphabetically sorted. I think this would be desirable in most cases. If I haven't missed anything this could be fixed for instance by replacing
+##(pp-display-expression (bmkp-tags-list (not fullp) current-only-p) "*All Tags"))##
+with
+##(pp-display-expression (sort (bmkp-tags-list (not fullp) current-only-p) 'string<) "*All Tags"))##
+in the definition of `bmkp-list-all-tags'. -- AndersJohansson
+
+[new:DrewAdams:2012-05-16 15:21 UTC]
+Good idea.  Done.  The code is a bit different, as it needs to be able to (a) handle a prefix arg (full tags) and (b) respect `case-fold-search'.
+
+Thx -- DrewAdams
+
+[new:AndersJohansson:2012-05-22 13:30 UTC]
+Another thing that would be very useful, at least for me, the way I use Bookmark+ (doing qualitative text analysis by bookmarking and tagging portions of textfiles), is if there was a possibility to show the bookmark list in another way, showing the tags (or the car of a tag) in a column (preferably instead of the filename which isn't that important for me right now). I don't know if this is a stupid idea for some reason, but I think this would help whenever there is a need for an overview of the tags associated with a bunch of bookmarks. --- AndersJohansson
+
+
+[new:DrewAdams:2012-05-22 15:35 UTC]
+I agree that something like that could be useful.  But I'm afraid that one will have to go on my wishlist-todo list.
+
+There is also the problem that a list of tags can be long or short, and so can individual tags be long or short, and tags can contain newlines etc.  IOW, there is no obvious and easy way to format such info in a column -- I would have to come up with something else.  
+
+And because the `##*Bookmark List*##' itself is complex, I would instead probably show bookmarks plus their tags in a separate display -- a separate buffer (as is done for `bmkp-list-all-tags').
+
+Dunno when/whether I will do something like this, however, so don't hold your breath.
+
+One workaround to some extent, at least in the sense that it lets you see a set of bookmarks (all of them, if you like) together with their tags, is `E': `bmkp-bmenu-edit-marked'.  You might at least take a look at that, to see if it's helpful.  Thx -- DrewAdams
+
+[new:AndersJohansson:2012-05-23 09:30 UTC]
+I understand there are lots of complexities to consider for this. bmkp-bmenu-edit-marked' actually worked pretty well for me right now. Thanks ---AndersJohansson
+
+
+
+----
+
+
+[:2012-07-01-EgbertoFuentes]
+[new:EgbertoFuentes:2012-07-01 19:23 UTC]
+I have a problem when create a file-handler bookmark:
+
+##(setq-default bmkp-guess-default-handler-for-file-flag t)##
+
+When I create this kind of bookmark in the same session, it works perfect; but when I restart emacs and try to activate the same bookmark it doesn't work (something about a void ##--shell-cmd--## symbol). --- EgbertoFuentes
+
+[new:DrewAdams:2012-07-02 06:19 UTC]
+Here is a workaround (code from last May, before I changed it to use `lexical-let*'):
+
+  (defun bmkp-default-handler-for-file (filename)
+    "..."
+    (let* ((bmkp-user  (bmkp-default-handler-user filename))
+           (shell-cmd  (if (stringp bmkp-user)
+                           bmkp-user
+                         (and (not bmkp-user)
+                              bmkp-guess-default-handler-for-file-flag
+                              (or (and (require 'dired-x nil t)
+                                       (let* ((case-fold-search
+                                               (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                                        dired-guess-shell-case-fold-search)
+                                                   case-fold-search))
+                                              (default  (dired-guess-default (list filename))))
+                                         (if (consp default) (car default) default)))
+                                  (and (require 'mailcap nil t)
+                                       (car (mailcap-file-default-commands (list filename)))))))))
+      (cond ((stringp shell-cmd) `(lambda (bmk) (dired-do-shell-command ',shell-cmd nil ',(list filename))))
+            ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
+             bmkp-user)
+            (t nil))))
+
+But before trying the workaround, please send me the definition of that bookmark from your bookmark file (you can change any personal info in it; I only need to see the technical definition).
+
+If you can also send me the definition of the bookmark after applying the workaround (you will need to re-create the bookmark, of course), that will help.  Please send the info to me by email if you can (see the file header for the address).
+
+And please let me know your Emacs version, using `M-x emacs-version'.  Thx -- DrewAdams
+
+----
+
+
+[new]
+Hi Drew, I've made a bookmark+ plugin for [[OneKey]]. It makes navigating bookmarks a bit faster, and allows filtering using arbitrary boolean expressions. Here it is: [[one-key-bmkp.el]]
+ -- JoeBloggs
+
+[new:DrewAdams:2012-10-01 20:37 UTC]
+Hi Joe,
+
+Sounds interesting.  Unfortunately, when I tried to give it a quick try, with my setup, I at first saw buffer `##*One Key*##' but then I tried to resize a frame with the mouse so I could see things better, and everything went blank (all frames), I saw ##Entering debugger...## in the [[echo area]], and Emacs completely froze.  (That was with a recent development snapshot of Emacs 24.)  I had to kill Emacs from the OS.
+
+Tried again, this time with Emacs 24.2.  This time, when I hit the key to pop up the menu, I got this:
+
+So it looks like you might have a minor problem with a negative value for `dif'.  The error seems to arise whenever the frame for buffer `##*One Key*##' would be wider than the frame from which I invoked it.  (For me, `##*One Key*##' is a special-display buffer, so it is shown in a separate, special-display frame.)  All of that is just with <tt>[[one-key.el]]</tt>, without <tt>[[one-key-bmkp.el]]</tt>.
+
+Using a wider frame, to avoid the error, and after loading ##one-key-bmkp.el##, I can bring up the menu OK, but I see nothing there about bookmarks.  You might want to add a little more explanation to your instructions.
+
+Also, if I click mouse-1 in the `##*One Key*##' buffer, I get this error:
+
+  "Invalid key sequence: (down-mouse-1 (#<window 38 on *One-Key*> 422 (479 . 48) 24812906 nil 422 (59 . 4) nil (7 . 6) (8 . 14)))"
+
+Anyway, I'm glad to see people using and building upon '''Bookmark+'''.
+
+-- DrewAdams
+
+[new:JoeBloggs:2012-10-01 22:25 UTC]
+On the case...
+Btw, if you're interested in trying it out while I fix those bugs, here's a howto:
+
+# Use a wide frame to open the `##*One-Key*##' buffer
+# Press <C-f9> to add a new menu
+# Select "bookmarks+" from the list
+# You should see a menu of your bookmark tags aswell as a few other items. Selecting an item adds it to the logical expression. Press SPC/RET to open/close brackets (or just use the bracket keys), or ! to negate an item. The logical connective alternates between | (OR) and & (AND) according to the depth of bracketing.
+# Once you've finished your logical expression press RET and you will be prompted to save the filter.
+# After that you should see a menu of all the filtered bookmarks.
+
+-- JoeBloggs
+
+
+[new:DrewAdams:2012-10-01 22:11 UTC]
+OK, thanks. I'm busy now, but I'll play with it a bit later. -- DrewAdams
+
+[new:JoeBloggs:2012-10-02 00:30 UTC]
+Btw, I found a bug in the bmkp-thing-at-point function in bookmark+-1.el
+ I get an error about syntax-table being nil. If you use the common lisp extensions in cl.el I think you could fix it by changing the function signature to:
+
+  (defun* bmkp-thing-at-point (thing &optional (syntax-table (syntax-table)))
+  
+-- JoeBloggs
+
+[new:DrewAdams:2012-10-02 04:12 UTC]
+
+Should be OK now; thanks.  That's supposed to be the same as `icicle-thing-at-point', but it hadn't been updated.  Avoiding `require's among libraries can have its drawbacks. -- DrewAdams
+
+[new:JoeBloggs:2012-10-02 03:17 UTC]
+OK, I think I've fixed those bugs in [[OneKey]] now. Btw, in future to report a bug please use M-x one-key-submit-bug-report, or press <C-f11> in the `##*One-Key*##' buffer.
+
+-- JoeBloggs
+
+[new:DrewAdams:2012-10-02 04:12 UTC]
+Dunno when I'll get around to trying it out again, but I'll try to find some time.  Thx -- DrewAdams
+
+
+[new:DrewAdams:2012-10-02 04:59 UTC]
+Just to let you know. I spent just a little time with it.  I again ran into problems with Emacs hanging etc.  The problems are too general & vague for me to be able to report a concrete bug.  It does not seem to play well with using separate frames for different buffers.  Will try to find time to try it more later.  I did look the code over, and it looks interesting.  HTH -- DrewAdams
+
+[new:JoeBloggs:2012-10-02 18:59 UTC]
+OK, I've made a few changes so it works better when opened in its own frame now. Still not perfect (help is shown in original frame instead of new frame), but working on it.. I usually just stick to one frame and hadn't thought about the possibility of multiple frames. Are there any other situations that I may have overlooked?
+-- JoeBloggs
+
+
+[new:DrewAdams:2012-10-03 01:19 UTC]
+Thanks for those efforts. I'll have to take a look later -- busy now.  Thx -- DrewAdams
