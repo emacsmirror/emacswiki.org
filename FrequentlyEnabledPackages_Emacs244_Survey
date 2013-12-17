@@ -1,5 +1,6 @@
 As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel is conducting a survey]].  We want to find out vanilla GnuEmacs packages/modes that you '''''ENABLE OR DISABLE''''' by default.
 
+
 __Interesting Titbit__
 
 Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061  Uniquify will be enabled by default]] in Emacs-24.4
@@ -30,192 +31,186 @@ __Minor Mode Survey__
 
 {{{
 
-#+CONSTANTS: N=120
-| Packages/Modes                                   | Upvote / User count | % Users |
-|--------------------------------------------------+---------------------+---------|
-| column-number-mode                               |                  84 |      70 |
-|--------------------------------------------------+---------------------+---------|
-| uniquify                                         |                  83 |      69 |
-| show-paren-mode                                  |                  78 |      65 |
-| ido-mode                                         |                  73 |      60 |
-| transient-mark-mode                              |                  62 |      51 |
-| ibuffer                                          |                  55 |      45 |
-| recentf-mode                                     |                  52 |      43 |
-| blink-cursor-mode                                |                  50 |      41 |
-| flyspell-mode                                    |                  50 |      41 |
-| font-lock-mode                                   |                  46 |      38 |
-|--------------------------------------------------+---------------------+---------|
-| eldoc-mode                                       |                  44 |      36 |
-| org-mode                                         |                  44 |      36 |
-| global-font-lock-mode                            |                  42 |      35 |
-| line-number-mode                                 |                  42 |      35 |
-| winner-mode                                      |                  42 |      35 |
-| dired-x                                          |                  40 |      33 |
-| ido-everywhere                                   |                  38 |      31 |
-| auto-fill-mode                                   |                  37 |      30 |
-| abbrev-mode                                      |                  36 |      30 |
-| windmove                                         |                  36 |      30 |
-| delete-selection-mode                            |                  31 |      25 |
-|--------------------------------------------------+---------------------+---------|
-| saveplace                                        |                  28 |      23 |
-| desktop-save-mode                                |                  27 |      22 |
-| display-time-mode                                |                  26 |      21 |
-| server-mode                                      |                  26 |      21 |
-| which-function-mode                              |                  25 |      20 |
-| hippie-exp                                       |                  22 |      18 |
-| savehist-mode                                    |                  22 |      18 |
-| imenu                                            |                  21 |      17 |
-| tramp                                            |                  21 |      17 |
-| global-subword-mode                              |                  20 |      16 |
-| org-capture                                      |                  20 |      16 |
-| auto-encryption-mode                             |                  19 |      15 |
-| tooltip-mode                                     |                  18 |      15 |
-| icomplete-mode                                   |                  17 |      14 |
-| ffap                                             |                  16 |      13 |
-| size-indication-mode                             |                  16 |      13 |
-| cua-selection-mode                               |                  15 |      12 |
-| dired-hide-details-mode                          |                  15 |      12 |
-| file-name-shadow-mode                            |                  15 |      12 |
-| mouse-wheel-mode                                 |                  15 |      12 |
-| visual-line-mode                                 |                  15 |      12 |
-|--------------------------------------------------+---------------------+---------|
-| auto-compression-mode                            |                  14 |      11 |
-| global-hl-line-mode                              |                  14 |      11 |
-| subword-mode                                     |                  14 |      11 |
-| linum-mode                                       |                  13 |      10 |
-| visible-bell                                     |                  13 |      10 |
-| auto-composition-mode                            |                  12 |      10 |
-| cua-mode                                         |                  12 |      10 |
-| electric-indent-mode                             |                  12 |      10 |
-| hs-minor-mode                                    |                  12 |      10 |
-| kill-whole-line                                  |                  12 |      10 |
-| global-auto-revert-mode                          |                  11 |       9 |
-| global-linum-mode                                |                  11 |       9 |
-| reftex-mode                                      |                  11 |       9 |
-| compilation-minor-mode                           |                  10 |       8 |
-| electric-pair-mode                               |                  10 |       8 |
-| ispell-minor-mode                                |                  10 |       8 |
-| global-whitespace-mode                           |                   9 |       7 |
-| cl                                               |                   8 |       6 |
-| iswitchb-mode                                    |                   8 |       6 |
-| org-src-mode                                     |                   8 |       6 |
-| shell-dirtrack-mode                              |                   8 |       6 |
-| edebug-mode                                      |                   7 |       5 |
-| whitespace-mode                                  |                   7 |       5 |
-| orgtbl-mode                                      |                   6 |       5 |
-| printing                                         |                   6 |       5 |
-| rectangle-mark-mode                              |                   6 |       5 |
-| delete-by-moving-to-trash                        |                   5 |       4 |
-| erc-mode                                         |                   5 |       4 |
-| global-cwarn-mode                                |                   5 |       4 |
-| global-hi-lock-mode                              |                   5 |       4 |
-| hide-ifdef-mode                                  |                   5 |       4 |
-| mouse-avoidance-mode                             |                   5 |       4 |
-| auto-completion-mode                             |                   4 |       3 |
-| autoinsert                                       |                   4 |       3 |
-| bs-show                                          |                   4 |       3 |
-| semantic-mode                                    |                   4 |       3 |
-| auto-image-file-mode                             |                   3 |       2 |
-| electric-layout-mode                             |                   3 |       2 |
-| epa-file-enable                                  |                   3 |       2 |
-| generic-x                                        |                   3 |       2 |
-| global-visual-line-mode                          |                   3 |       2 |
-| descr-text                                       |                   2 |       1 |
-| orgstruct++-mode                                 |                   2 |       1 |
-| outline-minor-mode                               |                   2 |       1 |
-| advice                                           |                   1 |       0 |
-| ange-ftp                                         |                   1 |       0 |
-| ansi-color                                       |                   1 |       0 |
-| apropos                                          |                   1 |       0 |
-| bookmark                                         |                   1 |       0 |
-| buffer-menu-mode                                 |                   1 |       0 |
-| buff-menu                                        |                   1 |       0 |
-| bytecomp                                         |                   1 |       0 |
-| byte-opt                                         |                   1 |       0 |
-| color                                            |                   1 |       0 |
-| comint                                           |                   1 |       0 |
-| compile                                          |                   1 |       0 |
-| cus-edit                                         |                   1 |       0 |
-| cus-theme                                        |                   1 |       0 |
-| debug                                            |                   1 |       0 |
-| delsel                                           |                   1 |       0 |
-| desktop                                          |                   1 |       0 |
-| diff-mode                                        |                   1 |       0 |
-| dired-aux                                        |                   1 |       0 |
-| display-battery-mode                             |                   1 |       0 |
-| easymenu                                         |                   1 |       0 |
-| easy-mmode                                       |                   1 |       0 |
-| ede-minor-mode                                   |                   1 |       0 |
-| ediff                                            |                   1 |       0 |
-| edmacro                                          |                   1 |       0 |
-| emacs-lisp-mode                                  |                   1 |       0 |
-| facemenu                                         |                   1 |       0 |
-| face-remap                                       |                   1 |       0 |
-| faces                                            |                   1 |       0 |
-| files                                            |                   1 |       0 |
-| finder                                           |                   1 |       0 |
-| find-func                                        |                   1 |       0 |
-| frame                                            |                   1 |       0 |
-| frameset                                         |                   1 |       0 |
-| global-ede-mode                                  |                   1 |       0 |
-| global-semantic-decoration-mode                  |                   1 |       0 |
-| global-semantic-highlight-func-mode              |                   1 |       0 |
-| global-semantic-idle-completions-mode            |                   1 |       0 |
-| global-semantic-idle-local-symbol-highlight-mode |                   1 |       0 |
-| global-semantic-idle-scheduler-mode              |                   1 |       0 |
-| global-semantic-idle-summary-mode                |                   1 |       0 |
-| global-semantic-mru-bookmark-mode                |                   1 |       0 |
-| global-semantic-stickyfunc-mode                  |                   1 |       0 |
-| global-semanticdb-minor-mode                     |                   1 |       0 |
-| grep                                             |                   1 |       0 |
-| help                                             |                   1 |       0 |
-| help-fns                                         |                   1 |       0 |
-| help-mode                                        |                   1 |       0 |
-| hl-line                                          |                   1 |       0 |
-| image                                            |                   1 |       0 |
-| image-dired                                      |                   1 |       0 |
-| image-file                                       |                   1 |       0 |
-| info-mode                                        |                   1 |       0 |
-| isearch                                          |                   1 |       0 |
-| iso-transl                                       |                   1 |       0 |
-| kmacro                                           |                   1 |       0 |
-| lisp-mnt                                         |                   1 |       0 |
-| lisp-mode                                        |                   1 |       0 |
-| lpr                                              |                   1 |       0 |
-| ls-lisp                                          |                   1 |       0 |
-| menu-bar                                         |                   1 |       0 |
-| menu-bar-mode                                    |                   1 |       0 |
-| minibuffer-depth-indicate-mode                   |                   1 |       0 |
-| misearch                                         |                   1 |       0 |
-| mouse                                            |                   1 |       0 |
-| mwheel                                           |                   1 |       0 |
-| newcomment                                       |                   1 |       0 |
-| outline                                          |                   1 |       0 |
-| package                                          |                   1 |       0 |
-| page                                             |                   1 |       0 |
-| paren                                            |                   1 |       0 |
-| pc-selection-mode                                |                   1 |       0 |
-| pp                                               |                   1 |       0 |
-| ps-print                                         |                   1 |       0 |
-| regexp-opt                                       |                   1 |       0 |
-| register                                         |                   1 |       0 |
-| replace                                          |                   1 |       0 |
-| ring                                             |                   1 |       0 |
-| shadow                                           |                   1 |       0 |
-| shell                                            |                   1 |       0 |
-| simple                                           |                   1 |       0 |
-| thingatpt                                        |                   1 |       0 |
-| time-date                                        |                   1 |       0 |
-| timer                                            |                   1 |       0 |
-| tool-bar                                         |                   1 |       0 |
-| tramp-ftp                                        |                   1 |       0 |
-| url-handler-mode                                 |                   1 |       0 |
-| url-parse                                        |                   1 |       0 |
-| url-vars                                         |                   1 |       0 |
-| view-mode                                        |                   1 |       0 |
-| wid-edit                                         |                   1 |       0 |
-| window                                           |                   1 |       0 |
-#+TBLFM: $3= 100.0 * $2/ $N; %d;
+| Packages/Modes                                   | Upvote / User count |
+|--------------------------------------------------+---------------------|
+| abbrev-mode                                      |                  36 |
+| advice                                           |                   1 |
+| ange-ftp                                         |                   1 |
+| ansi-color                                       |                   1 |
+| apropos                                          |                   1 |
+| auto-completion-mode                             |                   4 |
+| auto-composition-mode                            |                  12 |
+| auto-compression-mode                            |                  14 |
+| auto-encryption-mode                             |                  19 |
+| auto-fill-mode                                   |                  37 |
+| auto-image-file-mode                             |                   3 |
+| autoinsert                                       |                   4 |
+| blink-cursor-mode                                |                  50 |
+| bookmark                                         |                   1 |
+| bs-show                                          |                   4 |
+| buffer-menu-mode                                 |                   1 |
+| buff-menu                                        |                   1 |
+| bytecomp                                         |                   1 |
+| byte-opt                                         |                   1 |
+| cl                                               |                   8 |
+| color                                            |                   1 |
+| column-number-mode                               |                  84 |
+| comint                                           |                   1 |
+| compile                                          |                   1 |
+| compilation-minor-mode                           |                  10 |
+| cua-mode                                         |                  12 |
+| cua-selection-mode                               |                  15 |
+| cus-edit                                         |                   1 |
+| cus-theme                                        |                   1 |
+| debug                                            |                   1 |
+| delete-by-moving-to-trash                        |                   5 |
+| delete-selection-mode                            |                  31 |
+| delsel                                           |                   1 |
+| descr-text                                       |                   2 |
+| desktop                                          |                   1 |
+| desktop-save-mode                                |                  27 |
+| diff-mode                                        |                   1 |
+| dired-aux                                        |                   1 |
+| dired-hide-details-mode                          |                  15 |
+| dired-x                                          |                  40 |
+| display-battery-mode                             |                   1 |
+| display-time-mode                                |                  26 |
+| easymenu                                         |                   1 |
+| easy-mmode                                       |                   1 |
+| ede-minor-mode                                   |                   1 |
+| edebug-mode                                      |                   7 |
+| ediff                                            |                   1 |
+| edmacro                                          |                   1 |
+| eldoc-mode                                       |                  44 |
+| electric-indent-mode                             |                  12 |
+| electric-layout-mode                             |                   3 |
+| electric-pair-mode                               |                  10 |
+| emacs-lisp-mode                                  |                   1 |
+| epa-file-enable                                  |                   3 |
+| erc-mode                                         |                   5 |
+| facemenu                                         |                   1 |
+| face-remap                                       |                   1 |
+| faces                                            |                   1 |
+| ffap                                             |                  16 |
+| file-name-shadow-mode                            |                  15 |
+| files                                            |                   1 |
+| finder                                           |                   1 |
+| find-func                                        |                   1 |
+| flyspell-mode                                    |                  50 |
+| font-lock-mode                                   |                  46 |
+| frame                                            |                   1 |
+| frameset                                         |                   1 |
+| generic-x                                        |                   3 |
+| global-auto-revert-mode                          |                  11 |
+| global-cwarn-mode                                |                   5 |
+| global-ede-mode                                  |                   1 |
+| global-font-lock-mode                            |                  42 |
+| global-hi-lock-mode                              |                   5 |
+| global-hl-line-mode                              |                  14 |
+| global-linum-mode                                |                  11 |
+| global-semantic-decoration-mode                  |                   1 |
+| global-semantic-highlight-func-mode              |                   1 |
+| global-semantic-idle-completions-mode            |                   1 |
+| global-semantic-idle-local-symbol-highlight-mode |                   1 |
+| global-semantic-idle-scheduler-mode              |                   1 |
+| global-semantic-idle-summary-mode                |                   1 |
+| global-semantic-mru-bookmark-mode                |                   1 |
+| global-semantic-stickyfunc-mode                  |                   1 |
+| global-semanticdb-minor-mode                     |                   1 |
+| global-subword-mode                              |                  20 |
+| global-visual-line-mode                          |                   3 |
+| global-whitespace-mode                           |                   9 |
+| grep                                             |                   1 |
+| help                                             |                   1 |
+| help-fns                                         |                   1 |
+| help-mode                                        |                   1 |
+| hide-ifdef-mode                                  |                   5 |
+| hippie-exp                                       |                  22 |
+| hl-line                                          |                   1 |
+| hs-minor-mode                                    |                  12 |
+| ibuffer                                          |                  55 |
+| icomplete-mode                                   |                  17 |
+| ido-everywhere                                   |                  38 |
+| ido-mode                                         |                  73 |
+| image                                            |                   1 |
+| image-dired                                      |                   1 |
+| image-file                                       |                   1 |
+| imenu                                            |                  21 |
+| info-mode                                        |                   1 |
+| isearch                                          |                   1 |
+| iso-transl                                       |                   1 |
+| ispell-minor-mode                                |                  10 |
+| iswitchb-mode                                    |                   8 |
+| kill-whole-line                                  |                  12 |
+| kmacro                                           |                   1 |
+| line-number-mode                                 |                  42 |
+| linum-mode                                       |                  13 |
+| lisp-mnt                                         |                   1 |
+| lisp-mode                                        |                   1 |
+| lpr                                              |                   1 |
+| ls-lisp                                          |                   1 |
+| menu-bar                                         |                   1 |
+| menu-bar-mode                                    |                   1 |
+| minibuffer-depth-indicate-mode                   |                   1 |
+| misearch                                         |                   1 |
+| mouse                                            |                   1 |
+| mouse-avoidance-mode                             |                   5 |
+| mwheel                                           |                   1 |
+| mouse-wheel-mode                                 |                  15 |
+| newcomment                                       |                   1 |
+| org-capture                                      |                  20 |
+| org-mode                                         |                  44 |
+| org-src-mode                                     |                   8 |
+| orgstruct++-mode                                 |                   2 |
+| orgtbl-mode                                      |                   6 |
+| outline                                          |                   1 |
+| outline-minor-mode                               |                   2 |
+| package                                          |                   1 |
+| page                                             |                   1 |
+| paren                                            |                   1 |
+| pc-selection-mode                                |                   1 |
+| pp                                               |                   1 |
+| printing                                         |                   6 |
+| ps-print                                         |                   1 |
+| recentf-mode                                     |                  52 |
+| rectangle-mark-mode                              |                   6 |
+| reftex-mode                                      |                  11 |
+| regexp-opt                                       |                   1 |
+| register                                         |                   1 |
+| replace                                          |                   1 |
+| ring                                             |                   1 |
+| savehist-mode                                    |                  22 |
+| saveplace                                        |                  28 |
+| semantic-mode                                    |                   4 |
+| server-mode                                      |                  26 |
+| shadow                                           |                   1 |
+| shell                                            |                   1 |
+| shell-dirtrack-mode                              |                   8 |
+| simple                                           |                   1 |
+| show-paren-mode                                  |                  78 |
+| size-indication-mode                             |                  16 |
+| subword-mode                                     |                  14 |
+| thingatpt                                        |                   1 |
+| time-date                                        |                   1 |
+| timer                                            |                   1 |
+| tool-bar                                         |                   1 |
+| tooltip-mode                                     |                  18 |
+| tramp                                            |                  21 |
+| tramp-ftp                                        |                   1 |
+| transient-mark-mode                              |                  62 |
+| uniquify                                         |                  83 |
+| url-handler-mode                                 |                   1 |
+| url-parse                                        |                   1 |
+| url-vars                                         |                   1 |
+| view-mode                                        |                   1 |
+| visible-bell                                     |                  13 |
+| visual-line-mode                                 |                  15 |
+| wid-edit                                         |                   1 |
+| which-function-mode                              |                  25 |
+| whitespace-mode                                  |                   7 |
+| window                                           |                   1 |
+| windmove                                         |                  36 |
+| winner-mode                                      |                  42 |
 
 }}}
 
