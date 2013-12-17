@@ -10,7 +10,7 @@ __How to summarize the results__
 
 __Survey Trend__
 
-Here is a quick summary of polling trends.  For ease of interpretation, Horizontal rules are drawn at 50%, 25% and 12% levels.
+Here is a quick summary of polling trends.  For ease of interpretation, Horizontal rules are drawn at 62%, 50%, 37%, 25% and 12% levels.
 
 {{{
 #+CONSTANTS: N=120
@@ -20,8 +20,10 @@ Here is a quick summary of polling trends.  For ease of interpretation, Horizont
 |--------------------------------------------------+---------------------+---------|
 | uniquify                                         |                  83 |      69 |
 | show-paren-mode                                  |                  78 |      65 |
+|--------------------------------------------------+---------------------+---------|
 | ido-mode                                         |                  73 |      60 |
 | transient-mark-mode                              |                  62 |      51 |
+|--------------------------------------------------+---------------------+---------|
 | ibuffer                                          |                  55 |      45 |
 | recentf-mode                                     |                  52 |      43 |
 | blink-cursor-mode                                |                  50 |      41 |
