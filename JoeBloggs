@@ -43,6 +43,8 @@ Most of these can also be found on my github account: https://github.com/vapniks
 Here is a list of things that I would like to see at some point, but haven't got around to doing yet (and might never do so).
 If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
 
+* A general framework for marking and selecting items in a buffer a la dired mode. I had to write my own code for this for Lisp:simple-call-tree+.el, and have come across a few other libraries that do this kind of thing (e.g. [https://github.com/rejeep/prodigy.el prodigy]). I'm guessing it would be useful in for other libraries yet to be written.
+)
 * A currency conversion library - it should get it's information from some reliable online source such as http://www.xe.com. It would also be good if there was some way to integrate it with the emacs [AdvancedDeskCalculator calculator].
 * A function to make it easy to format text in different colours/faces, e.g. (format+ "%y, %y, %y" '("red" :foreground "red") '("blue" :background "blue") '("function" 'font-lock-function-name-face))
 * Fix [[ComintMode]] so that `comint-delete-output' (C-c C-o) works for prompts other than just the last one.
@@ -52,6 +54,7 @@ If anyone decides to implement one of these, or finds an already existing implem
 * Directory name caching for ido - like [http://www.skamphausen.de/cgi-bin/ska/CDargs cdargs] for bash, or [[FileNameCache]] but for directories (and with user chosen aliases).
 * Some way of getting emacs to handle hooks more robustly. It's really annoying when your config file won't load fully because some function that you put on one of the built-in hooks is no longer valid, and you then have to do a load of debugging to track it down. Would be much nicer if emacs just skipped over the dodgy function, reported the error, and then continued.
 * More c-level string matching functions, e.g. for finding longest common substring. This would be useful for building more powerful code analysis tools for example.
+
 
 == Mail Box ==
 
