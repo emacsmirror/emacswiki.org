@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:59:40 2013 (-0700)
+;; Last-Updated: Tue Dec 17 14:12:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1954
+;;     Update #: 1959
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -18,15 +18,16 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `chistory',
-;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
-;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
-;;   `header2', `help+20', `hexrgb', `highlight', `info', `info+',
-;;   `isearch+', `iso-transl', `lib-requires', `loadhist',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
-;;   `mouse+', `mwheel', `naked', `pp', `pp+', `replace+', `ring',
-;;   `second-sel', `setup-keys', `simple+', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `wimpy-del'.
+;;   `cmds-menu', `cus-theme', `doremi', `doremi-cmd', `doremi-frm',
+;;   `easymenu', `eyedropper', `faces', `faces+', `fit-frame',
+;;   `frame-cmds', `frame-fns', `header2', `help+20', `hexrgb',
+;;   `highlight', `info', `info+', `isearch+', `iso-transl',
+;;   `lib-requires', `loadhist', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mouse', `mouse+', `mwheel', `naked',
+;;   `pp', `pp+', `replace+', `ring', `second-sel', `setup-keys',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `wimpy-del'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -57,6 +58,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/17 dadams
+;;     Turn off electric-indent-mode (Emacs 24.4 turns it on by default).
 ;; 2012/10/02 dadams
 ;;     Handle obsolescence of face modeline.
 ;; 2011/11/29 dadams
@@ -399,6 +402,7 @@
 ;;; (setq display-time-day-and-date nil)    ; No date in modeline.  In `time.el'.
 
 (setq-default indent-tabs-mode  nil)    ; SPCs only (no TABs), when indenting.
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Use classic `C-j' and `RET'.
 
 ;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take
 ;;; effect, because `ls-lisp.el' is a standard library, preloaded.
