@@ -43,6 +43,8 @@ logfile c:\msmtplog.txt
 ########################
 </pre>
 
+Attention: As in version 1.4.31 of msmtp, there is no need to fiddle with `message-sendmail-extra-arguments'.  Inside your msmtprc file, add the `from' command to each account. msmtp will match the `from' value against the `From: ' field of the e-mail header (only the address).
+
 Now, weâd like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
 
 <pre>
