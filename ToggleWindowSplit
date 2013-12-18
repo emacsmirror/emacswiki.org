@@ -36,6 +36,8 @@ write this.
 
 Here's a simpler implementation I wrote before knowing about this wiki page:
 
+[This version doesn't always preserve the associated buffers as the above version does]
+
 <pre>
 (defun toggle-frame-split ()
   "If the frame is split vertically, split it horizontally or vice versa.
