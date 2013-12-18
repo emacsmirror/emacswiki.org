@@ -9,7 +9,8 @@ See also:
 
 * [[ShowWhiteSpace#HighlightChars|Highlight Characters]]
 * HighLight
-* AutoHighlightSymbolMode: https://github.com/mitsuo-saito/auto-highlight-symbol-mode
+* %%AutoHighlightSymbolMode%%: https://github.com/mitsuo-saito/auto-highlight-symbol-mode
+* In Emacs 24.4, `##M-s h .##' will be bound to `highlight-symbol-at-point'
 
 ====Problems====
 * If the highlighted symbol has an overlay with dark background, the highlight is not visible.
