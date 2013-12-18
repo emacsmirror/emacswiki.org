@@ -27,7 +27,7 @@ If you feel like adding an extra note to your vote, use [[Comments_on_Frequently
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 120 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 121 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -38,7 +38,7 @@ __Minor Mode Survey__
 | ange-ftp                                         |                   1 |
 | ansi-color                                       |                   1 |
 | apropos                                          |                   1 |
-| auto-completion-mode                             |                   4 |
+| auto-completion-mode                             |                   5 |
 | auto-composition-mode                            |                  12 |
 | auto-compression-mode                            |                  14 |
 | auto-encryption-mode                             |                  19 |
@@ -46,7 +46,7 @@ __Minor Mode Survey__
 | auto-image-file-mode                             |                   3 |
 | autoinsert                                       |                   4 |
 | blink-cursor-mode                                |                  50 |
-| bookmark                                         |                   1 |
+| bookmark                                         |                   2 |
 | bs-show                                          |                   4 |
 | buffer-menu-mode                                 |                   1 |
 | buff-menu                                        |                   1 |
@@ -68,7 +68,7 @@ __Minor Mode Survey__
 | delsel                                           |                   1 |
 | descr-text                                       |                   2 |
 | desktop                                          |                   1 |
-| desktop-save-mode                                |                  27 |
+| desktop-save-mode                                |                  28 |
 | diff-mode                                        |                   1 |
 | dired-aux                                        |                   1 |
 | dired-hide-details-mode                          |                  15 |
@@ -131,7 +131,7 @@ __Minor Mode Survey__
 | ibuffer                                          |                  55 |
 | icomplete-mode                                   |                  17 |
 | ido-everywhere                                   |                  38 |
-| ido-mode                                         |                  73 |
+| ido-mode                                         |                  74 |
 | image                                            |                   1 |
 | image-dired                                      |                   1 |
 | image-file                                       |                   1 |
@@ -159,12 +159,12 @@ __Minor Mode Survey__
 | mouse-wheel-mode                                 |                  15 |
 | newcomment                                       |                   1 |
 | org-capture                                      |                  20 |
-| org-mode                                         |                  44 |
+| org-mode                                         |                  45 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   6 |
-| outline                                          |                   1 |
-| outline-minor-mode                               |                   2 |
+| outline                                          |                   2 |
+| outline-minor-mode                               |                   3 |
 | package                                          |                   1 |
 | page                                             |                   1 |
 | paren                                            |                   1 |
@@ -173,7 +173,7 @@ __Minor Mode Survey__
 | printing                                         |                   6 |
 | ps-print                                         |                   1 |
 | recentf-mode                                     |                  52 |
-| rectangle-mark-mode                              |                   6 |
+| rectangle-mark-mode                              |                   7 |
 | reftex-mode                                      |                  11 |
 | regexp-opt                                       |                   1 |
 | register                                         |                   1 |
@@ -195,9 +195,10 @@ __Minor Mode Survey__
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
 | tooltip-mode                                     |                  18 |
-| tramp                                            |                  21 |
+| tramp                                            |                  22 |
 | tramp-ftp                                        |                   1 |
 | transient-mark-mode                              |                  62 |
+| undo-tree                                     |                  1 |
 | uniquify                                         |                  83 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
