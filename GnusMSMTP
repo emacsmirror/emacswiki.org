@@ -122,6 +122,8 @@ logfile /home/USER/msmtplog.txt
 </pre>
 msmtp complains about the 'default' account settings, so if you receive a generic error while running with emacs; go to the command-line and if see if you receive more verbose error messages.  Also, recheck your rc file.
 
+[18/12/2013]: You really shouldn't disable the check for the server certificate (`tls_certcheck')
+
 <pre>
 Above configuration tested with:
 OS: Ubuntu Linux 7.10
