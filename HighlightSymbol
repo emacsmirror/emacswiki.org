@@ -1,10 +1,6 @@
 highlight-symbol is a way to quickly highlight and navigate between symbols.
 -----
 
-Emacs 24.3.50.4 (the bzr build) has in-built support for highlighting symbols .  It is bound to M-s h .  or C-x w .
-
-
-
 It will temporarily highlight all occurrences of the current symbol and also allows one-button manual highlighting.  It's available on my [http://nschum.de/src/emacs/highlight-symbol/ website].  -- [[nschum]]
 
 http://nschum.de/src/emacs/highlight-symbol/highlight-symbol.png
