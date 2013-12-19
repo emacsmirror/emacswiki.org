@@ -72,3 +72,6 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                             (puthash (match-string 1) t hash))
                           (setq my-php-symbol-hash hash))))))))
 </pre>
+
+= See Also =
+CompanyMode
