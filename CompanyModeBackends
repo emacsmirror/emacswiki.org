@@ -63,20 +63,12 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                              my-php-symbol-hash)
                         my-php-symbol-hash
 
-                      (message "Fetching completion list...")
-
-                      (with-current-buffer
-                          (url-retrieve-synchronously (concat "http://www.php.net/manual-lookup.php?scope=quickref&pattern=" arg))
-
+                      (with-temp-buffer
+                           (call-process-shell-command "php -r '$all=get_defined_functions();foreach ($all[\"internal\"] as $fun) { echo $fun . \";\";};'"\
+      nil t)
                         (goto-char (point-min))
-
-                        (if (re-search-forward "<!-- result list start -->" nil t)
-                            (let ((end (save-excursion
-                                         (if (re-search-forward "<!-- result list end -->" nil t)
-                                             (point)))))
-                              (if end
-                                  (let ((hash (make-hash-table)))
-                                    (while (re-search-forward ">\\([^<]+\\)</b>" end t)
-                                      (puthash (match-string 1) t hash))
-                                    (setq my-php-symbol-hash hash)))))))))))
+                        (let ((hash (make-hash-table)))
+                          (while (re-search-forward "\\([^;]+\\);" (point-max) t)
+                            (puthash (match-string 1) t hash))
+                          (setq my-php-symbol-hash hash))))))))
 </pre>
