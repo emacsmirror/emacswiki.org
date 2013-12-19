@@ -1,0 +1,22 @@
+Hi there! I'm Aaron. I have [http://blog.aaron-miller.me a rarely updated blog], [http://github.com/aaron-em a Github account], and [mailto:me@aaron-miller.me a frequently checked email address]. I spend some time on [http://stackexchange.com/users/1894896/aaron-miller Stack Exchange sites]:
+
+http://stackexchange.com/users/flair/1894896.png
+
+I use Emacs, and have done since ca. late 2010, which was when I decided I needed an editor which didn't suck, which could run on the Windows platform under Cygwin, and which could natively, reliably, edit remote files via a variety of transports. After a month or so of hunting around, I found there just wasn't anything better for that purpose than Tramp. Perhaps by now there is, but I doubt it, and I wouldn't care if there were; Emacs has grown on me.
+
+I use Emacs for web development, which is my day job, in Perl, Ruby, PHP when I can't dodge fast enough, and Javascript on both the server and the client side; for life management, by means of Org-mode; for IRC, by way of ERC, and, of course, for my leisure programming, which used to be mostly Perl but these days is increasingly Emacs Lisp and Common Lisp. I have Emacs tied into Firefox via [https://addons.mozilla.org/en-US/firefox/addon/its-all-text/ the "It's All Text!" extension]; Emacs is my terminal emulator. With increasingly rare exception, if it involves typing text into a computer, Emacs is what I use to do it.
+
+----
+
+I've written some Emacs Lisp code. It might not suck. Here's the stuff that's publicly available, roughly in reverse order of age:
+
+* [http://github.com/aaron-em/nethack-luck.el nethack-luck.el] - Nethack's luck messages, for your convenience (and in your Eshell banner)
+* [http://github.com/aaron-em/weatherline-mode.el weatherline-mode.el] - the current weather, courtesy of [http://www.openweathermap.org OpenWeatherMap], in your mode line
+* [http://github.com/aaron-em/system-cores.el system-cores.el] - a unified interface to various platforms' methods of finding out how many physical and logical processors are installed
+* [[dedicate-windows-manually.el]] - manually dedicate and undedicate windows to their buffers; also prevents/unprevents window splitting
+
+I've written a fair bit more Emacs Lisp code than that, but none of it's in shape to be made publicly available. As that changes, I'll update this page with links to newly posted things, if I remember.
+
+----
+
+CategoryHomepage
