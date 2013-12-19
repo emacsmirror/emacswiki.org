@@ -1,5 +1,5 @@
 Being very annoyed with rcirc not knowing how to automatically reconnect I ([[avar]]) hacked that feature in with a custom connect function, hooks and hackery:
 
-* http://github.com/avar/dotemacs/blob/726f0b6cd5badce641be6ef690ca82e9dbdcc605/.emacs
+* http://github.com/avar/dotemacs/blob/726f0b6cd5badce641be6ef690ca82e9dbdcc605/.emacs#L639
 
 I hope this is useful for somebody else.
