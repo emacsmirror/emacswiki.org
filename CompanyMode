@@ -19,7 +19,7 @@ Back-ends are single functions, they look like this:
 They can be installed simply by adding them to ''company-backends''.
 If it is in a file named like the function (e.g. company-my-backend.el), it will be required automatically.
 
-A list of user-written back-ends on the Wiki: CompanyModeBackends
+A list of user-written back-ends: CompanyModeBackends
 
 == Front-ends ==
 A visualization (front-end) is also a single function.  It looks like this:
