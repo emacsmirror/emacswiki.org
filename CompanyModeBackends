@@ -62,7 +62,7 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                       (message "Fetching completion list...")
 
                       (with-current-buffer
-                          (url-retrieve-synchronously "http://php.net/quickref.php")
+                          (url-retrieve-synchronously (concat "http://www.php.net/manual-lookup.php?scope=quickref&pattern=" arg))
 
                         (goto-char (point-min))
 
@@ -72,7 +72,7 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                                              (point)))))
                               (if end
                                   (let ((hash (make-hash-table)))
-                                    (while (re-search-forward ">\\([^<]+\\)</a>" end t)
+                                    (while (re-search-forward ">\\([^<]+\\)</b>" end t)
                                       (puthash (match-string 1) t hash))
                                     (setq my-php-symbol-hash hash)))))))))))
 </pre>
