@@ -1,8 +1,14 @@
-= Rope =
+This page is about backends available for CompanyMode.
+
+
+
+== Rope ==
 
 http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
 
-= SlimeMode =
+
+
+== SlimeMode ==
 
 A backend plugging into the slime completion mechanism.  It can
 display arglists, docstrings and display the source of a completion
@@ -12,7 +18,6 @@ The newest version can always be found at its
 [http://github.com/anwyn/slime-company GitHub] repository.
 
 There is a copy on the EmacsWiki, though it may be outdated:
-
 Lisp:slime-company.el
 
 A variant that is always kept compatible with the latest Slime ELPA package is available at:
@@ -21,14 +26,19 @@ http://gist.github.com/179847
 The first version of this file, for use with an older Slime, can be found at:
 http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
 
-= Inf-Ruby =
+
+
+
+== Inf-Ruby ==
 [http://gist.github.com/raw/610104/b4db1e8789d8507d00b7d56672485143e9eec72c/inf-ruby-company.el inf-ruby-company.el]
 
 Documentation: [[InfRubyCompany]]
 
-= EmacsLispMode =
 
-=== Keywords completions ===
+
+== EmacsLispMode ==
+
+=== Keyword completions ===
 
   (defun company-elisp-finder-keyword-backend (command &optional arg &rest ign)
     "A `company-backend' for finder-keywords."
@@ -42,8 +52,11 @@ Documentation: [[InfRubyCompany]]
 
 -- [[nschum]]
 
+
+
+
 [:PhpCompletion]
-= Php function completion =
+== Php function completion ==
 
 It fetches the list of functions from php.net if it's not fetched already, so it does not need a static completion list, only an internet connections:
 
@@ -73,5 +86,5 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                           (setq my-php-symbol-hash hash))))))))
 </pre>
 
-= See Also =
-CompanyMode
+----
+CategoryCompletion
