@@ -11,7 +11,7 @@ I use Emacs for web development, which is my day job, in Perl, Ruby, PHP when I 
 I've written some Emacs Lisp code. It might not suck. Here's the stuff that's publicly available, roughly in reverse order of age:
 
 * [http://github.com/aaron-em/nethack-luck.el nethack-luck.el] - Nethack's luck messages, for your convenience (and in your Eshell banner)
-* [http://github.com/aaron-em/weatherline-mode.el weatherline-mode.el] - the current weather, courtesy of [http://www.openweathermap.org OpenWeatherMap], in your mode line
+* [http://github.com/aaron-em/weatherline-mode.el weatherline-mode.el] - the current weather, courtesy of [http://openweathermap.org OpenWeatherMap], in your mode line
 * [http://github.com/aaron-em/system-cores.el system-cores.el] - a unified interface to various platforms' methods of finding out how many physical and logical processors are installed
 * [[dedicate-windows-manually.el]] - manually dedicate and undedicate windows to their buffers; also prevents/unprevents window splitting
 
