@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.120
+;; Version: 0.121
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 19-Dec-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Add slim-mode to auto-indent-multiple-indent-modes.  Indentation on
+;;    paste sort of works..
 ;; 18-Dec-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Add markdown-mode to auto-indent-disabled-modes-list.  Should address
@@ -1377,6 +1381,7 @@ point is at BOL.  And if point is after text, act as if point
     haskell-mode
     haml-mode
     yaml-mode
+    slim-mode
     scss-mode)
   "List of modes with multiple indent."
   :type '(repeat (symbol :tag "Major mode"))
