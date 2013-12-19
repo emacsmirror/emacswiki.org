@@ -49,7 +49,7 @@ It fetches the list of functions from php.net if it's not fetched already, so it
 
 <pre>
 (defun my-php ()
-  (add-to-list 'company-backends 'company-php-backend)
+  (add-to-list 'company-backends 'company-my-php-backend)
   )
 (add-hook 'php-mode-hook 'my-php)
  (defun company-my-php-backend (command &optional arg &rest ignored)
