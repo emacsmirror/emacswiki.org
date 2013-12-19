@@ -74,7 +74,10 @@ Could this be used to display [http://stackoverflow.com/questions/1587972/how-to
 [new:DrewAdams:2009-10-31 20:53 UTC]
 Sure, why not? -- DrewAdams
 
-
+=== Off by one ===
+It seems to be
+With <tt>[[column-marker.el]]</tt> and (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-1 80))) I it only highlights the 81st column.
+Using emacs 23.4 on debian jessie. Sorry I'm not sure where to report this bug.
 
 ----
 
