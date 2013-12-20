@@ -1,50 +1,90 @@
-S/MIME support in Gnus is somewhat limited.  ExtendSMIME redefines some Gnus
-functions and adds new ones to include proper support for
-* multiple recipients (smime-encrypt-region enhanced),
-* retrieval  and caching of certificates from LDAP servers
-  (smime-cert-by-ldap-1 redefined, including a bug fix and negative caching),
-* extraction and caching of certificates from signed messages
-  (smime-verify-region enhanced),
-* and (via jl-encrypt.el) automatic insertion of MML tags into messages if
-  certificates for all recipients are available.
-
-The general idea of ExtendSMIME is to store available certificates in
-files under smime-certificate-directory.  The file names under which a
-certificate is stored are its e-mail addresses.
-A certificate file is written in two cases:  First, if a certificate is
-received on demand via LDAP.  Second, if a signed message containing a
-certificate is verified successfully then the contained certificate is
-stored for each of its e-mail addresses.
-
-Signed versions of jl-smime.el and jl-encrypt.el are available
-[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
-
-For basic setup information concerning S/MIME in GNU Emacs (Gnus, in
-fact), I recommend that you read Info node
-[https://www.gnu.org/software/emacs/manual/html_node/message/Security.html(message) Security]
-and the Wiki entry GnusSMIME.
+ExtendSMIME enhances DefaultEncrypt to support S/MIME.  Moreover, it allows
+to retrieve certificates via LDAP and to import them into gpgsm.
 
 ==Preliminaries==
 In general, I recommend GnuPG over S/MIME (which is the default for Gnus).
 Unless you are in a restricted setting, say in a university or corporate
 setting, the trust model regarding certificate authorities is broken.
 You may want to recall some certificate authority failures such as
-[http://www.h-online.com/security/news/item/SSL-meltdown-a-cyber-war-attack-1214104.html Comodo (2011)],
+Comodo (2011) [URI censored],
 [https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model DigiNotar (2011)],
-and [http://www.h-online.com/news/item/Trustwave-issued-a-man-in-the-middle-certificate-1429982.html Trustwave (2012)].
+Trustwave (2012) [URI censored], and
+[https://blog.mozilla.org/security/2013/12/09/revoking-trust-in-one-anssi-certificate/ ANSSI (2013)].
+
 Although the impact of those failures appears to be restricted to SSL
 certificates, I don't see any reason why S/MIME certificates should be more
 trustworthy.
 
+In addition, be careful how you create your key pair.  Doing that in your
+browser via a Web form provided by your CA apparently requires a networked
+machine, which may not be the best choice.  Instead, openssl and gpgsm
+enable offline generation with transfer to an e-token or smartcard.
+If you must use a browser, for Firefox at least set a master password
+before you generate the key pair:
+http://kb.mozillazine.org/Master_password
+Otherwise, everyone with access to your profile folder (local admin as well
+as backups in remote places) can use your private key.
+
+Having said that, in my university I trust the CA to sign keys for the
+correct owners, and more colleagues own S/MIME certificates than GnuPG
+keys.
+
+==Functionality==
+The general idea of ExtendSMIME is to enhance S/MIME support in Gnus for
+* retrieval of certificates from LDAP servers with import into gpgsm
+  (smime-cert-by-ldap-1 redefined, including a bug fix and negative
+  caching) and
+* (via jl-encrypt.el) automatic insertion of MML tags into messages if
+  certificates for all recipients are available.
+
+Note that version 3.1 of ExtendSMIME introduces a major change: Previous
+versions used openssl for cryptographic operations while version 3.1 uses
+gpgsm (part of gnupg-2).  In particular, certificates are no longer
+maintained by ExtendSMIME but are imported into gpgsm.  In fact, gpgsm
+manages certificates on its own and automatically extracts certificates
+from signed messages, which simplifies the code of ExtendSMIME a lot.
+
+The general idea of ExtendSMIME is to search for missing certificates via
+LDAP before an e-mail is sent.  Resulting certificates are imported
+into gpgsm.  LDAP search is customizable (and documented) via
+`jl-smime-permit-ldap'.
+
+In addition to this automatic LDAP search, the command
+`M-x jl-smime-key-available-p' allows manual searches.  It asks for an
+e-mail address (an address at point is used as default value).  If no
+certificate is available, an LDAP search is started (ignoring negative
+caching and `jl-smime-permit-ldap').  If a certificate is found, it is
+imported into gpgsm; otherwise, a negative cache entry is created.
+
+Documentation concerning S/MIME with GNU Emacs is mostly targeting openssl
+but not gpgsm.  See installation instructions below.
+
 ==Installation==
-Put Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
+Signed versions of jl-smime.el and jl-encrypt.el are available
+[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
+
+Message security (as described in
+[https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Info node `(message) Security'])
+automatically prefers EasyPG with gpgsm over openssl if EasyPG is loaded
+first.
+Thus, place Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
+(require 'epa-file)
 (load "jl-smime")
 }}}
-Customizable variables are `jl-smime-permit-ldap' and
-`jl-smime-negative-cache-dir'.  You may want to read their documentation.
+
+Optionally and unrelated to e-mail, you may also want:
+{{{
+(setq epa-file-encrypt-to "<your-key-id>")
+(setq epg-debug t)
+}}}
+
+Customizable variables of ExtendSMIME are jl-smime-permit-ldap,
+jl-smime-negative-cache-dir, and jl-smime-negcache-maxage.
+You may want to read their documentation.
 
 I'm using the following code after (load "jl-smime") in my setup:
+
 {{{
 ;; Allow automatic LDAP queries for certificates within my domain.
 (setq jl-smime-permit-ldap "@\\(.+\\.\\)?uni-muenster\\.de$")
@@ -68,18 +108,36 @@ I'm using the following code after (load "jl-smime") in my setup:
       ; -H: connect to specified URI.
       ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")
       )
-
-;; Cache S/MIME passphrase for 600 seconds.  (Default is 16.)
-(require 'password-cache)
-(setq password-cache-expiry 600)
 }}}
 
-For the record: Previously, I used plaintext LDAP with the following
-differences to the above setup:
+If you used openssl previously, you need to import your keys and
+certificates into gpgsm.  Here are three-and-a-half steps, which worked for
+me.
+
+First, import the private key.
 {{{
-(setq ldap-ldapsearch-args '("-x" "-tt"))
-(setq smime-ldap-host-list '("ldap.pca.dfn.de"))
+$ gpgsm --import my-private-key.p12
 }}}
+
+Second, the CA signing my certificate is unknown to gpgsm (gpg-agent, in
+fact).  Thus, gpgsm refuses to use that key pair.  I added the option
+`allow-mark-trusted' to ~/.gnupg/gpg-agent.conf.  Then I tried again to
+sign a file.  This time, gpg-agent displayed the root CA's fingerprint and
+asked whether I trust it.  Saying "yes" added that fingerprint to
+~/.gnupg/trustlist.txt, and the key became usable.  (Note that you must
+trust the root CA; adding an intermediate CA's fingerprint does not work.)
+
+Third, import (a subset of) your old certificates.  With ExtendSMIME before
+version 3.1, those were stored in files under
+`smime-certificate-directory', ~/Mail/certs, by default.  In that
+directory, execute: <code>$ gpgsm --import <certfiles></code>
+
+Finally, decide how you ensure that you can decrypt your own e-mails.
+See comments for DefaultEncrypt in jl-encrypt.el and note that, similarly
+to gpg, gpgsm understands the option "--encrypt-to" (which is not
+mentioned in the man page).  I have the following line in gpgsm.conf:
+encrypt-to <colon-separated-fingerprint-of-own-key>
+
 
 ----
 CategoryGnus SigningMail EncryptingMail
