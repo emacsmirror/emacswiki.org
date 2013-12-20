@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.121
+;; Version: 0.122
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Dec-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    May address underlying issue of #37.  Only reindent at certain points
+;;    (like return).  Otherwise reindenting is not performed.
 ;; 19-Dec-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Add slim-mode to auto-indent-multiple-indent-modes.  Indentation on
@@ -2555,13 +2559,18 @@ around and the whitespace was deleted from the line."
                        (string= (match-string 0) (key-description (this-command-keys))))
                    (error nil)))
             (auto-indent-according-to-mode))
-           ((and auto-indent-block-close
-                 (let ((case-fold-search t))
-                   (condition-case err
-                       (looking-back (regexp-opt auto-indent-block-close-keywords t))
-                     (error nil))))
-            (auto-indent-according-to-mode))
            ((and last-command-event (memq last-command-event '(10 13 return)))
+            (when (and auto-indent-block-close
+                       (save-excursion
+                         (let ((case-fold-search t)
+                               (cs (condition-case err
+                                       (comment-search-backward (point-at-bol) t)
+                                     (error nil))))
+                           (when cs
+                             (skip-chars-backward " \t")
+                             (looking-back (regexp-opt auto-indent-block-close-keywords 'words))
+                             t))))
+             (auto-indent-according-to-mode))
             (when (or (not (or (fboundp 'yas--snippets-at-point)
                                (fboundp 'yas/snippets-at-point)))
                       (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
