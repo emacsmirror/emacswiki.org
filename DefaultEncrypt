@@ -1,31 +1,90 @@
 [https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Gnus supports GnuPG]
 via the insertion of so-called MML secure tags, which contain encryption
-instructions to be performed before a message is sent.  However, in the past I
-sent plaintext e-mails (more than once, I'm afraid) that really should have
-been encrypted ones.  To prevent myself from forgetting to encrypt e-mails
-again, I wrote DefaultEncrypt.
+instructions to be performed before a message is sent.
+However, by default those tags need to be added manually, which can easily
+be forgotten.  In contrast, DefaultEncrypt aims to insert those tags
+automatically if public keys for all recipients are available.
 
-DefaultEncrypt aims for automatic insertion of MML secure tags into messages
-if public keys (either GnuPG public keys or S/MIME certificates) for
-all recipients are available.  In addition, before a message is sent,
-the user is asked if plaintext should really be sent unencryptedly when
-public keys for all recipients are available.  Moreover, a consistency
-check aims to avoid unsafe usage of Bcc headers.
-This works by rebinding the standard keys for message sending
-(`C-c C-c'} and `C-c C-s') as well as by adding a check
-to `gnus-message-setup-hook'.
+I assume that you are familiar with GnuPG support for Gnus messages as
+described in
+[https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Info node `(message) Security'].
+Moreover, DefaultEncrypt is based on EasyPG, the default interface of Emacs for
+OpenPGP and S/MIME, see
+[https://www.gnu.org/software/emacs/manual/html_node/epa/index.html Info node `(epa)'].
+
+DefaultEncrypt aims for automatic insertion of an MML secure encryption
+tags into messages if public keys (either GnuPG public keys or S/MIME
+certificates) for all recipients are available.  In addition, before a
+message is sent, the user is asked whether plaintext should really be sent
+unencryptedly when public keys for all recipients are available.
+
+Moreover, a consistency check aims to avoid unsafe usage of Bcc headers.
+(Some details are given below.)
+
+Finally, another consistency check tests whether multiple public keys are
+available for some recipient.  If so, EasyPG would select one of those
+keys, which may or may not be a desirable one.  In this case,
+DefaultEncrypt sets `mm-encrypt-option' to 'multiple (available since Emacs
+23.2), which causes EasyPG to display (mostly) relevant keys in a separate
+buffer.  In that buffer, you need to select keys for *all* recipients (not
+just those with multiple public keys).  Relevant key bindings in that
+buffer are: m (select a key), <mouse-2> (display key info), C-c C-c
+(OK, after you selected keys for all recipients)
+See also the documentation for `jl-encrypt-manual-choice'.
+
+The above works by rebinding the standard keys for message sending
+(`C-c C-c' and `C-c C-s') as well as by adding the check
+`jl-encrypt-if-possible' to `gnus-message-setup-hook'.
+
+Note that with EasyPG, e-mail is *not* encrypted to (a key for) the
+From address (see Info node `(epa) Mail-mode integration').
+Instead, to make sure that you can decrypt your own e-mails, typical
+options are
+* to use a Bcc header to encrypt the e-mail to one of your own
+  GnuPG identities (see `jl-encrypt-safe-bcc-list' then) or
+* to use the encrypt-to or hidden-encrypt-to option in gpg.conf or
+* to use the encrypt-to option in gpgsm.conf.
+Note that encrypt-to gives away your identity for *every*
+encryption without warning, which is not what you want if you are
+using, e.g., remailers.
+Also, be careful with Bcc headers; it *might* be possible to make
+this work without giving away the Bcc'ed identities, but it did
+not work by default in my case, and I recommend against such a
+thing: Only add Bcc if you are absolutely sure that you know what
+you are doing.  And let me know how to do that properly ;)
+See also `jl-encrypt-bcc-is-safe'.
+
 If you are really interested in S/MIME then I suggest that you take a look
-at ExtendSMIME in addition to this file.
-
-A signed version of jl-encrypt.el is available
-[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
+at ExtendSMIME (jl-smime.el) in addition to this file.
 
 ==Installation==
+A signed version of DefaultEncrypt (jl-encrypt.el) is available
+[http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
+
 Put Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
 (require 'jl-encrypt)
 }}}
 If you share my preferences, no further configuration should be necessary.
+
+Customizable variables defined in this file are
+`jl-encrypt-insert-signature', `jl-encrypt-gpg-without-mime',
+`jl-encrypt-safe-bcc-list', and `jl-encrypt-manual-choice'.
+
+In addition, as explained in the following `mml-default-encrypt-method' and
+`mml-default-sign-method' influence whether to prefer S/MIME or GnuPG in
+certain situations, and the value of `gnus-message-replysignencrypted' may
+be changed by this code.
+If `jl-encrypt-insert-signature' is nil (the default),
+`gnus-message-replysignencrypted' will be set to nil to avoid signatures
+for reply messages.  You may manually add MML sign tags any time, of
+course, but the whole point of this file is to create MML tags automatically
+(e.g., by customizing `jl-encrypt-insert-signature').
+If GnuPG and S/MIME keys are both available for the given recipients and no
+MML tag is present, `mml-default-encrypt-method' determines what method to
+prefer.  If `jl-encrypt-insert-signature' is set to `always',
+`mml-default-sign-method' determines what method to prefer upon message
+creation.
 
 ==Sanity check==
 Without any further configuration, send a GnuPG encrypted e-mail to
@@ -63,27 +122,6 @@ If you are signing all your e-mails with GnuPG you probably also
 want to set `mml-default-sign-method' to "pgp" (instead of
 "pgpmime").
 
-==Configuration==
-Customizable variables are `jl-encrypt-insert-signature',
-`jl-encrypt-gpg-without-mime', `jl-encrypt-recipient-headers',
-`jl-encrypt-ignore-from', and `jl-encrypt-safe-bcc-list'.
-
-In addition, as explained in the following `mml-default-encrypt-method' and
-`mml-default-sign-method' influence whether to prefer S/MIME or GnuPG in
-certain situations, and the value of `gnus-message-replysignencrypted' may
-be changed by this code.
-
-If `jl-encrypt-insert-signature' is nil (the default),
-`gnus-message-replysignencrypted' will be set to nil to avoid signatures
-for reply messages.  You may manually add MML sign tags any time, of
-course, but the whole point of this file is to create MML tag automatically
-(e.g., by customizing `jl-encrypt-insert-signature').
-
-If GnuPG and S/MIME keys are both available for the given recipients and no
-MML tag is present, `mml-default-encrypt-method' determines what method to
-prefer.  If `jl-encrypt-insert-signature' is set to `always',
-`mml-default-sign-method' determines what method to prefer upon message
-creation.
 
 ----
 CategoryGnus SigningMail EncryptingMail
