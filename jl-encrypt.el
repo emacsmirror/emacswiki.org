@@ -1,491 +1,420 @@
-;;; jl-encrypt.el --- Insert MML encryption tags if public keys are available
-;; -*- Mode: Emacs-Lisp -*-
-;; -*- coding: utf-8 -*-
-
-;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
-;; Copyright (C) 2013 konubinix
-
-;; Version: $Id: jl-encrypt.el,v 1.19 2013/07/01 19:39:19 lechten Exp $
-;; Changelog:
-;; 2012/03/09, Version 1.1, initial release
-;; 2013/03/18, Version 2.1, integrate patch by konubinix to also encrypt
-;;   e-mail that already contains a secure sign tag:
-;;   - Add functions jl-is-signed-p and jl-do-not-sign-p.
-;;   - Change jl-secure-message-gpg and jl-secure-message-smime to use
-;;     jl-do-not-sign-p (and not only jl-encrypt-without-signature).
-;;   - Change jl-message-send-maybe-exit to look for secure encrypt tag
-;;     (instead of any secure tag).
-;;   - Add Changelog, give credit to konubinix
-;; 2013/07/01, Version 3.1, support XEmacs, don't break news, don't replace
-;;   S/MIME tag with GnuPG tag if possible.  New version started based on
-;;   feedback and testing by Michael Strauss.
-;;   - Replace delete-dups with mm-delete-duplicates as XEmacs does not have
-;;     delete-dups.
-;;   - Bug fixed when rebinding keys: Use (interactive "P") instead of
-;;     (interactive "p").
-;;   - Do not attempt to encrypt news postings, only go for e-mails with
-;;     non-empty recipient lists.
-;;   - If the user inserted an S/MIME signature tag, and S/MIME as well as
-;;     GnuPG keys are available, don't prefer GnuPG any more but upgrade
-;;     S/MIME signature to S/MIME sign+encrypt.
-;;   - Refactoring.
-;;     - Added jl-method-table, jl-access-method-table, jl-mail-recipients,
-;;       jl-maybe-add-tag, jl-maybe-add-tag-for-args, jl-is-smime-p.
-;;     - Based on above, simplified jl-proceed-without-encryption-p and
-;;       jl-encrypt-if-possible.
-;;     - Moved jl-certfile-available-p and jl-secure-message-smime to
-;;       jl-smime.
-;;   - Explain potential unsafety of Bcc headers.  Safety check added.
-;;     Added jl-encrypt-safe-bcc-list.
-;;   - Changed jl-gpgkey-available-p to produce less false positives.
-;;   - Replaced jl-encrypt-without-signature with jl-encrypt-insert-signature.
-;;     Have jl-encrypt-if-possible use it.  Bug fix in jl-is-signed-p.
-;;   - Different treatment of From header.  See comment for new variable
-;;     jl-encrypt-ignore-from.
-;;   - Simplified internal recipient lists now contain just lower-case e-mail
-;;     addresses (no names any longer).
-;;   - Use defcustom instead of defvar for user variables, which are also
-;;     renamed.
-
-;; Compatibility: Should work with GNU Emacs 23.1 and later
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 3, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.
-;; If not, see http://www.gnu.org/licenses/ or write to the
-;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
-
-;; Keywords: mail, encryption, GnuPG, gpg, S/MIME, OpenPGP
-
-;; URL: http://www.emacswiki.org/emacs/jl-encrypt.el
-;; EmacsWiki: DefaultEncrypt
-
-;; A signed version of this file is available over there:
-;; http://www.informationelle-selbstbestimmung-im-internet.de/emacs/
-
-;;; Commentary:
-;; If you sometimes send plaintext e-mails that really should have been
-;; encrypted ones, then this file may be for you.
-;; I assume that you are familiar with GnuPG support for Gnus messages as
-;; described in Info node `(message) Security':
-;; https://www.gnu.org/software/emacs/manual/html_node/message/Security.html
-;;
-;; The code aims for automatic insertion of an MML secure encryption tags into
-;; messages if public keys (either GnuPG public keys or S/MIME certificates)
-;; for all recipients are available.  In addition, before a message is sent,
-;; the user is asked if plaintext should really be sent unencryptedly when
-;; public keys for all recipients are available.  Moreover, a consistency
-;; check aims to avoid unsafe usage of Bcc headers.
-;; This works by rebinding `C-c C-c' and `C-c C-s' as well as by adding
-;; `jl-encrypt-if-possible' to `gnus-message-setup-hook'.
-;; If you are really interested in S/MIME then I suggest that you take a look
-;; at jl-smime.el in addition to this file.
-
-;; Install:
-;; Place this file into your load-path and add the following to ~/.emacs.
-;;     (require 'jl-encrypt)
-;; If you share my preferences, no further configuration should be necessary.
-;;
-;; Customizable variables defined in this file are
-;; `jl-encrypt-insert-signature', `jl-encrypt-gpg-without-mime',
-;; `jl-encrypt-recipient-headers', `jl-encrypt-ignore-from',
-;; and `jl-encrypt-safe-bcc-list'.
-;; Note that as of jl-encrypt 3.1 all customizable variables share the same
-;; prefix (jl-encrypt): `jl-gpg-without-mime' and `jl-recipient-headers' are
-;; renamed; `jl-encrypt-recipient-headers' now works in combination with
-;; `jl-encrypt-ignore-from'.
-;; Moreover, `jl-encrypt-without-signature' does not exist any longer but has
-;; been replaced by the more flexible `jl-encrypt-insert-signature'.
-;;
-;; In addition, as explained in the following `mml-default-encrypt-method' and
-;; `mml-default-sign-method' influence whether to prefer S/MIME or GnuPG in
-;; certain situations, and the value of `gnus-message-replysignencrypted' may
-;; be changed by this code.
-;; If `jl-encrypt-insert-signature' is nil (the default),
-;; `gnus-message-replysignencrypted' will be set to nil to avoid signatures
-;; for reply messages.  You may manually add MML sign tags any time, of
-;; course, but the whole point of this file is to create MML tag automatically
-;; (e.g., by customizing `jl-encrypt-insert-signature').
-;; If GnuPG and S/MIME keys are both available for the given recipients and no
-;; MML tag is present, `mml-default-encrypt-method' determines what method to
-;; prefer.  If `jl-encrypt-insert-signature' is set to `always',
-;; `mml-default-sign-method' determines what method to prefer upon message
-;; creation.
-;;
-;; Sanity check:
-;; Without any further configuration, send a GnuPG encrypted e-mail to
-;; yourself as follows.  Enter your own e-mail address after To, choose some
-;; Subject, and enter `M-x spook' in the body, which will insert suitable
-;; text.  Then press `C-c C-c' to send the e-mail as usual (forgetting to
-;; encrypt).  If you own a GnuPG public for the To e-mail address then you
-;; will be asked whether you really want to send that e-mail as plaintext.
-;; Answering `no' will insert an MML secure tag for you.  Press `C-c C-c'
-;; again, and an encrypted e-mail will be sent.  If you receive that e-mail
-;; with garbled attachments read the comment for
-;; `jl-encrypt-gpg-without-mime'.
-
-;; You may want to check the subsequent comments to understand the rationale
-;; of my changes to standard message behavior.
-
-;; This file is *NOT* part of GNU Emacs.
-
-;;; Code:
-(require 'gnus)
-(require 'message)
-;; XEmacs does not have delete-dups.  mm-util provides mm-delete-duplicates.
-(require 'mm-util)
-
-;; Rebind keys for sending messages to check whether encryption is possible
-;; (all necessary public keys are available).
-;; In the past, this could have prevented me from sending plaintext e-mails
-;; that should have been sent encrypted.
-(define-key message-mode-map (kbd "C-c C-c") 'jl-message-send-and-exit)
-(define-key message-mode-map (kbd "C-c C-s") 'jl-message-send)
-
-;; Make gnus insert MML encryption tags if keys for all recipients are
-;; available.  Thus, if you reply (or wide reply) to a message or edit
-;; a saved draft, then MML encryption tags will be inserted right away.
-;; Moreover, if jl-encrypt-insert-signature is always, an MML signature
-;; tag will be added immediately.
-(add-hook 'gnus-message-setup-hook 'jl-encrypt-if-possible)
-
-(defgroup jl-encrypt nil
-  "Customization options for jl-encrypt.el.")
-
-(defcustom jl-encrypt-insert-signature nil
-  "Control whether MML signature tags should be produced.
-If it is nil, no signatures are created.  If it is `always',
-signature tags are inserted for new messages (with their type
-determined by `mml-default-sign-method').  If is is `encrypted',
-messages that are encrypted are also signed."
-  :group 'jl-encrypt
-  :type '(choice (const nil) (const always) (const encrypted)))
-
-(defcustom jl-encrypt-gpg-without-mime nil
-  "Control whether MML encryption should use MIME Security with OpenPGP.
-RFC 3156 specifies how OpenPGP (and, thus, GnuPG) and MIME work
-together.  In Gnus, `mml-secure-message-encrypt-pgpmime' follows
-that standard.  An alternative is
-`mml-secure-message-encrypt-pgp', which represents a less
-powerful approach.  If you (like me in the past) happen to send
-e-mails in an environment using broken M$ SMTP servers, then your
-beautiful e-mails produced by
-`mml-secure-message-encrypt-pgpmime', following RFC 3156, will be
-corrupted along the way.  E.g., the SMTP server at my department
-throws away the e-mail's Content-Type \"multipart/encrypted\" and
-its \"protocol=application/pgp-encrypted\" and inserts a
-meaningless \"multipart/mixed\" one.  Thus, the recipient will
-have a hard time figuring out what the e-mail's strange
-attachments are good for.  FUBAR.
-If this variable is set to nil (the default) then your e-mails
-are built according to RFC 3156.  I suggest that you send an
-encrypted e-mail to yourself.  Complain to your IT department if
-you receive garbled attachments.  Then set this variable to
-non-nil, while they are setting up a reasonable SMTP server.
-If you are signing all your e-mails with GnuPG you probably also
-want to set `mml-default-sign-method' to \"pgp\" (instead of
-\"pgpmime\")."
-  :group 'jl-encrypt
-  :type 'boolean)
-
-(defcustom jl-encrypt-ignore-from t
-  "Control whether a key for the From address must be present for encryption.
-If this variable is t (the default) then an MML encryption tag is
-added if public keys or S/MIME certificates are available for all
-recipients among `jl-encrypt-recipient-headers', ignoring the
-From header.  If this variable is nil then in addition to keys
-for the recipients also a public key for the From e-mail is
-required.
-Note that if you are using GnuPG, then regardless of this
-variable's setting, e-mail is *not* encrypted to (a key for) the
-From address (at least not via EasyPG, see Info node `(epa)
-Mail-mode integration').  Instead, to make sure that you can
-decrypt your own e-mails, typical options are
-* to use a Bcc header to encrypt the e-mail to one of your own
-  GnuPG identities (see `jl-encrypt-safe-bcc-list' then) or
-* to use the encrypt-to or hidden-encrypt-to option in gpg.conf.
-Note that encrypt-to gives away your identity for *every*
-encryption without warning, which is not what you want if you are
-using, e.g., remailers.
-In case of S/MIME, I suggest the use of jl-smime.el which sets
-this variable to nil."
-  :group 'jl-encrypt
-  :type 'boolean)
-
-(defcustom jl-encrypt-recipient-headers '("to" "cc")
-  "List of headers that determine whose keys must be available.
-An MML secure tag will only be inserted if public keys or
-certificates are available for all recipients mentioned in these
-headers.
-Note that this list does not (and should not) include \"From\";
-instead, treatment of the From address is defined by
-`jl-encrypt-ignore-from'.
-Also, be careful with Bcc headers; it *might* be possible to make
-this work without giving away the Bcc'ed identities, but it did
-not work by default in my case, and I recommend against such a
-thing: Only add Bcc if you are absolutely sure that you know what
-you are doing.  And let me know how to do that properly ;)
-For an academic paper explaining the problem, see URL
-`http://crypto.stanford.edu/portia/papers/bb-bcc.pdf'.
-See also `jl-encrypt-bcc-is-safe'."
-  :group 'jl-encrypt
-  :type '(repeat string))
-
-(defcustom jl-encrypt-safe-bcc-list nil
-  "List of e-mail addresses that are safe to use in Bcc headers.
-As mentioned for `jl-encrypt-recipient-headers', use of Bcc
-headers in encrypted e-mails may give away the Bcc'ed identities.
-Use this variable to specify e-mail addresses whose owners
-consider such give-away as safe.  This may be useful if you use
-Bcc headers to encrypt e-mails to yourself (instead gpg.conf's
-encrypt-to option mentioned for `jl-encrypt-ignore-from')."
-  :group 'jl-encrypt
-  :type '(repeat string))
-
-;;
-;; No configuration options beyond this point.  Just code.
-;;
-
-(defvar jl-method-table '(("gpg" (("test" jl-gpgkey-available-p)
-				  ("doit" jl-secure-message-gpg)
-				  ("ask" "GnuPG public keys available \
-for all recipients.  Really proceed *without* encryption? "))))
-  "Internal functionality for supported security methods.")
-
-(defun jl-access-method-table (method what)
-  "Return object for METHOD representing WHAT."
-  (let ((method-spec (assoc method jl-method-table)))
-    (if method-spec
-	(cadr (assoc what (cadr method-spec)))
-      (if (string= method "smime")
-	  (error "You must load jl-smime for S/MIME support")
-	(error "Method `%s' not supported by `jl-method-table'")))))
-
-(defun jl-message-send-and-exit (&optional arg)
-  "Delegate work to `jl-message-send-maybe-exit', passing ARG."
-  (interactive "P")
-  (jl-message-send-maybe-exit t arg))
-
-(defun jl-message-send (&optional arg)
-  "Delegate work to `jl-message-send-maybe-exit', passing ARG."
-  (interactive "P")
-  (jl-message-send-maybe-exit nil arg))
-
-(defun jl-message-send-maybe-exit (exit arg)
-  "Send message if MML secure encrypt tag is present or not appropriate.
-If MML secure encrypt tag is not present, check via
-`jl-proceed-without-encryption-p' whether public keys for all
-recipients are available and an MML secure tag should be added, or
-whether the message should be sent without encryption.  In the latter
-case EXIT controls whether `message-send-and-exit' or `message-send'
-is called, and ARG is passed as argument."
-  (save-excursion
-    (goto-char (point-min))
-    (when (or (re-search-forward "<#secure.+encrypt" nil t)
-	      (jl-proceed-without-encryption-p))
-      ;; jl-proceed-without-encryption-p may insert an encrypt tag.
-      ;; So re-check for encryption.
-      (goto-char (point-min))
-      (let ((encrypted (re-search-forward "<#secure.+encrypt" nil t)))
-	(jl-encrypt-bcc-is-safe encrypted)
-	(if exit
-	    (message-send-and-exit arg)
-	  (message-send arg))))))
-
-(unless (fboundp 'member-ignore-case)
-  ;; Copied from subr.el for XEmacs 21.5.33
-  (defun member-ignore-case (elt list)
-    "Like `member', but ignores differences in case and text representation.
-ELT must be a string.  Upper-case and lower-case letters are treated as equal."
-    (member* (the string elt)
-	     (the (and list (satisfies (lambda (list) (every 'stringp list))))
-	       list)
-	     :test 'equalp)))
-
-(defun jl-encrypt-plain-bcc-list ()
-  "Return Bcc addresses if \"bcc\" not in `jl-encrypt-recipient-headers'."
-  (if (not (member-ignore-case "bcc" jl-encrypt-recipient-headers))
-      (let ((bcc (message-fetch-field "bcc")))
-	(if bcc
-	    (mapcar 'cadr (mail-extract-address-components bcc t))))))
-
-(defun jl-encrypt-bcc-is-safe (encrypted)
-  "Check whether usage of Bcc is safe (or absent).
-Bcc usage is safe in several cases: first, if ENCRYPTED is nil;
-second, if the user added \"bcc\" to `jl-encrypt-recipient-headers';
-third, if the Bcc addresses are a subset of  `jl-encrypt-safe-bcc-list'.
-In all other cases, ask the user whether Bcc usage is safe.
-Raise error if user answers no.
-Note that this function does not produce a meaningful return value:
-either an error is raised or not."
-  (if encrypted
-      (let ((bcc-list (jl-encrypt-plain-bcc-list)))
-	(unless (jl-subsetp bcc-list jl-encrypt-safe-bcc-list)
-	  (unless (yes-or-no-p "Message for encryption contains Bcc header.\
-  This may give away all Bcc'ed identities to all recipients.\
-  Are you sure that this is safe?\
-  (The documentation for `jl-encrypt-safe-bcc-list' and\
-  `jl-encrypt-recipient-headers' explains how to avoid this warning.) ")
-	    (error "Aborted"))))))
-
-(defun jl-mail-recipients ()
-  "Return recipients of current message or nil.
-Recipients are only returned if the message is an e-mail with at
-least one recipient."
-  (if (message-mail-p)
-      (let ((recipients (jl-message-fetch-recipients)))
-	(if (>= (length recipients) 1)
-	    recipients
-	  nil))
-    nil))
-
-(defun jl-maybe-add-tag-for-args (recipients method &optional dontask)
-  "Maybe add MML secure tag for RECIPIENTS and METHOD.
-If keys are available for all RECIPIENTS and METHOD and DONTASK is
-nil, ask whether no encryption should be performed.  If the user
-answers \"yes\",don't add an MML tag and return `yes'; if the user
-answers \"no\", insert tag and return `no'.
-Otherwise, if DONTASK is t, insert tag and return 'inserted.
-Otherwise, return `failed'."
-  (if (jl-test-list recipients (jl-access-method-table method "test"))
-      (if (not dontask)
-	  (if (yes-or-no-p (jl-access-method-table method "ask"))
-	      'yes
-	    (funcall (jl-access-method-table method "doit"))
-	    'no)
-	(funcall (jl-access-method-table method "doit"))
-	(message "Inserted %s tag" method)
-	'inserted)
-    (message "Failed to insert %s tag" method)
-    'failed))
-
-(defun jl-maybe-add-tag (&optional dontask)
-  "Maybe add MML secure encryption tag to current message.
-If no recipients are returned by `jl-mail-recipients',
-immediately return `failed'.  Otherwise, try to add a tag for
-those recipients.  If jl-smime.el has been loaded, S/MIME tags
-may be inserted in addition to the default of GnuPG tags.  Which
-method is tried first if both are available, depends on the
-current message and the value of `mml-default-encrypt-method': If
-`mml-default-encrypt-method' indicates smime or if the message
-carries an S/MIME signature tag, go for S/MIME first; otherwise
-for GnuPG.  Call `jl-maybe-add-tag-for-args' with recipients,
-chosen method, and DONTASK.
-If that call does not return `failed', return this result.
-Otherwise, re-try the call with the second method and return its
-result."
-  (let ((recipients (jl-mail-recipients)))
-    (if recipients
-	(let* ((smime-supported (assoc "smime" jl-method-table))
-	       (is-smime (and smime-supported
-			      (or (string= "smime" mml-default-encrypt-method)
-				  (jl-is-smime-p))))
-	       (first-method (if is-smime "smime" "gpg"))
-	       (second-method (if is-smime "gpg"
-				(if smime-supported "smime")))
-	       (first-result (jl-maybe-add-tag-for-args
-			      recipients first-method dontask)))
-	  (if (and (eq 'failed first-result) second-method)
-	      (jl-maybe-add-tag-for-args recipients second-method dontask)
-	    first-result))
-      'failed)))
-
-(defun jl-proceed-without-encryption-p (&optional dontask)
-  "Return t if no (additional) encryption is necessary.
-This happens if `jl-maybe-add-tag' called with DONTASK does not
-return 'no."
-  (let ((tag-added (jl-maybe-add-tag dontask)))
-    (not (eq 'no tag-added))))
-
-(defun jl-message-fetch-recipients ()
-  "Return list of current message's recipients.
-Each list element is an e-mail address of one recipient (among
-those listed in the headers `jl-encrypt-recipient-headers')."
-  (save-excursion
-    (save-restriction
-      (message-narrow-to-headers)
-      (let* ((headers (if jl-encrypt-ignore-from
-			  jl-encrypt-recipient-headers
-			(cons "from" jl-encrypt-recipient-headers)))
-	     (recipients
-	     (mapconcat 'downcase
-			(remove nil (mapcar 'message-fetch-field headers))
-			",")))
-	(mm-delete-duplicates
-	 (mapcar 'cadr (mail-extract-address-components recipients t)))))))
-
-(defun jl-gpgkey-available-p (recipient)
-  "Check whether GnuPG knows a public key for RECIPIENT."
-  (= 0 (call-process "gpg" nil nil nil "--list-keys"
-		     (concat "<" recipient ">"))))
-
-(defun jl-secure-message-gpg ()
-  "Invoke MML function to add appropriate secure tag for GnuPG.
-The choice between pgp or pgpmime is based on `jl-encrypt-gpg-without-mime'.
-Creation of signatures is controlled by `jl-do-not-sign-p'."
-  (if jl-encrypt-gpg-without-mime
-      (mml-secure-message-encrypt-pgp (jl-do-not-sign-p))
-    (mml-secure-message-encrypt-pgpmime (jl-do-not-sign-p))))
-
-(defun jl-is-smime-p ()
-  "Check whether secure tag for S/MIME is present."
-  (save-excursion
-    (goto-char (point-min))
-    (re-search-forward "<#secure.+method=smime" nil t)))
-
-(defun jl-is-signed-p ()
-  "Check whether secure sign tag is present."
-  (save-excursion
-    (goto-char (point-min))
-    (re-search-forward "<#secure.+sign" nil t)))
-
-(defun jl-do-not-sign-p ()
-  "Check whether the message should not be signed.
-This is the case if the `jl-encrypt-insert-signature' is nil and
-no secure sign tag is present."
-  (and (not jl-encrypt-insert-signature)
-       (not (jl-is-signed-p))))
-
-(defun jl-encrypt-if-possible ()
-  "Insert MML encryption tag if appropriate.
-Function used in `gnus-message-setup-hook'.  Set
-`gnus-message-replysignencrypted' to nil if `jl-encrypt-insert-signature'
-is nil.  Insert MML signature tag if `jl-encrypt-insert-signature' is
-`always'.  Call `jl-maybe-add-tag' with t to avoid being asked a question."
-  (if (not jl-encrypt-insert-signature)
-      (setq gnus-message-replysignencrypted nil)
-    (if (eq 'always jl-encrypt-insert-signature)
-	(mml-secure-message mml-default-sign-method 'sign)))
-  (jl-maybe-add-tag t))
-
-(defun jl-test-list (list predicate)
-  "To each element of LIST apply PREDICATE.
-Return nil if list is empty or some test returns nil;
-otherwise, return t."
-  (if list
-      (let ((result (mapcar predicate list)))
-	(if (memq nil result)
-	    nil
-	  t))))
-
-(defun jl-subsetp (list1 list2)
-  "Return t if LIST1 is a subset of LIST2.
-Similar to `subsetp' but use member for element test so that this works for
-lists of strings."
-  (if list1
-      (and (member (car list1) list2)
-	   (jl-subsetp (cdr list1) list2))
-    t))
-
-(provide 'jl-encrypt)
-;;; jl-encrypt.el ends here
+#FILE text/x-emacs-lisp 
+Ozs7IGpsLWVuY3J5cHQuZWwgLS0tIEluc2VydCBNTUwgZW5jcnlwdGlvbiB0YWdzIGlmIHB1Ymxp
+YyBrZXlzIGFyZSBhdmFpbGFibGUKOzsgLSotIE1vZGU6IEVtYWNzLUxpc3AgLSotCjs7IC0qLSBj
+b2Rpbmc6IHV0Zi04IC0qLQoKOzsgQ29weXJpZ2h0IChDKSAyMDExLCAyMDEyLCAyMDEzIEplbnMg
+TGVjaHRlbmLDtnJnZXIKOzsgQ29weXJpZ2h0IChDKSAyMDEzIGtvbnViaW5peAoKOzsgVmVyc2lv
+bjogJElkOiBqbC1lbmNyeXB0LmVsLHYgMS4yMSAyMDEzLzEyLzIwIDE1OjQ4OjA4IGxlY2h0ZW4g
+RXhwICQKOzsgQ2hhbmdlbG9nOgo7OyAyMDEyLzAzLzA5LCBWZXJzaW9uIDEuMSwgaW5pdGlhbCBy
+ZWxlYXNlCjs7IDIwMTMvMDMvMTgsIFZlcnNpb24gMi4xLCBpbnRlZ3JhdGUgcGF0Y2ggYnkga29u
+dWJpbml4IHRvIGFsc28gZW5jcnlwdAo7OyAgIGUtbWFpbCB0aGF0IGFscmVhZHkgY29udGFpbnMg
+YSBzZWN1cmUgc2lnbiB0YWc6Cjs7ICAgLSBBZGQgZnVuY3Rpb25zIGpsLWlzLXNpZ25lZC1wIGFu
+ZCBqbC1kby1ub3Qtc2lnbi1wLgo7OyAgIC0gQ2hhbmdlIGpsLXNlY3VyZS1tZXNzYWdlLWdwZyBh
+bmQgamwtc2VjdXJlLW1lc3NhZ2Utc21pbWUgdG8gdXNlCjs7ICAgICBqbC1kby1ub3Qtc2lnbi1w
+IChhbmQgbm90IG9ubHkgamwtZW5jcnlwdC13aXRob3V0LXNpZ25hdHVyZSkuCjs7ICAgLSBDaGFu
+Z2UgamwtbWVzc2FnZS1zZW5kLW1heWJlLWV4aXQgdG8gbG9vayBmb3Igc2VjdXJlIGVuY3J5cHQg
+dGFnCjs7ICAgICAoaW5zdGVhZCBvZiBhbnkgc2VjdXJlIHRhZykuCjs7ICAgLSBBZGQgQ2hhbmdl
+bG9nLCBnaXZlIGNyZWRpdCB0byBrb251YmluaXgKOzsgMjAxMy8wNy8wMSwgVmVyc2lvbiAzLjEs
+IHN1cHBvcnQgWEVtYWNzLCBkb24ndCBicmVhayBuZXdzLCBkb24ndCByZXBsYWNlCjs7ICAgUy9N
+SU1FIHRhZyB3aXRoIEdudVBHIHRhZyBpZiBwb3NzaWJsZS4gIE5ldyB2ZXJzaW9uIHN0YXJ0ZWQg
+YmFzZWQgb24KOzsgICBmZWVkYmFjayBhbmQgdGVzdGluZyBieSBNaWNoYWVsIFN0cmF1c3MuCjs7
+ICAgLSBSZXBsYWNlIGRlbGV0ZS1kdXBzIHdpdGggbW0tZGVsZXRlLWR1cGxpY2F0ZXMgYXMgWEVt
+YWNzIGRvZXMgbm90IGhhdmUKOzsgICAgIGRlbGV0ZS1kdXBzLgo7OyAgIC0gQnVnIGZpeGVkIHdo
+ZW4gcmViaW5kaW5nIGtleXM6IFVzZSAoaW50ZXJhY3RpdmUgIlAiKSBpbnN0ZWFkIG9mCjs7ICAg
+ICAoaW50ZXJhY3RpdmUgInAiKS4KOzsgICAtIERvIG5vdCBhdHRlbXB0IHRvIGVuY3J5cHQgbmV3
+cyBwb3N0aW5ncywgb25seSBnbyBmb3IgZS1tYWlscyB3aXRoCjs7ICAgICBub24tZW1wdHkgcmVj
+aXBpZW50IGxpc3RzLgo7OyAgIC0gSWYgdGhlIHVzZXIgaW5zZXJ0ZWQgYW4gUy9NSU1FIHNpZ25h
+dHVyZSB0YWcsIGFuZCBTL01JTUUgYXMgd2VsbCBhcwo7OyAgICAgR251UEcga2V5cyBhcmUgYXZh
+aWxhYmxlLCBkb24ndCBwcmVmZXIgR251UEcgYW55IG1vcmUgYnV0IHVwZ3JhZGUKOzsgICAgIFMv
+TUlNRSBzaWduYXR1cmUgdG8gUy9NSU1FIHNpZ24rZW5jcnlwdC4KOzsgICAtIFJlZmFjdG9yaW5n
+Lgo7OyAgICAgLSBBZGRlZCBqbC1tZXRob2QtdGFibGUsIGpsLWFjY2Vzcy1tZXRob2QtdGFibGUs
+IGpsLW1haWwtcmVjaXBpZW50cywKOzsgICAgICAgamwtbWF5YmUtYWRkLXRhZywgamwtbWF5YmUt
+YWRkLXRhZy1mb3ItYXJncywgamwtaXMtc21pbWUtcC4KOzsgICAgIC0gQmFzZWQgb24gYWJvdmUs
+IHNpbXBsaWZpZWQgamwtcHJvY2VlZC13aXRob3V0LWVuY3J5cHRpb24tcCBhbmQKOzsgICAgICAg
+amwtZW5jcnlwdC1pZi1wb3NzaWJsZS4KOzsgICAgIC0gTW92ZWQgamwtY2VydGZpbGUtYXZhaWxh
+YmxlLXAgYW5kIGpsLXNlY3VyZS1tZXNzYWdlLXNtaW1lIHRvCjs7ICAgICAgIGpsLXNtaW1lLgo7
+OyAgIC0gRXhwbGFpbiBwb3RlbnRpYWwgdW5zYWZldHkgb2YgQmNjIGhlYWRlcnMuICBTYWZldHkg
+Y2hlY2sgYWRkZWQuCjs7ICAgICBBZGRlZCBqbC1lbmNyeXB0LXNhZmUtYmNjLWxpc3QuCjs7ICAg
+LSBDaGFuZ2VkIGpsLWdwZ2tleS1hdmFpbGFibGUtcCB0byBwcm9kdWNlIGxlc3MgZmFsc2UgcG9z
+aXRpdmVzLgo7OyAgIC0gUmVwbGFjZWQgamwtZW5jcnlwdC13aXRob3V0LXNpZ25hdHVyZSB3aXRo
+IGpsLWVuY3J5cHQtaW5zZXJ0LXNpZ25hdHVyZS4KOzsgICAgIEhhdmUgamwtZW5jcnlwdC1pZi1w
+b3NzaWJsZSB1c2UgaXQuICBCdWcgZml4IGluIGpsLWlzLXNpZ25lZC1wLgo7OyAgIC0gRGlmZmVy
+ZW50IHRyZWF0bWVudCBvZiBGcm9tIGhlYWRlci4gIFNlZSBjb21tZW50IGZvciBuZXcgdmFyaWFi
+bGUKOzsgICAgIGpsLWVuY3J5cHQtaWdub3JlLWZyb20uCjs7ICAgLSBTaW1wbGlmaWVkIGludGVy
+bmFsIHJlY2lwaWVudCBsaXN0cyBub3cgY29udGFpbiBqdXN0IGxvd2VyLWNhc2UgZS1tYWlsCjs7
+ICAgICBhZGRyZXNzZXMgKG5vIG5hbWVzIGFueSBsb25nZXIpLgo7OyAgIC0gVXNlIGRlZmN1c3Rv
+bSBpbnN0ZWFkIG9mIGRlZnZhciBmb3IgdXNlciB2YXJpYWJsZXMsIHdoaWNoIGFyZSBhbHNvCjs7
+ICAgICByZW5hbWVkLgo7OyAyMDEzLzEyLzIwLCBWZXJzaW9uIDQtYmV0YSwgdW5pZmllZCB1c2Ug
+b2YgRWFzeVBHIGZvciBncGcgYW5kIGdwZ3NtLgo7OyAgIC0gUmVtb3ZlZCB2YXJpYWJsZXMKOzsg
+ICAgIGpsLWVuY3J5cHQtaWdub3JlLWZyb20gYW5kCjs7ICAgICBqbC1lbmNyeXB0LXJlY2lwaWVu
+dC1oZWFkZXJzLgo7OyAgICAgVHJlYXRtZW50IG9mIGVuY3J5cHRpb24gdGFyZ2V0cyBub3cgY29u
+dHJvbGxlZCBlbnRpcmVseSBieSBFYXN5UEcKOzsgICAgIChhbmQgR251UEcgY29uZmlndXJhdGlv
+biBmaWxlcykuICBOZXcgZnVuY3Rpb25zIGpsLWVwZy1maW5kLXVzYWJsZS1rZXlzCjs7ICAgICBh
+bmQgamwtZXBnLWNoZWNrLXVuaXF1ZS1rZXlzIHRvd2FyZHMgdGhhdCBlbmQuCjs7ICAgLSBOZXcg
+dmFyaWFibGUgamwtZW5jcnlwdC1tYW51YWwtY2hvaWNlLgo7OyAgICAgSWYgc2V2ZXJhbCBwdWJs
+aWMga2V5cyBhcmUgYXZhaWxhYmxlIGZvciBhIHJlY2lwaWVudCwgYXNrIHVzZXIgd2hpY2gKOzsg
+ICAgIG9uZSB0byB1c2UuICAoUmVxdWlyZXMgYG1tLWVuY3J5cHQtb3B0aW9uJyBpbnRyb2R1Y2Vk
+IGluIEVtYWNzIDIzLjIuKQoKOzsgQ29tcGF0aWJpbGl0eTogRGV2ZWxvcGVkIG9uIEdOVSBFbWFj
+cyAyNC4zOyBtYXkgd29yayB3aXRoIEdOVSBFbWFjcyAyMy4yCjs7IGFuZCBsYXRlcgoKOzsgVGhp
+cyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9v
+cgo7OyBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
+TGljZW5zZSBhcwo7OyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsg
+ZWl0aGVyIHZlcnNpb24gMywgb3IKOzsgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lv
+bi4KCjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdp
+bGwgYmUgdXNlZnVsLAo7OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0
+aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1Ig
+QSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQo7OyBHZW5lcmFsIFB1YmxpYyBMaWNl
+bnNlIGZvciBtb3JlIGRldGFpbHMuCgo7OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBhbG9uZyB3aXRoIEdOVSBFbWFj
+czsgc2VlIHRoZSBmaWxlIENPUFlJTkcuCjs7IElmIG5vdCwgc2VlIGh0dHA6Ly93d3cuZ251Lm9y
+Zy9saWNlbnNlcy8gb3Igd3JpdGUgdG8gdGhlCjs7IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwg
+SW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwKOzsgQm9zdG9uLCBNQSAwMjEx
+MC0xMzAxLCBVU0EuCgo7OyBLZXl3b3JkczogbWFpbCwgZW5jcnlwdGlvbiwgR251UEcsIGdwZywg
+T3BlblBHUCwgZ3Bnc20sIFMvTUlNRSwgQ01TCgo7OyBVUkw6IGh0dHA6Ly93d3cuZW1hY3N3aWtp
+Lm9yZy9lbWFjcy9qbC1lbmNyeXB0LmVsCjs7IEVtYWNzV2lraTogRGVmYXVsdEVuY3J5cHQKCjs7
+IEEgc2lnbmVkIHZlcnNpb24gb2YgdGhpcyBmaWxlIGlzIGF2YWlsYWJsZSBvdmVyIHRoZXJlOgo7
+OyBodHRwOi8vd3d3LmluZm9ybWF0aW9uZWxsZS1zZWxic3RiZXN0aW1tdW5nLWltLWludGVybmV0
+LmRlL2VtYWNzLwoKOzs7IENvbW1lbnRhcnk6Cjs7IEdudXMgc3VwcG9ydHMgR251UEcgdmlhIHRo
+ZSBpbnNlcnRpb24gb2Ygc28tY2FsbGVkIE1NTCBzZWN1cmUgdGFncywgd2hpY2gKOzsgY29udGFp
+biBlbmNyeXB0aW9uIGluc3RydWN0aW9ucyB0byBiZSBwZXJmb3JtZWQgYmVmb3JlIGEgbWVzc2Fn
+ZSBpcyBzZW50Lgo7OyBIb3dldmVyLCBieSBkZWZhdWx0IHRob3NlIHRhZ3MgbmVlZCB0byBiZSBh
+ZGRlZCBtYW51YWxseSwgd2hpY2ggY2FuIGVhc2lseQo7OyBiZSBmb3Jnb3R0ZW4uICBJbiBjb250
+cmFzdCwgRGVmYXVsdEVuY3J5cHQgYWltcyB0byBpbnNlcnQgdGhvc2UgdGFncwo7OyBhdXRvbWF0
+aWNhbGx5IGlmIHB1YmxpYyBrZXlzIGZvciBhbGwgcmVjaXBpZW50cyBhcmUgYXZhaWxhYmxlLgo7
+Owo7OyBJIGFzc3VtZSB0aGF0IHlvdSBhcmUgZmFtaWxpYXIgd2l0aCBHbnVQRyBzdXBwb3J0IGZv
+ciBHbnVzIG1lc3NhZ2VzIGFzCjs7IGRlc2NyaWJlZCBpbiBJbmZvIG5vZGUgYChtZXNzYWdlKSBT
+ZWN1cml0eSc6Cjs7IGh0dHBzOi8vd3d3LmdudS5vcmcvc29mdHdhcmUvZW1hY3MvbWFudWFsL2h0
+bWxfbm9kZS9tZXNzYWdlL1NlY3VyaXR5Lmh0bWwKOzsgTW9yZW92ZXIsIERlZmF1bHRFbmNyeXB0
+IGlzIGJhc2VkIG9uIEVhc3lQRywgdGhlIGRlZmF1bHQgaW50ZXJmYWNlIG9mIEVtYWNzCjs7IGZv
+ciBPcGVuUEdQIGFuZCBTL01JTUUsIHNlZSBJbmZvIG5vZGUgYChlcGEpJzoKOzsgaHR0cHM6Ly93
+d3cuZ251Lm9yZy9zb2Z0d2FyZS9lbWFjcy9tYW51YWwvaHRtbF9ub2RlL2VwYS9pbmRleC5odG1s
+Cjs7Cjs7IERlZmF1bHRFbmNyeXB0IGFpbXMgZm9yIGF1dG9tYXRpYyBpbnNlcnRpb24gb2YgYW4g
+TU1MIHNlY3VyZSBlbmNyeXB0aW9uCjs7IHRhZ3MgaW50byBtZXNzYWdlcyBpZiBwdWJsaWMga2V5
+cyAoZWl0aGVyIEdudVBHIHB1YmxpYyBrZXlzIG9yIFMvTUlNRQo7OyBjZXJ0aWZpY2F0ZXMpIGZv
+ciBhbGwgcmVjaXBpZW50cyBhcmUgYXZhaWxhYmxlLiAgSW4gYWRkaXRpb24sIGJlZm9yZSBhCjs7
+IG1lc3NhZ2UgaXMgc2VudCwgdGhlIHVzZXIgaXMgYXNrZWQgd2hldGhlciBwbGFpbnRleHQgc2hv
+dWxkIHJlYWxseSBiZSBzZW50Cjs7IHVuZW5jcnlwdGVkbHkgd2hlbiBwdWJsaWMga2V5cyBmb3Ig
+YWxsIHJlY2lwaWVudHMgYXJlIGF2YWlsYWJsZS4KOzsKOzsgTW9yZW92ZXIsIGEgY29uc2lzdGVu
+Y3kgY2hlY2sgYWltcyB0byBhdm9pZCB1bnNhZmUgdXNhZ2Ugb2YgQmNjIGhlYWRlcnMuCjs7IChT
+b21lIGRldGFpbHMgYXJlIGdpdmVuIGJlbG93LikKOzsKOzsgRmluYWxseSwgYW5vdGhlciBjb25z
+aXN0ZW5jeSBjaGVjayB0ZXN0cyB3aGV0aGVyIG11bHRpcGxlIHB1YmxpYyBrZXlzIGFyZQo7OyBh
+dmFpbGFibGUgZm9yIHNvbWUgcmVjaXBpZW50LiAgSWYgc28sIEVhc3lQRyB3b3VsZCBzZWxlY3Qg
+b25lIG9mIHRob3NlCjs7IGtleXMsIHdoaWNoIG1heSBvciBtYXkgbm90IGJlIGEgZGVzaXJhYmxl
+IG9uZS4gIEluIHRoaXMgY2FzZSwKOzsgRGVmYXVsdEVuY3J5cHQgc2V0cyBgbW0tZW5jcnlwdC1v
+cHRpb24nIHRvICdtdWx0aXBsZSAoYXZhaWxhYmxlIHNpbmNlIEVtYWNzCjs7IDIzLjIpLCB3aGlj
+aCBjYXVzZXMgRWFzeVBHIHRvIGRpc3BsYXkgKG1vc3RseSkgcmVsZXZhbnQga2V5cyBpbiBhIHNl
+cGFyYXRlCjs7IGJ1ZmZlci4gIEluIHRoYXQgYnVmZmVyLCB5b3UgbmVlZCB0byBzZWxlY3Qga2V5
+cyBmb3IgKmFsbCogcmVjaXBpZW50cyAobm90Cjs7IGp1c3QgdGhvc2Ugd2l0aCBtdWx0aXBsZSBw
+dWJsaWMga2V5cykuICBSZWxldmFudCBrZXkgYmluZGluZ3MgaW4gdGhhdAo7OyBidWZmZXIgYXJl
+OiBtIChzZWxlY3QgYSBrZXkpLCA8bW91c2UtMj4gKGRpc3BsYXkga2V5IGluZm8pLCBDLWMgQy1j
+Cjs7IChPSywgYWZ0ZXIgeW91IHNlbGVjdGVkIGtleXMgZm9yIGFsbCByZWNpcGllbnRzKQo7OyBT
+ZWUgYWxzbyB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgYGpsLWVuY3J5cHQtbWFudWFsLWNob2ljZScu
+Cjs7Cjs7IFRoZSBhYm92ZSB3b3JrcyBieSByZWJpbmRpbmcgdGhlIHN0YW5kYXJkIGtleXMgZm9y
+IG1lc3NhZ2Ugc2VuZGluZwo7OyAoYEMtYyBDLWMnIGFuZCBgQy1jIEMtcycpIGFzIHdlbGwgYXMg
+YnkgYWRkaW5nIHRoZSBjaGVjawo7OyBgamwtZW5jcnlwdC1pZi1wb3NzaWJsZScgdG8gYGdudXMt
+bWVzc2FnZS1zZXR1cC1ob29rJy4KOzsKOzsgTm90ZSB0aGF0IHdpdGggRWFzeVBHLCBlLW1haWwg
+aXMgKm5vdCogZW5jcnlwdGVkIHRvIChhIGtleSBmb3IpIHRoZQo7OyBGcm9tIGFkZHJlc3MgKHNl
+ZSBJbmZvIG5vZGUgYChlcGEpIE1haWwtbW9kZSBpbnRlZ3JhdGlvbicpLgo7OyBJbnN0ZWFkLCB0
+byBtYWtlIHN1cmUgdGhhdCB5b3UgY2FuIGRlY3J5cHQgeW91ciBvd24gZS1tYWlscywgdHlwaWNh
+bAo7OyBvcHRpb25zIGFyZQo7OyAqIHRvIHVzZSBhIEJjYyBoZWFkZXIgdG8gZW5jcnlwdCB0aGUg
+ZS1tYWlsIHRvIG9uZSBvZiB5b3VyIG93bgo7OyAgIEdudVBHIGlkZW50aXRpZXMgKHNlZSBgamwt
+ZW5jcnlwdC1zYWZlLWJjYy1saXN0JyB0aGVuKSBvcgo7OyAqIHRvIHVzZSB0aGUgZW5jcnlwdC10
+byBvciBoaWRkZW4tZW5jcnlwdC10byBvcHRpb24gaW4gZ3BnLmNvbmYgb3IKOzsgKiB0byB1c2Ug
+dGhlIGVuY3J5cHQtdG8gb3B0aW9uIGluIGdwZ3NtLmNvbmYuCjs7IE5vdGUgdGhhdCBlbmNyeXB0
+LXRvIGdpdmVzIGF3YXkgeW91ciBpZGVudGl0eSBmb3IgKmV2ZXJ5Kgo7OyBlbmNyeXB0aW9uIHdp
+dGhvdXQgd2FybmluZywgd2hpY2ggaXMgbm90IHdoYXQgeW91IHdhbnQgaWYgeW91IGFyZQo7OyB1
+c2luZywgZS5nLiwgcmVtYWlsZXJzLgo7OyBBbHNvLCBiZSBjYXJlZnVsIHdpdGggQmNjIGhlYWRl
+cnM7IGl0ICptaWdodCogYmUgcG9zc2libGUgdG8gbWFrZQo7OyB0aGlzIHdvcmsgd2l0aG91dCBn
+aXZpbmcgYXdheSB0aGUgQmNjJ2VkIGlkZW50aXRpZXMsIGJ1dCBpdCBkaWQKOzsgbm90IHdvcmsg
+YnkgZGVmYXVsdCBpbiBteSBjYXNlLCBhbmQgSSByZWNvbW1lbmQgYWdhaW5zdCBzdWNoIGEKOzsg
+dGhpbmc6IE9ubHkgYWRkIEJjYyBpZiB5b3UgYXJlIGFic29sdXRlbHkgc3VyZSB0aGF0IHlvdSBr
+bm93IHdoYXQKOzsgeW91IGFyZSBkb2luZy4gIEFuZCBsZXQgbWUga25vdyBob3cgdG8gZG8gdGhh
+dCBwcm9wZXJseSA7KQo7OyBTZWUgYWxzbyBgamwtZW5jcnlwdC1iY2MtaXMtc2FmZScuCjs7Cjs7
+IElmIHlvdSBhcmUgcmVhbGx5IGludGVyZXN0ZWQgaW4gUy9NSU1FIHRoZW4gSSBzdWdnZXN0IHRo
+YXQgeW91IHRha2UgYSBsb29rCjs7IGF0IEV4dGVuZFNNSU1FIChqbC1zbWltZS5lbCkgaW4gYWRk
+aXRpb24gdG8gdGhpcyBmaWxlLgoKOzsgSW5zdGFsbDoKOzsgUGxhY2UgdGhpcyBmaWxlIGludG8g
+eW91ciBsb2FkLXBhdGggYW5kIGFkZCB0aGUgZm9sbG93aW5nIHRvIH4vLmVtYWNzLgo7OyAgICAg
+KHJlcXVpcmUgJ2psLWVuY3J5cHQpCjs7IElmIHlvdSBzaGFyZSBteSBwcmVmZXJlbmNlcywgbm8g
+ZnVydGhlciBjb25maWd1cmF0aW9uIHNob3VsZCBiZSBuZWNlc3NhcnkuCjs7Cjs7IEN1c3RvbWl6
+YWJsZSB2YXJpYWJsZXMgZGVmaW5lZCBpbiB0aGlzIGZpbGUgYXJlCjs7IGBqbC1lbmNyeXB0LWlu
+c2VydC1zaWduYXR1cmUnLCBgamwtZW5jcnlwdC1ncGctd2l0aG91dC1taW1lJywKOzsgYGpsLWVu
+Y3J5cHQtc2FmZS1iY2MtbGlzdCcsIGFuZCBgamwtZW5jcnlwdC1tYW51YWwtY2hvaWNlJy4KOzsK
+OzsgSW4gYWRkaXRpb24sIGFzIGV4cGxhaW5lZCBpbiB0aGUgZm9sbG93aW5nIGBtbWwtZGVmYXVs
+dC1lbmNyeXB0LW1ldGhvZCcgYW5kCjs7IGBtbWwtZGVmYXVsdC1zaWduLW1ldGhvZCcgaW5mbHVl
+bmNlIHdoZXRoZXIgdG8gcHJlZmVyIFMvTUlNRSBvciBHbnVQRyBpbgo7OyBjZXJ0YWluIHNpdHVh
+dGlvbnMsIGFuZCB0aGUgdmFsdWUgb2YgYGdudXMtbWVzc2FnZS1yZXBseXNpZ25lbmNyeXB0ZWQn
+IG1heQo7OyBiZSBjaGFuZ2VkIGJ5IHRoaXMgY29kZS4KOzsgSWYgYGpsLWVuY3J5cHQtaW5zZXJ0
+LXNpZ25hdHVyZScgaXMgbmlsICh0aGUgZGVmYXVsdCksCjs7IGBnbnVzLW1lc3NhZ2UtcmVwbHlz
+aWduZW5jcnlwdGVkJyB3aWxsIGJlIHNldCB0byBuaWwgdG8gYXZvaWQgc2lnbmF0dXJlcwo7OyBm
+b3IgcmVwbHkgbWVzc2FnZXMuICBZb3UgbWF5IG1hbnVhbGx5IGFkZCBNTUwgc2lnbiB0YWdzIGFu
+eSB0aW1lLCBvZgo7OyBjb3Vyc2UsIGJ1dCB0aGUgd2hvbGUgcG9pbnQgb2YgdGhpcyBmaWxlIGlz
+IHRvIGNyZWF0ZSBNTUwgdGFncyBhdXRvbWF0aWNhbGx5Cjs7IChlLmcuLCBieSBjdXN0b21pemlu
+ZyBgamwtZW5jcnlwdC1pbnNlcnQtc2lnbmF0dXJlJykuCjs7IElmIEdudVBHIGFuZCBTL01JTUUg
+a2V5cyBhcmUgYm90aCBhdmFpbGFibGUgZm9yIHRoZSBnaXZlbiByZWNpcGllbnRzIGFuZCBubwo7
+OyBNTUwgdGFnIGlzIHByZXNlbnQsIGBtbWwtZGVmYXVsdC1lbmNyeXB0LW1ldGhvZCcgZGV0ZXJt
+aW5lcyB3aGF0IG1ldGhvZCB0bwo7OyBwcmVmZXIuICBJZiBgamwtZW5jcnlwdC1pbnNlcnQtc2ln
+bmF0dXJlJyBpcyBzZXQgdG8gYGFsd2F5cycsCjs7IGBtbWwtZGVmYXVsdC1zaWduLW1ldGhvZCcg
+ZGV0ZXJtaW5lcyB3aGF0IG1ldGhvZCB0byBwcmVmZXIgdXBvbiBtZXNzYWdlCjs7IGNyZWF0aW9u
+LgoKOzsgU2FuaXR5IGNoZWNrOgo7OyBXaXRob3V0IGFueSBmdXJ0aGVyIGNvbmZpZ3VyYXRpb24s
+IHNlbmQgYSBHbnVQRyBlbmNyeXB0ZWQgZS1tYWlsIHRvCjs7IHlvdXJzZWxmIGFzIGZvbGxvd3Mu
+ICBFbnRlciB5b3VyIG93biBlLW1haWwgYWRkcmVzcyBhZnRlciBUbywgY2hvb3NlIHNvbWUKOzsg
+U3ViamVjdCwgYW5kIGVudGVyIGBNLXggc3Bvb2snIGluIHRoZSBib2R5LCB3aGljaCB3aWxsIGlu
+c2VydCBzdWl0YWJsZQo7OyB0ZXh0LiAgVGhlbiBwcmVzcyBgQy1jIEMtYycgdG8gc2VuZCB0aGUg
+ZS1tYWlsIGFzIHVzdWFsIChmb3JnZXR0aW5nIHRvCjs7IGVuY3J5cHQpLiAgSWYgeW91IG93biBh
+IEdudVBHIHB1YmxpYyBmb3IgdGhlIFRvIGUtbWFpbCBhZGRyZXNzIHRoZW4geW91Cjs7IHdpbGwg
+YmUgYXNrZWQgd2hldGhlciB5b3UgcmVhbGx5IHdhbnQgdG8gc2VuZCB0aGF0IGUtbWFpbCBhcyBw
+bGFpbnRleHQuCjs7IEFuc3dlcmluZyBgbm8nIHdpbGwgaW5zZXJ0IGFuIE1NTCBzZWN1cmUgdGFn
+IGZvciB5b3UuICBQcmVzcyBgQy1jIEMtYycKOzsgYWdhaW4sIGFuZCBhbiBlbmNyeXB0ZWQgZS1t
+YWlsIHdpbGwgYmUgc2VudC4gIElmIHlvdSByZWNlaXZlIHRoYXQgZS1tYWlsCjs7IHdpdGggZ2Fy
+YmxlZCBhdHRhY2htZW50cyByZWFkIHRoZSBjb21tZW50IGZvcgo7OyBgamwtZW5jcnlwdC1ncGct
+d2l0aG91dC1taW1lJy4KCjs7IFlvdSBtYXkgd2FudCB0byBjaGVjayB0aGUgc3Vic2VxdWVudCBj
+b21tZW50cyB0byB1bmRlcnN0YW5kIHRoZSByYXRpb25hbGUKOzsgb2YgbXkgY2hhbmdlcyB0byBz
+dGFuZGFyZCBtZXNzYWdlIGJlaGF2aW9yLgoKOzsgVGhpcyBmaWxlIGlzICpOT1QqIHBhcnQgb2Yg
+R05VIEVtYWNzLgoKOzs7IENvZGU6CihyZXF1aXJlICdnbnVzKQoocmVxdWlyZSAnbWVzc2FnZSkK
+KHJlcXVpcmUgJ21tbDIwMTUpCihyZXF1aXJlICdlcGcpCihyZXF1aXJlICdtbS1lbmNvZGUpIDsg
+bW0tZW5jcnlwdC1vcHRpb24KCjs7IFhFbWFjcyBkb2VzIG5vdCBoYXZlIGRlbGV0ZS1kdXBzLiAg
+bW0tdXRpbCBwcm92aWRlcyBtbS1kZWxldGUtZHVwbGljYXRlcy4KKHJlcXVpcmUgJ21tLXV0aWwp
+Cgo7OyBSZWJpbmQga2V5cyBmb3Igc2VuZGluZyBtZXNzYWdlcyB0byBjaGVjayB3aGV0aGVyIGVu
+Y3J5cHRpb24gaXMgcG9zc2libGUKOzsgKGFsbCBuZWNlc3NhcnkgcHVibGljIGtleXMgYXJlIGF2
+YWlsYWJsZSkuCjs7IEluIHRoZSBwYXN0LCB0aGlzIGNvdWxkIGhhdmUgcHJldmVudGVkIG1lIGZy
+b20gc2VuZGluZyBwbGFpbnRleHQgZS1tYWlscwo7OyB0aGF0IHNob3VsZCBoYXZlIGJlZW4gc2Vu
+dCBlbmNyeXB0ZWQuCihkZWZpbmUta2V5IG1lc3NhZ2UtbW9kZS1tYXAgKGtiZCAiQy1jIEMtYyIp
+ICdqbC1tZXNzYWdlLXNlbmQtYW5kLWV4aXQpCihkZWZpbmUta2V5IG1lc3NhZ2UtbW9kZS1tYXAg
+KGtiZCAiQy1jIEMtcyIpICdqbC1tZXNzYWdlLXNlbmQpCgo7OyBNYWtlIGdudXMgaW5zZXJ0IE1N
+TCBlbmNyeXB0aW9uIHRhZ3MgaWYga2V5cyBmb3IgYWxsIHJlY2lwaWVudHMgYXJlCjs7IGF2YWls
+YWJsZS4gIFRodXMsIGlmIHlvdSByZXBseSAob3Igd2lkZSByZXBseSkgdG8gYSBtZXNzYWdlIG9y
+IGVkaXQKOzsgYSBzYXZlZCBkcmFmdCwgdGhlbiBNTUwgZW5jcnlwdGlvbiB0YWdzIHdpbGwgYmUg
+aW5zZXJ0ZWQgcmlnaHQgYXdheS4KOzsgTW9yZW92ZXIsIGlmIGpsLWVuY3J5cHQtaW5zZXJ0LXNp
+Z25hdHVyZSBpcyBhbHdheXMsIGFuIE1NTCBzaWduYXR1cmUKOzsgdGFnIHdpbGwgYmUgYWRkZWQg
+aW1tZWRpYXRlbHkuCihhZGQtaG9vayAnZ251cy1tZXNzYWdlLXNldHVwLWhvb2sgJ2psLWVuY3J5
+cHQtaWYtcG9zc2libGUpCgooZGVmZ3JvdXAgamwtZW5jcnlwdCBuaWwKICAiQ3VzdG9taXphdGlv
+biBvcHRpb25zIGZvciBqbC1lbmNyeXB0LmVsLiIpCgooZGVmY3VzdG9tIGpsLWVuY3J5cHQtbWFu
+dWFsLWNob2ljZSB0CiAgIk5vbi1uaWwgaWYgdXNlciBzaG91bGQgY2hvb3NlIGluIGNhc2Ugb2Yg
+bXVsdGlwbGUgcHVibGljIGtleXMuCkluIGdlbmVyYWwsIG11bHRpcGxlIHB1YmxpYyBrZXlzIG1h
+eSBleGlzdCBmb3IgYSBzaW5nbGUgZS1tYWlsIGFkZHJlc3MgKGUuZy4sCmZvciBkaWZmZXJlbnQg
+c2VjdXJpdHkgbGV2ZWxzIG9yIGJlZm9yZSBvbmUga2V5IGV4cGlyZXMpLiAgSW4gc3VjaCBhIGNh
+c2UsCkVhc3lQRyBhbmQgZ3BnIGF1dG9tYXRpY2FsbHkgc2VsZWN0IGEga2V5LCB3aGlsZSBncGdz
+bSByZXBvcnRzIGFuIGFtYmlndWl0eS4KQnkgZGVmYXVsdCwgRGVmYXVsdEVuY3J5cHQgc3dpdGNo
+ZXMgdG8gbWFudWFsIGtleSBzZWxlY3Rpb24gaW4gc3VjaCBjYXNlcy4KU2V0IHRvIG5pbCBmb3Ig
+YXV0b21hdGljIHNlbGVjdGlvbiBieSBFYXN5UEcuIgogIDpncm91cCAnamwtZW5jcnlwdAogIDp0
+eXBlICdib29sZWFuKQoKKGRlZmN1c3RvbSBqbC1lbmNyeXB0LWluc2VydC1zaWduYXR1cmUgbmls
+CiAgIkNvbnRyb2wgd2hldGhlciBNTUwgc2lnbmF0dXJlIHRhZ3Mgc2hvdWxkIGJlIHByb2R1Y2Vk
+LgpJZiBpdCBpcyBuaWwsIG5vIHNpZ25hdHVyZXMgYXJlIGNyZWF0ZWQuICBJZiBpdCBpcyBgYWx3
+YXlzJywgc2lnbmF0dXJlCnRhZ3MgYXJlIGluc2VydGVkIGZvciBuZXcgbWVzc2FnZXMgKHdpdGgg
+dGhlaXIgdHlwZSBkZXRlcm1pbmVkIGJ5CmBtbWwtZGVmYXVsdC1zaWduLW1ldGhvZCcpLiAgSWYg
+aXMgaXMgYGVuY3J5cHRlZCcsIG1lc3NhZ2VzIHRoYXQgYXJlCmVuY3J5cHRlZCBhcmUgYWxzbyBz
+aWduZWQuIgogIDpncm91cCAnamwtZW5jcnlwdAogIDp0eXBlICcoY2hvaWNlIChjb25zdCBuaWwp
+IChjb25zdCBhbHdheXMpIChjb25zdCBlbmNyeXB0ZWQpKSkKCihkZWZjdXN0b20gamwtZW5jcnlw
+dC1ncGctd2l0aG91dC1taW1lIG5pbAogICJOb24tbmlsIHRvIHVzZSBNTUwgZW5jcnlwdGlvbiB3
+aXRob3V0IE1JTUUgU2VjdXJpdHkgZm9yIE9wZW5QR1AuClJGQyAzMTU2IHNwZWNpZmllcyBob3cg
+T3BlblBHUCAoYW5kLCB0aHVzLCBHbnVQRykgYW5kIE1JTUUgd29yawp0b2dldGhlci4gIEluIEdu
+dXMsIGBtbWwtc2VjdXJlLW1lc3NhZ2UtZW5jcnlwdC1wZ3BtaW1lJyBmb2xsb3dzCnRoYXQgc3Rh
+bmRhcmQuICBBbiBhbHRlcm5hdGl2ZSBpcwpgbW1sLXNlY3VyZS1tZXNzYWdlLWVuY3J5cHQtcGdw
+Jywgd2hpY2ggcmVwcmVzZW50cyBhIGxlc3MKcG93ZXJmdWwgYXBwcm9hY2guICBJZiB5b3UgKGxp
+a2UgbWUgaW4gdGhlIHBhc3QpIGhhcHBlbiB0byBzZW5kCmUtbWFpbHMgaW4gYW4gZW52aXJvbm1l
+bnQgdXNpbmcgYnJva2VuIE0kIFNNVFAgc2VydmVycywgdGhlbiB5b3VyCmJlYXV0aWZ1bCBlLW1h
+aWxzIHByb2R1Y2VkIGJ5CmBtbWwtc2VjdXJlLW1lc3NhZ2UtZW5jcnlwdC1wZ3BtaW1lJywgZm9s
+bG93aW5nIFJGQyAzMTU2LCB3aWxsIGJlCmNvcnJ1cHRlZCBhbG9uZyB0aGUgd2F5LiAgRS5nLiwg
+dGhlIFNNVFAgc2VydmVyIGF0IG15IGRlcGFydG1lbnQKdGhyb3dzIGF3YXkgdGhlIGUtbWFpbCdz
+IENvbnRlbnQtVHlwZSBcIm11bHRpcGFydC9lbmNyeXB0ZWRcIiBhbmQKaXRzIFwicHJvdG9jb2w9
+YXBwbGljYXRpb24vcGdwLWVuY3J5cHRlZFwiIGFuZCBpbnNlcnRzIGEKbWVhbmluZ2xlc3MgXCJt
+dWx0aXBhcnQvbWl4ZWRcIiBvbmUuICBUaHVzLCB0aGUgcmVjaXBpZW50IHdpbGwKaGF2ZSBhIGhh
+cmQgdGltZSBmaWd1cmluZyBvdXQgd2hhdCB0aGUgZS1tYWlsJ3Mgc3RyYW5nZQphdHRhY2htZW50
+cyBhcmUgZ29vZCBmb3IuICBGVUJBUi4KSWYgdGhpcyB2YXJpYWJsZSBpcyBzZXQgdG8gbmlsICh0
+aGUgZGVmYXVsdCkgdGhlbiB5b3VyIGUtbWFpbHMKYXJlIGJ1aWx0IGFjY29yZGluZyB0byBSRkMg
+MzE1Ni4gIEkgc3VnZ2VzdCB0aGF0IHlvdSBzZW5kIGFuCmVuY3J5cHRlZCBlLW1haWwgdG8geW91
+cnNlbGYuICBDb21wbGFpbiB0byB5b3VyIElUIGRlcGFydG1lbnQgaWYKeW91IHJlY2VpdmUgZ2Fy
+YmxlZCBhdHRhY2htZW50cy4gIFRoZW4gc2V0IHRoaXMgdmFyaWFibGUgdG8Kbm9uLW5pbCwgd2hp
+bGUgdGhleSBhcmUgc2V0dGluZyB1cCBhIHJlYXNvbmFibGUgU01UUCBzZXJ2ZXIuCklmIHlvdSBh
+cmUgc2lnbmluZyBhbGwgeW91ciBlLW1haWxzIHdpdGggR251UEcgeW91IHByb2JhYmx5IGFsc28K
+d2FudCB0byBzZXQgYG1tbC1kZWZhdWx0LXNpZ24tbWV0aG9kJyB0byBcInBncFwiIChpbnN0ZWFk
+IG9mClwicGdwbWltZVwiKS4iCiAgOmdyb3VwICdqbC1lbmNyeXB0CiAgOnR5cGUgJ2Jvb2xlYW4p
+CgooZGVmY3VzdG9tIGpsLWVuY3J5cHQtc2FmZS1iY2MtbGlzdCBuaWwKICAiTGlzdCBvZiBlLW1h
+aWwgYWRkcmVzc2VzIHRoYXQgYXJlIHNhZmUgdG8gdXNlIGluIEJjYyBoZWFkZXJzLgpFYXN5UEcg
+ZW5jcnlwdHMgZS1tYWlscyB0byBCY2MgYWRkcmVzc2VzLCBhbmQgdGhlIGVuY3J5cHRlZCBlLW1h
+aWwKYnkgZGVmYXVsdCBpZGVudGlmaWVzIHRoZSB1c2VkIGVuY3J5cHRpb24ga2V5cywgZ2l2aW5n
+IGF3YXkgdGhlCkJjYydlZCBpZGVudGl0aWVzLiAgQ2xlYXJseSwgdGhpcyBjb250cmFkaWN0cyB0
+aGUgb3JpZ2luYWwgZ29hbCBvZgoqYmxpbmQqIGNvcGllcy4KRm9yIGFuIGFjYWRlbWljIHBhcGVy
+IGV4cGxhaW5pbmcgdGhlIHByb2JsZW0sIHNlZSBVUkwKYGh0dHA6Ly9jcnlwdG8uc3RhbmZvcmQu
+ZWR1L3BvcnRpYS9wYXBlcnMvYmItYmNjLnBkZicuClVzZSB0aGlzIHZhcmlhYmxlIHRvIHNwZWNp
+ZnkgZS1tYWlsIGFkZHJlc3NlcyB3aG9zZSBvd25lcnMgZG8gbm90Cm1pbmQgaWYgdGhleSBhcmUg
+aWRlbnRpZmlhYmxlIGFzIHJlY2lwaWVudHMuICBUaGlzIG1heSBiZSB1c2VmdWwgaWYKeW91IHVz
+ZSBCY2MgaGVhZGVycyB0byBlbmNyeXB0IGUtbWFpbHMgdG8geW91cnNlbGYuIgogIDpncm91cCAn
+amwtZW5jcnlwdAogIDp0eXBlICcocmVwZWF0IHN0cmluZykpCgo7Owo7OyBObyBjb25maWd1cmF0
+aW9uIG9wdGlvbnMgYmV5b25kIHRoaXMgcG9pbnQuICBKdXN0IGNvZGUuCjs7CgooZGVmdmFyIGps
+LW1ldGhvZC10YWJsZSAnKChPcGVuUEdQICgoInRlc3QiIGpsLWdwZ2tleS1hdmFpbGFibGUtcCkK
+CQkJCSAgICAoImRvaXQiIGpsLXNlY3VyZS1tZXNzYWdlLWdwZykKCQkJCSAgICAoImFzayIgIkdu
+dVBHIHB1YmxpYyBrZXlzIGF2YWlsYWJsZSBcCmZvciBhbGwgcmVjaXBpZW50cy4gIFJlYWxseSBw
+cm9jZWVkICp3aXRob3V0KiBlbmNyeXB0aW9uPyAiKSkpKQogICJJbnRlcm5hbCBmdW5jdGlvbmFs
+aXR5IGZvciBzdXBwb3J0ZWQgc2VjdXJpdHkgbWV0aG9kcy4iKQoKKGRlZnVuIGpsLWFjY2Vzcy1t
+ZXRob2QtdGFibGUgKG1ldGhvZCB3aGF0KQogICJSZXR1cm4gb2JqZWN0IGZvciBNRVRIT0QgcmVw
+cmVzZW50aW5nIFdIQVQuIgogIChsZXQgKChtZXRob2Qtc3BlYyAoYXNzcSBtZXRob2QgamwtbWV0
+aG9kLXRhYmxlKSkpCiAgICAoaWYgbWV0aG9kLXNwZWMKCShjYWRyIChhc3NvYyB3aGF0IChjYWRy
+IG1ldGhvZC1zcGVjKSkpCiAgICAgIChpZiAoZXEgbWV0aG9kICdDTVMpCgkgIChlcnJvciAiWW91
+IG11c3QgbG9hZCBqbC1zbWltZSBmb3IgUy9NSU1FIHN1cHBvcnQiKQoJKGVycm9yICJNZXRob2Qg
+YCVzJyBub3Qgc3VwcG9ydGVkIGJ5IGBqbC1tZXRob2QtdGFibGUnIiBtZXRob2QpKSkpKQoKKGRl
+ZnVuIGpsLW1lc3NhZ2Utc2VuZC1hbmQtZXhpdCAoJm9wdGlvbmFsIGFyZykKICAiRGVsZWdhdGUg
+d29yayB0byBgamwtbWVzc2FnZS1zZW5kLW1heWJlLWV4aXQnLCBwYXNzaW5nIEFSRy4iCiAgKGlu
+dGVyYWN0aXZlICJQIikKICAoamwtbWVzc2FnZS1zZW5kLW1heWJlLWV4aXQgdCBhcmcpKQoKKGRl
+ZnVuIGpsLW1lc3NhZ2Utc2VuZCAoJm9wdGlvbmFsIGFyZykKICAiRGVsZWdhdGUgd29yayB0byBg
+amwtbWVzc2FnZS1zZW5kLW1heWJlLWV4aXQnLCBwYXNzaW5nIEFSRy4iCiAgKGludGVyYWN0aXZl
+ICJQIikKICAoamwtbWVzc2FnZS1zZW5kLW1heWJlLWV4aXQgbmlsIGFyZykpCgooZGVmdW4gamwt
+bWVzc2FnZS1zZW5kLW1heWJlLWV4aXQgKGV4aXQgYXJnKQogICJTZW5kIG1lc3NhZ2UgaWYgTU1M
+IHNlY3VyZSBlbmNyeXB0IHRhZyBpcyBwcmVzZW50IG9yIG5vdCBhcHByb3ByaWF0ZS4KSWYgTU1M
+IHNlY3VyZSBlbmNyeXB0IHRhZyBpcyBub3QgcHJlc2VudCwgY2hlY2sgdmlhCmBqbC1wcm9jZWVk
+LXdpdGhvdXQtZW5jcnlwdGlvbi1wJyB3aGV0aGVyIHB1YmxpYyBrZXlzIGZvciBhbGwKcmVjaXBp
+ZW50cyBhcmUgYXZhaWxhYmxlIGFuZCBhbiBNTUwgc2VjdXJlIHRhZyBzaG91bGQgYmUgYWRkZWQs
+IG9yCndoZXRoZXIgdGhlIG1lc3NhZ2Ugc2hvdWxkIGJlIHNlbnQgd2l0aG91dCBlbmNyeXB0aW9u
+LiAgSW4gdGhlIGxhdHRlcgpjYXNlIEVYSVQgY29udHJvbHMgd2hldGhlciBgbWVzc2FnZS1zZW5k
+LWFuZC1leGl0JyBvciBgbWVzc2FnZS1zZW5kJwppcyBjYWxsZWQsIGFuZCBBUkcgaXMgcGFzc2Vk
+IGFzIGFyZ3VtZW50LiIKICAoc2F2ZS1leGN1cnNpb24KICAgIChnb3RvLWNoYXIgKHBvaW50LW1p
+bikpCiAgICAod2hlbiAob3IgKHJlLXNlYXJjaC1mb3J3YXJkICI8I3NlY3VyZVtePl0rZW5jcnlw
+dCIgbmlsIHQpCgkgICAgICAoamwtcHJvY2VlZC13aXRob3V0LWVuY3J5cHRpb24tcCkpCiAgICAg
+IDs7IGpsLXByb2NlZWQtd2l0aG91dC1lbmNyeXB0aW9uLXAgbWF5IGluc2VydCBhbiBlbmNyeXB0
+IHRhZy4KICAgICAgOzsgU28gcmUtY2hlY2sgZm9yIGVuY3J5cHRpb24uCiAgICAgIChnb3RvLWNo
+YXIgKHBvaW50LW1pbikpCiAgICAgIChsZXQgKChlbmNyeXB0ZWQgKHJlLXNlYXJjaC1mb3J3YXJk
+ICI8I3NlY3VyZVtePl0rZW5jcnlwdCIgbmlsIHQpKSkKCShqbC1lbmNyeXB0LWJjYy1pcy1zYWZl
+IGVuY3J5cHRlZCkKCShsZXQgKChtbS1lbmNyeXB0LW9wdGlvbgoJICAgICAgIChpZiAoYW5kIGps
+LWVuY3J5cHQtbWFudWFsLWNob2ljZQoJCQkoZXEgJ211bHRpcGxlCgkJCSAgICAoamwtZXBnLWNo
+ZWNrLXVuaXF1ZS1rZXlzIChqbC1tYWlsLXJlY2lwaWVudHMpKSkpCgkJICAgJ2d1aWRlZAoJCSA7
+OyBPdGhlcndpc2UsIHRyeSB0byBwcmVzZXJ2ZSBtbS1lbmNyeXB0LW9wdGlvbiAod2l0aG91dAoJ
+CSA7OyBlcnJvciBmb3IgdmVyc2lvbnMgd2hlcmUgdGhhdCB2YXJpYWJsZSBkb2VzIG5vdCBleGlz
+dCkuCgkJIChpZiAoYm91bmRwICdtbS1lbmNyeXB0LW9wdGlvbikKCQkgICAgIG1tLWVuY3J5cHQt
+b3B0aW9uCgkJICAgbmlsKSkpKQoJICAoaWYgZXhpdAoJICAgICAgKG1lc3NhZ2Utc2VuZC1hbmQt
+ZXhpdCBhcmcpCgkgICAgKG1lc3NhZ2Utc2VuZCBhcmcpKSkpKSkpCgooZGVmdW4gamwtZW5jcnlw
+dC1hZGRyZXNzLWxpc3QgKGhlYWRlcikKICAiUmV0dXJuIGUtbWFpbCBhZGRyZXNzZXMgb2YgSEVB
+REVSIGFzIGxpc3QuIgogIChsZXQgKChoZHIgKG1haWwtc3RyaXAtcXVvdGVkLW5hbWVzIChtZXNz
+YWdlLWZldGNoLWZpZWxkIGhlYWRlcikpKSkKICAgICh3aGVuIGhkcgogICAgICAoc3BsaXQtc3Ry
+aW5nIGhkciAiLCAiKSkpKQoKKGRlZnVuIGpsLWVuY3J5cHQtYmNjLWlzLXNhZmUgKGVuY3J5cHRl
+ZCkKICAiQ2hlY2sgd2hldGhlciB1c2FnZSBvZiBCY2MgaXMgc2FmZSAob3IgYWJzZW50KS4KQmNj
+IHVzYWdlIGlzIHNhZmUgaW4gdHdvIGNhc2VzOiBmaXJzdCwgaWYgRU5DUllQVEVEIGlzIG5pbDsK
+c2Vjb25kLCBpZiB0aGUgQmNjIGFkZHJlc3NlcyBhcmUgYSBzdWJzZXQgb2YgYGpsLWVuY3J5cHQt
+c2FmZS1iY2MtbGlzdCcuCkluIGFsbCBvdGhlciBjYXNlcywgYXNrIHRoZSB1c2VyIHdoZXRoZXIg
+QmNjIHVzYWdlIGlzIHNhZmUuClJhaXNlIGVycm9yIGlmIHVzZXIgYW5zd2VycyBuby4KTm90ZSB0
+aGF0IHRoaXMgZnVuY3Rpb24gZG9lcyBub3QgcHJvZHVjZSBhIG1lYW5pbmdmdWwgcmV0dXJuIHZh
+bHVlOgplaXRoZXIgYW4gZXJyb3IgaXMgcmFpc2VkIG9yIG5vdC4iCiAgKGlmIGVuY3J5cHRlZAog
+ICAgICAobGV0ICgoYmNjLWxpc3QgKGpsLWVuY3J5cHQtYWRkcmVzcy1saXN0ICJiY2MiKSkpCgko
+dW5sZXNzIChqbC1zdWJzZXRwIGJjYy1saXN0IGpsLWVuY3J5cHQtc2FmZS1iY2MtbGlzdCkKCSAg
+KHVubGVzcyAoeWVzLW9yLW5vLXAgIk1lc3NhZ2UgZm9yIGVuY3J5cHRpb24gY29udGFpbnMgQmNj
+IGhlYWRlci5cCiAgVGhpcyBtYXkgZ2l2ZSBhd2F5IGFsbCBCY2MnZWQgaWRlbnRpdGllcyB0byBh
+bGwgcmVjaXBpZW50cy5cCiAgQXJlIHlvdSBzdXJlIHRoYXQgdGhpcyBpcyBzYWZlP1wKICAoQ3Vz
+dG9taXplIGBqbC1lbmNyeXB0LXNhZmUtYmNjLWxpc3QnIHRvIGF2b2lkIHRoaXMgd2FybmluZy4p
+ICIpCgkgICAgKGVycm9yICJBYm9ydGVkIikpKSkpKQoKKGRlZnVuIGpsLW1haWwtcmVjaXBpZW50
+cyAoKQogICJSZXR1cm4gcmVjaXBpZW50cyBvZiBjdXJyZW50IG1lc3NhZ2Ugb3IgbmlsLgpSZWNp
+cGllbnRzIGFyZSBvbmx5IHJldHVybmVkIGlmIHRoZSBtZXNzYWdlIGlzIGFuIGUtbWFpbCB3aXRo
+IGF0CmxlYXN0IG9uZSByZWNpcGllbnQuIgogIChpZiAobWVzc2FnZS1tYWlsLXApCiAgICAgIChs
+ZXQgKChyZWNpcGllbnRzCgkgICAgIChtbS1kZWxldGUtZHVwbGljYXRlcwoJICAgICAgKHNwbGl0
+LXN0cmluZyAobWVzc2FnZS1vcHRpb25zLXNldC1yZWNpcGllbnQpICIsICIpKSkpCgkoaWYgKD49
+IChsZW5ndGggcmVjaXBpZW50cykgMSkKCSAgICByZWNpcGllbnRzCgkgIG5pbCkpCiAgICBuaWwp
+KQoKKGRlZnVuIGpsLW1heWJlLWFkZC10YWctZm9yLWFyZ3MgKHJlY2lwaWVudHMgbWV0aG9kICZv
+cHRpb25hbCBkb250YXNrKQogICJNYXliZSBhZGQgTU1MIHNlY3VyZSB0YWcgZm9yIFJFQ0lQSUVO
+VFMgYW5kIE1FVEhPRC4KSWYga2V5cyBhcmUgYXZhaWxhYmxlIGZvciBhbGwgUkVDSVBJRU5UUyBh
+bmQgTUVUSE9EIGFuZCBET05UQVNLIGlzCm5pbCwgYXNrIHdoZXRoZXIgbm8gZW5jcnlwdGlvbiBz
+aG91bGQgYmUgcGVyZm9ybWVkLiAgSWYgdGhlIHVzZXIKYW5zd2VycyBcInllc1wiLGRvbid0IGFk
+ZCBhbiBNTUwgdGFnIGFuZCByZXR1cm4gYHllcyc7IGlmIHRoZSB1c2VyCmFuc3dlcnMgXCJub1wi
+LCBpbnNlcnQgdGFnIGFuZCByZXR1cm4gYG5vJy4KT3RoZXJ3aXNlLCBpZiBET05UQVNLIGlzIHQs
+IGluc2VydCB0YWcgYW5kIHJldHVybiAnaW5zZXJ0ZWQuCk90aGVyd2lzZSwgcmV0dXJuIGBmYWls
+ZWQnLiIKICAoaWYgKGpsLXRlc3QtbGlzdCByZWNpcGllbnRzIChqbC1hY2Nlc3MtbWV0aG9kLXRh
+YmxlIG1ldGhvZCAidGVzdCIpKQogICAgICAoaWYgKG5vdCBkb250YXNrKQoJICAoaWYgKHllcy1v
+ci1uby1wIChqbC1hY2Nlc3MtbWV0aG9kLXRhYmxlIG1ldGhvZCAiYXNrIikpCgkgICAgICAneWVz
+CgkgICAgKGZ1bmNhbGwgKGpsLWFjY2Vzcy1tZXRob2QtdGFibGUgbWV0aG9kICJkb2l0IikpCgkg
+ICAgJ25vKQoJKGZ1bmNhbGwgKGpsLWFjY2Vzcy1tZXRob2QtdGFibGUgbWV0aG9kICJkb2l0Iikp
+CgkobWVzc2FnZSAiSW5zZXJ0ZWQgJXMgdGFnIiBtZXRob2QpCgknaW5zZXJ0ZWQpCiAgICAobWVz
+c2FnZSAiRmFpbGVkIHRvIGluc2VydCAlcyB0YWciIG1ldGhvZCkKICAgICdmYWlsZWQpKQoKKGRl
+ZnVuIGpsLW1heWJlLWFkZC10YWcgKCZvcHRpb25hbCBkb250YXNrKQogICJNYXliZSBhZGQgTU1M
+IHNlY3VyZSBlbmNyeXB0aW9uIHRhZyB0byBjdXJyZW50IG1lc3NhZ2UuCklmIG5vIHJlY2lwaWVu
+dHMgYXJlIHJldHVybmVkIGJ5IGBqbC1tYWlsLXJlY2lwaWVudHMnLAppbW1lZGlhdGVseSByZXR1
+cm4gYGZhaWxlZCcuICBPdGhlcndpc2UsIHRyeSB0byBhZGQgYSB0YWcgZm9yCnRob3NlIHJlY2lw
+aWVudHMuICBJZiBqbC1zbWltZS5lbCBoYXMgYmVlbiBsb2FkZWQsIFMvTUlNRSB0YWdzCm1heSBi
+ZSBpbnNlcnRlZCBpbiBhZGRpdGlvbiB0byB0aGUgZGVmYXVsdCBvZiBHbnVQRyB0YWdzLiAgV2hp
+Y2gKbWV0aG9kIGlzIHRyaWVkIGZpcnN0IGlmIGJvdGggYXJlIGF2YWlsYWJsZSwgZGVwZW5kcyBv
+biB0aGUKY3VycmVudCBtZXNzYWdlIGFuZCB0aGUgdmFsdWUgb2YgYG1tbC1kZWZhdWx0LWVuY3J5
+cHQtbWV0aG9kJzogSWYKYG1tbC1kZWZhdWx0LWVuY3J5cHQtbWV0aG9kJyBpbmRpY2F0ZXMgc21p
+bWUgb3IgaWYgdGhlIG1lc3NhZ2UKY2FycmllcyBhbiBTL01JTUUgc2lnbmF0dXJlIHRhZywgZ28g
+Zm9yIFMvTUlNRSBmaXJzdDsgb3RoZXJ3aXNlCmZvciBHbnVQRy4gIENhbGwgYGpsLW1heWJlLWFk
+ZC10YWctZm9yLWFyZ3MnIHdpdGggcmVjaXBpZW50cywKY2hvc2VuIG1ldGhvZCwgYW5kIERPTlRB
+U0suCklmIHRoYXQgY2FsbCBkb2VzIG5vdCByZXR1cm4gYGZhaWxlZCcsIHJldHVybiB0aGlzIHJl
+c3VsdC4KT3RoZXJ3aXNlLCByZS10cnkgdGhlIGNhbGwgd2l0aCB0aGUgc2Vjb25kIG1ldGhvZCBh
+bmQgcmV0dXJuIGl0cwpyZXN1bHQuIgogIChsZXQgKChyZWNpcGllbnRzIChqbC1tYWlsLXJlY2lw
+aWVudHMpKSkKICAgIChpZiByZWNpcGllbnRzCgkobGV0KiAoKHNtaW1lLXN1cHBvcnRlZCAoYXNz
+cSAnQ01TIGpsLW1ldGhvZC10YWJsZSkpCgkgICAgICAgKGlzLXNtaW1lIChhbmQgc21pbWUtc3Vw
+cG9ydGVkCgkJCSAgICAgIChvciAoc3RyaW5nPSAic21pbWUiIG1tbC1kZWZhdWx0LWVuY3J5cHQt
+bWV0aG9kKQoJCQkJICAoamwtaXMtc21pbWUtcCkpKSkKCSAgICAgICAoZmlyc3QtbWV0aG9kIChp
+ZiBpcy1zbWltZSAnQ01TICdPcGVuUEdQKSkKCSAgICAgICAoc2Vjb25kLW1ldGhvZCAoaWYgaXMt
+c21pbWUgJ09wZW5QR1AKCQkJCShpZiBzbWltZS1zdXBwb3J0ZWQgJ0NNUykpKQoJICAgICAgIChm
+aXJzdC1yZXN1bHQgKGpsLW1heWJlLWFkZC10YWctZm9yLWFyZ3MKCQkJICAgICAgcmVjaXBpZW50
+cyBmaXJzdC1tZXRob2QgZG9udGFzaykpKQoJICAoaWYgKGFuZCAoZXEgJ2ZhaWxlZCBmaXJzdC1y
+ZXN1bHQpIHNlY29uZC1tZXRob2QpCgkgICAgICAoamwtbWF5YmUtYWRkLXRhZy1mb3ItYXJncyBy
+ZWNpcGllbnRzIHNlY29uZC1tZXRob2QgZG9udGFzaykKCSAgICBmaXJzdC1yZXN1bHQpKQogICAg
+ICAnZmFpbGVkKSkpCgooZGVmdW4gamwtcHJvY2VlZC13aXRob3V0LWVuY3J5cHRpb24tcCAoJm9w
+dGlvbmFsIGRvbnRhc2spCiAgIlJldHVybiB0IGlmIG5vIChhZGRpdGlvbmFsKSBlbmNyeXB0aW9u
+IGlzIG5lY2Vzc2FyeS4KVGhpcyBoYXBwZW5zIGlmIGBqbC1tYXliZS1hZGQtdGFnJyBjYWxsZWQg
+d2l0aCBET05UQVNLIGRvZXMgbm90CnJldHVybiAnbm8uIgogIChsZXQgKCh0YWctYWRkZWQgKGps
+LW1heWJlLWFkZC10YWcgZG9udGFzaykpKQogICAgKG5vdCAoZXEgJ25vIHRhZy1hZGRlZCkpKSkK
+CihkZWZ1biBqbC1lcGctZmluZC11c2FibGUta2V5cyAocmVjaXBpZW50KQogICJGaW5kIHVzYWJs
+ZSBlbmNyeXB0aW9uIGtleXMgZm9yIGUtbWFpbCBhZGRyZXNzIFJFQ0lQSUVOVC4KVmFyaWFibGUg
+YGVwYS1wcm90b2NvbCcgZGV0ZXJtaW5lcyB0aGUgdHlwZSBvZiBrZXlzLiIKICAobGV0ICgoY2Fu
+ZGlkYXRlcyAoZXBnLWxpc3Qta2V5cyAoZXBnLW1ha2UtY29udGV4dCBlcGEtcHJvdG9jb2wpIHJl
+Y2lwaWVudCkpCglrZXlzKQogICAgKGRvbGlzdCAoY2FuZGlkYXRlIGNhbmRpZGF0ZXMga2V5cykK
+ICAgICAgOzsgQmV3YXJlOiBUaGVyZSBhcmUgbG90cyBvZiBzaW1pbGFyIGZ1bmN0aW9ucyB0byBj
+aGVjayBjYW5kaWRhdGUsIGUuZy4sCiAgICAgIDs7IG1tbDIwMTUtZXBnLWZpbmQtdXNhYmxlLWtl
+eSwgbW1sMTk5MS1lcGctZmluZC11c2FibGUta2V5LAogICAgICA7OyBtbWwtc21pbWUtZXBnLWZp
+bmQtdXNhYmxlLWtleS4KICAgICAgOzsgVGhlIGZpcnN0IHR3byBhcmUgZXhhY3QgY29waWVzOyB0
+aGV5IGV4Y2x1ZGUgZGlzYWJsZWQsIHJldm9rZWQsIGFuZAogICAgICA7OyBleHBpcmVkIGtleXMu
+ICBUaGUgdGhpcmQgb25lIGRvZXMgbm90IHRlc3QgZm9yIGRpc2FibGVkIGtleXM7IG1heWJlCiAg
+ICAgIDs7IFMvTUlNRSBrZXlzIGNhbm5vdCBiZSBkaXNhYmxlZC4gIEhlbmNlLCBpdCBwcm9iYWJs
+eSBkb2VzIG5vdCBodXJ0IHRvCiAgICAgIDs7IGFwcGx5IG1tbDIwMTUtZXBnLWZpbmQtdXNhYmxl
+LWtleSBpbiBhbGwgY2FzZXMuCiAgICAgIChpZiAobW1sMjAxNS1lcGctZmluZC11c2FibGUta2V5
+IChsaXN0IGNhbmRpZGF0ZSkgJ2VuY3J5cHQpCgkgIChwdXNoIGNhbmRpZGF0ZSBrZXlzKSkpKSkK
+CihkZWZ1biBqbC1lcGctY2hlY2stdW5pcXVlLWtleXMgKHJlY2lwaWVudHMpCiAgIkNoZWNrIGlm
+IGFsbCBSRUNJUElFTlRTIGhhdmUgdW5pcXVlIGVuY3J5cHRpb24ga2V5cy4KUmV0dXJuICdvayBp
+ZiBhIHVuaXF1ZSBrZXkgaXMgZm91bmQgZm9yIGV2ZXJ5IHJlY3BpZW50LiAgUmV0dXJuIG5pbCwg
+aWYgbm8ga2V5CmlzIGZvdW5kIGZvciBzb21lIHJlY2lwaWVudDsgb3RoZXJ3aXNlLCByZXR1cm4g
+J211bHRpcGxlLiIKICAobGV0ICgoZXBhLXByb3RvY29sIChpZiAoamwtaXMtc21pbWUtcCkKCQkJ
+ICAnQ01TCgkJCSdPcGVuUEdQKSkpCiAgICAoY2F0Y2ggJ2JyZWFrCiAgICAgIChkb2xpc3QgKHJl
+Y2lwaWVudCByZWNpcGllbnRzICdvaykKCShsZXQqICgoY2FuZGlkYXRlcyAoamwtZXBnLWZpbmQt
+dXNhYmxlLWtleXMgcmVjaXBpZW50KSkKCSAgICAgICAoY2FuZG5vIChsZW5ndGggY2FuZGlkYXRl
+cykpKQoJICAodW5sZXNzICg9IDEgY2FuZG5vKQoJICAgIChpZiAoPSAwIGNhbmRubykKCQkocHJv
+Z24gKG1lc3NhZ2UgIk5vIGtleSBmb3IgJXMiIHJlY2lwaWVudCkKCQkgICAgICAgKHRocm93ICdi
+cmVhayBuaWwpKQoJICAgICAgKG1lc3NhZ2UgIk11bHRpcGxlIGtleXMgZm9yICVzIiByZWNpcGll
+bnQpCgkgICAgICAoc2l0LWZvciAyKQoJICAgICAgKHRocm93ICdicmVhayAnbXVsdGlwbGUpKSkp
+KSkpKQoKKGRlZnVuIGpsLWdwZ2tleS1hdmFpbGFibGUtcCAocmVjaXBpZW50KQogICJDaGVjayB3
+aGV0aGVyIEVhc3lQRyBrbm93cyBhIHB1YmxpYyBPcGVuUEdQIGtleSBmb3IgUkVDSVBJRU5ULiIK
+ICAobGV0ICgoZXBhLXByb3RvY29sICdPcGVuUEdQKSkKICAgIChqbC1lcGctZmluZC11c2FibGUt
+a2V5cyByZWNpcGllbnQpKSkKCihkZWZ1biBqbC1zZWN1cmUtbWVzc2FnZS1ncGcgKCkKICAiSW52
+b2tlIE1NTCBmdW5jdGlvbiB0byBhZGQgYXBwcm9wcmlhdGUgc2VjdXJlIHRhZyBmb3IgR251UEcu
+ClRoZSBjaG9pY2UgYmV0d2VlbiBwZ3Agb3IgcGdwbWltZSBpcyBiYXNlZCBvbiBgamwtZW5jcnlw
+dC1ncGctd2l0aG91dC1taW1lJy4KQ3JlYXRpb24gb2Ygc2lnbmF0dXJlcyBpcyBjb250cm9sbGVk
+IGJ5IGBqbC1kby1ub3Qtc2lnbi1wJy4iCiAgKGlmIGpsLWVuY3J5cHQtZ3BnLXdpdGhvdXQtbWlt
+ZQogICAgICAobW1sLXNlY3VyZS1tZXNzYWdlLWVuY3J5cHQtcGdwIChqbC1kby1ub3Qtc2lnbi1w
+KSkKICAgIChtbWwtc2VjdXJlLW1lc3NhZ2UtZW5jcnlwdC1wZ3BtaW1lIChqbC1kby1ub3Qtc2ln
+bi1wKSkpKQoKKGRlZnVuIGpsLWlzLXNtaW1lLXAgKCkKICAiQ2hlY2sgd2hldGhlciBzZWN1cmUg
+dGFnIGZvciBTL01JTUUgaXMgcHJlc2VudC4iCiAgKHNhdmUtZXhjdXJzaW9uCiAgICAoZ290by1j
+aGFyIChwb2ludC1taW4pKQogICAgKHJlLXNlYXJjaC1mb3J3YXJkICI8I3NlY3VyZVtePl0rbWV0
+aG9kPXNtaW1lIiBuaWwgdCkpKQoKKGRlZnVuIGpsLWlzLXNpZ25lZC1wICgpCiAgIkNoZWNrIHdo
+ZXRoZXIgc2VjdXJlIHNpZ24gdGFnIGlzIHByZXNlbnQuIgogIChzYXZlLWV4Y3Vyc2lvbgogICAg
+KGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgIChyZS1zZWFyY2gtZm9yd2FyZCAiPCNzZWN1cmVb
+Xj5dK3NpZ24iIG5pbCB0KSkpCgooZGVmdW4gamwtZG8tbm90LXNpZ24tcCAoKQogICJDaGVjayB3
+aGV0aGVyIHRoZSBtZXNzYWdlIHNob3VsZCBub3QgYmUgc2lnbmVkLgpUaGlzIGlzIHRoZSBjYXNl
+IGlmIGBqbC1lbmNyeXB0LWluc2VydC1zaWduYXR1cmUnIGlzIG5pbCBhbmQKbm8gc2VjdXJlIHNp
+Z24gdGFnIGlzIHByZXNlbnQuIgogIChhbmQgKG5vdCBqbC1lbmNyeXB0LWluc2VydC1zaWduYXR1
+cmUpCiAgICAgICAobm90IChqbC1pcy1zaWduZWQtcCkpKSkKCihkZWZ1biBqbC1lbmNyeXB0LWlm
+LXBvc3NpYmxlICgpCiAgIkluc2VydCBNTUwgZW5jcnlwdGlvbiB0YWcgaWYgYXBwcm9wcmlhdGUu
+CkZ1bmN0aW9uIHVzZWQgaW4gYGdudXMtbWVzc2FnZS1zZXR1cC1ob29rJy4gIFNldApgZ251cy1t
+ZXNzYWdlLXJlcGx5c2lnbmVuY3J5cHRlZCcgdG8gbmlsIGlmIGBqbC1lbmNyeXB0LWluc2VydC1z
+aWduYXR1cmUnCmlzIG5pbC4gIEluc2VydCBNTUwgc2lnbmF0dXJlIHRhZyBpZiBgamwtZW5jcnlw
+dC1pbnNlcnQtc2lnbmF0dXJlJyBpcwpgYWx3YXlzJy4gIENhbGwgYGpsLW1heWJlLWFkZC10YWcn
+IHdpdGggdCB0byBhdm9pZCBiZWluZyBhc2tlZCBhIHF1ZXN0aW9uLiIKICAoaWYgKG5vdCBqbC1l
+bmNyeXB0LWluc2VydC1zaWduYXR1cmUpCiAgICAgIChzZXRxIGdudXMtbWVzc2FnZS1yZXBseXNp
+Z25lbmNyeXB0ZWQgbmlsKQogICAgKGlmIChlcSAnYWx3YXlzIGpsLWVuY3J5cHQtaW5zZXJ0LXNp
+Z25hdHVyZSkKCShtbWwtc2VjdXJlLW1lc3NhZ2UgbW1sLWRlZmF1bHQtc2lnbi1tZXRob2QgJ3Np
+Z24pKSkKICAoamwtbWF5YmUtYWRkLXRhZyB0KSkKCihkZWZ1biBqbC10ZXN0LWxpc3QgKGxpc3Qg
+cHJlZGljYXRlKQogICJUbyBlYWNoIGVsZW1lbnQgb2YgTElTVCBhcHBseSBQUkVESUNBVEUuClJl
+dHVybiBuaWwgaWYgbGlzdCBpcyBlbXB0eSBvciBzb21lIHRlc3QgcmV0dXJucyBuaWw7Cm90aGVy
+d2lzZSwgcmV0dXJuIHQuIgogIChpZiBsaXN0CiAgICAgIChsZXQgKChyZXN1bHQgKG1hcGNhciBw
+cmVkaWNhdGUgbGlzdCkpKQoJKGlmIChtZW1xIG5pbCByZXN1bHQpCgkgICAgbmlsCgkgIHQpKSkp
+CgooZGVmdW4gamwtc3Vic2V0cCAobGlzdDEgbGlzdDIpCiAgIlJldHVybiB0IGlmIExJU1QxIGlz
+IGEgc3Vic2V0IG9mIExJU1QyLgpTaW1pbGFyIHRvIGBzdWJzZXRwJyBidXQgdXNlIG1lbWJlciBm
+b3IgZWxlbWVudCB0ZXN0IHNvIHRoYXQgdGhpcyB3b3JrcyBmb3IKbGlzdHMgb2Ygc3RyaW5ncy4i
+CiAgKGlmIGxpc3QxCiAgICAgIChhbmQgKG1lbWJlciAoY2FyIGxpc3QxKSBsaXN0MikKCSAgIChq
+bC1zdWJzZXRwIChjZHIgbGlzdDEpIGxpc3QyKSkKICAgIHQpKQoKKHByb3ZpZGUgJ2psLWVuY3J5
+cHQpCjs7OyBqbC1lbmNyeXB0LmVsIGVuZHMgaGVyZQo=
