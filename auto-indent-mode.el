@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.122
+;; Version: 0.123
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Dec-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Documentation about fixing #37.
 ;; 20-Dec-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    May address underlying issue of #37.  Only reindent at certain points
@@ -1403,7 +1406,7 @@ indentation is may not specified for the current mode."
   :type '(repeat (symbol :tag "Ignored indent-function"))
   :group 'auto-indent)
 
-(defcustom auto-indent-newline-function 'reindent-then-newline-and-indent
+(defcustom auto-indent-newline-function 'reindent-newline-and-indent
   "Auto indentation function for the return key."
   :type '(choice
           (const :tag "Reindent the current line, insert the newline then indent the current line."
@@ -1571,6 +1574,10 @@ If the major mode has `major-mode-indent-level', `major-indent-level', `major-mo
 int main(void) {
     /* ... */
     } // <- unindent this line when I type it.
+
+For keywords that end a line defined by
+`auto-indent-block-close-keywords', only deindent on a new line
+
 "
   :type 'boolean
   :group 'auto-indent)
@@ -1583,9 +1590,12 @@ For example in ruby:
 # In an object instance variable (denoted with '@'), remember a block.
 def remember(&a_block)
   @block = a_block
-  end # <- unindent this line when I type it.
+  end # <- unindent this line after I press return.
 
 This will check any of the keywords and try to unindent the line.
+
+This is used so that you can be more conservative in indentation by using:
+ (setq auto-indent-newline-function 'newline-and-indent)
 "
   :type '(repeat (string :tag "Keyword to unindent"))
   :group 'auto-indent-mode)
