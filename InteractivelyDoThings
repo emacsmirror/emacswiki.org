@@ -423,11 +423,17 @@ If you want to have ido-style ##completion-at-point## (the default in-buffer com
 
 === Better flex (fuzzy) matching for Ido ===
 
+There are at least two options:
+
+[http://marmalade-repo.org/packages/flx-ido flx-ido].  This does fuzzy matching based on intelligent sorting of the list along with nice highlighting.  It doesn't match out-of-order characters though, unlike:
+
 [http://marmalade-repo.org/packages/ido-better-flex ido-better-flex] implements just another fuzzy matching algorithm, unlike default Ido flex, it allows you to match candidates even if you type a character that is before the previously matched input.
 
 === Display Completions Vertically ===
 
 It's a lot easier to scan long path names if they're displayed vertically, instead of horizontally.  Run this to achieve just that:
+
+This can be achieved by installing package [http://marmalade-repo.org/packages/ido-vertical-mode ido-vertical-mode], which (presumably), does the following, below.
 
   ;; Display ido results vertically, rather than horizontally
   (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
