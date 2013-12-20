@@ -35,8 +35,8 @@ tiraimodern # 2013-08-21 MaemoEmacs
 http://www\.facebook\.com/profile.php\?id=\d+ # 2013-09-27 We've had a lot of bogus comments with user names linked to Facebook profiles. Please remove the link in question in order to save the page.
 casino # 2013-11-18 Comments on EmacsWikiProblems
 bestquote # 2013-11-19 Comments on 2013-05-07
-online # 2013-11-20 Comments on JianliZhao
-coverage # 2013-11-18 Comments on JianliZhao
+# online # 2013-11-20 Comments on JianliZhao
+# coverage # 2013-11-18 Comments on JianliZhao
 edgenericmeds # 2013-11-23 Comments on EmacsWikiProblems
 bestprices # 2013-11-25 Comments on 2013-04-24
 insur # 2013-11-27 A deluge of insurance related spam has forced us to add this regular expression to the ban list. Hopefully it can be replaced with something less broad, soon.
