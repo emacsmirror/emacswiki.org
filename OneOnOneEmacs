@@ -577,9 +577,11 @@ What's up there? :/  Dec 21, 2013 at 01:58 CET -- codethief
 [new:DrewAdams:2013-12-21 03:51 UTC]
 Sorry about that.  I've uploaded a fix to the wiki.  Should be on MELPA within a day.
 
-However, I don't understand why that would affect subsequent sessions, if you didn't load ##oneonone.el## in them.  Maybe check your `custom-file' (or [[init file]]), to ensure that something did not save a setting or something.  Nothing should be saved, normally, unless you customized some option.  Perhaps you used DeskTop or something?  Dunno.
+However, I don't understand why that would affect subsequent sessions, if you didn't load ##oneonone.el## in them.  Oh, maybe there is an automatically generated ##oneonone-autoloads.el## file or something that is automatically loaded.  I'm no expert on ##package.el## stuff.  If so, remove that (or updated to the new version should overwrite it, I imagine).
 
-Anyway, try to ensure that if you use any files at startup to restore a previous session state then they are clean (nothing `##1on1-##` in them), then try the new version I uploaded.  Sorry for your trouble.
+If something else seems to be causing the problem, maybe check your `custom-file' (or [[init file]]), to ensure that something did not save a setting or something.  Nothing should be saved, normally, unless you customized some option.  Perhaps you used DeskTop or something?  Dunno.
+
+Anyway, try to ensure that if you use any files at startup to restore a previous session state then they are clean (nothing `##1on1-##` in them), and try the new version I uploaded.  Sorry for your trouble.
 
 Thx -- DrewAdams
 
