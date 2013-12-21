@@ -1,3 +1,6 @@
+This page describes the extension 'Clean Auto Indent':
+[url]https://github.com/pmarinov/clean-aindent[/url]
+
 When automatic indentation is enabled, upon entering new line Emacs
 will put the cursor under the first non-blank character of the
 previous line. Because it is not designed to handle virtual spaces,
@@ -29,8 +32,8 @@ making it automatic `(add-hook 'before-save-hook 'delete-trailing-whitespace)'.
 The problem is that in such configuration all white spaces, including
 those from lines you didn't edit, will be deleted. This is
 inadmissible in an environment of collaborative development where one
-central version control repository is shared. Your commits will have
-tons of unrelated changes.
+central version control repository is shared. Your commits *will have
+tons of unrelated changes*.
 
 `clean-aindent.el' is a small extension that keeps track of the last
 auto-indent operation and, if it is abandoned, *would take care to trim
