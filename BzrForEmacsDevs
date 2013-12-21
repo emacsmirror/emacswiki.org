@@ -184,8 +184,6 @@ At this point, you're ready to do work.  You edit the source files, build and te
       bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -F log-message.txt
 
-See Eli's description of his ChangeLog workflow here: http://lists.gnu.org/archive/html/emacs-devel/2013-12/msg00727.html
-
 You can also do ##bzr commit -m "blah blah blah"##, if your log message is short enough to fit on one line.  Remember, these commits are local: they affect only the task branch, since it is not bound to upstream.  The commits don't affect the upstream master branch, and they don't even affect your local trunk mirror.  No one else will see the commits until you send them upstream.
 
 (Note: the Emacs project will continue to keep versioned ChangeLog files.  See [http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00334.html this mail] for more.)
@@ -353,6 +351,7 @@ If you have the changelog_merge plugin installed (comes bundled with some bzr di
 
 Related threads/messages:
 * [[http://lists.gnu.org/archive/html/emacs-devel/2013-12/msg00716.html|Bzr taskbranches and ChangeLog]] - description of the problem with local branches and the ChangeLog and hints for solving it
+* See Eli's description of his ChangeLog workflow here: http://lists.gnu.org/archive/html/emacs-devel/2013-12/msg00727.html
 * [[http://lists.gnu.org/archive/html/emacs-devel/2011-04/msg00284.html|splitting ChangeLogs]]
 
 [:Resources]
