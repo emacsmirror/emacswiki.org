@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Jul 23 16:47:33 2013 (-0700)
+;; Last-Updated: Fri Dec 20 19:27:44 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2774
+;;     Update #: 2794
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -250,6 +250,7 @@
 ;;    `1on1-color-minibuffer-frame-on-setup',
 ;;    `1on1-color-isearch-minibuffer-frame',
 ;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
+;;    `1on1-filter-no-default-minibuffer',
 ;;    `1on1-flash-ding-minibuffer-frame',
 ;;    `1on1-minibuffer-prompt-end', `1on1-reset-minibuffer-frame',
 ;;    `1on1-remove-if', `1on1-set-minibuffer-frame-top/bottom',
@@ -280,9 +281,13 @@
 ;;  from Steve Kemp...
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+ 
 ;;; Change Log:
 ;;
+;; 2013/08/12 dadams
+;;     Added: 1on1-filter-no-default-minibuffer.
+;;     1on1-minibuffer-frame-alist: Added: (cons 'desktop-dont-save t).
+;;     frameset-filter-alist:  Add 1on1-filter-no-default-minibuffer and null name entries.
 ;; 2013/07/08 dadams
 ;;     1on1-color-minibuffer-frame-on-exit-increment: Set default value to 0.10.
 ;;     1on1-color-minibuffer-frame-on-exit:
@@ -614,14 +619,13 @@
 (require 'oneonone)
 
 
-;; To quiet the byte compiler
-(unless (> emacs-major-version 21)
-  (defvar x-pointer-box-spiral)
-  (defvar x-pointer-xterm))
+;; Quiet the byte compiler.
+(defvar frameset-filter-alist)          ; In `frameset.el', Emacs 24.4+
+(defvar x-pointer-box-spiral)
+(defvar x-pointer-xterm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+ 
 ;;;###autoload
 (defgroup One-On-One nil
   "Options to define initial frame configuration."
@@ -638,9 +642,7 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs")
   :link '(emacs-commentary-link :tag "Commentary" "oneonone")
   )
-
-
-
+ 
 ;;; Minibuffer frame: ********************************
 ;;;
 (defvar 1on1-minibuffer-frame nil
@@ -876,7 +878,9 @@ for the new value to take effect."
    (or (assq 'vertical-scroll-bars minibuffer-frame-alist) ;  No scroll bar.
        (cons 'vertical-scroll-bars nil))
    (or (assq 'name minibuffer-frame-alist)
-       (cons 'name "Emacs Minibuffer")))
+       (cons 'name "Emacs Minibuffer"))
+   (or (assq 'desktop-dont-save minibuffer-frame-alist)
+       (cons 'desktop-dont-save t)))
   "*Frame-parameter alist for the standalone minibuffer frame
 `1on1-minibuffer-frame'.
 
@@ -916,8 +920,19 @@ Not used unless `1on1-fit-minibuffer-frame-max-height' is nil.
 This has no effect if you do not use library `fit-frame.el'."
   :type 'integer :group 'One-On-One)
 
+(when (boundp 'frameset-filter-alist)  ; Emacs 24.4+
+
+  (defun 1on1-filter-no-default-minibuffer (current  _filtered  _parameters  saving)
+    "Do not replace existing minibuffer frame when restoring a frameset."
+    (or saving  (not (equal current '(frameset--mini t . t)))  '(frameset--mini t . nil)))
+
+  (push '(frameset--mini . 1on1-filter-no-default-minibuffer) frameset-filter-alist)
+
+  ;; Also, keep frame names when restoring a frameset.
+  (push '(name . nil) frameset-filter-alist))
 
 
+ 
 ;;; *Help* frame: ********************************
 ;;;   Display of *Help* buffer in custom frame.
 ;;;   Background, height, cursor and pointer colors.
@@ -949,9 +964,7 @@ Note: This is not used if `1on1-*Help*-frame-flag' is nil.
 If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
-
-
-
+ 
 ;;; *Completions* frame: ********************************
 ;;;   Display of *Completion* buffer in custom frame.
 ;;;   Background, height, cursor and pointer colors.
@@ -1011,9 +1024,7 @@ This must be less than the current default font size, since the new
 font size cannot be less than 1 point.
 A value of zero or nil means the *Completions* frame is not zoomed."
   :type '(restricted-sexp :match-alternatives (integerp null)) :group 'One-On-One)
-
-
-
+ 
 ;;; Default for normal frames: `1on1-default-frame-alist' **************************
 ;;;
 (defvar 1on1-default-frame-foreground "Black"
@@ -1204,9 +1215,7 @@ for the new value to take effect."
   ;; :type '(alist :key-type symbol :value-type sexp)
   :type '(repeat (cons :format "%v" (symbol :tag "Frame Parameter") (sexp :tag "Value")))
   :group 'One-On-One)
-
-
-
+ 
 ;;; Special-display frames: `1on1-special-display-frame-alist' ************************
 ;;;
 (defvar 1on1-default-special-frame-foreground "Black"
@@ -1321,9 +1330,7 @@ for the new value to take effect."
   ;; :type '(alist :key-type symbol :value-type sexp)
   :type '(repeat (cons :format "%v" (symbol :tag "Frame Parameter") (sexp :tag "Value")))
   :group 'One-On-One)
-
-
-
+ 
 ;;; Main command ***************************************
 ;;;
 ;;;###autoload
