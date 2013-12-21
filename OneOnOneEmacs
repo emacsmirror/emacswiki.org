@@ -586,6 +586,12 @@ Anyway, try to ensure that if you use any files at startup to restore a previous
 Thx -- DrewAdams
 
 
+[new:codethief:2013-12-21 18:49 CET]
+Wow, thanks for replying so quickly! Unfortunately, I'm still getting the same error with version 20131221.350…
+(Yes, there's a file .emacs.d/elpa/oneonone-20131221.350/oneonone-autoloads.el but since that's the newest version disabling or deleting it won't actually help me with getting oneoneone to work, right?)
+
+-- codethief
+
 ----
 
 CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize
