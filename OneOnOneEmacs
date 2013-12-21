@@ -550,6 +550,26 @@ PS: Aquamacs comes with OneBufferOneFrame (OBOF). Never tried it but it may work
 [new:DrewAdams:2012-07-22 19:57 UTC]
 As far as I know, Aquamacs's OneBufferOneFrame is still based on some of the OneOnOneEmacs code (e.g. frame fitting). -- DrewAdams
 
+[new:codethief:2013-12-21 00:41 UTC]
+Upon installing revision 20130723.2352 from MELPA (i.e. the latest version from the wiki here), I immediately get the following error which subsequently also pops up every start – independent of whether I (require 'oneonone) or not – and more or less completely breaks my Emacs:
+
+Debugger entered--Lisp error: (void-variable 1on1-minibuffer-frame-background)
+  (defvar 1on1-inactive-minibuffer-frame-background 1on1-minibuffer-frame-background "*The color of the `1on1-minibuffer-frame' when it is inactive.\n\nNote: This is not used if `1on1-minibuffer-frame-flag' is nil.")
+  eval-buffer(#<buffer  *load*> nil "/home/simon/.emacs.d/elpa/oneonone-20130723.2352/oneonone-autoloads.el" nil t)  ; Reading at buffer position 3258
+  load-with-code-conversion("/home/simon/.emacs.d/elpa/oneonone-20130723.2352/oneonone-autoloads.el" "/home/simon/.emacs.d/elpa/oneonone-20130723.2352/oneonone-autoloads.el" nil t)
+  load("/home/simon/.emacs.d/elpa/oneonone-20130723.2352/oneonone-autoloads" nil t)
+  package--make-autoloads-and-compile("oneonone" "/home/simon/.emacs.d/elpa/oneonone-20130723.2352")
+  package-unpack-single("oneonone" "20130723.2352" "Frame configuration that uses one frame per window." ((hexrgb (0))))
+  package-download-single(oneonone "20130723.2352" "Frame configuration that uses one frame per window." ((hexrgb (0))))
+  package-download-transaction((hexrgb oneonone))
+  package-install(oneonone)
+  package-install-button-action(#<marker (moves after insertion) at 67 in *Help*>)
+  push-button(67 t)
+  push-button((mouse-2 (#<window 12 on *Backtrace*> 67 (264 . 51) 5482444 nil 67 (29 . 2) nil (1 . 13) (9 . 23))))
+  call-interactively(push-button nil nil)
+
+What's up there? :/
+
 ----
 
 CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize
