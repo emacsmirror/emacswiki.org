@@ -550,6 +550,8 @@ PS: Aquamacs comes with OneBufferOneFrame (OBOF). Never tried it but it may work
 [new:DrewAdams:2012-07-22 19:57 UTC]
 As far as I know, Aquamacs's OneBufferOneFrame is still based on some of the OneOnOneEmacs code (e.g. frame fitting). -- DrewAdams
 
+----
+
 [new:codethief:2013-12-21 01:58 CET]
 Upon installing revision 20130723.2352 from MELPA (i.e. the latest version from the wiki here), I immediately get the following error which subsequently also pops up every start – independent of whether I (require 'oneonone) or not – and more or less completely breaks my Emacs:
 
@@ -570,9 +572,17 @@ Debugger entered--Lisp error: (void-variable 1on1-minibuffer-frame-background)
   call-interactively(push-button nil nil)
 </pre>
 
-What's up there? :/
+What's up there? :/  Dec 21, 2013 at 01:58 CET -- codethief
 
-Dec 21, 2013 at 01:58 CET -- codethief
+[new:DrewAdams:2013-12-21 03:51 UTC]
+Sorry about that.  I've uploaded a fix to the wiki.  Should be on MELPA within a day.
+
+However, I don't understand why that would affect subsequent sessions, if you didn't load ##oneonone.el## in them.  Maybe check your `custom-file' (or [[init file]]), to ensure that something did not save a setting or something.  Nothing should be saved, normally, unless you customized some option.  Perhaps you used DeskTop or something?  Dunno.
+
+Anyway, try to ensure that if you use any files at startup to restore a previous session state then they are clean (nothing `##1on1-##` in them), then try the new version I uploaded.  Sorry for your trouble.
+
+Thx -- DrewAdams
+
 
 ----
 
