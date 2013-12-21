@@ -87,7 +87,7 @@
 ;;        |            D            |      |       |        |        |
 ;;        +-------------------------+      +-------+--------+--------+
 ;;
-;; `rotate-frame-anti-clockwise'  ...  Rotate 90 degrees anti-clockwise
+;; `rotate-frame-anticlockwise'  ...  Rotate 90 degrees anti-clockwise
 ;;
 ;;        +------------+------------+      +--------+--------+-------+
 ;;        |            |     B      |      |   B    |   C    |       |
