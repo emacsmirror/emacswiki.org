@@ -572,7 +572,7 @@ Debugger entered--Lisp error: (void-variable 1on1-minibuffer-frame-background)
   call-interactively(push-button nil nil)
 </pre>
 
-What's up there? :/  Dec 21, 2013 at 01:58 CET -- codethief
+What's up there? :/  Dec 21, 2013 at 01:58 CET -- [[codethief]]
 
 [new:DrewAdams:2013-12-21 03:51 UTC]
 Sorry about that.  I've uploaded a fix to the wiki.  Should be on MELPA within a day.
@@ -589,8 +589,12 @@ Thx -- DrewAdams
 [new:codethief:2013-12-21 18:49 CET]
 Wow, thanks for replying so quickly! Unfortunately, I'm still getting the same error with version 20131221.350…
 (Yes, there's a file .emacs.d/elpa/oneonone-20131221.350/oneonone-autoloads.el but since that's the newest version disabling or deleting it won't actually help me with getting oneoneone to work, right?)
+-- [[codethief]]
 
--- codethief
+[new:DrewAdams:2013-12-21 19:30 UTC]
+It's easiest if you follow up with me using email (##(concat "drew.adams" "@" "oracle" ".com")##). Please send me the file ##oneonone-autoloads.el## that was generated.  (I assume that you deleted the previous version of the file, to make sure.)
+
+And please try commenting out parts of that autoloads file yourself until the error disappears.  Use `comment-region' (I bind it to `##C-x C-;##') to comment and uncomment different regions.  Bisect the file recursively until you find the problematic part.  I.e., comment-out half the file, then 3/4, then 7/8...  That is very quick (except that you need to restart Emacs each time).  Thx -- DrewAdams.
 
 ----
 
