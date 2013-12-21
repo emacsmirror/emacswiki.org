@@ -34,6 +34,10 @@ If you want to autoindent file when save or visit, try [[indent-file.el]] -- col
 
 The [[indent-file.el]] saves every time you visit a file.  In addition you get your buffer untabbified and all the trailing whitespace removed.  I don't like emacs saving files every time I visit them.  I created a minor mode that autoindents on save or visit as well as autoindentation in general.  In theory, emacs "pretends" that no such change occurred (its just between you and emacs).  It is in AutoIndentMode -- MatthewFidler
 
+[new]
+
+See also CleanAutoIndent – indentation without abandoned trailing white spaces
+
 == Auto-indent current and new lines ==
 
 <tt>electric-indent-mode</tt> will indent the current line and new ones when you type certain "electric" characters or actions; pressing Enter, for example, will re-indent the current line if necessary, add a new one and indent it; adding a closing bracket ("}") will automatically match the indentation of the opening pair (reducing identation if required), etc.
@@ -198,9 +202,6 @@ That leaves one space between the lines, which may or may not be what you want.
 [new]
 
 I have an implementation of this in AutoIndentMode -- MatthewFidler
-
-----
-
 
 ----
 
