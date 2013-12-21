@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Fri Dec 20 19:27:44 2013 (-0800)
+;; Last-Updated: Fri Dec 20 19:48:17 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2794
+;;     Update #: 2816
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -286,6 +286,8 @@
 ;;
 ;; 2013/08/12 dadams
 ;;     Added: 1on1-filter-no-default-minibuffer.
+;;     Removed autoload cookie: *-frame-alist.
+;;     1on1-active-mode-line-background: Use constant default, so can have autoload cookie.
 ;;     1on1-minibuffer-frame-alist: Added: (cons 'desktop-dont-save t).
 ;;     frameset-filter-alist:  Add 1on1-filter-no-default-minibuffer and null name entries.
 ;; 2013/07/08 dadams
@@ -734,7 +736,7 @@ This should be opposite in sign to
   :type 'integer :group 'One-On-One)
 
 ;;;###autoload
-(defcustom 1on1-active-mode-line-background 1on1-active-minibuffer-frame-background
+(defcustom 1on1-active-mode-line-background "PaleGoldenrod"
   "*The color of the mode-line when it is active.
 Note: This is not used if `1on1-color-mode-line-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
@@ -850,7 +852,6 @@ for the new value to take effect."
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
-;;;###autoload
 (defcustom 1on1-minibuffer-frame-alist
   (list
    (or (assq 'foreground-color minibuffer-frame-alist)
@@ -1017,7 +1018,7 @@ for the new value to take effect."
 
 ;;;###autoload
 (defcustom 1on1-completions-frame-zoom-font-difference
-  (or (and (require 'zoom-frm 'nil t) (* 2 frame-zoom-font-difference))
+  (or (and (require 'zoom-frm 'nil t)  (* 2 frame-zoom-font-difference))
       2)
   "*Number of points to reduce the *Completions* frame font size.
 This must be less than the current default font size, since the new
@@ -1165,7 +1166,6 @@ take effect.")
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
-;;;###autoload
 (defcustom 1on1-default-frame-alist
   (list
    (or (assq 'foreground-color default-frame-alist)
@@ -1294,7 +1294,6 @@ it to take effect.")
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
-;;;###autoload
 (defcustom 1on1-special-display-frame-alist
   (list
    (or (assq 'font special-display-frame-alist)
