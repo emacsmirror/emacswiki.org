@@ -27,18 +27,20 @@ The trailing white-space area is highlighted in red.
 
 There are solutions already built in Emacs. These spaces
 can be removed by invoking M-x `delete-trailing-whitespace', or even
-making it automatic `(add-hook 'before-save-hook 'delete-trailing-whitespace)'.
+making it automatic by attaching to `before-save-hook'.
 
 The problem is that in such configuration all white spaces, including
-those from lines you didn't edit, will be deleted. This is
+*those from lines you didn't edit*, will be deleted. This is
 inadmissible in an environment of collaborative development where one
-central version control repository is shared. Your commits *will have
-tons of unrelated changes*.
+central version control repository is shared. Your commits
+*will have tons of unrelated changes*.
 
 `clean-aindent.el' is a small extension that keeps track of the last
-auto-indent operation and, if it is abandoned, *would take care to trim
-down the abandoned white space* characters.
+auto-indent operation and, if it is abandoned,
+*would take care to trim down the abandoned white space* characters.
 
 It will look like this after the line is abandoned:
 
 [[image:AIndentClean]]
+
+(PetarMarinov)
