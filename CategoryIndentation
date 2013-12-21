@@ -25,6 +25,7 @@ Related:
 
 * IndentationBasics -- various variables
 * AutoIndentation -- how to indent new lines automatically
+* CleanAutoIndent -- indentation without abandoned trailing white spaces
 * NoTabs -- how to avoid tabs altogether (see also TabsAreEvil)
 * SmartTabs -- how to use tabs for indentation and spaces for alignment
 * UntabifyUponSave -- save all files with spaces instead of tabs
