@@ -347,7 +347,7 @@ When you decide to work on the next task, create a new task branch:
 [:ChangeLog]
 === Special handling of ChangeLog ===
 
-Bzr in Emacs handles ChangeLog in a special way, that makes no conflicts appear on merging. This special handling of ChangeLog may be also helpful in your local branch. See <code>bzr help changelog_merge</code>. /Please extend this part (and remove this message) if you know more details, because I based this brief description not on my knowledge, but on the mailing list thread only - JarekCzekalski./
+If you have the changelog_merge plugin installed (comes bundled with some bzr distributions), bzr handles merges of ChangeLog files in a special way, which avoids merge conflicts. After the merge, the ChangeLog entries are arranged in the order of their arrival to the branch into which you merge.  This means that merging from the trunk into a feature branch will put the entries from the trunk //before// the entries you added while working in the branch, so you might need to rearrange the entries before committing upstream.  When you merge //to// the trunk, the entries from the branch will appear at the top, which is what you want; but we still recommend reviewing the ChangeLog entries before you commit upstream, to make sure the entries are in the correct order -- which is the order of commits to the mainline on Savannah.
 
 Related threads/messages:
 * [[http://lists.gnu.org/archive/html/emacs-devel/2013-12/msg00716.html|Bzr taskbranches and ChangeLog]] - description of the problem with local branches and the ChangeLog and hints for solving it
