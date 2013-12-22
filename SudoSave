@@ -51,5 +51,5 @@ For sudo.el: Integration with standard file save hooks:
 </pre>
 -- FedorZhigaltsov
 
-----
+[new]
  Unfortunately for me, sudo.el does not switch read-only mode off when root files are opened from a terminal in emacsclient. And WARNING: if you try to set read-only flag off yourself and save the file then it will error out and leave the file chowned as normal user, rather than root. Can anyone else confirm this is the case? Or do I have some conflicting elisp in my configs?
