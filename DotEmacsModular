@@ -37,6 +37,7 @@ Debian already included a method like the mentioned <tt>my-site-start</tt>: It's
     (debian-run-directories user-site-start-dir))
 }}}
 
+[:RecursiveSubdirs]
 == Recursive subdirs ==
 The follow defun returns a list of all directories under a specific directory tree:
 {{{
@@ -62,6 +63,29 @@ You can use this function in your InitFile file for reading all ".el" files like
   (dolist (file (directory-files dir t "\.el$" nil))
     (load (file-name-sans-extension file))))
 }}}
+[[targzeta]]
+
+== Load directory ==
+A faster alternative to [[#RecursiveSubdirs]] is this function:
+{{{
+(defun load-directory (directory)
+  "Load recursively all `.el' files in DIRECTORY."
+  (dolist (element (directory-files-and-attributes directory nil nil nil))
+    (let* ((path (car element))
+           (fullpath (concat directory "/" path))
+           (isdir (car (cdr element)))
+           (ignore-dir (or (string= path ".") (string= path ".."))))
+      (cond
+       ((and (eq isdir t) (not ignore-dir))
+        (load-directory fullpath))
+       ((and (eq isdir nil) (string= (substring path -3) ".el"))
+        (load (file-name-sans-extension fullpath)))))))
+}}}
+and within [[InitFile]]:
+{{{
+(load-directory "~/.emacs.d/config")
+}}}
+
 [[targzeta]]
 ----------
 
