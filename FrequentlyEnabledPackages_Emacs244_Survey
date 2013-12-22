@@ -60,7 +60,7 @@ __Minor Mode Survey__
 | byte-opt                                         |                   1 |
 | cl                                               |                   8 |
 | color                                            |                   1 |
-| column-number-mode                               |                  84 |
+| column-number-mode                               |                  85 |
 | comint                                           |                   1 |
 | compile                                          |                   1 |
 | compilation-minor-mode                           |                  10 |
@@ -87,7 +87,7 @@ __Minor Mode Survey__
 | edebug-mode                                      |                   7 |
 | ediff                                            |                   1 |
 | edmacro                                          |                   1 |
-| eldoc-mode                                       |                  44 |
+| eldoc-mode                                       |                  45 |
 | electric-indent-mode                             |                  12 |
 | electric-layout-mode                             |                   3 |
 | electric-pair-mode                               |                  10 |
@@ -102,7 +102,7 @@ __Minor Mode Survey__
 | files                                            |                   1 |
 | finder                                           |                   1 |
 | find-func                                        |                   1 |
-| flyspell-mode                                    |                  50 |
+| flyspell-mode                                    |                  51 |
 | font-lock-mode                                   |                  46 |
 | frame                                            |                   1 |
 | frameset                                         |                   1 |
@@ -110,7 +110,7 @@ __Minor Mode Survey__
 | global-auto-revert-mode                          |                  11 |
 | global-cwarn-mode                                |                   5 |
 | global-ede-mode                                  |                   1 |
-| global-font-lock-mode                            |                  42 |
+| global-font-lock-mode                            |                  43 |
 | global-hi-lock-mode                              |                   5 |
 | global-hl-line-mode                              |                  14 |
 | global-linum-mode                                |                  11 |
@@ -124,7 +124,7 @@ __Minor Mode Survey__
 | global-semantic-stickyfunc-mode                  |                   1 |
 | global-semanticdb-minor-mode                     |                   1 |
 | global-subword-mode                              |                  20 |
-| global-visual-line-mode                          |                   3 |
+| global-visual-line-mode                          |                   4 |
 | global-whitespace-mode                           |                   9 |
 | grep                                             |                   1 |
 | help                                             |                   1 |
@@ -134,8 +134,8 @@ __Minor Mode Survey__
 | hippie-exp                                       |                  22 |
 | hl-line                                          |                   1 |
 | hs-minor-mode                                    |                  12 |
-| ibuffer                                          |                  55 |
-| icomplete-mode                                   |                  17 |
+| ibuffer                                          |                  56 |
+| icomplete-mode                                   |                  18 |
 | ido-everywhere                                   |                  38 |
 | ido-mode                                         |                  74 |
 | image                                            |                   1 |
@@ -146,10 +146,10 @@ __Minor Mode Survey__
 | isearch                                          |                   1 |
 | iso-transl                                       |                   1 |
 | ispell-minor-mode                                |                  10 |
-| iswitchb-mode                                    |                   8 |
+| iswitchb-mode                                    |                   9 |
 | kill-whole-line                                  |                  12 |
 | kmacro                                           |                   1 |
-| line-number-mode                                 |                  42 |
+| line-number-mode                                 |                  43 |
 | linum-mode                                       |                  13 |
 | lisp-mnt                                         |                   1 |
 | lisp-mode                                        |                   1 |
@@ -165,7 +165,7 @@ __Minor Mode Survey__
 | mouse-wheel-mode                                 |                  15 |
 | newcomment                                       |                   1 |
 | org-capture                                      |                  20 |
-| org-mode                                         |                  45 |
+| org-mode                                         |                  46 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   6 |
@@ -185,7 +185,7 @@ __Minor Mode Survey__
 | register                                         |                   1 |
 | replace                                          |                   1 |
 | ring                                             |                   1 |
-| savehist-mode                                    |                  22 |
+| savehist-mode                                    |                  23 |
 | saveplace                                        |                  28 |
 | semantic-mode                                    |                   4 |
 | server-mode                                      |                  26 |
@@ -193,7 +193,7 @@ __Minor Mode Survey__
 | shell                                            |                   1 |
 | shell-dirtrack-mode                              |                   8 |
 | simple                                           |                   1 |
-| show-paren-mode                                  |                  78 |
+| show-paren-mode                                  |                  79 |
 | size-indication-mode                             |                  16 |
 | subword-mode                                     |                  14 |
 | thingatpt                                        |                   1 |
@@ -203,13 +203,13 @@ __Minor Mode Survey__
 | tooltip-mode                                     |                  18 |
 | tramp                                            |                  22 |
 | tramp-ftp                                        |                   1 |
-| transient-mark-mode                              |                  62 |
-| uniquify                                         |                  83 |
+| transient-mark-mode                              |                  63 |
+| uniquify                                         |                  84 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
 | url-vars                                         |                   1 |
 | view-mode                                        |                   1 |
-| visible-bell                                     |                  13 |
+| visible-bell                                     |                  14 |
 | visual-line-mode                                 |                  15 |
 | wid-edit                                         |                   1 |
 | which-function-mode                              |                  25 |
