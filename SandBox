@@ -31,3 +31,18 @@ text
 :: indent 2
 
 ::: indent 3
+
+I think what never worked was to intermix these.
+
+* foo
+: bar
+* foo
+: bar
+
+Works.
+
+* foo
+** bar
+:: baz
+
+This doesn't work as expected because "baz" is the first item of a definition list.
