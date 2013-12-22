@@ -1,3 +1,4 @@
+==My site start==
 EraEriksson created a simple library for keeping your DotEmacs simple
 by allowing you to divide it into a modular collection of files.
 It's called <tt>my-site-start</tt> and can be downloaded from http://porkmail.org/elisp
@@ -36,7 +37,32 @@ Debian already included a method like the mentioned <tt>my-site-start</tt>: It's
     (debian-run-directories user-site-start-dir))
 }}}
 
-
+== Recursive subdirs ==
+The follow defun returns a list of all directories under a specific directory tree:
+{{{
+(defun recursive-subdirs (directory &optional withroot)
+  "Return a unsorted list of names of directories in DIRECTORY recursively.
+If WITHROOT is non-nil, also DIRECTORY will be include."
+  (let (subdirs)
+    (dolist (element (directory-files-and-attributes directory nil nil nil))
+      (let* ((path (car element))
+             (isdir (car (cdr element)))
+             (ignore (or (string= path ".") (string= path ".."))))
+        (if (and (eq isdir t) (not ignore))
+            (let ((dir (concat directory "/" path)))
+              (setq subdirs (append (cons dir subdirs)
+                                    (recursive-subdirs dir)))))))
+    (if (not (eq withroot nil))
+        (add-to-list 'subdirs directory))
+    subdirs))
+}}}
+You can use this function in your InitFile file for reading all ".el" files like in this snippet:
+{{{
+(dolist (dir (recursive-subdirs "~/.emacs.d/config" t))
+  (dolist (file (directory-files dir t "\.el$" nil))
+    (load (file-name-sans-extension file))))
+}}}
+[[targzeta]]
 ----------
 
 CategoryDotEmacs
