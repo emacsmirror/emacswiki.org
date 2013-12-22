@@ -1,1 +1,14 @@
-DeletedPage
+
+
+----
+
+It would be helpful if this page described how to add a package to Gnu ELPA. Part of the answer is here:
+http://git.savannah.gnu.org/cgit/emacs/elpa.git/tree/README
+
+But that does not describe how to specify the package meta-data. According to this post:
+http://article.gmane.org/gmane.emacs.devel/166724
+
+we don't write a <package>-pkg.el file.
+
+-- [http://stephe-leake.org/ stephen_leake] 2013-12-22 14:13 UTC
+
