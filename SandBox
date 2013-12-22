@@ -24,11 +24,10 @@ your edits to see how they look; you can just click '''Preview'''.
 
 (your test stuff goes here... don't forget the minor change checkbox!)
 
-- 
+text
 
-----
+: indent 1
 
-<test> yo
+:: indent 2
 
-== Ya ==
-=== Fer Shure ===
+::: indent 3
