@@ -3,14 +3,14 @@
 ;; Filename: oneonone.el
 ;; Description: Frame configuration that uses one frame per window.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Fri Dec 20 19:48:17 2013 (-0800)
+;; Last-Updated: Sat Dec 21 16:03:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2816
+;;     Update #: 2821
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -284,10 +284,11 @@
  
 ;;; Change Log:
 ;;
+;; 2013/12/21 dadams
+;;     Removed autoload cookie: *-frame-alist.
+;;     1on1-(in)active-mode-line-background: Use constant default, so can have autoload cookie.
 ;; 2013/08/12 dadams
 ;;     Added: 1on1-filter-no-default-minibuffer.
-;;     Removed autoload cookie: *-frame-alist.
-;;     1on1-active-mode-line-background: Use constant default, so can have autoload cookie.
 ;;     1on1-minibuffer-frame-alist: Added: (cons 'desktop-dont-save t).
 ;;     frameset-filter-alist:  Add 1on1-filter-no-default-minibuffer and null name entries.
 ;; 2013/07/08 dadams
@@ -642,8 +643,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/oneonone.el")
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs")
-  :link '(emacs-commentary-link :tag "Commentary" "oneonone")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "oneonone"))
  
 ;;; Minibuffer frame: ********************************
 ;;;
@@ -700,7 +700,7 @@ Note: This is not used if `1on1-minibuffer-frame-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
 ;;;###autoload
-(defcustom 1on1-inactive-minibuffer-frame-background 1on1-minibuffer-frame-background
+(defcustom 1on1-inactive-minibuffer-frame-background "LightBlue"
   "*The color of the `1on1-minibuffer-frame' when it is inactive.
 
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil."
