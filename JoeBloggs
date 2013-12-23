@@ -23,7 +23,7 @@ Here are some libraries I wrote:
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]].
 * '''Lisp:jb-misc-macros.el''' -- Miscellaneous macros used in some of my libs.
 * '''Lisp:ido-gnus.el''' -- access gnus groups and servers using [[InteractivelyDoThings]]
-* '''Lisp:gnus-summary-ext.el'' -- Extra limit and process mark commands for the gnus summary buffer.
+* '''Lisp:gnus-summary-ext.el''' -- Extra limit and process mark commands for the gnus summary buffer.
 * '''Lisp:smptmail-multi.el''' -- Use different SMTP accounts for different emails.
 * '''Lisp:helm-helm-commands.el''' -- List all helm commands with [https://github.com/emacs-helm/helm Helm]
 
