@@ -20,7 +20,7 @@ Other handy keys:
 * try to press TAB
 
 == Auto updating the status buffer ==
-If you are using Emacs 24.4 on Linux with inotify support then you can get the status buffer to automatically update on file changes by loading the file magit-inotify.el from ##contrib/## (https://github.com/magit/magit/blob/master/contrib/magit-inotify.el) and activating the ##magit-inotify-mode## minor mode.
+If you are using Emacs 24.4 on Linux with inotify support then you can get the status buffer to automatically update on file changes by loading the file magit-inotify.el from ##contrib/## (https://github.com/magit/magit/blob/master/contrib/magit-inotify.el) and activating the ##magit-inotify-mode## minor mode. (Interesting, but the link seems broken.)
 
 == Link to magit from org documents ==
 The [https://github.com/sigma/org-magit org-magit] package provides a link type to magit for OrgMode.
