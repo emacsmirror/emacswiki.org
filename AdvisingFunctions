@@ -6,25 +6,13 @@ See AdviceVsHooks for a discussion of when to use advice. '''''Summary:''''' adv
 
 == Advised hello world ==
 
- (defun foo()
-   (interactive)
-   (message "hello world"))
+    (defun foo () (interactive) (insert "hello"))
+    (defadvice foo (after foo-after activate) (insert " world!\n"))
+    (foo) ;=> hello world!
 
- ;; advice the foo function
- (defadvice foo(around advice-foo activate)
-   (interactive)
-   (message "hello advised world")
-   (sit-for 1)
-   ;; and here it calls the advised function
-   ad-do-it)
-
- ;; now you can unadvise the advised function
- (ad-unadvise 'foo)
-
- ;; now it will correspond to the original definition
- (foo)
-
-
+   ;; now you can unadvise the advised function
+   (ad-unadvise 'foo)
+   (foo)
 
 == Interactive functions ==
 
