@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 10 16:53:12 2013 (-0800)
+;; Last-Updated: Mon Dec 23 20:50:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23503
+;;     Update #: 23504
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1128,14 +1128,14 @@
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-completion-at-point',
-;;    `icicle-lisp-vanilla-completing-read',
+;;    `icicle-lisp-vanilla-completing-read', `icicle-load-library',
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
 ;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-color-candidate',
 ;;    `icicle-make-face-candidate', `icicle-make-frame-alist',
 ;;    `icicle-make-plain-predicate', `icicle-make-window-alist',
-;;    `icicle-markers', `icicle-markers-to-readable',
+;;    `icicle-map', `icicle-markers', `icicle-markers-to-readable',
 ;;    `icicle-marker+text',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
