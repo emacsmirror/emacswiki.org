@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Dec 23 20:54:40 2013 (-0800)
+;; Last-Updated: Tue Dec 24 08:20:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10499
+;;     Update #: 10501
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6919,6 +6919,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/12/24 dadams
+;;     icicle-top-level-key-bindings: Added icicle-load-library (but not bound to a key, by default).
 ;; 2013/12/09 dadams
 ;;     Renamed: icicle-buffer-skip-hook               to icicle-buffer-skip-functions,
 ;;              icicle-find-file-of-content-skip-hook to icicle-file-skip-functions.
