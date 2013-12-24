@@ -2,3 +2,10 @@ I use [https://github.com/glasserc/ethan-wspace ethan-wspace] and consider the p
 
 -- estearns 2013-12-22 16:37 UTC
 
+
+----
+
+I didn't know about ws-trim.el. I needed something that narrowly fixes auto-indent, couldn't find anything and implemented one myself. If you use ws-trim.el you don't need my small extension.
+
+-- PetarMarinov 2013-12-24 19:57 UTC
+
