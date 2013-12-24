@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 123 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 124 [color=red][b] <- start here [/b][/color]
 
 {{{
 
@@ -48,7 +48,7 @@ __Minor Mode Survey__
 | auto-composition-mode                            |                  12 |
 | auto-compression-mode                            |                  14 |
 | auto-encryption-mode                             |                  19 |
-| auto-fill-mode                                   |                  38 |
+| auto-fill-mode                                   |                  39 |
 | auto-image-file-mode                             |                   3 |
 | autoinsert                                       |                   4 |
 | blink-cursor-mode                                |                  50 |
@@ -75,7 +75,7 @@ __Minor Mode Survey__
 | descr-text                                       |                   2 |
 | desktop                                          |                   1 |
 | desktop-save-mode                                |                  28 |
-| diff-mode                                        |                   1 |
+| diff-mode                                        |                   2 |
 | dired-aux                                        |                   1 |
 | dired-hide-details-mode                          |                  15 |
 | dired-x                                          |                  40 |
@@ -85,7 +85,7 @@ __Minor Mode Survey__
 | easy-mmode                                       |                   1 |
 | ede-minor-mode                                   |                   1 |
 | edebug-mode                                      |                   7 |
-| ediff                                            |                   2 |
+| ediff                                            |                   3 |
 | edmacro                                          |                   2 |
 | eldoc-mode                                       |                  46 |
 | electric-indent-mode                             |                  12 |
@@ -131,13 +131,14 @@ __Minor Mode Survey__
 | help-fns                                         |                   1 |
 | help-mode                                        |                   1 |
 | hide-ifdef-mode                                  |                   5 |
-| hippie-exp                                       |                  23 |
+| highlight-parentheses                            |                   1 |
+| hippie-exp                                       |                  24 |
 | hl-line                                          |                   1 |
 | hs-minor-mode                                    |                  12 |
 | ibuffer                                          |                  56 |
 | icomplete-mode                                   |                  18 |
-| ido-everywhere                                   |                  38 |
-| ido-mode                                         |                  75 |
+| ido-everywhere                                   |                  39 |
+| ido-mode                                         |                  76 |
 | image                                            |                   1 |
 | image-dired                                      |                   1 |
 | image-file                                       |                   1 |
@@ -165,10 +166,10 @@ __Minor Mode Survey__
 | mouse-wheel-mode                                 |                  15 |
 | newcomment                                       |                   1 |
 | org-capture                                      |                  20 |
-| org-mode                                         |                  47 |
+| org-mode                                         |                  48 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
-| orgtbl-mode                                      |                   6 |
+| orgtbl-mode                                      |                   7 |
 | outline                                          |                   2 |
 | outline-minor-mode                               |                   3 |
 | package                                          |                   1 |
@@ -201,22 +202,22 @@ __Minor Mode Survey__
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
 | tooltip-mode                                     |                  18 |
-| tramp                                            |                  22 |
+| tramp                                            |                  23 |
 | tramp-ftp                                        |                   1 |
-| transient-mark-mode                              |                  63 |
-| uniquify                                         |                  85 |
+| transient-mark-mode                              |                  64 |
+| uniquify                                         |                  86 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
 | url-vars                                         |                   1 |
 | view-mode                                        |                   1 |
-| visible-bell                                     |                  14 |
-| visual-line-mode                                 |                  15 |
+| visible-bell                                     |                  15 |
+| visual-line-mode                                 |                  16 |
 | wid-edit                                         |                   1 |
 | which-function-mode                              |                  25 |
 | whitespace-mode                                  |                   8 |
 | window                                           |                   1 |
 | windmove                                         |                  36 |
-| winner-mode                                      |                  42 |
+| winner-mode                                      |                  4  |
 
 }}}
 
