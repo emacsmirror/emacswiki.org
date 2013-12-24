@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec 10 16:53:52 2013 (-0800)
+;; Last-Updated: Mon Dec 23 20:54:40 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10497
+;;     Update #: 10499
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1030,6 +1030,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/12/23 dadams
+;;     Added: icicle-load-library.
+;;     Moved icicle-named-colors defvar inside icicle-cmd2-after-load-hexrgb.
 ;; 2013/12/10 dadams
 ;;     Added: icicle-search-regexp.
 ;;     icicle-search-define-candidates-1: Set icicle-search-regexp.
