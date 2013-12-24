@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Dec  9 13:58:02 2013 (-0800)
+;; Last-Updated: Tue Dec 24 08:19:23 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5795
+;;     Update #: 5798
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4400,6 +4400,7 @@ toggle Icicle mode off and then back on."
     (insert-buffer                 icicle-insert-buffer                t) ; `C-S-insert'
     (kill-buffer                   icicle-kill-buffer                  t) ; `C-x k'
     (kill-buffer-and-its-windows   icicle-kill-buffer                  t) ; `C-x k' (`misc-cmds.el')
+    (load-library                  icicle-load-library                 (> emacs-major-version 20))
     (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
      (fboundp 'minibuffer-keyboard-quit))
     (other-window                  icicle-other-window-or-frame        t) ; `C-x o'
