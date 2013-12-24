@@ -1,0 +1,4 @@
+AFAICT ediff-directories ignores the -w (ignore whitespace flag) when deciding whether or not files or identical.  If true, this is a major lose when comparing source directories with different tab policies (e.g., one where tabs are used and one where tabs are banned in favor of multiple spaces).
+
+-- [http://rpgoldman.goldman-tribe.org RobertPGoldman] 2013-12-24 22:49 UTC
+
