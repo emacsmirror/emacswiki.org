@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Dec 10 16:50:46 2013 (-0800)
+;; Last-Updated: Mon Dec 23 20:52:33 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6696
+;;     Update #: 6700
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -102,10 +102,10 @@
 ;;    (+)`icicle-Info-goto-node-of-content', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-map',
-;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
-;;    (+)`icicle-object-action', (+)`icicle-occur',
-;;    (+)`icicle-occur-dired-marked',
+;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library',
+;;    (+)`icicle-map', `icicle-next-visible-thing',
+;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
+;;    (+)`icicle-occur', (+)`icicle-occur-dired-marked',
 ;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
@@ -890,6 +890,10 @@ at point, or if none then the visited file."
 
 (defun icicle-cmd2-after-load-hexrgb ()
   "Things to do for `icicles-cmd2.el' after loading `hexrgb.el'."
+
+  (defvar icicle-named-colors ()
+    "Named colors.")
+
   (when (and (fboundp 'read-color)  (not (fboundp 'icicle-ORIG-read-color))) ; Exists with Emacs 23+.
     (fset 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
@@ -1966,6 +1970,19 @@ build a cache file of synonyms that are used for completion.  See
 
 ;;; Icicles Top-Level Commands, Part 2 -------------------------------
 
+(when (> emacs-major-version 20)
+  (icicle-define-command icicle-load-library
+    "Multi-command version of `load-library'."
+    load-library
+    "Load library: " 
+    (if (fboundp 'locate-file-completion-table)
+        (apply-partially 'locate-file-completion-table load-path (get-load-suffixes))
+      (lambda (string _IGNORE action)
+        (locate-file-completion string (cons load-path (get-load-suffixes)) action)))
+    nil t nil nil nil nil
+    ;; Vanilla Emacs does not remove dups - see bug #16208.
+    ((icicle-transform-function  #'icicle-remove-duplicates))))
+
 
 (defvar icicle-orig-font nil
   "Font of selected frame, before command.")
@@ -2144,9 +2161,6 @@ FULL-NAME)."
 ;;;                              "Font is not yet loaded (used)")))
 ;;;         (icicle-candidate-short-help help-string sized-font)
 ;;;         (list sized-font)))))
-
-(defvar icicle-named-colors ()
-  "Named colors.")
 
 
 (defvar icicle-info-buff nil
