@@ -59,8 +59,10 @@ Seem  that electric-indent-mode doesn't work properly with python-mode. You can 
 (add-to-list 'electric-indent-functions 'electric-indent-ignore-python)
 
 ;; Enter key executes newline-and-indent
-(add-hook 'python-mode-hook
-          (local-set-key (kbd "RET") 'newline-and-indent))
+(defun set-newline-and-indent ()
+  "Map the return key with `newline-and-indent'"
+  (local-set-key (kbd "RET") 'newline-and-indent))
+(add-hook 'python-mode-hook 'set-newline-and-indent)
 }}}
 [[targzeta]]
 
