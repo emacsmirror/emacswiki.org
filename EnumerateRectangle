@@ -1,3 +1,8 @@
+In Emacs > 24.1 the following functionality is available as part of C-x r N.  See NEWS file.
+
+
+-------
+
 I often want to insert a column of incrementing numbers.  So I wrote a function that does that, patterned after ##string-rectangle##.
 
 
