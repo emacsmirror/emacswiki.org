@@ -44,6 +44,26 @@ See also CleanAutoIndent – indentation without abandoned trailing white spaces
 
 You can call <code>(electric-indent-mode 1)</code> in your .<tt>emacs</tt> or <tt>customize-variable</tt> it to activate it permanently.
 
+[new]
+
+Seem  that electric-indent-mode doesn't work properly with python-mode. You can use this snippet:
+{{{
+;;; Indentation for python
+
+;; Ignoring electric indentation
+(defun electric-indent-ignore-python (char)
+  "Ignore electric indentation for python-mode"
+  (if (equal major-mode 'python-mode)
+      `no-indent'
+    t))
+(add-to-list 'electric-indent-functions 'electric-indent-ignore-python)
+
+;; Enter key executes newline-and-indent
+(add-hook 'python-mode-hook
+          (local-set-key (kbd "RET") 'newline-and-indent))
+}}}
+[[targzeta]]
+
 == Auto-indent yanked (pasted) code ==
 
 [:SmartPaste]
