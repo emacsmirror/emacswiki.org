@@ -1,0 +1,8 @@
+Hello,
+
+since my last Emacs update (to 24.3.1), this script does not work anymore: concatenate and incf are not defined.
+Solution: insert the following line in the top:
+(require 'cl)
+
+-- Hendrik 2013-12-25 11:34 UTC
+
