@@ -4,12 +4,12 @@
 ;; Description: Extensions to `c-mode.el' & `cc-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Aug 30 13:01:25 1999
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 15:36:29 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:35:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 74
+;;     Update #: 75
 ;; URL: http://www.emacswiki.org/cc-mode+.el
 ;; Keywords: c, c++, programming
 ;; Compatibility: GNU Emacs 20.x
