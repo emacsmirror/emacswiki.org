@@ -3,12 +3,12 @@
 ;; Filename: icicles-fn.el
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Dec  1 12:14:50 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:30:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14119
+;;     Update #: 14122
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2024,13 +2024,14 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
       ;;                    (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
       (unless (string= "" (car name.char))
         ;; Display char itself after the name, in `*Completions*'.
-        (let* ((disp-string  (concat (car name.char) "\t"
+        (let* ((name         (car name.char))
+               (disp-string  (concat name "\t"
                                      (propertize (string (cdr name.char)) 'face 'icicle-extra-candidate)))
-               (symb         (intern (car name.char))))
+               (symb         (intern name)))
           (put symb 'icicle-display-string disp-string)
           (icicle-candidate-short-help (format "Char: %-10cCode Point: %d" (cdr name.char) (cdr name.char))
                                        disp-string)
-          (put-text-property 0 1 'icicle-orig-cand symb disp-string))))
+          (put-text-property 0 1 'icicle-orig-cand name disp-string))))
     (let* ((new-prompt              (copy-sequence prompt))
            (IGNORE-1                (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
            (completion-ignore-case  t)
@@ -2042,7 +2043,7 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
                                          (complete-with-action action ',names string pred)))))
            chr)
       (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
-        (when orig-cand  (setq input  (symbol-name orig-cand))))
+        (when orig-cand  (setq input  orig-cand)))
       (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
                        ((string-match-p "^#" input)                  (read input))
                        (t                                            (cdr (assoc-string input
