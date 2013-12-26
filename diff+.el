@@ -3,14 +3,14 @@
 ;; Filename: diff+.el
 ;; Description: Extensions to `diff.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:06:31 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:26:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 578
+;;     Update #: 580
 ;; URL: http://www.emacswiki.org/diff+.el
 ;; Doc URL: http://emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
