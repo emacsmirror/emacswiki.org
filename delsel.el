@@ -3,15 +3,15 @@
 ;; Filename: delsel.el
 ;; Description: Delete the region (selection) upon char insertion or DEL.
 ;; Author: Matthieu Devin <devin@lucid.com>, Drew Adams
-;; Maintainer: D. ADAMS
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: D. ADAMS (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:43:31 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:24:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 355
+;;     Update #: 361
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/18 dadams
+;;     Do not make insert-parentheses delete selection, for Emacs 22+.
 ;; 2012/08/12 dadams
 ;;     delete-selection-pre-hook-1: Updated for Emacs 24 bug #12161 fix.
 ;; 2012/06/02 dadams
@@ -333,7 +335,8 @@ either \\[customize] or function `delete-selection-mode'."
 (put 'newline 'delete-selection t)
 (put 'open-line 'delete-selection 'kill)
 
-(put 'insert-parentheses 'delete-selection t)
+(when (< emacs-major-version 22)        ; New `insert-parentheses' behavior.
+  (put 'insert-parentheses 'delete-selection t))
 
 ;; This can be used to cancel a selection in the minibuffer without
 ;; aborting the minibuffer.
