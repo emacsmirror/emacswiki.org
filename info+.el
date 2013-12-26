@@ -3,14 +3,14 @@
 ;; Filename: info+.el
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 17 10:02:53 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:36:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 4937
+;;     Update #: 4938
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
