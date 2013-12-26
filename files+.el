@@ -3,14 +3,14 @@
 ;; Filename: files+.el
 ;; Description: Enhancements of standard library `files.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 11 21:15:38 2013 (-0800)
+;; Last-Updated: Thu Dec 26 08:56:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 722
+;;     Update #: 723
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
