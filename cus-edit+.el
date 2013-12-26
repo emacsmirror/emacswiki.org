@@ -3,14 +3,14 @@
 ;; Filename: cus-edit+.el
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:41:09 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:23:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1523
+;;     Update #: 1525
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
