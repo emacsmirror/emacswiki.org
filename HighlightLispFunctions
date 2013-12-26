@@ -1,6 +1,6 @@
 This page is about library '''<tt>[[hl-defined.el]]</tt>''', which lets you highlight [[symbol]]s that are known to be defined functions and/or variables in an EmacsLisp buffer.  Or you can highlight symbols that are ''not'' known to be defined functions or variables.
 
-(Library <tt>[[highlight-fns.el]]</tt> is a rudimentary version of this feature; it just highlights defined functions.)
+(Library <tt>[[highlight-fns.el]]</tt> is a rudimentary version of this feature; it just highlights defined functions.  It is essentially made obsolete by library <tt>[[hl-defined.el]]</tt>.)
 
 == How to Use ==
 
