@@ -3,13 +3,12 @@
 ;; Filename: icicles-face.el
 ;; Description: Faces for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Version: 22.0
-;; Last-Updated: Sun Jul  7 21:25:57 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:30:35 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 711
+;;     Update #: 713
 ;; URL: http://www.emacswiki.org/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
