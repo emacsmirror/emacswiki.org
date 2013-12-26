@@ -3,14 +3,14 @@
 ;; Filename: grep+.el
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec  5 10:28:43 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:03:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 645
+;;     Update #: 646
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
