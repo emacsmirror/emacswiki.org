@@ -3,14 +3,14 @@
 ;; Filename: doremi-mac.el
 ;; Description: A macro for defining Do Re Mi commands.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 14 16:45:30 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:54:52 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:48:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 217
+;;     Update #: 218
 ;; URL: http://www.emacswiki.org/doremi-mac.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: extensions, convenience, keys, repeat, cycle
