@@ -3,15 +3,15 @@
 ;; Filename: frame-cmds.el
 ;; Description: Frame and window commands (interactive functions).
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Sep 21 09:21:39 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:01:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2893
+;;     Update #: 2894
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
