@@ -3,14 +3,14 @@
 ;; Filename: hl-defined.el
 ;; Description: Highlight defined or undefined symbols in Emacs-Lisp.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2013-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 20 16:38:56 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:25:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 300
+;;     Update #: 301
 ;; URL: http://www.emacswiki.org/hl-defined.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
