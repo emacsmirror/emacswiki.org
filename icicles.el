@@ -3,14 +3,14 @@
 ;; Filename: icicles.el
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 23 20:50:09 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:33:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23504
+;;     Update #: 23505
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
