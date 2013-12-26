@@ -3,13 +3,13 @@
 ;; Filename: compile+20.el
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 15:37:34 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:17:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 941
+;;     Update #: 943
 ;; URL: http://www.emacswiki.org/compile+20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
@@ -17,11 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `compile', `compile-20',
-;;   `easymenu', `faces', `faces+', `fit-frame', `font-lock',
-;;   `frame-fns', `help+20', `highlight', `info', `info+',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `apropos', `apropos+', `avoid', `cmds-menu', `compile',
+;;   `compile-20', `easymenu', `fit-frame', `font-lock', `frame-fns',
+;;   `help+20', `highlight', `info', `info+', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
