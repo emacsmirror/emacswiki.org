@@ -3,13 +3,13 @@
 ;; Filename: diff+20.el
 ;; Description: Extensions to `diff.el' for Emacs 20 or older.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 15:44:39 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:28:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 632
+;;     Update #: 634
 ;; URL: http://www.emacswiki.org/diff+20.el
 ;; Doc URL: http://www.emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
