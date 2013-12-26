@@ -3,14 +3,14 @@
 ;; Filename: dired-sort-menu+.el
 ;; Description: Extensions to `dired-sort-menu.el'
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-sort-menu "0"))
-;; Last-Updated: Tue Jul 23 15:49:32 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:47:37 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 103
+;;     Update #: 104
 ;; URL: http://www.emacswiki.org/dired-sort-menu+.el
 ;; Doc URL: http://emacswiki.org/DiredSortMenu
 ;; Keywords: directories, diredp, dired
