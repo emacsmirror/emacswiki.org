@@ -3,14 +3,14 @@
 ;; Filename: highlight-fns.el
 ;; Description: Highlight called Lisp functions.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2013-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 17 15:56:40 2013 (-0700)
+;; Last-Updated: Thu Dec 26 11:07:13 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 42
+;;     Update #: 48
 ;; URL: http://www.emacswiki.org/highlight-fns.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
@@ -25,6 +25,9 @@
 ;;; Commentary:
 ;;
 ;;    A minor mode that highlights function calls in Emacs-Lisp mode.
+;;
+;;  This library is essentially obsolete.  It is a rudimentary version
+;;  of library `hl-defined.el', which replaces it.
 ;;
 ;;  Put this in your init file:
 ;;
@@ -92,6 +95,8 @@
     '((t (:inherit font-lock-constant-face)))
   "Face used to highlight called Lisp functions."
   :group 'programming :group 'faces)
+
+(defvar highlight-lisp-fns-mode nil)
 
 (define-minor-mode highlight-lisp-fns-mode
     "Toggle highlighting called Lisp functions in the current buffer.
