@@ -3,7 +3,7 @@ sqlite.el is a simple SqliteInterface for connecting and retrieving information 
 
 It has been created as a temporary solution because the JasonFruit's script is not available through the link given. As his script, this is based on the code founded at the third item in this page: http://mysite.verizon.net/mbcladwell/.
 
-You can download it from [[Lisp:sqlite.el]] page.
+You can download it from Github: https://github.com/cnngimenez/sqlite.el .
 
 == Features ==
 
