@@ -3,15 +3,15 @@
 ;; Filename: font-lock-menus.el
 ;; Description: Font-lock menus.  `font-menus.el' fixed for Emacs 24+.
 ;; Author: Francis J. Wright, Simon Marshal, Drew Adams
-;; Maintainer: Drew Adams
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000 Francis J. Wright
-;; Copyright (C) 2012-2013, Drew Adams, all rights reserved.
+;; Copyright (C) 2012-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:12:01 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:00:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
