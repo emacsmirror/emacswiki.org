@@ -3,14 +3,14 @@
 ;; Filename: hl-line+.el
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2006-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:31:03 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:26:18 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 484
+;;     Update #: 485
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
