@@ -3,14 +3,14 @@
 ;; Filename: help+.el
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:31:46 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:04:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2163
+;;     Update #: 2164
 ;; URL: http://www.emacswiki.org/help+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
