@@ -3,14 +3,14 @@
 ;; Filename: icomplete+.el
 ;; Description: Extensions to `icomplete.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 21 07:35:56 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:34:43 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1614
+;;     Update #: 1615
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
