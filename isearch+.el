@@ -3,14 +3,14 @@
 ;; Filename: isearch+.el
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 16 13:39:53 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:36:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3393
+;;     Update #: 3394
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
