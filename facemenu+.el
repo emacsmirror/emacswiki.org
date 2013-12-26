@@ -3,14 +3,14 @@
 ;; Filename: facemenu+.el
 ;; Description: Extensions to `facemenu.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 24 09:06:31 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:53:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1858
+;;     Update #: 1859
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
