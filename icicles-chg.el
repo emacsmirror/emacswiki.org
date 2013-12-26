@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Dec 26 11:35:55 2013 (-0800)
+;; Last-Updated: Thu Dec 26 13:19:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10507
+;;     Update #: 10509
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1030,6 +1030,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/12/26 dadams
+;;     icicle-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/12/23 dadams
 ;;     Added: icicle-load-library.
 ;;     Moved icicle-named-colors defvar inside icicle-cmd2-after-load-hexrgb.
