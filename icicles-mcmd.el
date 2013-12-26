@@ -3,12 +3,12 @@
 ;; Filename: icicles-mcmd.el
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Dec  1 10:02:43 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:31:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 19298
+;;     Update #: 19304
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6071,7 +6071,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                                 (set (make-local-variable 'completion-reference-buffer)
                                                      (window-buffer (active-minibuffer-window)))))
                                             minibuffer-setup-hook))
-                  (icicle-cands-to-narrow  icicle-completion-candidates)
+                  ;; If `icicle-display-string' was used, then get back the original candidates.
+                  ;; However, this also means that the candidates will no longer be displayed according
+                  ;; to `icicle-display-string'.  $$$$$$ FIXME?  To fix we would need to do something
+                  ;; like what is done in `icicle-display-candidates-in-Completions'.
+                  (icicle-cands-to-narrow  (mapcar (lambda (cc)
+                                                     (or (get-text-property 0 'icicle-orig-cand cc)  cc))
+                                                   icicle-completion-candidates))
                   (icicle-narrow-regexp    (and icicle-compute-narrowing-regexp-p
                                                 ;; (regexp-opt ()) returns nil in older Emacs versions.
                                                 icicle-cands-to-narrow
