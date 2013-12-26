@@ -3,14 +3,14 @@
 ;; Filename: fit-frame.el
 ;; Description: Resize a frame.  In particular, fit a frame to its buffers.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:07:49 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:59:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1364
+;;     Update #: 1365
 ;; URL: http://www.emacswiki.org/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
