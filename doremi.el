@@ -3,14 +3,14 @@
 ;; Filename: doremi.el
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 15:55:49 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:48:54 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1616
+;;     Update #: 1617
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
