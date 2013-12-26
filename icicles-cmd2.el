@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Dec 26 11:16:09 2013 (-0800)
+;; Last-Updated: Thu Dec 26 13:18:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6701
+;;     Update #: 6703
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5110,11 +5110,19 @@ because it needs `comment-search-forward'."
       (unwind-protect
            (save-excursion
              (goto-char start)
-             (while (and (< start end)  (setq cbeg  (comment-search-forward end 'NOERROR)))
+             (while (and (< start end)
+                         (save-excursion
+                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+               (when (string= "" comment-end) (goto-char cbeg))
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
-                             (search-forward comment-end end 'NOERROR)))
-               (when (and cbeg  cend)
+                             (cond ((fboundp 'comment-forward) ; Emacs 22+
+                                    (and (comment-forward 1)
+                                         (point)))
+                                   ((goto-char cbeg)
+                                    (search-forward comment-end end 'NOERROR))
+                                   )))
+               (when (and cbeg cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
                    (put-text-property cbeg cend 'invisible nil)))))
