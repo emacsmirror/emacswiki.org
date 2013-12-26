@@ -3,14 +3,14 @@
 ;; Filename: hl-spotlight.el
 ;; Description: Extension of hl-line.el to spotlight current few lines.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2009-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2009-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:30:27 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:26:40 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 471
+;;     Update #: 472
 ;; URL: http://www.emacswiki.org/hl-spotlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
