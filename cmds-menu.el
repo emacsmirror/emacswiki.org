@@ -3,14 +3,14 @@
 ;; Filename: cmds-menu.el
 ;; Description: `Recent Commands' submenu for the menu-bar `Tools' menu.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2013-2014, Drew Adams, all rights reserved.
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  2 08:35:08 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:14:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 50
+;;     Update #: 52
 ;; URL: http://www.emacswiki.org/cmds-menu.el
 ;; Doc URL:
 ;; Keywords: convenience, command, menu
