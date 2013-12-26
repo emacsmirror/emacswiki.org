@@ -3,14 +3,14 @@
 ;; Filename: hide-comnt.el
 ;; Description: Hide/show comments in code.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2011-2014, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 25 08:43:40 2013 (-0700)
+;; Last-Updated: Thu Dec 26 11:01:42 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 54
+;;     Update #: 86
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -45,16 +45,19 @@
 ;;   (require 'hide-comnt)
 ;;
 ;;
-;;  Note for Emacs 20: The commands and option defined here do nothing
-;;  in Emacs 20.  Nevertheless, the library can be byte-compiled in
-;;  Emacs 20 and `imenu+.elc' can be loaded in later Emacs versions
-;;  and used there.  This is the only real use of this library for
-;;  Emacs 20: it provides macro `with-comments-hidden'.
+;;  Note for Emacs 20: The commands and option defined here DO NOTHING
+;;  IN EMACS 20.  Nevertheless, the library can be byte-compiled in
+;;  Emacs 20 and `hide-comnt.elc' can be loaded in later Emacs
+;;  versions and used there.  This is the only real use of this
+;;  library for Emacs 20: it provides macro `with-comments-hidden'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/10/09 dadams
+;;     hide/show-comments: Use save-excursion.  If empty comment-end go to CBEG.
+;;                         Use comment-forward if available.
 ;; 2012/10/06 dadams
 ;;     hide/show-comments: Call comment-normalize-vars first.  Thx to Stefan Monnier.
 ;;     hide/show-comments-toggle: Do nothing if newcomment.el not available.
@@ -86,6 +89,7 @@
 ;;
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
 (defcustom ignore-comments-flag t
@@ -148,10 +152,18 @@ it needs `comment-search-forward'."
       (unwind-protect
            (save-excursion
              (goto-char start)
-             (while (and (< start end) (setq cbeg  (comment-search-forward end 'NOERROR)))
+             (while (and (< start end)
+                         (save-excursion
+                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+               (when (string= "" comment-end) (goto-char cbeg))
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
-                             (search-forward comment-end end 'NOERROR)))
+                             (cond ((fboundp 'comment-forward) ; Emacs 22+
+                                    (and (comment-forward 1)
+                                         (point)))
+                                   ((goto-char cbeg)
+                                    (search-forward comment-end end 'NOERROR))
+                                   )))
                (when (and cbeg cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
