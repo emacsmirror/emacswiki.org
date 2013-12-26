@@ -3,12 +3,12 @@
 ;; Filename: icicles-opt.el
 ;; Description: User options (customizable variables) for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Dec 24 08:19:23 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:32:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5798
+;;     Update #: 5799
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
