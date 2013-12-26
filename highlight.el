@@ -3,14 +3,14 @@
 ;; Filename: highlight.el
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 28 15:54:41 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:25:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3453
+;;     Update #: 3454
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -19,11 +19,10 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
-;;   `faces', `faces+', `fit-frame', `frame-fns', `help+20', `info',
-;;   `info+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
