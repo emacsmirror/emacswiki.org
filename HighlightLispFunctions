@@ -28,7 +28,7 @@ Highlighting uses these [[face]]s:
 
 To use the library, put this in your [[init file]]:
 
-    (require 'highlight-fns)
+    (require 'hl-defined)
 
 If you want to turn on this highlighting automatically for Emacs-Lisp mode, then put this in your init file after requiring the library:
 
