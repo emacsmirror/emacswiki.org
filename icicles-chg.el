@@ -3,12 +3,12 @@
 ;; Filename: icicles-chg.el
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec 24 08:20:38 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:27:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10501
+;;     Update #: 10502
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
