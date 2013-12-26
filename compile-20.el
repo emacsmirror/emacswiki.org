@@ -3,13 +3,13 @@
 ;; Filename: compile-20.el
 ;; Description: Extensions to `compile.el'
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Sep  2 13:39:51 1999
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 15:38:49 2013 (-0700)
+;; Last-Updated: Thu Dec 26 10:19:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 192
+;;     Update #: 194
 ;; URL: http://www.emacswiki.org/compile-20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
