@@ -10,6 +10,7 @@ I use Emacs for web development, which is my day job, in Perl, Ruby, PHP when I 
 
 I've written some Emacs Lisp code. It might not suck. Here's the stuff that's publicly available, roughly in reverse order of age:
 
+* [https://github.com/aaron-em/upside-down.el upside-down.el] - ɔⵑƃɐɯ uoⵑsɹǝʌuⵑ ʇxǝʇ
 * [https://github.com/aaron-em/long-s-mode.el ſ-mode.el] - Long 's' inſertion, both manual and automatic-as-you-type
 * [http://github.com/aaron-em/nethack-luck.el nethack-luck.el] - Nethack's luck messages, for your convenience (and in your Eshell banner)
 * [http://github.com/aaron-em/system-cores.el system-cores.el] - a unified interface to various platforms' methods of finding out how many physical and logical processors are installed
