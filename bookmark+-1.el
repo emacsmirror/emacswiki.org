@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Nov 21 23:01:24 2013 (-0800)
+;; Last-Updated: Thu Dec 26 08:30:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 7052
+;;     Update #: 7054
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7943,7 +7943,7 @@ The default value for the desktop-file location is the current value
 of DESKTOP-FILE.  As always, you can use `M-n' to retrieve it.
 
 With a prefix arg, set a bookmark to an existing DESKTOP-FILE - do not
-save the current desktop; that is, do not overwrite DESKTOP-FLIE.
+save the current desktop; that is, do not overwrite DESKTOP-FILE.
 
 If you also use library Icicles, then the desktop files of all
 existing desktop bookmarks are available during the desktop file-name
