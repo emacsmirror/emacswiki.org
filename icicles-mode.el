@@ -3,12 +3,12 @@
 ;; Filename: icicles-mode.el
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Tue Nov 19 09:26:53 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:31:42 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9803
+;;     Update #: 9804
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
