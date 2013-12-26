@@ -3,14 +3,14 @@
 ;; Filename: doremi-cmd.el
 ;; Description: Miscellaneous Do Re Mi commands
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Sun Oct 27 19:41:54 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:47:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 486
+;;     Update #: 487
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
