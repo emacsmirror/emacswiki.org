@@ -3,12 +3,12 @@
 ;; Filename: icicles-cmd2.el
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Dec 23 20:52:33 2013 (-0800)
+;; Last-Updated: Thu Dec 26 11:16:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6700
+;;     Update #: 6701
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
