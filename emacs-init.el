@@ -4,13 +4,13 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Tue Jul 23 15:57:48 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:51:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2178
+;;     Update #: 2179
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -22,24 +22,25 @@
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
 ;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+',
-;;   `chistory', `cl', `color-moccur', `comint', `compile',
-;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
-;;   `cus-load', `cus-start', `custom', `cygwin-mount', `dired',
-;;   `dired+', `dired-aux', `dired-details', `dired-details+',
-;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
-;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-lock-menus',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `header2',
-;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
-;;   `icomplete+', `image-dired', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `chistory', `cl', `cmds-menu', `color-moccur', `comint',
+;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
+;;   `cygwin-mount', `dired', `dired+', `dired-aux', `dired-details',
+;;   `dired-details+', `dired-sort-menu', `dired-sort-menu+',
+;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
+;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
+;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `header2', `help+20', `hexrgb',
+;;   `highlight', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `icomplete', `icomplete+',
+;;   `image-dired', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
 ;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
