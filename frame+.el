@@ -3,14 +3,14 @@
 ;; Filename: frame+.el
 ;; Description: Extensions to `frame.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:12:55 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:01:12 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 260
+;;     Update #: 261
 ;; URL: http://www.emacswiki.org/frame+.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: frames
