@@ -3,14 +3,14 @@
 ;; Filename: hexrgb.el
 ;; Description: Functions to manipulate colors, including RGB hex strings.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:19:23 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:06:37 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 956
+;;     Update #: 957
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
