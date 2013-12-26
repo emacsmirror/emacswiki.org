@@ -3,14 +3,14 @@
 ;; Filename: filesets+.el
 ;; Description: Extensions to `filesets.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2008-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 16 14:11:36 2008 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:32:22 2013 (-0700)
+;; Last-Updated: Thu Dec 26 08:57:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 47
+;;     Update #: 49
 ;; URL: http://www.emacswiki.org/filesets+.el
 ;; Doc URL: http://www.emacswiki.org/FileSets
 ;; Keywords:
