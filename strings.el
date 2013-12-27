@@ -3,14 +3,14 @@
 ;; Filename: strings.el
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Jul 23 17:01:42 2013 (-0700)
+;;; Last-Updated: Thu Dec 26 09:51:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 550
+;;     Update #: 551
 ;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
