@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Thu Dec 26 09:32:02 2013 (-0800)
+;; Last-Updated: Fri Dec 27 14:16:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5799
+;;     Update #: 5801
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2509,7 +2509,11 @@ A value of zero means do not show such help at all.  In any case, a
 user event (e.g. a key press) always interrupts this display.
 
 Note that `post-command-hook' actions do not take place until this
-display is finished.
+display is finished.  For example, if the help is shown because your
+input is complete, then Icomplete will not show additional candidates
+\(e.g. with the same input as a prefix) until the mode-line help has
+finished.  This is because Icomplete display is a `post-command-hook'
+action.
 
 If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
