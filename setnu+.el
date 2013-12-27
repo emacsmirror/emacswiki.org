@@ -3,14 +3,14 @@
 ;; Filename: setnu+.el
 ;; Description: Extensions to `setnu.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Jul 23 16:54:20 2013 (-0700)
+;;; Last-Updated: Thu Dec 26 09:47:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 174
+;;     Update #: 175
 ;; URL: http://www.emacswiki.org/setnu%2b.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: lines
