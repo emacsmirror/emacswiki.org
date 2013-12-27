@@ -3,14 +3,14 @@
 ;; Filename: menu-bar+.el
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 18 08:14:24 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:40:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3707
+;;     Update #: 3708
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
