@@ -3,14 +3,14 @@
 ;; Filename: setup-keys.el
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 18 08:11:33 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:47:41 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1242
+;;     Update #: 1243
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -23,9 +23,9 @@
 ;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
-;;   `ring', `second-sel', `simple+', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
