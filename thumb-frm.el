@@ -3,14 +3,14 @@
 ;; Filename: thumb-frm.el
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Wed Aug  7 08:53:03 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:52:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1717
+;;     Update #: 1745
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -172,7 +172,7 @@
 ;;    `thumfr-sort-by-window-id', `thumfr-thumbify-frame',
 ;;    `thumfr-thumbnail-frame-p', `thumfr-thumbnail-frames',
 ;;    `thumfr-thumbify-frame-upon-event',
-;;    `thumfr-thumbify-other-frames',
+;;    `thumfr-thumbify-other-frames', `thumfr-thumfr-parameter-p',
 ;;    `thumfr-toggle-sort-thumbnail-frame-stack',
 ;;    `thumfr-toggle-thumbnail-frame'.
 ;;
@@ -272,6 +272,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/08/09 dadams
+;;     Added: thumfr-thumfr-parameter-p.
+;;     *-(de)thumbify-frame: Exclude thumfr-thumfr-parameter-p.
 ;; 2013/08-07 dadams
 ;;     Rewrite: Store info in frame parameters instead of vars thumfr(-non)-thumbnail-frames.
 ;;       Removed: thumfr(-non)-thumbnail-frames (vars), thumfr-cull-thumbnail-frames.
@@ -619,15 +622,23 @@ is non-nil."
     (while (not (input-pending-p)) (sit-for 0))
     (discard-input)))
 
+(defun thumfr-thumfr-parameter-p (parameter+value)
+  "Return non-nil if PARAMETER+VALUE is a `thumb-frm.el' frame parameter.
+PARAMETER+VALUE is a frame-parameter cons: (PARAMETER . VALUE).
+This means that PARAMETER is either `thumbfr-thumbnail-frame' or
+`thumbfr-non-thumbnail-frame'."
+  (memq (car parameter+value) '(thumfr-thumbnail-frame thumfr-non-thumbnail-frame)))
+
 ;;;###autoload
 (defun thumfr-thumbify-frame (&optional frame)
   "Create a thumbnail version of FRAME (default: selected frame).
 Variable `thumfr-frame-parameters' is used to determine
-which frame parameters (such as `menu-bar') to remove."
+which frame parameters (such as `menu-bar-lines') to remove."
   (interactive)
   (setq frame  (or frame (selected-frame)))
   (let* ((tf-params      (frame-parameter frame 'thumfr-non-thumbnail-frame))
-         (non-tf-params  (frame-parameters frame)))
+         (non-tf-params  (thumfr-remove-if #'thumfr-thumfr-parameter-p
+                                           (frame-parameters frame))))
     (when thumfr-rename-when-thumbify-flag (rename-non-minibuffer-frame))
     (unless (frame-parameter frame 'thumfr-thumbnail-frame) ; No-op if already a thumbnail.
       (set-frame-parameter frame 'thumfr-thumbnail-frame     non-tf-params)
@@ -660,7 +671,8 @@ which frame parameters (such as `menu-bar') to remove."
   (interactive)
   (setq frame  (or frame (selected-frame)))
   (let* ((non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame))
-         (tf-params      (frame-parameters frame)))
+         (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p
+                                           (frame-parameters frame))))
     (when non-tf-params                 ; No-op if not a thumbnail.
       (set-frame-parameter frame 'thumfr-non-thumbnail-frame tf-params)
       (set-frame-parameter frame 'thumfr-thumbnail-frame     nil)
