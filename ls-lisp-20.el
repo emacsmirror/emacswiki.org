@@ -2,12 +2,12 @@
 
 ;; Copyright (C) 1992, 1994, 2000, 2004 Free Software Foundation, Inc.
 ;;               2005 Lars Hansen
-;;               2010-2013 Drew Adams
+;;               2010-2014 Drew Adams
 
 ;; Author: Sebastian Kremer <sk@thp.uni-koeln.de>
 ;; Modified by: Francis J. Wright <F.J.Wright at qmul.ac.uk>
-;; Maintainer: Drew Adams
-;; Last-Updated: Fri Dec 28 10:10:00 2012 (-0800)
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Last-Updated: Thu Dec 26 09:39:39 2013 (-0800)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/ls-lisp.el
 ;; Keywords: unix, dired, microsoft windows
@@ -78,7 +78,7 @@
 ;; hook for external symbolic link support, more robust sorting and {}
 ;; expansion.  That version is available here:
 ;; http://centaur.maths.qmw.ac.uk/Emacs/. Francis's mark for it:
-;; v 1.50 2004/02/15 18:06:30 fjw.  
+;; v 1.50 2004/02/15 18:06:30 fjw.
 
 ;; That version was changed by Lars Hansen <larsh at soem dot dk> on
 ;; 2005-11-22.  He removed `ls-lisp-parse-symlink' and calls to it.
