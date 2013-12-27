@@ -3,14 +3,14 @@
 ;; Filename: isearch-prop.el
 ;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2011-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  9 13:07:04 2013 (-0700)
+;; Last-Updated: Thu Dec 26 17:25:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 672
+;;     Update #: 692
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -218,9 +218,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/26 dadams
+;;     isearchp-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/10/09 dadams
 ;;     Added: isearchp-toggle-hiding-comments (same as hide/show-comments-toggle in hide-comnt.el).
 ;;            Bind it, not isearchp-hide/show-comments, to M-;.
+;;     isearchp-hide/show-comments: Use comment-end-skip, not comment-end.
 ;; 2013/10/02 dadams
 ;;     isearchp-next-visible-thing-1: Put back <=, not <, for comparison.  See comment.
 ;;     Soft-require thingatpt+.el.
@@ -332,6 +335,7 @@
 ;; Quiet the byte-compiler.
 (defvar isearchp-reg-beg) ;; In `isearch+.el'.
 (defvar isearchp-reg-end) ;; In `isearch+.el'.
+(defvar comment-end-skip) ;; In `newcomment.el' (Emacs 24+).
  
 ;;(@* "Variables")
 
@@ -1450,18 +1454,19 @@ show invisible text that you previously hid using this command."
     (comment-normalize-vars)     ; Per Stefan, should call this first.
     (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
                                                (get-text-property (point) 'invisible)))
-        (hide/show-comments 'show start end)
-      (hide/show-comments 'hide start end))))
+        (isearchp-hide/show-comments 'show start end)
+      (isearchp-hide/show-comments 'hide start end))))
 
-;; Same as `hide/show-comments' in `hide-comnt.el'.
+;; Same as `hide/show-comments' in `hide-comnt.el', except no need to handle Emacs < 23.
 ;;
 (defun isearchp-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
 \(This is thus *NOT* a toggle command.)
 
-Interactively, START and END are the region limits if it is active
-Otherwise, including non-interactively, they are the buffer limits.
+Interactively, START and END default to the region limits, if active.
+Otherwise, including non-interactively, they default to `point-min'
+and `point-max'.
 
 During Isearch this is bound to `M-;'.  However, in order to use a
 prefix arg within Isearch you must set `isearch-allow-scroll' or
@@ -1476,9 +1481,10 @@ show invisible text that you previously hid using this command.
 
 From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
 show them."
-  (interactive (list (if current-prefix-arg 'show 'hide)
-                     (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
-                     (if (and transient-mark-mode  mark-active) (region-end) (point-max))))
+  (interactive (cons (if current-prefix-arg 'show 'hide)
+                     (if (or (not mark-active) (null (mark)) (= (point) (mark)))
+                         (list (point-min) (point-max))
+                       (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
   (when (require 'newcomment nil t)     ; `comment-search-forward'
     (comment-normalize-vars)     ; Per Stefan, should call this first.
     (unless start (setq start  (point-min)))
@@ -1490,14 +1496,18 @@ show them."
       (unwind-protect
            (save-excursion
              (goto-char start)
-             (while (and (< start end)  (setq cbeg  (comment-search-forward end 'NOERROR)))
+             (while (and (< start end)
+                         (save-excursion
+                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+               (when (string= "" comment-end) (goto-char cbeg))
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
-                             (search-forward comment-end end 'NOERROR)))
-               (when (and cbeg  cend)
+                             (and (comment-forward 1) (point))))
+               (when (and cbeg cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))))
+                   (put-text-property cbeg cend 'invisible nil)))
+               (goto-char (setq start  (or cend  end)))))
         (set-buffer-modified-p bufmodp)))))
 
 ;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
