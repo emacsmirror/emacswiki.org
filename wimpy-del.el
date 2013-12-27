@@ -3,15 +3,15 @@
 ;; Filename: wimpy-del.el
 ;; Description: Require confirmation for large region deletion.
 ;; Author: Bard Bloom, bard@theory.lcs.mit.edu, Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) Bard Bloom, June 1989
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 17:10:41 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:57:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 177
+;;     Update #: 178
 ;; URL: http://www.emacswiki.org/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
