@@ -3,14 +3,14 @@
 ;; Filename: wide-n.el
 ;; Description: Cycle among buffer restrictions
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 14:06:31 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:57:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 347
+;;     Update #: 348
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
