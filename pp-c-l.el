@@ -3,14 +3,14 @@
 ;; Filename: pp-c-l.el
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:49:59 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:45:13 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 209
+;;     Update #: 210
 ;; URL: http://www.emacswiki.org/pp-c-l.el
 ;; Doc URL: http://emacswiki.org/PrettyControlL
 ;; Keywords: display, convenience, faces
