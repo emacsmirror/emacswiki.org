@@ -3,13 +3,13 @@
 ;; Filename: ring+.el
 ;; Description: Extensions to `ring.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
 ;; Version: 0
-;; Last-Updated: Tue Jul 23 16:52:11 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:46:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 225
+;;     Update #: 226
 ;; URL: http://www.emacswiki.org/ring%2b.el
 ;; Doc URL: http://emacswiki.org/RingPlus
 ;; Keywords: extensions, lisp, emacs-lisp
