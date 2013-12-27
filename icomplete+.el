@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:34:43 2013 (-0800)
+;; Last-Updated: Fri Dec 27 08:59:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1615
+;;     Update #: 1621
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/27 dadams
+;;     icompletep-completion-all-sorted-completions: Use cl-delete-if, not delete-if.
 ;; 2013/09/21 dadams
 ;;     icompletep-completion-all-sorted-completions:
 ;;       Temporary hack for 24.4: completion--cache-all-sorted-completions takes 3 args now.
@@ -1041,9 +1043,10 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
             ;; Exclude file names with extensions in `completion-ignored-extensions'.
             (when (or minibuffer-completing-file-name
                       (and (boundp 'icicle-abs-file-candidates)  icicle-abs-file-candidates))
-              (setq all  (delete-if (lambda (fl)
-                                      (string-match-p (regexp-opt completion-ignored-extensions) fl))
-                                    all)))
+              (setq all  (cl-delete-if (lambda (fl)
+                                         (string-match-p (regexp-opt completion-ignored-extensions)
+                                                         fl))
+                                       all)))
             (unless dont-remove-dups (setq all  (delete-dups all))) ; Delete duplicates.
             (setq last  (last all)      ; Reset LAST, since it may be a different cons-cell.
                   all   (if sort-fun
