@@ -3,14 +3,14 @@
 ;; Filename: mouse3.el
 ;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 26 07:59:01 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:42:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1501
+;;     Update #: 1502
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
