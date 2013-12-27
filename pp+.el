@@ -3,14 +3,14 @@
 ;; Filename: pp+.el
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec  3 12:29:56 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:44:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 216
+;;     Update #: 217
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
