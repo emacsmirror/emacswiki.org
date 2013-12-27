@@ -3,14 +3,14 @@
 ;; Filename: second-sel.el
 ;; Description: Secondary selection commands
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2008-2014, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 16 08:04:13 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:46:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 560
+;;     Update #: 561
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
