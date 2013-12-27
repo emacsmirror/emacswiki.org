@@ -4,26 +4,23 @@
 ;; Description: Extensions for `vc.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 16:45:20 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Dec 28 10:31:55 2012 (-0800)
+;; Last-Updated: Thu Dec 26 18:04:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1487
+;;     Update #: 1491
 ;; URL: http://www.emacswiki.org/vc+.el
 ;; Keywords: internal, tools, unix
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `cl',
-;;   `dired', `dired+', `dired-aux', `dired-x', `ediff',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
-;;   `frame-cmds', `frame-fns', `misc-fns', `pp', `pp+', `ring',
-;;   `ring+', `strings', `subr-21', `thingatpt', `thingatpt+', `vc',
-;;   `vc+', `vc-', `vc-hooks', `w32-browser'.
+;;   `avoid', `ediff', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `fit-frame', `frame-cmds', `frame-fns', `misc-fns', `ring',
+;;   `ring+', `strings', `thingatpt', `thingatpt+', `vc', `vc+',
+;;   `vc-', `vc-hooks'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -101,6 +98,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/26 dadams
+;;     Do not bother to require dired+.el.
 ;; 2010/12/04 dadams
 ;;     vc-dired-mode: Removed call to make-local-hook.
 ;; 1999/04/09 dadams
@@ -181,7 +180,6 @@
 (eval-when-compile (require 'cl)) ;; case (plus, for Emacs <20: when, unless)
 (require 'vc-)
 (require 'vc)
-(require 'dired+) ;; dired-buffers-for-dir
 (require 'ediff) ;; ediff-load-version-control, ediff-version-control-package
 
 (require 'frame-cmds nil t) ;; (no error if not found): remove-windows-on
