@@ -83,7 +83,7 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 
 ; '''##<strong>##''': <strong>Strong</strong> (usually bold): ##<strong>foo bar (toto)</strong>## -> <strong>foo bar (toto)</strong>
 
-[bbcode]
+[:bbcode]
 === BBCode ===
 
 “BBCode is an abbreviation for Bulletin Board Code, the lightweight markup language used to format posts in many message boards. The available tags are usually indicated by rectangular brackets surrounding a keyword, and they are parsed by the message board system before being translated into a markup language the web browsers understands, usually HTML or XHTML” -- [http://en.wikipedia.org/wiki/BBCode Wikipedia]
