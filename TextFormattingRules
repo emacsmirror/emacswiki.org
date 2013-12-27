@@ -44,10 +44,18 @@ The official documentation is here:
 * [[Oddmuse:Usemod Markup Extension]]
 * [[Oddmuse:bbCode Extension]]
 
+
+
+
 [:AlternativeMarkup]
 == Alternative Markup ==
 
 The basic punctuation-based markup (see above) is preferable in all cases where it works. Alternative markup works in some additional contexts.
+
+
+
+
+
 
 [:WikiTags]
 === Wiki Tags ===
@@ -66,6 +74,11 @@ whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must 
         foo
         </pre>
 
+
+
+
+
+
 [:htmltags]
 === HTML Tags ===
 
@@ -82,6 +95,11 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 ; '''##<em>##''': <em>Emphasis</em> (usually italics): ##<em>foo bar (toto)</em>## -> <em>foo bar (toto)</em>
 
 ; '''##<strong>##''': <strong>Strong</strong> (usually bold): ##<strong>foo bar (toto)</strong>## -> <strong>foo bar (toto)</strong>
+
+
+
+
+
 
 [:bbcode]
 === BBCode ===
@@ -120,6 +138,11 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 
 Note that traditionally, ##[url‍=http://www.example.org/]text[/url]## would also be allowed. Apparently spammers also like it, which is why it ended up on BannedRegexps.
 
+
+
+
+
+
 [:links][:anchors]
 == Links and Anchors ==
 
@@ -146,6 +169,11 @@ See CreateNewPages.
 * See also InterLinks for URL abbreviations for commonly used Web sites, and NearLinks for linking to nearby Wikis.
 * It is a good idea to provide links to appropriate category (or "parent") pages at the bottom of a page -- see WikiOrganization.
 
+
+
+
+
+
 [:actions][:action][:wikiactions]
 == Wiki actions ==
 The reflexive intermap-link %%EmacsWiki%% has some of the following actions:
@@ -157,7 +185,12 @@ The reflexive intermap-link %%EmacsWiki%% has some of the following actions:
 
 A more complete list can be found at http://www.oddmuse.org/cgi-bin/oddmuse/Action_List
 
-[:Lists]
+
+
+
+
+
+[:Lists][:Bullets]
 == Lists ==
 
 Lists and indented paragraphs start with a special character ''followed by at least one space character''. For example, a bulleted list item starts with `##* ##', not with just `##*##'.
@@ -178,6 +211,27 @@ Lists and indented paragraphs start with a special character ''followed by at le
 }}}
 ; Example: This list is an example of definition list
 ; Third item: and its definition
+
+See [[#ListIndentation|Indentation]] for how to add a separate paragraph (or a line break) to a list item (i.e., at the same indentation level).
+
+
+
+
+[:indendation]
+== Indentation ==
+
+* Indented lines start with one or more colons, followed by one or more whitespace characters [space or tabs]
+* ('##: ##') -- more colons mean more indention. 
+* Indented lines must be the first sentence in a paragraph.\\
+ (This is useful for personal replies or blockquotes. See also [[#Dialog]].)
+
+[:ListIndentation]
+* You can use two backslashes '''##\\##''', to insert a line break at the current indentation level. The previous list item shows an example: ##\\## is used between ##paragraph.## and ##(This is useful##.\\\\
+To create the appearance of a separate paragraph (like this one) within a list item, you can use '''##\\\\##'''.
+
+
+
+
 
 [:tables]
 == Tables ==
@@ -200,13 +254,7 @@ Becomes:
 
 Official documentation is at [[Oddmuse:Table Markup Extension]].
 
-[:indendation]
-== Indentation ==
 
-* Indented lines start with one or more colons, followed by one or more whitespace characters [space or tabs]
-* ('##: ##') -- more colons mean more indention. 
-* Indented lines must be the first sentence in a paragraph.
-* (This is useful for personal replies or blockquotes. See also [[#Dialog]].)
 
 
 [:Dialog]
@@ -251,6 +299,11 @@ A contribution after a ##[new]## ends at either the next ##[new]##, the next hea
 
 Use headings, horizontal lines or even new pages to separate threads of discussions, but use ##[new]## to separate entries in the thread.
 
+
+
+
+
+
 [:SourceCode]
 == Source Code ==
 
@@ -267,6 +320,11 @@ four (4) spaces.
 whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must be alone on a line, to work. (see [[#WikiTags|WikiTags]] above)
 
 * Include [[Gists]]
+
+
+
+
+
 
 [:headings]
 == Headings ==
@@ -289,6 +347,11 @@ After level 4, they are not displayed differently.
 Overuse of headings is poor style, as short Wiki pages are
 preferred to long ones.  Consider splitting the page into two or more
 pages.
+
+
+
+
+
 
 [:images]
 == Images ==
@@ -313,6 +376,11 @@ Result:
 
 [[image:AngryFruitSaladTwo_Screenshot]]
 
+
+
+
+
+
 [:irc]
 == IRC Quotes ==
 
@@ -331,6 +399,9 @@ Result:
 <PyroMithrandir> emacs IS a text adventure game
 
 
+
+
+
 [:transclusion]
 == Inclusion / Transclusion == 
 
@@ -344,6 +415,11 @@ There is more to it, however. See Oddmuse:Transclusion.
 
 The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but if you're on !ExamplePage, clicking on the header will search for it. It's up to the users to use a decent prefix to identify pages that are to be transcluded and to mention the page name this piece of text is from.
 
+
+
+
+
+
 [:redirect]
 == Rename / Redirect ==
 
@@ -351,6 +427,10 @@ To change the name of a page without losing all of the archived links to the ori
 <code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page.
 
 More details at PageRedirection
+
+
+
+
 
 [:seealso]
 == See Also ==
