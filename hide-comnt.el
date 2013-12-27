@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 11:01:42 2013 (-0800)
+;; Last-Updated: Thu Dec 26 17:10:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 86
+;;     Update #: 104
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -55,6 +55,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/26 dadams
+;;     hide/show-comments: Update START to comment end or END.
 ;; 2013/10/09 dadams
 ;;     hide/show-comments: Use save-excursion.  If empty comment-end go to CBEG.
 ;;                         Use comment-forward if available.
@@ -121,13 +123,15 @@ Note that prior to Emacs 21, this never hides comments."
 (defun hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
+\(This is thus *NOT* a toggle command.)
+
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
 
 Uses `save-excursion', restoring point.
 
-Be aware that using this command to show invisible text shows *all*
+Be aware that using this command to show invisible text shows *ALL*
 such text, regardless of how it was hidden.  IOW, it does not just
 show invisible text that you previously hid using this command.
 
@@ -138,7 +142,7 @@ This command does nothing in Emacs versions prior to Emacs 21, because
 it needs `comment-search-forward'."
   (interactive
    (cons (if current-prefix-arg 'show 'hide)
-         (if (or (not mark-active) (null (mark)) (= (point) (mark)))
+         (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
              (list (point-min) (point-max))
            (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
   (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
@@ -167,7 +171,8 @@ it needs `comment-search-forward'."
                (when (and cbeg cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))))
+                   (put-text-property cbeg cend 'invisible nil)))
+               (goto-char (setq start  (or cend  end)))))
         (set-buffer-modified-p bufmodp)))))
 
 (defun hide/show-comments-toggle (&optional start end)
