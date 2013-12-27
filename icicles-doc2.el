@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Dec 26 09:29:14 2013 (-0800)
+;; Last-Updated: Fri Dec 27 14:21:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29467
+;;     Update #: 29469
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5237,9 +5237,14 @@
 ;;    alternative help is available.
 ;;
 ;;    Regardless of the option value, a user event (e.g. a key press)
-;;    always interrupts (terminates) this help display.  Note too that
-;;    `post-command-hook' actions do not take place until this display
-;;    is finished.
+;;    always interrupts (terminates) this help display.
+;;
+;;    Note that `post-command-hook' actions do not take place until
+;;    this display is finished.  For example, if the help is shown
+;;    because your input is complete, then Icomplete will not show
+;;    additional candidates (e.g. with the same input as a prefix)
+;;    until the mode-line help has finished.  This is because
+;;    Icomplete display is a `post-command-hook' action.
 ;;
 ;;  * Face `icicle-mode-line-help' is used to highlight Icicles help
 ;;    shown in the mode-line.  This includes that controlled by option
