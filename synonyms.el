@@ -3,14 +3,14 @@
 ;; Filename: synonyms.el
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 17:02:24 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:51:41 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2517
+;;     Update #: 2518
 ;; URL: http://www.emacswiki.org/synonyms.el
 ;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
