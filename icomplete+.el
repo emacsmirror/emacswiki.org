@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 27 08:59:15 2013 (-0800)
+;; Last-Updated: Fri Dec 27 09:04:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1621
+;;     Update #: 1625
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -124,7 +124,8 @@
 ;;; Change Log:
 ;;
 ;; 2013/12/27 dadams
-;;     icompletep-completion-all-sorted-completions: Use cl-delete-if, not delete-if.
+;;     icompletep-completion-all-sorted-completions:
+;;       Use cl-delete-if, not delete-if.  And require cl-lib.el.
 ;; 2013/09/21 dadams
 ;;     icompletep-completion-all-sorted-completions:
 ;;       Temporary hack for 24.4: completion--cache-all-sorted-completions takes 3 args now.
@@ -265,6 +266,8 @@
 ;;; Code:
 
 (require 'icomplete)
+
+(when (> emacs-major-version 23) (require 'cl-lib)) ; cl-delete-if
 
 ;; Quiet the byte-compiler.
 (defvar completion-all-sorted-completions)
