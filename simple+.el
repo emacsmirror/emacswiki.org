@@ -3,14 +3,14 @@
 ;; Filename: simple+.el
 ;; Description: Extensions to standard library `simple.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Tue Jul 23 16:58:26 2013 (-0700)
+;;; Last-Updated: Thu Dec 26 09:48:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 459
+;;     Update #: 460
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
