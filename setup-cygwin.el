@@ -3,14 +3,14 @@
 ;; Filename: setup-cygwin.el
 ;; Description:
 ;; Author: Markus Hoenika
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Tue Jul 23 16:54:51 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:47:27 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 139
+;;     Update #: 140
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
