@@ -3,14 +3,14 @@
 ;; Filename: lib-requires.el
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 23 16:33:54 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:38:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 750
+;;     Update #: 751
 ;; URL: http://www.emacswiki.org/lib-requires.el
 ;; Doc URL: http://emacswiki.org/LibraryDependencies
 ;; Keywords: libraries, files
