@@ -3,14 +3,14 @@
 ;; Filename: macros+.el
 ;; Description: Extensions to `macros.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Apr 22 08:42:10 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Jul 23 16:38:41 2013 (-0700)
+;;; Last-Updated: Thu Dec 26 09:40:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 189
+;;     Update #: 190
 ;; URL: http://www.emacswiki.org/macros+.el
 ;; Keywords: abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
