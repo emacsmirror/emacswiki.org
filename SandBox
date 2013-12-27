@@ -47,5 +47,11 @@ Works.
 
 This doesn't work as expected because "baz" is the first item of a definition list.
 
+* foo\\
+bar
+
+* foo
+\\bar
+
 * foo\\bar
 
