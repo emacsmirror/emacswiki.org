@@ -3,13 +3,13 @@
 ;; Filename: mkhtml.el
 ;; Description: Create HTML with links.  (Extensions to `htmlize.el'.)
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Fri Dec 28 10:14:02 2012 (-0800)
+;; Last-Updated: Thu Dec 26 09:41:50 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2330
+;;     Update #: 2332
 ;; URL: http://www.emacswiki.org/mkhtml.el
 ;; Doc URL: http://emacswiki.org/SaveAsHtml
 ;; Keywords: tools, hypermedia, www, info
