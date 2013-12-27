@@ -3,14 +3,14 @@
 ;; Filename: start.el
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 23 20:26:47 2013 (-0700)
+;; Last-Updated: Thu Dec 26 17:55:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2990
+;;     Update #: 2998
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -21,19 +21,19 @@
 ;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `cl', `color-moccur', `compile', `compile+20',
-;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
-;;   `cus-start', `custom', `dired', `dired+', `dired-aux',
-;;   `dired-details', `dired-details+', `dired-sort-menu',
-;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `ediff', `ediff+', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `em-joc', `emacsbug', `eshell-auto',
-;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
-;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
-;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
+;;   `buff-menu+', `cl', `cmds-menu', `color-moccur', `compile',
+;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-details', `dired-details+',
+;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
+;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
+;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
 ;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
 ;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
 ;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
