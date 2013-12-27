@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Dec 26 13:18:28 2013 (-0800)
+;; Last-Updated: Thu Dec 26 17:13:27 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6703
+;;     Update #: 6704
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5083,13 +5083,15 @@ list includes the names of the symbols that satisfy
 (defun icicle-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
+\(This is thus *NOT* a toggle command.)
+
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
 
 Uses `save-excursion', restoring point.
 
-Be aware that using this command to show invisible text shows *all*
+Be aware that using this command to show invisible text shows *ALL*
 such text, regardless of how it was hidden.  IOW, it does not just
 show invisible text that you previously hid using this command.
 
@@ -5125,7 +5127,8 @@ because it needs `comment-search-forward'."
                (when (and cbeg cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))))
+                   (put-text-property cbeg cend 'invisible nil)))
+               (goto-char (setq start  (or cend  end)))))
         (set-buffer-modified-p bufmodp)))))
 
 ;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
