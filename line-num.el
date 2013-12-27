@@ -3,15 +3,15 @@
 ;; Filename: line-num.el
 ;; Description: Display line numbers in left-margin of buffer.
 ;; Author: (Darryl Okahata) darrylo@hpsrdmo, Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989, Hewlett-Packard, all rights reserved.
 ;; Created: Wed Mar 31 16:18:24 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Jul 23 16:34:53 2013 (-0700)
+;;; Last-Updated: Thu Dec 26 09:38:45 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 216
+;;     Update #: 217
 ;; URL: http://www.emacswiki.org/line-num.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: local
