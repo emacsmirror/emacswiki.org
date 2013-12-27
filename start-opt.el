@@ -3,14 +3,14 @@
 ;; Filename: start-opt.el
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 17 14:12:59 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:50:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1959
+;;     Update #: 1960
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
