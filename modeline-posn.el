@@ -3,14 +3,14 @@
 ;; Filename: modeline-posn.el
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2006-2014, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 23 11:38:07 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:42:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 153
+;;     Update #: 154
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
