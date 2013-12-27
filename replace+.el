@@ -3,14 +3,14 @@
 ;; Filename: replace+.el
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 13 18:59:56 2013 (-0800)
+;; Last-Updated: Thu Dec 26 09:46:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1704
+;;     Update #: 1705
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
