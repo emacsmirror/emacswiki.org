@@ -3,14 +3,14 @@
 ;; Filename: palette.el
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 2006-2014, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Jul 23 14:29:42 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:44:17 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 734 4
+;;     Update #: 735 4
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
