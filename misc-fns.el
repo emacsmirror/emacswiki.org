@@ -3,14 +3,14 @@
 ;; Filename: misc-fns.el
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 30 10:07:45 2013 (-0700)
+;; Last-Updated: Thu Dec 26 09:41:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 604
+;;     Update #: 605
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
