@@ -155,7 +155,7 @@ But be advised that `cua-mode' will change more behaviors than just that.
 * HalfScrolling -- scrolling by half pages
 * IdleScrolling -- scroll down one line per second when idle
 * SwissMove -- scroll with decreasing stepsizes
-* Lisp:gold-ratio-scroll-screen.el -- scroll screen_height/1.618 and highlight line before or after scrolling
+* Lisp:gold-ratio-scroll-screen.el -- scroll window_height/1.618 and highlight line before or after scrolling
 
 ----
 CategoryDisplay
