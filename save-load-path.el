@@ -1,6 +1,6 @@
 ;;; save-load-path.el --- save load-path and reuse it to test
 
-;; Time-stamp: <2013-01-31 06:47:26 rubikitch>
+;; Time-stamp: <2013-12-29 04:49:07 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -78,7 +78,8 @@
   "Save `load-path' to file `save-load-path-file'."
   (with-temp-buffer
     (insert
-     (prin1-to-string `(setq load-path ',load-path)))
+     (let (print-level print-length)
+       (prin1-to-string `(setq load-path ',load-path))))
     (write-region (point-min) (point-max) save-load-path-file)))
 
 (defun save-load-path-initialize ()
