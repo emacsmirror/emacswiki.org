@@ -22,7 +22,8 @@
 ;;
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 16 May 2002
-;; Version: 1.5
+;; Version: 1.6
+;; Keywords: convenience, matching
 ;;
 ;;; Commentary:
 ;;
@@ -41,12 +42,14 @@
 ;;   (global-set-key [(control ?.)] 'goto-last-change)
 ;;   (global-set-key [(control ?,)] 'goto-last-change-reverse)
 ;;
-;; Works with emacs-19.29, 19.31, 20.3, 20.7, 21.1, 21.4 and 22.1.
+;; Works with emacs-19.29, 19.31, 20.3, 20.7, 21.1, 21.4, 22.1 and 23.1
 ;; Works with XEmacs-20.4 and 21.4 (but see todo about `last-command' below)
 ;;
 ;;--------------------------------------------------------------------
 ;; History
 ;;
+;; Ver 1.6 2013-12-12 David Andersson
+;;    Add keywords; Cleanup comments
 ;; Ver 1.5 2013-12-11 David Andersson
 ;;    Autoload and document `goto-last-change-reverse'
 ;; Ver 1.4 2008-09-20 David Andersson
@@ -104,6 +107,9 @@ Optional third argument is the replacement, which defaults to \"...\"."
 
 (defun glc-adjust-pos2 (pos p1 p2 adj)
   ;; Helper function to glc-adjust-pos
+  ;; p1, p2: interval where an edit occured
+  ;; adj: amount of text added (positive) or removed (negativ) by the edit
+  ;; Return pos if well before p1, or pos+adj if well after p2, or nil if too close
   (cond ((<= pos (- p1 glc-current-span))
 	 pos)
 	((> pos (+ p2 glc-current-span))
@@ -124,19 +130,10 @@ Deletion edits before POS returns a smaller value.
 	 pos)
 	((numberp (car e))		; (beg . end)==insertion
 	 (glc-adjust-pos2 pos (car e) (car e) (- (cdr e) (car e))))
-;; 	 (cond ((< pos (- (car e) glc-current-span)) pos)
-;; 	       ((> pos (+ (car e) glc-current-span)) (+ pos (- (cdr e) (car e))))
-;; 	       (t nil)))
 	((stringp (car e))		; (string . pos)==deletion
 	 (glc-adjust-pos2 pos (abs (cdr e)) (+ (abs (cdr e)) (length (car e))) (- (length (car e)))))
-;; 	 (cond ((< pos (- (abs (cdr e)) glc-current-span)) pos)
-;; 	       ((> pos (+ (abs (cdr e)) (length (car e)) glc-current-span)) (- pos (length (car e))))
-;; 	       (t nil)))
 	((null (car e))			; (nil prop val beg . end)==prop change
 	 (glc-adjust-pos2 pos (nth 3 e) (nthcdr 4 e) 0))
-;; 	 (cond ((< pos (- (nth 3 e) glc-current-span)) pos)
-;; 	       ((> pos (+ (nthcdr 4 e) glc-current-span)) pos)
-;; 	       (t nil)))
 	(t				; (marker . dist)==marker moved
 	 pos)))
 
@@ -163,7 +160,7 @@ or nil if the point was closer than `glc-current-span' to some edit in R.
 (defun glc-get-pos (e)
   "If E represents an edit, return a position value in E, the position
 where the edit took place. Return nil if E represents no real change.
-\nE is a entry in the buffer-undo-list."
+\nE is an entry in the buffer-undo-list."
   (cond ((numberp e) e)			; num==changed position
 	((atom e) nil)			; nil==command boundary
 	((numberp (car e)) (cdr e))	; (beg . end)==insertion
@@ -175,7 +172,7 @@ where the edit took place. Return nil if E represents no real change.
 (defun glc-get-descript (e &optional n)
   "If E represents an edit, return a short string describing E.
 Return nil if E represents no real change.
-\nE is a entry in the buffer-undo-list."
+\nE is an entry in the buffer-undo-list."
   (let ((nn (or (format "T-%d: " n) "")))
     (cond ((numberp e) "New position")	; num==changed position
 	  ((atom e) nil)		; nil==command boundary
@@ -196,7 +193,7 @@ Return nil if E represents no real change.
 
 (defun glc-is-positionable (e)
   "Return non-nil if E is an insertion, deletion or text property change.
-\nE is a entry in the buffer-undo-list."
+\nE is an entry in the buffer-undo-list."
   (and (not (numberp e)) (glc-get-pos e)))
 
 (defun glc-is-filetime (e)
