@@ -1,318 +1,239 @@
-;;; goto-chg.el --- goto last change
-;;--------------------------------------------------------------------
-;;
-;; Copyright (C) 2002-2008,2013 David Andersson
-;;
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2 of
-;; the License, or (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be
-;; useful, but WITHOUT ANY WARRANTY; without even the implied
-;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-;; PURPOSE.  See the GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public
-;; License along with this program; if not, write to the Free
-;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-;; MA 02111-1307 USA
-;;
-;;-------------------------------------------------------------------
-;;
-;; Author: David Andersson <l.david.andersson(at)sverige.nu>
-;; Created: 16 May 2002
-;; Version: 1.5
-;;
-;;; Commentary:
-;;
-;; Goto Last Change
-;;
-;; Goto the point of the most recent edit in the buffer.
-;; When repeated, goto the second most recent edit, etc.
-;; Negative argument, C-u -, for reverse direction.
-;; Works by looking into buffer-undo-list to find points of edit.
-;;
-;; You would probably like to bind this command to a key.
-;; For example in your ~/.emacs:
-;;
-;;   (require 'goto-chg)
-;;
-;;   (global-set-key [(control ?.)] 'goto-last-change)
-;;   (global-set-key [(control ?,)] 'goto-last-change-reverse)
-;;
-;; Works with emacs-19.29, 19.31, 20.3, 20.7, 21.1, 21.4 and 22.1.
-;; Works with XEmacs-20.4 and 21.4 (but see todo about `last-command' below)
-;;
-;;--------------------------------------------------------------------
-;; History
-;;
-;; Ver 1.5 2013-12-11 David Andersson
-;;    Autoload and document `goto-last-change-reverse'
-;; Ver 1.4 2008-09-20 David Andersson
-;;    Improved property change description; Update comments.
-;; Ver 1.3 2007-03-14 David Andersson
-;;    Added `goto-last-change-reverse'
-;; Ver 1.2 2003-04-06 David Andersson
-;;    Don't let repeating error depthen glc-probe-depth.
-;; Ver 1.1 2003-04-06 David Andersson
-;;    Zero arg describe changes. Negative arg go back.
-;;    Autoload. Remove message using nil in stead of an empty string.
-;; Ver 1.0 2002-05-18 David Andersson
-;;    Initial version
-;;
-;;--------------------------------------------------------------------
-;;
-;;todo: Rename "goto-chg.el" -> "gotochange.el" or "goto-chgs" ?
-;;todo: Rename function goto-last-change -> goto-last-edit ?
-;;todo: Rename adjective "-last-" -> "-latest-" or "-most-recent-" ?
-;;todo: There are some, maybe useful, funcs  for region undo 
-;;       in simple.el in emacs 20. Take a look.
-;;todo: Add functionality to visit changed point in text order, not only in
-;;        chronological order. (Naa, highlight-changes-mode does that).
-;;todo: Inverse indication that a change has been saved or not
-;;todo: Highlight the range of text involved in the last change?
-;;todo: See session-jump-to-last-change in session.el?
-;;todo: Unhide invisible text (e.g. outline mode) like isearch do.
-;;todo: XEmacs sets last-command to `t' after an error, so you cannot reverse
-;;        after "No furter change info". Should we bother?
-;;todo: Try distinguish "No further change info" (end of truncated undo list)
-;;        and "No further changes" (end of a complete undo list).
-;;
-;;--------------------------------------------------------------------
-
-;;; Code:
-
-(defvar glc-default-span 8 "*goto-last-change don't visit the same point twice. glc-default-span tells how far around a visited point not to visit again.")
-(defvar glc-current-span 8 "Internal for goto-last-change.\nA copy of glc-default-span or the ARG passed to goto-last-change.")
-(defvar glc-probe-depth 0 "Internal for goto-last-change.\nIt is non-zero between successive goto-last-change.")
-
-;;todo: Find begin and end of line, then use it somewhere
-
-(defun glc-center-ellipsis (str maxlen &optional ellipsis)
-  "Truncate STRING in the middle to length MAXLEN.
-If STRING is max MAXLEN just return the string.
-Optional third argument is the replacement, which defaults to \"...\"."
-  (if (<= (length str) maxlen)
-      str
-    ;; else
-    (let* ((lipsis (or ellipsis "..."))
-	   (i (/ (- maxlen (length lipsis)) 2)))
-      (concat (substring str 0 i)
-	      lipsis 
-	      (substring str (- i))))))
-
-(defun glc-adjust-pos2 (pos p1 p2 adj)
-  ;; Helper function to glc-adjust-pos
-  (cond ((<= pos (- p1 glc-current-span))
-	 pos)
-	((> pos (+ p2 glc-current-span))
-	 (+ pos adj))
-	((zerop glc-current-span)
-	 p1)
-	(t
-	 nil)))
-
-(defun glc-adjust-pos (pos e)
-  "Given POS, a buffer position before the edit E, compute and return
-the \"same\" buffer position after E happened.
-Exception: return nil if POS is closer than `glc-current-span' to the edit E.
-\nInsertion edits before POS returns a larger value.
-Deletion edits before POS returns a smaller value.
-\nThe edit E is an entry from the `buffer-undo-list'. See for details."
-  (cond ((atom e)			; nil==cmd boundary, or, num==changed pos
-	 pos)
-	((numberp (car e))		; (beg . end)==insertion
-	 (glc-adjust-pos2 pos (car e) (car e) (- (cdr e) (car e))))
-;; 	 (cond ((< pos (- (car e) glc-current-span)) pos)
-;; 	       ((> pos (+ (car e) glc-current-span)) (+ pos (- (cdr e) (car e))))
-;; 	       (t nil)))
-	((stringp (car e))		; (string . pos)==deletion
-	 (glc-adjust-pos2 pos (abs (cdr e)) (+ (abs (cdr e)) (length (car e))) (- (length (car e)))))
-;; 	 (cond ((< pos (- (abs (cdr e)) glc-current-span)) pos)
-;; 	       ((> pos (+ (abs (cdr e)) (length (car e)) glc-current-span)) (- pos (length (car e))))
-;; 	       (t nil)))
-	((null (car e))			; (nil prop val beg . end)==prop change
-	 (glc-adjust-pos2 pos (nth 3 e) (nthcdr 4 e) 0))
-;; 	 (cond ((< pos (- (nth 3 e) glc-current-span)) pos)
-;; 	       ((> pos (+ (nthcdr 4 e) glc-current-span)) pos)
-;; 	       (t nil)))
-	(t				; (marker . dist)==marker moved
-	 pos)))
-
-;; If recursive in stead of iterative (while), it tends to fill the call stack.
-;; (Isn't it tail optimized?)
-(defun glc-adjust-list (r)
-  "R is list of edit entries in chronological order.
-Pick the point of the first edit entry and update that point with
-the second, third, etc, edit entries. Return the final updated point,
-or nil if the point was closer than `glc-current-span' to some edit in R.
-\nR is basically a reversed slice from the buffer-undo-list."
-  (if r
-      ;; Get pos
-      (let ((pos (glc-get-pos (car r))))
-	(setq r (cdr r))
-	;; Walk back in reverse list
-	(while (and r pos)
-	  (setq pos (glc-adjust-pos pos (car r))
-		r (cdr r)))
-	pos)
-    ;; else
-    nil))
-
-(defun glc-get-pos (e)
-  "If E represents an edit, return a position value in E, the position
-where the edit took place. Return nil if E represents no real change.
-\nE is a entry in the buffer-undo-list."
-  (cond ((numberp e) e)			; num==changed position
-	((atom e) nil)			; nil==command boundary
-	((numberp (car e)) (cdr e))	; (beg . end)==insertion
-	((stringp (car e)) (abs (cdr e))) ; (string . pos)==deletion
-	((null (car e)) (nthcdr 4 e))	; (nil ...)==text property change
-	((atom (car e)) nil)		; (t ...)==file modification time
-	(t nil)))			; (marker ...)==marker moved
-
-(defun glc-get-descript (e &optional n)
-  "If E represents an edit, return a short string describing E.
-Return nil if E represents no real change.
-\nE is a entry in the buffer-undo-list."
-  (let ((nn (or (format "T-%d: " n) "")))
-    (cond ((numberp e) "New position")	; num==changed position
-	  ((atom e) nil)		; nil==command boundary
-	  ((numberp (car e))		; (beg . end)==insertion
-	   (if (and n (< n 2))
-	       (format "%sInserted %d chars \"%s\"" nn (- (cdr e) (car e)) 
-		       (glc-center-ellipsis (buffer-substring (car e) (cdr e)) 60))
-	     ;; else
-	     ;; An older insert. The inserted text cannot easily be computed.
-	     ;; Just show the char count.
-	     (format "%sInserted %d chars" nn (- (cdr e) (car e)))))
-	  ((stringp (car e))		; (string . pos)==deletion
-	   (format "%sDeleted \"%s\"" nn (glc-center-ellipsis (car e) 60)))
-	  ((null (car e))		; (nil ...)==text property change
-	   (format "%sProperty change" nn))
-	  ((atom (car e)) nil)		; (t ...)==file modification time
-	  (t nil))))			; (marker ...)==marker moved
-
-(defun glc-is-positionable (e)
-  "Return non-nil if E is an insertion, deletion or text property change.
-\nE is a entry in the buffer-undo-list."
-  (and (not (numberp e)) (glc-get-pos e)))
-
-(defun glc-is-filetime (e)
-  "Return t if E indicates a buffer became \"modified\",
-that is, it was previously saved or unchanged. Nil otherwise."
-  (and (listp e) (eq (car e) t)))
-
-;;;###autoload
-(defun goto-last-change (arg)
-"Go to the point where the last edit was made in the current buffer.
-Repeat the command to go to the second last edit, etc.
-\nTo go back to more recent edit, the reverse of this command, use \\[goto-last-change-reverse]
-or precede this command with \\[universal-argument] - (minus).
-\nIt does not go to the same point twice even if there has been many edits
-there. I call the minimal distance between distinguishable edits \"span\".
-Set variable `glc-default-span' to control how close is \"the same point\".
-Default span is 8.
-The span can be changed temporarily with \\[universal-argument] right before \\[goto-last-change]:
-\\[universal-argument] <NUMBER> set current span to that number,
-\\[universal-argument] (no number) multiplies span by 4, starting with default.
-The so set span remains until it is changed again with \\[universal-argument], or the consecutive
-repetition of this command is ended by any other command.
-\nWhen span is zero (i.e. \\[universal-argument] 0) subsequent \\[goto-last-change] visits each and
-every point of edit and a message shows what change was made there.
-In this case it may go to the same point twice.
-\nThis command uses undo information. If undo is disabled, so is this command.
-At times, when undo information becomes too large, the oldest information is
-discarded. See variable `undo-limit'."
-  (interactive "P")
-  (cond ((not (eq this-command last-command))
-	 ;; Start a glc sequence
-	 ;; Don't go to current point if last command was an obvious edit
-	 ;; (yank or self-insert, but not kill-region). Makes it easier to
-	 ;; jump back and forth when copying seleced lines.
-	 (setq glc-probe-depth (if (memq last-command '(yank self-insert-command)) 1 0)
-	       glc-direction 1
-	       glc-current-span glc-default-span)
-	 (if (< (prefix-numeric-value arg) 0)
-	     (error "Negative arg: Cannot reverse as the first operation"))))
-  (cond ((null buffer-undo-list)
-	 (error "Buffer has not been changed"))
-	((eq buffer-undo-list t)
-	 (error "No change info (undo is disabled)")))
-  (cond ((numberp arg)			; Numeric arg sets span
-	 (setq glc-current-span (abs arg)))
-	((consp arg)			; C-u's multiply previous span by 4
-	 (setq glc-current-span (* (abs (car arg)) glc-default-span))
-	 (message "Current span is %d chars" glc-current-span))) ;todo: keep message with "waiting" and "is saved"
-  (cond ((< (prefix-numeric-value arg) 0)
-	 (setq glc-direction -1))
-	(t
-	 (setq glc-direction 1)))
-  (let (rev				; Reversed (and filtered) undo list
-	pos				; The pos we look for, nil until found
-	(n 0)				; Steps in undo list (length of 'rev')
-	(l buffer-undo-list) 
-	(passed-save-entry (not (buffer-modified-p)))
-	(new-probe-depth glc-probe-depth))
-    ;; Walk back and forth in the buffer-undo-list, each time one step deeper,
-    ;; until we can walk back the whole list with a 'pos' that is not coming
-    ;; too close to another edit.
-    (while (null pos)
-      (setq new-probe-depth (+ new-probe-depth glc-direction))
-      (if (< glc-direction 0)
-	  (setq rev ()
-		n 0
-		l buffer-undo-list
-		passed-save-entry (not (buffer-modified-p))))
-      (if (< new-probe-depth 1)
-	  (error "No later change info"))
-      (if (> n 150)
-	  (message "working..."))
-      ;; Walk forward in buffer-undo-list, glc-probe-depth steps.
-      ;; Build reverse list along the way
-      (while (< n new-probe-depth)
-	(cond ((null l)
-	       ;(setq this-command t)	; Disrupt repeat sequence
-	       (error "No further change info"))
-	      ((glc-is-positionable (car l))
-	       (setq n (1+ n)
-		     rev (cons (car l) rev)))
-	      ((or passed-save-entry (glc-is-filetime (car l)))
-	       (setq passed-save-entry t)))
-	(setq l (cdr l)))
-      ;; Walk back in reverse list, from older to newer edits.
-      ;; Adjusting pos along the way.
-      (setq pos (glc-adjust-list rev)))
-    ;; Found a place not previously visited, in 'pos'.
-    ;; (An error have been issued if nothing (more) found.)
-    (if (> n 150)
-	(message nil))			; remove message "working..."
-    (if (and (= glc-current-span 0) (glc-get-descript (car rev) n))
-	(message "%s" (glc-get-descript (car rev) n))
-      ;; else
-      (if passed-save-entry
-	  (message "(This change is saved)")))
-    (setq glc-probe-depth new-probe-depth)
-    (goto-char pos)))
-
-;;;###autoload
-(defun goto-last-change-reverse (arg)
-  "Go back to more recent changes after \\[goto-last-change] have been used.
-See `goto-last-change' for use of prefix argument."
-  (interactive "P")
-  ;; Negate arg, all kinds
-  (cond ((eq arg nil)  (setq arg '-))
-	((eq arg '-)   (setq arg nil))
-	((listp arg)   (setq arg (list (- (car arg)))))
-	(t (setq arg   (- arg))))
-  ;; Make 'goto-last-change-reverse' look like 'goto-last-change'
-  (cond ((eq last-command this-command)
-	 (setq last-command 'goto-last-change)))
-  (setq this-command 'goto-last-change)
-  ;; Call 'goto-last-change' to do the job
-  (goto-last-change arg))
-
-(provide 'goto-chg)
-
-;;; goto-chg.el ends here
+#FILE text/x-emacs-lisp 
+Ozs7IGdvdG8tY2hnLmVsIC0tLSBnb3RvIGxhc3QgY2hhbmdlCjs7LS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KOzsKOzsg
+Q29weXJpZ2h0IChDKSAyMDAyLTIwMDgsMjAxMyBEYXZpZCBBbmRlcnNzb24KOzsKOzsgVGhpcyBw
+cm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vcgo7
+OyBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
+ZW5zZSBhcwo7OyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0
+aGVyIHZlcnNpb24gMiBvZgo7OyB0aGUgTGljZW5zZSwgb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkg
+bGF0ZXIgdmVyc2lvbi4KOzsKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBo
+b3BlIHRoYXQgaXQgd2lsbCBiZQo7OyB1c2VmdWwsIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
+d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkCjs7IHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBv
+ciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIKOzsgUFVSUE9TRS4gIFNlZSB0aGUgR05VIEdlbmVy
+YWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KOzsKOzsgWW91IHNob3VsZCBoYXZl
+IHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljCjs7IExpY2Vuc2UgYWxv
+bmcgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUKOzsgU29mdHdh
+cmUgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwK
+OzsgTUEgMDIxMTEtMTMwNyBVU0EKOzsKOzstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjs7Cjs7IEF1dGhvcjogRGF2aWQg
+QW5kZXJzc29uIDxsLmRhdmlkLmFuZGVyc3NvbihhdClzdmVyaWdlLm51Pgo7OyBDcmVhdGVkOiAx
+NiBNYXkgMjAwMgo7OyBWZXJzaW9uOiAxLjYKOzsgS2V5d29yZHM6IGNvbnZlbmllbmNlLCBtYXRj
+aGluZwo7Owo7OzsgQ29tbWVudGFyeToKOzsKOzsgR290byBMYXN0IENoYW5nZQo7Owo7OyBHb3Rv
+IHRoZSBwb2ludCBvZiB0aGUgbW9zdCByZWNlbnQgZWRpdCBpbiB0aGUgYnVmZmVyLgo7OyBXaGVu
+IHJlcGVhdGVkLCBnb3RvIHRoZSBzZWNvbmQgbW9zdCByZWNlbnQgZWRpdCwgZXRjLgo7OyBOZWdh
+dGl2ZSBhcmd1bWVudCwgQy11IC0sIGZvciByZXZlcnNlIGRpcmVjdGlvbi4KOzsgV29ya3MgYnkg
+bG9va2luZyBpbnRvIGJ1ZmZlci11bmRvLWxpc3QgdG8gZmluZCBwb2ludHMgb2YgZWRpdC4KOzsK
+OzsgWW91IHdvdWxkIHByb2JhYmx5IGxpa2UgdG8gYmluZCB0aGlzIGNvbW1hbmQgdG8gYSBrZXku
+Cjs7IEZvciBleGFtcGxlIGluIHlvdXIgfi8uZW1hY3M6Cjs7Cjs7ICAgKHJlcXVpcmUgJ2dvdG8t
+Y2hnKQo7Owo7OyAgIChnbG9iYWwtc2V0LWtleSBbKGNvbnRyb2wgPy4pXSAnZ290by1sYXN0LWNo
+YW5nZSkKOzsgICAoZ2xvYmFsLXNldC1rZXkgWyhjb250cm9sID8sKV0gJ2dvdG8tbGFzdC1jaGFu
+Z2UtcmV2ZXJzZSkKOzsKOzsgV29ya3Mgd2l0aCBlbWFjcy0xOS4yOSwgMTkuMzEsIDIwLjMsIDIw
+LjcsIDIxLjEsIDIxLjQsIDIyLjEgYW5kIDIzLjEKOzsgV29ya3Mgd2l0aCBYRW1hY3MtMjAuNCBh
+bmQgMjEuNCAoYnV0IHNlZSB0b2RvIGFib3V0IGBsYXN0LWNvbW1hbmQnIGJlbG93KQo7Owo7Oy0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCjs7IEhpc3RvcnkKOzsKOzsgVmVyIDEuNiAyMDEzLTEyLTEyIERhdmlkIEFuZGVy
+c3Nvbgo7OyAgICBBZGQga2V5d29yZHM7IENsZWFudXAgY29tbWVudHMKOzsgVmVyIDEuNSAyMDEz
+LTEyLTExIERhdmlkIEFuZGVyc3Nvbgo7OyAgICBBdXRvbG9hZCBhbmQgZG9jdW1lbnQgYGdvdG8t
+bGFzdC1jaGFuZ2UtcmV2ZXJzZScKOzsgVmVyIDEuNCAyMDA4LTA5LTIwIERhdmlkIEFuZGVyc3Nv
+bgo7OyAgICBJbXByb3ZlZCBwcm9wZXJ0eSBjaGFuZ2UgZGVzY3JpcHRpb247IFVwZGF0ZSBjb21t
+ZW50cy4KOzsgVmVyIDEuMyAyMDA3LTAzLTE0IERhdmlkIEFuZGVyc3Nvbgo7OyAgICBBZGRlZCBg
+Z290by1sYXN0LWNoYW5nZS1yZXZlcnNlJwo7OyBWZXIgMS4yIDIwMDMtMDQtMDYgRGF2aWQgQW5k
+ZXJzc29uCjs7ICAgIERvbid0IGxldCByZXBlYXRpbmcgZXJyb3IgZGVwdGhlbiBnbGMtcHJvYmUt
+ZGVwdGguCjs7IFZlciAxLjEgMjAwMy0wNC0wNiBEYXZpZCBBbmRlcnNzb24KOzsgICAgWmVybyBh
+cmcgZGVzY3JpYmUgY2hhbmdlcy4gTmVnYXRpdmUgYXJnIGdvIGJhY2suCjs7ICAgIEF1dG9sb2Fk
+LiBSZW1vdmUgbWVzc2FnZSB1c2luZyBuaWwgaW4gc3RlYWQgb2YgYW4gZW1wdHkgc3RyaW5nLgo7
+OyBWZXIgMS4wIDIwMDItMDUtMTggRGF2aWQgQW5kZXJzc29uCjs7ICAgIEluaXRpYWwgdmVyc2lv
+bgo7Owo7Oy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCjs7Cjs7dG9kbzogUmVuYW1lICJnb3RvLWNoZy5lbCIgLT4gImdv
+dG9jaGFuZ2UuZWwiIG9yICJnb3RvLWNoZ3MiID8KOzt0b2RvOiBSZW5hbWUgZnVuY3Rpb24gZ290
+by1sYXN0LWNoYW5nZSAtPiBnb3RvLWxhc3QtZWRpdCA/Cjs7dG9kbzogUmVuYW1lIGFkamVjdGl2
+ZSAiLWxhc3QtIiAtPiAiLWxhdGVzdC0iIG9yICItbW9zdC1yZWNlbnQtIiA/Cjs7dG9kbzogVGhl
+cmUgYXJlIHNvbWUsIG1heWJlIHVzZWZ1bCwgZnVuY3MgIGZvciByZWdpb24gdW5kbyAKOzsgICAg
+ICAgaW4gc2ltcGxlLmVsIGluIGVtYWNzIDIwLiBUYWtlIGEgbG9vay4KOzt0b2RvOiBBZGQgZnVu
+Y3Rpb25hbGl0eSB0byB2aXNpdCBjaGFuZ2VkIHBvaW50IGluIHRleHQgb3JkZXIsIG5vdCBvbmx5
+IGluCjs7ICAgICAgICBjaHJvbm9sb2dpY2FsIG9yZGVyLiAoTmFhLCBoaWdobGlnaHQtY2hhbmdl
+cy1tb2RlIGRvZXMgdGhhdCkuCjs7dG9kbzogSW52ZXJzZSBpbmRpY2F0aW9uIHRoYXQgYSBjaGFu
+Z2UgaGFzIGJlZW4gc2F2ZWQgb3Igbm90Cjs7dG9kbzogSGlnaGxpZ2h0IHRoZSByYW5nZSBvZiB0
+ZXh0IGludm9sdmVkIGluIHRoZSBsYXN0IGNoYW5nZT8KOzt0b2RvOiBTZWUgc2Vzc2lvbi1qdW1w
+LXRvLWxhc3QtY2hhbmdlIGluIHNlc3Npb24uZWw/Cjs7dG9kbzogVW5oaWRlIGludmlzaWJsZSB0
+ZXh0IChlLmcuIG91dGxpbmUgbW9kZSkgbGlrZSBpc2VhcmNoIGRvLgo7O3RvZG86IFhFbWFjcyBz
+ZXRzIGxhc3QtY29tbWFuZCB0byBgdCcgYWZ0ZXIgYW4gZXJyb3IsIHNvIHlvdSBjYW5ub3QgcmV2
+ZXJzZQo7OyAgICAgICAgYWZ0ZXIgIk5vIGZ1cnRlciBjaGFuZ2UgaW5mbyIuIFNob3VsZCB3ZSBi
+b3RoZXI/Cjs7dG9kbzogVHJ5IGRpc3Rpbmd1aXNoICJObyBmdXJ0aGVyIGNoYW5nZSBpbmZvIiAo
+ZW5kIG9mIHRydW5jYXRlZCB1bmRvIGxpc3QpCjs7ICAgICAgICBhbmQgIk5vIGZ1cnRoZXIgY2hh
+bmdlcyIgKGVuZCBvZiBhIGNvbXBsZXRlIHVuZG8gbGlzdCkuCjs7Cjs7LS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCjs7
+OyBDb2RlOgoKKGRlZnZhciBnbGMtZGVmYXVsdC1zcGFuIDggIipnb3RvLWxhc3QtY2hhbmdlIGRv
+bid0IHZpc2l0IHRoZSBzYW1lIHBvaW50IHR3aWNlLiBnbGMtZGVmYXVsdC1zcGFuIHRlbGxzIGhv
+dyBmYXIgYXJvdW5kIGEgdmlzaXRlZCBwb2ludCBub3QgdG8gdmlzaXQgYWdhaW4uIikKKGRlZnZh
+ciBnbGMtY3VycmVudC1zcGFuIDggIkludGVybmFsIGZvciBnb3RvLWxhc3QtY2hhbmdlLlxuQSBj
+b3B5IG9mIGdsYy1kZWZhdWx0LXNwYW4gb3IgdGhlIEFSRyBwYXNzZWQgdG8gZ290by1sYXN0LWNo
+YW5nZS4iKQooZGVmdmFyIGdsYy1wcm9iZS1kZXB0aCAwICJJbnRlcm5hbCBmb3IgZ290by1sYXN0
+LWNoYW5nZS5cbkl0IGlzIG5vbi16ZXJvIGJldHdlZW4gc3VjY2Vzc2l2ZSBnb3RvLWxhc3QtY2hh
+bmdlLiIpCgo7O3RvZG86IEZpbmQgYmVnaW4gYW5kIGVuZCBvZiBsaW5lLCB0aGVuIHVzZSBpdCBz
+b21ld2hlcmUKCihkZWZ1biBnbGMtY2VudGVyLWVsbGlwc2lzIChzdHIgbWF4bGVuICZvcHRpb25h
+bCBlbGxpcHNpcykKICAiVHJ1bmNhdGUgU1RSSU5HIGluIHRoZSBtaWRkbGUgdG8gbGVuZ3RoIE1B
+WExFTi4KSWYgU1RSSU5HIGlzIG1heCBNQVhMRU4ganVzdCByZXR1cm4gdGhlIHN0cmluZy4KT3B0
+aW9uYWwgdGhpcmQgYXJndW1lbnQgaXMgdGhlIHJlcGxhY2VtZW50LCB3aGljaCBkZWZhdWx0cyB0
+byBcIi4uLlwiLiIKICAoaWYgKDw9IChsZW5ndGggc3RyKSBtYXhsZW4pCiAgICAgIHN0cgogICAg
+OzsgZWxzZQogICAgKGxldCogKChsaXBzaXMgKG9yIGVsbGlwc2lzICIuLi4iKSkKCSAgIChpICgv
+ICgtIG1heGxlbiAobGVuZ3RoIGxpcHNpcykpIDIpKSkKICAgICAgKGNvbmNhdCAoc3Vic3RyaW5n
+IHN0ciAwIGkpCgkgICAgICBsaXBzaXMgCgkgICAgICAoc3Vic3RyaW5nIHN0ciAoLSBpKSkpKSkp
+CgooZGVmdW4gZ2xjLWFkanVzdC1wb3MyIChwb3MgcDEgcDIgYWRqKQogIDs7IEhlbHBlciBmdW5j
+dGlvbiB0byBnbGMtYWRqdXN0LXBvcwogIDs7IHAxLCBwMjogaW50ZXJ2YWwgd2hlcmUgYW4gZWRp
+dCBvY2N1cmVkCiAgOzsgYWRqOiBhbW91bnQgb2YgdGV4dCBhZGRlZCAocG9zaXRpdmUpIG9yIHJl
+bW92ZWQgKG5lZ2F0aXYpIGJ5IHRoZSBlZGl0CiAgOzsgUmV0dXJuIHBvcyBpZiB3ZWxsIGJlZm9y
+ZSBwMSwgb3IgcG9zK2FkaiBpZiB3ZWxsIGFmdGVyIHAyLCBvciBuaWwgaWYgdG9vIGNsb3NlCiAg
+KGNvbmQgKCg8PSBwb3MgKC0gcDEgZ2xjLWN1cnJlbnQtc3BhbikpCgkgcG9zKQoJKCg+IHBvcyAo
+KyBwMiBnbGMtY3VycmVudC1zcGFuKSkKCSAoKyBwb3MgYWRqKSkKCSgoemVyb3AgZ2xjLWN1cnJl
+bnQtc3BhbikKCSBwMSkKCSh0CgkgbmlsKSkpCgooZGVmdW4gZ2xjLWFkanVzdC1wb3MgKHBvcyBl
+KQogICJHaXZlbiBQT1MsIGEgYnVmZmVyIHBvc2l0aW9uIGJlZm9yZSB0aGUgZWRpdCBFLCBjb21w
+dXRlIGFuZCByZXR1cm4KdGhlIFwic2FtZVwiIGJ1ZmZlciBwb3NpdGlvbiBhZnRlciBFIGhhcHBl
+bmVkLgpFeGNlcHRpb246IHJldHVybiBuaWwgaWYgUE9TIGlzIGNsb3NlciB0aGFuIGBnbGMtY3Vy
+cmVudC1zcGFuJyB0byB0aGUgZWRpdCBFLgpcbkluc2VydGlvbiBlZGl0cyBiZWZvcmUgUE9TIHJl
+dHVybnMgYSBsYXJnZXIgdmFsdWUuCkRlbGV0aW9uIGVkaXRzIGJlZm9yZSBQT1MgcmV0dXJucyBh
+IHNtYWxsZXIgdmFsdWUuClxuVGhlIGVkaXQgRSBpcyBhbiBlbnRyeSBmcm9tIHRoZSBgYnVmZmVy
+LXVuZG8tbGlzdCcuIFNlZSBmb3IgZGV0YWlscy4iCiAgKGNvbmQgKChhdG9tIGUpCQkJOyBuaWw9
+PWNtZCBib3VuZGFyeSwgb3IsIG51bT09Y2hhbmdlZCBwb3MKCSBwb3MpCgkoKG51bWJlcnAgKGNh
+ciBlKSkJCTsgKGJlZyAuIGVuZCk9PWluc2VydGlvbgoJIChnbGMtYWRqdXN0LXBvczIgcG9zIChj
+YXIgZSkgKGNhciBlKSAoLSAoY2RyIGUpIChjYXIgZSkpKSkKCSgoc3RyaW5ncCAoY2FyIGUpKQkJ
+OyAoc3RyaW5nIC4gcG9zKT09ZGVsZXRpb24KCSAoZ2xjLWFkanVzdC1wb3MyIHBvcyAoYWJzIChj
+ZHIgZSkpICgrIChhYnMgKGNkciBlKSkgKGxlbmd0aCAoY2FyIGUpKSkgKC0gKGxlbmd0aCAoY2Fy
+IGUpKSkpKQoJKChudWxsIChjYXIgZSkpCQkJOyAobmlsIHByb3AgdmFsIGJlZyAuIGVuZCk9PXBy
+b3AgY2hhbmdlCgkgKGdsYy1hZGp1c3QtcG9zMiBwb3MgKG50aCAzIGUpIChudGhjZHIgNCBlKSAw
+KSkKCSh0CQkJCTsgKG1hcmtlciAuIGRpc3QpPT1tYXJrZXIgbW92ZWQKCSBwb3MpKSkKCjs7IElm
+IHJlY3Vyc2l2ZSBpbiBzdGVhZCBvZiBpdGVyYXRpdmUgKHdoaWxlKSwgaXQgdGVuZHMgdG8gZmls
+bCB0aGUgY2FsbCBzdGFjay4KOzsgKElzbid0IGl0IHRhaWwgb3B0aW1pemVkPykKKGRlZnVuIGds
+Yy1hZGp1c3QtbGlzdCAocikKICAiUiBpcyBsaXN0IG9mIGVkaXQgZW50cmllcyBpbiBjaHJvbm9s
+b2dpY2FsIG9yZGVyLgpQaWNrIHRoZSBwb2ludCBvZiB0aGUgZmlyc3QgZWRpdCBlbnRyeSBhbmQg
+dXBkYXRlIHRoYXQgcG9pbnQgd2l0aAp0aGUgc2Vjb25kLCB0aGlyZCwgZXRjLCBlZGl0IGVudHJp
+ZXMuIFJldHVybiB0aGUgZmluYWwgdXBkYXRlZCBwb2ludCwKb3IgbmlsIGlmIHRoZSBwb2ludCB3
+YXMgY2xvc2VyIHRoYW4gYGdsYy1jdXJyZW50LXNwYW4nIHRvIHNvbWUgZWRpdCBpbiBSLgpcblIg
+aXMgYmFzaWNhbGx5IGEgcmV2ZXJzZWQgc2xpY2UgZnJvbSB0aGUgYnVmZmVyLXVuZG8tbGlzdC4i
+CiAgKGlmIHIKICAgICAgOzsgR2V0IHBvcwogICAgICAobGV0ICgocG9zIChnbGMtZ2V0LXBvcyAo
+Y2FyIHIpKSkpCgkoc2V0cSByIChjZHIgcikpCgk7OyBXYWxrIGJhY2sgaW4gcmV2ZXJzZSBsaXN0
+Cgkod2hpbGUgKGFuZCByIHBvcykKCSAgKHNldHEgcG9zIChnbGMtYWRqdXN0LXBvcyBwb3MgKGNh
+ciByKSkKCQlyIChjZHIgcikpKQoJcG9zKQogICAgOzsgZWxzZQogICAgbmlsKSkKCihkZWZ1biBn
+bGMtZ2V0LXBvcyAoZSkKICAiSWYgRSByZXByZXNlbnRzIGFuIGVkaXQsIHJldHVybiBhIHBvc2l0
+aW9uIHZhbHVlIGluIEUsIHRoZSBwb3NpdGlvbgp3aGVyZSB0aGUgZWRpdCB0b29rIHBsYWNlLiBS
+ZXR1cm4gbmlsIGlmIEUgcmVwcmVzZW50cyBubyByZWFsIGNoYW5nZS4KXG5FIGlzIGFuIGVudHJ5
+IGluIHRoZSBidWZmZXItdW5kby1saXN0LiIKICAoY29uZCAoKG51bWJlcnAgZSkgZSkJCQk7IG51
+bT09Y2hhbmdlZCBwb3NpdGlvbgoJKChhdG9tIGUpIG5pbCkJCQk7IG5pbD09Y29tbWFuZCBib3Vu
+ZGFyeQoJKChudW1iZXJwIChjYXIgZSkpIChjZHIgZSkpCTsgKGJlZyAuIGVuZCk9PWluc2VydGlv
+bgoJKChzdHJpbmdwIChjYXIgZSkpIChhYnMgKGNkciBlKSkpIDsgKHN0cmluZyAuIHBvcyk9PWRl
+bGV0aW9uCgkoKG51bGwgKGNhciBlKSkgKG50aGNkciA0IGUpKQk7IChuaWwgLi4uKT09dGV4dCBw
+cm9wZXJ0eSBjaGFuZ2UKCSgoYXRvbSAoY2FyIGUpKSBuaWwpCQk7ICh0IC4uLik9PWZpbGUgbW9k
+aWZpY2F0aW9uIHRpbWUKCSh0IG5pbCkpKQkJCTsgKG1hcmtlciAuLi4pPT1tYXJrZXIgbW92ZWQK
+CihkZWZ1biBnbGMtZ2V0LWRlc2NyaXB0IChlICZvcHRpb25hbCBuKQogICJJZiBFIHJlcHJlc2Vu
+dHMgYW4gZWRpdCwgcmV0dXJuIGEgc2hvcnQgc3RyaW5nIGRlc2NyaWJpbmcgRS4KUmV0dXJuIG5p
+bCBpZiBFIHJlcHJlc2VudHMgbm8gcmVhbCBjaGFuZ2UuClxuRSBpcyBhbiBlbnRyeSBpbiB0aGUg
+YnVmZmVyLXVuZG8tbGlzdC4iCiAgKGxldCAoKG5uIChvciAoZm9ybWF0ICJULSVkOiAiIG4pICIi
+KSkpCiAgICAoY29uZCAoKG51bWJlcnAgZSkgIk5ldyBwb3NpdGlvbiIpCTsgbnVtPT1jaGFuZ2Vk
+IHBvc2l0aW9uCgkgICgoYXRvbSBlKSBuaWwpCQk7IG5pbD09Y29tbWFuZCBib3VuZGFyeQoJICAo
+KG51bWJlcnAgKGNhciBlKSkJCTsgKGJlZyAuIGVuZCk9PWluc2VydGlvbgoJICAgKGlmIChhbmQg
+biAoPCBuIDIpKQoJICAgICAgIChmb3JtYXQgIiVzSW5zZXJ0ZWQgJWQgY2hhcnMgXCIlc1wiIiBu
+biAoLSAoY2RyIGUpIChjYXIgZSkpIAoJCSAgICAgICAoZ2xjLWNlbnRlci1lbGxpcHNpcyAoYnVm
+ZmVyLXN1YnN0cmluZyAoY2FyIGUpIChjZHIgZSkpIDYwKSkKCSAgICAgOzsgZWxzZQoJICAgICA7
+OyBBbiBvbGRlciBpbnNlcnQuIFRoZSBpbnNlcnRlZCB0ZXh0IGNhbm5vdCBlYXNpbHkgYmUgY29t
+cHV0ZWQuCgkgICAgIDs7IEp1c3Qgc2hvdyB0aGUgY2hhciBjb3VudC4KCSAgICAgKGZvcm1hdCAi
+JXNJbnNlcnRlZCAlZCBjaGFycyIgbm4gKC0gKGNkciBlKSAoY2FyIGUpKSkpKQoJICAoKHN0cmlu
+Z3AgKGNhciBlKSkJCTsgKHN0cmluZyAuIHBvcyk9PWRlbGV0aW9uCgkgICAoZm9ybWF0ICIlc0Rl
+bGV0ZWQgXCIlc1wiIiBubiAoZ2xjLWNlbnRlci1lbGxpcHNpcyAoY2FyIGUpIDYwKSkpCgkgICgo
+bnVsbCAoY2FyIGUpKQkJOyAobmlsIC4uLik9PXRleHQgcHJvcGVydHkgY2hhbmdlCgkgICAoZm9y
+bWF0ICIlc1Byb3BlcnR5IGNoYW5nZSIgbm4pKQoJICAoKGF0b20gKGNhciBlKSkgbmlsKQkJOyAo
+dCAuLi4pPT1maWxlIG1vZGlmaWNhdGlvbiB0aW1lCgkgICh0IG5pbCkpKSkJCQk7IChtYXJrZXIg
+Li4uKT09bWFya2VyIG1vdmVkCgooZGVmdW4gZ2xjLWlzLXBvc2l0aW9uYWJsZSAoZSkKICAiUmV0
+dXJuIG5vbi1uaWwgaWYgRSBpcyBhbiBpbnNlcnRpb24sIGRlbGV0aW9uIG9yIHRleHQgcHJvcGVy
+dHkgY2hhbmdlLgpcbkUgaXMgYW4gZW50cnkgaW4gdGhlIGJ1ZmZlci11bmRvLWxpc3QuIgogIChh
+bmQgKG5vdCAobnVtYmVycCBlKSkgKGdsYy1nZXQtcG9zIGUpKSkKCihkZWZ1biBnbGMtaXMtZmls
+ZXRpbWUgKGUpCiAgIlJldHVybiB0IGlmIEUgaW5kaWNhdGVzIGEgYnVmZmVyIGJlY2FtZSBcIm1v
+ZGlmaWVkXCIsCnRoYXQgaXMsIGl0IHdhcyBwcmV2aW91c2x5IHNhdmVkIG9yIHVuY2hhbmdlZC4g
+TmlsIG90aGVyd2lzZS4iCiAgKGFuZCAobGlzdHAgZSkgKGVxIChjYXIgZSkgdCkpKQoKOzs7IyMj
+YXV0b2xvYWQKKGRlZnVuIGdvdG8tbGFzdC1jaGFuZ2UgKGFyZykKIkdvIHRvIHRoZSBwb2ludCB3
+aGVyZSB0aGUgbGFzdCBlZGl0IHdhcyBtYWRlIGluIHRoZSBjdXJyZW50IGJ1ZmZlci4KUmVwZWF0
+IHRoZSBjb21tYW5kIHRvIGdvIHRvIHRoZSBzZWNvbmQgbGFzdCBlZGl0LCBldGMuClxuVG8gZ28g
+YmFjayB0byBtb3JlIHJlY2VudCBlZGl0LCB0aGUgcmV2ZXJzZSBvZiB0aGlzIGNvbW1hbmQsIHVz
+ZSBcXFtnb3RvLWxhc3QtY2hhbmdlLXJldmVyc2VdCm9yIHByZWNlZGUgdGhpcyBjb21tYW5kIHdp
+dGggXFxbdW5pdmVyc2FsLWFyZ3VtZW50XSAtIChtaW51cykuClxuSXQgZG9lcyBub3QgZ28gdG8g
+dGhlIHNhbWUgcG9pbnQgdHdpY2UgZXZlbiBpZiB0aGVyZSBoYXMgYmVlbiBtYW55IGVkaXRzCnRo
+ZXJlLiBJIGNhbGwgdGhlIG1pbmltYWwgZGlzdGFuY2UgYmV0d2VlbiBkaXN0aW5ndWlzaGFibGUg
+ZWRpdHMgXCJzcGFuXCIuClNldCB2YXJpYWJsZSBgZ2xjLWRlZmF1bHQtc3BhbicgdG8gY29udHJv
+bCBob3cgY2xvc2UgaXMgXCJ0aGUgc2FtZSBwb2ludFwiLgpEZWZhdWx0IHNwYW4gaXMgOC4KVGhl
+IHNwYW4gY2FuIGJlIGNoYW5nZWQgdGVtcG9yYXJpbHkgd2l0aCBcXFt1bml2ZXJzYWwtYXJndW1l
+bnRdIHJpZ2h0IGJlZm9yZSBcXFtnb3RvLWxhc3QtY2hhbmdlXToKXFxbdW5pdmVyc2FsLWFyZ3Vt
+ZW50XSA8TlVNQkVSPiBzZXQgY3VycmVudCBzcGFuIHRvIHRoYXQgbnVtYmVyLApcXFt1bml2ZXJz
+YWwtYXJndW1lbnRdIChubyBudW1iZXIpIG11bHRpcGxpZXMgc3BhbiBieSA0LCBzdGFydGluZyB3
+aXRoIGRlZmF1bHQuClRoZSBzbyBzZXQgc3BhbiByZW1haW5zIHVudGlsIGl0IGlzIGNoYW5nZWQg
+YWdhaW4gd2l0aCBcXFt1bml2ZXJzYWwtYXJndW1lbnRdLCBvciB0aGUgY29uc2VjdXRpdmUKcmVw
+ZXRpdGlvbiBvZiB0aGlzIGNvbW1hbmQgaXMgZW5kZWQgYnkgYW55IG90aGVyIGNvbW1hbmQuClxu
+V2hlbiBzcGFuIGlzIHplcm8gKGkuZS4gXFxbdW5pdmVyc2FsLWFyZ3VtZW50XSAwKSBzdWJzZXF1
+ZW50IFxcW2dvdG8tbGFzdC1jaGFuZ2VdIHZpc2l0cyBlYWNoIGFuZApldmVyeSBwb2ludCBvZiBl
+ZGl0IGFuZCBhIG1lc3NhZ2Ugc2hvd3Mgd2hhdCBjaGFuZ2Ugd2FzIG1hZGUgdGhlcmUuCkluIHRo
+aXMgY2FzZSBpdCBtYXkgZ28gdG8gdGhlIHNhbWUgcG9pbnQgdHdpY2UuClxuVGhpcyBjb21tYW5k
+IHVzZXMgdW5kbyBpbmZvcm1hdGlvbi4gSWYgdW5kbyBpcyBkaXNhYmxlZCwgc28gaXMgdGhpcyBj
+b21tYW5kLgpBdCB0aW1lcywgd2hlbiB1bmRvIGluZm9ybWF0aW9uIGJlY29tZXMgdG9vIGxhcmdl
+LCB0aGUgb2xkZXN0IGluZm9ybWF0aW9uIGlzCmRpc2NhcmRlZC4gU2VlIHZhcmlhYmxlIGB1bmRv
+LWxpbWl0Jy4iCiAgKGludGVyYWN0aXZlICJQIikKICAoY29uZCAoKG5vdCAoZXEgdGhpcy1jb21t
+YW5kIGxhc3QtY29tbWFuZCkpCgkgOzsgU3RhcnQgYSBnbGMgc2VxdWVuY2UKCSA7OyBEb24ndCBn
+byB0byBjdXJyZW50IHBvaW50IGlmIGxhc3QgY29tbWFuZCB3YXMgYW4gb2J2aW91cyBlZGl0Cgkg
+OzsgKHlhbmsgb3Igc2VsZi1pbnNlcnQsIGJ1dCBub3Qga2lsbC1yZWdpb24pLiBNYWtlcyBpdCBl
+YXNpZXIgdG8KCSA7OyBqdW1wIGJhY2sgYW5kIGZvcnRoIHdoZW4gY29weWluZyBzZWxlY2VkIGxp
+bmVzLgoJIChzZXRxIGdsYy1wcm9iZS1kZXB0aCAoaWYgKG1lbXEgbGFzdC1jb21tYW5kICcoeWFu
+ayBzZWxmLWluc2VydC1jb21tYW5kKSkgMSAwKQoJICAgICAgIGdsYy1kaXJlY3Rpb24gMQoJICAg
+ICAgIGdsYy1jdXJyZW50LXNwYW4gZ2xjLWRlZmF1bHQtc3BhbikKCSAoaWYgKDwgKHByZWZpeC1u
+dW1lcmljLXZhbHVlIGFyZykgMCkKCSAgICAgKGVycm9yICJOZWdhdGl2ZSBhcmc6IENhbm5vdCBy
+ZXZlcnNlIGFzIHRoZSBmaXJzdCBvcGVyYXRpb24iKSkpKQogIChjb25kICgobnVsbCBidWZmZXIt
+dW5kby1saXN0KQoJIChlcnJvciAiQnVmZmVyIGhhcyBub3QgYmVlbiBjaGFuZ2VkIikpCgkoKGVx
+IGJ1ZmZlci11bmRvLWxpc3QgdCkKCSAoZXJyb3IgIk5vIGNoYW5nZSBpbmZvICh1bmRvIGlzIGRp
+c2FibGVkKSIpKSkKICAoY29uZCAoKG51bWJlcnAgYXJnKQkJCTsgTnVtZXJpYyBhcmcgc2V0cyBz
+cGFuCgkgKHNldHEgZ2xjLWN1cnJlbnQtc3BhbiAoYWJzIGFyZykpKQoJKChjb25zcCBhcmcpCQkJ
+OyBDLXUncyBtdWx0aXBseSBwcmV2aW91cyBzcGFuIGJ5IDQKCSAoc2V0cSBnbGMtY3VycmVudC1z
+cGFuICgqIChhYnMgKGNhciBhcmcpKSBnbGMtZGVmYXVsdC1zcGFuKSkKCSAobWVzc2FnZSAiQ3Vy
+cmVudCBzcGFuIGlzICVkIGNoYXJzIiBnbGMtY3VycmVudC1zcGFuKSkpIDt0b2RvOiBrZWVwIG1l
+c3NhZ2Ugd2l0aCAid2FpdGluZyIgYW5kICJpcyBzYXZlZCIKICAoY29uZCAoKDwgKHByZWZpeC1u
+dW1lcmljLXZhbHVlIGFyZykgMCkKCSAoc2V0cSBnbGMtZGlyZWN0aW9uIC0xKSkKCSh0CgkgKHNl
+dHEgZ2xjLWRpcmVjdGlvbiAxKSkpCiAgKGxldCAocmV2CQkJCTsgUmV2ZXJzZWQgKGFuZCBmaWx0
+ZXJlZCkgdW5kbyBsaXN0Cglwb3MJCQkJOyBUaGUgcG9zIHdlIGxvb2sgZm9yLCBuaWwgdW50aWwg
+Zm91bmQKCShuIDApCQkJCTsgU3RlcHMgaW4gdW5kbyBsaXN0IChsZW5ndGggb2YgJ3JldicpCgko
+bCBidWZmZXItdW5kby1saXN0KSAKCShwYXNzZWQtc2F2ZS1lbnRyeSAobm90IChidWZmZXItbW9k
+aWZpZWQtcCkpKQoJKG5ldy1wcm9iZS1kZXB0aCBnbGMtcHJvYmUtZGVwdGgpKQogICAgOzsgV2Fs
+ayBiYWNrIGFuZCBmb3J0aCBpbiB0aGUgYnVmZmVyLXVuZG8tbGlzdCwgZWFjaCB0aW1lIG9uZSBz
+dGVwIGRlZXBlciwKICAgIDs7IHVudGlsIHdlIGNhbiB3YWxrIGJhY2sgdGhlIHdob2xlIGxpc3Qg
+d2l0aCBhICdwb3MnIHRoYXQgaXMgbm90IGNvbWluZwogICAgOzsgdG9vIGNsb3NlIHRvIGFub3Ro
+ZXIgZWRpdC4KICAgICh3aGlsZSAobnVsbCBwb3MpCiAgICAgIChzZXRxIG5ldy1wcm9iZS1kZXB0
+aCAoKyBuZXctcHJvYmUtZGVwdGggZ2xjLWRpcmVjdGlvbikpCiAgICAgIChpZiAoPCBnbGMtZGly
+ZWN0aW9uIDApCgkgIChzZXRxIHJldiAoKQoJCW4gMAoJCWwgYnVmZmVyLXVuZG8tbGlzdAoJCXBh
+c3NlZC1zYXZlLWVudHJ5IChub3QgKGJ1ZmZlci1tb2RpZmllZC1wKSkpKQogICAgICAoaWYgKDwg
+bmV3LXByb2JlLWRlcHRoIDEpCgkgIChlcnJvciAiTm8gbGF0ZXIgY2hhbmdlIGluZm8iKSkKICAg
+ICAgKGlmICg+IG4gMTUwKQoJICAobWVzc2FnZSAid29ya2luZy4uLiIpKQogICAgICA7OyBXYWxr
+IGZvcndhcmQgaW4gYnVmZmVyLXVuZG8tbGlzdCwgZ2xjLXByb2JlLWRlcHRoIHN0ZXBzLgogICAg
+ICA7OyBCdWlsZCByZXZlcnNlIGxpc3QgYWxvbmcgdGhlIHdheQogICAgICAod2hpbGUgKDwgbiBu
+ZXctcHJvYmUtZGVwdGgpCgkoY29uZCAoKG51bGwgbCkKCSAgICAgICA7KHNldHEgdGhpcy1jb21t
+YW5kIHQpCTsgRGlzcnVwdCByZXBlYXQgc2VxdWVuY2UKCSAgICAgICAoZXJyb3IgIk5vIGZ1cnRo
+ZXIgY2hhbmdlIGluZm8iKSkKCSAgICAgICgoZ2xjLWlzLXBvc2l0aW9uYWJsZSAoY2FyIGwpKQoJ
+ICAgICAgIChzZXRxIG4gKDErIG4pCgkJICAgICByZXYgKGNvbnMgKGNhciBsKSByZXYpKSkKCSAg
+ICAgICgob3IgcGFzc2VkLXNhdmUtZW50cnkgKGdsYy1pcy1maWxldGltZSAoY2FyIGwpKSkKCSAg
+ICAgICAoc2V0cSBwYXNzZWQtc2F2ZS1lbnRyeSB0KSkpCgkoc2V0cSBsIChjZHIgbCkpKQogICAg
+ICA7OyBXYWxrIGJhY2sgaW4gcmV2ZXJzZSBsaXN0LCBmcm9tIG9sZGVyIHRvIG5ld2VyIGVkaXRz
+LgogICAgICA7OyBBZGp1c3RpbmcgcG9zIGFsb25nIHRoZSB3YXkuCiAgICAgIChzZXRxIHBvcyAo
+Z2xjLWFkanVzdC1saXN0IHJldikpKQogICAgOzsgRm91bmQgYSBwbGFjZSBub3QgcHJldmlvdXNs
+eSB2aXNpdGVkLCBpbiAncG9zJy4KICAgIDs7IChBbiBlcnJvciBoYXZlIGJlZW4gaXNzdWVkIGlm
+IG5vdGhpbmcgKG1vcmUpIGZvdW5kLikKICAgIChpZiAoPiBuIDE1MCkKCShtZXNzYWdlIG5pbCkp
+CQkJOyByZW1vdmUgbWVzc2FnZSAid29ya2luZy4uLiIKICAgIChpZiAoYW5kICg9IGdsYy1jdXJy
+ZW50LXNwYW4gMCkgKGdsYy1nZXQtZGVzY3JpcHQgKGNhciByZXYpIG4pKQoJKG1lc3NhZ2UgIiVz
+IiAoZ2xjLWdldC1kZXNjcmlwdCAoY2FyIHJldikgbikpCiAgICAgIDs7IGVsc2UKICAgICAgKGlm
+IHBhc3NlZC1zYXZlLWVudHJ5CgkgIChtZXNzYWdlICIoVGhpcyBjaGFuZ2UgaXMgc2F2ZWQpIikp
+KQogICAgKHNldHEgZ2xjLXByb2JlLWRlcHRoIG5ldy1wcm9iZS1kZXB0aCkKICAgIChnb3RvLWNo
+YXIgcG9zKSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gZ290by1sYXN0LWNoYW5nZS1yZXZlcnNl
+IChhcmcpCiAgIkdvIGJhY2sgdG8gbW9yZSByZWNlbnQgY2hhbmdlcyBhZnRlciBcXFtnb3RvLWxh
+c3QtY2hhbmdlXSBoYXZlIGJlZW4gdXNlZC4KU2VlIGBnb3RvLWxhc3QtY2hhbmdlJyBmb3IgdXNl
+IG9mIHByZWZpeCBhcmd1bWVudC4iCiAgKGludGVyYWN0aXZlICJQIikKICA7OyBOZWdhdGUgYXJn
+LCBhbGwga2luZHMKICAoY29uZCAoKGVxIGFyZyBuaWwpICAoc2V0cSBhcmcgJy0pKQoJKChlcSBh
+cmcgJy0pICAgKHNldHEgYXJnIG5pbCkpCgkoKGxpc3RwIGFyZykgICAoc2V0cSBhcmcgKGxpc3Qg
+KC0gKGNhciBhcmcpKSkpKQoJKHQgKHNldHEgYXJnICAgKC0gYXJnKSkpKQogIDs7IE1ha2UgJ2dv
+dG8tbGFzdC1jaGFuZ2UtcmV2ZXJzZScgbG9vayBsaWtlICdnb3RvLWxhc3QtY2hhbmdlJwogIChj
+b25kICgoZXEgbGFzdC1jb21tYW5kIHRoaXMtY29tbWFuZCkKCSAoc2V0cSBsYXN0LWNvbW1hbmQg
+J2dvdG8tbGFzdC1jaGFuZ2UpKSkKICAoc2V0cSB0aGlzLWNvbW1hbmQgJ2dvdG8tbGFzdC1jaGFu
+Z2UpCiAgOzsgQ2FsbCAnZ290by1sYXN0LWNoYW5nZScgdG8gZG8gdGhlIGpvYgogIChnb3RvLWxh
+c3QtY2hhbmdlIGFyZykpCgoocHJvdmlkZSAnZ290by1jaGcpCgo7OzsgZ290by1jaGcuZWwgZW5k
+cyBoZXJlCg==
