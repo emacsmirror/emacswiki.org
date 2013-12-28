@@ -70,17 +70,18 @@
   :type 'boolean)
 
 (defcustom gold-ratio-scroll-screen-ratio 1.618
-  "forward or backward (frame-height)/this-value lines "
+  "forward or backward (window-text-height)/this-value lines "
   :group 'gold-ratio-scroll-screen
   :type 'number)
 
 (defcustom gold-ratio-scroll-highlight-flag 'both
   "highlight or not before or after scroll"
   :group 'gold-ratio-scroll-screen
-  :type '(choice (const :tag "do not highlight" nil)
-                 (const :tag "highlight line before scroll" 'before)
-                 (const :tag "highlight line after scroll" 'after)
-                 (const :tag "highlight line after scroll" 'both)))
+  :type '(choice
+          (const :tag "do not highlight" nil)
+          (const :tag "highlight line before scroll" 'before)
+          (const :tag "highlight line after scroll" 'after)
+          (const :tag "highlight line both before or after scroll" 'both)))
 
 (defcustom gold-ratio-scroll-highlight-delay (cons 0.15 0.1)
   "*How long to highlight the line .
@@ -124,7 +125,7 @@
   (let ((old-marker gold-ratio-scroll-screen-previous-point)
         (bol-before-jump (point-at-bol))
         (eol-before-jump (1+ (point-at-eol)))
-        (scroll-line-cnt (round (/ (frame-height) gold-ratio-scroll-screen-ratio))))
+        (scroll-line-cnt (round (/ (window-text-height) gold-ratio-scroll-screen-ratio))))
     (setq gold-ratio-scroll-screen-previous-point (point-marker))
     (if (and (not (and (equal (current-buffer) (marker-buffer old-marker))
                        (equal (marker-position old-marker) (point))))
@@ -135,7 +136,7 @@
                (equal (point-max) (point)))
       (dired-previous-line 1))
     (when gold-ratio-scroll-recenter
-      (recenter (+ scroll-line-cnt (/ (- (frame-height) scroll-line-cnt) 2))))
+      (recenter (+ scroll-line-cnt (/ (- (window-text-height) scroll-line-cnt) 2))))
     (when (member gold-ratio-scroll-highlight-flag '(before both))
       (gold-ratio-scroll-highlight
        bol-before-jump eol-before-jump
@@ -153,7 +154,7 @@
   (let ((old-marker gold-ratio-scroll-screen-previous-point)
         (bol-before-jump (point-at-bol))
         (eol-before-jump (1+ (point-at-eol)))
-        (scroll-line-cnt (round (/ (frame-height) gold-ratio-scroll-screen-ratio))))
+        (scroll-line-cnt (round (/ (window-text-height) gold-ratio-scroll-screen-ratio))))
     (setq gold-ratio-scroll-screen-previous-point (point-marker))
     (if (and  (not (and (equal (current-buffer) (marker-buffer old-marker))
                         (equal (marker-position old-marker) (point))))
@@ -164,7 +165,7 @@
                (equal (point-min) (point)))
       (dired-next-line 2))
     (when gold-ratio-scroll-recenter
-      (recenter (/ (- (frame-height) scroll-line-cnt) 2)))
+      (recenter (/ (- (window-text-height) scroll-line-cnt) 2)))
     (when (member gold-ratio-scroll-highlight-flag '(before both))
       (gold-ratio-scroll-highlight
        bol-before-jump eol-before-jump
