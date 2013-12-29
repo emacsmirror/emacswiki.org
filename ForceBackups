@@ -37,8 +37,8 @@ Next, we configure Emacs to handle multiple backups:
 Finally, we tell emacs to make a backup on each save, not just the first, by
 unsetting 'buffer-backed-up'. We make two kinds of backups:
 per-session backups, once on the first save of each emacs session, and
-per-save backups, once on every save.  The backups go in different
-places and Emacs creates the backup dirs automatically if they don't
+per-save backups, once on every save.  The [BackupDirectory backups go in different
+places] and Emacs creates the backup dirs automatically if they don't
 exist:
 
   ;; Default and per-save backups go here:
