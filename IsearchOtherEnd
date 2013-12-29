@@ -19,7 +19,7 @@ activating it, and does so only if the mark is not already active."
   (defun my-goto-match-beginning ()
     (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
 
-: `isearch-mode-end-hook-quit' is only non-nil if the user quits the search. In this case we do nothing and get placed back at the starting point. 
+: `isearch-mode-end-hook-quit' is only non-nil if the user quits the search. In this case we do nothing and get placed back at the starting point. -- steckerhalter
 
 [new]
 With an incremental search, it actually seems fairly natural to end up with point at the end of the search term; after all, you can see it progressing along the search term with each character that you enter. That's not the case, however, for non-incremental search (search-forward, bound to C-s RET). So is it possible to do a similar thing like this for non-incremental search? I've only managed to do it using a wrapper so far:
