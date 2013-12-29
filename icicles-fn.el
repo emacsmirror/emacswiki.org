@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Dec 26 09:30:48 2013 (-0800)
+;; Last-Updated: Sun Dec 29 15:26:27 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14122
+;;     Update #: 14146
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -127,8 +127,9 @@
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
-;;    `icicle-local-keys-first-p', `icicle-make-plain-predicate',
-;;    `icicle-major-mode-name-less-p', `icicle-make-face-candidate',
+;;    `icicle-local-keys-first-p', `icicle-make-char-candidate',
+;;    `icicle-make-face-candidate', `icicle-make-plain-predicate',
+;;    `icicle-major-mode-name-less-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
@@ -1941,7 +1942,7 @@ before you call this function."
 
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
   (defun icicle-read-char-maybe-completing (&optional prompt names inherit-input-method seconds)
-    "Read a char with PROMPT, possibly completing against character NAMES.
+    "Read a char with PROMPT, possibly completing against NAMES.
 If the character read is `C-q' then read another character.
 Otherwise, if the character read is a completing key (e.g. `TAB'),
 then complete.
@@ -1983,6 +1984,30 @@ CHARS defaults to the value of `icicle-read-char-history'."
 ;; 5. See doc string for the rest.
 ;;
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
+
+  (defun icicle-make-char-candidate (name.char)
+    "Return multi-completion candidate for NAME.CHAR.
+NAME.CHAR has the form of an element of `ucs-names':
+* The car is the character name.
+* The cdr is the character itself.
+
+The multi-completion candidate is a cons whose cdr is still the
+character, but whose car is a list of the character name and a string
+representation of the character.
+
+Properties `help-echo' and `icicle-mode-line-help' are put on the
+string, showing the char name and code point (in hex, octal, and
+decimal)."
+    (and (not (string= "" (car name.char)))
+         ;; $$$$$$ Maybe make this optional?
+         ;; (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
+         (let* ((name  (copy-sequence (car name.char)))
+                (char  (cdr name.char)))
+           (icicle-candidate-short-help (format "Char: %-10cCode Point: x%X, o%o, %d" char char char char) name)
+           (cons (list name (format "%c" char)) char))))
+
+
+
   (unless (fboundp 'icicle-ORIG-read-char-by-name)
     (defalias 'icicle-ORIG-read-char-by-name (symbol-function 'read-char-by-name)))
 
@@ -1995,12 +2020,17 @@ You can use completion against the Unicode name of the character.
 
 In Icicle mode:
 
-* The character itself is displayed next to its name, even though it
-  is not part of the completion candidate.  WYSIWYG.
+* The character itself is displayed next to its name - WYSIWYG.
+
+* In fact, the completion candidate is a multi-completion, whose first
+  part is the char name and whose second part is the character.
+  This means that you can alternatively type the character to see what
+  its Unicode name is.
 
 * When you cycle among candidates, the current character and its
   Unicode code point are shown in the mode line (provided user option
-  `icicle-help-in-mode-line-delay' is greater than zero.)
+  `icicle-help-in-mode-line-delay' is greater than zero).  The code
+  point is shown in hexadecimal, octal, and decimal notation.
 
 If you use a dedicated `*Completions*' frame, then the font used in
 `*Completions*' is the same as the frame from which you invoked
@@ -2018,36 +2048,33 @@ Non-nil optional arg NAMES is an alist of names to use in place of the
 value returned by `icicle-ucs-names'.  It must have the same form as
 such a return value: (CHAR-NAME . CHAR-CODE)."
     (unless names  (setq names  (icicle-ucs-names)))
-    (dolist (name.char  names)
-      ;; $$$$$$  (when (and (not (string= "" (car name.char)))
-      ;;                    ;; $$$$$$ Maybe make this optional?
-      ;;                    (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
-      (unless (string= "" (car name.char))
-        ;; Display char itself after the name, in `*Completions*'.
-        (let* ((name         (car name.char))
-               (disp-string  (concat name "\t"
-                                     (propertize (string (cdr name.char)) 'face 'icicle-extra-candidate)))
-               (symb         (intern name)))
-          (put symb 'icicle-display-string disp-string)
-          (icicle-candidate-short-help (format "Char: %-10cCode Point: %d" (cdr name.char) (cdr name.char))
-                                       disp-string)
-          (put-text-property 0 1 'icicle-orig-cand name disp-string))))
-    (let* ((new-prompt              (copy-sequence prompt))
-           (IGNORE-1                (put-text-property 0 1 'icicle-fancy-candidates t new-prompt))
-           (completion-ignore-case  t)
-           (input                   (completing-read
-                                     new-prompt
-                                     `(lambda (string pred action)
-                                       (if (eq action 'metadata)
-                                           '(metadata (category . unicode-name))
-                                         (complete-with-action action ',names string pred)))))
+    (setq names  (delq nil (mapcar #'icicle-make-char-candidate names)))
+    (let* ((new-prompt                             (copy-sequence prompt))
+           (enable-recursive-minibuffers           t)
+           (completion-ignore-case                 t)
+           (icicle-show-multi-completion-flag      t) ; Override user setting.
+           (icicle-multi-completing-p              t)
+           (icicle-list-use-nth-parts              '(1))
+           (icicle-transform-before-sort-p         t)
+           (icicle-list-join-string                "\t")
+           (icicle-candidate-properties-alist      '((2 (face icicle-candidate-part))))
+           (icicle-whole-candidate-as-text-prop-p  t)
+           (mctized-cands                          (car (icicle-mctize-all names nil)))
+           (input                                  (completing-read
+                                                    new-prompt
+                                                    `(lambda (string pred action)
+                                                      (if (eq action 'metadata)
+                                                          '(metadata (category . unicode-name))
+                                                        (complete-with-action
+                                                         action ',mctized-cands string pred)))))
            chr)
-      (let ((orig-cand  (get-text-property 0 'icicle-orig-cand input)))
-        (when orig-cand  (setq input  orig-cand)))
-      (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
-                       ((string-match-p "^#" input)                  (read input))
-                       (t                                            (cdr (assoc-string input
-                                                                                        names t)))))
+      (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)
+                        (string-to-number input 16))
+                       ((string-match-p "^#" input)
+                        (read input))
+                       (t
+                        (cddr (assoc-string input mctized-cands t)))))
+      (unless (characterp chr) (error "Invalid character: `%s'" chr))
       (add-to-list 'icicle-read-char-history chr)
       chr))
 
