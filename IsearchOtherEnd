@@ -14,6 +14,13 @@ activating it, and does so only if the mark is not already active."
 
 : Unfortunately, if you end via `C-g', and you use such a hook, the mark is ''not'' set at the search start, so you cannot get back there via `C-x C-x'. Too bad. (Ending the search with `RET' or something else does set the mark correctly.) -- DrewAdams
 
+[new] I was not amused by this behavior too so I checked and found a solution where C-g will still work as expected:
+
+  (defun my-goto-match-beginning ()
+    (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
+
+: `isearch-mode-end-hook-quit' is only non-nil if when the user quits the search. In this case we do nothing and get placed back at the starting point. 
+
 [new]
 With an incremental search, it actually seems fairly natural to end up with point at the end of the search term; after all, you can see it progressing along the search term with each character that you enter. That's not the case, however, for non-incremental search (search-forward, bound to C-s RET). So is it possible to do a similar thing like this for non-incremental search? I've only managed to do it using a wrapper so far:
 
