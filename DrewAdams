@@ -680,10 +680,11 @@ cheers, towi.
 Done.  See [[option]] '''`col-highlight-show-only''''.  Thanks for the suggestion -- DrewAdams
 
 [new:TN:2013-12-29 12:07 MET]
-Could you have a look at http://stackoverflow.com/questions/20800710/turning-off-indent-tabs-mode-in-emacs-causes-malfunction-in-move-to-column-when/20820335#20820335
+Please, could you have a look at http://stackoverflow.com/questions/20800710/turning-off-indent-tabs-mode-in-emacs-causes-malfunction-in-move-to-column-when/20820335#20820335
 ?
 Do you know the right interpretation of the features of `move-to-column` or do you know someone who knows and is willing to answer/check my answer?
-
+Thanks in advance,
+Tobias Zawada
 ----
 
 Libraries referenced here: 
