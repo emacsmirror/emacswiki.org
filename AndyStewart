@@ -2,19 +2,16 @@
 
 Hi all,
 
-My name is Andy Stewart and I am a programmer living and working in China. Please excuse my English as it is not always the best! Feel free to correct any glaring errors you encounter.
+My name is Andy Stewart (My Chinese name: 王勇) and I am a programmer living and working in China.
+I am now developing leading operating system [http://www.linuxdeepin.com LinuxDeepin]
 
 I've used Gnu Emacs since 2007, I love it and use it for pretty much everything (programming, irc, music, file-manager, mail, newsgroup, wiki, notes... etc.). Almost anything that you can imagine.
-
-I use Debian as my main Operating System.
 
 I have signed the copyright document for the FSF so my contributions may be distributed accordingly.
 Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
-==HELP!==
-: Have many people ask me for add new feature or fix bug of my stuff, but i haven't time maintain those code anymore.
-: I'm looking for Emacs hacker take over my extensions.
-: If you interested my extension and want maintain it, please send mail to me, thank you very much!  -- AndyStewart
+==Get git version==
+Many friends ask me about my emacs code, now you can free git it from [https://github.com/linuxdeepin/deepin-emacs DeepinEmacs]
 
 ==Packages==
 * Standalone packages.
@@ -350,7 +347,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 : IRC: [::ManateeLazyCat].
 
-: Mail: lazycat dot manatee at gmail dot com
+: Mail: lazycat dot manatee at gmail dot com 
 
 ==Acknowledgments==
 : Thanks to RichardRiley correct my English, advices and many other help. 
