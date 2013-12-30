@@ -1143,14 +1143,42 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 [:LatestEntry]
 <pre>
-Quick question.  What is the equivalent key and feature for "M-r" (search history by regexp) in Vanilla Emacs for Icicles?
-For smooth transition from vanilla Emacs, I may hope that this or equivalent feature is available by default key bindings...
+
 </pre>
 
 ----
 <pre>
 
 </pre>
+
+Quick question.  What is the equivalent key and feature for `M-r' (search history by regexp) in Vanilla Emacs for Icicles?
+For smooth transition from vanilla Emacs, I may hope that this or equivalent feature is available by default key bindings... -- [[golconda]]
+
+[new:DrewAdams:2013-12-30 15:23 UTC]
+See [[Icicles - History Enhancements]], including [[Icicles - History Enhancements#InsertPreviousInputs|Insert Previous Inputs]].  In particular:
+
+: In vanilla Emacs, the history lists are never shown as such; you can access previous
+inputs only one at a time, in order (with `M-p').  In vanilla
+Emacs, you can use a [[regexp]] to search the history list (via
+`M-r' and `M-s'), but the regexp matching is not dynamic, and the first
+match found is the only one you get.
+In ''Icicle'' mode, `M-r' and `M-s' are not available for matching a
+history item --- use `M-o' instead.
+
+
+
+<pre>
+
+</pre>
+
+----
+<pre>
+
+</pre>
+
+
+
+
 I've experienced some difficulties in using icicles with cua.  Huge thanks to Drew for helping me understand and work around this issue.  Specificially, when the region is active in the minibuffer, and when cua-mode is enabled, self-inserting keys are bound to cua-replace-region, and the DEL key is bound to cua-delete-region.  The region can become active when cycling through completions.  This causes rather odd behaviour where you can only delete part of the text in the minibuffer, and cannot add new text to the minibuffer after cycling.  
 A workaround is to set `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate' to the same value, so that the region doesn't become active in the minibuffer.  
 See also [[IciclesIssuesClosed#cua-mode]] for more discussion on cua-mode interactions.
