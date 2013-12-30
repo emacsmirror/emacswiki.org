@@ -119,7 +119,7 @@ I really like this idea, because it's dumb to make me hit C-x C-s all the time b
 
 === Focus Hooks ===
 
-New hooks for gain/loss of focus were added in Gnu Emacs 24.4: <code>focus-in-hook</code> and <code>focus-out-hook.</code>
+New hooks for gain/loss of focus were added in Gnu Emacs 24.4: <code>focus-in-hook</code> and <code>focus-out-hook</code>.
 
 If you are running a version of Emacs with these hooks, you can add
 
