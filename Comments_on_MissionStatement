@@ -1,0 +1,9 @@
+The section "What RMS would not like to see" is hard to follow. It would be clearer (easier to read) with a bit of typography for each participant. Example:
+::   Mail by RMS (Roman type), quoting Alex ([i]Italic type[/i])\\
+or\\
+::   Mail by RMS (black), quoting Alex ([color=green]green[/color])
+
+I'd fix it myself, but I'm not the author.
+
+-- epement 2013-12-30 18:54 UTC
+
