@@ -241,6 +241,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 
 * Programming:
 
+** Lisp:init-jedit.el -- How to configure [http://tkf.github.io/emacs-jedi/ jedi] to make [[AutoComplete]] works perfect to Python.
+
 ** Lisp:init-helm.el -- Configure for [[Helm]].
 
 ** Lisp:init-ide.el -- Some configuration for IDE.
