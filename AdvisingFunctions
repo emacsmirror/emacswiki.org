@@ -32,7 +32,7 @@ function definition of an advised function.
 	  (progn
 	    (message "advice-bar interactive: %s" (interactive-p))
 	    (sit-for 1)
-	    (call-interactively 'ad-Orig-bar))
+	    (call-interactively (ad-get-orig-definition 'bar)))
 	ad-do-it))
 
 ----
