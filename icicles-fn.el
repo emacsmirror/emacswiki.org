@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Dec 30 14:00:11 2013 (-0800)
+;; Last-Updated: Mon Dec 30 14:46:06 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14170
+;;     Update #: 14173
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2085,13 +2085,14 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
                                       (code                       (icicle-transform-multi-completion
                                                                    completion))
                                       ;; To have property `icicle-whole-candidate', COMPLETION must be complete.
-                                      (char                       (caddr
+                                      (char                       (cdr
                                                                    (get-text-property
-                                                                    0 'icicle-whole-candidate completion))))
+                                                                    0 'icicle-whole-candidate completion)))
+                                      (case-fold-search           t))
                                  (and (or (and name  (string-match-p input name))
                                           (and code  (string-match-p input code)))
                                       char)))))))
-      (unless (characterp chr) (error "Invalid character: `%s'" chr))
+      (unless (characterp chr) (error "Invalid character: `%s'" input))
       (add-to-list 'icicle-read-char-history chr)
       chr))
 
