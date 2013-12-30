@@ -1143,7 +1143,8 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 [:LatestEntry]
 <pre>
-
+Quick question.  What is the equivalent key and feature for "M-r" (search history by regexp) in Vanilla Emacs for Icicles?
+For smooth transition from vanilla Emacs, I may hope that this or equivalent feature is available by default key bindings...
 </pre>
 
 ----
