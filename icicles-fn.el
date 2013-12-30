@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Dec 29 22:13:59 2013 (-0800)
+;; Last-Updated: Mon Dec 30 14:00:11 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14154
+;;     Update #: 14170
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1992,19 +1992,20 @@ NAME.CHAR has the form of an element of `ucs-names':
 * The cdr is the character itself.
 
 The multi-completion candidate is a cons whose cdr is still the
-character, but whose car is a list of the character name and a string
-representation of the character.
+character, but whose car is a list (NAME CODE SCHAR), where:
+* CODE is a string representation of the Unicode code point of CHAR,
+  as a hexidecimal numeral
+* SCHAR is a string representation of CHAR
 
-Properties `help-echo' and `icicle-mode-line-help' are put on the
-string, showing the char name and code point (in hex, octal, and
-decimal)."
+Properties `help-echo' and `icicle-mode-line-help' are put on NAME,
+showing both NAME and the code point (in hex, octal, and decimal)."
     (and (not (string= "" (car name.char)))
          ;; $$$$$$ Maybe make this optional?
          ;; (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
          (let* ((name  (copy-sequence (car name.char)))
                 (char  (cdr name.char)))
            (icicle-candidate-short-help (format "Char: %-10cCode Point: x%X, o%o, %d" char char char char) name)
-           (cons (list name (format "%c" char)) char))))
+           (cons (list name (format "%X" char) (format "%c" char)) char))))
 
 
 
@@ -2020,15 +2021,18 @@ You can use completion against the Unicode name of the character.
 
 In Icicle mode:
 
-* The character itself is displayed next to its name - WYSIWYG.
+* The Unicode code point of the char and the char itself appear next
+  to the char name in `*Completions*' - WYSIWYG.
 
-* In fact, the completion candidate is a multi-completion, whose first
-  part is the char name and whose second part is the character.
-  This means that you can alternatively type the character to see what
-  its Unicode name is.
+* The completion candidate is a multi-completion.  Its first part is
+  the char name.  Its second part is the code point, as a hexadecimal
+  numeral.  Its third part is the character.  This means that you can
+  alternatively type the code point or the character to see what the
+  name is.  You can complete the name or the code point, or both.
 
-* When you cycle among candidates, the current character and its
-  Unicode code point are shown in the mode line (provided user option
+* When you cycle among candidates, regardless of whether buffer
+  `*Completions*' is shown, the current character and its code point
+  are shown in the mode line (provided user option
   `icicle-help-in-mode-line-delay' is greater than zero).  The code
   point is shown in hexadecimal, octal, and decimal notation.
 
@@ -2039,8 +2043,8 @@ completion.
 If you use library `doremi-frm.el' then you can increase the font size
 for `*Completions*' dynamically using `C-x -'.
 
-As an alternative to completing the Unicode name, you can input a
-number for the Unicode code point: a hexidecimal number or a number in
+As an alternative to completing the Unicode name or code point, you
+can just input the code point as a hexidecimal numeral or a number in
 hash notation: #o21430 for octal, #x2318 for hex, or #10r8984 for
 decimal.
 
@@ -2057,28 +2061,36 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
            (icicle-list-use-nth-parts              '(1))
            (icicle-transform-before-sort-p         t)
            (icicle-list-join-string                "\t")
-           (icicle-candidate-properties-alist      '((2 (face icicle-candidate-part))))
+           (icicle-candidate-properties-alist      '((3 (face icicle-candidate-part))))
            (icicle-whole-candidate-as-text-prop-p  t)
            (mctized-cands                          (car (icicle-mctize-all names nil)))
-           (colletion-fn                           `(lambda (string pred action)
+           (collection-fn                          `(lambda (string pred action)
                                                      (if (eq action 'metadata)
                                                          '(metadata (category . unicode-name))
                                                        (complete-with-action
                                                         action ',mctized-cands string pred))))
-           (input                                  (completing-read new-prompt colletion-fn))
+           (input                                  (completing-read new-prompt collection-fn))
            chr)
       (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
                        ((string-match-p "^#" input)                  (read input))
                        ((cddr (assoc-string input mctized-cands t))) ; INPUT is a multi-completion.
-                       (t               
-                        ;; INPUT is not a multi-completion, but it might match a single sulti-completion.
-                        ;; In particular, it might be just the NAME part of the multi-completion. 
-                        (let* ((completion  (try-completion input colletion-fn))
-                               (name        (and (stringp completion)
-                                                 (icicle-transform-multi-completion completion))))
-                          (and name  (string-match-p input name)
-                               ;; To have the property `icicle-whole-candidate', COMPLETION must be complete.
-                               (cdr (get-text-property 0 'icicle-whole-candidate completion)))))))
+                       (t
+                        (let ((completion  (try-completion input collection-fn)))
+                          (and (stringp completion)
+                               ;; INPUT is not a multi-completion, but it may match a single sulti-completion.
+                               ;; In particular, it might match just the NAME or CODE part of it.
+                               (let* ((name                       (icicle-transform-multi-completion
+                                                                   completion))
+                                      (icicle-list-use-nth-parts  '(2))
+                                      (code                       (icicle-transform-multi-completion
+                                                                   completion))
+                                      ;; To have property `icicle-whole-candidate', COMPLETION must be complete.
+                                      (char                       (caddr
+                                                                   (get-text-property
+                                                                    0 'icicle-whole-candidate completion))))
+                                 (and (or (and name  (string-match-p input name))
+                                          (and code  (string-match-p input code)))
+                                      char)))))))
       (unless (characterp chr) (error "Invalid character: `%s'" chr))
       (add-to-list 'icicle-read-char-history chr)
       chr))
