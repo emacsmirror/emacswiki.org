@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec 29 15:48:10 2013 (-0800)
+;; Last-Updated: Mon Dec 30 15:08:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 28007
+;;     Update #: 28017
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6841,30 +6841,36 @@
 ;;  my library `ucs-cmds.el' then you might want to remap that command
 ;;  to command `ucsc-insert', which is an enhancement.
 ;;
-;;  Icicles enhances this by (a) showing the character to be inserted
-;;  after its name in `*Completions*' and (b) showing the current
-;;  character and its code point in the mode line (in hex, octal, and
-;;  decimal notations) when you cycle.
+;;  Icicles enhances this by showing in `*Completions*', for each
+;;  candidate Unicode character, its name and code point, as well as
+;;  the character itself.
+;;
+;;  Also, when you cycle among the matching candidates, the name and
+;;  code point of the current candidate are shown in the mode line.
+;;  The code point is shown in hexadecimal, octal, and decimal
+;;  notations.
 ;;
 ;;  Completion candidates are in fact multi-completions, meaning that
-;;  you can also match against the character itself.  Why might you
-;;  want to do that?  To see the corresponding Unicode character
-;;  name(s), including any old names.  For example, for the character
-;;  ` (grave accent) you get these two completion candidates:
+;;  you can match against the name or the code point, or both.
 ;;
-;;    GRAVE ACCENT	`
-;;    SPACING GRAVE	`
+;;  You can even match the character itself.  Why might you want to do
+;;  that?  To see the corresponding Unicode character name(s),
+;;  including any old names.  For example, for the character ` (grave
+;;  accent) you get these two completion candidates:
 ;;
-;;  The main purpose for this is to show you the characters along with
-;;  their names (WYSIWYG).  The chars are shown in `*Completions*'
-;;  using the same font as the frame from which you invoked `C-x 8
-;;  RET'.  That you can also match against the chars themselves is
-;;  just a nice-to-have.
+;;    GRAVE ACCENT      60      `
+;;    SPACING GRAVE     60      `
+;;
+;;  The main purpose for this is to show you the characters and code
+;;  points together with their names (WYSIWYG).  The characters are
+;;  shown in `*Completions*' using the same font as the frame from
+;;  which you invoked `C-x 8 RET'.  That you can also match against
+;;  the characters themselves is just a nice-to-have.
 ;;
 ;;  The most important features of the Icicles version of `C-x 8 RET'
-;;  are (a) seeing the chars (WYSIWYG) and (b) being able to use
-;;  progressive completion, so you can use multiple simple patterns
-;;  instead of a single complex pattern.
+;;  are (a) seeing the characters and code points (WYSIWYG) and (b)
+;;  being able to use progressive completion, so you can use multiple
+;;  simple patterns instead of a single complex pattern.
 ;;
 ;;  I recommend that you use `insert-char' (or better, `ucsc-insert'),
 ;;  not key completion, to insert Unicode characters.
