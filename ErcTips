@@ -3,5 +3,29 @@
 To remove the server part from the channel identifyer in the mode line, customize
 `erc-mode-line-format' and change <code>"%s"</code> to <code>"%t"</code>.
 
+= Auto ghost yourself =
+
+When you have a bad connections which keeps dropping, you'll want to ghost your nick automatically. You can do this with this function:
+
+<pre>
+(defun erc-ghost-maybe (server nick)
+  "Send GHOST message to NickServ if NICK ends with \"`\".
+The function is suitable for `erc-after-connect'."
+  (when (string-match "\\(.*?\\)`+$" nick)
+    (let ((nick-orig (match-string 1 nick))
+          (password erc-session-password))
+      (when (y-or-n-p (format "Current nick is '%s'. Do you want to ghost?"
+                              nick))
+        (erc-message "PRIVMSG" (format "NickServ GHOST %s %s"
+				       nick-orig password))
+	(erc-cmd-NICK nick-orig)
+	(erc-message "PRIVMSG" (format "NickServ identify %s %s"
+				       nick-orig password))))))
+(add-hook 'erc-after-connect 'erc-ghost-maybe)
+
+</pre>
+
+It will prompt when it detects that you are not using your default nick. You can remove the "(when (y-or-n-p..." condition if you don't want the prompt.
+Note: this function doesn't work if the last letter of your nick naturally contains a ` symbol.
 ----
 [[ERC]]
