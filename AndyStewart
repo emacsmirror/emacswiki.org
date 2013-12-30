@@ -91,6 +91,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 
 *** [http://www.emacswiki.org/emacs/gtk2hs.el gtk2hs.el] -- Documentation convert tool for [http://www.mirrorservice.org/sites/www.haskell.org/gtk2hs/ gtk2hs].
 
+*** [http://www.emacswiki.org/emacs/auto-save.el auto-save.el] -- Auto save file when emacs idle, instead default one.
+
 * Enhanced packages.
 
 : Below are enhanced packages, some packages need many depend libraries, so copy any code you like. :)
