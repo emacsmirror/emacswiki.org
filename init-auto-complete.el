@@ -1,21 +1,21 @@
-;;; init-auto-complete.el --- Configuration for auto-complete mode
+;;; init-auto-complete.el --- Init for auto complete
 
 ;; Filename: init-auto-complete.el
-;; Description: Configuration for auto-complete mode
-;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
-;; Created: 2008-12-02 11:08:12
+;; Description: Init for auto complete
+;; Author: Andy Stewart <andy@freedom>
+;; Maintainer: Andy Stewart <andy@freedom>
+;; Copyright (C) 2013, Andy Stewart, all rights reserved.
+;; Created: 2013-12-30 01:31:46
 ;; Version: 0.1
-;; Last-Updated: 2008-12-02 11:08:15
+;; Last-Updated: 2013-12-30 01:31:46
 ;;           By: Andy Stewart
-;; URL:
-;; Keywords: auto-complete
-;; Compatibility: GNU Emacs 23.0.60.1
+;; URL: http://www.emacswiki.org/emacs/download/init-auto-complete.el
+;; Keywords:
+;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `auto-complete' `auto-complete-extension'
+;;
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -39,7 +39,7 @@
 
 ;;; Commentary:
 ;;
-;; Configuration for auto-complete mode
+;; Init for auto complete
 ;;
 
 ;;; Installation:
@@ -55,10 +55,18 @@
 ;;
 ;; No need more.
 
+;;; Customize:
+;;
+;;
+;;
+;; All of the above can customize by:
+;;      M-x customize-group RET init-auto-complete RET
+;;
+
 ;;; Change log:
 ;;
-;; 2008/12/02
-;;      First released.
+;; 2013/12/30
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -72,76 +80,27 @@
 ;;
 
 ;;; Require
-(require 'auto-complete)
-(require 'auto-complete-extension nil t) ;optional
-(require 'auto-complete-yasnippet nil t) ;optional
-(require 'auto-complete-semantic nil t)  ;optional
-(require 'auto-complete-gtags nil t)     ;optional
+
+
 
 ;;; Code:
 
-;; Generic setup.
-(global-auto-complete-mode t)           ;enable global-mode
-(setq ac-auto-start t)                  ;automatically start
-(setq ac-dwim t)                        ;Do what i mean
-(setq ac-override-local-map nil)        ;don't override local map
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "/usr/share/deepin-emacs/site-lisp/extensions/auto-complete/dict")
+(ac-config-default)
+(setq ac-use-quick-help nil)
 
-;; The mode that automatically startup.
-(setq ac-modes
-      '(emacs-lisp-mode lisp-interaction-mode lisp-mode scheme-mode
-                        c-mode cc-mode c++-mode java-mode
-                        perl-mode cperl-mode python-mode ruby-mode
-                        ecmascript-mode javascript-mode php-mode css-mode
-                        makefile-mode sh-mode fortran-mode f90-mode ada-mode
-                        xml-mode sgml-mode
-                        haskell-mode literate-haskell-mode
-                        emms-tag-editor-mode
-                        asm-mode
-                        org-mode))
-;; (add-to-list 'ac-trigger-commands 'org-self-insert-command) ; if you want enable auto-complete at org-mode, uncomment this line
-
-;; The sources for common all mode.
-(custom-set-variables
- '(ac-sources
-   '(
-     ac-source-yasnippet ;this source need file `auto-complete-yasnippet.el'
-     ;; ac-source-semantic    ;this source need file `auto-complete-semantic.el'
-     ac-source-imenu
-     ac-source-abbrev
-     ac-source-words-in-buffer
-     ac-source-files-in-current-dir
-     ac-source-filename
-     )))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Lisp mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(dolist (hook (list
-               'emacs-lisp-mode-hook
-               'lisp-interaction-mode
-               ))
-  (add-hook hook '(lambda ()
-                    (add-to-list 'ac-sources 'ac-source-symbols))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; C-common-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enables omnicompletion with `c-mode-common'.
-(add-hook 'c-mode-common-hook
-          '(lambda ()
-             (add-to-list 'ac-omni-completion-sources
-                          (cons "\\." '(ac-source-semantic)))
-             (add-to-list 'ac-omni-completion-sources
-                          (cons "->" '(ac-source-semantic)))
-             (add-to-list 'ac-sources 'ac-source-gtags)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; C++-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Keywords.
-(add-hook 'c++-mode-hook '(lambda ()
-                            (add-to-list 'ac-sources 'ac-c++-sources)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Haskell mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Keywords.
-(add-hook 'haskell-mode-hook '(lambda ()
-                                (add-to-list 'ac-sources 'ac-source-haskell)))
+(setq-default
+ ac-sources
+ '(
+   ac-source-yasnippet
+   ac-source-imenu
+   ac-source-abbrev
+   ac-source-words-in-same-mode-buffers
+   ac-source-files-in-current-dir
+   ac-source-filename
+   ))
 
 (provide 'init-auto-complete)
 
 ;;; init-auto-complete.el ends here
-
