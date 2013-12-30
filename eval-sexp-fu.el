@@ -2,7 +2,9 @@
 
 ;; Copyright (C) 2009-2013 Takeshi Banse <takebi@laafc.net>
 ;; Author: Takeshi Banse <takebi@laafc.net>
+;; Version: 0.4.0
 ;; Keywords: lisp, highlight, convenience
+;; Package-Requires: ((highlight "0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
