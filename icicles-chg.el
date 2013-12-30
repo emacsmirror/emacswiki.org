@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec 29 15:23:46 2013 (-0800)
+;; Last-Updated: Mon Dec 30 13:46:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10511
+;;     Update #: 10518
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1920,6 +1920,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/12/30 dadams
+;;     icicle-make-char-candidate: 3-part multi-completion now - added hex code point.
+;;     icicle-read-char-by-name: 3-part multi-completion now - can complete against hex code point too.
 ;; 2013/12/29 dadams
 ;;     Added: icicle-make-char-candidate.  Add hex and octal for code point in help echo.
 ;;     icicle-read-char-by-name: Redefined to use multi-completion.  Can now use with narrowing.
