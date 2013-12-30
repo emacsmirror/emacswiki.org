@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Dec 29 15:26:27 2013 (-0800)
+;; Last-Updated: Sun Dec 29 22:10:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 14146
+;;     Update #: 14153
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2060,20 +2060,25 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
            (icicle-candidate-properties-alist      '((2 (face icicle-candidate-part))))
            (icicle-whole-candidate-as-text-prop-p  t)
            (mctized-cands                          (car (icicle-mctize-all names nil)))
-           (input                                  (completing-read
-                                                    new-prompt
-                                                    `(lambda (string pred action)
-                                                      (if (eq action 'metadata)
-                                                          '(metadata (category . unicode-name))
-                                                        (complete-with-action
-                                                         action ',mctized-cands string pred)))))
+           (colletion-fn                           `(lambda (string pred action)
+                                                     (if (eq action 'metadata)
+                                                         '(metadata (category . unicode-name))
+                                                       (complete-with-action
+                                                        action ',mctized-cands string pred))))
+           (input                                  (completing-read new-prompt colletion-fn))
            chr)
-      (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)
-                        (string-to-number input 16))
-                       ((string-match-p "^#" input)
-                        (read input))
-                       (t
-                        (cddr (assoc-string input mctized-cands t)))))
+      (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
+                       ((string-match-p "^#" input)                  (read input))
+                       ((cddr (assoc-string input mctized-cands t))) ; INPUT is a multi-completion.
+                       (t               
+                        ;; INPUT is not a multi-completion, but it might match a single sulti-completion.
+                        ;; In particular, it might be just the NAME part of the multi-completion. 
+                        (let* ((completion  (try-completion input colletion-fn))
+                               (name        (and (stringp completion)
+                                                 (icicle-transform-multi-completion completion))))
+                          (and (string-match-p input name)
+                               ;; To have the property `icicle-whole-candidate', COMPLETION must be complete.
+                               (cdr (get-text-property 0 'icicle-whole-candidate completion)))))))
       (unless (characterp chr) (error "Invalid character: `%s'" chr))
       (add-to-list 'icicle-read-char-history chr)
       chr))
