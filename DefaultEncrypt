@@ -126,4 +126,4 @@ want to set `mml-default-sign-method' to "pgp" (instead of
 
 
 ----
-CategoryGnus SigningMail EncryptingMail
+CategoryGnus EncryptingMail
