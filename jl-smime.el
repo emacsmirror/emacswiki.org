@@ -1,313 +1,378 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGpsLXNpbWUuZWwgLS0tIEltcHJvdmVkIHN1cHBvcnQgZm9yIFMvTUlNRSB3aXRoIE1NTCBh
-bmQgTERBUAo7OyAtKi0gTW9kZTogRW1hY3MtTGlzcCAtKi0KOzsgLSotIGNvZGluZzogdXRmLTgg
-LSotCgo7OyBDb3B5cmlnaHQgKEMpIDIwMTEsIDIwMTIsIDIwMTMgSmVucyBMZWNodGVuYsO2cmdl
-cgoKOzsgVmVyc2lvbjogJElkOiBqbC1zbWltZS5lbCx2IDEuOSAyMDEzLzEyLzIwIDE1OjQ3OjAy
-IGxlY2h0ZW4gRXhwICQKOzsgQ2hhbmdlbG9nOgo7OyAyMDEyLzAzLzA5LCBWZXJzaW9uIDEuMSwg
-aW5pdGlhbCByZWxlYXNlCjs7IDIwMTIvMDUvMDEsIFZlcnNpb24gMS4yLCBleHRyYWN0IGNlcnRp
-ZmljYXRlIGZyb20gc2lnbmVkIG1lc3NhZ2UgdG8gZmlsZQo7OyAyMDEzLzA2LzI5LCBWZXJzaW9u
-IDIuMToKOzsgICAgLSBjb21wYXRpYmlsaXR5IHdpdGggamwtZW5jcnlwdC5lbCAzLjEKOzsgICAg
-LSBjdXN0b21pemFibGUgTERBUCBzZWFyY2ggZm9yIG1pc3NpbmcgY2VydGlmaWNhdGVzIHVwb24g
-c2VuZAo7OyAgICAtIG1vdmVkIGN1c3RvbWl6YXRpb24gZm9yIG90aGVyIHBhY2thZ2VzIGZyb20g
-Y29kZSB0byBjb21tZW50cwo7OyAyMDEzLzEyLzIwLCBWZXJzaW9uIDMtYmV0YToKOzsgICAgLSBz
-d2l0Y2ggZnJvbSBvcGVuc3NsIHRvIGdwZ3NtIHZpYSBFYXN5UEcgKGNlcnRpZmljYXRlcyBhcmUg
-bm8gbG9uZ2VyCjs7ICAgICAgc3RvcmVkIGluIGZpbGVzIGJ1dCBpbXBvcnRlZCBpbnRvIGdwZ3Nt
-KQo7OyAgICAtIG5ldyBjdXN0b21pemFibGUgdmFyaWFibGUgamwtc21pbWUtbmVnY2FjaGUtbWF4
-YWdlCjs7ICAgIC0gbmV3IGNvbW1hbmQgamwtc21pbWUta2V5LWF2YWlsYWJsZS1wCgo7OyBDb21w
-YXRpYmlsaXR5OiBEZXZlbG9wZWQgb24gR05VIEVtYWNzIDI0LjM7IG1heSB3b3JrIHdpdGggR05V
-IEVtYWNzIDIzLjIKOzsgYW5kIGxhdGVyCgo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2Fy
-ZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yCjs7IG1vZGlmeSBpdCB1bmRlciB0aGUg
-dGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzCjs7IHB1Ymxpc2hlZCBi
-eSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAzLCBvcgo7OyAo
-YXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRp
-c3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRI
-T1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7
-IE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNl
-ZSB0aGUgR05VCjs7IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7
-IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
-YyBMaWNlbnNlCjs7IGFsb25nIHdpdGggR05VIEVtYWNzOyBzZWUgdGhlIGZpbGUgQ09QWUlORy4K
-OzsgSWYgbm90LCBzZWUgaHR0cDovL3d3dy5nbnUub3JnL2xpY2Vuc2VzLyBvciB3cml0ZSB0byB0
-aGUKOzsgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdHJlZXQs
-IEZpZnRoIEZsb29yLAo7OyBCb3N0b24sIE1BIDAyMTEwLTEzMDEsIFVTQS4KCjs7IEtleXdvcmRz
-OiBtYWlsLCBlbmNyeXB0aW9uLCBTL01JTUUsIENNUywgTERBUAoKOzsgVVJMOiBodHRwOi8vd3d3
-LmVtYWNzd2lraS5vcmcvZW1hY3Mvamwtc21pbWUuZWwKOzsgRW1hY3NXaWtpOiBFeHRlbmRTTUlN
-RQoKOzsgQSBzaWduZWQgdmVyc2lvbiBvZiB0aGlzIGZpbGUgaXMgYXZhaWxhYmxlIG92ZXIgdGhl
-cmU6Cjs7IGh0dHA6Ly93d3cuaW5mb3JtYXRpb25lbGxlLXNlbGJzdGJlc3RpbW11bmctaW0taW50
-ZXJuZXQuZGUvZW1hY3MvCgo7OyBSZXF1aXJlczogamwtZW5jcnlwdC5lbCAgIGh0dHA6Ly93d3cu
-ZW1hY3N3aWtpLm9yZy9lbWFjcy9qbC1lbmNyeXB0LmVsCgo7OzsgQ29tbWVudGFyeToKOzsgRXh0
-ZW5kU01JTUUgZW5oYW5jZXMgRGVmYXVsdEVuY3J5cHQgdG8gc3VwcG9ydCBTL01JTUUuICBNb3Jl
-b3ZlciwgaXQgYWxsb3dzCjs7IHRvIHJldHJpZXZlIGNlcnRpZmljYXRlcyB2aWEgTERBUCBhbmQg
-dG8gaW1wb3J0IHRoZW0gaW50byBncGdzbS4KOzsKOzsgUHJlbGltaW5hcmllczoKOzsgSW4gZ2Vu
-ZXJhbCwgSSByZWNvbW1lbmQgR251UEcgb3ZlciBTL01JTUUgKHdoaWNoIGlzIHRoZSBkZWZhdWx0
-IGZvciBHbnVzKS4KOzsgVW5sZXNzIHlvdSBhcmUgaW4gYSByZXN0cmljdGVkIHNldHRpbmcsIHNh
-eSBpbiBhIHVuaXZlcnNpdHkgb3IgY29ycG9yYXRlCjs7IHNldHRpbmcsIHRoZSB0cnVzdCBtb2Rl
-bCByZWdhcmRpbmcgY2VydGlmaWNhdGUgYXV0aG9yaXRpZXMgaXMgYnJva2VuLgo7OyBZb3UgbWF5
-IHdhbnQgdG8gcmVjYWxsIHNvbWUgY2VydGlmaWNhdGUgYXV0aG9yaXR5IGZhaWx1cmVzIHN1Y2gg
-YXMKOzsgQ29tb2RvICgyMDExKSwgRGlnaU5vdGFyICgyMDExKSwgVHJ1c3R3YXZlICgyMDEyKSwg
-YW5kIEFOU1NJICgyMDEzKToKOzsgaHR0cDovL3d3dy5oLW9ubGluZS5jb20vc2VjdXJpdHkvbmV3
-cy9pdGVtL1NTTC1tZWx0ZG93bi1hLWN5YmVyLXdhci1hdHRhY2stMTIxNDEwNC5odG1sCjs7IGh0
-dHBzOi8vZnJlZWRvbS10by10aW5rZXIuY29tL2Jsb2cvc2pzL2RpZ2lub3Rhci1oYWNrLWhpZ2hs
-aWdodHMtY3JpdGljYWwtZmFpbHVyZXMtb3VyLXNzbC13ZWItc2VjdXJpdHktbW9kZWwKOzsgaHR0
-cDovL3d3dy5oLW9ubGluZS5jb20vbmV3cy9pdGVtL1RydXN0d2F2ZS1pc3N1ZWQtYS1tYW4taW4t
-dGhlLW1pZGRsZS1jZXJ0aWZpY2F0ZS0xNDI5OTgyLmh0bWwKOzsgaHR0cHM6Ly9ibG9nLm1vemls
-bGEub3JnL3NlY3VyaXR5LzIwMTMvMTIvMDkvcmV2b2tpbmctdHJ1c3QtaW4tb25lLWFuc3NpLWNl
-cnRpZmljYXRlLwo7Owo7OyBBbHRob3VnaCB0aGUgaW1wYWN0IG9mIHRob3NlIGZhaWx1cmVzIGFw
-cGVhcnMgdG8gYmUgcmVzdHJpY3RlZCB0byBTU0wKOzsgY2VydGlmaWNhdGVzLCBJIGRvbid0IHNl
-ZSBhbnkgcmVhc29uIHdoeSBTL01JTUUgY2VydGlmaWNhdGVzIHNob3VsZCBiZSBtb3JlCjs7IHRy
-dXN0d29ydGh5Lgo7Owo7OyBJbiBhZGRpdGlvbiwgYmUgY2FyZWZ1bCBob3cgeW91IGNyZWF0ZSB5
-b3VyIGtleSBwYWlyLiAgRG9pbmcgdGhhdCBpbiB5b3VyCjs7IGJyb3dzZXIgdmlhIGEgV2ViIGZv
-cm0gcHJvdmlkZWQgYnkgeW91ciBDQSBhcHBhcmVudGx5IHJlcXVpcmVzIGEgbmV0d29ya2VkCjs7
-IG1hY2hpbmUsIHdoaWNoIG1heSBub3QgYmUgdGhlIGJlc3QgY2hvaWNlLiAgSW5zdGVhZCwgb3Bl
-bnNzbCBhbmQgZ3Bnc20KOzsgZW5hYmxlIG9mZmxpbmUgZ2VuZXJhdGlvbiB3aXRoIHRyYW5zZmVy
-IHRvIGFuIGUtdG9rZW4gb3Igc21hcnRjYXJkLgo7OyBJZiB5b3UgbXVzdCB1c2UgYSBicm93c2Vy
-LCBmb3IgRmlyZWZveCBhdCBsZWFzdCBzZXQgYSBtYXN0ZXIgcGFzc3dvcmQKOzsgYmVmb3JlIHlv
-dSBnZW5lcmF0ZSB0aGUga2V5IHBhaXI6Cjs7IGh0dHA6Ly9rYi5tb3ppbGxhemluZS5vcmcvTWFz
-dGVyX3Bhc3N3b3JkCjs7IE90aGVyd2lzZSwgZXZlcnlvbmUgd2l0aCBhY2Nlc3MgdG8geW91ciBw
-cm9maWxlIGZvbGRlciAobG9jYWwgYWRtaW4gYXMgd2VsbAo7OyBhcyBiYWNrdXBzIGluIHJlbW90
-ZSBwbGFjZXMpIGNhbiB1c2UgeW91ciBwcml2YXRlIGtleS4KOzsKOzsgSGF2aW5nIHNhaWQgdGhh
-dCwgaW4gbXkgdW5pdmVyc2l0eSBJIHRydXN0IHRoZSBDQSB0byBzaWduIGtleXMgZm9yIHRoZQo7
-OyBjb3JyZWN0IG93bmVycywgYW5kIG1vcmUgY29sbGVhZ3VlcyBvd24gUy9NSU1FIGNlcnRpZmlj
-YXRlcyB0aGFuIEdudVBHCjs7IGtleXMuCjs7Cjs7IEZ1bmN0aW9uYWxpdHk6Cjs7IFRoZSBnZW5l
-cmFsIGlkZWEgb2YgRXh0ZW5kU01JTUUgaXMgdG8gZW5oYW5jZSBTL01JTUUgc3VwcG9ydCBpbiBH
-bnVzIGZvcgo7OyAqIHJldHJpZXZhbCBvZiBjZXJ0aWZpY2F0ZXMgZnJvbSBMREFQIHNlcnZlcnMg
-d2l0aCBpbXBvcnQgaW50byBncGdzbQo7OyAgIChzbWltZS1jZXJ0LWJ5LWxkYXAtMSByZWRlZmlu
-ZWQsIGluY2x1ZGluZyBhIGJ1ZyBmaXggYW5kIG5lZ2F0aXZlCjs7ICAgY2FjaGluZykgYW5kCjs7
-ICogKHZpYSBqbC1lbmNyeXB0LmVsKSBhdXRvbWF0aWMgaW5zZXJ0aW9uIG9mIE1NTCB0YWdzIGlu
-dG8gbWVzc2FnZXMgaWYKOzsgICBjZXJ0aWZpY2F0ZXMgZm9yIGFsbCByZWNpcGllbnRzIGFyZSBh
-dmFpbGFibGUuCjs7Cjs7IE5vdGUgdGhhdCB2ZXJzaW9uIDMuMSBvZiBFeHRlbmRTTUlNRSBpbnRy
-b2R1Y2VzIGEgbWFqb3IgY2hhbmdlOiBQcmV2aW91cwo7OyB2ZXJzaW9ucyB1c2VkIG9wZW5zc2wg
-Zm9yIGNyeXB0b2dyYXBoaWMgb3BlcmF0aW9ucyB3aGlsZSB2ZXJzaW9uIDMuMSB1c2VzCjs7IGdw
-Z3NtIChwYXJ0IG9mIGdudXBnLTIpLiAgSW4gcGFydGljdWxhciwgY2VydGlmaWNhdGVzIGFyZSBu
-byBsb25nZXIKOzsgbWFpbnRhaW5lZCBieSBFeHRlbmRTTUlNRSBidXQgYXJlIGltcG9ydGVkIGlu
-dG8gZ3Bnc20uICBJbiBmYWN0LCBncGdzbQo7OyBtYW5hZ2VzIGNlcnRpZmljYXRlcyBvbiBpdHMg
-b3duIGFuZCBhdXRvbWF0aWNhbGx5IGV4dHJhY3RzIGNlcnRpZmljYXRlcwo7OyBmcm9tIHNpZ25l
-ZCBtZXNzYWdlcywgd2hpY2ggc2ltcGxpZmllcyB0aGUgY29kZSBvZiBFeHRlbmRTTUlNRSBhIGxv
-dC4KOzsKOzsgVGhlIGdlbmVyYWwgaWRlYSBvZiBFeHRlbmRTTUlNRSBpcyB0byBzZWFyY2ggZm9y
-IG1pc3NpbmcgY2VydGlmaWNhdGVzIHZpYQo7OyBMREFQIGJlZm9yZSBhbiBlLW1haWwgaXMgc2Vu
-dC4gIFJlc3VsdGluZyBjZXJ0aWZpY2F0ZXMgYXJlIGltcG9ydGVkCjs7IGludG8gZ3Bnc20uICBM
-REFQIHNlYXJjaCBpcyBjdXN0b21pemFibGUgKGFuZCBkb2N1bWVudGVkKSB2aWEKOzsgYGpsLXNt
-aW1lLXBlcm1pdC1sZGFwJy4KOzsKOzsgSW4gYWRkaXRpb24gdG8gdGhpcyBhdXRvbWF0aWMgTERB
-UCBzZWFyY2gsIHRoZSBjb21tYW5kCjs7IGBNLXggamwtc21pbWUta2V5LWF2YWlsYWJsZS1wJyBh
-bGxvd3MgbWFudWFsIHNlYXJjaGVzLiAgSXQgYXNrcyBmb3IgYW4KOzsgZS1tYWlsIGFkZHJlc3Mg
-KGFuIGFkZHJlc3MgYXQgcG9pbnQgaXMgdXNlZCBhcyBkZWZhdWx0IHZhbHVlKS4gIElmIG5vCjs7
-IGNlcnRpZmljYXRlIGlzIGF2YWlsYWJsZSwgYW4gTERBUCBzZWFyY2ggaXMgc3RhcnRlZCAoaWdu
-b3JpbmcgbmVnYXRpdmUKOzsgY2FjaGluZyBhbmQgYGpsLXNtaW1lLXBlcm1pdC1sZGFwJykuICBJ
-ZiBhIGNlcnRpZmljYXRlIGlzIGZvdW5kLCBpdCBpcwo7OyBpbXBvcnRlZCBpbnRvIGdwZ3NtOyBv
-dGhlcndpc2UsIGEgbmVnYXRpdmUgY2FjaGUgZW50cnkgaXMgY3JlYXRlZC4KOzsKOzsgRG9jdW1l
-bnRhdGlvbiBjb25jZXJuaW5nIFMvTUlNRSB3aXRoIEdOVSBFbWFjcyBpcyBtb3N0bHkgdGFyZ2V0
-aW5nIG9wZW5zc2wKOzsgYnV0IG5vdCBncGdzbS4gIFNlZSBpbnN0YWxsYXRpb24gaW5zdHJ1Y3Rp
-b25zIGJlbG93LgoKOzsgSW5zdGFsbDoKOzsgTWVzc2FnZSBzZWN1cml0eSAoYXMgZGVzY3JpYmVk
-IGluIEluZm8gbm9kZSBgKG1lc3NhZ2UpIFNlY3VyaXR5JykKOzsgaHR0cHM6Ly93d3cuZ251Lm9y
-Zy9zb2Z0d2FyZS9lbWFjcy9tYW51YWwvaHRtbF9ub2RlL21lc3NhZ2UvU2VjdXJpdHkuaHRtbAo7
-OyBhdXRvbWF0aWNhbGx5IHByZWZlcnMgRWFzeVBHIHdpdGggZ3Bnc20gb3ZlciBvcGVuc3NsIGlm
-IEVhc3lQRyBpcyBsb2FkZWQKOzsgZmlyc3QuICBUaHVzLCBwbGFjZSBqbC1zbWltZS5lbCBhcyB3
-ZWxsIGFzIGpsLWVuY3J5cHQuZWwgaW50byB5b3VyCjs7IGxvYWQtcGF0aCwgYW5kIGFkZCB0aGUg
-Zm9sbG93aW5nIHRvIH4vLmVtYWNzOgo7Owo7OyAgICAgKHJlcXVpcmUgJ2VwYS1maWxlKQo7OyAg
-ICAgKGxvYWQgImpsLXNtaW1lIikKOzsKOzsgT3B0aW9uYWxseSBhbmQgdW5yZWxhdGVkIHRvIGUt
-bWFpbCwgeW91IG1heSBhbHNvIHdhbnQ6Cjs7ICAgICAoc2V0cSBlcGEtZmlsZS1lbmNyeXB0LXRv
-ICI8eW91ci1rZXktaWQ+IikKOzsgICAgIChzZXRxIGVwZy1kZWJ1ZyB0KQo7Owo7OyBDdXN0b21p
-emFibGUgdmFyaWFibGVzIG9mIEV4dGVuZFNNSU1FIGFyZSBqbC1zbWltZS1wZXJtaXQtbGRhcCwK
-Ozsgamwtc21pbWUtbmVnYXRpdmUtY2FjaGUtZGlyLCBhbmQgamwtc21pbWUtbmVnY2FjaGUtbWF4
-YWdlLgo7OyBZb3UgbWF5IHdhbnQgdG8gcmVhZCB0aGVpciBkb2N1bWVudGF0aW9uLgo7Owo7OyBJ
-J20gdXNpbmcgdGhlIGZvbGxvd2luZyBjb2RlIGFmdGVyIChsb2FkICJqbC1zbWltZSIpIGluIG15
-IHNldHVwOgo7Owo7OyA7OyBBbGxvdyBhdXRvbWF0aWMgTERBUCBxdWVyaWVzIGZvciBjZXJ0aWZp
-Y2F0ZXMgd2l0aGluIG15IGRvbWFpbi4KOzsgKHNldHEgamwtc21pbWUtcGVybWl0LWxkYXAgIkBc
-XCguK1xcLlxcKT91bmktbXVlbnN0ZXJcXC5kZSQiKQo7Owo7OyA7OyBJJ20gc2VhcmNoaW5nIGZv
-ciBTL01JTUUgY2VydGlmaWNhdGVzIHZpYSBMREFQUyBhdCBERk4tVmVyZWluLgo7OyA7OyBOb3Rl
-IHRoYXQgbGRhcC5lbCBpbiBFbWFjcyByZXF1aXJlcyBhIG1pbm9yIHdvcmthcm91bmQgdG8gcGVy
-Zm9ybQo7OyA7OyBlbmNyeXB0ZWQgY29ubmVjdGlvbnMgdmlhIExEQVBTLiAgSW4gZmFjdCwgbGRh
-cHNlYXJjaCBpcyBiZWluZyBpbnZva2VkCjs7IDs7IHRvIHVzZSB1bmVuY3J5cHRlZCBwbGFpbnRl
-eHQgTERBUCBjb21tdW5pY2F0aW9uIHdpdGggdGhlIHBhcmFtZXRlciAiLWgiLgo7OyA7OyBNYXli
-ZSBJJ20gZG9pbmcgc29tZXRoaW5nIHdyb25nIGJ1dCBJIG9ubHkgZ290IExEQVBTIHRvIHdvcmsg
-d2l0aCB0aGUKOzsgOzsgcGFyYW1ldGVyICItSCBsZGFwczovL2xkYXAucGNhLmRmbi5kZSIuICBU
-byBnZXQgcmlkIG9mIHRoZSBkZWZhdWx0Cjs7IDs7IHBhcmFtZXRlciAtaCwgSSdtIHBhc3Npbmcg
-dGhlIGVtcHR5IHN0cmluZyBhcyBob3N0bmFtZSwgc2V0dGluZwo7OyA7OyBzbWltZS1sZGFwLWhv
-c3QtbGlzdCB0byAnKCIiKS4gIEZpbmFsbHksIGxkYXBzZWFyY2ggYWJvcnRzIHRoZQo7OyA7OyBj
-b25uZWN0aW9uIGlmIGl0IGlzIG5vdCB0b2xkIHdoZXJlIHRvIGZpbmQgdGhlIENBIGNlcnRpZmlj
-YXRlIGZvciB0aGUKOzsgOzsgTERBUFMgc2VydmVyICh3aGljaCBpcyBhIEdvb2QgVGhpbmcpLgo7
-OyA7OyBJIGNyZWF0ZWQgfi8ubGRhcHJjIHdpdGggYSBzaW5nbGUgbGluZSBwb2ludGluZyB0byB0
-aGF0IENBIGNlcnRpZmljYXRlOgo7OyA7OyBUTFNfQ0FDRVJUIC9wYXRoL3RvL3NlcnZlci9jZXJ0
-Cjs7IChyZXF1aXJlICdsZGFwKQo7OyAoc2V0cSBzbWltZS1sZGFwLWhvc3QtbGlzdCAnKCIiKSkK
-OzsgKHNldHEgbGRhcC1kZWZhdWx0LWJhc2UgIk89REZOLVZlcmVpbixDPURFIgo7OyAgICAgICA7
-IC14OiBubyBTQVNMIGF1dGhlbnRpY2F0aW9uLCAtdHQ6IHN0b3JlIHJlc3VsdCBpbiBmaWxlCjs7
-ICAgICAgIDsgLUg6IGNvbm5lY3QgdG8gc3BlY2lmaWVkIFVSSS4KOzsgICAgICAgbGRhcC1sZGFw
-c2VhcmNoLWFyZ3MgJygiLXgiICItdHQiICItSCBsZGFwczovL2xkYXAucGNhLmRmbi5kZSIpCjs7
-ICAgICAgICkKOzsKOzsgSWYgeW91IHVzZWQgb3BlbnNzbCBwcmV2aW91c2x5LCB5b3UgbmVlZCB0
-byBpbXBvcnQgeW91ciBrZXlzIGFuZAo7OyBjZXJ0aWZpY2F0ZXMgaW50byBncGdzbS4gIEhlcmUg
-YXJlIHRocmVlLWFuZC1hLWhhbGYgc3RlcHMsIHdoaWNoIHdvcmtlZCBmb3IKOzsgbWUuCjs7Cjs7
-IEZpcnN0LCBpbXBvcnQgdGhlIHByaXZhdGUga2V5Lgo7OyAkIGdwZ3NtIC0taW1wb3J0IG15LXBy
-aXZhdGUta2V5LnAxMgo7Owo7OyBTZWNvbmQsIHRoZSBDQSBzaWduaW5nIG15IGNlcnRpZmljYXRl
-IGlzIHVua25vd24gdG8gZ3Bnc20gKGdwZy1hZ2VudCwgaW4KOzsgZmFjdCkuICBUaHVzLCBncGdz
-bSByZWZ1c2VzIHRvIHVzZSB0aGF0IGtleSBwYWlyLiAgSSBhZGRlZCB0aGUgb3B0aW9uCjs7IGBh
-bGxvdy1tYXJrLXRydXN0ZWQnIHRvIH4vLmdudXBnL2dwZy1hZ2VudC5jb25mLiAgVGhlbiBJIHRy
-aWVkIGFnYWluIHRvCjs7IHNpZ24gYSBmaWxlLiAgVGhpcyB0aW1lLCBncGctYWdlbnQgZGlzcGxh
-eWVkIHRoZSByb290IENBJ3MgZmluZ2VycHJpbnQgYW5kCjs7IGFza2VkIHdoZXRoZXIgSSB0cnVz
-dCBpdC4gIFNheWluZyAieWVzIiBhZGRlZCB0aGF0IGZpbmdlcnByaW50IHRvCjs7IH4vLmdudXBn
-L3RydXN0bGlzdC50eHQsIGFuZCB0aGUga2V5IGJlY2FtZSB1c2FibGUuICAoTm90ZSB0aGF0IHlv
-dSBtdXN0Cjs7IHRydXN0IHRoZSByb290IENBOyBhZGRpbmcgYW4gaW50ZXJtZWRpYXRlIENBJ3Mg
-ZmluZ2VycHJpbnQgZG9lcyBub3Qgd29yay4pCjs7Cjs7IFRoaXJkLCBpbXBvcnQgKGEgc3Vic2V0
-IG9mKSB5b3VyIG9sZCBjZXJ0aWZpY2F0ZXMuICBXaXRoIEV4dGVuZFNNSU1FIGJlZm9yZQo7OyB2
-ZXJzaW9uIDMuMSwgdGhvc2Ugd2VyZSBzdG9yZWQgaW4gZmlsZXMgdW5kZXIKOzsgYHNtaW1lLWNl
-cnRpZmljYXRlLWRpcmVjdG9yeScsIH4vTWFpbC9jZXJ0cywgYnkgZGVmYXVsdC4gIEluIHRoYXQK
-OzsgZGlyZWN0b3J5LCBleGVjdXRlOiAkIGdwZ3NtIC0taW1wb3J0IDxjZXJ0ZmlsZXM+Cjs7Cjs7
-IEZpbmFsbHksIGRlY2lkZSBob3cgeW91IGVuc3VyZSB0aGF0IHlvdSBjYW4gZGVjcnlwdCB5b3Vy
-IG93biBlLW1haWxzLgo7OyBTZWUgY29tbWVudHMgZm9yIERlZmF1bHRFbmNyeXB0IGluIGpsLWVu
-Y3J5cHQuZWwgYW5kIG5vdGUgdGhhdCwgc2ltaWxhcmx5Cjs7IHRvIGdwZywgZ3Bnc20gdW5kZXJz
-dGFuZHMgdGhlIG9wdGlvbiAiLS1lbmNyeXB0LXRvIiAod2hpY2ggaXMgbm90Cjs7IG1lbnRpb25l
-ZCBpbiB0aGUgbWFuIHBhZ2UpLiAgSSBoYXZlIHRoZSBmb2xsb3dpbmcgbGluZSBpbiBncGdzbS5j
-b25mOgo7OyBlbmNyeXB0LXRvIDxjb2xvbi1zZXBhcmF0ZWQtZmluZ2VycHJpbnQtb2Ytb3duLWtl
-eT4KCjs7IFRoaXMgZmlsZSBpcyAqTk9UKiBwYXJ0IG9mIEdOVSBFbWFjcy4KCjs7OyBDb2RlOgoo
-cmVxdWlyZSAnc21pbWUpCihyZXF1aXJlICdtbWwtc21pbWUpCihyZXF1aXJlICdqbC1lbmNyeXB0
-KQoKKGRlZmdyb3VwIGpsLXNtaW1lIG5pbAogICJDdXN0b21pemF0aW9uIG9wdGlvbnMgZm9yIGps
-LXNtaW1lLmVsIHdoaWNoIGV4dGVuZCBqbC1lbmNyeXB0LmVsIgogIDpncm91cCAnamwtZW5jcnlw
-dCkKCihkZWZjdXN0b20gamwtc21pbWUtcGVybWl0LWxkYXAgbmlsCiAgIkNvbnRyb2wgd2hldGhl
-ciBMREFQIHF1ZXJpZXMgc2hvdWxkIGxvb2sgZm9yIG1pc3NpbmcgY2VydGlmaWNhdGVzLgpJZiB0
-aGlzIHZhcmlhYmxlIGlzIG5pbCAodGhlIGRlZmF1bHQpLCBMREFQIHF1ZXJpZXMgYXJlIG9ubHkK
-cGVyZm9ybWVkIGJ5IHN0YW5kYXJkIEdudXMgbWVzc2FnZSBiZWhhdmlvciAod2l0aCBFYXN5UEcg
-cHJvYmFibHkKbmV2ZXIpLgpPdGhlcndpc2UsIHRoaXMgdmFyaWFibGUgbXVzdCBiZSBhIHJlZ3Vs
-YXIgZXhwcmVzc2lvbiBtYXRjaGluZwplLW1haWwgYWRkcmVzc2VzLiAgV2hlbmV2ZXIgYW4gUy9N
-SU1FIGNlcnRpZmljYXRlIGlzIG1pc3NpbmcgZm9yCmFuIGUtbWFpbCBhZGRyZXNzIHRoYXQgKGEp
-IG1hdGNoZXMgdGhpcyByZWd1bGFyIGV4cHJlc3Npb24KYW5kIChiKSBpcyBub3QgcmVjb3JkZWQg
-dW5kZXIgYGpsLXNtaW1lLW5lZ2F0aXZlLWNhY2hlLWRpcicsIGFuCkxEQVAgcXVlcnkgZm9yIGEg
-Y2VydGlmaWNhdGUgaXMgcGVyZm9ybWVkLgpOb3RlIHRoYXQgc3VjaCBhbiBMREFQIHF1ZXJ5IHRl
-bGxzIHRoZSBMREFQIHNlcnZlciBhbmQgKGlmIHlvdSBkbwpub3QgdXNlIGVuY3J5cHRlZCBMREFQ
-UyBjb21tdW5pY2F0aW9uKSAqZXZlcnkqIHBhcnR5IGNvbnRyb2xsaW5nCmFueSBub2RlIG9yIGxp
-bmsgYmV0d2VlbiB5b3UgYW5kIHRoYXQgc2VydmVyIHRvIHdob20geW91IGFyZQphYm91dCB0byBz
-ZW5kIGFuIGUtbWFpbC4gIFN1Y2ggaW5mb3JtYXRpb24gbGVha2FnZSBtYXkgb3IgbWF5IG5vdApi
-ZSB0b2xlcmFibGUgaW4geW91ciBzaXR1YXRpb24uCgpBdCB3b3JrIEknbSB1c2luZyBcIkBcXCgu
-K1xcLlxcKT91bmktbXVlbnN0ZXJcXC5kZSRcIiB0byBjaGVjayBmb3IKY2VydGlmaWNhdGVzIGZv
-ciBhbGwgYWRkcmVzc2VzIHVuZGVyIFwidW5pLW11ZW5zdGVyLmRlXCIuClRodXMsIGlmIEkgc2Vu
-ZCBhbiBlLW1haWwgdG8gYW4gYWRkcmVzcyB3aXRoaW4gbXkgZG9tYWluLCBhbmQgZ3Bnc20KZG9l
-cyBub3QgaGF2ZSBhIGNlcnRpZmljYXRlIGZvciB0aGF0IGFkZHJlc3MsIGFuIExEQVAgc2VhcmNo
-IGlzCnN0YXJ0ZWQuICBJZiB0aGF0IHNlYXJjaCByZXR1cm5zIGEgY2VydGlmaWNhdGUsIGl0IGlz
-IGltcG9ydGVkCmludG8gZ3Bnc20uICBJZiBubyBjZXJ0aWZpY2F0ZSBpcyBmb3VuZCwgYSBuZWdh
-dGl2ZSBjYWNoZSBlbnRyeQpmb3IgdGhlIGUtbWFpbCBhZGRyZXNzIGlzIGNyZWF0ZWQuICBBcyBs
-b25nIGFzIHRoYXQgZW50cnkgZXhpc3RzClwoc2VlIGBqbC1zbWltZS1uZWdjYWNoZS1tYXhhZ2Un
-KSwgbm8gZnVydGhlciBMREFQIHF1ZXJ5IHdpbGwgYmUKc3RhcnRlZCBmb3IgdGhhdCBhZGRyZXNz
-LiIKICA6Z3JvdXAgJ2psLXNtaW1lCiAgOnR5cGUgJyhjaG9pY2UgKGNvbnN0IG5pbCkgKHJlZ2V4
-cCkpKQoKKGRlZnVuIGpsLXNtaW1lLW1rY2FjaGVkaXIgKCkKICAiSW50ZXJuYWwgZnVuY3Rpb24g
-dG8gY29tcHV0ZSBkZWZhdWx0IG5hbWUgb2YgbmVnYXRpdmUgY2FjaGUgZGlyZWN0b3J5LiIKICAo
-bGV0ICgocmVzdWx0IChmaWxlLW5hbWUtYXMtZGlyZWN0b3J5CgkJIChjb25jYXQKCQkgIChmaWxl
-LW5hbWUtYXMtZGlyZWN0b3J5IHNtaW1lLWNlcnRpZmljYXRlLWRpcmVjdG9yeSkKCQkgICJuZWdh
-dGl2ZS1jYWNoZSIpKSkpCiAgICAoaWYgKG5vdCAoZmlsZS1kaXJlY3RvcnktcCByZXN1bHQpKQoJ
-KG1ha2UtZGlyZWN0b3J5IHJlc3VsdCB0KSkKICAgIHJlc3VsdCkpCgooZGVmY3VzdG9tIGpsLXNt
-aW1lLW5lZ2F0aXZlLWNhY2hlLWRpciAoamwtc21pbWUtbWtjYWNoZWRpcikKICAiRGlyZWN0b3J5
-IHRvIHJlY29yZCBlLW1haWwgYWRkcmVzc2VzIGZvciB3aGljaCBMREFQIGZhaWxlZC4KTERBUCBx
-dWVyaWVzIGFyZSB1c2VkIHRvIHNlYXJjaCBmb3IgbWlzc2luZyBTL01JTUUgY2VydGlmaWNhdGVz
-LgpJZiBhIHF1ZXJ5IGZhaWxzLCBpdHMgZS1tYWlsIGFkZHJlc3MgaXMgcmVjb3JkZWQgdW5kZXIg
-dGhpcwpkaXJlY3RvcnkuICBBcyBsb25nIGFzIGFuIGUtbWFpbCBhZGRyZXNzIGlzIHJlY29yZGVk
-IHRoZXJlLApqbC1zbWltZSB3aWxsIG5vdCBpbml0aWF0ZSBmdXJ0aGVyIExEQVAgcXVlcmllcyBm
-b3IgdGhhdCBlLW1haWwKYWRkcmVzcy4gIEFuIGUtbWFpbCBhZGRyZXNzIHdpbGwgYmUgcmVtb3Zl
-ZCBmcm9tIHRoZSBuZWdhdGl2ZQpjYWNoZSBpZiBqbC1zbWltZSBvYnNlcnZlcyBpdHMgY2VydGlm
-aWNhdGUgKGUuZy4sIGlmIHlvdSByZWNlaXZlCmEgc2lnbmVkIGUtbWFpbCBjb250YWluaW5nIHRo
-ZSBjZXJ0aWZpY2F0ZSBvciBpZgpgc21pbWUtY2VydC1ieS1sZGFwLTEnIHJldHJpZXZlcyB0aGUg
-Y2VydGlmaWNhdGUsIHBvc3NpYmx5IHdoZW4KeW91IHBlcmZvcm0gYEMtYyBSRVQgYyBzJykuCkVz
-c2VudGlhbGx5LCB0aGlzIG5lZ2F0aXZlIGNhY2hpbmcgaXMgbWVhbnQgdG8gbGltaXQgdGhlIGFt
-b3VudApvZiBpbmZvcm1hdGlvbiBsZWFrYWdlIGV4cGxhaW5lZCB1bmRlciBgamwtc21pbWUtcGVy
-bWl0LWxkYXAnLiIKICA6Z3JvdXAgJ2psLXNtaW1lCiAgOnR5cGUgJyhzdHJpbmcpKQoKKGRlZmN1
-c3RvbSBqbC1zbWltZS1uZWdjYWNoZS1tYXhhZ2UgMAogICJOdW1iZXIgb2YgZGF5cyBhZnRlciB3
-aGljaCBuZWdhdGl2ZSBjYWNoZSBlbnRyaWVzIGV4cGlyZS4KSWYgMCwga2VlcCBlbnRyaWVzIGZv
-cmV2ZXIuIgogIDpncm91cCAnamwtc21pbWUKICA6dHlwZSAnKGludGVnZXIpKQoKOzsKOzsgTm8g
-Y29uZmlndXJhdGlvbiBvcHRpb25zIGJleW9uZCB0aGlzIHBvaW50LiAgSnVzdCBjb2RlLgo7OwoK
-KGFkZC10by1saXN0ICdqbC1tZXRob2QtdGFibGUKCSAgICAgJyhDTVMgKCgidGVzdCIgamwtc21p
-bWUta2V5LWF2YWlsYWJsZS1wKQoJCSAgICAoImRvaXQiIGpsLXNlY3VyZS1tZXNzYWdlLXNtaW1l
-KQoJCSAgICAoImFzayIgIlMvTUlNRSBjZXJ0aWZpY2F0ZXMgYXZhaWxhYmxlIFwKZm9yIGFsbCBy
-ZWNpcGllbnRzLiAgUmVhbGx5IHByb2NlZWQgKndpdGhvdXQqIGVuY3J5cHRpb24/ICIpKSkpCgo7
-OyBjYWRhYXIgaXMgZGVmaW5lZCBpbiBjbC5lbAoocmVxdWlyZSAnY2wpCihkZWZ1biBqbC1zbWlt
-ZS1jZXJ0LWJ5LWxkYXAtMSAobWFpbCBob3N0KQogICJHZXQgY2VydGlmaWNhdGUgZm9yIE1BSUwg
-ZnJvbSBMREFQIHNlcnZlciBIT1NUIGFuZCBpbXBvcnQgaW50byBncGdzbS4iCiAgOzsgRm9sbG93
-aW5nIGZ1bmNhbGwgYW5kIHN1YnNlcXVlbnQgdGVzdCBvbiBsZGFwcmVzdWx0IGFyZSBjb3BpZWQg
-ZnJvbQogIDs7IHNtaW1lLWNlcnQtYnktbGRhcC0xLiAgSG93ZXZlciwgaGVyZSB0aGUgbGRhcHJl
-c3VsdCBpcyBpbXBvcnRlZCBpbnRvCiAgOzsgZ3Bnc20gb3IgYSBuZWdhdGl2ZSBjYWNoZSBlbnRy
-eSBpcyBjcmVhdGVkLCBhbmQgbm8gY2VydGlmaWNhdGUgYnVmZmVyIGlzCiAgOzsgY3JlYXRlZC4K
-ICAobGV0ICgobGRhcHJlc3VsdAoJIDs7IEpMOiBJbiBzb21lIHZlcnNpb25zIG9mIGVtYWNzLCBs
-ZGFwcmVzdWx0IGNvbnRhaW5zIGxvdHMgb2YKCSA7OyBuaWwgZWxlbWVudHMuCgkgOzsgVGhlc2Ug
-c2VlbSB0byBiZSB1bmV4cGVjdGVkIGluIHRoZSBsZXQgYm9keSBiZWxvdy4KCSA7OyBIZW5jZSwg
-dGhlIGZvbGxvd2luZyByZW1vdmUgb3BlcmF0aW9uIGlzIG5lY2Vzc2FyeS4uLgoJIChyZW1vdmUg
-bmlsIChmdW5jYWxsCgkgIChpZiAob3IgKGZlYXR1cmVwICd4ZW1hY3MpCgkJICA7OyBGb3IgRW1h
-Y3MgPj0gMjIgd2UgZG9uJ3QgbmVlZCBzbWltZS1sZGFwLmVsCgkJICAoPCBlbWFjcy1tYWpvci12
-ZXJzaW9uIDIyKSkKCSAgICAgIChwcm9nbgoJCShyZXF1aXJlICdzbWltZS1sZGFwKQoJCSdzbWlt
-ZS1sZGFwLXNlYXJjaCkKCSAgICAnbGRhcC1zZWFyY2gpCgkgIChjb25jYXQgIm1haWw9IiBtYWls
-KQoJICBob3N0ICcoInVzZXJDZXJ0aWZpY2F0ZSIpIG5pbCkpKSkKICAgIChpZiAoYW5kICg+PSAo
-bGVuZ3RoIGxkYXByZXN1bHQpIDEpCiAgICAgICAgICAgICAoPiAobGVuZ3RoIChjYWRhYXIgbGRh
-cHJlc3VsdCkpIDApKQoJKGpsLXNtaW1lLWltcG9ydC1sZGFwLWNlcnRzIGxkYXByZXN1bHQgbWFp
-bCkKICAgICAgOzsgTm8gY2VydGlmaWNhdGUgZm91bmQuICBSZWNvcmQgaW4gbmVnYXRpdmUgY2Fj
-aGUuCiAgICAgIChqbC1zbWltZS1hZGQtbmVnY2FjaGUgbWFpbCkKICAgICAgbmlsKSkpCgooZGVm
-dW4gamwtc21pbWUtY2VydC1ieS1sZGFwIChtYWlsKQogICJGaW5kIGNlcnRpZmljYXRlIHZpYSBM
-REFQIGZvciBhZGRyZXNzIE1BSUwuIgogIDs7IEl0ZXJhdGlvbiBvdmVyIHNtaW1lLWxkYXAtaG9z
-dC1saXN0IHRha2VuIGZyb20gc21pbWUtY2VydC1ieS1sZGFwCiAgOzsgaW4gc21pbWUuZWwuCiAg
-KGlmIHNtaW1lLWxkYXAtaG9zdC1saXN0CiAgICAgIChjYXRjaCAnaW1wb3J0ZWQKCShkb2xpc3Qg
-KGhvc3Qgc21pbWUtbGRhcC1ob3N0LWxpc3QpCgkgIChsZXQgKChyZXN1bHQgKGpsLXNtaW1lLWNl
-cnQtYnktbGRhcC0xIG1haWwgaG9zdCkpKQoJICAgICh3aGVuIHJlc3VsdAoJICAgICAgKGxldCAo
-KGNvbnNpZGVyZWQgKGNhciByZXN1bHQpKQoJCSAgICAoaW1wb3J0ZWQgKGNhZHIgcmVzdWx0KSkp
-CgkJKGlmICg8IDAgY29uc2lkZXJlZCkKCQkgICAgKGlmICg9IDAgaW1wb3J0ZWQpCgkJCShtZXNz
-YWdlICJObyBuZXcga2V5cyAob3V0IG9mICVzKSBmb3IgJXMgYXQgaG9zdCBcIiVzXCIiCgkJCQkg
-Y29uc2lkZXJlZCBtYWlsIGhvc3QpCgkJICAgICAgKG1lc3NhZ2UgIkltcG9ydGVkICVzIGtleShz
-KSBmb3IgJXMgYXQgaG9zdCBcIiVzXCIiCgkJCSAgICAgICBpbXBvcnRlZCBtYWlsIGhvc3QpCgkJ
-ICAgICAgKHRocm93ICdpbXBvcnRlZCBpbXBvcnRlZCkpCgkJICAobWVzc2FnZSAiTm8ga2V5cyBm
-b3IgJXMgYXQgaG9zdCBcIiVzXCIiIG1haWwgaG9zdCkpKSkpKSkpKQoKKGRlZnVuIGpsLXNtaW1l
-LWltcG9ydC1sZGFwLWNlcnRzIChsZGFwcmVzdWx0IG1haWwpCiAgIkltcG9ydCBjZXJ0aWZpY2F0
-ZXMgZnJvbSBMREFQUkVTVUxUIGZvciBNQUlMIGludG8gRWFzeVBHIChncGdzbSkuIgogIChsZXQg
-KChjb250ZXh0IChlcGctbWFrZS1jb250ZXh0ICdDTVMpKQoJKGltcG9ydGVkIDApCgkoY29uc2lk
-ZXJlZCAwKSkKICAgIChkb2xpc3QgKGVudHJ5IGxkYXByZXN1bHQgKGxpc3QgY29uc2lkZXJlZCBp
-bXBvcnRlZCkpCiAgICAgICh3aGVuICg+IChsZW5ndGggKGNhZGFyIGVudHJ5KSkgMCkKCShlcGct
-aW1wb3J0LWtleXMtZnJvbS1zdHJpbmcgY29udGV4dCAoY2FkYXIgZW50cnkpKQoJKGxldCAoKHJl
-c3VsdCAoZXBnLWNvbnRleHQtcmVzdWx0LWZvciBjb250ZXh0ICdpbXBvcnQpKSkKCSAgKHNldHEg
-aW1wb3J0ZWQgKCsgaW1wb3J0ZWQgKGVwZy1pbXBvcnQtcmVzdWx0LWltcG9ydGVkIHJlc3VsdCkp
-CgkJY29uc2lkZXJlZCAoKyBjb25zaWRlcmVkIChlcGctaW1wb3J0LXJlc3VsdC1jb25zaWRlcmVk
-IHJlc3VsdCkpKQoJKSkpKSkKCihkZWZ1biBqbC1zbWltZS1rZXktYXZhaWxhYmxlLXAgKHJlY2lw
-aWVudCAmb3B0aW9uYWwgZm9yY2VkKQogICJDaGVjayB3aGV0aGVyIEVhc3lQRyBrbm93cyBhbiBT
-L01JTUUgY2VydGlmaWNhdGUgZm9yIFJFQ0lQSUVOVC4KVGhlIGNoZWNrIG1heSBpbml0aWF0ZSBh
-biBMREFQIHNlYXJjaCB0byByZXRyaWV2ZSBzdWNoIGEgY2VydGlmaWNhdGUuCklmIG9wdGlvbmFs
-IEZPUkNFRCBpcyB0cnVlLCBkbyBub3QgY2hlY2sgd2hldGhlciBhbiBMREFQIHF1ZXJ5IGlzIHBl
-cm1pdHRlZAp3aGVuIGEgY2VydGlmaWNhdGUgaXMgbWlzc2luZy4gIElmIGNhbGxlZCBpbnRlcmFj
-dGl2ZWx5LCBhbiBlLW1haWwgYWRkcmVzcyBhdApwb2ludCBpcyB1c2VkIGFzIGRlZmF1bHQgdmFs
-dWUgZm9yIFJFQ0lQSUVOVCBhbmQgRk9SQ0VEIGlzIHNldCB0byB0LiIKICAoaW50ZXJhY3RpdmUg
-KGxpc3QKICAgICAgICAgICAgICAgIChyZWFkLXN0cmluZyAoZm9ybWF0ICJFLU1haWwgYWRkcmVz
-cyBmb3IgTERBUCBzZWFyY2ggKCVzKTogIgoJCQkJICAgICAodGhpbmctYXQtcG9pbnQgJ2VtYWls
-KSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuaWwgbmlsICh0aGluZy1hdC1wb2ludCAn
-ZW1haWwpKQoJCXQpKQogIChsZXQqICgoZXBhLXByb3RvY29sICdDTVMpCgkgKGZvdW5kIChvciAo
-amwtZXBnLWZpbmQtdXNhYmxlLWtleXMgcmVjaXBpZW50KQoJCSAgICAod2hlbiAob3IgZm9yY2Vk
-IChqbC1zbWltZS1sZGFwLXBlcm1pdHRlZC1wIHJlY2lwaWVudCkpCgkJICAgICAgKGpsLXNtaW1l
-LWNlcnQtYnktbGRhcCByZWNpcGllbnQpCgkJICAgICAgKGpsLWVwZy1maW5kLXVzYWJsZS1rZXlz
-IHJlY2lwaWVudCkpKSkKCSAobm8gKGxlbmd0aCBmb3VuZCkpKQogICAgKGlmIGZvcmNlZAoJOzsg
-RGlzcGxheSBvZiBtZXNzYWdlIGluIGludGVyYWN0aXZlIGNhbGwgZG9lcyBub3QgcmV0dXJuIG5p
-bCBpbiBjYXNlCgk7OyBvZiBtaXNzaW5nIGNlcnRpZmljYXRlLCB3aGljaCBJIGZpbmQgT0suCgko
-aWYgKD0gMCBubykKCSAgICAobWVzc2FnZSAiTm8gY2VydGlmaWNhdGUgZm91bmQiKQoJICAoamwt
-c21pbWUtZGVsLW5lZ2NhY2hlIHJlY2lwaWVudCkKCSAgKG1lc3NhZ2UgIkZvdW5kICVzIGNlcnRp
-ZmljYXRlKHMpIiBubykpCiAgICAgIGZvdW5kKSkpCgooZGVmdW4gamwtc21pbWUtYWRkLW5lZ2Nh
-Y2hlIChlbWFpbCkKICAiQ3JlYXRlIG5lZ2F0aXZlIGNhY2hlIGVudHJ5IGZvciBFTUFJTC4iCiAg
-KGxldCAoKGNhY2hlbmFtZSAoY29uY2F0IGpsLXNtaW1lLW5lZ2F0aXZlLWNhY2hlLWRpciAoZG93
-bmNhc2UgZW1haWwpKSkpCiAgICAod3JpdGUtcmVnaW9uICIiIG5pbCBjYWNoZW5hbWUpCiAgICAo
-bWVzc2FnZSAiQ3JlYXRlZCBuZWdhdGl2ZSBjYWNoZSBlbnRyeSAlcyIgY2FjaGVuYW1lKSkpCgoo
-ZGVmdW4gamwtc21pbWUtZGVsLW5lZ2NhY2hlIChlbWFpbCkKICAiUmVtb3ZlIG5lZ2F0aXZlIGNh
-Y2hlIGZpbGUgZm9yIEVNQUlMIGlmIGl0IGV4aXN0cy4KQWx3YXlzIHJldHVybiBuaWwuIgogIChs
-ZXQgKChjYWNoZW5hbWUgKGNvbmNhdCBqbC1zbWltZS1uZWdhdGl2ZS1jYWNoZS1kaXIgKGRvd25j
-YXNlIGVtYWlsKSkpKQogICAgKHdoZW4gKGZpbGUtZXhpc3RzLXAgY2FjaGVuYW1lKQogICAgICAo
-ZGVsZXRlLWZpbGUgY2FjaGVuYW1lKQogICAgICAobWVzc2FnZSAiRGVsZXRlZCBuZWdhdGl2ZSBj
-YWNoZSBlbnRyeSAlcyIgY2FjaGVuYW1lKSkKICAgIG5pbCkpCgooZGVmdW4gamwtc21pbWUtbmVn
-Y2FjaGUtZXhwaXJlIChlbWFpbCkKICAiRGVsZXRlIGNhY2hlIGVudHJ5IGZvciBFTUFJTCBpZiBp
-dCBoYXMgZXhwaXJlZC4KQW4gZW50cnkgZXhwaXJlcyBvbmNlIGl0IGlzIG9sZGVyIHRoYW4gYGps
-LXNtaW1lLW5lZ2NhY2hlLW1heGFnZScuIgogIChsZXQgKChjYWNoZW5hbWUgKGNvbmNhdCBqbC1z
-bWltZS1uZWdhdGl2ZS1jYWNoZS1kaXIgKGRvd25jYXNlIGVtYWlsKSkpKQogICAgKGlmIChhbmQg
-KD4gamwtc21pbWUtbmVnY2FjaGUtbWF4YWdlIDApCgkgICAgIChmaWxlLWV4aXN0cy1wIGNhY2hl
-bmFtZSkpCgkodW5sZXNzICg+IGpsLXNtaW1lLW5lZ2NhY2hlLW1heGFnZQoJCSAgICgtICh0aW1l
-LXRvLWRheXMgKGN1cnJlbnQtdGltZSkpCgkJICAgICAgKHRpbWUtdG8tZGF5cyAobnRoIDYgKGZp
-bGUtYXR0cmlidXRlcyBjYWNoZW5hbWUpKSkpKQoJICAoZGVsZXRlLWZpbGUgY2FjaGVuYW1lKQoJ
-ICAobWVzc2FnZSAiRXhwaXJlZCBuZWdhdGl2ZSBjYWNoZSBlbnRyeSAlcyIgY2FjaGVuYW1lKSkp
-KSkKCihkZWZ1biBqbC1zbWltZS1pc25lZ2NhY2hlZC1wIChlbWFpbCkKICAiUmV0dXJuIG5vbi1u
-aWwgaWYgRU1BSUwgaXMgbmVnYXRpdmVseSBjYWNoZWQuIgogIChsZXQgKChjYWNoZW5hbWUgKGNv
-bmNhdCBqbC1zbWltZS1uZWdhdGl2ZS1jYWNoZS1kaXIgKGRvd25jYXNlIGVtYWlsKSkpKQogICAg
-KGpsLXNtaW1lLW5lZ2NhY2hlLWV4cGlyZSBlbWFpbCkKICAgIChmaWxlLWV4aXN0cy1wIGNhY2hl
-bmFtZSkpKTEKCihkZWZ1biBqbC1zbWltZS1sZGFwLXBlcm1pdHRlZC1wIChlbWFpbCkKICAiUmV0
-dXJuIG5vbi1uaWwgaWYgTERBUCBxdWVyeSBmb3IgRU1BSUwgaXMgcGVybWl0dGVkLgpBbiBMREFQ
-IHF1ZXJ5IGlzIHBlcm1pdHRlZCBpZiAoYSkgbm8gbmVnYXRpdmUgY2FjaGUgZmlsZSBmb3IKZW1h
-aWwgZXhpc3RzLCAoYikgYGpsLXNtaW1lLXBlcm1pdC1sZGFwJyBpcyBub3QgbmlsIGJ1dCBhIHJl
-Z3VsYXIKZXhwcmVzc2lvbiwgYW5kIChjKSBlbWFpbCBtYXRjaGVzIGBqbC1zbWltZS1wZXJtaXQt
-bGRhcCcuIgogIChhbmQgKG5vdCAoamwtc21pbWUtaXNuZWdjYWNoZWQtcCBlbWFpbCkpCiAgICAg
-ICAoc3RyaW5ncCBqbC1zbWltZS1wZXJtaXQtbGRhcCkKICAgICAgIChzdHJpbmctbWF0Y2ggamwt
-c21pbWUtcGVybWl0LWxkYXAgZW1haWwpKSkKCihkZWZ1biBqbC1zZWN1cmUtbWVzc2FnZS1zbWlt
-ZSAoKQogICJJbnZva2UgTU1MIGZ1bmN0aW9uIHRvIGFkZCBhcHByb3ByaWF0ZSBzZWN1cmUgdGFn
-IGZvciBTL01JTUUuCkNyZWF0aW9uIG9mIHNpZ25hdHVyZXMgaXMgY29udHJvbGxlZCBieSBgamwt
-ZG8tbm90LXNpZ24tcCcuIgogIChtbWwtc2VjdXJlLW1lc3NhZ2UtZW5jcnlwdC1zbWltZSAoamwt
-ZG8tbm90LXNpZ24tcCkpKQoKOzs7IGpsLXNtaW1lLmVsIGVuZHMgaGVyZQo=
+;;; jl-sime.el --- Improved support for S/MIME with MML and LDAP
+;; -*- Mode: Emacs-Lisp -*-
+;; -*- coding: utf-8 -*-
+
+;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
+
+;; Version: $Id: jl-smime.el,v 1.10 2013/12/31 12:01:57 lechten Exp $
+;; Changelog:
+;; 2012/03/09, Version 1.1, initial release
+;; 2012/05/01, Version 1.2, extract certificate from signed message to file
+;; 2013/06/29, Version 2.1:
+;;    - compatibility with jl-encrypt.el 3.1
+;;    - customizable LDAP search for missing certificates upon send
+;;    - moved customization for other packages from code to comments
+;; 2013/12/20, Version 3-beta:
+;;    - switch from openssl to gpgsm via EasyPG (certificates are no longer
+;;      stored in files but imported into gpgsm)
+;;    - new customizable variable jl-smime-negcache-maxage
+;;    - new command jl-smime-key-available-p
+;; 2013/12/31, Version 3.1:
+;;    - updated documentation
+
+;; Compatibility: Developed on GNU Emacs 24.3; may work with GNU Emacs 23.2
+;; and later
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.
+;; If not, see http://www.gnu.org/licenses/ or write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;; Keywords: mail, encryption, S/MIME, CMS, LDAP
+
+;; URL: http://www.emacswiki.org/emacs/jl-smime.el
+;; EmacsWiki: ExtendSMIME
+
+;; A signed version of this file is available over there:
+;; http://www.informationelle-selbstbestimmung-im-internet.de/emacs/
+
+;; Requires: jl-encrypt.el   http://www.emacswiki.org/emacs/jl-encrypt.el
+
+;;; Commentary:
+;; ExtendSMIME enhances DefaultEncrypt to support S/MIME.  Moreover, it allows
+;; to retrieve certificates via LDAP and to import them into gpgsm.
+;;
+;; Preliminaries:
+;; I use, but do not recommend, S/MIME.  I recommend GnuPG.
+;; Here is what I think about the “trust” model of S/MIME:
+;; https://blogs.fsfe.org/jens.lechtenboerger/2013/12/23/openpgp-and-smime/
+;;
+;; Functionality:
+;; The general idea of ExtendSMIME is to enhance S/MIME support in Gnus for
+;; * retrieval of certificates from LDAP servers with import into gpgsm
+;;   (smime-cert-by-ldap-1 redefined, including a bug fix and negative
+;;   caching) and
+;; * (via jl-encrypt.el) automatic insertion of MML tags into messages if
+;;   certificates for all recipients are available.
+;;
+;; Note that version 3 of ExtendSMIME introduces a major change: Previous
+;; versions used openssl for cryptographic operations while version 3 uses
+;; gpgsm (part of gnupg-2).  In particular, certificates are no longer
+;; maintained by ExtendSMIME but are imported into gpgsm.  In fact, gpgsm
+;; manages certificates on its own and automatically extracts certificates
+;; from signed messages, which simplifies the code of ExtendSMIME a lot.
+;;
+;; The general idea of ExtendSMIME is to search for missing certificates via
+;; LDAP before an e-mail is sent.  Resulting certificates are imported
+;; into gpgsm.  LDAP search is customizable (and documented) via
+;; `jl-smime-permit-ldap'.
+;;
+;; In addition to this automatic LDAP search, the command
+;; `M-x jl-smime-key-available-p' allows manual searches.  It asks for an
+;; e-mail address (an address at point is used as default value).  If no
+;; certificate is available, an LDAP search is started (ignoring negative
+;; caching and `jl-smime-permit-ldap').  If a certificate is found, it is
+;; imported into gpgsm; otherwise, a negative cache entry is created.
+;;
+;; Documentation concerning S/MIME with GNU Emacs is mostly targeting openssl
+;; but not gpgsm.  See installation instructions below.
+
+;; Install:
+;; Message security (as described in Info node `(message) Security')
+;; https://www.gnu.org/software/emacs/manual/html_node/message/Security.html
+;; automatically prefers EasyPG with gpgsm over openssl if EasyPG is loaded
+;; first.  Thus, place jl-smime.el as well as jl-encrypt.el into your
+;; load-path, and add the following to ~/.emacs:
+;;
+;;     (require 'epa-file)
+;;     (load "jl-smime")
+;;
+;; Optionally, but unrelated to e-mail, you may also want:
+;;     (setq epa-file-encrypt-to "<your-key-id>")
+;;     (setq epg-debug t)
+;;
+;; Customizable variables of ExtendSMIME are jl-smime-permit-ldap,
+;; jl-smime-negative-cache-dir, and jl-smime-negcache-maxage.
+;; You may want to read their documentation.
+;;
+;; I'm using the following code after (load "jl-smime") in my setup:
+;;
+;; ;; Allow automatic LDAP queries for certificates within my domain.
+;; (setq jl-smime-permit-ldap "@\\(.+\\.\\)?uni-muenster\\.de$")
+;;
+;; ;; I'm searching for S/MIME certificates via LDAPS at DFN-Verein.
+;; ;; Note that ldap.el in Emacs requires a minor workaround to perform
+;; ;; encrypted connections via LDAPS.  In fact, ldapsearch is being invoked
+;; ;; to use unencrypted plaintext LDAP communication with the parameter "-h".
+;; ;; Maybe I'm doing something wrong but I only got LDAPS to work with the
+;; ;; parameter "-H ldaps://ldap.pca.dfn.de".  To get rid of the default
+;; ;; parameter -h, I'm passing the empty string as hostname, setting
+;; ;; smime-ldap-host-list to '("").  Finally, ldapsearch aborts the
+;; ;; connection if it is not told where to find the CA certificate for the
+;; ;; LDAPS server (which is a Good Thing).
+;; ;; I created ~/.ldaprc with a single line pointing to that CA certificate:
+;; ;; TLS_CACERT /path/to/server/cert
+;; (require 'ldap)
+;; (setq smime-ldap-host-list '(""))
+;; (setq ldap-default-base "O=DFN-Verein,C=DE"
+;;       ; -x: no SASL authentication, -tt: store result in file
+;;       ; -H: connect to specified URI.
+;;       ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")
+;;       )
+;;
+;; If you used openssl previously, you need to import your keys and
+;; certificates into gpgsm.  Here are three-and-a-half steps, which worked for
+;; me.
+;;
+;; First, import the private key.
+;; $ gpgsm --import my-private-key.p12
+;;
+;; Second, the CA signing my certificate is unknown to gpgsm (gpg-agent, in
+;; fact).  Thus, gpgsm refuses to use that key pair.  I added the option
+;; `allow-mark-trusted' to ~/.gnupg/gpg-agent.conf.  Then I tried again to
+;; sign a file.  This time, gpg-agent displayed the root CA's fingerprint and
+;; asked whether I trust it.  Saying "yes" added that fingerprint to
+;; ~/.gnupg/trustlist.txt, and the key became usable.  (Note that you must
+;; “trust” the root CA; adding an intermediate CA's fingerprint does not work.
+;; You read my article on “trust”, didn’t you?)
+;;
+;; Third, import (a subset of) your old certificates.  With ExtendSMIME before
+;; version 3, those were stored in files under
+;; `smime-certificate-directory', ~/Mail/certs, by default.  In that
+;; directory, execute: $ gpgsm --import <certfiles>
+;;
+;; Finally, decide how you ensure that you can decrypt your own e-mails.
+;; See comments for DefaultEncrypt in jl-encrypt.el and note that, similarly
+;; to gpg, gpgsm understands the option "--encrypt-to" (which is not
+;; mentioned in the man page).  I have the following line in gpgsm.conf:
+;; encrypt-to <colon-separated-fingerprint-of-own-key>
+
+;; This file is *NOT* part of GNU Emacs.
+
+;;; Code:
+(require 'smime)
+(require 'mml-smime)
+(require 'jl-encrypt)
+
+(defgroup jl-smime nil
+  "Customization options for jl-smime.el which extend jl-encrypt.el"
+  :group 'jl-encrypt)
+
+(defcustom jl-smime-permit-ldap nil
+  "Control whether LDAP queries should look for missing certificates.
+If this variable is nil (the default), LDAP queries are only
+performed by standard Gnus message behavior (with EasyPG probably
+never).
+Otherwise, this variable must be a regular expression matching
+e-mail addresses.  Whenever an S/MIME certificate is missing for
+an e-mail address that (a) matches this regular expression
+and (b) is not recorded under `jl-smime-negative-cache-dir', an
+LDAP query for a certificate is performed.
+Note that such an LDAP query tells the LDAP server and (if you do
+not use encrypted LDAPS communication) *every* party controlling
+any node or link between you and that server to whom you are
+about to send an e-mail.  Such information leakage may or may not
+be tolerable in your situation.
+
+At work I'm using \"@\\(.+\\.\\)?uni-muenster\\.de$\" to check for
+certificates for all addresses under \"uni-muenster.de\".
+Thus, if I send an e-mail to an address within my domain, and gpgsm
+does not have a certificate for that address, an LDAP search is
+started.  If that search returns a certificate, it is imported
+into gpgsm.  If no certificate is found, a negative cache entry
+for the e-mail address is created.  As long as that entry exists
+\(see `jl-smime-negcache-maxage'), no further LDAP query will be
+started for that address."
+  :group 'jl-smime
+  :type '(choice (const nil) (regexp)))
+
+(defun jl-smime-mkcachedir ()
+  "Internal function to compute default name of negative cache directory."
+  (let ((result (file-name-as-directory
+		 (concat
+		  (file-name-as-directory smime-certificate-directory)
+		  "negative-cache"))))
+    (if (not (file-directory-p result))
+	(make-directory result t))
+    result))
+
+(defcustom jl-smime-negative-cache-dir (jl-smime-mkcachedir)
+  "Directory to record e-mail addresses for which LDAP failed.
+LDAP queries are used to search for missing S/MIME certificates.
+If a query fails, its e-mail address is recorded under this
+directory.  As long as an e-mail address is recorded there,
+jl-smime will not initiate further LDAP queries for that e-mail
+address.  An e-mail address will be removed from the negative
+cache if jl-smime observes its certificate (e.g., if you receive
+a signed e-mail containing the certificate or if
+`smime-cert-by-ldap-1' retrieves the certificate, possibly when
+you perform `C-c RET c s').
+Essentially, this negative caching is meant to limit the amount
+of information leakage explained under `jl-smime-permit-ldap'."
+  :group 'jl-smime
+  :type '(string))
+
+(defcustom jl-smime-negcache-maxage 0
+  "Number of days after which negative cache entries expire.
+If 0, keep entries forever."
+  :group 'jl-smime
+  :type '(integer))
+
+;;
+;; No configuration options beyond this point.  Just code.
+;;
+
+(add-to-list 'jl-method-table
+	     '(CMS (("test" jl-smime-key-available-p)
+		    ("doit" jl-secure-message-smime)
+		    ("ask" "S/MIME certificates available \
+for all recipients.  Really proceed *without* encryption? "))))
+
+;; cadaar is defined in cl.el
+(require 'cl)
+(defun jl-smime-cert-by-ldap-1 (mail host)
+  "Get certificate for MAIL from LDAP server HOST and import into gpgsm."
+  ;; Following funcall and subsequent test on ldapresult are copied from
+  ;; smime-cert-by-ldap-1.  However, here the ldapresult is imported into
+  ;; gpgsm or a negative cache entry is created, and no certificate buffer is
+  ;; created.
+  (let ((ldapresult
+	 ;; JL: In some versions of emacs, ldapresult contains lots of
+	 ;; nil elements.
+	 ;; These seem to be unexpected in the let body below.
+	 ;; Hence, the following remove operation is necessary...
+	 (remove nil (funcall
+	  (if (or (featurep 'xemacs)
+		  ;; For Emacs >= 22 we don't need smime-ldap.el
+		  (< emacs-major-version 22))
+	      (progn
+		(require 'smime-ldap)
+		'smime-ldap-search)
+	    'ldap-search)
+	  (concat "mail=" mail)
+	  host '("userCertificate") nil))))
+    (if (and (>= (length ldapresult) 1)
+             (> (length (cadaar ldapresult)) 0))
+	(jl-smime-import-ldap-certs ldapresult mail)
+      ;; No certificate found.  Record in negative cache.
+      (jl-smime-add-negcache mail)
+      nil)))
+
+(defun jl-smime-cert-by-ldap (mail)
+  "Find certificate via LDAP for address MAIL."
+  ;; Iteration over smime-ldap-host-list taken from smime-cert-by-ldap
+  ;; in smime.el.
+  (if smime-ldap-host-list
+      (catch 'imported
+	(dolist (host smime-ldap-host-list)
+	  (let ((result (jl-smime-cert-by-ldap-1 mail host)))
+	    (when result
+	      (let ((considered (car result))
+		    (imported (cadr result)))
+		(if (< 0 considered)
+		    (if (= 0 imported)
+			(message "No new keys (out of %s) for %s at host \"%s\""
+				 considered mail host)
+		      (message "Imported %s key(s) for %s at host \"%s\""
+			       imported mail host)
+		      (throw 'imported imported))
+		  (message "No keys for %s at host \"%s\"" mail host)))))))))
+
+(defun jl-smime-import-ldap-certs (ldapresult mail)
+  "Import certificates from LDAPRESULT for MAIL into EasyPG (gpgsm)."
+  (let ((context (epg-make-context 'CMS))
+	(imported 0)
+	(considered 0))
+    (dolist (entry ldapresult (list considered imported))
+      (when (> (length (cadar entry)) 0)
+	(epg-import-keys-from-string context (cadar entry))
+	(let ((result (epg-context-result-for context 'import)))
+	  (setq imported (+ imported (epg-import-result-imported result))
+		considered (+ considered (epg-import-result-considered result)))
+	)))))
+
+(defun jl-smime-key-available-p (recipient &optional forced)
+  "Check whether EasyPG knows an S/MIME certificate for RECIPIENT.
+The check may initiate an LDAP search to retrieve such a certificate.
+If optional FORCED is true, do not check whether an LDAP query is permitted
+when a certificate is missing.  If called interactively, an e-mail address at
+point is used as default value for RECIPIENT and FORCED is set to t."
+  (interactive (list
+                (read-string (format "E-Mail address for LDAP search (%s): "
+				     (thing-at-point 'email))
+                             nil nil (thing-at-point 'email))
+		t))
+  (let* ((epa-protocol 'CMS)
+	 (found (or (jl-epg-find-usable-keys recipient)
+		    (when (or forced (jl-smime-ldap-permitted-p recipient))
+		      (jl-smime-cert-by-ldap recipient)
+		      (jl-epg-find-usable-keys recipient))))
+	 (no (length found)))
+    (if forced
+	;; Display of message in interactive call does not return nil in case
+	;; of missing certificate, which I find OK.
+	(if (= 0 no)
+	    (message "No certificate found")
+	  (jl-smime-del-negcache recipient)
+	  (message "Found %s certificate(s)" no))
+      found)))
+
+(defun jl-smime-add-negcache (email)
+  "Create negative cache entry for EMAIL."
+  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+    (write-region "" nil cachename)
+    (message "Created negative cache entry %s" cachename)))
+
+(defun jl-smime-del-negcache (email)
+  "Remove negative cache file for EMAIL if it exists.
+Always return nil."
+  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+    (when (file-exists-p cachename)
+      (delete-file cachename)
+      (message "Deleted negative cache entry %s" cachename))
+    nil))
+
+(defun jl-smime-negcache-expire (email)
+  "Delete cache entry for EMAIL if it has expired.
+An entry expires once it is older than `jl-smime-negcache-maxage'."
+  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+    (if (and (> jl-smime-negcache-maxage 0)
+	     (file-exists-p cachename))
+	(unless (> jl-smime-negcache-maxage
+		   (- (time-to-days (current-time))
+		      (time-to-days (nth 6 (file-attributes cachename)))))
+	  (delete-file cachename)
+	  (message "Expired negative cache entry %s" cachename)))))
+
+(defun jl-smime-isnegcached-p (email)
+  "Return non-nil if EMAIL is negatively cached."
+  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+    (jl-smime-negcache-expire email)
+    (file-exists-p cachename)))1
+
+(defun jl-smime-ldap-permitted-p (email)
+  "Return non-nil if LDAP query for EMAIL is permitted.
+An LDAP query is permitted if (a) no negative cache file for
+email exists, (b) `jl-smime-permit-ldap' is not nil but a regular
+expression, and (c) email matches `jl-smime-permit-ldap'."
+  (and (not (jl-smime-isnegcached-p email))
+       (stringp jl-smime-permit-ldap)
+       (string-match jl-smime-permit-ldap email)))
+
+(defun jl-secure-message-smime ()
+  "Invoke MML function to add appropriate secure tag for S/MIME.
+Creation of signatures is controlled by `jl-do-not-sign-p'."
+  (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
+
+;;; jl-smime.el ends here
