@@ -67,10 +67,9 @@ Suggestions:
 
 == Gnus and Security ==
 
-* GnusPGG -- setting crypting tools
-* SigningMail -- general page
+* EasyPG -- GnuPG (gpg and gpgsm) interface for Emacs
 * EncryptingMail -- general page
-* GnusSMIME -- using S/MIME for signing/encrypting mails
+* GnusSMIME -- using openssl for signing/encrypting mails
 * GnusAndOutlookPGP -- workaround for inter-operating with PGP plugins for Outlook not capable of PGP/MIME
 
 == Gnus Buffers ==
