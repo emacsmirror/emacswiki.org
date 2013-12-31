@@ -2,32 +2,9 @@ ExtendSMIME enhances DefaultEncrypt to support S/MIME.  Moreover, it allows
 to retrieve certificates via LDAP and to import them into gpgsm.
 
 ==Preliminaries==
-In general, I recommend GnuPG over S/MIME (which is the default for Gnus).
-Unless you are in a restricted setting, say in a university or corporate
-setting, the trust model regarding certificate authorities is broken.
-You may want to recall some certificate authority failures such as
-Comodo (2011) [URI censored],
-[https://freedom-to-tinker.com/blog/sjs/diginotar-hack-highlights-critical-failures-our-ssl-web-security-model DigiNotar (2011)],
-Trustwave (2012) [URI censored], and
-[https://blog.mozilla.org/security/2013/12/09/revoking-trust-in-one-anssi-certificate/ ANSSI (2013)].
-
-Although the impact of those failures appears to be restricted to SSL
-certificates, I don't see any reason why S/MIME certificates should be more
-trustworthy.
-
-In addition, be careful how you create your key pair.  Doing that in your
-browser via a Web form provided by your CA apparently requires a networked
-machine, which may not be the best choice.  Instead, openssl and gpgsm
-enable offline generation with transfer to an e-token or smartcard.
-If you must use a browser, for Firefox at least set a master password
-before you generate the key pair:
-http://kb.mozillazine.org/Master_password
-Otherwise, everyone with access to your profile folder (local admin as well
-as backups in remote places) can use your private key.
-
-Having said that, in my university I trust the CA to sign keys for the
-correct owners, and more colleagues own S/MIME certificates than GnuPG
-keys.
+I use, but do not recommend, S/MIME.  I recommend GnuPG.
+Here is what I think about the “trust” model of S/MIME:
+https://blogs.fsfe.org/jens.lechtenboerger/2013/12/23/openpgp-and-smime/
 
 ==Functionality==
 The general idea of ExtendSMIME is to enhance S/MIME support in Gnus for
@@ -37,8 +14,8 @@ The general idea of ExtendSMIME is to enhance S/MIME support in Gnus for
 * (via jl-encrypt.el) automatic insertion of MML tags into messages if
   certificates for all recipients are available.
 
-Note that version 3.1 of ExtendSMIME introduces a major change: Previous
-versions used openssl for cryptographic operations while version 3.1 uses
+Note that version 3 of ExtendSMIME introduces a major change: Previous
+versions used openssl for cryptographic operations while version 3 uses
 gpgsm (part of gnupg-2).  In particular, certificates are no longer
 maintained by ExtendSMIME but are imported into gpgsm.  In fact, gpgsm
 manages certificates on its own and automatically extracts certificates
@@ -125,10 +102,11 @@ fact).  Thus, gpgsm refuses to use that key pair.  I added the option
 sign a file.  This time, gpg-agent displayed the root CA's fingerprint and
 asked whether I trust it.  Saying "yes" added that fingerprint to
 ~/.gnupg/trustlist.txt, and the key became usable.  (Note that you must
-trust the root CA; adding an intermediate CA's fingerprint does not work.)
+“trust” the root CA; adding an intermediate CA's fingerprint does not work.
+You read my article on “trust”, didn’t you?)
 
 Third, import (a subset of) your old certificates.  With ExtendSMIME before
-version 3.1, those were stored in files under
+version 3, those were stored in files under
 `smime-certificate-directory', ~/Mail/certs, by default.  In that
 directory, execute: <code>$ gpgsm --import <certfiles></code>
 
