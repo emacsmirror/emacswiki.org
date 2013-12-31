@@ -5,7 +5,7 @@
 ;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
 ;; Copyright (C) 2013 konubinix
 
-;; Version: $Id: jl-encrypt.el,v 1.21 2013/12/20 15:48:08 lechten Exp $
+;; Version: $Id: jl-encrypt.el,v 1.23 2013/12/31 12:02:22 lechten Exp $
 ;; Changelog:
 ;; 2012/03/09, Version 1.1, initial release
 ;; 2013/03/18, Version 2.1, integrate patch by konubinix to also encrypt
@@ -47,8 +47,7 @@
 ;;   - Use defcustom instead of defvar for user variables, which are also
 ;;     renamed.
 ;; 2013/12/20, Version 4-beta, unified use of EasyPG for gpg and gpgsm.
-;;   - Removed variables
-;;     jl-encrypt-ignore-from and
+;;   - Removed variables jl-encrypt-ignore-from and
 ;;     jl-encrypt-recipient-headers.
 ;;     Treatment of encryption targets now controlled entirely by EasyPG
 ;;     (and GnuPG configuration files).  New functions jl-epg-find-usable-keys
@@ -56,6 +55,10 @@
 ;;   - New variable jl-encrypt-manual-choice.
 ;;     If several public keys are available for a recipient, ask user which
 ;;     one to use.  (Requires `mm-encrypt-option' introduced in Emacs 23.2.)
+;; 2013/12/31, Version 4.1,
+;;   - Take care of interface change for mml2015-epg-find-usable-key
+;;     starting with Ma Gnus v0.7.
+;;   - Updated documentation.
 
 ;; Compatibility: Developed on GNU Emacs 24.3; may work with GNU Emacs 23.2
 ;; and later
@@ -140,7 +143,9 @@
 ;; you are doing.  And let me know how to do that properly ;)
 ;; See also `jl-encrypt-bcc-is-safe'.
 ;;
-;; If you are really interested in S/MIME then I suggest that you take a look
+;; If you are interested in S/MIME then I suggest that you read this:
+;; https://blogs.fsfe.org/jens.lechtenboerger/2013/12/23/openpgp-and-smime/
+;; If you are still interested in S/MIME afterwards, take a look
 ;; at ExtendSMIME (jl-smime.el) in addition to this file.
 
 ;; Install:
@@ -434,11 +439,18 @@ Variable `epa-protocol' determines the type of keys."
       ;; Beware: There are lots of similar functions to check candidate, e.g.,
       ;; mml2015-epg-find-usable-key, mml1991-epg-find-usable-key,
       ;; mml-smime-epg-find-usable-key.
-      ;; The first two are exact copies; they exclude disabled, revoked, and
-      ;; expired keys.  The third one does not test for disabled keys; maybe
-      ;; S/MIME keys cannot be disabled.  Hence, it probably does not hurt to
-      ;; apply mml2015-epg-find-usable-key in all cases.
-      (if (mml2015-epg-find-usable-key (list candidate) 'encrypt)
+      ;; With Gnus v5.13, the first two are exact copies; they exclude
+      ;; disabled, revoked, and expired keys. The third one does not test
+      ;; for disabled keys; maybe S/MIME keys cannot be disabled.
+      ;; Hence, it probably does not hurt to apply mml2015-epg-find-usable-key
+      ;; in all cases.
+      ;; With Ma Gnus v0.7, mml2015-epg-find-usable-key is rewritten with an
+      ;; incompatible list of arguments (but mml1991-epg-find-usable-key
+      ;; remains unchanged) to use the new function mml2015-epg-check-sub-key.
+      (if (or (and (fboundp 'mml2015-epg-check-sub-key)
+		   (mml2015-epg-check-sub-key candidate 'encrypt))
+	      (and (not (fboundp 'mml2015-epg-check-sub-key))
+		   (mml2015-epg-find-usable-key (list candidate) 'encrypt)))
 	  (push candidate keys)))))
 
 (defun jl-epg-check-unique-keys (recipients)
