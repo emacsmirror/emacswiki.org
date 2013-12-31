@@ -93,6 +93,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 
 *** [http://www.emacswiki.org/emacs/auto-save.el auto-save.el] -- Auto save file when emacs idle, instead default one.
 
+*** [http://www.emacswiki.org/emacs/qml-mode.el qml-mode.el] -- Extension to support Qt [http://qt-project.org/doc/qt-5.0/qtqml/qtqml-index.html QML] files.
+
 * Enhanced packages.
 
 : Below are enhanced packages, some packages need many depend libraries, so copy any code you like. :)
