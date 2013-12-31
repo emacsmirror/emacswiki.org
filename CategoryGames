@@ -45,7 +45,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * NethackMode -- play nethack inside emacs
 * PhutballMode -- play phutball over the net
 * RandomIdleQuote -- not really a game, but fun! Show's a quote when emacs goes into idle.
-* [http://dto.github.com/notebook/rlx.html RLX], a graphical roguelike engine and development system for Emacs(currently being ported to Common Lisp).
+* [http://dto.github.com/notebook/rlx.html RLX], a graphical roguelike engine and development system for Emacs(currently being ported to Common Lisp). (link dead as of 2013.12.31)
 * [http://members3.jcom.home.ne.jp/tanaka-ryo/images/rpg-el.tar.gz rpg-el] -- a role playing game
 * ScrmableSrtnig
 * SokobanMode
