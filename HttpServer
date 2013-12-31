@@ -1,6 +1,6 @@
 For an HTTP server which makes use of modern Emacs network process handling see [https://github.com/eschulte/emacs-web-server Web Server] which requires Emacs 24.3 or greater but has no external dependencies.
 
----
+----
 
 Emacs 23 supports server sockets and asynchronous server sockets. [[Elnode]] is an asychronous http server in elisp by NicFerrier.
 
