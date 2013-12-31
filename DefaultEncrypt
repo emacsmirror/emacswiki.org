@@ -54,8 +54,10 @@ thing: Only add Bcc if you are absolutely sure that you know what
 you are doing.  And let me know how to do that properly ;)
 See also `jl-encrypt-bcc-is-safe'.
 
-If you are really interested in S/MIME then I suggest that you take a look
-at ExtendSMIME (jl-smime.el) in addition to this file.
+If you are interested in S/MIME then I suggest that you read this:
+https://blogs.fsfe.org/jens.lechtenboerger/2013/12/23/openpgp-and-smime/
+If you are still interested in S/MIME afterwards, take a look
+at ExtendSMIME (Lisp:jl-smime.el) in addition to this file.
 
 ==Installation==
 A signed version of DefaultEncrypt (jl-encrypt.el) is available
