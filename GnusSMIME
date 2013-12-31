@@ -2,6 +2,11 @@ This is a small tutorial to get you started on using S/MIME with
 gnus, i.e. signing mails with your private key and encrypting mail
 with some other person's certificate.
 
+Note that the bulk of this page is based on S/MIME with openssl,
+which requires that you manage certificates yourself. A superior
+approach based on EasyPG with gpgsm (part of GnuPG-2) is explained
+towards the end. See also ExtendSMIME.
+
 == Basic setup ==
 
 First, you need your own X.509 certificate together with your private key in
@@ -229,6 +234,7 @@ I strongly suggest you **make a backup of your .bbdb file** before using this fu
 
 ==Retrieving certificates via LDAP==
 ExtendSMIME redefines some Gnus functions and adds new ones to include proper support for multiple recipients, retrieval and caching of certificates from LDAP servers, and (via DefaultEncrypt) automatic insertion of MML tags into messages if certificates for all recipients are available.
+
 ==Update: epg and gpgsm ==
 
 Using ''smime '' is significantly easier, when using ''epg'' (the EasyPG Library) and ''gpgsm'' (I have tested this combination with Xemacs 21.5.32 (mule) and "Ma Gnus v0.6" under Kubuntu 10.04; gpgsm should run for all Linux distributions, for MacOS I am not sure, nor for MS Windows.)
@@ -278,4 +284,4 @@ Now in gnus the commands you should use are:
 
 
 ----
-CategoryGnus GnusPGG SigningMail EncryptingMail
+CategoryGnus GnusPGG EncryptingMail
