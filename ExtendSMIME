@@ -118,4 +118,4 @@ encrypt-to <colon-separated-fingerprint-of-own-key>
 
 
 ----
-CategoryGnus SigningMail EncryptingMail
+CategoryGnus EncryptingMail
