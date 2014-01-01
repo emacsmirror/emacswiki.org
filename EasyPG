@@ -173,6 +173,17 @@ Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again.
 
 ----
 
+goibhniu: I think this may be a problem with the gpg-agent.  I've had it on a Mac and was able to fix it by uninstalling and reinstalling GPG Tools.  Here are some useful links:
+
+http://comments.gmane.org/gmane.emacs.bugs/65815
+(Hehe, apparently rms himself ran into a problem.)
+
+http://support.gpgtools.org/discussions/everything/2128-gpg-error
+
+ -dm
+
+----
+
 One reason for 'File exists, but cannot be read' can be that it cannot find gpg.  It is a shame that the error message is so bad.
 
 To fix, you can either set epg-gpg-program to the full path (e.g. /sw/bin/gpg2) or set it to a relative path (e.g. gpg2) and make sure that exec-path contains the right directory.  Setting $PATH from inside Emacs is NOT adequate, it has to be in exec-path.  (Setting $PATH outside Emacs would probably do but with Emacs.app invoked from Finder that might not be convenient.)
