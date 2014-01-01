@@ -7,7 +7,7 @@
 You can easily customize any of the key bindings that '''Icicles''' uses -- see
 [[Icicles - Customizing Key Bindings]].  I recommend that you first try
 using the default bindings, however.  There are many '''Icicles''' key bindings (in particular in the [[minibuffer]]), but they are grouped
-into a few natural sets, to help you remember them.  And there are [[user options]] available for easy key customization.
+into a few natural sets, to help you remember them.  And there are [[user option]]s available for easy key customization.
 
 
 
