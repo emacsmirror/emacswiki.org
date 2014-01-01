@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Dec 31 17:03:11 2013 (-0800)
+;; Last-Updated: Wed Jan  1 11:06:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19309
+;;     Update #: 19312
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3888,7 +3888,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                         (insert inserted)
                         ;; If candidate is a directory, just update `*Completions*', so you can drill down.
                         ;; Otherwise, remove `*Completions*'.
-                        (if (and (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                        (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
+                                 (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
                                  icicle-keep-Completions-for-sole-dir-flag)
                             (icicle-display-candidates-in-Completions)
                           (save-selected-window (icicle-remove-Completions-window))))
@@ -4293,7 +4294,8 @@ message either.  NO-DISPLAY-P is passed to
                       (insert inserted)
                       ;; If candidate is a directory, just update `*Completions*', so you can drill down.
                       ;; Otherwise, remove `*Completions*'.
-                      (if (and (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                      (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
+                               (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
                                icicle-keep-Completions-for-sole-dir-flag)
                           (icicle-display-candidates-in-Completions)
                         (save-selected-window (icicle-remove-Completions-window)))
@@ -6645,7 +6647,7 @@ MOREP non-nil means add the saved candidates, don't replace existing."
            (icicle-display-candidates-in-Completions)
            (message "No saved candidates to restore") (sit-for 2))
           (t
-           (setq icicle-completion-candidates ; Remove directories if completing file names
+           (setq icicle-completion-candidates ; Remove directory part if completing file names
                  (if (icicle-file-name-input-p) ; using `read-file-name'.
                      (mapcar #'file-name-nondirectory saved-cands)
                    saved-cands))
