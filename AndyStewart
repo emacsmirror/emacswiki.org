@@ -2,7 +2,7 @@
 
 Hi all,
 
-My name is Andy Stewart (My Chinese name: 王勇) and I am a programmer living and working in China.
+My name is Andy Stewart (My Chinese name is 王勇) and I am a programmer living and working in China.
 I am now developing leading operating system [http://www.linuxdeepin.com LinuxDeepin]
 
 I've used Gnu Emacs since 2007, I love it and use it for pretty much everything (programming, irc, music, file-manager, mail, newsgroup, wiki, notes... etc.). Almost anything that you can imagine.
@@ -94,6 +94,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 *** [http://www.emacswiki.org/emacs/auto-save.el auto-save.el] -- Auto save file when emacs idle, instead default one.
 
 *** [http://www.emacswiki.org/emacs/qml-mode.el qml-mode.el] -- Extension to support Qt [http://qt-project.org/doc/qt-5.0/qtqml/qtqml-index.html QML] files.
+
+*** [http://www.emacswiki.org/emacs/window-number.el window-number.el] -- For fast switch in windows.
 
 * Enhanced packages.
 
