@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Dec 30 15:08:25 2013 (-0800)
+;; Last-Updated: Wed Jan  1 09:47:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28017
+;;     Update #: 28021
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7442,13 +7442,15 @@
 ;;  You can save completion candidates to a different variable from
 ;;  `icicle-saved-completion-candidates' by using a numeric prefix
 ;;  argument to command `icicle-candidate-set-save'; that is, use `C-u
-;;  N C-M->'.  Alternatively, use `C-M-}', which is bound to command
-;;  `icicle-candidate-set-save-to-variable'.  You are prompted for the
-;;  name of the variable, and you can use completion when inputting
-;;  it.  During this completion, the only available candidates are
-;;  variables that you have used for saved candidates (but completion
-;;  is lax, so you can type a new variable name).  The same behavior
-;;  works also for `C->', `C-M-)', and `C-)'.
+;;  N C-M->', where N is an integer.  Alternatively, use `C-M-}',
+;;  which is bound to command `icicle-candidate-set-save-to-variable'.
+;;
+;;  You are prompted for the name of the variable, and you can use
+;;  completion when inputting it.  During this completion, the only
+;;  available candidates are variables that you have used for saved
+;;  candidates (but completion is lax, so you can type a new variable
+;;  name).  The same behavior works also for `C->', `C-M-)', and
+;;  `C-)'.
 ;;
 ;;  To retrieve completion candidates that were previously saved to a
 ;;  variable other than `icicle-saved-completion-candidates', so that
