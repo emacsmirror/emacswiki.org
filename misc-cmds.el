@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:41:14 2013 (-0800)
+;; Last-Updated: Tue Dec 31 16:57:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3125
+;;     Update #: 3128
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/31 dadams
+;;     undo-repeat: Use set-transient-map, if defined.
 ;; 2013/12/01 dadams
 ;;     Added: switch-to-alternate-buffer(-other-window).
 ;; 2013/11/28 dadams
@@ -1289,15 +1291,19 @@ With prefix arg, clear also the simple search history."
 ;; Suggested: rebind `undo' keys to `undo-repeat'.
 ;; (global-set-key [remap undo] 'undo-repeat)
 
-(when (fboundp 'set-temporary-overlay-map) ; Emacs 24.3+
+(when (or (fboundp 'set-transient-map)  ; Emacs 24.4+
+          (fboundp 'set-temporary-overlay-map)) ; Emacs 24.3
   (defun undo-repeat (arg)
     "Same as `undo', but repeatable even on a prefix key.
 E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
     (interactive "*P")
     (undo arg)
-    (set-temporary-overlay-map (let ((map  (make-sparse-keymap)))
-                                 (define-key map "u" 'undo-repeat)
-                                 map))))
+    (let ((fun  (if (fboundp 'set-transient-map)
+                    #'set-transient-map
+                  #'set-temporary-overlay-map)))
+      (funcall fun (let ((map  (make-sparse-keymap)))
+                     (define-key map "u" 'undo-repeat)
+                     map)))))
 
 ;;;###autoload
 (defun view-X11-colors ()
