@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec 31 17:00:25 2013 (-0800)
+;; Last-Updated: Wed Jan  1 11:09:30 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10522
+;;     Update #: 10524
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4047,6 +4047,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/01/01 dadams
+;;     icicle-(prefix|apropos)-complete-1: Sole completion case, for file name: Respect NO-DISPLAY-P.
 ;; 2013/12/31 dadams
 ;;     icicle-universal-argument--mode: Use set-transient-map, if defined.
 ;; 2013/12/26 dadams
