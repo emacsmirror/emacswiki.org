@@ -81,6 +81,7 @@
 ;;      * Add new function `window-number-switch'
 ;;      * Add group `window-number' and customize colors.
 ;;      * Highlight window number on mode-line when `window-number-switch' prompt input.
+;;      * Use `completing-read' instead `read-string' for better input experience.
 ;;
 ;; 2004
 ;;      * First released.
@@ -152,7 +153,17 @@ Prompt user input window number if have more windows."
       (call-interactively 'other-window)
     (window-number-set-active-color)
     (unwind-protect
-        (window-number-select (read-number "Window number: "))
+        (let* ((window-numbers (number-sequence 1 (length (window-list))))
+               (window-buffer-names (mapcar (lambda (x) (buffer-name (window-buffer x))) (window-number-list)))
+               (completing-list (mapcar (lambda (x) (list (concat (number-to-string x) " <" (elt window-buffer-names (- x 1)) ">") x)) window-numbers))
+               (current-window-index (1+ (position (selected-window) (window-number-list))))
+               (next-window-index (if (= current-window-index (length (window-list))) 1 (+ current-window-index 1)))
+               (select-index-string (completing-read (format "Window number (%s): " next-window-index) completing-list))
+               )
+          (window-number-select
+           (if (string= select-index-string "")
+               next-window-index
+             (string-to-int select-index-string))))
       ;; Reset to inactive color if interactive is intercept by Ctrl+g
       (window-number-set-inactive-color)
       ))
