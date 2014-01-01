@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Thu Dec 26 09:57:56 2013 (-0800)
+;; Last-Updated: Tue Dec 31 16:52:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 315
+;;     Update #: 320
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -157,6 +157,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/31 dadams
+;;     zoom-in/out: Use set-transient-map, if defined.
 ;; 2013/09//29 dadams
 ;;     zoom-in/out: Only for Emacs 24.3+ (needs set-temporary-overlay-map).
 ;; 2013/09/13 dadams
@@ -332,7 +334,9 @@ Buffer zooming uses command `text-scale-decrease'."
             (current-buffer))
         (text-scale-decrease 1))))
 
-  (when (fboundp 'set-temporary-overlay-map) ; Emacs 24.3+
+  (when (or (fboundp 'set-transient-map) ; Emacs 24.4+
+            (fboundp 'set-temporary-overlay-map)) ; Emacs 24.3
+            
     (defun zoom-in/out (arg)
       "Zoom current frame or buffer in or out.
 A prefix arg determines the behavior, as follows:
@@ -387,14 +391,17 @@ plain `C-u' with this command then it acts like `text-scale-adjust'."
                     (window-buffer (posn-window (event-start last-command-event)))
                   (current-buffer))
               (text-scale-increase step))))
-        (set-temporary-overlay-map
-         (let ((map  (make-sparse-keymap)))
-           (dolist (mods  '(() (control)))
-             (dolist (key  '(?- ?+ ?= ?0)) ; The `=' key is often unshifted `+' key.
-               (define-key map (vector (append mods (list key)))
-                 `(lambda () (interactive) (zoom-in/out ',arg)))))
-           (define-key map "\C-u" `(lambda () (interactive) (zoom-in/out ',arg)))
-           map))))))
+        (let ((fun  (if (fboundp 'set-transient-map)
+                        #'set-transient-map
+                      #'set-temporary-overlay-map)))
+          (funcall fun
+                   (let ((map  (make-sparse-keymap)))
+                     (dolist (mods  '(() (control)))
+                       (dolist (key  '(?- ?+ ?= ?0)) ; The `=' key is often unshifted `+' key.
+                         (define-key map (vector (append mods (list key)))
+                           `(lambda () (interactive) (zoom-in/out ',arg)))))
+                     (define-key map "\C-u" `(lambda () (interactive) (zoom-in/out ',arg)))
+                     map)))))))
 
 ;; These are not so useful, but some people might like them.
 (when (fboundp 'set-face-attribute)     ; Emacs 22+
