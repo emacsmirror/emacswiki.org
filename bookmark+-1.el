@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Dec 26 08:30:57 2013 (-0800)
+;; Last-Updated: Wed Jan  1 13:36:15 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7054
+;;     Update #: 7059
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -365,7 +365,8 @@
 ;;    `bmkp-file-attribute-6-cp', `bmkp-file-attribute-7-cp',
 ;;    `bmkp-file-attribute-8-cp', `bmkp-file-attribute-9-cp',
 ;;    `bmkp-file-attribute-10-cp', `bmkp-file-attribute-11-cp',
-;;    `bmkp-file-bookmark-p', `bmkp-file-names', `bmkp-file-remote-p',
+;;    `bmkp-file-bookmark-p', `bmkp-file-cache-ad-hack',
+;;    `bmkp-file-names', `bmkp-file-remote-p',
 ;;    `bmkp-file-some-tags-alist-only',
 ;;    `bmkp-file-some-tags-regexp-alist-only',
 ;;    `bmkp-file-this-dir-alist-only',
@@ -650,6 +651,7 @@
 
 ;; Quiet the byte-compiler
 
+(defvar ad-do-it)                       ; Defined in `advice.el'.
 (defvar bmkp-auto-light-when-set)       ; Defined in `bookmark+-lit.el'.
 (defvar bmkp-auto-light-when-jump)      ; Defined in `bookmark+-lit.el'.
 (defvar bmkp-light-priorities)          ; Defined in `bookmark+-lit.el'.
@@ -6871,12 +6873,17 @@ The bookmarked position will be the beginning of the file."
            `(lambda () ',common)))))
 
 (when (fboundp 'file-cache-add-file)
-  (defadvice file-cache-add-file (around bmkp-autofile-filecache activate)
-    "Respect option `bmkp-autofile-filecache'."
+  (defun bmkp-file-cache-ad-hack ()
+    "Helper for `bmkp-autofile-filecache' advice for `file-cache-add-file'.
+Hack to workaround the fact that macro `case' does not get byte-compiled."
     (case bmkp-autofile-filecache
       (autofile-only     (bmkp-autofile-set (ad-get-arg 0) nil nil 'NO-UPDATE-P))
       (autofile+cache    (progn ad-do-it  (bmkp-autofile-set (ad-get-arg 0) nil nil 'NO-UPDATE-P 'MSG-P)))
-      (cache-only        ad-do-it))))
+      (cache-only        ad-do-it)))
+  
+  (defadvice file-cache-add-file (around bmkp-autofile-filecache activate)
+    "Respect option `bmkp-autofile-filecache'."
+    (bmkp-file-cache-ad-hack)))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
