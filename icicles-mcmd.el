@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Dec 26 09:31:25 2013 (-0800)
+;; Last-Updated: Tue Dec 31 17:03:11 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 19304
+;;     Update #: 19309
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2546,7 +2546,10 @@ you do not want this remapping, then customize option
 (when (fboundp 'universal-argument--mode) ; Emacs 24.4+.
   (defun icicle-universal-argument--mode ()
     "Like `universal-argument--mode', but use `icicle-universal-argument-map'."
-    (set-temporary-overlay-map icicle-universal-argument-map)))
+    (let ((fun  (if (fboundp 'set-transient-map) ; Make it work also for Emacs 24.3.50 snapshots
+                    #'set-transient-map ;          prior to the renaming of `set-temporary-overlay-map'.
+                  #'set-temporary-overlay-map)))
+      (funcall fun icicle-universal-argument-map))))
 
 (defun icicle-universal-argument ()     ; Bound to `C-u' in minibuffer.
   "`universal-argument', but also echo the prefix."
