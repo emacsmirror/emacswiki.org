@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 10:23:19 2013 (-0800)
+;; Last-Updated: Wed Jan  1 10:39:27 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1525
+;;     Update #: 1527
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -346,6 +346,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/01 dadams
+;;     Insert newline after button Set from external changes.
 ;; 2013/05/04 dadams
 ;;     custom-magic-alist: Updated wrt vanilla Emacs (added themed).
 ;; 2012/04/21 dadams
@@ -1659,6 +1661,7 @@ are ignored by `customize-customized'."
         (apply button (pop commands))   ; Consider Unchanged
         (apply button (pop commands))   ; Ignore unsaved changes
         (apply button (pop commands))   ; Set from external changes
+        (widget-insert "\n")
 
         (if custom-reset-button-menu
             (progn (widget-insert " ")
