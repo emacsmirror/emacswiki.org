@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Dec 30 14:49:30 2013 (-0800)
+;; Last-Updated: Tue Dec 31 17:00:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 10520
+;;     Update #: 10522
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4047,6 +4047,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/12/31 dadams
+;;     icicle-universal-argument--mode: Use set-transient-map, if defined.
 ;; 2013/12/26 dadams
 ;;     icicle-narrow-candidates: Get back original candidates, via text property icicle-orig-cand.
 ;; 2013/12/01 dadams
