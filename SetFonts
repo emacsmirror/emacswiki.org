@@ -15,6 +15,13 @@ with the startup fontset.
 
 * ChangeFontsPermanentlyOnWindows
 
+* Use [[Anything]] command `anything-select-xfont' to narrow the font list by typing some patterns.
+
+
+
+
+
+
 [:GloballyChangingFont]
 === Globally Change the Default Font ===
 A simple way to change the default font is to put this in your [[init file]]:
@@ -261,14 +268,6 @@ From my personal experiences, there is no working-for-all-emacs solution for fon
 -- cinsk
 [new]
 
-
-== Use with Anything ==
-'''[[Anything]]''' is a candidate selection framework.
-
-Start with `M-x anything-select-xfont', narrow the font list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-
-C-z changes to selected font temporarily without quitting anything session.
 
 
 ----
