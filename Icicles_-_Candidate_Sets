@@ -201,8 +201,10 @@ problem.  (Personally, I use `nil'.)]
 You can save completion candidates to a different
 variable from `icicle-saved-completion-candidates' by using a
 [[numeric prefix argument]] to command `icicle-candidate-set-save';
-that is, use `##C-u ## '''''##N##''''' ## C-M->##'.  Alternatively, use '''`##C-M-}##'''', which is
-bound to command '''`icicle-candidate-set-save-to-variable''''.  You are
+that is, use `##C-u ## '''''##N##''''' ## C-M->##'where '''''##N##''''' is an integer.  Alternatively, use '''`##C-M-}##'''', which is
+bound to command '''`icicle-candidate-set-save-to-variable''''.
+
+You are
 prompted for the name of the variable, and you can use completion
 when inputting it.  During this completion, the only available candidates are
 variables that you have used for saved candidates (but completion
