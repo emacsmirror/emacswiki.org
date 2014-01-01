@@ -201,7 +201,7 @@ problem.  (Personally, I use `nil'.)]
 You can save completion candidates to a different
 variable from `icicle-saved-completion-candidates' by using a
 [[numeric prefix argument]] to command `icicle-candidate-set-save';
-that is, use `##C-u ##'''''##N##'''''## C-M->##'.  Alternatively, use '''`##C-M-}##'''', which is
+that is, use `##C-u ## '''''##N##''''' ## C-M->##'.  Alternatively, use '''`##C-M-}##'''', which is
 bound to command '''`icicle-candidate-set-save-to-variable''''.  You are
 prompted for the name of the variable, and you can use completion
 when inputting it.  During this completion, the only available candidates are
@@ -211,8 +211,8 @@ behavior works also for `##C->##', `##C-M-)##', and `##C-)##'.
 
 To retrieve completion candidates that were previously saved to a
 variable other than `icicle-saved-completion-candidates', so that
-they become the current set of candidates, use `##C-u ##'''''##N##'''''## C-M-<##',
-where '''''##N##''''' is an integer, or '''`##C-M-{##'''' ('''`icicle-candidate-set-retrieve''''
+they become the current set of candidates, use `##C-u ## '''''##N##''''' ## C-M-<##',
+where '''''##N##''''' is an integer, or '''`##C-M-{##''''  ('''`icicle-candidate-set-retrieve''''
 or '''`icicle-candidate-set-retrieve-from-variable'''').
 
 Using a plain [[prefix argument]] (`C-u' ''without'' a number)
