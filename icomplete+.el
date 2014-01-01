@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 27 16:48:45 2013 (-0800)
+;; Last-Updated: Tue Dec 31 16:06:18 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1646
+;;     Update #: 1648
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/12/31 dadams
+;;     icomplete-exhibit, for Emacs 24.3.50: Protect icomplete-show-matches-on-no-input with boundp.
 ;; 2013/12/27 dadams
 ;;     icomplete-exhibit, icomplete-completions, icompletep-completion-all-sorted-completions:
 ;;       Added 24.4+ version.
@@ -577,7 +579,8 @@ and `minibuffer-setup-hook'."
       (save-excursion
         (goto-char (point-max))
         ;; Insert the match-status information.
-        (when (and (or icomplete-show-matches-on-no-input
+        (when (and (or (and (boundp 'icomplete-show-matches-on-no-input)
+                            icomplete-show-matches-on-no-input)
                        (> (icomplete--field-end) (icomplete--field-beg)))
                    (save-excursion      ; Do nothing if looking at a list, string, etc.
                      (goto-char (icomplete--field-end))
