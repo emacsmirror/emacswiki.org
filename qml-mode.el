@@ -4,18 +4,18 @@
 ;; Description: Mode for Qt QML file
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2013, Andy Stewart, all rights reserved.
+;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 21:23:56
 ;; Version: 0.1
-;; Last-Updated: 2013-12-31 21:23:56
+;; Last-Updated: 2014-01-01 13:23:56
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/qml-mode.el
-;; Keywords: 
+;; Keywords:
 ;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
 ;;
-;; 
+;;
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -37,10 +37,10 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; Mode for Qt QML file
-;; 
+;;
 
 ;;; Installation:
 ;;
@@ -57,30 +57,36 @@
 
 ;;; Customize:
 ;;
-;; 
+;;
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET qml-mode RET
 ;;
 
 ;;; Change log:
-;;	
+;;
+;; 2014/01/01
+;;      * Fixed keywords regexp
+;;      * Fxied qml-indent-line
+;;
 ;; 2013/12/31
 ;;      * First released.
-;; 
+;;
 
 ;;; Acknowledgements:
 ;;
-;; 
+;;
 ;;
 
 ;;; TODO
 ;;
-;; 
+;;
 ;;
 
 ;;; Require
 
+(require 'css-mode)
+(require 'js)
 
 ;;; Code:
 
@@ -92,7 +98,7 @@ This is run before the process is cranked up."
 
 (defvar qml-indent-width 4)
 
-(defconst qml-block-re "\\(^[ \t]*\\)\\([a-zA-Z0-9]*\\)[ \t]*[a-zA-Z0-9_]*[ \t]*[a-zA-Z0-9_(),: \t]*{")
+(defconst qml-block-re "\\(^[ \t]*\\)\\([a-zA-Z0-9]*\\)[ \t]*[a-zA-Z0-9_]*[ \t]*.*{")
 
 (defun qml-get-beg-of-block ()
   (save-excursion
@@ -149,7 +155,9 @@ This is run before the process is cranked up."
             (goto-char start)
             (setq cur-indent (current-indentation))
             (goto-char cur)
-            (setq cur-indent (+ cur-indent default-tab-width))
+            (unless (string= (string (char-after (- (point) 1))) "{")
+              (setq cur-indent (+ cur-indent default-tab-width))
+              )
             )))
     (indent-line-to cur-indent)
     (if (string= (string (char-after (point))) "}")
@@ -157,31 +165,39 @@ This is run before the process is cranked up."
       )
     ))
 
-(defun qml-indent-region (start end)
-  (let ((indent-region-function nil))
-    (indent-region start end nil)))
-
-(require 'css-mode)
-(require 'js)
-
-(defvar qml-keywords
-  (concat "\\<" (regexp-opt '("import")) "\\>\\|" js--keyword-re))
-
 (defvar qml-font-lock-keywords
-  `(("/\\*.*\\*/\\|//.*"                ; comment
+  `(
+    ;; Comment.
+    ("/\\*.*\\*/\\|//.*"
      (0 font-lock-comment-face t t))
-    ("\\<\\(true\\|false\\|[A-Z][a-zA-Z0-9]*\\.[A-Z][a-zA-Z0-9]*\\)\\>" ; constants
+    ;; Constants.
+    ("\\<\\(true\\|false\\|[A-Z][a-zA-Z0-9]*\\.[A-Z][a-zA-Z0-9]*\\)\\>"
      (0 font-lock-constant-face))
-    ("\\<\\([A-Z][a-zA-Z0-9]*\\)\\>"    ; Elements
-     (1 font-lock-function-name-face nil t)
-     (2 font-lock-function-name-face nil t))
-    (,(concat qml-keywords "\\|\\<parent\\>") ; keywords
+    ;; Keyword.
+    ("\\(\\<parent\\|import\\|if\\|else[ \t]+if\\>\\)"
      (0 font-lock-keyword-face nil t))
-    ("\\<\\([a-z][a-zA-Z.]*\\|property .+\\):\\|\\<\\(anchors\\|font\\|origin\\|axis\\)\\>" ; property
-     (1 font-lock-variable-name-face nil t)
-     (2 font-lock-variable-name-face nil t))
-    ("\\<function +\\([a-z][a-zA-Z0-9]*\\)\\>" ; method
-     (1 font-lock-function-name-face)))
+    ;; Import
+    ("\\(^import\\)[ \t]+\\([a-zA-Z0-9\.]+\\)[ \t]+\\([^ /\*]+\\)"
+     (1 font-lock-keyword-face nil t)
+     (2 font-lock-function-name-face nil t)
+     (3 font-lock-constant-face nil t))
+    ;; Element
+    ("\\([A-Z][a-zA-Z0-9]*\\)[ \t]+{"
+     (1 font-lock-function-name-face nil t))
+    ;; Property keyword.
+    ("\\(^[ \t]+property[ \t][a-zA-Z0-9_]+[ \t][a-zA-Z0-9_]+\\)"
+     (0 font-lock-variable-name-face nil t))
+    ;; Signal.
+    ("\\(^[ \t]+signal[ \t][a-zA-Z0-9]+\\)"
+     (0 font-lock-variable-name-face nil t))
+    ;; Properties.
+    ("\\([ \t]?[a-zA-Z0-9\.]+\\):"
+     (1 font-lock-variable-name-face nil t))
+    ;; Method
+    ("\\<\\(function\\) +\\([a-z][a-zA-Z0-9]*\\)\\>"
+     (1 font-lock-keyword-face nil t)
+     (2 font-lock-function-name-face nil t))
+    )
   "Keywords to highlight in `qml-mode'.")
 
 (defvar qml-mode-syntax-table
@@ -191,7 +207,7 @@ This is run before the process is cranked up."
 
 ;;;###autoload
 
-(defun qml-mode()
+(define-derived-mode qml-mode prog-mode "QML"
   "Major mode for Qt declarative UI"
   (interactive)
   (kill-all-local-variables)
@@ -200,7 +216,6 @@ This is run before the process is cranked up."
   (set (make-local-variable 'tab-width) qml-indent-width)
   (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'indent-line-function) 'qml-indent-line)
-  (set (make-local-variable 'indent-region-function) 'qml-indent-region)
   (set (make-local-variable 'comment-start) "/* ")
   (set (make-local-variable 'comment-end) " */")
   (setq major-mode 'qml-mode)
