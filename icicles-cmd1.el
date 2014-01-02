@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Dec 26 11:15:19 2013 (-0800)
+;; Last-Updated: Thu Jan  2 09:53:20 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26653
+;;     Update #: 26668
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3934,8 +3934,10 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
   (define-key minibuffer-local-must-match-map " " 'minibuffer-complete-word) ; First code
   nil                                   ; Undo code
-  (progn (define-key minibuffer-local-must-match-map " " 'icicle-self-insert) ; Last code
-         (setq this-command  icicle-new-last-cmd))) ; This will update `last-command'.
+  (progn                                ; Last code.  Restore `SPC'.  CMD might turn off Icicle mode...
+    (define-key minibuffer-local-must-match-map
+        " " (if icicle-mode 'icicle-self-insert 'minibuffer-complete-word))
+    (setq this-command  icicle-new-last-cmd))) ; This will update `last-command'.
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
 ;;                 `icicle-new-last-cmd' and `icicle-orig-must-pass-after-match-pred' are bound in
@@ -3984,7 +3986,8 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                  ;; to be `cmd' during the `C-RET' part, but `last-command' must not be `cmd'
                  ;; during the `next' part.
                  (this-command                            cmd))
-             (define-key minibuffer-local-must-match-map " " 'icicle-self-insert) ; Restore `SPC'.
+             (define-key minibuffer-local-must-match-map ; Restore `SPC'.  CMD might turn off Icicle mode...
+                 " " (if icicle-mode 'icicle-self-insert 'minibuffer-complete-word))
              (call-interactively cmd 'record-it)))
           ;; Should not happen, since `icicle-e*-e*-command' calls `completing-read' with non-nil REQUIRE arg.
           (t (error "Not a command: `%s'" cmd-name)))
