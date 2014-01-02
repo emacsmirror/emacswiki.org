@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan  1 13:37:31 2014 (-0800)
+;; Last-Updated: Thu Jan  2 07:55:53 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15459
+;;     Update #: 15461
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/01/02 dadams
+;;     Reverted yesterday's change.  Just use cond instead of case.
 ;; 2014/01/01 dadams
 ;;     Added bmkp-file-cache-ad-hack, as workaround for macro case not getting byte-compiled.
 ;;     file-cache-add-file: Use bmkp-file-cache-ad-hack.  Thx to Michael Heerdegen.
