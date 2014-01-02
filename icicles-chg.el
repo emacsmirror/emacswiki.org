@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jan  2 08:43:00 2014 (-0800)
+;; Last-Updated: Thu Jan  2 09:44:43 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10525
+;;     Update #: 10527
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/02 dadams
+;;     icicle-execute-extended-command(-1):
+;;       Restore SPC correctly.  If CMD turns off Icicle mode then not icicle-self-insert.
 ;; 2013/12/09 dadams
 ;;     Added:
 ;;       icicle-find-file-of-content-in-tags-table, icicle-find-file-no-search-in-tags-table,
