@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan  1 11:06:09 2014 (-0800)
+;; Last-Updated: Thu Jan  2 08:42:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19312
+;;     Update #: 19313
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6354,7 +6354,7 @@ The bindings removed are those defined by option
 `icicle-buffer-candidate-key-bindings'."
   (dolist (map  (list minibuffer-local-completion-map minibuffer-local-must-match-map))
     (dolist (entry  icicle-buffer-candidate-key-bindings)
-      (define-key map (car entry) (cadr entry)))))
+      (define-key map (car entry) nil)))) ; Unbind it.  Ideally, we should restore any non-Icicles binding.
 
 
 ;; `minibuffer-local-filename-completion-map' and `minibuffer-local-must-match-filename-map'
