@@ -15,52 +15,6 @@ typical "./configure; make; make install" steps work fine.
 [new]
 It does not compile using MSYS on MS Windows.
 
-[new]
-<b>More on <code>cscope</code> and Windows:</b> for versions up to 1.54, binaries compiled with DJGPP are provided (e.g., [http://downloads.sourceforge.net/cscope/csc154b.zip csc154b.zip]). <code>xcscope.el</code> is not included and is obtained separately by downloading the source. Update the global <code>PATH</code> variable with the location of <code>cscope.exe</code>, put <code>xcscope.el</code> in the <code>site-lisp</code> directory, and add the following lines to <code>.emacs</code>:
-
- (require 'xcscope)
- (setq cscope-do-not-update-database t)
-
-By default, <code>xcscope.el</code> does automatic indexing by use of a Bash script (<code>cscope-indexer</code>). As Windows lacks Bash support, automatic indexing is here disabled (although the [http://www.mingw.org/wiki/msys MSYS] project does include a <code>sh.exe</code> executable which can run such scripts). To index manually and recursively, in the uppermost directory run
-
- cscope -bR
-
-The <code>-b</code> flag tells <code>cscope</code> to just build the database and then exit. Otherwise, <code>cscope</code> is terminated by <code>Ctrl-D</code>.
-
-This /seems/ to work adequately with GNU Emacs 22.1.
-
-[new]
-a possibly handy hack:
-
- (defun my-find-tag(&optional prefix)
-  "union of `find-tag' alternatives. decides upon major-mode"
-  (interactive "P")
-  (if (and (boundp 'cscope-minor-mode)
-           cscope-minor-mode)
-      (progn
-        (ring-insert find-tag-marker-ring (point-marker))
-        (call-interactively
-         (if prefix
-             'cscope-find-this-symbol
-           'cscope-find-global-definition-no-prompting
-           )))
-    (call-interactively 'find-tag)))
-
- (substitute-key-definition 'find-tag 'my-find-tag  global-map)
-
-[new]
-Chris: I like this native win32 cscope version: http://code.google.com/p/cscope-win32. See the xcscope.el section for integration under windows.
-
-== ascope.el ==
-
-ascope is an improvement over xcscope that runs all queries through a single cscope process, instead of starting a new process and reloading the database for each query. It was made by Staton Sun as a merge between xscope and another single-process interface, bscope (not listed here) [http://lists.gnu.org/archive/html/gnu-emacs-sources/2008-04/msg00021.html Original ML post]. A copy of the file is made available here: Lisp:ascope.el
-
-== cscope.el ==
-
-Bill Carpenter's cscope.el mode is available from this wiki: 
-
-Lisp:cscope.el
-
 == xcscope.el ==
 
 Darryl Okahata's xcscope.el comes with the cscope package. This package is stable, and development is continuing in its own tree (https://github.com/dkogan/xcscope.el). This tree fixes various bugs and adds various features. This xcscope.el package is currently available on MELPA and in Debian and in Ubuntu (package name is "xcscope-el"). Following comments are about Darryl's original xcscope.el. I'll review (and possibly absort) the patches mentioned here shortly.
@@ -264,6 +218,54 @@ I got the original cscope-indexer script to work by copying it to the bin folder
  			    'cscope-unix-index-files-sentinel)
        (process-kill-without-query cscope-unix-index-process)
 </pre>
+
+=== xcscope.el comments ===
+
+[new]
+<b>More on <code>cscope</code> and Windows:</b> for versions up to 1.54, binaries compiled with DJGPP are provided (e.g., [http://downloads.sourceforge.net/cscope/csc154b.zip csc154b.zip]). <code>xcscope.el</code> is not included and is obtained separately by downloading the source. Update the global <code>PATH</code> variable with the location of <code>cscope.exe</code>, put <code>xcscope.el</code> in the <code>site-lisp</code> directory, and add the following lines to <code>.emacs</code>:
+
+ (require 'xcscope)
+ (setq cscope-do-not-update-database t)
+
+By default, <code>xcscope.el</code> does automatic indexing by use of a Bash script (<code>cscope-indexer</code>). As Windows lacks Bash support, automatic indexing is here disabled (although the [http://www.mingw.org/wiki/msys MSYS] project does include a <code>sh.exe</code> executable which can run such scripts). To index manually and recursively, in the uppermost directory run
+
+ cscope -bR
+
+The <code>-b</code> flag tells <code>cscope</code> to just build the database and then exit. Otherwise, <code>cscope</code> is terminated by <code>Ctrl-D</code>.
+
+This /seems/ to work adequately with GNU Emacs 22.1.
+
+[new]
+a possibly handy hack:
+
+ (defun my-find-tag(&optional prefix)
+  "union of `find-tag' alternatives. decides upon major-mode"
+  (interactive "P")
+  (if (and (boundp 'cscope-minor-mode)
+           cscope-minor-mode)
+      (progn
+        (ring-insert find-tag-marker-ring (point-marker))
+        (call-interactively
+         (if prefix
+             'cscope-find-this-symbol
+           'cscope-find-global-definition-no-prompting
+           )))
+    (call-interactively 'find-tag)))
+
+ (substitute-key-definition 'find-tag 'my-find-tag  global-map)
+
+[new]
+Chris: I like this native win32 cscope version: http://code.google.com/p/cscope-win32. See the xcscope.el section for integration under windows.
+
+== ascope.el ==
+
+ascope is an improvement over xcscope that runs all queries through a single cscope process, instead of starting a new process and reloading the database for each query. It was made by Staton Sun as a merge between xscope and another single-process interface, bscope (not listed here) [http://lists.gnu.org/archive/html/gnu-emacs-sources/2008-04/msg00021.html Original ML post]. A copy of the file is made available here: Lisp:ascope.el
+
+== cscope.el ==
+
+Bill Carpenter's cscope.el mode is available from this wiki: 
+
+Lisp:cscope.el
 
 == xcscope+ ==
 
