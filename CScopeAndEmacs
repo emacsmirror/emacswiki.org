@@ -63,7 +63,7 @@ Lisp:cscope.el
 
 == xcscope.el ==
 
-Darryl Okahata's xcscope.el comes with the cscope package.
+Darryl Okahata's xcscope.el comes with the cscope package. This package is stable, and development is continuing in its own tree (https://github.com/dkogan/xcscope.el). This tree fixes various bugs and adds various features. This xcscope.el package is currently available on MELPA and in Debian and in Ubuntu (package name is "xcscope-el"). Following comments are about Darryl's original xcscope.el. I'll review (and possibly absort) the patches mentioned here shortly.
 
 I don't know cscope.el, but I discovered xcscope.el recently -- and this is really practical! Don't use M-x grep anymore!
 
