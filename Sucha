@@ -1,13 +1,13 @@
-Hi, I'm Sucha and use Emacs under Slackware and Windows.
+Hi, I'm Sucha and use Emacs under Mac/Win/Linux since 2004, my homepage [http://suchang.net suchang.net], maintained by EmacsWiki and EmacsWikiJournal.
 
 大家好，我是罗非鱼，是一个 Emacs 的粉丝，:)
 
-* Home(主页): http://suchang.net
-* Blog(博客): http://suchang.net/blog
+欢迎访问我的主页 [http://suchang.net suchang.net]，是由 EmacsWiki 以及 EmacsWikiJournal 驱动的。
 
-I use EmacsWikiMode and EmacsWikiJournal to maintain my website and blog, there's some articles about Emacs, Slackware, life, reading and programming, all was written in Chinese, you are welcome to visit.
+== Project ==
 
-我使用 EmacsWikiMode 和 EmacsWikiJournal 来维护我的主页和博客，里面大都是一些有关 Emacs，Slackware，生活，阅读和编程的文章，非常欢迎你的访问。 
+* [https://github.com/lalawue/emacs-wiki-journal emacs-wiki-journal.git] - a blog system base on EmacsWiki, example [http://suchang.net/blog/ http://suchang.net/blog], [http://suchang.net/cs/EmacsWikiJournal.html intro] in Chinese.
+* [http://suchang.net/cs/TipsAndTricks.html my emacs tips and tricks] - some tips and tricks about using Emacs, in Chinese.
 
 [new]
 Welcome to the wiki! :) Feel free to create Chinese pages on this wiki as well. -- AlexSchroeder
