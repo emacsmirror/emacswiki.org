@@ -1434,8 +1434,8 @@ See [[Icicles - Multi-Completions]].
 What's going on?  '''`C-S-RET'''' (`C-S-return') invokes an ''alternative action'' on the
 current completion candidate.  Here, you do this, in turn, for the
 file-name candidates ##icicles-cmd1.el## and ##icicles-fn.el##.  '''`##C-|##''''
-invokes an alternative action on '''''all''''' of the current completion
-candidates.  Here, you do this for all file names that begin with
+invokes an alternative action on '''''each''''' of the current completion
+candidates.  Here, you do this for each file name that begins with
 ##ici##.  Finally, you cycle to ##icicles-doc1.el## and hit `RET' to
 visit that file.
 
