@@ -1,9 +1,8 @@
 Company stands for "complete anything" and is a modular in-buffer completion mechanism.
 
-http://nschum.de/src/emacs/company-mode/
+http://company-mode.github.io/
 
-http://nschum.de/src/emacs/company-mode/company-elisp.png
-http://nschum.de/src/emacs/company-mode/company-cpp.png
+[img]http://company-mode.github.io/images/company-elisp.png[/img]
 
 == Back-ends ==
 Back-ends are single functions, they look like this:
@@ -130,7 +129,7 @@ It predates AutoComplete.  The focus for CompanyMode is to have self-contained f
 [new]
 I wrote the below snippet to try company with a a predictive backend.
 I'm aiming to write the opposite snippet as well so both completionui and company can coexist in harmony.
-
+{{{
 ;; completionui-company-freundschaft embryo
 (defun company-predictive-backend (command &optional arg &rest ignored)
   (message "company-predictive-backend %s" command)
@@ -146,6 +145,7 @@ I'm aiming to write the opposite snippet as well so both completionui and compan
 
 ;;eval the below statement in a text buffer to try
 ;;(set (make-local-variable 'company-backends) '(company-predictive-backend))
+}}}
 ----
 
 How about adding an option for substring match completions? E.g. I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
