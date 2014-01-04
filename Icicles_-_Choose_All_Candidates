@@ -56,16 +56,16 @@ is available.
 In the definition of a given multi-command, the appropriate action
 functions are bound to variables:
 
-* '''`icicle-candidate-action-fn'''' (`##C-!##') -- normal ''single''-candidate
+* '''`icicle-candidate-action-fn'''' (applied to each candidate by `##C-!##') -- normal ''single''-candidate
 action
 
-* '''`icicle-candidate-alt-action-fn'''' (`##C-|##') -- ''alternative
+* '''`icicle-candidate-alt-action-fn'''' (applied to each candidate by `##C-|##') -- ''alternative
 single''-candidate action
 
-* '''`icicle-all-candidates-list-action-fn'''' (`##M-!##') -- normal
+* '''`icicle-all-candidates-list-action-fn'''' (applied to all candidates together by `##M-!##') -- normal
 ''list''-of-candidates action
 
-* '''`icicle-all-candidates-list-alt-action-fn'''' (`##M-|##') -- ''alternative
+* '''`icicle-all-candidates-list-alt-action-fn'''' (applied to all candidates together by `##M-|##') -- ''alternative
 list''-of-candidates action
 
 For most multi-commands, however, only the normal single-candidate
