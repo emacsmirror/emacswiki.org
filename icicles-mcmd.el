@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jan  2 08:42:10 2014 (-0800)
+;; Last-Updated: Sat Jan  4 13:23:33 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19313
+;;     Update #: 19315
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2220,6 +2220,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Removal of `icicle-search' highlighting \\[icicle-dispatch-C-.]\t%S
      Replacement of whole search hit         \\[icicle-dispatch-M-_]\t%S
      Replacement of expanded common match    \\[icicle-toggle-search-replace-common-match]\t%S
+     Searching complements of contexts       \\[icicle-toggle-search-complementing-domain]\t%S
 
  * Regexp-quote input, then apropos-complete \\[icicle-regexp-quote-input]
 
@@ -2385,7 +2386,8 @@ editing."
              (if icicle-search-whole-word-flag 'yes 'no)
              (if icicle-search-cleanup-flag 'yes 'no)
              (if icicle-search-replace-whole-candidate-flag 'yes 'no)
-             (if icicle-search-replace-common-match-flag 'yes 'no))
+             (if icicle-search-replace-common-match-flag 'yes 'no)
+             (if icicle-search-complement-domain-p 'yes 'no))
      icicle-general-help-string
      "
 
