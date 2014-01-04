@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jan  2 09:44:43 2014 (-0800)
+;; Last-Updated: Sat Jan  4 13:26:15 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10527
+;;     Update #: 10528
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4050,6 +4050,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/01/04 dadams
+;;     icicle-help-string-completion: Added C-M-~: icicle-toggle-search-complementing-domain.
 ;; 2014/01/02 dadams
 ;;     icicle-unbind-buffer-candidate-keys: Unbind (bind to nil), not bind!
 ;; 2014/01/01 dadams
