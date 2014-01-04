@@ -4,7 +4,7 @@ If you often edit source code residing in subdirectories relative to your Makefi
 (defun get-above-makefile () (expand-file-name
 	   "Makefile" (loop as d = default-directory then (expand-file-name
 	   ".." d) if (file-exists-p (expand-file-name "Makefile" d)) return
-	   d)))
+	   (shell-quote-argument d))))
 
 ;; bind compiling with get-above-makefile to f5
 (global-set-key [f5] (lambda () (interactive) (compile (format
