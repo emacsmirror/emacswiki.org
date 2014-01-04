@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Thu Dec 26 09:33:13 2013 (-0800)
+;; Last-Updated: Sat Jan  4 09:56:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1761
+;;     Update #: 1773
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -238,10 +238,12 @@ That is, `icicle-all-candidates-action-1' is in progress.
 If neither nil nor t, then the value is the action function to use.")
 
 (defvar icicle-all-candidates-list-action-fn nil
-  "Action function to apply to a list of all matching completions.")
+  "Action function to apply to a list of all matching completions.
+It is applied using `M-!' during completion.")
 
 (defvar icicle-all-candidates-list-alt-action-fn nil
-  "Alternative action function to apply to a list of matching completions.")
+  "Alternative action function to apply to a list of matching completions.
+It is applied using `M-|' during completion.")
 
 (defvar icicle-allowed-sort-predicate nil
   "Predicate that `icicle-current-sort-functions' allows in a sort order.
@@ -297,11 +299,15 @@ Otherwise, all buffer names are used as candidates.")
 
 (defvar icicle-candidate-action-fn nil
   "Action function to apply to current completion candidate.
+It is applied by `C-RET', `C-mouse-2', and similar keys during
+completion.
 For `icicle-all-candidates-action' to be able to report successes,
 this should return nil for \"success\" and non-nil for \"failure\".")
 
 (defvar icicle-candidate-alt-action-fn nil
   "Alternative action function to apply to current completion candidate.
+It is applied by `C-S-RET', `C-S-mouse-2', and similar keys during
+completion.
 For `icicle-all-candidates-alt-action' to be able to report successes,
 this should return nil for \"success\" and non-nil for \"failure\".")
 
@@ -310,6 +316,8 @@ this should return nil for \"success\" and non-nil for \"failure\".")
 
 (defvar icicle-candidate-help-fn nil
   "Help function to be applied to current completion candidate.
+It is applied by `C-M-RET', `C-M-mouse-2', and similar keys during
+completion.
 If nil then default help function `icicle-help-on-candidate' is used.
 If non-nil, it must be a function that accepts a completion candidate
 in its display form.  If the candidate is a multi-completion then the
