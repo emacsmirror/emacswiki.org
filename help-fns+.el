@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:05:00 2013 (-0800)
+;; Last-Updated: Sat Jan  4 12:01:15 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1640
+;;     Update #: 1646
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `naked', `view', `wid-edit',
-;;   `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `info', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,6 +60,10 @@
 ;;  User options defined here:
 ;;
 ;;    `help-cross-reference-manuals' (Emacs 23.2+).
+;;
+;;  Faces defined here:
+;;
+;;    `describe-variable-value' (Emacs 24+).
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -120,6 +124,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/04 dadams
+;;     Added: describe-variable-value.
+;;     describe-variable (Emacs 24+): Highlight the value with face describe-variable-value.
 ;; 2013/08/06 dadams
 ;;     describe-function: Ensure arg is a defined function before calling describe-function-1 (for Emacs 24+).
 ;; 2013/07/01 dadams
@@ -1832,6 +1839,12 @@ file local variable.\n")
 ;; 7. No no-function message if not called interactively.
 ;;
 (when (> emacs-major-version 23)
+
+  (defface describe-variable-value '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
+                                     (t (:foreground "DarkGreen")))
+    "*Face used to highlight the variable value, for `describe-variable'."
+    :group 'help :group 'faces)
+
   (defun describe-variable (variable &optional buffer frame optionp)
     "Display the full documentation of VARIABLE (a symbol).
 VARIABLE names an Emacs Lisp variable, possibly a user option.
@@ -1910,6 +1923,7 @@ it is displayed along with the global value."
                                   (and (stringp val)  (string-match-p "[n]" val)))
                         (terpri))
                       (pp val)
+                      (put-text-property from (point) 'face 'describe-variable-value)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
                           (delete-region from (1+ from))
                         (delete-region (1- from) from)))
