@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Jan  1 09:47:10 2014 (-0800)
+;; Last-Updated: Sat Jan  4 09:50:40 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28021
+;;     Update #: 28027
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1725,9 +1725,9 @@
 ;;  What's going on?  `C-S-RET' (`C-S-return') invokes an alternative
 ;;  action on the current completion candidate.  Here, you do this, in
 ;;  turn, for the file-name candidates `icicles-cmd1.el' and
-;;  `icicles-fn.el'.  `C-|' invokes an alternative action on *all* of
-;;  the current completion candidates.  Here, you do this for all file
-;;  names that begin with `ici'.  Finally, you cycle to
+;;  `icicles-fn.el'.  `C-|' invokes an alternative action on *each* of
+;;  the current completion candidates.  Here, you do this for each
+;;  file name that begins with `ici'.  Finally, you cycle to
 ;;  `icicles-doc1.el' and hit RET to visit that file.
 ;;
 ;;  The alternative action for `C-x C-f' (command `icicle-file')
@@ -7225,17 +7225,18 @@
 ;;  In the definition of a given multi-command, the appropriate action
 ;;  functions are bound to variables:
 ;;
-;;  * `icicle-candidate-action-fn' (`C-!') - normal single-candidate
+;;  * `icicle-candidate-action-fn' (applied to each candidate by
+;;    `C-!') - normal single-candidate action
+;;
+;;  * `icicle-candidate-alt-action-fn' (applied to each candidate by
+;;    `C-|') - alternative single-candidate action
+;;
+;;  * `icicle-all-candidates-list-action-fn' (applied to all
+;;    candidates together by `M-!') - normal list-of-candidates action
+;;
+;;  * `icicle-all-candidates-list-alt-action-fn' (applied to all
+;;    candidates together by `M-|') - alternative list-of-candidates
 ;;    action
-;;
-;;  * `icicle-candidate-alt-action-fn' (`C-|') - alternative
-;;    single-candidate action
-;;
-;;  * `icicle-all-candidates-list-action-fn' (`M-!') - normal
-;;    list-of-candidates action
-;;
-;;  * `icicle-all-candidates-list-alt-action-fn' (`M-|') - alternative
-;;    list-of-candidates action
 ;;
 ;;  For most multi-commands, however, only the normal single-candidate
 ;;  action is defined.  In this case, `M-!' duplicates what `C-!'
