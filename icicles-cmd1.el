@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jan  2 09:53:20 2014 (-0800)
+;; Last-Updated: Sat Jan  4 21:45:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26668
+;;     Update #: 26679
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -564,7 +564,6 @@
   (defvar icicle-kmacro-alist)          ; In `icicles-var.el'
   (defvar kmacro-ring)                  ; In `kmacro.el'
   (defvar read-file-name-completion-ignore-case) ;  In `minibuffer.el'
-  (defvar recentf-list)                 ; In `recentf.el'
   (defvar tags-case-fold-search)        ; In `etags.el'
   (defvar tooltip-mode))                ; In `tooltip.el'
 
@@ -618,6 +617,7 @@
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
+(defvar recentf-list)                   ; In `recentf.el'
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar snarf-tag-function)             ; In `etags.el'
 (defvar translation-table-for-input)    ; Built-in, Emacs 21+
@@ -8220,7 +8220,7 @@ Ido-like behavior."
                            (condition-case nil ; E.g. error because not on file line (ignore)
                                (abbreviate-file-name (dired-get-file-for-visit))
                              (error nil))
-                         (car recentf-list))
+                         (and (boundp 'recentf-list)  (car recentf-list)))
     nil
     (icicle-file-bindings               ; Bindings
      ((prompt                                 "Recent file (absolute): ")
@@ -8236,9 +8236,10 @@ Ido-like behavior."
                                                      '(icicle-make-file+date-candidate file)
                                                      '(list file))))
       (icicle-abs-file-candidates
-       (progn (unless (boundp 'recentf-list) (require 'recentf))
+       (progn (require 'recentf nil t)
               (when (fboundp 'recentf-mode) (recentf-mode 99))
-              (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
+              (unless (and (boundp 'recentf-list)  (consp recentf-list))
+                (icicle-user-error "Recent-files list is empty"))
               (mapcar icicle-full-cand-fn recentf-list)))
       (icicle-show-multi-completion-flag      t) ; Override user setting.
       (icicle-multi-completing-p              t)
@@ -8498,7 +8499,7 @@ could temporarily set `icicle-file-predicate' to:
                            (condition-case nil ; E.g. error because not on file line (ignore)
                                (abbreviate-file-name (dired-get-file-for-visit))
                              (error nil))
-                         (car recentf-list))
+                         default-directory)
     nil
     (icicle-file-bindings               ; Bindings
      ((prompt                                 "File (absolute): ")
@@ -8845,7 +8846,7 @@ Ido-like behavior."
                              (condition-case nil ; E.g. error because not on file line (ignore)
                                  (abbreviate-file-name (dired-get-file-for-visit))
                                (error nil))
-                           (car recentf-list))
+                           (and (boundp 'recentf-list)  (car recentf-list)))
   nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                                 "Recent file (absolute): ")
@@ -8858,9 +8859,10 @@ Ido-like behavior."
                                                    '(icicle-make-file+date-candidate file)
                                                    '(list file))))
     (icicle-abs-file-candidates
-     (progn (unless (boundp 'recentf-list) (require 'recentf))
+     (progn (require 'recentf nil t)
             (when (fboundp 'recentf-mode) (recentf-mode 99))
-            (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
+            (unless (and (boundp 'recentf-list)  (consp recentf-list))
+              (icicle-user-error "Recent-files list is empty"))
             (mapcar icicle-full-cand-fn recentf-list)))
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              icicle-pref-arg)
@@ -9123,7 +9125,7 @@ could temporarily set `icicle-file-predicate' to:
                              (condition-case nil ; E.g. error because not on file line (ignore)
                                  (abbreviate-file-name (dired-get-file-for-visit))
                                (error nil))
-                           (car recentf-list))
+                           default-directory)
   nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File (absolute): ")
