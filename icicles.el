@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:33:30 2013 (-0800)
+;; Last-Updated: Sun Jan  5 12:18:20 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23505
+;;     Update #: 23513
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1132,11 +1132,11 @@
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
 ;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
-;;    `icicle-make-bookmark-candidate', `icicle-make-color-candidate',
-;;    `icicle-make-face-candidate', `icicle-make-frame-alist',
-;;    `icicle-make-plain-predicate', `icicle-make-window-alist',
-;;    `icicle-map', `icicle-markers', `icicle-markers-to-readable',
-;;    `icicle-marker+text',
+;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
+;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
+;;    `icicle-make-frame-alist', `icicle-make-plain-predicate',
+;;    `icicle-make-window-alist', `icicle-map', `icicle-markers',
+;;    `icicle-markers-to-readable', `icicle-marker+text',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
@@ -1407,10 +1407,16 @@
 ;;    `icicle-ORIG-crm-local-completion-map',
 ;;    `icicle-ORIG-crm-local-must-match-map',
 ;;    `icicle-orig-extra-cands', `icicle-orig-font',
-;;    `icicle-orig-frame', `icicle-orig-menu-bar',
+;;    `icicle-orig-font-lock-keywords', `icicle-orig-frame',
+;;    `icicle-orig-menu-bar',
+;;    `icicle-orig-minibuffer-completion-pred',
+;;    `icicle-orig-minibuffer-completion-table',
+;;    `icicle-orig-must-match-regexp',
+;;    `icicle-orig-must-not-match-regexp',
 ;;    `icicle-orig-must-pass-after-match-pred',
-;;    `icicle-orig-pixelsize', `icicle-orig-pointsize',
-;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
+;;    `icicle-orig-must-pass-predicate', `icicle-orig-pixelsize',
+;;    `icicle-orig-pointsize', `icicle-orig-pt-explore',
+;;    `icicle-orig-read-file-name-fn',
 ;;    `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
 ;;    `icicle-other-window', `icicle-path-variables',
