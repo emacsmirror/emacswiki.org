@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  5 13:27:51 2014 (-0800)
+;; Last-Updated: Sun Jan  5 14:21:21 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1871
+;;     Update #: 1873
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -197,6 +197,7 @@
 ;; 2014/01/05 dadams
 ;;     Add to Syntax Highlighting (Font Lock) menu: icicle-next-font-lock-keywords-repeat,
 ;;                                                  icicle-font-lock-keyword.
+;;     Soft-require font-lock-menus.el.
 ;; 2013/07/24 dadams
 ;;     Added: facemenup-nonempty-region-p.
 ;;     Paste Text Properties to Region menu: use hlt-copied-props and facemenup-nonempty-region-p.
@@ -358,6 +359,7 @@
 ;; No error if these are not found - soft-requires:
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; read-face-name
 (when (> emacs-major-version 22) (require 'help-fns+ nil t)) ;; help-commands-to-key-buttons
+(require 'font-lock-menus nil t) ; Submenu for font-lock levels.
 
 ;; Quiet the byte-compiler.
 (defvar facemenu-self-insert-data) ;; In `facemenu.el'
