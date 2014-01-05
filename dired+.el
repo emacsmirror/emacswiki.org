@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:47:12 2013 (-0800)
+;; Last-Updated: Sun Jan  5 11:39:35 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7251
+;;     Update #: 7260
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -498,6 +498,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/05 dadams
+;;     Bind dired-omit-mode (aka dired-omit-toggle) to C-x M-o.
 ;; 2013/12/05 dadams
 ;;     diredp-do-grep-1: Call grep-default-command with arg, if grep+.el is loaded.
 ;; 2013/11/05 dadams
@@ -2796,6 +2798,12 @@ If no one is selected, symmetric encryption will be performed.  "
 
 ;;; Non-menu Dired bindings.
 
+;; Move `dired-omit-mode' to `C-x M-o', so prefix key `M-o' is free for face/font-lock stuff.
+(define-key dired-mode-map "\C-x\M-o" (if (fboundp 'dired-omit-mode)
+                                          'dired-omit-mode
+                                        'dired-omit-toggle))
+(when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode 'dired-omit-toggle))
+  (define-key dired-mode-map "\M-o" nil))
 
 ;; Navigation
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
