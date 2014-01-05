@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan  5 12:17:51 2014 (-0800)
+;; Last-Updated: Sun Jan  5 14:04:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10540
+;;     Update #: 10554
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1036,6 +1036,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/01/05 dadams
+;;     Added: icicle-next-font-lock-keywords, icicle-next-font-lock-keywords-repeat,
+;;            icicle-font-lock-keyword, icicle-update-f-l-keywords.
 ;; 2013/12/26 dadams
 ;;     icicle-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/12/23 dadams
@@ -1927,6 +1930,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2014/01/05 dadams
+;;     Added: icicle-list-position, icicle-repeat-command.
 ;;     icicle-completing-read: Bind icicle-orig-*, so can use icicle-recomplete-from-original-domain.
 ;; 2013/12/30 dadams
 ;;     icicle-make-char-candidate: 3-part multi-completion now - added hex code point.
@@ -4055,6 +4059,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/01/05 dadams
+;;     Added: icicle-recomplete-from-original-domain.
 ;; 2014/01/04 dadams
 ;;     icicle-help-string-completion: Added C-M-~: icicle-toggle-search-complementing-domain.
 ;; 2014/01/02 dadams
@@ -5723,6 +5729,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/01/05 dadams
+;;     Put icicle-recomplete-from-original-domain on icicle-menu-map and on Minibuf menu.
+;;     icicle-(bind|restore)-other-keymap-keys:
+;;       Bind icicle-next-font-lock-keywords-repeat, icicle-font-lock-keyword in facemenu-keymap.
 ;; 2013/11/19 dadams
 ;;     icicle-(redefine|restore)-std-completion-fns:
 ;;       Remove use of icicle-read-file-name-default and icicle-ORIG-read-file-name-default.
@@ -6949,6 +6959,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/01/05 dadams
+;;     icicle-completion-key-bindings: Added icicle-recomplete-from-original-domain == C-x C-0.
 ;; 2013/12/24 dadams
 ;;     icicle-top-level-key-bindings: Added icicle-load-library (but not bound to a key, by default).
 ;; 2013/12/09 dadams
@@ -7809,7 +7821,8 @@
 ;; 2014/01/05 dadams
 ;;     Added: icicle-orig-font-lock-keywords, icicle-orig-minibuffer-completion-pred,
 ;;            icicle-orig-minibuffer-completion-table, icicle-orig-must-match-regexp,
-;;            icicle-orig-must-not-match-regexp, icicle-orig-must-pass-predicate.
+;;            icicle-orig-must-not-match-regexp, icicle-orig-must-pass-predicate,
+;;            icicle-current-font-lock-part.
 ;; 2013/12/03 dadams
 ;;     icicle-read-expression-map: Swap TAB and M-TAB, so TAB completes Lisp symbols.
 ;; 2013/11/19 dadams
