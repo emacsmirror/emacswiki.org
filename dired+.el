@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  5 11:39:35 2014 (-0800)
+;; Last-Updated: Sun Jan  5 13:48:14 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7260
+;;     Update #: 7261
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -2802,7 +2802,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\C-x\M-o" (if (fboundp 'dired-omit-mode)
                                           'dired-omit-mode
                                         'dired-omit-toggle))
-(when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode 'dired-omit-toggle))
+(when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode dired-omit-toggle))
   (define-key dired-mode-map "\M-o" nil))
 
 ;; Navigation
