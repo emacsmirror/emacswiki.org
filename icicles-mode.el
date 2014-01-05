@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Thu Dec 26 09:31:42 2013 (-0800)
+;; Last-Updated: Sun Jan  5 14:04:58 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 9804
+;;     Update #: 9827
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1017,6 +1017,10 @@ Used on `pre-command-hook'."
       '(menu-item "Cancel This Minibuffer" icicle-abort-recursive-edit
         :enable (active-minibuffer-window)
         :help "Cancel this minibuffer and return to the next higher level"))
+    (define-key icicle-menu-map [icicle-recomplete-from-original-domain]
+      '(menu-item "Recompute Completions" icicle-recomplete-from-original-domain
+        :enable (and (active-minibuffer-window)  icicle-completing-p)
+        :help "Recomplete your last typed input, using the original domain."))
     (define-key icicle-menu-map [icicle-separator-levels] '("--"))
 
     (define-key icicle-menu-map [icicle-apply]
@@ -2200,8 +2204,12 @@ Used on `pre-command-hook'."
 
   ;; Bind keys in Comint mode.
   (when (boundp 'comint-mode-map)
-    (define-key comint-mode-map (icicle-kbd "C-c C-i") 'icicle-comint-command) ; `C-c TAB'
+    (define-key comint-mode-map (icicle-kbd "C-c C-i") 'icicle-comint-command)  ; `C-c TAB'
     (define-key comint-mode-map (icicle-kbd "C-c tab") 'icicle-comint-command)) ; `C-c TAB'
+
+  (when (boundp 'facemenu-keymap)
+    (define-key 'facemenu-keymap "n" 'icicle-next-font-lock-keywords-repeat) ; `M-o n'
+    (define-key 'facemenu-keymap "I" 'icicle-font-lock-keyword))             ; `M-o I'
 
   ;; Bind keys in Shell mode.
   (when (and (boundp 'shell-mode-map)  (memq 'comint-dynamic-complete icicle-functions-to-redefine))
@@ -2288,11 +2296,11 @@ Used on `pre-command-hook'."
                                 (listify-key-sequence (icicle-kbd "M")))))
            (def  (lookup-key dired-mode-map key)))
       (unless (and def  (not (integerp def)))
-        (define-key dired-mode-map key 'icicle-occur-dired-marked-recursive)))  ; `M-s M-s M'
+        (define-key dired-mode-map key 'icicle-occur-dired-marked-recursive))) ; `M-s M-s M'
 
     ;; `diredp-recursive-map'.
     (define-key diredp-recursive-map (icicle-kbd "C-S-s") ; `M-+ C-S-s', aka `M-+ C-S'
-      'icicle-search-dired-marked-recursive)              ;     and `C-0 M-s M-s M-s' and `C-0 C-`'
+      'icicle-search-dired-marked-recursive) ;     and `C-0 M-s M-s M-s' and `C-0 C-`'
     (define-key diredp-recursive-map (icicle-kbd "C-S-o") ; `M-+ C-S-o', aka `M-+ C-O'
       'icicle-occur-dired-marked-recursive)
     (define-key diredp-recursive-map (icicle-kbd "C-{") ; `M-+ C-{'
@@ -2397,6 +2405,11 @@ is bound in all keymaps accessible from keymap MAP."
   (when (boundp 'comint-mode-map)
     (define-key comint-mode-map (icicle-kbd "C-c C-i") nil)
     (define-key comint-mode-map (icicle-kbd "C-c tab") nil))
+
+  ;; Unbind keys in Facemenu.
+  (when (boundp 'facemenu-keymap)
+    (define-key 'facemenu-keymap "n" nil)  ; `M-o n'
+    (define-key 'facemenu-keymap "I" nil)) ; `M-o I'
 
   ;; Unbind keys in Shell mode.
   (when (and (boundp 'shell-mode-map)  (memq 'icicle-comint-dynamic-complete
@@ -2922,6 +2935,10 @@ MAP is `minibuffer-local-completion-map' or
       '(menu-item "Top Level" icicle-top-level
         :help "Cancel all minibuffers and return to the top level")
       'quit)
+    (define-key map [menu-bar minibuf icicle-recomplete-from-original-domain]
+      '(menu-item "Recompute Completions" icicle-recomplete-from-original-domain
+        :enable (and (active-minibuffer-window)  icicle-completing-p)
+        :help "Recomplete your last typed input, using the original domain."))
     (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
       '(menu-item "Quit" icicle-abort-recursive-edit
         :help "Cancel this minibuffer and return to the next higher level"))
