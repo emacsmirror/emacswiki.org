@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Dec 27 14:16:09 2013 (-0800)
+;; Last-Updated: Sun Jan  5 12:45:42 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5801
+;;     Update #: 5812
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1634,17 +1634,19 @@ value incrementally."
     (,(icicle-kbd "C-x :")     icicle-toggle-network-drives-as-remote t)              ; `C-x :'
     (,(icicle-kbd "C-x /")     icicle-toggle-expand-directory t)                      ; `C-x /'
     (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t)                            ; `C-x C-a'
-    (,(icicle-kbd "C-x t")   icicle-cycle-image-file-thumbnail
-     (fboundp 'icicle-cycle-image-file-thumbnail))                                    ; `C-x t'
-    (,(icicle-kbd "C-x w")   icicle-doremi-candidate-width-factor+
-     (fboundp 'doremi))                                                               ; `C-x w'
-    (,(icicle-kbd "C-x |")   icicle-doremi-inter-candidates-min-spaces+
-     (fboundp 'doremi))                                                               ; `C-x |'
-    (,(icicle-kbd "C-x #")   icicle-doremi-increment-max-candidates+
-     (fboundp 'doremi))                                                               ; `C-x #'
-    (,(icicle-kbd "C-x -") icicle-doremi-zoom-Completions+
-     (and (fboundp 'doremi)  (fboundp 'text-scale-increase)))                         ; `C-x -'
-    (,(icicle-kbd "C-x 1") icicle-doremi-increment-swank-timeout+
+    (,(icicle-kbd "C-x C-0")   icicle-recomplete-from-original-domain t)              ; `C-x C-0'
+    (,(icicle-kbd "C-x t")     icicle-cycle-image-file-thumbnail                      ; `C-x t'
+     (fboundp 'icicle-cycle-image-file-thumbnail))
+    (,(icicle-kbd "C-x w")     icicle-doremi-candidate-width-factor+                  ; `C-x w'
+     (fboundp 'doremi))
+    (,(icicle-kbd "C-x |")     icicle-doremi-inter-candidates-min-spaces+             ; `C-x |'
+     (fboundp 'doremi))
+    (,(icicle-kbd "C-x #")     icicle-doremi-increment-max-candidates+                ; `C-x #'
+     (fboundp 'doremi))
+    (,(icicle-kbd "C-x -")     icicle-doremi-zoom-Completions+                        ; `C-x -'
+     (and (fboundp 'doremi)
+      (fboundp 'text-scale-increase)))
+    (,(icicle-kbd "C-x 1")     icicle-doremi-increment-swank-timeout+
      (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
     ;; NO - NEED TO DO THE SWANK PART AT RUNTIME, in icicles-mode.el
     (,(icicle-kbd "C-x 2") icicle-doremi-increment-swank-prefix-length+
@@ -2515,7 +2517,7 @@ input is complete, then Icomplete will not show additional candidates
 finished.  This is because Icomplete display is a `post-command-hook'
 action.
 
-If you use Do Re Mi (library `doremi.el') then you can use
+If you use library Do Re Mi (`doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'number :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous)
