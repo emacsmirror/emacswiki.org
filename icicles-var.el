@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Jan  5 12:17:32 2014 (-0800)
+;; Last-Updated: Sun Jan  5 13:17:33 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1782
+;;     Update #: 1785
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -63,7 +63,8 @@
 ;;    `icicle-compute-narrowing-regexp-p',
 ;;    `icicle-confirm-exit-commands',
 ;;    `icicle-current-completion-candidate-overlay',
-;;    `icicle-current-completion-mode', `icicle-current-input',
+;;    `icicle-current-completion-mode',
+;;    `icicle-current-font-lock-part', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
 ;;    `icicle-cycling-p', `icicle-default-thing-insertion-flipped-p',
 ;;    `icicle-delete-candidate-object', `icicle-dictionary-history',
@@ -440,6 +441,10 @@ Effective starting with Emacs 23.")
 
 (defvar icicle-current-completion-mode nil
   "Symbol `prefix' or `apropos', specifying the current completion mode.")
+
+(defvar icicle-current-font-lock-part nil
+  "The part of `font-lock-keywords' currently being used, during cycling.
+Updated by `icicle-next-font-lock-keywords(-repeat)'.")
 
 (defvar icicle-current-input "" "Current minibuffer input.")
 
