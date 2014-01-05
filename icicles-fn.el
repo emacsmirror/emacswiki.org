@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Jan  5 11:55:55 2014 (-0800)
+;; Last-Updated: Sun Jan  5 13:00:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14184
+;;     Update #: 14193
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -126,7 +126,7 @@
 ;;    `icicle-latest-use-first-p', `icicle-levenshtein-match',
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
-;;    `icicle-lisp-vanilla-completing-read',
+;;    `icicle-lisp-vanilla-completing-read', `icicle-list-position',
 ;;    `icicle-local-keys-first-p', `icicle-make-char-candidate',
 ;;    `icicle-make-face-candidate', `icicle-make-plain-predicate',
 ;;    `icicle-major-mode-name-less-p',
@@ -171,7 +171,7 @@
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-regexp', `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
-;;    `icicle-read-string-completing',
+;;    `icicle-read-string-completing', `icicle-repeat-command',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
 ;;    `icicle-remove-color-duplicates', `icicle-remove-dots',
 ;;    `icicle-remove-duplicates', `icicle-remove-dups-if-extras',
@@ -352,6 +352,7 @@
   (defvar completion-styles)            ; In `minibuffer.el'
   (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23)
 
+(defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
 (defvar crm-separator)                  ; In `crm.el'
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
@@ -2259,6 +2260,7 @@ candidate `*point face name*' to use the face at point."
                     (eyedrop-face-at-point))
                    (proxy (symbol-value (intern (substring proxy 1 (1- (length proxy))))))
                    (t (intern face)))))))
+
       ((< emacs-major-version 24)       ; Emacs 22-23
        (defun icicle-read-face-name (prompt &optional string-describing-default multiple)
          "Read a face name with completion and return its face symbol
@@ -6135,6 +6137,28 @@ candidates that do not match the current input.  So this function then
 has the effect of removing any duplicates that match the input.  If
 there are no such matching candidates, then LIST is returned."
   (if icicle-extra-candidates (icicle-remove-duplicates list) list))
+
+;; Same as `bmkp-list-position' in `bookmark+-1.el'.
+;; Simple version of `cl-position' for all Emacs versions.
+(defun icicle-list-position (item items &optional test)
+  "Find the first occurrence of ITEM in list ITEMS.
+Return the index of the matching item, or nil if not found.
+Items are compared using binary predicate TEST, or `equal' if TEST is
+nil."
+  (unless test (setq test  'equal))
+  (let ((pos  0))
+    (catch 'icicle-list-position
+      (dolist (itm  items)
+        (when (funcall test item itm) (throw 'icicle-list-position pos))
+        (setq pos  (1+ pos)))
+      nil)))
+
+;; Same as `bmkp-repeat-command' in `bookmark+-1.el'.
+(defun icicle-repeat-command (command)
+  "Repeat COMMAND."
+  (let ((repeat-message-function  'ignore))
+    (setq last-repeatable-command  command)
+    (repeat nil)))
 
 (defun icicle-file-readable-p (file)
   "Return non-nil if FILE (a string) names a readable file."
