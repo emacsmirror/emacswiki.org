@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:53:56 2013 (-0800)
+;; Last-Updated: Sun Jan  5 13:27:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1859
+;;     Update #: 1871
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -194,6 +194,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/05 dadams
+;;     Add to Syntax Highlighting (Font Lock) menu: icicle-next-font-lock-keywords-repeat,
+;;                                                  icicle-font-lock-keyword.
 ;; 2013/07/24 dadams
 ;;     Added: facemenup-nonempty-region-p.
 ;;     Paste Text Properties to Region menu: use hlt-copied-props and facemenup-nonempty-region-p.
@@ -411,7 +414,15 @@ palette using `x'."
                                            (nth 1 (if (boundp 'flm-font-lock-fontify-level)
                                                       flm-font-lock-fontify-level
                                                     font-lock-fontify-level))]
-                                          ))
+                                          "--"
+                                          ["Cycle Keywords (Icicles)"
+                                           icicle-next-font-lock-keywords-repeat
+                                           :active
+                                           (and (boundp 'icicle-mode)  icicle-mode
+                                            (fboundp 'icicle-next-font-lock-keywords-repeat))]
+                                          ["+ Choose Keywords (Icicles)" icicle-font-lock-keyword
+                                           :active (and (boundp 'icicle-mode)  icicle-mode
+                                                    (fboundp 'icicle-font-lock-keyword))]))
                       "Syntax Highlighting (Font Lock)"))
 
 ;;;###autoload
