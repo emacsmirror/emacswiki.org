@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jan  4 13:26:15 2014 (-0800)
+;; Last-Updated: Sat Jan  4 21:51:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10528
+;;     Update #: 10535
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/04 dadams
+;;     icicle-locate-file-*-1: Typo: Mistakenly used recentf-list instead of default-directory.
+;;     icicle-recent-file-*-1: Ensure recentf-list is boundp.
 ;; 2014/01/02 dadams
 ;;     icicle-execute-extended-command(-1):
 ;;       Restore SPC correctly.  If CMD turns off Icicle mode then not icicle-self-insert.
