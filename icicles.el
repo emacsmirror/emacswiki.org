@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  5 12:18:20 2014 (-0800)
+;; Last-Updated: Sun Jan  5 13:40:37 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23513
+;;     Update #: 23521
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -285,8 +285,8 @@
 ;;    `icicle-find-file-tagged',
 ;;    `icicle-find-file-tagged-other-window', `icicle-find-first-tag',
 ;;    `icicle-find-first-tag-other-window', `icicle-find-tag',
-;;    `icicle-font', `icicle-frame-bg', `icicle-frame-fg',
-;;    `icicle-fundoc', `icicle-goto-global-marker',
+;;    `icicle-font', `icicle-font-lock-keyword', `icicle-frame-bg',
+;;    `icicle-frame-fg', `icicle-fundoc', `icicle-goto-global-marker',
 ;;    `icicle-goto-global-marker-or-pop-global-mark',
 ;;    `icicle-goto-marker', `icicle-goto-marker-or-set-mark-command',
 ;;    `icicle-grep-saved-file-candidates',
@@ -330,6 +330,8 @@
 ;;    `icicle-locate-other-window',
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
+;;    `icicle-next-font-lock-keywords',
+;;    `icicle-next-font-lock-keywords-repeat',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
 ;;    `icicle-occur', `icicle-occur-dired-marked',
 ;;    `icicle-occur-dired-marked-recursive',
@@ -625,7 +627,9 @@
 ;;    `icicle-previous-line', `icicle-previous-prefix-candidate',
 ;;    `icicle-previous-prefix-candidate-action',
 ;;    `icicle-previous-prefix-candidate-alt-action',
-;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
+;;    `icicle-read+insert-file-name',
+;;    `icicle-recomplete-from-original-domain',
+;;    `icicle-regexp-quote-input',
 ;;    `icicle-remove-buffer-cands-for-derived-mode',
 ;;    `icicle-remove-buffer-cands-for-mode',
 ;;    `icicle-remove-buffer-cands-for-visible',
@@ -1128,8 +1132,9 @@
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-completion-at-point',
-;;    `icicle-lisp-vanilla-completing-read', `icicle-load-library',
-;;    `icicle-local-keys-first-p', `icicle-locate-file-no-search-1',
+;;    `icicle-lisp-vanilla-completing-read', `icicle-list-position',
+;;    `icicle-load-library', `icicle-local-keys-first-p',
+;;    `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
 ;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
@@ -1212,7 +1217,7 @@
 ;;    `icicle-remove-from-recentf-candidate-action',
 ;;    `icicle-remove-if', `icicle-remove-if-not',
 ;;    `icicle-remove-property', `icicle-replace-mct-cand-in-mct',
-;;    `icicle-remove-saved-set-action',
+;;    `icicle-remove-saved-set-action', `icicle-repeat-command',
 ;;    `icicle-replace-input-w-parent-dir', `icicle-require-match-p',
 ;;    `icicle-restore-completion-keys',
 ;;    `icicle-restore-custom-minibuffer-keys',
@@ -1289,7 +1294,7 @@
 ;;    `icicle-unsorted-prefix-candidates',
 ;;    `icicle-universal-argument--mode' (Emacs 24.4+),
 ;;    `icicle-upcase', `icicle-upcase-if-ignore-case',
-;;    `icicle-update-and-next',
+;;    `icicle-update-and-next', `icicle-update-f-l-keywords',
 ;;    `icicle-update-ignored-extensions-regexp',
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
@@ -1339,7 +1344,8 @@
 ;;    `icicle-crm-local-completion-map',
 ;;    `icicle-crm-local-must-match-map',
 ;;    `icicle-current-completion-candidate-overlay',
-;;    `icicle-current-completion-mode', `icicle-current-input',
+;;    `icicle-current-completion-mode',
+;;    `icicle-current-font-lock-part', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
 ;;    `icicle-custom-menu-map', `icicle-cycling-p',
 ;;    `icicle-default-thing-insertion-flipped-p',
