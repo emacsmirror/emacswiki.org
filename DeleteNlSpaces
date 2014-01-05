@@ -25,4 +25,5 @@ You can download the source from [[https://github.com/targzeta/delete-nl-spaces 
 (require 'delete-nl-spaces)
 }}}
 
-
+----
+CategoryEditing
