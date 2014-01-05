@@ -53,16 +53,19 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
                     (progn
                       (delete-char trailnewlines)))))))
 
+=== With PictureMode ===
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 
+=== nuke-trailing-whitespace ===
 * `M-x nuke-trailing-whitespace'
 
 [new]
 : *Note:* I've had some corruption problems with `nuke-trailing-whitespace' and Unicode files. In addition to the trailing newlines getting deleted, a few non-whitespace characters get deleted too. I've done a quick fix by replacing the `delete-region' with `delete-blank-lines'.
-[new]
 
+=== whitespace.el ===
 * <tt>[http://www.splode.com/~friedman/software/emacs-lisp/src/whitespace.el whitespace.el]</tt>. -- GregFenton
 
+=== Simple function ===
 * This commmand (e.g. bind to `C-x C-h'):
 
         (defun my-delete-leading-whitespace (start end)
@@ -72,7 +75,11 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (if (not (bolp)) (forward-line 1))
             (delete-whitespace-rectangle (point) end nil)))
 
+=== ethan-wspace ===
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
+
+=== DeleteNlSpaces ==
+* DeleteNlSpaces - a non intrusive minor mode for deleting needless spaces
 
 == Version control friendly options (modify only the lines you have edited) ==
 
