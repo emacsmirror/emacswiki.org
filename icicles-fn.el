@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Dec 30 14:46:06 2013 (-0800)
+;; Last-Updated: Sun Jan  5 11:55:55 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14173
+;;     Update #: 14184
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1135,8 +1135,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
          (minibuffer-completion-table       collection)
          (icicle-fancy-cands-internal-p     (or icicle-whole-candidate-as-text-prop-p
                                                 icicle-fancy-candidates-p
-                                                (get-text-property
-                                                 0 'icicle-fancy-candidates prompt)))
+                                                (get-text-property 0 'icicle-fancy-candidates prompt)))
          result)
     ;; Transform a cons collection to what is expected for `minibuffer-completion-table'.
     (when icicle-fancy-cands-internal-p
@@ -1150,12 +1149,33 @@ Completion ignores case when `completion-ignore-case' is non-nil."
                           prompt collection predicate require-match initial-input
                           hist-m@%=!$+&^*z def inherit-input-method)))
           (t
-           (let ((minibuffer-prompt-properties
-                  (and (boundp 'minibuffer-prompt-properties) ; Emacs 21+ only
-                       (icicle-remove-property 'face minibuffer-prompt-properties)))
-                 (minibuffer-completing-file-name
+           (let* ((minibuffer-prompt-properties             (and (boundp 'minibuffer-prompt-properties)
+                                                                 (icicle-remove-property ; Emacs 21+ only
+                                                                  'face minibuffer-prompt-properties)))
                   ;; Can't be file-name completion unless it's a function.
-                  (and (functionp collection)  minibuffer-completing-file-name)))
+                  (minibuffer-completing-file-name          (and (functionp collection)
+                                                                 minibuffer-completing-file-name))
+                  ;; If not a recursive minibuffer, save original domain-defining variables,
+                  ;; so user can restore them using `icicle-recomplete-from-original-domain'.
+                  (top-level-p                              (< (minibuffer-depth) 1))
+                  (icicle-orig-minibuffer-completion-table  (if top-level-p
+                                                                minibuffer-completion-table
+                                                              icicle-orig-minibuffer-completion-table))
+                  (icicle-orig-minibuffer-completion-pred   (if top-level-p
+                                                                predicate
+                                                              icicle-orig-minibuffer-completion-pred))
+                  (icicle-orig-must-pass-after-match-pred   (if top-level-p
+                                                                icicle-must-pass-after-match-predicate
+                                                              icicle-orig-must-pass-after-match-pred))
+                  (icicle-orig-must-match-regexp            (if top-level-p
+                                                                icicle-must-match-regexp
+                                                              icicle-orig-must-match-regexp))
+                  (icicle-orig-must-not-match-regexp        (if top-level-p
+                                                                icicle-must-not-match-regexp
+                                                              icicle-orig-must-not-match-regexp))
+                  (icicle-orig-must-pass-predicate          (if top-level-p
+                                                                icicle-must-pass-predicate
+                                                              icicle-orig-must-pass-predicate)))
              (when (< emacs-major-version 21)
                (setq prompt  (concat (and icicle-candidate-action-fn  "+ ") prompt)))
              (setq result  (catch 'icicle-read-top
