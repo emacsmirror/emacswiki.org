@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Dec 26 17:13:27 2013 (-0800)
+;; Last-Updated: Sun Jan  5 14:07:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6704
+;;     Update #: 6718
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -78,7 +78,8 @@
 ;;    (+)`icicle-find-file-some-tags-regexp-other-window',
 ;;    (+)`icicle-find-file-tagged',
 ;;    (+)`icicle-find-file-tagged-other-window', (+)`icicle-font',
-;;    (+)`icicle-frame-bg', (+)`icicle-frame-fg', (+)`icicle-fundoc',
+;;    (+)`icicle-font-lock-keyword', (+)`icicle-frame-bg',
+;;    (+)`icicle-frame-fg', (+)`icicle-fundoc',
 ;;    (+)`icicle-goto-global-marker',
 ;;    (+)`icicle-goto-global-marker-or-pop-global-mark',
 ;;    (+)`icicle-goto-marker',
@@ -103,9 +104,11 @@
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library',
-;;    (+)`icicle-map', `icicle-next-visible-thing',
-;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-occur-dired-marked',
+;;    (+)`icicle-map', `icicle-next-font-lock-keywords',
+;;    `icicle-next-font-lock-keywords-repeat',
+;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
+;;    (+)`icicle-object-action', (+)`icicle-occur',
+;;    (+)`icicle-occur-dired-marked',
 ;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
@@ -246,7 +249,8 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-widget-color-complete', `icicle-WYSIWYG-font'.
+;;    `icicle-update-f-l-keywords', `icicle-widget-color-complete',
+;;    `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -2161,6 +2165,113 @@ FULL-NAME)."
 ;;;                              "Font is not yet loaded (used)")))
 ;;;         (icicle-candidate-short-help help-string sized-font)
 ;;;         (list sized-font)))))
+
+
+(when (> emacs-major-version 21)        ; Need cadr of `font-lock-keywords' to hold uncompiled version.
+
+  (defun icicle-next-font-lock-keywords (increment &optional startoverp resetp msgp)
+    "Cycle to the next part of `font-lock-keywords'.
+With a plain prefix arg (`C-u'), start over from the beginning.
+With a zero prefix arg, reset to the original (full) set of
+`font-lock-keywords'."
+    (interactive (let ((startovr  (consp current-prefix-arg))
+                       (reset     (zerop (prefix-numeric-value current-prefix-arg))))
+                   (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
+                         startovr
+                         reset
+                         'MSGP)))
+    (unless icicle-orig-font-lock-keywords  (setq icicle-orig-font-lock-keywords  font-lock-keywords))
+    (let ((keywds  (if (eq t (car icicle-orig-font-lock-keywords))
+                       (cadr icicle-orig-font-lock-keywords)
+                     icicle-orig-font-lock-keywords)))
+      (cond (resetp
+             (setq font-lock-keywords  icicle-orig-font-lock-keywords)
+             (when msgp (message "`font-lock-keywords' reset to original in this buffer (full)")))
+            (t
+             (setq icicle-current-font-lock-part
+                   (if startoverp
+                       (car keywds)
+                     (let ((index  (icicle-list-position icicle-current-font-lock-part keywds)))
+                       (if index
+                           (nth (mod (+ increment index) (length keywds)) keywds)
+                         (car keywds)))))
+             (setq font-lock-keywords  (list icicle-current-font-lock-part))
+             (when msgp (message "`font-lock-keywords' set to next part")))))
+    (funcall font-lock-fontify-buffer-function))
+
+  (defun icicle-next-font-lock-keywords-repeat (increment &optional startoverp resetp msgp) ; `M-o n'
+    "Cycle to the next part of `font-lock-keywords'.
+With a plain prefix arg (`C-u'), start over from the beginning.
+With a zero prefix arg, reset to the original (full) set of
+`font-lock-keywords'."
+    (interactive (let ((startovr  (consp current-prefix-arg))
+                       (reset     (zerop (prefix-numeric-value current-prefix-arg))))
+                   (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
+                         startovr
+                         reset
+                         'MSGP)))
+    (require 'repeat)
+    (icicle-repeat-command 'icicle-next-font-lock-keywords))
+
+  (icicle-define-command icicle-font-lock-keyword
+    "Choose one or more items from `font-lock-keywords'.
+To set `font-lock-keywords' to *all* of the keywords that currently
+match your input, use `M-!'.  The current completions sort order is
+used.
+
+To add *all* of the keywords that currently match your input to
+`font-lock-keywords', use `M-|'.  The current completions sort order
+is used.
+
+To reset the keywords to what they were originally in this
+buffer (e.g., before invoking `icicle-font-lock-keyword'), use a
+negative prefix arg when acting on any candidate (which candidate does
+not matter)."
+    (lambda (choice)                    ; Action function.
+      (with-current-buffer icicle-orig-buff
+        (cond ((and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0))
+               (setq font-lock-keywords  icicle-orig-font-lock-keywords)
+               (funcall font-lock-fontify-buffer-function)
+               (message "`font-lock-keywords' reset to original (full)")
+               (icicle-top-level))
+              (t
+               (setq font-lock-keywords  (list (cdr (assoc choice alist)))) ; ALIST is FREE HERE.
+               (funcall font-lock-fontify-buffer-function)
+               (message "`font-lock-keywords' set to chosen candidate")))))
+    "Font-lock part: " alist nil t nil nil nil nil ; `completing-read' arguments.
+    ((icicle-sort-comparer                      nil)
+     (IGNORE                                    (unless icicle-orig-font-lock-keywords
+                                                  (with-current-buffer icicle-orig-buff
+                                                    (setq icicle-orig-font-lock-keywords  font-lock-keywords))))
+     (uncompiled-keywds                         (if (eq t (car icicle-orig-font-lock-keywords))
+                                                    (cadr icicle-orig-font-lock-keywords)
+                                                  icicle-orig-font-lock-keywords))
+     (alist                                     (delq nil (mapcar (lambda (part)
+                                                                    (and (not (eq t part))
+                                                                         (cons (format "%s" part) part)))
+                                                                  uncompiled-keywds)))
+     (icicle-all-candidates-list-action-fn      `(lambda (cands)
+                                                  (icicle-update-f-l-keywords cands ',alist))) ; `M-!'
+     (icicle-all-candidates-list-alt-action-fn  `(lambda (cands)
+                                                  (icicle-update-f-l-keywords cands ',alist 'ADD)))) ; `M-|'
+    nil nil nil)                        ; First, undo, last code.
+
+  (defun icicle-update-f-l-keywords (candidates alist &optional addp)
+    "Set `font-lock-keywords' to the keywords represented by CANDIDATES.
+Non-nil ADDP means append those keywords to `font-lock-keywords'.
+ALIST is the (uncompiled) original (full) set of keywords for this
+buffer."
+    (with-current-buffer icicle-orig-buff
+      (let ((new-keywds         (mapcar (lambda (cand) (cdr (assoc cand alist))) candidates))
+            (uncompiled-keywds  (if (eq t (car font-lock-keywords))
+                                    (cadr font-lock-keywords)
+                                  font-lock-keywords)))
+        (setq font-lock-keywords  (if addp (append uncompiled-keywds new-keywds) new-keywds))
+        (funcall font-lock-fontify-buffer-function)
+        (message (if addp
+                     "All candidates appended to `font-lock-keywords'")
+                 "`font-lock-keywords' set to all candidates"))))
+  )
 
 
 (defvar icicle-info-buff nil
