@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sat Jan  4 09:56:47 2014 (-0800)
+;; Last-Updated: Sun Jan  5 12:08:40 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1773
+;;     Update #: 1780
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -111,6 +111,11 @@
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p', `icicle-orig-buff',
+;;    `icicle-orig-font-lock-keywords',
+;;    `icicle-orig-minibuffer-completion-pred',
+;;    `icicle-orig-minibuffer-completion-table',
+;;    `icicle-orig-must-match-regexp',
+;;    `icicle-orig-must-not-match-regexp',
 ;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
 ;;    `icicle-orig-window', `icicle-orig-win-explore',
@@ -971,6 +976,22 @@ Used by, e.g., `icicle-execute-extended-command'.")
 
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")
+
+(defvar icicle-orig-font-lock-keywords nil
+  "Saved value of `font-lock-keywords'.")
+(make-variable-buffer-local 'icicle-orig-font-lock-keywords)
+
+(defvar icicle-orig-minibuffer-completion-pred nil
+  "Saved value of `minibufer-completion-predicate'.")
+
+(defvar icicle-orig-minibuffer-completion-table nil
+  "Saved value of `minibufer-completion-table'.")
+
+(defvar icicle-orig-must-match-regexp nil
+  "Saved value of `icicle-must-match-regexp'.")
+
+(defvar icicle-orig-must-not-match-regexp nil
+  "Saved value of `icicle-must-not-match-regexp'.")
 
 (defvar icicle-orig-must-pass-after-match-pred nil
   "Saved value of `icicle-must-pass-after-match-predicate'.")
