@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jan  4 13:23:33 2014 (-0800)
+;; Last-Updated: Sun Jan  5 12:39:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19315
+;;     Update #: 19321
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -171,8 +171,9 @@
 ;;    `icicle-previous-line', `icicle-previous-prefix-candidate',
 ;;    `icicle-previous-prefix-candidate-action',
 ;;    `icicle-previous-prefix-candidate-alt-action',
-;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
-;;    `icicle-remove-candidate',
+;;    `icicle-read+insert-file-name',
+;;    `icicle-recomplete-from-original-domain',
+;;    `icicle-regexp-quote-input', `icicle-remove-candidate',
 ;;    `icicle-remove-buffer-cands-for-derived-mode',
 ;;    `icicle-remove-buffer-cands-for-mode',
 ;;    `icicle-remove-buffer-cands-for-visible',
@@ -8386,6 +8387,40 @@ it is the only frame or a standalone minibuffer frame."
             (if (and (one-window-p t)  (cdr (visible-frame-list))) ; Sole window but not sole frame.
                 (delete-frame)
               (delete-window (selected-window)))))))))
+
+(defun icicle-recomplete-from-original-domain (reversep) ; Bound to `C-x C-0' during completion.
+  "Recomplete your last typed input, using the original domain.
+That is, ignore the current domain, which might have resulted from
+restoring a saved candidates set or from narrowing, and start over
+using the original domain of possible candidates.
+
+With a prefix arg, reverse the candidate order after recompleting."
+  (interactive "P")
+  (let* ((file-name-input-p                       (icicle-file-name-input-p))
+         (candidates-fn                           (case icicle-current-completion-mode
+                                                    (prefix
+                                                     (if file-name-input-p
+                                                         #'icicle-file-name-prefix-candidates
+                                                       #'icicle-prefix-candidates))
+                                                    (apropos
+                                                     (if file-name-input-p
+                                                         #'icicle-file-name-apropos-candidates
+                                                       #'icicle-apropos-candidates)))))
+    (setq  minibuffer-completion-table             (or icicle-orig-minibuffer-completion-table
+                                                       minibuffer-completion-table)
+           minibuffer-completion-predicate         (or icicle-orig-minibuffer-completion-pred
+                                                       minibuffer-completion-predicate)
+           icicle-must-pass-after-match-predicate  (or icicle-orig-must-pass-after-match-pred
+                                                       icicle-must-pass-after-match-predicate))
+    ;; Recompute and redisplay completion candidates.  Reset candidate number.
+    (setq icicle-completion-candidates
+          (condition-case nil
+              (funcall candidates-fn icicle-current-input)
+            (error icicle-completion-candidates))) ; No change if completion error.
+    (when (get-buffer-window "*Completions*" 0) ; Update `*Completions*' display or remove it.
+      (if icicle-completion-candidates
+          (icicle-display-candidates-in-Completions reversep)
+        (save-selected-window (icicle-remove-Completions-window))))))
 
 (defun icicle-top-level ()
   "Remove `*Completions*' window.  Return to top level.
