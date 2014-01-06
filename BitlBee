@@ -222,6 +222,58 @@ or in rcirc:
         (replace-match "<\\1>"))))
   (add-to-list 'rcirc-markup-text-functions 'my-rcirc-reformat-bitlbee-backlog)
 
+=== Desktop notifications of messages on systems with D-Bus ===
+
+The following code creates a desktop notification via D-Bus whenever a new message is received; the notification doesn't time out, and is instead cleared by sending a reply to that message, or by being closed manually.
+
+Tested on Emacs 24.3 manually compiled for Debian Wheezy.
+
+  (require 'notifications)
+  
+  ;; Association list, pairing buffer names with notification IDs.
+  
+  (setq erc-notification-id-alist '())
+  
+  ;; Function for use by erc-new-message-notify.
+  
+  (defun erc-notification-closed (id reason)
+    "Callback function, for removing notification entry if user closed notification manually."
+    (dolist (entry erc-notification-id-alist)
+      (if (equal id (cdr entry))
+          (setq erc-notification-id-alist
+                (delq
+                 (assoc (car entry) erc-notification-id-alist)
+                 erc-notification-id-alist)))))
+  
+  ;; Create notification when ERC message received.
+  
+  (defun erc-new-message-notify (message)
+    "Notify user of new ERC message."
+    (let ((this-buffer (buffer-name (current-buffer))))
+      (if (not (string-match "^[#&]" this-buffer))
+          (if (not (assoc this-buffer erc-notification-id-alist))
+              (setq erc-notification-id-alist
+                    (cons
+                     `(,this-buffer ,@(notifications-notify :timeout 0 :on-close 'erc-notification-closed :title "New message in chat" :body (buffer-name (current-buffer))))
+                     erc-notification-id-alist))))))
+  
+  (add-hook 'erc-insert-pre-hook 'erc-new-message-notify)
+  
+  ;; On ERC buffer modification by user, clear notification message.
+  
+  (defun erc-close-notification ()
+    "Close ERC notification bubbles related to the current chat."
+    (let ((this-buffer (buffer-name (current-buffer))))
+      (if (assoc this-buffer erc-notification-id-alist)
+        (progn
+          (notifications-close-notification (cdr (assoc this-buffer erc-notification-id-alist)))
+          (setq erc-notification-id-alist
+                (delq
+                 (assoc this-buffer erc-notification-id-alist)
+                 erc-notification-id-alist))))))
+  
+  (add-hook 'erc-send-post-hook 'erc-close-notification)
+
 == HTTP proxy support ==
 
 BitlBee has http proxy support in the code. To use it, see the system-wide BitlBee configuration file bitlbee.conf, usually installed in <tt>(/usr/local)/etc/bitlbee/</tt>. You can't use the runtime set command for this because proxy servers usually aren't really a per-user thing.
