@@ -1,7 +1,7 @@
 The '''syntax table''' contains information that tells Emacs how to
 operate on text, words, sentences etc. It will make Emacs know enough
-about all the symbols in a buffer. Syntax tables is used for example
-for word motion. The Syntax Tables may be different for different
+about all the symbols in a buffer. Syntax tables are used, for example,
+for moving forward or backward by word. The Syntax Tables may be different for different
 buffers, but usually it is controled by the current MajorMode of the
 buffer. Syntax Table may inherit ''standard syntax table''. The syntax
 tables of most major modes inherit the standard syntax table (see
