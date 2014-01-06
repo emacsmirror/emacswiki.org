@@ -121,7 +121,7 @@ only deltas are transferred.
 * [1] [http://en.wikipedia.org/wiki/Distributed_revision_control DVCS]
   = Distributed Version Control System
 * [2] [http://git-scm.org Git homepage]
-* [3] [http://www.debian.org/doc/developers-reference/best-pkging-practices.html#bpp-debian-control Debian packaging manual, Chapter 6. Best Packaging Practices]
+* [3] [http://www.debian.org/doc/developers-reference Debian packaging manual, Chapter 6.2 Practices for debian/control]
 
 == Download and Install ==
 
@@ -232,7 +232,7 @@ omitted for brevity:
     ;; example.el -- Major mode for editing example files
 
     ;;;###autoload
-    (defun example-mode (&optional mdoe)
+    (defun example-mode (&optional mode)
       (interactive "P")
       (message "example-mode in use"))
 
@@ -339,5 +339,4 @@ CategoryPackaging
 epackage
 bare bones
 Template files
-
 
