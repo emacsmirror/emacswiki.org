@@ -13,5 +13,31 @@ If you often edit source code residing in subdirectories relative to your Makefi
 
 coded by bpalmer
 
+
+
+if all the straight forward parent directory do not contain Makefile, the codes above unfortunately would fall into infinitely loop. the codes below would resolve this problem, and you can use the list to find multiple filename format.
+
+<pre>
+(setq compilation-filenames '("Makefile" "makefile"))
+
+(defun get-nearest-compilation-file ()
+  "Search for the compilation file traversing up the directory tree."
+  (let ((dir default-directory)
+	(parent-dir (file-name-directory (directory-file-name default-directory)))
+	(nearest-compilation-file 'nil))
+    (while (and (not (string= dir parent-dir))
+		(not nearest-compilation-file))
+      (dolist (filename compilation-filenames)
+	(setq file-path (concat dir filename))
+	(when (file-readable-p file-path)
+	  (setq nearest-compilation-file file-path)))
+      (setq dir parent-dir
+	    parent-dir (file-name-directory (directory-file-name parent-dir))))
+    nearest-compilation-file))
+</pre>
+
+live long and prosper  
+                               -- from zigler
+
 ----
 CategoryProgramming
