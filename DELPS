@@ -295,9 +295,9 @@ That was it in a nutshell. What's left to do is to check the generated
 files, adjust or delete them as needed. E.g. we don't need for this
 simple extension files like *-compile, *-examples, *-uninstall and we
 can simply delete them. We have to fill in the important /info/ file
-that defines details of the package. After all chnages, we commit to
-Git, make this new epackage available (push to Github) and annouce its
-availability in epackage yellow pages; amongst other packages.
+that defines details of the package. After all changes, we commit to
+Git, make this new epackage available (push to Github) and announce its
+availability in epackage yellow pages; among other packages.
 
 The directory structure is as follows. For a complete example with all
 the details, see heading /For Package Developers/.
