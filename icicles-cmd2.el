@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jan  5 14:07:47 2014 (-0800)
+;; Last-Updated: Mon Jan  6 14:50:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6718
+;;     Update #: 6720
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2173,7 +2173,12 @@ FULL-NAME)."
     "Cycle to the next part of `font-lock-keywords'.
 With a plain prefix arg (`C-u'), start over from the beginning.
 With a zero prefix arg, reset to the original (full) set of
-`font-lock-keywords'."
+`font-lock-keywords'.
+
+This command is mainly for testing `font-lock-keywords' patterns that
+you have created.
+
+For more flexibility, use multi-command `icicle-font-lock-keyword'."
     (interactive (let ((startovr  (consp current-prefix-arg))
                        (reset     (zerop (prefix-numeric-value current-prefix-arg))))
                    (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
@@ -2203,7 +2208,12 @@ With a zero prefix arg, reset to the original (full) set of
     "Cycle to the next part of `font-lock-keywords'.
 With a plain prefix arg (`C-u'), start over from the beginning.
 With a zero prefix arg, reset to the original (full) set of
-`font-lock-keywords'."
+`font-lock-keywords'.
+
+This command is mainly for testing `font-lock-keywords' patterns that
+you have created.
+
+For more flexibility, use multi-command `icicle-font-lock-keyword'."
     (interactive (let ((startovr  (consp current-prefix-arg))
                        (reset     (zerop (prefix-numeric-value current-prefix-arg))))
                    (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
@@ -2226,7 +2236,10 @@ is used.
 To reset the keywords to what they were originally in this
 buffer (e.g., before invoking `icicle-font-lock-keyword'), use a
 negative prefix arg when acting on any candidate (which candidate does
-not matter)."
+not matter).
+
+This command is mainly for testing `font-lock-keywords' patterns that
+you have created."
     (lambda (choice)                    ; Action function.
       (with-current-buffer icicle-orig-buff
         (cond ((and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0))
