@@ -15,7 +15,7 @@ coded by bpalmer
 
 
 
-if all the straight forward parent directory do not contain Makefile, the codes above unfortunately would fall into infinitely loop. the codes below would resolve this problem, and you can use the list to find multiple filename format.
+if all the straight upward parent directories do not contain Makefile, the codes above unfortunately would fall into infinitely loop. the codes below would resolve this problem, and you can use the list to find multiple filename format.
 
 <pre>
 (setq compilation-filenames '("Makefile" "makefile"))
