@@ -273,13 +273,13 @@ development files. The steps are:
 				       branches (dev only)
 
     # Start packaging
-    cd ~my/elisp/package/example/
+    cd ~/my/elisp/package/example/
 
     # Inject extension into Git branch "upstream"
     Egit
 
     # Tag this realease
-    git tar upstream/YYYY-MM-DD
+    git tag upstream/YYYY-MM-DD
 
     # Change to standard branch which will hold the "epacakage"
     git branch master upstream
