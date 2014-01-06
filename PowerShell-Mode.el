@@ -527,7 +527,6 @@ characters that can't be set by the syntax-table alone.")
 (defvar powershell-mode-map
   (let ((powershell-mode-map (make-keymap)))
     ;;    (define-key powershell-mode-map "\r" 'powershell-indent-line)
-    (define-key powershell-mode-map "\t" 'powershell-indent-line)
     (define-key powershell-mode-map (kbd "M-\"") 'powershell-doublequote-selection)
     (define-key powershell-mode-map (kbd "M-'") 'powershell-quote-selection)
     (define-key powershell-mode-map (kbd "C-'") 'powershell-unquote-selection)
