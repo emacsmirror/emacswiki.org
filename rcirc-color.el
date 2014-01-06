@@ -1,5 +1,12 @@
-;;; rcirc-color.el -- color nicks
-;; Copyright 2005-2013  Alex Schroeder
+;;; rcirc-color.el --- color nicks
+
+;; Copyright (C) 2005-2013 Alex Schroeder
+
+;; Author: Alex Schroeder <alex@gnu.org>
+;; Version: 0.2
+;; Keywords: comm
+
+;; This file is NOT part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
