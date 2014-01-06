@@ -1,5 +1,12 @@
-;;;; rcirc-controls.el -- control sequences
-;; Copyright 2008  Alex Schroeder
+;;; rcirc-controls.el --- control sequences
+
+;; Copyright (C) 2008 Alex Schroeder
+
+;; Author: Alex Schroeder <alex@gnu.org>
+;; Version: 0.1
+;; Keywords: comm
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
