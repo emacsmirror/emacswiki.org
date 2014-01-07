@@ -365,8 +365,11 @@ Tramp: 2.1.18-23.2
 [new:DrewAdams:2012-06-16 12:51 UTC]
 I cannot repro it on Windows.  MichaelHeerdegen tried but cannot repro it on GNU/Linux.  Please follow up using email.  Thx -- DrewAdams
 
+[PasJa:2014-01-07]
 
+Today i've restarted my emacs(it run more than half year :-) and upgraded icicles to the current version. The problem which i described above is gone.
 
+Regards-- Pasja
 
 
 
