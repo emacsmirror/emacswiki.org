@@ -1,18 +1,19 @@
-This page is for tips and tricks about using Git with the Emacs source tree.
+This page is for tips and tricks about using Git.
 
 == Getting Emacs via Git ==
 
-Emacs Git repositories are in a number of places. The most official one right now is savannah.
+Emacs Git repositories are available from a number of places. The official one is Savannah.
 
-Getting Emacs via Git while using the least space:
-
-{{{
-git clone --depth 1 git://git.savannah.gnu.org/emacs.git
-}}}
-
-Getting Emacs via Git and pulling all the branches and history and what not:
+Getting Emacs via Git:
 
 {{{
 git clone git://git.savannah.gnu.org/emacs.git
 }}}
 
+This clones the Emacs Git repository from Savannah, including all of the branches in that repository.
+
+If disk space is at a premium, you can clone a //shallow// repository, with history truncated to just a handful of the latest revisions.  This uses much less space, but is severely limited in its usability: you cannot clone or fetch from such a repository, nor push from or to it.  Thus, a shallow repository is useless for you if you want to contribute to Emacs development (which is what this page is for).  Here's how to create a shallow clone with history for only 2 last revisions:
+
+{{{
+git clone --depth 1 git://git.savannah.gnu.org/emacs.git
+}}}
