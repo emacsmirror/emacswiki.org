@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jan  4 21:45:49 2014 (-0800)
+;; Last-Updated: Mon Jan  6 19:11:06 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26679
+;;     Update #: 26685
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2759,72 +2759,74 @@ See also:
       (setq icicle-apropos-value-last-initial-cand-set  cands))
     cands)
   nil nil nil nil nil nil
-  ((pref-arg                            current-prefix-arg)
-   (num-arg                             (prefix-numeric-value pref-arg))
-   (prompt                              (format "SYMBOL `C-M-j' %s: " (if pref-arg "INFO" "VALUE"))) ; Bindings
-   (icicle-toggle-transforming-message  (cond ((or (consp pref-arg)  (= num-arg 0))
-                                               "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
-                                              ((and pref-arg  (> num-arg 0))
-                                               "Filtering to FACES (+ plists) is now %s")
-                                              ((< num-arg 0)
-                                               "Filtering to COMMANDS (+ defs) is now %s")
-                                              (t "Filtering to user OPTIONS (+ values) is now %s")))
-   (icicle-candidate-properties-alist   '((1 (face icicle-candidate-part))))
-   (icicle-multi-completing-p           t)
-   (icicle-list-use-nth-parts           '(1))
-   (icicle-transform-before-sort-p      t)
-   (icicle-transform-function           nil) ; No transformation: all symbols.
-   (icicle-last-transform-function      (lambda (cands) ; `C-$': only user options, commands, or faces.
-                                          (loop for cc in cands
-                                                with symb
-                                                do (setq symb  (intern (icicle-transform-multi-completion cc)))
-                                                if (cond ((or (consp `,pref-arg)  (= `,num-arg 0))
-                                                          (or (user-variable-p symb)
-                                                              (commandp symb)
-                                                              (facep symb)))
-                                                         ((and `,pref-arg  (> `,num-arg 0))
-                                                          (facep symb))
-                                                         ((< `,num-arg 0)
-                                                          (commandp symb))
-                                                         (t
-                                                          (user-variable-p symb)))
-                                                collect cc)))
-   (print-fn                            (lambda (obj)
-                                          (let ((print-circle  t))
+  ((pref-arg                              current-prefix-arg) ; Bindings
+   (num-arg                               (prefix-numeric-value pref-arg))
+   (prompt                                (format "SYMBOL `C-M-j' %s: " (if pref-arg "INFO" "VALUE")))
+   (icicle--last-toggle-transforming-msg  icicle-toggle-transforming-message)
+   (icicle-toggle-transforming-message    (cond ((or (consp pref-arg)  (= num-arg 0))
+                                                 "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
+                                                ((and pref-arg  (> num-arg 0))
+                                                 "Filtering to FACES (+ plists) is now %s")
+                                                ((< num-arg 0)
+                                                 "Filtering to COMMANDS (+ defs) is now %s")
+                                                (t "Filtering to user OPTIONS (+ values) is now %s")))
+   (icicle-candidate-properties-alist     '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p             t)
+   (icicle-list-use-nth-parts             '(1))
+   (icicle-transform-before-sort-p        t)
+   (icicle-transform-function             nil) ; No transformation: all symbols.
+   (icicle-last-transform-function        (lambda (cands) ; `C-$': only user options, commands, or faces.
+                                            (loop for cc in cands
+                                                  with symb
+                                                  do (setq symb  (intern
+                                                                  (icicle-transform-multi-completion cc)))
+                                                  if (cond ((or (consp `,pref-arg)  (= `,num-arg 0))
+                                                            (or (user-variable-p symb)
+                                                                (commandp symb)
+                                                                (facep symb)))
+                                                           ((and `,pref-arg  (> `,num-arg 0))
+                                                            (facep symb))
+                                                           ((< `,num-arg 0)
+                                                            (commandp symb))
+                                                           (t
+                                                            (user-variable-p symb)))
+                                                  collect cc)))
+   (print-fn                              (lambda (obj)
+                                            (let ((print-circle  t))
 ;;; $$$$$$                                  (condition-case nil
 ;;;                                             (prin1-to-string obj)
 ;;;                                           (error "`icicle-apropos-value' printing error")))))
-                                            (prin1-to-string obj))))
-   (make-cand                           (cond ((< num-arg 0) ; Function
-                                               (lambda (symb)
-                                                 (and (fboundp symb)
-                                                      `((,(symbol-name symb)
-                                                         ,(if (byte-code-function-p (symbol-function symb))
-                                                              ""
-                                                              (funcall print-fn (symbol-function symb))))))))
-                                              ((= num-arg 0) ; Do ALL
-                                               (lambda (symb) ; Favor the var, then the fn, then the plist.
-                                                 (cond ((boundp symb)
-                                                        `((,(symbol-name symb)
-                                                           ,(funcall print-fn (symbol-value symb)))))
-                                                       ((fboundp symb)
+                                              (prin1-to-string obj))))
+   (make-cand                             (cond ((< num-arg 0) ; Function
+                                                 (lambda (symb)
+                                                   (and (fboundp symb)
                                                         `((,(symbol-name symb)
                                                            ,(if (byte-code-function-p (symbol-function symb))
                                                                 ""
-                                                                (funcall print-fn (symbol-function symb))))))
-                                                       ((symbol-plist symb)
+                                                                (funcall print-fn (symbol-function symb))))))))
+                                                ((= num-arg 0) ; Do ALL
+                                                 (lambda (symb) ; Favor the var, then the fn, then the plist.
+                                                   (cond ((boundp symb)
+                                                          `((,(symbol-name symb)
+                                                             ,(funcall print-fn (symbol-value symb)))))
+                                                         ((fboundp symb)
+                                                          `((,(symbol-name symb)
+                                                             ,(if (byte-code-function-p (symbol-function symb))
+                                                                  ""
+                                                                  (funcall print-fn (symbol-function symb))))))
+                                                         ((symbol-plist symb)
+                                                          `((,(symbol-name symb)
+                                                             ,(funcall print-fn (symbol-plist symb))))))))
+                                                ((and pref-arg  (> num-arg 0)) ; Plist
+                                                 (lambda (symb)
+                                                   (and (symbol-plist symb)
                                                         `((,(symbol-name symb)
-                                                           ,(funcall print-fn (symbol-plist symb))))))))
-                                              ((and pref-arg  (> num-arg 0)) ; Plist
-                                               (lambda (symb)
-                                                 (and (symbol-plist symb)
-                                                      `((,(symbol-name symb)
-                                                         ,(funcall print-fn (symbol-plist symb)))))))
-                                              (t ; Variable
-                                               (lambda (symb)
-                                                 (and (boundp symb)
-                                                      `((,(symbol-name symb)
-                                                         ,(funcall print-fn (symbol-value symb))))))))))
+                                                           ,(funcall print-fn (symbol-plist symb)))))))
+                                                (t ; Variable
+                                                 (lambda (symb)
+                                                   (and (boundp symb)
+                                                        `((,(symbol-name symb)
+                                                           ,(funcall print-fn (symbol-value symb))))))))))
   (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
          (icicle-highlight-lighter)
          (message "Gathering %s%s..." (cond ((consp pref-arg)              'SYMBOLS)
@@ -4097,6 +4099,7 @@ You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as ann
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
+   (icicle--last-toggle-transforming-msg    icicle-toggle-transforming-message)
    (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
    (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
                                               (with-current-buffer icicle-pre-minibuffer-buffer
