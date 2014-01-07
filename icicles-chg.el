@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan  5 14:04:05 2014 (-0800)
+;; Last-Updated: Mon Jan  6 19:25:50 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10554
+;;     Update #: 10562
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/06 dadams
+;;     icicle-apropos-value, icicle-command-abbrev: Bind icicle--last-toggle-transforming-msg.
 ;; 2014/01/04 dadams
 ;;     icicle-locate-file-*-1: Typo: Mistakenly used recentf-list instead of default-directory.
 ;;     icicle-recent-file-*-1: Ensure recentf-list is boundp.
@@ -1036,6 +1038,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/01/06 dadams
+;;     icicle-vardoc, icicle-fundoc, icicle-plist, icicle-doc:
+;;       Bind icicle--last-toggle-transforming-msg.
 ;; 2014/01/05 dadams
 ;;     Added: icicle-next-font-lock-keywords, icicle-next-font-lock-keywords-repeat,
 ;;            icicle-font-lock-keyword, icicle-update-f-l-keywords.
