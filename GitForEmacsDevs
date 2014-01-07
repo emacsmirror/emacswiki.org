@@ -1,19 +1,356 @@
-This page is for tips and tricks about using Git.
+[:Introduction]
+== Introduction ==
 
-== Getting Emacs via Git ==
+Some features described on EmacsWiki are available only in the latest
+'''[::EmacsDevelopmentVersion]'''. To obtain those features, you will
+need to build Emacs using the development source code. This page is
+about that source code and how to use it.
 
-Emacs Git repositories are available from a number of places. The official one is Savannah.
+This is a quick-start guide to using [http://git-scm.com Git] for
+Emacs development.  It presents a simple Git workflow oriented toward
+the "regular contributor," whether a "core" committer, a maintainer of
+a well-defined package (/e.g./, a major mode), or simply someone who
+enjoys occasionally hacking on Emacs and then contributing those
+improvements to the community.  The emphasis is on /necessary/ and
+/simple/, not on "general" nor on maximal efficiency.  Emacs
+developers will surely need various other workflows at times, and
+there are in most cases more highly performant ways of accomplishing
+most tasks.  However, the ways presented here are intended to be
+straightforward, effective, reasonably efficient, and relatively
+simple.
 
-Getting Emacs via Git:
+"VCS means never having to say you're sorry."  It's true, but it's
+still worth being careful, even with git.  In the workflows described
+below, a quick "git status" is inserted before each commit.  This is
+optional, of course, but it's generally a good idea if (a) you haven't
+committed in that branch within your short-term memory, or (b) you've
+done a merge.
 
-{{{
-git clone git://git.savannah.gnu.org/emacs.git
-}}}
+[:StopGap]
+=== Centralized workflow ===
 
-This clones the Emacs Git repository from Savannah, including all of the branches in that repository.
+The workflow documented on this page takes advantage of the fact that
+Git is a decentralized version control system.  It is especially
+useful when you are working on large changes to Emacs.
 
-If disk space is at a premium, you can clone a //shallow// repository, with history truncated to just a handful of the latest revisions.  This uses much less space, but is severely limited in its usability: you cannot clone or fetch from such a repository, nor push from or to it.  Thus, a shallow repository is useless for you if you want to contribute to Emacs development (which is what this page is for).  Here's how to create a shallow clone with history for only 2 last revisions:
+If you just need a quick and simple workflow, see
+GitQuickStartForEmacsDevs.  That page describes a simple CVS-like
+centralized workflow, which allows you to contribute changes to Emacs
+as quickly as you can, with a minimum amount of extra effort.  One
+advantage of that workflow is that you can use VC-dir without
+complications.
 
-{{{
-git clone --depth 1 git://git.savannah.gnu.org/emacs.git
-}}}
+Later, when you have a chance, come back here and learn the workflow
+described on this page.  This workflow hews more closely to what
+experienced Git users are accustomed to, which will make it easier for
+you to get support online.  One disadvantage of this workflow is that
+VC-dir support is still somewhat lacking.
+
+[:Terminology]
+=== Terminology ===
+
+If you were last involved in Emacs development before Bazaar, and find the
+terminology in this guide confusing, read
+[https://www.kernel.org/pub/software/scm/git/docs/v1.4.4.4/cvs-migration.html
+Git for CVS Users] and come back.
+
+If you are used to Bazaar, bear in mind that the work unit you will
+clone when using Git is not a branch but an entire repository with all
+its branches. You'll still be pushing commits to a branch, by default
+the mainline branch.  The mainline branch of the public Emacs
+repository will be called the /master branch/, /master/ for short, or
+/upstream master branch/ for emphasis.  (The mainline branch is the
+one containing the changes targeted for future public releases.)
+
+The command examples are generally given in Unix command-line style,
+although we did try to use forms that would work on MS-Windows as
+well.  If you use Windows or some other system, please feel free to
+add examples appropriate for that system.
+
+[:GettingStarted]
+== Getting Started ==
+
+[:Help]
+=== Getting help on Git ===
+
+Git provides both Unix-style man pages (start with ##man git##) and
+emvedded help (start with ##git help##). See [[#OtherResources]] for
+more documentation.
+
+[:RegularContributors]
+=== The Git Work Routine ===
+
+Overview of the Git work routine:
+
+# Tell Git your name and email address; these will be used as defaults to identify your commits. (Usage: git config --global user.name "Frank Chu"; git config --global user.email fchu@example.com")
+# Clone the repository: ##git clone <username>@git://git.sv.gnu.org/emacs##
+# Do trivial, single-commit work on /master/ and commit to upstream from there; do your non-trivial work in local feature branches, committing locally as you go (more about that below).
+# From time to time, update to get upstream newness with ##git pull## (this is like <tt>cvs update</tt> or <tt>bzr up</tt>).
+# When a task is finished (a local branch's changes are complete), then either
+## merge them into the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
+## package up your changes with ##git format-patxh## and send them as a patch series to the project mailing list (analogous to posting a patch).
+# Receive feedback.
+# Lather, rinse, repeat until the change is accepted.
+# If you did all this on a local feature branch, you can remove the branch now.  The change history will live upstream.
+
+Now let's look at the specific git commands.
+
+[:PersonalizingGit]
+=== Personalizing Git ===
+
+Unlike centralized VCSes where you are identified by an account in the
+repository, in Git you can clone repositories in many places, and you may
+be sending changes to many places (including, but not limited to, the
+upstream Emacs repo).  So Git stores your identity locally, and
+includes it as part of every revision you commit.  This information is
+your name and email address.  To configure Git to use them, do
+
+      git config --global user.name "J. Random Hacker"
+      git config --global user.email "jrandom@gnu.org.invalid"
+
+When you are integrating somebody else's work, you will want to be
+identified as the committer (so you can handle technical issues with
+the commit), but not as the author.  In that case you can use the
+##--author## option to ##git commit## to specify the author.
+
+[:InitializingYourGitRepo]
+=== Initializing Your Local Git Repository ===
+
+This section describes how to set things up if you plan on making
+contributions to Emacs (whether or not you're one of the Emacs
+maintainers).  You can also use this way just to track the Emacs
+sources, even if you never contribute changes.
+
+For the general public, Emacs's repo lives at ##git://git.sv.gnu.org/emacs##. Committers should prefix it with their Savannah user-id: ##USERID@git.savannah.gnu.org/emacs##. Apply ##git clone## to these; it will clone the repo into a directory named 'emacs'.
+
+[:QuickFix]
+=== Doing Quick Fixes ===
+
+You can do quick, self-contained fixes (one-line patches and the like)
+directly to the master branch if you want:
+
+      cd $DEVHOME/emacs/
+      git pull                    # get in sync with the upstream master
+      <<<make your edit>>>
+      git status                  # (optional) sanity check -- lists changed and unknown files
+      git commit -a -m "Fix silly typo in README."
+      git push
+
+##git## will automatically identify you as the committer and author of
+these changes (see [[#PersonalizingGit]]).  If you are integrating
+another developer's work, you can use ##--author 'J. Other Hacker
+<jhacker@gnu.org.invalid>'## to identify JO Hacker as the author of
+the change.
+
+//Note:// For larger tasks, such as a complicated bug fix or new
+feature that might require multiple commits and rounds of feedback, we
+always recommend creating a "task branch" dedicated to that fix or
+feature -- see [[#FeatureBranch]].
+
+[:InitializeBranch]
+[:FeatureBranch]
+[:RegularDevelopmentBranch]
+== Workflow for Regular Development ==
+
+=== Creating a Task Branch ===
+
+When you are working on a task that touches many files, or requires a
+lot of thought and several stages, or for any reason may take a fair
+amount of time, it's a good idea to work on a separate branch to keep
+the changes from interfering with concurrent work (including your
+own!), and to keep the history separate from other work.  This makes
+review easier, too.  So first create a new branch:
+
+      cd $DEVHOME/emacs
+      git branch TASKNAME
+      git checkout TASKNAME
+
+...where "TASKNAME" could be, e.g., the bug tracker ticket number of
+the bug you're trying to fix, or just a short, descriptive name for
+the task.
+
+=== Working in a Task Branch ===
+
+At this point, you're ready to do work.  You edit the source files,
+build and test as needed.  When you've accomplished a subtask, it's a
+good idea to stop and commit your work to the branch.  Here, you often
+have a larger ChangeLog than can comfortably be entered on the command
+line with ##-m##.  In this case, you put the log message in a file
+we'll call ##log-message.txt##.  Then
+
+      git status                  # (optional) sanity check -- lists changed and unknown files
+      git commit -a -F log-message.txt
+
+You can also do ##git commit -m "blah blah blah"##, if your log
+message is short enough to fit on one line.  Remember, these commits
+are local: they affect only your task branch, not the upstrewm repo.
+No one else will see the commits until you send them upstream.
+
+(Note: the Emacs project will continue to keep versioned ChangeLog
+files.  See
+[http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00334.html
+this mail] for more.)
+
+If the task isn't done yet, keep working.  Edit yet more source files,
+until you reach a good stopping point:
+
+      git status                   # (optional) sanity check -- lists changed and unknown files
+      git commit -a -F another-log-message.txt
+
+etc.  You can commit any time you reach a good checkpoint.  We
+recommend committing much more frequently than you might with CVS or
+Subversion.
+
+From time to time you may wish to refresh the local repository by
+updating to get changes from upstream:
+
+      git pull
+
+And after refreshing, you'll want to get those changes into your task
+branch, by merging them:
+
+      git merge master
+      git status                  # (recommended) sanity check -- lists changed and unknown files
+      git commit -m "Merge from master."
+
+The merge may fail due to an upstream change that conflicts with your
+branch.  You'll need to fix the problem (looking for conflict markers
+and editing, just as in CVS and Bazaar). Then use ##git add## on the
+resolved file to mark that it shoild be added to the next commit.
+
+      git add file-you-changed ...      # Mark these conflicts as resolved.
+                                        # Git keeps track of unresolved conflicts,
+                                        # and won't let you commit until all are resolved.
+
+Once you have achieved a clean merge, commit it:
+
+      git status                  # (recommended) sanity check -- lists changed and unknown files
+      git commit -m "Merge from mainline."
+
+Note that you will need this ##commit## command even if there were no
+conflicts detected during the merge.
+
+Once you have completed the task, you'll want to send it for review or
+maybe even put it into upstream.  You can send for review either by
+publishing your branch (see [[#PublishBranch]]) or sending a bundle
+(see [[#SendABundle]]), and if you are a committer you can merge to
+upstream yourself (see [[#MergeToUpstream]]).
+
+[:SendAPatchSet]
+=== Sending a Patch Set for Review ===
+
+Another way to post changes for review is to create a "patch set",
+which is a sequence of files containing your change, each in a special
+augmented patch format that Git understands:
+
+      git format-patch <BEGIN>..<END>
+
+where <BEGIN> and <END> identifies thr range of commits in your change.
+This will produce a seqence of files, one per commit in the equence, 
+each with a name generated from the summary line of the commit.
+
+Send mail to the Emacs Devel list describing the change; attach the
+patch set to that mail (please use MIME type ##text/plain##).  If the
+reviewers ask for further tweaks, repeat the cycle.  Edit the files,
+build and test as necessary, and
+
+      git status                  # (optional) sanity check -- lists changed and unknown files
+      git commit -m "Address reviewer comments."
+
+
+[:PushToUpstream]
+[:MergeToUpstream]
+=== Merging Into the Upstream Master ===
+
+If you are a committer, you can merge to the upstream master directly.
+
+First, update your repository:
+
+      cd $DEVHOME/emacs
+      git checkout master
+      git pull
+      git merge ../TASKNAME
+
+Run the tests:
+
+      make check
+
+and then commit
+
+      git status                  # (recommended) sanity check -- lists changed and unknown files
+      git commit -m "fixes debbugs:12345"
+
+which merges all your new commits to the upstream
+master.
+
+Alternatively, if you use VC in Emacs, Emacs will populate the commit
+message from your ChangeLog updates. If the ChangeLogs reference the
+bug, VC also generates the --fixes flag when it carries out the
+commit. To use VC:
+
+  vc-dir the root directory of Emacs sources
+  vc-dir-mark to mark files to commit
+  vc-next-action to edit a commit message
+  log-edit-insert-changelog to populate from ChangeLogs, possibly using prefix-arg
+  vc-next-action to commit
+
+In this process, updating your ##master## with ##git pull## is not
+really optional.  There is a race condition here, just as in CVS and
+Bazaar: if your mirror is not up-to-date because another developer has
+committed since you last updated, your commit will fail.  In this case
+you should abort the merge
+
+      git revert
+
+do another ##git pull##, merge from the ##TASKNAME## branch again, and
+commit.
+
+When you're done with your work and it's all been sent upstream, you
+can delete your task branch...
+
+      cd ..
+      rm -rf TASKNAME/
+
+When you decide to work on the next task, create a new task branch:
+
+      cd $DEVHOME/emacs
+      git branch NEW_TASKNAME
+
+...and you know what to do from here.
+
+[:Resources]
+== Resources ==
+
+If you've read this far, you should have a basic understanding of Git,
+and how develop Emacs using Git.  Below are some more resources that
+you or people you work with might find useful.
+
+[:CasualDevs]
+=== Resources for Casual Developers ===
+
+Ideally, one-time contributors, beta testers, and anyone else needing
+to follow bleeding-edge Emacs would use the same workflow as described
+above for regular contributors.  However, in case that workflow feels
+like too much trouble, then GitForEmacsCasualDevs offers a couple of
+slightly simpler setups.
+
+Even if you use one of those simpler setups at first, we still
+encourage you to migrate to the [[#RegularContributors]] workflow as
+soon as you can -- not because you necessarily plan to become a
+regular contributor, but because then your setup will be the same as
+what most other people are using, so they can better help you if you
+have questions.
+
+[:OtherResources]
+=== Other Resources ===
+
+* [http://git-scm.com/ Git home site]
+* [https://www.kernel.org/pub/software/scm/git/docs/user-manual.html Git User's manual]
+* [https://git-scm.com/docs/gittutorial‎ Official Git tutorial]
+* [http://git-scm.com/book The Git Book]
+* GitQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow.
+
+---------
+
+
+CategoryContributingToEmacs
