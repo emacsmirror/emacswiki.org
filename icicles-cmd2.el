@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Jan  6 14:50:05 2014 (-0800)
+;; Last-Updated: Mon Jan  6 19:14:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6720
+;;     Update #: 6732
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3026,20 +3026,21 @@ See also: `icicle-apropos-value'."      ; Doc string
       (setq icicle-vardoc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "VAR `C-M-j' DOC: ") ; Bindings
-   (icicle-toggle-transforming-message "Filtering to user options is now %s")
-   (icicle-transform-function           nil) ; No transformation: all symbols.
-   (icicle-last-transform-function      (lambda (cands) ; `C-$': only options.
-                                          (loop
-                                           for cc in cands
-                                           with symb
-                                           do (setq symb  (intern (icicle-transform-multi-completion cc)))
-                                           if (user-variable-p symb)
-                                           collect cc)))
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-multi-completing-p          t)
-   (icicle-list-use-nth-parts          '(1))
-   (pref-arg                           current-prefix-arg))
+  ((prompt                                "VAR `C-M-j' DOC: ") ; Bindings
+   (icicle--last-toggle-transforming-msg  icicle-toggle-transforming-message)
+   (icicle-toggle-transforming-message    "Filtering to user options is now %s")
+   (icicle-transform-function             nil) ; No transformation: all symbols.
+   (icicle-last-transform-function        (lambda (cands) ; `C-$': only options.
+                                            (loop
+                                             for cc in cands
+                                             with symb
+                                             do (setq symb  (intern (icicle-transform-multi-completion cc)))
+                                             if (user-variable-p symb)
+                                             collect cc)))
+   (icicle-candidate-properties-alist     '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p             t)
+   (icicle-list-use-nth-parts             '(1))
+   (pref-arg                              current-prefix-arg))
   (progn                                ; First code
     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
@@ -3095,20 +3096,21 @@ See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
       (setq icicle-fundoc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "FUNC `C-M-j' DOC: ") ; Bindings
-   (icicle-toggle-transforming-message "Filtering to commands is now %s")
-   (icicle-transform-function           nil) ; No transformation: all symbols.
-   (icicle-last-transform-function      (lambda (cands) ; `C-$': only commands.
-                                          (loop
-                                           for cc in cands
-                                           with symb
-                                           do (setq symb  (intern (icicle-transform-multi-completion cc)))
-                                           if (commandp symb)
-                                           collect cc)))
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-multi-completing-p          t)
-   (icicle-list-use-nth-parts          '(1))
-   (pref-arg                           current-prefix-arg))
+  ((prompt                                "FUNC `C-M-j' DOC: ") ; Bindings
+   (icicle--last-toggle-transforming-msg  icicle-toggle-transforming-message)
+   (icicle-toggle-transforming-message    "Filtering to commands is now %s")
+   (icicle-transform-function             nil) ; No transformation: all symbols.
+   (icicle-last-transform-function        (lambda (cands) ; `C-$': only commands.
+                                            (loop for cc in cands
+                                                  with symb
+                                                  do (setq symb  (intern
+                                                                  (icicle-transform-multi-completion cc)))
+                                                  if (commandp symb)
+                                                  collect cc)))
+   (icicle-candidate-properties-alist     '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p             t)
+   (icicle-list-use-nth-parts             '(1))
+   (pref-arg                              current-prefix-arg))
   (progn                                ; First code
     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
@@ -3158,8 +3160,8 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
                       icicle-plist-last-initial-cand-set)))
     (unless result                      ; COLLECTION arg: an alist with items ((symb plist-string))
       (mapatoms
-       (lambda (symb)                 ; Each completion candidate is a list of strings.
-         (condition-case nil          ; Ignore symbols that produce errors.
+       (lambda (symb)                   ; Each completion candidate is a list of strings.
+         (condition-case nil            ; Ignore symbols that produce errors.
              (let ((plist  (symbol-plist symb)))
                (when plist
                  (push (list (list (symbol-name symb)
@@ -3172,9 +3174,10 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
       (setq icicle-plist-last-initial-cand-set  result))
     result)
   nil nil nil nil nil nil
-  ((prompt                             "SYMB `C-M-j' PLIST: ") ; Bindings
-   (icicle-toggle-transforming-message "Filtering to faces is now %s")
-   (icicle-transform-function           nil) ; No transformation: all symbols.
+  ((prompt                                "SYMB `C-M-j' PLIST: ") ; Bindings
+   (icicle--last-toggle-transforming-msg  icicle-toggle-transforming-message)
+   (icicle-toggle-transforming-message    "Filtering to faces is now %s")
+   (icicle-transform-function             nil) ; No transformation: all symbols.
    (icicle-last-transform-function
     (lambda (cands)                     ; `C-$': only faces.
       (loop for cc in cands
@@ -3182,10 +3185,10 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
             do (setq symb  (intern (icicle-transform-multi-completion cc)))
             if (facep symb)
             collect cc)))
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-multi-completing-p          t)
-   (icicle-list-use-nth-parts          '(1))
-   (pref-arg                           current-prefix-arg))
+   (icicle-candidate-properties-alist     '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p             t)
+   (icicle-list-use-nth-parts             '(1))
+   (pref-arg                              current-prefix-arg))
   (progn                                ; First code
     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
@@ -3255,21 +3258,22 @@ See also: `icicle-apropos-value'."      ; Doc string
       (setq icicle-doc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "Find doc using regexp: ") ; Bindings
+  ((prompt                                "Find doc using regexp: ") ; Bindings
    ;; $$$$$$ (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
-   (icicle-toggle-transforming-message  "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
-   (icicle-transform-function           nil) ; No transformation: all symbols.
-   (icicle-last-transform-function      (lambda (cands) ; `C-$': only user options, commands, or faces.
-                                          (loop for cc in cands
-                                                with symb
-                                                do (setq symb (intern (icicle-transform-multi-completion cc)))
-                                                if (or (user-variable-p symb)  (commandp symb)  (facep symb))
-                                                collect cc)))
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
-   (icicle-multi-completing-p          t)
-   (icicle-list-use-nth-parts          '(1))
-   (icicle-candidate-help-fn           'icicle-doc-action)
-   (pref-arg                           current-prefix-arg))
+   (icicle--last-toggle-transforming-msg  icicle-toggle-transforming-message)
+   (icicle-toggle-transforming-message    "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
+   (icicle-transform-function             nil) ; No transformation: all symbols.
+   (icicle-last-transform-function        (lambda (cands) ; `C-$': only user options, commands, or faces.
+                                            (loop for cc in cands
+                                                  with symb
+                                                  do (setq symb (intern (icicle-transform-multi-completion cc)))
+                                                  if (or (user-variable-p symb)  (commandp symb)  (facep symb))
+                                                  collect cc)))
+   (icicle-candidate-properties-alist     '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p             t)
+   (icicle-list-use-nth-parts             '(1))
+   (icicle-candidate-help-fn              'icicle-doc-action)
+   (pref-arg                              current-prefix-arg))
   (progn                                ; First code
     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
     (icicle-highlight-lighter)
