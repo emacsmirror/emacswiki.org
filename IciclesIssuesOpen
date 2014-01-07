@@ -335,42 +335,6 @@ Sorry for your trouble.  BTW, if you prefer to follow up using email instead of 
 
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-
-[:PasJaTrampProblem2012-06-08]
-[new]
-I've found another little bug: when i go to another machine with tramp, like `/ssh:pasja@example.com:/pasja' and hit the famous tab key, the machine part goes to the completion. My prompt looks like `/ssh:pasja@example.com:/pasja/pasja@example.com'. Of course this directory does not exist in my home folder, and i have to delete back, to get the real completion. After that is could use it normally.
-
-Regards-- PasJa
-
-
-[new:DrewAdams:2012-06-08 15:40 UTC]
-What Emacs version are you using, and what Tramp version? -- DrewAdams
-
-
-[new]
-Emacs: GNU Emacs 23.2.1 (i486-pc-linux-gnu, GTK+ Version 2.20.0) of 2010-12-11 on raven, modified by Debian
-
-Tramp: 2.1.18-23.2
-
--- PasJa
-
-[new:DrewAdams:2012-06-16 12:51 UTC]
-I cannot repro it on Windows.  MichaelHeerdegen tried but cannot repro it on GNU/Linux.  Please follow up using email.  Thx -- DrewAdams
-
-[PasJa:2014-01-07]
-
-Today i've restarted my emacs(it run more than half year :-) and upgraded icicles to the current version. The problem which i described above is gone.
-
-Regards --PasJa
-
 
 
 
