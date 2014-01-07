@@ -1,0 +1,170 @@
+== Git quick start guide for Emacs Developers ==
+
+Emacs is about to switch to Git as its version control system.
+
+If you are an Emacs contributor without experience using Git in
+particular and Distributed Version Control Systems (dVCS) in general,
+this document tells you how to use Bazaar in a simple, CVS-like way.
+
+The "workflow" described in this document allows you to:
+
+* Contribute to Emacs in a CVS-like way, including the use of VC-dir.
+* Get conversant with the Git UI.
+* Have a starting point for learning the full capabilities of Git.
+
+There is a separate document, [[GitForEmacsDevs]], that describes
+several workflows that take advantage of the fact that Git is a
+*distributed* version control system.  Such workflows are particularly
+useful if you are making substantial changes to Emacs.
+
+=== Conventions and basic info ===
+
+* Whenever we need to refer to the Emacs repository on the GNU
+  *servers, we'll use URL_TO_UPSTREAM_MASTER*. At the time of this
+  *writing, it is ##<username>@git://git.sv.gnu.org/emacs##.
+
+* ##git help /command/## is an easy way to get documentation about
+    /command/. Use this for learning useful command line options.
+
+=== Starting ===
+
+We start by telling Git who you are. This is used for recording the
+author of the commits.  You will need to run two commands, one to set
+your name among humans and the other to set your email address:
+
+: ##git config --global user.name "Your Name Here"##
+
+: ##git config --global user.email "you@wherever.net"##
+
+Next, you need to clone a copy of the Emacs repository:
+
+* ##git clone URL_TO_UPSTREAM_TRUNK##
+
+This will take a couple of minutes even on a fast connection;
+it downloads about 300MB of data.
+
+=== Daily work ===
+
+If you're using the command-line:
+
+* ##git pull##
+* Edit files
+* ##git commit -a##
+* ##git push##
+
+Optionally, before doing a commit, you can do ##git status## and ##git
+diff## to view the changed which will be committed by ##git commit
+-a## (with no filename arguments) and unknown files which will be
+ignored by ##git commit##.  "Unknown" means that the file neither
+matches a pattern in .gitignore nor is registered with Bazaar.
+Typically unknown files are newly added.  In order to track changes in
+them, use the ##git add## command:
+
+##git add new-file ...##
+
+then commit them as usual with the rest of the appropriate changeset.
+You can also commit using VC-dir:
+
+* ##M-x vc-dir RET##
+* ##m## (Mark files to commit)
+* ##v##
+* Type log (##C-c C-a## to pull in ChangeLog(s))
+* ##C-c C-c##
+
+If Bazaar complains about conflicts after the update, fix them and use
+
+: ##git add <file>##
+
+(##git add## cannot fix any conflicts itself; it only marks a file
+as being ready to commit after *you* fix the conflicts.)
+
+With Git you shouldn't commit the changed files one at a time if
+they belong to the same logical change. So please don't do:
+
+* ##git commit ChangeLog.txt##
+* ##git commit lisp/foo.el##
+
+but instead do
+
+* ##git commit lisp/foo.el ChangeLog.txt##
+
+or just
+
+* ##git commit -a##
+
+if those are the only changed files.
+(It is recommended to do a ##git status## before a commit without
+filename arguments to check for inadvertant changes that would be
+committed.)
+
+This is very important because
+every commit creates a *changeset*, which is a discrete step on the
+history of the code base. A changeset should correspond to one
+well-defined purpose which is completely achieved with the
+corresponding commit as, for instance, "Fix bug #342" or "Implement
+feature Foo".
+
+Before committing, not just the files you are committing but _all_
+your local source files must be up to date with upstream. So if
+somebody else commits to upstream between the ##git pull## and the ##git
+commit## commands, you'll need to ##git pull## again.
+
+
+
+=== More branches ===
+
+If you work on other branches besides /master/, just ##cd## into your
+repository and
+
+: ##git checkout branch_name##
+
+
+=== Other commands ===
+
+Bazaar has ##status##, ##log##, ##annotate##,  etc. They do pretty
+much what you would expect from CVS and Bazaar experience.
+
+##git revert##, on the other hand, behaves a bit differently than you
+might expect.  You may want to use ##git reset## instead. Read the
+documentation for both to decide.
+
+=== Use VC-Dir ===
+
+VC-Dir works fine with this setup. It doesn't support all features of
+more advanced Bazaar setups, though.
+
+=== That's it ===
+
+You know enough to continue your Emacs hacking. Furthermore, you have
+the initial elements for turning your current setup into a more
+advanced setup once you learn enough to do so. You will not need to
+download all the history from upstream again.
+
+
+=== What you have, what you are missing ===
+
+You have in your disk a copy of the entire repository as of the
+last ##git pull##. Hence, Bazaar does not need to contact
+a server upstream for displaying logs, reverting edited files,
+annotating, etc. This is useful for working off-line.
+
+Git makes possible to commit changes off-line to your local history
+and send them upstream in one batch. There are several options with
+associated trade-offs for doing this, so read GitForEmacsDevs or ask
+on the emacs-devel mailing list if you are interested on that
+possibility.
+
+Git allows you to work as if you had your own personal CVS branch
+in your machine and communicate changes with other developers, not
+only with upstream. What's considered "upstream" is just an agreement
+among the developers who participate on the same project. That is the
+essence of Distributed Version Control. Your current setup can be
+easily adapted for this, but you need to master the necessary Git
+concepts before embarking on that practices.
+
+Git makes it very easy to create as many private branches as you
+wish.
+
+=== Further reading ===
+
+GitForEmacsDevs
