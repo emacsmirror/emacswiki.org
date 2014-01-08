@@ -16,6 +16,13 @@ Custom themes are similar to color themes, but:
 
 * You cannot ''undo'' the application of custom themes, to return to the state before applying a theme.  You can only ''disable'' custom themes, not undo to a non-theme state.  That is, you can swap one custom theme for another, but any non-theme state before applying a custom theme is lost. With color themes, on the other hand, you can restore a pre-theme state.
 
+* Custom themes have some [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15740|performance problems]].
+
+
+
+
+
+
 
 
 
