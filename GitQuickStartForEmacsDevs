@@ -56,7 +56,7 @@ Optionally, before doing a commit, you can do ##git status## and ##git
 diff## to view the changed which will be committed by ##git commit
 -a## (with no filename arguments) and unknown files which will be
 ignored by ##git commit##.  "Unknown" means that the file neither
-matches a pattern in .gitignore nor is registered with Bazaar.
+matches a pattern in .gitignore nor is registered with Git.
 Typically unknown files are newly added.  In order to track changes in
 them, use the ##git add## command:
 
@@ -71,7 +71,7 @@ You can also commit using VC-dir:
 * Type log (##C-c C-a## to pull in ChangeLog(s))
 * ##C-c C-c##
 
-If Bazaar complains about conflicts after the update, fix them and use
+If Git complains about conflicts after the update, fix them and use
 
 : ##git add <file>##
 
@@ -121,7 +121,7 @@ repository and
 
 === Other commands ===
 
-Bazaar has ##status##, ##log##, ##annotate##,  etc. They do pretty
+Git has ##status##, ##log##, ##annotate##,  etc. They do pretty
 much what you would expect from CVS and Bazaar experience.
 
 ##git revert##, on the other hand, behaves a bit differently than you
@@ -131,7 +131,7 @@ documentation for both to decide.
 === Use VC-Dir ===
 
 VC-Dir works fine with this setup. It doesn't support all features of
-more advanced Bazaar setups, though.
+more advanced Git setups, though.
 
 === That's it ===
 
@@ -144,7 +144,7 @@ download all the history from upstream again.
 === What you have, what you are missing ===
 
 You have in your disk a copy of the entire repository as of the
-last ##git pull##. Hence, Bazaar does not need to contact
+last ##git pull##. Hence, Git does not need to contact
 a server upstream for displaying logs, reverting edited files,
 annotating, etc. This is useful for working off-line.
 
