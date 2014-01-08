@@ -1,4 +1,4 @@
-For an HTTP server which makes use of modern Emacs network process handling see [https://github.com/eschulte/emacs-web-server Web Server] which requires Emacs 24.3 or greater but has no other dependencies.  The info manual is available online at [http://eschulte.github.io/emacs-web-server/index.html#Top manual].
+For an HTTP server which makes use of modern Emacs network process handling see [https://github.com/eschulte/emacs-web-server Web Server] which requires Emacs 24.3 or greater but has no other dependencies.  web-server supports the full range of HTTP GET and POST requests, and web sockets.  The info manual including usage examples is available online at [http://eschulte.github.io/emacs-web-server/index.html#Top manual].
 
 ----
 
