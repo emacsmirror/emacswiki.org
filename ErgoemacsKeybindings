@@ -1,4 +1,3 @@
-
 ErgoEmacs keybindings improves GNU Emacs for people who did not grew
 up with emacs. User interface is based on common modern software
 interface familiar to most people today, such as using 【Ctrl+C】 key
@@ -205,9 +204,9 @@ For QWERTY, an additional mapping of these keys have been made:
 * A modified Control-x map has been assigned to Menu f:
 * This map allows you to type the keys without a key chord
 requirement.  For example to switch buffers instead of
-[Control+x] [b] you could type [Menu] [f] [b].  (Note that the [f]
+[Control+x] [­b] you could type [Menu] [f] [­b].  (Note that the [f]
 key changes based on layout; For example using the colemak layout
-you would type [Menu] [t] [b] to switch buffers).
+you would type [Menu] [t] [­b] to switch buffers).
 
 * This modified keymap changes the control-chorded keys to
 alt-chorded keys since they are easier to reach, there is another
@@ -228,7 +227,7 @@ the combination [Control-x] [Control-] are used.
 
 * Chorded key combinations are changed drop the chord.  For example
 the buffer list [Control-x] [Conrtol-b] is changed to [Menu] [r]
-[b].
+[­b].
 
 * Chorded key combinations that are single key are translated to
 [Alt+] for example [Control+k] [a] is changed to [Menu] [r] [k]
@@ -241,7 +240,7 @@ bound to these types of key combinations.  They are quite
 difficult to press and remember.
 
 Similarly The Control-c keymap is rebound to [Menu] [j] for the
-modified [Control-c] keymap and [Menu] [u] for the unchorded
+modified [Control-c] keymap and [Menu] [­u] for the unchorded
 [Control-c] keymap.  This is also true of the [Control-h] keymap.
 This is bound to [Menu] [h] for the normal Control-h keymap.  It is
 also bound to [Menu] [y] for the unchorded Control-h keymap.
@@ -251,7 +250,7 @@ also bound to [Menu] [y] for the unchorded Control-h keymap.
 One can enable movement without key-chords as follows:
 * On QWERTY, press [Menu] [k] and then the movement key.  This key is
 repeatable.  Therefore [Menu] [k] [k] [k] would move the cursor down
-two lines.  If this is followed by [i] this would have the cursor
+two lines.  If this is followed by [­i] this would have the cursor
 move up a line.  To exit the repeatable movement/delete keys press
 [Menu].  This is similar to VIM's edit mode, with a toggle of the
 [Menu] key.
@@ -260,12 +259,12 @@ accomplished in QWERTY by [Shift+i].
 * Any command that enters the minibuffer also exits the repeatable
 movement/deletion.
 * To reduce the shifted key-chords, on QWERTY you can also press
-[Menu] [i].  Therefore [Menu] [i] [i] is equivalent to one page
+[Menu] [­i].  Therefore [Menu] [­i] [­i] is equivalent to one page
 up. Followed by a [k] will be the page-down equivalent
 * Again, [Menu] stops the movement mode and anything that enters
 the minibuffer removes the movement mode.
-* Shift and the key is the unshifted command.  Therefore [Menu] [i]
-[i] [Shift+k] would be Page Up followed by down one character.
+* Shift and the key is the unshifted command.  Therefore [Menu] [­i]
+[­i] [Shift+k] would be Page Up followed by down one character.
 == Layouts Supported ==
 == Tips for adopting ErgoEmacs Keybindings ==
 If you are a long time emacs user, you may find it painful to adopt
