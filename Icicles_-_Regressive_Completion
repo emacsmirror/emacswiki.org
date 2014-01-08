@@ -55,6 +55,18 @@ completion there is no such problem, because the completion  candidates themselv
 `nil' value of `insert-default-directory' or use `M-k' to remove the directory component before hitting `##M-+##'.
 
 
+'''See Also:''' [[Icicles - Candidate Sets#RecompletingUsingTheOriginalDomain|Recompleting Using the Original Domain]] for how to
+widen back to the original set of candidates.
+
+
+
+
+
+
+
+
+
+
 ----
 
 || *Previous:*  [[Icicles - Progressive Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completion On Demand]] ||
