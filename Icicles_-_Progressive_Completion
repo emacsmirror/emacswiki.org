@@ -280,6 +280,10 @@ See also [[Icicles - Search Commands, Overview]].
 
 * [[Icicles - Candidate Sets]] for information about `##C-~##' and for another way to perform a set intersection on sets of candidate completions
 
+* [[Icicles - Candidate Sets#RecompletingUsingTheOriginalDomain|Recompleting Using the Original Domain]] for how to cancel
+narrowing and recomplete your input using the original set of
+candidates.
+
 * [[Icicles - Search Commands, Overview]] for a way to ''search'' using multiple regexps and predicates -- command `icicle-search' uses the same idea as that behind progressive completion
 
 * [[Icicles - Other Search Commands]], for a way to grep files using
