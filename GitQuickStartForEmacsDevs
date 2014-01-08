@@ -21,7 +21,7 @@ useful if you are making substantial changes to Emacs.
 
 * Whenever we need to refer to the Emacs repository on the GNU
   *servers, we'll use URL_TO_UPSTREAM_MASTER*. At the time of this
-  *writing, it is ##<username>@git://git.sv.gnu.org/emacs##.
+  *writing, it is ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##.
 
 * ##git help /command/## is an easy way to get documentation about
     /command/. Use this for learning useful command line options.
