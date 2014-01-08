@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 448 $
+;; RCS Version: $Rev: 450 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -271,6 +271,27 @@ Should not contain the -D option. See also `sr-listing-switches'."
   :group 'sunrise
   :type 'string)
 
+(defcustom sr-cursor-follows-mouse t
+  "Determines whether the cursor inside the Sunrise panes should
+follow the mouse in graphical environments."
+  :group 'sunrise
+  :type 'boolean
+  :set (defun sr-set-cursor-follows-mouse (symbol value)
+         "Setter function for the `sr-set-cursor-follows-mouse' custom option."
+         (mapc (lambda (buf)
+                 (with-current-buffer buf
+                   (when (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+                     (setq track-mouse value))))
+               (buffer-list))
+         (set-default symbol value)))
+
+(defcustom sr-mouse-events-threshold 5
+  "Number of mouse movement events to ignore before following it
+with the cursor. This helps to avoid capturing accidentally the
+cursor when Sunrise is activated."
+  :group 'sunrise
+  :type 'integer)
+
 (defcustom sr-avfs-root nil
   "Root of the AVFS virtual filesystem used for navigating compressed archives.
 Setting this value activates AVFS support."
@@ -514,6 +535,10 @@ Initial value is 2/3 the viewport height.")
 the default.  The function receives one argument DIR, which is
 the directory to go to.")
 
+(defvar sr-mouse-events-count 0
+  "Number of mouse movement events received before activating the
+  `sr-cursor-follows-mouse' feature.")
+
 (defconst sr-side-lookup (list '(left . right) '(right . left))
   "Trivial alist used by the Sunrise Commander to lookup its own passive side.")
 
@@ -755,6 +780,8 @@ automatically:
   (set (make-local-variable 'revert-buffer-function) 'sr-revert-buffer)
   (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
+  (set (make-local-variable 'mouse-1-click-follows-link) nil)
+  (set (make-local-variable 'track-mouse) sr-cursor-follows-mouse)
   (set (make-local-variable 'hl-line-sticky-flag) nil)
   (hl-line-mode 1)
 )
@@ -777,6 +804,8 @@ automatically:
   (set (make-local-variable 'revert-buffer-function) 'sr-revert-buffer)
   (set (make-local-variable 'buffer-quit-function) 'sr-quit)
   (set (make-local-variable 'sr-show-file-attributes) sr-show-file-attributes)
+  (set (make-local-variable 'mouse-1-click-follows-link) nil)
+  (set (make-local-variable 'track-mouse) sr-cursor-follows-mouse)
   (set (make-local-variable 'hl-line-sticky-flag) nil)
   (hl-line-mode 1)
 
@@ -1018,10 +1047,11 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 (ad-activate 'use-hard-newlines)
 
 (defadvice dired-insert-set-properties
-  (after sr-advice-dired-insert-set-properties (beg end))
+  (around sr-advice-dired-insert-set-properties (beg end))
   "Manage hidden attributes in files added externally (e.g. from find-dired) to
 the Sunrise Commander."
-  (when (memq major-mode '(sr-mode sr-virtual-mode))
+  (if (not (memq major-mode '(sr-mode sr-virtual-mode)))
+      ad-do-it
     (with-no-warnings
       (sr-display-attributes beg end sr-show-file-attributes))))
 (ad-activate 'dired-insert-set-properties)
@@ -1150,8 +1180,8 @@ the Sunrise Commander."
 (define-key sr-mode-map [remap undo-only] 'sr-undo)
 (define-key sr-mode-map [backspace]   'dired-unmark-backward)
 
-(define-key sr-mode-map [mouse-1]     'sr-mouse-advertised-find-file)
-(define-key sr-mode-map [mouse-2]     'sr-mouse-change-window)
+(define-key sr-mode-map [mouse-1]        'sr-mouse-advertised-find-file)
+(define-key sr-mode-map [mouse-movement] 'sr-mouse-move-cursor)
 
 (define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
 (define-key sr-mode-map [(control .)]         'sr-checkpoint-restore)
@@ -1161,8 +1191,6 @@ the Sunrise Commander."
 (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-panes)
 (define-key sr-mode-map [(control })]         'sr-max-lock-panes)
 (define-key sr-mode-map [(control {)]         'sr-min-lock-panes)
-
-(define-key sr-mode-map (kbd "<down-mouse-1>")  'ignore)
 
 (defvar sr-commander-keys
   '(([(f2)]            . sr-goto-dir)
@@ -1648,6 +1676,12 @@ the panes at normal position."
   (sr-save-panes-width)
   (sr-lock-panes 'min))
 
+(defun sr-mouse-disown-cursor ()
+  "Reset the mouse movement event counter. This is used to
+implement the `sr-cursor-follows-mouse' feature."
+  (setq sr-mouse-events-count 0))
+(add-hook 'sr-init-hook 'sr-mouse-disown-cursor)
+
 ;;; ============================================================================
 ;;; File system navigation functions:
 
@@ -1985,6 +2019,21 @@ and add it to your `load-path'" name name))))
   (mouse-set-point e)
   (if (eq (selected-window) (sr-other 'window))
       (sr-change-window)))
+
+(defun sr-mouse-move-cursor (event)
+  "Move the cursor to the current mouse position.
+This function is called only if the `sr-cursor-follows-mouse' custom variable
+\(which see) has not been set to nil."
+  (interactive "e")
+  (if (<= sr-mouse-events-count sr-mouse-events-threshold)
+      (setq sr-mouse-events-count (1+ sr-mouse-events-count))
+    (when (mouse-movement-p event)
+      (let ((mouse-pos (cadadr event))
+            (mouse-win (caadr event)))
+        (when (eq mouse-win (sr-other 'window))
+          (sr-change-window))
+        (when (numberp mouse-pos)
+          (goto-char mouse-pos))))))
 
 (defun sr-beginning-of-buffer()
   "Go to the first directory/file in Dired."
