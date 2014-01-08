@@ -4,7 +4,7 @@ Emacs is about to switch to Git as its version control system.
 
 If you are an Emacs contributor without experience using Git in
 particular and Distributed Version Control Systems (dVCS) in general,
-this document tells you how to use Bazaar in a simple, CVS-like way.
+this document tells you how to use Git in a simple, CVS-like way.
 
 The "workflow" described in this document allows you to:
 
