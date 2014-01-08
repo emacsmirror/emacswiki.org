@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jan  4 09:50:40 2014 (-0800)
+;; Last-Updated: Wed Jan  8 14:28:35 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28027
+;;     Update #: 28046
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1215,6 +1215,8 @@
 ;;  edit the text of the current candidate (e.g. during lax
 ;;  completion).  Just repeat `C-g' to get its usual behavior (since
 ;;  the region has been deactivated).
+;;
+;;  See Also: (@> "Recompleting Using the Original Domain").
 ;;
 ;;(@* "Toggle Options on the Fly")
 ;;  ** Toggle Options on the Fly **
@@ -3035,6 +3037,10 @@
 ;;  * (@> "Sets of Completion Candidates") for another way to perform
 ;;    a set intersection on sets of candidate completions.
 ;;
+;;  * (@> "Recompleting Using the Original Domain") for how to cancel
+;;    narrowing and recomplete your input using the original set of
+;;    candidates.
+;;
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview")
 ;;    for a way to search using two regexps - command `icicle-search'
 ;;    uses the same idea as that behind progressive completion.
@@ -3098,6 +3104,9 @@
 ;;  candidates themselves have a directory component.  So either use a
 ;;  `nil' value of `insert-default-directory' or use `M-k' to remove
 ;;  the directory component before hitting `M-+'.
+;;
+;;  See Also: (@> "Recompleting Using the Original Domain") for how to
+;;  widen back to the original set of candidates.
  
 ;;(@* "Completion On Demand")
 ;;
@@ -7615,6 +7624,25 @@
 ;;        mean that you cannot use these key sequences for prefix
 ;;        arguments - you must use `C-u N', or `M-N' instead, where N
 ;;        is a possibly signed integer.
+;;
+;;(@* "Recompleting Using the Original Domain")
+;;  ** Recompleting Using the Original Domain **
+;;
+;;  Sometimes you want to perform an operation using a saved set of
+;;  candidates, and then you want to do something using the original
+;;  set of candidates provided by the command's completion domain.
+;;  For example, you might want to perform an action on selected files
+;;  from a saved candidate set, and then act on files that are not
+;;  necessarily in that set.
+;;
+;;  That is what `C-x C-0' (`icicle-recomplete-from-original-domain')
+;;  does: during completion, it forgets about the current set of
+;;  candidates and completes your input from scratch, using the
+;;  original domain of candidates.
+;;
+;;  This means that you can also use it after progressive completion,
+;;  to pop up to the shallowest minibuffer level (1) and start over,
+;;  completing your current input from scratch.
 ;;
 ;;  See Also:
 ;;
