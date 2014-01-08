@@ -25,7 +25,7 @@ Custom themes are similar to color themes, but:
 
 == Installing Library Color Theme ==
 
-[Possibly not up-to-date.  See http://www.nongnu.org/color-theme for the latest information.]
+[See http://www.nongnu.org/color-theme for the latest information.]
 
 Put the file color-theme.el and the folder "themes" (with the files color-theme-example.el and color-theme-library.el) in a directory on your LoadPath. The main function to
 use is `color-theme-select'. It creates the Color Theme Selection
