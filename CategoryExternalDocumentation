@@ -8,7 +8,7 @@ lists the documentation installed in it. To add to it invoke "install-info".
 
 To make this directory available to Emacs add this snippet to your "init.el":
 
-(add-to-list 'Info-default-directory-list "~/info")
+  (add-to-list 'Info-default-directory-list "~/info")
 
 SteveYegge on Info files:
 https://sites.google.com/site/steveyegge2/my-dot-emacs-file
