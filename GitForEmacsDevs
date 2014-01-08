@@ -88,7 +88,7 @@ Overview of the Git work routine:
 # From time to time, update to get upstream newness with ##git pull## (this is like <tt>cvs update</tt> or <tt>bzr up</tt>).
 # When a task is finished (a local branch's changes are complete), then either
 ## merge them into the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
-## package up your changes with ##git format-patxh## and send them as a patch series to the project mailing list (analogous to posting a patch).
+## package up your changes with ##git format-patch## and send them as a patch series to the project mailing list (analogous to posting a patch).
 # Receive feedback.
 # Lather, rinse, repeat until the change is accepted.
 # If you did all this on a local feature branch, you can remove the branch now.  The change history will live upstream.
