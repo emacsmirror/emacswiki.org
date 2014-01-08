@@ -382,6 +382,9 @@ is a possibly signed integer.
 
 
 
+
+
+[:RecompletingUsingTheOriginalDomain]
 [:C-xC-0]
 [:icicle-recomplete-from-original-domain]
 == Recompleting Using the Original Domain ==
