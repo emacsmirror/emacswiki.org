@@ -11,7 +11,7 @@ just open it for editing in Emacs:
 
 When you add Lisp to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer', or `M-x eval-region' or just `C-x C-e'.  See EvaluatingExpressions.
 
-If it seems your InitFile is not being read, type `C-h e' to see if there's a chance there was a problem with it loading.  See also DebugFileLoading.
+If it seems your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See also DebugFileLoading.
 
 It's often better to break up a lengthy init file into a number of EmacsLisp libraries and a small, top-level init file that loads those libraries, especially if you define commands and other functions. Some of the init files posted on %%EmacsWiki%% are organized in this way, as a set of library files.
 
