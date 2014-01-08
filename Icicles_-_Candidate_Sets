@@ -376,7 +376,38 @@ mean that you cannot use these [[key sequence]]s for prefix
 arguments -- you must use `##C-u ##''##N##'' ', or `##M-##''##N##'' ' instead, where ''##N##''
 is a possibly signed integer.
 
-'''See Also:'''
+
+
+
+
+
+
+[:C-xC-0]
+[:icicle-recomplete-from-original-domain]
+== Recompleting Using the Original Domain ==
+
+Sometimes you want to perform an operation using a saved set of
+candidates, and then you want to do something using the original
+set of candidates provided by the command's completion domain.
+For example, you might want to perform an action on selected files
+from a saved candidate set, and then act on files that are not
+necessarily in that set.
+
+That is what '''`C-x C-0'''' (`icicle-recomplete-from-original-domain')
+does: during completion, it forgets about the current set of
+candidates and completes your input from scratch, using the
+original domain of candidates.
+
+This means that you can also use it after [[progressive completion]],
+to pop up to the shallowest minibuffer level (1) and start over,
+completing your current input from scratch.
+
+
+
+
+
+
+== See Also ==
 
 * [[Icicles - Multi-Commands]] for information about `C-RET'.
 * [[Icicles - Choose All Candidates]] for information about `##C-!##'.
