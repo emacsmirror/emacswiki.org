@@ -4,18 +4,18 @@ Your '''[::init file]''' contains personal EmacsLisp code that you want to execu
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
-In [[Emacs]], if you do not know where your InitFile is located or you do not have one and want to create it, then
+In [[Emacs]], if you do not know where your init file is located or you do not have one and want to create it, then
 just open it for editing in Emacs:
 
    C-x C-f ~/.emacs RET
 
-When you add Lisp to your .emacs, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer', or `M-x eval-region' or just `C-x C-e'.  See EvaluatingExpressions.
+When you add Lisp to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer', or `M-x eval-region' or just `C-x C-e'.  See EvaluatingExpressions.
 
 If it seems your InitFile is not being read, type `C-h e' to see if there's a chance there was a problem with it loading.  See also DebugFileLoading.
 
-It's often better to break up a lengthy InitFile into a number of Emacs Lisp packages and a small, top-level InitFile that loads your packages, especially if you define commands and other functions. Some of the "init files" available here on EmacsWiki are organized in this way, as a set of packages.
+It's often better to break up a lengthy init file into a number of EmacsLisp libraries and a small, top-level init file that loads those libraries, especially if you define commands and other functions. Some of the init files posted on %%EmacsWiki%% are organized in this way, as a set of library files.
 
-For basic advice on how to install a neat new Emacs Lisp file you just found so that it loads automatically when you start Emacs, see InstallingPackages.
+For info about how to load an EmacsLisp file automatically when you start Emacs, see InstallingPackages.
 
 You can also have a separate CustomFile reserved strictly for customizations recorded by [[Customize]].
 
