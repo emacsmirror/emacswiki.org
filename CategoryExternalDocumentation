@@ -10,7 +10,7 @@ To make this directory available to Emacs add this snippet to your "init.el":
 
 (add-to-list 'Info-default-directory-list "~/info")
 
-Yegge on Info files:
+SteveYegge on Info files:
 https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 
 === Git ===
