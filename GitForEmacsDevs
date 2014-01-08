@@ -74,7 +74,7 @@ add examples appropriate for that system.
 === Getting help on Git ===
 
 Git provides both Unix-style man pages (start with ##man git##) and
-emvedded help (start with ##git help##). See [[#OtherResources]] for
+embedded help (start with ##git help##). See [[#OtherResources]] for
 more documentation.
 
 [:RegularContributors]
