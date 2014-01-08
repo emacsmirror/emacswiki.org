@@ -859,12 +859,7 @@ edit the text of the current candidate (e.g. during lax
 completion).  Just repeat `C-g' to get its usual behavior (since
 the region has been deactivated).
 
-
-
-
-
-
-
+'''See Also:''' [[Icicles - Candidate Sets#RecompletingUsingTheOriginalDomain|Recompleting Using the Original Domain]] 
 
 
 
