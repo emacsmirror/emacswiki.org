@@ -8,12 +8,12 @@ This mode is part of GNU Emacs 21. Or you can download it here:
 * http://perso.wanadoo.fr/david.ponce/downloads/recentf-1.23.zip
 
 To enable `recentf-mode', put this in your `~/.emacs':
-
-    (require 'recentf)
-    (recentf-mode 1)
-    (setq recentf-max-menu-items 25)
-    (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
+{{{
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+}}}
 
 [:RecentFilesWithCompletion]
 
@@ -42,7 +42,7 @@ structuring of the recent file menu accessible from the minibuffer,
 with standard tabbed completion.  Here it is.  (I find it convenient
 to globally bind `C-c r' to the command `recentf-minibuffer-dialog'.) -- SteveBerman
 
-<pre>
+{{{
 (defun recentf-filtered-list (arg)
   "Return a filtered list of ARG recentf items."
     (recentf-apply-menu-filter
@@ -102,7 +102,7 @@ Otherwise, show the default maximum number of recent items."
 	 (j (recentf-memindex item items))
 	 (file (nth j files)))
     (funcall recentf-menu-action file))) ; find-file by default
-</pre>
+}}}
 
 
 == Icicles: `icicle-recent-file' ==
@@ -121,7 +121,7 @@ It should work (untested -- see UseIswitchBuffer) using the IswitchBuffers packa
 * ido-temp-list by iswitchb-temp-buflist
 * ido-read-buffer by iswitchb-read-buffer
 
-<pre>
+{{{
 (defun recentf-interactive-complete ()
   "find a file in the recently open file using ido for completion"
   (interactive)
@@ -144,24 +144,24 @@ It should work (untested -- see UseIswitchBuffer) using the IswitchBuffers packa
 		       (setq ido-temp-list result-list))))
 	       (ido-read-buffer (format "%d matches:" result-length))))
 	   ))))
-</pre>
+}}}
 
 Or this somewhat simpler version:
 
-<pre>
+{{{
 (defun recentf-ido-find-file ()
   "Find a recent file using Ido."
   (interactive)
   (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
     (when file
       (find-file file))))
-</pre>
+}}}
 
 where <code>file-name-nondirectory</code> could be applied to
 <code>recentf-list</code> if preferred.
 
 And this is a version with <code>file-name-nondirectory</code>.
-<pre>
+{{{
 (defun recentf-ido-find-file ()
   "Find a recent file using Ido."
   (interactive)
@@ -180,7 +180,7 @@ And this is a version with <code>file-name-nondirectory</code>.
     (when filename
       (find-file (cdr (assoc filename
 			     file-assoc-list))))))
-</pre>
+}}}
 
 
 
@@ -246,29 +246,29 @@ With C-z content of files is displayed without quitting anything session.
 == TrampMode ==
 
 When using TrampMode with recentf.el, it's advisable to turn off the cleanup feature of recentf that attempts to stat all the files and remove them from the recently accessed list if they are readable.  Tramp means that this requires recentf to open up a remote site which will block your emacs process at the most inopportune times. 
-
-
-    (require 'recentf)
-    (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-    (recentf-mode 1)
+{{{
+(require 'recentf)
+(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+(recentf-mode 1)
+}}}
 
 == Gnus ==
 
 I use Gnus in one process, and everything related to plain file editing in another emacs process.  My initial load starts recentf-mode but for gnus, I really needed the recentf to use a different history file.
+{{{
+;; use a different set of recent files for gnus
+;; cmg@dok.org
+(setq recentf-save-file (recentf-expand-file-name "~/.recentf.gnus"))
 
-   ;; use a different set of recent files for gnus
-   ;; cmg@dok.org
-   (setq recentf-save-file (recentf-expand-file-name "~/.recentf.gnus"))
+;; prevent double initialization of recentf
+(if (not (boundp 'cmg:prevent-gnus-recentf-double-init))
+    (setq cmg:prevent-gnus-recentf-double-init nil))
 
-   ;; prevent double initialization of recentf
-   (if (not (boundp 'cmg:prevent-gnus-recentf-double-init))
-       (setq cmg:prevent-gnus-recentf-double-init nil))
-
-   (if (not cmg:prevent-gnus-recentf-double-init)
-       (progn
-         (load-file recentf-save-file)
-         (setq cmg:prevent-gnus-recentf-double-init t)))
-
+(if (not cmg:prevent-gnus-recentf-double-init)
+    (progn
+      (load-file recentf-save-file)
+      (setq cmg:prevent-gnus-recentf-double-init t)))
+}}}
     
 == Picklist ==
 
@@ -280,10 +280,10 @@ Please note, that it vanished from the internet but if someone wants the code I 
 
 Lisp:recentf-buffer.el -- creates a buffer with the list of recently open files. It's an addition to recentf.el. To install:
 
-<pre>
+{{{
 (load "recentf-buffer")
 (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer)
-</pre>
+}}}
 
 -- EugeneMarkov
 
@@ -319,7 +319,7 @@ I wrote to the maintainer of recentf.el but received no feedback til now, so I m
 
 I have the habit to start one Emacs dedicated to Gnus first thing in the morning and close it last thing in the evening.  With the standard recentf storage habit this Emacs will always overwrite the list of recent files, thus making it more or less constant.  There are several ways to solve this, one would be to read the list before saving it and merging the list from the file with that in the current instance of Emacs before saving it back.  My code for this, which I have in daily usage for a while now, is listed below.  Somehow I can't just overwrite the functions from recentf but I need to find the right time for that, that's why I put it after the requiring and befor the activation. -- StefanKamphausen
 
-<pre>
+{{{
 (defun try-require (feature)
   (condition-case nil
       (require feature)
@@ -373,7 +373,7 @@ file to write to."
        (warn "recentf mode: %s" (error-message-string error)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (recentf-mode 1))
-</pre>
+}}}
 
 == Entries for files that were never displayed ==
 
@@ -385,7 +385,7 @@ This is fixed in the CVS version of CEDET.
 [new]
 The following is a workaround.
 
-<pre>
+{{{
 (require 'recentf)
 (recentf-mode 1)
 
@@ -408,12 +408,12 @@ FILE has been displayed."
 ;; example, CEDET opens a lot of files in the background to generate
 ;; its tags database, etc.
 (setq recentf-keep '(keep-default-and-visible-recentf-p))
-</pre>
+}}}
 
 == Undo kill buffer ==
 The Opera web browser has a surprisingly useful feature called the "trash can".  After you close a tab you can "undo" the close with C-z.  As it turns out when I want a tab reopened it's usually one of the last few I closed, so I almost never end up looking in the history.  I missed this feature in Emacs, so I implemented it on top of recentf.
 
-<pre>
+{{{
 (defun undo-kill-buffer (arg)
   "Re-open the last buffer killed.  With ARG, re-open the nth buffer."
   (interactive "p")
@@ -430,7 +430,7 @@ The Opera web browser has a surprisingly useful feature called the "trash can". 
     (find-file
      (if arg (nth arg recently-killed-list)
        (car recently-killed-list)))))
-</pre>
+}}}
 
 
 See Also: GnomeIntegration for opening files in GNOME's recent-files list.
