@@ -18,4 +18,6 @@ If you need information on a specific library within Emacs, use FinderCommentary
 
 Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.
 
+ExternalDocumentation is about integrating other sources of information. 
+
 If, for some reason, you need access to the Emacs documentation strings without having access to Emacs itself, there's a site collecting it: [http://bruce-connor.github.io/emacs-online-documentation/ Emacs Online Documentation].
