@@ -1,0 +1,61 @@
+The built-in help browser Info is used to read documentation about
+Emacs and the GNU tools. For convenience, it might be useful to
+install in the Info's directory some other manuals and documentation.
+
+Common convention to all external manuals would be to be keep a
+separate directory, for example "~/info". In it a special file, named "dir",
+lists the documentation installed in it. To add to it invoke "install-info".
+
+To make this directory available to Emacs add this snippet to your "init.el":
+
+(add-to-list 'Info-default-directory-list "~/info")
+
+Yegge on Info files:
+https://sites.google.com/site/steveyegge2/my-dot-emacs-file
+
+=== Git ===
+
+  $ wget https://github.com/git/git/archive/master.zip
+  $ unzip master.zip
+  $ cd git-master/Documentation
+  $ make git.info
+  $ mv git.info ~/info
+  $ cd ~/info
+  $ install-info git.info dir
+
+(PetarMarinov)
+
+NOTE: the git man pages can also be converted and accessed via
+Info. To produce them follow the steps above by replacing git.info
+with gitman.info.
+
+NOTE: On a Mac install asciidoc and docbook2x first. For example, via brew:
+
+  $ brew install asciidoc
+  $ brew install docbook2x
+  $ cd /usr/local/bin
+  $ ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
+
+=== Python ===
+
+  $ wget https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.info.gz
+  $ install-info python.info.gz dir
+
+(via JonathanWaltman)
+
+=== Perl ===
+
+  $ mkdir tmp
+  $ cd tmp
+  $ wget -r --no-parent http://cpansearch.perl.org/src/KRISHPL/perl-5.6-info/info/
+  $ cd cpansearch.perl.org/src/KRISHPL/perl-5.6-info/info/
+  $ rm *unsplit*
+  $ rm *html*
+  $ rm pm.*
+  $ mv * ~/info
+  $ cd ~/info
+  $ install-info --section="Development" --entry="* Perl 5.6: (perl.info).  The Perl 5.6 Documentation" perl.info dir
+
+NOTE:
+pm.info* is deleted because it gives an error. The best solution is for
+documentation to be rebuilt with newer makeinfo version.
