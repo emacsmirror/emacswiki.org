@@ -59,7 +59,7 @@ Thanks again for the quick responses.
 
 Hm, perhaps you might be better off just installing Emacs for Windows on 20 USB stick and hand these out to students? Let them bring their own sticks and make copies, if they want (or give the sticks away?) -- I don't think Emacs needs any registry entries or settings or anything like that.
 
-I don't think that $HOME would point to a directory on the USB stick, so this might confuse people who want to work on an init file. You might have to fiddle with the copy of Emacs you install on those USB sticks to make it ##(load (concat invocation-directory "../../emacs-init.el"))## for people to edit or ##(setenv "HOME" (concat invocation-directory "../../emacs-init.el"))## such that people can create their own ##~/.emacs## file.
+I don't think that $HOME would point to a directory on the USB stick, so this might confuse people who want to work on an init file. You might have to fiddle with the copy of Emacs you install on those USB sticks to make it ##(load (concat invocation-directory "../../emacs-init.el"))## for people to edit or ##(setenv "HOME" (concat invocation-directory "../../"))## such that people can create their own ##~/.emacs## file.
 
 -- AlexSchroeder 2014-01-09 12:56 UTC
 
