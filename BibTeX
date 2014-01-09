@@ -1,4 +1,4 @@
-<code>bibtex-mode</code>, contained in <code>bibtex.el</code> file, is a major mode for editing and validating [http://www.bibtex.org BibTeX] `.bib' files. It is part of GnuEmacs, and is included in [[XEmacs]]. Current <code>bibtex.el</code> maintainer is Dirk Herrmann.
+<code>bibtex-mode</code>, contained in <code>bibtex.el</code> file, is a major mode for editing and validating [http://www.bibtex.org BibTeX] `.bib' files. It is part of GnuEmacs, and is included in [[XEmacs]]. Current <code>bibtex.el</code> maintainer is Roland Winkler.
 
 !BibTeX `.bib' files contain bibliographical information. Below is an example of one entry in such `.bib' !BibTeX database file: 
 
@@ -10,6 +10,8 @@
        volume  = "41",
        pages   = "73",
     }
+
+[https://gist.github.com/VladimirAlexiev/8334496 Here's a patch] to bibtex-autokey that implements a key format commonly used on CEUR-WS (e.g. see http://ceur-ws.org/Vol-1032/CSP2013.bib). It uses crossref instead of year: eg Alexiev:TPDL2012 instead of Alexiev:2012
 
 Besides bibliographical information `.bib' files might contain definition of shortcuts used in bibliographical entries via @STRING definition, comments via @COMMENT, and code to include at the beginning of created `.bbl' bibliography file (see below) via @PREAMBLE command.
 
