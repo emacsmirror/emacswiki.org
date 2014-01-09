@@ -123,10 +123,7 @@ According to the aspell documentation, "ultra" is the fastest mode, which is sti
 
 === Hunspell ===
 
-Hunspell (http://hunspell.sourceforge.net/) is the spell checker in [http://www.openoffice.org/ OpenOffice] as of 2.0.2. Hunspell, having many updated [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries] and an ispell-compatible mode, makes a good replacement to ispell/aspell if your language has more complex rules than aspell can handle (for example in Swedish).
-
-[new]
-Does not hunspell come with OOo? I can't find it in my OOo installation (on MS Windows).
+Hunspell (http://hunspell.sourceforge.net/) is the spell checker in openofffice and many other programs, as noted in [http://en.wikipedia.org/wiki/Hunspell wikipedia]. Hunspell, having many updated [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries] and an ispell-compatible mode, makes a good replacement to ispell/aspell if your language has more complex rules than aspell can handle (for example in Swedish).
 
 [new]
 To use hunspell, add <code>(setq ispell-program-name "hunspell")</code> to your .emacs. [http://email.esm.psu.edu/pipermail/macosx-emacs/2008-May/000431.html] has a complete setup for this. 
