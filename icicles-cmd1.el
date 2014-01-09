@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Jan  6 19:11:06 2014 (-0800)
+;; Last-Updated: Wed Jan  8 18:40:44 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26685
+;;     Update #: 26688
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4156,7 +4156,8 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
                          (let ((enable-recursive-minibuffers  t)
                                (icicle-current-input          abbrev-or-cmd))
                            (icicle-remove-Completions-window)
-                           (icicle-command-abbrev-command)))))
+                           (icicle-command-abbrev-command)
+                           (caar command-history))))) ; CMD read and invoked, to be recorded.
              (icicle-command-abbrev-record abbrev-or-cmd cmd)))
           ((not not-cmdp) (call-interactively abbrev-or-cmd)))))
 
