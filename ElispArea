@@ -95,6 +95,15 @@ Please describe the EmacsLisp libraries you add to the Wiki. CreateNewPages to d
 
 Proposed guidelines for Emacs Lisp files on Emacs Wiki are in ElispAreaConventions.
 
+If a file has been uploaded to the wiki, we consider it an implicit invitation to collaborative improve it. If you are the maintainer of code that has been changed on the site, you have several options:
+
+# treat it is a fork and ignore it
+# review the change and reject it -- roll back the change and revert to an earlier version
+# agree to the change and merge it with your working copy if you use a version control system
+# agree to the change and do nothing if the copy on the wiki is the only official location
+
+Other people fixing what they consider to be bugs and adding features they are missing seems to be the workflow that emerges naturally from the wiki nature of this site. If you disagree, see /Version Control/, above.
+
 == Alternatives ==
 
 Here are some other places to download and distribute elisp code:
@@ -138,7 +147,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 300%
+%Id: 301%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
@@ -165,7 +174,3 @@ This usually happens when code contains string literals. Consider using octal es
   (replace-string "\222" "'" nil (point-min) (point-max))  ; closing single quote
 
 To convince yourself that octal escapes really work, consider ##(length "\221")## -> 1.
-
-=== Syntax highlighting ===
-
-EmacsLisp files put on Wiki pages now have syntax highlighting in pastel colors.  The script used is the Beautifier Perl module.
