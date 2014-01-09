@@ -66,7 +66,7 @@ I don't think that $HOME would point to a directory on the USB stick, so this mi
 
 ----
 
-+1 to Alex's suggestion, ***if*** you have Windows computers.  And yes, take care about `$HOME' and init files.
++1 to Alex's suggestion, ''if'' you have Windows computers.  And yes, take care about `$HOME' and init files.
 
 -- DrewAdams 2014-01-09 14:55 UTC
 
