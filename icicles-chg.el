@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jan  6 19:25:50 2014 (-0800)
+;; Last-Updated: Wed Jan  8 18:44:56 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10562
+;;     Update #: 10563
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/08 dadams
+;;     icicle-command-abbrev-action: Set CMD to the invoked command, using command-history.
 ;; 2014/01/06 dadams
 ;;     icicle-apropos-value, icicle-command-abbrev: Bind icicle--last-toggle-transforming-msg.
 ;; 2014/01/04 dadams
