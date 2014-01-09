@@ -12,8 +12,6 @@ Library '''##crosshairs.el##''' provides these commands:
 
 * `flash-crosshairs' -- Highlight the current line and column for a few seconds. Another way to show the current line and column temporarily. You can show each for different lengths of time: line and column.
 
-Easy installation using AutoInstall: `M-x auto-install-batch col-highlight' -- [[rubikitch]]
-
 '''See Also:'''
 
 * HighlightCurrentLine  for ways to highlight the current line.
