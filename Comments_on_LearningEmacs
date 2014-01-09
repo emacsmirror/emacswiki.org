@@ -33,3 +33,24 @@ I remember having worked on an EmacsBusinessCard -- a 50MB disk image with GNU/L
 
 -- AlexSchroeder 2014-01-09 10:12 UTC
 
+
+----
+
+Thanks for the quick responses, Drew Adams and Alex Schroeder.
+
+I use Ubuntu Linux and have been setting up some friends with it. They are older organic farmers who seem to be getting as far as Libre Office but I don't think they will learn emacs. I try to avoid the mouse myself but I discovered that right clicking is better than C-z and other shortcuts for people with heavy fingers. But I might have a chance to work in emacs with some people at earlier stages. I.A. Richards is all about getting learners to be "self-corrigible", being able to see if they are learning or not, and a nice sequenced Emacs in Easy English course might help with that.
+
+I'm looking for a bootable Education Emacs CD to see if I can use it in a school computer room, or anyone's computer really. I don't think anyone at the school is confident enough with computers to feel comfortable installing extra software, or letting me do it. A CD would make it easy to experiment with a few interested students before trying to convince people it's worthwhile to install more applications. With a CD, students could even bring in their own computers to see what sort of learning we can do. I've been getting the impression that some of the younger people in Japan are a lot more comfortable with their phones than computers, so they might not be comfortable installing on-line binaries. Some students didn't know what HTML was.
+
+I don't know when I'll have time to figure out how to remaster a CD/DVD with emacs (and maybe Tux Typing and other educational goodies) and was hoping someone had already spent some time inventing these sort of educational .iso wheels. The CD doesn't even have to be that small, I don't mind buying a fifty pack  of DVDs to get started but it shouldn't be too slow. Recently it seems that whenever I check a live CD, it doesn't have emacs.
+
+I installed emacs through the Ubuntu Software Center and just realized I don't have the source files while working through the _Introduction to Emacs Lisp_.  I'm thinking an Emacs Education Live CD will have to have the sources to follow along with Robert Chassell's book. 
+
+It took me a while to wrap my head around recursion for some reason. Maybe it was because I started with a Japanese book, or because I wasn't paying attention. After a few years I sat down and worked through _The Schemer's Guide_ and it helped. It felt good to be able to work through that. I think I used Racket to work through the exercises. The Racket guys seem like good educators, one of their on-line curriculum pages talked requirement for documentation (strings) in student work.. I think it would be great to work on developing good thinking like the Schemers Guide (and maybe HTDP, _How To Develop Programs_, but I haven't had a chance to look at that book yet) in emacs. For students that aren't ready for programming, just jumping around in text or exploring document structure with org mode might help them. I imagine the possibilities are endless but experimenting will reveal the most useful approaches. 
+
+I'm thinking emacs with all the English manuals, especially the tutorial will be great for students of English as a Foreign Language - and students stuck in the class without any interest in English might be able to get into e-lisp and/or working with text in emacs. You never know until you try. 
+
+Thanks again for the quick responses.
+
+-- brismall 2014-01-09 11:57 UTC
+
