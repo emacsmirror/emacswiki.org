@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:36:22 2013 (-0800)
+;; Last-Updated: Fri Jan 10 11:03:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3394
+;;     Update #: 3402
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -522,6 +522,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/01/10 dadams
+;;     isearch-mouse-2: Do not call isearchp-set-sel-and-yank unless mark is defined.
+;;     isearchp-set-sel-and-yank: No-op unless mark is defined.
 ;; 2013/12/16 dadams
 ;;     isearch-mode: Update for vanilla Emacs 24: set isearch--saved-overriding-local-map.  (Bug#16035)
 ;; 2013/10/16 dadams
@@ -2139,20 +2142,22 @@ outside of Isearch."
   ;;   (deactivate-mark)
   ;;   (isearch-yank-x-selection))
   ;;
-  (if isearchp-mouse-2-flag
+  (if (and isearchp-mouse-2-flag  (mark))
       (when (/= (region-beginning) (region-end)) (isearchp-set-sel-and-yank))
     (let ((win                            (posn-window (event-start click)))
           (overriding-terminal-local-map  nil)
           (binding                        (key-binding (this-command-keys-vector) t)))
-      (if (and (window-minibuffer-p win)  (not (minibuffer-window-active-p win))) ; In echo area
+      (if (and (window-minibuffer-p win)  (not (minibuffer-window-active-p win)) ; In echo area
+               (mark))
           (isearchp-set-sel-and-yank)
         (when (functionp binding) (call-interactively binding))))))
 
 (defun isearchp-set-sel-and-yank ()
   "Set X selection and yank it into echo area."
-  (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
-  (deactivate-mark)
-  (isearch-yank-x-selection))
+  (when (mark)
+    (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
+    (deactivate-mark)
+    (isearch-yank-x-selection)))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
