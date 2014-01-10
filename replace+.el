@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:46:04 2013 (-0800)
+;; Last-Updated: Fri Jan 10 10:42:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1705
+;;     Update #: 1746
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -136,6 +136,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/10 dadams
+;;     query-replace-read-args, query-replace(-regexp), replace-string:
+;;       Update for Emacs 24.4 - add new arg for BACKWARD.
 ;; 2013/12/13 dadams
 ;;     Added: replacep-msg-emphasis, replacep-msg-emphasis2, replacep-propertize, replacep-remove-property.
 ;;     toggle-search/replace-region-as-default, query-replace-read-from, query-replace-read-to,
@@ -699,7 +702,14 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
                       (prog1 (cdr from) (setq from  (car from)))
                     (query-replace-read-to from prompt regexp-flag))))
       (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
-      (list from to current-prefix-arg))))
+      (if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                               (or (> emacs-minor-version 3)
+                                                   (= emacs-version "24.3.50"))))
+          (list from
+                to
+                (and current-prefix-arg  (not (eq current-prefix-arg '-)))
+                (and current-prefix-arg  (eq current-prefix-arg '-)))
+        (list from to current-prefix-arg)))))
 
 
 
@@ -807,20 +817,33 @@ replacement."
   (defadvice query-replace (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let ((common
-            (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word")
-                                             (and transient-mark-mode  mark-active
-                                                  (> (region-end) (region-beginning))
-                                                  (not search/replace-region-as-default-flag)
-                                                  " in region"))
-                                     nil)))
-       (list (nth 0 common) (nth 1 common) (nth 2 common)
-             ;; These are done separately here, so that `command-history' will record these expressions
-             ;; rather than the values they had this time.
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-beginning))
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-end)))))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                                              (or (> emacs-minor-version 3)
+                                                                  (= emacs-version "24.3.50")))))
+
+            (common      (query-replace-read-args (concat "Query replace"
+                                                          (and current-prefix-arg
+                                                               (if (and emacs24.4+
+                                                                        (eq current-prefix-arg '-))
+                                                                   " backward"
+                                                                 " word"))
+                                                          (and transient-mark-mode  mark-active
+                                                               (> (region-end) (region-beginning))
+                                                               (not search/replace-region-as-default-flag)
+                                                               " in region"))
+                                                  nil))
+            (from        (nth 0 common))
+            (to          (nth 1 common))
+            (delimited   (nth 2 common))
+            ;; These are done separately here, so that `command-history' will record these expressions
+            ;; rather than the values they had this time.
+            (start       (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-beginning)))
+            (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-end))))
+       (if emacs24.4+
+           (list from to delimited start end)
+         (list from to delimited start end (nth 3 common)))))))
 
 
 
@@ -832,18 +855,33 @@ replacement."
   (defadvice query-replace-regexp (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let ((common
-            (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word") " regexp"
-                                             (and transient-mark-mode  mark-active
-                                                  (> (region-end) (region-beginning))
-                                                  (not search/replace-region-as-default-flag)
-                                                  " in region"))
-                                     t)))
-       (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-beginning))
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-end)))))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                                              (or (> emacs-minor-version 3)
+                                                                  (= emacs-version "24.3.50")))))
+            (common      (query-replace-read-args (concat "Query replace"
+                                                          (and current-prefix-arg
+                                                               (if (and emacs24.4+
+                                                                        (eq current-prefix-arg '-))
+                                                                   " backward"
+                                                                 " word"))
+                                                          " regexp"
+                                                          (and transient-mark-mode  mark-active
+                                                               (> (region-end) (region-beginning))
+                                                               (not search/replace-region-as-default-flag)
+                                                               " in region"))
+                                                  t))
+            (regexp      (nth 0 common))
+            (to          (nth 1 common))
+            (delimited   (nth 2 common))
+            ;; These are done separately here, so that `command-history' will record these expressions
+            ;; rather than the values they had this time.
+            (start       (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-beginning)))
+            (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-end))))
+       (if emacs24.4+
+           (list regexp to delimited start end)
+         (list regexp to delimited start end (nth 3 common)))))))
 
 
 
@@ -855,18 +893,33 @@ replacement."
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let ((common
-            (query-replace-read-args (concat "Replace" (and current-prefix-arg  " word") " string"
-                                             (and transient-mark-mode  mark-active
-                                                  (> (region-end) (region-beginning))
-                                                  (not search/replace-region-as-default-flag)
-                                                  " in region"))
-                                     nil)))
-       (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-beginning))
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-end)))))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                                              (or (> emacs-minor-version 3)
+                                                                  (= emacs-version "24.3.50")))))
+            (common      (query-replace-read-args (concat "Replace"
+                                                          (and current-prefix-arg
+                                                               (if (and emacs24.4+
+                                                                        (eq current-prefix-arg '-))
+                                                                   " backward"
+                                                                 " word"))
+                                                          " string"
+                                                          (and transient-mark-mode  mark-active
+                                                               (> (region-end) (region-beginning))
+                                                               (not search/replace-region-as-default-flag)
+                                                               " in region"))
+                                                  nil))
+            (from        (nth 0 common))
+            (to          (nth 1 common))
+            (delimited   (nth 2 common))
+            ;; These are done separately here, so that `command-history' will record these expressions
+            ;; rather than the values they had this time.
+            (start       (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-beginning)))
+            (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-end))))
+       (if emacs24.4+
+           (list from to delimited start end)
+         (list from to delimited start end (nth 3 common)))))))
 
 
 
@@ -878,18 +931,33 @@ replacement."
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let ((common
-            (query-replace-read-args (concat "Replace" (and current-prefix-arg " word") " regexp"
-                                             (and transient-mark-mode  mark-active
-                                                  (> (region-end) (region-beginning))
-                                                  (not search/replace-region-as-default-flag)
-                                                  " in region"))
-                                     t)))
-       (list (nth 0 common) (nth 1 common) (nth 2 common)
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-beginning))
-             (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                  (region-end)))))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                                              (or (> emacs-minor-version 3)
+                                                                  (= emacs-version "24.3.50")))))
+            (common      (query-replace-read-args (concat "Replace"
+                                                          (and current-prefix-arg
+                                                               (if (and emacs24.4+
+                                                                        (eq current-prefix-arg '-))
+                                                                   " backward"
+                                                                 " word"))
+                                                          " regexp"
+                                                          (and transient-mark-mode  mark-active
+                                                               (> (region-end) (region-beginning))
+                                                               (not search/replace-region-as-default-flag)
+                                                               " in region"))
+                                                  t))
+            (regexp      (nth 0 common))
+            (to          (nth 1 common))
+            (delimited   (nth 2 common))
+            ;; These are done separately here, so that `command-history' will record these expressions
+            ;; rather than the values they had this time.
+            (start       (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-beginning)))
+            (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                              (region-end))))
+       (if emacs24.4+
+           (list from to delimited start end)
+         (list from to delimited start end (nth 3 common)))))))
 
 
 
