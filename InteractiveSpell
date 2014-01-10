@@ -1,3 +1,5 @@
+Ispell is the default spell checking program for emacs. Hunspell is a modern alternative, used by most popular free software for spell checking.
+
 ispell.el is an Emacs interface to the ispell binary.
 
 * ispell.el homepage -- http://kdstevens.com/~stevens/ispell-page.html
