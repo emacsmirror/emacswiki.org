@@ -97,7 +97,7 @@ Other modes for that are GuessLang and AutoLangMode.
 
 [http://hunspell.sourceforge.net/ Hunspell] is the spell checker in openofffice, firefox, and many other programs, as noted in [http://en.wikipedia.org/wiki/Hunspell wikipedia], and this consensus makes it the best for emacs too! Hunspell has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries]. For certain languages such as Swedish, it can handle complex rules that aspell cannot.
 
-The simplest way to setup Hunspell: Install Hunspell on your system. It is available via linux package managers. Install [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] via elpa, then add the following to your init file. Restart emacs, and you are good to go. 
+The simplest way to setup Hunspell: Install Hunspell on your system. Install [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] via elpa, then add the following to your init file. Restart emacs and you are good to go. 
 
   (setq ispell-program-name "hunspell")
   (require 'rw-hunspell)
