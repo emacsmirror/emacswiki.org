@@ -93,43 +93,23 @@ GuessBufferLanguage and chooses a dictionary accordingly.
 Other modes for that are GuessLang and AutoLangMode.
 
 == Using Another Spelling-Program ==
-=== Aspell ===
-You might be interested in using a different spell checker. In
-particular, Aspell is a fairly new replacement for much of Ispell's
-functionality. Fortunately, using Aspell with Emacs is very easy:
-
-    (setq ispell-program-name "aspell")
-
-Flyspell uses "-l" with ispell for faster region checking. The equivalent aspell command is "list":
-
-    (setq ispell-list-command "list")
-
-The %%*Flyspell-region%%* buffer will contain the message 'Error: You must specify a parameter for "-l".' when aspell fails because this parameter is not set.
-
-(Aspell has an Ispell-emulation mode, so it behaves like ispell.el expects.)
-
-For lots more information on Aspell, see the Aspell website:
-
-* http://aspell.net/
-
-Compared with Ispell, Aspell is much better at coming up with suggested spellings, and at putting them in likely order.  This is particularly useful when used with flyspell-auto-correct-previous-word, where you can iterate through suggested spellings -- it's much more useful when the correct spelling is near the head of the list.
-
-The problem with using aspell with flyspell is that in its default mode, it it a *lot* slower than ispell.  Fortunately, you can tell it to speed up, though this reduces somewhat the quality of its suggestions.  So try this:
-
-    (setq ispell-program-name "aspell")
-    (setq ispell-extra-args '("--sug-mode=ultra"))
-
-According to the aspell documentation, "ultra" is the fastest mode, which is still twice as slow as ispell; but I don't notice the difference from ispell on my machine.  If your machine is fast enough, a better option might be to try "fast" mode, which is twice as slow as "ultra", but more accurate.  The "normal" mode, which is the aspell default, is even more accurate, but is reportedly 10 times slower than "fast" mode, and on my machine it makes editing and motion around the buffer noticeably sluggish when in flyspell-mode.  YMMV, depending on how fast your machine is, and how big your word-lists are.
 
 === Hunspell ===
 
-Hunspell (http://hunspell.sourceforge.net/) is the spell checker in openofffice and many other programs, as noted in [http://en.wikipedia.org/wiki/Hunspell wikipedia]. Hunspell, having many updated [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries] and an ispell-compatible mode, makes a good replacement to ispell/aspell if your language has more complex rules than aspell can handle (for example in Swedish).
+[http://hunspell.sourceforge.net/ Hunspell] is the spell checker in openofffice, firefox, and many other programs, as noted in [http://en.wikipedia.org/wiki/Hunspell wikipedia], and this consensus makes it the best for emacs too! Hunspell has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries]. For certain languages such as Swedish, it can handle complex rules that aspell cannot.
+
+The simplest way to setup Hunspell: Install Hunspell on your system. It is available via linux package managers. Install [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] via elpa, then add the following to your init file. Restart emacs, and you are good to go. 
+
+  (setq ispell-program-name "hunspell")
+  (require 'rw-hunspell)
+
+Alternate, more complex hunspell setups
 
 [new]
-To use hunspell, add <code>(setq ispell-program-name "hunspell")</code> to your .emacs. [http://email.esm.psu.edu/pipermail/macosx-emacs/2008-May/000431.html] has a complete setup for this. 
+One complete setup is at http://email.esm.psu.edu/pipermail/macosx-emacs/2008-May/000431.html
 
-On my setup, I have the following:
-
+[new]
+Another setup:
 <pre>
 (setq
    ispell-dictionary-alist
@@ -187,6 +167,36 @@ In windows I use the following. Make sure that hunspell is in the path.
  '(rw-hunspell-use-rw-ispell t)
 )
 </pre>
+
+
+=== Aspell ===
+You might be interested in using a different spell checker. In
+particular, Aspell is a fairly new replacement for much of Ispell's
+functionality. Fortunately, using Aspell with Emacs is very easy:
+
+    (setq ispell-program-name "aspell")
+
+Flyspell uses "-l" with ispell for faster region checking. The equivalent aspell command is "list":
+
+    (setq ispell-list-command "list")
+
+The %%*Flyspell-region%%* buffer will contain the message 'Error: You must specify a parameter for "-l".' when aspell fails because this parameter is not set.
+
+(Aspell has an Ispell-emulation mode, so it behaves like ispell.el expects.)
+
+For lots more information on Aspell, see the Aspell website:
+
+* http://aspell.net/
+
+Compared with Ispell, Aspell is much better at coming up with suggested spellings, and at putting them in likely order.  This is particularly useful when used with flyspell-auto-correct-previous-word, where you can iterate through suggested spellings -- it's much more useful when the correct spelling is near the head of the list.
+
+The problem with using aspell with flyspell is that in its default mode, it it a *lot* slower than ispell.  Fortunately, you can tell it to speed up, though this reduces somewhat the quality of its suggestions.  So try this:
+
+    (setq ispell-program-name "aspell")
+    (setq ispell-extra-args '("--sug-mode=ultra"))
+
+According to the aspell documentation, "ultra" is the fastest mode, which is still twice as slow as ispell; but I don't notice the difference from ispell on my machine.  If your machine is fast enough, a better option might be to try "fast" mode, which is twice as slow as "ultra", but more accurate.  The "normal" mode, which is the aspell default, is even more accurate, but is reportedly 10 times slower than "fast" mode, and on my machine it makes editing and motion around the buffer noticeably sluggish when in flyspell-mode.  YMMV, depending on how fast your machine is, and how big your word-lists are.
+
 
 === Speck Mode ==
 A third way to use emacs is with SpeckMode which is an alternative to iSpell.
