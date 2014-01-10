@@ -47,10 +47,6 @@ He's a member of the FSF -- and [[http://www.fsf.org/register_form?referrer=8082
 * and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
 
 === deftheme ===
-* notes on how I can't get the cyberpunk theme to auto-load from .emacs
-** at home only? because it's working at work.
-** will other themes auto-load?
-
 ==== Theme handling system ====
 <code>deftheme</code> is the theme-handling system introduced in Emacs 23, and enhanced in Emacs 24.
 As such, it is something of a replacement for ColorTheme.
@@ -65,15 +61,18 @@ You can add more.... somehow....
 
 ==== Switching Themes ====
 * Switching themes does not //roll-back// changes applied in a theme. You need to disable the current (or any previously applied) themes to have a blank slate.
-*[[http://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters order matters]]
+* [[http://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters order matters]]
 
 ==== See Also ====
 * Further information at http://batsov.com/articles/2012/02/19/color-theming-in-emacs-reloaded/
 * http://emacsfodder.github.io/blog/notes-on-deftheme/
+* http://emacsredux.com/blog/2013/08/21/color-themes-redux/ where he's _still_ calling it <code>deftheme</code> in late 2013.
 
 ==== standalone page ====
 * This was [[http://www.emacswiki.org/emacs/?action=browse;id=DefTheme;revision=2 its own page]] for a while, but selected elements were merged into the page for the ColorTheme package.
-** but added were some notes on how `deftheme` ("Custom Themes") differed from ColorTheme` (can't roll-back changes applied in `deftheme` for instance).
+** but added were some notes on how <code>deftheme</code> ("Custom Themes") differed from ColorTheme (can't roll-back changes applied in <code>deftheme</code> for instance).
+** Doesn't make sense to me, since ColorTheme is a specific package, and the notes on using <code>deftheme</code> have nothing to do with that package.
+
 
 === re-org(ing) my init-file(s) ===
 * IN-PROGRESS as of 2013.07
@@ -104,7 +103,7 @@ You can add more.... somehow....
 * need to start an Emacswiki page for it....
 
 === journal ===
-* [[Journal]] - I use a modified version of this. 
+* [[Journal]] - I use a modified version of this.
 ** created a repo @ https://github.com/MichaelPaulukonis/fisler-journal.el
 *** contains original code as found @ [[Journal]] and my modifications
 ** TODO: Clean up code, prefix-space ("namespace") the code, and fix the issues
@@ -151,12 +150,12 @@ Can't find any notes on this, yet, other than what I blatantly stole from [[NicF
 * [[DiredPlus]]
 * [[NxmlModeForXHTML]]
 * [[CategoryWThirtyTwo]] since I primarily use Windows. :::sigh:::
-* [[Journal]] - I use a modified version of this. 
+* [[Journal]] - I use a modified version of this.
 ** see also: JournalMode - not the same thing. differences?
 
 == Packages I used to like ==
 * [[emacs-w3m]]
-** I don't have anything against w3m, I just don't use it anymore. too much Javascript in my world.... 
+** I don't have anything against w3m, I just don't use it anymore. too much Javascript in my world....
 
 
 == Packages, Pages, and things I am thinking about liking ==
@@ -195,7 +194,7 @@ Can't find any notes on this, yet, other than what I blatantly stole from [[NicF
 * [EmacsWiki:action=rc;all=1;showedit=1;from=1;rcuseronly=MichaelPaulukonis as MichaelPaulukonis]
 
 == wiki thoughts ==
-* [[MissionStatement]] [[MissionRant]] and [[WikEmacs]] 
+* [[MissionStatement]] [[MissionRant]] and [[WikEmacs]]
 ** Is there more stuff that xrefs (or relates to) the above
 * http://www.xradiograph.com/Programming.WikiAsConcept
 
