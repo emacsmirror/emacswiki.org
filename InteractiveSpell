@@ -38,7 +38,7 @@ Here are some things extending <code>ispell.el</code>,
 
 * [http://user42.tuxfamily.org/ispell-stopwords/index.html ispell-stopwords.el] -- use Perl POD <code>=for stopwords</code> per-file words list
 
-== Using other dictionaries ==
+== Manual install of a dictionary ==
 
 Here is some code for your ~/.emacs that makes a new dictionary
 available to `ispell-change-dictionary'.  This dictionary is a
