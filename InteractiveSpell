@@ -38,12 +38,6 @@ Here are some things extending <code>ispell.el</code>,
 
 * [http://user42.tuxfamily.org/ispell-stopwords/index.html ispell-stopwords.el] -- use Perl POD <code>=for stopwords</code> per-file words list
 
-== Making sure your personal dictionaries get used ==
-
-Use the following to make sure that Emacs starts the ispell process in your home directory.
-
- (setq ispell-process-directory (expand-file-name "~/"))
-
 == Using other dictionaries ==
 
 Here is some code for your ~/.emacs that makes a new dictionary
