@@ -50,7 +50,7 @@ by 256. This also helps preventing integer overflow."
 		      2 256)))
     (sqrt (+ (ash (* (+ 512 red-mean) dr dr) -8)
 	     (* 4 dg dg)
-	     (ash (* (- 767 red-mean) dr dr) -8)))))
+	     (ash (* (- 767 red-mean) db db) -8)))))
 
 (defvar rcirc-colors
   (let ((min-distance 200); heuristics
