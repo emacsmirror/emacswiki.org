@@ -4,6 +4,9 @@ ispell.el is an Emacs interface to the ispell binary.
 
 * ispell.el homepage -- http://kdstevens.com/~stevens/ispell-page.html
 
+
+== Setting up Ispell ==
+
 You need ispell installed if you want to use ispell.el.  You need ispell dictionaries installed if you actually want to use the program.  Usually the binary is distributed with an American and a British dictionary, one of them linked the to the default English dictionary.
 
 You can get the binary and lots of dictionaries from the official homepage:
@@ -40,7 +43,7 @@ Here are some things extending <code>ispell.el</code>,
 
 * [http://user42.tuxfamily.org/ispell-stopwords/index.html ispell-stopwords.el] -- use Perl POD <code>=for stopwords</code> per-file words list
 
-== Manual install of a dictionary ==
+=== Manual install of a dictionary ===
 
 Here is some code for your ~/.emacs that makes a new dictionary
 available to `ispell-change-dictionary'.  This dictionary is a
@@ -77,7 +80,7 @@ Or all in one:
      (mapconcat (lambda (c) (format "\\%o" (multibyte-char-to-unibyte c)))
                 "äöüÄÖÜ" ""))
 
-== Changing dictionaries automatically ==
+=== Changing dictionaries automatically ===
 
 Customize the variable `ispell-message-dictionary-alist' if you want
 to switch dictionary according to some header when you use
