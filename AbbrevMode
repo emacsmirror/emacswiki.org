@@ -57,10 +57,14 @@ Also, if you want abbreviations to be saved whenever you save files (C-x s) or q
 
 == Restoring Abbrevs ==
 
-Use `M-x read-abbrev-file' to read the abbrevs, or better yet, add the
-following to your ~/.emacs file:
+Turning on abbrev mode will read your abbrev file.
+To turn on abbrev-mode globally in your init file:
 
-    (quietly-read-abbrev-file)       ;; reads the abbreviations file on startup
+  (setq-default abbrev-mode t)
+
+If you want to read you abbrev file at a different time, perhaps at init without turning on abbrev mode,
+
+    (quietly-read-abbrev-file)       ;; reads the abbreviations file
 
 This will read the definitions from the default file,
 "~/.abbrev_defs".
