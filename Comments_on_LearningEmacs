@@ -70,3 +70,17 @@ I don't think that $HOME would point to a directory on the USB stick, so this mi
 
 -- DrewAdams 2014-01-09 14:55 UTC
 
+
+----
+
+Thanks again Alex and Drew, Thanks for the ideas, and init file lines. I can just paste them into my .emacs right?
+
+I'll look into the USB option over the next few weeks, My partner has a windows computer. If I can get into the school compuer room they are all windows computers. Before doing that I'll ask a few interested students to bring in their computers to test out the approach. One likely candidate has a mac, but the USB option will be great for the computer room, if I can motivate myself to talk my way into it.
+
+I just remembered I used to play around with the _Lisp Resource Kit_. I just checked out the site and all the download links are broken. I guess I'll have to find an old copy laying around somewhere and hope the CD is still ok. I can't remember if it had emacs on it or not. If it does I doubt it has the sources and manuals though....
+http://www.common-lisp.net/project/lisp-res-kit/
+
+Thanks again.
+
+-- brismall 2014-01-10 01:26 UTC
+
