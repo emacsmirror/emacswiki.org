@@ -31,7 +31,13 @@ on -- [[Icicles - Search Commands, Overview]]. The search hits are highlighted s
 
 [[image:IciclesSearchContextLevelsScreenshot]]
 
-
+== Let Emacs Create Your Regexp ==
+One can use the function `regexp-opt' to create elisp regexps. Suppose you want to find out the syntax for a regexp that matches both "end" and "endif".
+Enter the following in an elisp buffer, say <code>*scratch*</code>:
+<code>
+(regexp-opt '("end" "endif") t)
+</code>
+Then put the cursor after the last parentesis and give the command '''`##C-x C-e##''''. The result <code>"\\(end\\(?:if\\)?\\)"</code> should appear in the minibuffer, and also in the buffer <code>*Messages*</code>.
 
 
 
