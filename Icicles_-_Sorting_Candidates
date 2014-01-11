@@ -250,14 +250,15 @@ interactively, melding them together.
 
 You do this as follows:
 
-# Start with a given sort order (use `##C-u C-,##' to choose one).
+# Start with a given sort order (use `##C-,##' to choose one,
+possibly with a prefix arg).
 
 # Save the set of candidates you are interested in, using `##C-M->##'
 (see [[Icicles - Candidate Sets#SavingAndRetrieving|Saving and Retrieving Completion Candidates]]).  This
 saves the candidates in their current order at the time of the
 save: the ''saved order''.
 
-# Choose a different sort order (e.g., use `##C-u C-,##').
+# Choose a different sort order (again, `##C-,##', possibly with a prefix arg).
 
 # Use '''`##C-M-+##'''' ('''`icicle-plus-saved-sort'''') to combine the two sort orders, that is, the (new) current order and the saved order.
 
@@ -306,9 +307,11 @@ Sorting by color brightness shows a single value gamut, the
 brightest colors followed by dimmer and dimmer colors, down to the
 dimmest (black).
 
-Try `M-x icicle-read-color-wysiwyg', sorting (`##C-u C-,##') first by hue.
+Try `M-x icicle-read-color-wysiwyg', sorting (`##C-,##', possibly with
+a prefix arg) first by hue.
 Save the completion candidates (`##C-M->##').  Now sort by brightness
-(`##C-u C-,##' again).  Now use `##C-M-+##' to add/merge the two sort
+(`##C-,##' again, possibly with
+a prefix arg).  Now use `##C-M-+##' to add/merge the two sort
 orders.  You now see essentially a series of rainbows, from
 brighter to dimmer and dimmer.
 
