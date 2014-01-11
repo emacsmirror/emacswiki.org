@@ -317,7 +317,7 @@ You can get a copy of this extension from:
 
 ----
 [:Checkpoints]
-==The Checkpoint Extension: checkpoints for Emacs 23==
+==The Checkpoint Extension: checkpoints for Emacs 23+==
 Beginning with version 4 of the Sunrise Commander, checkpoints were redefined to
 be a special form of  bookmarks.  Unfortunately,  the  differences  between  the
 bookmarks  frameworks  in  Emacs  22 and Emacs 23 are so big that including this
