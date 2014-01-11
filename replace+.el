@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 11 12:08:41 2014 (-0800)
+;; Last-Updated: Sat Jan 11 12:45:26 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1758
+;;     Update #: 1762
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -52,7 +52,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;     `replacep-propertize', `replacep-remove-property',
-;     `search/replace-default', `usable-region'.
+;     `replacep-string-match-p.', `search/replace-default',
+;     `usable-region'.
 ;;
 ;;  Internal variable defined here:
 ;;
@@ -138,6 +139,7 @@
 ;;
 ;; 2014/01/11 dadams
 ;;     Added: replacep-string-match-p.
+;;     query-replace-w-options: Added MSGP arg.  New prefix arg behavior, to allow backward search.
 ;;     query-replace-read-args, query-replace(-regexp), replace-(string|regexp):
 ;;       Use replacep-string-match-p, not =.
 ;; 2014/01/10 dadams
@@ -766,21 +768,20 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
 ;;    2. The default regexps are provided by `search/replace-default'.
 ;;
 ;;;###autoload
-(defun query-replace-w-options (old new &optional prefix start end)
-  "Replace some occurrences of OLD text with NEW one.
-Fourth and fifth arg START and END specify the region to operate on.
+(defun query-replace-w-options (old new &optional kind start end msgp)
+  "Replace some occurrences of OLD text with NEW text.
+This is like `query-replace' or `query-replace-regexp'.  A prefix arg
+determines what kind of matches to replace, as follows:
 
-This is the same as command `query-replace', except for the treatment
-of a prefix argument.
-
-No PREFIX argument (nil) means replace literal string matches.
-Non-negative PREFIX argument means replace word matches.
-Negative PREFIX argument means replace regexp matches.
+* None:                                literal string, forward
+* Plain (`C-u'):                       word,           forward
+* `-' (e.g. `C- -'):                   literal string, backward
+* Non-negative numeric (e.g. `C- 2'):  regexp,         forward
+* Negative numeric (e.g. `C- -2'):     regexp,         backward
 
 See options `search/replace-region-as-default-flag',
 `search/replace-2nd-sel-as-default-flag', and
-`search/replace-default-fn' regarding the default values of OLD and
-NEW.
+`search/replace-default-fn' regarding default values of OLD and NEW.
 
 Option `replace-w-completion-flag', if non-nil, provides for
 minibuffer completion while you type OLD and NEW.  In that case, to
@@ -790,31 +791,54 @@ insert a SPC or TAB character, you will need to precede it by \
 If option `isearchp-set-region-flag' is non-nil, then select the last
 replacement."
   (interactive
-   (let* ((kind    (cond ((and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
-                          " WORD")
-                         (current-prefix-arg " REGEXP")
-                         (t " STRING")))
-          (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP" kind))))
-     (list (nth 0 common) (nth 1 common) (nth 2 common)
+   (let* ((emacs24.4+   (or (> emacs-major-version 24)
+                            (and (= emacs-major-version 24)
+                                 (or (> emacs-minor-version 3)
+                                     (replacep-string-match-p "24.3.50" emacs-version)))))
+          (qr-kind      (cond ((consp current-prefix-arg) " WORD") ; `C-u'
+                              ((and emacs24.4+  (eq `- current-prefix-arg)) " STRING BACKWARD") ; `-'
+                              ((and emacs24.4+
+                                    current-prefix-arg
+                                    (< (prefix-numeric-value current-prefix-arg) 0))
+                               " REGEXP BACKWARD") ; `C-- 2', `C-u -2'
+                              (current-prefix-arg " REGEXP") ; `C-2,    `C-u 2'
+                              (t " STRING"))) ; no prefix arg
+          (prompt       (concat "Query replace" qr-kind))
+          (regexp-flag  (replacep-string-match-p "^ REGEXP" qr-kind))
+          (from         (query-replace-read-from prompt regexp-flag))
+          (to           (if (consp from)
+                            (prog1 (cdr from) (setq from  (car from)))
+                          (query-replace-read-to from prompt regexp-flag)))
+          (backward     (and emacs24.4+  (replacep-string-match-p "BACKWARD$" qr-kind))))
+     (when (and search/replace-region-as-default-flag  (usable-region t))
+       (deactivate-mark))
+     (list from
+           to
+           qr-kind
            (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-beginning))
-           (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-end)))))
-  (let ((kind  (cond ((and prefix  (natnump (prefix-numeric-value prefix))) 'WORD)
-                     (prefix 'REGEXP)
-                     (t 'STRING))))
-    (case kind
-      (WORD
-       (if (< emacs-major-version 21) (query-replace old new t) (query-replace old new t start end)))
-      (REGEXP
-       (if (< emacs-major-version 21)
-           (query-replace-regexp old new)
-         (perform-replace old new t t nil nil nil start end)))
-      (STRING
-       (if (< emacs-major-version 21) (query-replace old new) (query-replace old new nil start end))))
-    (when (interactive-p)
-      (message "query-replace %s `%s' by `%s'...done"
-               kind
-               (replacep-propertize old 'face 'replacep-msg-emphasis)
-               (replacep-propertize new 'face 'replacep-msg-emphasis))))
+           (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-end))
+           'MSGP)))
+  (case (intern kind)
+    (\ WORD
+     (if (< emacs-major-version 21)
+         (query-replace old new t)
+       (query-replace old new t start end)))
+    (\ REGEXP
+     (if (< emacs-major-version 21)
+         (query-replace-regexp old new)
+       (perform-replace old new t t nil nil nil start end)))
+    (\ STRING
+     (if (< emacs-major-version 21)
+         (query-replace old new)
+       (query-replace old new nil start end)))
+    (\ REGEXP\ BACKWARD
+     (perform-replace old new t t nil nil nil start end 'BACKWARD))
+    (\ STRING\ BACKWARD
+     (query-replace old new nil start end 'BACKWARD)))
+  (when msgp (message "query-replace %s `%s' by `%s'...done"
+                      kind
+                      (replacep-propertize old 'face 'replacep-msg-emphasis)
+                      (replacep-propertize new 'face 'replacep-msg-emphasis)))
   (when (and (boundp 'isearchp-set-region-flag)  isearchp-set-region-flag)
     (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
