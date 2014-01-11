@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 11 12:45:26 2014 (-0800)
+;; Last-Updated: Sat Jan 11 12:49:07 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1762
+;;     Update #: 1763
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -744,8 +744,7 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
 
 
 ;; The main difference between this and `query-replace' is in the treatment of the PREFIX
-;; arg.  Only a positive (or nil) PREFIX value gives the same behavior.  A negative PREFIX
-;; value does a regexp query replace.  Another difference is that non-nil
+;; arg.  See the doc string for the behavior.  Another difference is that non-nil
 ;; `isearchp-set-region-flag' means set the region around the last target occurrence.
 ;;
 ;; In Emacs 21+, this has the same behavior as the versions of `query-replace-read-to' and
