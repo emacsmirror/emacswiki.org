@@ -267,25 +267,22 @@ If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs
 ==== Using xmonad/xmobar ====
 
 If you want display new message notification like other clients does (notify when there is new message and remove the notification when the messages are read).
-Xmobar can comunicate thrue a pipe.
+Xmobar can comunicate with a file, here a simple file on .xmonad directory, but you may want it in /dev/shm
 
-create a pipe somewhere, before xmonad is started (eg : .xinitrc)
+in xmobarrc, add a this :
 <pre>
-mkfifo .xmonad/jabber_notify_pipe
-</pre>
-in xmobarrc :
-add a PipeReader with your pipe
-<pre>
-Run PipeReader " :.xmonad/jabber_notify_pipe" "jabber"
+   	 Run Com "cat" [".xmonad/jabber_notify"] "jabber" 1000
 </pre>
 dont forget to put a %jabber% in the template string
 
 in your jabber.el configuration :
 
 <pre>
+
+
 (defun send-message-xmobar (msg)
-  (start-process "msg" nil shell-file-name shell-command-switch
-		 (format "echo \"%s\" > ~/.xmonad/jabber_notify_pipe" msg)))
+  (if *jabber-connected*
+      (call-process-shell-command (format "echo \"%s\" > ~/.xmonad/jabber_notify" msg))))
 
 (defun jabber-notify-xmobar ()
   (if (equal "0" jabber-activity-count-string)
