@@ -34,17 +34,24 @@ Wrt #4 above, consider using library <tt>[[thingatpt+.el]]</tt>, which provides 
 
 
 
+
+
+
+
 [:QueryReplaceExtensions]
 == Query-Replace ==
 
 Library <tt>[[replace+.el]]</tt> does not redefine either of the standard query-replace commands, `query-replace' or `query-replace-regexp'.  Instead, it defines a new command that combines them.
 
-* Command '''`query-replace-w-options'''' rolls both `query-replace' and `query-replace-regexp' into one. The prefix arg governs the behavior:
-** None -- replace ''literal'' string matches (like `query-replace' with no prefix arg)
-** Non-negative -- replace ''word'' matches (like `query-replace' with a prefix arg)
-** Negative -- replace ''regexp'' matches (like `query-replace-regexp')
+* Command '''`query-replace-w-options'''' rolls commands `query-replace' and `query-replace-regexp' into one.  I bind this to '''`##M-%##'''', in place of `query-replace'.  The [[prefix argument]] governs the behavior:
 
-:: In other words, this gives you `query-replace-regexp' if you use a negative argument; otherwise, it is like `query-replace' (but see next).  I bind this to '''`##M-%##'''', in place of `query-replace'.
+** None -- Replace literal '''''string''''' matches, searching ''forward'' (like `query-replace' with no prefix arg).
+** `-' -- Replace literal '''''string''''' matches, searching ''backward'' (like `query-replace' with a negative prefix arg).
+** Plain '''`C-u'''' -- Replace '''''word''''' matches, searching ''forward'' (like `query-replace' with a prefix arg other than `-')
+** Non-negative (e.g. `C-2') -- Replace '''''regexp''''' matches, searching ''forward'' (like `query-replace-regexp' with no prefix arg)
+** Negative (e.g. `C-- 2') -- Replace '''''regexp''''' matches, searching ''backward'' (like `query-replace-regexp' with a negative prefix arg)
+
+
 
 * If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library <tt>[[isearch+.el]]</tt>.
 
