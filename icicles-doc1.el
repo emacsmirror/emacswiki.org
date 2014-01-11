@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Jan  8 14:28:35 2014 (-0800)
+;; Last-Updated: Sat Jan 11 14:50:55 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28046
+;;     Update #: 28052
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4629,14 +4629,16 @@
 ;;
 ;;  You do this as follows:
 ;;
-;;  1. Start with a given sort order (use `C-u C-,' to choose one).
+;;  1. Start with a given sort order (use `C-,' to choose one,
+;;     possibly with a prefix arg).
 ;;
 ;;  2. Save the set of candidates you are interested in, using `C-M->'
 ;;     (see (@> "Saving and Retrieving Completion Candidates")).  This
 ;;     saves the candidates in their current order at the time of the
 ;;     save: the saved order.
 ;;
-;;  3. Choose a different sort order (e.g., use `C-u C-,').
+;;  3. Choose a different sort order (again, `C-,', possibly with a
+;;     prefix arg).
 ;;
 ;;  4. Use `C-M-+' (`icicle-plus-saved-sort') to combine the two sort
 ;;     orders, that is, the (new) current order and the saved order.
@@ -4685,11 +4687,12 @@
 ;;  brightest colors followed by dimmer and dimmer colors, down to the
 ;;  dimmest (black).
 ;;
-;;  Try `M-x icicle-read-color-wysiwyg', sorting (`C-u C-,') first by
-;;  hue.  Save the completion candidates (`C-M->').  Now sort by
-;;  brightness (`C-u C-,' again).  Now use `C-M-+' to add/merge the
-;;  two sort orders.  You now see essentially a series of rainbows,
-;;  from brighter to dimmer and dimmer.
+;;  Try `M-x icicle-read-color-wysiwyg', sorting (`C-,', possibly with
+;;  a prefix arg) first by hue.  Save the completion candidates
+;;  (`C-M->').  Now sort by brightness (`C-,' again, possibly with a
+;;  prefix arg).  Now use `C-M-+' to add/merge the two sort orders.
+;;  You now see essentially a series of rainbows, from brighter to
+;;  dimmer and dimmer.
 ;;
 ;;  Use `C-M-+' again, to give hue more prominence in the merged sort
 ;;  order.  And again.  Keep hitting `C-M-+' until there is no more
