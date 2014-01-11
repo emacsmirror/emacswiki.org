@@ -264,6 +264,38 @@ On Debian, the libnotify1 and libnotify-bin packages are required.
 ==== Using growl ====
 If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs-1.  It should be easy to adapt this to use ToDoChiKu for a more general solution.
 
+==== Using xmonad/xmobar ====
+
+If you want display new message notification like other clients does (notify when there is new message and remove the notification when the messages are read).
+Xmobar can comunicate thrue a pipe.
+
+create a pipe somewhere, before xmonad is started (eg : .xinitrc)
+<pre>
+mkfifo .xmonad/jabber_notify_pipe
+</pre>
+in xmobarrc :
+add a PipeReader with your pipe
+<pre>
+Run PipeReader " :.xmonad/jabber_notify_pipe" "jabber"
+</pre>
+dont forget to put a %jabber% in the template string
+
+in your jabber.el configuration :
+
+<pre>
+(defun send-message-xmobar (msg)
+  (start-process "msg" nil shell-file-name shell-command-switch
+		 (format "echo \"%s\" > ~/.xmonad/jabber_notify_pipe" msg)))
+
+(defun jabber-notify-xmobar ()
+  (if (equal "0" jabber-activity-count-string)
+      (send-message-xmobar "")
+    (send-message-xmobar (format "<fc=red,black>%s new messages</fc>" jabber-activity-count-string))))
+
+(add-hook 'jabber-activity-update-hook 'jabber-notify-xmobar)
+</pre>
+
+
 ==== Setting several alerts at a time ====
 
 If you want to configure several alert systems at a time when a new message arrive, you can include them inside jabber-alert-message-hooks. For example, to receive an Xmessage notification and a system bell beep:
