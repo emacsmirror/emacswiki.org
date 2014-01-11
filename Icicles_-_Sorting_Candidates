@@ -308,15 +308,29 @@ brightest colors followed by dimmer and dimmer colors, down to the
 dimmest (black).
 
 Try `M-x icicle-read-color-wysiwyg', sorting (`##C-,##', possibly with
-a prefix arg) first by hue.
+a prefix arg) first by hue.  Here is a screenshot:
+
+[[image:by-hue]]
+
 Save the completion candidates (`##C-M->##').  Now sort by brightness
 (`##C-,##' again, possibly with
-a prefix arg).  Now use `##C-M-+##' to add/merge the two sort
+a prefix arg).  A screenshot:
+
+[[image:by-brightness]]
+
+Now use `##C-M-+##' to add/merge the two sort
 orders.  You now see essentially a series of rainbows, from
-brighter to dimmer and dimmer.
+brighter to dimmer and dimmer.  A screenshot:
+
+[[image:by-hue-and-brightness]]
 
 Use `##C-M-+##' again, to give hue more prominence in the merged sort
-order.  And again.  Keep hitting `##C-M-+##' until there is no more
+order.  And again.  Here is a screenshot after a few times of using `##C-M-+##', adding more hue influence.
+
+[[image:by-hue-hue-hue-brightness]]
+
+
+Keep hitting `##C-M-+##' until there is no more
 apparent change in the sort order --- at this point you are back to
 a pure hue sort.
 
