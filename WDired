@@ -31,6 +31,7 @@ when improving a directory structure. JoakimVerona
   ;; to be able to use `dired-do-create-files-regexp' and get its
   ;; "benefits"
 
+I've made an ArchLinux AUR package for this patch (took a little touching up, though) [https://aur.archlinux.org/packages/emacs-wdired-parent-dir/ emacs-wdired-parent-dir] -- ElliottSeyler
 
 == Patch: mode-name ==
 
