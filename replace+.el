@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 10 10:42:10 2014 (-0800)
+;; Last-Updated: Sat Jan 11 12:08:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1746
+;;     Update #: 1758
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -136,8 +136,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/11 dadams
+;;     Added: replacep-string-match-p.
+;;     query-replace-read-args, query-replace(-regexp), replace-(string|regexp):
+;;       Use replacep-string-match-p, not =.
 ;; 2014/01/10 dadams
-;;     query-replace-read-args, query-replace(-regexp), replace-string:
+;;     query-replace-read-args, query-replace(-regexp), replace-(string|regexp):
 ;;       Update for Emacs 24.4 - add new arg for BACKWARD.
 ;; 2013/12/13 dadams
 ;;     Added: replacep-msg-emphasis, replacep-msg-emphasis2, replacep-propertize, replacep-remove-property.
@@ -383,6 +387,13 @@ You can complete to any symbol name.  During completion, you can
 insert a SPC or TAB char by preceding it with `\\[quoted-insert]'.  If this is
 inconvenient, set this option to nil."
   :type 'boolean :group 'matching)
+
+;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'replacep-string-match-p 'string-match-p) ; Emacs 23+
+  (defun replacep-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 ;;;###autoload
 (defun toggle-replace-w-completion (force-p)
@@ -704,7 +715,7 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
       (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
       (if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
                                                (or (> emacs-minor-version 3)
-                                                   (= emacs-version "24.3.50"))))
+                                                   (replacep-string-match-p "24.3.50" emacs-version))))
           (list from
                 to
                 (and current-prefix-arg  (not (eq current-prefix-arg '-)))
@@ -817,9 +828,10 @@ replacement."
   (defadvice query-replace (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
-                                                              (or (> emacs-minor-version 3)
-                                                                  (= emacs-version "24.3.50")))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)
+                                  (or (> emacs-minor-version 3)
+                                      (replacep-string-match-p "24.3.50" emacs-version)))))
 
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
@@ -855,9 +867,10 @@ replacement."
   (defadvice query-replace-regexp (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
-                                                              (or (> emacs-minor-version 3)
-                                                                  (= emacs-version "24.3.50")))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)
+                                  (or (> emacs-minor-version 3)
+                                      (replacep-string-match-p "24.3.50" emacs-version)))))
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -893,9 +906,10 @@ replacement."
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
-                                                              (or (> emacs-minor-version 3)
-                                                                  (= emacs-version "24.3.50")))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)
+                                  (or (> emacs-minor-version 3)
+                                      (replacep-string-match-p "24.3.50" emacs-version)))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -931,9 +945,10 @@ replacement."
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
     nil
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
-                                                              (or (> emacs-minor-version 3)
-                                                                  (= emacs-version "24.3.50")))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)
+                                  (or (> emacs-minor-version 3)
+                                      (replacep-string-match-p "24.3.50" emacs-version)))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
