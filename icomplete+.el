@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 31 16:06:18 2013 (-0800)
+;; Last-Updated: Sat Jan 11 22:13:30 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1648
+;;     Update #: 1664
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/11 dadams
+;;     Soft, not hard require cl-lib.el.  Only 24.3+ has it.
+;;     icompletep-completion-all-sorted-completions for Emacs 24.1-3:
+;;       Use icompletep-remove-if if cl-delete-if is not defined (i.e., for Emacs 24.1-2).
 ;; 2013/12/31 dadams
 ;;     icomplete-exhibit, for Emacs 24.3.50: Protect icomplete-show-matches-on-no-input with boundp.
 ;; 2013/12/27 dadams
@@ -272,7 +276,8 @@
 
 (require 'icomplete)
 
-(when (> emacs-major-version 23) (require 'cl-lib)) ; cl-delete-if
+(when (> emacs-major-version 23)        ; Emacs 24.3+ actually, so soft-require.
+  (require 'cl-lib nil t)) ; cl-delete-if
 
 ;; Quiet the byte-compiler.
 (defvar completion-all-sorted-completions)
@@ -504,6 +509,7 @@ menu-bar bindings in the l of keys (Emacs 23+ only)."
                  (setq keys  (concat (substring keys 0 (max 0 (- max-len 5))) "...")))))
         keys))))
 
+;; Same as `icicle-remove-if' in `icicles-fn.el'.
 (defun icompletep-remove-if (pred xs)
   "A copy of list XS with no elements that satisfy predicate PRED."
   (let ((result  ()))
@@ -931,6 +937,7 @@ following the rest of the icomplete info:
 ;; 4. Optionally show and highlight key bindings, truncating if too long.
 ;;
 (when (and (= emacs-major-version 24)  (< emacs-minor-version 4)) ; Emacs 24.1 through Emacs 24.3.
+
   (defun icomplete-completions (name candidates predicate require-match)
     "Identify prospective candidates for minibuffer completion.
 NAME is the name to complete.
@@ -1110,8 +1117,12 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
             ;; Exclude file names with extensions in `completion-ignored-extensions'.
             (when (or minibuffer-completing-file-name
                       (and (boundp 'icicle-abs-file-candidates)  icicle-abs-file-candidates))
-              (let ((ignore-regexp  (regexp-opt completion-ignored-extensions)))
-                (setq all  (cl-delete-if (lambda (fl) (string-match-p ignore-regexp fl)) all))))
+              (let ((ignore-regexp  (regexp-opt completion-ignored-extensions))
+                    ;; Only Emacs 24.3+ has library `cl-lib.el', with `cl-delete-if'.
+                    (fun            (if (fboundp 'cl-delete-if)
+                                        #'cl-delete-if
+                                      #'icompletep-remove-if)))
+                (setq all  (funcall fun (lambda (fl) (string-match-p ignore-regexp fl)) all))))
             (unless dont-remove-dups (setq all  (delete-dups all))) ; Delete duplicates.
             (setq last  (last all)      ; Reset LAST, since it may be a different cons-cell.
                   all   (if sort-fun
