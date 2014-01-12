@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Jan  5 13:00:41 2014 (-0800)
+;; Last-Updated: Sat Jan 11 18:43:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14193
+;;     Update #: 14194
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -730,8 +730,11 @@ so it is called after completion-list buffer text is written."
       (let* ((mainbuf        (current-buffer))
              (mbuf-contents  (icicle-input-from-minibuffer))
              (dir-of-input   (and minibuffer-completing-file-name
-                                  (icicle-file-name-directory
-                                   (expand-file-name (substitute-in-file-name mbuf-contents))))))
+                                  ;; Emacs 20 bug: `substitute-in-file-name' barfs on "foo$": use condition-case.
+                                  (condition-case nil
+                                      (icicle-file-name-directory
+                                       (expand-file-name (substitute-in-file-name mbuf-contents)))
+                                    (error nil)))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input  (or (icicle-get-safe this-command 'icicle-completing-command)
