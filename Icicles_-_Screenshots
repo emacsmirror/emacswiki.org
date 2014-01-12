@@ -136,11 +136,16 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 
 
 
+
+
+
 [:FileIciclesMenu]
 === File Menu: Icicles Submenu ===
 : [[image:drew-icicles-File-submenu]]
 
 '''Icicles''' augments the standard '''File''' menu, adding an '''Icicles''' submenu that provides [[multi-command]]s and specialized [[Dired]] commands.
+
+
 
 
 
@@ -156,11 +161,18 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 
 
 
+
+
 [:BookmarksIciclesMenu]
 === Bookmarks Menu: Icicles Submenu ===
 : [[image:drew-icicles-Bookmarks-submenu]]
 
 '''Icicles''' augments the standard '''Bookmarks''' menu (typically a submenu of the '''Edit''' menu), adding an '''Icicles''' submenu that provides [[multi-command]]s for navigating to and among different kinds of bookmarks or markers.  The bookmark and tags menu items are avaible only if you also use '''[[Bookmark+]]''', but the go-to items are always available.
+
+
+
+
+
 
 
 
@@ -183,12 +195,20 @@ Contextual menu '''Completion''' pops up when you use `C-mouse-3' in buffer `*Co
 
 '''Icicles''' augments the standard '''Options''' menu. It adds an '''Icicles''' submenu with items that let you modify specific '''Icicles''' options.
 
+
+
+
+
+
 [:CustomizeEmacsIciclesMenu]
 === Customize Emacs Menu: Icicles Submenu ===
 
 : [[image:DrewsEmacsIciclesOptionsCustomizeMenu]]
 
 '''Icicles''' also adds an '''Icicles''' submenu to the '''Customize Emacs''' submenu of menu '''Options''', with operations for customizing anything.  See [[Icicles - Customization and General Tips]].
+
+
+
 
 
 
@@ -222,12 +242,24 @@ See [[Icicles - Key Bindings#icicle-top-level-key-bindings|Customizing Keys]].
 
 
 
+
+
+
+
+
+
 [:AproposCompletion]
 === Apropos Completion (Regexp Matching) ===
 
 [[image:IciclesRegexpCompletions]]
 
 Buffer `*Completions*' shows all matches for your input `##M-x ise.*char##'. See [[Icicles - Nutshell View]].
+
+
+
+
+
+
 
 
 [:AproposCompletionCycling]
@@ -239,6 +271,11 @@ See [[Icicles - Apropos Completions]] and [[Icicles - Cycling Completions]].
 
 
 
+
+
+
+
+
 [:ModeLine]
 === Mode-Line ===
 
@@ -247,6 +284,13 @@ This screenshot shows highlighting of the `Icy' [[mode line]] lighter that indic
 : [[image:DrewsEmacsIcyModeLine]]
 
 The fact that `Icy' is highlighted at all indicates that [[completion]] is available. The light-green background and the `##+##' indicate [[multi-command]] completion. And the blue box (which appears as an underline and overline) indicates that completion is currently ''strict'': your input must match one of the candidates.
+
+
+
+
+
+
+
 
 
 
@@ -270,12 +314,20 @@ This screenshot shows [[progressive completion]].  See [[Icicles - Customization
 
 
 
+
+
+
+
 [:icicle-occur]
 === `icicle-occur': Lines in a Buffer that Match a Regexp ===
 
 [[image:IciclesOccurScreenshot]]
 
 See [[Icicles - Search Commands, Overview]].
+
+
+
+
 
 
 
@@ -290,10 +342,19 @@ See [[Icicles - Search Commands, Overview]].
 
 
 
+
+
+
+
+
 [:RegexpSubgroupsHighlighting]
 === Highlighting of Regexp Subgroups ===
 
 [[image:IciclesSearchContextLevelsScreenshot]]
+
+
+
+
 
 
 
@@ -303,6 +364,10 @@ See [[Icicles - Search Commands, Overview]].
 [[image:IciclesImenuScreenshot]]
 
 See [[Icicles - Search Commands, Overview]].
+
+
+
+
 
 
 
@@ -327,6 +392,10 @@ See [[Icicles - Key Completion]].
 
 
 
+
+
+
+
 [:FuzzyCompletion]
 === Fuzzy Prefix Completion ===
 
@@ -340,12 +409,21 @@ See [[Icicles - Fuzzy Completion]]
 
 
 
+
+
+
 [:LaCarte]
 === Menu-Bar Choices Accessible from the Keyboard ===
 
 [[image:lacarte-w-icicles]]
 
 See '''LaCarte'''.
+
+
+
+
+
+
 
 
 
@@ -360,8 +438,34 @@ Sorted by color saturation (purity):
 
 [[image:DrewsEmacsColorSaturationCompletions]]
 
+Sorted by color hue:
 
-See [[Icicles - Candidates with Text Properties]]
+[[image:by-hue]]
+
+Sorted by brightness (value):
+
+[[image:by-brightness]]
+
+Sorted by hue and brightness:
+
+[[image:by-hue-and-brightness]]
+
+Sorted by hue + hue + hue + hue + brightness:
+
+[[image:by-hue-hue-hue-brightness]]
+
+
+See:
+
+* [[Icicles - Sorting Candidates]]
+
+* [[Icicles - Candidates with Text Properties]]
+
+
+
+
+
+
 
 
 
@@ -382,6 +486,9 @@ See:
 * [[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag]]
 
 * [[Icicles - Candidates with Text Properties]]
+
+
+
 
 
 
