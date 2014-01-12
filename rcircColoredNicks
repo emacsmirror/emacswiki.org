@@ -127,15 +127,6 @@ An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug rep
 }}}
 
 == Problems ==
-I always get the error: 
-
-##004013  !!! ":tie 001 entropie :Welcome to the BitlBee gateway, entropie" (wrong-number-of-arguments (lambda (process sender response channel-buffer) (let ((target (with-current-buffer channel-buffer (or rcirc-target )))) (with-syntax-table rcirc-nick-syntax-table (while (re-search-forward \w+ nil t) (let ((face (gethash (match-string-no-properties 0) rcirc-color-mapping))) (when face (rcirc-add-face (match-beginning 0) (match-end 0) face))))))) 2)##
-
-Any ideas?
-
-[new:AlexSchroeder:2007-08-09 07:36 UTC]
-Perhaps you're using an incompatible version of rcirc? I'm using the rcirc that comes with 22.1, and 
-the current version of ##rcirc-color.el##.
 
 [new:Yves Baumes:2013-02-07 16:42 UTC] After install, I restarted my Emacs and got "recursive loading
 while loading .emacs" kind of error. As suggested in the error
