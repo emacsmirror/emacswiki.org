@@ -126,23 +126,11 @@ An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug rep
 	candidates))
 }}}
 
-== Problems ==
+== More on Color Generation ==
 
-[new:Yves Baumes:2013-02-07 16:42 UTC] After install, I restarted my Emacs and got "recursive loading
-while loading .emacs" kind of error. As suggested in the error
-message, I restarted with --debug-init which confirmed there was a
-recursive loading. After fiddling around I found that there is an
-autoload in rcirc-color which generates an autoload file which
-contains this line (eval-after-load 'rcirc '(require rcirc-color))
-while in the beginning of the file rcirc-color.el there is a (require
-'rcirc). In order to prevent the issue, I removed the `require' line at
-the beginning of the rcirc-color.el file. And it works now. But I am
-not sure it is the best solution. I am wondering, maybe removing the
-eval-after-load line?
+The blog post [http://defanor.uberspace.net/notes/random-foreground-color.html random foreground color generation]
+has more background on random color generation.
 
-[new]
-I have no idea where this auto load comes from. -- Alex
-
-
----- CategoryChatClient
+----
+CategoryChatClient
 [[rcirc]]
