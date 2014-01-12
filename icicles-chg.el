@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jan 11 18:45:18 2014 (-0800)
+;; Last-Updated: Sat Jan 11 23:35:46 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10565
+;;     Update #: 10566
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1040,6 +1040,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/01/11 dadams
+;;     icicle-this-command-keys-prefix:
+;;       Reverted change made 2013-12-01.  S-TAB following any prefix key should complete that key.
 ;; 2014/01/06 dadams
 ;;     icicle-vardoc, icicle-fundoc, icicle-plist, icicle-doc:
 ;;       Bind icicle--last-toggle-transforming-msg.
