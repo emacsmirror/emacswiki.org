@@ -2,7 +2,7 @@
 
 You will need to install git.
 
-There is a Debian package called <code>git-core</code> that you can
+There is a Debian package called <code>git</code> that you can
 install if you use Debian or Ubuntu.  If you are using Windows, then
 visit http://code.google.com/p/msysgit/.  Mac OS X users may
 wish to install <code>git-core</code> using
