@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jan  8 18:44:56 2014 (-0800)
+;; Last-Updated: Sat Jan 11 18:45:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10563
+;;     Update #: 10565
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1936,6 +1936,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/01/11 dadams
+;;     icicle-completion-setup-function (Emacs 20-21): Wrap in condition case - Emacs bug.
 ;; 2014/01/05 dadams
 ;;     Added: icicle-list-position, icicle-repeat-command.
 ;;     icicle-completing-read: Bind icicle-orig-*, so can use icicle-recomplete-from-original-domain.
