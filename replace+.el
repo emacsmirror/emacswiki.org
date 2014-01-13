@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 11 12:49:07 2014 (-0800)
+;; Last-Updated: Mon Jan 13 09:07:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1763
+;;     Update #: 1791
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/13 dadams
+;;     query-replace-read-(from|to): Define for Emacs 20-21 also.
 ;; 2014/01/11 dadams
 ;;     Added: replacep-string-match-p.
 ;;     query-replace-w-options: Added MSGP arg.  New prefix arg behavior, to allow backward search.
@@ -553,9 +555,8 @@ The possible strings are, in order:
 ;; and you can enter nothing to repeat the previous query replacement
 ;; operation.
 ;;
-(when (> emacs-major-version 21)
-  (defun query-replace-read-from (string regexp-flag)
-    "Query and return the `from' argument of a query-replace operation.
+(defun query-replace-read-from (string regexp-flag)
+  "Query and return the `from' argument of a query-replace operation.
 The return value can also be a pair (FROM . TO) indicating that the user
 wants to replace FROM with TO.
 
@@ -565,51 +566,54 @@ See options `search/replace-region-as-default-flag',
 
 If option `replace-w-completion-flag' is non-nil then you can complete
 to a symbol name."
-    (if query-replace-interactive
-        (car (if regexp-flag regexp-search-ring search-ring))
-      (let* ((default                       (search/replace-default
-                                             (symbol-value query-replace-from-history-variable)))
-             (lastto                        (car (symbol-value query-replace-to-history-variable)))
-             (lastfrom                      (car (symbol-value query-replace-from-history-variable)))
-             (minibuffer-prompt-properties  (replacep-remove-property 'face minibuffer-prompt-properties))
-             (from-prompt
-              (progn
-                ;; Use second, not first, if the two history items are the same (e.g. shared lists).
-                (when (equal lastfrom lastto)
-                  (setq lastfrom  (cadr (symbol-value query-replace-from-history-variable))))
-                (if (and lastto lastfrom)
-                    (format "%s.  OLD (empty means %s -> %s): " string
-                            (replacep-propertize (query-replace-descr lastfrom)
-                                                 'face 'replacep-msg-emphasis)
-                            (replacep-propertize (query-replace-descr lastto)
-                                                 'face 'replacep-msg-emphasis2))
-                  (concat string ".  OLD: "))))
-             ;; The save-excursion here is in case the user marks and copies
-             ;; a region in order to specify the minibuffer input.
-             ;; That should not clobber the region for the query-replace itself.
-             (from                          (save-excursion
-                                              (if replace-w-completion-flag
-                                                  (completing-read
-                                                   from-prompt obarray nil nil nil
-                                                   query-replace-from-history-variable default t)
-                                                (if query-replace-interactive
-                                                    (car (if regexp-flag regexp-search-ring search-ring))
-                                                  (read-from-minibuffer
-                                                   from-prompt nil nil nil
-                                                   query-replace-from-history-variable default t))))))
-        (if (and (zerop (length from)) lastto lastfrom)
-            (cons lastfrom lastto)
-          ;; Warn if user types \n or \t, but don't reject the input.
-          (and regexp-flag
-               (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\(\\\\[nt]\\)" from)
-               (let ((match  (match-string 3 from)))
-                 (cond
-                   ((string= match "\\n")
-                    (message "Note: `\\n' here doesn't match a newline; to do that, type C-q C-j instead"))
-                   ((string= match "\\t")
-                    (message "Note: `\\t' here doesn't match a tab; to do that, just type TAB")))
-                 (sit-for 2)))
-          from)))))
+  (if query-replace-interactive
+      (car (if regexp-flag regexp-search-ring search-ring))
+    (let* ((default                       (search/replace-default
+                                           (symbol-value query-replace-from-history-variable)))
+           (lastto                        (car (symbol-value query-replace-to-history-variable)))
+           (lastfrom                      (car (symbol-value query-replace-from-history-variable)))
+           (minibuffer-prompt-properties  (and (boundp 'minibuffer-prompt-properties) ; Emacs 22+.
+                                               (replacep-remove-property 'face
+                                                                         minibuffer-prompt-properties)))
+           (from-prompt
+            (if (not (fboundp 'query-replace-descr)) ; Emacs 20-21.
+                (concat string ".  OLD (to be replaced): ")
+              ;; Use second, not first, if the two history items are the same (e.g. shared lists).
+              (when (equal lastfrom lastto)
+                (setq lastfrom  (cadr (symbol-value query-replace-from-history-variable))))
+              (if (and lastto lastfrom)
+                  (format "%s.  OLD (empty means %s -> %s): " string
+                          (replacep-propertize (query-replace-descr lastfrom)
+                                               'face 'replacep-msg-emphasis)
+                          (replacep-propertize (query-replace-descr lastto)
+                                               'face 'replacep-msg-emphasis2))
+                (concat string ".  OLD: "))))
+           ;; The save-excursion here is in case the user marks and copies
+           ;; a region in order to specify the minibuffer input.
+           ;; That should not clobber the region for the query-replace itself.
+           (from                          (save-excursion
+                                            (if replace-w-completion-flag
+                                                (completing-read
+                                                 from-prompt obarray nil nil nil
+                                                 query-replace-from-history-variable default t)
+                                              (if query-replace-interactive
+                                                  (car (if regexp-flag regexp-search-ring search-ring))
+                                                (read-from-minibuffer
+                                                 from-prompt nil nil nil
+                                                 query-replace-from-history-variable default t))))))
+      (if (and (zerop (length from)) lastto lastfrom)
+          (cons lastfrom lastto)
+        ;; Warn if user types \n or \t, but don't reject the input.
+        (and regexp-flag
+             (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\(\\\\[nt]\\)" from)
+             (let ((match  (match-string 3 from)))
+               (cond
+                 ((string= match "\\n")
+                  (message "Note: `\\n' here doesn't match a newline; to do that, type C-q C-j instead"))
+                 ((string= match "\\t")
+                  (message "Note: `\\t' here doesn't match a tab; to do that, just type TAB")))
+               (sit-for 2)))
+        from))))
 
 
 
@@ -623,36 +627,42 @@ to a symbol name."
 ;; As with vanilla query-replace, you can also use the history lists, and you can enter nothing to repeat
 ;; the previous query replacement operation.
 ;;
-(when (> emacs-major-version 21)
-  (defun query-replace-read-to (from string regexp-flag)
-    "Query and return the `to' argument of a query-replace operation.
+(defun query-replace-read-to (from string regexp-flag)
+  "Query and return the `to' argument of a query-replace operation.
 See also `query-replace-read-from'."
-    (query-replace-compile-replacement
-     (save-excursion
-       (let* ((history-add-new-input         nil)
-              (default                       (search/replace-default
-                                              (symbol-value query-replace-to-history-variable)))
-              (minibuffer-prompt-properties  (replacep-remove-property
-                                              'face minibuffer-prompt-properties))
-              (to-prompt                     (format "%s.  NEW (replacing %s): "
-                                                     string
-                                                     (replacep-propertize (query-replace-descr from)
-                                                                          'face 'replacep-msg-emphasis)))
-              ;; The save-excursion here is in case the user marks and copies
-              ;; a region in order to specify the minibuffer input.
-              ;; That should not clobber the region for the query-replace itself.
-              (to                            (save-excursion
-                                               (if replace-w-completion-flag
-                                                   (completing-read
-                                                    to-prompt obarray nil nil nil
-                                                    query-replace-to-history-variable default t)
-                                                 (read-from-minibuffer
-                                                  to-prompt nil nil nil query-replace-to-history-variable
-                                                  default t)))))
-         (add-to-history query-replace-to-history-variable to nil t)
-         (setq query-replace-defaults  (cons from to))
-         to))
-     regexp-flag)))
+  (let ((to-replace
+         (save-excursion
+           (let* ((history-add-new-input         nil)
+                  (default                       (search/replace-default
+                                                  (symbol-value query-replace-to-history-variable)))
+                  (minibuffer-prompt-properties  (and (boundp 'minibuffer-prompt-properties) ; Emacs 22+.
+                                                      (replacep-remove-property
+                                                       'face minibuffer-prompt-properties)))
+                  (to-prompt                     (if (not (fboundp 'query-replace-descr)) ; Emacs 20-21.
+                                                     (format "NEW (replacing %s): " from)
+                                                   (format "%s.  NEW (replacing %s): "
+                                                           string
+                                                           (replacep-propertize
+                                                            (query-replace-descr from)
+                                                            'face 'replacep-msg-emphasis))))
+                  ;; The save-excursion here is in case the user marks and copies
+                  ;; a region in order to specify the minibuffer input.
+                  ;; That should not clobber the region for the query-replace itself.
+                  (to                            (save-excursion
+                                                   (if replace-w-completion-flag
+                                                       (completing-read
+                                                        to-prompt obarray nil nil nil
+                                                        query-replace-to-history-variable default t)
+                                                     (read-from-minibuffer
+                                                      to-prompt nil nil nil
+                                                      query-replace-to-history-variable default t)))))
+             (when (fboundp 'add-to-history) ; Emacs 22+
+               (add-to-history query-replace-to-history-variable to nil t))
+             (setq query-replace-defaults  (cons from to))
+             to))))
+    (if (fboundp 'query-replace-compile-replacement)
+        (query-replace-compile-replacement to-replace regexp-flag)
+      to-replace)))
 
 
 
