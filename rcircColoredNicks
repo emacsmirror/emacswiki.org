@@ -126,7 +126,7 @@ An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug rep
 	candidates))
 }}}
 
-== More on Color Generation ==
+== Minimum Contrast ==
 
 The blog post [http://defanor.uberspace.net/notes/random-foreground-color.html random foreground color generation]
 has more background on random color generation where the generated colors have a *minimum contrast* compared
