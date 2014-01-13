@@ -2,3 +2,10 @@ In python-mode, when doing make-revision I get "Symbol's value as a variable is 
 
 -- vader 2014-01-13 15:40 UTC
 
+
+----
+
+@vader: That header2.el bug should be fixed now - please try the latest revision.  Thx.
+
+-- DrewAdams 2014-01-13 16:19 UTC
+
