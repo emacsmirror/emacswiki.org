@@ -1,4 +1,4 @@
-;;; rcirc-notify.el -- libnotify popups
+;;; rcirc-notify.el --- libnotify popups
 ;;
 ;; Copyright (c) 2008 Will Farrington
 ;; Copyright (c) 2009, 2011 Alex Schroeder <alex@gnu.org>
