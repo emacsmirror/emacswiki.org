@@ -242,6 +242,8 @@ Here is how to use the code for rcirc:
 	colors))
 }}}
 
+Change the ##7## in the code above to something smaller such as ##4.5## if you want a wider spread of colors.
+
 ----
 CategoryChatClient
 [[rcirc]]
