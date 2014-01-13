@@ -28,6 +28,11 @@ I suggest the addition of the following two lines in the definition of "hide-mat
 
 Another suggestion: it would be good to have some indicator in the mode line about having lines currently hidden.
 
+[new]
+HideLines works perfectly well in conjunction with [http://www.emacswiki.org/emacs/LineNumbers#toc6 Linum] (Emacs function to display line numbers in the left margin), now a standard feature of the Emacs distribution. Hidden lines may be easily detected by the non-sequential line numbers in the left margin.
+
+Also, one nice feature (for me) is that if you edit a line to match the regexp which suppressed that line, the line being edited is not automatically or instantly hidden. Lines are only hidden at the time the hide-lines command is invoked; the buffer is not automatically re-evaluated---and lines are not automatically hidden---on every cursor-movement, buffer save, or screen refresh. This is exactly the behavior I needed.
+
 ----
 CategoryEditing
 CategoryHideStuff
