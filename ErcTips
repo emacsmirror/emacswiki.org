@@ -27,5 +27,9 @@ The function is suitable for `erc-after-connect'."
 
 It will prompt when it detects that you are not using your default nick. You can remove the "(when (y-or-n-p..." condition if you don't want the prompt.
 Note: this function doesn't work if the last letter of your nick naturally contains a ` symbol.
+
+= Do not use whitespace-mode in ERC =
+
+Enabling `whitespace-mode' in an ERC buffer removes colors and other styles from all text in the buffer. This is not obvious and especially annoying for `global-whitespace-mode' users, as disabling `whitespace-mode' does not fix the lack of colors/styles.
 ----
 [[ERC]]
