@@ -1,0 +1,4 @@
+In python-mode, when doing make-revision I get "Symbol's value as a variable is void: comment-end-p"
+
+-- vader 2014-01-13 15:40 UTC
+
