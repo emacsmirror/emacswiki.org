@@ -129,8 +129,10 @@ An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug rep
 == Minimum Contrast ==
 
 The blog post [http://defanor.uberspace.net/notes/random-foreground-color.html random foreground color generation]
-has more background on random color generation where the generated colors have a *minimum contrast* compared
-to the background. Here is how to use the code.
+has more background on random color generation based on
+[http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G18 G18: Ensuring that a contrast ratio of at least 4.5:1 exists between text (and images of text) and background behind the text].
+
+Here is how to use the code for rcirc:
 
 {{{
 (defsubst circe-w3-contrast-c-to-l (c)
