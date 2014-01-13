@@ -300,7 +300,7 @@ Lisp:ukrainian-holidays.el
        (holiday-fixed 12 26 "Santo Stefano")
        (holiday-fixed 1 6 "Epifania")
        (holiday-easter-etc -52 "Giovedì grasso")
-       (holiday-easter-etc -47 "Martedì Carnevale")
+       (holiday-easter-etc -47 "Martedì grasso")
        (holiday-easter-etc  -2 "Venerdì Santo")
        (holiday-easter-etc   0 "Pasqua")
        (holiday-easter-etc  +1 "Lunedì Pasqua")
