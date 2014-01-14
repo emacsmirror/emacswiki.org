@@ -11,6 +11,7 @@
 * [http://csdl.ics.hawaii.edu/Tools/Shemacs/ Shemacs] is a tool implementing synchronous multi-user support for the Emacs editor using Egret, a client-server-agent framework for implementation of domain-specific, collaborative, hypertext systems.
 * [http://github.com/technomancy/conspire/tree/master Conspire mode] achieves realtime, collaborative editing using git as a backend. Works only over a LAN.
 * [[Google_Wave_for_Emacs]] -- An ongoing discussion concerning future [http://en.wikipedia.org/wiki/Google_Wave Google Wave] support in Emacs.
+* [https://floobits.com/help/plugins/emacs Floobits] provides real-time collaboration tools for a variety of editors including an Emacs plugin.
 
 ----
 LukeGorrie wrote shbuf http://www.bluetail.com/~luke/shbuf/ which formerly required erlang for the server (since emacs didn't have server sockets) but I think it only requires gnumacs now (xemacs doesn't have server sockets) --ShaeErisson
