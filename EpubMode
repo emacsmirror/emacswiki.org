@@ -11,8 +11,10 @@ I am an amateur elisp coder with very little elisp experience. I am actively see
 
 EPUB (short for electronic publication; alternatively capitalized as ePub, ePUB, EPub, or epub, with "EPUB" preferred by the vendor) is a free and open e-book standard by the International Digital Publishing Forum (IDPF). Files have the extension .epub. http://en.wikipedia.org/wiki/EPUB
 
-[new:ColinBaxter:2014-01-14 16:53 UTC]
+[new]
 epubmode.el is corrupted.
+
+-- [http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter] 
 
 
 
