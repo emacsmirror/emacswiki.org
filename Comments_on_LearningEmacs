@@ -101,3 +101,11 @@ Thanks again.
 
 -- brismall 2014-01-10 01:43 UTC
 
+
+----
+
+With Windows, I copied the emacs(emacs-24.3-bin-i386.zip ) folders to a usb stick and double clicked on emacs in the bin folder. It works great, All the manuals are there too. That's all I really need to get started. I never would have thought it was so easy, I just assumed I needed a Live CD to get started.  Thanks a lot Alex and Drew. I'll worry about the init.el and .emacs files later.
+http://ftp.gnu.org/gnu/emacs/windows/
+
+-- brismall 2014-01-14 07:17 UTC
+
