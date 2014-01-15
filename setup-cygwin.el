@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Thu Dec 26 09:47:27 2013 (-0800)
+;; Last-Updated: Tue Jan 14 19:35:23 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 140
+;;     Update #: 144
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -31,6 +31,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/14 dadams
+;;     Added: add-to-list definition with APPEND, for Emacs 20.
 ;; 2013/06/02 dadams
 ;;     Set env var CYGWIN to nodosfilewarning, to workaround ediff-buffers problem with names of temp files.
 ;;     Set null-device to /dev/null.
@@ -76,6 +78,26 @@
 ;;; Code:
 
 (require 'cygwin-mount)
+
+(when (< emacs-major-version 21)
+  (defun add-to-list (list-var element &optional append)
+    "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
+The test for presence of ELEMENT is done with `equal'.
+If ELEMENT is added, it is added at the beginning of the list,
+unless the optional argument APPEND is non-nil, in which case
+ELEMENT is added at the end.
+
+If you want to use `add-to-list' on a variable that is not defined
+until a certain package is loaded, you should put the call to `add-to-list'
+into a hook function that will be run only after loading the package.
+`eval-after-load' provides one way to do this.  In some cases
+other hooks, such as major mode hooks, can do the job."
+    (if (member element (symbol-value list-var))
+        (symbol-value list-var)
+      (set list-var
+           (if append
+               (append (symbol-value list-var) (list element))
+             (cons element (symbol-value list-var)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
