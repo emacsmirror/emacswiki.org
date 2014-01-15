@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Jan 11 23:37:06 2014 (-0800)
+;; Last-Updated: Tue Jan 14 19:48:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6734
+;;     Update #: 6736
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6583,17 +6583,20 @@ information about the arguments, see the doc for command
 (defun icicle-compilation-search-in-context-fn (cand+mrker replace-string)
   "`icicle-search-in-context-fn' used for `icicle-compilation-search'.
 If `crosshairs.el' is loaded, then the target position is highlighted."
-  (if (not (fboundp 'compilation-next-error-function))
-      (compile-goto-error)              ; Emacs 20, 21.
-    (setq compilation-current-error  (point)) ; Emacs 22+.
-    (compilation-next-error-function 0 nil))
-  (save-excursion
-    (save-restriction
-      (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
-        (narrow-to-region (line-beginning-position) (line-end-position)))
-      (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
-  (when (fboundp 'crosshairs-highlight) (crosshairs-highlight 'line-only 'nomsg))
-  (let ((icicle-candidate-nb  icicle-candidate-nb)) (icicle-complete-again-update)))
+  (condition-case nil
+      (progn
+        (if (not (fboundp 'compilation-next-error-function))
+            (compile-goto-error)        ; Emacs 20, 21.
+          (setq compilation-current-error  (point)) ; Emacs 22+.
+          (compilation-next-error-function 0 nil))
+        (save-excursion
+          (save-restriction
+            (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+              (narrow-to-region (line-beginning-position) (line-end-position)))
+            (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
+        (when (fboundp 'crosshairs-highlight) (crosshairs-highlight 'line-only 'nomsg))
+        (let ((icicle-candidate-nb  icicle-candidate-nb)) (icicle-complete-again-update)))
+    (error nil)))
 
 (defun icicle-compilation-hook-fn ()
   "Hook setting `icicle-search-command' for compilation modes.
