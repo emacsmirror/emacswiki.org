@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan  8 18:40:44 2014 (-0800)
+;; Last-Updated: Wed Jan 15 08:39:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26688
+;;     Update #: 26706
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1945,19 +1945,37 @@ symbols with function definitions are considered.  Otherwise, all
 symbols with function definitions, values or properties are
 considered."
   (interactive)
-  (let* ((end            (point))
+  (let* ((pos            (point))
          (buffer-syntax  (syntax-table))
+         ;; $$$$$$ FIXME: In minibuffer with no input, `backward-sexp' moves into the prompt, which is
+         ;;        read-only.  What we do currently is just let that happen and let the pattern be "".
+         ;;        Better would be to stop movement into the prompt etc.  See also Emacs bug #16453.
          (beg            (unwind-protect
-                              (save-excursion
+                              (progn
                                 (set-syntax-table emacs-lisp-mode-syntax-table)
-                                (backward-sexp 1)
-                                (while (= (char-syntax (following-char)) ?\') (forward-char 1))
-                                (point))
+                                (condition-case nil
+                                    (save-excursion
+                                      (backward-sexp 1)
+                                      (skip-syntax-forward "'")
+                                      (point))
+                                  (scan-error pos)))
                            (set-syntax-table buffer-syntax)))
+         (end           (unless (or (eq beg (point-max))
+                                    (member (char-syntax (char-after beg)) '(?\" ?\( ?\))))
+                          (unwind-protect
+                               (progn
+                                 (set-syntax-table emacs-lisp-mode-syntax-table)
+                                 (condition-case nil
+                                     (save-excursion
+                                       (goto-char beg)
+                                       (forward-sexp 1)
+                                       (min (point) beg))
+                                   (scan-error pos)))
+                            (set-syntax-table buffer-syntax))))
          (pattern       (buffer-substring beg end))
          (new           (try-completion pattern obarray)))
     (unless (stringp new) (setq new  pattern))
-    (delete-region beg end)
+    (condition-case nil (delete-region beg end) (error nil)) ; E.g. read-only text of a prompt.
     (insert new)
     (setq end  (+ beg (length new)))
     (if (and (not (string= new ""))  (not (string= (downcase new) (downcase pattern)))
@@ -1980,7 +1998,7 @@ considered."
                   (save-excursion
                     (goto-char beg)
                     (if (not (eq (char-before) ?\( ))
-                        (lambda (sym) ;why not just nil ?   -sm
+                        (lambda (sym)   ;why not just nil ?   -sm
                           (or (boundp sym)  (fboundp sym)  (symbol-plist sym)))
                       ;; If first element of parent list is not an open paren, assume that this is a
                       ;; funcall position: use `fboundp'.  If not, then maybe this is a variable in
@@ -1993,7 +2011,7 @@ considered."
         ;;       candidate and pass nil as PRED to `completing-read'.  Don't bother for now.
         (setq new  (save-excursion (completing-read "Complete Lisp symbol: "
                                                     obarray predicate t new)))))
-    (delete-region beg end)
+    (condition-case nil (delete-region beg end) (error nil)) ; E.g. read-only text of a prompt.
     (insert new)))
 
 
