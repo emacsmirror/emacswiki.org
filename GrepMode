@@ -70,6 +70,13 @@ If you installed `GnuWin32' under, say, "C:\GNU\gnuwin32", consider adding the f
       (setq find-program "C:\\GNU\\gnuwin32\\bin\\find.exe"
             grep-program "C:\\GNU\\gnuwin32\\bin\\grep.exe"))
 
+Note: setq seems to be unnecessary if PATH variable is modified as above to correct location for find and grep executables.
+
+Note: If paths above contain spaces use additional quotes like this: 
+
+   (setq find-program "C:\\\"Program Files (x86)\"\\GnuWin32\\bin\\find.exe"
+         grep-program "C:\\\"Program Files (x86)\"\\GnuWin32\\bin\\grep.exe")
+
 It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-find', etc to work:
 
    (defadvice shell-quote-argument (after windows-nt-special-quote (argument) activate)
