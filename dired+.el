@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  5 13:48:14 2014 (-0800)
+;; Last-Updated: Wed Jan 15 14:26:19 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7261
+;;     Update #: 7264
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -498,6 +498,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/15 dadams
+;;     Bind diredp-toggle-find-file-reuse-dir to C-M-R (aka C-M-S-r).
 ;; 2014/01/05 dadams
 ;;     Bind dired-omit-mode (aka dired-omit-toggle) to C-x M-o.
 ;; 2013/12/05 dadams
@@ -2842,6 +2844,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-g"    'diredp-do-grep)                               ; `M-g'
 (when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
+(define-key dired-mode-map [(control meta shift ?r)]                    ; `C-M-R' (aka `C-M-S-r')
+  'diredp-toggle-find-file-reuse-dir)
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
 (substitute-key-definition 'describe-mode 'diredp-describe-mode                    ; `h', `C-h m'
                            dired-mode-map (current-global-map))
@@ -5753,7 +5757,7 @@ Unlike `dired-find-alternate-file' this does not use
 ;;;###autoload
 (defalias 'toggle-diredp-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)
 ;;;###autoload
-(defun diredp-toggle-find-file-reuse-dir (force-p) ; Not bound
+(defun diredp-toggle-find-file-reuse-dir (force-p) ; Bound to `C-M-R' (aka `C-M-S-r')
   "Toggle whether Dired `find-file' commands reuse directories.
 This applies also to `dired-w32-browser' commands and
 `diredp-up-directory'.
