@@ -36,43 +36,43 @@ There is a fork of ElScreen/package.el updated for Emacs 24 and without external
 
 Key features of %%ElScreen%% are:
 
- - Key bindings are similar to GNU Screen.
- - Screens are tabbed which makes it easier and faster to switch among applications.
- - %%ElScreen%% menu is also added to menu-bar to create, select or delete screens.
- - Each frame keeps up to 10 window-configurations.
- - List of screens can be shown in mini-buffer.
- - You can assign your own name to each window.
+ Key bindings are similar to GNU Screen.
+ Screens are tabbed which makes it easier and faster to switch among applications.
+ %%ElScreen%% menu is also added to menu-bar to create, select or delete screens.
+ Each frame keeps up to 10 window-configurations.
+ List of screens can be shown in mini-buffer.
+ You can assign your own name to each window.
 
 == Environments ==
 
 Following emacs variants are confirmed to run %%ElScreen%%:
 
- - GNU Emacs 23.0.92
- - GNU Emacs 22.0.50 (including Meadow 3.00-dev)
- - GNU Emacs 21.4
- - GNU Emacs 21.3
- - GNU Emacs 21.2
- - XEmacs 21.4
- - XEmacs 21.5
+ GNU Emacs 23.0.92
+ GNU Emacs 22.0.50 (including Meadow 3.00-dev)
+ GNU Emacs 21.4
+ GNU Emacs 21.3
+ GNU Emacs 21.2
+ XEmacs 21.4
+ XEmacs 21.5
 
 
 == Tips ==
 
 === How to iconify (or suspend) Emacs? ===
 
-C-z is assigned to iconify-or-deiconify-frame (or suspend-emacs),
+C-z is assigned to `iconify-or-deiconify-frame` (or `suspend-emacs`),
 however %%ElScreen%% reassigns this key to its prefix key. How can we
 iconify (or suspend) our Emacs?
 
-Ask emacs where iconify-or-deiconify-frame on with "C-h w
+Ask emacs where `iconify-or-deiconify-frame` on with "C-h w
 iconify-or-deiconify", and it will reply with
 "iconify-or-deiconify-frame is on C-x C-z". ... Yes, you can also use
 C-x C-z to iconify-or-deiconify (or suspend-emacs)!
 
 Of course you can change it by setting elscreen-prefix-key as following:
-
+{{{
 (setq elscreen-prefix-key "\C-z")
-
+}}}
 Note: You must set this value before %%ElScreen%% is loaded.
 
 === How to change prefix-key after %%ElScreen%% is loaded? ===
@@ -80,10 +80,10 @@ Note: You must set this value before %%ElScreen%% is loaded.
 As described above, %%ElScreen%% prefix key can be changed by setting
 elscreen-prefix-key. However, this will not have any effect after
 %%ElScreen%% is loaded. Even in this case, you can change it with
-elscreen-set-prefix-key as following:
-
- (elscreen-set-prefix-key "\C-t")
-
+`elscreen-set-prefix-key` as following:
+{{{
+(elscreen-set-prefix-key "\C-t")
+}}}
 === How to create screen automatically when there is only one screen? ===
 
 C-z C-n, C-z C-p and suchlike are used to switch screen. When there is
@@ -242,9 +242,6 @@ I want to let first sceen numbered as 1 instead 0, how to do ?
 How do I deactivate elscreen once it was loaded?
 [new]
 I'm trying out elscreen, but when I switch buffers via "C-x b" which runs "switch-to-buffer", I see buffers from all screens when I tab complete.  Is there a way to set it up so only the current screen's buffers show?  Thanks!
- 
-
-
 
 
 ----
