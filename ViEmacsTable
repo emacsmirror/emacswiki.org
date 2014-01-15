@@ -11,7 +11,7 @@ This table does not cover basic commands like character motion
 ||substitute variables ||##:s/##''pat''##/\1 \2## ||`M-x replace-regexp', then ##\1 \2## ||
 ||search word/identifier  ||##/\<##''word''##\>##  ||`C-s M-e C-w'   ||
 ||delete lines  ||##:g/##''pat''##/d##    ||`M-x flush-lines'   ||
-||zap-to ||##ct## ||`##M-z##' ||
+||zap-to ||##cf## ||`##M-z##' ||
 ||set line numbers    ||##:se nu##    ||see LineNumbers ||
 ||show tabs and newlines  ||##:se list##  ||see ShowWhiteSpace   ||
 ||change file formats ||##:se ff=unix/dos## ||`C-x RET f' (TAB to choose) ||
