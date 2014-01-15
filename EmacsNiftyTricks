@@ -40,7 +40,8 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Use [[zap-to-char]].
 
 * M-SPC will remove all except 1 space between characters.  Suppose you have
-'a <blanks> tree' & point is postioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
+'a <blanks> tree' & point is positioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
+** With recent Emacs there's ##cycle-spacing## command which can cycle between one space, no spaces and original spacing. Evaluate ##(substitute-key-definition 'just-one-space (lambda () (interactive) (cycle-spacing -1 t)) (current-global-map))## to test it easily. -- mina86
 
 * [http://www.emacswiki.org/emacs/thesaurus.el Use an online thesaurus] to replace the word at point with a synonym of your choosing. 
 
