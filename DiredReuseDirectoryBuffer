@@ -4,7 +4,36 @@ buffer -- the Dired buffer you chose it in is not deleted.
 Some people don't like this behavior, because as you navigate around the
 directory tree you accumulate Dired buffers, one for each directory you visit.
 
-= Simple Alternatives =
+
+
+
+
+
+
+
+== Libraries that Provide Reuse ==
+
+* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-diredp-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
+
+:: Use `toggle-diredp-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(toggle-diredp-find-file-reuse-dir 1)##.
+
+:: Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
+
+* http://www.northbound-train.com/emacs/dired-single.el
+* Lisp:joseph-single-dired.el
+* The [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
+
+
+
+
+
+
+
+
+
+== Do It Yourself? ==
+
+For those who do not want to load a library (too easy!) ---
 
 In Emacs 22 and later, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. Alternatively you can use this code (mouse clicks is still not affected, but `RET' works): 
 
@@ -22,21 +51,10 @@ When moving to parent directory by `^´, Dired by default creates a new buffer f
  ))
 </pre>  
 
-= Libraries that Provide for Reuse =
 
-* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-diredp-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
 
-:: Use `toggle-diredp-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(toggle-diredp-find-file-reuse-dir 1)##.
 
-:: Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
-
-* http://www.northbound-train.com/emacs/dired-single.el
-* Lisp:joseph-single-dired.el
-* The [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
-
-= Advise `dired-find-file' =
-
-Here are two ways to advise `dired-find-file', so it reuses a directory buffer. (But see AdviceVsHooks.)
+And here are two ways to advise `dired-find-file', so it reuses a directory buffer. (But see AdviceVsHooks.)
 
 * The first
 
@@ -89,7 +107,7 @@ Here are two ways to advise `dired-find-file', so it reuses a directory buffer. 
      	     (dired-goto-file dir))))))
 
 
-= Experiences =
+== Experiences ==
 
 I used to hate those Dired buffers cluttering up my Emacs so I had one of these hacks enabled for years. However, for some years now I have gone back to the default behaviour which has (at least) one advantage that is worth more to me than to have less buffers: performance when opening Dired buffers for directories on slow servers. I open a lot of directories on shares at different servers at work, many in remote locations. As with many Emacs concepts I have now got used to it and suspect that there was actually some thought behind this from the beginning even if it seems strange at first. Also, since I have F5 bound to a helper command to kill buffers, it is really easy to get rid of the dired buffers when I want to. And, sometimes when I drill down from one directory to a sub directory I discovver that I wanted to go to the parent. Then for me I can just kill the current one (F5) or switch to the previous one (bound to F1 in my setup). So, that's my experience and I just thought I should share it :) -- MaDa
 : That is my experience as well, I struck a fine balance by using the `subdir' commands—that way I don't need to work on a buffer-per-directory basis. -- Iceland_jack
