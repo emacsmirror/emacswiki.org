@@ -36,24 +36,24 @@ There is a fork of ElScreen/package.el updated for Emacs 24 and without external
 
 Key features of %%ElScreen%% are:
 
- Key bindings are similar to GNU Screen.
- Screens are tabbed which makes it easier and faster to switch among applications.
- %%ElScreen%% menu is also added to menu-bar to create, select or delete screens.
- Each frame keeps up to 10 window-configurations.
- List of screens can be shown in mini-buffer.
- You can assign your own name to each window.
+* Key bindings are similar to GNU Screen.
+* Screens are tabbed which makes it easier and faster to switch among applications.
+* %%ElScreen%% menu is also added to menu-bar to create, select or delete screens.
+* Each frame keeps up to 10 window-configurations.
+* List of screens can be shown in mini-buffer.
+* You can assign your own name to each window.
 
 == Environments ==
 
 Following emacs variants are confirmed to run %%ElScreen%%:
 
- GNU Emacs 23.0.92
- GNU Emacs 22.0.50 (including Meadow 3.00-dev)
- GNU Emacs 21.4
- GNU Emacs 21.3
- GNU Emacs 21.2
- XEmacs 21.4
- XEmacs 21.5
+* GNU Emacs 23.0.92
+* GNU Emacs 22.0.50 (including Meadow 3.00-dev)
+* GNU Emacs 21.4
+* GNU Emacs 21.3
+* GNU Emacs 21.2
+* XEmacs 21.4
+* XEmacs 21.5
 
 
 == Tips ==
