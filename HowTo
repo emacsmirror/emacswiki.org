@@ -9,7 +9,7 @@
 
 * Use different natural [[HowLanguagesWork|languages]] on the wiki.
 
-* Use different [[CSS]] stylesheets to customize the look & feel of the wiki for your own use.
+* Use different [[CSS]] stylesheets to customize the look & feel of the wiki ([EmacsWiki:action=browse;bootstrap=0;id=HowTo;theme=;css= Classic], [EmacsWiki:action=browse;id=HowTo;bootstrap=1 Standard]).
 
 * [[WikiDownload|Download]] all or some of the wiki page database.
 
