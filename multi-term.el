@@ -126,6 +126,9 @@
 ;;
 
 ;;; Change log:
+;; 2014/01/16
+;;      * Fix breakage introduced in Emacs 24.4.
+;;
 ;; 2013/01/08
 ;;      * Fix customize group of `multi-term-try-create'.
 ;;      * Add autoloads.
