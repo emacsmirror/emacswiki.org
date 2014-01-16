@@ -49,7 +49,7 @@
 ;; If you want to get an effect in an interactive fashion, please call
 ;; `bracketed-paste-setup', too.
 ;;
-;; To accumlating the "cut-buffer", the "Pasting Mode"
+;; To accumalte the "cut-buffer", the "Pasting Mode"
 ;; `bracketed-paste--pasting-mode' will be active, though the keymap
 ;; `bracketed-paste--pasting-mode-map' is kind of brute force. It is *not*
 ;; possible to do even `M-x' in the `bracketed-paste--pasting-mode'.
