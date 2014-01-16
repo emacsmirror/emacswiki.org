@@ -503,7 +503,7 @@ mistake to look for complete reproduction of Ido behavior in '''Icicles''' -- yo
 
 Longer answer -- see these sections for info on how to get some behavior similar to Ido:
 
-* [[Icicles - Alternative Libraries]]
+* [[Icicles - Ido and IswitchB]]
 
 * [[Icicles - Fuzzy Completion#ScatterMatchCompletion|Icicles - Fuzzy Completion]]
 * [[Icicles - Icompletion#CompletionsIcompletion|Icicles - Incremental Completion]]
