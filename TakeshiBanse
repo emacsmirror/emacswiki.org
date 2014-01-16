@@ -10,6 +10,7 @@ I'm Japanese. I use GNU Emacs 23.1.50.1
 * Lisp:anything-el-swank-fuzzy.el -- anything-sources for el-swank-fuzzy.el.
 * Lisp:eval-sexp-fu.el [[EvalSexpFu]] -- tiny functionality enhancements for evaluationg sexps.
 * Lisp:anything-c-javadoc.el -- anythng-sources for opening javadocs.
+* Lisp:bracketed-paste.el -- bracketed paste mode support within emacs -nw.
 
 = Link =
 
