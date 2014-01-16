@@ -159,7 +159,7 @@
   (setq bracketed-paste-paste-command
         ;; TODO: make evilish
         ;; XXX: pasting in replace-state behavior differs inside/outside
-        ;; bracketed paste mode. GVim's bihaviour here for an ease.
+        ;; bracketed paste mode. GVim's behaviour here for an ease.
         (defun bracketed-paste--evil-paste ()
           (interactive)
           (call-interactively (if (evil-visual-state-p)
