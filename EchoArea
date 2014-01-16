@@ -11,8 +11,8 @@ The echo area is also used for other informative messages -- those displayed by 
 
 == Changing the face ==
 
-(with-current-buffer (get-buffer " *Echo Area 0*")
-  (setq-local face-remapping-alist '((default (:height 0.9) variable-pitch)))) ; etc.
+    (with-current-buffer (get-buffer " *Echo Area 0*")
+      (setq-local face-remapping-alist '((default (:height 0.9) variable-pitch)))) ; etc.
 
 
 == Filtering messages ==
