@@ -1,3 +1,5 @@
+== Description ==
+
 Short messages to the user appear commonly in the '''[::echo area]'''. This area is shared with the [[minibuffer]]. The space occupied by the minibuffer for input is thus also used by the echo area for output. There are two names for this space because the behavior is different. The minibuffer is used for input; the echo area is used for output. Because it is used only for output, the echo area is read-only.
 
 The echo area is not a [[buffer]] -- you cannot edit anything there. It is simply a space for displaying messages. Most text written to the echo area is also logged to the MessagesBuffer.
@@ -7,32 +9,14 @@ When you type input into the minibuffer, and you pause for a short time, a remin
 The echo area is also used for other informative messages -- those displayed by function `message', for instance. Output to the echo area (except for echoed keystrokes, in GnuEmacs), is also logged to the MessagesBuffer, `*Messages*'.
 
 
+== Changing the face ==
 
+(with-current-buffer (get-buffer " *Echo Area 0*")
+  (setq-local face-remapping-alist '((default (:height 0.9) variable-pitch)))) ; etc.
 
-
-
-
-
-
-== Discussion ==
-
-Is there a way to clear the echo area of echoed keystrokes when a command is finished? -- VegardOye
-
-----
-
-Does anyone know how to change the appearance of the echo area; most importantly the background color in my case? -- JonasBernoulli
-
-[new:DrewAdams:2011-10-11 22:10 UTC]
-If you use a standalone minibuffer frame, it is probably easy.  For an example, see <tt>[[oneonone.el]]</tt>. It changes the frame background for various states: isearching and active minibuffer.  You could presumably do similarly when echoing (dunno, you might need a hook that doesn't exist).
-
-If you do not use a standalone minibuffer frame then I doubt you can do it.  Well, you could define a special face to use there, and impose its background, but that would not affect the window background as a whole. 
-
-But maybe someone has a good idea how to do it. -- DrewAdams
-
-[new]
-Well I have an idea myself - but a bad one. Change the default face to what I want in the minibuffer and then make it local everywhere else and set it locally to the real value. But I would have to ensure that I really do it everywhere and face inheritance would probably break. This shouldn't be so hard. -- JonasBernoulli 
 
 == Filtering messages ==
+
 The echo area can be useful, but sometimes messages are displayed there with overwhelming frequency. This is particularly frustrating when it happens often enough to interrupt typing into the minibuffer.
 
 Here is a hack to allowing filtering certain messages so that they go to the MessagesBuffer (`*Messages*'), but not to the echo area:
@@ -56,6 +40,24 @@ Here is a hack to allowing filtering certain messages so that they go to the Mes
           (ad-set-args 0 `("%s" ,formatted-string))
           ad-do-it)))))
 }}}
+
+== Discussion ==
+
+Is there a way to clear the echo area of echoed keystrokes when a command is finished? -- VegardOye
+
+----
+
+Does anyone know how to change the appearance of the echo area; most importantly the background color in my case? -- JonasBernoulli
+
+[new:DrewAdams:2011-10-11 22:10 UTC]
+If you use a standalone minibuffer frame, it is probably easy.  For an example, see <tt>[[oneonone.el]]</tt>. It changes the frame background for various states: isearching and active minibuffer.  You could presumably do similarly when echoing (dunno, you might need a hook that doesn't exist).
+
+If you do not use a standalone minibuffer frame then I doubt you can do it.  Well, you could define a special face to use there, and impose its background, but that would not affect the window background as a whole. 
+
+But maybe someone has a good idea how to do it. -- DrewAdams
+
+[new]
+Well I have an idea myself - but a bad one. Change the default face to what I want in the minibuffer and then make it local everywhere else and set it locally to the real value. But I would have to ensure that I really do it everywhere and face inheritance would probably break. This shouldn't be so hard. -- JonasBernoulli 
 
 ----
 CategoryCommands
