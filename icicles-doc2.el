@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Dec 27 14:21:09 2013 (-0800)
+;; Last-Updated: Thu Jan 16 12:16:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29469
+;;     Update #: 29471
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -99,8 +99,8 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Moving Between the Minibuffer and Other Buffers")
 ;;  (@file :file-name "icicles-doc1.el" :to "Inserting a Regexp from a Variable or Register")
 ;;  (@file :file-name "icicles-doc1.el" :to "Special Characters in Input Patterns")
-;;  (@file :file-name "icicles-doc1.el" :to "Alternative Libraries: Other Methods of Choosing Default Values")
 ;;  (@file :file-name "icicles-doc1.el" :to "Exiting the Minibuffer Without Confirmation")
+;;  (@file :file-name "icicles-doc1.el" :to "Ido and IswitchB")
 ;;  (@file :file-name "icicles-doc1.el" :to "*Completions* Display")
 ;;  (@file :file-name "icicles-doc1.el" :to "Icompletion")
 ;;    (@file :file-name "icicles-doc1.el" :to "icomplete+.el Displays the Number of Other Prefix Candidates")
