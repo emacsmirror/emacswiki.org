@@ -151,12 +151,46 @@ The idea is to open up Customize, so that it sees changes that are made elsewher
 [new]
 ''I could not agree more, even though I did not think about it before (I'm repeating myself, I know, I know... :). -- MathiasDahl''
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [:CustomizePlus]
+[:cus-edit+.el]
 == Customize+: Making Customize Behave as It Should All the Time ==
 
 After I wrote the text on this page a few days ago, I set about trying to come up with a better solution than requiring individual functions to inform Customize that they've set something. The result is library Lisp:cus-edit+.el. Here is the executive summary (from the source-code commentary):
 
 : This library in effect gets rid of the useless ''"changed outside of Customize"'' state. User preferences have only the `standard', `saved', or `set' (= unsaved) state, regardless of how they are set. Someday, Customize might be more integrated with the rest of Emacs, and "changed outside of Customize" will make no more sense than "changed outside of Emacs". Customize will then be just one possible way to access the space of user preferences, the same preference space that other parts of Emacs can access differently. If we're writing on the same blackboard, you can see what I erase, and I can see what you write. Simple.
+
+
+
+
+
+
+Here is one user's [[http://msnyder.info/|takeaway]] (search the page for '''"cus-edit+.el Is the Best Emacs Module You've Never Used"''').  An excerpt:
+
+[new]
+: I have declared .emacs bankruptcy for 2014. I’ve wanted a simple, extensible Emacs configuration for some time now. On the way to that goal, I discovered a module that’s made it easier, and has changed how I think about Emacs configuration...  Its goal is simple: to unify the changes you make both outside and inside Emacs’ Customize system. The results, however, are phenomenal. Huge swaths of my disorganized .emacs.d should have been tracked by Customize...  Give cus-edit+ a go: It’s available on Melpa, as well as the %%EmacsWiki%%.  Find all those random setqs cluttering up your Emacs configuration, and get them where they belong.
+[new]
+
+
+
+
+
+
+
 
 There is a detailed explanation of what that library does in the source-code comments, so I won't repeat that all here. Here are the highlights:
 
