@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.8.9
-;; Last-Updated: <2013-01-08 10:11:43 Tuesday by jpkotta>
+;; Version: 0.8.10
+;; Last-Updated: <2014-01-16 22:05:43 Thursday by gcv>
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1
@@ -351,8 +351,13 @@ Default is nil."
   :type 'boolean
   :set (lambda (symbol value)
          (set symbol value)
-         (when (ad-advised-definition-p 'other-window)
-           (multi-term-dedicated-handle-other-window-advice value)))
+         ;; ad-advised-definition-p no longer exists on Emacs 24.4 as of 2014-01-03.
+         (if (or (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+                 (string-match "24\\.3\\.50\\..*" emacs-version))
+             (when (ad-is-advised 'other-window)
+               (multi-term-dedicated-handle-other-window-advice value))
+           (when (ad-advised-definition-p 'other-window)
+             (multi-term-dedicated-handle-other-window-advice value))))
   :group 'multi-term)
 
 (defcustom multi-term-dedicated-select-after-open-p nil
