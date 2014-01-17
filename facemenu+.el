@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  5 14:21:21 2014 (-0800)
+;; Last-Updated: Fri Jan 17 11:26:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1873
+;;     Update #: 1875
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -20,9 +20,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `doremi', `doremi-frm', `easymenu', `eyedropper',
-;;   `facemenu', `faces', `faces+', `frame-cmds', `frame-fns',
-;;   `hexrgb', `misc-fns', `mwheel', `ring', `strings', `thingatpt',
-;;   `thingatpt+'.
+;;   `facemenu', `faces', `faces+', `font-lock-menus', `frame-cmds',
+;;   `frame-fns', `hexrgb', `misc-fns', `mwheel', `ring', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -194,6 +194,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/17 dadams
+;;     list-faces-display: Use dolist instead of while.
 ;; 2014/01/05 dadams
 ;;     Add to Syntax Highlighting (Font Lock) menu: icicle-next-font-lock-keywords-repeat,
 ;;                                                  icicle-font-lock-keyword.
@@ -1434,10 +1436,7 @@ faces with matching names are displayed."
       (setq window      (get-buffer-window (get-buffer "*Faces*") t)
             disp-frame  (if window (window-frame window) (car (frame-list))))
       (or (eq frame disp-frame)
-          (let ((faces  (face-list)))
-            (while faces
-              (copy-face (car faces) (car faces) frame disp-frame)
-              (setq faces  (cdr faces)))))))
+          (dolist (face (face-list))  (copy-face face face frame disp-frame)))))
 
 
   (define-button-type 'help-facemenu-set-face
