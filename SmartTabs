@@ -24,7 +24,7 @@ This page provides code which improves on Emacs' auto-indenting, so that wheneve
 == Packaging ==
 This code is now available as an Emacs minor mode through the [[MELPA|MELPA]] package ##smart-tabs-mode## and can be installed through the Emacs package manager. You can add MELPA to your package archive list with:
 
-    (add-to-list 'package-archives ("melpa" . "http://melpa.milkbox.net/packages/"))
+    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 The source code is available at [[http://github.com/jcsalomon/smarttabs|GitHub]]; see the file <tt>smart-tabs-mode.el</tt>.  Bug reports, code contributions, etc., are all welcome. —JCSalomon
 
