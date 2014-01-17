@@ -13,7 +13,7 @@ to `trash-directory' on other systems.
 
 = Using the freedesktop.org trash specification =
 
-== In emacs CVS HEAD (post 23.1) ==
+== Current Emacs ==
 
 Using the Freedesktop.org trashcan is the default.
 
@@ -46,5 +46,21 @@ and other temp files. My trash-exclusion settings are as follows:
 }}}
 
 This setting will prevent Emacs from trashing old desktop lock files (if you use DeskTop Mode) and backup files (with names like `#filename#'), as well as any files in /tmp (including the server file, which gets trashed on every emacs restart if you use server.el).
+
+== Mac OS X ==
+
+If you use [http://brew.sh/ Homebrew] you can ##brew install trash## for a command-line program to trash files and directories using OSX conventions.
+
+{{{
+(setq delete-by-moving-to-trash t)
+
+(defun system-move-file-to-trash (file)
+  "Use \"trash\" to move FILE to the system trash.
+When using Homebrew, install it using \"brew install trash\"."
+  (call-process (executable-find "trash")
+		nil 0 nil
+		file))
+}}}
+
 ----
 CategoryDirectories
