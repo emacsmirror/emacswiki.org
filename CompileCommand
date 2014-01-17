@@ -324,14 +324,11 @@ Yet another variant of much the same thing (using upward-find-file above):
 This isn't a compile-specific tweak, but I tend to use it for that and grep mostly.  Often I'll want to run M-x compile or M-x grep, but I will want the default-directory to be something other than the current buffer's.  I wrote the following command and bound it to M-X (ie, shift-M-X):
 
 {{{
-(defun in-directory ()
-  "Reads a directory name (using ido), then runs
-execute-extended-command with default-directory in the given
+(defun in-directory (dir)
+  "Runs execute-extended-command with default-directory set to the given
 directory."
-  (interactive)
-  (let ((default-directory 
-          (ido-read-directory-name "In directory: "
-                                   nil nil t)))
+  (interactive "DIn directory: ")
+  (let ((default-directory dir))
     (call-interactively 'execute-extended-command)))
 }}}
 
