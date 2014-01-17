@@ -276,9 +276,13 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 
 * `S-TAB' during [[minibuffer]] input shows you all matches for your input string, which can be a regexp. So, just type a regexp whenever the minibuffer is active for [[completion]] and hit `S-TAB' to see what the regexp matches. Try this with [[command]] input (`M-x'), [[buffer]] switching (`C-x b'), file visiting (`C-x f'), help (`C-h f', `C-h v'), and so on. Almost any time you type input in the minibuffer, you can type a regexp and use `S-TAB' to see what it matches (and then choose one of the matching candidates to input, if you want).
 
-== Question ==
+== Questions ==
+[new]
 Does Emacs support lookahead/lookbehind?
+:   [i]No, Emacs does not support Perl-style lookahead/lookbehind expressions.[/i]
 
+[new]
+The escape sequence \c[i]C[/i] represents any character of category "[i]C[/i]", and according to Emacs documentation invoked by "M-x describe-categories", \c6 ought to match any digit. Yet the ASCII digits 0-9 are not matched by \c6. Is this an error, or just something on the to-do list?
 ----
 CategoryRegexp
 CategoryGlossary
