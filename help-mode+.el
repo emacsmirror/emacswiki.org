@@ -8,9 +8,9 @@
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:06:22 2013 (-0800)
+;; Last-Updated: Fri Jan 17 13:12:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 182
+;;     Update #: 189
 ;; URL: http://www.emacswiki.org/help-mode+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -44,6 +44,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/17 dadams
+;;     Do not redefine help-mode for Emacs 24+.
 ;; 2012/10/25 dadams
 ;;     Added redefinition of help-make-xrefs.
 ;; 2011/01/04 dadams
@@ -85,34 +87,39 @@
 
 
 ;; REPLACES ORIGINAL IN `help-mode.el'.
+;;
 ;; Deletes frame if `one-window-p'.
 ;;
 ;;;###autoload
-(defun help-mode ()
-  "Major mode for viewing help text and navigating references in it.
+(when (< emacs-major-version 24)        ; Emacs 24+ does not use `view-mode', so no need.
+  (defun help-mode ()
+    "Major mode for viewing help text and navigating references in it.
 Entry to this mode runs the normal hook `help-mode-hook'.
 Commands:
 \\{help-mode-map}"
-  (interactive)
-  (kill-all-local-variables)
-  (use-local-map help-mode-map)
-  (setq mode-name   "Help"
-        major-mode  'help-mode)
-  (view-mode)
-  (make-local-variable 'view-no-disable-on-exit)
-  (setq view-no-disable-on-exit  t
-        view-exit-action         (lambda (buffer)
-                                   (or (window-minibuffer-p (selected-window))
-                                       (when (eq (window-buffer) (get-buffer "*Help*"))
-                                         (if (one-window-p t)
-                                             (delete-frame)
-                                           (delete-window))))))
-  (run-mode-hooks 'help-mode-hook))
+    (interactive)
+    (kill-all-local-variables)
+    (use-local-map help-mode-map)
+    (setq mode-name   "Help"
+          major-mode  'help-mode)
+    (view-mode)
+    (make-local-variable 'view-no-disable-on-exit)
+    (setq view-no-disable-on-exit  t
+          view-exit-action         (lambda (buffer)
+                                     (or (window-minibuffer-p (selected-window))
+                                         (when (eq (window-buffer) (get-buffer "*Help*"))
+                                           (if (one-window-p t)
+                                               (delete-frame)
+                                             (delete-window))))))
+    (run-mode-hooks 'help-mode-hook)))
 
 
 ;; REPLACES ORIGINAL IN `help-mode.el'.
+;;
 ;; Show all doc possible for a symbol that is any 2 or 3 of fn, var, and face.
+;;
 ;; See Emacs bug #12686.
+;;
 ;;;###autoload
 (defun help-make-xrefs (&optional buffer)
   "Parse and hyperlink documentation cross-references in the given BUFFER.
@@ -309,11 +316,12 @@ that."
 
 
 ;; REPLACES ORIGINAL IN `help-mode.el'.
+
 ;; Buttonizes names of libraries also.
 ;; To see the effect, try `C-h v features', and click on a library name.
 ;;
 ;; 2006-01-20: This no longer works, because the call to this function
-;; from `describe-variable was commented out in `help-fns.el'.
+;; from `describe-variable' was commented out in `help-fns.el'.
 ;;
 (defun help-xref-on-pp (from to)
   "Add xrefs for symbols in `pp's output between FROM and TO."
