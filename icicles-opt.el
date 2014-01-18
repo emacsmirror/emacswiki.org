@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jan  5 12:45:42 2014 (-0800)
+;; Last-Updated: Sat Jan 18 08:53:37 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5812
+;;     Update #: 5832
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -131,7 +131,7 @@
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
 ;;    `icicle-isearch-history-insert-keys',
-;;    `icicle-keep-Completions-for-sole-dir-flag',
+;;    `icicle-keep-Completions-for-sole-dir',
 ;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
@@ -3474,16 +3474,23 @@ easily read your minibuffer input."
   :type (if (and (require 'wid-edit nil t)  (get 'color 'widget-type)) 'color 'string)
   :group 'Icicles-Minibuffer-Display)
 
-(defcustom icicle-keep-Completions-for-sole-dir-flag t
+(defcustom icicle-keep-Completions-for-sole-dir 'update-if-showing
   "*What to do when the only match for your input is a directory name.
 This applies only to non-absolute file-name completion.
-If non-`nil' then just update `*Completions*' to show the sole
-candidate.  If `nil' then remove the `*Completions*' window instead.
-The default value is `t'.
 
-Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle the option."
-  :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Files)
+* If `nil' then remove the `*Completions*' window.
+
+* If the symbol `pop-up' then unconditionally update `*Completions*'
+  to show the sole candidate.  Show `*Completions*' if it was not yet
+  showing.
+
+* If any other non-`nil' value then update `*Completions*' if it is
+  showing, and do nothing otherwise.  This is the default behavior."
+  :type '(choice
+          (const :tag "Remove `*Completions*' unconditionally"            nil)
+          (const :tag "Show and update `*Completions*' unconditionally"   pop-up)
+          (other :tag "Update `*Completions*' if showing; else remove it" update-if-showing))
+  :group 'Icicles-Completions-Display :group 'Icicles-Files)
 
 (defcustom icicle-require-match-flag nil
   "*Control REQUIRE-MATCH arg to `completing-read' and `read-file-name'.
