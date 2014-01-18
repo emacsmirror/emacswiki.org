@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan 15 08:39:18 2014 (-0800)
+;; Last-Updated: Sat Jan 18 10:47:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26706
+;;     Update #: 26709
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2058,8 +2058,13 @@ Same as `icicle-customize-face' except it uses a different window."
    (list (let* ((icicle-multi-completing-p             t)
                 (icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
-                 (lambda (x)
-                   (icicle-ORIG-customize-face-other-window (intern (icicle-transform-multi-completion x)))
+                 (lambda (fc)
+                   (let ((proxy  (car (member fc icicle-proxy-candidates))))
+                     (setq fc  (icicle-transform-multi-completion fc)
+                           fc  (if proxy
+                                   (symbol-value (intern (substring proxy 1 (1- (length proxy)))))
+                                 (intern fc)))
+                     (icicle-ORIG-customize-face fc))
                    (select-window (minibuffer-window))
                    (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
@@ -2112,24 +2117,39 @@ With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate,
 or `C-g' to quit.
 
-With a prefix argument, you can enter multiple faces at the same time
-with a single `RET' (in Emacs 22 or later).  This gives you more or
-less the `crm' completion behavior of `customize-face' in vanilla
-Emacs.  Most Icicles completion features are still available, but
-`TAB' performs `crm' completion, so it does not also cycle among
-completion candidates.  You can, as always, use `down' to do that.
+With no prefix argument:
 
-A advantage of using a prefix argument is that the default value is
-the list of all faces under the cursor.  A disadvantage is that face
-candidates are not WYSIWYG in buffer `*Completions*'.
+* Candidates are shown according to option
+  `icicle-WYSIWYG-Completions-flag'.
+
+* If `icicle-add-proxy-candidates-flag' is non-nil then proxy
+  candidates are included.  These are the names of face-name options,
+  that is, options with custom-type `face'.  The face that is option
+  value is used.
+
+With a prefix argument:
+
+* You get no WYSIWYG display and no proxy candidates.
+
+* You can enter multiple faces at the same time with a single
+  `RET' (in Emacs 22 or later).  This gives you more or less the `crm'
+  completion behavior of `customize-face' in vanilla Emacs.  Most
+  Icicles completion features are still available, but `TAB' performs
+  `crm' completion, so it does not also cycle among completion
+  candidates.  You can, as always, use `down' to do that.
 
 This is an Icicles command - see command `icicle-mode'."
   (interactive
    (list (let* ((icicle-multi-completing-p             t)
                 (icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
-                 (lambda (x)
-                   (icicle-ORIG-customize-face (intern (icicle-transform-multi-completion x)))
+                 (lambda (fc)
+                   (let ((proxy  (car (member fc icicle-proxy-candidates))))
+                     (setq fc  (icicle-transform-multi-completion fc)
+                           fc  (if proxy
+                                   (symbol-value (intern (substring proxy 1 (1- (length proxy)))))
+                                 (intern fc)))
+                     (icicle-ORIG-customize-face fc))
                    (select-window (minibuffer-window))
                    (select-frame-set-input-focus (selected-frame))))
                 (icicle-all-candidates-list-action-fn  'icicle-customize-faces)
