@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Jan 16 12:16:48 2014 (-0800)
+;; Last-Updated: Sat Jan 18 09:39:00 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29471
+;;     Update #: 29475
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5213,12 +5213,15 @@
 ;;    `*Completions*' window.  You can also remove the `*Completions*'
 ;;    window at any time using `C-x 0' in the minibuffer.
 ;;
-;;  * Option `icicle-keep-Completions-for-sole-dir-flag' controls what
+;;  * Option `icicle-keep-Completions-for-sole-dir' controls what
 ;;    happens during (non-absolute) file-name completion when the only
-;;    match for your input is a directory name.  If non-`nil' then
-;;    just update `*Completions*' to show the sole candidate.  If
-;;    `nil' then remove the `*Completions*' window instead.  The
-;;    default value is `t'.
+;;    match for your input is a directory name.  If the value is `nil'
+;;    then remove the `*Completions*' window.  If it is the symbol
+;;    `pop-up' then update `*Completions*' unconditionally to show the
+;;    sole candidate - show `*Completions*' if it was not yet showing.
+;;    If it is any other non-`nil' value then update `*Completions*'
+;;    if it is showing, and do nothing otherwise.  The default value
+;;    is `t', giving this update-if-shown-else-remove behavior.
 ;;
 ;;  * Non-`nil' option `icicle-show-Completions-help-flag' means
 ;;    display help (instructions) at the top of the buffer that shows
