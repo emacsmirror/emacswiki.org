@@ -138,12 +138,16 @@ Add the following line to ~/.gnupg/gpg-agent.conf:
 
     pinentry-program /usr/bin/pinentry-curses
 
-----
 [new]
-Yeah, great, install gpg2 via homebrew and you get the pinentry-curses program! However, if you use it and after entering you first passphrase, many key-mappings that the shell (osx 10.9 via iTerm2) transferred correctly just before are broken: e.g. arrow-keys do no longer work etc.
-Is there any solution to restore the original key-mappings after pinertry-curses ???
-Note, it seems that there was a similar problem with Mutt once that could have been fixed, apparently: http://dev.mutt.org/trac/ticket/3058
+Yeah, great solution, you install gpg2 via homebrew and you get the pinentry-curses program! 
 
+However, if you use it and after entering you first passphrase, many key-mappings that the shell (osx 10.9 via iTerm2) transferred correctly just before are broken: e.g. arrow-keys do no longer work etc.
+
+Is there any solution to restore the original key-mappings after pinertry-curses ???
+
+Note, it seems that there was a similar problem with Mutt once that could have been fixed, apparently: http://dev.mutt.org/trac/ticket/3058
+--[[emelin]]
+----
 == Problems Decrypting ==
 
 With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a *.gpg file, but when I try to reopen it in emacs, I get the following:  'File exists, but cannot be read'.  I am able to decrypt it fine outside of emacs with gpg -d
