@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jan 15 08:42:00 2014 (-0800)
+;; Last-Updated: Sat Jan 18 09:14:07 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10570
+;;     Update #: 10576
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4078,6 +4078,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/01/18 dadams
+;;     icicle-(prefix|apropos)-complete-1: Respect new icicle-keep-Completions-for-sole-dir behavior.
 ;; 2014/01/05 dadams
 ;;     Added: icicle-recomplete-from-original-domain.
 ;; 2014/01/04 dadams
@@ -6978,6 +6980,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/01/18 dadams
+;;     Renamed: icicle-keep-Completions-for-sole-dir-flag to icicle-keep-Completions-for-sole-dir.
+;;     icicle-keep-Completions-for-sole-dir: Added pop-up value.  Default behavior now: do not pop up. 
 ;; 2014/01/05 dadams
 ;;     icicle-completion-key-bindings: Added icicle-recomplete-from-original-domain == C-x C-0.
 ;; 2013/12/24 dadams
