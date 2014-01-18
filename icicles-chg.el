@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jan 18 09:14:07 2014 (-0800)
+;; Last-Updated: Sat Jan 18 10:45:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10576
+;;     Update #: 10585
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/18 dadams
+;;     icicle-customize-face(-other-window): Handle proxy candidates in action function.  Updated doc.
 ;; 2014/01/15 dadams
 ;;     icicle-lisp-complete-symbol:
 ;;       Prevent read-only error message for empty input in minibuffer.  Update a bit wrt vanilla.
@@ -1946,6 +1948,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/01/18 dadams
+;;     icicle-read-face-name: Rewrote for Emacs 24.  Doc string updated per Emacs bug #16483.
 ;; 2014/01/11 dadams
 ;;     icicle-completion-setup-function (Emacs 20-21): Wrap in condition case - Emacs bug.
 ;; 2014/01/05 dadams
