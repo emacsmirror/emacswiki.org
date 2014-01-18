@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jan  5 12:39:13 2014 (-0800)
+;; Last-Updated: Sat Jan 18 09:08:00 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19321
+;;     Update #: 19334
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3889,12 +3889,14 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (icicle-file-name-directory-w-default icicle-current-input))
                                          icicle-last-completion-candidate)))
                         (insert inserted)
-                        ;; If candidate is a directory, just update `*Completions*', so you can drill down.
-                        ;; Otherwise, remove `*Completions*'.
+                        ;; If candidate is a directory then remove or update `*Completions*', depending
+                        ;; on `icicle-keep-Completions-for-sole-dir'.
                         (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
                                  (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
-                                 icicle-keep-Completions-for-sole-dir-flag)
-                            (icicle-display-candidates-in-Completions)
+                                 icicle-keep-Completions-for-sole-dir)
+                            (when (or (get-buffer-window "" 0)
+                                      (eq 'pop-up icicle-keep-Completions-for-sole-dir))
+                              (icicle-display-candidates-in-Completions))
                           (save-selected-window (icicle-remove-Completions-window))))
                       ;; Do not transform multi-completion here.  It should be done in the function that
                       ;; acts on the chosen completion candidate.  For a multi-command, that means it
@@ -4295,21 +4297,23 @@ message either.  NO-DISPLAY-P is passed to
                                           (icicle-file-name-directory-w-default icicle-current-input))
                                        icicle-last-completion-candidate)))
                       (insert inserted)
-                      ;; If candidate is a directory, just update `*Completions*', so you can drill down.
-                      ;; Otherwise, remove `*Completions*'.
+                      ;; If candidate is a directory then remove or update `*Completions*', depending
+                      ;; on `icicle-keep-Completions-for-sole-dir'.
                       (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
                                (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
-                               icicle-keep-Completions-for-sole-dir-flag)
-                          (icicle-display-candidates-in-Completions)
-                        (save-selected-window (icicle-remove-Completions-window)))
-                      ;; Do not transform multi-completion here.  It should be done in the function that
-                      ;; acts on the chosen completion candidate.  For a multi-command, that means it should
-                      ;; be done in the action function.
-                      ;; $$$$$$ (icicle-transform-sole-candidate)
+                               icicle-keep-Completions-for-sole-dir)
+                          (when (or (get-buffer-window "" 0)
+                                    (eq 'pop-up icicle-keep-Completions-for-sole-dir))
+                            (icicle-display-candidates-in-Completions))
+                        (save-selected-window (icicle-remove-Completions-window))))
+                    ;; Do not transform multi-completion here.  It should be done in the function that
+                    ;; acts on the chosen completion candidate.  For a multi-command, that means it should
+                    ;; be done in the action function.
+                    ;; $$$$$$ (icicle-transform-sole-candidate)
 
-                      ;; $$$$$$ This did nothing:
-                      ;; icicle-current-input
-                      ))))
+                    ;; $$$$$$ This did nothing:
+                    ;; icicle-current-input
+                    )))
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
              (cond ((and icicle-top-level-when-sole-completion-flag
