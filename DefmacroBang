@@ -1,4 +1,4 @@
-In Chapter 3 of his book "Let over Lambda" http://letoverlambda.com Doug Hoyte describes a Common Lisp macro defmacro! that allows you to automatically ensure that parameters are only evaluated once and that unwanted capture cannot occur.  Here is the macro, together with various helper functions translated into Emacs Lisp (Emacs 24.3.50):
+In Chapter 3 of his book "Let over Lambda" http://letoverlambda.com Doug Hoyte describes a Common Lisp macro defmacro! that allows you to define macros in a way that automatically ensures that parameters are only evaluated once and that unwanted capture cannot occur.  Here is the macro, together with various helper functions translated into Emacs Lisp (Emacs 24.3.50):
 
 {{{
 
@@ -57,7 +57,7 @@ In Chapter 3 of his book "Let over Lambda" http://letoverlambda.com Doug Hoyte d
   (symb "g!" (substring (symbol-name (symb s)) 2)))
 ;;
 (defmacro defmacro! (name args &rest body)
-  "Define a macro that understands Hoyte's o! g!-language."
+  "Define a macro using Hoyte's o!-g! language."
   (let* ((os (cl-remove-if-not #'o!-symbol-p args))
 	 (gs (cl-mapcar  #'o!-symbol-to-g!-symbol os)))
     `(defmacro/g! ,name ,args
@@ -72,7 +72,7 @@ The macro allows you to make definitions like:
   `(* ,g!num ,g!num)))
 }}}
 
-The o! prefix in the argument list ensures that the argument is only evaluated once and the g! prefixes in the body ensure that these arguments are replaced by gensyms and thus cannot capture any variables.
+Defmacro! understands Hoyte's o!-g! language. The o! prefix used before an argument ensures that the argument is only evaluated once and the g! prefix before a variable in the body ensure that it is wrapped  by a gensyms and thus cannot capture any variables.
 
 This can be illustrated by the following:
 {{{
