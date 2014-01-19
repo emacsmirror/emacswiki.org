@@ -6,6 +6,10 @@ Major mode for editing web templates: HTML files embedding parts (CSS / JavaScri
 
 * http://web-mode.org
 
+= mmm-mode.el =
+
+* See MmmMode
+
 = multi-web-mode.el =
 
 Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina. (Yes, it is actively maintained)
@@ -15,10 +19,6 @@ Auto select major mode for HTML files when point is moving around. Check updates
 MuMaMo (short for multiple major modes) needs Emacs 22 or later. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also support NxmlMode (however this works best with Emacs 23).
 
 You can [[http://www.emacswiki.org/emacs/Icicles_-_Search_Commands%2c_Overview#SearchMumamoModes|search mumamo regions by major mode]] using '''[[Icicles]]'''.
-
-= mmm-mode.el =
-
-* See MmmMode
 
 = multi-mode.el =
 
