@@ -1,0 +1,114 @@
+In Chapter 3 of his book "Let over Lambda" http://letoverlambda Doug Hoyte describes a Common Lisp macro defmacro! that allows you to automatically ensure that parameters are only evaluated once and that unwanted capture cannot occur.  Here is the macro, together with various helper functions translated into Emacs Lisp:
+
+{{{
+
+;; -*- lexical-binding: t -*-
+
+(require 'cl-lib)
+
+(defun mkstr (&rest args)
+  "Make a string out of arbitrary list of objects."
+  (with-output-to-string
+      (dolist (a args) (princ a))))
+;;
+(cl-defun symb (&rest args)
+  "Make and/or intern a symbol out of arbitrary list of objects."
+  (intern (apply #'mkstr args)))
+;;
+(defun g!-symbol-p (s)
+  "Test to see if a symbol is a g!symbol."
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (substring (symbol-name s) 0 2) "g!")))
+;;
+(defun flatten (x)
+  "Flatten tree X into a single list."
+  (cl-labels ((rec (x acc)
+		   (cond ((null x) acc)
+			 ((atom x) (cons x acc))
+			 (t (rec
+			     (car x)
+			     (rec (cdr x) acc))))))
+    (rec x nil)))
+;;
+(defmacro defmacro/g! (name args &rest body)
+  "Automatic symbol generation."
+  (let ((syms
+	 (cl-mapcar
+	  #'symb
+	  (cl-remove-duplicates
+	   (cl-remove-if-not #'g!-symbol-p
+			     (flatten body))))))
+    `(defmacro ,name ,args
+       (let ,(cl-mapcar
+	      (lambda (s)
+		`(,s (cl-gensym ,(substring (symbol-name s) 2))))
+	      syms)
+	 ,@body))))
+;;
+(defun o!-symbol-p (s)
+  "Test to see if a symbol is an o!-symbol."
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (substring (symbol-name s) 0 2) "o!")))
+;;
+(defun o!-symbol-to-g!-symbol (s)
+  "Convert an o!-symbol into a g!-symbol."
+  (symb "g!" (substring (symbol-name (symb s)) 2)))
+;;
+(defmacro defmacro! (name args &rest body)
+  "Define a macro that understands Hoyte's o! g!-language."
+  (let* ((os (cl-remove-if-not #'o!-symbol-p args))
+	 (gs (cl-mapcar  #'o!-symbol-to-g!-symbol os)))
+    `(defmacro/g! ,name ,args
+       `(let ,(cl-mapcar #'list (list ,@gs) (list ,@os))
+	  ,(progn ,@body)))))
+}}}
+
+The macro allows you to make definitions like:
+
+{{{
+(defmacro! square (o!num)
+  `(* ,g!num ,g!num)))
+}}}
+
+The o! prefix in the argument list ensures that the argument is only evaluated once and the g! prefixes in the body ensure that these arguments are replaced by gensyms and thus cannot capture any variables.
+
+This can be illustrated by the following:
+{{{
+
+ELISP> (square 96)
+9216
+ELISP> (defvar num 4)
+num
+ELISP> num
+4
+ELISP> (square (incf num))
+25
+ELISP> num
+5
+ELISP> (macroexpand '(square (incf num)))
+(let
+    ((num20603
+      (incf num)))
+  (* num20603 num20603))
+}}}
+
+For further details read Hoyte's book.
+
+I have preserved the names of the helper functions and macros so that anyone interested can compare the Emacs and Common Lisp versions.  The most notable differences are that the function symb interns the symbol it generates and is used somewhat more often in the Emacs Lisp code than in the Common Lisp code.  If this is not done the Emacs Lisp can generate several versions of a symbol, all of which print identically, where only one is required.  The symbols are interned into the default obarray, which doesn't appear to do any harm, but I regard it as a bit of a kludge an I'm not sure it might not introduce some subtle bug.  Ideally they would be interned into an obarray that is local to the code in defmacro! but I couldn't find across a way of doing it.
+
+The Emacs Lisp documentation reads as if something like the following should work, as a sort of compromise, but it doesn't:
+
+{{{
+
+(defvar an-obarray (make-vector 37 0))
+;;
+(cl-defun symb (&rest args)
+  "Make a symbol out of arbitrary list of objects."
+  (intern (apply #'mkstr args) an-obarray))
+}}}
+
+Does anyone have any ideas?
+
+
