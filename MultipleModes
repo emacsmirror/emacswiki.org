@@ -1,5 +1,18 @@
 Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
+= Comparison =
+
+|| library        || elisp files || size  || last update || url                                                 ||
+|| web-mode       ||           1 || 279 kb ||  2014-01-11 || https://github.com/fxbois/web-mode                  ||
+|| mmm-mode       ||          17 || 185 kb ||  2013-10-27 || https://github.com/purcell/mmm-mode                 ||
+|| multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
+|| muamo          ||         115 || 3.1 mb ||  2010-04-25 || http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html ||
+|| multi-mode     ||           1 || 23 kb  ||        2009 || http://www.loveshack.ukfsn.org/emacs/multi-mode.el  ||
+
+(as of 2014-01-19)
+
+-----------
+
 = web-mode.el = 
 
 Major mode for editing web templates: HTML files embedding parts (CSS / JavaScript) and blocks (server and client side). web-mode.el is autonomous and is compatible with many template engines (PHP / Jsp / Erb / Django / Twig / Handlebars / Aspx). Actively maintained by François-Xavier Bois.
