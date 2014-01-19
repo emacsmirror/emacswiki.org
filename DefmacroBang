@@ -96,7 +96,7 @@ ELISP> (macroexpand '(square (incf num)))
 
 For further details read Hoyte's book.
 
-I have preserved the names of the helper functions and macros so that anyone interested can compare the Emacs and Common Lisp versions.  The most notable differences are that the function symb interns the symbol it generates and is used somewhat more often in the Emacs Lisp code than in the Common Lisp code.  If this is not done the Emacs Lisp can generate several versions of a symbol, all of which print identically, where only one is required.  The symbols are interned into the default obarray, which doesn't appear to do any harm, but I regard it as a bit of a kludge an I'm not sure it might not introduce some subtle bug.  Ideally they would be interned into an obarray that is local to the code in defmacro! but I couldn't find across a way of doing it.
+I have preserved the names of the helper functions and macros so that anyone interested can compare the Emacs and Common Lisp versions.  The most notable differences are that the function symb interns the symbol it generates and is used somewhat more often in the Emacs Lisp code than in the Common Lisp code.  If this is not done the Emacs Lisp can generate several versions of a symbol, all of which print identically, where only one is required.  The symbols are interned into the default obarray, which doesn't appear to do any harm, but I regard it as a bit of a kludge and  I'm not sure it might not introduce some subtle bug.  Ideally they would be interned into an obarray that is local to the code in defmacro! but I couldn't find across a way of doing it.
 
 The Emacs Lisp documentation reads as if something like the following should work, as a sort of compromise, but it doesn't:
 
