@@ -1,4 +1,4 @@
-In Chapter 3 of his book "Let over Lambda" http://letoverlambda.com Doug Hoyte describes a Common Lisp macro defmacro! that allows you to automatically ensure that parameters are only evaluated once and that unwanted capture cannot occur.  Here is the macro, together with various helper functions translated into Emacs Lisp:
+In Chapter 3 of his book "Let over Lambda" http://letoverlambda.com Doug Hoyte describes a Common Lisp macro defmacro! that allows you to automatically ensure that parameters are only evaluated once and that unwanted capture cannot occur.  Here is the macro, together with various helper functions translated into Emacs Lisp (Emacs 24.3.50):
 
 {{{
 
