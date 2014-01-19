@@ -68,9 +68,12 @@ Seems to need the following in emacs 24 since make-local hook has been removed:
 
 This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See IndirectBuffers.
 
+---------------
 
+= Comments =
+
+[new] What a shame that there are multiple multiple mode modes. As soon as you need mode X that requires multiple mode M1, while already using another mode which uses multiple mode M2, you're loading far more than you need to. Just because TIMTOWTDI (sorry for the perl-ism) doesn't mean you must do it more than one way.
 
 ----
 CategoryModes
 
-[new] What a shame that there are multiple multiple mode modes. As soon as you need mode X that requires multiple mode M1, while already using another mode which uses multiple mode M2, you're loading far more than you need to. Just because TIMTOWTDI (sorry for the perl-ism) doesn't mean you must do it more than one way.
