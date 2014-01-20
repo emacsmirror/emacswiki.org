@@ -230,5 +230,11 @@ The first thing I missed of Vim were the tabs. With elscreen.el and its dependen
     (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
     (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
 
+=== ESC key under GNU Screen ===
+You may find that the ESC key does not work as expected when running "emacs -nw" under GNU Screen. I.e. pressing ESC does not get you out of <I> mode if you press quickly. The fix is to put this in your .screenrc
+
+    maptimeout 5
+
+See details on this [http://vim.wikia.com/wiki/GNU_Screen_integration|link]
 ----
 CategoryKeys CategoryEmulation
