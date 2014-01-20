@@ -1,183 +1,242 @@
 This is a member of CategoryESS
 
-== MS Windows Users: Get Started with Emacs, ESS, and R ==
+== MS Windows & Mac Users: Get Started with Emacs, ESS, and R ==
 
-I've been advising Windows users and setting up Windows systems this
-week, and before I forget I need to write down what 
-I've learned.  There are a few little details that people miss.
+I worked up some lecture notes on Emacs and ESS, "Emacs has No Learning Curve" (
+http://pj.freefaculty.org/guides/Rcourse/emacs-ess).  For Windows users, I made a Youtube video that demonstrates some editors, emphasizing Emacs: ("StartR-02", http://www.youtube.com/watch?v=lNlJFEpdytc). Even if you only use a Mac, you might want to watch that in order to get a visual impression of what Emacs with ESS is all about. 
 
-1. Install R from http://www.r-project.org.  If you let R install itself
-into the folder it likes (##C:\Program Files\R##), 
-your life may be easier later on.  (I say that even though I hate
-directories with spaces in them.)
+I have more experience with Windows than I do with Macintosh, but I've worked on both.  The key advice, which applies on all operating systems, is that one should not start R from the system menu/desktop icon/Finder. Instead, navigate in a file manager to the place where the R code file is, and launch an editor there. That generally allows R to detect the working directory properly, and there will be no need for "setwd()" at the beginning of the program. 
 
+If you have a Mac system, it is perhaps good enough to use the editor R.app that R itself provides. I think you will be happier over the long run using Emacs, but that decision is up to you. On Windows, on the other hand, the editor that R provides is not adequate, and thus you are urged to give Emacs a try.
 
-I usually have a reasonably current copy of that at
-http://pj.freefaculty.org/software/WinProgs, but  you can always go 
-to the source for the latest and greatest.
+There are a few little details that people miss.
 
-
-Lately, R does not add its executable's folder to the system
-path, I don't know why. It will be necessary to do that, or make
-some other work-arounds with Emacs-ess configuration.
+1. Install R from http://www.r-project.org.  On Windows, users have a choice of where to install R. The default will suggest a folder that is R version dependent, like ##C:\Program Files\R\R-3.0.2##.  Some other programs are taught to look for R in that location, so a novice might be wise to leave R in that location. However, there are good reasons I generally prefer to cut off the version, and just install to ##C:\Program Files\R## and some experts, especially ones who integrate R with programming languages like C++, suggest we install in a place with no spaces in the directory structure.  Either way, I recommend that users learn how to add the R bin\x86 subdirectory to the system path, so that Rterm.exe will be found by other programs.
 
 After you install R, you have the problem of installing additional
 packages from CRAN.  I have a script called 
 <code>R_InstallFaves-2.R</code> that I run inside R.  It downloads a ton of packages.
-If you don't know how to run that inside R, 
-then I'd suggest you either paste the whole program into an open R
-session or use the source() function inside R.  Maybe 
-you could wait and do that after you have completed the rest of the
-steps here.
+If you don't know how to run that inside R,  then I'd suggest that should be your first homework assignment. (Either paste the whole program into an open R
+session or read ?source inside R.) 
 
 2. Install the newest version of Professor Goulet's Emacs modified for
-Windows. His page is 
-http://vgoulet.act.ulaval.ca/en/ressources/emacs/. It has ESS (Emacs
+Windows or Macintosh. His page is http://vgoulet.act.ulaval.ca/en/ressources/emacs/. It has ESS (Emacs
 Speaks Statistics) setup inside there, along with 
 other handy Emacs addons.  Professor Goulet's effort to package all of
 that amazes me.
 
-I keep a copy of that at http://pj.freefaculty.org/software/WinProgs
+Because I administer so many Windows systems, I generally keep a copy of that at http://pj.freefaculty.org/software/WinProgs. 
 
-Inside the Emacs installation, notice there is a bin directory with a
-program called "addpm.exe".  Run that to add known 
-file types to your Windows Registry.
+On Windows: Inside the Emacs installation, notice there is a bin directory with a program called "addpm.exe".  Run that to add known 
+file types to your Windows Registry.  I also suggest starting emacs from a right-click "open with" on R files, so the system learns that is what you want to do.
 
-3. Get my customized startup configuration file for Emacs
+Here's the basic idea. You open a file named whatever.R in Emacs, Emacs notices the suffix, it adds some menus and pulldowns. You start R from inside Emacs, and the R terminal is displayed in an Emacs buffer.  That is very customizable, which is the next topic.
 
-http://pj.freefaculty.org/software/Emacs/50emacs-ess-ku.el
+3. Get my customized startup configuration file for Emacs.  I've revised this over the years, improvements in Emacs and ESS have rendered some of my customizations unnecessary or harmful. 
 
-Install that in your Emacs folder. It MUST go under
-site-lisp/site.start.d. It won't work if you put it anywhere else.
+http://pj.freefaculty.org/software/Emacs/init.el
+
+You can force that configuration to be used in all user accounts in a computer if you install it in your Emacs directory. It MUST go under
+site-lisp/site.start.d. You don't have to be as brutish as that. After you experiment with Emacs a bit, you will see it creates a custom user configuration folder in your home directory, generally called ".emacs.d", and you can copy the init.el file into that folder.
 
 In case I change my web host, perhaps it is wise to just show you what I have. 
-This is the January, 2011 version
-
-[new]
-framepop.el is not part of Emacs but is availabe at http://bazaar.launchpad.net/~vcs-imports/emacs-goodies-el/trunk/files/head:/elisp/emacs-goodies-el/
-[new]
+This is the September, 2013 version. Note I have a lot of stuff commented out here. It used to be needed, but they've made a lot of changes in Emacs and ESS.  Some fancy stuff I liked (framepop) conflicted with ESS -> SAS usage, so I had to stop that.  Also, it appears the file chooser menus in Windows have been fixed, so I don't need to work around that either.
 
 <pre>
+;; Paul Johnson
+;; 2013-09-30
+
+;; Workaround for shift-enter trouble on Windows
+
+;; UPDATE: Because Emacs ESS changes made this MUCH easier, my
+;; re-work gets shorter :=)
+
+
+;; INSTRUCTIONS. Put this file in ~/.emacs, or in ~/emacs.d/init.el,
+;; or in the Emacs site-start.d folder.
+
+;; R USER PREVIEW.
+;; Here are my special features related to ESS with R.
+
+;; 1. Indentation policy follows Programming R Extensions Manual
+;; UPDATE 2013-07-10. No longer needed. This is ESS default as of version 13-05
+
+;; 2. Shift+Enter will send the current line to R, and it will start R
+;; if it is not running.  ESS 13-05 chose instead CTL+Enter, which I
+;; DO NOT want because it conflicts with CUA mode.
+
+;; 3. R will assume the current working directory is the document directory.
+
+;; 4. R runs in its own "frame"
+
+;; 5. Emacs help pops up in its own frame.
+
+
+;; JUSTIFICATION.  The intention is to make Emacs work more like a
+;; "modern" GUI editor.
+;; See my companion lecture
+;; "Emacs Has No Learning Curve"
+;; http://pj.freefaculty.org/guides/Rcourse
+
+
 ;; Paul Johnson <pauljohn@ku.edu>
-;; 2011-01-25
+;; 2012-11-24
+;;
+;; Conflicts between Emacs-ESS and SAS usage forced me to make
+;; some changes. And for no benefit, as SAS mode still not great.
+;; I had to cut out a lot of framepop stuff.
+;;
 
-;; framepop is not installed on some systems, so I commented
-;; that out below. It is neat, if you have framepop.
 
-;; This updates my previous startup option file that was called
-;; 50emacs-ess-ku.el. Either you should put this file in your
-;; Emacs site-start.d folder or put it in your home directory 
-;; and call it .emacs.
+;; 2013-07-10 TODO: Find out if this is still necessary, or for
+;; which versions of windows.
 
-;; If you are using this because you use Emacs to work with R, the
-;; main special features are:
-;; 1. Shift+Enter will send the current line to R, and it will start
-;;    R if it is not running.
-;; 2. R will start in the current working directory, without stopping
-;;    to ask the user about a working directory.
-;; 2. R runs in its own "frame"
-;; 3. Emacs help information pops up in its own frame.
+;; Section I. Windows OS work-arounds
 
-;; This is my .emacs file, it is a collection of special tricks I've
-;; learned by complaining to Emacs users. It makes Emacs easy for me
-;; to use. If you try this file, I believe you can use Emacs without
-;; knowing any Lisp and without even reading the Emacs tutorial. The
-;; intention is to make Emacs work more like a "modern" GUI editor.  I
-;; don't want it to try to supply a window manager or re-design the
-;; keyboard and mouse.  I respect the long heritage of Emacs and its
-;; extensibility, but I don't need those legacy features that were
-;; written before modern computers were invented. I agree with the
-;; idea behind "oneonone Emacs"
-;; (http://www.emacswiki.org/emacs/OneOnOneEmacs), but think it is too
-;; difficult to implement and maintain.
+;;(if (eq system-type 'windows-nt)
+;;    (setq use-file-dialog nil))
+;; There's been a chronic problem with file selection dialogs on Windows
+;; Maybe you commment previous out and see if your Windows is fixed.
 
-;; I've never liked the complicated system of "mark" and "point" for
-;; text selection and I don't generally use any of the multi-click
-;; keyboard commands. Any "shortcut" that requires me to type several
-;; keys is not really a shortcut. It is not easier to type C-x C-f
-;; that it is to click "File" with the mouse.  I do use some single
-;; key-combination shortcuts, like M-q to "reformat region".
 
-;; I started on this because I was constantly aggravated that files on
-;; which I was working would get covered over by new material from
-;; Emacs. I completely hate that. I want new content to pop new
-;; panels and/or windows wherever possible. When I do M-x to open the
-;; command mini-buffer, and then I type a letter or two and hit TAB, I
-;; want to leave my document undisturbed on the screen. I want the
-;; options resulting from the TAB to appear in their own window, which
-;; automatically disappears after I make my choice.
 
-;; The only exception below is caused by a bug in Emacs for
-;; Windows.  The file selection GUI is broken, so the file dialog is
-;; turned off.
+;; Section II. Keyboard and mouse customization
 
-;; I've added comments for the commands below, you can read them if
-;; you are curious what they do.
+;; IIA: make mouse selection work in the usual Mac/Windows way
 
- (if (eq system-type 'windows-nt)
-   (setq use-file-dialog nil)) ; necessary on windows b/c dialog bug
+;; 2013-07-10 Comment these out
+;; (setq shift-select-mode t) ; is default in Emacs 23+, replaces pc-select
+;; (transient-mark-mode t) ; highlight text selection, is default Emacs 23+
+(delete-selection-mode t) ; delete selected text when typing
 
-; make mouse selection work in the usual Mac/Windows way
-(require 'pc-select)
-(transient-mark-mode t) ; highlight text selection
-(delete-selection-mode t) ; delete seleted text when typing
-(cua-mode t) ; windows style keybind C-x, C-v, cut paste
+
+;; http://ergoemacs.org/emacs/emacs24_features.html
+;; after copy Ctrl+c in X11 apps, you can paste by `yank' in emacs
+;; (setq x-select-enable-clipboard t)
+
+;; after mouse selection in X11, you can paste by `yank' in emacs
+;;(setq x-select-enable-primary t)
+;; This seems not reliable to me (2013-07-10)
+
+;; TODO:
+;; Figure out Emacs-24 trouble with mouse selections. I need to
+;; figure out where the truth lies
+
+;; In Linux, I see weirdness in Emacs 24 with paste and clipboard. Confusing!
+;; http://stackoverflow.com/questions/13036155/how-to-to-combine-emacs-primary-clipboard-copy-and-paste-behavior-on-ms-windows
+(setq select-active-regions t)
+(global-set-key [mouse-2] 'mouse-yank-primary)  ; make mouse middle-click only paste from primary X11 selection, not clipboard and kill ring.
+
+;;(setq mouse-drag-copy-region t)
+;; See following http://emacswiki.org/emacs/CopyAndPaste
+;; where there is a ton of really confusing advice.
+
+;; highlight does not alter KILL ring
+(setq mouse-drag-copy-region nil)
+
+
+;; IIB: keyboard customization
+
+;; CUA mode is helpful not only for copy and paste, but also C-Enter is rectangle select
+(cua-mode t) ; windows style binding C-x, C-v, C-c, C-z
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-(setq cua-keep-region-after-copy t) ;; Selection remains after C-c
+;;20130717(setq cua-keep-region-after-copy t) ;; Selection remains after C-c
+
+;; write line numbers on left of window
+;; Caution: if you do this, it makes Emacs much slower!
+;;(global-linum-mode 1) ; always show line numbers
 
 
-;; Stop Emacs from splitting "frames", encourage it to pop up new
-; frames for new content.
-; see: http://www.gnu.org/software/emacs/elisp/html_node/Choosing-Window.html
-(setq pop-up-frames t)
-(setq special-display-popup-frame t)
+;; Section III. Programming conveniences:
+(show-paren-mode t) ; light-up matching parens
+(global-font-lock-mode t) ; turn on syntax highlighting
+(setq text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+
+
+
+;; Section IV. ESS Emacs Statistics
+
+;; start R in current working directory, don't let R ask user
+(setq ess-ask-for-ess-directory nil)
+
+;; ESS 13.05 default C-Ret conflicts with CUA mode rectangular selection.
+;; Change shortcut to use Shift-Return
+;; Suggested by Vitalie Spinu ESS-help email 2013-05-15
+;; worked in Linux, not Windows 2013-09-29
+;;(define-key ess-mode-map [(control return)] nil)
+;;(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
+
+;; cause "Shift+Enter" to send the current line to *R*
+(defun my-ess-eval ()
+  (interactive)
+  (if (and transient-mark-mode mark-active)
+      (call-interactively 'ess-eval-region)
+    (call-interactively 'ess-eval-line-and-step)))
+
+(add-hook 'ess-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+
+
+
+;; create a new frame for each help instance
+;; (setq ess-help-own-frame t)
+;; If you want all help buffers to go into one frame do:
+(setq ess-help-own-frame 'one)
+
+;; I want the *R* process in its own frame
+;; This was a broken feature in ESS, fixed now. Helps massively!
+(setq inferior-ess-own-frame t)
+;;(setq inferior-ess-same-window nil)
+
+;; See no beauty in this. Test: move pointer into a function
+;; Run C-c C-d C-e to see effect
+;;(setq ess-describe-at-point-method 'tooltip)
+
+;; PJ 2013-07-10 Following commented out
+;; PJ 2012-03-21 because ESS 13.05 made it default
+;; Indentation per Programming R Extensions
+;; (add-hook 'ess-mode-hook
+;;    (lambda ()
+;;    (ess-set-style 'C++ 'quiet)
+;;    (add-hook 'local-write-file-hooks
+;;	      (lambda ()
+;;		(ess-nuke-trailing-whitespace)))))
+;;;;(setq ess-nuke-trailing-whitespace-p 'ask)
+;;;; or even
+;;(setq ess-nuke-trailing-whitespace-p t)
+;;; Perl
+;;(add-hook 'perl-mode-hook
+;;	  (lambda () (setq perl-indent-level 4)))
+;; End ESS
+
+
+;; In Spring 2012, we noticed ESS SAS mode doesn't work well
+;; at all on Windows, that lead to removal of lots of stuff
+;; I really liked. Even then, we couldn't get much satisfaction.
+;;
+;; Following was needed for that, otherwise, it is not needed
+;; (load "ess-site")
+;; (ess-sas-global-unix-keys)
+
+
+;; PJ 2013-02-28
+;; stops suggestions in R when tabbing. Quiets noise, but ruins feature
+;; (setq completion-auto-help nil)
+
+
+
+;; ;; ;; Section V. Customize the use of Frames. Try to make new content
+;; ;; ;; appear in wholly new frames on screen.
+;; ;; ;;
+;; ;; ;; V.A: Discourage Emacs from splitting "frames", encourage it to pop up new
+;; ;; ;; frames for new content.
 (setq split-window-preferred-function nil) ;discourage horizontal splits
-(setq pop-up-windows nil)
 
-;; Wow. "pop-up-frames" is different from "framepop". Crazy!
-;; The framepop package can "catch" some special small buffers and 
-;; divert them off to a specially configured frame.  I made it pink!
-;; The framepop packages is in emacs-goodies on Ubuntu, I hope
-;; it is installed in whatever system I use.  If it is installed 
-;; the following causes useful changes in the way special frames are
-;; delivered. It doesn't get all special frames, such as "grep".
-;; But it does grab tab completions. That's a big plus.
-;(require 'advice)
-;(when window-system
-;  (require 'framepop)
-;  (framepop-enable))
-
-(setq framepop-frame-parameters
-      '((name . nil)                     ; use buffer name
-        (unsplittable . t)               ; always include this
-        (menu-bar-lines . 0)             ; no menu bar
-        (minibuffer . nil)               ;    or minubuffer
-        (left . -1)                      ; top left corner of screen,
-        (top . 30)                       ;    away from my main frame
-        (width . 71)                     ; narrower, so it fits nicely
-        (background-color . "MistyRose")   ; for October.
-        (tool-bar-lines . 0) 
-        (minibuffer)))
-
-(setq framepop-min-frame-size 20)
-(setq framepop-use-advice (quote automatic))
-(setq framepop-auto-resize t)
-
-
-;; Framepop does not catch all of the frames you want. It will
-;; pop up full sized frames for little lists. .
-;; I see no benefit in it.
-(setq special-display-buffer-names
-  '("*Help*" "*shell*" "*Completions*" "*grep*" "*tex-shell*"))
-
-
-
-;; I wish I could make all new files & buffers appear in separate frames.
-;; But I can't find a way. But I can make files opened from the menu bar
-;; appear in their own frames. This overrides the default menu bar settings.
-;; Opening an existing file and creating new one in a new frame are the exact
-;; same operations.
-;; adapted from Emacs menu-bar.el
+;; V.C: Make files opened from the menu bar appear in their own
+;; frames. This overrides the default menu bar settings.  Opening an
+;; existing file and creating new one in a new frame are the exact
+;; same operations.  adapted from Emacs menu-bar.el
 (defun menu-find-existing ()
   "Edit the existing file FILENAME."
   (interactive)
@@ -188,20 +247,16 @@ framepop.el is not part of Emacs but is availabe at http://bazaar.launchpad.net/
         (find-file-other-frame filename)
       (find-file filename))))
 (define-key menu-bar-file-menu [new-file]
-  '(menu-item "New..." find-file-other-frame
+  '(menu-item "Open/Create" find-file-other-frame
 	      :enable (menu-bar-non-minibuffer-window-p)
 	      :help "Create a new file"))
 (define-key menu-bar-file-menu [open-file]
-  `(menu-item ,(purecopy "Open File...") menu-find-existing
+  '(menu-item ,(purecopy "Open File...") menu-find-existing
               :enable (menu-bar-non-minibuffer-window-p)
               :help ,(purecopy "Read an existing file into an Emacs buffer")))
 
-;(define-key menu-bar-file-menu [open-file]
-;  '(menu-item "Open File..." find-file-other-frame
-;	      :enable (menu-bar-non-minibuffer-window-p) 
-;	      :help "Open Existing File"))
 
-;;Open directory list in new frame.
+;; V.D  Open directory list in new frame.
 (define-key menu-bar-file-menu [dired]
   '(menu-item "Open Directory..." dired-other-frame
 	      :help "Read a directory; operate on its files (Dired)"
@@ -210,7 +265,9 @@ framepop.el is not part of Emacs but is availabe at http://bazaar.launchpad.net/
 
 
 
-;; Remove "splash screen"
+;; Section VI: Miscellaneous convenience
+
+;; Remove Emacs "splash screen"
 ;; http://fuhm.livejournal.com/
 (defadvice command-line-normalize-file-name
   (before kill-stupid-startup-screen activate)
@@ -218,94 +275,42 @@ framepop.el is not part of Emacs but is availabe at http://bazaar.launchpad.net/
 (setq inhibit-splash-screen t)
 
 
+;; Show file name in title bar
+;; http://www.thetechrepo.com/main-articles/549
+(setq frame-title-format "%b - Emacs")
 
-;; Default Emacs does not scroll pages smoothly with down arrow key.
-; It tries to jump a page-worth.
-; See this for advice on preventing that 
-; http://stackoverflow.com/questions/3631220/fix-to-get-smooth-scrolling-in-emacs
-(setq redisplay-dont-pause t)
-(setq scroll-conservatively 20)
-(setq scroll-margin 2)
-(setq scroll-preserve-screen-position 1)
-
+;; Make Emacs scroll smoothly with down arrow key.
+;; 2011-10-14
+;; faq 5.45 http://www.gnu.org/s/emacs/emacs-faq.html#Modifying-pull_002ddown-menus
+(setq scroll-conservatively most-positive-fixnum)
 
 
-;; programming conveniences:
-(show-paren-mode t) ; light-up matching parens
-(global-font-lock-mode t) ; turn on syntax highlight
-(setq text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
-
-
-
-;;
+;; adjust the size of the frames, uncomment this, adjust values
 ;;(setq default-frame-alist '((width . 90) (height . 65)))
 
 
-
-;; ESS for R customization begins here:
-(setq inferior-ess-own-frame t)
-(setq inferior-ess-same-window nil)
-;;;
-;;;;;create a new frame for each help instance
-;;;
-;;(setq ess-help-own-frame t)
-;;;;;If you want all help
-;;;;; buffers to go into one frame do:
-;;;
-(setq ess-help-own-frame 'one)
-
-;; minibuffer tips
-;;(require 'ess-eldoc)
-;; html help
-; (setq inferior-ess-r-help-command "help(\"%s\", help_type=\"html\")\n")
-
-;;start R in current working directory
-(setq ess-ask-for-ess-directory nil)
-(setq ess-local-process-name "R")
-
-;; cause "Shift+Enter" to send the current line to *R*
-(defun my-ess-eval ()
-  (interactive)
-  (if (and transient-mark-mode mark-active)
-        (call-interactively 'ess-eval-region)
-    (call-interactively 'ess-eval-line-and-step)))
-
-(add-hook 'ess-mode-hook
-          '(lambda()
-             (local-set-key [(shift return)] 'my-ess-eval)))
-
-
-;;http://stackoverflow.com/questions/840279/passwords-in-emacs-tramp-mode-editing
+;; Remember password when connected to remote sites via Tramp
+;; http://stackoverflow.com/questions/840279/passwords-in-emacs-tramp-mode-editing
 ;; Emacs "tramp" service (ssh connection) constantly
 ;; asks for the log in password without this
 (setq password-cache-expiry nil)
 
-;; I'm right handed, need scroll bar on right (like other programs)
-(setq scroll-bar-mode-explicit t)
-(set-scroll-bar-mode `right) 
 
-
- (setq ansi-color-for-comint-mode 'filter)
- (setq comint-prompt-read-only t)
- (setq comint-scroll-to-bottom-on-input t)
- (setq comint-scroll-to-bottom-on-output t)
- (setq comint-move-point-for-output t)
-
-
+;; Section : Emacs shells work better
+;; http://snarfed.org/why_i_run_shells_inside_emacs
+(setq ansi-color-for-comint-mode 'filter)
+(setq comint-prompt-read-only t)
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+(setq comint-move-point-for-output t)
 
 </pre>
 
 
 This has many features that will help a Windows user who is picking up
-Emacs for the first time. As of 2010-02-10, that 
-startup file is vital because it prevents you from hitting bugs that
-make Emacs FAIL when interacting with ESS. I'm told 
-future versions of Emacs will fix the problem (associated with the file
-chooser).
+Emacs for the first time. As of 2014-01-20, so far as I know, the Windows-specific menu dialogue problems have been solved.
 
-That configuration file also has a convenient shortcut.  In a line of
-code, the key combination SHIFT-Return
-will send a command over to the open R buffer.
+The Emacs-cua mode has a super handle "column rectangle" cut and paste procedure that is initiated with Ctl-Enter. This contradicts the new ESS use of Ctl-Enter that sends lines from the R code buffer to the *R* session. My setup sends code with SHIFT-Enter instead. I've been doing it that way since 2006, don't hate me for being old fashioned.
 
 In particular, the changes I recommend for new Emacs users are intended to 
 make Emacs behave like an ordinary Windows program, so it 
@@ -316,14 +321,9 @@ make Emacs behave like an ordinary Windows program, so it
 
    - starts R help items in separate frames
 
-   - uses the mouse to select regions in the usual Windows way
+   - uses the mouse to select regions in the usual way
 
-   - uses Control-x, Control-v in the Windows way
-
-   - blocks the use of the *buggy* windows file chooser, instead preferring the Emacs minibar at the bottom
-
-   - stops the Emacs frame from overlapping the start menu when Emacs starts
-
+   - uses Control-x, Control-v in the usual way (cua mode)
 
 4. I have some other information on configuring windows. In particular, you should
 
@@ -333,45 +333,31 @@ make Emacs behave like an ordinary Windows program, so it
 
 I have a set of notes I keep on that over at this other place: http://pj.freefaculty.org/cgi-bin/mw/index.php?title=Windows:AdminTips
 
-5. Here's the *best way* to get started writing R programs in Emacs for
-Windows.
+5. Here's the *best way* to get started writing R programs in Emacs
 
 Create a new folder where you want to do your work. In my systems, it is
 a hierarchy like 
 <pre>
-C:\users\pauljohn\pols\R\examples
+C:\users\pauljohn\Documents\pols\R\examples
 </pre>
-but you can do whatever you like. It
-is best to NOT use spaces in your names here. 
-Win 2000 and XP screwed us over by putting user homes under "Documents
-and Settings", so I create a folder on C where I 
-keep my work.  Win7 and Vista use ##C:\Users##, which is OK, since it has no
-spaces.
+or, for Mac
+<pre>
+/users/pauljohn/Documents/pols/R/examples
+</pre>
+but you can do whatever you like. It is best to NOT use spaces in your names here. 
 
-Download an example R file from my page and put it into the directory
-you just created. I would urge you to try this one:
-
-http://pj.freefaculty.org/stat/ps706/barplot.R
-
-I suppose you are using the Windows Explorer to create the folder and
-suppose you are looking at the folder where you 
-put barplot.R. That barplot.R is truly a masterpiece :), but in case you
-can't find it, any R code will do. If you have never used R, take this and
-put it in a file.
+Download an example R file from my page (http://pj.freefaculty.org/R/WorkingExamples) and put it into the directory
+you just created. Try the barplot files. Fun and informative! If you can't find my folder of R working examples, type this in a file.
 
 <pre>
-x <- rpois(10, lambda=10)
-mynames <- c(rep("Really Long Name",9),"Really Long Name Long Long")
-barplot(x)
+x <- rpois(100, lambda=10)
+xtab <- table(x)
+barplot(xtab, xlab = "Observed Counts")
 </pre>
 
 
-
-RIGHT click on that file.  We want to open it in GNU Emacs, not with
-some other program that Windows might suggest. So, 
-when you RIGHT click, choose "open with" and if there is no option GNU
-Emacs, then browse, go find your Emacs install 
-directory, look under "bin", and choose the file "runemacs.exe".  Don't
+We want to open that R file in Emacs. On Windows, use the right click "open with,"   
+look under "bin" in the Emacs program folder, and choose the file "runemacs.exe".  Don't
 choose "emacs.exe". DO choose "runemacs.exe".
 
 Emacs will open with barplot.R in front of you. There are many ways to
