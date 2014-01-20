@@ -1,7 +1,7 @@
 [[https://github.com/swank-js/swank-js|SwankJs]] is a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package. 
 
 == installation ==
-There's a list of instructions on [[https://github.com/swank-js/swank-js|SwankJs's gitjhub page]]. At times they seem verbose, at other times, too terse.
+There's a list of instructions on [[https://github.com/swank-js/swank-js|SwankJs's github page]]. At times they seem verbose, at other times, too terse.
 Also relies on symlinks, so installation for Windows environments may be funky.
 There's a different installation page @ https://github.com/swank-js/swank-js/wiki/Installation
 
