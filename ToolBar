@@ -4,7 +4,7 @@ GnuEmacs and [[XEmacs]] each have a [::ToolBarMode] that provides buttons -- lik
 
 To disable the toolbar completely, turn off `tool-bar-mode'. Add the following to your InitFile, for GnuEmacs:
 
-    (tool-bar-mode -1)
+    (tool-bar-mode 0)
 
 or Customize the tool-bar-mode variable:
 
