@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:36:05 2013 (-0800)
+;; Last-Updated: Mon Jan 20 09:43:53 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 4938
+;;     Update #: 4939
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -827,7 +827,7 @@ useful."
 
 ;;;###autoload
 (defcustom Info-fontify-angle-bracketed-flag t
-  "*Non-nil means `info' fontifies text within `<...>.
+  "*Non-nil means `info' fontifies text within <...>.
 A non-nil value has no effect unless `Info-fontify-quotations-flag' is
 also non-nil.
 
