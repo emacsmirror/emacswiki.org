@@ -3,7 +3,7 @@ This is a member of CategoryESS
 == MS Windows & Mac Users: Get Started with Emacs, ESS, and R ==
 
 I worked up some lecture notes on Emacs and ESS, "Emacs has No Learning Curve" (
-http://pj.freefaculty.org/guides/Rcourse/emacs-ess).  For Windows users, I made a Youtube video that demonstrates some editors, emphasizing Emacs: ("StartR-02", http://www.youtube.com/watch?v=lNlJFEpdytc). Even if you only use a Mac, you might want to watch that in order to get a visual impression of what Emacs with ESS is all about. 
+http://pj.freefaculty.org/guides/Rcourse/emacs-ess).  For Windows users, I made a Youtube video that demonstrates some editors, emphasizing Emacs: (##"StartR-02"##, http://www.youtube.com/watch?v=lNlJFEpdytc). Even if you only use a Mac, you might want to watch that in order to get a visual impression of what Emacs with ESS is all about. 
 
 I have more experience with Windows than I do with Macintosh, but I've worked on both.  The key advice, which applies on all operating systems, is that one should not start R from the system menu/desktop icon/Finder. Instead, navigate in a file manager to the place where the R code file is, and launch an editor there. That generally allows R to detect the working directory properly, and there will be no need for "setwd()" at the beginning of the program. 
 
@@ -87,10 +87,6 @@ This is the September, 2013 version. Note I have a lot of stuff commented out he
 ;; I had to cut out a lot of framepop stuff.
 ;;
 
-
-;; 2013-07-10 TODO: Find out if this is still necessary, or for
-;; which versions of windows.
-
 ;; Section I. Windows OS work-arounds
 
 ;;(if (eq system-type 'windows-nt)
@@ -99,11 +95,8 @@ This is the September, 2013 version. Note I have a lot of stuff commented out he
 ;; Maybe you commment previous out and see if your Windows is fixed.
 
 
-
 ;; Section II. Keyboard and mouse customization
-
 ;; IIA: make mouse selection work in the usual Mac/Windows way
-
 ;; 2013-07-10 Comment these out
 ;; (setq shift-select-mode t) ; is default in Emacs 23+, replaces pc-select
 ;; (transient-mark-mode t) ; highlight text selection, is default Emacs 23+
@@ -329,9 +322,7 @@ make Emacs behave like an ordinary Windows program, so it
 
    - make windows file explorer always show full file names (turn off "hide known extensions")
 
-   - add "Open with Emacs" as a right click menu option for all files.  
-
-I have a set of notes I keep on that over at this other place: http://pj.freefaculty.org/cgi-bin/mw/index.php?title=Windows:AdminTips
+   - add "Open with Emacs" as a right click menu option for all files.  We have a Windows registry hack for that.
 
 5. Here's the *best way* to get started writing R programs in Emacs
 
