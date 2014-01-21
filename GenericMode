@@ -194,7 +194,8 @@ x-resource-generic-mode
 
 = Problems =
 
-== How does it work to use a face other than any of the font-lock-xxx faces?
+== How does it work to use a face other than any of the font-lock-xxx faces? ==
+
 This does not work: 
 
     (define-generic-mode 'test-mode
@@ -204,7 +205,6 @@ This does not work:
      ()                        ;;  auto-mode-list
      ()                        ;; function-list
      "test-mode")
-
 
 == Does it interfere with packages that do more complex highlighting? ==
 
