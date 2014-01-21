@@ -28,7 +28,7 @@ Suppose we have a little language called foo; a typical foo-file might look some
 Using define-generic-mode, we can easily define a mode for this:
 
     (require 'generic-x) ;; we need this
-
+    
     (define-generic-mode 
       'foo-mode                         ;; name of the mode to create
       '("!!")                           ;; comments start with '!!'
