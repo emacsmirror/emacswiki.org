@@ -64,7 +64,7 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
   \cl      latin character
   \cg      greek character
 
-Here are some [[syntax classes]] that can be used between brackets, ##[]##.
+Here are some syntax classes that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:] an alphanumeric character
