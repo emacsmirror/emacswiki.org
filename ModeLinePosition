@@ -4,9 +4,79 @@ This page describes library <tt>[[modeline-posn.el]]</tt>, which provides extens
 
 The following extensions are provided by library ##modeline-posn.el##:
 
-* In TransientMarkMode, when the [[region]] is [[active region|active]], the size indicated is that of the region, not the [[buffer]].  This portion of the mode-line is then highlighted with face `region'.  ([[option|Option]] '''`modelinepos-empty-region-flag'''' determines whether to also indicate an ''empty'' active region.)
+'''1.''' Whenever the current column is greater than ‘modelinepos-column-limit’, the column-number indication in the mode-line is highlighted in face `font-lock-function-name-face'. This lets you know when you've gone past a certain number of characters in any line. You can customize user option ‘modelinepos-column-limit’, and you can bind it to different values in different modes. 
 
-* Whenever the current column is greater than ‘modelinepos-column-limit’, the column-number indication in the mode-line is highlighted in face `font-lock-function-name-face'. This lets you know when you've gone past a certain number of characters in any line. You can customize user option ‘modelinepos-column-limit’, and you can bind it to different values in different modes. 
+'''2.''' In TransientMarkMode, when the [[region]] is [[active region|active]], the size indicated is that of the region, not the [[buffer]].  This portion of the mode-line is then highlighted with face `region'.  ([[option|Option]] '''`modelinepos-empty-region-flag'''' determines whether to also indicate an ''empty'' active region.)
+
+'''3.''' The region highlighting in the mode-line is changed to a different face when you invoke a command that behaves specially for an active region.  Currently, this applies to replacement commands such as `query-replace'.  If you use library '''[[Isearch+]]''' then it also applies to [[Isearch]] and to replacement commands invoked from Isearch. 
+
+
+'''For #2:''' When the region is active, the mode line displays some
+information that you can customize --- see option
+'''`modelinepos-style''''.  Customization choices for this include: (a)
+the number of chars, (b) the number of chars and number of lines,
+and (c) anything else you might want.  Choice (b) is the default.
+
+For (c), you provide a `format' expression as separate components:
+the format string and the sexp arguments to be evaluated and
+plugged into the string.  The number of sexp args depends on the
+format string that you use: one for each '''`##%##'''' construct.
+
+Choice (c) is provided so that you can choose alternative
+formatting styles.  For example, instead of '''`## 256 ch, 13 l##'''', you
+could show '''`## (256 chars, 13 lines)##''''.  But (c) can really show
+information at all.  It need not have anything to do with the
+region, but it is nevertheless shown when the region is active.
+
+Option '''`modelinepos-empty-region-flag'''' determines whether to show
+the active-region indication when the active region is empty.  By
+default it is `t', meaning indicate an empty active region.
+
+'''For #3''': Certain standard Emacs commands restrict their scope to
+the region when it is active.  Some of these are handled here by
+highlighting the region indication in the mode line specially
+(using face '''`modelinepos-region-acting-on'''' instead of face
+'''`modelinepos-region'''').  The region-restricted commands defined in
+standard library `##replace.el##' are handled this way.
+
+If you also use library '''[[Isearch+]]''' (<tt>[[isearch+.el]]</tt>) then (for Emacs 24.3+) Isearch commands too can optionally be restricted to the
+active region, and they too are handled by the special mode-line
+highlighting.  This includes `M-%' and `C-M-%' during Isearch,
+which invoke query-replacement.  Not only is the Isearch region
+indicated in the mode line, but the query-replacement command is
+invoked from Isearch with that region active, so it too is limited to that scope.
+
+Here are some screenshots to show the effect.
+
+''‘modelinepos-column-limit’ = 70, past and not past the limit''
+
+[[image:mode-line-col-limit-past]]
+
+[[image:mode-line-col-limit-not-past]]
+
+
+''Region highlighting and limits''
+
+[[image:mode-line-region]]
+
+
+''Region highlighting and limits during Isearch restricted to region''
+
+
+[[image:mode-line-region-restricted-cmd]]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
