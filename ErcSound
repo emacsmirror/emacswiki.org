@@ -82,7 +82,7 @@ Here is how to add a simple sound effect to your ERC experience.
 First, get a sound file.  In the following example, I got the famous
 "Ni!" file:
 
-* http://lorien.sdsu.edu/~carroll/audio/ni.wav
+* http://www.intriguing.com/mp/sounds.php
 
 Save it somewhere, and then add the following code, modifying the file
 path accordingly:
