@@ -1,5 +1,5 @@
 [[es:ModoDerivado]]
-Instead of writing a new mode from scratch, you should derive your new mode from an existing mode.  Deriving a new mode from fundamental mode (which does basically nothing) is better than writing a new mode from scratch.  (Unless you know what you are doing, of course.)
+Instead of writing a new MajorMode from scratch, you should derive your new mode from an existing mode.  Deriving a new mode from fundamental mode (which does basically nothing) is better than writing a new mode from scratch.  (Unless you know what you are doing, of course.)
 
 Here's an example of how to translate a very simple GenericMode code sample into a DerivedMode code sample.  This would be the way to go if you think that GenericMode is too limiting for your needs.
 
