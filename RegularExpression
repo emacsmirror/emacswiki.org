@@ -64,7 +64,7 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
   \cl      latin character
   \cg      greek character
 
-Here are some syntax classes that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
+Here are some [[Manual:Syntax Descriptors|syntax classes]] that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:] an alphanumeric character
@@ -85,7 +85,7 @@ Syntax classes:
   \s"   string quote character      \s|   generic string delimiter 
   \s\   escape character            
 
-You can see the current [[syntax table]] by typing <code>C-h s</code>.
+You can see the current [[Manual:Syntax Tables|syntax table]] by typing <code>C-h s</code>.
 The syntax table depends on the current mode. As expected,
 letters a..z are listed as word constituents in text-mode.
 Other word constituents in this mode include A..Z, 0..9,
@@ -221,7 +221,7 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 [:LearningRegexps]
 == Study and Practice ==
 
-* Read about regexps in the Elisp manual (see also RegexpReferences), and study EmacsLisp code that uses regexps.
+* Read about regexps in the [[Manual:Regexps|Elisp manual]]). See also RegexpReferences. Study EmacsLisp code that uses regexps.
 
 * Regexp searching (`C-M-s') is a great way to learn about regexps -- see [[IncrementalSearch#RegexpSearches|Regexp Searches]]. Change your regexp on the fly and see immediately what difference the change makes.
 
