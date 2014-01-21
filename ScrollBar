@@ -1,18 +1,19 @@
 Emacs can have a vertical '''[::scroll bar]''' in each [[window]].
 
 In order to disable the display of scroll bars, add the following to your ~/.emacs file, for GnuEmacs:
-
-    (scroll-bar-mode -1)
-
+{{{
+(scroll-bar-mode -1)
+}}}
 or this, for [[XEmacs]]:
 
-    (set-specifier horizontal-scrollbar-visible-p nil)
-    (set-specifier vertical-scrollbar-visible-p nil)
-
+{{{
+(set-specifier horizontal-scrollbar-visible-p nil)
+(set-specifier vertical-scrollbar-visible-p nil)
+}}}
 ----
 
-M-x scroll-bar-mode toggles scroll bars in all [[Frame]]s. This is usually not what I want.
-To turn on scrollbars on a per-frame basis instead, you can put this handy function in your .emacs:
+`M-x scroll-bar-mode` toggles scroll bars in all [[Frame]]s. This is usually not what I want.
+To turn on scrollbars on a per-frame basis instead, you can put this handy function in your InitFile:
 
     (defun scroll-bars-in-this-frame (&optional off)
       (interactive)
@@ -27,14 +28,16 @@ Or use `M-x toggle-scroll-bar'.
 
 You can also set where the scroll bars should be. For GnuEmacs, use
 one of the following:
-
-    (set-scroll-bar-mode 'right)   ; replace 'right with 'left to place it to the left
+{{{
+(set-scroll-bar-mode 'right)   ; replace 'right with 'left to place it to the left
+}}}
 
 and for [[XEmacs]]:
 
-    (set-specifier scrollbar-on-left-p nil) ; replace nil with t to place it to the left
-    (set-specifier scrollbar-on-top-p nil) ; replace nil with t to place it on top
-
+{{{
+(set-specifier scrollbar-on-left-p nil) ; replace nil with t to place it to the left
+(set-specifier scrollbar-on-top-p nil) ; replace nil with t to place it on top
+}}}
 ----
 To use a colored scroll bar (good to have good constrast) you can ./configure gnu emacs with "--with-x-toolkit=motif"  See `system-configuration-options' variable to see how is your running emacs configured.
 
@@ -42,16 +45,16 @@ Apparently with only that toolkit you can
 (set-face-background'scroll-bar "red")
 
 Alternatively, users of the GTK toolkit can style scrollbars by putting something like this in ~/.gtkrc-2.0:
-
-    style "contrast"
-    {
-            GtkScrollbar::has_forward_stepper  = 0
-            GtkScrollbar::has_backward_stepper = 0
-            bg[NORMAL]   = "red"
-            bg[PRELIGHT] = "dark red"
-    }
-    class "GtkScrollbar" style "contrast"
-
+<pre>
+style "contrast"
+{
+        GtkScrollbar::has_forward_stepper  = 0
+        GtkScrollbar::has_backward_stepper = 0
+        bg[NORMAL]   = "red"
+        bg[PRELIGHT] = "dark red"
+}
+class "GtkScrollbar" style "contrast"
+</pre>
 ----
 
 GnuEmacs can draw its own "native" scroll bars, which (contrary to the
@@ -59,14 +62,14 @@ above post) are quite customizable. In my opinion, this also gives the
 best results for users of ColorTheme. Details follow: 
 
 Build GnuEmacs with the following options passed to
-./configure:
-
-              --without-toolkit-scroll-bars --with-x-toolkit=no 
-
+`./configure`:
+<pre>
+--without-toolkit-scroll-bars --with-x-toolkit=no 
+</pre>
 Then try a ColorTheme, or: 
-
-     M-x customize-face RET scroll-bar RET
-
+<pre>
+M-x customize-face RET scroll-bar RET
+</pre>
 You can set the foreground/background colors, border color/width, etc.
 There is a separate variable called scroll-bar-width.
 
@@ -78,7 +81,7 @@ exposed in the window. I use the MouseWheel or IncrementalSearch
 when I want to move around in a buffer, and have never found much
 reason to use the scroll bar for this.
 
-However: the native scroll bar has its own keymap (try C-h C-k, then
+However: the native scroll bar has its own keymap (try `C-h C-k`, then
 click or drag on the scroll bar). I haven't yet tried this, but in
 principle its response to mouse movements can be configured freely,
 perhaps even to duplicate the behavior of the typical scroller.
