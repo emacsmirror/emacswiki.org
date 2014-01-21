@@ -32,6 +32,10 @@ removes all faces from the region.
 '''`isearchp-deactivate-region-flag''''.  Both of these are available
 for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggle-region-restriction'''') during search to toggle `isearchp-restrict-to-region-flag'.
 
+[:modeline-position]
+[:query-replace]
+* If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `M-%' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
+
 
 [:isearchp-set-region-flag]
 [:isearchp-toggle-set-region]
