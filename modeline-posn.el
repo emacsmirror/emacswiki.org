@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 20 21:34:59 2014 (-0800)
+;; Last-Updated: Mon Jan 20 21:49:14 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 734
+;;     Update #: 735
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -65,13 +65,13 @@
 ;;  standard library `replace.el' are handled this way.
 ;;
 ;;  If you also use my library `isearch+.el', which I recommend, then
-;;  (for Emacs 24.3+) Isearch too can optionally be restricted to the
-;;  active region, and they too are handled by the special mode-line
-;;  highlighting.  This includes `M-%' and `C-M-%' during Isearch,
-;;  which invoke query-replacement.  Not only is the Isearch region
-;;  indicated in the mode line, but the query-replacement command is
-;;  invoked from Isearch with that region active, so it too is limited
-;;  to that scope.
+;;  (for Emacs 24.3+) Isearch commands too can optionally be
+;;  restricted to the active region, and they too are handled by the
+;;  special mode-line highlighting.  This includes `M-%' and `C-M-%'
+;;  during Isearch, which invoke query-replacement.  Not only is the
+;;  Isearch region indicated in the mode line, but the
+;;  query-replacement command is invoked from Isearch with that region
+;;  active, so it too is limited to that scope.
 ;;
 ;;  Note: Loading this library changes the default definition of
 ;;        `mode-line-position'.
