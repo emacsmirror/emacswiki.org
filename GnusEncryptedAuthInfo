@@ -30,6 +30,9 @@ You can change that if you turn on the passphrase caché:
 [added 3 October 2010 [[Gijs Hillenius]]
 When encrypting the .authinfo.gpg file, do *not* select any gpg-key from the list presented by EPA. Instead, go for the default, symmetric encryption, and use a new password, not your GPG password. Unless you like using the same password for everything.
 
+[added 19 January 2014 [[taltman]]
+Even when setting epg-gpg-program to "/usr/bin/gpg2" and configuring gpg2 to "use-agent", I'm still getting multiple pinentry requests. So, I found a work-around: use Emacs with EPG to open the .authinfo.gpg file in a buffer *before* starting gnus. It will prompt you once with the pinentry pop-up for opening the file. Then, start gnus. Somehow gnus notices the data in the buffer, and you don't get a pinentry pop-up per account.
+
 ----
 [new]
 It seems that in addition, you need to stop passing <code>--use-agent</code> to your <code>gpg</code> program. This is the same as what you need to get a text prompt instead of a graphical prompt in [[EasyPG]]; read at that page to know how to disable the agent. --[[DanielClemente]]
