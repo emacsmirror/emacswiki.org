@@ -1,12 +1,24 @@
-[[http://nodejs.org/|Node-JS]] is an asynchronous TCP programming framework using JavaScript. There are a few ways to run node.js from Emacs:
+[[http://nodejs.org/|Node-JS]] is an asynchronous TCP programming framework using JavaScript. There are several modes for running node.js inside of Emacs:
+
+== Using comint mode ==
+
+    (defun node-repl () (interactive)
+      (pop-to-buffer (make-comint "node-repl" "node" nil "--interactive"))
+    (node-repl)
 
 == Using js-comint ==
 
-:: The simplest way to have node.js (tested using node v0.8.1) as an inferior shell under Emacs is to use the [[http://js-comint-el.sourceforge.net/|js-comint package]]. Then, set <code>(setq inferior-js-program-command "node --interactive")</code> to force node to run in interactive mode. The command <code>M-x run-js</code> will then open the interpreter. ([[http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows|source]])
+"The simplest way to have node.js (tested using node v0.8.1) as an inferior shell under Emacs is to use the [[http://js-comint-el.sourceforge.net/|js-comint package]]. Then, set <code>(setq inferior-js-program-command "node --interactive")</code> to force node to run in interactive mode. The command <code>M-x run-js</code> will then open the interpreter." -- http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows
 
 NOTE: tab-completion doesn't work
 
-Also tested on Win7, Emacs 24 and node.js 0.10.5
+Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
+
+== Using nodejs-repl ==
+
+http://marmalade-repo.org/packages/nodejs-repl
+
+Size: 27KB
 
 == Using SwankJs ==
 
