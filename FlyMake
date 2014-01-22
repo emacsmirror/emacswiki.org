@@ -205,7 +205,7 @@ Use Flymake's XML syntax-checking on files with a .xsl extension.
 
 === JavaScript with Google Closure ===
 
-1. Download the Google Closure compiler and unzip (http://closure-compiler.googlecode.com/files/compiler-latest.zip).
+1. Download the Google Closure compiler and unzip (http://dl.google.com/closure-compiler/compiler-latest.zip).
 2. Create a shell script to run closure on a file.  I called mine "closure.sh":
 <pre>
 java -jar ~/bin/compiler.jar --warning_level VERBOSE --js $1 --js_output_file /dev/null
