@@ -2,6 +2,8 @@
 
 == Using comint mode ==
 
+The simplest method is to just use Emacs's Comint mode: 
+
     (defun node-repl () (interactive)
       (pop-to-buffer (make-comint "node-repl" "node" nil "--interactive"))
     (node-repl)
@@ -15,6 +17,10 @@ NOTE: tab-completion doesn't work
 Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
 
 == Using nodejs-repl ==
+
+* TAB completion same as Node.js REPL 
+* file name completion in string 
+* incremental history search
 
 http://marmalade-repo.org/packages/nodejs-repl
 
