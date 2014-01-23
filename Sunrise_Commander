@@ -377,6 +377,26 @@ You can get a copy of the Sunrise Commander Windows Addons extension
 * http://joseito.republika.pl/sunrise-x-w32-addons.el.gz
 
 ----
+[:Grognards]
+==Reduce Intrusion==
+
+If you use the *mouse* occasionally, the defaults might be confusing.
+Here's how to disable "click to visit file" and "cursor follows mouse".
+
+{{{
+(setq sr-cursor-follows-mouse nil)
+(define-key sr-mode-map [mouse-1]        nil)
+(define-key sr-mode-map [mouse-movement] nil)
+}}}
+
+Perhaps Shift TAB gives you an error about `backtab' being undefined?
+With only two windows, you can have ##<S-tab>## or ##<backtab>## behave like ##TAB##:
+
+{{{
+(define-key sr-mode-map [backtab]        'sr-change-window)
+}}}
+
+----
 [:Misc]
 ==Comments and Suggestions==
 [new]
