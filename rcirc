@@ -52,6 +52,7 @@ Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Her
 	 :channels ("#rcirc" "#emacs" "#emacswiki"))
 }}}
 
+Use [http://blog.freenode.net/2011/02/port-6697-irc-via-tlsssl/ post 6697].
 This requires an Emacs that has been built with [http://www.gnutls.org/ GNU TLS] or an appropriate ##gnutls-cli##.
 
 If you are on *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download a precompiled binary]. Make sure the ##bin## directory is on your path. Test it by calling ##gnutls-cli## from `eshell'. This is what you would expect:
