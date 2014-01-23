@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jan 18 10:45:18 2014 (-0800)
+;; Last-Updated: Thu Jan 23 10:28:54 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10585
+;;     Update #: 10588
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5754,6 +5754,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/01/23 dadams
+;;     For BBDB: Determine older version not just by presence of old name but also by absence of new.
 ;; 2014/01/05 dadams
 ;;     Put icicle-recomplete-from-original-domain on icicle-menu-map and on Minibuf menu.
 ;;     icicle-(bind|restore)-other-keymap-keys:
