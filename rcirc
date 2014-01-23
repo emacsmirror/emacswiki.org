@@ -44,16 +44,32 @@ Please also consider visiting these pages in order to getting started:
 
 ==Connecting to servers using SSL/TLS ==
 
-Emacs 24 has SSL support out of the box.
+Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Here's how to set it up:
 
-For Emacs 23 you need a fork of rcirc:
+{{{
+(setq rcirc-server-alist
+      '(("irc.freenode.net" :port 6697 :encryption tls
+	 :channels ("#rcirc" "#emacs" "#emacswiki"))
+}}}
+
+This requires an Emacs that has been built with [http://www.gnutls.org/ GNU TLS] or an appropriate ##gnutls-cli##.
+
+If you are on *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download a precompiled binary]. Make sure the ##bin## directory is on your path. Test it by calling ##gnutls-cli## from `eshell'. This is what you would expect:
+
+{{{
+Welcome to the Emacs shell
+
+~ $ gnutls-cli
+No hostname specified
+}}} 
+
+For *Emacs 23* you need a *fork* of rcirc:
 
 https://github.com/nealey/rcirc/wiki 
 which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
 
 or this (SSL with an optional :use-tls for `rcirc-server-alist' and :custom-connect-function for arbitrary connection method (ssl/proxy/whatever) similar to the neale's patch)
 https://github.com/melmothx/rcirc/tree/to-emacs
-
 
 ==rcirc add-ons and commands==
 
