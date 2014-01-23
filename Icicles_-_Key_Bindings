@@ -665,8 +665,8 @@ their documentation.  If you finished the command by just typing
 `C-g', then your input (`hook') was never really entered, so it is
 not available via the minibuffer history (`M-p').  You can
 retrieve it with `C-l', to use it again, in your next command.  User option
-'''<tt>‘[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]’</tt>''' controls the behavior of `C-l'
-and `##C-##'''##L##''''; if non-`nil', then, instead of cycling inputs, these
+'''<tt>‘[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]’</tt>''' controls the behavior of '''`C-l''''
+and '''`##C-L##''''; if non-`nil', then, instead of cycling inputs, these
 commands let you access previous inputs using completion.
 
 
