@@ -24,13 +24,27 @@ with the startup fontset.
 
 [:GloballyChangingFont]
 === Globally Change the Default Font ===
-A simple way to change the default font is to put this in your [[init file]]:
 
-  (add-to-list 'default-frame-alist
-                         '(font . "FONT"))
+To change the default font for new (non special-display) frames, put either of these in your [[init file]]:
 
-where ##FONT## is a string naming the font you want, for example, ##"Droid Sans Mono-10"##.
+: ##(add-to-list 'default-frame-alist '(font . ## ''##FONT##'' ##))##
+
+: ##(set-frame-attribute 'default t :font ## ''##FONT##'' ##))##
+
+To change the default font for the current frame, as well as future frames, put either of these in your init file:
+
+: ##(set-frame-attribute 'default nil :font ## ''##FONT##'' ##))##
+
+: ##(set-frame-font  ## ''##FONT##'' ##nil t)##
+
+
+
+
+where ''##FONT##'' is a string naming the font you want, for example, ##"Droid Sans Mono-10"##.
+
 This should work on all platforms.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
+
+If you are using a development snapshot for what will become Emacs 24.4 then see [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16529|Emacs bug #16529]].
 
 (There needs to be an explanation for how to set fonts for particular modes or buffers here. Including a set-face-attribute hook as described above for a particular mode does not work; once you enter that mode the new font is set, but it is applied <i>globally</i> to all other open buffers!)
 
