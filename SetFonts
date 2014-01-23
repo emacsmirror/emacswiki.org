@@ -26,8 +26,8 @@ with the startup fontset.
 === Globally Change the Default Font ===
 A simple way to change the default font is to put this in your [[init file]]:
 
-(add-to-list 'default-frame-alist
-                       '(font . "FONT"))
+  (add-to-list 'default-frame-alist
+                         '(font . "FONT"))
 
 where ##FONT## is a string naming the font you want, for example, ##"Droid Sans Mono-10"##.
 This should work on all platforms.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
