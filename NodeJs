@@ -19,6 +19,7 @@ Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
 == Using nodejs-repl ==
 
 * TAB completion same as Node.js REPL 
+** NOTE: I locked up Emacs 24 on Win 7 attempting tab-completion on an array. YMMV. --MichaelPaulukonis
 * file name completion in string 
 * incremental history search
 
