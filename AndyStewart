@@ -131,6 +131,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 
 *** Lisp:auto-complete-extension.el -- Some enhanced module for [[AutoComplete]], including Haskell.
 
+*** Lisp:auto-complete-clang-extension.el -- Extension for completion C/C++/Object-C .
+
 *** Lisp:flymake-extension.el -- Some enhanced module and config (including Haskell, C, Java) for [[FlyMake]].
 
 *** Lisp:eldoc-extension.el -- Highlight function argument with [[ElDoc]]. (Maintainer: [[rubikitch]]).
