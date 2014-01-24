@@ -9,7 +9,7 @@
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2004
 ;; Version: 0.1
-;; Last-Updated: 2014-01-01 22:25:03
+;; Last-Updated: 2014-01-24 10:25:03
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/window-number.el
 ;; Keywords:
@@ -76,6 +76,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/01/24
+;;      * Fixed bug of `window-number-set-active-color' and `window-number-set-inactive-color' that not use user's color.
 ;;
 ;; 2014/01/01
 ;;      * Add new function `window-number-switch'
@@ -181,13 +184,13 @@ Prompt user input window number if have more windows."
           (error "No such window.")))))
 
 (defun window-number-set-inactive-color ()
-  (set-face-foreground 'window-number-face "white")
-  (set-face-background 'window-number-face "darkred")
+  (set-face-foreground 'window-number-face window-number-inactive-foreground)
+  (set-face-background 'window-number-face window-number-inactive-background)
   (force-mode-line-update))
 
 (defun window-number-set-active-color ()
-  (set-face-foreground 'window-number-face "black")
-  (set-face-background 'window-number-face "gold")
+  (set-face-foreground 'window-number-face window-number-active-foreground)
+  (set-face-background 'window-number-face window-number-active-background)
   (force-mode-line-update))
 
 (defun window-number ()
