@@ -39,9 +39,12 @@ __Minor Mode Survey__
 | Packages/Modes                                   | Upvote / User count |
 |--------------------------------------------------+---------------------|
 | abbrev-mode                                      |                  38 |
+| ada-mode                                         |                   1 |
 | advice                                           |                   1 |
+| align                                            |                   1 |
 | ange-ftp                                         |                   1 |
 | ansi-color                                       |                   1 |
+| antlr-mode                                       |                   1 |
 | apropos                                          |                   3 |
 | auto-completion-mode                             |                   7 |
 | auto-composition-mode                            |                  12 |
@@ -50,6 +53,7 @@ __Minor Mode Survey__
 | auto-fill-mode                                   |                  40 |
 | auto-image-file-mode                             |                   4 |
 | autoinsert                                       |                   4 |
+| bat-mode                                         |                   1 |
 | blink-cursor-mode                                |                  53 |
 | bookmark                                         |                   3 |
 | bs-show                                          |                   4 |
@@ -57,12 +61,16 @@ __Minor Mode Survey__
 | buffer-menu-mode                                 |                   2 |
 | byte-opt                                         |                   1 |
 | bytecomp                                         |                   1 |
-| cl                                               |                  12 |
+| cc-mode                                         |                   1 |
+| cl                                               |                   12 |
+| cl-macs                                          |                  1 |
 | color                                            |                   1 |
 | column-number-mode                               |                  89|
 | comint                                           |                   4 |
 | compilation-minor-mode                           |                  10 |
 | compile                                          |                   1 |
+| copyright                                        |                   1 |
+| css-mode                                         |                   1 |
 | cua-mode                                         |                  12 |
 | cua-selection-mode                               |                  15 |
 | cus-edit                                         |                   1 |
@@ -75,6 +83,7 @@ __Minor Mode Survey__
 | desktop                                          |                   2 |
 | desktop-save-mode                                |                  30 |
 | diff-mode                                        |                   2 |
+| dired                                           |                   1 |
 | dired-aux                                        |                   2 |
 | dired-hide-details-mode                          |                  15 |
 | dired-x                                          |                  43 |
@@ -82,6 +91,7 @@ __Minor Mode Survey__
 | display-time-mode                                |                  27 |
 | easy-mmode                                       |                   1 |
 | easymenu                                         |                   1 |
+| ebnf2ps                                          |                   1 |
 | ede-minor-mode                                   |                   1 |
 | edebug-mode                                      |                   7 |
 | ediff                                            |                   5 |
@@ -93,6 +103,7 @@ __Minor Mode Survey__
 | emacs-lisp-mode                                  |                   3 |
 | epa-file-enable                                  |                   3 |
 | erc-mode                                         |                   5 |
+| etags                                            |                   1 |
 | face-remap                                       |                   1 |
 | facemenu                                         |                   1 |
 | faces                                            |                   2 |
@@ -163,6 +174,7 @@ __Minor Mode Survey__
 | mouse-wheel-mode                                 |                  18 |
 | mwheel                                           |                   1 |
 | newcomment                                       |                   1 |
+| nxml-mode                                        |                   1 |
 | org-capture                                      |                  22 |
 | org-mode                                         |                  53 |
 | org-src-mode                                     |                   8 |
@@ -170,12 +182,14 @@ __Minor Mode Survey__
 | orgtbl-mode                                      |                   7 |
 | outline                                          |                   3 |
 | outline-minor-mode                               |                   3 |
+| ox-html                                          |                   1 |
 | package                                          |                   2 |
 | page                                             |                   1 |
 | paren                                            |                   2 |
 | pc-selection-mode                                |                   1 |
 | pp                                               |                   1 |
 | printing                                         |                   7 |
+| ps-mode                                          |                   1 |
 | ps-print                                         |                   2 |
 | recentf-mode                                     |                  56 |
 | rectangle-mark-mode                              |                   8 |
@@ -184,6 +198,8 @@ __Minor Mode Survey__
 | register                                         |                   2 |
 | replace                                          |                   1 |
 | ring                                             |                   2 |
+| ruby-mode                                        |                   1 |
+| ruler-mode                                       |                   1 |
 | savehist-mode                                    |                  26 |
 | saveplace                                        |                  29 |
 | semantic-mode                                    |                   4 |
@@ -196,6 +212,7 @@ __Minor Mode Survey__
 | size-indication-mode                             |                  19 |
 | subword-mode                                     |                  14 |
 | thingatpt                                        |                   3 |
+| timeclock                                       |                   1 |
 | time-date                                        |                   1 |
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
@@ -210,6 +227,7 @@ __Minor Mode Survey__
 | view-mode                                        |                   2 |
 | visible-bell                                     |                  18 |
 | visual-line-mode                                 |                  17 |
+| wdired                                          |                   1 |
 | which-function-mode                              |                  28 |
 | whitespace-mode                                  |                  10 |
 | wid-edit                                         |                   1 |
