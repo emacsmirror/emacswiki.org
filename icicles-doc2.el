@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jan 18 09:39:00 2014 (-0800)
+;; Last-Updated: Sat Jan 25 13:31:52 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29475
+;;     Update #: 29476
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4437,7 +4437,7 @@
 ;;  such as 2.35, from http://bbdb.sourceforge.net/.
 ;;
 ;;  If user option `icicle-functions-to-redefine' contains an entry
-;;  for `bbdb-complete-mail' (for BBDB version 3.02) or
+;;  for `bbdb-complete-mail' (for BBDB version 3.02 or later) or
 ;;  `bbdb-complete-name' (for BBDB version 2.35), then Icicles
 ;;  redefines that command so that it uses Icicles completion when
 ;;  there are multiple completions.  You can use any Icicles features,
