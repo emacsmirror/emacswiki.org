@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jan 18 10:47:03 2014 (-0800)
+;; Last-Updated: Sat Jan 25 13:31:12 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26709
+;;     Update #: 26715
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -388,7 +388,8 @@
 ;;              been REDEFINED HERE:
 ;;              (BBDB is available here: http://bbdb.sourceforge.net/.)
 ;;
-;;  `bbdb-complete-name' - Use Icicles minibuffer completion when there
+;;  `icicle-bbdb-complete-mail', `bbdb-complete-name' -
+;;                         Use Icicles minibuffer completion when there
 ;;                         are multiple candidates.
 ;;
 ;;
@@ -575,11 +576,11 @@
 
 (defvar apropos-do-all)                 ; In `apropos.el'
 (defvar bbdb-complete-mail-allow-cycling) ; In `bbdb-com.el'
-(defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el'
+(defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el', older BBDB versions
 (defvar bbdb-completion-list)           ; In `bbdb-come.el'
 (defvar bbdb-extract-address-components-func) ; In `bbdb-com.el'
 (defvar bbdb-expand-mail-aliases)       ; In `bbdb-com.el'
-(defvar bbdb-complete-name-hooks)       ; In `bbdb-com.el'
+(defvar bbdb-complete-name-hooks)       ; In `bbdb-com.el', older BBDB versions
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
@@ -1677,7 +1678,8 @@ See your version of BBDB for more information."
 ;;
 ;; Avoid a byte-compile error if user has already loaded BBDB version 3+.
 ;; The error has to do with `bbdb-records' being a defsubst that takes no args.
-(unless (eval-when-compile (and (featurep 'bbdb)  (not (string-lessp bbdb-version "3"))))
+(unless (eval-when-compile (and (featurep 'bbdb)  (or (not (zerop (string-to-number bbdb-version)))
+                                                      (not (string-lessp bbdb-version "3")))))
   (defun icicle-bbdb-complete-name (&optional start-pos)
     "Complete the user full-name or net-address before point.
 Completes only up to the preceding newline, colon, or comma, or the
