@@ -10,7 +10,7 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 == Basic configuration options ==
 
- (setq ess-eval-visibly nil) ; ESS will not print the evaluated comands, also speeds up the evaluation 
+ (setq ess-eval-visibly nil) ; ESS will not print the evaluated commands, also speeds up the evaluation 
  (setq ess-ask-for-ess-directory nil) ;if you don't want to be prompted each time you start an interactive R session
 
 == Completion ==
