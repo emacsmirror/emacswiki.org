@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jan 23 10:28:54 2014 (-0800)
+;; Last-Updated: Sat Jan 25 13:39:21 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10588
+;;     Update #: 10593
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/01/25 dadams
+;;     icicle-bbdb-complete-name: Do not define if bbdb-version is not a number.
 ;; 2014/01/18 dadams
 ;;     icicle-customize-face(-other-window): Handle proxy candidates in action function.  Updated doc.
 ;; 2014/01/15 dadams
@@ -6986,6 +6988,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/01/25 dadams
+;;     icicle-functions-to-redefine: Commented out bbdb-complete-name (obsolete in BBDB).
 ;; 2014/01/18 dadams
 ;;     Renamed: icicle-keep-Completions-for-sole-dir-flag to icicle-keep-Completions-for-sole-dir.
 ;;     icicle-keep-Completions-for-sole-dir: Added pop-up value.  Default behavior now: do not pop up. 
