@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Thu Jan 23 10:22:37 2014 (-0800)
+;; Last-Updated: Sat Jan 25 13:22:34 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 9830
+;;     Update #: 9831
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3692,7 +3692,7 @@ if `icicle-change-region-background-flag' is non-nil."
       (eval-after-load "icicles-mode" form)
     (eval-after-load "bbdb-com" form)))
 
-;;; `bbdb-com.el' version 3.02 - `bbdb-complete-mail'.
+;;; `bbdb-com.el' version 3.02 and later - `bbdb-complete-mail'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'bbdb-complete-mail)
