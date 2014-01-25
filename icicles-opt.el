@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Jan 18 08:53:37 2014 (-0800)
+;; Last-Updated: Sat Jan 25 13:21:57 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5832
+;;     Update #: 5836
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2411,8 +2411,8 @@ See also option `icicle-buffer-skip-functions'."
   :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 (defcustom icicle-functions-to-redefine
-  `(bbdb-complete-name                  ; For older BBDB versions such as 2.35
-    bbdb-complete-mail                  ; For BBDB versions such as 3.02
+  `(;; bbdb-complete-name               ; For older BBDB versions such as 2.35
+    bbdb-complete-mail                  ; For BBDB versions such as 3.02 and later
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
     ;; Use these two if you want Icicles completion for shell commands.
@@ -3480,7 +3480,7 @@ This applies only to non-absolute file-name completion.
 
 * If `nil' then remove the `*Completions*' window.
 
-* If the symbol `pop-up' then unconditionally update `*Completions*'
+* If the symbol `pop-up' then update `*Completions*' unconditionally
   to show the sole candidate.  Show `*Completions*' if it was not yet
   showing.
 
