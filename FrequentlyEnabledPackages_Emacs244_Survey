@@ -61,11 +61,11 @@ __Minor Mode Survey__
 | buffer-menu-mode                                 |                   2 |
 | byte-opt                                         |                   1 |
 | bytecomp                                         |                   1 |
-| cc-mode                                         |                   1 |
-| cl                                               |                   12 |
+| cc-mode                                          |                   1 |
+| cl                                               |                  12 |
 | cl-macs                                          |                  1 |
 | color                                            |                   1 |
-| column-number-mode                               |                  89|
+| column-number-mode                               |                  89 |
 | comint                                           |                   4 |
 | compilation-minor-mode                           |                  10 |
 | compile                                          |                   1 |
@@ -83,7 +83,7 @@ __Minor Mode Survey__
 | desktop                                          |                   2 |
 | desktop-save-mode                                |                  30 |
 | diff-mode                                        |                   2 |
-| dired                                           |                   1 |
+| dired                                            |                   1 |
 | dired-aux                                        |                   2 |
 | dired-hide-details-mode                          |                  15 |
 | dired-x                                          |                  43 |
@@ -212,7 +212,7 @@ __Minor Mode Survey__
 | size-indication-mode                             |                  19 |
 | subword-mode                                     |                  14 |
 | thingatpt                                        |                   3 |
-| timeclock                                       |                   1 |
+| timeclock                                        |                   1 |
 | time-date                                        |                   1 |
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
@@ -227,7 +227,7 @@ __Minor Mode Survey__
 | view-mode                                        |                   2 |
 | visible-bell                                     |                  18 |
 | visual-line-mode                                 |                  17 |
-| wdired                                          |                   1 |
+| wdired                                           |                   1 |
 | which-function-mode                              |                  28 |
 | whitespace-mode                                  |                  10 |
 | wid-edit                                         |                   1 |
