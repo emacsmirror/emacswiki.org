@@ -78,7 +78,7 @@ as apropos completion and candidate cycling.   In addition, you can complete an 
 === BBDB Completion ===
 
 Library ##bbdb.el## is a rolodex-like database program for GNU Emacs -- see BbdbMode.  
-You can obtain a recent version, such as 3.02, from
+You can obtain a recent version, such as 3.02 or later, from
 http://melpa.milkbox.net/, or you can pick up an older version,
 such as 2.35, from http://bbdb.sourceforge.net/.
 
