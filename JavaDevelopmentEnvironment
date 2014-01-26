@@ -13,13 +13,7 @@ If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.
 
 If you checkout from the Svn repo, ant and ant-contrib are dependencies to build. Svn repo: https://jdee.svn.sourceforge.net/svnroot/jdee/trunk
 
-[new]
-Sorry, but shamsum was not OK 2013-12-01.
-my computer: 30561519a2b7d55e24e34b658d4d07eb  jdee-bin-2.4.1.tar.bz2
 
-Sum should be f69b90830aa5ef4a7ea3c8f31127d8e10a238333  jdee-bin-2.4.1.tar.bz2, according to http://sourceforge.net/projects/jdee/files/jdee/2.4.1/jdee-2.4.1.shasums/download. 
-
-/X
 
 ==Bugs==
 There's no obvious way to submit a bug at the SourceForge page. Perhaps it requires an account. This section aggregates bug reports from those who don't want to create an account.
