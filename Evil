@@ -54,6 +54,8 @@ A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is 
 
 * [https://github.com/Dewdrops/evil-exchange evil-exchange]: Port of vim-exchange
 
+* [https://github.com/Dewdrops/evil-extra-operator evil-extra-operator]: Operators for evaluating codes, translating text, taking notes, searching via google, etc.
+
 == Bug tracker ==
 
 If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil BitBucket bug tracker] (open for all).
