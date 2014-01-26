@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:47:57 2013 (-0800)
+;; Last-Updated: Sun Jan 26 10:22:01 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 777
+;;     Update #: 780
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -51,6 +51,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/26 dadams
+;;     lisp-indentation-hack:
+;;       For Emacs 22+, use load-history-filename-element, not assoc.
 ;; 2013/07/14 dadams
 ;;     Removed require of fit-frame.el.
 ;; 2011/08/19 dadams
@@ -257,7 +260,10 @@
   "Better Lisp indenting.  Use in Lisp mode hooks
 such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
 `lisp-interaction-mode-hook'."
-  (unless (assoc "cl-indent" load-history) (load "cl-indent" nil t))
+  (unless (if (fboundp 'load-history-regexp) ; Emacs 22+
+              (load-history-filename-element (load-history-regexp "cl-indent"))
+            (assoc "cl-indent" load-history))
+    (load "cl-indent" nil t))
   (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
   (setq lisp-indent-maximum-backtracking  10)
   (put 'define-derived-mode              'common-lisp-indent-function '(4 4 4 2 &body))
