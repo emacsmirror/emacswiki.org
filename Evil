@@ -234,21 +234,20 @@ The first thing I missed of Vim were the tabs. With elscreen.el and its dependen
 
 === Toggle input method ===
 Add below code into ~/.emacs:
-     (defun evil-toggle-input-method ()
-       "when toggle on input method, switch to evil-insert-state if possible.
-     when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
-       (interactive)
-       (if (not current-input-method)
-           (if (not (string= evil-state "insert"))
-               (evil-insert-state))
-         (if (string= evil-state "insert")
-             (evil-normal-state)
-             ))
-       (toggle-input-method))
-     
-     (global-set-key (kbd "C-\\") 'evil-toggle-input-method)
 
-
+    (defun evil-toggle-input-method ()
+      "when toggle on input method, switch to evil-insert-state if possible.
+    when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
+      (interactive)
+      (if (not current-input-method)
+          (if (not (string= evil-state "insert"))
+              (evil-insert-state))
+        (if (string= evil-state "insert")
+            (evil-normal-state)
+            ))
+      (toggle-input-method))
+    
+    (global-set-key (kbd "C-\\") 'evil-toggle-input-method)
 
 === ESC key under GNU Screen ===
 You may find that the ESC key does not work as expected when running "emacs -nw" under GNU Screen. I.e. pressing ESC does not get you out of insert mode if you press quickly. The fix is to put this in your .screenrc
