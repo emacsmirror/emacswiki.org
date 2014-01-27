@@ -2,7 +2,7 @@ This is a really simple mode to edit pages on Oddmuse wikis (such as EmacsWiki) 
 
 There are actually various Oddmuse editing modes out there.
 
-* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] us currently maintained by XavierMaillard
+* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] is currently maintained by XavierMaillard
 * Lisp:oddmuse.el is an older, abandoned copy hosted on this wiki
 * [[oddmuse-curl.el]] is a fork of a very early copy that still uses `curl' currently maintained by AlexSchroeder
 * [[Yaoddmuse]] is a fork currently maintained by [[rubikitch]]
