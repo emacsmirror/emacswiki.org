@@ -1,24 +1,26 @@
 ==About==
 
-Make-color (macol) is a package for choosing a color by updating text
-sample with r/g/b/... keys to see how the color looks in the context.
+Make-color is a package for choosing a color by updating text sample
+with r/g/b/... keys to see how the color looks in the context.
 
 Full documentation and source code can be found on
 [http://github.com/alezost/make-color.el github repo].
 
 ==Installation==
 
-Put "make-color.el" into a directory from `load-path' and add the
-following autoloads to your .emacs:
+The package can be installed from [[MELPA]].
 
-    (autoload 'macol-make-color "make-color" nil t)
-    (autoload 'macol-switch-to-buffer "make-color" nil t)
+If you want to install it manually, put "make-color.el" into a directory
+from `load-path' and add the following autoloads to your .emacs:
+
+    (autoload 'make-color "make-color" nil t)
+    (autoload 'make-color-switch-to-buffer "make-color" nil t)
 
 ==Usage==
 
 * Select any region (it will be used as a text sample).
 
-* M-x macol-make-color
+* M-x make-color
 
 * Select a region and press "n": this text will be set for updating its
 foreground / background color.
