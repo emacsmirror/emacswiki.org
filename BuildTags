@@ -23,6 +23,7 @@ The way I generate the tags for my project is (not the best, but it works!):
   cd /path/to/my/project
   find . | grep ".*\.\(hh\|hxx\|cc\)" | xargs etags -f TAGS
 
+UPDATE: ctags 5.8 *does* have an "-e" option, so "ctags -Re" works without complaint.
 
 === From within Emacs ===
 
