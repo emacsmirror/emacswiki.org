@@ -265,8 +265,7 @@ The following is an approach for obtaining the complete list of possible expansi
                    (setq last-command 'my-hippie-expand-completions)
                    (not (equal he-num -1)))))
         ;; Evaluating the completions modifies the buffer, however we will finish
-        ;; up in the same state that we began, and (save-current-buffer) seems a
-        ;; bit heavyweight in the circumstances.
+        ;; up in the same state that we began.
         (set-buffer-modified-p buffer-modified)
         ;; Provide the options in the order in which they are normally generated.
         (delete he-search-string (reverse he-tried-table))))
