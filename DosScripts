@@ -4,7 +4,7 @@ At least three Emacs modes have been released for editing Dos scripts (batch fil
 
 By Agnar Renolen and Matthew Fidler (2002-2009). Similar to ##dos-mode##, but with fewer features.
 
-Lisp:batch-mode.el does not recognize ::comments, :.labels, %~args, underscored_variables, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates. Size: 19KB
+Lisp:batch-mode.el does not recognize ::comments, :.labels, %~args, underscored_variables, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates. Size: 6KB
 
 Using the term /batch mode/ here can be misleading, since the GNU Emacs Manual says: "Batch mode is used for running programs written in Emacs Lisp from shell scripts, makefiles, and so on." This is what BatchMode is about.
 
@@ -12,13 +12,13 @@ Using the term /batch mode/ here can be misleading, since the GNU Emacs Manual s
 
 By Tadamegu Furukawa (2001-2005). Similar to ##dos-mode##, but with fewer features.
 
-CmdMode does not recognize ::comments, :.labels, /options, -options, or --options. Script cannot be run from Emacs with args. Code navigation misses :.labels and is not as feature-rich as imenu+outline. Size: 53KB
+CmdMode does not recognize ::comments, :.labels, /options, -options, or --options. Script cannot be run from Emacs with args. Code navigation misses :.labels and is not as feature-rich as imenu+outline. Size: 25KB
 
 == dos-mode ==
 
 By Arni Magnusson (2003-2013). The recommended mode for editing Dos scripts.
 
-DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates. Size: 22KB
+DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates. Size: 7KB
 
 [new]
 I added indentation for ##dos-mode## via the lisp file DosIndent -- Matthew Fidler
@@ -29,7 +29,7 @@ By Daniel Colascione (2010). Emphasis on language parser.
 
 Lisp:ntcmd.el is a new DOS script mode that uses a parser to fully
 understand the cmd language. Does not natively include templating and
-outlining: use other minor modes, like [[Yasnippet]], for that. Size: 67KB
+outlining: use other minor modes, like [[Yasnippet]], for that. Size: 45KB
 
 ----
 == General discussion ==
