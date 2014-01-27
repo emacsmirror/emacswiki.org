@@ -1,0 +1,37 @@
+==About==
+
+Make-color (macol) is a package for choosing a color by updating text
+sample with r/g/b/... keys to see how the color looks in the context.
+
+Full documentation and source code can be found on
+[http://github.com/alezost/make-color.el github repo].
+
+==Installation==
+
+Put "make-color.el" into a directory from `load-path' and add the
+following autoloads to your .emacs:
+
+    (autoload 'macol-make-color "make-color" nil t)
+    (autoload 'macol-switch-to-buffer "make-color" nil t)
+
+==Usage==
+
+* Select any region (it will be used as a text sample).
+
+* M-x macol-make-color
+
+* Select a region and press "n": this text will be set for updating its
+foreground / background color.
+
+* Press keys to change a color of the probing region:
+
+** r/R, g/G, b/B – decrease/increase red, green, blue components (RGB model)
+** c/C, m/M, y/Y – decrease/increase cyan, magenta, yellow components (RGB model)
+** h/H, s/S, l/L – decrease/increase hue, saturation, luminance (HSL model)
+** RET – change current color (prompt for a value)
+
+:: See mode description (C-h m) for other available keys.
+
+
+----
+CategoryFaces
