@@ -50,6 +50,7 @@ Here are some of the pages in CategoryFaces.
 * HowtoChangeFrameColors
 * [[Icicles - Other Search Commands#SearchingTextProperties|Icicles - Search for Properties]] -- Search for text that has certain [[overlay]] or [[text property|text properties]]; navigate among zones of text with faces.
 * ListColors -- Show colors having defined color names.
+* MakeColor -- Alternative way of "picking" a color: change the color in context.
 * PointerShape -- Change the shape of the MousePointer (X Windows only).
 * SetFonts -- Change font or font size; install fonts.
 ** AntiAliasedFaces
