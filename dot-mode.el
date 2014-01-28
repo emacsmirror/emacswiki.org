@@ -1,23 +1,6 @@
-;;; dot-mode.el --- Minor mode to repeat typing or commands
-
+;;; dot-mode.el - minor mode to repeat typing or commands
 ;;; Copyright (C) 1995 James Gillespie
 ;;; Copyright (C) 2000 Robert Wyrick (rob@wyrick.org)
-
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 1, or (at your option)
-;;; any later version.
-
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-
-;;; A copy of the GNU General Public License can be obtained from 
-;;; the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
-;;; 02139, USA.
-
-;;; Commentary:
 ;;
 ;; Purpose of this package: minor mode to repeat typing or commands
 ;;
@@ -93,28 +76,45 @@
 ;; none
 ;;
 
-;; EMACS vs. VI
-;;
-;; This mode is written to address one argument in the emacs vs. vi
-;; jihad :-)  It emulates the vi `redo' command, repeating the
-;; immediately preceding sequence of commands.  This is done by
-;; recording input commands which change the buffer, i.e. not motion
-;; commands.
+;;; This program is free software; you can redistribute it and/or modify
+;;; it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 1, or (at your option)
+;;; any later version.
 
-;; DESIGN
-;;
-;; The heart of this minor mode is a state machine.  The function
-;; dot-mode-after-change is called from after-change-functions and
-;; sets a variable (is there one already?  I couldn't find it) which
-;; is examined by dot-mode-loop, called from from post-command-hook.
-;; This variable, dot-mode-changed, is used in conjunction with
-;; dot-mode-state to move to the next state in the state machine.
-;; The state machine is hard coded into dot-mode-loop in the
-;; interests of speed; it uses two normal states (idle and store)
-;; and two corresponding override states which allow the user to
-;; forcibly store commands which do not change the buffer.
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
 
-(defconst dot-mode-version "1.10"
+;;; A copy of the GNU General Public License can be obtained from 
+;;; the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
+;;; 02139, USA.
+
+;;; COMMENTARY
+;;;
+;;; This mode is written to address one argument in the emacs vs. vi
+;;; jihad :-)  It emulates the vi `redo' command, repeating the
+;;; immediately preceding sequence of commands.  This is done by
+;;; recording input commands which change the buffer, i.e. not motion
+;;; commands.
+
+;;; DESIGN
+;;;
+;;; The heart of this minor mode is a state machine.  The function
+;;; dot-mode-after-change is called from after-change-functions and
+;;; sets a variable (is there one already?  I couldn't find it) which
+;;; is examined by dot-mode-loop, called from from post-command-hook.
+;;; This variable, dot-mode-changed, is used in conjunction with
+;;; dot-mode-state to move to the next state in the state machine.
+;;; The state machine is hard coded into dot-mode-loop in the
+;;; interests of speed; it uses two normal states (idle and store)
+;;; and two corresponding override states which allow the user to
+;;; forcibly store commands which do not change the buffer.
+;;;
+;;; TODO
+;;; * Explore using recent-keys for this functionality
+
+(defconst dot-mode-version "1.12"
   "Report bugs to: Robert Wyrick <rob@wyrick.org>")
 
 ;;; CHANGE HISTORY
@@ -197,12 +197,16 @@
 ;;; dot-mode-override to record a <right> and then tried to call
 ;;; dot-mode-execute.  The bug was in dot-mode-event-to-string
 ;;; Thanks to Scott Evans <gse@antisleep.com> for reporting the bug!
+;;;
+;;; 1.12
+;;; Make calls to make-local-hook optional for Emacs 24 compatibility.
+;;; Use kmacro-display for displaying the macro string.
 
 (defvar dot-mode nil
   "Whether dot mode is on or not")
 (make-variable-buffer-local 'dot-mode)
 
-(defvar dot-mode-map 
+(defvar dot-mode-map
   (let ((map (make-sparse-keymap)))
     (if (fboundp 'read-kbd-macro)
         (progn
@@ -269,7 +273,7 @@
 ;;         (this-single-command-keys)
 ;;       (vconcat (char-to-string meta-prefix-char) (number-to-string current-prefix-arg) (this-single-command-keys)))))
 
-(cond 
+(cond
  ((fboundp 'this-command-keys-vector)
   (fset 'dot-mode-command-keys (symbol-function 'this-command-keys-vector)))
  (t
@@ -315,23 +319,25 @@ or even saved for later use with name-last-kbd-macro"
 )
 
 (defun dot-mode-buffer-to-string ()
-       "Return the macro buffer as a string."
+  "Return the macro buffer as a string."
   (let ((str dot-mode-cmd-buffer))
-    (if (fboundp 'character-to-event) ; we're on X-Emacs
-        (progn
-          (setq str (prin1-to-string str))
-          (setq str (replace-in-string str " *#<keypress-event +" "<"))
-          (setq str (replace-in-string str " *<\\(.\\)> *" "\\1"))
-          (setq str (replace-in-string str "^\\[\\(.*\\)\\]$" "\\1"))
-        )
-      ;; ELSE - we're on GNU Emacs
-      (setq str (mapconcat (lambda (arg)
-                             (cond ((and (fboundp 'eventp) (eventp arg))
-                                    (dot-mode-event-to-string arg))
-                                   ((symbolp arg)
-                                    (concat "<" (symbol-name arg) ">"))
-                                   (t
-                                    (char-to-string arg)))) str ""))
+    (cond ((fboundp 'kmacro-display)
+           (setq str (kmacro-display str)))
+          ((fboundp 'character-to-event) ; we're on X-Emacs
+           (progn
+             (setq str (prin1-to-string str))
+             (setq str (replace-in-string str " *#<keypress-event +" "<"))
+             (setq str (replace-in-string str " *<\\(.\\)> *" "\\1"))
+             (setq str (replace-in-string str "^\\[\\(.*\\)\\]$" "\\1"))
+             ))
+          (t ;; ELSE - attempt to do it ourselves
+           (setq str (mapconcat (lambda (arg)
+                                  (cond ((and (fboundp 'eventp) (eventp arg))
+                                         (dot-mode-event-to-string arg))
+                                        ((symbolp arg)
+                                         (concat "<" (symbol-name arg) ">"))
+                                        (t
+                                         (char-to-string arg)))) str "")))
     )
     str)
 )
@@ -341,7 +347,7 @@ or even saved for later use with name-last-kbd-macro"
   ;; Just store it as a string buffer... 
   ;;     On X Emacs, we'll call character-to-event later
   ;;     On GNU Emacs, vconcat will handle strings
-  (setq dot-mode-minibuffer-input 
+  (setq dot-mode-minibuffer-input
         (concat dot-mode-minibuffer-input (buffer-string) "\r"))
 
   ;; I'd really like to check this-command to see if it's exit-minibuffer
@@ -375,9 +381,11 @@ or even saved for later use with name-last-kbd-macro"
         ;; hangs during execution (on GNU Emacs, anyway).
         (message "Repeated \"%s\"" (dot-mode-buffer-to-string)))
     ;; Put the hooks back
-    (make-local-hook 'pre-command-hook)
-    (make-local-hook 'post-command-hook)
-    (make-local-hook 'after-change-functions)
+    (if (fboundp 'make-local-hook)
+        (progn
+          (make-local-hook 'pre-command-hook)
+          (make-local-hook 'post-command-hook)
+          (make-local-hook 'after-change-functions)))
     (add-hook 'pre-command-hook 'dot-mode-pre-hook nil t)
     (add-hook 'post-command-hook 'dot-mode-loop nil t)
     (add-hook 'after-change-functions 'dot-mode-after-change nil t)
@@ -405,9 +413,9 @@ or even saved for later use with name-last-kbd-macro"
                (if (not (null dot-mode-minibuffer-input))
                    (progn
                      (if (fboundp 'character-to-event) ;; we're on X-Emacs
-                         (setq dot-mode-minibuffer-input 
+                         (setq dot-mode-minibuffer-input
                                (mapcar 'character-to-event dot-mode-minibuffer-input)))
-                     (setq dot-mode-cmd-keys (vconcat dot-mode-cmd-keys 
+                     (setq dot-mode-cmd-keys (vconcat dot-mode-cmd-keys
                                                       dot-mode-minibuffer-input))
                    )
                )
@@ -432,7 +440,7 @@ or even saved for later use with name-last-kbd-macro"
   ;; The only time this will ever do any good is if you did a
   ;; quit out of the minibuffer.  In that case, the hook will
   ;; still be there.  It won't really hurt anything, it will just
-  ;; continue to record everything you do in the minibuffer 
+  ;; continue to record everything you do in the minibuffer
   ;; regardless of whether or not it is an execute-extended-command.
   ;; And the dot-mode-minibuffer-input buffer could get quite large.
   (remove-hook 'minibuffer-exit-hook 'dot-mode-minibuffer-exit)
@@ -514,9 +522,11 @@ than just `.'."
       )
     ;; ELSE
     ;; The hooks are _ALWAYS_ local since dot-mode may not be on in every buffer
-    (make-local-hook 'pre-command-hook)
-    (make-local-hook 'post-command-hook)
-    (make-local-hook 'after-change-functions)
+    (if (fboundp 'make-local-hook)
+        (progn
+          (make-local-hook 'pre-command-hook)
+          (make-local-hook 'post-command-hook)
+          (make-local-hook 'after-change-functions)))
     (add-hook 'pre-command-hook 'dot-mode-pre-hook nil t)
     (add-hook 'post-command-hook 'dot-mode-loop nil t)
     (add-hook 'after-change-functions 'dot-mode-after-change nil t)
