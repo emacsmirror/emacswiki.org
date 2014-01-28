@@ -79,6 +79,9 @@ the keys you want to bind them to.
 
 Here is a screenshot of part of the Customize buffer for option `icicle-top-level-key-bindings', to give you an idea. You use '''INS''' to insert another binding and '''DEL''' to delete a binding. You type the key sequence you want in the '''Key''' field and its command in the '''Command''' field. As an alternative to specifying a key, you can choose '''Command to remap''' in the '''Value Menu''' and then enter the command you want to remap.
 
+
+
+[:IciclesCustomizingKeysScreenshot]
 [[image:IciclesCustomizingKeys]]
 
 
