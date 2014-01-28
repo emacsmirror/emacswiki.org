@@ -112,7 +112,7 @@ Thanks to JuriLinkov and Ian Kelling.
 
 == Extending Isearch with isearch-yank-symbol ==
 
-More in the spirit of Emacs is to have a keybind within Isearch to yank symbol's at the point.  For instance, Isearch has a binding for yanking s-expressions from the buffer.  However, an s-expression is a broader definition than the symbol of a common imperative programming language.  The yank needs to be only generic enough for identifiers ("symbols").  `C-M-w' is an obvious binding in Isearch for this "symbol yank".
+More in the spirit of Emacs is to have a keybind within Isearch to yank symbol's at the point.  For instance, Isearch has a binding for yanking s-expressions from the buffer.  However, an s-expression is a broader definition than the symbol of a common imperative programming language.  The yank needs to be only generic enough for identifiers ("symbols").  `C-M-w' is an obvious binding in Isearch for this "symbol yank". [Warning: Thanks for proposing this solution, but "C-M-w" is not among the key bindings that are reserved for users and, indeed, is already bound to `isearch-del-char' in Emacs 24.3]
 
   (require 'etags)
 
