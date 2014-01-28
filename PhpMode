@@ -228,6 +228,36 @@ Here's a variation of my quick documentation lookup above. It shows short help f
 </pre>
 
 
+== Collecting all functions for completion ==
+
+This code fetches all php function names from the net and stores it in a list. It can be used for completion with a completion backend.
+
+<pre>
+
+(defun my-fetch-php-completions ()
+  (if (and (boundp 'my-php-symbol-list)
+           my-php-symbol-list)
+      my-php-symbol-list
+
+    (message "Fetching completion list...")
+
+    (with-current-buffer
+        (url-retrieve-synchronously "http://www.php.net/manual/en/indexes.functions.php")
+
+      (goto-char (point-min))
+
+      (message "Collecting function names...")
+
+      (setq my-php-symbol-list nil)
+      (while (re-search-forward "<a[^>]*class=\"index\"[^>]*>\\([^<]+\\)</a>" nil t)
+        (push (match-string-no-properties 1) my-php-symbol-list))
+
+      my-php-symbol-list)))
+
+
+</pre>
+
+
 == Completion with Company ==
 
 See [[CompanyModeBackends#PhpCompletion]]
