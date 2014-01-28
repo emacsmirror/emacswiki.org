@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 131 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 132 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
@@ -45,7 +45,7 @@ __Minor Mode Survey__
 | ange-ftp                                         |                   1 |
 | ansi-color                                       |                   1 |
 | antlr-mode                                       |                   1 |
-| apropos                                          |                   3 |
+| apropos                                          |                   4 |
 | auto-completion-mode                             |                   7 |
 | auto-composition-mode                            |                  12 |
 | auto-compression-mode                            |                  15 |
@@ -66,11 +66,11 @@ __Minor Mode Survey__
 | cl-macs                                          |                   1 |
 | color                                            |                   1 |
 | column-number-mode                               |                  89 |
-| comint                                           |                   4 |
-| compilation-minor-mode                           |                  10 |
+| comint                                           |                   5 |
+| compilation-minor-mode                           |                  11 |
 | compile                                          |                   1 |
 | copyright                                        |                   1 |
-| css-mode                                         |                   1 |
+| css-mode                                         |                   2 |
 | cua-mode                                         |                  12 |
 | cua-selection-mode                               |                  15 |
 | cus-edit                                         |                   1 |
@@ -80,30 +80,30 @@ __Minor Mode Survey__
 | delete-selection-mode                            |                  33 |
 | delsel                                           |                   2 |
 | descr-text                                       |                   2 |
-| desktop                                          |                   2 |
-| desktop-save-mode                                |                  30 |
+| desktop                                          |                   3 |
+| desktop-save-mode                                |                  31 |
 | diff-mode                                        |                   2 |
-| dired                                            |                   1 |
-| dired-aux                                        |                   2 |
+| dired                                            |                   2 |
+| dired-aux                                        |                   3 |
 | dired-hide-details-mode                          |                  15 |
-| dired-x                                          |                  43 |
+| dired-x                                          |                  44 |
 | display-battery-mode                             |                   1 |
-| display-time-mode                                |                  27 |
+| display-time-mode                                |                  28 |
 | easy-mmode                                       |                   1 |
 | easymenu                                         |                   1 |
 | ebnf2ps                                          |                   2 |
 | ede-minor-mode                                   |                   1 |
 | edebug-mode                                      |                   7 |
-| ediff                                            |                   5 |
+| ediff                                            |                   6 |
 | edmacro                                          |                   2 |
 | eldoc-mode                                       |                  50 |
 | electric-indent-mode                             |                  12 |
 | electric-layout-mode                             |                   3 |
 | electric-pair-mode                               |                  10 |
-| emacs-lisp-mode                                  |                   3 |
-| epa-file-enable                                  |                   3 |
+| emacs-lisp-mode                                  |                   4 |
+| epa-file-enable                                  |                   4 |
 | erc-mode                                         |                   5 |
-| etags                                            |                   1 |
+| etags                                            |                   2 |
 | face-remap                                       |                   1 |
 | facemenu                                         |                   1 |
 | faces                                            |                   2 |
@@ -113,14 +113,14 @@ __Minor Mode Survey__
 | find-func                                        |                   1 |
 | finder                                           |                   1 |
 | flyspell-mode                                    |                  52 |
-| font-lock-mode                                   |                  50 |
+| font-lock-mode                                   |                  51 |
 | frame                                            |                   2 |
 | frameset                                         |                   1 |
-| generic-x                                        |                   4 |
+| generic-x                                        |                   5 |
 | global-auto-revert-mode                          |                  13 |
 | global-cwarn-mode                                |                   5 |
 | global-ede-mode                                  |                   1 |
-| global-font-lock-mode                            |                  47 |
+| global-font-lock-mode                            |                  48 |
 | global-hi-lock-mode                              |                   5 |
 | global-hl-line-mode                              |                  16 |
 | global-linum-mode                                |                  14 |
@@ -136,11 +136,11 @@ __Minor Mode Survey__
 | global-subword-mode                              |                  21 |
 | global-visual-line-mode                          |                   5 |
 | global-whitespace-mode                           |                  11 |
-| grep                                             |                   3 |
+| grep                                             |                   4 |
 | help                                             |                   2 |
 | help-fns                                         |                   1 |
 | help-mode                                        |                   2 |
-| hide-ifdef-mode                                  |                   5 |
+| hide-ifdef-mode                                  |                   6 |
 | hippie-exp                                       |                  26 |
 | hl-line                                          |                   3 |
 | hs-minor-mode                                    |                  12 |
@@ -149,13 +149,13 @@ __Minor Mode Survey__
 | ido-everywhere                                   |                  42 |
 | ido-mode                                         |                  81 |
 | image                                            |                   1 |
-| image-dired                                      |                   2 |
+| image-dired                                      |                   3 |
 | image-file                                       |                   1 |
 | imenu                                            |                  21 |
-| info-mode                                        |                   2 |
-| isearch                                          |                   4 |
+| info-mode                                        |                   3 |
+| isearch                                          |                   5 |
 | iso-transl                                       |                   2 |
-| ispell-minor-mode                                |                  10 |
+| ispell-minor-mode                                |                  11 |
 | iswitchb-mode                                    |                   9 |
 | kill-whole-line                                  |                  12 |
 | kmacro                                           |                   2 |
@@ -174,9 +174,9 @@ __Minor Mode Survey__
 | mouse-wheel-mode                                 |                  18 |
 | mwheel                                           |                   1 |
 | newcomment                                       |                   1 |
-| nxml-mode                                        |                   1 |
+| nxml-mode                                        |                   2 |
 | org-capture                                      |                  22 |
-| org-mode                                         |                  53 |
+| org-mode                                         |                  54 |
 | org-src-mode                                     |                   8 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   7 |
@@ -217,10 +217,10 @@ __Minor Mode Survey__
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
 | tooltip-mode                                     |                  18 |
-| tramp                                            |                  26 |
+| tramp                                            |                  27 |
 | tramp-ftp                                        |                   1 |
 | transient-mark-mode                              |                  67 |
-| uniquify                                         |                  89 |
+| uniquify                                         |                  90 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
 | url-vars                                         |                   1 |
