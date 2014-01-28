@@ -70,8 +70,10 @@ Buffers:
 
     (defun string/ends-with (s ending)
       "return non-nil if string S ends with ENDING."
-      (let ((elength (length ending)))
-        (string= (substring s (- 0 elength)) ending)))
+      (cond ((>= (length s) (length ending))
+             (let ((elength (length ending)))
+               (string= (substring s (- 0 elength)) ending)))
+            (t nil)))
 
     (defun string/starts-with (s begins)
       "returns non-nil if string S starts with BEGINS.  Else nil."
