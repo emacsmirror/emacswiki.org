@@ -23,6 +23,12 @@ The term "'''[::completion]'''" can mean different things in Emacs:
 
 * `pcomplete' -- standard library `<code>pcomplete.el</code>': Completes function arguments. See ProgrammableCompletion.
 
+* [[CompanyMode|Company]] -- a framework for completion while programming
+
+* [[AutoComplete|Auto Completion]] -- a framework for completion while programming
+
+Also note that the question [http://stackoverflow.com/questions/4704748/emacs-completion-autocomplete-or-company Emacs completion: autocomplete or company?] doesn't have an obvious answer.
+
 
 '''3. Help about completions --''' The possible completions in the sense of '''1''' or '''2''' are displayed; this help is also sometimes referred to as "completion".  
 
