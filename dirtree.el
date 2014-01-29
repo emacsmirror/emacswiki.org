@@ -4,6 +4,7 @@
 ;;
 ;; Author: Ye Wenbin <wenbinye@gmail.com>
 ;; Maintainer: Ye Wenbin <wenbinye@gmail.com>
+;; Package-Requires: ((tree-mode "1.1.1.1") (windata "0"))
 ;; Created: 09 Jan 2010
 ;; Version: 0.01
 ;; Keywords
