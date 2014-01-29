@@ -2,7 +2,7 @@ JSON (JavaScript Object Notation) is a subset of JavaScript useful as a format f
 
 Read all about it at [http://json.org/ json.org]!
 
-You can read and write JSON from Emacs Lisp using [http://edward.oconnor.cx/elisp/json.el json.el].
+You can decode and encode JSON from Emacs Lisp using [http://edward.oconnor.cx/2006/03/json.el json.el].  It is part of GNU Emacs since 23.1 (2008).
 
 Some highlighting support for editing json files is provided by [https://github.com/joshwnj/json-mode json-mode].
 
