@@ -230,7 +230,7 @@ Here's a variation of my quick documentation lookup above. It shows short help f
 
 == Collecting all functions for completion ==
 
-This code fetches all php function names from the net and stores it in a list. It can be used for completion with a completion backend.
+This code fetches all php function names from the net and stores it in a list. It can be used for completion with a completion frontend.
 
 <pre>
 
