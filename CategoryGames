@@ -51,6 +51,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * SokobanMode
 * TypingOfEmacs -- a game for fast typers
 * TypingPractice -- typing practice in the minibuffer.
+* [https://github.com/killdash9/tron.el Tron] -- A tron game with a configurable number of opponents.
 * [[Whine]] -- complaint generator
 * MineSweeper -- a game of mine sweeper
 * [http://www.elite-for-emacs.org/ Elite for Emacs] -- An Emacs version of the classic game Elite
