@@ -1,15 +1,5 @@
 There are good packages for Emacs Snapshot (a daily snapshot of the latest HEAD in the source repository) and also for Emacs 24 releases.
 
-== APT Packages ==
-The APT repository at http://emacs.naquadah.org/ has precompiled emacs-snapshot packages available for a few different architectures and Debian releases.
-
-It is rebuilt daily (normally) and can be installed with a package manager (like aptitude).
-
-You //may// need some of the dependencies listed below. 
-
-=== Problems ===
-I was having problems with installing emacs-snapshot on Debian Wheezy due to unsatisfiable libmagick-dependencies. The problem was solved by apt-pinning; basically taking two missing libraries from Debian unstable repositories. John H. Robinson has written [http://jaqque.sbih.org/kplug/apt-pinning.html noob-friendly guide to apt-pinning].
-
 == Ubuntu PPA ==
 There is also an [[https://launchpad.net/~cassou/+archive/emacs|Ubuntu PPA]].
 
