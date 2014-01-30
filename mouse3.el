@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:42:48 2013 (-0800)
+;; Last-Updated: Thu Jan 30 06:55:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1502
+;;     Update #: 1504
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -309,6 +309,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/30 dadams
+;;     mouse3-region-popup-menu:
+;;       Use t, not EVENT as arg to x-popup-menu (see Emacs bug #16565).  Thx to Michael Heerdegen.
 ;; 2013/11/26 dadams
 ;;     *-region-popup-x-popup-panes, *-region-popup-copy-submenu, *-region-popup-highlight-submenu:
 ;;       Added hlt-(copy|yank)-props.
@@ -1257,7 +1260,7 @@ for Emacs 23+.)"
 
                        ;; Entries from `mouse3-region-popup-entries'.
                        ,@(mouse3-region-popup-custom-entries)))))
-         (choice  (x-popup-menu event menus)))
+         (choice  (x-popup-menu t menus)))
     (mouse3-region-popup-choice menus choice)))
 
 (defun mouse3-region-popup-choice (menus choice)
