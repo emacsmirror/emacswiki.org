@@ -1,9 +1,9 @@
 If you build Emacs from source you're going to miss the native print dialog available in CarbonEmacsPackage.
 Here's how to get it back:
 
-# Get [http://cvs.sourceforge.jp/cgi-bin/viewcvs.cgi/macemacsjp/CarbonEmacsPackage/GPL/mac/mac-print-mode.el mac-print-mode.el] and put it on your LoadPath.
-# Get [http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el htmlize.el] and put it in your LoadPath.
-# Get [http://hmdt.jp/coral/ coral 1.2]
+# Get [https://raw.github.com/marcora/emacs/master/mac-print-mode.el mac-print-mode.el] and put it on your LoadPath.
+# Get [http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el htmlize.el] and put it in your LoadPath or download the package.
+# Get [http://hmdt.jp/coral/ coral 1.3]
 ## copy ##bin/coral.app## into ##/Applications##
 ## copy ##bin/coral## into ##/usr/local/bin## and edit it so that it calls ##/Applications/coral.app/Contents/MacOS/coral##
 # Add the following to your ##.emacs##:
