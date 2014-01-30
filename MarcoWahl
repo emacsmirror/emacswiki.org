@@ -1,10 +1,7 @@
-Lisp:reverse-every-other-line.el  --- A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  Depends on program convert of the ImageMagic-suite.
+Lisp:reverse-every-other-line.el  --- A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  This mode depends on program 'convert' of the Image Magic-suite.  Comments and improvements welcome.
 
-Git repo at https://github.com/marcowahl/reverse-every-other-line
-
-Comments and improvements welcome.
-
-
+Git repo: https://github.com/marcowahl/reverse-every-other-line
+----
 Test: Editing via w3.
 
 Welcome to the wiki!  Are you really using w3?  Amazing.  :) -- AlexSchroeder
