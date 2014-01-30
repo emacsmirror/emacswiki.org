@@ -4,5 +4,15 @@ As would be expected, this input method may be invoked with `M-x set-input-metho
 
 A list of available sequences may be viewed with `M-x describe-input-method'
 
+== Customizing the TeX Input Method ==
+
+Here is an example. You need to bind the "current" package before calling `quail-define-rules' and you need to use the `append' annotation.
+
+{{{
+(let ((quail-current-package (assoc "TeX" quail-package-alist)))
+  (quail-define-rules ((append . t))
+		      ("^\\alpha" ?ᵅ)))
+}}}
+
 ----
 TeX
