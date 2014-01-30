@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 13 09:07:51 2014 (-0800)
+;; Last-Updated: Thu Jan 30 08:57:55 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1791
+;;     Update #: 1796
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/30 dadams
+;;     query-replace, interactive spec: Swapped return lists - it is Emacs 24.4+ that has 6 args. 
+;;     defadvices: Removed extra nil before interactive spec.
 ;; 2014/01/13 dadams
 ;;     query-replace-read-(from|to): Define for Emacs 20-21 also.
 ;; 2014/01/11 dadams
@@ -859,7 +862,6 @@ replacement."
 ;;
 (when (> emacs-major-version 21)
   (defadvice query-replace (before respect-search/replace-region-as-default-flag activate)
-    nil
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
@@ -887,8 +889,8 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs24.4+
-           (list from to delimited start end)
-         (list from to delimited start end (nth 3 common)))))))
+           (list from to delimited start end (nth 3 common))
+         (list from to delimited start end))))))
 
 
 
@@ -898,7 +900,6 @@ replacement."
 ;;
 (when (> emacs-major-version 21)
   (defadvice query-replace-regexp (before respect-search/replace-region-as-default-flag activate)
-    nil
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
@@ -937,7 +938,6 @@ replacement."
 ;;
 (when (> emacs-major-version 21)
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
-    nil
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
@@ -976,7 +976,6 @@ replacement."
 ;;
 (when (> emacs-major-version 21)
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
-    nil
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
