@@ -7,6 +7,7 @@ A list of available sequences may be viewed with `M-x describe-input-method'
 == Customizing the TeX Input Method ==
 
 Here is an example. You need to bind the "current" package before calling `quail-define-rules' and you need to use the `append' annotation.
+You can add more rules to this function call.
 
 {{{
 (let ((quail-current-package (assoc "TeX" quail-package-alist)))
