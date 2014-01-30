@@ -695,6 +695,18 @@ Libraries referenced here:
 
 Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:cus-edit+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el, Lisp:ring+.el
 
+----
+
+Dear Drew,
+
+When i start emacs with -Q, load replace plus, and try to use `query-replace' i've got the following error 
+
+    call-interactively: Wrong number of arguments: (lambda (from-string to-string &optional delimited start end) #("Advice doc string" 0 17 (ad-advice-info query-replace)) (interactive (let* ((emacs24\.4+ (or (> emacs-major-version 24) (and (= emacs-major-version 24) (or (> emacs-minor-version 3) (replacep-string-match-p "24.3.50" emacs-version))))) (common (query-replace-read-args (concat "Query replace" (and current-prefix-arg (if (and emacs24\.4+ ...) " backward" " word")) (and transient-mark-mode mark-active (> (region-end) (region-beginning)) (not search/replace-region-as-default-flag) " in region")) nil)) (from (nth 0 common)) (to (nth 1 common)) (delimited (nth 2 common)) (start (and transient-mark-mode mark-active (> (region-end) (region-beginning)) (region-beginning))) (end (and transient-mark-mode mark-active (> (region-end) (region-beginning)) (region-end)))) (if emacs24\.4+ (list from to delimited start end) (list from to delimited start end (nth 3 common))))) (let (ad-return-value) (interactive (let* ((emacs24\.4+ (or (> emacs-major-version 24) (and (= emacs-major-version 24) (or (> emacs-minor-version 3) (replacep-string-match-p "24.3.50" emacs-version))))) (common (query-replace-read-args (concat "Query replace" (and current-prefix-arg (if ... " backward" " word")) (and transient-mark-mode mark-active (> ... ...) (not search/replace-region-as-default-flag) " in region")) nil)) (from (nth 0 common)) (to (nth 1 common)) (delimited (nth 2 common)) (start (and transient-mark-mode mark-active (> (region-end) (region-beginning)) (region-beginning))) (end (and transient-mark-mode mark-active (> (region-end) (region-beginning)) (region-end)))) (if emacs24\.4+ (list from to delimited start end) (list from to delimited start end (nth 3 common))))) (setq ad-return-value (with-no-warnings (ad-Orig-query-replace from-string to-string delimited start end))) ad-return-value)), 6
+
+I use GNU Emacs 24.3.1 (x86_64-pc-linux-gnu, GTK+ Version 3.4.2) of 2013-04-13 on trouble, modified by Debian
+
+Regards,
+PasJa
 
 ------
 CategoryHomepage
