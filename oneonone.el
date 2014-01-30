@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Dec 26 09:43:34 2013 (-0800)
+;; Last-Updated: Thu Jan 30 13:01:31 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2822
+;;     Update #: 2902
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -45,14 +45,14 @@
 ;;  In addition, these user options control the creation of three
 ;;  separate, specialized frames:
 ;;
-;;    - `1on1-*Help*-frame-flag' - *Help* buffer frame
-;;    - `1on1-*Completions*-frame-flag' - *Completions* buffer frame
+;;    - `1on1-*Help*-frame-flag' - `*Help*' buffer frame
+;;    - `1on1-*Completions*-frame-flag' - `*Completions*' buffer frame
 ;;    - `1on1-minibuffer-frame-flag' - minibuffer frame
 ;;
-;;  Buffers *Help* and *Completions* are always displayed in their own
-;;  frames.  In addition, if `1on1-*Help*-frame-flag' or
-;;  `1on1-*Completions*-frame-flag' is non-nil, then the *Help* or
-;;  *Completions* frame has a special (customizable) appearance.
+;;  Buffers `*Help*' and `*Completions*' are always displayed in their
+;;  own frames.  In addition, if `1on1-*Help*-frame-flag' or
+;;  `1on1-*Completions*-frame-flag' is non-nil, then the `*Help*' or
+;;  `*Completions*' frame has a special (customizable) appearance.
 ;;
 ;;  If `1on1-minibuffer-frame-flag' is non-nil (the default value),
 ;;  then the minibuffer is shown in its own frame,
@@ -145,23 +145,29 @@
 ;;    (define-key minibuffer-local-completion-map "\C-o"
 ;;                '1on1-fit-minibuffer-frame)
 ;;
+;;  By default, `oneonone.el' sets the width of the bottom and right
+;;  dividers, which separate Emacs windows, to 2 instead of 0.  This
+;;  lets you more easily notice where to drag with your mouse, to
+;;  resize windows.  If you use Emacs 24.4 or later then I also
+;;  recommend that you consider customizing face `window-divider', to
+;;  further highlight the dividers.
+;;
 ;;
 ;;  Notes on user options defined here:
 ;;  ---------------------------------
 ;;
-;;  Some user options are used here only as conveniences to define
-;;  frame-parameter alists.  They are defined using `defvar', not
-;;  `defcustom', because you cannot use Customize to define them
+;;  Some non-option variables are used here only as conveniences to
+;;  define frame-parameter alists.  They are defined using `defvar',
+;;  not `defcustom', because you cannot use Customize to define them
 ;;  independently of the alist user options they help to define.  The
 ;;  alists themselves are the variables to customize.  If you want to
 ;;  change the `defvar' variables individually and then use them to
 ;;  set the alist variables, then use `setq', not Customize, to change
 ;;  them, and restart Emacs for their changes to take effect.
 ;;
-;;  Changes to any user options defined here with `defcustom' will
-;;  take effect as soon as `1on1-emacs' is executed, so you can do
-;;  `M-x 1on1-emacs' to see their changes (no need to restart
-;;  Emacs).
+;;  Changes to any user options defined here take effect as soon as
+;;  `1on1-emacs' is executed, so you can do `M-x 1on1-emacs' to see
+;;  their changes (no need to restart Emacs).
 ;;
 ;;  User options `1on1-color-minibuffer-frame-on-setup-increment' and
 ;;  `1on1-color-minibuffer-frame-on-exit-increment' determine how much
@@ -187,7 +193,7 @@
 ;;    `1on1-set-box-cursor-when-idle-interval',
 ;;    `1on1-set-cursor-type', `1on1-toggle-box-cursor-when-idle'.
 ;;
-;;  Customizable user options defined here:
+;;  User options defined here:
 ;;
 ;;    `1on1-*Completions*-frame-flag',
 ;;    `1on1-*Completions*-frame-at-right-flag',
@@ -219,28 +225,6 @@
 ;;    `1on1-remap-other-frame-command-flag',
 ;;    `1on1-special-display-frame-alist'.
 ;;
-;;  Non-customizable user options defined here:
-;;
-;;    `1on1-default-frame-background', `1on1-default-frame-font',
-;;    `1on1-default-frame-foreground',
-;;    `1on1-default-frame-menu-bar-lines',
-;;    `1on1-default-frame-mouse-color', `1on1-default-frame-size',
-;;    `1on1-default-frame-upper-left-corner',
-;;    `1on1-default-special-frame-background',
-;;    `1on1-default-special-frame-cursor-color',
-;;    `1on1-default-special-frame-font',
-;;    `1on1-default-special-frame-foreground',
-;;    `1on1-default-special-frame-menu-bar-lines',
-;;    `1on1-default-special-frame-mouse-color',
-;;    `1on1-default-special-frame-size',
-;;    `1on1-default-special-frame-upper-left-corner',
-;;    `1on1-minibuffer-frame-background',
-;;    `1on1-minibuffer-frame-cursor-color',
-;;    `1on1-minibuffer-frame-font',
-;;    `1on1-minibuffer-frame-foreground',
-;;    `1on1-minibuffer-frame-height',
-;;    `1on1-minibuffer-frame-mouse-color'.
-;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `1on1-box-cursor-when-idle',
@@ -255,14 +239,31 @@
 ;;    `1on1-minibuffer-prompt-end', `1on1-reset-minibuffer-frame',
 ;;    `1on1-remove-if', `1on1-set-minibuffer-frame-top/bottom',
 ;;    `1on1-set-minibuffer-frame-width',
-;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line',
+;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line'.
 ;;
 ;;  Non-option variables defined here:
 ;;
 ;;    `1on1-box-cursor-when-idle-p',
 ;;    `1on1-box-cursor-when-idle-interval',
-;;    `1on1-box-cursor-when-idle-timer', `1on1-last-cursor-type',
-;;    `1on1-minibuffer-frame'.
+;;    `1on1-box-cursor-when-idle-timer',
+;;    `1on1-default-frame-background', `1on1-default-frame-font',
+;;    `1on1-default-frame-foreground',
+;;    `1on1-default-frame-menu-bar-lines',
+;;    `1on1-default-frame-mouse-color', `1on1-default-frame-size',
+;;    `1on1-default-frame-upper-left-corner', `1on1-divider-width',
+;;    `1on1-last-cursor-type', `1on1-minibuffer-frame',
+;;    `1on1-minibuffer-frame-background',
+;;    `1on1-minibuffer-frame-cursor-color',
+;;    `1on1-minibuffer-frame-font',
+;;    `1on1-minibuffer-frame-foreground',
+;;    `1on1-minibuffer-frame-height',
+;;    `1on1-minibuffer-frame-mouse-color',
+;;    `1on1-special-frame-background',
+;;    `1on1-special-frame-cursor-color', `1on1-special-frame-font',
+;;    `1on1-special-frame-foreground',
+;;    `1on1-special-frame-menu-bar-lines',
+;;    `1on1-special-frame-mouse-color', `1on1-special-frame-size',
+;;    `1on1-special-frame-upper-left-corner'.
 ;;
 ;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
@@ -284,6 +285,12 @@
  
 ;;; Change Log:
 ;;
+;; 2014/01/30 dadams
+;;     Added: 1on1-divider-width.
+;;     Renamed: 1on1-default-special-frame* to 1on1-special-frame*.
+;;              This is an *incompatible change*: If you customized options with the old names
+;;              then you will need recustomize using the new names.
+;;     1on1-(default|special)-frame-alist: Use 1on1-divider-width.
 ;; 2013/12/21 dadams
 ;;     Removed autoload cookie: *-frame-alist.
 ;;     1on1-(in)active-mode-line-background: Use constant default, so can have autoload cookie.
@@ -644,6 +651,13 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs")
   :link '(emacs-commentary-link :tag "Commentary" "oneonone"))
+
+(defvar 1on1-divider-width 2
+  "Default `bottom-divider-width' and `right-divider-width'.
+This is used only to define the standard value of
+`1on1-default-frame-alist' and `1on1-special-display-frame-alist'.
+Customize those options, not this variable.  If you change this
+variable, you will need to restart Emacs for it to take effect.")
  
 ;;; Minibuffer frame: ********************************
 ;;;
@@ -1182,6 +1196,10 @@ take effect.")
        (cons 'cursor-type 1on1-default-frame-cursor-type))
    (or (assq 'menu-bar-lines default-frame-alist)
        (cons 'menu-bar-lines 1on1-default-frame-menu-bar-lines))
+   (or (assq 'bottom-divider-width default-frame-alist)
+       (cons 'bottom-divider-width 1on1-divider-width))
+   (or (assq 'right-divider-width default-frame-alist)
+       (cons 'right-divider-width 1on1-divider-width))
    (or (assq 'top default-frame-alist)
        (cons 'top (car 1on1-default-frame-upper-left-corner)))
    (or (assq 'left default-frame-alist)
@@ -1218,7 +1236,7 @@ for the new value to take effect."
  
 ;;; Special-display frames: `1on1-special-display-frame-alist' ************************
 ;;;
-(defvar 1on1-default-special-frame-foreground "Black"
+(defvar 1on1-special-frame-foreground "Black"
   "Default foreground color for special display frames.
 
 This is used only to define the standard value of
@@ -1226,7 +1244,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-background "LightSteelBlue"
+(defvar 1on1-special-frame-background "LightSteelBlue"
   "Default background color for special display frames.
 
 This is used only to define the standard value of
@@ -1234,7 +1252,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-font
+(defvar 1on1-special-frame-font
   (if (eq system-type 'windows-nt)
       ;;; "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
       "-*-Lucida Console-normal-r-*-*-14-*-*-*-c-*-iso8859-1"
@@ -1248,7 +1266,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-mouse-color "Yellow"
+(defvar 1on1-special-frame-mouse-color "Yellow"
   "Default mouse color for special display frames.
 
 This is used only to define the standard value of
@@ -1256,7 +1274,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-cursor-color "Yellow"
+(defvar 1on1-special-frame-cursor-color "Yellow"
   "Default text cursor color for special display frames.
 
 This is used only to define the standard value of
@@ -1264,7 +1282,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-menu-bar-lines 1
+(defvar 1on1-special-frame-menu-bar-lines 1
   "Number of lines used for the menu bar of special display frames.
 
 This is used only to define the standard value of
@@ -1272,7 +1290,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-upper-left-corner '(0 . 0)
+(defvar 1on1-special-frame-upper-left-corner '(0 . 0)
   "Position of upper left corner of special display frames.
 A cons whose car is the distance from the top in pixels
 and whose cdr is the distance from the left in pixels.
@@ -1282,7 +1300,7 @@ This is used only to define the standard value of
 one.  If you change this variable, you will need to restart Emacs for
 it to take effect.")
 
-(defvar 1on1-default-special-frame-size '(80 . 20)
+(defvar 1on1-special-frame-size '(80 . 20)
   "Default size of special display frames.
 A cons whose car is the frame width in characters and whose cdr is the
 frame height in characters.
@@ -1297,25 +1315,29 @@ it to take effect.")
 (defcustom 1on1-special-display-frame-alist
   (list
    (or (assq 'font special-display-frame-alist)
-       (cons 'font 1on1-default-special-frame-font))
+       (cons 'font 1on1-special-frame-font))
    (or (assq 'width special-display-frame-alist)
-       (cons 'width (car 1on1-default-special-frame-size)))
+       (cons 'width (car 1on1-special-frame-size)))
    (or (assq 'height special-display-frame-alist)
-       (cons 'height (cdr 1on1-default-special-frame-size)))
+       (cons 'height (cdr 1on1-special-frame-size)))
    (or (assq 'mouse-color special-display-frame-alist)
-       (cons 'mouse-color 1on1-default-special-frame-mouse-color))
+       (cons 'mouse-color 1on1-special-frame-mouse-color))
    (or (assq 'cursor-color special-display-frame-alist)
-       (cons 'cursor-color 1on1-default-special-frame-cursor-color))
+       (cons 'cursor-color 1on1-special-frame-cursor-color))
    (or (assq 'menu-bar-lines special-display-frame-alist)
-       (cons 'menu-bar-lines 1on1-default-special-frame-menu-bar-lines))
+       (cons 'menu-bar-lines 1on1-special-frame-menu-bar-lines))
+   (or (assq 'bottom-divider-width special-display-frame-alist)
+       (cons 'bottom-divider-width 1on1-divider-width))
+   (or (assq 'right-divider-width special-display-frame-alist)
+       (cons 'right-divider-width 1on1-divider-width))
    (or (assq 'foreground-color special-display-frame-alist)
-       (cons 'foreground-color 1on1-default-special-frame-foreground))
+       (cons 'foreground-color 1on1-special-frame-foreground))
    (or (assq 'background-color special-display-frame-alist)
-       (cons 'background-color 1on1-default-special-frame-background))
+       (cons 'background-color 1on1-special-frame-background))
    (or (assq 'top special-display-frame-alist)
-       (cons 'top (car 1on1-default-special-frame-upper-left-corner)))
+       (cons 'top (car 1on1-special-frame-upper-left-corner)))
    (or (assq 'left special-display-frame-alist)
-       (cons 'left (cdr 1on1-default-special-frame-upper-left-corner)))
+       (cons 'left (cdr 1on1-special-frame-upper-left-corner)))
    (or (assq 'unsplittable special-display-frame-alist)
        (cons 'unsplittable t))
    (or (assq 'user-position special-display-frame-alist)
@@ -1461,7 +1483,7 @@ show/hide: hold CTRL + click in window"))
            ((string= "*Completions*" bufname) 1on1-completions-frame-mouse+cursor-color)
            ((eq 1on1-minibuffer-frame (selected-frame))
             1on1-minibuffer-frame-cursor-color)
-           ((special-display-p bufname) 1on1-default-special-frame-cursor-color)
+           ((special-display-p bufname) 1on1-special-frame-cursor-color)
            (t 1on1-default-frame-cursor-color)))))))
 
 ;; This is from Juri Linkov <juri@jurta.org>, with read-only added.
