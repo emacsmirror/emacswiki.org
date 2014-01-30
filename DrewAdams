@@ -697,6 +697,8 @@ Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:cus-edit+.el, Lisp:
 
 ----
 
+
+[:new]
 Dear Drew,
 
 When i start emacs with -Q, load replace plus, and try to use `query-replace' i've got the following error 
@@ -707,6 +709,12 @@ I use GNU Emacs 24.3.1 (x86_64-pc-linux-gnu, GTK+ Version 3.4.2) of 2013-04-13 o
 
 Regards,
 PasJa
+
+[new:DrewAdams:2014-01-30 17:04 UTC]
+Oops.  I had switched the return values for `interactive' in the `defadvice'.  Should be OK now.  Please try the latest version.  Thx -- DrewAdams
+
+
+----
 
 ------
 CategoryHomepage
