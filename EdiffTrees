@@ -37,5 +37,14 @@ I'd love a recursive directory diff in Emacs that presented a view of two dired 
 
 Even better would be a three-way diff/merge with three file and dired buffers similar to the two way comparison case. -- MatthewLMcClure
 
+[new]
+Thank you for writing this tool. It was handy for a task I just had and have encountered previously!
+
+ediff-trees-examine-next-regexp is less convenient than it could be. I'd prefer the ediff-directories behavior of querying for a regular expression to match against filenames rather than constantly invoking ediff-trees-examine-next-regexp and giving the same regexp each time. (Even though I can recall the regexp from history, it's awkward).
+
+A control window, like ediff's own, that provides the ability to navigate among the changed files, would be helpful, too. That is, having a window that permits jumping to the first, last, previous, next, or numbered file pair, like ediff permits navigating differences for a pair, would make the usage clearer. Thus, one would select a pair to compare, ediff-trees would run ediff, one would close ediff after comparing the files, then one would select the next pair to compare.
+
+-- RobStewart
+
 ----
 CategoryProgrammerUtils
