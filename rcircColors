@@ -1,3 +1,3 @@
 The following allows [[rcirc]] to handle escape sequences such as ##^C4This is blue^C##.
 
-Lisp:rcirc-controls.el
+[https://github.com/kensanata/elisp/blob/master/rcirc-controls.el rcirc-controls.el]
