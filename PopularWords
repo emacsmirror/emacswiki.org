@@ -2,4 +2,4 @@ This mode warns you if you use any word that is not one of the 1000 or 2000 most
 
 [https://github.com/kensanata/elisp/blob/master/1000-words.el 1000-words.el]
 ----
-CategoryText
+CategoryWriting
