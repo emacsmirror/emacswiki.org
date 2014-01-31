@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Tue Jan 14 19:35:23 2014 (-0800)
+;; Last-Updated: Thu Jan 30 18:59:56 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 144
+;;     Update #: 156
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -31,6 +31,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/01/30 dadams
+;;     Added: setcyg-dir-p.
+;;     cygwin-root-directory: Look for "C:/cygwin64/" first, then "C:/cygwin/".
 ;; 2014/01/14 dadams
 ;;     Added: add-to-list definition with APPEND, for Emacs 20.
 ;; 2013/06/02 dadams
@@ -104,14 +107,18 @@ other hooks, such as major mode hooks, can do the job."
 (defgroup setup-cygwin nil
   "Set up Emacs to use Cygwin.")
 
-(defcustom cygwin-root-directory "C:/cygwin/"
+(defun setcyg-dir-p (directory)
+  "Return DIRECTORY if DIRECTORY is a readable directory, nil otherwise."
+  (and (file-directory-p directory)  (file-readable-p directory)  directory))
+
+(defcustom cygwin-root-directory (or (setcyg-dir-p "C:/cygwin64/")  (setcyg-dir-p "C:/cygwin/"))
   "Root directory of Cygwin installation.
 It should have subdirectories `bin' and `usr/info'.
 Subdirectory `bin' should have file `bin/bash.exe'."
   :group 'setup-cygwin :type 'directory)
 
-(unless (file-directory-p cygwin-root-directory)
-  (error "Cannot find Cygwin - customize `cygwin-root-directory'"))
+(unless (setcyg-dir-p cygwin-root-directory)
+  (error "Cannot find Cygwin.  Please customize option `cygwin-root-directory'"))
 
 
 ;;; Make Cygwin paths accessible
