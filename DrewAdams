@@ -713,6 +713,11 @@ PasJa
 [new:DrewAdams:2014-01-30 17:04 UTC]
 Oops.  I had switched the return values for `interactive' in the `defadvice'.  Should be OK now.  Please try the latest version.  Thx -- DrewAdams
 
+[new]
+
+Thanks, it works fine
+
+Regards, PasJa
 
 ----
 
