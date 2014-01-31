@@ -1,5 +1,7 @@
 = About =
 
+Update, 2014-01-31: For some time now I also run this under Windows. The core is the same but the way to show and hide the launcher window is a bit different. If you want the details, just send me (MaDa) an e-mail.
+
 In the never-ending quest to use Emacs for everything, this is a hack
 to use Emacs together with [[Anything]] as a general purpose command
 launcher for my Ubuntu GNU/Linux desktop installation. The goal is to
