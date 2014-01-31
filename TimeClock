@@ -6,9 +6,6 @@ This mode is for keeping track of time intervals.  You can use it for whatever p
 
 timeclock.el is written by JohnWiegley.
 
-timeclock.el is now part of GNU Emacs, BUT:
-The version of timeclock.el that comes with my older revision of Gnu Emacs (GNU Emacs 21.2.1 that comes with Red Hat 7.3) is buggy.  I fixed this by downloading and using the HEAD revision of the file from the CVS repository, until I can upgrade to a more recent release of Gnu Emacs. -- BrentGoodrick
-
 --
 
 Does anyone know where to find documentation for timeclock?  The info page has some documentation: http://www.delorie.com/gnu/docs/emacs/emacs_437.html but not enough to bootstrap timeclock.  If I type M-x timeclock-in, my only project is nil and if I type M-x timeclock-out, the lack of defined reasons ends up throwing an error.
@@ -34,6 +31,13 @@ Note, there are some gotchas with running timeclock-x.el: you may have problems 
 ::  (timeclock-modeline-display 1) 
 
 Note: The help screen in timeclock-x.el refers to a function "timeclock-generate-timesheet" which is not defined in timeclock.el or timeclock-x.el. I gather that there were plans to release some report generation code (perhaps in a timeclock-report.el?).
+
+----
+===Older versions===
+
+timeclock.el is now part of GNU Emacs, BUT:
+The version of timeclock.el that comes with my older revision of Gnu Emacs (GNU Emacs 21.2.1 that comes with Red Hat 7.3) is buggy.  I fixed this by downloading and using the HEAD revision of the file from the CVS repository, until I can upgrade to a more recent release of Gnu Emacs. -- BrentGoodrick
+
 
 ----
 CategoryCalendar
