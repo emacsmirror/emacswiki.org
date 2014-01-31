@@ -2,7 +2,7 @@ Libnotify notifications for [[rcirc]].
 
 Source:
 
-* Lisp:rcirc-notify.el
+* [https://github.com/kensanata/elisp/blob/master/rcirc-notify.el rcirc-notify.el]
 
 To install, put it in your LoadPath and add the following to your InitFile:
 
