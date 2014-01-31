@@ -44,7 +44,7 @@ ediff-trees-examine-next-regexp is less convenient than it could be. I'd prefer 
 
 A control window, like ediff's own, that provides the ability to navigate among the changed files, would be helpful, too. That is, having a window that permits jumping to the first, last, previous, next, or numbered file pair, like ediff permits navigating differences for a pair, would make the usage clearer. Thus, one would select a pair to compare, ediff-trees would run ediff, one would close ediff after comparing the files, then one would select the next pair to compare.
 
--- RobStewart
+[[RobStewart]]
 
 ----
 CategoryProgrammerUtils
