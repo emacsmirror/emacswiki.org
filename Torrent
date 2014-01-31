@@ -1,8 +1,8 @@
-Torrent files are "bencoded". See Wikipedia:Bencode.
+Torrent files are "bencoded". See WikiPedia:Bencode.
 
 Here's some code for viewing these files:
 
 * [https://github.com/kensanata/elisp/blob/master/torrent.el torrent.el]
 
 ----
-CategoryMode
+CategoryModes
