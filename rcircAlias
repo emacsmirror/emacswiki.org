@@ -1,4 +1,4 @@
-[[rcirc-alias.el]] is an incomplete extension for [[rcirc]]. It allows you to rename nicks and merge them -- treating multiple nicks as a single person.
+[https://github.com/kensanata/elisp/blob/master/rcirc-alias.el rcirc-alias.el] is an incomplete extension for [[rcirc]]. It allows you to rename nicks and merge them -- treating multiple nicks as a single person.
 
 Currently implemented:
 
