@@ -1,6 +1,6 @@
 When using [[rcirc]] you might be connected to a channel that doesn't have a lot of activity. If there is, however, you want to be alerted with a *beep*, whether your nick is mentioned or not. Enter the `rcirc-ding' minor-mode.
 
-* Lisp:rcirc-ding.el
+* [https://github.com/kensanata/elisp/blob/master/rcirc-ding.el rcirc-ding.el]
 
 == Playing Soundfiles ==
 
