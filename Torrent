@@ -1,4 +1,4 @@
-Torrent files are "bencoded". See WikiPedia:Bencode.
+Torrent files are [WikiPedia:Bencode bencoded].
 
 Here's some code for viewing these files:
 
