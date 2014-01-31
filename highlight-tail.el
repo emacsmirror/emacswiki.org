@@ -1065,6 +1065,7 @@ Run it, when you've made changes to some highlight-tail-mode variables."
                        'highlight-tail-check-if-defaultbgcolor-changed)))
   (add-hook 'post-command-hook 'highlight-tail-post-command))
 
+;;;###autoload
 (defun highlight-tail-mode (&optional arg)
   "Draw a \"tail\" while you're typing.
 
