@@ -1,4 +1,4 @@
-[WikiPedia:BitTorrent_%28protocol%29 Torrent] files are [WikiPedia:Bencode bencoded].
+[WikiPedia:BitTorrent Torrent] files are [WikiPedia:Bencode bencoded].
 
 Here's some code for viewing these files:
 
