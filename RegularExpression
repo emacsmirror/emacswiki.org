@@ -67,7 +67,8 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
 Here are some [[Manual:Syntax Descriptors|syntax classes]] that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
 
   [:digit:]  a digit, same as [0-9]
-  [:alpha:] an alphanumeric character
+  [:alpha:]  a letter (an alphabetic character)
+  [:alnum:]  a letter or adigit (an alphanumeric character ()
   [:upper:]  a letter in uppercase
   [:space:]  a whitespace character, as defined by the syntax table
   [:xdigit:] an hexadecimal digit
