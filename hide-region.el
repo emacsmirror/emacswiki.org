@@ -115,6 +115,7 @@ not really placed in the text, it is just shown in the overlay"
 (defvar hide-region-overlays nil
   "Variable to store the regions we put an overlay on.")
 
+;;;###autoload
 (defun hide-region-hide ()
   "Hides a region by making an invisible overlay over it and save the
 overlay on the hide-region-overlays \"ring\""
@@ -134,6 +135,7 @@ overlay on the hide-region-overlays \"ring\""
                                  'font-lock-face 'hide-region-after-string-face)
                    hide-region-after-string))))
 
+;;;###autoload
 (defun hide-region-unhide ()
   "Unhide a region at a time, starting with the last one hidden and
 deleting the overlay from the hide-region-overlays \"ring\"."
