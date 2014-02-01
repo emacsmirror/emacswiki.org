@@ -32,7 +32,6 @@ RepeatedStrainInjury -- ErgoemacsKeybindings helps me a lot!
 * Implement a DHCP client in EmacsLisp.
 * Make GNU Emacs support both [[Guile]] and EmacsLisp.
 * Implement a FTP server in EmacsLisp.
-* Completion of labels in Rmail.
 * Implement a spell checker in EmacsLisp.
 * Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
 * FFI support in Emacs.
