@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:38:15 2013 (-0800)
+;; Last-Updated: Sat Feb  1 12:44:20 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 888
+;;     Update #: 915
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -73,7 +73,13 @@
 ;;
 ;;    `lacarte-execute-command', `lacarte-execute-menu-command'.
 ;;
-;;  Options defined here: `lacarte-convert-menu-item-function'.
+;;  User options defined here:
+;;
+;;    `lacarte-convert-menu-item-function'.
+;;
+;;  Faces defined here:
+;;
+;;    `lacarte-shortcut'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -82,8 +88,9 @@
 ;;    `lacarte-get-a-menu-item-alist-1',
 ;;    `lacarte-get-a-menu-item-alist-22+',
 ;;    `lacarte-get-a-menu-item-alist-pre-22',
-;;    `lacarte-get-overall-menu-item-alist', `lacarte-menu-first-p',
-;;    `lacarte-remove-w32-keybd-accelerators',
+;;    `lacarte-get-overall-menu-item-alist',
+;;    `lacarte-key-description', `lacarte-menu-first-p',
+;;    `lacarte-propertize', `lacarte-remove-w32-keybd-accelerators',
 ;;    `lacarte-string-match-p'.
 ;;
 ;;  Internal variables defined here:
@@ -258,6 +265,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/02/01 dadams
+;;     Added: lacarte-key-description, lacarte-propertize, face lacarte-shortcut.
+;;     lacarte-add-if-menu-item, lacarte-get-a-menu-item-alist-pre-22:
+;;       Use lacarte-key-description, not key-description.  Use face lacarte-shortcut for key shortcuts.
+;;     lacarte-execute-command: Stop icicle-special-candidate-regexp at ?\000 char (before key shortcut).
+;;     lacarte-add-if-menu-item: Add ?\000 char before key shortcut (so not highlighted by Icicles).
 ;; 2013/07/09 dadams
 ;;     Updated for recent Emacs versions.  Corrections.
 ;;       Added: lacarte-add-if-menu-item,lacarte-get-a-menu-item-alist-22+,
@@ -379,7 +392,7 @@
  
 ;;(@* "User Options")
 
-;;; User Options -------------------------------------------
+;;; User Options and Faces ---------------------------------
 
 ;;;###autoload
 (defgroup lacarte nil
@@ -394,8 +407,7 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
   :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/lacarte.el")
   :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/LaCarte")
-  :link '(emacs-commentary-link :tag "Commentary" "lacarte.el")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "lacarte.el"))
 
 ;;;###autoload
 (defcustom lacarte-convert-menu-item-function nil
@@ -404,6 +416,13 @@ Used by `lacarte-execute-menu-command'.  A typical use would be to
 remove the `&' characters used in MS Windows menus to define keyboard
 accelerators.  See `lacarte-remove-w32-keybd-accelerators'."
   :type '(choice (const :tag "None" nil) function) :group 'lacarte)
+
+;;;###autoload
+(defface lacarte-shortcut               ; Same grays as for `shadow'.
+    '((((background dark)) (:foreground "gray70"))
+      (t (:foreground "gray50")))
+  "*Face used to highlight key binding of menu item `*Completions*'."
+  :group 'Icicles-Completions-Display :group 'faces)
  
 ;;; Internal Variables -------------------------------------
 
@@ -436,7 +455,8 @@ using face `icicle-special-candidate'."
   (run-hooks 'menu-bar-update-hook)
   (let ((lacarte-menu-items-alist         (lacarte-get-overall-menu-item-alist))
         (completion-ignore-case           t) ; Not case-sensitive, by default.
-        (icicle-special-candidate-regexp  (and (not no-commands-p)  ".* > \\(.\\|\n\\)*"))
+        ;; ?\000 prevents the key shortcut from being highlighted with face `icicle-special-candidate'.
+        (icicle-special-candidate-regexp  (and (not no-commands-p)  ".* > [^?\000]*"))
         (icicle-sort-orders-alist         (and (boundp 'icicle-sort-orders-alist)
                                                (if no-commands-p
                                                    icicle-sort-orders-alist
@@ -483,6 +503,22 @@ using face `icicle-special-candidate'."
   (if (lacarte-string-match-p " > " s1)
       (or (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))
     (and (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))))
+
+;; Same as `icicle-propertize', in `icicles-fn.el'.
+(defun lacarte-propertize (object &rest properties)
+  "Like `propertize', but for all Emacs versions.
+If OBJECT is not a string, then use `prin1-to-string' to get a string."
+  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
+    (add-text-properties 0 (length new) properties new)
+    new))
+
+(defun lacarte-key-description (keys &optional prefix angles)
+  "`icicle-key-description', if Icicles is loaded; else `key-description'.
+`icicle-key-description' removes any angle brackets, unless ANGLES is
+non-nil."
+  (if (fboundp 'icicle-key-description)
+      (icicle-key-description keys prefix angles)
+    (key-description keys prefix)))
 
 ;;;###autoload
 (defun lacarte-execute-menu-command (maps)
@@ -586,11 +622,11 @@ Ignore events that do not belong to menu-bar menus."
     (cond
       ;; (menu-item ITEM-STRING): non-selectable item - skip it.
       ((and (eq 'menu-item (car-safe bndg))  (null (cdr-safe (cdr-safe bndg))))
-       (setq bndg  nil))            ; So `keymapp' test, below, fails.
+       (setq bndg  nil))                ; So `keymapp' test, below, fails.
     
       ;; (ITEM-STRING): non-selectable item - skip it.
       ((and (stringp (car-safe bndg))  (null (cdr-safe bndg)))
-       (setq bndg  nil))            ; So `keymapp' test, below, fails.
+       (setq bndg  nil))                ; So `keymapp' test, below, fails.
     
       ;; (menu-item "--..." . WHATEVER): separator - skip it.
       ;; Users can use `easy-menu-define' with an item such as ["--" nil], which produces
@@ -617,7 +653,7 @@ Ignore events that do not belong to menu-bar menus."
       ((eq 'menu-item (car-safe bndg))
        (let ((enable-condition  (memq ':enable (cdr-safe (cdr-safe (cdr-safe bndg))))))
          (if (or (not enable-condition)
-                 (condition-case nil ; Don't enable if we can't check the condition.
+                 (condition-case nil    ; Don't enable if we can't check the condition.
                      (eval (cadr enable-condition))
                    (error nil)))
              (progn
@@ -660,7 +696,11 @@ Ignore events that do not belong to menu-bar menus."
                                   composite-name)
                                 ;; Add key description, if bound to a key.
                                 (let ((key  (and bndg  (where-is-internal bndg nil t))))
-                                  (and key  (format " (%s)" (key-description key)))))
+                                  ;; Hidden ?\000 char to prevent Icicles from highlighting shortcut too.
+                                  (and key  (concat (lacarte-propertize "?\000" 'invisible t)
+                                                    (lacarte-propertize
+                                                     (format " (%s)" (lacarte-key-description key))
+                                                     'face 'lacarte-shortcut)))))
                         bndg)
                   lacarte-menu-items-alist)))))
 
@@ -756,7 +796,9 @@ Returns `lacarte-menu-items-alist', which it modifies."
                                    composite-name)
                                  ;; Add key description, if bound to a key.
                                  (let ((key  (where-is-internal defn nil t)))
-                                   (and key  (format " (%s)" (key-description key)))))
+                                   (and key  (lacarte-propertize
+                                              (format " (%s)" (lacarte-key-description key))
+                                              'face 'lacarte-shortcut))))
                          defn)
                    lacarte-menu-items-alist))))
         (when (consp scan) (setq scan  (cdr scan)))))
