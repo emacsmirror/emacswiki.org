@@ -285,6 +285,13 @@ The CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) suite can use cscope as
 * SemanticBovinator symref - Find symbol references
 * Semantic Database backend - Find tags by name in your project.
 
+== rscope.el ==
+
+rscope is a new implementation taking its roots from ascope, thus running a single cscope process for each cscope database.
+It's a bit more versatile than ascope because it copes with multiple cscope databases (and hence spawns one cscope process per database once).
+
+It was developped by Robert Jarzmik and is in [https://github.com/rjarzmik/rscope rscope's github repository]. The page explains the usage, which is globally very close to xscope in terms of key bindings.
+
 ----
 CategoryProgrammerUtils
 CategoryNavigation
