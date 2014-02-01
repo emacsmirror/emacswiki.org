@@ -1,8 +1,8 @@
 ;;; archive-region.el --- Move region to archive file instead of killing
 
-;; Time-stamp: <2013-01-31 06:46:04 rubikitch>
+;; Time-stamp: <2014-02-02 08:42:06 rubikitch>
 
-;; Copyright (C) 2010,2013  rubikitch
+;; Copyright (C) 2010,2013,2014  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: languages
@@ -164,12 +164,16 @@
    (concat (regexp-quote archive-region-filename-suffix) "$")
    "" buffer-file-name))
 
-(defun archive-region-open-archive-file-other-window ()
+(defun archive-region-open-archive-file (&optional func)
   "Open archive file."
   (interactive)
   (unless (file-exists-p (archive-region-current-archive-file))
     (error "Archive file does not exist."))
-  (find-file-other-window (archive-region-current-archive-file)))
+  (funcall (or func 'find-file) (archive-region-current-archive-file)))
+(defun archive-region-open-archive-file-other-window ()
+  "Open archive file."
+  (interactive)
+  (archive-region-open-archive-file 'find-file-other-window))
 
 (defun kill-region-or-archive-region (arg s e)
   "Extend `kill-region' (C-w) to have archive feature.
