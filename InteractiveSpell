@@ -249,6 +249,24 @@ Note: When running hunspell from the terminal there is no problem with "foreign"
 }}}
 does not change anything.
 
+
+=== Correctly saved words with german Umlaute in personal dictionary of hunspell not recognised as correct spelling by emacs ispell or flyspell ===
+[new] Question: I have a perfectly working setup for hunspell with emacs (flyspell) using
+{{{
+("german”  "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "de_DE_frami" ) nil utf-8)
+}}}
+as dictionary definition for ispell-dictionary-alist.
+
+German Umlaute are no problem as long as the main dict “de_DE_frami” contains them. However, as soon as I put a word with german Umlaute like “Bestürzenste” in the personal dictionary of hunspell, it is not recognized as being correct whereas all other added words that contain no german Umlaut are well recognized as being correct.
+
+On top of this, if I check the personal dictionary of hunspell all words appear there nicely in proper utf8 encoding. What’s even more is that hunspell, if executed on the command line with the only option "-d de_DE_frami" does recognize words with Umlaute and e.g. “Bestürzenste” is reported as being correct.
+
+So I guess the trouble is caused by ispell or flyspell. Might this be a bug concerning only lookups in the personal dictionary. Did anybody have the some problem? Is there a workaround that I wasn’t able to find aber hours of searching the net?
+
+Thanks for helping out here!
+
+Btw. I also tried with the encoding iso-8859-1 instead of ut8 in the dict definition above --> not change.
+
 ----
 
 CategoryModes | CategorySpelling
