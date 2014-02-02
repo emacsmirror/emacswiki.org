@@ -16,6 +16,8 @@ Wayback Machine link working Nov. 1, 2012: http://web.archive.org/web/2010092408
 
 As you type, it shows the number of characters in the buffer, the number of words, and the number of lines: "WC:148/40/4".  You can set a marker to the point where you want to begin counting (when you enable `word-count-mode' in a buffer, the marker is at the position of point), and you can set a region to count.
 
+For emacs24 compatibility, comment out the line that reads "(make-local-hook hook)".
+
 == Show wc-like info in the mode-line ==
 
 WordCountMode (`wc-mode') is another minor mode that does essentially the same thing: it displays the character count, word count and line count for the buffer in the [[mode line]] (similar to the output of the Unix <code>wc</code> command).
