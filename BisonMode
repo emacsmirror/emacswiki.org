@@ -2,7 +2,7 @@ Bison Mode by Eric Beuscher, 1998:
 
 * http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/bison-mode.el
 
-This mode might need an additional (require 'cc-mode) and (require 'font-lock) to work with recent emacses.
+This mode might need an additional <code>(require 'cc-mode)</code> and <code>(require 'font-lock)</code> to work with recent emacses.
 
 Handy imenu function for jumping around to different rules in a bison/yacc file. Call this in your .y file however you like.
 
