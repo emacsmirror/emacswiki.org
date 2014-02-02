@@ -124,7 +124,7 @@ I like the way you can make a skeleton repeat until you don't want any more inpu
     "Enter tags in any case and the output will be upcased."
      nil
     "Tags: "
-    ((upcase (read-string "Tag: ")) ":"  str) ":" \n)
+    ((upcase (skeleton-read "Tag: ")) ":"  str) ":" \n)
 
 == Skeletonizing skeletons ==
 It's easy to create interactive skeletons for multiple distinct inputs. Here's a skeleton which aids in writing new skeletons! It first prompts for the name and docstring, and then repeatedly prompts for every line of the new skeleton definition. This could easily be adapted to writing simple functions or classes in different languages.
