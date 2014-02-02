@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 15 14:26:19 2014 (-0800)
+;; Last-Updated: Sun Feb  2 10:32:19 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7264
+;;     Update #: 7284
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -436,6 +436,7 @@
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
 ;;  `dired-goto-file'         - Fix Emacs bug #7126.
 ;;                              Remove `/' from dir before compare.
+;;                              (Emacs < 24 only.)
 ;;  `dired-hide-details-mode' - Respect new user options:
 ;;                              * `diredp-hide-details-initially-flag'
 ;;                              * `diredp-hide-details-propagate-flag'
@@ -498,6 +499,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/02 dadams
+;;     dired-goto-file: Redefine only for Emacs < 24. 
 ;; 2014/01/15 dadams
 ;;     Bind diredp-toggle-find-file-reuse-dir to C-M-R (aka C-M-S-r).
 ;; 2014/01/05 dadams
@@ -1290,7 +1293,7 @@ ARG, if non-nil, specifies the files to use instead of the marked files.
     256 includes ALL directories (including `.' and `..')
  If ARG is otherwise non-nil, use the current file.
 If optional third arg SHOW-PROGRESS evaluates to non-nil,
- redisplay the dired buffer after each file is processed.
+ redisplay the Dired buffer after each file is processed.
  No guarantee is made about the position on the marked line.
  BODY must ensure this itself, if it depends on this.
 Search starts at the beginning of the buffer, thus the car of the list
@@ -1436,7 +1439,7 @@ OP-SYMBOL is a symbol describing the operation performed (e.g.
 \(e.g. with `Compress * [2 files]? ') and to display errors (e.g.
 `Failed to compress 1 of 2 files - type W to see why (\"foo\")')
 
-SHOW-PROGRESS if non-nil means redisplay dired after each file."
+SHOW-PROGRESS if non-nil means redisplay Dired after each file."
   (and (dired-mark-confirm op-symbol arg)
        (let* ((total-list  (dired-map-over-marks (funcall fun) arg show-progress)) ; Return vals.
               (total       (length total-list))
@@ -1640,7 +1643,7 @@ If HDR is non-nil, insert a header line with the directory name."
 
   ;; Similar to `image-dired-dired-toggle-marked-thumbs'.
   (defun image-dired-dired-insert-marked-thumbs () ; Not bound
-    "Insert thumbnails before file names of marked files in the dired buffer."
+    "Insert thumbnails before file names of marked files in the Dired buffer."
     (interactive)
     (dired-map-over-marks
      (let* ((image-pos   (dired-move-to-filename))
@@ -2747,7 +2750,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (when (or (> emacs-major-version 21)  (fboundp 'wdired-change-to-wdired-mode))
   (define-key diredp-menu-bar-subdir-menu [wdired-mode]
     '(menu-item "Edit File Names (WDired)" wdired-change-to-wdired-mode
-      :help "Put a dired buffer in a mode in which filenames are editable"
+      :help "Put a Dired buffer in a mode in which filenames are editable"
       :keys "C-x C-q" :filter (lambda (x) (and (derived-mode-p 'dired-mode)  x)))))
 (when (fboundp 'dired-compare-directories) ; Emacs 22+
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
@@ -3009,47 +3012,47 @@ Don't forget to mention your Emacs and library versions."))
 (defface diredp-dir-heading
     '((((background dark)) (:foreground "Yellow" :background "#00003F3F3434")) ; ~ dark green
       (t                   (:foreground "Blue" :background "Pink")))
-  "*Face used for directory headings in dired buffers."
+  "*Face used for directory headings in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-dir-heading 'diredp-dir-heading)
 
 (defface diredp-deletion
     '((t (:foreground "Yellow" :background "Red")))
-  "*Face used for deletion flags (D) in dired buffers."
+  "*Face used for deletion flags (D) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion 'diredp-deletion)
 
 (defface diredp-deletion-file-name
     '((t (:foreground "Red")))
-  "*Face used for names of deleted files in dired buffers."
+  "*Face used for names of deleted files in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion-file-name 'diredp-deletion-file-name)
 
 (defface diredp-flag-mark
     '((((background dark)) (:foreground "Blue" :background "#7575D4D41D1D")) ; ~ olive green
       (t                   (:foreground "Yellow" :background "Blueviolet")))
-  "*Face used for flags and marks (except D) in dired buffers."
+  "*Face used for flags and marks (except D) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-flag-mark 'diredp-flag-mark)
 
 (defface diredp-flag-mark-line
     '((((background dark)) (:background "#787831311414")) ; ~ dark red brown
       (t                   (:background "Skyblue")))
-  "*Face used for flagged and marked lines in dired buffers."
+  "*Face used for flagged and marked lines in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-flag-mark-line 'diredp-flag-mark-line)
 
 (defface diredp-file-suffix
     '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
       (t                   (:foreground "DarkMagenta")))
-  "*Face used for file suffixes in dired buffers."
+  "*Face used for file suffixes in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-suffix 'diredp-file-suffix)
 
 (defface diredp-number
     '((((background dark)) (:foreground "#FFFFFFFF7474")) ; ~ light yellow
       (t                   (:foreground "DarkBlue")))
-  "*Face used for numerical fields in dired buffers.
+  "*Face used for numerical fields in Dired buffers.
 In particular, inode number, number of hard links, and file size."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-number 'diredp-number)
@@ -3057,21 +3060,21 @@ In particular, inode number, number of hard links, and file size."
 (defface diredp-symlink
     '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
       (t                   (:foreground "DarkOrange")))
-  "*Face used for symbolic links in dired buffers."
+  "*Face used for symbolic links in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-symlink 'diredp-symlink)
 
 (defface diredp-date-time
     '((((background dark)) (:foreground "#74749A9AF7F7")) ; ~ med blue
       (t                   (:foreground "DarkGoldenrod4")))
-  "*Face used for date and time in dired buffers."
+  "*Face used for date and time in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-date-time 'diredp-date-time)
 
 (defface diredp-file-name
     '((((background dark)) (:foreground "Yellow"))
       (t                   (:foreground "Blue")))
-  "*Face used for file names (without suffixes) in dired buffers."
+  "*Face used for file names (without suffixes) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-name 'diredp-file-name)
 
@@ -3080,14 +3083,14 @@ In particular, inode number, number of hard links, and file size."
       ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
       (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t                   (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
-  "*Face used for ignored file names  in dired buffers."
+  "*Face used for ignored file names  in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
 (defface diredp-compressed-file-suffix
     '((((background dark)) (:foreground "Blue"))
       (t                   (:foreground "Yellow")))
-  "*Face used for compressed file suffixes in dired buffers."
+  "*Face used for compressed file suffixes in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-compressed-file-suffix 'diredp-compressed-file-suffix)
 
@@ -3095,7 +3098,7 @@ In particular, inode number, number of hard links, and file size."
 ;; For example, I use "-alF" for `dired-listing-switches'.
 (defface diredp-executable-tag
     '((t (:foreground "Red")))
-  "*Face used for executable tag (*) on file names in dired buffers."
+  "*Face used for executable tag (*) on file names in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-executable-tag 'diredp-executable-tag)
 
@@ -3103,56 +3106,56 @@ In particular, inode number, number of hard links, and file size."
     '((((background dark))
        (:foreground "#7474FFFFFFFF" :background "#2C2C2C2C2C2C")) ; ~ cyan, dark gray
       (t (:foreground "DarkRed" :background "LightGray")))
-  "*Face used for directory privilege indicator (d) in dired buffers."
+  "*Face used for directory privilege indicator (d) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-dir-priv 'diredp-dir-priv)
 
 (defface diredp-exec-priv
     '((((background dark)) (:background "#4F4F3B3B2121")) ; ~ dark brown
       (t                   (:background "LightSteelBlue")))
-  "*Face used for execute privilege indicator (x) in dired buffers."
+  "*Face used for execute privilege indicator (x) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-exec-priv 'diredp-exec-priv)
 
 (defface diredp-other-priv
     '((((background dark)) (:background "#111117175555")) ; ~ dark blue
       (t                   (:background "PaleGoldenrod")))
-  "*Face used for l,s,S,t,T privilege indicators in dired buffers."
+  "*Face used for l,s,S,t,T privilege indicators in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-other-priv 'diredp-other-priv)
 
 (defface diredp-write-priv
     '((((background dark)) (:background "#25258F8F2929")) ; ~ dark green
       (t                   (:background "Orchid")))
-  "*Face used for write privilege indicator (w) in dired buffers."
+  "*Face used for write privilege indicator (w) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-write-priv 'diredp-write-priv)
 
 (defface diredp-read-priv
     '((((background dark)) (:background "#999932325555")) ; ~ burgundy / dark magenta
       (t                   (:background "MediumAquamarine")))
-  "*Face used for read privilege indicator (w) in dired buffers."
+  "*Face used for read privilege indicator (w) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-read-priv 'diredp-read-priv)
 
 (defface diredp-no-priv
     '((((background dark)) (:background "#2C2C2C2C2C2C")) ; ~ dark gray
       (t                   (:background "LightGray")))
-  "*Face used for no privilege indicator (-) in dired buffers."
+  "*Face used for no privilege indicator (-) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-no-priv 'diredp-no-priv)
 
 (defface diredp-rare-priv
     '((((background dark)) (:foreground "Green" :background "#FFFF00008080")) ; ~ hot pink
       (t                   (:foreground "Magenta" :background "SpringGreen")))
-  "*Face used for rare privilege indicators (b,c,s,m,p,S) in dired buffers."
+  "*Face used for rare privilege indicators (b,c,s,m,p,S) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-rare-priv 'diredp-rare-priv)
 
 (defface diredp-link-priv
     '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
       (t                   (:foreground "DarkOrange")))
-  "*Face used for link privilege indicator (l) in dired buffers."
+  "*Face used for link privilege indicator (l) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-link-priv 'diredp-link-priv)
 
@@ -5647,11 +5650,11 @@ Non-interactively:
 ;; Allows for consp `dired-directory' too.
 ;;
 (defun dired-buffers-for-dir (dir &optional file)
-  "Return a list of buffers that dired DIR (top level or in-situ subdir).
+  "Return a list of buffers that Dired DIR (top level or in-situ subdir).
 If FILE is non-nil, include only those whose wildcard pattern (if any)
 matches FILE.
 The list is in reverse order of buffer creation, most recent last.
-As a side effect, killed dired buffers for DIR are removed from
+As a side effect, killed Dired buffers for DIR are removed from
 `dired-buffers'."
   (setq dir  (file-name-as-directory dir))
   (let (result buf)
@@ -5724,7 +5727,7 @@ As a side effect, killed dired buffers for DIR are removed from
           (error "File no longer exists; type `g' to update Dired buffer")))))
 
   (defun dired-find-alternate-file () ; Not bound
-    "In Dired, visit this file or directory instead of the dired buffer."
+    "In Dired, visit this file or directory instead of the Dired buffer."
     (interactive)
     (set-buffer-modified-p nil)
     (find-alternate-file (dired-get-file-for-visit))))
@@ -6437,7 +6440,8 @@ Requires library `autofit-frame.el'."
     (setq mode-line-process  nil)        ; Set by, e.g., `find-dired'.
     (old-dired-revert arg noconfirm)))
 
-
+;; Like `dired-up-directory', but go up to MS Windows drive if in top-level directory.
+;;
 ;;;###autoload
 (defun diredp-up-directory (&optional other-window) ; Bound to `^'
   "Run Dired on parent directory of current directory.
@@ -6446,7 +6450,7 @@ Creates a buffer if necessary.
 
 With a prefix arg, Dired the parent directory in another window.
 
-On MS Windows, if you already at the root directory, invoke
+On MS Windows, if you are already at the root directory, invoke
 `diredp-w32-drives' to visit a navigable list of Windows drives."
   (interactive "P")
   (let* ((dir  (dired-current-directory))
@@ -6690,86 +6694,84 @@ Otherwise, an error occurs in these cases."
 ;; 1. Fixes Emacs bug #7126: Did not work with arbitrary file list (cons arg to `dired').
 ;; 2. Remove `/' from directory name before comparing with BASE.
 ;;
-;;;###autoload
-(defun dired-goto-file (file)           ; Bound to `j'
-  "Go to line describing file FILE in this dired buffer."
-  ;; Return value of point on success, else nil.
-  ;; FILE must be an absolute file name.
-  ;; Loses if FILE contains control chars like "\007" for which ls
-  ;; either inserts "?" or "\\007" into the buffer, so we won't find
-  ;; it in the buffer.
-  (interactive
-   (prog1                               ; Let push-mark display its message
-       (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
-     (push-mark)))
-  (setq file  (directory-file-name file)) ; does no harm if no directory
-  (let ((found             nil)
-        (case-fold-search  nil)
-        dir)
-    (setq dir  (or (file-name-directory file)  (error "File name `%s' is not absolute" file)))
-
-    ;; Dired+: Added this sexp.
-    (save-excursion
-      (goto-char (point-min))
-      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
-            (here           nil))
-        (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
-
-        ;; Escape whitespace.  Added per Emacs 24 addition in `unless' code below:
-        (when (and (dired-switches-escape-p dired-actual-switches)
-                   (diredp-string-match-p "[ \t\n]" search-string))
-          ;; FIXME: fix this for all possible file names (embedded control chars etc).
-          ;;        Need to escape everything that `ls -b' escapes.
-          (setq search-string  (replace-regexp-in-string " " "\\ "  search-string nil t)
-                search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
-
-        ;; Use HERE to ensure we do not keep searching for a directory entry.
-        (while (and (not (eobp))  (not found)  (not (equal here (point))))
-          (setq here  (point))
-          (if (search-forward (concat " " search-string) nil 'NO-ERROR)
-              ;; Must move to filename since an (actually correct) match could have been
-              ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
-              (setq found  (dired-move-to-filename))
-            ;; If this isn't the right line, move forward to avoid trying this line again.
-            (forward-line 1)))))
-
-    (unless found
+(when (< emacs-major-version 24)
+  (defun dired-goto-file (file)         ; Bound to `j'
+    "Go to line describing file FILE in this Dired buffer.
+FILE must be an absolute file name.
+Return value of point on success, else nil."
+    ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
+    ;; into the buffer, so we won't find it in the buffer.
+    (interactive
+     (prog1                             ; Let push-mark display its message
+         (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
+       (push-mark)))
+    (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
+    (setq file  (directory-file-name file)) ; does no harm if no directory
+    (let* ((case-fold-search  nil)
+           (dir               (file-name-directory file))
+           (found             nil))
+      ;; Dired+: Added this sexp.
       (save-excursion
-        ;; The difficulty here is to get the result of dired-goto-subdir without really
-        ;; calling it if we don't have any subdirs.
-        (when (if (string= dir (expand-file-name default-directory))
-                  (goto-char (point-min))
-                (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
-          (let ((base      (file-name-nondirectory file))
-                (boundary  (dired-subdir-max))
-                search-string)
-            (setq search-string  (replace-regexp-in-string "\^m" "\\^m" base nil t)
-                  search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+        (goto-char (point-min))
+        (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
+              (here           nil))
+          (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+
+          ;; Escape whitespace.  Added per Emacs 24 addition in `unless' code below:
+          (when (and (dired-switches-escape-p dired-actual-switches)
+                     (diredp-string-match-p "[ \t\n]" search-string))
+            ;; FIXME: fix this for all possible file names (embedded control chars etc).
+            ;;        Need to escape everything that `ls -b' escapes.
+            (setq search-string  (replace-regexp-in-string " " "\\ "  search-string nil t)
+                  search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
+                  search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+
+          ;; Use HERE to ensure we do not keep searching for a directory entry.
+          (while (and (not (eobp))  (not found)  (not (equal here (point))))
+            (setq here  (point))
+            (if (search-forward (concat " " search-string) nil 'NO-ERROR)
+                ;; Must move to filename since an (actually correct) match could have been
+                ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
+                (setq found  (dired-move-to-filename))
+              ;; If this isn't the right line, move forward to avoid trying this line again.
+              (forward-line 1)))))
+
+      (unless found
+        (save-excursion
+          ;; The difficulty here is to get the result of `dired-goto-subdir' without really
+          ;; calling it, if we don't have any subdirs.
+          (when (if (string= dir (expand-file-name default-directory))
+                    (goto-char (point-min))
+                  (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
+            (let ((base      (file-name-nondirectory file))
+                  (boundary  (dired-subdir-max))
+                  search-string)
+              (setq search-string  (replace-regexp-in-string "\^m" "\\^m" base nil t)
+                    search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
             
-            ;; Escape whitespace.  Sexp added by Emacs 24:
-            (when (and (dired-switches-escape-p dired-actual-switches)
-                       (diredp-string-match-p "[ \t\n]" search-string))
-              ;; FIXME: fix this for all possible file names (embedded control chars etc).
-              ;;        Need to escape everything that `ls -b' escapes.
-              (setq search-string  (replace-regexp-in-string " " "\\ " search-string nil t)
-                    search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                    search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
-            (while (and (not found)
-                        ;; Filenames are preceded by SPC.  This makes the search faster
-                        ;; (e.g. for the filename "-"!).
-                        (search-forward (concat " " search-string) boundary 'move))
-              ;; Dired+: Remove / from filename, then compare with BASE.
-              ;; Match could have BASE just as initial substring or
-              ;; or in permission bits or date or not be a proper filename at all.
-              (if (and (dired-get-filename 'no-dir t)
-                       (equal base (directory-file-name (dired-get-filename 'no-dir t))))
-                  ;; Must move to filename since an (actually correct) match could have been
-                  ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
-                  (setq found  (dired-move-to-filename))
-                ;; If this is not the right line, move forward to avoid trying this line again.
-                (forward-line 1)))))))
-    (and found  (goto-char found))))    ; Return value of point.
+              ;; Escape whitespace.  Sexp added by Emacs 24:
+              (when (and (dired-switches-escape-p dired-actual-switches)
+                         (diredp-string-match-p "[ \t\n]" search-string))
+                ;; FIXME: fix this for all possible file names (embedded control chars etc).
+                ;;        Need to escape everything that `ls -b' escapes.
+                (setq search-string  (replace-regexp-in-string " " "\\ " search-string nil t)
+                      search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
+                      search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+              (while (and (not found)
+                          ;; Filenames are preceded by SPC.  This makes the search faster
+                          ;; (e.g. for the filename "-"!).
+                          (search-forward (concat " " search-string) boundary 'move))
+                ;; Dired+: Remove `/' from filename, then compare with BASE.
+                ;; Match could have BASE just as initial substring or
+                ;; or in permission bits or date or not be a proper filename at all.
+                (if (and (dired-get-filename 'no-dir t)
+                         (equal base (directory-file-name (dired-get-filename 'no-dir t))))
+                    ;; Must move to filename since an (actually correct) match could have been
+                    ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
+                    (setq found  (dired-move-to-filename))
+                  ;; If this is not the right line, move forward to avoid trying this line again.
+                  (forward-line 1)))))))
+      (and found  (goto-char found))))) ; Return value of point.
 
 
 ;; REPLACE ORIGINAL in `dired.el':
@@ -7288,7 +7290,7 @@ Examples:
   Mark zero-length files: `(equal 0 size)'
   Mark files last modified on Feb 2: `(string-match \"Feb  2\" time)'
   Mark uncompiled Emacs Lisp files (`.el' file without a `.elc' file):
-     First, dired just the source files: `dired *.el'.
+     First, Dired just the source files: `dired *.el'.
      Then, use \\[dired-mark-sexp] with this sexp:
           (not (file-exists-p (concat name \"c\")))"
 
@@ -7650,7 +7652,7 @@ With non-nil prefix arg, mark them instead."
 ;;
 ;;;###autoload
 (defun diredp-mouse-find-file (event)   ; Bound to `S-mouse-2'
-  "Replace dired in its window by this file or directory."
+  "Replace Dired in its window by this file or directory."
   (interactive "e")
   (let (file)
     (with-current-buffer (window-buffer (posn-window (event-end event)))
@@ -7662,7 +7664,7 @@ With non-nil prefix arg, mark them instead."
 
 ;;;###autoload
 (defun diredp-mouse-view-file (event)   ; Not bound
-  "Examine this file in view mode, returning to dired when done.
+  "Examine this file in view mode, returning to Dired when done.
 When file is a directory, show it in this buffer if it is inserted;
 otherwise, display it in another buffer."
   (interactive "e")
@@ -7893,7 +7895,7 @@ This normally preserves the last-modified date when copying."
   "Run a shell COMMAND on this file.
 If there is output, it goes to a separate buffer.
 
-No automatic redisplay of dired buffers is attempted, as there's no
+No automatic redisplay of Dired buffers is attempted, as there's no
 telling what files the command may have changed.  Type
 \\[dired-do-redisplay] to redisplay.
 
