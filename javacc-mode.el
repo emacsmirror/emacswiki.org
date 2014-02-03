@@ -17,6 +17,10 @@
 (defconst javacc-author-email "bwaite@connect.carleton.ca")
 (defconst javacc-web-page     "www.thesiteiwillonedayhave.com")
 
+;; To use java-font-lock-keywords, we need to require its mode first
+(eval-when-compile
+  (require 'cc-mode))
+
 ;;this is pretty much all I'm adding
 (defconst javacc-keyword-re
   (regexp-opt '("DEBUG_PARSER" "DEBUG_LOOKAHEAD" "DEBUG_TOKEN_MANAGER"
