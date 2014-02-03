@@ -56,7 +56,7 @@ Seem  that electric-indent-mode doesn't work properly with python-mode. You can 
   (if (equal major-mode 'python-mode)
       `no-indent'
     nil))
-(add-to-list 'electric-indent-functions 'electric-indent-ignore-python)
+(add-hook 'electric-indent-functions 'electric-indent-ignore-python)
 
 ;; Enter key executes newline-and-indent
 (defun set-newline-and-indent ()
