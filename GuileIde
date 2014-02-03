@@ -1,3 +1,7 @@
+
+NOTE: The text below is from 2008. For a full Guile IDE, you probably just want to checko out http://www.nongnu.org/geiser/
+
+
 Options for editing [[Guile]] code and interacting with an inferior [[Guile]] process (for evaluating expressions, source debugging, etc.) from within Emacs include:
 
 * SchemeMode (scheme.el) -- Standard part of Emacs.  Good indenting and fontifying. Simple inferior process control with CmuScheme.  No EDebug-like source debugging.
