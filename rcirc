@@ -72,6 +72,18 @@ which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
 or this (SSL with an optional :use-tls for `rcirc-server-alist' and :custom-connect-function for arbitrary connection method (ssl/proxy/whatever) similar to the neale's patch)
 https://github.com/melmothx/rcirc/tree/to-emacs
 
+===Warnings==
+
+##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
+
+If you're getting this warning, add the following to your init file:
+
+{{{
+(setq gnutls-min-prime-bits 1024)
+}}}
+
+There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanation on the mailing list].
+
 ==rcirc add-ons and commands==
 
 ; [[rcircColoredNicks]]: ##/color## -- color each nick using a separate color
