@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jan 25 13:39:21 2014 (-0800)
+;; Last-Updated: Sun Feb  2 20:03:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10593
+;;     Update #: 10595
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6988,6 +6988,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/02/02 dadams
+;;     icicle-buffer-prefix-arg-filtering: Corrected example in doc string.
 ;; 2014/01/25 dadams
 ;;     icicle-functions-to-redefine: Commented out bbdb-complete-name (obsolete in BBDB).
 ;; 2014/01/18 dadams
