@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Jan 25 13:21:57 2014 (-0800)
+;; Last-Updated: Sun Feb  2 20:02:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5836
+;;     Update #: 5850
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1109,43 +1109,57 @@ condition is checked, and so on.  If none of the conditions match then
 no filtering is done.
 
 BUF-TEST is a predicate that accepts a buffer as argument.  If it
-returns non-nil then name of that buffer is removed as a completion
-candidate.  Alternatively, BUF-TEST can be the constant `nil', which
-has the same effect as applying (lambda (buf) nil) as the filter
-predicate: the buffer is not removed.
+returns non-nil then the name of that buffer is removed as a
+completion candidate.  Alternatively, BUF-TEST can be the constant
+`nil', which has the same effect as applying (lambda (buf) nil) as the
+filter predicate: the buffer is not removed.
 
 As an example, this value of `icicle-buffer-prefix-arg-filtering'
 provides the same behavior as value `use-default' (but it is slower):
 
-  ((not nil) ; (no prefix arg): no filtering.
-  ((lambda (cpa)                                       ; `C-u C-u C-u'
-     (and (consp cpa)                                  ; Visible
-          (> (prefix-numeric-value cpa) 16)))
-   (lambda (bf) (get-buffer-window bf 0)))
-  ((lambda (cpa)                                       ; `C-u C-u'
-     (and (consp cpa)                                  ; Invisible
-          (> (prefix-numeric-value cpa) 4)))
-   (lambda (bf) (not (get-buffer-window bf 0))))
-  ((lambda (cpa)                                       ; `C-u'
-     (and (consp current-prefix-arg)                   ; Derived mode
-          (fboundp 'derived-mode-p)))
-   (lambda (bf) (derived-mode-p
-                 (with-current-buffer bf major-mode))))
-  ((lambda (cpa)                                       ; 0
-     (zerop (prefix-numeric-value cpa)))               ; Same mode
-   (let ((this-mode  major-mode))
-     `(lambda (bf)
-        (with-current-buffer bf 
-          (not (eq major-mode ',this-mode))))))
-  ((lambda (cpa)                                       ; < 0
-     (< (prefix-numeric-value cpa) 0))                 ; Other frame
-   (lambda (bf)
-     (not (member bf (cdr (assq 'buffer-list (frame-parameters)))))))
-  ((lambda (cpa) cpa)                                  ; > 0
-   (lambda (bf)                                        ; Not file/dir
-     (and (not (buffer-file-name bf))
-          (with-current-buffer bf
-            (not (eq major-mode 'dired-mode)))))))"
+  (((lambda (cpa)                                 ; (no prefix arg)
+      (null cpa))
+    nil)                                          ; Any (no filtering)
+
+   ((lambda (cpa)                                 ; `C-u C-u C-u'
+      (and (consp cpa)
+           (> (prefix-numeric-value cpa) 16)))
+    (lambda (bf) (get-buffer-window bf 0)))       ; Invisible
+
+   ((lambda (cpa)                                 ; `C-u C-u'
+      (and (consp cpa)
+           (> (prefix-numeric-value cpa) 4)))
+    (lambda (bf) (not (get-buffer-window bf 0)))) ; Visible
+
+   ((lambda (cpa)                                 ; `C-u'
+      (and (consp current-prefix-arg)
+           (fboundp 'derived-mode-p)))
+    (lambda (bf)                                  ; Derived mode
+      (not (derived-mode-p
+             (with-current-buffer bf major-mode)))))
+
+   ((lambda (cpa)                                 ; = 0
+      (zerop (prefix-numeric-value cpa)))
+    (lambda (bf)
+      (let ((this-mode  major-mode))              ; Same mode
+        (with-current-buffer bf
+          (not (eq major-mode this-mode))))))
+
+   ((lambda (cpa)                                 ; < 0
+      (< (prefix-numeric-value cpa) 0))
+    (lambda (bf)                                  ; Same frame
+      (not (member bf (cdr (assq 'buffer-list (frame-parameters)))))))
+
+   ((lambda (cpa)                                 ; > 0
+      cpa)
+    (lambda (bf)                                  ; File or dir
+      (and (not (buffer-file-name bf))
+           (with-current-buffer bf
+             (not (eq major-mode 'dired-mode)))))))
+
+Note that when the buffer-name predicate returns non-nil the buffer
+name is removed as a candidate.  Hence the descriptions in the
+comments above are opposite the predicates."
   :type '(choice
           (const  :tag "Use the default Icicles behavior" use-default)
           (repeat :tag "Conditions tested in order, to filter buffer-name candidates"
@@ -1153,9 +1167,9 @@ provides the same behavior as value `use-default' (but it is slower):
             (function  :tag "Predicate to test raw prefix arg"
              :value (lambda (cpa) (and (consp cpa) (> (prefix-numeric-value cpa) 16)))) ; C-u C-u C-u
             (choice
-             (const    :tag "No filtering - include all buffer names" nil)
-             (function :tag "Predicate to filter out a buffer name"
-              :value (lambda (bf) (get-buffer-window bf 0))))))) ; Visible
+             (function :tag "Predicate to filter out a buffer name" ; Visible
+              :value (lambda (bf) (get-buffer-window bf 0)))
+             (const    :tag "No filtering - include all buffer names" nil)))))
   :group 'Icicles-Buffers)
 
 (defcustom icicle-buffer-require-match-flag nil
