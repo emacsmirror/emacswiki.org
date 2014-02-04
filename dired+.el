@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  3 20:57:29 2014 (-0800)
+;; Last-Updated: Mon Feb  3 21:14:02 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7309
+;;     Update #: 7310
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -184,8 +184,8 @@
 ;;    use `i' to bounce between a subdirectory line and its
 ;;    inserted-listing header line.  You can delete a subdir listing
 ;;    using `C-u k' on its header line.  You can hide/show an inserted
-;;    subdir using `$' and `M-$'.  You can use `C-_' to undo any of
-;;    these operations.
+;;    subdir using `$'.  You can use `C-_' to undo any of these
+;;    operations.
 ;;
 ;;  * You can open a Dired buffer for an arbitrary set of files, from
 ;;    different directories.
