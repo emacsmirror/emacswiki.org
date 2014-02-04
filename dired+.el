@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  3 21:14:02 2014 (-0800)
+;; Last-Updated: Mon Feb  3 22:23:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7310
+;;     Update #: 7358
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -501,6 +501,7 @@
 ;;
 ;; 2014/02/03 dadams
 ;;     Added: diredp-hide-subdir-nomove.
+;;     Added: dired-goto-file for Emacs 24+ - open hidden parent dir, so can goto destination.
 ;;     Replace bindings for dired-hide-subdir with diredp-hide-subdir-nomove.
 ;;     Bind dired-hide-subdir to M-$ (not $).
 ;; 2014/02/02 dadams
@@ -6792,7 +6793,7 @@ Otherwise, an error occurs in these cases."
   (defun dired-goto-file (file)         ; Bound to `j'
     "Go to line describing file FILE in this Dired buffer.
 FILE must be an absolute file name.
-Return value of point on success, else nil."
+Return buffer position on success, else nil."
     ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
     ;; into the buffer, so we won't find it in the buffer.
     (interactive
@@ -6865,7 +6866,41 @@ Return value of point on success, else nil."
                     (setq found  (dired-move-to-filename))
                   ;; If this is not the right line, move forward to avoid trying this line again.
                   (forward-line 1)))))))
-      (and found  (goto-char found))))) ; Return value of point.
+      (and found  (goto-char found))))) ; Return buffer position, or nil if not found.
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; If destination is in a hidden dir listing, open that listing and move to destination in it.
+;;
+(unless (< emacs-major-version 24)
+  (defun dired-goto-file (file)
+    "Go to line describing file FILE in this Dired buffer.
+FILE must be an absolute file name.
+Return buffer position on success, else nil."
+    ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
+    ;; into the buffer, so we won't find it in the buffer.
+    (interactive
+     (prog1 (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
+       (push-mark)))                    ; Let push-mark display its message.
+    (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
+    (setq file  (directory-file-name file)) ; Does no harm if not a directory
+    (let* ((case-fold-search  nil)
+           (dir               (file-name-directory file))
+           (found
+            (or
+             ;; First, look for a listing under the absolute name.
+             (save-excursion (goto-char (point-min)) (dired-goto-file-1 file file (point-max)))
+             ;; Else look for it as a relative name.  The difficulty is to get the result
+             ;; of `dired-goto-subdir' without calling it, if we don't have any subdirs.
+             (save-excursion
+               (when (if (string= dir (expand-file-name default-directory))
+                         (goto-char (point-min))
+                       (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
+                 (when (dired-subdir-hidden-p (dired-current-directory))
+                   (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
+                 (dired-goto-file-1 (file-name-nondirectory file) file (dired-subdir-max)))))))
+      (and found  (goto-char found))))) ; Return buffer position, or nil if not found.
 
 
 ;; REPLACE ORIGINAL in `dired.el':
