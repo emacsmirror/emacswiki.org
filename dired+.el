@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb  2 10:32:19 2014 (-0800)
+;; Last-Updated: Mon Feb  3 20:57:29 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7284
+;;     Update #: 7309
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -499,6 +499,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/03 dadams
+;;     Added: diredp-hide-subdir-nomove.
+;;     Replace bindings for dired-hide-subdir with diredp-hide-subdir-nomove.
+;;     Bind dired-hide-subdir to M-$ (not $).
 ;; 2014/02/02 dadams
 ;;     dired-goto-file: Redefine only for Emacs < 24. 
 ;; 2014/01/15 dadams
@@ -2715,7 +2719,7 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Hide/Show All Subdirs" dired-hide-all
     :help "Hide all subdirectories, leave only header lines"))
 (define-key diredp-menu-bar-subdir-menu [hide-subdir]
-  '(menu-item "Hide/Show Subdir" dired-hide-subdir
+  '(menu-item "Hide/Show Subdir" diredp-hide-subdir-nomove
     :help "Hide or unhide current directory listing"))
 (define-key diredp-menu-bar-subdir-menu [tree-down]
   '(menu-item "Tree Down" dired-tree-down :help "Go to first subdirectory header down the tree"))
@@ -2832,11 +2836,13 @@ If no one is selected, symmetric encryption will be performed.  "
 ;; On Windows, bind more.
 (eval-after-load "w32-browser"
   '(progn
-    (define-key dired-mode-map [(control return)] 'dired-w32explore)        ; `C-RET'
-    (define-key dired-mode-map [(meta return)] 'dired-w32-browser)          ; `M-RET'
-    (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser)))        ; `mouse-2'
+    (define-key dired-mode-map [(control return)] 'dired-w32explore)                ; `C-RET'
+    (define-key dired-mode-map [(meta return)] 'dired-w32-browser)                  ; `M-RET'
+    (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser)))                ; `mouse-2'
 
-(define-key dired-mode-map "="       'diredp-ediff)
+(define-key dired-mode-map "\$"      'diredp-hide-subdir-nomove)                    ; `$'
+(define-key dired-mode-map "\M-$"    'dired-hide-subdir)                            ; `M-$'
+(define-key dired-mode-map "="       'diredp-ediff)                                 ; `='
 ;; This replaces the `dired-x.el' binding of `dired-mark-extension'.
 (define-key dired-mode-map "*."      'diredp-mark/unmark-extension)                 ; `* .'
 (define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)         ; `C-M-*'
@@ -6133,6 +6139,94 @@ Else return a singleton list of a directory name, which is as follows:
                           '("." ".." "./" "../")))
              file))
       (list (dired-current-directory))))
+
+
+;; This is like original `dired-hide-subdir' in `dired-aux.el', except:
+;;
+;; 1. Plain prefix arg means invoke `dired-hide-all'.  Added optional arg NEXT.
+;; 2. Do not move to the next subdir.
+;; 3. Modified to work with also with older Emacs versions.
+;;
+(defun diredp-hide-subdir-nomove (arg &optional next)
+  "Hide or unhide the current directory.
+Unlike `dired-hide-subdir', this does not advance the cursor to the
+next directory header line.
+
+With a plain prefix arg (`C-u'), invoke `dired-hide-all' to hide or
+ show everything.
+With a numeric prefix arg N, hide this subdirectory and the next N-1
+ subdirectories."
+  (interactive "P")
+  (dired-hide-check)
+  (if (consp arg)
+      (dired-hide-all 'IGNORED)         ; Arg needed for older Emacs versions.
+    (setq arg  (prefix-numeric-value arg))
+    (let ((modflag  (buffer-modified-p)))
+      (while (>=  (setq arg  (1- arg)) 0)
+        (let* ((cur-dir   (dired-current-directory))
+               (hidden-p  (dired-subdir-hidden-p cur-dir))
+               (elt       (assoc cur-dir dired-subdir-alist))
+               (end-pos   (1- (dired-get-subdir-max elt)))
+               buffer-read-only)
+          (goto-char (dired-get-subdir-min elt)) ; Keep header line visible, hide rest
+          (skip-chars-forward "^\n\r")
+          (if hidden-p
+              (subst-char-in-region (point) end-pos ?\r ?\n)
+            (subst-char-in-region (point) end-pos ?\n ?\r)))
+        (when next (dired-next-subdir 1 t)))
+      (if (fboundp 'restore-buffer-modified-p)
+          (restore-buffer-modified-p modflag)
+        (set-buffer-modified-p modflag)))))
+
+;;; ----------------------
+;;; If we instead renamed `diredp-hide-subdir-nomove' to `dired-hide-subdir' as a replacement,
+;;; then we would define things this way:
+;;;
+;;;
+;;; ;; REPLACE ORIGINAL in `dired-aux.el'.
+;;; ;;
+;;; ;; 1. Plain prefix arg means invoke `dired-hide-all'.  Added optional arg NEXT.
+;;; ;;
+;;; ;; 2. Do not move to the next subdir.
+;;; ;;
+;;; ;; 3. Modified to work with also with older Emacs versions.
+;;; ;;
+;;; (defun dired-hide-subdir (arg &optional next)
+;;;   "Hide or unhide the current directory.
+;;; Unlike `diredp-hide-subdir-goto-next', this does not advance the
+;;; cursor to the next directory header line.
+;;;
+;;; With a plain prefix arg (`C-u'), invoke `dired-hide-all' to hide or
+;;;  show everything.
+;;; With a numeric prefix arg N, hide this subdirectory and the next N-1
+;;;  subdirectories."
+;;;   (interactive "P")
+;;;   (dired-hide-check)
+;;;   (if (consp arg)
+;;;       (dired-hide-all 'IGNORED)         ; Arg needed for older Emacs versions.
+;;;     (setq arg  (prefix-numeric-value arg))
+;;;     (let ((modflag  (buffer-modified-p)))
+;;;       (while (>=  (setq arg  (1- arg)) 0)
+;;;         (let* ((cur-dir   (dired-current-directory))
+;;;                (hidden-p  (dired-subdir-hidden-p cur-dir))
+;;;                (elt       (assoc cur-dir dired-subdir-alist))
+;;;                (end-pos   (1- (dired-get-subdir-max elt)))
+;;;                buffer-read-only)
+;;;           (goto-char (dired-get-subdir-min elt)) ; Keep header line visible, hide rest
+;;;           (skip-chars-forward "^\n\r")
+;;;           (if hidden-p
+;;;               (subst-char-in-region (point) end-pos ?\r ?\n)
+;;;             (subst-char-in-region (point) end-pos ?\n ?\r)))
+;;;         (when next (dired-next-subdir 1 t)))
+;;;       (if (fboundp 'restore-buffer-modified-p)
+;;;           (restore-buffer-modified-p modflag)
+;;;         (set-buffer-modified-p modflag)))))
+;;;
+;;; (defun diredp-hide-subdir-goto-next (arg)
+;;;   "Hide or unhide current directory and move to next directory header line."
+;;;   (interactive "P")
+;;;   (dired-hide-subdir arg 'NEXT))
+;;; ----------------------
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
