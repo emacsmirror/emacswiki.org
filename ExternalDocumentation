@@ -59,3 +59,20 @@ NOTE: On a Mac install asciidoc and docbook2x first. For example, via brew:
 NOTE:
 pm.info* is deleted because it gives an error. The best solution is for
 documentation to be rebuilt with newer makeinfo version.
+
+=== stdlibc++ ===
+
+To install documentation in .info format of GNU's standard C++ library (for stuff like std::string, std::vector, etc.) follow:
+
+  $ wget http://www.netgull.com/gcc/infrastructure/libg%2B%2B-2.8.1.3.tar.gz
+  $ tar -xvf libg++-2.8.1.3.tar.gz libg++-2.8.1.3/libg++/texinfo/lgpl.texinfo
+  $ tar -xvf libg++-2.8.1.3.tar.gz libg++-2.8.1.3/libg++/libg++.texi
+  $ cd libg++-2.8.1.3/libg++/
+  $ cp texinfo/lgpl.texinfo .
+  $ makeinfo libg++.texi
+    (a bunch of warnings!)
+  $ cp libg++.info ~/info/
+  $ cd ~/info
+  $ install-info libg++.info dir
+
+The URL in wget is one of the mirrors selected for geographic proximity. Select yours from http://gcc.gnu.org/mirrors.html
