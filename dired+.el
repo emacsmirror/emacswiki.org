@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  3 22:23:03 2014 (-0800)
+;; Last-Updated: Mon Feb  3 22:37:20 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7358
+;;     Update #: 7363
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -197,6 +197,17 @@
 ;;    it a cons of buffer name and file names.  Relative file names
 ;;    are interpreted relative to the value of `default-directory'.
 ;;    Use absolute file names if appropriate.
+;;
+;;  `i' and `$' are improved in Dired+:
+;;
+;;  * Once a subdir has been inserted, `i' bounces between the subdir
+;;    listing and the subdir line in the parent listing.  If the
+;;    parent dir is hidden, then `i' from a subdir opens the parent
+;;    listing so it can move to the subdir line there (Emacs 24+).
+;;
+;;  * `$' is a simple toggle - it does not move the cursor forward.
+;;    `M-$' advances the cursor, in addition to toggling like `$'.
+;;    `C-u $' does hide/show all (what `M-$' does in vanilla Dired).
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
