@@ -3,6 +3,35 @@
 latex-preview-pane is a minor mode for Emacs that enables you to preview your LaTeX files directly in Emacs. 
 It supports PDF previews, your choice of pdflatex or xelatex, and it highlights errors in your LaTeX buffer.
  
-The latest version of cygwin-mount.el can always be found at: https://github.com/jsinglet/latex-preview-pane
+The latest version of latex-preview-pane can always be found at: https://github.com/jsinglet/latex-preview-pane
 
-The following document details the instalation and usage of latex-preview-pane.
+The following document details the instalation and usage of latex-preview-pane. Below you can see a screenshot of LaTeX Preview Pane in action.
+
+[[image:LaTeXPreviewPaneSS]]
+
+
+Below, you can see LaTeX Preview Pane highlighting an error in a buffer.
+
+[[image:LaTeXPreviewPaneError]]
+
+== Installing LaTeX Preview Pane == 
+
+To install latex-preview-pane you will need the following:
+
+* A installed copy of Emacs 24+ with a working packages system
+* The command pdflatex on your PATH
+* Access to the Marmalade package repository
+
+If you don't already have Marmalade installed, add the following snippet to your .emacs file and either restart emacs or simply <code>eval-region</code> the snippet. 
+
+{{{
+(require 'package)
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)
+}}}
+
+To install latex-preview-pane, simply execute <code>M-x package-install latex-preview-pane</code> and restart Emacs.
+
+== Using LaTeX Preview Pane ==
