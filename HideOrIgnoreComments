@@ -44,11 +44,13 @@ That screenshot does not show up, for me anyway.  Please post the screenshot to 
 But I doubt that an image will be enough to help me understand the problem (and I know little about Ruby).  You will likely need to investigate a bit further what happens, perhaps using the Lisp debugger. IOW, for me, at least, to be able to help you, you will need to provide more info.  -- DrewAdams
 
 [new]
+The problem with Ruby is that to get good results you also need to hide any spaces that preceed the comment, or they end up as whitespace before whatever is after the comment.
 
+So you can add this line as the first line inside the loop in <tt>hide/show-comments</tt>
 
+    (when (string= "" comment-end) (goto-char cbeg))
 
-
-
+Have a look at https://gist.github.com/8809677 for a modified version.
 
 
 
