@@ -60,6 +60,11 @@ To compile documents to PDF by default add the following to your <tt>[InitFile ~
 
     (setq TeX-PDF-mode t)
 
+If it doesn't work, try this :
+
+    (require 'tex)
+    (TeX-global-PDF-mode t)
+
 == SwifTeX ==
 
 [http://www.ctan.org/tex-archive/support/emacs-modes/swiftex/swiftex-doc.txt SwifTeX] (by the author of !docTeX, the mode for editing self-documenting !LaTeX code) is derived from the !LaTeX mode in "tex-mode.el" (distributed with Emacs) using the autoloaded function <code>`define-derived-mode'</code>. It has untested option to derive from !AUCTeX's !LaTeX-mode.
