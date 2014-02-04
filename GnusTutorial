@@ -700,7 +700,7 @@ idea how to do it. Here are some ideas what you can do now:
 
 ==== RTFM ====
 
-To open the Gnus manual hit C-h i gnus. Then you can either work through
+To open the Gnus manual hit C-h i d m gnus. Then you can either work through
 the menus or search in the node-titles with i or in the fulltext with s.
 
 
