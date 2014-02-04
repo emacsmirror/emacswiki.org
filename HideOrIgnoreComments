@@ -48,7 +48,7 @@ The problem with Ruby is that to get good results you also need to hide any spac
 
 So you can add this line as the first line inside the loop in <tt>hide/show-comments</tt>
 
-    (when (string= "" comment-end) (goto-char cbeg))
+    (while (= (char-before cbeg) ? ) (setq cbeg (1- cbeg)))
 
 Have a look at https://gist.github.com/8809677 for a modified version.
 
