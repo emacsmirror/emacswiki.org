@@ -7,7 +7,7 @@ using Emacs with (or within) Cygwin (http://www.cygwin.com/)
 * SetTty -- why you should set CYGWIN="tty" (at least)
 * CustomizingBoth -- making your InitFile work with both non- and cygwinized emacsen
 * NTEmacsWithCygwin -- how to do it, and why you might want to
-* [[windows-path.el]] --lets you use windows-style filenames like "c:/path/file" or "c:\path\file" in cygwin emacs
+* [[windows-path.el]] -- lets you use windows-style filenames like "c:/path/file" or "c:\path\file" in cygwin emacs
 ----
 妳可以在這�<站點髮現很多在Emacs中使�"�Cygwin tools地有�"�信息(這�<站點�Oe樣有很好地中�-�設置說明):
 : http://www.khngai.com/emacs/ 
