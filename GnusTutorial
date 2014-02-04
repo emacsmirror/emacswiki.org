@@ -116,8 +116,6 @@ because it's listed last on ftp://ftp.gnus.org/pub/gnus/!
 
 === Installing Gnus ===
 
-FIXME: We must do Windows instructions, too!
-
 First, you need to decide on a directory where Gnus should be
 installed. You might wish to install it in your home directory, or you
 might wish to install it in a site-wide directory. For site-wide
