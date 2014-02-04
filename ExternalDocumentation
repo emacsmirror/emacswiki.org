@@ -76,3 +76,5 @@ To install documentation in .info format of GNU's standard C++ library (for stuf
   $ install-info libg++.info dir
 
 The URL in wget is one of the mirrors selected for geographic proximity. Select yours from http://gcc.gnu.org/mirrors.html
+
+GNU's standard C++ library page: http://gcc.gnu.org/libstdc++
