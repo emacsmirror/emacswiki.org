@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 450 $
+;; RCS Version: $Rev: 451 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -285,7 +285,7 @@ follow the mouse in graphical environments."
                (buffer-list))
          (set-default symbol value)))
 
-(defcustom sr-mouse-events-threshold 5
+(defcustom sr-mouse-events-threshold 10
   "Number of mouse movement events to ignore before following it
 with the cursor. This helps to avoid capturing accidentally the
 cursor when Sunrise is activated."
@@ -516,6 +516,9 @@ Initial value is 2/3 the viewport height.")
 
 (defvar sr-inhibit-highlight nil
   "Special variable used to temporarily inhibit highlighting in panes.")
+
+(defvar sr-inhibit-switch nil
+  "Special variable used to inhibit switching from one pane to the other.")
 
 (defvar sr-find-items nil
   "Special variable used by `sr-find' to control the scope of find operations.")
@@ -840,6 +843,14 @@ automatically:
      (sr-display-attributes (point-min) (point-max) sr-show-file-attributes)
      (sr-restore-point-if-same-buffer)))
 
+(defmacro sr-save-selected-window (&rest body)
+  "Execute BODY, then select the previously selected window.
+During the operation, `sr-inhibit-switch' is set to t.
+Uses `save-selected-window' internally."
+  `(let ((sr-inhibit-switch t))
+     (save-selected-window
+       ,@body)))
+
 (defmacro sr-alternate-buffer (form)
   "Execute FORM in a new buffer, after killing the previous one."
   `(let ((dispose nil))
@@ -936,39 +947,6 @@ Helper macro for passive & synchronized navigation."
        (if focus (sr-focus-filename focus))
        (revert-buffer)))))
 
-(defun sr-select-window (side)
-  "Select/highlight the given Sunrise window (right or left)."
-  (select-window (symbol-value (sr-symbol side 'window)))
-  (setq sr-selected-window side)
-  (setq sr-this-directory default-directory)
-  (sr-highlight))
-
-(defun sr-viewer-window ()
-  "Return an active window that can be used as the viewer."
-  (if (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-          (memq (current-buffer) (list sr-left-buffer sr-right-buffer)))
-      (let ((current-window (selected-window)) (target-window))
-        (dotimes (_times 2)
-          (setq current-window (next-window current-window))
-          (unless (memq current-window (list sr-left-window sr-right-window))
-            (setq target-window current-window)))
-        target-window)
-    (selected-window)))
-
-(defun sr-select-viewer-window (&optional force-setup)
-  "Select a window that is not a Sunrise pane.
-If no suitable active window can be found and FORCE-SETUP is set,
-calls the function `sr-setup-windows' and tries once again."
-  (interactive "p")
-  (let ((viewer (sr-viewer-window)))
-    (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-        (hl-line-mode 1))
-    (if viewer
-        (select-window viewer)
-      (when force-setup
-        (sr-setup-windows)
-        (select-window (sr-viewer-window))))))
-
 (defun sr-backup-buffer ()
   "Create a backup copy of the current buffer.
 Used as a cache during revert operations."
@@ -1003,41 +981,43 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
     (require extension filename t)))
 
 (defadvice dired-find-buffer-nocreate
-  (before sr-advice-findbuffer (dirname &optional mode))
+    (before sr-advice-findbuffer (dirname &optional mode))
   "A hack to avoid some Dired mode quirks in the Sunrise Commander."
   (if (sr-equal-dirs sr-dired-directory dirname)
       (setq mode 'sr-mode)))
 ;; ^--- activated by sr-within macro
 
 (defadvice dired-dwim-target-directory
-  (around sr-advice-dwim-target ())
+    (around sr-advice-dwim-target ())
   "Tweak the target directory guessing mechanism when Sunrise Commander is on."
   (if (and sr-running (eq (selected-frame) sr-current-frame))
       (setq ad-return-value sr-other-directory)
     ad-do-it))
 (ad-activate 'dired-dwim-target-directory)
 
+(defadvice select-window
+    (after sr-ad-select-window (window &optional norecord))
+  "Detect Sunrise pane switches and update tracking state accordingly."
+  (sr-detect-switch))
+(ad-activate 'select-window)
+
 (defadvice other-window
-  (around sr-advice-other-window (count &optional all-frames))
+    (around sr-advice-other-window (count &optional all-frames))
   "Select the correct Sunrise Commander pane when switching from other windows."
   (if (or (not sr-running) sr-ediff-on)
       ad-do-it
     (let ((from (selected-window))
           (to (next-window)))
-      ad-do-it
-      (unless (or sr-traditional-other-window
-                  (not (memq to (list sr-left-window sr-right-window)))
-                  (memq from (list sr-left-window sr-right-window)))
-        ;; switching from outside
-        (sr-select-window sr-selected-window))
-      (with-no-warnings
-        (when (eq (selected-window) (sr-other 'window))
-          ;; switching from the other pane
-          (sr-change-window))))))
+      (if (or sr-traditional-other-window
+              (not (memq to (list sr-left-window sr-right-window)))
+              (memq from (list sr-left-window sr-right-window)))
+          ad-do-it
+        (sr-select-window sr-selected-window))))
+  (sr-detect-switch))
 (ad-activate 'other-window)
 
 (defadvice use-hard-newlines
-  (around sr-advice-use-hard-newlines (&optional arg insert))
+    (around sr-advice-use-hard-newlines (&optional arg insert))
   "Stop asking if I want hard lines the in Sunrise Commander, just guess."
   (if (memq major-mode '(sr-mode sr-virtual-mode))
       (let ((inhibit-read-only t))
@@ -1047,7 +1027,7 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
 (ad-activate 'use-hard-newlines)
 
 (defadvice dired-insert-set-properties
-  (around sr-advice-dired-insert-set-properties (beg end))
+    (around sr-advice-dired-insert-set-properties (beg end))
   "Manage hidden attributes in files added externally (e.g. from find-dired) to
 the Sunrise Commander."
   (if (not (memq major-mode '(sr-mode sr-virtual-mode)))
@@ -1181,6 +1161,7 @@ the Sunrise Commander."
 (define-key sr-mode-map [backspace]   'dired-unmark-backward)
 
 (define-key sr-mode-map [mouse-1]        'sr-mouse-advertised-find-file)
+(define-key sr-mode-map [mouse-2]        'sr-mouse-change-window)
 (define-key sr-mode-map [mouse-movement] 'sr-mouse-move-cursor)
 
 (define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
@@ -1405,7 +1386,7 @@ buffer or window."
              (not sr-ediff-on)
              (not (eq sr-window-split-style 'vertical))
              (window-live-p sr-left-window)
-             (save-selected-window
+             (sr-save-selected-window
                (select-window sr-left-window)
                (let ((my-delta (- sr-panes-height (window-height))))
                  (enlarge-window my-delta))
@@ -1578,7 +1559,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
   (when (and (window-live-p sr-left-window)
              (window-live-p sr-right-window))
     (let ((direction (or (and reverse -1) 1)))
-      (save-selected-window
+      (sr-save-selected-window
         (select-window sr-left-window)
         (enlarge-window-horizontally (* 5 direction))))
     (setq sr-selected-window-width nil)))
@@ -1612,7 +1593,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
         (max (sr-get-panes-size 'max))
         (ratio 1)
         delta)
-    (save-selected-window
+    (sr-save-selected-window
       (when (eq sr-window-split-style 'vertical)
         (select-window sr-right-window)
         (setq ratio 2)
@@ -1631,7 +1612,7 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
         (min (sr-get-panes-size 'min))
         (ratio 1)
         delta)
-    (save-selected-window
+    (sr-save-selected-window
       (when (eq sr-window-split-style 'vertical)
         (select-window sr-right-window)
         (setq ratio 2)
@@ -2004,21 +1985,26 @@ and add it to your `load-path'" name name))))
 ;;; ============================================================================
 ;;; Graphical interface interaction functions:
 
+(defun sr-detect-switch ()
+  "Detect Sunrise pane switches and update tracking state accordingly."
+  (when (and sr-running
+             (not sr-inhibit-switch)
+             (eq (selected-window) (sr-other 'window)))
+    (let ((there sr-this-directory))
+      (setq sr-selected-window (sr-other)
+            sr-this-directory default-directory
+            sr-other-directory there)
+      (sr-highlight))))
+
 (defun sr-change-window()
   "Change to the other Sunrise pane."
   (interactive)
-  (if (and (window-live-p sr-left-window) (window-live-p sr-right-window))
-      (let ((here sr-this-directory))
-        (setq sr-this-directory sr-other-directory)
-        (setq sr-other-directory here)
-        (sr-select-window (sr-other)))))
+  (sr-select-window (sr-other)))
 
 (defun sr-mouse-change-window (e)
   "Change to the Sunrise pane clicked in by the mouse."
   (interactive "e")
-  (mouse-set-point e)
-  (if (eq (selected-window) (sr-other 'window))
-      (sr-change-window)))
+  (mouse-set-point e))
 
 (defun sr-mouse-move-cursor (event)
   "Move the cursor to the current mouse position.
@@ -2034,6 +2020,38 @@ This function is called only if the `sr-cursor-follows-mouse' custom variable
           (sr-change-window))
         (when (numberp mouse-pos)
           (goto-char mouse-pos))))))
+
+(defun sr-select-window (side)
+  "Select/highlight the given Sunrise window (right or left)."
+  (select-window (symbol-value (sr-symbol side 'window))))
+
+(defun sr-viewer-window ()
+  "Return an active window that can be used as the viewer."
+  (if (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+          (memq (current-buffer) (list sr-left-buffer sr-right-buffer)))
+      (let ((current-window (selected-window)) (target-window))
+        (dotimes (_times 2)
+          (setq current-window (next-window current-window))
+          (unless (memq current-window (list sr-left-window sr-right-window))
+            (setq target-window current-window)))
+        target-window)
+    (selected-window)))
+
+(defun sr-select-viewer-window (&optional force-setup)
+  "Select a window that is not a Sunrise pane.
+If no suitable active window can be found and FORCE-SETUP is set,
+calls the function `sr-setup-windows' and tries once again."
+  (interactive "p")
+  (let ((selected sr-selected-window)
+        (viewer (sr-viewer-window)))
+    (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+        (hl-line-mode 1))
+    (if viewer
+        (select-window viewer)
+      (when force-setup
+        (sr-setup-windows)
+        (select-window (sr-viewer-window))))
+    (setq sr-selected-window selected)))
 
 (defun sr-beginning-of-buffer()
   "Go to the first directory/file in Dired."
@@ -2105,9 +2123,10 @@ This function is called only if the `sr-cursor-follows-mouse' custom variable
     (let ((tmp sr-this-directory))
       (setq sr-this-directory sr-other-directory
             sr-other-directory tmp))
-    (select-window sr-right-window)
-    (sr-setup-visible-panes)
-    (sr-select-window sr-selected-window)))
+    (let ((here sr-selected-window))
+      (select-window sr-right-window)
+      (sr-setup-visible-panes)
+      (sr-select-window here))))
 
 (defun sr-synchronize-panes (&optional reverse)
   "Change the directory in the other pane to that in the current one.
@@ -2145,7 +2164,7 @@ to that in the other one."
   (unless (featurep 'browse-url)
     (error "ERROR: Feature browse-url not available!"))
   (setq file (or file (dired-get-filename)))
-  (save-selected-window
+  (sr-save-selected-window
     (sr-select-viewer-window)
     (let ((buff (current-buffer)))
       (browse-url (concat "file://" file))
@@ -2232,7 +2251,7 @@ buffer."
 Kills any other buffer opened previously the same way."
   (let ((split-width-threshold (* 10 (window-width)))
         (filename (expand-file-name (dired-get-filename nil t))))
-    (save-selected-window
+    (sr-save-selected-window
       (condition-case description
           (progn
             (sr-select-viewer-window)
@@ -2533,7 +2552,7 @@ elements that are non-equal are found."
   "Scroll the current pane or (if active) the viewer pane 1 line up."
   (interactive)
   (if (buffer-live-p other-window-scroll-buffer)
-      (save-selected-window
+      (sr-save-selected-window
         (sr-select-viewer-window)
         (scroll-up 1))
     (scroll-up 1)))
@@ -2542,7 +2561,7 @@ elements that are non-equal are found."
   "Scroll the current pane or (if active) the viewer pane 1 line down."
   (interactive)
   (if (buffer-live-p other-window-scroll-buffer)
-      (save-selected-window
+      (sr-save-selected-window
         (sr-select-viewer-window)
         (scroll-down 1))
     (scroll-down 1)))
@@ -2617,10 +2636,9 @@ elements that are non-equal are found."
         (sr-advertised-find-file))
     (sr-in-other (sr-advertised-find-file))))
 
-(defun sr-mouse-advertised-find-file (e)
+(defun sr-mouse-advertised-find-file (_e)
   "Open the file/directory pointed to by the mouse."
   (interactive "e")
-  (sr-mouse-change-window e)
   (sr-advertised-find-file))
 
 (defun sr-prev-subdir-other (&optional count)
@@ -3866,14 +3884,13 @@ See `sr-term' for a description of the arguments."
 (defmacro sr-ti (form)
   "Evaluate FORM in the context of the selected pane.
 Helper macro for implementing terminal integration in Sunrise."
-  `(if sr-running
-       (progn
-         (sr-select-window sr-selected-window)
-         (hl-line-unhighlight)
-         (unwind-protect
-             ,form
-           (when sr-running
-             (sr-select-viewer-window))))))
+  `(when sr-running
+     (sr-select-window sr-selected-window)
+     (hl-line-unhighlight)
+     (unwind-protect
+         ,form
+       (when sr-running
+         (sr-select-viewer-window)))))
 
 (defun sr-ti-previous-line ()
   "Move one line backward on active pane from the terminal window."
@@ -3953,10 +3970,10 @@ Helper macro for implementing terminal integration in Sunrise."
 (defmacro sr-clex (pane form)
   "Evaluate FORM in the context of PANE.
 Helper macro for implementing command line expansion in Sunrise."
-  `(save-window-excursion
+  `(progn
      (setq pane (if (atom pane) pane (eval pane)))
-     (select-window (symbol-value (sr-symbol ,pane 'window)))
-     ,form))
+     (with-current-buffer (symbol-value (sr-symbol ,pane 'buffer))
+       ,form)))
 
 (defun sr-clex-marked (pane)
   "Return a string containing the list of marked files in PANE."
@@ -3991,45 +4008,41 @@ Puts `sr-clex-commit' into local `after-change-functions'."
       (progn
         (setq sr-clex-on nil)
         (delete-overlay sr-clex-hotchar-overlay))
-    (progn
-      (insert-char ?% 1)
-      (if sr-running
-          (progn
-            (add-hook 'after-change-functions 'sr-clex-commit nil t)
-            (setq sr-clex-on t)
-            (setq sr-clex-hotchar-overlay (make-overlay (point) (1- (point))))
-            (overlay-put sr-clex-hotchar-overlay 'face 'sr-clex-hotchar-face)
-            (message
-             "Sunrise: CLEX is now ON for keys: m f n d a p M F N D A P %%"))))))
+    (insert-char ?% 1)
+    (when sr-running
+      (add-hook 'after-change-functions 'sr-clex-commit nil t)
+      (setq sr-clex-on t)
+      (setq sr-clex-hotchar-overlay (make-overlay (point) (1- (point))))
+      (overlay-put sr-clex-hotchar-overlay 'face 'sr-clex-hotchar-face)
+      (message
+       "Sunrise: CLEX is now ON for keys: m f n d a p M F N D A P %%"))))
 
 (defun sr-clex-commit (&optional _beg _end _range)
   "Commit the current CLEX operation (if any).
 This function is added to the local `after-change-functions' list
 by `sr-clex-start'."
   (interactive)
-  (if sr-clex-on
-      (progn
-        (setq sr-clex-on nil)
-        (delete-overlay sr-clex-hotchar-overlay)
-        (let* ((xchar (char-before))
-               (expansion (case xchar
-                            (?m (sr-clex-marked       'left))
-                            (?f (sr-clex-file         'left))
-                            (?n (sr-clex-marked-nodir 'left))
-                            (?d (sr-clex-dir          'left))
-                            (?M (sr-clex-marked       'right))
-                            (?F (sr-clex-file         'right))
-                            (?N (sr-clex-marked-nodir 'right))
-                            (?D (sr-clex-dir          'right))
-                            (?a (sr-clex-marked       '(sr-this)))
-                            (?A (sr-clex-dir          '(sr-this)))
-                            (?p (sr-clex-marked       '(sr-other)))
-                            (?P (sr-clex-dir          '(sr-other)))
-                            (t nil))))
-          (if expansion
-              (progn
-                (delete-char -2)
-                (insert expansion)))))))
+  (when sr-clex-on
+    (setq sr-clex-on nil)
+    (delete-overlay sr-clex-hotchar-overlay)
+    (let* ((xchar (char-before))
+           (expansion (case xchar
+                        (?m (sr-clex-marked       'left))
+                        (?f (sr-clex-file         'left))
+                        (?n (sr-clex-marked-nodir 'left))
+                        (?d (sr-clex-dir          'left))
+                        (?M (sr-clex-marked       'right))
+                        (?F (sr-clex-file         'right))
+                        (?N (sr-clex-marked-nodir 'right))
+                        (?D (sr-clex-dir          'right))
+                        (?a (sr-clex-marked       '(sr-this)))
+                        (?A (sr-clex-dir          '(sr-this)))
+                        (?p (sr-clex-marked       '(sr-other)))
+                        (?P (sr-clex-dir          '(sr-other)))
+                        (t nil))))
+      (when expansion
+        (delete-char -2)
+        (insert expansion)))))
 
 (define-minor-mode sr-term-char-minor-mode
   "Sunrise Commander terminal add-on for character (raw) mode."
