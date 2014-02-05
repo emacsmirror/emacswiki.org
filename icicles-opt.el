@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Feb  2 20:02:45 2014 (-0800)
+;; Last-Updated: Wed Feb  5 07:08:21 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5850
+;;     Update #: 5851
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4047,7 +4047,7 @@ prefix argument (or else start a new Emacs session)."
            (dolist (entry  val)
              (icicle-set-S-TAB-methods-for-command (car entry) (cdr entry)))))
   :initialize #'custom-initialize-default
-  :group 'Icicles-matching)
+  :group 'Icicles-Matching)
 
 (defcustom icicle-swank-prefix-length 1
   "*Length (chars) of symbol prefix that much match, for swank completion.
