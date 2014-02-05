@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Jan 30 13:01:31 2014 (-0800)
+;; Last-Updated: Wed Feb  5 15:20:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2902
+;;     Update #: 2926
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -113,8 +113,8 @@
 ;;  requiring `oneonone.el' but before executing `1on1-emacs':
 ;;
 ;;    (require 'oneonone)
-;;    (setq default-frame-alist nil)
-;;    (setq initial-frame-alist '((background-color . "White"))); e.g.
+;;    (setq default-frame-alist  nil)
+;;    (setq initial-frame-alist  '((background-color . "White"))); e.g.
 ;;    (1on1-emacs)
 ;;
 ;;  If you want the text cursor to change to a box when Emacs is idle,
@@ -621,7 +621,7 @@
 (require 'frame-cmds nil t) ;; (no error if not found): rename-frame
 (require 'zoom-frm nil t) ;; (no error if not found):
                           ;; frame-zoom-font-difference, zoom-frm-out
-(require 'hexrgb) ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv
+(require 'hexrgb) ;; hexrgb-increment-hue
 
 
 ;; Ensure that this is loaded before compiling it.
@@ -1371,9 +1371,9 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
   (interactive)
   (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
     (error "Use `1on1-emacs' only with a graphics display, not with a text terminal"))
-  (setq default-frame-alist (append 1on1-default-frame-alist default-frame-alist)
-        special-display-frame-alist (append 1on1-special-display-frame-alist
-                                            special-display-frame-alist))
+  (setq default-frame-alist          (append 1on1-default-frame-alist default-frame-alist)
+        special-display-frame-alist  (append 1on1-special-display-frame-alist
+                                             special-display-frame-alist))
 
   ;; *Help* frame
   (if 1on1-*Help*-frame-flag
@@ -1384,9 +1384,9 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
                    (cons 'mouse-color 1on1-help-frame-mouse+cursor-color)
                    (cons 'cursor-color 1on1-help-frame-mouse+cursor-color)
                    '(height . 40))))
-    (setq special-display-buffer-names
-          (1on1-remove-if (lambda (elt) (equal "*Help*" (car elt)))
-                          special-display-buffer-names)))
+    (setq special-display-buffer-names  (1on1-remove-if (lambda (elt)
+                                                          (equal "*Help*" (car elt)))
+                                                        special-display-buffer-names)))
 
   ;; *Completions* frame
   ;; If `1on1-minibuffer-frame-flag' is non-nil, then *Completions* frame must be treated
@@ -1400,14 +1400,14 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
               ((background-color ,@1on1-completions-frame-background)
                (mouse-color      ,@1on1-completions-frame-mouse+cursor-color)
                (cursor-color     ,@1on1-completions-frame-mouse+cursor-color)
-               (menu-bar-lines . 0) (tool-bar-lines . 0)    ; No menu bar or tool bar.
+               (menu-bar-lines . 0) (tool-bar-lines . 0) ; No menu bar or tool bar.
                ,@(and 1on1-completions-frame-width
                       `((width   ,@1on1-completions-frame-width))))))
          (add-to-list 'special-display-buffer-names
                       `("*Completions*" 1on1-display-*Completions*-frame)))
-    (setq special-display-buffer-names
-          (1on1-remove-if (lambda (elt) (equal "*Completions*" (car elt)))
-                          special-display-buffer-names)))
+    (setq special-display-buffer-names  (1on1-remove-if (lambda (elt)
+                                                          (equal "*Completions*" (car elt)))
+                                                        special-display-buffer-names)))
 
   ;; Minibuffer frame
   (when 1on1-minibuffer-frame-flag
@@ -1415,8 +1415,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
     (setq pop-up-frames  t)
 
     ;; Set up `1on1-minibuffer-frame'.
-    (setq minibuffer-frame-alist (append 1on1-minibuffer-frame-alist
-                                         minibuffer-frame-alist))
+    (setq minibuffer-frame-alist  (append 1on1-minibuffer-frame-alist minibuffer-frame-alist))
     (if 1on1-minibuffer-frame
         (modify-frame-parameters 1on1-minibuffer-frame 1on1-minibuffer-frame-alist)
       (setq 1on1-minibuffer-frame
@@ -1432,7 +1431,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
     (when (fboundp 'rename-frame)
       (rename-frame 1on1-minibuffer-frame "Emacs minibuffer                         \
 show/hide: hold CTRL + click in window"))
-    (setq minibuffer-auto-raise t)
+    (setq minibuffer-auto-raise  t)
     ;; Background colors of minibuffer frame: 3 states
     (add-hook 'isearch-mode-hook '1on1-color-isearch-minibuffer-frame)
     (add-hook 'isearch-mode-end-hook '1on1-color-minibuffer-frame-on-exit)
@@ -1453,7 +1452,7 @@ show/hide: hold CTRL + click in window"))
     (remove-hook 'post-command-hook '1on1-change-cursor-on-overwrite/read-only))
   (if 1on1-change-cursor-on-input-method-flag
       (add-hook 'post-command-hook '1on1-change-cursor-on-input-method)
-    (setq current-input-method nil)
+    (setq current-input-method  nil)
     (1on1-change-cursor-on-input-method)
     (remove-hook 'post-command-hook '1on1-change-cursor-on-input-method))
   (add-hook 'minibuffer-exit-hook '1on1-reset-minibuffer-frame)
@@ -1477,14 +1476,13 @@ show/hide: hold CTRL + click in window"))
     (set-cursor-color
      (if current-input-method
          1on1-default-frame-cursor-color-input-method
-       (let ((bufname (buffer-name (current-buffer))))
-         (cond
-           ((string= "*Help*" bufname) 1on1-help-frame-mouse+cursor-color)
-           ((string= "*Completions*" bufname) 1on1-completions-frame-mouse+cursor-color)
-           ((eq 1on1-minibuffer-frame (selected-frame))
-            1on1-minibuffer-frame-cursor-color)
-           ((special-display-p bufname) 1on1-special-frame-cursor-color)
-           (t 1on1-default-frame-cursor-color)))))))
+       (let ((bufname  (buffer-name (current-buffer))))
+         (cond ((string= "*Help*" bufname) 1on1-help-frame-mouse+cursor-color)
+               ((string= "*Completions*" bufname) 1on1-completions-frame-mouse+cursor-color)
+               ((eq 1on1-minibuffer-frame (selected-frame))
+                1on1-minibuffer-frame-cursor-color)
+               ((special-display-p bufname) 1on1-special-frame-cursor-color)
+               (t 1on1-default-frame-cursor-color)))))))
 
 ;; This is from Juri Linkov <juri@jurta.org>, with read-only added.
 (defun 1on1-change-cursor-on-overwrite/read-only ()
@@ -1509,9 +1507,9 @@ To get the frame's current cursor type, use `frame-parameters'."
 
 (defun 1on1-box-cursor-when-idle ()
   "Change the cursor to a box cursor when Emacs is idle."
-  (let ((type (cdr (assoc 'cursor-type (frame-parameters)))))
+  (let ((type  (cdr (assoc 'cursor-type (frame-parameters)))))
     (unless (eq type 'box)
-      (setq 1on1-last-cursor-type type)
+      (setq 1on1-last-cursor-type  type)
       (1on1-set-cursor-type 'box))))
 
 (defun 1on1-box-cursor-when-idle-off ()
@@ -1526,8 +1524,9 @@ To get the frame's current cursor type, use `frame-parameters'."
 When on, the cursor is changed to a box whenever Emacs is idle.
 With prefix argument, turn on if ARG > 0; else turn off."
   (interactive "P")
-  (setq 1on1-box-cursor-when-idle-p
-        (if arg (> (prefix-numeric-value arg) 0) (not 1on1-box-cursor-when-idle-p)))
+  (setq 1on1-box-cursor-when-idle-p  (if arg
+                                         (> (prefix-numeric-value arg) 0)
+                                       (not 1on1-box-cursor-when-idle-p)))
   (cond (1on1-box-cursor-when-idle-p
          (timer-activate-when-idle 1on1-box-cursor-when-idle-timer)
          (add-hook 'pre-command-hook '1on1-box-cursor-when-idle-off)
@@ -1548,7 +1547,7 @@ use `\\[toggle-box-cursor-when-idle]."
   (interactive
    "nSeconds to idle, before changing to a box cursor: ")
   (timer-set-idle-time 1on1-box-cursor-when-idle-timer
-                       (setq 1on1-box-cursor-when-idle-interval secs)
+                       (setq 1on1-box-cursor-when-idle-interval  secs)
                        t))
 
 ;;;###autoload
@@ -1585,12 +1584,12 @@ Otherwise, that variable should be nil."
   "Display *Help* buffer in its own frame.
 `special-display-function' is used to do the actual displaying.
 BUF and ARGS are the arguments to `special-display-function'."
-  (let ((old-ptr-shape (and (boundp 'x-pointer-shape) x-pointer-shape))
+  (let ((old-ptr-shape  (and (boundp 'x-pointer-shape) x-pointer-shape))
         return-window)
-    (when (boundp 'x-pointer-xterm) (setq x-pointer-shape x-pointer-xterm))
-    (setq return-window (select-window (funcall special-display-function buf args)))
+    (when (boundp 'x-pointer-xterm) (setq x-pointer-shape  x-pointer-xterm))
+    (setq return-window  (select-window (funcall special-display-function buf args)))
     (raise-frame)
-    (setq x-pointer-shape old-ptr-shape)
+    (setq x-pointer-shape  old-ptr-shape)
     return-window))
 
 (defun 1on1-display-*Completions*-frame (buf &optional args)
@@ -1604,11 +1603,11 @@ the frame that set up the minibuffer.
 
 If `zoom-frm.el' is used, then shrink the text according to
 `1on1-completions-frame-zoom-font-difference'."
-  (let ((old-ptr-shape (and (boundp 'x-pointer-shape) x-pointer-shape))
+  (let ((old-ptr-shape  (and (boundp 'x-pointer-shape) x-pointer-shape))
         return-window)
     (when (and 1on1-*Completions*-frame-flag (boundp 'x-pointer-box-spiral))
-      (setq x-pointer-shape x-pointer-box-spiral))
-    (setq return-window (select-window (funcall special-display-function buf args)))
+      (setq x-pointer-shape  x-pointer-box-spiral))
+    (setq return-window  (select-window (funcall special-display-function buf args)))
 
     ;; In Icicles, use the font family of the original window.  This is particularly for
     ;; picking up the proper font for Unicode chars in `*Completions*'.  Emacs 23+ only.
@@ -1638,7 +1637,7 @@ If `zoom-frm.el' is used, then shrink the text according to
     (raise-frame)
     (when 1on1-minibuffer-frame (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame))
     (when (and 1on1-*Completions*-frame-flag (boundp 'x-pointer-box-spiral))
-      (setq x-pointer-shape old-ptr-shape))
+      (setq x-pointer-shape  old-ptr-shape))
     return-window))
 
 (defun 1on1-color-minibuffer-frame-on-setup ()
@@ -1648,12 +1647,12 @@ Use this when increasing the minibuffer recursion depth."
     (save-window-excursion
       (select-frame 1on1-minibuffer-frame)
       (set-background-color 1on1-active-minibuffer-frame-background)
-      (let ((count (minibuffer-depth)))
+      (let ((count  (minibuffer-depth)))
         (while (> count 1)
           (set-background-color (hexrgb-increment-hue ; Change bg hue slightly.
                                  (frame-parameter nil 'background-color)
                                  1on1-color-minibuffer-frame-on-setup-increment))
-          (setq count (1- count)))))))
+          (setq count  (1- count)))))))
 
 (defun 1on1-color-minibuffer-frame-on-exit ()
   "Change background of minibuffer frame to reflect the minibuffer depth.
