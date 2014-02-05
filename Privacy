@@ -16,7 +16,7 @@ keeps track of the IP numbers that have visited the site in the last 20 seconds.
 127.0.0.1 1390729057 1390728798 1390728798 1390728798 1390728797 1390670644 1390670381 1390670381 1390670380 1390670380
 }}}
 
-This is updated whenever somebody visits the site.
+This is updated whenever somebody visits the site. This information is not public.
 
 == Tracking of IP numbers and hostnames of authors by the wiki ==
 
