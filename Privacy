@@ -1,0 +1,53 @@
+This page lists privacy issues concerning [[Emacs Wiki]].
+
+== Cookies ==
+
+The wiki uses a cookie that doesn't identify individual users. The cookie is used to remember your preferences from one visit to the next.
+If you examine the cookie, you need to split it along the URL-encoded 0x1e byte (%251e). A typical user's cookie might look like this:
+##euihnscuskc 1## (which indicates that you have answered the WikiPedia:CAPTCHA at least once), ##bootstrap 0## (if you prefer the Classic [[CSS]])
+and ##username AlexSchroeder## (which says which username you'd like to use when editing a page).
+
+== Tracking of IP numbers and hostnames of readers trackers by the wiki ==
+  
+In order to prevent leeching (downloading a lot of pages using a bot instead of using one of the methods listed on WikiDownload), the wiki also
+keeps track of the IP numbers that have visited the site in the last 20 seconds. The ##visitors.log## file lists IP numbers and timestamps as follows:
+
+{{{
+127.0.0.1 1390729057 1390728798 1390728798 1390728798 1390728797 1390670644 1390670381 1390670381 1390670380 1390670380
+}}}
+
+This is updated whenever somebody visits the site.
+
+== Tracking of IP numbers and hostnames of authors by the wiki ==
+
+The wiki also tracks IP numbers and hostnames whenever a page is edited. The idea is that we want to ban certain people from editing the site via BannedHosts.
+This information is available in multiple places.
+
+*Recent changes* records IP number or hostname of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used. The IP numbers and hostnames are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job].
+
+*Every page* stores the IP number or hostname that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number or hostname they used.
+
+*Every “kept” page* stores the IP number or hostname that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a very small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used.
+
+[quote]
+*What are Kept Pages?*
+
+The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved…
+
+# all revisions older than two weeks are deleted
+# the current revision gets a new timestamp (so it will not be deleted for another two weeks!) and is saved as an old revision (a "kept page")
+# the new page is saved
+
+Thus, you can always go back at least two weeks.
+[/quote]
+
+== Spammers ==
+
+As you can see on WikiSpam, we log all the blocked edits that ran afoul of our banning rules. These log files contain IP numbers.
+
+== Web Server Logs ==
+
+The web server itself also keeps access log and error logs. These go back 31 days. They contain IP numbers and the URLs they requested. These log files are not public.
+
+----
+EmacsWiki
