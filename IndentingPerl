@@ -249,7 +249,7 @@ Answering to myself (using up-to-date https://github.com/jrockway/cperl-mode)
 
 [new]
 
-My fix to continued indentation where <code>cperl-indent-parens-as-block</code> is in effect (fixes staircase and I hope introduces less side effects than other snippets listed here).
+My fix to continued indentation when <code>cperl-indent-parens-as-block</code> is in effect (fixes staircase and I hope introduces less side effects than other snippets listed here).
 
   (defadvice cperl-backward-to-start-of-continued-exp (after indentation-fix)
     (and (not (memq char-after '(?\) ?\})))
