@@ -246,9 +246,10 @@ Is there customization to have auto-indent like this:
 Answering to myself (using up-to-date https://github.com/jrockway/cperl-mode)
     
     (set-q cperl-indent-subs-specially nil)
---Anonymous
 
-My fix to continued indentation where <code>cperl-indent-parens-as-block</code> is in effect (fixes staircase and I hope introduces less side effects).
+[new]
+
+My fix to continued indentation where <code>cperl-indent-parens-as-block</code> is in effect (fixes staircase and I hope introduces less side effects than other snippets listed here).
 
   (defadvice cperl-backward-to-start-of-continued-exp (after indentation-fix)
     (and (not (memq char-after '(?\) ?\})))
