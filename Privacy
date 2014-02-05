@@ -23,7 +23,7 @@ This is updated whenever somebody visits the site. This information is not publi
 The wiki also tracks IP numbers and hostnames whenever a page is edited. The idea is that we want to ban certain people from editing the site via BannedHosts.
 This information is available in multiple places.
 
-*Recent changes* records IP number or hostname of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used. The IP numbers and hostnames are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job].
+*Recent changes* records IP number or hostname of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used. The IP numbers and hostnames are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job]. If you check the [Self:action=rc;days=30 recent changes for the last 30 days], you should see that changes at the very bottom of the list---the changes older than 28 days---no longer have an IP number or hostname.
 
 *Every page* stores the IP number or hostname that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number or hostname they used.
 
