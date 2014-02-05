@@ -26,6 +26,14 @@ Here is some pseudo-code:
 [new]
 Why not call the `keyboard-escape-quit' function? it's even more do-what-i-want oriented. -- SylvainGarden
 
+[new]
+Great, keyboard-escape-quit seems to work!  Don't forget to make escape cancel an isearch as well:
+{{{
+; Map escape to cancel (like C-g)...
+(define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
+(global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
+}}}
+
 ----
 CategoryCommands
 CategoryHelp
