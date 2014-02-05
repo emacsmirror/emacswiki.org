@@ -3,12 +3,13 @@ Now you can run vi (or mutt! (see MuttInEmacs) (or Emacs! :))) in an Emacs buffe
 
 Use `M-x ansi-term' to start it.
 
-Note that `M-x ansi-term' differs from `M-x term': ansi-term will render colors, too.
-
-Also note that ansi-term remaps your default `C-x' key to `C-c'.
+Historically, `M-x ansi-term' differed from `M-x term' in that the latter couldn't render colours.  These days ([https://lists.gnu.org/archive/html/help-gnu-emacs/2007-12/msg00199.html ref]) the latter has caught up, so the main practical difference is now that ansi-term uses `C-x' for a prefix key, whilst term sticks with only the older `C-c' binding.  They also use slightly different buffer names.
 
 In Emacs 22, try prefixing actions that aren't recognized by their standard key commands with `C-x'.  For example, `M-x' becomes `C-x M-x'.
 
 For more configuration options see AnsiTermHints
+
+NB: Whilst ansi-term and term are closely related to each other, they shouldn't be confused with the entirely separate `M-x terminal-emulator' package.  This is expected to be announced as obsolete in the [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?id=55d5b3e35ac0de26fb09525e64d528db218f04e0#n909 NEWS] file for Emacs 24.4.
+
 ----
 CategoryExternalUtilities
