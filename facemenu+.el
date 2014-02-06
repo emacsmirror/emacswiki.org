@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 17 11:26:09 2014 (-0800)
+;; Last-Updated: Thu Feb  6 13:44:04 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1875
+;;     Update #: 1878
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -194,6 +194,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/06 dadams
+;;     Do not add Display Font's to menu twice (for font-lock-menus.el and font-menus.el).
 ;; 2014/01/17 dadams
 ;;     list-faces-display: Use dolist instead of while.
 ;; 2014/01/05 dadams
@@ -397,9 +399,16 @@ palette using `x'."
 (defvar facemenup-last-face-fg nil
   "Foreground of last face changed using face menu, before the change.")
 
-;; `font(-lock)-menus.el' puts `Display Fonts' last in menu.  Move it after `Display Colors'.
-(when (or (featurep 'font-lock-menus)  (featurep 'font-menus))
-  (define-key-after facemenu-menu [display-fonts] '("Display Fonts" . display-fonts) 'dc))
+(when (featurep 'font-lock-menus)
+  (define-key-after facemenu-menu [flm-list-fonts] '("Display Fonts" . flm-list-fonts) 'dc))
+
+;; `font-lock-menus.el' puts `Display Fonts' last in menu.  Move it after `Display Colors'.
+;; It provides both feature `font-lock-menus' and feature `font-menus'.  `font-menus.el' is an
+;; older version of `font-lock-menus.el', and it calls command `display-fonts'.
+(when (featurep 'font-menus)
+  (if (featurep 'font-lock-menus)
+      (define-key-after facemenu-menu [flm-list-fonts] '("Display Fonts" . flm-list-fonts) 'dc)
+    (define-key-after facemenu-menu [display-fonts] '("Display Fonts" . display-fonts) 'dc)))
 
 (when (or (featurep 'font-lock-menus)  (featurep 'font-menus)) ; Submenu for font-lock levels.
   (easy-menu-add-item facemenu-menu () (easy-menu-create-menu ; (menu-name menu-items)
