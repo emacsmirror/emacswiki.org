@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb  6 09:19:29 2014 (-0800)
+;; Last-Updated: Thu Feb  6 10:25:29 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 107
+;;     Update #: 126
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -37,7 +37,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `ignore-comments-flag'.
+;;    `hide-whitespace-before-comment-flag', `ignore-comments-flag'.
 ;;
 ;;
 ;;  Put this in your init file (`~/.emacs'):
@@ -56,7 +56,10 @@
 ;;; Change Log:
 ;;
 ;; 2014/02/06 dadams
-;;     hide/show-comments: Go to start of comment before calling comment-forward.
+;;     Added: hide-whitespace-before-comment-flag.
+;;     hide/show-comments:
+;;       Go to start of comment before calling comment-forward.
+;;       Hide whitespace preceding comment, if hide-whitespace-before-comment-flag.
 ;; 2013/12/26 dadams
 ;;     hide/show-comments: Update START to comment end or END.
 ;; 2013/10/09 dadams
@@ -97,7 +100,12 @@
 
 ;;;###autoload
 (defcustom ignore-comments-flag t
-  "Non-nil means macro `with-comments-hidden' hides comments."
+  "*Non-nil means macro `with-comments-hidden' hides comments."
+  :type 'boolean :group 'matching)
+
+;;;###autoload
+(defcustom hide-whitespace-before-comment-flag t
+  "*Non-nil means `hide/show-comments' hides whitespace preceding a comment."
   :type 'boolean :group 'matching)
 
 
@@ -126,6 +134,9 @@ Note that prior to Emacs 21, this never hides comments."
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
 \(This is thus *NOT* a toggle command.)
+
+If option `hide-whitespace-before-comment-flag' is non-nil, then hide
+also any whitespace preceding a comment.
 
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
@@ -160,7 +171,16 @@ it needs `comment-search-forward'."
              (goto-char start)
              (while (and (< start end)
                          (save-excursion
-                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+                           (setq cbeg  (comment-search-forward end 'NOERROR))
+                           cbeg))
+               (when hide-whitespace-before-comment-flag ; Hide preceding whitespace.
+                 (save-excursion
+                   (goto-char cbeg)
+                   (if (not (fboundp 'looking-back)) ; Emacs 21
+                       (while (memq (char-before cbeg) '(?\   ?\t ?\n ?\f))
+                         (setq cbeg  (1- cbeg)))
+                     (looking-back "\\(\n\\|\\s-+\\)" nil 'GREEDY) ; Emacs 22+
+                     (setq cbeg  (match-beginning 0)))))
                (when (string= "" comment-end) (goto-char cbeg))
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
@@ -168,9 +188,11 @@ it needs `comment-search-forward'."
                                     (goto-char cbeg)
                                     (and (comment-forward 1)  (point)))
                                    ((goto-char cbeg)
-                                    (search-forward comment-end end 'NOERROR))
-                                   )))
-               (when (and cbeg cend)
+                                    (search-forward comment-end end 'NOERROR)))))
+               (when (and hide-whitespace-before-comment-flag ; Hide also newline at end.
+                          (= (char-after cend) ?\n))
+                 (setq cend  (min (1+ cend) (point-max))))
+               (when (and cbeg  cend)
                  (if (eq 'hide hide/show)
                      (put-text-property cbeg cend 'invisible t)
                    (put-text-property cbeg cend 'invisible nil)))
