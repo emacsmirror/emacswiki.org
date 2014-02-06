@@ -236,8 +236,8 @@ This code will alert about incoming message through xosd. Obviously, it requires
 ;(add-hook 'jabber-alert-message-hooks 'jabber-message-xosd) 
 </pre>
 
-==== Using notifiy.el ====
-Original code was for libnotify1 and libnotify-bin, but I modify it to use notify.el - http://www.emacswiki.org/emacs/notify.el , which is cross-platform (I tested it on linux and mac).
+==== Using notifiy.el (cross platform) ====
+Original code was for libnotify1 and libnotify-bin, but I modified it to use notify.el - http://www.emacswiki.org/emacs/notify.el , which is cross-platform (I tested it on linux and mac).
 
 <pre>
 (require 'notify)
@@ -253,7 +253,7 @@ Original code was for libnotify1 and libnotify-bin, but I modify it to use notif
       (notify (format "%s" (jabber-jid-displayname from))
              text)))
 
-(add-hook 'jabber-alert-info-message-hooks 'jabber-notify)
+(add-hook 'jabber-alert-info-message-hooks 'notify-jabber-notify)
 </pre>
 
 Originally code was using jabber-alert-message-hooks , but it didn't work for me opposed to jabber-alert-info-message-hooks.
