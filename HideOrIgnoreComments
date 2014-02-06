@@ -52,6 +52,19 @@ So you can add this line as the first line inside the loop in <tt>hide/show-comm
 
 Have a look at https://gist.github.com/8809677 for a modified version.
 
+[new:DrewAdams:2014-02-06 18:34 UTC]
+That and another (worse) bug should be fixed now.  Please try the latest version: <tt>[[hide-comnt.el]]</tt>.  Thx -- DrewAdams
+
+----
+
+
+
+
+
+
+
+
+
 
 
 
