@@ -236,33 +236,27 @@ This code will alert about incoming message through xosd. Obviously, it requires
 ;(add-hook 'jabber-alert-message-hooks 'jabber-message-xosd) 
 </pre>
 
-==== Using notification-daemon ====
-This code will issue incoming message alerts using the notification daemon on linux systems.
-On Debian, the libnotify1 and libnotify-bin packages are required.
+==== Using notifiy.el ====
+Original code was for libnotify1 and libnotify-bin, but I modify it to use notify.el - http://www.emacswiki.org/emacs/notify.el , which is cross-platform (I tested it on linux and mac).
 
 <pre>
-(defvar libnotify-program "/usr/bin/notify-send")
+(require 'notify)
 
-(defun notify-send (title message)
-  (start-process "notify" " notify"
-		 libnotify-program "--expire-time=4000" title message))
-
-(defun libnotify-jabber-notify (from buf text proposed-alert)
-  "(jabber.el hook) Notify of new Jabber chat messages via libnotify"
+(defun notify-jabber-notify (from buf text proposed-alert)
+  "(jabber.el hook) Notify of new Jabber chat messages via notify.el"
   (when (or jabber-message-alert-same-buffer
             (not (memq (selected-window) (get-buffer-window-list buf))))
     (if (jabber-muc-sender-p from)
-        (notify-send (format "(PM) %s"
+        (notify (format "(PM) %s"
                        (jabber-jid-displayname (jabber-jid-user from)))
                (format "%s: %s" (jabber-jid-resource from) text)))
-      (notify-send (format "%s" (jabber-jid-displayname from))
+      (notify (format "%s" (jabber-jid-displayname from))
              text)))
 
-(add-hook 'jabber-alert-message-hooks 'libnotify-jabber-notify)
+(add-hook 'jabber-alert-info-message-hooks 'jabber-notify)
 </pre>
 
-==== Using growl ====
-If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs-1.  It should be easy to adapt this to use ToDoChiKu for a more general solution.
+Originally code was using jabber-alert-message-hooks , but it didn't work for me opposed to jabber-alert-info-message-hooks.
 
 ==== Using xmonad/xmobar ====
 
