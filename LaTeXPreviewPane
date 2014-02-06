@@ -45,7 +45,7 @@ Otherwise, you can enable it on a per-buffer basis with the command:
 M-x latex-preview-pane-mode
 }}}
 
-To use LaTeX Preview Pane, simply open any TeX file and LaTeX Preview Pane will open and attempt to generate your TeX preview. Note that there is also a menu in this mode which contains the following functions:
+To use LaTeX Preview Pane, simply open any TeX file and if latex-preview-pane is set to be automatically enabled, it will open a preview pane and attempt to generate your TeX preview. Otherwise you can activate it with <code>M-x latex-preview-pane-mode</code> to open the preview pane. Note that there is also a menu in this mode which contains the following functions:
 * Refresh Preview (bound to M-p)
 * Open in External Program (Bound to M-P)
 * Disable LaTeX Preview Pane (turns the mode off, you can also use <code> M-x latex-preview-pane-mode</code> to toggle it off.
