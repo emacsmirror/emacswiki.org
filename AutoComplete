@@ -602,6 +602,8 @@ I couldn't find the place to post a bug report, so I'll leave it here. As of Ema
 [new]
 ...Since I installed auto-complete I just can't exit emacs as it freezes with 'Wrote ~/.emacs.d/ac-comphist.d'.
 Any ideas? I have this plugins installed: evil, evil-nerd-commenter, undo-tree, smooth-scrolling, color-theme
+[new]
+Try... (setq ac-use-comphist nil). This option makes emacs to exit slowly... -- Kiwon
 
 ----
 CategoryCompletion
