@@ -77,6 +77,17 @@ if you use colordiff in svn, maybe you need this
 <pre>
 (add-hook 'diff-mode-hook '(lambda () (require 'ansi-color)(ansi-color-apply-on-region (point-min) (point-max))))
 </pre>
+
+The above snippet may not work in newer versions of Emacs (tested on 23.4.1) where the contents of the diff buffer are acquired asynchronously through the underlying version control system.  In this case, `ansi-color-apply-on-region' should be run after the buffer is populated with the diff content.  The following snippets does this job:
+<pre>
+(defadvice vc-diff-finish (after handle-color-in-diff-output)
+  "Run `ansi-color-apply-on-region'." 
+  (progn
+    (require 'ansi-color)
+    (toggle-read-only)
+    (ansi-color-apply-on-region (point-min) (point-max))
+    (toggle-read-only)))
+</pre>
 ----
 See also
 VersionControlAlways.
