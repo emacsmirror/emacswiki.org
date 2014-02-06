@@ -20,26 +20,35 @@ To install latex-preview-pane you will need the following:
 
 * A installed copy of Emacs 24+ with a working packages system
 * The command pdflatex on your PATH
-* Access to the Marmalade package repository
+* Access to the MELPA package repository
 
-If you don't already have Marmalade installed, add the following snippet to your .emacs file and either restart emacs or simply <code>eval-region</code> the snippet. 
+If you don't already have MELPA installed, add the following snippet to your .emacs file and either restart emacs or simply <code>eval-region</code> the snippet. 
 
 {{{
 (require 'package)
-(add-to-list 'package-archives 
-    '("marmalade" .
-      "http://marmalade-repo.org/packages/"))
-(package-initialize)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
 }}}
 
 To install latex-preview-pane, simply execute <code>M-x package-install latex-preview-pane</code> and restart Emacs.
 
 == Using LaTeX Preview Pane ==
 
+If you would like latex-preview-pane to load automatically with your LaTeX files, add the following to your .emacs:
+
+{{{
+(latex-preview-pane-enable)
+}}}
+
+Otherwise, you can enable it on a per-buffer basis with the command:
+{{{
+M-x latex-preview-pane-mode
+}}}
+
 To use LaTeX Preview Pane, simply open any TeX file and LaTeX Preview Pane will open and attempt to generate your TeX preview. Note that there is also a menu in this mode which contains the following functions:
 * Refresh Preview (bound to M-p)
 * Open in External Program (Bound to M-P)
-* Disable LaTeX Preview Pane (turns the mode off, you can also use <code> M-x latex-preview-pane</code> to toggle it off.
+* Disable LaTeX Preview Pane (turns the mode off, you can also use <code> M-x latex-preview-pane-mode</code> to toggle it off.
 * Customize LaTeX Preview Pane (opens a customization buffer where you can set the command to use for generating previews)
 
 == Questions, Feedback ==
