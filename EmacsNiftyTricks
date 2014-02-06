@@ -277,6 +277,7 @@ One reason why there should not be literal tabs inside strings - use \t
 * Align lines in region on a common string with `M-x align-regexp'
 * Delete all space around point with ##M-\##
 * RectangleCommands: kill, yank, insert, delete rectangles and more!
+
 == Miscellaneous ==
 * `M-x phases-of-moon' -- Awoooo!
 ** This function is obsolete since 23.1; use `lunar-phases' instead. -- XueFuqiao
@@ -287,6 +288,39 @@ One reason why there should not be literal tabs inside strings - use \t
 * [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
 * Here's how my Emacs helps me fight procrastination: [http://blog.danieljanus.pl/blog/2008/12/18/fighting-procrastination/] -- DanielJanus
 * Search Google and Wikipedia with BrowseAproposURL.
+* If you despise long-pressing C-f/C-b for moving to a particular position in a long line, you can use binary navigation: you repeatedly decide whether you go either right or left from `point'. The first time you jump, you jump to the midpoint between `point' and the beginning (jump left), or end (jump right) of the line. Subsequent jumps move `point' by half the distance of the last jump, either in left or right direction. I bind jump left to M-j and jump right to M-k (although this overrides existing bindings):
+
+<pre>
+(lexical-let ((beg -1)
+	      (end -1)
+	      (prev-mid -1))
+
+(defun backward-binary ()
+   (interactive)
+   (if (/= prev-mid (point)) 
+       (setq beg -1 end -1)
+     (setq end prev-mid))
+   (if (< beg 0) (setq beg (line-beginning-position)
+		       end (point)))
+   (setq prev-mid (/ (+ beg end) 2))
+   (goto-char prev-mid))
+
+(defun forward-binary ()
+   (interactive)
+   (if (/= prev-mid (point))
+       (setq beg -1 end -1)
+     (setq beg prev-mid))
+   (if (< end 0) (setq beg (point)
+		       end (line-end-position)))
+   (setq prev-mid (/ (+ beg end ) 2))
+   (goto-char prev-mid))
+)
+
+(global-set-key [(meta j)] 'backward-binary)
+(global-set-key [(meta k)] 'forward-binary)
+</pre>
+
+Navigating like this feels a bit odd at first, but by now I badly miss the feature in my terminals.
 
 == Further ideas for nifty tricks ==
 * Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
