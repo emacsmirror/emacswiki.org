@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 17:10:00 2013 (-0800)
+;; Last-Updated: Thu Feb  6 09:19:29 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 104
+;;     Update #: 107
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -55,6 +55,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/06 dadams
+;;     hide/show-comments: Go to start of comment before calling comment-forward.
 ;; 2013/12/26 dadams
 ;;     hide/show-comments: Update START to comment end or END.
 ;; 2013/10/09 dadams
@@ -163,8 +165,8 @@ it needs `comment-search-forward'."
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
                              (cond ((fboundp 'comment-forward) ; Emacs 22+
-                                    (and (comment-forward 1)
-                                         (point)))
+                                    (goto-char cbeg)
+                                    (and (comment-forward 1)  (point)))
                                    ((goto-char cbeg)
                                     (search-forward comment-end end 'NOERROR))
                                    )))
