@@ -1,13 +1,13 @@
 ;;; sunrise-commander.el --- two-pane file manager for Emacs based on Dired and inspired by MC  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2007-2012 José Alfredo Romero Latouche.
+;; Copyright (C) 2007-2014 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 451 $
+;; RCS Version: $Rev: 452 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1368,10 +1368,13 @@ buffer or window."
         (if (eq start (current-buffer)) (setq start nil)))))
 
 (defun sr-restore-prior-configuration ()
-  "Restore the configuration stored in `sr-prior-window-configuration' if any."
-  (set-window-configuration sr-prior-window-configuration)
-  (if (buffer-live-p sr-restore-buffer)
-      (set-buffer sr-restore-buffer)))
+  "Restore the configuration stored in `sr-prior-window-configuration' if any.
+Return t if a configuration to restore could be found, nil otherwise."
+  (when sr-prior-window-configuration
+    (set-window-configuration sr-prior-window-configuration)
+    (if (buffer-live-p sr-restore-buffer)
+        (set-buffer sr-restore-buffer))
+    t))
 
 (defun sr-lock-window (_frame)
   "Resize the left Sunrise pane to have the \"right\" size."
@@ -1388,7 +1391,8 @@ buffer or window."
              (window-live-p sr-left-window)
              (sr-save-selected-window
                (select-window sr-left-window)
-               (let ((my-delta (- sr-panes-height (window-height))))
+               (let* ((sr-panes-height (or sr-panes-height (window-height)))
+                      (my-delta (- sr-panes-height (window-height))))
                  (enlarge-window my-delta))
                (scroll-right)
                (when (window-live-p sr-right-window)
@@ -1495,21 +1499,18 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
 (defun sr-quit (&optional norestore)
   "Quit Sunrise and restore Emacs to the previous state."
   (interactive)
-  (if sr-running
-      (progn
-        (setq sr-running nil)
-        (sr-save-directories)
-        (sr-save-panes-width)
-        (if norestore
-            (progn
-              (sr-select-viewer-window)
-              (delete-other-windows))
-          (sr-restore-prior-configuration))
-        (sr-bury-panes)
-        (setq buffer-read-only nil)
-        (run-hooks 'sr-quit-hook)
-        (setq sr-current-frame nil))
-    (bury-buffer)))
+  (if (not sr-running)
+      (bury-buffer)
+    (setq sr-running nil
+          sr-current-frame nil
+          buffer-read-only nil)
+    (sr-save-directories)
+    (sr-save-panes-width)
+    (when (or norestore (not (sr-restore-prior-configuration)))
+      (sr-select-viewer-window)
+      (delete-other-windows))
+    (sr-bury-panes)
+    (run-hooks 'sr-quit-hook)))
 
 (add-hook 'delete-frame-functions
           (lambda (frame)
@@ -4121,7 +4122,7 @@ file in the file system."
   "Return the additional data for saving a Sunrise buffer to a desktop file."
   (unless (sr-pure-virtual-p)
     (let* ((side (if (eq (current-buffer) sr-left-buffer) 'left 'right))
-           (sorting-order (get side 'sorting-order))
+           (sorting-order (or (get side 'sorting-order) "NAME"))
            (sorting-reverse (get side 'sorting-reverse)))
       (apply
        'append
@@ -4194,11 +4195,9 @@ Used for desktop support."
   (if sr-running (sr-quit))
   nil)
 
-;; These register the previous functions in the desktop framework:
+;; This registers the previous functions in the desktop framework:
 (add-to-list 'desktop-buffer-mode-handlers
              '(sr-mode . sr-desktop-restore-buffer))
-(add-to-list 'desktop-buffer-mode-handlers
-             '(sr-virtual-mode . sr-desktop-restore-buffer))
 
 ;; This initializes (and sometimes starts) Sunrise after desktop restoration:
 (add-hook 'desktop-after-read-hook
@@ -4206,8 +4205,12 @@ Used for desktop support."
             (unless (assoc 'sr-running desktop-globals-to-clear)
               (add-to-list 'desktop-globals-to-clear
                            '(sr-running . (sr-reset-state))))
-            (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
-                (sunrise))))
+            (when (and (buffer-live-p sr-left-buffer)
+                       (get-buffer-window sr-left-buffer))
+              (sr-setup-windows)
+              (sr-highlight)
+              (setq sr-current-frame (window-frame (selected-window))
+                    sr-running t))))
 
 ;;; ============================================================================
 ;;; Miscellaneous functions:
