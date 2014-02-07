@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Feb  5 07:08:21 2014 (-0800)
+;; Last-Updated: Fri Feb  7 11:01:32 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5851
+;;     Update #: 5853
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -84,6 +84,7 @@
 ;;    `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag',
 ;;    `icicle-complete-key-anyway-flag',
+;;    `icicle-complete-keys-ignored-prefix-keys',
 ;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
@@ -1455,6 +1456,25 @@ to toggle the option."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 (when (fboundp 'map-keymap)             ; Emacs 22+.
+  (defcustom icicle-complete-keys-ignored-prefix-keys nil
+    "*Prefix keys for `icicle-complete-keys' to ignore.
+If `icicle-complete-keys' is bound to a key on one of these prefix
+keys then it does not complete that prefix key.  Instead, it acts as
+though invoked at the top level.  This lets you bind key completion to
+a key sequence that starts with a prefix key, so you can invoke it
+from there just as if you had invoked it at top level.
+
+The value is a list of key sequences.  Example of adding such a key
+using Customize:
+
+ Click [INS] to insert a new, empty entry
+ Type `M-s' in the edit field.
+ Use the `State' menu to update the option value to reflect the edit.
+
+This adds the key sequence [134217843], which is represented
+externally by `M-s'."
+    :type '(repeat (key-sequence :tag "Prefix Key" :value [ignore])) :group 'Icicles-Key-Bindings)
+
   (defcustom icicle-complete-keys-self-insert-ranges ()
     "*Non-nil means `icicle-complete-keys' includes self-inserting keys.
 That means keys bound to `self-insert-command'.
