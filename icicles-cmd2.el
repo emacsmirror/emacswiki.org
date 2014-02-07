@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jan 14 19:48:03 2014 (-0800)
+;; Last-Updated: Fri Feb  7 11:04:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6736
+;;     Update #: 6740
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7952,8 +7952,18 @@ information."
       (icicle-complete-keys-1 [menu-bar])))
 
   (defun icicle-this-command-keys-prefix ()
-    "Return the prefix of the currently invoked key sequence."
-    (let ((this-key  (this-command-keys))) (substring this-key 0 (1- (length this-key)))))
+    "Return the prefix of the currently invoked key sequence.
+But IF (a) this command is `icicle-complete-keys' and
+       (b) it was invoked from a prefix key that is a member of
+           option `icicle-complete-keys-ignored-prefix-keys'
+  THEN return [], as if `icicle-complete-keys' was invoked at top
+       level, i.e., with no prefix key."
+    (let* ((this-key-sequence  (this-command-keys))
+           (this-prefix        (substring this-key-sequence 0 (1- (length this-key-sequence)))))
+      (when (and (eq this-command 'icicle-complete-keys)
+                 (member this-prefix icicle-complete-keys-ignored-prefix-keys))
+        (setq this-prefix []))
+      this-prefix))
 
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
   ;;
