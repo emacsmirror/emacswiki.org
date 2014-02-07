@@ -6,9 +6,9 @@ For about the last 3 years I've been working towards the following model.
 
 3 init files:
 
-* {{{.emacs.d/init.el}}} - the default emacs init file, mine is unusually small for an Emacs hacker
-* {{{.emacs.d/nic-custom.el.gpg}}} - used for Emacs customizations and protected by gpg
-* {{{.emacs.d/nic-after-init.el}}} - used to load stuff that depends on packages
+* ##.emacs.d/init.el## - the default emacs init file, mine is unusually small for an Emacs hacker
+* ##.emacs.d/nic-custom.el.gpg## - used for Emacs customizations and protected by gpg, see [[Secure_customize_with_epa]] for details
+* ##.emacs.d/nic-after-init.el## - used to load stuff that depends on packages
 
 == init.el ==
 
