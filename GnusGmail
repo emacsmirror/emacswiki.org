@@ -28,7 +28,7 @@ machine imap.gmail.com login user@gmail.com password secret port 993
 machine smtp.gmail.com login user@gmail.com password secret port 587
 }}}
 
-To send messages, you will need to have ##starttls## installed. If you're using homebrew in Mac OS X, you can install it with ##brew install gnutls##.
+When sending your first email from gnus, you might get a ##STARTTLS## error. If you're using homebrew in Mac OS X, you can install the necessary package with ##brew install gnutls##.
 
 You can find more information in the following sections.
 
