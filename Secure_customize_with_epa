@@ -1,0 +1,44 @@
+= Securing Customize with EPA =
+
+If you use customize you find that you're storing all sorts of stuff in it, window size and positions but also passwords and other secure stuff.
+
+A nice way of dealing with this problem is to just secure your config with GPG and EPA.
+
+The first thing you have to do is [[http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html#ss3.1|make a GPG key]]:
+
+{{{
+gpg --gen
+}}}
+
+In your {{{init.el}}} you can set the variable {{{custom-file}}} to a gpg file which you can then load. Here's what I have:
+
+{{{
+(load-file
+ (setq custom-file
+       (concat
+        (file-name-directory
+         (or
+          (buffer-file-name)
+          load-file-name))
+        "nic-custom.el.gpg")))
+}}}
+
+You need to evaluate that to set the {{{custom-file}}} variable and unless the file exists it might error.
+
+To ensure that EPA uses your GPG key you have to open the GPG'd file and add the following comment:
+
+{{{
+;;   -*- epa-file-encrypt-to: ("your.key.id@whatever") -*-
+}}}
+
+You might have to save that file and then open it again to make it select the correct key.
+
+Before you restart Emacs you should:
+
+{{{
+M-: (custom-save-all)
+}}}
+
+which will force your customizations to be saved in the new file.
+
+Now, when you start Emacs it will ask you for your GPG key password and then load the customizations from your custom file.
