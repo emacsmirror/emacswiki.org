@@ -30,7 +30,7 @@ Introspection: EmacsDebugger seems like it must do this, but maybe I'm thinking 
 *Spawn more Emacs processes to do work for you* -- [[JohnWiegley]]'s [[Async]] takes this approach, [[Elnode]] has an alternative and [[Elpakit]] another alternative. No one has unified this approach yet.
 
 *Defer asynchronous tasks* -- this is what the [https://github.com/kiwanami/emacs-deferred emacs-deferred] library does.
-It provides facilities to manage asynchronous tasks. The API and implementations were translated from JSDeferred and Mochikit.Async in Javascript.
+It provides facilities to manage asynchronous tasks. The API and implementations were translated from JSDeferred and Mochikit.Async in Javascript. [https://github.com/kiwanami/emacs-deferred/blob/master/README-concurrent.markdown concurrent.el] is a higher level library for concurrency, based on `deferred.el'.
 
 == Research ==
 CoRoutines, jit-lock-stealth*, ECB, Lisp:later-do.el, Lisp:coroutine.el, Lisp:tagbody.el, AsyncEval
