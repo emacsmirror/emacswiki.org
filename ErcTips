@@ -26,7 +26,7 @@ The function is suitable for `erc-after-connect'."
 </pre>
 
 It will prompt when it detects that you are not using your default nick. You can remove the "(when (y-or-n-p..." condition if you don't want the prompt.
-Note: this function doesn't work if the last letter of your nick naturally contains a ` symbol.
+Note: this function doesn't work if the last letter of your nick is the same as `erc-nick-uniquifier'.
 
 = Do not use whitespace-mode in ERC =
 
