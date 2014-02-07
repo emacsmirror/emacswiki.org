@@ -35,7 +35,9 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 
 For those who do not want to load a library (too easy!) ---
 
-In Emacs 22 and later, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. Alternatively you can use this code (mouse clicks is still not affected, but `RET' works): 
+The simplest method is to just use `a' in a Dired buffer, instead of `e', `f', or `RET'. This uses the standard command `find-alternate-file', which replaces the current buffer with another file. It will give a warning the first time you use it. It's available since Emacs 22. This method does not affect mouse clicks on directory names, however. 
+
+Alternatively you can use this code (mouse clicks is still not affected, but `RET' works): 
 
 <pre>
 (put 'dired-find-alternate-file 'disabled nil)
