@@ -128,6 +128,50 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+[new]
+System: Windows 7
+
+Emacs: GNU Emacs 24.2.1 (i386-mingw-nt6.1.7601)
+
+Icicles Update #: 10597 (downloaded today from wiki)
+
+Hi,
+
+I have a problem with `icicle-find-file-expand-directory-flag. Setting it to non-nil has no effect for me. (This variable did not exist in my previous version of Icicles, which is the reason I downloaded the newer version today).
+
+steps to reproduce (for me, at least):
+
+1. 'C-x C-f' (icicle-file)
+
+2. cycling through directories with completion or apropos-completion
+
+3. hitting Return upon selection of correct directory
+
+This will always result in visiting the directory with dired, regardless of whether `icicle-find-file-expand-directory-flag is set to nil or non-nil. 
+Hitting 'C-x /' while in minibuffer results in the message "Expanding directory candidates when you act on them is ON" (resp. OFF), but again, that doesn't actually change behaviour, acting on directory candidates will always throw me to dired.
+
+'C-e' and 'C-M-/' work correctly.
+
+According to the documentation, this setting this option to non-nil results in "The effect of ‘RET’ and ‘C-RET’ is then the same as ‘C-M-/’". But that is not the case for me.
+
+Kind regards,
+
+Bernhard
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 [:AyvangoMultiTaggingInOrgMode]
 
