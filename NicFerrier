@@ -153,6 +153,10 @@ So I wrote one:
 
 This toggles bold on the dark ones, which I think is all the vim thing is doing.
 
+== Config and Customize ==
+
+[[NicFerrier_config|This page]] describes how I do my config which is somewhat interesting for a wierd section of the population who are obsessed with it.
+
 == Packages For Config - Small, Portable Init Files ==
 
 [:PackagesForConfig]Another interest of mine is achieving portable Emacs config.  My plan is to achieve this through use of packages.
