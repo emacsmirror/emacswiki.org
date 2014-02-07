@@ -830,7 +830,7 @@ t: also grep recursively subdirectories in dir (also if called interactively wit
 	  filematches
 	  (inhibit-read-only t))
       (loop for file in files do
-	    (unless (directory-p file)
+	    (unless (file-directory-p file)
 	      (if re
 		  (progn
 		    (erase-buffer)
