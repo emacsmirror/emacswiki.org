@@ -82,3 +82,166 @@ If it's running then don't start it."
 }}}
 
 the point of this is to install hooks and advice that can't be done with customize or shouldn't be done with the {{{after-init}}}
+
+== The package config debate ==
+
+There is a lot of debate about how to handle config for packages. There is [[johnw]]'s ##use-package## and there are people who like to do ##(package-initialize)## in their ##init.el##.
+
+Personally I use an ##after-init-hook## to load a file of config that does specific things after my packages have loaded.
+
+Here's my after init file:
+
+{{{
+;;; Nic's after init hook
+
+;; AC
+(require 'auto-complete-config)
+(ac-config-default)
+
+;; Keychords
+(key-chord-mode t)
+(key-chord-define-global
+ "12"
+ 'rcirc-next-active-buffer)
+(key-chord-define-global
+ "23"
+ 'jabber-activity-switch-to)
+(key-chord-define-global
+ "45"
+ 'maildir-refresh)
+(key-chord-define-global
+ "90"
+ 'gnomenm-flip)
+
+;; Buffer handing stuff
+(key-chord-define-global
+ "bn"
+ 'bury-buffer)
+(key-chord-define-global
+ "1q"
+ 'delete-other-windows)
+(key-chord-define-global
+ "2q"
+ 'delete-window)
+
+(key-chord-define-global
+ "[]" (lambda ()
+        (interactive)
+        (find-file "~/work/org/todo.org")))
+
+;; Jabber stuff
+(defun jabber-switch-or-start ()
+  (interactive)
+  (let ((buf (get-buffer "*-jabber-roster-*")))
+    (unless (bufferp buf)
+      (let ((acc-list
+             (get 'jabber-account-list 'saved-value)))
+        (unless (get 'jabber-account-list 'customize-value)
+          (setq jabber-account-list (cadr (car acc-list)))))
+      (jabber-connect-all))
+    (switch-to-buffer "*-jabber-roster-*")))
+
+(key-chord-define-global
+ "jl"
+ 'jabber-switch-or-start)
+
+
+;; Better hide show - I think of this as @< and @>
+(require 'hideshow)
+(key-chord-define hs-minor-mode-map "'," 'hs-hide-block)
+(key-chord-define hs-minor-mode-map "'." 'hs-show-block)
+
+;; Do key-chords for macrostep
+(key-chord-define emacs-lisp-mode-map "m." 'macrostep-expand)
+(key-chord-define lisp-interaction-mode-map "m." 'macrostep-expand)
+
+(require 'mark-tools)
+(key-chord-define-global
+ "m/"
+ 'list-marks)
+(frame-font-keychord-init)
+
+;; Org agenga stuff
+(global-set-key "\C-ca" 'org-agenda)
+
+;; smartparens stuff
+
+(add-hook 'minibuffer-setup-hook 'smartparens-mode)
+
+(defun nics-smartparens-hook-fn ()
+  (require 'smartparens-config))
+
+(add-hook
+ 'smartparens-enabled-hook
+ 'nics-smartparens-hook-fn)
+
+;; Twitter stuff... no customize for now
+(setq twittering-icon-mode t)
+(setq twittering-timer-interval 180)
+(setq twittering-url-show-status nil)
+(setq twittering-status-format 
+      "%i %s,  %@:
+%FILL[  ]{%T}
+ ")
+(add-hook
+ 'twittering-edit-mode
+ (lambda nil
+   (visual-line-mode t)))
+
+;; (key-chord-define-global
+;;  "op"
+;;  (lambda nil
+;;    (interactive)
+;;    (switch-to-buffer (car (twittering-get-buffer-list)))))
+
+
+;; Do stuff with the secrets we've loaded through customize
+(require 'kv)
+
+;; Scratchy working out rcirc extra stuff
+(defun rcirc-process-for-server (server)
+  "Return any dicovered process for rcirc host SERVER."
+  (loop for p in (process-list)
+     if (and
+         (eq 'rcirc-mode
+             (let ((buf (process-buffer p)))
+               (when (and
+                      (bufferp  buf)
+                      (buffer-live-p buf))
+                 (with-current-buffer buf
+                   major-mode))))
+         (equal server
+                (process-contact
+                 (get-process p) :host)))
+     return p))
+
+(defun rcirc-choose-server ()
+  "Interactively choose an rcirc server from the process list."
+  (assoc
+   (completing-read
+    "Select a server: "
+    (loop for rp in (rcirc-process-list)
+       collect (process-contact (get-process rp) :host)))
+   rcirc-server-alist))
+
+(defun rcirc-reboot (server-entry &optional args)
+  "Kill any existing connection and restart.
+
+SERVER-ENTRY is the server entry as it would appear in the
+`rcirc-server-alist'.
+
+With ARGS just kill the connection."
+  (interactive (list (rcirc-choose-server) current-prefix-arg))
+  (destructuring-bind
+        (server &key nick port
+                user-name password full-name
+                channels encryption) server-entry
+    (let ((proc (rcirc-process-for-server server)))
+      (when (processp proc)
+        (delete-process proc)))
+    (unless args
+      (rcirc-connect
+       server port nick
+       user-name full-name
+       channels password encryption))))
+}}}
