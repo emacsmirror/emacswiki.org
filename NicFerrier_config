@@ -1,0 +1,84 @@
+= How I do my config =
+
+Emacs and config eh? We spend our lives toying with it.
+
+For about the last 3 years I've been working towards the following model.
+
+3 init files:
+
+* {{{.emacs.d/init.el}}} - the default emacs init file, mine is unusually small for an Emacs hacker
+* {{{.emacs.d/nic-custom.el.gpg}}} - used for Emacs customizations and protected by gpg
+* {{{.emacs.d/nic-after-init.el}}} - used to load stuff that depends on packages
+
+== init.el ==
+
+My init.el is very small:
+
+{{{
+;; Continue with init
+(load-file
+ (setq custom-file
+       (concat
+        (file-name-directory
+         (or
+          (buffer-file-name)
+          load-file-name))
+        "nic-custom.el.gpg")))
+
+;; After init stuff
+(add-hook
+ 'after-init-hook
+ ;; should abstract the location of this
+ (lambda nil (load-file "~/.emacs.d/nic-after-init.el")))
+
+;; I really hate brief-mode's keybinding
+(fmakunbound 'brief-mode)
+
+;; No need for any other xml mode
+(fset 'xml-mode 'nxml-mode)
+
+(defadvice server-start
+    (around nic-custome-detect-existing first activate compile)
+  "Detect if the Emacs server is already running.
+
+If it's running then don't start it."
+  (unless (file-exists-p
+           (concat
+            "/tmp/emacs1000/"
+            server-name))
+    ad-do-it))
+
+(add-hook 'js-mode-hook (lambda () (linum-mode 1)(flyspell-prog-mode)(smartparens-mode)))
+(add-hook 'js2-mode-hook (lambda () (linum-mode 1)(flyspell-prog-mode)(smartparens-mode)))
+(add-hook
+ 'css-mode-hook
+ (lambda () (linum-mode 1)(flyspell-prog-mode)(rainbow-mode 1)))
+(add-hook 'nxml-mode-hook (lambda () (linum-mode 1)(flyspell-prog-mode)))
+(add-hook 'creole-mode-hook 'turn-on-auto-fill)
+
+;; Make git not use a pager
+(setenv "GIT_PAGER" "head")
+(setenv "PAGER" "head")
+
+(global-set-key "\M-?" 'magit-status)
+(global-set-key (kbd "C-#")     'er/expand-region)
+(global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
+(global-set-key (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
+(global-set-key (kbd "C-M-'")   'shell-switcher-new-shell)
+(global-set-key (kbd "C-x C-b")   'ibuffer)
+;;(global-set-key (kbd "C-+") 'text-scale-increase) ; use neg arg to decrease
+(global-set-key (kbd "<f6>") 'rcirc-next-active-buffer)
+(windmove-default-keybindings)
+(ffap-bindings)
+
+;; Stuff we need
+(require 'uniquify)
+(require 'dired-x)
+(require 'ert)
+
+(put 'downcase-region 'disabled nil)
+
+;; End init file
+}}}
+
+the point of this is to install hooks and advice that can't be done with customize or shouldn't be done with the {{{after-init}}}
