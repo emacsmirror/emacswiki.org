@@ -46,9 +46,9 @@
     (setcar elt (replace-regexp-in-string
 		 "\\\\|SVG" "" (car elt)))))
 
-(when (require 'mac-print-mode nil t)
-  (mac-print-mode 1)
-  (global-set-key (kbd "M-p") 'mac-print-buffer))
+;; (when (require 'mac-print-mode nil t)
+;;   (mac-print-mode 1)
+;;   (global-set-key (kbd "M-p") 'mac-print-buffer))
 
 (setq vc-follow-symlinks t
       inhibit-startup-screen t
@@ -151,110 +151,110 @@
 ;; (color-theme-pink-bliss)
 ;; (set-face-attribute 'default nil :height 90 :family )
 
-(define-generic-mode 'venus-feed-mode
-  '(?#)
-  '("name")
-  '(("\\[\\(.*\\)\\]" 1 font-lock-type-face)
-    ("=\\(.*\\)" 1 font-lock-function-name-face))
-  '("\\.venus\\'")
-  nil
-  "Mode for the ini file to determine the feeds")  
+;; (define-generic-mode 'venus-feed-mode
+;;   '(?#)
+;;   '("name")
+;;   '(("\\[\\(.*\\)\\]" 1 font-lock-type-face)
+;;     ("=\\(.*\\)" 1 font-lock-function-name-face))
+;;   '("\\.venus\\'")
+;;   nil
+;;   "Mode for the ini file to determine the feeds")  
 
-(defun venus-feed-sort-buffer (start end)
-  "Sort the region.
-Note that comments between URL and name will stay where they are."
-  (interactive "r")
-  (goto-char start)
-  (let (items)
-    (while (re-search-forward "^\\[http://.*\nname ?= ?\\(.*\\)" end t)
-      (setq items (cons (cons (match-string 1)
-			      (match-string 0))
-			items)))
-    (delete-region start end)
-    (dolist (item (sort items (lambda (a b)
-				(string< (upcase (car a))
-					 (upcase (car b))))))
-      (insert (cdr item) "\n"))))
+;; (defun venus-feed-sort-buffer (start end)
+;;   "Sort the region.
+;; Note that comments between URL and name will stay where they are."
+;;   (interactive "r")
+;;   (goto-char start)
+;;   (let (items)
+;;     (while (re-search-forward "^\\[http://.*\nname ?= ?\\(.*\\)" end t)
+;;       (setq items (cons (cons (match-string 1)
+;; 			      (match-string 0))
+;; 			items)))
+;;     (delete-region start end)
+;;     (dolist (item (sort items (lambda (a b)
+;; 				(string< (upcase (car a))
+;; 					 (upcase (car b))))))
+;;       (insert (cdr item) "\n"))))
 
-(defun opml-find-name (opml name)
-  "Find outline node with title attribute NAME
-in parsed XML OPML."
-  (catch 'name
-    (dolist (outline (xml-get-children (first (xml-get-children (first opml)
-								'body))
-				       'outline))
-      (when (string= (xml-get-attribute outline 'title) name)
-	(throw 'name outline)))))
+;; (defun opml-find-name (opml name)
+;;   "Find outline node with title attribute NAME
+;; in parsed XML OPML."
+;;   (catch 'name
+;;     (dolist (outline (xml-get-children (first (xml-get-children (first opml)
+;; 								'body))
+;; 				       'outline))
+;;       (when (string= (xml-get-attribute outline 'title) name)
+;; 	(throw 'name outline)))))
 
-(defun venus-import-opml-folder (file name)
-  "Import an OPML file."
-  (interactive "fOPML file: \nsFolder Name: ")
-  (let ((opml (xml-parse-file file))
-	result)
-    (dolist (outline (xml-get-children (opml-find-name opml name)
-				       'outline))
-      (let ((feed (xml-get-attribute-or-nil outline 'xmlUrl))
-	    (name (xml-get-attribute-or-nil outline 'text)))
-	(when (and feed name)
-	  (setq result (cons (cons name feed) result)))))
-    (dolist (item (nreverse result))
-      (insert "[" (cdr item) "]\n"
-	      "name = " (car item) "\n"))))
+;; (defun venus-import-opml-folder (file name)
+;;   "Import an OPML file."
+;;   (interactive "fOPML file: \nsFolder Name: ")
+;;   (let ((opml (xml-parse-file file))
+;; 	result)
+;;     (dolist (outline (xml-get-children (opml-find-name opml name)
+;; 				       'outline))
+;;       (let ((feed (xml-get-attribute-or-nil outline 'xmlUrl))
+;; 	    (name (xml-get-attribute-or-nil outline 'text)))
+;; 	(when (and feed name)
+;; 	  (setq result (cons (cons name feed) result)))))
+;;     (dolist (item (nreverse result))
+;;       (insert "[" (cdr item) "]\n"
+;; 	      "name = " (car item) "\n"))))
 
-(defun venus-import-url-list (venus-buffer-name)
-  "Import a list of blog URLs from the current buffer.
-If provided as HTML anchor elements, the element content will be used as
-blog name."
-  (interactive "bVenus buffer name: ")
-  (require 'goto-addr)
-  (goto-char (point-min))
-  (let (urls keepers)
-    (while (re-search-forward goto-address-url-regexp nil t)
-      (let ((url (match-string 0))
-	    (name (when (looking-at "\">\\([^<\"]+\\)")
-		    (match-string 1))))
-	(setq urls (cons (cons url name) urls))))
-    (set-buffer venus-buffer-name)
-    (dolist (item urls)
-      (let ((url (car item))
-	    (name (cdr item)))
-	(goto-char (point-min))
-	(unless (search-forward url nil t)
-	  (goto-char (point-max))
-	  (newline)
-	  (cond ((string-match "blogspot\\.com/$" url)
-		 (setq url (concat url "feeds/posts/default")))
-		((string-match "wordpress\\.com/$" url)
-		 (setq url (concat url "feed/atom/"))))
-	  (insert "[" url "]")
-	  (when name
-	    (newline)
-	    (insert "name = " name)))))))
+;; (defun venus-import-url-list (venus-buffer-name)
+;;   "Import a list of blog URLs from the current buffer.
+;; If provided as HTML anchor elements, the element content will be used as
+;; blog name."
+;;   (interactive "bVenus buffer name: ")
+;;   (require 'goto-addr)
+;;   (goto-char (point-min))
+;;   (let (urls keepers)
+;;     (while (re-search-forward goto-address-url-regexp nil t)
+;;       (let ((url (match-string 0))
+;; 	    (name (when (looking-at "\">\\([^<\"]+\\)")
+;; 		    (match-string 1))))
+;; 	(setq urls (cons (cons url name) urls))))
+;;     (set-buffer venus-buffer-name)
+;;     (dolist (item urls)
+;;       (let ((url (car item))
+;; 	    (name (cdr item)))
+;; 	(goto-char (point-min))
+;; 	(unless (search-forward url nil t)
+;; 	  (goto-char (point-max))
+;; 	  (newline)
+;; 	  (cond ((string-match "blogspot\\.com/$" url)
+;; 		 (setq url (concat url "feeds/posts/default")))
+;; 		((string-match "wordpress\\.com/$" url)
+;; 		 (setq url (concat url "feed/atom/"))))
+;; 	  (insert "[" url "]")
+;; 	  (when name
+;; 	    (newline)
+;; 	    (insert "name = " name)))))))
 
-(defun venus-insert-item (url)
-  "Return a venus item based on the blog URL.
-This will retrieve the page in question to determine the exact
-feed address and the blog title."
-  (with-current-buffer (url-retrieve-synchronously url)
-    (let (title feed)
-      (goto-char (point-min))
-      (when (search-forward "<title>" nil t)
-	(let ((start (match-end 0)))
-	  (when (search-forward "</title>" nil t)
-	    (setq title (buffer-substring start (match-beginning 0))))))
-      (goto-char (point-min))
-      (while (and (search-forward "<link\\b" nil t)
-		  (not feed))
-	(let ((start (match-end 0)))
-	  (when (search-forward "/>" nilt t)
-	    (let ((end (match-beginning 0)))
-	      (goto-char start)
-	      (when (search-forward "\\btype=[\"']application/\\(atom\\|rss\\)+xml[\"']" nil end)
-		(goto-char start)
-		(when (search-forward "\\bhref=[\"']\\(.*?\\)[\"']" nil end)
-		  (setq feed (match-string 1))))))))
-      (concat "\n[" (or feed url) "]\n"
-	      "name = " title "\n"))))
+;; (defun venus-insert-item (url)
+;;   "Return a venus item based on the blog URL.
+;; This will retrieve the page in question to determine the exact
+;; feed address and the blog title."
+;;   (with-current-buffer (url-retrieve-synchronously url)
+;;     (let (title feed)
+;;       (goto-char (point-min))
+;;       (when (search-forward "<title>" nil t)
+;; 	(let ((start (match-end 0)))
+;; 	  (when (search-forward "</title>" nil t)
+;; 	    (setq title (buffer-substring start (match-beginning 0))))))
+;;       (goto-char (point-min))
+;;       (while (and (search-forward "<link\\b" nil t)
+;; 		  (not feed))
+;; 	(let ((start (match-end 0)))
+;; 	  (when (search-forward "/>" nilt t)
+;; 	    (let ((end (match-beginning 0)))
+;; 	      (goto-char start)
+;; 	      (when (search-forward "\\btype=[\"']application/\\(atom\\|rss\\)+xml[\"']" nil end)
+;; 		(goto-char start)
+;; 		(when (search-forward "\\bhref=[\"']\\(.*?\\)[\"']" nil end)
+;; 		  (setq feed (match-string 1))))))))
+;;       (concat "\n[" (or feed url) "]\n"
+;; 	      "name = " title "\n"))))
 
 (define-generic-mode 'htaccess-mode
   '(?#)
@@ -292,16 +292,24 @@ feed address and the blog title."
   (add-hook 'after-init-hook 'session-initialize))
 (setq history-length 100)
 
+;;; packages
+
+(require 'package)
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 ;;; Unicode
 
-(setq unicode-helper-data-txt "~/Documents/Unicode/UnicodeData.txt")
-(global-set-key (kbd "C-c C-p RET") 'unicode-helper-name-at-point)
-(global-set-key (kbd "C-c C-p =") 'unicode-helper-name-at-point)
-(global-set-key (kbd "C-c C-p C-c") 'unicode-helper-insert-codepoint)
-(global-set-key (kbd "C-c C-p C-n") 'unicode-helper-insert-char-name)
-(autoload 'unicode-helper-name-at-point "unicode-helper-mode" nil t)
-(autoload 'unicode-helper-insert-codepoint "unicode-helper-mode" nil t)
-(autoload 'unicode-helper-insert-char-name "unicode-helper-mode" nil t)
+;; (setq unicode-helper-data-txt "~/Documents/Unicode/UnicodeData.txt")
+;; (global-set-key (kbd "C-c C-p RET") 'unicode-helper-name-at-point)
+;; (global-set-key (kbd "C-c C-p =") 'unicode-helper-name-at-point)
+;; (global-set-key (kbd "C-c C-p C-c") 'unicode-helper-insert-codepoint)
+;; (global-set-key (kbd "C-c C-p C-n") 'unicode-helper-insert-char-name)
+;; (autoload 'unicode-helper-name-at-point "unicode-helper-mode" nil t)
+;; (autoload 'unicode-helper-insert-codepoint "unicode-helper-mode" nil t)
+;; (autoload 'unicode-helper-insert-char-name "unicode-helper-mode" nil t)
 
 ;;; css mode
 (autoload 'css-mode "css-mode" nil t)
@@ -323,10 +331,21 @@ feed address and the blog title."
 ;;; dired mode
 
 (require 'dired-x)
-(setq dired-recursive-deletes 'top
-      dired-recursive-copies 'top
+(setq dired-recursive-deletes 'always
+      dired-recursive-copies 'always
+      dired-deletion-confirmer 'y-or-n-p
+      dired-clean-up-buffers-too nil
+      delete-by-moving-to-trash t
+      ;; trash-directory "~/.Trash/emacs"
       dired-dwim-target t
       dired-guess-shell-alist-user '(("\\.pdf$" "open")))
+
+(defun system-move-file-to-trash (file)
+  "Use \"trash\" to move FILE to the system trash.
+When using Homebrew, install it using \"brew install trash\"."
+  (call-process (executable-find "trash")
+		nil 0 nil
+		file))
 
 (defface dired-pdf-face '((t (:foreground "firebrick"))) "PDF files")
 
@@ -335,6 +354,7 @@ feed address and the blog title."
 	  (lambda ()
 	    (local-set-key (kbd "C-c C-r")
 			   'wdired-change-to-wdired-mode)
+	    (local-set-key (kbd "J") 'dired-up-directory)
 	    (local-set-key (kbd "M-<down>")
 			   (lambda ()
 			     (interactive)
@@ -473,8 +493,8 @@ feed address and the blog title."
   '(require 'eshell-autojump nil t))
 
 ;;; scheme
-(require 'cmuscheme)
-(setq scheme-program-name "/opt/local/bin/scsh")
+;; (require 'cmuscheme)
+;; (setq scheme-program-name "/opt/local/bin/scsh")
 
 ;;; perl
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . cperl-mode))
@@ -523,16 +543,18 @@ feed address and the blog title."
       rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-nick-prefix-chars "~&@%+!"
       rcirc-server-alist
-      '(("irc.freenode.net" :channels
-	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
-	  "#epfarms" "#emacswiki" "#raspbian"))
+      '(("irc.freenode.net" :port 6697 :encryption tls
+	 :channels ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
+	  "#epfarms" "#emacswiki" "#raspbian" "#machomebrew"
+	  "#julia"))
 	;; ("irc.gimp.org" :channels ("#gimp-users"))
 	;; "#eclipse" "#eclipse-de" "#osgi" "#perl6" "#inkscape"
 	;; "#ubuntu" "#hcoop" "#biology" "#clojure" "#clojure.de"
 	;; ("ircnet.eversible.com" :channels ("#drsrm"))
 	;; ("irc.euirc.net" :channels ("#tanelorn"))
 	;; ("irc.lugs.ch"   :channels ("#hackerfunk"))
-	("irc.perl.org" :channels ("#perlde"))
+	("irc.perl.org" :port 6697 :encryption tls
+	 :channels ("#perlde"))
 	;; ("irc.sorcery.net" :channels ("#Stargazer"))
 	;; ("irc.otherworlders.org" :channels ("#pathfinder"))
 	;; "#enworld"
@@ -1075,41 +1097,41 @@ cells by rows first."
 
 ;;; WriteRoom
 
-(defun write-room ()
-  "Make a frame without any bling."
-  (interactive)
-  ;; to restore:
-  ;; (setq mode-line-format (default-value 'mode-line-format))
-  (let ((frame (make-frame '(;; (minibuffer . nil)
-			     (vertical-scroll-bars . nil)
-			     (left-fringe . 0); no fringe
-			     (right-fringe . 0)
-			     (background-mode . dark)
-			     (background-color . "black")
-			     (foreground-color . "green")
-			     (cursor-color . "green")
-			     (border-width . 0)
-			     (border-color . "black"); should be unnecessary
-			     (internal-border-width . 64); whitespace!
-			     (cursor-type . box)
-			     (menu-bar-lines . 0)
-			     (tool-bar-lines . 0)
-			     (mode-line-format . nil); dream on... has no effect
-			     (fullscreen . t); does not work on all systems
-			     (left . 0)
-			     (top . 0)
-			     (width . 128)
-			     (height . 37)
-			     (unsplittable . t)))))
-    (select-frame frame)
-    (find-file "~/NOTES")
-    (setq mode-line-format nil); is buffer local unfortunately
-    ;; maximize window if fullscreen above had no effect
-    (when (fboundp 'w32-send-sys-command)
-      (w32-send-sys-command 61488 frame))))
+;; (defun write-room ()
+;;   "Make a frame without any bling."
+;;   (interactive)
+;;   ;; to restore:
+;;   ;; (setq mode-line-format (default-value 'mode-line-format))
+;;   (let ((frame (make-frame '(;; (minibuffer . nil)
+;; 			     (vertical-scroll-bars . nil)
+;; 			     (left-fringe . 0); no fringe
+;; 			     (right-fringe . 0)
+;; 			     (background-mode . dark)
+;; 			     (background-color . "black")
+;; 			     (foreground-color . "green")
+;; 			     (cursor-color . "green")
+;; 			     (border-width . 0)
+;; 			     (border-color . "black"); should be unnecessary
+;; 			     (internal-border-width . 64); whitespace!
+;; 			     (cursor-type . box)
+;; 			     (menu-bar-lines . 0)
+;; 			     (tool-bar-lines . 0)
+;; 			     (mode-line-format . nil); dream on... has no effect
+;; 			     (fullscreen . t); does not work on all systems
+;; 			     (left . 0)
+;; 			     (top . 0)
+;; 			     (width . 128)
+;; 			     (height . 37)
+;; 			     (unsplittable . t)))))
+;;     (select-frame frame)
+;;     (find-file "~/NOTES")
+;;     (setq mode-line-format nil); is buffer local unfortunately
+;;     ;; maximize window if fullscreen above had no effect
+;;     (when (fboundp 'w32-send-sys-command)
+;;       (w32-send-sys-command 61488 frame))))
 
 ;;; Table Mode
-(add-hook 'text-mode-hook 'table-recognize)
+;; (add-hook 'text-mode-hook 'table-recognize)
 
 ;;; mail
 (autoload 'fetchmail-mode "fetchmail-mode"
@@ -1147,38 +1169,40 @@ cells by rows first."
 			     "/]]")))))
 
 ;; emacs-w3m
-(add-to-list 'load-path "~/elisp/w3m")
-(require 'w3m-load)
-(setq w3m-use-cookies t)
+;; (add-to-list 'load-path "~/elisp/w3m")
+;; (require 'w3m-load)
+;; (setq w3m-use-cookies t)
 
 ;; identica, twitter
 
-(when (require 'netrc nil t)
-  (autoload 'identica-mode "identica-mode" nil t)
-  (let ((identica (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
-    (setq identica-username (netrc-get identica "login")
-	  identica-password (netrc-get identica "password")))
-  (autoload 'twittering-mode "twittering-mode" nil t)
-  (autoload 'twit-show-recent-tweets "twit" nil t)
-  (let ((twittering (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
-    (setq twittering-username (netrc-get twittering "login")
-	  twit-user twittering-username
-	  twittering-password (netrc-get twittering "password")
-	  twit-pass twittering-password)))
-(setq twit-show-user-images t)
+;; (when (require 'netrc nil t)
+;;   (autoload 'identica-mode "identica-mode" nil t)
+;;   (let ((identica (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
+;;     (setq identica-username (netrc-get identica "login")
+;; 	  identica-password (netrc-get identica "password")))
+;;   (autoload 'twittering-mode "twittering-mode" nil t)
+;;   (autoload 'twit-show-recent-tweets "twit" nil t)
+;;   (let ((twittering (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
+;;     (setq twittering-username (netrc-get twittering "login")
+;; 	  twit-user twittering-username
+;; 	  twittering-password (netrc-get twittering "password")
+;; 	  twit-pass twittering-password)))
+;; (setq twit-show-user-images t)
 
 ;;; Clojure
 
-(autoload 'clojure-mode "clojure-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.clj\\'" . clojure-mode))
+;; (autoload 'clojure-mode "clojure-mode" nil t)
+;; (add-to-list 'auto-mode-alist '("\\.clj\\'" . clojure-mode))
 
 ;;; Sunrise Commander
 
 (autoload 'sunrise "sunrise-commander" nil t)
-(eval-after-load 'sunrise-commander
-  '(sunrise-mc-keys))
-(add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
-(autoload 'sr-virtual-mode "sunrise-commander")
+(defadvice windmove-do-window-select
+  (after sr-windmove-do-window-select (dir &optional arg window))
+  "Handle window selections from `windmove-left' and family"
+  (when (and (boundp 'sr-running) (eq (selected-window) (sr-other 'window)))
+    (sr-change-window)))
+(ad-activate 'windmove-do-window-select)
 
 ;;; Gnus
 
@@ -1638,22 +1662,23 @@ This requires the following command:
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(canlock-password "f0e77d033338878513c7e4935cfac5eaa0da285c")
+ '(dired-listing-switches "-alh"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ;;; automatic additions
 
 (put 'narrow-to-region 'disabled nil)
 (put 'not-modified 'disabled t)
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(canlock-password "f0e77d033338878513c7e4935cfac5eaa0da285c"))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
