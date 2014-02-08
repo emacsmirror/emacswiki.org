@@ -149,8 +149,9 @@ For example, what if you want to use, say, `##C-x C-^##' for top-level key compl
 `icicle-complete-keys' to `##C-x C-^##' then when you use that key
 sequence '''Icicles''' will complete prefix key `C-x'.  You need some
 way to tell '''Icicles''' to ignore the `C-x' here.  You can do that by
-customizing [[option]] '''`icicle-complete-keys-ignored-prefix-keys'''' to
-include the prefix key you want to ignore (`C-x' in this case).
+customizing [[option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-ignored-prefix-keys|icicle-complete-keys-ignored-prefix-keys]]</tt>''''
+to include the prefix key you want to ignore (`C-x' in this case).
 
 You probably do not want to do this for `C-x', since it is useful
 to be able to complete `C-x' itself.  But you might, for example,
