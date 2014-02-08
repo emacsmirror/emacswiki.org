@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Feb  7 15:55:04 2014 (-0800)
+;; Last-Updated: Sat Feb  8 10:28:21 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14280
+;;     Update #: 14296
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -89,7 +89,7 @@
 ;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates',
 ;;    `icicle-extra-candidates-first-p',
-;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
+;;    `icicle-face-valid-attribute-values',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -127,9 +127,9 @@
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read', `icicle-list-position',
-;;    `icicle-local-keys-first-p', `icicle-make-char-candidate',
-;;    `icicle-make-face-candidate', `icicle-make-plain-predicate',
-;;    `icicle-major-mode-name-less-p',
+;;    `icicle-looks-like-dir-name-p', `icicle-local-keys-first-p',
+;;    `icicle-make-char-candidate', `icicle-make-face-candidate',
+;;    `icicle-make-plain-predicate', `icicle-major-mode-name-less-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
@@ -4822,11 +4822,11 @@ the code."
               (icicle-save-raw-input))
 
             ;; Save expanded common match as current input, unless input is a directory.
-            ;; Use `icicle-file-directory-p'.
+            ;; Use `icicle-looks-like-dir-name-p'.
             ;; `file-directory-p' fails to consider "~/foo//usr/" a directory.
-            ;; $$$$$$ We could use the `icicle-file-directory-p' code with `icicle-file-name-directory'
+            ;; $$$$$$ We could use the `icicle-looks-like-dir-name-p' code with `icicle-file-name-directory'
             ;;        instead of `icicle-file-name-directory-w-default', if that presents a problem.
-            (unless (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-current-input))
+            (unless (and (icicle-file-name-input-p)  (icicle-looks-like-dir-name-p icicle-current-input))
               (setq icicle-current-input  common)))))
 
        ;; Save input for `C-l'.
@@ -5102,10 +5102,18 @@ relative, use this test:
  (or (icicle-file-name-input-p)  icicle-abs-file-candidates)"
   minibuffer-completing-file-name)
 
-(defun icicle-file-directory-p (file)
-  "Local, faster replacement for `file-directory-p'.
-This does not do all of the file-handler processing that
-`file-directory-p' does, so it is not a general replacement."
+(defun icicle-looks-like-dir-name-p (file)
+  "Return non-nil if FILE looks like a directory name.
+If FILE is not a string, return nil.  Otherwise, FILE can be an
+absolute or a relative file name.
+
+This compares FILE with the directory part of its name, or with
+`default-directory' if there is no directory part.
+
+This does not do the file-handler processing that `file-directory-p'
+does, so it is not a replacement for that function.  And unlike
+`file-directory-p', this returns non-nil for an argument like
+\"~/foo//usr/\"."
   (and (stringp file)  (string= file (icicle-file-name-directory-w-default file))))
 
 (defun icicle-minibuf-input ()
@@ -7196,10 +7204,13 @@ A directory has a lower file type than a non-directory.
 The type of a non-directory is its extension.  Extensions are compared
  alphabetically.
 If not doing file-name completion then this is the same as
-`icicle-case-string-less-p'."
+`icicle-case-string-less-p'.
+
+The directory test is only syntactic: whether it looks like a
+directory name"
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
-      (let ((s1-dir-p  (icicle-file-directory-p s1))
-            (s2-dir-p  (icicle-file-directory-p s2)))
+      (let ((s1-dir-p  (icicle-looks-like-dir-name-p s1))
+            (s2-dir-p  (icicle-looks-like-dir-name-p s2)))
         (cond ((and s1-dir-p  s2-dir-p) (icicle-case-string-less-p s1 s2)) ; Both are dirs, so alpha.
               ((not (or s1-dir-p s2-dir-p)) ; Neither is a dir.  Compare extensions.
                (let ((es1  (file-name-extension s1 t))
@@ -7220,10 +7231,13 @@ If not doing file-name completion then this is the same as
 If both S1 and S2 are the same type (dir or file) then:
  S1 < S2 if S1 was used as input previously but S2 was not.
  S1 < S2 if neither was used as input previously and:
-  and S1 was accessed more recently than S2."
+  and S1 was accessed more recently than S2.
+
+The directory test is only syntactic: whether it looks like a
+directory name"
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
-      (let ((s1-dir-p  (icicle-file-directory-p s1))
-            (s2-dir-p  (icicle-file-directory-p s2)))
+      (let ((s1-dir-p  (icicle-looks-like-dir-name-p s1))
+            (s2-dir-p  (icicle-looks-like-dir-name-p s2)))
         (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
                 (not (or s1-dir-p s2-dir-p)))
             (icicle-latest-use-first-p s1 s2) ; Compare same type using last use.
@@ -7235,10 +7249,13 @@ If both S1 and S2 are the same type (dir or file) then:
 (defun icicle-dirs-first-p (s1 s2)
   "Non-nil means S1 is a dir and S2 a file, or S1 < S2 (alphabet).
 If not doing file-name completion then this is the same as
-`icicle-case-string-less-p'."
+`icicle-case-string-less-p'.
+
+The directory test is only syntactic: whether it looks like a
+directory name"
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
-      (let ((s1-dir-p  (icicle-file-directory-p s1))
-            (s2-dir-p  (icicle-file-directory-p s2)))
+      (let ((s1-dir-p  (icicle-looks-like-dir-name-p s1))
+            (s2-dir-p  (icicle-looks-like-dir-name-p s2)))
         (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
                 (not (or s1-dir-p s2-dir-p)))
             (icicle-case-string-less-p s1 s2)  ; Compare equals.
@@ -7251,10 +7268,13 @@ If not doing file-name completion then this is the same as
 (defun icicle-dirs-last-p (s1 s2)
   "Non-nil means S1 is a file and S2 a dir, or S1 < S2 (alphabet).
 If not doing file-name completion then this is the same as
-`icicle-case-string-less-p'."
+`icicle-case-string-less-p'.
+
+The directory test is only syntactic: whether it looks like a
+directory name"
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
-      (let ((s1-dir-p  (icicle-file-directory-p s1))
-            (s2-dir-p  (icicle-file-directory-p s2)))
+      (let ((s1-dir-p  (icicle-looks-like-dir-name-p s1))
+            (s2-dir-p  (icicle-looks-like-dir-name-p s2)))
         (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
                 (not (or s1-dir-p s2-dir-p)))
             (icicle-case-string-less-p s1 s2)  ; Compare equals.
