@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Feb  7 16:07:17 2014 (-0800)
+;; Last-Updated: Sat Feb  8 08:08:50 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10612
+;;     Update #: 10621
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/02/08 dadams
+;;     icicle-find-file-(no-search|of-content)-action-1:
+;;       Pass icicle-find-file-(no-search|of-content)-1 as arg, not icicle-find-file-action-fn.
+;;     icicle-find-file-or-expand-dir: Use funcall, not call-interactively (not really a command).
 ;; 2014/01/25 dadams
 ;;     icicle-bbdb-complete-name: Do not define if bbdb-version is not a number.
 ;; 2014/01/18 dadams
