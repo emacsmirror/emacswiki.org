@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Jan 18 10:12:39 2014 (-0800)
+;; Last-Updated: Fri Feb  7 15:55:04 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14266
+;;     Update #: 14280
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -195,7 +195,7 @@
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
 ;;    `icicle-ucs-names', `icicle-unhighlight-lighter',
-;;    `icicle-unpropertize-completion',
+;;    `icicle-unlist', `icicle-unpropertize-completion',
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
 ;;    `icicle-unsorted-file-name-prefix-candidates',
@@ -285,7 +285,6 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl)) ;; case, lexical-let, loop
-                                  ;; plus, for Emacs < 21: dolist, push, pop
 
 (require 'hexrgb nil t) ;; (no error if not found): hexrgb-color-name-to-hex
 (require 'wid-edit+ nil t) ;; (no error if not found):
@@ -1594,7 +1593,7 @@ for POSITION."
   (setq icicle-filtered-default-value  default-value)
 
   ;; If a list of strings, use the first one for prompt etc.
-  (let ((def-value  (if (consp default-value) (car default-value) default-value)))
+  (let ((def-value  (icicle-unlist default-value)))
     ;; Maybe use DEFAULT-VALUE for INITIAL-CONTENTS also.
     (when (and icicle-default-value  (not (eq icicle-default-value t))
                def-value  (stringp initial-contents)  (string= "" initial-contents))
@@ -1807,7 +1806,8 @@ also enter the name of a string variable - its value is returned.
 Completion is available for this.  A string variable is a variable
 whose value or whose custom type is compatible with type `string'."
   (unwind-protect
-       (let ((strg  nil)
+       (let ((strg      nil)
+             (default1  (icicle-unlist default)) ; Emacs 23+ lets DEFAULT be a list of strings - use the first.
              (icicle-proxy-candidates
               (append
                (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
@@ -1819,9 +1819,7 @@ whose value or whose custom type is compatible with type `string'."
                                                (error nil)))
                                     (push (symbol-name cand) ipc))))
                       ipc))
-               icicle-proxy-candidates))
-             ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
-             (default1  (if (consp default) (car default) default)))
+               icicle-proxy-candidates)))
          (when default
            (save-match-data
              (setq prompt  (if (string-match "\\(\\):[ \t]*\\'" prompt)
@@ -2158,7 +2156,7 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
     (when (and default-value  (equal value ""))
-      (setq value (if (consp default-value) (car default-value) default-value)))
+      (setq value  (icicle-unlist default-value)))
     value))
 
 
@@ -3748,7 +3746,7 @@ The optional second arg is ignored."
                    (setq column-nb  columns))) ; End of the row. Simulate being in farthest column.
                (when (< endpos (point)) (set-text-properties endpos (point) nil))))
         ;; Convert candidate (but not annotation) to unibyte or to multibyte, if needed.
-        (setq string  (if (consp cand) (car cand) cand))
+        (setq string  (icicle-unlist cand))
         (cond ((and (null enable-multibyte-characters)  (multibyte-string-p string))
                (setq string  (string-make-unibyte string)))
               ((and enable-multibyte-characters  (not (multibyte-string-p string)))
@@ -5326,6 +5324,10 @@ occurrences."
         (setq tail  (cdr tail)))))       ; Remove matching singleton.
   elts)
 
+(defun icicle-unlist (object)
+  "If OBJECT is a cons, return its car; else return OBJECT."
+  (if (consp object) (car object) object))
+
 (defun icicle-position (item list)
   "Zero-based position of first occurrence of ITEM in LIST, else nil."
   (let ((index  0))
@@ -6743,7 +6745,7 @@ regexp, the last isearch string, and the last replacement regexp.
 
 Optional argument HISTORY is a symbol to use for the history list.
 If nil then use `regexp-history'."
-          (let* ((deflt                  (if (consp default) (car default) default))
+          (let* ((deflt                  (icicle-unlist default))
                  (suggestions            (and (> emacs-major-version 22)
                                               (if (listp default) default (list default))))
                  (suggestions            (and (> emacs-major-version 22)
