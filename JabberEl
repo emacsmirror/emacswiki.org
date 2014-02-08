@@ -116,7 +116,7 @@ Control message history (which stored in <code>~/.emacs-jabber</code> dir):
 [new]
 Don't disturb me if someone chage presence status (usually remote clients make this automatically):
 <pre>
-(set  jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil))
+(setq jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil))
 </pre>
 [new]
 The above didn't work for me, and has unbalenced parenthesis in any case...
@@ -253,10 +253,8 @@ Original code was for libnotify1 and libnotify-bin, but I modified it to use not
       (notify (format "%s" (jabber-jid-displayname from))
              text)))
 
-(add-hook 'jabber-alert-info-message-hooks 'notify-jabber-notify)
+(add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
 </pre>
-
-Originally code was using jabber-alert-message-hooks , but it didn't work for me opposed to jabber-alert-info-message-hooks.
 
 ==== Using xmonad/xmobar ====
 
