@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jan 25 13:31:12 2014 (-0800)
+;; Last-Updated: Sat Feb  8 08:04:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26715
+;;     Update #: 26730
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -680,14 +680,14 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 (defmacro icicle-find-file-no-search-action-1 (other-window-p)
   "Action function for commands using `read-file-name' without searching.
 Non-nil OTHER-WINDOW-P means use other window."
-  ;; FREE VARS here: CURRENT-PREFIX-ARG, THIS-COMMAND, `icicle-pref-arg', `icicle-find-file-action-fn'.
+  ;; FREE VARS here: CURRENT-PREFIX-ARG, THIS-COMMAND, `icicle-pref-arg'.
   `(lambda (file)
     (let ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                          icicle-all-candidates-action))
                     (or (and ,icicle-pref-arg        (not current-prefix-arg))
                         (and (not ,icicle-pref-arg)  current-prefix-arg))
                   ,icicle-pref-arg)))
-      (icicle-find-file-or-expand-dir file icicle-find-file-action-fn r-o ,other-window-p))))
+      (icicle-find-file-or-expand-dir file #'icicle-find-file-no-search-1 r-o ,other-window-p))))
 
 (defmacro icicle-find-file-abs-of-content-action-1 (other-window-p read-only-p)
   "File-visiting action function for commands reading absolute file names.
@@ -734,8 +734,7 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
   "Action function for commands using `read-file-name' with content searching.
 Non-nil OTHER-WINDOW-P means use other window.
 Non-nil READ-ONLY-P means visit file in read-only mode."
-  ;; FREE VARS here: CURRENT-PREFIX-ARG, THIS-COMMAND, `icicle-new-bufs-to-kill', `icicle-new-bufs-to-keep'
-  ;;                 `icicle-find-file-action-fn'.
+  ;; FREE VARS here: CURRENT-PREFIX-ARG, THIS-COMMAND, `icicle-new-bufs-to-kill', `icicle-new-bufs-to-keep'.
   `(lambda (file)                       ; Action function
     (setq file  (icicle-transform-multi-completion file))
     (setq file  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
@@ -760,7 +759,7 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
             (kill-buffer created-buf))))
 
       ;; Visit properly (mode, vars, handlers, hooks).
-      (icicle-find-file-or-expand-dir file icicle-find-file-action-fn r-o ,other-window-p)
+      (icicle-find-file-or-expand-dir file #'icicle-find-file-of-content-1 r-o ,other-window-p)
 
       ;; Add the visited buffers to those we will keep (not kill).
       ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7732,7 +7731,7 @@ Ido-like behavior."
 (defun icicle-find-file-or-expand-dir (file-or-dir command read-only-p other-window-p)
   "Helper for Icicles commands that find files using `read-file-name'.
 FILE-OR-DIR is the target file or directory name.
-COMMAND is the Icicles file-finding command (a symbol).
+COMMAND is the original Icicles file-finding command (a symbol).
 Non-nil READ-ONLY-P means visit the file in read-only mode.
 Non-nil OTHER-WINDOW-P means visit the file in another window.
 
@@ -7751,7 +7750,7 @@ behavior.  Instead, it always visits the chosen directory."
            (> emacs-major-version 20))  ; Emacs 20 BUG: `default-directory' gets changed.
       (let ((default-directory                       file-or-dir)
             (icicle-show-Completions-initially-flag  t))
-        (call-interactively command))
+        (funcall command))
     (let ((fn  (if read-only-p
                    (if other-window-p #'find-file-read-only-other-window #'find-file-read-only)
                  (if other-window-p #'find-file-other-window #'find-file))))
