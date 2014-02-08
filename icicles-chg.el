@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Feb  5 07:09:54 2014 (-0800)
+;; Last-Updated: Fri Feb  7 16:07:17 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10597
+;;     Update #: 10612
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1048,6 +1048,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/02/07 dadams
+;;     Added: icicle-same-vector-keyseq-p.
+;;     icicle-this-command-keys-prefix:
+;;       Respect new option icicle-complete-keys-ignored-prefix-keys.
+;;       Use this-command-keys-vector, not this-command-keys.
 ;; 2014/01/14 dadams
 ;;     icicle-compilation-search-in-context-fn:
 ;;       Wrap body in condition-case, so can tolerate non-error lines as no-op in compilation buffer.
@@ -1950,6 +1955,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/02/07 dadams
+;;     Added: icicle-unlist.  Use it in icicle-read-from-minibuffer, icicle-read-string-completing,
+;;                            icicle-read-string, icicle-insert-candidates, icicle-read-regexp.
 ;; 2014/01/18 dadams
 ;;     icicle-read-face-name: Rewrote for Emacs 24.  Doc string updated per Emacs bug #16483.
 ;; 2014/01/11 dadams
@@ -4084,6 +4092,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/02/07 dadams
+;;     icicle-history: Use icicle-unlist (new).
 ;; 2014/01/18 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Respect new icicle-keep-Completions-for-sole-dir behavior.
 ;; 2014/01/05 dadams
@@ -6988,6 +6998,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/02/07 dadams
+;;     Added: icicle-complete-keys-ignored-prefix-keys.
 ;; 2014/02/05 dadams
 ;;     icicle-S-TAB-completion-methods-per-command: Corrected :group - capitalized.
 ;; 2014/02/02 dadams
