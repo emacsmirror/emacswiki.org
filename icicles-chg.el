@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Feb  8 08:08:50 2014 (-0800)
+;; Last-Updated: Sat Feb  8 10:52:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10621
+;;     Update #: 10629
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -89,6 +89,8 @@
 ;;     icicle-find-file-(no-search|of-content)-action-1:
 ;;       Pass icicle-find-file-(no-search|of-content)-1 as arg, not icicle-find-file-action-fn.
 ;;     icicle-find-file-or-expand-dir: Use funcall, not call-interactively (not really a command).
+;;                                     Use file-directory-p, not icicle-looks-like-dir-name-p.
+;;                                     Use file-name-as-directory to get new default-directory.
 ;; 2014/01/25 dadams
 ;;     icicle-bbdb-complete-name: Do not define if bbdb-version is not a number.
 ;; 2014/01/18 dadams
@@ -1959,6 +1961,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/02/08 dadams
+;;     Renamed: icicle-file-directory-p to icicle-looks-like-dir-name-p.
+;;     icicle-looks-like-dir-name-p: Better doc string.
 ;; 2014/02/07 dadams
 ;;     Added: icicle-unlist.  Use it in icicle-read-from-minibuffer, icicle-read-string-completing,
 ;;                            icicle-read-string, icicle-insert-candidates, icicle-read-regexp.
@@ -4096,6 +4101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/02/08 dadams
+;;     icicle-(prefix|apropos)-complete-1:
+;;       Applied renaming of icicle-file-directory-p to icicle-looks-like-dir-name-p.
 ;; 2014/02/07 dadams
 ;;     icicle-history: Use icicle-unlist (new).
 ;; 2014/01/18 dadams
