@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Feb  7 11:04:03 2014 (-0800)
+;; Last-Updated: Fri Feb  7 16:08:36 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6740
+;;     Update #: 6745
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -221,8 +221,9 @@
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-var-value-satisfying',
-;;    `icicle-region-or-buffer-limits', `icicle-search-action',
-;;    `icicle-search-action-1', `icicle-search-bookmark-action',
+;;    `icicle-region-or-buffer-limits', `icicle-same-vector-keyseq-p',
+;;    `icicle-search-action', `icicle-search-action-1',
+;;    `icicle-search-bookmark-action',
 ;;    `icicle-search-char-property-scan',
 ;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
@@ -346,9 +347,9 @@
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
-  ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-ranges,
-  ;; icicle-key-descriptions-use-<>-flag, icicle-recenter, icicle-require-match-flag,
-  ;; icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-kbd,
+  ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-ignored-prefix-keys,
+  ;; icicle-complete-keys-self-insert-ranges, icicle-key-descriptions-use-<>-flag, icicle-recenter,
+  ;; icicle-require-match-flag, icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-kbd,
   ;; icicle-search-highlight-all-current-flag, icicle-search-highlight-threshold, icicle-search-hook,
   ;; icicle-sort-comparer, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
@@ -379,7 +380,7 @@
   ;; icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
-  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp, icicle-string-match-p
+  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp, icicle-string-match-p, icicle-unlist
 (require 'icicles-cmd1)
   ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd,
   ;; icicle-bookmark-help-string, icicle-bookmark-propertize-candidate, icicle-buffer-list,
@@ -7958,12 +7959,20 @@ But IF (a) this command is `icicle-complete-keys' and
            option `icicle-complete-keys-ignored-prefix-keys'
   THEN return [], as if `icicle-complete-keys' was invoked at top
        level, i.e., with no prefix key."
-    (let* ((this-key-sequence  (this-command-keys))
-           (this-prefix        (substring this-key-sequence 0 (1- (length this-key-sequence)))))
-      (when (and (eq this-command 'icicle-complete-keys)
-                 (member this-prefix icicle-complete-keys-ignored-prefix-keys))
-        (setq this-prefix []))
-      this-prefix))
+  (let* ((this-key-sequence  (this-command-keys-vector))
+         (this-prefix        (substring this-key-sequence 0 (1- (length this-key-sequence)))))
+    (when (and (eq this-command 'icicle-complete-keys)
+               (icicle-some icicle-complete-keys-ignored-prefix-keys
+                            this-prefix
+                            #'icicle-same-vector-keyseq-p))
+      (setq this-prefix []))
+    this-prefix))
+
+  (defun icicle-same-vector-keyseq-p (key1 key2)
+    "Return non-nil if KEY1 and KEY2 represent the same key sequence.
+Each is a vector."
+    (equal (apply #'vector (mapcar #'icicle-unlist key1))
+           (apply #'vector (mapcar #'icicle-unlist key2))))
 
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
   ;;
