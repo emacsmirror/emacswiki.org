@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jan 11 14:50:55 2014 (-0800)
+;; Last-Updated: Sat Feb  8 08:45:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28052
+;;     Update #: 28067
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -276,6 +276,7 @@
 ;;    (@> "`S-TAB' Is Everywhere - Start With It")
 ;;    (@> "Completing Keys By Name")
 ;;    (@> "Completing Prefix Keys")
+;;    (@> "Top-Level Key Completion from a Prefix Key")
 ;;    (@> "Navigate the Key-Binding Hierarchy")
 ;;    (@> "Local Bindings and Menu Items Are Highlighted")
 ;;    (@> "Completing Keys By Just Hitting Them")
@@ -6537,6 +6538,45 @@
 ;;  can use `C-,' at any time to change the sort order among these two
 ;;  orders and sorting by command name.
 ;;
+;;(@* "Top-Level Key Completion from a Prefix Key")
+;;  ** Top-Level Key Completion from a Prefix Key **
+;;
+;;  In contrast to the previous section, "Completing Prefix Keys",
+;;  this section could alternatively be called "Not Completing
+;;  (Ignoring) Prefix Keys".
+;;
+;;  Command `icicle-complete-keys' is normally (i.e., by default)
+;;  invoked from `S-TAB', either at top level or by using a prefix key
+;;  followed by `S-TAB'.  In the latter case, it completes that prefix
+;;  key.  This is a primary use case: show the completions of a prefix
+;;  key.
+;;
+;;  But what if you wanted to perform top-level key completion, but
+;;  invoke that operation from a key (`S-TAB' or another) that is on a
+;;  prefix keymap?
+;;
+;;  For example, what if you want to use, say, `C-x C-^' for top-level
+;;  key completion?  If you just bind `icicle-complete-keys' to `C-x
+;;  C-^' then when you use that key sequence Icicles will complete
+;;  prefix key `C-x'.  You need some way to tell Icicles to ignore the
+;;  `C-x' here.  You can do that by customizing option
+;;  `icicle-complete-keys-ignored-prefix-keys' to include the prefix
+;;  key you want to ignore (`C-x' in this case).
+;;
+;;  You probably do not want to do this for `C-x', since it is useful
+;;  to be able to complete `C-x' itself.  But you might, for example,
+;;  want to make key completion available from a menu or some other
+;;  prefix key whose completions you do not need to be reminded of.
+;;
+;;  To add top-level key completion to, say, the menu-bar `Edit' menu,
+;;  you would customize `icicle-complete-keys-ignored-prefix-keys' by
+;;  adding `<menu-bar> <edit>' as a prefix key to ignore.  Then you
+;;  would add `icicle-complete-keys' as a `Complete Keys' menu item on
+;;  the `Edit' menu, as follows:
+;;
+;;    (global-set-key [menu-bar edit icicle-complete-keys]
+;;                    '("Complete Keys" . icicle-complete-keys))
+;;
 ;;(@* "Navigate the Key-Binding Hierarchy")
 ;;  ** Navigate the Key-Binding Hierarchy **
 ;;
@@ -8286,7 +8326,7 @@
 ;;  expand a directory candidate:
 ;;
 ;;  * `C-M-/'
-;;  * `C-e TAB' (or `S-TAB')
+;;  * `C-e TAB' (or `C-e S-TAB')
 ;;
 ;;  If you prefer, you can have Icicles cycle into subdirectories
 ;;  whenever you choose them using `RET' (or `mouse-2' in
