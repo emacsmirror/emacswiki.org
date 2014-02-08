@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 18 08:09:28 2014 (-0800)
+;; Last-Updated: Fri Feb  7 16:04:56 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23522
+;;     Update #: 23525
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -786,6 +786,7 @@
 ;;    `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag',
 ;;    `icicle-complete-key-anyway-flag',
+;;    `icicle-complete-keys-ignored-prefix-keys',
 ;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
@@ -1229,7 +1230,8 @@
 ;;    `icicle-retrieve-candidates-from-set', `icicle-reversible-sort',
 ;;    `icicle-row-wise-cand-nb',
 ;;    `icicle-run-icicle-post-command-hook',
-;;    `icicle-run-icicle-pre-command-hook', `icicle-saved-fileset-p',
+;;    `icicle-run-icicle-pre-command-hook',
+;;    `icicle-same-vector-keyseq-p', `icicle-saved-fileset-p',
 ;;    `icicle-save-or-restore-input', `icicle-save-raw-input',
 ;;    `icicle-scatter', `icicle-scatter-match',
 ;;    `icicle-scroll-or-update-Completions', `icicle-search-action',
@@ -1286,7 +1288,7 @@
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
 ;;    `icicle-unbind-key-completion-keys-in-keymaps-from',
 ;;    `icicle-undo-std-completion-faces',
-;;    `icicle-unhighlight-lighter', `icicle-unmap',
+;;    `icicle-unhighlight-lighter', `icicle-unlist', `icicle-unmap',
 ;;    `icicle-unpropertize-completion',
 ;;    `icicle-unsorted-apropos-candidates',
 ;;    `icicle-unsorted-file-name-apropos-candidates',
