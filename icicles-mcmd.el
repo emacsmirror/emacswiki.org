@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Feb  7 15:59:46 2014 (-0800)
+;; Last-Updated: Sat Feb  8 10:21:38 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19336
+;;     Update #: 19340
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3889,10 +3889,11 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (icicle-file-name-directory-w-default icicle-current-input))
                                          icicle-last-completion-candidate)))
                         (insert inserted)
-                        ;; If candidate is a directory then remove or update `*Completions*', depending
-                        ;; on `icicle-keep-Completions-for-sole-dir'.
+                        ;; If candidate looks like a directory then remove or update `*Completions*',
+                        ;; depending on `icicle-keep-Completions-for-sole-dir'.
+                        ;; $$$$$$$$ Should we use `file-directory-p' instead?
                         (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
-                                 (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                                 (icicle-file-name-input-p)  (icicle-looks-like-dir-name-p inserted)
                                  icicle-keep-Completions-for-sole-dir)
                             (when (or (get-buffer-window "" 0)
                                       (eq 'pop-up icicle-keep-Completions-for-sole-dir))
@@ -4297,10 +4298,11 @@ message either.  NO-DISPLAY-P is passed to
                                           (icicle-file-name-directory-w-default icicle-current-input))
                                        icicle-last-completion-candidate)))
                       (insert inserted)
-                      ;; If candidate is a directory then remove or update `*Completions*', depending
-                      ;; on `icicle-keep-Completions-for-sole-dir'.
+                      ;; If candidate looks like a directory then remove or update `*Completions*',
+                      ;; depending on `icicle-keep-Completions-for-sole-dir'.
+                      ;; $$$$$$$$ Should we use `file-directory-p' instead?
                       (if (and (not no-display-p) ; Never display for NO-DISPLAY-P.
-                               (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                               (icicle-file-name-input-p)  (icicle-looks-like-dir-name-p inserted)
                                icicle-keep-Completions-for-sole-dir)
                           (when (or (get-buffer-window "" 0)
                                     (eq 'pop-up icicle-keep-Completions-for-sole-dir))
