@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb  7 16:04:56 2014 (-0800)
+;; Last-Updated: Sat Feb  8 10:22:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23525
+;;     Update #: 23527
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1040,7 +1040,7 @@
 ;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates', `icicle-explore',
 ;;    `icicle-extra-candidates-first-p',
-;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
+;;    `icicle-face-valid-attribute-values',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -1137,7 +1137,8 @@
 ;;    `icicle-load-library', `icicle-local-keys-first-p',
 ;;    `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
-;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
+;;    `icicle-looking-back-at-p', `icicle-looks-like-dir-name-p',
+;;    `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
 ;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
 ;;    `icicle-make-frame-alist', `icicle-make-plain-predicate',
