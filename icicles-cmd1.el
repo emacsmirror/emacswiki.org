@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Feb  8 08:04:18 2014 (-0800)
+;; Last-Updated: Sat Feb  8 10:41:12 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26730
+;;     Update #: 26737
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7745,10 +7745,10 @@ directory FILE-OR-DIR.
 A non-exiting action such as `C-RET' does not have this special
 behavior.  Instead, it always visits the chosen directory."
   (if (and icicle-find-file-expand-directory-flag
-           (icicle-file-directory-p file-or-dir)
+           (file-directory-p file-or-dir) ; Not just `icicle-looks-like-dir-name-p'.
            (zerop (minibuffer-depth))
            (> emacs-major-version 20))  ; Emacs 20 BUG: `default-directory' gets changed.
-      (let ((default-directory                       file-or-dir)
+      (let ((default-directory                       (file-name-as-directory file-or-dir))
             (icicle-show-Completions-initially-flag  t))
         (funcall command))
     (let ((fn  (if read-only-p
