@@ -435,7 +435,7 @@ completion.  To do that, you can do either of the following to
 expand a directory candidate:
 
 * `C-M-/'
-* `C-e TAB' (or `S-TAB')
+* `C-e TAB' (or `C-e S-TAB')
 
 If you prefer, you can have '''Icicles''' cycle into subdirectories
 whenever you choose them using `RET' (or `mouse-2' in
