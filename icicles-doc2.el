@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jan 25 13:31:52 2014 (-0800)
+;; Last-Updated: Sat Feb  8 08:56:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29476
+;;     Update #: 29485
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5011,6 +5011,16 @@
 ;;    customize this option to choose another key, or try `ESC S-TAB'
 ;;    (equivalent to `M-S-TAB').
 ;;
+;;  * Option `icicle-complete-keys-ignored-prefix-keys' is a list of
+;;    prefix keys to be ignored by `icicle-complete-keys' (`S-TAB').
+;;    What this really means is that you can bind
+;;    `icicle-complete-keys' to a key sequence that uses one of these
+;;    prefix keys, and when you invoke it that way it acts as if
+;;    invoked at top level.  Otherwise, it would show you only the
+;;    keys bound on that prefix key.  This gives you a way to invoke
+;;    top-level key completion from a key sequence that uses a prefix
+;;    key.
+;;
 ;;  * Option `icicle-isearch-complete-keys' is the list of keys for
 ;;    `icicle-isearch-complete'.  By default, these keys are `M-TAB',
 ;;    `ESC TAB', and `C-M-TAB'.
@@ -6188,7 +6198,7 @@
 ;;
 ;;  * Option `icicle-option-type-prefix-arg-list' is a list of symbols
 ;;    that control prefix arguments for command
-;;    `icicle-describe-option-of-type (bound to `C-h C-o' by
+;;    `icicle-describe-option-of-type' (bound to `C-h C-o' by
 ;;    default). A list of six symbols taken from this list:
 ;;
 ;;    `direct'            `inherit'            `inherit-or-value'
