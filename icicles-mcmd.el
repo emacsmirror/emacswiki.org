@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jan 18 09:08:00 2014 (-0800)
+;; Last-Updated: Fri Feb  7 15:59:46 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19334
+;;     Update #: 19336
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -420,7 +420,7 @@
   ;; icicle-universal-argument-map, icicle-variable-name-history
 (require 'icicles-fn)
   ;; icicle-minibuf-input-sans-dir, icicle-read-regexp, icicle-string-match-p,
-  ;; icicle-toggle-icicle-mode-twice
+  ;; icicle-toggle-icicle-mode-twice, icicle-unlist
 
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
@@ -7485,7 +7485,7 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
   (when (and (arrayp minibuffer-completion-table)  minibuffer-completion-predicate)
     (setq minibuffer-completion-predicate
           `(lambda (elt) (funcall ',minibuffer-completion-predicate
-                          (intern (if (consp elt) (car elt) elt))))))
+                          (intern (icicle-unlist elt))))))
   (when (and (boundp minibuffer-history-variable)  (consp (symbol-value minibuffer-history-variable)))
     (setq minibuffer-completion-table
           (mapcar #'list (icicle-remove-duplicates
