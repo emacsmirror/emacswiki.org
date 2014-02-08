@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Feb  7 11:01:32 2014 (-0800)
+;; Last-Updated: Sat Feb  8 08:20:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5853
+;;     Update #: 5866
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1458,21 +1458,32 @@ to toggle the option."
 (when (fboundp 'map-keymap)             ; Emacs 22+.
   (defcustom icicle-complete-keys-ignored-prefix-keys nil
     "*Prefix keys for `icicle-complete-keys' to ignore.
+The value is a list of key sequences assumed to be prefix keys.
+
 If `icicle-complete-keys' is bound to a key on one of these prefix
 keys then it does not complete that prefix key.  Instead, it acts as
 though invoked at the top level.  This lets you bind key completion to
 a key sequence that starts with a prefix key, so you can invoke it
 from there just as if you had invoked it at top level.
 
-The value is a list of key sequences.  Example of adding such a key
-using Customize:
+Here is an example of adding two such prefix keys using Customize:
 
- Click [INS] to insert a new, empty entry
+ Click [INS] to insert a new, empty entry.
  Type `M-s' in the edit field.
+
+ Click [INS] to insert another new, empty entry.
+ Type `<menu-bar> <edit>' in the edit field.
+
  Use the `State' menu to update the option value to reflect the edit.
 
-This adds the key sequence [134217843], which is represented
-externally by `M-s'."
+This adds these two prefix keys to the option value:
+
+ * [134217843], which is represented externally by `M-s'
+ * [menu-bar edit], which represents the `Edit' menu-bar menu.
+
+This example means that if you bind `icicle-complete-keys' to a key on
+either of these prefix keys then invoking that key sequence will
+complete keys at the top level - it will not complete that prefix key."
     :type '(repeat (key-sequence :tag "Prefix Key" :value [ignore])) :group 'Icicles-Key-Bindings)
 
   (defcustom icicle-complete-keys-self-insert-ranges ()
