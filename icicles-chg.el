@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Feb  8 10:52:41 2014 (-0800)
+;; Last-Updated: Sun Feb  9 11:06:38 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10629
+;;     Update #: 10632
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4101,6 +4101,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/02/09 dadams
+;;     icicle-make-directory: Restore completion candidates after reading new dir name.
 ;; 2014/02/08 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       Applied renaming of icicle-file-directory-p to icicle-looks-like-dir-name-p.
