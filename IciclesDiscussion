@@ -1136,7 +1136,13 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 
 
+<pre>
 
+</pre>
+ ----
+<pre>
+
+</pre>
 
 
 
@@ -1145,11 +1151,12 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 <pre>
 
- </pre>
+</pre>
  ----
- <pre>
+<pre>
 
- </pre>
+</pre>
+
 [new]
 First of all, HUGE Thanks for creating Icicles! I'am enjoying it everyday.
 Using Icicles `C-c C-f' to open files, if I decide to create a new directory on the fly using `C-c +' I will not be able to create a new file in the new directory I created. Here's the step I take:
