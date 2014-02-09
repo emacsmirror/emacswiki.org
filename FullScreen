@@ -396,9 +396,7 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 
 
 ==See also==
-See also [[Fullscreen]].
-
-
+See also [[Fullscreen]] (just x-send-client-message for X Windows).
 
 
 == Q&A ==
