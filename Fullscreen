@@ -1,5 +1,5 @@
 ==What is Fullscreen ?==
-Fullscreen is a mode that provides fullscreen support.
+Fullscreen is a mode that provides fullscreen support for X Windows.
 
 ==Install==
 Put Lisp:fullscreen.el in your load-path, add the following to your ~/.emacs:
