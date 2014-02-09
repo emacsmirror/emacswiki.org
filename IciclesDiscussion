@@ -1148,31 +1148,6 @@ After you define the contexts, you type text in the minibuffer to filter the con
 </pre>
 
 ----
-
-<pre>
-
-</pre>
-
-[new]
-First of all, HUGE Thanks for creating Icicles! I'am enjoying it everyday.
-Using Icicles `C-x C-f' to open files, if I decide to create a new directory on the fly using `C-c +' I will not be able to create a new file in the new directory I created. Here's the step I take:
-
- 1. `C-x C-f' 
-
- 2. `C-c +'  to create a new directory "test"
-
- 3. select "test" as directory in the minibuffer
-
- 4. enter "newfile.txt"  ------------->>>  after hitting `Enter' Icicles complains "No Completion" and won't create the new file.
-
-The workaround is to exit minibuffer and start again with `C-x C-f'.
-Is this a normal behavior or am I missing something ?
-
-<pre>
-
-</pre>
-
-----
 <pre>
 
 </pre>
