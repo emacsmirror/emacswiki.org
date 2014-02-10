@@ -87,7 +87,7 @@ Using Icicles `C-x C-f' to open files, if I decide to create a new directory on 
 
  1. `C-x C-f' 
 
- 2. `C-c +'  to create a new directory "test"
+ 2. `C-c +'  to create a new directory "test" (select `yes')
 
  3. select "test" as directory in the minibuffer
 
@@ -99,7 +99,8 @@ Is this a normal behavior or am I missing something ?  -- JohnDoe974
 [new:DrewAdams:2014-02-09 19:14 UTC]
 It was a bug.  I think it is fixed now.  Please try the latest <tt>[[icicles-mcmd.el]]</tt>.  Thanks for the report. -- DrewAdams
 
-
+[new:JohnDoe974:2014-02-10 01:14 UTC]
+Thanks for the update. Still have the issue with the steps I described above. However If I hit `Enter' between step 2 and 3, I  can create any file.
 
 
 
