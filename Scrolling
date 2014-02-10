@@ -144,6 +144,9 @@ Another way is to just enable cua-mode, which gives you this more modern behavio
 [new]
 But be advised that `cua-mode' will change more behaviors than just that.
 
+[new]
+Emacs 24 has <code>(setq scroll-error-top-bottom t)</code> to approximate this behavior.
+
 == Other Scrolling Pages ==
 
 * BufferScrolling -- horizontal scrolling
