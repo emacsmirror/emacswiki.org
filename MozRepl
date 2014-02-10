@@ -50,7 +50,36 @@ instead of BrowserReload. The difference is this solution won't cache the user i
 Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
 That way you can change it and you can also delete it from the hook if you want to.
 
+== Read/Write DOM element in web page==
+Copy/paste below code into ~/.emacs, then you just need "M-x moz-load-js-file-and-send-it" and select the js file you nee execute:
+<pre>
+(defun moz-goto-content-and-run-cmd (cmd)
+  (comint-send-string (inferior-moz-process)
+                      (concat "repl.enter(content);"
+                              cmd
+                              "repl.back();")))
 
+(setq moz-repl-js-dir (expand-file-name "~/moz-repl-js-dir"))
+
+(defun moz--read-file (js-file)
+  (with-temp-buffer
+    (insert-file-contents js-file)
+    (buffer-string)))
+
+(defun moz-load-js-file-and-send-it ()
+  "load js file from specific directory and send it to mozrepl"
+  (interactive)
+  (let (cmd js-file)
+    (setq js-file (read-file-name "js file:" moz-repl-js-dir))
+    (when (file-exists-p js-file)
+      ;; flush mozrepl at first
+      (moz-goto-content-and-run-cmd "console.log('hello');")
+      ;; read the content of js-file
+      (setq cmd (moz--read-file js-file))
+      (moz-goto-content-and-run-cmd cmd))
+    ))
+
+</pre>
 
 == See Also ==
 
