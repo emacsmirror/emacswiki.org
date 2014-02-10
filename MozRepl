@@ -44,7 +44,7 @@ Nice, but if you are going to experiment with this it might be good to use a nam
 That way you can change it and you can also delete it from the hook if you want to.
 
 [new]
-I suggest using "
+I suggest using below code,
 <pre>
 (comint-send-string (inferior-moz-process)
                                            "setTimeout(function(){content.document.location.reload(true);}, '500');")
