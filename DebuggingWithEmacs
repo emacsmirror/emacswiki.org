@@ -132,7 +132,7 @@ I use a snippet from [http://kousik.blogspot.com/2005/10/highlight-current-line-
 
 == Realgud, a total rewrite of GUD ==
 
-In short, see: [https://github.com/rocky/emacs-dbgr/wiki realgud]. It is available from melpa as well.
+In short, see the [https://github.com/rocky/emacs-dbgr/wiki realgud wiki] or [https://github.com/rocky/emacs-dbgr/wiki realgud github progject]. It is available from melpa as well.
 
 GUD is one huge monolithic program written in a style that doesn't make much use of Lisp data structures.  Rocky Bernstein once extended that for his bash debugger and for a while it was in GNU Emacs. But since GUD is part of the emacs core and tied to that release cycle, bug fixes and changes were slow to happen.
 
@@ -151,7 +151,7 @@ So Rocky embarked on this journey to rewrite gud from the ground up using more c
 ||rbx-trepanning||||trepanx||||trepanning debugger for Rubinius Ruby||
 ||remake||||remake||||[http://bashdb.sf.net/remake GNU Make with debugger (remake)]||
 ||ruby-debug||||rdebug||||Ruby||
-||trepanning||||trepan||||trepanning debugger for a patched Ruby 1.9|||
+||trepanning||||trepan||||trepanning debugger for a patched Ruby 1.9||
 ||trepan2||||trepan2||||[https://code.google.com/p/pydbgr/ trepanning debugger for Python 2.x]||
 ||trepan3k||||trepan3k||||[https://code.google.com/p/python3-trepan/ trepanning debugger for Python 3.x]||
 ||zshdb||||zshdb||||[https://github.com/rocky/zshdb Zsh debugger]||
