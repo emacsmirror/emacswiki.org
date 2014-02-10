@@ -43,7 +43,7 @@ I suggest using below code,
 <pre>
 (comint-send-string (inferior-moz-process)
                                            "setTimeout(function(){content.document.location.reload(true);}, '500');")
-<pre>
+</pre>
 instead of BrowserReload. The difference is this solution won't cache the user input after web page refreshed. 
 
 [new]
