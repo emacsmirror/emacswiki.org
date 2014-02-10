@@ -150,9 +150,8 @@ It was a bug.  I think it is fixed now.  Please try the latest <tt>[[icicles-mcm
 [new:JohnDoe974:2014-02-10 01:14 UTC]
 Thanks for the update. Still have the issue with the steps I described above. However If I hit `Enter' between step 2 and 3, I  can create any file.
 
-
-
-
+[new:DrewAdams:2014-02-10 06:47 UTC]
+OK, let's see if I got it right this time.  Please try the latest <tt>[[icicles-mcmd.el]]</tt>.  Let me know, please -- DrewAdams
 
 
 
