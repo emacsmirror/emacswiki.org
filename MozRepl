@@ -43,6 +43,14 @@ Also, if you have multiple tabs/windows open it might initially pick the wrong w
 Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
 That way you can change it and you can also delete it from the hook if you want to.
 
+[new]
+I suggest using "
+<pre>
+(comint-send-string (inferior-moz-process)
+                                           "setTimeout(function(){content.document.location.reload(true);}, '500');")
+<pre>
+instead of BrowserReload. The difference is this solution won't cache the user input after web page refreshed 
+
 == See Also ==
 
 JavaScriptMode
