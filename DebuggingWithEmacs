@@ -25,20 +25,20 @@ a more productive experience. For more information on GUD, see:
 
 * http://www.gnu.org/software/emacs/manual/html_node/emacs/Debuggers.html#Debuggers
 
----- 
+----
 
 What about using it in emacs?  For me, it seems no different than running gdb in a shell.  Can someone do a step by step for a small simple program like the looping hello world with a breakpoint and source buffer?  GUD seems not to do the useful thing of displaying the source code listing in an emacs buffer.  Maybe I need a EmacsGUDTutorial.
 
-It should display the source code listing.  Did you compile with -g?  The Emacs info manual (now included with Emacs 22)
+It should display the source code listing.  Did you compile with -g? The Emacs info manual (now included with Emacs 22)
 describes debugging with Emacs.  See http://linuxjournal.com/article/7876 for a tutorial.  -- NickRoberts
 
- #include <stdio.h> 
+ #include <stdio.h>
  int main(int argc, char* argv[]){
   int i;
   printf("hello world\n");
   for ( i=0;i<10;++i){
     printf("%d \n",i);
-  } 
+  }
   return 0;
  }
 
@@ -83,7 +83,7 @@ Does GUD work with valgrind in a way that valgrind offers to pass the session's 
 
 See http://sources.redhat.com/ml/gdb/2003-12/msg00269.html for one trick.  I think you can do "set ann 1" (or even "set ann 3")
 after attaching to GDB. I'm not sure how useful this is as memory violations are only a small part of Valgrind and I don't think
-it attaches to GDB for memory leaks which is it's main use.  --NickRoberts 
+it attaches to GDB for memory leaks which is it's main use. --NickRoberts
 
 [new]
 How do you start multiple gdb sessions from emacs? -- TimotheeBesset
@@ -114,7 +114,7 @@ I use a snippet from [http://kousik.blogspot.com/2005/10/highlight-current-line-
       (overlay-put ov 'face 'secondary-selection)
       ov)
     "Overlay variable for GUD highlighting.")
-   
+
   (defadvice gud-display-line (after my-gud-highlight act)
     "Highlight current line."
     (let* ((ov gud-overlay)
@@ -123,12 +123,38 @@ I use a snippet from [http://kousik.blogspot.com/2005/10/highlight-current-line-
         (move-overlay ov (line-beginning-position) (line-beginning-position 2)
       ;;(move-overlay ov (line-beginning-position) (line-end-position)
                       (current-buffer)))))
-   
+
   (defun gud-kill-buffer ()
     (if (derived-mode-p 'gud-mode)
         (delete-overlay gud-overlay)))
-   
+
   (add-hook 'kill-buffer-hook 'gud-kill-buffer)
+
+== realgud, a total rewrite of GUD ==
+
+In short, see: [https://github.com/rocky/emacs-dbgr/wiki realgud]. It is available from melpa as well.
+
+GUD is one huge monolithic program written in a style that doesn't make much use of Lisp data structures.  Rocky Bernstein once extended that for his bash debugger [https://bashdb.sf.net bashdb] and for a while it was in GNU Emacs. But since GUD is part of the emacs core and tied to that release cycle, bug fixes and changes were slow to happen.
+
+The straw that broke Rocky's back was the fact that you could debug only one thing at a time and fixing this was not a simple matter, due to the pervasive global variables.
+
+So Rocky embarked on this journey to rewrite gud from the ground up using more current programming technology (more modularity, better use of Lisp, and more tests), and more current debuggers -- well, okay, they were largely Rocky's debuggers. Specifically:
+
+||Name||||Emacs Command Invocation||||What is it?||
+||bashdb||||bashdb||||bash debugger||
+||Devel::Trepan||||trepan.pl||||[https://github.com/rocky/Perl-Devel-Trepan Perl5 "trepanning" debugger]||
+||gdb||||realgud-gdb||||gdb||
+||pdb||||pdb||||stock C Python debugger||
+||perldb||||perldb||||stock Perl5 debugger||
+||pydb||||pydb||||slighly enhanced pdb for Python 2.x||
+||rb8-trepanning||||trepan8||||MRI Ruby 1.8 and an unpatched YARV 1.9||
+||rbx-trepanning||||trepanx||||trepanning debugger for Rubinius Ruby||
+||remake||||remake||||[https://bashdb.sf.net/remake GNU Make with debugger (remake)]||
+||ruby-debug||||rdebug||||Ruby||
+||trepanning||||trepan||||trepanning debugger for a patched Ruby 1.9|||
+||trepan2||||trepan2||||[https://code.google.com/p/pydbgr/ trepanning debugger for Python 2.x]||
+||trepan3k||||trepan3k||||[https://code.google.com/p/python3-trepan/ trepanning debugger for Python 3.x]||
+||zshdb||||zshdb||||[https://github.com/rocky/zshdb Zsh debugger]||
 
 ----
 CategoryDebug
