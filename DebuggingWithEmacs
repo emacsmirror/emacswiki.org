@@ -141,20 +141,20 @@ The straw that broke Rocky's back was the fact that you could debug only one thi
 So Rocky embarked on this journey to rewrite gud from the ground up using more current programming technology (more modularity, better use of Lisp, and more tests), and more current debuggers -- well, okay, they were largely Rocky's debuggers. Specifically:
 
 ||**Name**||||**Emacs Command Invocation**||||**What is it?**||
-||bashdb||||`bashdb`||||[https://bashdb.sf.net bash debugger]||
+||bashdb||||bashdb||||[https://bashdb.sf.net bash debugger]||
 ||Devel::Trepan||||trepan.pl||||[https://github.com/rocky/Perl-Devel-Trepan Perl5 "trepanning" debugger]||
-||gdb||||`realgud-gdb`||||gdb||
-||pdb||||`pdb`||||stock C Python debugger||
-||perldb||||`perldb`||||stock Perl5 debugger||
-||pydb||||`pydb`||||slighly enhanced pdb for Python 2.x||
-||rb8-trepanning||||`trepan8`||||MRI Ruby 1.8 and an unpatched YARV 1.9||
-||rbx-trepanning||||`trepanx`||||trepanning debugger for Rubinius Ruby||
-||remake||||`remake`||||[https://bashdb.sf.net/remake GNU Make with debugger (remake)]||
-||ruby-debug||||`rdebug`||||Ruby||
-||trepanning||||`trepan`||||trepanning debugger for a patched Ruby 1.9|||
-||trepan2||||`trepan2`||||[https://code.google.com/p/pydbgr/ trepanning debugger for Python 2.x]||
-||trepan3k||||`trepan3k`||||[https://code.google.com/p/python3-trepan/ trepanning debugger for Python 3.x]||
-||zshdb||||`zshdb`||||[https://github.com/rocky/zshdb Zsh debugger]||
+||gdb||||realgud-gdb||||gdb||
+||pdb||||pdb||||stock C Python debugger||
+||perldb||||perldb||||stock Perl5 debugger||
+||pydb||||pydb||||slighly enhanced pdb for Python 2.x||
+||rb8-trepanning||||trepan8||||MRI Ruby 1.8 and an unpatched YARV 1.9||
+||rbx-trepanning||||trepanx||||trepanning debugger for Rubinius Ruby||
+||remake||||remake||||[https://bashdb.sf.net/remake GNU Make with debugger (remake)]||
+||ruby-debug||||rdebug||||Ruby||
+||trepanning||||trepan||||trepanning debugger for a patched Ruby 1.9|||
+||trepan2||||trepan2||||[https://code.google.com/p/pydbgr/ trepanning debugger for Python 2.x]||
+||trepan3k||||trepan3k||||[https://code.google.com/p/python3-trepan/ trepanning debugger for Python 3.x]||
+||zshdb||||zshdb||||[https://github.com/rocky/zshdb Zsh debugger]||
 
 ----
 CategoryDebug
