@@ -119,47 +119,6 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
-<pre>
-
-</pre>
-
-----
-
-<pre>
-
-</pre>
-
-[new]
-First of all, HUGE Thanks for creating Icicles! I'am enjoying it everyday.
-Using Icicles `C-x C-f' to open files, if I decide to create a new directory on the fly using `C-c +' I will not be able to create a new file in the new directory I created. Here's the step I take:
-
- 1. `C-x C-f' 
-
- 2. `C-c +'  to create a new directory "test" (select `yes')
-
- 3. select "test" as directory in the minibuffer
-
- 4. enter "newfile.txt"  ------------->>>  after hitting `Enter' Icicles complains "No Completion" and won't create the new file.
-
-The workaround is to exit minibuffer and start again with `C-x C-f'.
-Is this a normal behavior or am I missing something ?  -- JohnDoe974
-
-[new:DrewAdams:2014-02-09 19:14 UTC]
-It was a bug.  I think it is fixed now.  Please try the latest <tt>[[icicles-mcmd.el]]</tt>.  Thanks for the report. -- DrewAdams
-
-[new:JohnDoe974:2014-02-10 01:14 UTC]
-Thanks for the update. Still have the issue with the steps I described above. However If I hit `Enter' between step 2 and 3, I  can create any file.
-
-[new:DrewAdams:2014-02-10 06:47 UTC]
-OK, let's see if I got it right this time.  Please try the latest <tt>[[icicles-mcmd.el]]</tt>.  Let me know, please -- DrewAdams
-
-[new:JohnDoe974:2014-02-10 15:14 UTC]
-Yes looks good to me! Thanks a lot !  -- JohnDoe974
-
-
-
-
-
 
 
 <pre>
