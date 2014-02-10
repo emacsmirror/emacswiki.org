@@ -99,6 +99,9 @@ CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports the use of GNU Glo
 GNU Global has a cscope-compatibility utility called "gtags-cscope". This tool has an identical interface to cscope, so any cscope interface can be used with it. Look at "xcscope.el", which is on MELPA and in Debian and in Ubuntu. The source is here: https://github.com/dkogan/xcscope.el To use this interface, do (setq cscope-program "gtags-cscope"). This interface has superior support for keeping track of multiple searches, and it's the best of the bunch, I think.
 
 ----
+Comment: would be interesting to see why xcscope.el is the best of the bunch. ggtags.el was created fairly recently out of frustration with all interfaces to gnu global. At the time they usually lacked one thing or another, or difficult to extend.  -- Leo
+
+----
 CategoryProgrammerUtils
 CategoryExternalUtilities
 CategoryCompletion
