@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Feb  9 11:03:29 2014 (-0800)
+;; Last-Updated: Sun Feb  9 22:34:56 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19345
+;;     Update #: 19347
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1134,8 +1134,9 @@ Otherwise, invoke `icicle-dabbrev-completion' (or
 (defun icicle-make-directory (dir)      ; Bound to `C-c +' in minibuffer, for file-name completion.
   "Create a directory."
   (interactive
-   (let ((candidates                    icicle-completion-candidates)
-         (enable-recursive-minibuffers  t))
+   (let ((candidates                     icicle-completion-candidates)
+         (minibuffer-completion-confirm  minibuffer-completion-confirm) ; `read-directory-name' messes it.
+         (enable-recursive-minibuffers   t))
      (unwind-protect
           (list (funcall
                  (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
@@ -1143,8 +1144,9 @@ Otherwise, invoke `icicle-dabbrev-completion' (or
                                                          (icicle-input-from-minibuffer))))
        (setq icicle-completion-candidates  candidates))))
   (setq dir  (directory-file-name (expand-file-name dir)))
-  (let ((candidates                    icicle-completion-candidates)
-        (enable-recursive-minibuffers  t))
+  (let ((candidates                      icicle-completion-candidates)
+         (minibuffer-completion-confirm  minibuffer-completion-confirm) ; `read-directory-name' messes it.
+        (enable-recursive-minibuffers    t))
     (while (file-exists-p dir)          ; This will cause Tramp to access if remote, but that's OK here.
       (message "%s already exists" dir) (sit-for 1)
       (unwind-protect
