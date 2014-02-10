@@ -51,9 +51,9 @@ Nice, but if you are going to experiment with this it might be good to use a nam
 That way you can change it and you can also delete it from the hook if you want to.
 
 == Read/Write DOM element in web page==
-0. Read http://blog.binchen.org/?p=987 to understand why. there is sample js code there.
-1. Install latest addon and firefox if possible
-2. Copy/paste below code into ~/.emacs, then you just need "M-x moz-load-js-file-and-send-it" and select the js file you need execute:
+* Read http://blog.binchen.org/?p=987 to understand why. there is sample js code there.
+* Install latest addon and firefox if possible
+* Copy/paste below code into ~/.emacs, then you just need "M-x moz-load-js-file-and-send-it" and select the js file you need execute:
 <pre>
 (defun moz-goto-content-and-run-cmd (cmd)
   (comint-send-string (inferior-moz-process)
