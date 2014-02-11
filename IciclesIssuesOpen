@@ -114,8 +114,14 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+pre>
 
+</pre>
+----
+<pre>
 
+</pre>
+I've just recently updated to latest icicles (from Oct 6 13 versions) but now using `C-x f' for recent file history always ask me for gpg files password and /ssh:localhost password. I 've tried deleting the file from history list (using `M-i') but cannot find them. Also I set `icicle-test-for-remote-files-flag' to nil in my .emacs but no changes. Any idea whats happening ? Thanks.
 
 
 
