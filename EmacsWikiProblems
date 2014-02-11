@@ -10,155 +10,9 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
-== "New" entries do not appear correctly ==
-
-I modified [[LineNumbers]] and that somehow broke the page appearance; now it's full of "[new]" strings (it wasn't before my edit).
-
-Oh God, it looks like i'm going to do it with this page as well.  "Diff" tells me only about my small modifications.  What am i doing wrong?
--- AlexKost
-
-[new]
-Whoops! That was a bug. I had installed the BBCode extension to support ##[b]bold[/b]## and the like. When it looked at the wiki text, it decided that ##[new]## was an unknown BBCode and it didn't get handled by the "Portrait Extension". I changed the order of the rules and now it should work again. -- AlexSchroeder
-
-[new]
-Thanks for the explanation, it's a big relief for me.  There are "[new]"-s at [[LineNumbers]] still.  -- AlexKost
-
-[new]
-Thanks. I edited it and added a newline in order to force the regeneration of the HTML. -- AlexSchroeder
-
-
-
-
-
-== How to do a search for CateogoryNeedsAttention without invoking the category ==
-Say we have the following markup:
-
-* <code>[[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]</code>
-** Note that spaces have been added to the text as "Category-space-Needs-space-Attention" but that's no nevery-you-mind as it has no effect.
-* [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]
-
-The page with that markup gets a big ol' "THIS PAGE NEEDS ATTENTION" banner atop itself.
-Which is attention-getting.
-But innaccurate.
-
-How can we do a search for that term, or even link to the category page, without invoking the markup?
-
-I attempted to do the markup as follows:
-
-<code>[[https://duckduckgo.com/?q=%22Category+NeedsAttention%22+site%3Aemacswiki.org|pages tagged with Category Needs Attention]]</code>
-
-But that particular search fails to find anything but the Category-NeedsAttention page itself.
-
-Also of Note: CNA markup does not appear in the page preview. It only appears after save. So twiddling with tricks to avoid its appearance can only be tested by a number of frivolous edit-save cycles.
-
-[new]
-Clearly an instance failure of WikiPedia:Use–mention_distinction. I don't think there currently is a solution. I think all our categories suffer from it. The only way to solve this would be to add meta information. But then how would you search for the meta information? I believe that there is no perfect solution. The real question is: how many levels of meta are you willing to accept? I'm currently willing to accept a simple wiki system with no meta data and I'm willing to incur the cost since I don't believe that there are many such instances. -- AlexSchroeder
-
-[new]
-I think that a category is a bit of meta information, but it is now a meta only due to some automagical coding in the background that treats the prefix-word "Category" as a bit of markup, distinct from other WikiLinks.. I would rather see a bit of markup to generate category tag that is distinct from the rendered output, so one could offer links to the category without becoming part of the category. --MichaelPaulukonis
-
-[new]
-What do you think of the addition of ##Category /emacs/Category## to the InterMap, for example. Now you can write ##Category:EmacsWikiSite## or ##[[Category:EmacsWikiSite]]##---resulting in Category:EmacsWikiSite and [[Category:EmacsWikiSite]]. If you then click on the header of CategoryEmacsWikiSite you will not find the pages with these links. If other languages are used more often, we can translate the prefix, too: ##Kategorie:EmacsWiki##. -- Alex
-
-
-
-
-== Still seeing double TOCs ==
-
-I removed the entry for the double-TOC in ElispArea.  But now I see one at HighlightLibrary.  I suspect that something introduced the problem but perhaps if the page then gets edited and saved anew the problem goes away? -- DrewAdams
-
-[new]
-Could be! I just tried looking at HighlightLibrary using IE 8---the oldest browser I have access to, and it looks ok. Just one table of contents. I've recently switched to a little piece of Javascript to remove an existing table of contents if it exists and to generate a new one based on the actual headings found in the HTML output instead of the hard to maintain code I have used for so long. Evidently the part about removing the existing table of contents is not working for you. :( -- AlexSchroeder
-
-------
-
-
-
-== Search ==
-
-=== "Press tab to search DuckDuckGo" problem ===
-
-What does happen: When I type `emacswiki` into the omnibox in Chrome, I am presented with a choice: "Press tab to search DuckDuckGo".  If I press tab and provide search terms, I am presented with a standard DuckDuckGo search results page.
-
-What should happen: When I type `emacswiki` into the omnibox in Chrome, I should be presented with nothing special, or a choice: "Press tab to search EmacsWiki".  If I press tab and provide search terms, I should be presented with the same results page that I would get if I were to visit emacswiki.org and then provide search terms in the search box on the top right.
-
-Steps to resolve: Dunno.  I'd start here: http://www.chromium.org/tab-to-search  (Presumably this covers other browsers, too?  If not, there's always http://www.opensearch.org/ as a reference.)
-
-=== Search finds nothing when browser is Chrome ===
-
-Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
-
-[new]
-Works for me. Chrome Version 25.0.1364.97 m and Windows XP SP3. My guess is a temporary hickup by Google. -- AlexSchroeder
-
-
-=== Search Flooded with Source Code ===
-
-(this issue is actually different from the above)
-
-No idea how much control you have over the search. However, currently searches often are useless to me, because they show only source code files. Try searching for "defmacro", for instance; maybe that is because it isn't discussed anywhere on the wiki, but I have no way of finding out. Please allow to exclude sources from the search results. -- OlafB
-
-[new]
-The ElispArea used to be separate, but now it is not.  Oddmuse:Searching would need to be improved to be able to differentiate code. -- AaronHawley
-
-[new]
-I'm not sure what to do. Fiddling with the search engine configuration might work, but how would we search for code examples, then? Add a second search box for code only? Yuck. There\s not much configuration going on because we are using Google Search. I don't see a way to add checkboxes and other options to influence it.
-
-Somebody could start working on a multi-lingual setup for Lucene or whatever the search engine of choice is for people who want to do it themselves. I remember looking at it and thinking that it looked like a lot of work for little gain.
-
-For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
-
-We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
 
 
 == Revisioning Problems ==
-
-=== Conflict from my own edit 25 minutes ago? ===
-
-I edited page [[icicles-opt.el]] and saved. Later I tried to do the same thing. I got a lock message. I used the browser Back button to get to the editing again and saved again. I then got this:
-
-<pre>
-This page was changed by somebody else 25 minutes ago. The changes conflict. Please check the page again.
-
-icicles-opt.el
-Download
-
-;;; icicles-opt.el --- User options (variables) for Icicles
-;;
-;; Filename: icicles-opt.el
-;; Description: User options (variables) for Icicles
-;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
-;; Created: Mon Feb 27 09:22:14 2006
-;; Version: 22.0
-<<<<<<< you
-;; Last-Updated: Fri Jun  4 17:34:46 2010 (-0700)
-||||||| ancestor
-;; Last-Updated: Fri Jun  4 16:52:30 2010 (-0700)
-=======
-;; Last-Updated: Fri Jun  4 17:32:35 2010 (-0700)
->>>>>>> other
-;;           By: dradams
-<<<<<<< you
-;;     Update #: 3700
-||||||| ancestor
-;;     Update #: 3698
-=======
-;;     Update #: 3699
->>>>>>> other
-</pre>
-
-... 
-
-
-It's telling me my two edits conflict, and it is not recognizing that I am me. ;-) -- DrewAdams
-
-[new]
-That's very strange indeed! I thought that once you're using a username -- which you clearly are -- then that doesn't happen anymore. I'll have to look at that code again. -- AlexSchroeder
-
-[new:DrewAdams:2010-06-05 13:55 UTC]
-It just happened that once. And I simply pasted and saved the file again, so there was no damage in the end. -- DrewAdams
 
 [:EditingGetsOldPageText]
 === editing does not get most recent version ===
@@ -185,8 +39,6 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 
 
 == Markup/Generation Issues==
-
-
 
 === Colon line prefix does not indent correctly ===
 
@@ -294,6 +146,9 @@ Again though, I'm happy with it not being fixed because we'll fix it with Elwiki
 If you read RFC 2396 you'll note that curly braces are deemed "unwise" in section
 2.4.3. Excluded US-ASCII Characters.
 
+
+
+
 == Server Issues ==
 
 === Site is very slow now ===
@@ -363,25 +218,6 @@ Vegard's update wiped out my previous update. -- DrewAdams
 [new]
 Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
 
-=== emacswiki and w3m ===
-
-EmacsWiki doesnt appear to work well with w3m, specifically the search button. --JoakimVerona
-
-[new]
-Try this solution, been using it a while now --[[pft]]:
-
-   (define-key w3m-mode-map "\C-c\C-c" 
-     '(lambda ()
-        (interactive)
-        (if (member 'w3m-href-anchor (text-properties-at (point)))
-            (w3m-view-this-url)
-          (w3m-submit-form))))
-
-[new]
-I've just opened at terminal and used w3m to browse and search the wiki and didn't see anything wrong.
-The answer above makes me think that maybe it's a w3m-mode question but I'm not sure. If it's a w3m issue,
-can you elaborate? -- AlexSchroeder
-
 === Browser `Open in New Window' no longer works on wiki pages ===
 
 This has changed in the last day or so -- since the spam attack. 
@@ -399,6 +235,8 @@ I believe you. Unfortunately I don't know what to do about it. I'm sure your bro
 
 [new:DrewAdams:2008-09-07 06:27 UTC]
 Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
+
+
 
 == Missing table of contents ==
 
@@ -423,29 +261,9 @@ I guess it worked most of the time, but at the same time it was very /brittle/ a
 
 The DuckDuckGo search also uses JavaScript to quietly add //site:www.emacswiki.org// to the search terms. Without JavaScript, this will also look weird. -- AlexSchroeder
 
-== Changing a link not allowed ==
 
-I have written the last entry under http://www.emacswiki.org/cgi-bin/wiki/EmacsMuse#toc18 but it is outdated. I wanted to change the two links but I was not allowed. So how do I change them? -- Hans Ekbrand
 
-[new]
-The error message says:
-##Regular expression "\s(https?:\S+\s+https?:\S+)" matched "http://dev.nozav.org/, http://perso.ens-lsh.fr/jbarnier" on this page. Reason: two consecutive bare links (http:... http://...) usually mean spam. See BannedRegexps for more information.##
 
-This is an anti-spam measure.
-Replacing the comma with the word "and" fixed it. Now the two links are no longer adjacent to each other and no longer match the regular expression. -- AlexSchroeder
-[new]
-I am having the same problem on [[AutoCompleteSources]]. I was trying to update the link for ac-math project and download pages but was stoped.
-The two consecutive bare links that triggered the error were already on the page and not part of edit. --Sam
-
-[new]
-Fixed. -- Alex
-
-== GNU Arch Wiki ==
-
-"Arch version control" page, " gnuarch-wiki" goes to the wrong web site.
-
-[new]
-Unfortunately, that's a GNU Arch Wiki Problem, not ours. If you go to [http://www.gnu.org/software/gnu-arch/ the official GNU Arch] page and click on _User-community wiki_, you are taken to the same site. -- Alex
 
 == Wiki hacked ==
 At the moment every page comes with the following line before the title: "Iran, Victory of the Islamic Revolution in Iran". Aside from being pretty old news, I think it may be a sign that someone is messing with this wiki. Please admins do something about it, thanks. Tue Feb 11 07:06:14 CET 2014
