@@ -169,6 +169,30 @@ Also see the comment about EmacsCodeBrowser (ECB) below.
 :: * goes back to the last line that has a "0" at the beginning (instead of point-min above).  These lines determine filenames in the speedbar buffer.
 :: * checks for another line with a "0" at the beginning or end of buffer to stop (instead of just eobp above).
 
+Here's some code that will open the directory tree to the current buffer relative to `project-root`. http://solovyov.net/project-root/
+<pre>
+(defun nm-speedbar-expand-line-list (&optional arg)
+  (when arg
+    (message (car arg))
+    (re-search-forward (concat " " (car arg) "$"))
+    (speedbar-expand-line (car arg))
+    (speedbar-next 1) ;; Move into the list.
+    (nm-speedbar-expand-line-list (cdr arg))))
+
+(defun nm-speedbar-open-current-buffer-in-tree ()
+  (interactive)
+  (let* ((root-dir (cdr (project-root-fetch)))
+          (original-buffer-file-directory (file-name-directory (buffer-file-name)))
+          (relative-buffer-path (car (cdr (split-string original-buffer-file-directory root-dir))))
+          (parents (butlast (split-string relative-buffer-path "/"))))
+    (save-excursion 
+      (sr-speedbar-open) ;; <--- or whatever speedbar you have e.g. (speedbar 1)
+      (set-buffer speedbar-buffer)
+      (beginning-of-buffer)
+      (nm-speedbar-expand-line-list parents))))
+</pre>
+: -- NateMurray
+
 :::Newer versions of speedbar (a part of the CEDET package CollectionOfEmacsDevelopmentEnvironmentTools) bind the "[" and "]" keys to expand/contract all descendants. -- EricLudlam
 
 : ''Question: how difficult should it be to add support for sql, javascript etc? (the languages I use quite alot right now, what a coincidence :)?'' -- MathiasDahl
