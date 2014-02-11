@@ -6,6 +6,9 @@ In case you find a bug, please file a bug report using the Help / Diagnose and R
 Make highlight and drag work:  Make mouse-drag-region within an existing region/transient mark do a copy such that the text could be cut/pasted elsewhere within a document or copied into a different application. Try highlighting a bit of text in your browser or other Mac app and then dragging it with mouse-down-1 into other apps.  You can paste text into Aquamacs this way, but if you try to copy out of Aquamacs in this manner, instead of dragging the selection, it merely redefines the selection.   If mouse-drag-region on a pre-marked region 
 
 [new]
+Make "copy on select" an option.  Many Aquamacs users, such as myself, are familiar with the way X does "copy on select" at least for the mouse.  It would be great if Aquamacs had this as a configurable option.  
+
+[new]
 PFlynn: When editing LaTeX, there is no X toolbar icon to close the current buffer (kill-buffer). This appears to have been inherited from AucTeX, which shows the same behaviour. Is there an easy way to put it back (like some elisp in my .emacs)?
 
 [new]
