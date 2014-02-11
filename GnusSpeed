@@ -64,7 +64,7 @@ You can notice that even opening a new Emacs instance takes very little time:
 So why not delegate some tasks to another process?
 
 
-==Practical tips and tricks to improve Gnus' speed=
+==Practical tips and tricks to improve Gnus' speed==
 
 === Install gnutls-cli tool ===
 
@@ -144,6 +144,10 @@ Note: such a hook does not work so well with nnrss-generate-download-script, whi
 
 ===Use group levels===
 * Use group levels to make checking for new mails faster. Use high levels (4 or 5) for groups like spam/ham and less important mailing lists etc. which you do not need to check regularly. Use 'gnus-activate-level' to specify which groups you'd like to be activated on startup. Put your important mail groups on level 1 and use prefix arguments like '1 g' to specify which groups you'd like to check for new mail.
+
+===Tweak your `gnus-summary-line-format'===
+Try tweaking `gnus-summary-line-format' to speed up summary line display when entering a group.
+For example using %D instead of %d to display dates is much faster.
 
 ===Last instance: open another Emacs===
 Many people end up opening two Emacs processes: one for editing, other for Gnus. In this way, even if Gnus blocks, the editing Emacs is responsive. You lose however the integration; it will be more cumbersome to pass stuff around stuff (bookmarks, org-mode, Lisp code.) and you will have to maintain 2 configurations. It isn't anymore *1 Emacs to rule them all*, they are 2.
