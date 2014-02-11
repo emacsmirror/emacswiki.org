@@ -144,7 +144,14 @@ That's the first step: purge your environment of any such remote file names.  On
 
 Make backup copies of any such files, of course.  Try testing by starting from `emacs -Q' (no init file), and then loading only ''Icicles''.  Eliminate as much as possible that is extraneous to the problem.  -- DrewAdams
 
+[new:JohnDoe974:2014-02-11 16:59 UTC]
+Drew, Thanks for your reply.
+I managed to solve the issue by deleting all reference to any remote file in my `recentf-save-file' file. Somehow after deleting the lines in the file, I had to execute `(setq recentf ...' part so that changes are not overwritten when exiting emacs. 
+I guess this is one drawback of setting history length to 200.
 
+However I could not find any reference to any gpg file in my history but this is also gone and Icicles is not asking for the password when using `C-x f'. All Good !
+Thanks again.
+-- JohnDoe974
 
 
 
