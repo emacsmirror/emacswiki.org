@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Feb  5 15:20:09 2014 (-0800)
+;; Last-Updated: Tue Feb 11 14:55:33 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2926
+;;     Update #: 2928
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -285,6 +285,8 @@
  
 ;;; Change Log:
 ;;
+;; 2014/02/11 dadams
+;;     1on1-color-minibuffer-frame-on-(exit|setup)-increment: Change type: number, not integer.
 ;; 2014/01/30 dadams
 ;;     Added: 1on1-divider-width.
 ;;     Renamed: 1on1-default-special-frame* to 1on1-special-frame*.
@@ -740,14 +742,14 @@ take effect."
   "*Increment to change minibuffer-frame hue when minibuffer is exited.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-setup-increment.'"
-  :type 'integer :group 'One-On-One)
+  :type 'number :group 'One-On-One)
 
 ;;;###autoload
 (defcustom 1on1-color-minibuffer-frame-on-setup-increment -0.10
   "*Increment to change minibuffer-frame hue when minibuffer is entered.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-exit-increment.'"
-  :type 'integer :group 'One-On-One)
+  :type 'number :group 'One-On-One)
 
 ;;;###autoload
 (defcustom 1on1-active-mode-line-background "PaleGoldenrod"
