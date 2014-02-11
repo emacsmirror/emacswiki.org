@@ -78,13 +78,14 @@ For readability, please separate each issue thread with `----' (horizontal line)
 
 Better yet, use this to separate threads (puts space before and after the horizontal line):
 
- <pre>
 
- </pre>
- ----
- <pre>
+<pre>
 
- </pre>
+</pre>
+----
+<pre>
+
+</pre>
 
 
 
