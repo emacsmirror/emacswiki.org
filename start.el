@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 17:55:15 2013 (-0800)
+;; Last-Updated: Tue Feb 11 14:37:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2998
+;;     Update #: 3003
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2014/02/11 dadams
+;;     Autoload of insert-time-string: swapped last two args.  See Emacs bug #16725.
 ;; 2013/08/23 dadams
 ;;     Soft-require highlight-symbol.el (Emacs 22+).
 ;; 2013/07/20 dadams
@@ -699,7 +701,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
        (lambda () (condition-case nil (imenup-add-defs-to-menubar) (error nil)))))))
 (when (> emacs-major-version 21) (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
-(autoload 'insert-time-string "insert-time-string" t "Insert current time at point.")
+(autoload 'insert-time-string "insert-time-string" "Insert current time at point." t)
 (autoload 'display-line-numbers "line-num"
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)
