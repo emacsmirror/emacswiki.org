@@ -7,9 +7,9 @@ Lisp:opengrok.el
 The output is not correctly separated by line, all output all in a single line. Thus the compilation-mode cannot understand.
 
 ----
-I love fast opengrok and xcscope.el interface. 
-so I'm modify some xscope.el and opengrok.jar
-[https://github.com/youngker/.emacs.d/blob/master/site-lisp/opengrok/xcscope.el xcscope_opengrok.el]
+=== Another interface to OpenGrok ===
+If you have a large project, It will be useful.
+https://github.com/youngker/xcscope.el
 
 -- [[youngker]]
 
