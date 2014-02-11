@@ -114,49 +114,6 @@ Better yet, use this to separate threads (puts space before and after the horizo
 ''Enter your report below.''
 
 
-
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-I've just recently updated to latest icicles (from Oct 6 13 versions) but now using `C-x f' for recent file history always ask me for gpg files password and /ssh:localhost password. I 've tried deleting the file from history list (using `M-i') but cannot find them. Also I set `icicle-test-for-remote-files-flag' to nil in my .emacs but no changes. Any idea whats happening ? Thanks.
-
-[new:DrewAdams:2014-02-11 06:59 UTC]
-From Oct 6?  That is pretty old.  Where are you getting the files from?
-
-Anyway, I'm sorry I probably can't help much with this. If you want to email me I can perhaps walk you through some debugging checks.  It sounds like you are getting interference from [[Tramp]] (wrt remote file names): it sees that you are trying to access a remote file, so it asks for your password for the remote host etc.
-
-Be sure to set and save [[option]] `recentf-exclude', specifying remote hosts you use, so they are excluded.  Check that `recentf-keep' does not include any remote file names.  Edit your `recentf-save-file' to remove any remote file names.
-
-And of course, try, as a start, to use Emacs without `recentf-mode'.
-
-We've had problems with this kind of Tramp thing in the past, but I thought they were all worked out.  I'm no expert on this.  Send me an email with as much relevant info as you can, including Tramp version and Emacs version, platform, etc.
-
-See also the various Tramp variables that can help with debugging (e.g., `tramp-verbose': increase it).  We will likely need to bring Michael Albinus (author of Tramp) into the mail exchange.
-
-Try first to remove everything else from the equation.  Get rid of your recentf file history and anything that is persistent (Desktop file etc., bookmarks file etc.), which might have recorded a remote file name.
-
-That's the first step: purge your environment of any such remote file names.  Once that is done, we can try purposefully using a remote file name in a controlled way, to see what can be done.
-
-Make backup copies of any such files, of course.  Try testing by starting from `emacs -Q' (no init file), and then loading only ''Icicles''.  Eliminate as much as possible that is extraneous to the problem.  -- DrewAdams
-
-[new:JohnDoe974:2014-02-11 16:59 UTC]
-Drew, Thanks for your reply.
-I managed to solve the issue by deleting all reference to any remote file in my `recentf-save-file' file. Somehow after deleting the lines in the file, I had to execute `(setq recentf ...' part so that changes are not overwritten when exiting emacs. 
-I guess this is one drawback of setting history length to 200.
-
-However I could not find any reference to any gpg file in my history but this is also gone and Icicles is not asking for the password when using `C-x f'. All Good !
-Thanks again.
--- JohnDoe974
-
-
-
-
-
 <pre>
 
 </pre>
