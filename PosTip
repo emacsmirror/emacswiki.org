@@ -235,5 +235,17 @@ Is this a real bug? or is there any better solution? -- SeungcheolJung
 
 : Any idea how should I contribute back those patches%%/%%get them reviewed by someone with more experience in programming Emacs libraries? They are currently available at https://github.com/pitkali/pos-tip/tree/fix/fg-color-and-themes (forked from emacsmirror repository). -- pitkali
 
+[new]
+: On windows 7 the display is very slow, it seems to be related to the fact that pos-tip-calibrate-frame-offset always returns nil because delete-frame-functions is explicitly *not* called for tooltip frames. This means that pos-tip-w32-max-width-height doesn't work either. I inserted the following after (sit-for 0):
+
+{{{
+    (mapc (lambda (frame) (if (equal (frame-parameter frame 'name) "tooltip")
+                         (setq pos-tip-frame-offset
+                               (cons (eval (frame-parameter frame 'left))
+                                     (eval (frame-parameter frame 'top)))))) (visible-frame-list))
+}}}
+
+Which fixed that problem, but things still seem slow
+
 ----
 CategoryWindows CategoryFrames
