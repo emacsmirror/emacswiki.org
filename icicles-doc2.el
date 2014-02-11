@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Feb  8 08:56:10 2014 (-0800)
+;; Last-Updated: Mon Feb 10 23:30:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29485
+;;     Update #: 29486
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5200,8 +5200,8 @@
 ;;
 ;;  * User option `icicle-incremental-completion' controls whether or
 ;;    not `*Completions*' is updated incrementally (icompletion) as
-;;    you type.  You can toggle incremental completion at any time
-;;    using `C-#'.  For more information, see
+;;    you type.  You can cycle the option among its three possible
+;;    values at any time using `C-#'.  For more information, see
 ;;    (@file :file-name "icicles-doc1.el" :to "Icompletion").
 ;;
 ;;  * User options `icicle-incremental-completion-delay' and
