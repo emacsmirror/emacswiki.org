@@ -1,5 +1,5 @@
 I hope everything is more or less self-explanatory, otherwise I'll add some extra comments.
 
-Nameses is especially suitable for emacs as a daemon together with lazy loading of the desktop.
+Nameses is especially suitable for emacs as a daemon together with lazy loading of the desktop. Note that once you have saved a session once, its status will automatically be saved in the future.
 
 <include gist "https://gist.github.com/8960595">
