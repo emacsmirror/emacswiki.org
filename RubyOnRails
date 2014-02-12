@@ -190,3 +190,6 @@ web-mode.el , a major mode for editing html templates, handles erb files. The mo
 == Tab-Key in Terminal-Mode
 [new]
 When using the emacs-rails plugin with snippets (tab-expansion), it works nicely in the normal GUI, but in terminal mode the tab-key triggers the indentation but snippets don't work. Does anyone have any tips for how to fix this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
+
+== projectile-rails ==
+If you use [[Projectile]], you might feel at home with [https://github.com/asok/projectile-rails projectile-rails], available on MELPA.
