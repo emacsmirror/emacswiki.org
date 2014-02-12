@@ -2,3 +2,10 @@ I've made most of the modifications today, so I haven't tested everything for a 
 
 -- jannis 2014-02-12 17:34 UTC
 
+
+----
+
+You should move the code to the Elisp area. Then change this page to a description of the library. Or remove this page altogether if you do not want a description page. To remove it, replace the text by just "DeletedPage".
+
+-- DrewAdams 2014-02-12 19:31 UTC
+
