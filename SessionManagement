@@ -18,6 +18,7 @@ Emacs and restored when you start a new session.
 * FrameRestorePackage -- Save and restore frame configurations.
 * [[MinimalSessionSaver]] -- Saves and restores list of visited files
 * [http://scottfrazersblog.blogspot.com/2009/12/emacs-named-desktop-sessions.html my-desktop] -- Named desktop sessions.
+* [[Nameses]] -- Named desktop sessions, based on my-desktop.
 * PolicySwitch -- Save and restore window configurations using policies.
 * SaveHist -- Save [[minibuffer]] histories and optionally other variables.
 * SavePlace -- Restore [[point]].
