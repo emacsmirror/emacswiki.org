@@ -1,0 +1,35 @@
+Lisp:mediawiki.el
+
+私は mediawiki モードを [http://meta.wikimedia.org/w/index.php?title=Mediawiki.el&oldid=1296149 wikipedia.org にある古いコピー]から入手し、Emacs 内で使うのに適したコードにリファクタリングしました。そして、custom と site alist を追加し、異なる mediawiki サイト間を簡単に移動できるようにしました。さらに、ページリングも追加し、M-p と M-n を使用してすべての mediawiki.el バッファ内を前後に移動できるようにしました。
+
+注意
+
+mediawiki モードは、新規ユーザが項目を保存するために解く必要がある CAPTCHA をサポートしていません。そのため、そのようなユーザがこのモードを使用して wiki に対して行った変更はすべて失われてしまいます。注意して下さい。新規ユーザに関する情報については、Wikipedia の次のページをご覧ください。 [https://ja.wikipedia.org/wiki/Wikipedia:%E5%88%A9%E7%94%A8%E8%80%85#.E8.87.AA.E5.8B.95.E6.89.BF.E8.AA.8D.E3.81.95.E3.82.8C.E3.81.9F.E5.88.A9.E7.94.A8.E8.80.85 Wikipedia:利用者#自動承認された利用者]
+
+使用方法
+
+* Lisp:mediawiki.el を path に追加する。
+* M-x load-library RET mediawiki RET
+* M-x customize-variable RET mediawiki-site-alist RET
+* 任意のサイトの情報を設定する。パスワードを保存したくない場合には、空白のままにしておいて下さい。サイトを開くときにプロンプトが表示されます。
+* C-x C-s
+* M-x mediawiki-site RET {サイト名} RET
+* これで、デフォルトページの編集ウィンドウが表示されているはずです。特定のサイトを指定しなければ、すでにログインが行われています。
+* M-x mediawiki-open RET Emacs RET # ページ「Emacs」を表示する
+
+mediawiki mode のキーバインディング
+
+* C-x C-s -- ページを保存する
+* C-c C-c -- ページを保存し、バッファを送信する
+* C-return -- ポインタ上のページを編集用に開く
+* TAB -- 次の wiki リンクに移動する
+* M-n -- ページリングの次のページに移動する
+* M-p -- ページリングの前のページに移動する
+* M-g -- 現在のページをリロードする
+
+TODO:
+
+* org-mode の編集フォーマットの利用オプションと MediaWiki モードへの変換
+* トークンのタイムアウトなどのより良いエラーハンドリング
+
+CategoryModes CategoryHypermedia
