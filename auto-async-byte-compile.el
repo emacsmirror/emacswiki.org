@@ -1,5 +1,5 @@
-;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
-;; Time-stamp: <2010-12-05 11:36:45 rubikitch>
+;;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
+;; Time-stamp: <2012-03-23 06:40:14 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -54,6 +54,9 @@
 ;;    default = nil
 ;;  `auto-async-byte-compile-exclude-files-regexp'
 ;;    *Regexp of files to exclude auto byte-compile.
+;;    default = nil
+;;  `auto-async-byte-compile-suppress-warnings'
+;;    *If non-nil, do not display warnings.
 ;;    default = nil
 
 ;;; Installation:
@@ -131,6 +134,11 @@ The variable `exitstatus' is exit status of byte-compile process."
   :type 'string  
   :group 'auto-async-byte-compile)
 
+(defcustom auto-async-byte-compile-suppress-warnings nil
+  "*If non-nil, do not display warnings."
+  :type 'boolean
+  :group 'auto-async-byte-compile)
+
 (defvar aabc/result-buffer " *auto-async-byte-compile*")
 
 (define-minor-mode auto-async-byte-compile-mode
@@ -172,9 +180,12 @@ This minor-mode performs `batch-byte-compile' automatically after saving elisp f
     (run-hooks 'auto-async-byte-compile-hook)))
 
 (defun aabc/display-function (process-name result-buffer status)
-  (if (eq status 'normal)
-      (message "%s completed" process-name)
-    (funcall auto-async-byte-compile-display-function result-buffer)))
+  (cond ((eq status 'normal)
+         (message "%s completed" process-name))
+        ((and auto-async-byte-compile-suppress-warnings (eq status 'warning))
+         (message "%s completed with warnings." process-name))
+        (t
+         (funcall auto-async-byte-compile-display-function result-buffer))))
 
 (defun aabc/status (exitstatus buffer)
   (cond ((eq exitstatus 1)
