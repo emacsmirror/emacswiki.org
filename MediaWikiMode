@@ -1,3 +1,4 @@
+[[ja:MediaWikiMode-ja]]
 Lisp:mediawiki.el
 
 I took the mediawiki mode from [http://meta.wikimedia.org/w/index.php?title=Mediawiki.el&oldid=1296149 an old copy on wikipedia.org] and refactored the code to use internal Emacs url-http libraries.  I also added customization and a site alist so that you can easily toggle between different mediawiki sites. Finally, I added a page ring so that by using M-p and M-n in any mediawiki.el buffer, you can go forwards and backwards.
