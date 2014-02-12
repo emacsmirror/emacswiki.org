@@ -1,0 +1,102 @@
+;;; Nameses enables named sessions.
+;; Nameses is largely based on my-desktop.el by Scott Frazer
+;; Modification by Jannis Teunissen
+
+;;; *** Usage ***
+;; Note: if 'name' is not given, you'll be asked for a name
+;;
+;; (nameses-save &optional name) -> save session
+;; (nameses-load &optional name) -> load session
+;; (nameses-remove &optional name) -> remove session
+;; (nameses-prev) -> load previous session
+;; (nameses-current-name) -> get current session name
+
+;;; *** Example configuration in .emacs ***
+;; (global-set-key (kbd "<f9>") 'nameses-load)
+;; (global-set-key (kbd "C-<f9>") 'nameses-prev)
+;; (global-set-key (kbd "C-S-<f9>") 'nameses-save)
+
+(defvar nameses-dir
+  (concat (getenv "HOME") "/.emacs.d/desktop-sessions/")
+  "*Directory to save desktop sessions in")
+
+(defvar nameses-prev-session nil
+  "The previous desktop session")
+
+(defvar nameses-ido-mode t
+  "Whether to use ido-mode")
+
+(defun nameses-save (&optional name)
+  "Save desktop by name."
+  (interactive)
+  (unless name (setq name (read-string "Save current session as: ")))
+  (make-directory (concat nameses-dir name) t)
+  (desktop-lazy-complete)               ; Load all buffers before saving
+  (desktop-save (concat nameses-dir name) t))
+
+(defun nameses-prev ()
+  "Switch to previous session"
+  (interactive)
+  (when nameses-prev-session
+    (nameses-load nameses-prev-session)))
+
+(defun nameses-remove (&optional name)
+  "Remove desktop by name."
+  (interactive)
+  (unless name
+    (setq name (nameses-select "Remove session: ")))
+  (unless (nameses-verify name)
+    (when (yes-or-no-p (concat "Really remove session '" name "' ?"))
+      (delete-directory (concat nameses-dir name) t))))
+
+(defun nameses-verify (name)
+  "Check whether a session is stored correctly"
+  (let ((dirname (file-name-as-directory (concat nameses-dir name))))
+    (when (or (not (file-directory-p dirname))
+              (cl-set-exclusive-or (directory-files dirname)
+                                   (list "." ".." desktop-base-file-name)))
+    (display-warning "nameses-verify"
+                     (concat "Does '" dirname "' exist, and does it contain "
+                             desktop-base-file-name " and no other files?")))))
+
+(defun nameses-load (&optional name)
+  "Read desktop by name."
+  (interactive)
+  (let ((prev-name (nameses-current-name)))
+    (when prev-name (nameses-save prev-name))
+    (unless name
+      (setq name (nameses-select "Load session: ")))
+    (save-some-buffers)
+    (desktop-clear)
+    (desktop-read (concat nameses-dir name))
+    (unless (and nameses-prev-session (string= nameses-prev-session prev-name))
+      (setq nameses-prev-session prev-name))))
+
+(defun nameses-current-name ()
+  "Get the current desktop name."
+  (interactive)
+  (when desktop-dirname
+    (let ((dirname (substring desktop-dirname 0 -1))) ; Remove trailing /
+      (when (string= (file-name-directory dirname) nameses-dir)
+        (file-name-nondirectory dirname)))))
+
+ (defun nameses-list-all ()
+  "Get all stored session names"
+  (when (file-exists-p nameses-dir)
+    (delete "." (delete ".." (directory-files nameses-dir)))))
+
+(defun nameses-select (message)
+  "Select an existing session by name"
+  (if nameses-ido-mode
+      (ido-completing-read message (nameses-list-all) nil t nil nil
+                           (nameses-current-name))
+  (completing-read message (nameses-list-all) nil t nil nil
+                   (nameses-current-name))))
+
+(defun nameses-kill-emacs-hook ()
+  "Save desktop before killing emacs."
+  (when (nameses-current-name)
+    (nameses-save (nameses-current-name))))
+
+(add-hook 'kill-emacs-hook 'nameses-kill-emacs-hook)
+(provide 'nameses)
