@@ -1,3 +1,4 @@
+[[en:MediaWikiMode]]
 Lisp:mediawiki.el
 
 私は mediawiki モードを [http://meta.wikimedia.org/w/index.php?title=Mediawiki.el&oldid=1296149 wikipedia.org にある古いコピー]から入手し、Emacs 内で使うのに適したコードにリファクタリングしました。そして、custom と site alist を追加し、異なる mediawiki サイト間を簡単に移動できるようにしました。さらに、ページリングも追加し、M-p と M-n を使用してすべての mediawiki.el バッファ内を前後に移動できるようにしました。
