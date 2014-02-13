@@ -1,8 +1,11 @@
-When you try to print your BBDB using the `P' command, you will find
-that this only works for ASCII text.  As soon as you have non-ASCII
+When you try to print your BBDB using the `P' command (or M-x bbdb-print), you will find
+that this works best for ASCII text.  As soon as you have non-ASCII
 characters in your bbdb.tex file, you need to fiddle with your TeX
-setup.  This is nigh impossible if you use all sorts of languages in
-your BBDB.  In this case, you will have a working BbdbMule setup for
+setup.  E.g. there are cases when the 'luatex' program reasonably processes
+the bbdb.tex file, but the classical 'tex' program does not.
+
+Fiddling the TeX setup is nigh impossible if you use all sorts of languages in
+your BBDB.  But in this case, you will have a working BbdbMule setup for
 display already.  Here is the missing stuff for the print setup.
 
 First, make sure you can use PsPrint for with multibyte buffers.  Test
