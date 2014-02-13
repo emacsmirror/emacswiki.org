@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  3 22:37:20 2014 (-0800)
+;; Last-Updated: Thu Feb 13 14:51:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7363
+;;     Update #: 7386
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -299,7 +299,8 @@
 ;;    `diredp-do-verify-recursive', `diredp-downcase-recursive',
 ;;    `diredp-downcase-this-file', `diredp-ediff',
 ;;    `diredp-encrypt-this-file', `diredp-fileset',
-;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
+;;    `diredp-fileset-other-window', `diredp-find-a-file',
+;;    `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
@@ -394,8 +395,8 @@
 ;;    (Emacs 22+), `diredp-do-chxxx-recursive',
 ;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
 ;;    `diredp-ensure-mode', `diredp-fewer-than-2-files-p',
-;;    `diredp-find-a-file-read-args', `diredp-files-within',
-;;    `diredp-files-within-1',
+;;    `diredp-fileset-1', `diredp-find-a-file-read-args',
+;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-subdirs',
@@ -510,6 +511,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/13 dadams
+;;     Added: diredp-fileset-other-window, diredp-fileset-1.
+;;     diredp-fileset: Use diredp-fileset-1.
+;;     Bind diredp-dired-union(-other-window) to C-x D, C-x 4 D,
+;;          diredp-fileset(-other-window)     to C-x F, C-x 4 F.
+;;     Use diredp-fileset-other-window, not diredp-fileset, in menu.
 ;; 2014/02/03 dadams
 ;;     Added: diredp-hide-subdir-nomove.
 ;;     Added: dired-goto-file for Emacs 24+ - open hidden parent dir, so can goto destination.
@@ -2785,8 +2792,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-subdir-menu [diredp-dired-union-other-window]
   '(menu-item "Dired Union..." diredp-dired-union-other-window
     :help "Open Dired for the union of some existing Dired buffers"))
-(define-key diredp-menu-bar-subdir-menu [diredp-fileset]
-  '(menu-item "Dired Fileset..." diredp-fileset
+(define-key diredp-menu-bar-subdir-menu [diredp-fileset-other-window]
+  '(menu-item "Dired Fileset..." diredp-fileset-other-window
     :enable (> emacs-major-version 21) :help "Open Dired on an Emacs fileset"))
 (define-key diredp-menu-bar-subdir-menu [diredp-marked-other-window]
   '(menu-item "Dired Marked Files in Other Window" diredp-marked-other-window
@@ -2825,6 +2832,11 @@ If no one is selected, symmetric encryption will be performed.  "
                                         'dired-omit-toggle))
 (when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode dired-omit-toggle))
   (define-key dired-mode-map "\M-o" nil))
+
+(define-key dired-mode-map "\C-x\S-d"  'diredp-dired-union)            ; `C-x D' (aka `C-x S-d')
+(define-key dired-mode-map "\C-x4\S-d" 'diredp-dired-union-other-window) ; `C-x 4 D'
+(define-key dired-mode-map "\C-x\S-f"  'diredp-fileset)                ; `C-x F' (aka `C-x S-f')
+(define-key dired-mode-map "\C-x4\S-f" 'diredp-fileset-other-window)   ; `C-x 4 F'
 
 ;; Navigation
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
@@ -3487,21 +3499,35 @@ Read names of Dired buffers to include, and then the new, Dired-union
    (list (let ((fd  (or (and (require 'filesets nil t)  filesets-data)
                         (error "Feature `filesets' not provided"))))
            (completing-read "Open Dired on fileset: " filesets-data))))
-  (let ((flset  (filesets-get-fileset-from-name flset-name))
-        (files  ())
-        (mode   nil))
+  (diredp-fileset-1 flset-name))
+
+;;;###autoload
+(defun diredp-fileset-other-window (flset-name) ; Not bound
+  "Open Dired in another window on the files in fileset FLSET-NAME."
+  (interactive
+   (list (let ((fd  (or (and (require 'filesets nil t)  filesets-data)
+                        (error "Feature `filesets' not provided"))))
+           (completing-read "Open Dired on fileset: " filesets-data))))
+  (diredp-fileset-1 flset-name 'OTHER-WINDOW))
+
+(defun diredp-fileset-1 (flset-name &optional other-window-p)
+  "Helper for `diredp-fileset(-other-window)'."
+  (let ((flset   (filesets-get-fileset-from-name flset-name))
+        (files   ())
+        (mode    nil)
+        (dirfun  (if other-window-p #'dired-other-window #'dired)))
     (unless (or (setq mode  (filesets-entry-mode flset)) ; ("my-fs" (:files "a" "b"))
                 (setq flset  (cons "dummy" flset) ; (:files "a" "b")
                       mode   (filesets-entry-mode flset)))
       (error "Bad fileset: %S" flset-name))
     (message "Gathering file names...")
     (dolist (file  (filesets-get-filelist flset mode)) (push file files))
-    (dired (cons (generate-new-buffer-name flset-name)
-                 (nreverse (mapcar (lambda (file)
-                                     (if (file-name-absolute-p file)
-                                         (expand-file-name file)
-                                       file))
-                                   files))))))
+    (funcall dirfun (cons (generate-new-buffer-name flset-name)
+                          (nreverse (mapcar (lambda (file)
+                                              (if (file-name-absolute-p file)
+                                                  (expand-file-name file)
+                                                file))
+                                            files))))))
 
 ;;;###autoload
 (defun diredp-dired-this-subdir (&optional tear-off-p msgp)
