@@ -44,7 +44,7 @@ is avoiding, so if you want it, you have to do it yourself.
   (setq newtest (sort (copy-sequence test) '>))
     => (3 2 1)
   test
-    => (3 2 1)
+    => (1 2 3)
 
 Watch out, this may also bite you in your code.  Sort changes the list
 -- and it may therefore change your code!  Self-modifying code!!
