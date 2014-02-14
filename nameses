@@ -3,11 +3,11 @@ The idea is that your desktop sessions are not associated with directories, but 
 
 == Why nameses? ==
 Since I started using emacs as a daemon (LINK), it became more important for me to be able to switch between desktop sessions, because you typically have only one instance of emacs running. The package [http://scottfrazersblog.blogspot.com/2009/12/emacs-named-desktop-sessions.html my-desktop] proved useful for that, but did not completely fit my needs. These are some of the changes that I've made:
-- Once your session has a name, it is automatically saved when you exit emacs or switch to a different session.
-- Added ido support for choosing sessions
-- Desktop sessions are locked when in use
-- You can remove sessions, with some checking to prevent removing other files
-- You can easily switch to the previous session
+* Once your session has a name, it is automatically saved when you exit emacs or switch to a different session.
+* Added ido support for choosing sessions
+* Desktop sessions are locked when in use
+* You can remove sessions, with some checking to prevent removing other files
+* You can easily switch to the previous session
 
 == Usage examples ==
 TODO
