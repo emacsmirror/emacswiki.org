@@ -8,6 +8,7 @@ Since I started using emacs as a daemon (LINK), it became more important for me 
 * Desktop sessions are locked when in use
 * You can remove sessions, with some checking to prevent removing other files
 * You can easily switch to the previous session
+* Nameses is compatible with lazy loading of the desktop
 
 == Usage examples ==
 TODO
