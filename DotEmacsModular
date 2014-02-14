@@ -63,6 +63,7 @@ You can use this function in your InitFile file for reading all ".el" files like
   (dolist (file (directory-files dir t "\.el$" nil))
     (load (file-name-sans-extension file))))
 }}}
+
 [[targzeta]]
 
 [:LoadDirectory]
@@ -86,6 +87,45 @@ and within [[InitFile]]:
 {{{
 (load-directory "~/.emacs.d/config")
 }}}
+
+
+Example:
+<pre>
+$> tree .emacs.d/ 
+.emacs.d/
+|-- config/
+|   |-- completion.el
+|   |-- control-version.el
+|   |-- external-command-whole-buffer.el
+|   |-- highligth-current-line.el
+|   |-- modes/
+|   |   |-- flymake-mode.el
+|   |   |-- markdown-mode.el
+|   |   |-- po-mode.el
+|   |   |-- programming/
+|   |   |   |-- c-mode.el
+|   |   |   |-- css-mode.el
+|   |   |   |-- global.el
+|   |   |   |-- js-mode.el
+|   |   |   |-- perl-mode.el
+|   |   |   |-- php-mode.el
+|   |   |   |-- python-mode.el
+|   |   |   |-- sh-mode.el
+|   |   |   `-- yasnippet.el
+|   |   |-- xml-mode.el
+|   |   `-- yaml-mode.el
+|   |-- rename-frame.el
+|   |-- revert-all-buffers.el
+|   |-- sh.el
+|   `-- windows.el
+`-- load-directory.el
+</pre>
+<pre>$> cat ~/.emacs
+...
+;;; Load all ".el" files under ~/.emacs.d/config directory.
+(load "~/.emacs.d/load-directory")
+(load-directory "~/.emacs.d/config")
+</pre>
 
 [[targzeta]]
 ----------
