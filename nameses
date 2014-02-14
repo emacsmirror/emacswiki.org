@@ -11,10 +11,31 @@ Since I started using emacs as a daemon (LINK), it became more important for me 
 * Nameses is compatible with lazy loading of the desktop
 
 == Usage examples ==
-TODO
+I would recommend putting something like this in your .emacs:
+
+  (require 'desktop)
+  (require 'nameses)
+  (require 'ido) or (setq nameses-ido-mode nil)
+  (global-set-key (kbd "<f9>")     'nameses-load)
+  (global-set-key (kbd "C-<f9>")   'nameses-prev)
+  (global-set-key (kbd "C-S-<f9>") 'nameses-save)
+
+Typical usage would then be:
+* <f9> -> Load an existing session
+* Ctrl-u <f9> -> Create new session (you'll be asked for a name)
+* Ctrl-Shift-<f9> -> Save session (you'll be asked for a name)
+* Ctrl-<f9> -> Switch to previous session
+
+Sessions are automatically saved when you leave them, whether you quit emacs or switch to another session. If you mess one up and do not want to save its new state, use
+  
+  M-x nameses-reset
+
+If you want to remove a session, use
+
+  M-x nameses-remove
 
 == Code ==
-TODO: update, add version number (0.01a)
-<include gist "https://gist.github.com/8960595">
+https://gist.github.com/8960595
 
 == Discussion ==
+Any comments are welcome
