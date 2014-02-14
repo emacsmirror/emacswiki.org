@@ -1,112 +1,176 @@
-#FILE text/x-emacs-lisp 
-OzsgTm90ZTogVGhlIGludGVyZmFjZSB1c2VkIGluIHRoaXMgZmlsZSByZXF1aXJlcyBDQyBNb2Rl
-IDUuMzAgb3IKOzsgbGF0ZXIuCgo7OzsgQ29kZToKCihyZXF1aXJlICdjYy1tb2RlKQoKOzsgVGhl
-c2UgYXJlIG9ubHkgcmVxdWlyZWQgYXQgY29tcGlsZSB0aW1lIHRvIGdldCB0aGUgc291cmNlcyBm
-b3IgdGhlCjs7IGxhbmd1YWdlIGNvbnN0YW50cy4gIChUaGUgY2MtZm9udHMgcmVxdWlyZSBhbmQg
-dGhlIGZvbnQtbG9jawo7OyByZWxhdGVkIGNvbnN0YW50cyBjb3VsZCBhZGRpdGlvbmFsbHkgYmUg
-cHV0IGluc2lkZSBhbgo7OyAoZXZhbC1hZnRlci1sb2FkICJmb250LWxvY2siIC4uLikgYnV0IHRo
-ZW4gc29tZSB0cmlja2VyeSBpcwo7OyBuZWNlc3NhcnkgdG8gZ2V0IHRoZW0gY29tcGlsZWQuKQoo
-ZXZhbC13aGVuLWNvbXBpbGUKICAocmVxdWlyZSAnY2MtbGFuZ3MpCiAgKHJlcXVpcmUgJ2NjLWZv
-bnRzKSkKCgooZXZhbC1hbmQtY29tcGlsZQogIDs7IE1ha2Ugb3VyIG1vZGUga25vd24gdG8gdGhl
-IGxhbmd1YWdlIGNvbnN0YW50IHN5c3RlbS4gIFVzZSBDCiAgOzsgbW9kZSBhcyB0aGUgZmFsbGJh
-Y2sgZm9yIHRoZSBjb25zdGFudHMgd2UgZG9uJ3QgY2hhbmdlIGhlcmUuCiAgOzsgVGhpcyBuZWVk
-cyB0byBiZSBkb25lIGFsc28gYXQgY29tcGlsZSB0aW1lIHNpbmNlIHRoZSBsYW5ndWFnZQogIDs7
-IGNvbnN0YW50cyBhcmUgZXZhbHVhdGVkIHRoZW4uCiAgKGMtYWRkLWxhbmd1YWdlICdjdWRhLW1v
-ZGUgJ2MrKy1tb2RlKSkKCjs7IGN1ZGEgaGFzIG5vIGJvb2xlYW4gYnV0IGEgc3RyaW5nIGFuZCBh
-IHZlY3RvciB0eXBlLgooYy1sYW5nLWRlZmNvbnN0IGMtcHJpbWl0aXZlLXR5cGUta3dkcwogICJQ
-cmltaXRpdmUgdHlwZSBrZXl3b3Jkcy4gIEFzIG9wcG9zZWQgdG8gdGhlIG90aGVyIGtleXdvcmQg
-bGlzdHMsIHRoZQprZXl3b3JkcyBsaXN0ZWQgaGVyZSBhcmUgZm9udGlmaWVkIHdpdGggdGhlIHR5
-cGUgZmFjZSBpbnN0ZWFkIG9mIHRoZQprZXl3b3JkIGZhY2UuCgpJZiBhbnkgb2YgdGhlc2UgYWxz
-byBhcmUgb24gYGMtdHlwZS1saXN0LWt3ZHMnLCBgYy1yZWYtbGlzdC1rd2RzJywKYGMtY29sb24t
-dHlwZS1saXN0LWt3ZHMnLCBgYy1wYXJlbi1ub250eXBlLWt3ZHMnLCBgYy1wYXJlbi10eXBlLWt3
-ZHMnLApgYy08Pi10eXBlLWt3ZHMnLCBvciBgYy08Pi1hcmdsaXN0LWt3ZHMnIHRoZW4gdGhlIGFz
-c29jaWF0ZWQgY2xhdXNlcwp3aWxsIGJlIGhhbmRsZWQuCgpEbyBub3QgdHJ5IHRvIG1vZGlmeSB0
-aGlzIGxpc3QgZm9yIGVuZCB1c2VyIGN1c3RvbWl6YXRpb25zOyB0aGUKYCotZm9udC1sb2NrLWV4
-dHJhLXR5cGVzJyB2YXJpYWJsZSwgd2hlcmUgYConIGlzIHRoZSBtb2RlIHByZWZpeCwgaXMKdGhl
-IGFwcHJvcHJpYXRlIHBsYWNlIGZvciB0aGF0LiIKICBjdWRhCiAgKGFwcGVuZAogICAnKCJkaW0z
-IgoJICJjaGFyMSIgInVjaGFyMSIgImNoYXIyIiAidWNoYXIyIiAiY2hhcjMiICJ1Y2hhcjMiICJj
-aGFyNCIgInVjaGFyNCIKCSAic2hvcnQxIiAidXNob3J0MSIgInNob3J0MiIgInVzaG9ydDIiICJz
-aG9ydDMiICJ1c2hvcnQzIiAic2hvcnQ0IiAidXNob3J0NCIKCSAiaW50MSIgInVpbnQxIiAiaW50
-MiIgInVpbnQyIiAiaW50MyIgInVpbnQzIiAiaW50NCIgInVpbnQ0IgoJICJsb25nMSIgInVsb25n
-MSIgImxvbmcyIiAidWxvbmcyIiAibG9uZzMiICJ1bG9uZzMiICJsb25nNCIgInVsb25nNCIKCSAi
-ZmxvYXQxIiAiZmxvYXQyIiAgImZsb2F0MyIgImZsb2F0NCIKCSAiZG91YmxlMSIgImRvdWJsZTIi
-ICkKICAgOzsgVXNlIGFwcGVuZCB0byBub3QgYmUgZGVzdHJ1Y3RpdmUgb24gdGhlCiAgIDs7IHJl
-dHVybiB2YWx1ZSBiZWxvdy4KICAgKGFwcGVuZAoJKGMtbGFuZy1jb25zdCBjLXByaW1pdGl2ZS10
-eXBlLWt3ZHMpCgluaWwpKSkKCihjLWxhbmctZGVmY29uc3QgYy10eXBlLW1vZGlmaWVyLWtleXdk
-cwogICJUeXBlIG1vZGlmaWVyIGtleXdvcmRzLiAgVGhlc2UgY2FuIG9jY3VyIGFsbW9zdCBhbnl3
-aGVyZSBpbiB0eXBlcwpidXQgdGhleSBkb24ndCBidWlsZCBhIHR5cGUgb2YgdGhlbXNlbHZlcy4g
-IFVubGlrZSB0aGUga2V5d29yZHMgb24KYGMtcHJpbWl0aXZlLXR5cGUta3dkcycsIHRoZXkgYXJl
-IGZvbnRpZmllZCB3aXRoIHRoZSBrZXl3b3JkIGZhY2UgYW5kCm5vdCB0aGUgdHlwZSBmYWNlLiIK
-ICBjdWRhCiAgKGFwcGVuZAogICAnKCJfX2RldmljZV9fIiwgIl9fZ2xvYmFsX18iLCAiX19zaGFy
-ZWRfXyIsICJfX2hvc3RfXyIsICJfX2NvbnN0YW50X18iKQogICAoYy1sYW5nLWNvbnN0IGMtdHlw
-ZS1tb2RpZmllci1rZXl3ZHMpCiAgIG5pbCkpCgooYy1sYW5nLWRlZmNvbnN0IGMtb3RoZXItb3At
-c3ludGF4LXRva2VucwogICJMaXN0IG9mIHRoZSB0b2tlbnMgbWFkZSB1cCBvZiBjaGFyYWN0ZXJz
-IGluIHRoZSBwdW5jdHVhdGlvbiBvcgpwYXJlbnRoZXNpcyBzeW50YXggY2xhc3NlcyB0aGF0IGhh
-dmUgdXNlcyBvdGhlciB0aGFuIGFzIGV4cHJlc3Npb24Kb3BlcmF0b3JzLiIKICBjdWRhCiAgKGFw
-cGVuZCAnKCIjIiAiIyMiCTsgVXNlZCBieSBjcHAuCiAgICAgICAgICAgICI6OiIgIi4uLiIgIjw8
-PCIgIj4+PiIpCiAgICAgICAgICAoYy1sYW5nLWNvbnN0IGMtb3RoZXItb3Atc3ludGF4LXRva2Vu
-cykpKQoKKGMtbGFuZy1kZWZjb25zdCBjLXByaW1hcnktZXhwci1rd2RzCiAgIktleXdvcmRzIGJl
-c2lkZXMgY29uc3RhbnRzIGFuZCBvcGVyYXRvcnMgdGhhdCBzdGFydCBwcmltYXJ5IGV4cHJlc3Np
-b25zLiIKICBjdWRhICAnKCJncmlkRGltIiAiYmxvY2tJZHgiICJibG9ja0RpbSIgInRocmVhZElk
-eCIgIndhcnBTaXplIikpCgooYy1sYW5nLWRlZmNvbnN0IGMtcGFyZW4tbm9udHlwZS1rd2RzCiAg
-IktleXdvcmRzIHRoYXQgbWF5IGJlIGZvbGxvd2VkIGJ5IGEgcGFyZW50aGVzaXMgZXhwcmVzc2lv
-biB0aGF0IGRvZXNuJ3QKY29udGFpbiB0eXBlIGlkZW50aWZpZXJzLiIKICBjdWRhICAgICAgIG5p
-bAogIChjIGMrKykgJyg7OyBHQ0MgZXh0ZW5zaW9uLgogICAgICAgICAgICAiX19hdHRyaWJ1dGVf
-XyIKICAgICAgICAgICAgOzsgTVNWQyBleHRlbnNpb24uCiAgICAgICAgICAgICJfX2RlY2xzcGVj
-IikpCgooZGVmY3VzdG9tIGN1ZGEtZm9udC1sb2NrLWV4dHJhLXR5cGVzIG5pbAogICIqTGlzdCBv
-ZiBleHRyYSB0eXBlcyAoYXNpZGUgZnJvbSB0aGUgdHlwZSBrZXl3b3JkcykgdG8gcmVjb2duaXpl
-IGluIEN1ZGEgbW9kZS4KRWFjaCBsaXN0IGl0ZW0gc2hvdWxkIGJlIGEgcmVnZXhwIG1hdGNoaW5n
-IGEgc2luZ2xlIGlkZW50aWZpZXIuIikKCihkZWZjb25zdCBjdWRhLWZvbnQtbG9jay1rZXl3b3Jk
-cy0xCiAgKGMtbGFuZy1jb25zdCBjLW1hdGNoZXJzLTEgY3VkYSkKICAiTWluaW1hbCBoaWdobGln
-aHRpbmcgZm9yIENVREEgbW9kZS4iKQoKKGRlZmNvbnN0IGN1ZGEtZm9udC1sb2NrLWtleXdvcmRz
-LTIKICAoYy1sYW5nLWNvbnN0IGMtbWF0Y2hlcnMtMiBjdWRhKQogICJGYXN0IG5vcm1hbCBoaWdo
-bGlnaHRpbmcgZm9yIENVREEgbW9kZS4iKQoKKGRlZmNvbnN0IGN1ZGEtZm9udC1sb2NrLWtleXdv
-cmRzLTMKICAoYy1sYW5nLWNvbnN0IGMtbWF0Y2hlcnMtMyBjdWRhKQogICJBY2N1cmF0ZSBub3Jt
-YWwgaGlnaGxpZ2h0aW5nIGZvciBDVURBIG1vZGUuIikKCihkZWZ2YXIgY3VkYS1mb250LWxvY2st
-a2V5d29yZHMgY3VkYS1mb250LWxvY2sta2V5d29yZHMtMwogICJEZWZhdWx0IGV4cHJlc3Npb25z
-IHRvIGhpZ2hsaWdodCBpbiBDVURBIG1vZGUuIikKCihkZWZ2YXIgY3VkYS1tb2RlLXN5bnRheC10
-YWJsZSBuaWwKICAiU3ludGF4IHRhYmxlIHVzZWQgaW4gY3VkYS1tb2RlIGJ1ZmZlcnMuIikKKG9y
-IGN1ZGEtbW9kZS1zeW50YXgtdGFibGUKICAgIChzZXRxIGN1ZGEtbW9kZS1zeW50YXgtdGFibGUK
-ICAgICAgICAgIChmdW5jYWxsIChjLWxhbmctY29uc3QgYy1tYWtlLW1vZGUtc3ludGF4LXRhYmxl
-IGN1ZGEpKSkpCgooZGVmdmFyIGN1ZGEtbW9kZS1hYmJyZXYtdGFibGUgbmlsCiAgIkFiYnJldmlh
-dGlvbiB0YWJsZSB1c2VkIGluIGN1ZGEtbW9kZSBidWZmZXJzLiIpCgooYy1kZWZpbmUtYWJicmV2
-LXRhYmxlICdjdWRhLW1vZGUtYWJicmV2LXRhYmxlCiAgOzsgS2V5d29yZHMgdGhhdCBpZiB0aGV5
-IG9jY3VyIGZpcnN0IG9uIGEgbGluZSBtaWdodCBhbHRlciB0aGUKICA7OyBzeW50YWN0aWMgY29u
-dGV4dCwgYW5kIHdoaWNoIHRoZXJlZm9yZSBzaG91bGQgdHJpZyByZWluZGVudGF0aW9uCiAgOzsg
-d2hlbiB0aGV5IGFyZSBjb21wbGV0ZWQuCiAgJygoImVsc2UiICJlbHNlIiBjLWVsZWN0cmljLWNv
-bnRpbnVlZC1zdGF0ZW1lbnQgMCkKICAgICgid2hpbGUiICJ3aGlsZSIgYy1lbGVjdHJpYy1jb250
-aW51ZWQtc3RhdGVtZW50IDApKSkKCihkZWZ2YXIgY3VkYS1tb2RlLW1hcCAobGV0ICgobWFwIChj
-LW1ha2UtaW5oZXJpdGVkLWtleW1hcCkpKQogICAgICAgICAgICAgICAgICAgICAgICA7OyBBZGQg
-YmluZGluZ3Mgd2hpY2ggYXJlIG9ubHkgdXNlZnVsIGZvciBDVURBCiAgICAgICAgICAgICAgICAg
-ICAgICAgIG1hcCkKICAiS2V5bWFwIHVzZWQgaW4gY3VkYS1tb2RlIGJ1ZmZlcnMuIikKCihlYXN5
-LW1lbnUtZGVmaW5lIGN1ZGEtbWVudSBjdWRhLW1vZGUtbWFwICJDVURBIE1vZGUgQ29tbWFuZHMi
-CiAgOzsgQ2FuIHVzZSBgY3VkYScgYXMgdGhlIGxhbmd1YWdlIGZvciBgYy1tb2RlLW1lbnUnCiAg
-Ozsgc2luY2UgaXRzIGRlZmluaXRpb24gY292ZXJzIGFueSBsYW5ndWFnZS4gIEluCiAgOzsgdGhp
-cyBjYXNlIHRoZSBsYW5ndWFnZSBpcyB1c2VkIHRvIGFkYXB0IHRvIHRoZQogIDs7IG5vbmV4aXN0
-ZW5jZSBvZiBhIGNwcCBwYXNzIGFuZCB0aHVzIHJlbW92aW5nIHNvbWUKICA7OyBpcnJlbGV2YW50
-IG1lbnUgYWx0ZXJuYXRpdmVzLgogIChjb25zICJDVURBIiAoYy1sYW5nLWNvbnN0IGMtbW9kZS1t
-ZW51IGN1ZGEpKSkKCjs7OyMjI0F1dG9sb2FkCihhZGQtdG8tbGlzdCAnYXV0by1tb2RlLWFsaXN0
-ICcoIlxcLmN1XFwnIiAuIGN1ZGEtbW9kZSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gY3VkYS1t
-b2RlICgpCiAgIk1ham9yIG1vZGUgZm9yIGVkaXRpbmcgQ1VEQSBDdWRhIGlzIGEgQyBsaWtlIGxh
-bmd1YWdlIGV4dGVuc2lvbgpmb3IgbWl4ZWQgbmF0aXZlL0dQVSBjb2RpbmcgY3JlYXRlZCBieSBO
-VklEQQoKVGhlIGhvb2sgYGMtbW9kZS1jb21tb24taG9vaycgaXMgcnVuIHdpdGggbm8gYXJncyBh
-dCBtb2RlCmluaXRpYWxpemF0aW9uLCB0aGVuIGBjdWRhLW1vZGUtaG9vaycuCgpLZXkgYmluZGlu
-Z3M6Clxce2N1ZGEtbW9kZS1tYXB9IgogIChpbnRlcmFjdGl2ZSkKICAoa2lsbC1hbGwtbG9jYWwt
-dmFyaWFibGVzKQogIChjLWluaXRpYWxpemUtY2MtbW9kZSB0KQogIChzZXQtc3ludGF4LXRhYmxl
-IGN1ZGEtbW9kZS1zeW50YXgtdGFibGUpCiAgKHNldHEgbWFqb3ItbW9kZSAnY3VkYS1tb2RlCiAg
-ICAgICAgbW9kZS1uYW1lICJDdWRhIgogICAgICAgIGxvY2FsLWFiYnJldi10YWJsZSBjdWRhLW1v
-ZGUtYWJicmV2LXRhYmxlCiAgICAgICAgYWJicmV2LW1vZGUgdCkKICAodXNlLWxvY2FsLW1hcCBj
-LW1vZGUtbWFwKQogIDs7IGBjLWluaXQtbGFuZ3VhZ2UtdmFycycgaXMgYSBtYWNybyB0aGF0IGlz
-IGV4cGFuZGVkIGF0IGNvbXBpbGUKICA7OyB0aW1lIHRvIGEgbGFyZ2UgYHNldHEnIHdpdGggYWxs
-IHRoZSBsYW5ndWFnZSB2YXJpYWJsZXMgYW5kIHRoZWlyCiAgOzsgY3VzdG9taXplZCB2YWx1ZXMg
-Zm9yIG91ciBsYW5ndWFnZS4KICAoYy1pbml0LWxhbmd1YWdlLXZhcnMgY3VkYS1tb2RlKQogIDs7
-IGBjLWNvbW1vbi1pbml0JyBpbml0aWFsaXplcyBtb3N0IG9mIHRoZSBjb21wb25lbnRzIG9mIGEg
-Q0MgTW9kZQogIDs7IGJ1ZmZlciwgaW5jbHVkaW5nIHNldHVwIG9mIHRoZSBtb2RlIG1lbnUsIGZv
-bnQtbG9jaywgZXRjLgogIDs7IFRoZXJlJ3MgYWxzbyBhIGxvd2VyIGxldmVsIHJvdXRpbmUgYGMt
-YmFzaWMtY29tbW9uLWluaXQnIHRoYXQKICA7OyBvbmx5IG1ha2VzIHRoZSBuZWNlc3NhcnkgaW5p
-dGlhbGl6YXRpb24gdG8gZ2V0IHRoZSBzeW50YWN0aWMKICA7OyBhbmFseXNpcyBhbmQgc2ltaWxh
-ciB0aGluZ3Mgd29ya2luZy4KICAoYy1jb21tb24taW5pdCAnY3VkYS1tb2RlKQogIChlYXN5LW1l
-bnUtYWRkIGN1ZGEtbWVudSkKICAocnVuLWhvb2tzICdjLW1vZGUtY29tbW9uLWhvb2spCiAgKHJ1
-bi1ob29rcyAnY3VkYS1tb2RlLWhvb2spCiAgKHNldHEgZm9udC1sb2NrLWtleXdvcmRzLWNhc2Ut
-Zm9sZC1zZWFyY2ggdCkKICAoYy11cGRhdGUtbW9kZWxpbmUpKQoKCihwcm92aWRlICdjdWRhLW1v
-ZGUpCg==
+<pre>
+;; Note: The interface used in this file requires CC Mode 5.30 or
+;; later.
+
+;;; Code:
+
+(require 'cc-mode)
+
+;; These are only required at compile time to get the sources for the
+;; language constants.  (The cc-fonts require and the font-lock
+;; related constants could additionally be put inside an
+;; (eval-after-load "font-lock" ...) but then some trickery is
+;; necessary to get them compiled.)
+(eval-when-compile
+  (require 'cc-langs)
+  (require 'cc-fonts))
+
+
+(eval-and-compile
+  ;; Make our mode known to the language constant system.  Use C
+  ;; mode as the fallback for the constants we don't change here.
+  ;; This needs to be done also at compile time since the language
+  ;; constants are evaluated then.
+  (c-add-language 'cuda-mode 'c++-mode))
+
+;; cuda has no boolean but a string and a vector type.
+(c-lang-defconst c-primitive-type-kwds
+  "Primitive type keywords.  As opposed to the other keyword lists, the
+keywords listed here are fontified with the type face instead of the
+keyword face.
+
+If any of these also are on `c-type-list-kwds', `c-ref-list-kwds',
+`c-colon-type-list-kwds', `c-paren-nontype-kwds', `c-paren-type-kwds',
+`c-<>-type-kwds', or `c-<>-arglist-kwds' then the associated clauses
+will be handled.
+
+Do not try to modify this list for end user customizations; the
+`*-font-lock-extra-types' variable, where `*' is the mode prefix, is
+the appropriate place for that."
+  cuda 
+  (append 
+   '("dim3" 
+	 "char1" "uchar1" "char2" "uchar2" "char3" "uchar3" "char4" "uchar4"
+	 "short1" "ushort1" "short2" "ushort2" "short3" "ushort3" "short4" "ushort4"
+	 "int1" "uint1" "int2" "uint2" "int3" "uint3" "int4" "uint4"
+	 "long1" "ulong1" "long2" "ulong2" "long3" "ulong3" "long4" "ulong4"
+	 "float1" "float2"  "float3" "float4" 
+	 "double1" "double2" )
+   ;; Use append to not be destructive on the
+   ;; return value below.
+   (append
+	(c-lang-const c-primitive-type-kwds)
+	nil)))
+
+(c-lang-defconst c-type-modifier-keywds
+  "Type modifier keywords.  These can occur almost anywhere in types
+but they don't build a type of themselves.  Unlike the keywords on
+`c-primitive-type-kwds', they are fontified with the keyword face and
+not the type face."
+  cuda
+    (append 
+      '("__device__", "__global__", "__shared__", "__host__", "__constant__") 
+      (c-lang-const c-type-modifier-keywds) 
+      nil))
+
+(c-lang-defconst c-other-op-syntax-tokens
+  "List of the tokens made up of characters in the punctuation or
+parenthesis syntax classes that have uses other than as expression
+operators."
+  cuda
+  (append '("#" "##"	; Used by cpp.
+	    "::" "..." "<<<" ">>>")
+	  (c-lang-const c-other-op-syntax-tokens)))
+
+(c-lang-defconst c-primary-expr-kwds
+  "Keywords besides constants and operators that start primary expressions."
+  cuda  '("gridDim" "blockIdx" "blockDim" "threadIdx" "warpSize"))
+
+(c-lang-defconst c-paren-nontype-kwds
+  "Keywords that may be followed by a parenthesis expression that doesn't
+contain type identifiers."
+  cuda       nil
+  (c c++) '(;; GCC extension.
+	    "__attribute__"
+	    ;; MSVC extension.
+	    "__declspec"))
+
+(defcustom cuda-font-lock-extra-types nil
+  "*List of extra types (aside from the type keywords) to recognize in Cuda mode.
+Each list item should be a regexp matching a single identifier.")
+
+(defconst cuda-font-lock-keywords-1 
+  (c-lang-const c-matchers-1 cuda)
+  "Minimal highlighting for CUDA mode.")
+
+(defconst cuda-font-lock-keywords-2 
+  (c-lang-const c-matchers-2 cuda)
+  "Fast normal highlighting for CUDA mode.")
+
+(defconst cuda-font-lock-keywords-3 
+  (c-lang-const c-matchers-3 cuda)
+  "Accurate normal highlighting for CUDA mode.")
+
+(defvar cuda-font-lock-keywords cuda-font-lock-keywords-3
+  "Default expressions to highlight in CUDA mode.")
+
+(defvar cuda-mode-syntax-table nil
+  "Syntax table used in cuda-mode buffers.")
+(or cuda-mode-syntax-table
+    (setq cuda-mode-syntax-table
+      (funcall (c-lang-const c-make-mode-syntax-table cuda))))
+
+(defvar cuda-mode-abbrev-table nil
+  "Abbreviation table used in cuda-mode buffers.")
+
+(c-define-abbrev-table 'cuda-mode-abbrev-table
+  ;; Keywords that if they occur first on a line might alter the
+  ;; syntactic context, and which therefore should trig reindentation
+  ;; when they are completed.
+  '(("else" "else" c-electric-continued-statement 0)
+    ("while" "while" c-electric-continued-statement 0)))
+
+(defvar cuda-mode-map (let ((map (c-make-inherited-keymap)))
+              ;; Add bindings which are only useful for CUDA
+              map)
+  "Keymap used in cuda-mode buffers.")
+
+(easy-menu-define cuda-menu cuda-mode-map "CUDA Mode Commands"
+          ;; Can use `cuda' as the language for `c-mode-menu'
+          ;; since its definition covers any language.  In
+          ;; this case the language is used to adapt to the
+          ;; nonexistence of a cpp pass and thus removing some
+          ;; irrelevant menu alternatives.
+          (cons "CUDA" (c-lang-const c-mode-menu cuda)))
+
+;;;###Autoload
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . cuda-mode))
+
+;;;###autoload
+(defun cuda-mode ()
+  "Major mode for editing CUDA Cuda is a C like language extension
+for mixed native/GPU coding created by NVIDA
+ 
+The hook `c-mode-common-hook' is run with no args at mode
+initialization, then `cuda-mode-hook'.
+
+Key bindings:
+\\{cuda-mode-map}"
+  (interactive)
+  (kill-all-local-variables)
+  (c-initialize-cc-mode t)
+  (set-syntax-table cuda-mode-syntax-table)
+  (setq major-mode 'cuda-mode
+    mode-name "Cuda"
+    local-abbrev-table cuda-mode-abbrev-table
+    abbrev-mode t)
+  (use-local-map c-mode-map)
+  ;; `c-init-language-vars' is a macro that is expanded at compile
+  ;; time to a large `setq' with all the language variables and their
+  ;; customized values for our language.
+  (c-init-language-vars cuda-mode)
+  ;; `c-common-init' initializes most of the components of a CC Mode
+  ;; buffer, including setup of the mode menu, font-lock, etc.
+  ;; There's also a lower level routine `c-basic-common-init' that
+  ;; only makes the necessary initialization to get the syntactic
+  ;; analysis and similar things working.
+  (c-common-init 'cuda-mode)
+  (easy-menu-add cuda-menu)
+  (run-hooks 'c-mode-common-hook)
+  (run-hooks 'cuda-mode-hook)
+  (setq font-lock-keywords-case-fold-search t)
+  (c-update-modeline))
+
+ 
+(provide 'cuda-mode)
+</pre>
