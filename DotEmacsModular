@@ -65,6 +65,7 @@ You can use this function in your InitFile file for reading all ".el" files like
 }}}
 [[targzeta]]
 
+[:LoadDirectory]
 == Load directory ==
 A faster alternative to [[#RecursiveSubdirs]] is this function:
 {{{
