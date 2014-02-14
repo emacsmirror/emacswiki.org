@@ -29,9 +29,18 @@ For more information about init files and custom files (Emacs 22 or later):
 : ##M-: (info "(emacs) Saving Customizations")##
 : ##M-: (info "(elisp) Init File")##
 
+== Organizing your init file ==
+[https://sites.google.com/site/steveyegge2/my-dot-emacs-file Steve Yegge's init file] is a good example of an intricate init file that still has some order to it. Different parts of initialization are separated out into different files, and everything is loaded in the init file.
+
+To simplify this, you could have <code>style.el</code>, <code>keys.el</code>, and <code>modes.el</code> all in <code>~/.emacs.d/elisp</code> making the appropriate customizations. Then you could tie everything together like this in your init file:
+
+    (add-to-list 'load-path "~/.emacs.d/elisp/")
+    (load-library "style")
+    (load-library "keys")
+    (load-library "modes")
+
 
 ----
 CategoryHelp
 CategoryDotEmacs
 CategoryGlossary
-
