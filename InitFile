@@ -39,7 +39,8 @@ To simplify this, you could have <code>style.el</code>, <code>keys.el</code>, an
     (load-library "keys")
     (load-library "modes")
 
-
+[new:targzeta:2014-02-14 19:28 UTC]
+See also [[DotEmacsModular#LoadDirectory]]
 ----
 CategoryHelp
 CategoryDotEmacs
