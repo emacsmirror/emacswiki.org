@@ -55,3 +55,17 @@ For sudo.el: Integration with standard file save hooks:
  Unfortunately for me, sudo.el does not switch read-only mode off when root files are opened from a terminal in emacsclient. And WARNING: if you try to set read-only flag off yourself and save the file then it will error out and leave the file chowned as normal user, rather than root. Can anyone else confirm this is the case? Or do I have some conflicting elisp in my configs?
 
 -- rodyaj
+
+----
+
+There is another way to save a file using sudo. This is the function I am using:
+
+<pre>
+(defun sudo-save ()
+  (interactive)
+  (if (not buffer-file-name)
+      (write-file (concat "/sudo:root@localhost:" (ido-read-file-name "File:")))
+    (write-file (concat "/sudo:root@localhost:" buffer-file-name))))
+</pre>
+
+-- erreina
