@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 13 14:51:13 2014 (-0800)
+;; Last-Updated: Sun Feb 16 07:49:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7386
+;;     Update #: 7410
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -463,6 +463,7 @@
 ;;                              afterward, and bury its buffer. Do not
 ;;                              show a menu bar for pop-up frame.
 ;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
+;;                              (Emacs 22-24.1)
 ;;
 ;;; NOT YET:
 ;;; ;;  `dired-readin-insert'     - Use t as WILDCARD arg to
@@ -511,6 +512,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/16 dadams
+;;     dired-pop-to-buffer: Do not redefine for Emacs > 24.1.
+;;     dired-mark-pop-up: Updated doc string.
 ;; 2014/02/13 dadams
 ;;     Added: diredp-fileset-other-window, diredp-fileset-1.
 ;;     diredp-fileset: Use diredp-fileset-1.
@@ -7017,7 +7021,9 @@ Non-nil TRASH means use the trash can."
 ;;
 ;; Put window point at bob.  Fixes bug #12281.
 ;;
-(when (> emacs-major-version 22)
+(when (and (> emacs-major-version 22)  (or (< emacs-major-version 24)
+                                           (and (= emacs-major-version 24)
+                                                (= emacs-minor-version 1))))
   (defun dired-pop-to-buffer (buf)
     "Pop up buffer BUF in a way suitable for Dired."
     (let ((split-window-preferred-function
@@ -7047,31 +7053,34 @@ Non-nil TRASH means use the trash can."
 ;;
 ;; 2, If buffer is shown in a separate frame, do not show a menu bar for that frame.
 ;;
-(defun dired-mark-pop-up (bufname op-symbol files function &rest args)
+(defun dired-mark-pop-up (buffer-or-name op-symbol files function &rest args)
   "Return FUNCTION's result on ARGS after showing which files are marked.
-Displays the file names in a buffer named BUFNAME;
- nil gives \" *Marked Files*\".
-This uses function `dired-pop-to-buffer' to do that.
+Displays the file names in a buffer named BUFFER-OR-NAME, the default
+name being \" *Marked Files*\".  The buffer is not shown if there is
+just one file, `dired-no-confirm' is t, or OP-SYMBOL is a member of
+the list in `dired-no-confirm'.  Uses function `dired-pop-to-buffer'
+to show the buffer.
 
-FUNCTION should not manipulate files, just read input
- (an argument or confirmation).
-The window is not shown if there is just one file or
- OP-SYMBOL is a member of the list in `dired-no-confirm'.
+The window is not shown if there is just one file, `dired-no-confirm'
+is `t', or OP-SYMBOL is a member of `dired-no-confirm'.
+
 FILES is the list of marked files.  It can also be (t FILENAME)
 in the case of one marked file, to distinguish that from using
-just the current file."
-  (or bufname  (setq bufname  " *Marked Files*"))
+just the current file.
+
+FUNCTION should not manipulate the files.  It should just read input
+\(an argument or confirmation)."
+  (unless buffer-or-name (setq buffer-or-name  " *Marked Files*"))
   (let (result)
     (if (or (eq dired-no-confirm t)
             (memq op-symbol dired-no-confirm)
             ;; If FILES defaulted to the current line's file.
             (= (length files) 1))
         (setq result  (apply function args))
-      (with-current-buffer (get-buffer-create bufname)
+      (with-current-buffer (get-buffer-create buffer-or-name)
         (erase-buffer)
-        ;; Handle (t FILE) just like (FILE), here.
-        ;; That value is used (only in some cases), to mean
-        ;; just one file that was marked, rather than the current line file.
+        ;; Handle (t FILE) just like (FILE), here.  That value is used (only in some cases),
+        ;; to mean just one file that was marked, rather than the current-line file.
         (dired-format-columns-of-files (if (eq (car files) t) (cdr files) files))
         (remove-text-properties (point-min) (point-max)
                                 '(mouse-face nil help-echo nil)))
@@ -7082,16 +7091,15 @@ just the current file."
                                                        special-display-frame-alist))
                    (default-frame-alist          (cons '(menu-bar-lines . 0)
                                                        default-frame-alist)))
-               (dired-pop-to-buffer bufname)
+               (dired-pop-to-buffer buffer-or-name)
                (goto-char (point-min)))
              (setq result  (apply function args)))
         (save-excursion
           (condition-case nil           ; Ignore error if user already deleted window.
-              (progn
-                (select-window (get-buffer-window bufname 0))
-                (if (one-window-p) (delete-frame) (delete-window)))
+              (progn (select-window (get-buffer-window buffer-or-name 0))
+                     (if (one-window-p) (delete-frame) (delete-window)))
             (error nil)))
-        (bury-buffer bufname)))
+        (bury-buffer buffer-or-name)))
     result))
 
 
