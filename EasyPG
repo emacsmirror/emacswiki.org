@@ -161,7 +161,7 @@ This kludge seems to work adequately as of February 2014, with Emacs 24.3 and gp
 
 1. Garbled/corrupted pinentry prompt text sometimes at console. 
 
-2. Currently you need to manually re-run this function with <code>(wg/kludge-gpg-agent (selected-frame))</code> when returning to GUI emacsclient frame.
+2. Currently you need to manually re-run this function with <code>(wg/kludge-gpg-agent (selected-frame))</code> when switching between existing emacsclient frames on different terminals.  TODO: find some way automatically to detect "focus" change when switching between existing emacsclients, and automatically rerun this function.
 
 --[[wgreenhouse]]
 
