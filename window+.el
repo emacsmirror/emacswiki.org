@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:57:42 2013 (-0800)
+;; Last-Updated: Sun Feb 16 08:44:11 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 203
+;;     Update #: 206
 ;; URL: http://www.emacswiki.org/window%2b.el
 ;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -46,6 +46,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/16 dadams
+;;     special-display-popup-frame:
+;;       Use vanilla Emacs 24 code for display-buffer-record-window,
+;;       set-window-buffer, etc.  Fixes Emacs bug #16768.
 ;; 2012/10/15 dadams
 ;;     Do not redefine quit-window for Emacs 24+, so do not delete frame for NEWS.
 ;;       Thx to Martin Rudalics.
@@ -199,10 +203,12 @@ arguments."
                                        (make-frame
                                         (append args special-display-frame-alist))))
               (window                (frame-selected-window frame)))
-         (set-window-buffer window buffer)
-         (set-window-dedicated-p window t)
          (when (fboundp 'display-buffer-record-window) ; Emacs 24+
            (display-buffer-record-window 'frame window buffer))
+	 (unless (eq buffer (window-buffer window))
+	   (set-window-buffer window buffer)
+	   (set-window-prev-buffers window nil))
+	 (set-window-dedicated-p window t)
          ;; Now call `fit-frame', with WINDOW selected.
          ;; Needs to be `save-window-excursion', not just `save-selected-window'.
          (when (fboundp 'fit-frame)
