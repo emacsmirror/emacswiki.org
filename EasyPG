@@ -143,6 +143,7 @@ Add the following line to ~/.gnupg/gpg-agent.conf:
 
 gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where and how to perform pinentry.  If you use emacs --daemon with a mix of GUI and console terminal, GPG_TTY was probably inherited from emacs --daemon's shell and will be totally irrelevant and wrong; on the other hand, if you open even one GUI emacsclient frame at any time, gpg-agent/pinentry will attempt to use that frame's setting of DISPLAY.  So I kludged GPG_TTY on the creation of a new frame:
 
+{{{
 (defun wg/kludge-gpg-agent
     (frame)
   (if
@@ -154,14 +155,15 @@ gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where a
     (setenv "DISPLAY" nil)))
 
 (add-hook 'after-make-frame-functions 'wg/kludge-gpg-agent) ;; We don't have a better hook for detecting a new emacsclient, as far as I know.
+}}}
 
 This kludge seems to work adequately as of February 2014, with Emacs 24.3 and gpg + gpg-agent 2.0.22.  Bugs:
 
 1. Garbled/corrupted pinentry prompt text sometimes at console. 
 
-2. Currently you need to manually re-run this function with (wg/kludge-gpg-agent (selected-frame)) when returning to GUI emacsclient frame.
+2. Currently you need to manually re-run this function with <code>(wg/kludge-gpg-agent (selected-frame))</code> when returning to GUI emacsclient frame.
 
---[wgreenhouse]
+--[[wgreenhouse]]
 
 == Problems Decrypting ==
 
