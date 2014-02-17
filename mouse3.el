@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 30 06:55:41 2014 (-0800)
+;; Last-Updated: Mon Feb 17 15:24:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1504
+;;     Update #: 1506
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -309,6 +309,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/17 dadams
+;;     Renamed menu item Open in Browser to Render in Browser.
 ;; 2014/01/30 dadams
 ;;     mouse3-region-popup-menu:
 ;;       Use t, not EVENT as arg to x-popup-menu (see Emacs bug #16565).  Thx to Michael Heerdegen.
@@ -713,7 +715,7 @@ restore it by yanking."
      ,@`,(and (fboundp 'bmkp-light-bookmarks-in-region) ; Defined in `bookmark+-lit.el'.
               '(("Highlight Bookmarks"          . bmkp-light-bookmarks-in-region)))
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
-              '(("Open in Browser"              . browse-url-of-region)))))
+              '(("Render in Browser"            . browse-url-of-region)))))
   "*Submenus of `mouse-3' `Region' popup menu.
 Used only if `mouse3-region-popup-x-popup-panes-flag' is non-nil.
 
@@ -1050,7 +1052,7 @@ restore it by yanking."
         :visible (fboundp 'bmkp-set-autonamed-regexp-region)) ; Defined in `bookmark+-1.el'.
        (bmkp-light-bookmarks        menu-item "Highlight Bookmarks" bmkp-light-bookmarks-in-region
         :visible (fboundp 'bmkp-light-bookmarks-in-region)) ; Defined in `bookmark+-lit.el'.
-       (browse-url-of-region        menu-item "Open in Browser" browse-url-of-region
+       (browse-url-of-region        menu-item "Render in Browser" browse-url-of-region
         :visible (fboundp 'browse-url-of-region))) ; Defined in `browse-url.el'.
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for miscellaneous operations on the mouse selection.")
