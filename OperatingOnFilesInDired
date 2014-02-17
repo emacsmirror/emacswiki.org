@@ -3,12 +3,28 @@ extensions are registered with the explorer.  See MsShellExecute.
 
 When a file is 'right-clicked' from explorer, some of the available actions are 'verbs'.  The default verb is displayed in Bold face (in the right-click menu), and will be executed by default (from a double-click).  WThirtyTwoShellExecute exposes all of these verbs to the emacs user whether visiting the file, or while in Dired.
 
-
 On Unix systems, the shell usually cannot do that.  On Unix systems
 therefore, we must use something like TrivialMode, OpenWith or RunAssoc instead.
 
+----
+Why not using xdg-open that is part of freedesktop.org which is cross desktop compatible??
+ I am using the following function to open files using the association defined in the Desktop environment:
 
+<pre>
+(defun dired-open-file ()
+  "In dired, open the file named on this line."
+  (interactive)
+  (let* ((file (dired-get-filename nil t)))
+    (call-process "xdg-open" nil 0 nil file)))
+</pre>
 
+In my .emacs I have a keybinding for using it from dired:
+
+<pre>
+(define-key dired-mode-map (kbd "C-c o") 'dired-open-file)
+</pre>
+
+--- erreina
 
 == Dired+ with W32 Browser ==
 
