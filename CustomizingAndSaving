@@ -179,7 +179,7 @@ After I wrote the text on this page a few days ago, I set about trying to come u
 
 
 
-Here is one user's [[http://msnyder.info/|takeaway]] (search the page for '''"cus-edit+.el Is the Best Emacs Module You've Never Used"''').  An excerpt:
+Here is one user's [[http://msnyder.info/posts/2014/01/cus-edit-plus/|takeaway]] (search the page for '''"cus-edit+.el Is the Best Emacs Module You've Never Used"''').  An excerpt:
 
 [new]
 : I have declared .emacs bankruptcy for 2014. I’ve wanted a simple, extensible Emacs configuration for some time now. On the way to that goal, I discovered a module that’s made it easier, and has changed how I think about Emacs configuration...  Its goal is simple: to unify the changes you make both outside and inside Emacs’ Customize system. The results, however, are phenomenal. Huge swaths of my disorganized .emacs.d should have been tracked by Customize...  Give cus-edit+ a go: It’s available on Melpa, as well as the %%EmacsWiki%%.  Find all those random setqs cluttering up your Emacs configuration, and get them where they belong.
