@@ -12,7 +12,7 @@ Since I started using [[EmacsAsDaemon|emacs as a daemon]], it became more import
 
 In summary, the differences (that can be advantages and disadvantages depending on your habits) with most other session management options would be:
 === Differences ===
-* Nameses is short and simple compared to things like Bookmark+. It does not offer any functionality besides session management.
+* Nameses is short and simple compared to things like [[BookmarkPlus#DesktopBookmarks|desktop bookmarks]]. It does not offer any functionality besides session management.
 * Loading an existing desktop is at least as simple a: just select one from a list. The difference with most other solutions is that your desktops, once loaded, are automatically saved.
 * Nameses takes care of lazy loading of the desktop (so that you do not overwrite a session with a version that is not completely loaded).
 * Desktop sessions are stored in one separate directory. Some other ways of using desktop sessions probably lead to problems when you use emacs as a daemon (e.g. [[http://www.emacswiki.org/emacs/DeskTop#toc3|here]]).
