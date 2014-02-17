@@ -20,7 +20,7 @@ some completed text in the minibuffer -- this is
 
 [:icicle-read+insert-file-name]
 On-demand completion is always available to insert a ''file name''.
-You invoke this using '''`C-M-F'''', that is, `C-M-S-f'
+You invoke this using '''`C-M-F'''', that is, `C-M-S-f' 
 ('''`##icicle-read+insert-file-name##'''').  A recursive minibuffer is used
 to perform the completion.  The result of completing is inserted
 at [[point]] in the parent minibuffer, without replacing any other
