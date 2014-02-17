@@ -218,7 +218,15 @@ Here is a better way:
 --GaÃ«l Deest
 
 
-See also [[#InvokeBookmarks]].
+[new]
+
+What about the following?
+
+  (defun ido-bookmark-jump (bname)
+    "*Switch to bookmark interactively using `ido'."
+    (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+    (bookmark-jump bname))
+
 
 === Complete find-tag using ido ===
 
