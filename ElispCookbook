@@ -133,6 +133,21 @@ Trim whitespace from a string with a Perl-like chomp function:
         (setq str (replace-match "" t t str)))
       str)
 
+Let's not overcomplicate matters:
+
+    (defun chomp-end (str)
+      "Chomp tailing whitespace from STR."
+      (replace-regexp-in-string (rx (* (any " \t\n")) eos)
+                                ""
+                                str))
+
+    (defun chomp (str)
+      "Chomp leading and tailing whitespace from STR."
+      (replace-regexp-in-string (rx (or (: bos (* (any " \t\n")))
+                                        (: (* (any " \t\n")) eos)))
+                                ""
+                                str))
+
 === Splitting strings ===
 
 See SplitString.
