@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb  6 13:44:04 2014 (-0800)
+;; Last-Updated: Tue Feb 18 13:51:38 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1878
+;;     Update #: 1880
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -194,6 +194,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/17 dadams
+;;     facemenup-set-face-attribute-at-point: Fixed prompt for reading attribute.
 ;; 2014/02/06 dadams
 ;;     Do not add Display Font's to menu twice (for font-lock-menus.el and font-menus.el).
 ;; 2014/01/17 dadams
@@ -1244,7 +1246,7 @@ You are prompted for the face attribute to change and its new value."
 
   ;; Helper function
   (defun facemenup-set-face-attribute-at--1 (face)
-    (let* ((attr   (intern (completing-read "Face attribute to change:"
+    (let* ((attr   (intern (completing-read "Face attribute to change: "
                                             [:family :width :height :weight :slant :foreground
                                                      :background :inverse-video :stipple
                                                      :underline :overline :strike-through
