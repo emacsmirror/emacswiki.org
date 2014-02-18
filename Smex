@@ -90,9 +90,10 @@ You can see mnemonical commands (within completion) before the others with this 
 
         ;; Filtering ad-return-value
         (dolist (to_remove remove-regexes)
-          (delete-if (lambda (item)
-                       (string-match to_remove item))
-                     ad-return-value))
+          (setq ad-return-value
+                (delete-if (lambda (item)
+                             (string-match to_remove item))
+                           ad-return-value)))
 
         ;; Creating resulting list
         (setq ad-return-value
