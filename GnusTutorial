@@ -1578,46 +1578,32 @@ using different modifiers with n and p. The commands are generally
 analogous for the two buffers.
 
 _Key_
+: Group buffer
+: Summary buffer
 
-Group buffer
+`n'
+: next group with unread articles
+: next unread article
 
-Summary buffer
+`p'
+: previous group with unread articles
+: previous unread article
 
-_n_
+`N'
+: next group
+: next article
 
-next group with unread articles
+`P'
+: previous group
+: previous article
 
-next unread article
+`C-n'
+: next line
+: next line
 
-_p_
-
-previous group with unread articles
-
-previous unread article
-
-_N_
-
-next group
-
-next article
-
-_P_
-
-previous group
-
-previous article
-
-_C-n_
-
-next line
-
-next line
-
-_C-p_
-
-previous line
-
-previous line
+`C-p'
+: previous line
+: previous line
 
 The idea here is that since most of the time you won't care to select
 groups with no unread articles or articles which you have already read,
