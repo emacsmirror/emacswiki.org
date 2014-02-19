@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 19 13:50:13 2014 (-0800)
+;; Last-Updated: Wed Feb 19 14:06:00 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3461
+;;     Update #: 3464
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -614,7 +614,9 @@
 ;;(@* "Change log")
 ;;
 ;; 2014/02/19 dadams
-;;     hlt-+/--highlight-regexp-region: Do not advance to hlt-next-face if UNHIGHLIGHTP.
+;;     hlt-+/--highlight-regexp-region:
+;;       If UNHIGHLIGHTP: Do not advance to hlt-next-face.
+;;                        If FACE is nil, unhighlight for all faces.
 ;; 2014/02/06 dadams
 ;;     hlt-+/--highlight-regexp-region: When hlt-auto-faces-flag, cycle to next face.
 ;; 2013/11/28 dadams
@@ -1609,7 +1611,10 @@ unhighlights the matches."
 (defun hlt-+/--highlight-regexp-region (unhighlightp start end regexp face msg-p mouse-p nth)
   "Helper for `hlt-(un)highlight-regexp-region'.
 Non-nil UNHIGHLIGHTP means unhighlight.  Otherwise, highlight.
-The other arguments are as for `hlt-highlight-regexp-region'."
+The other arguments are as for `hlt-highlight-regexp-region'.
+If UNHIGHLIGHTP:
+ Do not advance to the next face, even if `hlt-auto-faces-flag'.
+ If FACE is nil then unhighlight all faces."
   (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                              (setq start  (car start-end)
                                    end    (cadr start-end))))
@@ -1619,7 +1624,7 @@ The other arguments are as for `hlt-highlight-regexp-region'."
            (if unhighlightp "UN" "") regexp))
   ;; Advance the face if highlighting with auto faces.
   (when (and hlt-auto-faces-flag  (not unhighlightp)) (hlt-next-face))
-  (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
+  (if face (setq hlt-last-face  face) (unless unhighlightp (setq face  hlt-last-face)))
   (when (and msg-p  (not unhighlightp))
     (let ((reg-size  (abs (- end start))))
       (when (and (> reg-size hlt-max-region-no-warning)
