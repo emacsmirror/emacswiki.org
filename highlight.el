@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb  6 08:52:10 2014 (-0800)
+;; Last-Updated: Wed Feb 19 13:50:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3457
+;;     Update #: 3461
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -613,6 +613,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/02/19 dadams
+;;     hlt-+/--highlight-regexp-region: Do not advance to hlt-next-face if UNHIGHLIGHTP.
 ;; 2014/02/06 dadams
 ;;     hlt-+/--highlight-regexp-region: When hlt-auto-faces-flag, cycle to next face.
 ;; 2013/11/28 dadams
@@ -1615,7 +1617,8 @@ The other arguments are as for `hlt-highlight-regexp-region'."
   (unless (stringp regexp)              ; Else re-search-forward gets an error
     (error "HLT-%sHIGHLIGHT-REGEXP-REGION: REGEXP arg is not a string: `%S'"
            (if unhighlightp "UN" "") regexp))
-  (when hlt-auto-faces-flag (hlt-next-face))
+  ;; Advance the face if highlighting with auto faces.
+  (when (and hlt-auto-faces-flag  (not unhighlightp)) (hlt-next-face))
   (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
   (when (and msg-p  (not unhighlightp))
     (let ((reg-size  (abs (- end start))))
