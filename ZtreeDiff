@@ -17,6 +17,7 @@ Supported features:
 ** Backspace - jump to upper directory, double backspace  - close current directory
 ** *Space*/*RET* to expand/collapse directory, or
 ** Quick view the current file with *v* key
+** Toggle between expanded/collapsed state of the directory under the cursor with *x* key
 
 Screenshot:
 [[image:https://raw.github.com/fourier/ztree/screenshots/screenshots/emacs_diff_xterm.png]]
