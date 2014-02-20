@@ -179,25 +179,13 @@ You can also use `##C-`##' to quickly find, reuse, and edit a previous shell inp
 
 == Clearing Shell Mode Output ==
 
-This is what I use to clear the shell output.
-
- (defun clear-shell ()
-   (interactive)
-   (let ((old-max comint-buffer-maximum-size))
-     (setq comint-buffer-maximum-size 0)
-     (comint-truncate-buffer)
-     (setq comint-buffer-maximum-size old-max))) 
-
-[new]
-Shouldn't this work?
+Use this command to clear the shell buffer:
 
  (defun clear-shell ()
    (interactive)
    (let ((comint-buffer-maximum-size 0))
      (comint-truncate-buffer)))
 
-
-     
 == Switch between Term-mode and Shell-mode ==
 
 Below is a function which allows you to switch between Term mode and Shell mode, in the same buffer. 
@@ -231,8 +219,6 @@ I bound it to C-j to easily switch between the two modes:
   (define-key term-raw-map (kbd "C-j") 'term-switch-to-shell-mode)
 
 [Question] Why not simply shifting between character mode and line mode?  Is there a bigger reason to really shift to a real Shell buffer?
-
-
 
 
 ----
