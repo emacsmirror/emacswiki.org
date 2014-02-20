@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Feb  8 08:20:10 2014 (-0800)
+;; Last-Updated: Wed Feb 19 21:35:15 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5866
+;;     Update #: 5877
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2460,10 +2460,11 @@ See also option `icicle-buffer-skip-functions'."
     bbdb-complete-mail                  ; For BBDB versions such as 3.02 and later
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
-    ;; Use these two if you want Icicles completion for shell commands.
-    ;; See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
-    ;; dired-read-shell-command
-    ;; read-shell-command
+
+    ;; Uncomment `dired-read-shell-command' and `read-shell-command' if you want Icicles completion for
+    ;; shell commands.  See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
+    ;; dired-read-shell-command             read-shell-command
+
     ess-complete-object-name             gud-gdb-complete-command
     Info-goto-node                       Info-index
     Info-menu
@@ -2495,7 +2496,11 @@ Customize to change this option, then ensure that the code inserted by
 Customize into your `user-init-file' or your `custom-file' is invoked
 before you enter Icicle mode.
 
-See also option `icicle-top-level-key-bindings'."
+See also option `icicle-top-level-key-bindings'.
+
+Note: If you want the special Icicles completion for shell commands,
+then include these two functions in the option value:
+`dired-read-shell-command' and `read-shell-command'."
   :type '(repeat (restricted-sexp :tag "Command"
                   ;; Use `symbolp' instead of `functionp' or `fboundp', in case the library
                   ;; defining the function is not loaded.
