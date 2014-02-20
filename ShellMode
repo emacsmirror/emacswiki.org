@@ -228,6 +228,11 @@ I bound it to C-j to easily switch between the two modes:
 
 * http://www.cs.duke.edu/~des/vip.html: `vip' is a program that provides for interactive editing in a pipeline. It can be used syntactically like a filter.
 
+[new]
+Remember that Emacs has native built-in commands of [b]M-![/b] (or "M-x shell-command") and [b]M-|[/b] (or "M-x shell-command-on-region"), each of which allows a one-line command in the mini-buffer, and returns the output to the mini-buffer (if the output is one line, like the results of `date`) or to a new buffer, if the shell output is more than one line.
+
+Also, prefixing either command with Ctrl-U will send the output to the active editing buffer, rather than sending it to a separate buffer. Suppose you have a marked block to change (by an external command like `sort` or `sed` or `awk`). Use [b]M-|[/b] to see the output in a new window, and if satisfied, use [b]Ctrl-U M-|[/b] to change the marked block in the current window. If not satisfied, just run [b]M-|[/b] again with different parameters or option switches, and this will overwrite the output of the new window, without destroying the contents of the currently active window.
+
 ----
 CategoryExternalUtilities
 CategoryShell
