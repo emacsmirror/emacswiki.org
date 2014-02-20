@@ -220,6 +220,13 @@ I bound it to C-j to easily switch between the two modes:
 
 [Question] Why not simply shifting between character mode and line mode?  Is there a bigger reason to really shift to a real Shell buffer?
 
+== Piping shell output into an Emacs buffer ==
+
+* http://oneliner-elisp.sourceforge.net: “Oneliner integrates UNIX shell with Emacs text editor. Oneliner provides various syntax for integration. (e.g. You can connect ‘shell pipe’ and ‘Emacs buffer’ directly with simple syntax.)”
+
+* https://github.com/lewang/e-sink: Pipe output of shell command into an Emacs buffer using `emacsclient'.
+
+* http://www.cs.duke.edu/~des/vip.html: `vip' is a program that provides for interactive editing in a pipeline. It can be used syntactically like a filter.
 
 ----
 CategoryExternalUtilities
