@@ -1,0 +1,6 @@
+My name is Stefan Moeding. My first C-x C-s was on version 18.57 and since then I have used GNU Emacs on <nowiki>AmigaOS</nowiki>, VAX/VMS, <nowiki>OpenVMS</nowiki>, Ultrix, Tru64, <nowiki>SunOS</nowiki>, Solaris, AIX, <nowiki>FreeBSD</nowiki>, GNU/Linux and Mac OS X.
+
+Emacs helps me daily to hack SQL, Bash, Perl, C, R, LaTeX and Puppet.
+
+* Email: (concat (rot13-string "fgz") (string ?@) "kill-9" (string ?.) "net")
+* Blog: http://www.moeding.net
