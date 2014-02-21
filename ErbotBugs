@@ -38,6 +38,8 @@ ttp://es.tldp.org/Manuales-LuCAS/ENROOTADOR/v2.6/Guia_del_enROOTador/Guia_del_en
 
 </pre>
 
+You can make fsbot more than unresponsive, if you mapcar a circular list, fsbot dies. :( 
+
 <pre>
 <deego> maybe fsbot shouldn't respond to double comma unless the double comma
 	is "preceded" by \b
