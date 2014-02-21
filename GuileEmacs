@@ -3,7 +3,7 @@
 Guile Emacs is a variant of Emacs which is integrating the
 [[Guile]] extension language in addition to EmacsLisp so to
 provide a better programming environment for both Emacs
-users and Guile users.  Guile is in fact [[Scheme]], a much simpler and cleaner
+users and Guile users.  Guile is in fact [[Scheme]], which some people argue is a much simpler and cleaner
 dialect of Lisp than CommonLisp.
 
 == History ==
