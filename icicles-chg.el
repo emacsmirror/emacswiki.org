@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Feb  9 11:06:38 2014 (-0800)
+;; Last-Updated: Fri Feb 21 09:03:28 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10632
+;;     Update #: 10646
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1961,6 +1961,18 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/02/21 dadams
+;;     Added: icicle-read-file-name-default.
+;;     icicle-read-file-name, icicle-read-file-name-1, icicle-dired-read-shell-command,
+;;       icicle-dired-guess-shell-command:
+;;         Added optional HISTORY arg.
+;;     icicle-read-file-name-1: If icicle-orig-read-file-name-fn = read-file-name-default then
+;;                              use icicle-read-file-name-default, which accepts a HISTORY arg.
+;;     icicle-dired-read-shell-command, icicle-dired-guess-shell-command:
+;;       Use shell-command-history by default.
+;;     icicle-read-shell-command-completing: Pass HIST to icicle-read-file-name.
+;; 2014/02/19 dadams
+;;     icicle-read-file-name: 
 ;; 2014/02/08 dadams
 ;;     Renamed: icicle-file-directory-p to icicle-looks-like-dir-name-p.
 ;;     icicle-looks-like-dir-name-p: Better doc string.
