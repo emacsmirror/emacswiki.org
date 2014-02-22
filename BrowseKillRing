@@ -32,7 +32,7 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 ** Works in minibuffer, so it don't open other buffers. Every match is cut, so basically you see only 10 first characters, 10 last characters and number of cutted characters in the middle. To preview whole text, use Lisp:ido-preview.el
 
 
-
+[:browse-kill-ring+.el]
 * <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
 ** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
 ** You can copy or move selections from one ring to another (using `c').
