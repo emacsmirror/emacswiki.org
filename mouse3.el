@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 17 15:24:51 2014 (-0800)
+;; Last-Updated: Sat Feb 22 00:24:59 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1506
+;;     Update #: 1703
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -54,10 +54,9 @@
 ;;
 ;; You can use option `mouse3-second-click-default-command' to
 ;; customize the behavior to either pop up a menu or invoke any
-;; command you choose.  The default value is
-;; `mouse3-region-popup-menu', which pops up a menu.  To obtain the
-;; vanilla Emacs behavior, customize the option value to command
-;; `mouse3-kill/delete-region'.
+;; command you choose.  The default value is `mouse3-popup-menu',
+;; which pops up a menu.  To obtain the vanilla Emacs behavior,
+;; customize the option value to command `mouse3-kill/delete-region'.
 ;;
 ;; Option `mouse3-double-click-command' associates a command with a
 ;; `mouse-3' double-click.  The default value is command
@@ -116,23 +115,24 @@
 ;;
 ;; If you choose for `mouse-3' to pop up a menu then you can customize
 ;; that menu using various user options.  The command that pops up the
-;; menu is `mouse3-region-popup-menu'.  See the documentation for that
+;; menu is `mouse3-popup-menu'.  See the documentation for that
 ;; command for more explanation of the use of options.
 ;;
 ;; A fairly complete default menu is provided out of the box, so you
 ;; do not need to customize anything unless you want to.
 ;;
-;; `mouse3-region-popup-menu' ultimately invokes standard function
+;; `mouse3-popup-menu' ultimately invokes standard function
 ;; `x-popup-menu' to do its work.  The menu definition used by
-;; `x-popup-menu' can take two alternative forms which are quite
+;; `x-popup-menu' can take two alternative forms, which are quite
 ;; different.  Which form you choose to use is controlled by option
-;; `mouse3-region-popup-x-popup-panes-flag'.
+;; `mouse3-popup-x-popup-panes-flag'.
 ;;
 ;; If that option is nil (the default value), you can use keymaps and
 ;; extended menu items to define the popup menu.  This is recommended.
-;; If the value is non-nil then you can use option
-;; `mouse3-region-popup-x-popup-panes' to make use of the alternative,
-;; `x-popup-menu'-specific form.
+;; If the value is non-nil then you can use options
+;; `mouse3-region-popup-x-popup-panes' and
+;; `mouse3-noregion-popup-x-popup-panes' to make use of the
+;; alternative, `x-popup-menu'-specific form.
 ;;
 ;; That alternative form is easy to use, but it does not offer you all
 ;; of the possibilities that a standard menu definition does.  In
@@ -144,19 +144,18 @@
 ;; remove or disable submenus and menu items that are inappropriate
 ;; for the current context.  For example, it removes or disables
 ;; buffer-modifying items and submenus if the current buffer is
-;; read-only, and it removes or disables region-related items and
-;; submenus when the region is empty.
+;; read-only.
 ;;
 ;; The rest of the description here assumes that
-;; `mouse3-region-popup-x-popup-panes-flag' is nil (the default value
-;; and recommended).
+;; `mouse3-popup-x-popup-panes-flag' is nil (the default value and
+;; recommended).
 ;;
 ;; You can optionally include, at the beginning of the menu, a submenu
 ;; that has, as its own submenus, the global menus that are currently
 ;; available.  (These are the same menus that are popped up by
 ;; `C-mouse-3'.)  This is controlled by option
-;; `mouse3-region-popup-include-global-menus-flag'.  If the menu bar
-;; is not shown currently, then these submenus are the menu-bar menus.
+;; `mouse3-popup-include-global-menus-flag'.  If the menu bar is not
+;; shown currently, then these submenus are the menu-bar menus.
 ;; Otherwise they are the major-mode menus.
 ;;
 ;; For example, if the menu bar is showing, then in Dired mode the
@@ -165,10 +164,11 @@
 ;;
 ;; You define the rest of the popup menu (other than the global part)
 ;; using submenu keymaps and `menu-item' bindings (extended menu
-;; items).  You do this by customizing option
-;; `mouse3-region-popup-entries'.  You can reuse existing keymaps or
-;; create menu items and submenus from scratch.  See the documentation
-;; for `mouse3-region-popup-entries'.  If you reuse existing keymaps
+;; items).  You do this by customizing options
+;; `mouse3-region-popup-entries' and `mouse3-noregion-popup-entries'.
+;; You can reuse existing keymaps or create menu items and submenus
+;; from scratch.  See the documentation for
+;; `mouse3-(no)region-popup-entries'.  If you reuse existing keymaps
 ;; you can add their menu items either as a submenu or as individual
 ;; items.
 ;;
@@ -186,7 +186,7 @@
 ;; two modes is different, to give you an idea of what is possible.
 ;; For Dired mode, `mouse3-region-popup-entries' is used.  For Picture
 ;; mode, `mouse3-region-popup-x-popup-panes' is used, and both
-;; `mouse3-region-popup-x-popup-panes-flag' and
+;; `mouse3-popup-x-popup-panes-flag' and
 ;; `mouse3-region-popup-x-popup-panes' are made buffer-local.
 ;;
 ;; The example code for Picture mode provides actions on the rectangle
@@ -255,22 +255,24 @@
 ;; User options defined here:
 ;;
 ;;   `mouse3-dired-function', `mouse3-double-click-command',
+;;   `mouse3-noregion-popup-entries',
+;;   `mouse3-noregion-popup-x-popup-panes',
 ;;   `mouse3-picture-mode-x-popup-panes',
-;;   `mouse3-region-popup-entries',
-;;   `mouse3-region-popup-include-global-menus-flag',
+;;   `mouse3-popup-include-global-menus-flag',
+;;   `mouse3-popup-x-popup-panes-flag', `mouse3-region-popup-entries',
 ;;   `mouse3-region-popup-x-popup-panes',
-;;   `mouse3-region-popup-x-popup-panes-flag',
+;;   
 ;;   `mouse3-second-click-default-command'.
 ;;
 ;; Commands defined here:
 ;;
-;;   `mouse3-dired-flag-region-files-for-deletion',
-;;   `mouse3-dired-mark-region-files',
+;;   `mouse3-dired', `mouse3-dired-flag-region-files-for-deletion',
+;;   `mouse3-dired-mark-region-files', `mouse3-dired-other-window',
 ;;   `mouse3-dired-toggle-marks-in-region',
 ;;   `mouse3-dired-toggle-marks-in-region-from-mouse',
 ;;   `mouse3-dired-unmark-region-files', `mouse3-dired-use-menu',
 ;;   `mouse3-dired-use-toggle-marks', `mouse3-kill/delete-region',
-;;   `mouse3-region-popup-menu'.
+;;   `mouse3-popup-menu', `mouse3-pp-eval-sexp'.
 ;;
 ;; Non-interactive functions defined here:
 ;;
@@ -278,7 +280,7 @@
 ;;   `mouse3-dired-set-to-toggle-marks',
 ;;   `mouse3-dired-this-file-marked-p',
 ;;   `mouse3-dired-this-file-unmarked-p',
-;;   `mouse3-dired-toggle-marks-in-region',
+;;   `mouse3-dired-toggle-marks-in-region', `mouse3-file-or-dir',
 ;;   `mouse3-nonempty-region-p', `mouse3-region-popup-choice',
 ;;   `mouse3-region-popup-choice-1',
 ;;   `mouse3-region-popup-custom-entries',
@@ -286,6 +288,7 @@
 ;;
 ;; Internal variables defined here:
 ;;
+;;   `mouse3-noregion-popup-misc-submenu',
 ;;   `mouse3-region-popup-change-text-submenu',
 ;;   `mouse3-region-popup-check-convert-submenu',
 ;;   `mouse3-region-popup-copy-submenu',
@@ -309,6 +312,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/21 dadams
+;;     INCOMPATIBLE CHANGE: IF you previously customized one of the options
+;;       mouse3-region-popup-include-global-menus-flag, mouse3-region-popup-include-global-menus-flag,
+;;       or mouse3-region-popup-x-popup-panes-flag, THEN port your customizations to the options they were
+;;       renamed to (same names, but without -region).
+;;     Added: mouse3-dired, mouse3-dired-other-window, mouse3-pp-eval-sexp, mouse3-file-or-dir,
+;;            mouse3-noregion-popup-entries, mouse3-noregion-popup-misc-submenu,
+;;            mouse3-noregion-popup-x-popup-panes.
+;;     Renamed: mouse3-region-popup-menu to mouse3-popup-menu,
+;;              mouse3-region-popup-include-global-menus-flag to mouse3-popup-include-global-menus-flag
+;;              mouse3-region-popup-x-popup-panes-flag to mouse3-popup-x-popup-panes-flag.
+;;     mouse3-popup-menu: Use mouse3-popup-custom-entries, to handle also mouse3-noregion-popup-entries.
 ;; 2014/02/17 dadams
 ;;     Renamed menu item Open in Browser to Render in Browser.
 ;; 2014/01/30 dadams
@@ -421,6 +436,42 @@ Don't forget to mention your Emacs version and mouse3.el `Update #'."))
           "http://www.emacswiki.org/cgi-bin/wiki/Mouse3")
   :link '(emacs-commentary-link :tag "Doc" "mouse3"))
 
+(defun mouse3-nonempty-region-p ()
+  "Return non-nil if region is active and non-empty."
+  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
+
+(defun mouse3-dired (&optional other-window)
+  "Invoke Dired for file or directory named under mouse pointer.
+Assumes that there is a file or dir name at that position."
+  (interactive)
+  (when (listp last-nonmenu-event)      ; Emacs 20, at least: ensure mouse event.
+    (save-excursion
+      (mouse-set-point last-nonmenu-event)
+      (funcall (if other-window #'dired-other-window #'dired)
+               (file-name-directory
+                (abbreviate-file-name (expand-file-name (mouse3-file-or-dir))))))))
+
+(defun mouse3-dired-other-window ()
+  "Same as `mouse3-dired', but use other window."
+  (interactive)
+  (mouse3-dired 'OTHER-WINDOW))
+
+(defun mouse3-file-or-dir ()
+  "Return file or dir name at point.  Raise error if none."
+  (let ((guess  (ffap-guesser)))
+    (unless (and guess  (or (ffap-file-remote-p guess)
+                            (file-directory-p (abbreviate-file-name (expand-file-name guess)))
+                            (file-regular-p guess)))
+      (error "No file or dir name under mouse pointer"))
+    guess))
+
+(defun mouse3-pp-eval-sexp ()
+  "Evaluate the Lisp sexp at the mouse pointer and pretty-print the value."
+  (interactive)
+  (when (listp last-nonmenu-event)      ; Emacs 20, at least: ensure mouse event.
+    (pp-eval-expression (save-excursion (mouse-set-point last-nonmenu-event) (sexp-at-point)))
+    (sleep-for 3)))
+
 (defvar mouse3-save-then-kill-command nil
   "Command used for a 2nd `mouse-3' click at the same location, or nil.
 The command must accept 2 args: mouse click event and prefix arg.
@@ -428,8 +479,7 @@ If non-nil, the command is used in priority over the value of user
 option `mouse3-second-click-default-command'.  If nil, this var has no
 effect on `mouse-3' behavior.")
 
-;;;###autoload
-(defcustom mouse3-second-click-default-command 'mouse3-region-popup-menu
+(defcustom mouse3-second-click-default-command 'mouse3-popup-menu
   "*Command used for a second `mouse-3' click at the same location.
 The command must accept 2 args: mouse click event and prefix arg.
 
@@ -438,7 +488,7 @@ various contexts.  This option is used only if variable
 `mouse3-save-then-kill-command' is nil.
 
 Two particular values:
- `mouse3-region-popup-menu':  Pop up a menu of actions on the region.
+ `mouse3-popup-menu': Pop up a menu of actions on the region.
  `mouse3-kill/delete-region': Kill or delete the region, according to
                               `mouse-drag-copy-region'.
 
@@ -446,30 +496,29 @@ See also `mouse3-double-click-command'.  You will probably want to
 customize these two options together.  To make either a no-op, set the
 value to command `ignore'.
 
-Note that setting `mouse3-double-click-command' to
-`mouse3-region-popup-menu' and `mouse3-second-click-default-command'
-to `mouse3-kill/delete-region' is not recommended, because in Emacs a
+Note that setting `mouse3-double-click-command' to `mouse3-popup-menu'
+and `mouse3-second-click-default-command' to
+`mouse3-kill/delete-region' is not recommended, because in Emacs a
 double-click event is always preceded automatically by the associated
 single-click event.  See `(elisp) Repeat Events'."
   :type '(choice
-          (const :tag "Menu" :value mouse3-region-popup-menu)
+          (const :tag "Menu" :value mouse3-popup-menu)
           (const :tag "Kill/delete, per `mouse-drag-copy-region'" :value mouse3-kill/delete-region)
           (restricted-sexp :tag "Other Command (two args)" :match-alternatives (commandp)))
 ;;; $$$$$$  :set (lambda (symbol value)
 ;;;          (set symbol value)
-;;;          (if (eq value 'mouse3-region-popup-menu)
+;;;          (if (eq value 'mouse3-popup-menu)
 ;;;              (global-set-key [double-mouse-3] 'mouse3-kill/delete-region)
 ;;;            (global-set-key [double-mouse-3] nil)))
   :initialize 'custom-initialize-set
   :group 'mouse3)
 
-;;;###autoload
 (defcustom mouse3-double-click-command 'mouse3-kill/delete-region
   "*Command used for a `mouse-3' double-click.
 The command must accept 2 args: mouse click event and prefix arg.
 
 Two particular values:
- `mouse3-region-popup-menu':  Pop up a menu of actions on the region.
+ `mouse3-popup-menu':  Pop up a menu of actions on the region.
  `mouse3-kill/delete-region': Kill or delete the region, according to
                               `mouse-drag-copy-region'.
 
@@ -477,14 +526,14 @@ See also `mouse3-second-click-default-command'.  You will probably
 want to customize these two options together.  To make either a no-op,
 set the value to command `ignore'.
 
-Note that setting `mouse3-double-click-command' to
-`mouse3-region-popup-menu' and `mouse3-second-click-default-command'
-to `mouse3-kill/delete-region' is not recommended, because in Emacs a
+Note that setting `mouse3-double-click-command' to `mouse3-popup-menu'
+and `mouse3-second-click-default-command' to
+`mouse3-kill/delete-region' is not recommended, because in Emacs a
 double-click event is always preceded automatically by the associated
 single-click event.  See `(elisp) Repeat Events'."
   :type '(choice
           (const :tag "Kill/delete, per `mouse-drag-copy-region'" :value mouse3-kill/delete-region)
-          (const :tag "Menu" :value mouse3-region-popup-menu)
+          (const :tag "Menu" :value mouse3-popup-menu)
           (restricted-sexp :tag "Other Command (two args)" :match-alternatives (commandp)))
   :set (lambda (symbol value)
          (set symbol value)
@@ -495,21 +544,21 @@ single-click event.  See `(elisp) Repeat Events'."
   :group 'mouse3)
 
 ;;;###autoload
-(defcustom mouse3-region-popup-include-global-menus-flag t
+(defcustom mouse3-popup-include-global-menus-flag t
   "*Non-nil means `mouse-3' menu includes major-mode or menu-bar menus.
 When non-nil:
  If the menu bar is visible then include the major-mode menus.
  Otherwise, include the menu-bar menus.
 
-This option has no effect unless
-`mouse3-region-popup-x-popup-panes-flag' is nil, and it has no effect
-before Emacs 23."
+This option has no effect unless `mouse3-popup-x-popup-panes-flag' is
+nil, and it has no effect before Emacs 23."
   :type 'boolean :group 'mouse3)
 
 ;;;###autoload
-(defcustom mouse3-region-popup-x-popup-panes-flag nil
-  "*Non-nil means use `mouse3-region-popup-x-popup-panes'.
-If nil, or if `mouse3-region-popup-x-popup-panes' is nil, use
+(defcustom mouse3-popup-x-popup-panes-flag nil
+  "*Non-nil means use `mouse3-(no)region-popup-x-popup-panes'.
+If nil, or if both `mouse3-region-popup-x-popup-panes' and
+`mouse3-noregion-popup-x-popup-panes' are nil, then use
 `mouse3-region-popup-entries' instead."
   :type 'boolean :group 'mouse3)
 
@@ -717,7 +766,7 @@ restore it by yanking."
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
               '(("Render in Browser"            . browse-url-of-region)))))
   "*Submenus of `mouse-3' `Region' popup menu.
-Used only if `mouse3-region-popup-x-popup-panes-flag' is non-nil.
+Used only if `mouse3-popup-x-popup-panes-flag' is non-nil.
 
 A list of `x-popup-menu' pane menus, where each has the form
  (TITLE ITEM1 ITEM2...), with each ITEM a string or a cons cell
@@ -725,7 +774,7 @@ A list of `x-popup-menu' pane menus, where each has the form
 
 If you want to use features offered by extended menu items, then do
 not use this option.  Instead, set option
-`mouse3-region-popup-x-popup-panes-flag' to nil and use option
+`mouse3-popup-x-popup-panes-flag' to nil and use option
 `mouse3-region-popup-entries' to define the menu."
   :type '(alist
           :key-type   (string   :tag "Submenu Name")
@@ -740,11 +789,200 @@ not use this option.  Instead, set option
                         (list :tag "Separator" (const "--")))))
   :group 'mouse3)
 
-(defun mouse3-nonempty-region-p ()
-  "Return non-nil if region is active and non-empty."
-  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
+;; I guess there is no way to turn stuff off in this case, when buffer is read-only.
+;; Another good reason to use the standard format instead.
+(defcustom mouse3-noregion-popup-x-popup-panes
+  `(("Misc"
+     ,@(and (fboundp 'goto-address-find-address-at-point) ; `:visible'
+            '(("Send Email" . (lambda ()
+                                (interactive)
+                                (save-excursion
+                                  (when (listp last-nonmenu-event)
+                                    (mouse-set-point last-nonmenu-event)
+                                    (unless (goto-address-find-address-at-point)
+                                      (error "No email address under mouse pointer"))
+                                    (goto-address-at-point)))))))
+     ("Open URL in Browser" . browse-url-at-mouse)
+     ("Visit File" . ffap-at-mouse)
+     ("Visit File in Other Window" . (lambda ()
+                                       (interactive)
+                                       (save-excursion
+                                         (when (listp last-nonmenu-event)
+                                           (mouse-set-point last-nonmenu-event)
+                                           (find-file-other-window (mouse3-file-or-dir))))))
+     ("Dired" . mouse3-dired)
+     ("Dired in Other Window" . mouse3-dired-other-window)
+     ,@(and (fboundp 'describe-file)    ; `:visible' - defined in `help-fns+.el'.
+            '(("Describe File" . (lambda ()
+                                   (interactive)
+                                   (save-excursion
+                                     (when (listp last-nonmenu-event)
+                                       (mouse-set-point last-nonmenu-event)
+                                       (describe-file (mouse3-file-or-dir))))))))
+     ("Describe Function" . (lambda ()
+                              (interactive)
+                              (save-excursion
+                                (when (listp last-nonmenu-event)
+                                  (mouse-set-point last-nonmenu-event)
+                                  (let ((fn  (or (let ((sy  (symbol-at-point))) (and (fboundp sy)  sy))
+                                                 (function-called-at-point))))
+                                    (unless fn (error "No function name under mouse pointer"))
+                                    (describe-function fn))))))
+     ("Show Code Defining Function" . (lambda ()
+                                        (interactive)
+                                        (save-excursion
+                                          (when (listp last-nonmenu-event)
+                                            (mouse-set-point last-nonmenu-event)
+                                            (unless (function-at-point)
+                                              (error "No function name under mouse pointer"))
+                                            (find-function-at-point)))))
+     ("Describe Variable" . (lambda ()
+                              (interactive)
+                              (save-excursion
+                                (when (listp last-nonmenu-event)
+                                  (mouse-set-point last-nonmenu-event)
+                                  (let ((var  (variable-at-point)))
+                                    (when (numberp var) (error "No variable name under mouse pointer"))
+                                    (describe-variable var))))))
+     ("Show Code Defining Variable" . (lambda ()
+                                        (interactive)
+                                        (save-excursion
+                                          (when (listp last-nonmenu-event)
+                                            (mouse-set-point last-nonmenu-event)
+                                            (when (numberp (variable-at-point))
+                                              (error "No variable name under mouse pointer"))
+                                            (find-variable-at-point)))))
+     ("Describe Face" . (lambda ()
+                          (interactive)
+                          (save-excursion
+                            (when (listp last-nonmenu-event)
+                              (mouse-set-point last-nonmenu-event)
+                              (let ((face  (or (and (fboundp 'face-at-point)
+                                                    (face-at-point 'FROM-TEXT-TOO))
+                                               (and (facep (symbol-at-point))
+                                                    (symbol-at-point))
+                                               (let ((faceprop   (or (get-char-property (point) 'read-face-name)
+                                                                     (get-char-property (point) 'face))))
+                                                 (cond ((facep faceprop) faceprop)
+                                                       ((and (listp faceprop)
+                                                             ;; Don't treat an attribute spec as a list of faces.
+                                                             (not (keywordp (car faceprop)))
+                                                             (not (memq (car faceprop)
+                                                                        '(foreground-color background-color))))
+                                                        (car faceprop)))))))
+                                (unless face (error "No face name under mouse pointer"))
+                                (describe-face face))))))
+     ,@(and (fboundp 'describe-package) ; `:visible'
+            '(("Describe Package" . (lambda ()
+                                      (interactive)
+                                      (save-excursion
+                                        (when (listp last-nonmenu-event)
+                                          (mouse-set-point last-nonmenu-event)
+                                          (let ((pkg  (or (symbol-at-point)
+                                                          (function-called-at-point))))
+                                            (unless (memq pkg (append (mapcar 'car package-alist)
+                                                                      (mapcar 'car package-archive-contents)
+                                                                      (mapcar 'car package--builtins)))
+                                              (error "No package name under mouse pointer"))
+                                            (describe-package pkg))))))))
+     ("Describe Text Properties" . (lambda ()
+                                     (interactive)
+                                     (save-excursion
+                                       (when (listp last-nonmenu-event)
+                                         (mouse-set-point last-nonmenu-event)
+                                         (if (fboundp 'describe-text-properties)
+                                             (describe-text-properties (point))
+                                           (list-text-properties-at (point)))))))
+     ("--")
+     ,@(and (fboundp 'hlt-highlight-regexp-region) ; `:visible'
+            '(("Highlight Symbol"  . (lambda ()
+                                       (interactive)
+                                       (save-excursion
+                                         (when (listp last-nonmenu-event)
+                                           (mouse-set-point last-nonmenu-event)
+                                           (let ((symb  (symbol-at-point))
+                                                 (hlt-auto-faces-flag  t))
+                                             (unless symb (error "No symbol under mouse pointer"))
+                                             (hlt-highlight-regexp-region
+                                              (point-min) (point-max)
+                                              (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s")
+                                                      symb)))))))))
+     ,@(and (fboundp 'hlt-unhighlight-regexp-region) ; `:visible'
+            '(("Unhighlight Symbol" . (lambda ()
+                                        (interactive)
+                                        (save-excursion
+                                          (when (listp last-nonmenu-event)
+                                            (mouse-set-point last-nonmenu-event)
+                                            (let ((symb  (symbol-at-point)))
+                                              (unless symb (error "No symbol under mouse pointer"))
+                                              (hlt-unhighlight-regexp-region
+                                               (point-min) (point-max)
+                                               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s")
+                                                       symb)))))))))
+     ,@(and (fboundp 'hi-lock-face-symbol-at-point) ; `:visible'
+            '(("Hi-Lock Symbol" . (lambda ()
+                                    (interactive)
+                                    (save-excursion
+                                      (when (listp last-nonmenu-event)
+                                        (mouse-set-point last-nonmenu-event)
+                                        (unless (symbol-at-point) (error "No symbol under mouse pointer"))
+                                        (hi-lock-face-symbol-at-point)))))))
+     ,@(and (fboundp 'hi-lock-unface-buffer) ; `:visible'
+            (boundp 'hi-lock-interactive-patterns) ; `:enable'
+            '(("Un-Hi-Lock Symbol" . (lambda ()
+                                       (interactive)
+                                       (save-excursion
+                                         (when (listp last-nonmenu-event)
+                                           (mouse-set-point last-nonmenu-event)
+                                           (unless (symbol-at-point) (error "No symbol under mouse pointer"))
+                                           (hi-lock-unface-buffer
+                                            (car (assoc (find-tag-default-as-symbol-regexp)
+                                                        hi-lock-interactive-patterns)))))))))
+     ("--")
+     ,@(and (fboundp 'info-lookup-symbol) ; `:visible'
+            '(("Look Up Symbol in Manual" . (lambda ()
+                                              (interactive)
+                                              (save-excursion
+                                                (when (listp last-nonmenu-event)
+                                                  (mouse-set-point last-nonmenu-event)
+                                                  (let ((symb  (symbol-at-point)))
+                                                    (unless symb (error "No symbol under mouse pointer"))
+                                                    (info-lookup-symbol symb))))))))
+     ,@(and (fboundp 'isearch-forward-symbol-at-point) ; `:visible' - Emacs 24.4+
+            '(("Search for Symbol" . (lambda ()
+                                       (interactive)
+                                       (deactivate-mark) ; Must do this first.
+                                       (save-excursion
+                                         (when (listp last-nonmenu-event)
+                                           (mouse-set-point last-nonmenu-event)
+                                           (let ((symb  (symbol-at-point)))
+                                             (unless symb (error "No symbol under mouse pointer"))
+                                             (isearch-forward-symbol-at-point))))))))
+     ("Eval & Pretty-Print Lisp Sexp" . mouse3-pp-eval-sexp)))
+  "*Submenus of `mouse-3' `No Region' popup menu.
+Used only if `mouse3-popup-x-popup-panes-flag' is non-nil.
 
-;;;###autoload
+A list of `x-popup-menu' pane menus, where each has the form
+ (TITLE ITEM1 ITEM2...), with each ITEM a string or a cons cell
+ (STRING . VALUE).  See `x-popup-menu'.
+
+If you want to use features offered by extended menu items, then do
+not use this option.  Instead, set option
+`mouse3-popup-x-popup-panes-flag' to nil and use option
+`mouse3-noregion-popup-entries' to define the menu."
+  :type '(alist
+          :key-type   (string   :tag "Submenu Name")
+          :value-type (repeat
+                       (choice
+                        (cons :tag "Item"
+                         (string :tag "Name")
+                         ;; This is more correct but gives `mismatch' in Emacs < version 24:
+                         ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
+                         (restricted-sexp :tag "Command"
+                          :match-alternatives ((lambda (x) (not (null x)))) :value ignore))
+                        (list :tag "Separator" (const "--")))))
+  :group 'mouse3)
+
 (defconst mouse3-region-popup-remove/replace-items ; These are individual menu items: no submenu.
     `((kill           menu-item "Kill"   kill-region
        :visible (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
@@ -769,7 +1007,6 @@ not use this option.  Instead, set option
        :visible (and (not buffer-read-only)  (fboundp 'hlt-yank-props)  hlt-copied-props)))
   "Menu items for removing or replacing the mouse selection.")
 
-;;;###autoload
 (defconst mouse3-region-popup-remove/replace-rect-submenu
     '(remove/replace-rect-menu
       menu-item
@@ -804,7 +1041,6 @@ restore it by yanking."
       :enable (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
   "Submenu for removing or replacing the rectangle selected by the mouse.")
 
-;;;###autoload
 (defconst mouse3-region-popup-copy-submenu
     '(copy-menu
       menu-item
@@ -823,7 +1059,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for copying the mouse selection.")
 
-;;;###autoload
 (defconst mouse3-region-popup-register-submenu
     '(to-register-menu
       menu-item
@@ -851,7 +1086,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for putting the mouse selection in a register.")
 
-;;;###autoload
 (defconst mouse3-region-popup-rectangle-submenu
     `(rectangle-menu
       menu-item
@@ -905,7 +1139,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for operations on the rectangle selected by the mouse.")
 
-;;;###autoload
 (defconst mouse3-region-popup-change-text-submenu
     '(change-text-menu
       menu-item
@@ -941,7 +1174,6 @@ restore it by yanking."
       :enable (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
   "Submenu for operations on the mouse selection that change the text.")
 
-;;;###autoload
 (defconst mouse3-region-popup-check-convert-submenu
     '(check-convert-menu
       menu-item "Check, Correct, Convert"
@@ -984,7 +1216,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for operations that check, correct, or convert mouse-selection text.")
 
-;;;###autoload
 (defconst mouse3-region-popup-highlight-submenu
     '(hlt-highlight-menu
       menu-item "Highlight"
@@ -1002,7 +1233,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for highlighting or unhighlighting text in the mouse selection.")
 
-;;;###autoload
 (defconst mouse3-region-popup-print-submenu
     '(print-menu
       menu-item "Print"
@@ -1024,7 +1254,6 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for printing the mouse selection.")
 
-;;;###autoload
 (defconst mouse3-region-popup-misc-submenu
     '(misc-menu
       menu-item "Misc"
@@ -1057,7 +1286,188 @@ restore it by yanking."
       :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
   "Submenu for miscellaneous operations on the mouse selection.")
 
-;;;###autoload
+(defconst mouse3-noregion-popup-misc-submenu
+    '(misc-menu
+      menu-item "Misc"
+      (keymap
+       (send-email menu-item "Send Email" goto-address-at-point
+        :enable (save-excursion
+                  (mouse-set-point last-nonmenu-event)
+                  (goto-address-find-address-at-point))
+        :visible (fboundp 'goto-address-find-address-at-point))
+       (browse-url menu-item "Open URL in Browser" browse-url-at-mouse
+        :enable (save-excursion
+                  (mouse-set-point last-nonmenu-event)
+                  (if (or (> emacs-major-version 24) ; Do not use `browse-url-url-at-point'.
+                          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+                      (thing-at-point 'url t)
+                    (thing-at-point 'url))))
+       (find-file menu-item "Visit File" ffap-at-mouse
+        :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
+       (find-file-other menu-item "Visit File in Other Window" (lambda ()
+                                                                 (interactive)
+                                                                 (save-excursion
+                                                                   (mouse-set-point last-nonmenu-event)
+                                                                   (find-file-other-window (ffap-guesser))))
+        :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
+       (dired menu-item "Dired" mouse3-dired
+        :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
+       (dired-other menu-item "Dired in Other Window" mouse3-dired-other-window
+        :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
+       (sep-describe "--")
+       (describe-file menu-item "Describe File" (lambda ()
+                                                  (interactive)
+                                                  (save-excursion
+                                                    (mouse-set-point last-nonmenu-event)
+                                                    (describe-file (ffap-guesser))))
+        :enable (condition-case nil (mouse3-file-or-dir) (error nil))
+        :visible (fboundp 'describe-file)) ; Defined in `help-fns+.el'.
+       (describe-function menu-item "Describe Function" (lambda ()
+                                                          (interactive)
+                                                          (save-excursion
+                                                            (mouse-set-point last-nonmenu-event)
+                                                            (describe-function
+                                                             (or (let ((sy  (symbol-at-point)))
+                                                                   (and (fboundp sy)  sy))
+                                                                 (function-called-at-point)))))
+        :enable (or (fboundp (symbol-at-point))  (function-called-at-point)))
+       (find-function menu-item "Show Code Defining Function" (lambda ()
+                                                             (interactive)
+                                                             (save-excursion
+                                                               (mouse-set-point last-nonmenu-event)
+                                                               (find-function-at-point)))
+        :enable (function-called-at-point))
+       (describe-variable menu-item "Describe Variable" (lambda ()
+                                                          (interactive)
+                                                          (save-excursion
+                                                            (mouse-set-point last-nonmenu-event)
+                                                            (describe-variable (variable-at-point))))
+        :enable (not (numberp (variable-at-point))))
+       (find-variable menu-item "Show Code Defining Variable" (lambda ()
+                                                             (interactive)
+                                                             (save-excursion
+                                                               (mouse-set-point last-nonmenu-event)
+                                                               (find-variable-at-point)))
+        :enable (not (numberp (variable-at-point))))
+       (describe-face menu-item "Describe Face"
+        (lambda ()
+          (interactive)
+          (save-excursion
+            (mouse-set-point last-nonmenu-event)
+            (describe-face
+             (or (and (fboundp 'face-at-point)
+                      (face-at-point 'FROM-TEXT-TOO))
+                 (and (facep (symbol-at-point))
+                      (symbol-at-point))
+                 (let ((faceprop   (or (get-char-property (point) 'read-face-name)
+                                       (get-char-property (point) 'face))))
+                   (cond ((facep faceprop) faceprop)
+                         ((and (listp faceprop)
+                               ;; Don't treat an attribute spec as a list of faces.
+                               (not (keywordp (car faceprop)))
+                               (not (memq (car faceprop) '(foreground-color background-color))))
+                          (car faceprop))))))))
+        :enable (or
+                  (and (fboundp 'face-at-point)  (face-at-point 'FROM-TEXT-TOO))
+                  (and (facep (symbol-at-point))  (symbol-at-point))
+                  (let ((faceprop   (or (get-char-property (point) 'read-face-name)
+                                        (get-char-property (point) 'face))))
+                    (cond ((facep faceprop) faceprop)
+                          ((and (listp faceprop)
+                                ;; Don't treat an attribute spec as a list of faces.
+                                (not (keywordp (car faceprop)))
+                                (not (memq (car faceprop) '(foreground-color background-color))))
+                           (car faceprop))))))
+       (describe-package menu-item "Describe Package" (lambda ()
+                                                        (interactive)
+                                                        (save-excursion
+                                                          (mouse-set-point last-nonmenu-event)
+                                                          (and (fboundp 'describe-package)
+                                                               (describe-package
+                                                                (or (symbol-at-point)
+                                                                    (function-called-at-point))))))
+        :enable (and
+                 (boundp 'package--initialized)
+                 package--initialized
+                 (let ((guess  (or (symbol-at-point)  (function-called-at-point))))
+                   (memq guess (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
+                                       (mapcar 'car package--builtins)))))
+        :visible (fboundp 'describe-package))
+       (describe-text-properties menu-item "Describe Text Properties"
+        (lambda ()
+          (interactive)
+          (save-excursion
+            (mouse-set-point last-nonmenu-event)
+            (if (fboundp 'describe-text-properties)
+                (describe-text-properties (point))
+              (list-text-properties-at (point))))))
+       (sep-highlight "--")
+       (hlt-highlight menu-item "Highlight Symbol"  (lambda ()
+                                                      (interactive)
+                                                      (save-excursion
+                                                        (mouse-set-point last-nonmenu-event)
+                                                        (let ((hlt-auto-faces-flag  t))
+                                                          (hlt-highlight-regexp-region
+                                                           (point-min) (point-max)
+                                                           (format (if (> emacs-major-version 21)
+                                                                       "\\_<%s\\_>"
+                                                                     "%s")
+                                                                   (symbol-at-point))))))
+        :enable (symbol-at-point)
+        :visible (fboundp 'hlt-highlight-regexp-region))
+       (hlt-unhighlight menu-item "Unhighlight Symbol"  (lambda ()
+                                                          (interactive)
+                                                          (save-excursion
+                                                            (mouse-set-point last-nonmenu-event)
+                                                            (hlt-unhighlight-regexp-region
+                                                             (point-min) (point-max)
+                                                             (format (if (> emacs-major-version 21)
+                                                                         "\\_<%s\\_>"
+                                                                       "%s")
+                                                                     (symbol-at-point)))))
+        :enable (symbol-at-point)
+        :visible (fboundp 'hlt-unhighlight-regexp-region))
+       (hi-lock-symbol menu-item "Hi-Lock Symbol"  (lambda ()
+                                                     (interactive)
+                                                     (save-excursion
+                                                       (mouse-set-point last-nonmenu-event)
+                                                       (hi-lock-face-symbol-at-point)))
+        :visible (fboundp 'hi-lock-face-symbol-at-point))
+       (un-hi-lock-symbol menu-item "Un-Hi-Lock Symbol" (lambda ()
+                                                          (interactive)
+                                                          (save-excursion
+                                                            (mouse-set-point last-nonmenu-event)
+                                                            (hi-lock-unface-buffer
+                                                             (car (assoc (find-tag-default-as-symbol-regexp)
+                                                                         hi-lock-interactive-patterns)))))
+        :enable (and (boundp 'hi-lock-interactive-patterns)
+                 (save-excursion (mouse-set-point last-nonmenu-event)
+                                 (assoc (find-tag-default-as-symbol-regexp)
+                                        hi-lock-interactive-patterns)))
+        ;; Do not use `hi-lock-unface-buffer' here.  It is defined in releases before `*-at-point' is defined.
+        :visible (fboundp 'hi-lock-face-symbol-at-point))
+       (sep-misc "--")
+       (info-lookup-symbol menu-item "Look Up Symbol in Manual" (lambda ()
+                                                                  (interactive)
+                                                                  (save-excursion
+                                                                    (mouse-set-point last-nonmenu-event)
+                                                                    (info-lookup-symbol (symbol-at-point))))
+        :enable (symbol-at-point)
+        :visible (fboundp 'info-lookup-symbol))
+       (isearch-for-symbol menu-item "Search for Symbol" (lambda ()
+                                                           (interactive)
+                                                           (deactivate-mark) ; Must do this first.
+                                                           (save-excursion
+                                                             (mouse-set-point last-nonmenu-event)
+                                                             (isearch-forward-symbol-at-point)))
+        :enable (find-tag-default-bounds)
+        :visible (fboundp 'isearch-forward-symbol-at-point))
+       (eval-sexp menu-item "Eval & Pretty-Print Lisp Sexp" mouse3-pp-eval-sexp
+        :enable (or (derived-mode-p 'emacs-lisp-mode)  (derived-mode-p 'lisp-mode)))
+       )
+      :enable (not (mouse3-nonempty-region-p))) ; Enable this submenu if the region is empty.
+  "Submenu for miscellaneous operations when mouse selection is empty.")
+
 (defcustom mouse3-region-popup-entries `(,@mouse3-region-popup-remove/replace-items
                                          (sep1-std-entries menu-item "--" nil
                                           :visible (not buffer-read-only))
@@ -1072,14 +1482,14 @@ restore it by yanking."
                                          ,mouse3-region-popup-print-submenu
                                          ,mouse3-region-popup-misc-submenu
                                          )
-  "*Entries for the `mouse-3' popup menu.
+  "*Entries for `mouse-3' popup menu when region is active and nonempty.
 The option value is a list.  Each element defines a submenu or a menu
 item.  A null element (`nil') is ignored.
 
-Used only if `mouse3-region-popup-x-popup-panes-flag' is nil.
+Used only if `mouse3-popup-x-popup-panes-flag' is nil.
 
-If `mouse3-region-popup-include-global-menus-flag' is non-nil then a
-global submenu is added at the beginning of the popup menu, before the
+If `mouse3-popup-include-global-menus-flag' is non-nil then a global
+submenu is added at the beginning of the popup menu, before the
 entries from `mouse3-region-popup-entries'.
 
 Several alternative entry formats are available.  When customizing,
@@ -1126,6 +1536,50 @@ Example selectable menu-item element:
 
 \(`mouse3-nonempty-region-p' returns non-nil if the region is active
 and not empty.)"
+  ;; Could define this `:type' and so reuse the definition for both `*-region-*' and `*-noregion-*'.
+  :type  '(repeat
+           (choice
+            ;; These could be combined, but it's better for users to see separate choices.
+            (restricted-sexp
+             :tag "Submenu (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS) or (SYMBOL NAME . MENU-KEYMAP)"
+             :match-alternatives
+             ((lambda (x)
+                (and (consp x)  (symbolp (car x))
+                     (or (and (stringp (cadr x))  (cddr x)) ; (SYMBOL NAME . MENU-KEYMAP)
+                         ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS)
+                         (and (eq 'menu-item (cadr x))
+                              (stringp (car (cddr x)))
+                              (or (keymapp  (car (cdr (cddr x)))) ; Can be a keymap var.
+                                  (and (symbolp (car (cdr (cddr x))))
+                                       (boundp (car (cdr (cddr x))))
+                                       (keymapp (symbol-value (car (cdr (cddr x)))))))))))
+              'nil))
+            (restricted-sexp
+             :tag "Items from a keymap variable's value."
+             :match-alternatives ((lambda (x) (and (symbolp x)  (keymapp (symbol-value x))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Selectable item (SYMBOL menu-item NAME COMMAND . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x)  (symbolp (car x))
+                                                   (eq 'menu-item (cadr x))
+                                                   (stringp (car (cddr x)))
+                                                   (commandp (car (cdr (cddr x))))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Non-selectable item (SYMBOL NAME) or (SYMBOL menu-item NAME nil . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x)  (symbolp (car x))
+                                                   (or (and (stringp (cadr x))  (null (caddr x)))
+                                                       (and (eq 'menu-item (cadr x))
+                                                            (stringp (car (cddr x)))
+                                                            (null (car (cdr (cddr x))))))))
+                                  'nil))))
+  :group 'mouse3)
+
+(defcustom mouse3-noregion-popup-entries `(,mouse3-noregion-popup-misc-submenu)
+  "*Entries for the `mouse-3' popup menu when no nonempty active region.
+Other than the use context, this has the same description as
+`mouse3-noregion-popup-entries' - which see."
+  ;; Could define this `:type' and so reuse the definition for both `*-region-*' and `*-noregion-*'.
   :type  '(repeat
            (choice
             ;; These could be combined, but it's better for users to see separate choices.
@@ -1212,21 +1666,22 @@ For Emacs prior to Emacs 22, always kill region."
         (delete-region (region-beginning) (region-end))))))
 
 ;;;###autoload
-(defun mouse3-region-popup-menu (event ignored)
+(defun mouse3-popup-menu (event ignored)
   "Pop up a `Region' menu of actions for the selected text.
 See options `mouse3-region-popup-entries',
-`mouse3-region-popup-x-popup-panes-flag', and
-`mouse3-region-popup-x-popup-panes'.  .
+`mouse3-popup-x-popup-panes-flag', and
+`mouse3-region-popup-x-popup-panes'.
 
-You have two alternatives, which correspond to the value of option
-`mouse3-region-popup-x-popup-panes-flag' (and to the
-possibilities for the MENU argument of function `x-popup-menu'):
+You have two alternatives, which correspond to the possible values of
+option `mouse3-popup-x-popup-panes-flag' (and to the possibilities for
+the MENU argument of function `x-popup-menu'):
 
 1. nil (recommended) - Define the menu as a keymap, using submenu
    keymaps and `menu-item' bindings.
 
-2. non-nil - Define the menu using a (non-keymap) `x-popup-menu' panes
-   list, `mouse3-region-popup-x-popup-panes'.
+2. non-nil - Define the menu using (non-keymap) `x-popup-menu' panes
+   lists, `mouse3-region-popup-x-popup-panes' and
+   `mouse3-noregion-popup-x-popup-panes'.
 
 The first alternative lets you make use of keywords such as `:enable'
 and `:visible', and it lets you reuse existing menu keymaps.
@@ -1236,20 +1691,24 @@ items, but it does not let you use menu keywords or reuse existing
 keymaps.
 
 For the first alternative, in addition to the items and submenus
-supplied by `mouse3-region-popup-entries', a submenu is added at the
-beginning of the popup menu for either (a) the menu-bar menus (if the
-menu bar is not visible) or (b) the major-mode menus.  (This is only
-for Emacs 23+.)"
+supplied by options `mouse3-region-popup-entries' and
+`mouse3-noregion-popup-entries', a submenu is added at the beginning
+of the popup menu for either (a) the menu-bar menus (if the menu bar
+is not visible) or (b) the major-mode menus.  (This is only for Emacs
+23+.)"
   (interactive "e\nP")
   (sit-for 0)
-  (let* ((menus   (if (and mouse3-region-popup-x-popup-panes-flag  mouse3-region-popup-x-popup-panes)
+  (let* ((menus   (if (and mouse3-popup-x-popup-panes-flag  (or mouse3-region-popup-x-popup-panes
+                                                                mouse3-noregion-popup-x-popup-panes))
                       `(,(if (mouse3-nonempty-region-p) "Region" "No Region")
-                        ,@mouse3-region-popup-x-popup-panes)
+                         ,@(if (mouse3-nonempty-region-p)
+                               mouse3-region-popup-x-popup-panes
+                               mouse3-noregion-popup-x-popup-panes))
 
                     `((keymap ,(if (mouse3-nonempty-region-p) "Region" "No Region")
 
                        ;; Global menus - Emacs 23+ only.
-                       ,@(and mouse3-region-popup-include-global-menus-flag  (fboundp 'mouse-menu-bar-map)
+                       ,@(and mouse3-popup-include-global-menus-flag  (fboundp 'mouse-menu-bar-map)
                               (if (zerop (or (frame-parameter nil 'menu-bar-lines) 0))
                                   `((menu-bar-maps "Menu Bar" ,@(mouse-menu-bar-map)))
                                 ;; Alternative: a `@' prefix in the name makes Emacs splice in the
@@ -1257,13 +1716,40 @@ for Emacs 23+.)"
                                 ;; `((major-mode-map "@" ,@(mouse-menu-major-mode-map)))
                                 `((major-mode-map ,(format-mode-line mode-name)
                                    ,@(mouse-menu-major-mode-map)))))
-                       ,@(and mouse3-region-popup-include-global-menus-flag  (fboundp 'mouse-menu-bar-map)
+                       ,@(and mouse3-popup-include-global-menus-flag  (fboundp 'mouse-menu-bar-map)
                               '((sep1-global "--")))
 
-                       ;; Entries from `mouse3-region-popup-entries'.
-                       ,@(mouse3-region-popup-custom-entries)))))
+                       ;; Entries from `mouse3-(no)region-popup-entries'.
+                       ,@(if (mouse3-nonempty-region-p)
+                             (mouse3-popup-custom-entries)
+                             (mouse3-popup-custom-entries 'NOREGION))))))
          (choice  (x-popup-menu t menus)))
     (mouse3-region-popup-choice menus choice)))
+
+(defun mouse3-popup-custom-entries (&optional no-region-p)
+  "In `mouse3-(no)region-popup-entries', replace keymap vars by their values.
+Non-nil NO-REGION-P means use `mouse3-noregion-popup-entries', otherwise use
+`mouse3-region-popup-entries'"
+  (let ((new  ()))
+    (dolist (jj  (if no-region-p mouse3-noregion-popup-entries mouse3-region-popup-entries))
+      (cond ((and (symbolp jj)  (keymapp (symbol-value jj))) ; Just a keymap var.
+             (setq jj  (symbol-value jj))
+             (dolist (ii  jj) (push ii new)))
+            ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS), with a keymap var.
+            ((and (consp jj)  (symbolp (car jj))  (eq 'menu-item (cadr jj))
+                  (stringp (car (cddr jj))) (symbolp (car (cdr (cddr jj))))
+                  (not (commandp (car (cdr (cddr jj))))) (boundp (car (cdr (cddr jj))))
+                  (keymapp (symbol-value (car (cdr (cddr jj))))))
+             (setq jj  `(,(car jj) menu-item ,(car (cddr jj))
+                         ,(symbol-value (car (cdr (cddr jj)))) ; Replace keymap var by its value.
+                         ,@(cdr (cdr (cddr jj))))) ; Keywords.
+             (push jj new))
+            ((and (consp jj)  (symbolp (car jj))  (stringp (cadr jj)) ; (SYMBOL NAME . MENU-KEYMAP)
+                  (symbolp (cddr jj)) (boundp (cddr jj)) (keymapp (symbol-value (cddr jj))))
+             (setq jj  `(,(car jj) ,(cadr jj) ,@(symbol-value (cddr jj)))) ; Replace keymap var by value.
+             (push jj new))
+            (t (push jj new))))
+    (nreverse new)))
 
 (defun mouse3-region-popup-choice (menus choice)
   "Invoke the command from MENUS that is represented by user's CHOICE.
@@ -1294,7 +1780,7 @@ is the menu title and PANE-TITLE is a submenu title.
                           choice  (cdr choice)))
                    ((commandp binding)
                     (throw 'mouse3-region-popup-choice (call-interactively binding))) ; You only get one.
-                   (t (error "`mouse3-region-popup-choice', binding: %s" binding))))))
+                   (t (error "`mouse3-region-popup-choice', Not a command: %s" binding))))))
         ((consp menus)                  ; A list of keymaps or panes.
          (dolist (menu  menus)
            (if (keymapp menu)
@@ -1378,7 +1864,7 @@ is the menu title and PANE-TITLE is a submenu title.
 (defun mouse3-dired-add-region-menu ()
   "Add a `Selected Files' submenu to `mouse-3' pop-up menu.
 Provides commands to act on the selected files and directories."
-  (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) nil)
+  (set (make-local-variable 'mouse3-popup-x-popup-panes-flag) nil)
   (let ((default-entries  mouse3-region-popup-entries))
     (set (make-local-variable 'mouse3-region-popup-entries)
          `((dired-menu
@@ -1524,7 +2010,7 @@ With non-nil prefix arg, mark them instead."
  
 ;;; Picture mode.
 ;;;
-;;; This code shows an example of using a (local) non-nil `mouse3-region-popup-x-popup-panes-flag'.
+;;; This code shows an example of using a (local) non-nil `mouse3-popup-x-popup-panes-flag'.
 
 ;;;###autoload
 (defcustom mouse3-picture-mode-x-popup-panes
@@ -1560,7 +2046,7 @@ You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
 (add-hook
  'picture-mode-hook
  (lambda ()
-   (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) t)
+   (set (make-local-variable 'mouse3-popup-x-popup-panes-flag) t)
    (set (make-local-variable 'mouse3-region-popup-x-popup-panes)
         (cons `("Picture Mode" ,@mouse3-picture-mode-x-popup-panes)
               (copy-tree mouse3-region-popup-x-popup-panes)))))
@@ -1571,7 +2057,7 @@ You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
 ;;; ;; TO-DO: Use a keymap, not x-popup panes, to at least recuperate any standard Org mode menus.
 ;;; (add-hook 'org-mode-hook
 ;;;           (lambda ()
-;;;             (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) t)
+;;;             (set (make-local-variable 'mouse3-popup-x-popup-panes-flag) t)
 ;;;             (set (make-local-variable 'mouse3-region-popup-x-popup-panes)
 ;;;                  (cons '("Org Mode"
 ;;;                          ("Shift Time"          . org-timer-change-times-in-region)
