@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 22 00:24:59 2014 (-0800)
+;; Last-Updated: Sat Feb 22 12:29:19 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1703
+;;     Update #: 1704
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -792,7 +792,7 @@ not use this option.  Instead, set option
 ;; I guess there is no way to turn stuff off in this case, when buffer is read-only.
 ;; Another good reason to use the standard format instead.
 (defcustom mouse3-noregion-popup-x-popup-panes
-  `(("Misc"
+  `(("Thing at Pointer"
      ,@(and (fboundp 'goto-address-find-address-at-point) ; `:visible'
             '(("Send Email" . (lambda ()
                                 (interactive)
@@ -1288,7 +1288,7 @@ restore it by yanking."
 
 (defconst mouse3-noregion-popup-misc-submenu
     '(misc-menu
-      menu-item "Misc"
+      menu-item "Thing at Pointer"
       (keymap
        (send-email menu-item "Send Email" goto-address-at-point
         :enable (save-excursion
