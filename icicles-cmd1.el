@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Feb  8 10:41:12 2014 (-0800)
+;; Last-Updated: Sat Feb 22 10:55:02 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26737
+;;     Update #: 26740
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1970,13 +1970,14 @@ considered."
                                      (save-excursion
                                        (goto-char beg)
                                        (forward-sexp 1)
-                                       (min (point) beg))
+                                       (max (point) beg))
                                    (scan-error pos)))
                             (set-syntax-table buffer-syntax))))
-         (pattern       (buffer-substring beg end))
+         (pattern       (buffer-substring beg (or end  beg)))
          (new           (try-completion pattern obarray)))
     (unless (stringp new) (setq new  pattern))
     (condition-case nil (delete-region beg end) (error nil)) ; E.g. read-only text of a prompt.
+    (goto-char beg)
     (insert new)
     (setq end  (+ beg (length new)))
     (if (and (not (string= new ""))  (not (string= (downcase new) (downcase pattern)))
