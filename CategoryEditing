@@ -22,6 +22,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
 ** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
 ** RectangleCommands --  commands that operate across lines in a region in a column-intelligent manner.
+** Lisp:view-kill.el -- Displays the entire kill ring as a single page menu of numbered items.
 ** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
 ** ZapToChar -- Delete the characters from [[point]] to a character you specify.
 ** KillMatchingLines -- The power of ‘M-x flush-lines’ with killing.
