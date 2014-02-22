@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Feb 21 09:03:28 2014 (-0800)
+;; Last-Updated: Sat Feb 22 11:11:57 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10646
+;;     Update #: 10650
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/02/22 dadams
+;;     icicle-lisp-complete-symbol: Fixed regression introduced by 2014-01-15 change:
+;;       Max, not min, of point and BEG.  If END is nil, use BEG for PATTERN.  Go to BEG before insert.
 ;; 2014/02/08 dadams
 ;;     icicle-find-file-(no-search|of-content)-action-1:
 ;;       Pass icicle-find-file-(no-search|of-content)-1 as arg, not icicle-find-file-action-fn.
