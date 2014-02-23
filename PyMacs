@@ -5,21 +5,21 @@
 
  Newsgroups: comp.lang.python.announce
  Date: 25 Jun 2002 20:01:49 -0400
-
+ 
  Hi!  A new release of Pymacs is available as:
-
+ 
     http://www.iro.umontreal.ca/~pinard/pymacs/Pymacs.tar.gz
-
+ 
  Pymacs allows Emacs users to extend Emacs using Python, where they might have
  traditionally used Emacs LISP.  Pymacs runs on systems having sub-processes.
-
+ 
  The oldish `import pymacs; from pymacs import lisp' interface is gone.
  The usual interface is definitely `from Pymacs import lisp'.  The `setup'
  script has been reduced even more, it now only takes care of installing the
  Emacs Lisp side of Pymacs.  The Distutils `setup.py' script does the rest.
  So, the `-P', `-b', `-p' and `-x' options of `setup' are gone.  Syver also
  gave me a few hints about how to modify `setup' for Win32 systems.
-
+ 
  Some tuning was needed for Python 2.2 hexadecimal escape sequences, which
  Emacs does not grok in some cases.  This is the reason for this release.
 
