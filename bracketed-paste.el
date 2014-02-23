@@ -115,7 +115,9 @@
 (defun bracketed-paste--pasting-exit-aux (paste-command paste-buffer)
   (kill-region (point-min) (point-max))
   (kill-buffer)
-  (switch-to-buffer paste-buffer)
+  (if (minibufferp paste-buffer)
+      (select-window (active-minibuffer-window))
+    (switch-to-buffer paste-buffer))
   (call-interactively paste-command)
   (setq this-command 'yank))
 
@@ -146,9 +148,7 @@
     (mapc (hookf 'bracketed-paste--tty-state-exit-hook)
           bracketed-paste--setup-exit-hooks))
   (global-set-key (kbd "\e[200~") 'bracketed-paste--pasting-enter)
-  (global-set-key (kbd "\e[201~") 'bracketed-paste--pasting-exit)
-  (define-key minibuffer-local-map (kbd "\e[200~") 'ignore)
-  (define-key minibuffer-local-map (kbd "\e[201~") 'ignore))
+  (global-set-key (kbd "\e[201~") 'bracketed-paste--pasting-exit))
 
 ;; Evil
 (defvar evil-normal-state-map)
