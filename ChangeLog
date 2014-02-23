@@ -9,7 +9,7 @@ A !ChangeLog file itself is edited in Emacs using ChangeLogMode.
 
 To merge !ChangeLog files but maintain the chronological order, use `M-x change-log-merge'.
 
-For more about !ChangeLog files, see the "Change Log" section of the EmacsManual.
+For more about !ChangeLog files, see http://www.gnu.org/software/emacs/manual/html_node/emacs/Change-Log.html.
 
 See also EmbeddedChangelog, VcAddLogEntries.
 
