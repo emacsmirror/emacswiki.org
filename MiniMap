@@ -17,19 +17,9 @@ It is in GNU ELPA, so you can get it directly from `M-x install-package', or you
 
 Also in Marmalade http://marmalade-repo.org/packages/minimap/1.0
 
-Alternatively, you can find a Git repository holding an older version:
-<pre>
-git://randomsample.de/minimap.git
-or
-http://randomsample.de/minimap.git
-</pre>
-
 Usage:
 
-* Put ##minimap.el## in your load path.
-* ##(require 'minimap)##
-* Use `M-x minimap-create' in a buffer you're currently editing.
-* Use `M-x minimap-kill' to kill the minimap.
+* Use `M-x minimap-mode' to toggle the minimap minor mode. By default, the Minimap will automatically be activated for all buffers which are derived from `prog-mode'.
 * Use `M-x customize-group RET minimap RET' to adapt minimap to your needs.
 
 Things you can customize:
