@@ -93,11 +93,14 @@ minibuffer or during an `isearch'.
 
 == Play a different sound ==
 
-Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs:
+Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs (this handles .au or .wav files):
 
- (setq ring-bell-function (lambda ()
-			   (call-process "audioplay" nil 0 nil 
-				 "/this/is/my/errorsound.au")))
+ (setq ring-bell-function (lambda () (play-sound-file "/this/is/my/errorsound.au")))
+
+Or 
+
+ (setq ring-bell-function (lambda () 
+          (call-process "audioplay" nil 0 nil "/this/is/my/errorsound.au")))
 
 You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
 
