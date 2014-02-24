@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Feb 19 21:35:15 2014 (-0800)
+;; Last-Updated: Mon Feb 24 09:19:27 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5877
+;;     Update #: 5878
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1456,7 +1456,7 @@ to toggle the option."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 (when (fboundp 'map-keymap)             ; Emacs 22+.
-  (defcustom icicle-complete-keys-ignored-prefix-keys nil
+  (defcustom icicle-complete-keys-ignored-prefix-keys '([menu-bar icicles])
     "*Prefix keys for `icicle-complete-keys' to ignore.
 The value is a list of key sequences assumed to be prefix keys.
 
