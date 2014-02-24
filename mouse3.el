@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 22 12:29:19 2014 (-0800)
+;; Last-Updated: Mon Feb 24 11:46:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1704
+;;     Update #: 1712
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -312,6 +312,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/24 dadams
+;;     mouse3-noregion-popup-x-popup-panes, mouse3-noregion-popup-misc-submenu:
+;;       Corrected for face-at-point < 24.4.
 ;; 2014/02/21 dadams
 ;;     INCOMPATIBLE CHANGE: IF you previously customized one of the options
 ;;       mouse3-region-popup-include-global-menus-flag, mouse3-region-popup-include-global-menus-flag,
@@ -858,7 +861,10 @@ not use this option.  Instead, set option
                             (when (listp last-nonmenu-event)
                               (mouse-set-point last-nonmenu-event)
                               (let ((face  (or (and (fboundp 'face-at-point)
-                                                    (face-at-point 'FROM-TEXT-TOO))
+                                                    (or (condition-case nil
+                                                            (face-at-point 'FROM-TEXT-TOO) ; Emacs 24.4+
+                                                          (error nil))
+                                                        (face-at-point))) ; Emacs 23.1-24.3.
                                                (and (facep (symbol-at-point))
                                                     (symbol-at-point))
                                                (let ((faceprop   (or (get-char-property (point) 'read-face-name)
@@ -1332,10 +1338,10 @@ restore it by yanking."
                                                                  (function-called-at-point)))))
         :enable (or (fboundp (symbol-at-point))  (function-called-at-point)))
        (find-function menu-item "Show Code Defining Function" (lambda ()
-                                                             (interactive)
-                                                             (save-excursion
-                                                               (mouse-set-point last-nonmenu-event)
-                                                               (find-function-at-point)))
+                                                                (interactive)
+                                                                (save-excursion
+                                                                  (mouse-set-point last-nonmenu-event)
+                                                                  (find-function-at-point)))
         :enable (function-called-at-point))
        (describe-variable menu-item "Describe Variable" (lambda ()
                                                           (interactive)
@@ -1344,10 +1350,10 @@ restore it by yanking."
                                                             (describe-variable (variable-at-point))))
         :enable (not (numberp (variable-at-point))))
        (find-variable menu-item "Show Code Defining Variable" (lambda ()
-                                                             (interactive)
-                                                             (save-excursion
-                                                               (mouse-set-point last-nonmenu-event)
-                                                               (find-variable-at-point)))
+                                                                (interactive)
+                                                                (save-excursion
+                                                                  (mouse-set-point last-nonmenu-event)
+                                                                  (find-variable-at-point)))
         :enable (not (numberp (variable-at-point))))
        (describe-face menu-item "Describe Face"
         (lambda ()
@@ -1355,8 +1361,10 @@ restore it by yanking."
           (save-excursion
             (mouse-set-point last-nonmenu-event)
             (describe-face
-             (or (and (fboundp 'face-at-point)
-                      (face-at-point 'FROM-TEXT-TOO))
+             (or (and (fboundp 'face-at-point)  (or (condition-case nil
+                                                        (face-at-point 'FROM-TEXT-TOO) ; Emacs 24.4+
+                                                      (error nil))
+                                                    (face-at-point))) ; Emacs 23.1-24.3.
                  (and (facep (symbol-at-point))
                       (symbol-at-point))
                  (let ((faceprop   (or (get-char-property (point) 'read-face-name)
@@ -1368,16 +1376,19 @@ restore it by yanking."
                                (not (memq (car faceprop) '(foreground-color background-color))))
                           (car faceprop))))))))
         :enable (or
-                  (and (fboundp 'face-at-point)  (face-at-point 'FROM-TEXT-TOO))
-                  (and (facep (symbol-at-point))  (symbol-at-point))
-                  (let ((faceprop   (or (get-char-property (point) 'read-face-name)
-                                        (get-char-property (point) 'face))))
-                    (cond ((facep faceprop) faceprop)
-                          ((and (listp faceprop)
-                                ;; Don't treat an attribute spec as a list of faces.
-                                (not (keywordp (car faceprop)))
-                                (not (memq (car faceprop) '(foreground-color background-color))))
-                           (car faceprop))))))
+                 (and (fboundp 'face-at-point)  (or (condition-case nil
+                                                        (face-at-point 'FROM-TEXT-TOO) ; Emacs 24.4+
+                                                      (error nil))
+                                                 (face-at-point))) ; Emacs 23.1-24.3.
+                 (and (facep (symbol-at-point))  (symbol-at-point))
+                 (let ((faceprop   (or (get-char-property (point) 'read-face-name)
+                                       (get-char-property (point) 'face))))
+                   (cond ((facep faceprop) faceprop)
+                         ((and (listp faceprop)
+                               ;; Don't treat an attribute spec as a list of faces.
+                               (not (keywordp (car faceprop)))
+                               (not (memq (car faceprop) '(foreground-color background-color))))
+                          (car faceprop))))))
        (describe-package menu-item "Describe Package" (lambda ()
                                                         (interactive)
                                                         (save-excursion
