@@ -17,6 +17,8 @@ It is in GNU ELPA, so you can get it directly from `M-x install-package', or you
 
 Also in Marmalade http://marmalade-repo.org/packages/minimap/1.0
 
+Repository at GitHub: https://github.com/dengste/minimap
+
 Usage:
 
 * Use `M-x minimap-mode' to toggle the minimap minor mode. By default, the Minimap will automatically be activated for all buffers which are derived from `prog-mode'.
