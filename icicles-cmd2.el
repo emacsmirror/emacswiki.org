@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Feb  7 16:08:36 2014 (-0800)
+;; Last-Updated: Mon Feb 24 09:43:35 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6745
+;;     Update #: 6749
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7909,10 +7909,10 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           ;; $$$$$$ (icicle-orig-buff-key-complete           (current-buffer))
-           ;; $$$$$$ (icicle-orig-win-key-complete            (selected-window))
-           (icicle-orig-buff                        (current-buffer))
-           (icicle-orig-window                      (selected-window))
+           ;; $$$$$$$$ (icicle-orig-buff-key-complete       (current-buffer))
+           ;; $$$$$$$$ (icicle-orig-win-key-complete        (selected-window))
+           ;; $$$$$$ (icicle-orig-buff                      (current-buffer))
+           ;; $$$$$$ (icicle-orig-window                    (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
            (icicle-sort-comparer                    'icicle-local-keys-first-p)
            (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
@@ -7937,10 +7937,10 @@ information."
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           ;; $$$$$$ (icicle-orig-buff-key-complete           (current-buffer))
-           ;; $$$$$$ (icicle-orig-win-key-complete            (selected-window))
-           (icicle-orig-buff                        (current-buffer))
-           (icicle-orig-window                      (selected-window))
+           ;; $$$$$$$$ (icicle-orig-buff-key-complete       (current-buffer))
+           ;; $$$$$$$$ (icicle-orig-win-key-complete        (selected-window))
+           ;; $$$$$$ (icicle-orig-buff                      (current-buffer))
+           ;; $$$$$$ (icicle-orig-window                    (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
            (icicle-sort-comparer                    'icicle-local-keys-first-p)
            (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
