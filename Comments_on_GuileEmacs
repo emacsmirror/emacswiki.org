@@ -1,0 +1,8 @@
+Per a recent change to add the emphasized bit: "Guile is in fact Scheme, '''which some people argue''' is a much simpler and cleaner dialect of Lisp than CommonLisp."
+
+Arguably, anything is arguable, but a subset has fewer features and is unarguably simpler. Well, Guile isn't a subset of Lisp. 
+
+But, seriously -- is there any dialect of List that isn't cleaner and simpler than CommonLisp?
+
+-- MichaelPaulukonis 2014-02-24 16:15 UTC
+
