@@ -15,3 +15,10 @@ You cannot "compile" Python code using Emacs. You can edit Python code. Any file
 
 -- AlexSchroeder 2013-10-04 11:19 UTC
 
+
+----
+
+I have a more than 800 line Fortran 77 code which just became corrupt. The emacs editor displays some junk instead of the code I wrote but compilation in command prompt still runs and produces the correct results. What can I do?
+
+-- Marata 2014-02-24 13:22 UTC
+
