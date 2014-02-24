@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Feb 22 11:11:57 2014 (-0800)
+;; Last-Updated: Mon Feb 24 09:52:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10650
+;;     Update #: 10660
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1057,6 +1057,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/03/24 dadams
+;;     icicle-complete-keys, icicle-complete-menu-bar:
+;;       Do not bind icicle-orig-buff or icicle-orig-window - they are the minibuffer buf & window.
 ;; 2014/02/07 dadams
 ;;     Added: icicle-same-vector-keyseq-p.
 ;;     icicle-this-command-keys-prefix:
@@ -1693,7 +1696,7 @@
 ;;     icicle-goto-marker-1: Pass a PREDICATE arg that ensures the marker points somewhere.
 ;; 2010/04/25 dadams
 ;;     icicle-complete-keys-action:
-;;       Bind icicle-*, esp. *-initially-flag, around call of this-command-keys.  Thx to M Heerdegen.
+;;       Bind icicle-*, esp. *-initially-flag, around call of this-command-keys.  Thx to M. Heerdegen.
 ;;     icicle-complete-keys: Save some icicle-* vars to reuse in icicle-complete-keys-action.
 ;; 2010/04/17 dadams
 ;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
@@ -5795,6 +5798,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/02/24 dadams
+;;     icicle-define-icicle-maps, icicle-define-minibuffer-maps, icicle-bind-completion-keys:
+;;       Added menu item Show Available Keys (icicle-complete-keys).
 ;; 2014/01/23 dadams
 ;;     For BBDB: Determine older version not just by presence of old name but also by absence of new.
 ;; 2014/01/05 dadams
@@ -7027,6 +7033,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/02/24 dadams
+;;     icicle-complete-keys-ignored-prefix-keys: Init value is now ([menu-bar icicles]).
 ;; 2014/02/07 dadams
 ;;     Added: icicle-complete-keys-ignored-prefix-keys.
 ;; 2014/02/05 dadams
