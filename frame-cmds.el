@@ -9,9 +9,9 @@
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Dec 26 09:01:26 2013 (-0800)
+;; Last-Updated: Mon Feb 24 13:33:30 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2894
+;;     Update #: 2898
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -264,6 +264,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/24 dadams
+;;     rename-frame, rename-non-minibuffer-frame: Fixed default buffer name for non-interactive.
 ;; 2013/09/21 dadams
 ;;     maximize-frame: Apply frame-geom-value-numeric to new-* also.  Bug report thx: Mike Fitzgerald.
 ;; 2013/07/21 dadams
@@ -940,8 +942,8 @@ NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'."
                      nil t)             ; Default = selected.  Must exist.
          (read-from-minibuffer "Rename to (new name): " (cons (buffer-name) 1))
          current-prefix-arg))
-  (setq old-name  (or old-name  (get-frame-name)) ; Batch default: current.
-        new-name  (or new-name  (buffer-name))) ; Batch default: buffer name.
+  (setq old-name  (or old-name  (get-frame-name)) ; Batch defaults from current.
+        new-name  (or new-name  (buffer-name (window-buffer (frame-selected-window)))))
   ;; Convert to frame if string.
   (let ((fr  (get-a-frame old-name)))
     (if all-named
@@ -965,9 +967,9 @@ NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'."
                      nil t)             ; Default = selected.  Must exist.
          (read-from-minibuffer "Rename to (new name): " (cons (buffer-name) 1))
          current-prefix-arg))
-  (setq old-name  (or old-name  (get-frame-name)) ; Batch default: current.
-        new-name  (or new-name  (buffer-name))) ; Batch default: buffer name.
-  (let ((fr  (get-a-frame old-name)))    ; Convert to frame if string.
+  (setq old-name  (or old-name  (get-frame-name)) ; Batch defaults from current.
+        new-name  (or new-name  (buffer-name (window-buffer (frame-selected-window)))))
+  (let ((fr  (get-a-frame old-name)))   ; Convert to frame if string.
     (if (and (boundp '1on1-minibuffer-frame)
              (eq (cdr (assq 'name (frame-parameters 1on1-minibuffer-frame)))
                  (cdr (assq 'name (frame-parameters fr)))))
