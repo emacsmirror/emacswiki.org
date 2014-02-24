@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Jan 25 13:22:34 2014 (-0800)
+;; Last-Updated: Mon Feb 24 08:48:11 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 9831
+;;     Update #: 9841
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -836,6 +836,10 @@ Used on `pre-command-hook'."
       '(menu-item "Send Icicles Bug Report" icicle-send-bug-report))
     (define-key icicle-menu-map [icicle-customize-icicles-group]
       '(menu-item "Customize Icicles" icicle-customize-icicles-group))
+    (when (fboundp 'icicle-complete-keys)
+      (define-key icicle-menu-map [icicle-complete-keys]
+        '(menu-item "Show Available Keys (Complete Key)" icicle-complete-keys
+          :help "Show available keys (`C-g') or complete prefix key")))
     (define-key icicle-menu-map [icicle-help]
       '(menu-item "Icicles Help" icicle-minibuffer-help
         :help "Display help for minibuffer input and completion" :keys "M-? in minibuf"))
@@ -2560,6 +2564,10 @@ is unbound in all keymaps accessible from keymap MAP."
            :help "Terminate input and exit minibuffer" :keys "RET"))
        (define-key map [menu-bar minibuf separator-help] '("--"))
 
+       (when (fboundp 'icicle-complete-keys)
+         (define-key map [menu-bar minibuf icicle-complete-keys]
+             '(menu-item "Show Available Keys (Complete Key)" icicle-complete-keys
+               :help "Show available keys (`C-g') or complete prefix key")))
        (define-key map [menu-bar minibuf completion-help]
          '(menu-item "Icicles Help" icicle-minibuffer-help
            :help "Display help for minibuffer input and completion" :keys "M-?"))
@@ -2612,6 +2620,10 @@ is unbound in all keymaps accessible from keymap MAP."
              :help "Terminate input and exit minibuffer" :keys "RET"))
          (define-key map [menu-bar minibuf separator-help] '("--"))
 
+         (when (fboundp 'icicle-complete-keys)
+           (define-key map [menu-bar minibuf icicle-complete-keys]
+               '(menu-item "Show Available Keys (Complete Key)" icicle-complete-keys
+                 :help "Show available keys (`C-g') or complete prefix key")))
          (define-key map [menu-bar minibuf completion-help]
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion" :keys "M-?"))
@@ -2665,6 +2677,10 @@ is unbound in all keymaps accessible from keymap MAP."
              :help "Terminate input and exit minibuffer" :keys "RET"))
          (define-key map [menu-bar minibuf separator-help] '("--"))
 
+         (when (fboundp 'icicle-complete-keys)
+           (define-key map [menu-bar minibuf icicle-complete-keys]
+               '(menu-item "Show Available Keys (Complete Key)" icicle-complete-keys
+                 :help "Show available keys (`C-g') or complete prefix key")))
          (define-key map [menu-bar minibuf completion-help]
            '(menu-item "Icicles Help" icicle-minibuffer-help
              :help "Display help for minibuffer input and completion" :keys "M-?"))
@@ -2947,6 +2963,10 @@ MAP is `minibuffer-local-completion-map' or
         :help "Terminate input and exit minibuffer" :keys "RET"))
     (define-key map [menu-bar minibuf separator-help] '("--"))
 
+    (when (fboundp 'icicle-complete-keys)
+      (define-key map [menu-bar minibuf icicle-complete-keys]
+          '(menu-item "Show Available Keys (Complete Key)" icicle-complete-keys
+            :help "Show available keys (`C-g') or complete prefix key")))
     (define-key map [menu-bar minibuf completion-help]
       '(menu-item "Icicles Help" icicle-minibuffer-help
         :help "Display help for minibuffer input and completion" :keys "M-?"))
