@@ -1,4 +1,3 @@
-[[ru:4]]
 Company stands for "complete anything" and is a modular in-buffer completion mechanism.
 
 http://company-mode.github.io/
@@ -36,18 +35,13 @@ It can be installed by adding it to ''company-frontends''.
 
 ==== Why is ''company-backends'' initialized with ''company-css'', ''company-elisp'', etc? Shouldn't we add those symbols to ''company-backends'' when their respective libraries are required? ===
 
-Yes, ideally.  But that would make configuration more difficult.  Currently the user just has to drop the back-end file in the load-path, and company.el doesn't have to be modified.  If users want to go through the trouble to make it a bit more efficient, they can do this:
+No need to: iterating through back-ends that don't apply to the current buffer is pretty fast.
 
-  (setq company-backends nil)
+But the user can have different ''company-backends'' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends, like ''company-dabbrev'' and ''company-ispell'', which would generally apply to almost any buffer and thus block all back-ends after them, only in certain modes.
+
   (add-hook 'css-mode-hook
             (lambda ()
               (set (make-local-variable 'company-backends) '(company-css))))
-
-RichardRiley : Also in the current (4.3) css mode does not automatically invoke company. The line which worked for me was
-
-   (add-hook 'css-mode-hook (lambda () (company-mode)))
-
-YHWong: IMHO, the loading mechanism of company-mode needs to be changed. Instead of asking the user to autoload directly from their .emacs, company-mode can provide a feature file, which looks at company-backends, and automatically adds hooks to company mode to the modes declared in the elements in the backend list? This will of course, makes naming any backend "company-<major-mode>.el a convention that affects real functionality. Company mode can still be autoloaded, but from the feature file instead. This way company mode can load faster and the user won't have to do anything besides requiring the company feature.
 
 ==== Can I complete by typing a key instead of waiting for the delay timer? ====
 
@@ -80,7 +74,6 @@ Yes, set ''company-begin-commands'':
 
   (setq company-begin-commands '(self-insert-command))
 
-
 -- [[nschum]]
 
 ==== Yasnippet integration ====
@@ -99,7 +92,7 @@ Another code for solving conflicts in Company and Yasnippet.
           (backward-char 1)
           (if (looking-at "->") t nil)))))
 
-  (defun do-yas-expand ()  
+  (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
       (yas/expand)))
 
@@ -187,6 +180,10 @@ Again, because of the way company is build that would mean throwing the standard
 
 [new]
 Would it be possible to make the down-case feature of dabbrev backend customizable as it is counter intuitive for example in shell-mode where it completes in lowercase all environment variables ?
+
+----
+
+YHWong: IMHO, the loading mechanism of company-mode needs to be changed. Instead of asking the user to autoload directly from their .emacs, company-mode can provide a feature file, which looks at company-backends, and automatically adds hooks to company mode to the modes declared in the elements in the backend list? This will of course, makes naming any backend "company-<major-mode>.el a convention that affects real functionality. Company mode can still be autoloaded, but from the feature file instead. This way company mode can load faster and the user won't have to do anything besides requiring the company feature.
 
 ----
 
