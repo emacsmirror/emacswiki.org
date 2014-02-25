@@ -85,7 +85,26 @@ Here a few ungelled ideas from my own "maybe-to-do" list, to prime the pump.  Du
 
 The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
+ <pre>
 
+ </pre>
+ ----
+ <pre>
+
+ </pre>
+
+hi
+Is it possible to create a directory using `C-c +' on fly in other command than `C-x C-f', for example using `C-x C-w' or in dired rename `R'?
+Regards,
+JohnDoe974
+
+ <pre>
+
+ </pre>
+ ----
+ <pre>
+
+ </pre>
 
 
 
