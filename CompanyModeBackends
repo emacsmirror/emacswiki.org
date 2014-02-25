@@ -28,14 +28,6 @@ http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attac
 
 
 
-
-== Inf-Ruby ==
-[http://gist.github.com/raw/610104/b4db1e8789d8507d00b7d56672485143e9eec72c/inf-ruby-company.el inf-ruby-company.el]
-
-Documentation: [[InfRubyCompany]]
-
-
-
 == EmacsLispMode ==
 
 === Keyword completions ===
@@ -51,7 +43,6 @@ Documentation: [[InfRubyCompany]]
       ('meta (cdr (assoc (intern arg) finder-known-keywords)))))
 
 -- [[nschum]]
-
 
 
 
