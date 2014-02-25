@@ -3,6 +3,8 @@
 
 Auto-completion for Inf-Ruby (IRB) buffers.
 
+NOTE: This has been obsoleted by [https://github.com/company-mode/company-inf-ruby company-inf-ruby]. -- DmitryGutov
+
 == Download ==
 [http://gist.github.com/raw/610104/b4db1e8789d8507d00b7d56672485143e9eec72c/inf-ruby-company.el inf-ruby-company.el]
 
