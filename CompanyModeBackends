@@ -27,14 +27,14 @@ http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attac
 === Keyword completions ===
 
   (defun company-elisp-finder-keyword-backend (command &optional arg &rest ign)
-    "A `company-backend' for finder-keywords."
+    "`company-backend' for finder-keywords."
     (case command
-      ('prefix
+      (prefix
        (and (require 'finder nil t)
             (or (company-grab ":group '\\(\\(\\sw\\|\\s_\\)*\\)" 1)
                 (company-grab "Keywords:.*[ \t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1))))
-      ('candidates (all-completions arg finder-known-keywords))
-      ('meta (cdr (assoc (intern arg) finder-known-keywords)))))
+      (candidates (all-completions arg finder-known-keywords))
+      (meta (cdr (assoc (intern arg) finder-known-keywords)))))
 
 -- [[nschum]]
 
@@ -47,28 +47,28 @@ It fetches the list of functions from php.net if it's not fetched already, so it
 
 <pre>
 (defun my-php ()
-  (add-to-list 'company-backends 'company-my-php-backend)
-  )
+  (add-to-list 'company-backends 'company-my-php-backend))
+
 (add-hook 'php-mode-hook 'my-php)
  (defun company-my-php-backend (command &optional arg &rest ignored)
     (case command
-      ('prefix (and (eq major-mode 'php-mode)
+      (prefix (and (eq major-mode 'php-mode)
                     (company-grab-symbol)))
-      ('sorted t)
-      ('candidates (all-completions
-                    arg 
-                    (if (and (boundp 'my-php-symbol-hash)
-                             my-php-symbol-hash)
-                        my-php-symbol-hash
+      (sorted t)
+      (candidates (all-completions
+                   arg
+                   (if (and (boundp 'my-php-symbol-hash)
+                            my-php-symbol-hash)
+                      my-php-symbol-hash
 
-                      (with-temp-buffer
-                           (call-process-shell-command "php -r '$all=get_defined_functions();foreach ($all[\"internal\"] as $fun) { echo $fun . \";\";};'"\
-      nil t)
-                        (goto-char (point-min))
-                        (let ((hash (make-hash-table)))
-                          (while (re-search-forward "\\([^;]+\\);" (point-max) t)
-                            (puthash (match-string 1) t hash))
-                          (setq my-php-symbol-hash hash))))))))
+                     (with-temp-buffer
+                          (call-process-shell-command "php -r '$all=get_defined_functions();foreach ($all[\"internal\"] as $fun) { echo $fun . \";\";};'"\
+     nil t)
+                       (goto-char (point-min))
+                       (let ((hash (make-hash-table)))
+                         (while (re-search-forward "\\([^;]+\\);" (point-max) t)
+                           (puthash (match-string 1) t hash))
+                         (setq my-php-symbol-hash hash))))))))
 </pre>
 
 ----
