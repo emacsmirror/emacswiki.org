@@ -120,26 +120,6 @@ How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
 [new]
 It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and back-ends that can be easily swapped and loaded.
 
-[new]
-I wrote the below snippet to try company with a a predictive backend.
-I'm aiming to write the opposite snippet as well so both completionui and company can coexist in harmony.
-{{{
-;; completionui-company-freundschaft embryo
-(defun company-predictive-backend (command &optional arg &rest ignored)
-  (message "company-predictive-backend %s" command)
-  (case command
-    (prefix   (let* ((text (downcase(word-at-point))))
-                (set-text-properties 0 (length text) nil text )
-                (message "prefix:%s" text)
-                text
-                )
-              )
-    (candidates (predictive-complete arg))
-    (meta (format "This value is named %s" arg))))
-
-;;eval the below statement in a text buffer to try
-;;(set (make-local-variable 'company-backends) '(company-predictive-backend))
-}}}
 ----
 
 How about adding an option for substring match completions? E.g. I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
