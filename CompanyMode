@@ -51,7 +51,7 @@ Yes, just bind ''company-manual-begin'', ''company-complete-common'', ''company-
 
 Alternatively, you can set ''company-idle-delay'' to t, to always complete immediately.
 
-==== I want to have completion and indent bound to tab key (as it is done and work fine in Ca2+), how can i achieve that ? ====
+==== I want to have completion and indent bound to tab key (as it is done and work fine in Ca2+), how can i achieve that? ====
 
 [new]
 Depending on the emphasis, one of these:
@@ -75,6 +75,8 @@ Yes, set ''company-begin-commands'':
   (setq company-begin-commands '(self-insert-command))
 
 -- [[nschum]]
+
+This is the default value since the version 0.6.12.
 
 ==== Yasnippet integration ====
 Company does interfere with Yasnippet's native behaviour.
