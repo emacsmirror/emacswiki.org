@@ -85,28 +85,6 @@ Here a few ungelled ideas from my own "maybe-to-do" list, to prime the pump.  Du
 
 The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
- <pre>
-
- </pre>
- ----
- <pre>
-
- </pre>
-
-hi
-Is it possible to create a directory using `C-c +' on fly in other command than `C-x C-f', for example using `C-x C-w' or in dired rename `R'?
-Regards,
-JohnDoe974
-
- <pre>
-
- </pre>
- ----
- <pre>
-
- </pre>
-
-
 
 
 <pre>
@@ -1161,6 +1139,39 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 
 [:LatestEntry]
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+hi
+Is it possible to create a directory using `##C-c +##' on fly in other command than `C-x C-f', for example using `C-x C-w' or in dired rename `R'?
+Regards,
+JohnDoe974
+
+
+[new:DrewAdams:2014-02-25 18:57 UTC]
+Whenever it is possible it is documented in the doc string.  It is possible for all **Icicles** commands that expect file-name input, in particular: `icicle-delete-file', `icicle-dired', `icicle-file' (and similar), `icicle-recent-file', `icicle-locate-file', `icicle-file-list', `icicle-directory-list', `icicle-bookmark-a-file', `icicle-find-file-tagged'. 
+
+There is no **Icicles** command bound to `C-x C-w' or `R' in Dired, so no for those.  You could define  **Icicles** commands for such things, however. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
 
 <pre>
 
