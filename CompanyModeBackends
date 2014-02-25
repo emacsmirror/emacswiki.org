@@ -71,5 +71,20 @@ It fetches the list of functions from php.net if it's not fetched already, so it
                          (setq my-php-symbol-hash hash))))))))
 </pre>
 
+== PredictiveMode ==
+
+{{{
+;; completionui-company-freundschaft embryo
+(defun company-predictive (command &optional arg &rest ignored)
+  (case command
+    (prefix (let* ((text (downcase (word-at-point))))
+              (set-text-properties 0 (length text) nil text)
+              text))
+    (candidates (predictive-complete arg))))
+
+;;eval the below statement in a text buffer to try
+;;(set (make-local-variable 'company-backends) '(company-predictive))
+}}}
+
 ----
 CategoryCompletion
