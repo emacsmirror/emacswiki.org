@@ -2,12 +2,6 @@ This page is about backends available for CompanyMode.
 
 
 
-== Rope ==
-
-http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
-
-
-
 == SlimeMode ==
 
 A backend plugging into the slime completion mechanism.  It can
