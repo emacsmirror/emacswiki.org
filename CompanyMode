@@ -37,7 +37,7 @@ It can be installed by adding it to ''company-frontends''.
 
 No need to: iterating through back-ends that don't apply to the current buffer is pretty fast.
 
-But the user can have different ''company-backends'' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends, like ''company-dabbrev'' and ''company-ispell'', which would generally apply to almost any buffer and thus block all back-ends after them, only in certain modes.
+But the user can have different ''company-backends'' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends only in certain modes, like ''company-dabbrev'' and ''company-ispell'', which would generally apply to almost any buffer and thus block all back-ends after them.
 
   (add-hook 'css-mode-hook
             (lambda ()
