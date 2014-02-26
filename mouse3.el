@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 24 11:46:48 2014 (-0800)
+;; Last-Updated: Wed Feb 26 12:51:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1712
+;;     Update #: 1718
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -312,6 +312,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/02/26 dadams
+;;     mouse3-noregion-popup-misc-submenu, mouse3-noregion-popup-x-popup-panes: Use hlt-(un)highlight-symbol.
 ;; 2014/02/24 dadams
 ;;     mouse3-noregion-popup-x-popup-panes, mouse3-noregion-popup-misc-submenu:
 ;;       Corrected for face-at-point < 24.4.
@@ -900,31 +902,10 @@ not use this option.  Instead, set option
                                              (describe-text-properties (point))
                                            (list-text-properties-at (point)))))))
      ("--")
-     ,@(and (fboundp 'hlt-highlight-regexp-region) ; `:visible'
-            '(("Highlight Symbol"  . (lambda ()
-                                       (interactive)
-                                       (save-excursion
-                                         (when (listp last-nonmenu-event)
-                                           (mouse-set-point last-nonmenu-event)
-                                           (let ((symb  (symbol-at-point))
-                                                 (hlt-auto-faces-flag  t))
-                                             (unless symb (error "No symbol under mouse pointer"))
-                                             (hlt-highlight-regexp-region
-                                              (point-min) (point-max)
-                                              (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s")
-                                                      symb)))))))))
-     ,@(and (fboundp 'hlt-unhighlight-regexp-region) ; `:visible'
-            '(("Unhighlight Symbol" . (lambda ()
-                                        (interactive)
-                                        (save-excursion
-                                          (when (listp last-nonmenu-event)
-                                            (mouse-set-point last-nonmenu-event)
-                                            (let ((symb  (symbol-at-point)))
-                                              (unless symb (error "No symbol under mouse pointer"))
-                                              (hlt-unhighlight-regexp-region
-                                               (point-min) (point-max)
-                                               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s")
-                                                       symb)))))))))
+     ,@(and (fboundp 'hlt-highlight-symbol) ; `:visible'
+            '(("Highlight Symbol"  . hlt-highlight-symbol)))
+     ,@(and (fboundp 'hlt-unhighlight-symbol) ; `:visible'
+            '(("Unhighlight Symbol" . hlt-unhighlight-symbol)))
      ,@(and (fboundp 'hi-lock-face-symbol-at-point) ; `:visible'
             '(("Hi-Lock Symbol" . (lambda ()
                                     (interactive)
@@ -1413,31 +1394,12 @@ restore it by yanking."
                 (describe-text-properties (point))
               (list-text-properties-at (point))))))
        (sep-highlight "--")
-       (hlt-highlight menu-item "Highlight Symbol"  (lambda ()
-                                                      (interactive)
-                                                      (save-excursion
-                                                        (mouse-set-point last-nonmenu-event)
-                                                        (let ((hlt-auto-faces-flag  t))
-                                                          (hlt-highlight-regexp-region
-                                                           (point-min) (point-max)
-                                                           (format (if (> emacs-major-version 21)
-                                                                       "\\_<%s\\_>"
-                                                                     "%s")
-                                                                   (symbol-at-point))))))
+       (hlt-highlight menu-item "Highlight Symbol" hlt-highlight-symbol
         :enable (symbol-at-point)
-        :visible (fboundp 'hlt-highlight-regexp-region))
-       (hlt-unhighlight menu-item "Unhighlight Symbol"  (lambda ()
-                                                          (interactive)
-                                                          (save-excursion
-                                                            (mouse-set-point last-nonmenu-event)
-                                                            (hlt-unhighlight-regexp-region
-                                                             (point-min) (point-max)
-                                                             (format (if (> emacs-major-version 21)
-                                                                         "\\_<%s\\_>"
-                                                                       "%s")
-                                                                     (symbol-at-point)))))
+        :visible (fboundp 'hlt-highlight-symbol)) ; In `highlight.el'.
+       (hlt-unhighlight menu-item "Unhighlight Symbol" hlt-unhighlight-symbol
         :enable (symbol-at-point)
-        :visible (fboundp 'hlt-unhighlight-regexp-region))
+        :visible (fboundp 'hlt-unhighlight-symbol)) ; In `highlight.el'.
        (hi-lock-symbol menu-item "Hi-Lock Symbol"  (lambda ()
                                                      (interactive)
                                                      (save-excursion
