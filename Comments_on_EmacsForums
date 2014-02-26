@@ -22,3 +22,15 @@ I have a more than 800 line Fortran 77 code which just became corrupt. The emacs
 
 -- Marata 2014-02-24 13:22 UTC
 
+
+----
+
+Add your comment here.
+To Marata: copy the current file to a backup copy, and then check the backup copy for stray characters:
+
+     cat -vet backup_file | less
+
+Look for something like CR+LF conversion, maybe a UTF or Unicode conversion from previously using an untested editor on the file, etc. When done, convert the file back to its standard format.
+
+-- epement 2014-02-26 18:57 UTC
+
