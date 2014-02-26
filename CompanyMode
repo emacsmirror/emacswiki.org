@@ -77,7 +77,7 @@ Similarly to iswitchb.  Iswitchb is great, because I don't have to type the begi
 <...> Better yet: obey `completion-styles', so the user can choose between `prefix', `substring', `partial-completion', or any other style she likes.
 
 [new:DmitryGutov:2014-02-26 04:01 UTC]
-Note that `completion-styles' begins with `basic' by default, and all styles are tried in turn. So unless you customize this variable, if you just type `when', you won't get `eval-when-compile' among the candidates. You'll have to input a prefix that doesn't have any matches when using the `basic' style.
+: Note that `completion-styles' begins with `basic' by default, and all styles are tried in turn. So unless you customize this variable, if you just type `when', you won't get `eval-when-compile' among the candidates. You'll have to input a prefix that doesn't have any matches when using the `basic' style.
 
 [new]
 The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search. --  [[nschum]]
