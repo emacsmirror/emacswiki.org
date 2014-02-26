@@ -9,3 +9,15 @@ If you want it to be a default behaviour just add the following to your <code>.e
 
 (setq locate-make-command-line 'my-locate-make-command-line)
 }}}
+
+
+See Also:
+
+* '''[[Icicles]]''' [[multi-command]] `<tt>[[Icicles_-_File-Name_Input#FindFilesAnywhere|icicle-locate]]</tt>', which lets you search Unix `locate' hits case-sensitively or insensitively.  And you can toggle case sensitivity on the fly.
+
+
+
+
+
+----
+CategoryFiles CategorySearchAndReplace
