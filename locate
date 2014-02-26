@@ -1,0 +1,11 @@
+<code>M-x locate</code> allow you to use unix <code>locate</code> command.\\
+Usually I want case insensitive search.\\
+It can be done via <code>C-u M-x locate</code> and then adding <code>-i</code> argument to locate call.\\
+If you want it to be a default behaviour just add the following to your <code>.emacs</code>:
+{{{
+(defun my-locate-make-command-line (search-string)
+  "Make an insensitive locate command line"
+  (list locate-command "-i" search-string))
+
+(setq locate-make-command-line 'my-locate-make-command-line)
+}}}
