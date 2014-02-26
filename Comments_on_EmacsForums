@@ -24,8 +24,6 @@ I have a more than 800 line Fortran 77 code which just became corrupt. The emacs
 
 
 ----
-
-Add your comment here.
 To Marata: copy the current file to a backup copy, and then check the backup copy for stray characters:
 
      cat -vet backup_file | less
