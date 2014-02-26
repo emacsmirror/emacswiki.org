@@ -51,6 +51,44 @@ Yes, just bind ''company-manual-begin'', ''company-complete-common'', ''company-
 
 Alternatively, you can set ''company-idle-delay'' to t, to always complete immediately.
 
+==== Can I complete only after running ''self-insert-command''? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
+
+Yes, set ''company-begin-commands'':
+
+  (setq company-begin-commands '(self-insert-command))
+
+-- [[nschum]]
+
+This is the default value since the version 0.6.12.
+
+==== How do I get substring completion? ====
+
+Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each back-end. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
+
+Any other back-end would need to support non-prefix matching explicitly.
+
+When non-prefix matching is used, `company-preview-if-just-one-frontend' isn't displayed instead of `company-pseudo-tooltip-unless-just-one-frontend', as would be usual. Even if there's just one candidate, as long as it doesn't start with the input, you get a popup menu.
+
+[new]
+<...> I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
+
+Similarly to iswitchb.  Iswitchb is great, because I don't have to type the beginning of the buffer name, I can type any part of it.
+
+<...> Better yet: obey `completion-styles', so the user can choose between `prefix', `substring', `partial-completion', or any other style she likes.
+
+[new:DmitryGutov:2014-02-26 04:01 UTC]
+Note that `completion-styles' begins with `basic' by default, and all styles are tried in turn. So unless you customize this variable, if you just type `when', you won't get `eval-when-compile' among the candidates. You'll have to input a prefix that doesn't have any matches when using the `basic' style.
+
+[new]
+The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search. --  [[nschum]]
+
+[new]
+I've written another command named ''company-filter-candidates'' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
+
+==== How do I disable the down-case feature of the dabbrev back-end? ====
+
+Customize `company-dabbrev-downcase'.
+
 ==== I want to have completion and indent bound to tab key (as it is done and works fine in Ca2+), how can i achieve that? ====
 
 [new]
@@ -68,18 +106,9 @@ Depending on the emphasis, one of these:
         (company-complete-common)
       (indent-according-to-mode)))
 
-==== Can I complete only after running ''self-insert-command''? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
-
-Yes, set ''company-begin-commands'':
-
-  (setq company-begin-commands '(self-insert-command))
-
--- [[nschum]]
-
-This is the default value since the version 0.6.12.
-
 ==== Yasnippet integration ====
-Company does interfere with Yasnippet's native behaviour.
+
+Company interferes with Yasnippet's native behaviour.
 Here's a quick fix: http://gist.github.com/265010
 
 [new]
@@ -121,47 +150,6 @@ How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
 
 [new]
 It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and back-ends that can be easily swapped and loaded.
-
-----
-
-How about adding an option for substring match completions? E.g. I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
-
-Similarly to iswitchb.  Iswitchb is great, because I don't have to type the beginning of the buffer name, I can type any part of it.
-
-The option which would control it could be set to prefix match by default (keeping the current behavior) and the user could set it to substring match too.
-
-Better yet: obey ''completion-styles'', so the user can choose between ''prefix'', ''substring'', ''partial-completion'', or any other style she likes.
-
-[new]
-The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search.  But doing that automatically might work well, too.  I'll look into it.
-
-[new]
-
-Automatically is the key. Pressing two keys (or even one) to achieve the same effect is not the same. There could also be a switch key, though, in addition to the option.
-
-E.g. I set the default match to substring, so that it works like iswitchb, because I prefer it that way. But sometimes when I'm doing some completion and typed some characters it turns out it would be quicker to get to the desired match with prefix match, so I press the switch key which temporarily (for the current completion) toggles the match mode and updates the completion list instantly accordingly.
-
-[new]
-I've written another command named ''company-filter-candidates'' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke).  Picking up already typed text as the search string is more complicated, since it's difficult to visualize.  But I think this should feel a lot more like iswitchb.  -- [[nschum]]
-
-[new]
-
-Why is it difficult to visualize? With prefix match you color the matching prefix part, with substring match you color the first matching substring part. Lots of completion packages here on Emacs wiki do that.
-
-[new]
-Because of the way it was build.  The idea is that the interface is standardized, so every front-end has to support this. The "preview" visualization is the one that makes it difficult, because the preview would have to be inserted before point, causing it to jitter as you type.  I'll have to see how well it works.
-
-You could take a look at how icomplete handles this problem (when non-prefix completion is used, it just puts the whole completion after the text rather than only the missing suffix).
-
-[new]
-
-Why don't you add an other option to suppress preview visualization? I don't think preview is that important anyway, when you see the possible completions in the popup list, so the user could just suppress it altogether with a config option if it bothers him. You could mention the jittering effect at the explanation of the substring match option and point the user to the variable which can be used to suppress it.
-
-[new]
-Again, because of the way company is build that would mean throwing the standardized visualization interface overboard, or significantly amending it.  It's just not trivially done.  I have some ideas for this, but it'll have to wait.
-
-[new]
-Would it be possible to make the down-case feature of dabbrev backend customizable as it is counter intuitive for example in shell-mode where it completes in lowercase all environment variables ?
 
 ----
 
