@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 26 08:53:53 2014 (-0800)
+;; Last-Updated: Wed Feb 26 13:03:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3491
+;;     Update #: 3499
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -134,12 +134,22 @@
 ;;  Documentation
 ;;  -------------
 ;;
-;;(@* "Library `facemenu+.el' Puts Highlight on the Menu")
-;;  ** Library `facemenu+.el' Puts Highlight on the Menu **
+;;(@* "Libraries `facemenu+.el' and `mouse3.el' put Highlight on the Menu")
+;;  ** Libraries `facemenu+.el' and `mouse3.el' put Highlight on the Menu **
 ;;
 ;;  If you load library `facemenu+.el' after you load library
-;;  `highlight.el', then the commands defined here will also be
-;;  available on a Highlight submenu in the Text Properties menus.
+;;  `highlight.el' then commands defined here will also be available
+;;  on a `Highlight' submenu in the Text Properties menus.
+;;
+;;  If you load library `mouse3.el' after you load library
+;;  `highlight.el' then:
+;;
+;;    * Commands defined here will also be available on a `Highlight'
+;;      submenu of the `Region' right-click popup menu.
+;;
+;;    * Commands `hlt-highlight-symbol' and `hlt-unhighlight-symbol'
+;;      will be available on the `Thing at Pointer' submenu of the `No
+;;      Region' right-click popup menu.
 ;;
 ;;(@* "User Option `hlt-use-overlays-flag'")
 ;;  ** User Option `hlt-use-overlays-flag'
@@ -621,6 +631,7 @@
 ;;     hlt-next-highlight: Interactive spec uses face at point if hlt-auto-faces-flag.
 ;;                         Use get-char-property, not get-text-property.
 ;;                         Wrap around.
+;;     Bind C-x X hs, C-x X us to hlt-(un)highlight-symbol.
 ;; 2014/02/19 dadams
 ;;     hlt-+/--highlight-regexp-region:
 ;;       If UNHIGHLIGHTP: Do not advance to hlt-next-face.
@@ -899,10 +910,12 @@
 (define-key hlt-map "h"                         nil) ; Prefix key
 (define-key hlt-map "hh"                        'hlt-highlight)
 (define-key hlt-map "hr"                        'hlt-highlight-region)
+(define-key hlt-map "hs"                        'hlt-highlight-symbol)
 (define-key hlt-map "hx"                        'hlt-highlight-regexp-region)
 (define-key hlt-map "he"                        'hlt-highlight-regexp-to-end)
 (define-key hlt-map "u"                         nil) ; Prefix key
 (define-key hlt-map "ur"                        'hlt-unhighlight-region)
+(define-key hlt-map "us"                        'hlt-unhighlight-symbol)
 (define-key hlt-map "ux"                        'hlt-unhighlight-regexp-region)
 (define-key hlt-map "ue"                        'hlt-unhighlight-regexp-to-end)
 (define-key hlt-map "uf"                        'hlt-unhighlight-region-for-face)
