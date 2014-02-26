@@ -61,6 +61,28 @@ Yes, set `company-begin-commands':
 
 This is the default value since the version 0.6.12.
 
+==== I don't like the default colors! ====
+
+Contributions welcome.
+
+Meanwhile, you can [https://github.com/search?q=deftheme+company-tooltip&type=Code look for a theme that customizes the Company faces].
+
+Or customize them yourself.
+
+And if you're using a theme with a dark background, here's another quick option:
+
+  (require 'color)
+  
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
+(Borrowed from [https://github.com/noprompt/matilde/blob/master/emacs.d/noprompt-auto-complete.el#L18-L24 Joel Holdbrooks's init directory]).
+
 ==== How do I get substring completion? ====
 
 Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each back-end. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
