@@ -33,11 +33,11 @@ It can be installed by adding it to ''company-frontends''.
 
 == Issues & questions ==
 
-==== Why is ''company-backends'' initialized with ''company-css'', ''company-elisp'', etc? Shouldn't we add those symbols to ''company-backends'' when their respective libraries are required? ===
+==== Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required? ===
 
 No need to: iterating through back-ends that don't apply to the current buffer is pretty fast.
 
-But the user can have different ''company-backends'' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends only in certain modes, like ''company-dabbrev'' and ''company-ispell'', which would generally apply to almost any buffer and thus block all back-ends after them.
+But the user can have different `'company-backends' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends only in certain modes, like `company-dabbrev' and `company-ispell', which would generally apply to almost any buffer and thus block all back-ends after them.
 
   (add-hook 'css-mode-hook
             (lambda ()
@@ -45,15 +45,15 @@ But the user can have different ''company-backends'' values in different major m
 
 ==== Can I complete by typing a key instead of waiting for the delay timer? ====
 
-Yes, just bind ''company-manual-begin'', ''company-complete-common'', ''company-complete'', ''company-select-next'' to a key in the global map.
+Yes, just bind `company-manual-begin', `company-complete-common', `company-complete', `company-select-next' to a key in the global map.
 
   (global-set-key "\t" 'company-complete-common)
 
-Alternatively, you can set ''company-idle-delay'' to t, to always complete immediately.
+Alternatively, you can set `company-idle-delay' to t, to always complete immediately.
 
-==== Can I complete only after running ''self-insert-command''? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
+==== Can I complete only after running `self-insert-command'? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
 
-Yes, set ''company-begin-commands'':
+Yes, set `company-begin-commands':
 
   (setq company-begin-commands '(self-insert-command))
 
@@ -83,7 +83,7 @@ Similarly to iswitchb.  Iswitchb is great, because I don't have to type the begi
 The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search. --  [[nschum]]
 
 [new]
-I've written another command named ''company-filter-candidates'' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
+I've written another command named `company-filter-candidates' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
 
 ==== How do I disable the down-case feature of the dabbrev back-end? ====
 
