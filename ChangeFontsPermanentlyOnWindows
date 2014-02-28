@@ -100,7 +100,7 @@ but not any kind of font information. Any hints?
 Note: when you use the "change buffer font" menu, the font selected doesn't affect the frame. Examine the buffer-face-mode-remapping variable for that using C-h v buffer-face-mode-remapping. -- Yamitai
 
 [new:DrewAdams:2004-12-30 03:48 UTC]
-You can see the available fonts, and the effect each has, by cycling through them with command `doremi-font' in library Lisp:doremi-frm.el. -- DrewAdams
+You can see the available fonts, and the effect each has, by cycling through them with command `##doremi-font+##' in library <tt>[[doremi-frm.el]]</tt>. -- DrewAdams
 
 ----
 [new]
