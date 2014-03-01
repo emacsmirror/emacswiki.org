@@ -32,7 +32,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
 * DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
 * DiredDragAndDrop -- Lets you drag-and-drop files.
-* DiredEfap -- Rename the file a [[point]] in Dired.
+* DiredEfap -- Rename the file at [[point]] in Dired.
 * [[Diredful]] -- Colorful file names in dired buffers.
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
 * DiredPower -- Various Dired tips and features.
