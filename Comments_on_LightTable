@@ -1,0 +1,25 @@
+Is it possible to to add Brackets (brackets.io) style quick edit to Emacs?
+  - the main advantage is that it doesn't interrupt flow of thoughts - say if you are working a the main function logic, jumping to a called function definition and jump back will interrupt flow of thoughts - whereas edit it 'inline' - a small popup 'inline' windows will locate the function being called /under the cursor?
+
+Probably it wouldn't be difficult, let's see: 
+
+    (at-cursor-functionp
+        (let 
+            (p (locate-buffer-line-function current-point))
+            (if (car p) ; returned list, first is true/false
+                (open-side-buffer-with (cdr p))
+                (warning-mini-buffer "could not locate the function")
+            (`p)))
+           
+                                 
+; to locate-buffer-line-function shall be easy utilizing existing lib
+; such as in speedbar etc
+; however, for function defined in other files, or lang such as ruby, it
+    might be harder to implement
+
+
+
+sorry for my gibberish in elisp, some expert to help?
+
+-- [http://a1make.com ipstone] 2014-03-01 14:11 UTC
+
