@@ -70,6 +70,9 @@ mapcar works on a /sequence/, so you don't have to (append ... nil). -- bojohan
       (concat (reverse (string-to-list "E-M-A-C-S"))))
      'all-hail-emacs)
 
+== Match Data ==
+Why split-string over-writes match-data but does not save them? This is a nasty side-effect because the match-data from split-string is basically useless for the context where it was called from.
+
 ----
 ComparativeEmacsology
 CategoryCode
