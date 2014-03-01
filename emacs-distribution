@@ -10,7 +10,6 @@
 # n.b. This script is essentially just a wrapper for the command:
 # env HOME=$HOME/emacs/distributions/NAME emacs
 
-# Version 1.0
 # Author: Phil S.
 
 # Commentary:
@@ -154,18 +153,22 @@ fi
 if [ -n "${help}" ]; then
 	echo
 	echo "Usage:"
-	echo "$(basename $0) [ --emacs=EMACS ] [ NAME | --distro=PATH/TO/DIR/NAME ]"
+	echo "$(basename $0) [ --emacs=\"COMMAND\" ] [ NAME | --distro=PATH/TO/DIR/NAME ]"
 	echo "$(basename $0) [ OPTIONS ] -- [ EMACS-OPTIONS ]"
 	echo "$(basename $0) --delete [ NAME | --distro=PATH/TO/DIR/NAME ]"
 	echo
 	echo "Uses ${distrodir}/NAME unless --distro is specified."
 	echo
-	echo "Arguments following -- will be passed to Emacs."
-	echo "e.g. $(basename $0) mydistro -- --title='mydistro'"
+	echo "Arguments following -- will be passed to Emacs. e.g.:"
+	echo "$(basename $0) mydistro -- --title='mydistro' --debug-init"
 	echo
-	echo "--emacs specifies a non-default emacs command. To automate this"
-	echo "for a given distribution, place the command to run in the file:"
+	echo "--emacs=\"COMMAND\" specifies a non-default emacs command."
+	echo "Command-line options may also be included. To automate this for"
+	echo "a given distribution, place the command to run in the file:"
 	echo "${distrodir}/NAME/emacs-command"
+	echo
+	echo "The --delete option will remove (rm -rf) the directory of the"
+	echo "specified (NAME) distribution."
 	echo
 	exit
 fi
