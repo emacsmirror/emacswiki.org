@@ -1,3 +1,5 @@
+See DotEmacsDistributions
+
 <pre>
 #!/bin/sh
 
@@ -235,3 +237,7 @@ eval exec env HOME=${fakehome} ${emacs} ${args}
 # tab-width: 4
 # End:
 </pre>
+
+----
+
+CategoryDotEmacs
