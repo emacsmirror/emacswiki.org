@@ -54,17 +54,9 @@ Here is the code:
 
 ----
 
-Add your comment here.
 if i want to open a file by filename  ,this is my way:" C-x C-f M-s" 
 in vim  i doit by ",p" (command-t) 
 or " 'p " (CtrlP)
-
--- [http://yxsongbo.farbox.com yxsongbo] 2014-03-01 02:52 UTC
-
-
-----
-
-Add your comment here.
 
 -- [http://yxsongbo.farbox.com yxsongbo] 2014-03-01 02:52 UTC
 
