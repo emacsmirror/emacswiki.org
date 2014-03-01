@@ -1,5 +1,13 @@
 Search mail with Gnus and Spotlight (Mac OS).
 
+You may need to install "MailSpool.mdimporter" (http://www.yoshidam.net/diary/Spotlight/)
+to index your mail spool files of to spotlight.  That importer decodes non-UTF mails, attaching
+sender, receiver attributes to spotlight index.
+
+Note: This tool no longer works on MacOS X 10.9.  Its source codes are put on github
+(https://github.com/kawabata/MailSpool.mdimporter).  Someone needs to re-write it to work with
+newest MacOS X.
+
 Download the code from Lisp:gnus-spotlight.el.
 
 Installation:
@@ -9,6 +17,8 @@ Installation:
 }}}
 
 This makes `C-c C-n' in the Summary buffer search your mail using Spotlight and lets you browse the result in Gnus.
+
+Note:  nnir-spotlight.el (http://github.com/kawabata/nnir-spotlight) uses Gnus nnir interface for searching mails.
 
 ----
 CategoryGnus
