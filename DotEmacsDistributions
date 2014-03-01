@@ -9,3 +9,7 @@ Reasons for doing this include:
 * Updating a copy of your config to work on a new release of Emacs without breaking your current config.
 
 Shell script [[emacs-distribution]] provides an easy way to run multiple side-by-side instances of Emacs using varying configurations.
+
+----
+
+CategoryDotEmacs
