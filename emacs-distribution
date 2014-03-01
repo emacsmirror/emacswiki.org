@@ -12,6 +12,7 @@ See DotEmacsDistributions
 # n.b. This script is essentially just a wrapper for the command:
 # env HOME=$HOME/emacs/distributions/NAME emacs
 
+# Version 1.0
 # Author: Phil S.
 
 # Commentary:
