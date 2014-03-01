@@ -9,6 +9,7 @@ Specific Init issues:
 * AutoCodingAlist -- Determine encoding by file name.
 * AutoModeAlist -- Determine mode by file name.
 * CustomizingBoth -- writing an InitFile for multiple platforms
+* DotEmacsDistributions -- Running multiple independent configurations (or "distributions") of Emacs.
 * DotEmacsBankruptcy -- Declare bankruptcy when things get so bad you have to start over.
 * InitSplit -- split various variable customizations into their own files
 * InterpreterModeAlist-- Determine mode by interpreter listed in file's first line.
