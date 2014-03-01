@@ -4,7 +4,7 @@ Reasons for doing this include:
 
 * Trying a fully-featured configuration such as [[Prelude]].
 * Experimenting with someone else's configuration.
-* Trying out a new package which may conflict with your current config.
+* Trying out a new (or updated) package which may conflict with your current config.
 * Hacking on a copy of your config without breaking your default config.
 * Updating a copy of your config to work on a new release of Emacs without breaking your current config.
 
