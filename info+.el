@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 20 09:43:53 2014 (-0800)
+;; Last-Updated: Sun Mar  2 13:51:27 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 4939
+;;     Update #: 4956
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -202,6 +202,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/02 dadams
+;;     Info-find-file: Go to directory if no previous file (per Emacs 24.4+).
+;;     Info-find-node-2 (Emacs > 22): Go to Top node at end, if no history.
 ;; 2013/10/17 dadams
 ;;     Added: Info-search-beg, Info-search-end, Info-isearch-search-p.
 ;;     Added redefinition: Info-isearch-wrap, Info-isearch-search.
@@ -1197,6 +1200,7 @@ just return nil (no error)."
              (setq filename  found)
            (if noerror
                (setq filename nil)
+             (unless Info-current-file (Info-directory)) ; If no previous Info file, go to directory.
              (info-user-error "Info file `%s' does not exist" filename)))
          filename))
       ((member filename '(apropos history toc))  filename))) ; Handle virtual books - `toc'.
@@ -1786,7 +1790,6 @@ it says do not attempt further (recursive) error recovery."
                     (set-buffer-modified-p nil)
                     (set (make-local-variable 'Info-file-supports-index-cookies)
                          (Info-file-supports-index-cookies filename))
-
                     ;; See whether file has a tag table.  Record the location if yes.
                     (goto-char (point-max))
                     (forward-line -8)
@@ -1814,8 +1817,7 @@ it says do not attempt further (recursive) error recovery."
                             (set-marker Info-tag-table-marker pos)))
                       (set-marker Info-tag-table-marker nil))
                     (setq Info-current-file  filename))))
-           ;; Use string-equal, not equal, to ignore text props.
-           (if (string-equal nodename "*")
+           (if (string-equal nodename "*") ; Use `string-equal', not `equal', to ignore text props.
                (progn (setq Info-current-node  nodename) (Info-set-mode-line))
              ;; Possibilities:
              ;;
@@ -1846,19 +1848,16 @@ it says do not attempt further (recursive) error recovery."
                        ;; If this is an indirect file, determine which
                        ;; file really holds this node and read it in.
                        (unless (eq (nth 2 found) 'Info-mode)
-                         ;; Note that the current buffer must be the
-                         ;; *info* buffer on entry to
-                         ;; Info-read-subfile.  Thus the hackery above.
+                         ;; Note that the current buffer must be the *info* buffer on entry to
+                         ;; `Info-read-subfile'.  Thus the hackery above.
                          (setq guesspos  (Info-read-subfile guesspos)))
-                       ;; Handle anchor
-                       (when (nth 0 found)
+                       (when (nth 0 found) ; Handle anchor
                          (goto-char (setq anchorpos  guesspos)) (throw 'foo t)))))
                  ;; Else we may have a node, which we search for:
                  (goto-char (max (point-min) (- (byte-to-position guesspos) 1000)))
-                 ;; Now search from our advised position (or from beg of
-                 ;; buffer) to find the actual node.  First, check
-                 ;; whether the node is right where we are, in case the
-                 ;; buffer begins with a node.
+                 ;; Now search from our advised position (or from beg of buffer) to find the actual
+                 ;; node.  First, check whether the node is right where we are, in case the buffer
+                 ;; begins with a node.
                  (let ((pos  (Info-find-node-in-buffer regexp)))
                    (when pos (goto-char pos) (throw 'foo t)))
                  (when (string-match "\\([^.]+\\)\\." nodename)
@@ -1891,13 +1890,14 @@ it says do not attempt further (recursive) error recovery."
                       (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
                       Info-fit-frame-flag)
              (fit-frame)))
-      ;; If we did not finish finding the specified node,
-      ;; go back to the previous one.
-      (or Info-current-node no-going-back (null Info-history)
-          (let ((hist  (car Info-history)))
-            (setq Info-history  (cdr Info-history))
-            (Info-find-node (nth 0 hist) (nth 1 hist) t nomsg)
-            (goto-char (nth 2 hist)))))
+      ;; If we did not finish finding the specified node, go to the previous one or to `Top' node.
+      (unless (or Info-current-node  no-going-back)
+        (if Info-history
+            (let ((hist  (car Info-history)))
+              (setq Info-history  (cdr Info-history))
+              (Info-find-node (nth 0 hist) (nth 1 hist) t nomsg)
+              (goto-char (nth 2 hist)))
+          (Info-find-node Info-current-file "Top" t))))
     (Info-set-mode-line)))
 
 
