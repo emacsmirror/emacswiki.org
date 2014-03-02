@@ -22,8 +22,8 @@ Put the following lines in your .emacs:
     (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur)))
 }}}
 
-== Elpakit's version for ELPA packages ==
-[[Elpakit]] has a project based occur based on your ELPA package's source files.
+== ElpaKit's version for ELPA packages ==
+ElpaKit has a project based occur based on your ELPA package's source files.
 
 ----
 CategoryProject
