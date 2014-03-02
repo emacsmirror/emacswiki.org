@@ -7,11 +7,14 @@ ElpaKit can do 2 useful things:
 
 This last feature is particularly useful if you want to use a LocalElpaArchive.
 
-== Other things ElpaKit can do ==
+== Other things ElpaKit does ==
 
+* keeps package tests separate from source files
 * run tests in clean emacsen on packages built from source files
 * run clean daemon servers with packages built from source files
-* eval all the code you declare in packages
+* eval all the code you declare as being part of your package, which helps with development of packages
+* provides a "project occur" so you can find things easily in your package source files
+* manages processes used for testing and daemons with elpakit
 
 == Get it ==
 ElpaKit is available from marmalade.
