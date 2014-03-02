@@ -124,6 +124,16 @@ See DotEmacsDistributions
 # unwanted cruft.
 
 
+# TO DO:
+# The next version will include a --clone argument for initialising a distribution
+# as either a copy of your existing ~/.emacs.d, or a copy of another existing
+# distribution, or a copy of a given directory path, or (for git at minimum),
+# a copy of a specified repository. e.g.:
+# $ emacs-distribution copy-of-default-config --clone
+# $ emacs-distribution copy-of-copy --clone=copy-of-default-config
+# $ emacs-distribution prelude --clone=https://github.com/bbatsov/prelude.git
+
+
 distrodir=${HOME}/emacs/distributions
 
 # Process command line options
