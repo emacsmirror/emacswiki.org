@@ -71,7 +71,17 @@ mapcar works on a /sequence/, so you don't have to (append ... nil). -- bojohan
      'all-hail-emacs)
 
 == Match Data ==
+
 Why split-string over-writes match-data but does not save them? This is a nasty side-effect because the match-data from split-string is basically useless for the context where it was called from.
+
+[new:DrewAdams:2014-03-02 02:24 UTC]
+Emacs functions do not, in general, save the match data.  This is an explicit Emacs Dev policy.  There are a few functions that do save match data, and they are (should be) documented as doing so.
+
+Please state why you think it is necessarily the case that the match data from splitting a string is useless.
+
+But anyway, even if that were the case it would be unlikely (IMO) that Emacs Dev would agree to make `split-string' save the match data.  If you think otherwise, consider reporting a bug or enhancment request: `M-x report-emacs-bug'.
+
+In the meantime, it is easy for you to wrap any `split-string' calls you want (in your own code) with `save-match-data'. -- DrewAdams
 
 ----
 ComparativeEmacsology
