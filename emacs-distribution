@@ -30,6 +30,10 @@ See DotEmacsDistributions
 # them together and have multiple side-by-side emacs instances, each
 # using a different configuration.
 
+# TO DO:
+# Allow cloning of a single init file (all supported formats).
+# Post-processing of repositories to support other directory structures.
+
 
 # Running a distribution:
 # -----------------------
