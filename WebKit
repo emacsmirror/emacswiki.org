@@ -1,0 +1,27 @@
+Everyone has their own dreams, and every emacser  has an own operating system dream!   -- AndyStewart
+
+==We want full-feature browser in Emacs!==
+I think every emacser are hoping to run a modern browser in Emacs inside, not text browser like w3m, not xwidget that break emacs' text pure world, 
+we hope running WebKit engine browser like any  other modern application, not just text, it can run javascript, it can access any website you want to visit, 
+and integrated with Emacs well.
+
+==Emacs Webkit Screenshot==
+Below is screenshot of emacs-webkit that part of [https://github.com/linuxdeepin/deepin-emacs DeepinEmacs]:
+https://f.cloud.github.com/assets/237487/2060509/f60d05d0-8c1e-11e3-98c7-a14fa75e3ff7.png
+
+==How it works?==
+Below is framework of emacs-webkit that show how it works!
+
+[[image:webkit-framework.png]]
+ 
+==How to install it?==
+Emacs-Webkit base on [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC] , first you need install those libraries to use run emacs-webkit code.
+
+Then download emacs-webkit source code from : https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit
+
+Last add webkit.el in your load-path and execute command webkit-open-url , enjoy!
+
+==Hacking powerful browser!==
+I'm speed all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, haven't so much time on elisp world.
+
+It's very welcome to [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build most powerful browser for Emacs hacker!
