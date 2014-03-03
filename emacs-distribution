@@ -12,7 +12,7 @@ See DotEmacsDistributions
 # n.b. This script is essentially just a wrapper for the command:
 # env HOME=$HOME/emacs/distributions/NAME emacs
 
-# Version 1.0
+# Version 1.01
 # Author: Phil S.
 # URL: http://www.emacswiki.org/emacs/emacs-distribution
 
@@ -51,22 +51,44 @@ See DotEmacsDistributions
 # instance (inside that instance "~/" will be the distribution's home).
 
 
-# Pre-packaged distributions:
-# ---------------------------
+# Pre-packaged distributions, and --clone:
+# ----------------------------------------
 # Some configurations such as Emacs Prelude or Emacs Live come ready-
 # made with an init.el file, and need only be installed to the
-# appropriate .emacs.d directory. e.g.:
+# appropriate .emacs.d directory. If the repository (or otherwise)
+# represents the .emacs.d directory, then you can clone it directly:
 #
-# $ git clone https://github.com/bbatsov/prelude.git ~/emacs/distributions/prelude/.emacs.d
-# $ git clone https://github.com/overtone/emacs-live.git ~/emacs/distributions/emacs-live/.emacs.d
+# $ emacs-distribution prelude --clone="https://github.com/bbatsov/prelude.git"
+# $ emacs-distribution emacs-live --clone="https://github.com/overtone/emacs-live.git"
 #
-# From there, these would be run as follows:
-# $ emacs-distribution prelude
-# $ emacs-distribution emacs-live
+# In other scenarios, you can manually copy the appropriate directory as
+# ~/emacs/distributions/NAME/.emacs.d and then run the distribution with:
+# $ emacs-distribution NAME
+#
+# Distributions can also be cloned from the filesystem.
+# The uses of --clone are as follows:
+#
+# $ emacs-distribution --clone NAME
+#   Creates a copy of ~/.emacs.d as NAME.
+#
+# $ emacs-distribution --clone=DIST NAME
+#   Creates a copy of existing distribution DIST as NAME.
+#
+# $ emacs-distribution --clone=PATH/TO/DIR NAME
+#   Creates a copy of existing directory DIR as NAME.
+#   DIR will be copied as the .emacs.d directory, unless it
+#   contains a .emacs.d directory.
+#
+# $ emacs-distribution --clone=REPO NAME
+#   Clones version-control repository REPO as NAME.
+#   (Only git repositories are supported at this time.)
+#   REPO is assumed to represent the .emacs.d directory.
+#   If it does not, you will need to manually modify the
+#   distribution directory.
 
 
 # Default command-line options and per-distribution Emacs versions:
-# ------------------------------------------------------------------
+# -----------------------------------------------------------------
 # To use a specific version of Emacs for a distribution, either
 # specify the emacs command to run using the --emacs="COMMAND" option,
 # or place a file named "emacs-command" in the distribution directory
@@ -124,27 +146,23 @@ See DotEmacsDistributions
 # unwanted cruft.
 
 
-# TO DO:
-# The next version will include a --clone argument for initialising a distribution
-# as either a copy of your existing ~/.emacs.d, or a copy of another existing
-# distribution, or a copy of a given directory path, or (for git at minimum),
-# a copy of a specified repository. e.g.:
-# $ emacs-distribution copy-of-default-config --clone
-# $ emacs-distribution copy-of-copy --clone=copy-of-default-config
-# $ emacs-distribution prelude --clone=https://github.com/bbatsov/prelude.git
-
-
 distrodir=${HOME}/emacs/distributions
 
 # Process command line options
-opts=$(getopt -o hd:e: -l help,distro:,emacs:,delete -n "$(basename $0)" -- "$@")
+opts=$(getopt -o hd:e: -l help,distro:,emacs:,clone::,source-type:,delete -n "$(basename $0)" -- "$@")
 if [ $? -eq 0 ]; then
 	eval set -- ${opts}
 	while true; do
 		case "$1" in
 			( -h|--help   ) help=1; shift; break;;
-			( -d|--distro ) shift; fakehome=$1; distro=$(basename $1); shift;;
+			( -d|--distro ) {
+				shift; eval path=$1; # eval needed to handle ~/
+				fakehome=$(readlink -f "${path}"); # get absolute path
+				distro=$(basename $1); shift;
+			} ;;
 			( -e|--emacs  ) shift; emacs=$1; shift;;
+			( -c|--clone  ) clone=1; shift; source=$1; shift;;
+			( -t|--source-type ) shift; vcs=$1; shift;;
 			( --delete    ) delete=1; shift;;
 			( --          ) shift; break;;
 		esac
@@ -167,9 +185,12 @@ fi
 if [ -n "${help}" ]; then
 	echo
 	echo "Usage:"
-	echo "$(basename $0) [ --emacs=\"COMMAND\" ] [ NAME | --distro=PATH/TO/DIR/NAME ]"
-	echo "$(basename $0) [ OPTIONS ] -- [ EMACS-OPTIONS ]"
-	echo "$(basename $0) --delete [ NAME | --distro=PATH/TO/DIR/NAME ]"
+	echo "$(basename $0) [ --emacs=COMMAND ] [ --clone[=SOURCE] ]"
+	echo "    [ --source-type=TYPE ] [ NAME | --distro=PATH/TO/DIR/NAME ]"
+	echo "    [ -- [ EMACS-OPTIONS ... ] ]"
+	echo "$(basename $0) [ -e COMMAND ] [ -c [SOURCE] ] [ -t TYPE ]"
+	echo "    [ NAME | -d PATH/TO/DIR/NAME ] [ -- [ EMACS-OPTIONS ... ] ]"
+	echo "$(basename $0) --delete NAME"
 	echo
 	echo "Uses ${distrodir}/NAME unless --distro is specified."
 	echo
@@ -180,6 +201,15 @@ if [ -n "${help}" ]; then
 	echo "Command-line options may also be included. To automate this for"
 	echo "a given distribution, place the command to run in the file:"
 	echo "${distrodir}/NAME/emacs-command"
+	echo
+	echo "The --clone option will initialise a new distribution from an"
+	echo "existing source (~/.emacs.d by default, or a named distribution,"
+	echo "or a named directory, or a version control repository. It is"
+	echo "assumed that the repository represents the .emacs.d directory."
+	echo
+	echo "The --source-type option indicates the version-control system"
+	echo "for the repository, if it cannot be ascertained automatically"
+	echo "from SOURCE. Valid options are: bzr, cvs, darcs, git, hg, svn."
 	echo
 	echo "The --delete option will remove (rm -rf) the directory of the"
 	echo "specified (NAME) distribution."
@@ -207,17 +237,66 @@ if [ -n "${delete}" ]; then
 	exit # Exit here, regardless.
 fi
 
-# Run the distribution.
-
-# Create the home directory and user init file if necessary.
-if [ ! -d ${fakehome}/.emacs.d ]; then
-	mkdir -p ${fakehome}/.emacs.d
-	ln -s .emacs.d ${fakehome}/user-emacs-directory
-	init=${fakehome}/.emacs.d/init.el
-	# touch ${init}
-	echo ";; user init file for '${distro}' distribution.\n" >${init}
-	set -- "$@" "${init}" # Visit the new init file.
+# Create the distribution.
+emacsd="${fakehome}/.emacs.d"
+if [ ! -d "${emacsd}" ]; then
+	# Are we cloning an existing source?
+	if [ -n "${clone}" ]; then
+		# Determine source type.
+		if [ -z "${vcs}" ]; then
+			if [ -z "${source}" ]; then
+				source="${HOME}/.emacs.d"
+			elif [ -d "${distrodir}/${source}" ]; then
+				source="${distrodir}/${source}"
+			elif [ "${source%.git}" != "${source}" ]; then
+				vcs=git
+			elif [ "${source#git://}" != "${source}" ]; then
+				vcs=git
+			elif [ "${source#cvs://}" != "${source}" ]; then
+				vcs=cvs
+			elif [ "${source#svn*://}" != "${source}" ]; then
+				vcs=svn
+			fi
+		fi
+		# Copy from source.
+		if [ -n "${vcs}" ]; then
+			# Clone from VCS.
+			case "${vcs}" in
+				( bzr   ) bzr checkout "${source}" "${emacsd}"; x=$?; break;;
+				( cvs   ) cvs checkout -d "${emacsd}" "${source}"; x=$?; break;;
+				( darcs ) darcs get "${source}" "${emacsd}"; x=$?; break;;
+				( git   ) git clone "${source}" "${emacsd}"; x=$?; break;;
+				( hg    ) hg clone "${source}" "${emacsd}"; x=$?; break;;
+				( svn   ) svn checkout "${source}" "${emacsd}"; x=$?; break;;
+				( *     ) echo "Unsupported source type."; x=1; break;;
+			esac
+			if [ ${x} != 0 ]; then
+				echo "Error cloning repository."
+				exit
+			fi
+		elif [ -d "${source}" ]; then
+			# Copy directory.
+			if [ -d "${source}/.emacs.d" ]; then
+				cp -r "${source}" "${fakehome}"
+			else
+				mkdir -p ${fakehome}
+				cp -r "${source}" "${emacsd}"
+			fi
+		fi
+	else
+		# Not cloning. Create blank-slate distribution.
+		mkdir -p "${emacsd}"
+		init="${emacsd}/init.el"
+		# touch ${init}
+		echo ";; user init file for '${distro}' distribution.\n" >${init}
+		set -- "$@" "${init}" # Visit the new init file.
+	fi
+elif [ -n "${clone}" ]; then
+	echo "Cannot clone into existing distribution. Exiting."
+	exit
 fi
+
+# Run the distribution.
 
 # Check for a non-standard emacs executable.
 # --emacs takes precedence; then an "emacs-command" file; finally "emacs".
