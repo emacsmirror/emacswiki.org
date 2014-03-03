@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Feb 24 09:52:10 2014 (-0800)
+;; Last-Updated: Mon Mar  3 09:13:01 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10660
+;;     Update #: 10663
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1057,6 +1057,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/03/03 dadams
+;;     icicle-search-xml-element: Try to handle attributes and <ELTNAME/> too.
 ;; 2014/03/24 dadams
 ;;     icicle-complete-keys, icicle-complete-menu-bar:
 ;;       Do not bind icicle-orig-buff or icicle-orig-window - they are the minibuffer buf & window.
