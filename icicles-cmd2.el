@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Feb 24 09:43:35 2014 (-0800)
+;; Last-Updated: Mon Mar  3 09:11:42 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6749
+;;     Update #: 6763
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -408,6 +408,7 @@
 (defvar eyedrop-picked-background)      ; In `eyedrop.el' or `palette.el'
 (defvar eyedrop-picked-foreground)      ; In `eyedrop.el' or `palette.el'
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
+(defvar icicle-complete-keys-ignored-prefix-keys) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-complete-keys-self-insert-ranges) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
@@ -5558,6 +5559,15 @@ The search contexts are the top-level matching elements within the
 search limits, BEG and END.  Those elements might or might not contain
 descendent elements that are themselves of type ELEMENT.
 
+Unlike the case for `icicle-search-xml-element-text-node' the matching
+top-level elements can have attributes.  They can have any of these
+forms:
+
+ * <ELEMENTNAME>...</ELEMENTNAME>
+ * <ELEMENTNAME ATTRIBUTE1=\"...\"...>...</ELEMENTNAME>
+ * <ELEMENTNAME/>
+ * <ELEMENTNAME ATTRIBUTE1=\"...\".../>
+
 You can alternatively choose to search, not the search contexts as
 defined by the element-name regexp, but the non-contexts, that is, the
 buffer text that is outside such elements.  To do this, use `C-M-~'
@@ -5578,7 +5588,9 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
     (icicle-search-thing
      'sexp beg end require-match where
      `(lambda (thg+bds)
-       (and thg+bds  (icicle-string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))))
+       (and thg+bds  (icicle-string-match-p
+                      ,(format "\\`\\s-*<\\s-*%s\\(\\s-+\\|>\\|/>\\)" element) ; <foo>, <foo/>, <foo a="b"...
+                      (car thg+bds)))))))
 
 (defun icicle-search-xml-element-text-node (beg end require-match where element)
   "`icicle-search', with text() nodes of XML ELEMENTs as search contexts.
@@ -5588,6 +5600,10 @@ The search contexts are the text() nodes of the top-level matching
 elements within the search limits, BEG and END.  (Those elements might
 or might not contain descendent elements that are themselves of type
 ELEMENT.)
+
+Those top-level matching elements must not have attributes.  Only
+top-level elements of the form `<ELEMENTNAME>...</ELEMENTNAME>' are
+matched.
 
 You can alternatively choose to search, not the search contexts as
 defined by the element-name regexp, but the non-contexts, that is, the
@@ -5612,8 +5628,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
        (and thg+bds  (icicle-string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))
      `(lambda (thg+bds)
        (save-excursion
-         (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element)
-                                           (car thg+bds)))
+         (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))
                 (child       (icicle-next-visible-thing
                               'sexp (+ (match-end 0) (cadr thg+bds)) (cddr thg+bds)))
                 (tag-regexp  (concat "\\`\\s-*<\\s-*"
