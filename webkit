@@ -16,3 +16,6 @@ Then download emacs-webkit source code from : https://github.com/linuxdeepin/dee
 
 Last add webkit.el in your load-path and execute command webkit-open-url , enjoy!
  
+==Hacking powerful browser!==
+I'm speed all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, haven't so much time on elisp world.
+It's very welcome to [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build most powerful browser for Emacs hacker!
