@@ -26,6 +26,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 *** [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- Copy and paste from [[emacs-w3m]] to [[OrgMode]].
 
 ** Not part of Emacs.
+*** WebKit -- Running WebKit browser in Emacs! 
+
 *** AutoInstall -- Download and install elisp package automatically. (Maintainer: [[rubikitch]]).
 
 *** [[Yaoddmuse]] -- Edit and manage Oddmuse wikis (like EmacsWiki) page. (Maintainer: [[rubikitch]]).
