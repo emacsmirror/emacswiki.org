@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Mar  3 09:13:01 2014 (-0800)
+;; Last-Updated: Tue Mar  4 11:31:37 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10663
+;;     Update #: 10671
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1969,6 +1969,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/03/04 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Use icicle-display-completion-list, not display-completion-list.
+;;       Removed icicle-condition-case-no-debug around that call.
+;;       Pass NB-CANDS to icicle-display-completion-list.
+;;     icicle-display-completion-list: Added optional arg NB-CANDS.  Pass it to *-insert-candidates.
+;;     icicle-insert-candidates: Added optional arg NUMBER-OF-CANDIDATES.  Use it if available.
 ;; 2014/02/21 dadams
 ;;     Added: icicle-read-file-name-default.
 ;;     icicle-read-file-name, icicle-read-file-name-1, icicle-dired-read-shell-command,
