@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar  2 13:51:27 2014 (-0800)
+;; Last-Updated: Tue Mar  4 10:41:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 4956
+;;     Update #: 4966
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -57,7 +57,7 @@
 ;;    23+), `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-quotations',
 ;;    `Info-toggle-fontify-single-quote',
-;;    `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
+;;    `Info-toggle-breadcrumbs-in-header' (Emacs 23+),
 ;;    `Info-virtual-book', `menu-bar-read-lispref',
 ;;    `menu-bar-read-lispintro',
 ;;
@@ -202,6 +202,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/04 dadams
+;;     Renamed Info-toggle-breadcrumbs-in-header-line to Info-toggle-breadcrumbs-in-header.
+;;       Declared old name obsolete.
 ;; 2014/03/02 dadams
 ;;     Info-find-file: Go to directory if no previous file (per Emacs 24.4+).
 ;;     Info-find-node-2 (Emacs > 22): Go to Top node at end, if no history.
@@ -1044,18 +1047,23 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
    "Quit Info")
   (easy-menu-add-item
    Info-mode-menu nil
-   ["Toggle Breadcrumbs in Header Line" Info-toggle-breadcrumbs-in-header-line
-                                        :help "Toggle showing breadcrumbs in the header line"]
+   ["Toggle Breadcrumbs in Node Header" Info-toggle-breadcrumbs-in-header
+                                        :help "Toggle showing breadcrumbs in the node header"]
    "Quit Info"))
 
-;;;###autoload (autoload 'Info-toggle-breadcrumbs-in-header-line "info+")
+;;;###autoload (autoload 'Info-toggle-breadcrumbs-in-header "info+")
 (when (> emacs-major-version 22)
-  (defun Info-toggle-breadcrumbs-in-header-line (&optional msgp)
-    "Toggle showing breadcrumbs in a header line."
+  (defun Info-toggle-breadcrumbs-in-header (&optional msgp)
+    "Toggle showing breadcrumbs in the Info header (top of the node).
+This means the area at the top of the node, not the separate header
+line from non-nil `Info-use-header-line'."
     (interactive "p")
     (setq Info-breadcrumbs-in-header-flag  (not Info-breadcrumbs-in-header-flag))
-    (when msgp (message "Breadcrumbs in header line is now %s"
-                        (if Info-breadcrumbs-in-header-flag "ON" "OFF")))))
+    (when msgp (message "Showing breadcrumbs in Info header is now %s"
+                        (if Info-breadcrumbs-in-header-flag "ON" "OFF"))))
+
+  (defalias 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header)
+  (make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-quotations "info+")
 ;;;###autoload (autoload 'Info-toggle-fontify-single-quote "info+")
