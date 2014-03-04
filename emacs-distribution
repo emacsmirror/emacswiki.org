@@ -31,8 +31,11 @@ See DotEmacsDistributions
 # using a different configuration.
 
 # TO DO:
+# Rename to emacs-sandbox and ~/.emacs.d.sandboxes/
 # Allow cloning of a single init file (all supported formats).
 # Post-processing of repositories to support other directory structures.
+# Support archive formats?
+# (or a generic "fetch a thing" command to cover files/archives/URLs/repos/etc?)
 
 
 # Running a distribution:
