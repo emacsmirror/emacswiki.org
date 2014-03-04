@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Feb 21 09:09:33 2014 (-0800)
+;; Last-Updated: Tue Mar  4 11:27:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14382
+;;     Update #: 14390
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3329,12 +3329,11 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                             new-cand))))
                                  new-cand))
                              icicle-completion-candidates)))
-             ;; The `icicle-condition-case-no-debug' should not be needed, but it prevents an
-             ;; "End of buffer" message from `display-completion-list' on Emacs 22.
-             (icicle-condition-case-no-debug nil
-                 (display-completion-list
-                  (if reverse-p (reverse icicle-completion-candidates) icicle-completion-candidates))
-               (error nil)))
+             (icicle-display-completion-list (if reverse-p
+                                                 (reverse icicle-completion-candidates)
+                                               icicle-completion-candidates)
+                                             nil ; IGNORED
+                                             nb-cands))
            (save-excursion
              (save-window-excursion
                (with-current-buffer (get-buffer "*Completions*")
@@ -3734,7 +3733,7 @@ cached in `icicle-Info-index-cache'."
 (unless (fboundp 'icicle-ORIG-display-completion-list)
   (defalias 'icicle-ORIG-display-completion-list (symbol-function 'display-completion-list)))
 
-(defun icicle-display-completion-list (completions &optional ignored)
+(defun icicle-display-completion-list (completions &optional ignored nb-cands)
   "Display the list of completions, COMPLETIONS, using `standard-output'.
 Each element may be just a symbol or string or may be a list of two
 strings to be printed as if concatenated.
@@ -3745,7 +3744,8 @@ The actual completion alternatives, as inserted, are given the
 `mouse-face' property of `highlight'.
 At the end, this runs the normal hook `completion-setup-hook'.
 It can find the completion buffer in `standard-output'.
-The optional second arg is ignored."
+The optional second arg is ignored.
+Non-nil optional third arg NB-CANDS is the length of COMPLETIONS."
   (if (not (bufferp standard-output))
       (let ((standard-output  (current-buffer))) (icicle-display-completion-list completions))
     (let ((mainbuf  (current-buffer)))  ; $$$$$$ For Emacs 23 crap that puts base-size in last cdr.
@@ -3769,14 +3769,15 @@ The optional second arg is ignored."
             (set (make-local-variable 'completion-base-size)
                  (or (cdr last)  (and (minibufferp mainbuf)  0)))
             (setcdr last nil)))         ; Make completions a properly nil-terminated list.
-        (icicle-insert-candidates completions)))
+        (icicle-insert-candidates completions nb-cands)))
     ;; In vanilla Emacs < 23, the hook is run with `completion-common-substring' bound to
     ;; what is here called IGNORED.
     (run-hooks 'completion-setup-hook)
     nil))
 
-(defun icicle-insert-candidates (candidates)
-  "Insert completion candidates from list CANDIDATES into the current buffer."
+(defun icicle-insert-candidates (candidates &optional number-of-candidates)
+  "Insert completion candidates from list CANDIDATES into the current buffer.
+Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
   (when (consp candidates)
     (let ((annotation-fn  (or           ; Emacs 23+
                            (and icicle-last-completion-candidate
@@ -3818,7 +3819,7 @@ The optional second arg is ignored."
                               (cdr (assq 'width default-frame-alist)))))
                     (comp-win (1- (window-width comp-win))) ; Width picked by `display-buffer'.
                     (t 40))))           ; Failsafe.
-           (nb-cands         (length candidates))
+           (nb-cands         (or number-of-candidates  (length candidates)))
            (columns          (if any-multiline-p
                                  1
                                (or icicle-Completions-max-columns
