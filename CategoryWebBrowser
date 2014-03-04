@@ -6,6 +6,7 @@
 * [[w3]] -- the complete web browser written in Emacs Lisp
 * EmacsWebBrowser -- a toy browser that piggybacks onto font-lock
 * [[EmacsXWidgets]] -- The xwidget branch of Emacs has webkit integration, so you can have a browser inside an Emacs window.
+* [[WebKit]] -- Running full feature WebKit browser in Emacs, base on X11/EPC/PyQt5, don't need modified any code of Emacs like EmacsXWidgets.
 
 === Browsers dependent on external programs ===
 
