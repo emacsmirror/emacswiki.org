@@ -74,6 +74,11 @@ mapcar works on a /sequence/, so you don't have to (append ... nil). -- bojohan
 
 Why split-string over-writes match-data but does not save them? This is a nasty side-effect because the match-data from split-string is basically useless for the context where it was called from.
 
+Got burnt a couple of times by:
+
+   (while (re-search-forward re nil t)
+     (push (nconc (split-string (match-string 1)) (split-string (match-string 2)) collections))
+
 [new:DrewAdams:2014-03-02 02:24 UTC]
 Emacs functions do not, in general, save the match data.  This is an explicit Emacs Dev policy.  There are a few functions that do save match data, and they are (should be) documented as doing so.
 
