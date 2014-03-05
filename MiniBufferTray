@@ -27,7 +27,11 @@ Minibuffer-tray use same technique as [[WebKit]], you need install [http://www.r
 
 Then download minibuffer-tray source code from : https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
 
-Last add minibuffer-tray.el.el in your load-path and add (require 'minibuffer-tray) in your ~/.emacs, that's all!
+Last add minibuffer-tray.el.el in your load-path and add 
+{{{
+(require 'minibuffer-tray)
+}}}
+ in your ~/.emacs, that's all!
 
 ==Screenshot==
 [[image:minibuffertray.png]]
