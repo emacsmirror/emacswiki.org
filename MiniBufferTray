@@ -1,0 +1,32 @@
+I hate Emacs put a lot of spam on the mode-line.  -- AndyStewart
+
+==What message are we really care?==
+In fact, every day we are only interested those information: column, row, percent, time and date
+
+==Why not remove mode-line?==
+Emacs intro mode-line show information of current buffer, but most of them are spam.
+When you compare the file vertically, mode-line waste a lot of space and interfere with our line of sight.
+If you want detail information of current buffer, `Ctrl + h m' is enough.
+So why not remove mode-line ?
+
+You can use below code to *remove* mode-line:
+
+(custom-set-faces
+  '(mode-line ((t (:background "#3E0303" :foreground "#3E0303" :height 1))))
+  '(mode-line-highlight ((t (:height 1))))
+  '(mode-line-inactive ((t (:background "gray10" :foreground "gray10" :height 1))))
+)
+
+==What's minibuffer-tray ?==
+minibuffer-tray just contain  necessary information (column, row, percent, time, date)
+and stay on the bottom right corner of the emacs.
+
+==How to install it ?==
+Minibuffer-tray use same technique as [[WebKit]], you need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC]  first
+
+Then download minibuffer-tray source code from : https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
+
+Last add minibuffer-tray.el.el in your load-path and add (require 'minibuffer-tray) in your ~/.emacs, that's all!
+
+==Screenshot==
+[[image:minibuffertray.png]]
