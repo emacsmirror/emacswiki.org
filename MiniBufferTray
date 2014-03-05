@@ -31,7 +31,7 @@ Last add minibuffer-tray.el.el in your load-path and add
 {{{
 (require 'minibuffer-tray)
 }}}
- in your ~/.emacs, that's all!
+in your ~/.emacs, that's all!
 
 ==Screenshot==
 [[image:minibuffertray.png]]
