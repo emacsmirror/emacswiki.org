@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 11 22:13:30 2014 (-0800)
+;; Last-Updated: Wed Mar  5 10:53:10 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1664
+;;     Update #: 1669
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/05 dadams
+;;     icomplete-exhibit: Wrap body with with-current-buffer, to prevent using *Completions* buffer.
 ;; 2014/01/11 dadams
 ;;     Soft, not hard require cl-lib.el.  Only 24.3+ has it.
 ;;     icompletep-completion-all-sorted-completions for Emacs 24.1-3:
@@ -386,45 +388,46 @@ This has no effect unless library `icicles.el' is being used."
 Should be run via minibuffer `post-command-hook'.
 See `icomplete-mode' and `minibuffer-setup-hook'."
     (when (icomplete-simple-completing-p)
-      (save-match-data
-        (let* ((minibuf-begin     (if (< emacs-major-version 21)
-                                      (point-min)
-                                    (minibuffer-prompt-end)))
-               (contents          (buffer-substring minibuf-begin (point-max)))
-               (buffer-undo-list  t))
-          (save-excursion
-            (goto-char (point-max))
-            ;; Register the end of input, so we know where the extra stuff
-            ;; (match-status info) begins:
-            (unless (boundp 'icomplete-eoinput)
-              ;; In case it got wiped out by major mode business:
-              (make-local-variable 'icomplete-eoinput))
-            (setq icomplete-eoinput  (point))
-            ;; Insert the match-status information:
-            (when (and (> (point-max) minibuf-begin)
-                       (save-excursion  ; Do nothing if looking at a list, string, etc.
-                         (goto-char minibuf-begin)
-                         (not (looking-at ; No (, ", ', 9 etc. at start.
-                               "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)")))
-                       (or
-                        ;; Do not bother with delay after certain number of chars:
-                        (> (point-max) icomplete-max-delay-chars)
-                        ;; Do not delay if alternatives number is small enough:
-                        (if minibuffer-completion-table
-                            (cond ((numberp minibuffer-completion-table)
-                                   (< minibuffer-completion-table
-                                      icomplete-delay-completions-threshold))
-                                  ((sequencep minibuffer-completion-table)
-                                   (< (length minibuffer-completion-table)
-                                      icomplete-delay-completions-threshold))))
-                        ;; Delay - give some grace time for next keystroke, before
-                        ;; embarking on computing completions:
-                        (sit-for icomplete-compute-delay)))
-              (insert
-               (icomplete-completions contents minibuffer-completion-table
-                                      minibuffer-completion-predicate
-                                      (not minibuffer-completion-confirm)))))
-          (setq deactivate-mark  nil)))))) ; Don't let the insert deactivate the mark.
+      (with-current-buffer (window-buffer (active-minibuffer-window))
+        (save-match-data
+          (let* ((minibuf-begin     (if (< emacs-major-version 21)
+                                        (point-min)
+                                      (minibuffer-prompt-end)))
+                 (contents          (buffer-substring minibuf-begin (point-max)))
+                 (buffer-undo-list  t))
+            (save-excursion
+              (goto-char (point-max))
+              ;; Register the end of input, so we know where the extra stuff
+              ;; (match-status info) begins:
+              (unless (boundp 'icomplete-eoinput)
+                ;; In case it got wiped out by major mode business:
+                (make-local-variable 'icomplete-eoinput))
+              (setq icomplete-eoinput  (point))
+              ;; Insert the match-status information:
+              (when (and (> (point-max) minibuf-begin)
+                         (save-excursion ; Do nothing if looking at a list, string, etc.
+                           (goto-char minibuf-begin)
+                           (not (looking-at ; No (, ", ', 9 etc. at start.
+                                 "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)")))
+                         (or
+                          ;; Do not bother with delay after certain number of chars:
+                          (> (point-max) icomplete-max-delay-chars)
+                          ;; Do not delay if alternatives number is small enough:
+                          (if minibuffer-completion-table
+                              (cond ((numberp minibuffer-completion-table)
+                                     (< minibuffer-completion-table
+                                        icomplete-delay-completions-threshold))
+                                    ((sequencep minibuffer-completion-table)
+                                     (< (length minibuffer-completion-table)
+                                        icomplete-delay-completions-threshold))))
+                          ;; Delay - give some grace time for next keystroke, before
+                          ;; embarking on computing completions:
+                          (sit-for icomplete-compute-delay)))
+                (insert
+                 (icomplete-completions contents minibuffer-completion-table
+                                        minibuffer-completion-predicate
+                                        (not minibuffer-completion-confirm)))))
+            (setq deactivate-mark  nil))))))) ; Don't let the insert deactivate the mark.
 
 
 ;;; These two macros are defined in `subr.el' for Emacs 23+.
@@ -530,43 +533,44 @@ menu-bar bindings in the l of keys (Emacs 23+ only)."
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
 and `minibuffer-setup-hook'."
     (when (and icomplete-mode  (icomplete-simple-completing-p))
-      (save-excursion
-        (goto-char (point-max))
-        ;; Insert the match-status information.
-        (when (and (> (point-max) (minibuffer-prompt-end))
-                   buffer-undo-list     ; Wait for some user input.
-                   (save-excursion      ; Do nothing if looking at a list, string, etc.
-                     (goto-char (minibuffer-prompt-end))
-                     (save-match-data
-                       (not (looking-at ; No (, ", ', 9 etc. at start.
-                             "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
-                   (or
-                    ;; Do not bother with delay after certain number of chars:
-                    (> (- (point) (field-beginning)) icomplete-max-delay-chars)
-                    ;; Do not delay if completions are known.
-                    completion-all-sorted-completions
-                    ;; Do not delay if alternatives number is small enough:
-                    (and (sequencep minibuffer-completion-table)
-                         (< (length minibuffer-completion-table)
-                            icomplete-delay-completions-threshold))
-                    ;; Delay - give some grace time for next keystroke, before
-                    ;; embarking on computing completions:
-                    (sit-for icomplete-compute-delay)))
-          (let ((text              (while-no-input (icomplete-completions
-                                                    (field-string)
-                                                    minibuffer-completion-table
-                                                    minibuffer-completion-predicate
-                                                    (not minibuffer-completion-confirm))))
-                (buffer-undo-list  t)
-                deactivate-mark)
-            ;; Do nothing if `while-no-input' was aborted.
-            (when (stringp text)
-              (move-overlay icomplete-overlay (point) (point) (current-buffer))
-              ;; The current C cursor code doesn't know to use the overlay's
-              ;; marker's stickiness to figure out whether to place the cursor
-              ;; before or after the string, so let's spoon-feed it the pos.
-              (put-text-property 0 1 'cursor t text)
-              (overlay-put icomplete-overlay 'after-string text))))))))
+      (with-current-buffer (window-buffer (active-minibuffer-window))
+        (save-excursion
+          (goto-char (point-max))
+          ;; Insert the match-status information.
+          (when (and (> (point-max) (minibuffer-prompt-end))
+                     buffer-undo-list   ; Wait for some user input.
+                     (save-excursion    ; Do nothing if looking at a list, string, etc.
+                       (goto-char (minibuffer-prompt-end))
+                       (save-match-data
+                         (not (looking-at ; No (, ", ', 9 etc. at start.
+                               "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
+                     (or
+                      ;; Do not bother with delay after certain number of chars:
+                      (> (- (point) (field-beginning)) icomplete-max-delay-chars)
+                      ;; Do not delay if completions are known.
+                      completion-all-sorted-completions
+                      ;; Do not delay if alternatives number is small enough:
+                      (and (sequencep minibuffer-completion-table)
+                           (< (length minibuffer-completion-table)
+                              icomplete-delay-completions-threshold))
+                      ;; Delay - give some grace time for next keystroke, before
+                      ;; embarking on computing completions:
+                      (sit-for icomplete-compute-delay)))
+            (let ((text              (while-no-input (icomplete-completions
+                                                      (field-string)
+                                                      minibuffer-completion-table
+                                                      minibuffer-completion-predicate
+                                                      (not minibuffer-completion-confirm))))
+                  (buffer-undo-list  t)
+                  deactivate-mark)
+              ;; Do nothing if `while-no-input' was aborted.
+              (when (stringp text)
+                (move-overlay icomplete-overlay (point) (point) (current-buffer))
+                ;; The current C cursor code doesn't know to use the overlay's
+                ;; marker's stickiness to figure out whether to place the cursor
+                ;; before or after the string, so let's spoon-feed it the pos.
+                (put-text-property 0 1 'cursor t text)
+                (overlay-put icomplete-overlay 'after-string text)))))))))
 
 
 ;; REPLACES ORIGINAL defined in `icomplete.el':
@@ -582,46 +586,47 @@ and `minibuffer-setup-hook'."
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
 and `minibuffer-setup-hook'."
     (when (and icomplete-mode  (icomplete-simple-completing-p)) ;Shouldn't be necessary.
-      (save-excursion
-        (goto-char (point-max))
-        ;; Insert the match-status information.
-        (when (and (or (and (boundp 'icomplete-show-matches-on-no-input)
-                            icomplete-show-matches-on-no-input)
-                       (> (icomplete--field-end) (icomplete--field-beg)))
-                   (save-excursion      ; Do nothing if looking at a list, string, etc.
-                     (goto-char (icomplete--field-end))
-                     (save-match-data
-                       (not (looking-at ; No (, ", ', 9 etc. at start.
-                             "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
-                   (or
-                    ;; Do not bother with delay after certain number of chars:
-                    (> (- (point) (icomplete--field-beg)) icomplete-max-delay-chars)
-                    ;; Do not delay if completions are known.
-                    completion-all-sorted-completions
-                    ;; Do not delay if alternatives number is small enough:
-                    (and (sequencep (icomplete--completion-table))
-                         (< (length (icomplete--completion-table))
-                            icomplete-delay-completions-threshold))
-                    ;; Delay - give some grace time for next keystroke, before
-                    ;; embarking on computing completions:
-                    (sit-for icomplete-compute-delay)))
-          (let* ((field-string      (icomplete--field-string))
-                 (text              (while-no-input (icomplete-completions
-                                                     field-string
-                                                     (icomplete--completion-table)
-                                                     (icomplete--completion-predicate)
-                                                     (and (window-minibuffer-p)
-                                                          (not minibuffer-completion-confirm)))))
-                 (buffer-undo-list  t)
-                 deactivate-mark)
-            ;; Do nothing if `while-no-input' was aborted.
-            (when (stringp text)
-              (move-overlay icomplete-overlay (point) (point) (current-buffer))
-              ;; The current C cursor code doesn't know to use the overlay's
-              ;; marker's stickiness to figure out whether to place the cursor
-              ;; before or after the string, so let's spoon-feed it the pos.
-              (put-text-property 0 1 'cursor t text)
-              (overlay-put icomplete-overlay 'after-string text))))))))
+      (with-current-buffer (window-buffer (active-minibuffer-window))
+        (save-excursion
+          (goto-char (point-max))
+          ;; Insert the match-status information.
+          (when (and (or (and (boundp 'icomplete-show-matches-on-no-input)
+                              icomplete-show-matches-on-no-input)
+                         (> (icomplete--field-end) (icomplete--field-beg)))
+                     (save-excursion    ; Do nothing if looking at a list, string, etc.
+                       (goto-char (icomplete--field-end))
+                       (save-match-data
+                         (not (looking-at ; No (, ", ', 9 etc. at start.
+                               "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
+                     (or
+                      ;; Do not bother with delay after certain number of chars:
+                      (> (- (point) (icomplete--field-beg)) icomplete-max-delay-chars)
+                      ;; Do not delay if completions are known.
+                      completion-all-sorted-completions
+                      ;; Do not delay if alternatives number is small enough:
+                      (and (sequencep (icomplete--completion-table))
+                           (< (length (icomplete--completion-table))
+                              icomplete-delay-completions-threshold))
+                      ;; Delay - give some grace time for next keystroke, before
+                      ;; embarking on computing completions:
+                      (sit-for icomplete-compute-delay)))
+            (let* ((field-string      (icomplete--field-string))
+                   (text              (while-no-input (icomplete-completions
+                                                       field-string
+                                                       (icomplete--completion-table)
+                                                       (icomplete--completion-predicate)
+                                                       (and (window-minibuffer-p)
+                                                            (not minibuffer-completion-confirm)))))
+                   (buffer-undo-list  t)
+                   deactivate-mark)
+              ;; Do nothing if `while-no-input' was aborted.
+              (when (stringp text)
+                (move-overlay icomplete-overlay (point) (point) (current-buffer))
+                ;; The current C cursor code doesn't know to use the overlay's
+                ;; marker's stickiness to figure out whether to place the cursor
+                ;; before or after the string, so let's spoon-feed it the pos.
+                (put-text-property 0 1 'cursor t text)
+                (overlay-put icomplete-overlay 'after-string text)))))))))
 
 
 ;; REPLACES ORIGINAL defined in `icomplete.el':
