@@ -174,8 +174,8 @@ This is run before the process is cranked up."
     ("\\<\\(true\\|false\\|[A-Z][a-zA-Z0-9]*\\.[A-Z][a-zA-Z0-9]*\\)\\>"
      (0 font-lock-constant-face))
     ;; Keyword.
-    ("\\(\\<parent\\|import\\|if\\|else[ \t]+if\\>\\)"
-     (0 font-lock-keyword-face nil t))
+    ("\\<\\(parent\\|import\\|if\\|else[ \t]+if\\)\\>"
+     (1 font-lock-keyword-face nil t))
     ;; Import
     ("\\(^import\\)[ \t]+\\([a-zA-Z0-9\.]+\\)[ \t]+\\([^ /\*]+\\)"
      (1 font-lock-keyword-face nil t)
@@ -221,6 +221,7 @@ This is run before the process is cranked up."
   (setq major-mode 'qml-mode)
   (setq mode-name "qml")
   (use-local-map qml-mode-map)
+  (run-hooks 'pron-mode-hook)
   (run-hooks 'qml-mode-hook)
   )
 
@@ -228,7 +229,7 @@ This is run before the process is cranked up."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-M-q") 'qml-indent-exp)
     map)
-  "Keymap used by `yaoddmuse-mode'.")
+  "Keymap used by `qml-mode'.")
 
 (defun qml-indent-exp ()
   (interactive)
