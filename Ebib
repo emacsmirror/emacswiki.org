@@ -1,6 +1,6 @@
 Ebib is a !BibTeX database manager for Emacs.
 
-* Homepage: http://ebib.sourceforge.net
+* Homepage: http://joostkremers.github.io/ebib/
 * Mailing list: [mailto:ebib-users@lists.sourceforge.net ebib-users@lists.sourceforge.net] (also available on [http://gmane.org gmane] as [http://dir.gmane.org/gmane.emacs.ebib.user gmane.emacs.ebib.user]).  Join and report bugs, ask questions, and say what kinds of features you'd like to see!
 
 Ebib does not provide a [CategoryModes mode] for editing BibTeX files, but is rather a stand-alone program running inside Emacs, like [CategoryGnus gnus].
