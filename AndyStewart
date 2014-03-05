@@ -40,6 +40,8 @@ Many friends ask me about my emacs code, now you can free git it from [https://g
 
 *** MultiScratch -- Manages multiple scratch buffers. 
 
+*** MiniBufferTray -- New way to replace mode-line.
+
 *** [[Paste2]] -- Send and get paste with paste2.org asynchronous, convenient for IRC communion.
 
 *** ElispFormat -- Automatic format elisp code, not need format line by line.
