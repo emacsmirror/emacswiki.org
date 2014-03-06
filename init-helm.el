@@ -84,8 +84,16 @@
 (require 'helm-files)
 (require 'helm-config)
 (require 'helm-helm-commands)
+(require 'helm-c-yasnippet)
+(require 'helm-apt)
+(require 'apt-utils)
 
 ;;; Code:
+
+(setq helm-apt-cache-show-function
+      '(lambda (package)
+         (require 'init-apt-utils)
+         (apt-utils-show-package-1 package)))
 
 (defun helm-dwim ()
   (interactive)
@@ -99,6 +107,8 @@
        helm-source-moccur
        helm-source-occur
        helm-source-helm-commands
+       helm-c-source-yasnippet
+       helm-source-apt
        )
      "*helm search*")))
 
