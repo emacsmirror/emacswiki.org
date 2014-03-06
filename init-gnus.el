@@ -77,22 +77,22 @@
 ;;; Code:
 
 ;; 存储设置
-(setq gnus-startup-file "~/MyEmacs/Gnus/.newsrc")                  ;初始文件
-(setq gnus-default-directory "~/MyEmacs/Gnus/")                    ;默认目录
-(setq gnus-home-directory "~/MyEmacs/Gnus/")                       ;主目录
-(setq gnus-dribble-directory "~/MyEmacs/Gnus/")                    ;恢复目录
-(setq gnus-directory "~/MyEmacs/Gnus/News/")                       ;新闻组的存储目录
-(setq gnus-article-save-directory "~/MyEmacs/Gnus/News/")          ;文章保存目录
-(setq gnus-kill-files-directory "~/MyEmacs/Gnus/News/trash/")      ;文件删除目录
-(setq gnus-agent-directory "~/MyEmacs/Gnus/News/agent/")           ;代理目录
-(setq gnus-cache-directory "~/MyEmacs/Gnus/News/cache/")           ;缓存目录
-(setq gnus-cache-active-file "~/MyEmacs/Gnus/News/cache/active")   ;缓存激活文件
-(setq message-directory "~/MyEmacs/Gnus/Mail/")                    ;邮件的存储目录
-(setq message-auto-save-directory "~/MyEmacs/Gnus/Mail/drafts")    ;自动保存的目录
-(setq mail-source-directory "~/MyEmacs/Gnus/Mail/incoming")        ;邮件的源目录
-(setq nnmail-message-id-cache-file "~/MyEmacs/Gnus/.nnmail-cache") ;nnmail的消息ID缓存
-(setq nnml-newsgroups-file "~/MyEmacs/Gnus/Mail/newsgroup")        ;邮件新闻组解释文件
-(setq nntp-marks-directory "~/MyEmacs/Gnus/News/marks")            ;nntp组存储目录
+(setq gnus-startup-file "~/.emacs.d/deepin-emacs/Gnus/.newsrc")                  ;初始文件
+(setq gnus-default-directory "~/.emacs.d/deepin-emacs/Gnus/")                    ;默认目录
+(setq gnus-home-directory "~/.emacs.d/deepin-emacs/Gnus/")                       ;主目录
+(setq gnus-dribble-directory "~/.emacs.d/deepin-emacs/Gnus/")                    ;恢复目录
+(setq gnus-directory "~/.emacs.d/deepin-emacs/Gnus/News/")                       ;新闻组的存储目录
+(setq gnus-article-save-directory "~/.emacs.d/deepin-emacs/Gnus/News/")          ;文章保存目录
+(setq gnus-kill-files-directory "~/.emacs.d/deepin-emacs/Gnus/News/trash/")      ;文件删除目录
+(setq gnus-agent-directory "~/.emacs.d/deepin-emacs/Gnus/News/agent/")           ;代理目录
+(setq gnus-cache-directory "~/.emacs.d/deepin-emacs/Gnus/News/cache/")           ;缓存目录
+(setq gnus-cache-active-file "~/.emacs.d/deepin-emacs/Gnus/News/cache/active")   ;缓存激活文件
+(setq message-directory "~/.emacs.d/deepin-emacs/Gnus/Mail/")                    ;邮件的存储目录
+(setq message-auto-save-directory "~/.emacs.d/deepin-emacs/Gnus/Mail/drafts")    ;自动保存的目录
+(setq mail-source-directory "~/.emacs.d/deepin-emacs/Gnus/Mail/incoming")        ;邮件的源目录
+(setq nnmail-message-id-cache-file "~/.emacs.d/deepin-emacs/Gnus/.nnmail-cache") ;nnmail的消息ID缓存
+(setq nnml-newsgroups-file "~/.emacs.d/deepin-emacs/Gnus/Mail/newsgroup")        ;邮件新闻组解释文件
+(setq nntp-marks-directory "~/.emacs.d/deepin-emacs/Gnus/News/marks")            ;nntp组存储目录
 (setq mml-default-directory "~/.gnus/")                            ;附件的存储位置
 ;; 接收邮件或新闻
 (setq user-full-name my-full-name)            ;全名
@@ -102,10 +102,10 @@
 (setq gnus-secondary-select-methods                  ;次要选择方法
       '(
         (nnmaildir "Gmail"                        ;nnmaildir后端, 从本地文件中读邮件 (getmail 抓取)
-                   (directory "~/MyEmacs/Mail/")) ;读取目录
+                   (directory "~/.emacs.d/deepin-emacs/Mail/")) ;读取目录
         ))
 (setq mail-sources                                 ;邮件源设置
-      '((maildir :path "~/MyEmacs/Mail/"           ;本地邮件存储位置
+      '((maildir :path "~/.emacs.d/deepin-emacs/Mail/"           ;本地邮件存储位置
                  :subdirs ("cur" "new" "tmp"))))   ;本地邮件子目录划分
 ;; 发送邮件
 (setq send-mail-function 'sendmail-send-it         ;设置邮件发送方法
@@ -226,7 +226,7 @@
               gnus-sum-thread-tree-vertical
               "]*"))
 ;; 最后设置
-(gnus-compile)                          ;编译一些选项, 加快速度
+;;(gnus-compile)                          ;编译一些选项, 加快速度
 
 (provide 'init-gnus)
 
