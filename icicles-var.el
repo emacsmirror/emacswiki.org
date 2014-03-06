@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Jan  5 13:17:33 2014 (-0800)
+;; Last-Updated: Tue Mar  4 13:33:32 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1785
+;;     Update #: 1789
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -98,7 +98,8 @@
 ;;    `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
-;;    `icicle-last-completion-command', `icicle-last-input',
+;;    `icicle-last-completion-command',
+;;    `icicle-last-icomplete-mode-value', `icicle-last-input',
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
@@ -858,6 +859,9 @@ RING-ITEM is an item in `kmacro-ring' or `(kmacro-ring-head)'.")
   "Last completion candidate used in minibuffer completion.")
 
 (defvar icicle-last-completion-command nil "Last completion command used.")
+
+(defvar icicle-last-icomplete-mode-value (and (boundp icomplete-mode)  icomplete-mode)
+  "Value of `icomplete-mode' when completion started.")
 
 (defvar icicle-last-input "" "Last minibuffer input typed (not from cycling).")
 
