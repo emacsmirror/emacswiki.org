@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan  4 12:01:15 2014 (-0800)
+;; Last-Updated: Thu Mar  6 11:23:07 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1646
+;;     Update #: 1649
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -124,6 +124,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/06 dadams
+;;     describe-variable: Fixed typo in regexp: [n] -> [\n].
 ;; 2014/01/04 dadams
 ;;     Added: describe-variable-value.
 ;;     describe-variable (Emacs 24+): Highlight the value with face describe-variable-value.
@@ -1920,7 +1922,7 @@ it is displayed along with the global value."
                         (insert print-rep)
                       (terpri)
                       (unless (or (numberp val)  (symbolp val)  (characterp val)
-                                  (and (stringp val)  (string-match-p "[n]" val)))
+                                  (and (stringp val)  (string-match-p "[\n]" val)))
                         (terpri))
                       (pp val)
                       (put-text-property from (point) 'face 'describe-variable-value)
@@ -1936,7 +1938,7 @@ it is displayed along with the global value."
                         (princ "\nOriginal value was \n")
                         (setq from  (point))
                         (unless (or (numberp origval)  (symbolp origval)  (characterp origval)
-                                    (and (stringp origval)  (string-match-p "[n]" origval)))
+                                    (and (stringp origval)  (string-match-p "[\n]" origval)))
                           (terpri))
                         (pp origval)
                         (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
