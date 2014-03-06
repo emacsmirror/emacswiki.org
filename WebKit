@@ -23,6 +23,6 @@ Then download emacs-webkit source code from [https://github.com/linuxdeepin/deep
 Enjoiy your browsing with M-x webkit-open-url !!!
 
 ==Hacking the powerful browser!==
-I spend almost all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, which leave me not so much time on the elisp world.
+I spend almost all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, which leave me not so much time in the elisp world.
 
 It's a my pleasure to hava you [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build the most powerful browser for Emacs hackers!
