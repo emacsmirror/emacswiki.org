@@ -53,7 +53,7 @@ Many characters are special when they follow a backslash -- see below.
   \=       match succeeds if it is located at point
 
 
-##.?##,  ##+?##, and ##??## are non-greedy versions of ##.##,  ##+##, and ##?## -- see NonGreedyRegexp.
+##*?##,  ##+?##, and ##??## are non-greedy versions of ##*##,  ##+##, and ##?## -- see NonGreedyRegexp.
 Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match 
 ##\w##,  ##\b##, and ##\sc##.
 
