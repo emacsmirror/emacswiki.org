@@ -2,8 +2,8 @@ Everyone has their own dreams, and every emacser  has an own operating system dr
 
 ==We want full-featured browser in Emacs!==
 I think all emacsers are hoping to run a modern browser  inside Emacs, instead of plain text browser like w3m, as it breaks emacs' pure text world. 
-We hope to run the WebKit engine browser the way other modern application do. Beside text content, it can run javascript, can access any modern website you want, 
-and most importantly, can be integrated with Emacs well.
+We hope to run a WebKit engine browser the way other modern application do. Beside text content, it can run javascript, can access any modern website you want, 
+and most importantly, it can be integrated with Emacs well.
 
 ==Emacs Webkit Screenshot==
 Following is a screenshot of emacs-webkit, part of [https://github.com/linuxdeepin/deepin-emacs DeepinEmacs] project:
