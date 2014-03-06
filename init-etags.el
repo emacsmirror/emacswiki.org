@@ -76,9 +76,9 @@
 
 ;;; Code:
 
-(setq tags-table-list (list (expand-file-name "~/MyEmacs/TAGS"))) ;tag 的文件名
-(setq tags-default-target-directory "~/MyEmacs/")                 ;默认的索引目录
-(setq tags-default-storage-directory "~/MyEmacs/")                ;默认的存储目录
+(setq tags-table-list (list (expand-file-name "/usr/share/deepin-emacs/TAGS"))) ;tag 的文件名
+(setq tags-default-target-directory "/usr/share/deepin-emacs/")                 ;默认的索引目录
+(setq tags-default-storage-directory "/usr/share/deepin-emacs/")                ;默认的存储目录
 (setq tags-default-suffix "*.el")                                 ;默认的扩展名
 
 (provide 'init-etags)
