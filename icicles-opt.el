@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Feb 24 09:19:27 2014 (-0800)
+;; Last-Updated: Thu Mar  6 14:11:59 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5878
+;;     Update #: 5922
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -52,6 +52,7 @@
 ;;    `icicle-add-proxy-candidates-flag',
 ;;    `icicle-alternative-actions-alist',
 ;;    `icicle-alternative-sort-comparer',
+;;    `icicle-anything-transform-candidates-flag',
 ;;    `icicle-apropos-complete-keys',
 ;;    `icicle-apropos-complete-no-display-keys',
 ;;    `icicle-apropos-cycle-next-keys',
@@ -62,7 +63,6 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
-;;    `icicle-anything-transform-candidates-flag',
 ;;    `icicle-bookmark-name-length-max',
 ;;    `icicle-bookmark-refresh-cache-flag',
 ;;    `icicle-buffer-candidate-key-bindings', `icicle-buffer-configs',
@@ -122,6 +122,7 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
+;;    `icicle-icomplete-mode-max-candidates',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion',
@@ -187,7 +188,8 @@
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
-;;    `icicle-sort-orders-alist', `icicle-special-candidate-regexp',
+;;    `icicle-sorting-max-candidates', `icicle-sort-orders-alist',
+;;    `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
 ;;    `icicle-S-TAB-completion-methods-per-command',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
@@ -2733,6 +2735,26 @@ You can toggle this option from the minibuffer at any time using
 anytime to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
+(defcustom icicle-icomplete-mode-max-candidates 30
+  "*Automatically turn Icomplete mode off if there are more candidates.
+This takes effect (only) whenever there is an attempt to complete your
+input, whether that happens manually (`TAB', `S-TAB') or automatically
+due to Icicles incremental completion.
+
+If Icomplete mode was enabled before completion was initiated, then it
+is reenabled when the number of candidates falls below the option
+value.  Icicles does not turn Icomplete mode on unless it was on @@@@@@@@
+
+If the option value is not an integer, then it be nil.  In this case,
+Icicles does not turn Icomplete mode off and on.
+
+\(Note that this is about Emacs `icomplete-mode', not Icicles
+incremental completion.)"
+  :type '(choice
+          (integer :tag "Max number of candidates before inhibiting Icomplete mode" :value 10)
+          (const :tag "No maximum - do not automatically inhibit Icomplete mode"))
+  :group 'Icicles-Miscellaneous)
+
 (defcustom icicle-ignore-comments-flag t
   "*Non-nil means `icicle-with-comments-hidden' hides comments.
 You can toggle this option using `C-M-;' in the minibuffer, but to see
@@ -3913,6 +3935,19 @@ have the suffix `-cp' (for \"component predicate\") instead of `-p'."
             (const    :tag "None" nil)
             (function :tag "Final Predicate" :value icicle-case-string-less-p))))
   :group 'Icicles-Matching :group 'Icicles-Completions-Display)
+
+(defcustom icicle-sorting-max-candidates 1000
+  "*Automatically turn off completion sorting when there are more candidates.
+If not an integer, the value must be nil, meaning do not automatically
+turn off sorting.
+
+If sorting was enabled before initiating completion then it is
+reenabled when the number of candidates falls below this option
+value."
+  :type '(choice
+          (integer :tag "Max number of completion candidates before inhibiting sorting" :value 1000)
+          (const :tag "No maximum - do not automatically inhibit candidate sorting"))
+  :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-buffer-configs
   `(("All" nil nil nil nil ,icicle-sort-comparer)
