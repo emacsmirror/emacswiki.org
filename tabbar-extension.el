@@ -55,6 +55,12 @@
 ;;
 ;; No need more.
 
+;;; Customize:
+;;
+;; `tabbar-hide-header-button'
+;; Whether hide header button at left-up corner.
+;;
+
 ;;; Change log:
 ;;
 ;; 2008/11/04
@@ -72,26 +78,21 @@
 ;;
 
 ;;; Require
+
 (require 'tabbar)
 
 ;;; Code:
 
-(setq
- tabbar-scroll-left-help-function nil   ;don't show help information
- tabbar-scroll-right-help-function nil
- tabbar-help-on-tab-function nil
- tabbar-home-help-function nil
- tabbar-buffer-home-button (quote (("") "")) ;don't show tabbar button
- tabbar-scroll-left-button (quote (("") ""))
- tabbar-scroll-right-button (quote (("") "")))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun tabbar-select-end-tab ()
   "Select end tab of current tabset."
   (interactive)
   (tabbar-select-beg-tab t))
 
 (defun tabbar-select-beg-tab (&optional backward type)
-  "Select beginning tab of current tabs."
+  "Select beginning tab of current tabs.
+If BACKWARD is non-nil, move backward, otherwise move forward.
+TYPE is default option."
   (interactive)
   (let* ((tabset (tabbar-current-tabset t))
          (ttabset (tabbar-get-tabsets-tabset))
