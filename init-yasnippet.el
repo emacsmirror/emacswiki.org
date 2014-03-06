@@ -74,6 +74,7 @@
 ;;; Require
 
 (require 'yasnippet)
+(require 'init-git)
 
 ;;; Code:
 
