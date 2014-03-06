@@ -7,7 +7,8 @@ and most importantly, can be integrated with Emacs well.
 
 ==Emacs Webkit Screenshot==
 Following is a screenshot of emacs-webkit, part of [https://github.com/linuxdeepin/deepin-emacs DeepinEmacs] project:
-https://f.cloud.github.com/assets/237487/2060509/f60d05d0-8c1e-11e3-98c7-a14fa75e3ff7.png
+
+[[https://f.cloud.github.com/assets/237487/2060509/f60d05d0-8c1e-11e3-98c7-a14fa75e3ff7.png ScreenShot]]
 
 ==How it works?==
 Following picture shows the design of emacs-webkit:
@@ -15,7 +16,7 @@ Following picture shows the design of emacs-webkit:
 [[image:webkit-framework.png]]
  
 ==How to install it?==
-Emacs-webkit is based on [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC] , so you need install all these libraries to run emacs-webkit.
+Emacs-webkit is based on [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC] , so you need to install all these libraries to run emacs-webkit.
 
 Then download emacs-webkit source code from [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit] , put webkit.el in your load-path.
 
