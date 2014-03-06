@@ -7,9 +7,9 @@
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
-;; Version: 0.1.1
-;; Last-Updated: lun feb 25 14:05:07 2013 (-0300)
-;;           By: Christian
+;; Version: 0.1.2
+;; Last-Updated: 2014/03/06 22:28
+;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -398,12 +398,15 @@
 ;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Change log:
+;; 2014/03/06     Andy Stewart
+;;      * `yaoddmuse-post-dired': add sit-for 5 for emacswiki to void upload files failed.
+;;
 ;; 25-Feb-2013    ChristianGiménez
-;;    Last-Updated: lun feb 25 14:03:00 2013 (-0300) (ChristianGiménez)
-;;    * Tildes recognition in links.
+;;      * Tildes recognition in links.
+;;
 ;; 2010/05/04
 ;;      * Bug report command: `yaoddmuse-send-bug-report'
-;;      
+;;
 ;; 2010/03/20
 ;;      * Add Emacswiki-specific commands for convenience:
 ;;        `emacswiki'
@@ -914,7 +917,7 @@ It must print the page to stdout.
   "An alist of file extensions and corresponding MIME content-types.")
 
 (defvar yaoddmuse-imenu-regexp "^\\(=+\\)\\s-*\\(.*?\\)\\s-*\\1"
- "A regular expression for headings to be added to an index menu.")
+  "A regular expression for headings to be added to an index menu.")
 
 
 (defvar yaoddmuse-mode-map
