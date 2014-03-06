@@ -90,6 +90,23 @@
                'erc-mode-hook
                'sh-mode-hook
                'makefile-gmake-mode-hook
+               'python-mode-hook
+               'js2-mode-hook
+               'js-mode-hook
+               'html-mode-hook
+               'css-mode-hook
+               'apt-utils-mode-hook
+               'tuareg-mode-hook
+               'go-mode-hook
+               'coffee-mode-hook
+               'qml-mode-hook
+               'markdown-mode-hook
+               'slime-repl-mode-hook
+               'package-menu-mode-hook
+               'cmake-mode-hook
+               'po-mode-hook
+               'php-mode-hook
+               'web-mode-hook
                ))
   (add-hook hook (lambda () (linum-mode 1))))
 
