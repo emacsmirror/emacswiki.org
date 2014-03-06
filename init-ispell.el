@@ -73,12 +73,13 @@
 
 ;;; Require
 
+(require 'ispell)
 
 ;;; Code:
 
 (setq-default ispell-program-name "aspell")     ;用aspell替换ispell, 更加智能
 (setq-default ispell-extra-args '("--reverse")) ;修复aspell与ispell冲突的bug
-(setq ispell-personal-dictionary "~/MyEmacs/Configure-File/Ispell/personal-dictionary") ;设置个人词典
+(setq ispell-personal-dictionary "~/.emacs.d/deepin-emacs/Configure-File/Ispell/personal-dictionary") ;设置个人词典
 (setq ispell-silently-savep t)          ;保存自己的个人词典不需要询问
 (setq ispell-dictionary "english")      ;设置英文词典
 
