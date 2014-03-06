@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Feb  9 22:34:56 2014 (-0800)
+;; Last-Updated: Thu Mar  6 13:15:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19347
+;;     Update #: 19350
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1888,6 +1888,10 @@ order instead, updating `icicle-alternative-sort-comparer'."
                                                        icicle-alternative-sort-comparer
                                                      icicle-sort-comparer)
                                                    icicle-sort-orders-alist))))))
+               (when (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
+                 (setq icicle-last-sort-comparer  (if alternativep ; Save current as last.
+                                                      icicle-alternative-sort-comparer
+                                                    icicle-sort-comparer)))
                (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
                     (cdr (assoc next-order icicle-sort-orders-alist))))
               (t                        ; Cycle to next sort order.
@@ -1895,6 +1899,10 @@ order instead, updating `icicle-alternative-sort-comparer'."
                  (setq next-order       (or (cadr (memq (icicle-current-sort-order alternativep) orders))
                                             (car orders))
                        following-order  (or (cadr (memq next-order orders))  (car orders)))
+                 (when (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
+                   (setq icicle-last-sort-comparer  (if alternativep ; Save current as last.
+                                                        icicle-alternative-sort-comparer
+                                                      icicle-sort-comparer)))
                  (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
                       (cdr (assoc next-order icicle-sort-orders-alist))))))
         (icicle-complete-again-update)
