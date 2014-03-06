@@ -73,6 +73,7 @@
 
 ;;; Require
 
+(require 'basic-toolkit)
 
 ;;; Code:
 
@@ -128,17 +129,6 @@ kill all buffers with MODE except current buffer."
   (other-window +1)
   (kill-this-buffer)
   (other-window -1))
-
-(defun unmark-all-buffers ()
-  "Unmark all have marked buffers."
-  (interactive)
-  (let ((current-element (current-buffer)))
-    (save-excursion
-      (dolist (element (buffer-list))
-        (set-buffer element)
-        (deactivate-mark)))
-    (switch-to-buffer current-element)
-    (deactivate-mark)))
 
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
