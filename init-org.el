@@ -86,12 +86,12 @@
              (smiley-buffer (current-buffer)) ;自动转换笑脸
              ))
 (org-remember-insinuate)                ;Org-remeber 初始化
-(setq org-directory "~/MyEmacs/Org/")   ;设置默认的目录
+(setq org-directory "/usr/share/deepin-emacs/Org/")   ;设置默认的目录
 (setq org-default-notes-file            ;设置默认的笔记文件
       (concat org-directory "Dream.org"))
 (setq org-remember-templates            ;设置 Remeber 模板信息
       '(
-        ("Todo" ?o "* TODO %?\n  %i\n  %a" "~/MyEmacs/Org/Dream.org" "Other")
+        ("Todo" ?o "* TODO %?\n  %i\n  %a" "/usr/share/deepin-emacs/Org/Dream.org" "Other")
         ))
 
 (provide 'init-org)
