@@ -28,7 +28,7 @@
 ;; Features that might be required by this library:
 ;;
 ;; `emms' `emms-playlist-mode' `emms-source-file' `emms-playlist-sort'
-;; `emms-mark' `basic-edit-toolkit' `emms-last-played'
+;; `emms-mark' `basic-toolkit' `emms-last-played'
 ;;
 
 ;;; Installation:
@@ -73,7 +73,7 @@
 (require 'emms-source-file)
 (require 'emms-playlist-sort)
 (require 'emms)
-(require 'basic-edit-toolkit)
+(require 'basic-toolkit)
 
 (defadvice emms-play-directory-tree (after emms-random-play-1 activate)
   "This advice to make `emms-random' execute after emms-play-directory-tree"
@@ -157,37 +157,24 @@ play default music directory."
         (case (emms-track-type track)
           ((file url)
            (let* ((artist (or (emms-track-get track 'info-artist) empty))
-                  (year (emms-track-get track 'info-year))
                   (playing-time (or (emms-track-get track 'info-playing-time) 0))
                   (min (/ playing-time 60))
                   (sec (% playing-time 60))
                   (album (or (emms-track-get track 'info-album) empty))
-                  (tracknumber (emms-track-get track 'info-tracknumber))
                   (short-name (file-name-sans-extension
                                (file-name-nondirectory name)))
                   (title (or (emms-track-get track 'info-title) short-name))
                   )
-             (format "%10s %3d │ %-23s %-40s │ %-45s %-4s %-6s %7s"
-                     (emms-last-played-format-date last-played)
-                     play-count
-                     (prettyfy-string artist 18)
-                     (prettyfy-string title 30)
-                     ;; album
-                     (prettyfy-string
-                      (cond ((string= album empty) "")
-                            (t  album)) 40)
-                     ;; tracknumber
-                     (prettyfy-string
-                      (if (and tracknumber
-                               (not (zerop (string-to-number tracknumber))))
-                          (format "%3d" (string-to-number tracknumber))
-                        "") 10)
-                     ;; year
-                     (or year "....")
+             (format "%8s         %-50s    %-50s"
                      ;; time
                      (if (or (> min 0)  (> sec 0))
                          (format "%02d:%02d" min sec)
-                       "....."))))
+                       ".....")
+                     ;; Title
+                     (prettyfy-string title 40)
+                     ;; Artis
+                     (prettyfy-string artist 40)
+                     )))
           ((url)
            (concat (symbol-name type) ":" name))
           (t
