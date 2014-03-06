@@ -132,7 +132,6 @@ Region area can support rectangle area."
         (setq killed-rectangle result)   ;set `killed-rectangle'
       (kill-new (format "%s" result))))) ;kill result to kill ring
 
-
 (defun mark-rectangle-to-end ()
   "Mark current rectangle area to the end.
 The end of point is equal end of longest line in rectangle.
