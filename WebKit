@@ -18,9 +18,9 @@ Following picture shows the design of emacs-webkit:
 ==How to install it?==
 Emacs-webkit is based on [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC] , so you need to install all these libraries to run emacs-webkit.
 
-Then download emacs-webkit source code from [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit] , put webkit.el in your load-path.
+Then download emacs-webkit source code from [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit] and put webkit.el in your load-path.
 
-Enjoiy your browsing with M-x webkit-open-url !!!
+Load it and enjoiy your browsing with M-x webkit-open-url !!!
 
 ==Hacking the powerful browser!==
 I spend almost all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, which leave me not so much time in the elisp world.
