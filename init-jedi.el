@@ -83,11 +83,13 @@
 
 (autoload 'jedi:setup "jedi" nil t)
 (autoload 'jedi:ac-setup "jedi" nil t)
+(autoload 'jedi:tooltip-method "jedi" nil t)
 
 ;;; Code:
 
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
+(setq jedi:tooltip-method nil)
 
 (defun find-python-define (&optional prefix)
   (interactive "P")
