@@ -76,7 +76,7 @@
 
 ;;; Code:
 
-(setq newsticker-dir "~/MyEmacs/Configure-File/Newsticker")  ;种子目录
+(setq newsticker-dir "~/.emacs.d/deepin-emacs/Configure-File/Newsticker")  ;种子目录
 (setq newsticker-url-list-defaults nil)                      ;设置默认的列表为空
 (setq newsticker-automatically-mark-items-as-old t)          ;自动标记项目为已经检索的项目
 (setq newsticker-automatically-mark-visited-items-as-old t)  ;自动标记已经访问过的项目
@@ -88,22 +88,21 @@
 (setq newsticker-wget-arguments '("-q" "-O" "-"              ;wget抓取参数
                                   "--user-agent" "testing")) ;--user-agent参数是为了从google上抓取
 (setq newsticker-url-list
-      '(("EmacsWiki Recently Change"
-         "http://www.emacswiki.org/emacs/index.rss"
+      '(("EmacsWiki Recently Change"    ;包括小的改进
+         "http://www.emacswiki.org/cgi-bin/emacs?action=rss;showedit=1"
          nil nil nil)
         ("Planet Emacsen"
          "http://planet.emacsen.org/atom.xml"
-         nil nil nil)
-        ("LUPA Open Source News"
-         "http://www.lupaworld.com/myrss.php"
-         nil nil nil)
-        ("Google Blog Search -- Emacs"
-         "http://blogsearch.google.com/blogsearch_feeds?hl=en&oe=UTF-8&q=emacs&ie=utf-8&num=10&output=atom"
-         nil 86400 nil)                 ;一天更新一次
-        ("Google Blog Search -- Haskell"
-         "http://blogsearch.google.com/blogsearch_feeds?hl=en&oe=UTF-8&q=haskell&ie=utf-8&num=10&output=atom"
-         nil 86400 nil)                 ;一天更新一次
-        ))
+         nil 86400 nil)
+        ("Haskell Planet"
+         "http://planet.haskell.org/rss20.xml"
+         nil 86400 nil)
+        ("Bo Wen Wang"
+         "http://feeds.bowenwang.com.cn"
+         nil 86400 nil)
+        ("Google Mi"
+         "http://www.chromi.org/feed"
+         nil 1800 nil)))
 
 (provide 'init-newsticker)
 
