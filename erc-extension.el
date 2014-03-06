@@ -76,15 +76,18 @@
 
 ;;; Code:
 
-(defun erc-autologin ()
+(defun erc-autologin (nick)
   "Auto longing erc."
-  (interactive)
-  (erc
-   :server erc-server
-   :port erc-port
-   :full-name erc-user-full-name
-   :nick erc-nick
-   :password erc-password))
+  (interactive "sNick: \n")
+  (let ((passwd (read-passwd "Password: ")))
+    (erc
+     :server erc-server
+     :port erc-port
+     :full-name erc-user-full-name
+     :nick nick
+     :password passwd
+     ))
+  )
 
 (defun switch-to-erc ()
   "Switch to an erc buffer, or run `erc-select'.
@@ -97,7 +100,7 @@ When called repeatedly, cycle through the buffers."
       (setq buffers (cdr buffers)))
     (if buffers
         (switch-to-buffer (car buffers))
-      (erc-autologin))))
+      (call-interactively 'erc-autologin))))
 
 (defun erc-cmd-HOWMANY (&rest ignore)
   "Display how many users (and ops) the current channel has."
