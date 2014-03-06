@@ -73,6 +73,26 @@
         (if newsticker-automatically-mark-visited-items-as-old
             (newsticker-treeview-mark-item-old))))))
 
+(defun newsticker--treeview-browse-url-with-firefox ()
+  "View url with Firefox."
+  (interactive)
+  (newsticker-treeview-browse-url-with-external-browser "firefox"))
+
+(defun newsticker--treeview-browse-url-with-chromium-browser ()
+  "View url with Chromium-Browser."
+  (interactive)
+  (newsticker-treeview-browse-url-with-external-browser "google-chrome"))
+
+(defun newsticker-treeview-browse-url-with-external-browser (browser)
+  "Call `browse-url' for the link of the item at point."
+  (save-excursion
+    (set-buffer (newsticker--treeview-item-buffer))
+    (let ((url (get-text-property (point) :nt-link)))
+      (when url
+        (start-process "Newsticker-External-Browser" "*Newsticker-External-Browser*" browser url)
+        (if newsticker-automatically-mark-visited-items-as-old
+            (newsticker-treeview-mark-item-old))))))
+
 (defun newsticker-treeview-prev-page ()
   "Scroll item buffer."
   (interactive)
@@ -96,16 +116,6 @@
   (newsticker-treeview-quit)
   (w3m))
 
-(defun newsticker-treeview-browse-url-with-external-browser ()
-  "Call `browse-url' for the link of the item at point."
-  (interactive)
-  (save-excursion
-    (set-buffer (newsticker--treeview-item-buffer))
-    (let ((url (get-text-property (point) :nt-link)))
-      (when url
-        (w3m-view-url-with-external-browser url)
-        (if newsticker-automatically-mark-visited-items-as-old
-            (newsticker-treeview-mark-item-old))))))
 
 (defun newsticker-start+ ()
   "Startup newsticker and update info in mode line."
