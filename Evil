@@ -212,6 +212,10 @@ In Vim I like to have the status line change color when in insert mode and when 
            (set-face-background 'mode-line (car color))
            (set-face-foreground 'mode-line (cdr color))))))
 
+== Powerline Integration ==
+
+[https://github.com/Dewdrops/powerline Here] is a powerline fork tuned for Evil user.
+
 == Discussion ==
 
 : ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list and in our IRC channel #evil-mode on irc.freenode.net.)''
