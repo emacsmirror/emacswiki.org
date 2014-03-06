@@ -17,8 +17,8 @@
 ;;
 ;; `mwe-log-commands' `ecb'
 ;; `shell-command-extension'
-;; `ascii' `window-number' `windows' `color-moccur'
-;; `cycle-buffer' `basic-edit-toolkit' `completion-ui'
+;; `ascii' `windows' `color-moccur'
+;; `cycle-buffer' `basic-toolkit'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -87,15 +87,9 @@
 
 ;;; Require
 (require 'mwe-log-commands)
-(require 'ecb)
 (require 'shell-command-extension)
-(require 'ascii)
-(require 'window-number)
-(require 'windows)
 (require 'color-moccur)
-(require 'cycle-buffer)
-(require 'basic-edit-toolkit)
-(require 'completion-ui)
+(require 'basic-toolkit)
 
 ;;; Code:
 
@@ -115,6 +109,14 @@
 (defvar startup-close-file-list nil
   "Buffer list that startup close.")
 
+(defconst frame-default-font-size
+  (face-attribute 'default :height)
+  "Frame default font size.")
+
+(defvar frame-current-font-size
+  (face-attribute 'default :height)
+  "Frame current font size.")
+
 (defvar my-name "")
 (defvar my-full-name "")
 (defvar my-mail "")
@@ -127,7 +129,7 @@
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (flet ((process-list ())) ad-do-it))
+  (cl-flet ((process-list ())) ad-do-it))
 
 (defadvice list-load-path-shadows (around hidden-window-if-found-nothing activate)
   "This advice hidden output window if found nothing."
@@ -151,95 +153,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Kill syntax ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun kill-syntax-forward+ (&optional arg)
-  "Kill ARG set of syntax characters after point.
-And if `completion-auto-mode' is active,
-use function `completion-delete'."
-  (interactive "p")
-  (if (member 'auto-completion-mode minor-mode-list)
-      (completion-delete 'kill-syntax-forward arg)
-    (kill-syntax-forward arg)))
-
-(defun kill-syntax-backward+ (&optional arg)
-  "Kill ARG set of syntax characters preceding point."
-  (interactive "p")
-  (if (member 'auto-completion-mode minor-mode-list)
-      (completion-backward-delete 'kill-syntax-forward (- arg))
-    (kill-syntax-forward (- arg))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Scroll ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun scroll-up-one-line()
-  "Scroll up one line."
-  (interactive)
-  (scroll-up 1))
-
-(defun scroll-down-one-line()
-  "Scroll down one line."
-  (interactive)
-  (scroll-down 1))
-
-(defun scroll-other-window-up-line ()
-  "Scroll other window up one line."
-  (interactive)
-  (scroll-other-window 1))
-
-(defun scroll-other-window-down-line ()
-  "Scroll other window line down."
-  (interactive)
-  (scroll-other-window-down 1))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Indent ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun refresh-file ()
-  "Automatic reload current file."
-  (interactive)
-  (cond ((eq major-mode 'emacs-lisp-mode)
-         (indent-buffer)
-         (indent-comment-buffer)
-         (save-buffer)
-         (byte-compile-file buffer-file-name t))
-        ((member major-mode '(lisp-mode c-mode perl-mode))
-         (indent-buffer)
-         (indent-comment-buffer)
-         (save-buffer))
-        ((member major-mode '(haskell-mode sh-mode))
-         (indent-comment-buffer)
-         (save-buffer))
-        (t (message "Current mode is not supported, so not reload"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Pair move ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun go-to-next-pair-right()
-  "To right of next match parentheses."
-  (interactive)
-  (while (not (looking-at "\\(['\">)}]\\|]\\)")) (forward-char 1))
-  (forward-char 1))
-
-(defun go-to-next-pair-left()
-  "To left of previous match parentheses."
-  (interactive)
-  (backward-char 1)
-  (while (not (looking-at "\\(['\"<({]\\|[[]\\)")) (backward-char 1)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Cycle buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun cycle-buffer-in-special-mode (special-mode)
-  "Cycle in special mode."
-  (setq cycle-buffer-filter nil)
-  (setq cycle-buffer-filter (cons '(eq major-mode special-mode) cycle-buffer-filter))
-  (cycle-buffer-backward-permissive 1))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Compile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun compile-dwim-compile+ ()
+  "Same as `compile-dwim-compile', except save file before compile."
+  (interactive)
+  ;; Save file before compile.
+  (when buffer-file-name
+    (cl-flet ((message (&rest args)))
+      (basic-save-buffer)))
+  ;; Compile.
+  (call-interactively 'compile-dwim-compile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Find file ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun find-file-root (file)
-  "Find file with root."
-  (interactive "fFind file as sudo: ")
-  (find-file (concat find-file-root-prefix file)))
-
-(defun find-file-smb(file)
-  "Access file through samba protocol."
-  (interactive "fFind file as samba: ")
-  (find-file (concat "/smb:" file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Date and time ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -278,26 +210,6 @@ use function `completion-delete'."
   (other-window 1)
   (with-current-buffer (current-buffer)
     (call-interactively 'run-lisp)))
-
-(defun emacs-exit ()
-  "Exit emacs."
-  (interactive)
-  (if (get-buffer "*Group*")
-      (gnus-group-exit))
-  (newsticker--cache-save)
-  (see-you-again))
-
-(defun window-number-jump ()
-  "Jump to nth window."
-  (interactive)
-  (window-number-select (read-number "Window number: ")))
-
-(defun ascii-toggle ()
-  "Toggle ascii table"
-  (interactive)
-  (if ascii-display
-      (ascii-off)
-    (ascii-on)))
 
 (defun dot-emacs()
   "Open dot emacs file."
@@ -340,6 +252,7 @@ use function `completion-delete'."
 (defun ielm-toggle ()
   "Toggle ielm buffer."
   (interactive)
+  (require 'ielm)
   (let ((ielm-buffer-name "*ielm*"))
     (if (get-buffer ielm-buffer-name)
         (if (string-equal ielm-buffer-name (buffer-name))
@@ -445,7 +358,9 @@ unless return was pressed outside the comment"
           (indent-for-tab-command)
           (insert " "))
       ;; else insert only new-line
-      (insert "\n"))))
+      (insert "\n")
+      (indent-for-tab-command))
+    ))
 
 (defun clean-recentf-history ()
   "Clean recentf history of file assoc."
@@ -481,7 +396,7 @@ it is displayed along with the global value."
                   "Describe hash-map: ")
                 obarray
                 (lambda (atom) (and (boundp atom)
-                                    (hash-table-p (symbol-value atom))))
+                                (hash-table-p (symbol-value atom))))
                 t nil nil
                 (if (hash-table-p v) (symbol-name v))))
      (list (if (equal val "")
@@ -633,6 +548,93 @@ given as arguments are successfully loaded"
          (edges (window-inside-pixel-edges window)))
     (cons (+ (car x-y) (car edges))
           (+ (cdr x-y) (cadr edges)))))
+
+(defun text-scale-decrease-global ()
+  "Descrease frame font size."
+  (interactive)
+  (setq frame-current-font-size (truncate (* 0.8 frame-current-font-size)))
+  (set-face-attribute 'default nil :height frame-current-font-size))
+
+(defun text-scale-increase-global ()
+  "Increase frame font size."
+  (interactive)
+  (setq frame-current-font-size (truncate (* 1.2 frame-current-font-size)))
+  (set-face-attribute 'default nil :height frame-current-font-size))
+
+(defun text-scale-default-global ()
+  "Revert frame font size."
+  (interactive)
+  (setq frame-current-font-size frame-default-font-size)
+  (set-face-attribute 'default nil :height frame-current-font-size))
+
+(defun mldonkey-startup ()
+  "Startup mldonkey interface in Emacs."
+  (interactive)
+  (mldonkey-console)
+  (handler-buffer-exit-close))
+
+(defun mldonkey-hide ()
+  "Hide mldonkey console."
+  (interactive)
+  (delete-buffer-window "*MlDonkey Console*"))
+
+(defun my-imaxima ()
+  "Exit imaxima, and close it's buffer automaticly."
+  (interactive)
+  (if (bufferp (get-buffer "*maxima*"))
+      (switch-to-buffer "*maxima*")
+    (imaxima)
+    (my-maxima-keybind)
+    (handler-buffer-exit-close)))
+
+(defun function-for-Saizan ()
+  (interactive)
+  (haskell-ghci-load-file t)
+  (set-window-text-height (selected-window) 15))
+
+(defun uniquify-all-lines-region (start end)
+  "Find duplicate lines in region START to END keeping first occurrence."
+  (interactive "*r")
+  (save-excursion
+    (let ((end (copy-marker end)))
+      (while
+          (progn
+            (goto-char start)
+            (re-search-forward "^\\(.*\\)\n\\(\\(.*\n\\)*\\)\\1\n" end t))
+        (replace-match "\\1\n\\2")))))
+
+(defun uniquify-all-lines-buffer ()
+  "Delete duplicate lines in buffer and keep first occurrence."
+  (interactive "*")
+  (uniquify-all-lines-region (point-min) (point-max)))
+
+(defvar indirect-mode-name nil
+  "Mode to set for indirect buffers.")
+(make-variable-buffer-local 'indirect-mode-name)
+
+(defun indirect-region (start end)
+  "Edit the current region in another buffer.
+If the buffer-local variable `indirect-mode-name' is not set, prompt
+for mode name to choose for the indirect buffer interactively.
+Otherwise, use the value of said variable as argument to a funcall."
+  (interactive "r")
+  (let ((buffer-name (generate-new-buffer-name "*indirect*"))
+        (mode
+         (if (not indirect-mode-name)
+             (setq indirect-mode-name
+                   (intern
+                    (completing-read
+                     "Mode: "
+                     (mapcar (lambda (e)
+                               (list (symbol-name e)))
+                             (apropos-internal "-mode$" 'commandp))
+                     nil t)))
+           indirect-mode-name)))
+    (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
+    (funcall mode)
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (shrink-window-if-larger-than-buffer)))
 
 (provide 'lazycat-toolkit)
 
