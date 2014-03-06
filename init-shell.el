@@ -76,10 +76,6 @@
 
 ;;; Code:
 
-;;; ### Multi-shell ###
-;;; --- 多 shell 管理器
-(setq multi-shell-command "/bin/zsh")
-
 ;;; ### Cominit ###
 ;;; --- Cominit 模式
 (setq comint-prompt-read-only t)        ;提示符只读
