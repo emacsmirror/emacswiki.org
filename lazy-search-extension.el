@@ -3,12 +3,12 @@
 ;; Filename: lazy-search-extension.el
 ;; Description: Lazy Search Extension
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Joe Bloggs vapniks@yahoo.com
-;; Copyright (C) 2008, 2009, 2010, Andy Stewart, all rights reserved.
+;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
+;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-23 23:13:39
 ;; Version: 0.1
-;; Last-Updated: 2010-09-24 17:12:32
-;;           By: Joe Bloggs
+;; Last-Updated: 2008-12-23 23:13:39
+;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: lazy-search
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -57,16 +57,6 @@
 
 ;;; Change log:
 ;;
-;; 2010/10/17
-;;    * Joe Bloggs
-;;       * Added lazy-search-mark-sentence, lazy-search-copy-sentence, 
-;;         lazy-search-mark-paragraph and lazy-search-copy-paragraph
-;;       
-;; 2010/09/24
-;;    * Joe Bloggs
-;;       * Removed mark/copy parentheses functions and put them in lazy-search.el instead.
-;;       
-;;
 ;; 2008/12/24
 ;;      * First released.
 ;;
@@ -86,6 +76,48 @@
 (require 'color-moccur)
 
 ;;; Code:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Mark Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun lazy-search-mark-parentheses ()
+  "Mark parentheses."
+  (interactive)
+  (save-excursion
+    (if (paredit-in-string-p)
+        (lazy-search-mark
+         (point)
+         (1+ (car (paredit-string-start+end-points)))
+         (cdr (paredit-string-start+end-points)))
+      (lazy-search-mark
+       (point)
+       (progn
+         (backward-up-list)
+         (forward-char +1)
+         (point))
+       (progn
+         (up-list)
+         (forward-char -1)
+         (point))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Copy Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun lazy-search-copy-parentheses ()
+  "Copy parentheses at point."
+  (interactive)
+  (save-excursion
+    (if (paredit-in-string-p)
+        (lazy-search-mark
+         (point)
+         (1+ (car (paredit-string-start+end-points)))
+         (cdr (paredit-string-start+end-points)))
+      (lazy-search-copy
+       (progn
+         (backward-up-list)
+         (forward-char +1)
+         (point))
+       (progn
+         (up-list)
+         (forward-char -1)
+         (point))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Others ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lazy-search-moccur ()
   "Use moccur for search object."
   (interactive)
@@ -100,48 +132,12 @@
   (isearch-moccur-all)
   (lazy-search-quit))
 
-(defun lazy-search-copy-sentence ()
-  "Copy sentence at point.
-Kill object if `KILL-CONDITIONAL' is non-nil,
-otherwise copy object."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'sentence)
-                      (end-of-thing 'sentence))))
-
-(defun lazy-search-mark-sentence ()
-  "Mark sentence."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'sentence)
-     (end-of-thing 'sentence))))
-
-(defun lazy-search-copy-paragraph ()
-  "Copy paragraph at point.
-Kill object if `KILL-CONDITIONAL' is non-nil,
-otherwise copy object."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'paragraph)
-                      (end-of-thing 'paragraph))))
-
-(defun lazy-search-mark-paragraph ()
-  "Mark paragraph."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'paragraph)
-     (end-of-thing 'paragraph))))
-
 (dolist (elt-cons '(
+                    ;; Mark
+                    (("'" . "Mark Parentheses") . lazy-search-mark-parentheses)
+                    ;; Copy
+                    (("\"" . "Copy Parentheses") . lazy-search-copy-parentheses)
                     ;; Other
-		    (("p" . "mark paragraph") . lazy-search-mark-paragraph)
-		    (("P" . "Copy paragraph") . lazy-search-copy-paragraph)
-		    (("n" . "mark sentence") . lazy-search-mark-sentence)
-		    (("N" . "Copy sentence") . lazy-search-copy-sentence)
                     (("v" . "Moccur") . lazy-search-moccur)
                     (("V" . "Moccur All") . lazy-search-moccur-all)
                     ))
