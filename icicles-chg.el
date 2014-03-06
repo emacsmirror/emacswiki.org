@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Mar  4 11:31:37 2014 (-0800)
+;; Last-Updated: Thu Mar  6 14:24:26 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10671
+;;     Update #: 10681
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1969,6 +1969,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/03/06 dadams
+;;     icicle-insert-candidates:
+;;       Respect new options icicle-icomplete-mode-max-candidates and icicle-sorting-max-candidates.
 ;; 2014/03/04 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Use icicle-display-completion-list, not display-completion-list.
@@ -4128,6 +4131,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/03/06 dadams
+;;     icicle-change-sort-order: Set icicle-last-sort-comparer to current comparer, before changing.
 ;; 2014/02/09 dadams
 ;;     icicle-make-directory: Restore completion candidates after reading new dir name.
 ;; 2014/02/08 dadams
@@ -7042,6 +7047,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/03/06 dadams
+;;     Added: icicle-icomplete-mode-max-candidates, icicle-sorting-max-candidates.
 ;; 2014/02/24 dadams
 ;;     icicle-complete-keys-ignored-prefix-keys: Init value is now ([menu-bar icicles]).
 ;; 2014/02/07 dadams
@@ -7914,6 +7921,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2014/03/06 dadams
+;;     Added: icicle-last-icomplete-mode-value.
 ;; 2014/01/05 dadams
 ;;     Added: icicle-orig-font-lock-keywords, icicle-orig-minibuffer-completion-pred,
 ;;            icicle-orig-minibuffer-completion-table, icicle-orig-must-match-regexp,
