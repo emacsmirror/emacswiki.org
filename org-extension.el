@@ -193,6 +193,26 @@
   (org-switch-item-to-done)
   (org-archive-all-done-item))
 
+(defun org-switch-done-and-archive_ ()
+  "Switch item to DONE, and archive it."
+  (interactive)
+  (org-switch-item-to-done)
+  (org-archive-all-done-item_))
+
+(defun org-archive-all-done-item_ ()
+  "Archive all item that have with prefix DONE."
+  (interactive)
+  (save-excursion
+    (show-all)
+    (goto-char (point-min))
+    (if (search-forward-regexp "^[\\*]+ DONE" nil t)
+        (progn
+          (goto-char (point-min))
+          (while (search-forward-regexp "^[\\*]+ DONE" nil t)
+            (org-advertized-archive-subtree))
+          (message "Archive finished"))
+      (message "No need to archive"))))
+
 (provide 'org-extension)
 
 ;;; org-extension.el ends here
