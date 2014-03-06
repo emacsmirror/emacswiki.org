@@ -7,8 +7,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:32:12
 ;; Version: 0.1
-;; Last-Updated: 2013-04-09 19:34:00
-;;           By: Reuben Thomas <rrt@sc3d.org>
+;; Last-Updated: 2008-10-20 09:32:14
+;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: eldoc
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -72,11 +72,10 @@
 ;;
 
 ;;; Require
-(require 'eldoc-extension)
+
 
 ;;; Code:
 
-(setq eldoc-idle-delay 0)               ;显示延迟
 (dolist (hook (list
                'ielm-mode-hook
                'emacs-lisp-mode-hook
@@ -86,8 +85,16 @@
                'erc-mode-hook
                'org-mode-hook
                ))
-  (add-hook hook 'turn-on-eldoc-mode))
-(setq eldoc-argument-case 'eldoc-argument-list) ;高亮函数参数
+  (add-hook hook '(lambda ()
+                    (progn
+                      (require 'eldoc)
+                      (require 'eldoc-extension)
+                      (setq eldoc-idle-delay 0)                       ;显示延迟
+                      (setq eldoc-argument-case 'eldoc-argument-list) ;高亮函数参数
+                      (turn-on-eldoc-mode)))))
+
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(autoload 'go-eldoc-setup "go-eldoc")
 
 (provide 'init-eldoc)
 
