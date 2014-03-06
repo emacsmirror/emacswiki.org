@@ -73,18 +73,32 @@
 
 ;;; Require
 
+(require 'haskell-mode)
+(require 'haskell-extension)
 
 ;;; Code:
 
-(load "~/MyEmacs/Site-Lisp/Packages/haskell-mode/haskell-site-file")
-(autoload 'haskell-refac-mode "haskell-refac"
-  "Minor mode for refactoring Haskell programs" t)
-(add-hook 'haskell-mode-hook 'turn-on-font-lock)        ;高亮模式
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)   ;智能缩进模式
+(load "/usr/share/deepin-emacs/Site-Lisp/Packages/haskell-mode/haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-font-lock) ;高亮模式
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode) ;智能缩进模式
 (add-hook 'haskell-mode-hook 'turn-on-haskell-ghci)     ;GHCi 交互模式
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode) ;文档模式
-(add-hook 'haskell-mode-hook 'haskell-refac-mode)       ;重构
-(add-hook 'haskell-mode-hook 'hs-lint-mode-hook)        ;代码建议
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent) ;智能缩进模式
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode) ;文档模式
+(add-hook 'haskell-mode-hook 'hs-lint-mode-hook) ;代码建议
+(setq haskell-font-lock-symbols t)               ;美化符号
+(defun my-haskell-mode-hook ()                   ;代码建议
+  (local-set-key "\C-cl" 'hs-lint)
+  ;; (local-set-key "\C-cL" 'hs-scan)
+  )
+(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+;; (add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
+
+(lazy-set-key
+ '(
+   ("M-;" . comment-dwim-with-haskell-style) ;注释
+   )
+ haskell-mode-map
+ )
 
 (provide 'init-haskell)
 
