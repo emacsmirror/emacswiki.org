@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Mar  4 11:27:48 2014 (-0800)
+;; Last-Updated: Thu Mar  6 13:24:50 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14390
+;;     Update #: 14431
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3831,6 +3831,25 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
            (rows             (ceiling nb-cands columns))
  	   (row              0)
            startpos endpos string)
+      ;; Turn Icomplete mode on or off, depending on NB-CANDS.
+      (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates))
+        (if (< nb-cands icicle-icomplete-mode-max-candidates)
+            (if (not icicle-last-icomplete-mode-value)
+                (icomplete-mode -1)
+              (icomplete-mode 1)
+              (icomplete-exhibit))
+          (icomplete-tidy)
+          (icomplete-mode -1)))
+      ;; Turn sorting on or off, depending on NB-CANDS.
+      (when (natnump icicle-sorting-max-candidates)
+        (if (< nb-cands icicle-sorting-max-candidates)
+            (unless icicle-sort-comparer (setq icicle-sort-comparer  icicle-last-sort-comparer))
+          (setq icicle-last-sort-comparer  (or icicle-sort-comparer
+                                               icicle-last-sort-comparer
+                                               (let ((cval  (or (get 'icicle-sort-comparer 'saved-value)
+                                                                (get 'icicle-sort-comparer 'standard-value))))
+                                                 (condition-case nil (eval (car cval)) (error nil))))
+                icicle-sort-comparer       nil)))
       (when (eq 1 columns) (setq wwidth  colwidth))
       (dolist (cand  candidates)
         (setq endpos  (point))
