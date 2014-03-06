@@ -96,6 +96,16 @@
           (end-of-buffer)
           (insert "/"))))
 
+(defun doi-tabbar-backward-tab (&optional arg)
+  "Do `doi' with `tabbar-backward-tab'."
+  (interactive "p")
+  (doi 'tabbar-backward-tab arg))
+
+(defun doi-tabbar-forward-tab (&optional arg)
+  "Do `doi' with `tabbar-forward-tab'."
+  (interactive "p")
+  (doi 'tabbar-forward-tab arg))
+
 (provide 'doi-extension)
 
 ;;; doi-extension.el ends here
