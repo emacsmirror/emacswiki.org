@@ -3,7 +3,7 @@
 ;; Filename: move-text.el
 ;; Description: Move current line or region with M-up or M-down.
 ;; Author: Jason M <jasonm23@gmail.com>
-;; Extracted from basic-edit-toolkit.el by Andy Stewart.
+;; Extracted from basic-toolkit.el by Andy Stewart.
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Keywords: edit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -98,13 +98,6 @@
   arg lines up."
   (interactive "*p")
   (move-text-internal (- arg)))
-
-;;;###autoload
-(defun move-text-default-bindings ()
-  "Bind `move-text-up' and `move-text-down' to M-up and M-down."
-  (global-set-key [M-up] 'move-text-up)
-  (global-set-key [M-down] 'move-text-down))
-
 
 (provide 'move-text)
 
