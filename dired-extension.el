@@ -79,6 +79,8 @@
 
 ;;; Require
 
+(require 'color-moccur)
+
 ;;; Code:
 (defvar my-dired-omit-status t
   "The status of dired omit file.")
@@ -134,7 +136,7 @@ If not marked any files, default is current file or directory."
       (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
       (message "Size of all marked files: %s"
                (progn
-                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*\\(total\\|总计\\)$")
+                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*\\(total\\|总用量\\)$")
                  (match-string 1))))))
 
 (defun dired-rename-with-copy ()
@@ -262,7 +264,12 @@ In a repertory DIR with the name name + the start number start."
   "gnome-opens the specified file."
   (interactive "fFile to open: ")
   (let ((process-connection-type nil))
-    (start-process "" nil "/usr/bin/gnome-open" filename)))
+    (start-process "" nil "/usr/bin/xdg-open" filename)))
+
+(defun gnome-open-buffer ()
+  "Open current buffer file with gnome."
+  (interactive)
+  (gnome-open-file buffer-file-name))
 
 (defun dir-file-ext-my (file)
   "Given a full file's path name, returns a list of directory, filename
@@ -290,6 +297,16 @@ See also file-name-directory and file-name-nondirectory.."
               (buffer-substring bb (point-max)))))
         (if (interactive-p) (message "%S" cc))
         cc))))
+
+(defun find-lisp-find-dired-pwd (regexp)
+  "Find files in DIR, matching REGEXP."
+  (interactive "sMatching regexp: ")
+  (find-lisp-find-dired default-directory regexp))
+
+(defun moccur-grep-find-pwd (inputs)
+  (interactive
+   (list (moccur-grep-read-regexp moccur-grep-default-mask)))
+  (moccur-grep-find default-directory inputs))
 
 (provide 'dired-extension)
 ;;; dired-extension.el ends here
