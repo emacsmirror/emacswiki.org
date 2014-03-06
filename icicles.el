@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb 21 09:10:08 2014 (-0800)
+;; Last-Updated: Thu Mar  6 14:11:01 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23528
+;;     Update #: 23531
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -826,6 +826,7 @@
 ;;    `icicle-highlight-input-initial-whitespace-flag',
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
+;;    `icicle-icomplete-mode-max-candidates',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion',
@@ -892,7 +893,8 @@
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
-;;    `icicle-sort-orders-alist', `icicle-special-candidate-regexp',
+;;    `icicle-sorting-max-candidates', `icicle-sort-orders-alist',
+;;    `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
 ;;    `icicle-S-TAB-completion-methods-per-command',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
@@ -1390,7 +1392,8 @@
 ;;    `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
-;;    `icicle-last-completion-command', `icicle-last-input',
+;;    `icicle-last-completion-command',
+;;    `icicle-last-icomplete-mode-value', `icicle-last-input',
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-last-thing-type',
 ;;    `icicle-locate-file-no-symlinks-p',
