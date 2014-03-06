@@ -79,35 +79,45 @@
 
 ;;; Code:
 
+(defun dired-open-file-root ()
+  "Dired file as root."
+  (interactive)
+  (tramp-cleanup-all-connections)
+  (find-file (concat find-file-root-prefix (dired-get-filename))))
+
 (defun dired-open-file ()
   "Dired find file function.
 Open file use another tool"
   (interactive)
   (dolist (file (dired-get-marked-files))
-    (dired-open-file-internal file)))
+    (dired-open-file-internal file)
+    ))
+
+(defun dired-open-buffer ()
+  (interactive)
+  (dired-open-file-internal buffer-file-name))
 
 (defun dired-open-file-internal (file)
   "Open diversified format FILE."
   (interactive "fFile: ")
   (let ((file-extension (file-name-extension file)))
-    (if file-extension
-        (cond ((string-match "\\(s?html?\\)$" file-extension)
-               (w3m-copy-buffer)
-               (message "%s" file)
-               (w3m-find-file file))
-              ((string-match "\\(chm\\)$" file-extension)
-               (chm-view-file file))
-              ((string-match "\\(pdf\\|ps\\|dvi\\)$" file-extension)
-               (dired-view-file)
-               (doc-view-mode))
-              ((string-match (emms-player-get (emms-player-for (emms-playlist-current-selected-track)) 'regex) file)
-               (emms-add-file file)
-               (with-current-emms-playlist
-                 (goto-char (point-max))
-                 (forward-line -1)
-                 (emms-playlist-mode-play-smart)))
-              (t (find-file file)))
-      (find-file file))))
+    (cond ((string-equal "html" file-extension)
+           (require 'init-w3m)
+           (w3m-find-file file))
+          ((string-equal "chm" file-extension)
+           (require 'chm-view)
+           (chm-view-file file))
+          ((string-match "\\(pdf\\|ps\\|dvi\\)$" file-extension)
+           (dired-view-file)
+           (doc-view-mode))
+          ((string-match (emms-player-get (emms-player-for (emms-playlist-current-selected-track)) 'regex) file)
+           (emms-add-file file)
+           (with-current-emms-playlist
+             (goto-char (point-max))
+             (forward-line -1)
+             (emms-playlist-mode-play-smart)))
+          (t (find-file file)))
+    ))
 
 (provide 'dired-open)
 
