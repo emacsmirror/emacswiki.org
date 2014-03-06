@@ -81,6 +81,8 @@
 
 ;;; Require
 
+(require 'go-mode)
+
 ;;; Code:
 
 (defun go-run-buffer()
@@ -106,6 +108,24 @@
             (auto-complete-mode 1)
             (add-to-list 'ac-sources 'ac-source-go)
             (call-process "gocode" nil nil nil "-s")))
+
+;;; ### Golang ###
+(lazy-unset-key
+ '("C-k" "M-o")
+ go-mode-map)
+(lazy-set-key
+ '(
+   ("C-c C-c" . go-run-buffer)
+   ("C-c C-f" . gofmt)
+   ("C-c C-d" . godoc)
+   ("C-c C-a" . go-import-add)
+   ("C-8" . godef-jump)
+   ("C-u C-8" . godef-jump-other-window)
+   ("C-k" . go-kill)
+   ("M-o" . go-backward-delete)
+   )
+ go-mode-map
+ )
 
 (provide 'init-golang)
 
