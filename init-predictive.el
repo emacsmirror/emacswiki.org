@@ -73,6 +73,7 @@
 
 ;;; Require
 
+(require 'predictive)
 
 ;;; Code:
 
@@ -90,6 +91,17 @@
                'yaoddmuse-mode-hook
                ))
   (add-hook hook '(lambda () (predictive-mode 1))))
+
+(lazy-unset-key
+ '("TAB")
+ completion-dynamic-map)                ;卸载按键
+(lazy-set-key
+ '(
+   ("M-h" . completion-accept)          ;接受辅助补全
+   ("M-H" . completion-reject)          ;拒绝辅助补全
+   )
+ completion-map
+ )
 
 (provide 'init-predictive)
 
