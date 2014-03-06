@@ -9,37 +9,27 @@ SrSpeedbar is mode make [[SpeedBar]] show in *Current Frame* by SebastianRose.
 : in ~/.emacs
 
 ==Usage==
-* "sr-speedbar-open"                   
-: Open sr-speedbar window.
-* "sr-speedbar-close"                  
-: Close sr-speedbar window.
-* "sr-speedbar-toggle"
-: Toggle sr-speedbar window.
-* "sr-speedbar-select-window"
-: Select sr-speedbar window.
-* "sr-speedbar-refresh-turn-on"
-: Turn on refresh speedbar content.
-* "sr-speedbar-refresh-turn-off"
-: Turn off refresh speedbar content.
-* "sr-speedbar-refresh-toggle"
-: Toggle refresh speedbar content.
+
+|| **sr-speedbar-open** || Open sr-speedbar window. ||
+|| **sr-speedbar-close** || Close sr-speedbar window. ||
+|| **sr-speedbar-toggle** || Toggle sr-speedbar window. ||
+|| **sr-speedbar-select-window** || select sr-speedbar window. ||
+|| **sr-speedbar-refresh-turn-on** || Turn on refresh speedbar content. ||
+|| **sr-speedbar-refresh-turn-off** || Turn off refresh speedbar content. ||
+|| **sr-speedbar-refresh-toggle** || Toggle refresh speedbar content. ||
 
 ==Customize==
+
 All below setup can customize by:
     M-x customize-group RET sr-speedbar RET
 
-* `sr-speedbar-width-x'
-: The `sr-speedbar' window width under WINDOW system.
-* `sr-speedbar-width-console'
-: The `sr-speedbar' window width under CONSOLE.
-* `sr-speedbar-max-width'
-: The max window width allowed remember.
-* `sr-speedbar-delete-windows'
-: Whether delete other window before showing up.
-* `sr-speedbar-skip-other-window-p'
-: Whether skip `sr-speedbar' window when use command `other-window' select window in cyclic ordering of windows.
-* `sr-speedbar-auto-refresh'
-: Control status of refresh speedbar content.
+|| **sr-speedbar-width-x** || The sr-speedbar window width under WINDOW system. ||
+|| **sr-speedbar-width-console** || The sr-speedbar window width under CONSOLE. ||
+|| **sr-speedbar-max-width** || The max window width allowed remember. ||
+|| **sr-speedbar-delete-windows** || Whether delete other window before showing up. ||
+|| **sr-speedbar-skip-other-window-p** || Whether skip sr-speedbar window when use command **other-window** select window in cyclic ordering of windows. ||
+|| **sr-speedbar-auto-refresh** || Control status of refresh speedbar content. ||
+
 
 ==Screenshot==
 : This is screenshot by SebastianRose:
