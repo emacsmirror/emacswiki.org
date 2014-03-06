@@ -8,18 +8,15 @@
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.1
-;; Last-Updated: lun feb 25 14:05:07 2013 (-0300)
-;;           By: Christian
+;; Last-Updated: 2014/03/06 22:28
+;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `dired', `find-func', `mail-prsvr', `mailcap', `mm-util',
-;;   `sgml-mode', `skeleton', `thingatpt', `timer', `timezone',
-;;   `url', `url-cookie', `url-expand', `url-history', `url-methods',
-;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars'.
+;; `url' `cl' `sgml-mode' `skeleton'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -376,34 +373,10 @@
 ;;      M-x customize-group RET yaoddmuse RET
 ;;
 
-
-;;; Bug Report:
-;;
-;; If you have problem, send a bug report via M-x yaoddmuse-send-bug-report.
-;; The step is:
-;;  0) Setup mail in Emacs, the easiest way is:
-;;       (setq user-mail-address "your@mail.address")
-;;       (setq user-full-name "Your Full Name")
-;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
-;;       (setq mail-user-agent 'message-user-agent)
-;;       (setq message-send-mail-function 'message-smtpmail-send-it)
-;;  1) Be sure to use the LATEST version of yaoddmuse.el.
-;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
-;;  3) Use Lisp version instead of compiled one: (load "yaoddmuse.el")
-;;  4) Do it!
-;;  5) If you got an error, please do not close *Backtrace* buffer.
-;;  6) M-x yaoddmuse-send-bug-report and M-x insert-buffer *Backtrace*
-;;  7) Describe the bug using a precise recipe.
-;;  8) Type C-c C-c to send.
-;;  # If you are a Japanese, please write in Japanese:-)
-
 ;;; Change log:
-;; 25-Feb-2013    ChristianGiménez
-;;    Last-Updated: lun feb 25 14:03:00 2013 (-0300) (ChristianGiménez)
-;;    * Tildes recognition in links.
-;; 2010/05/04
-;;      * Bug report command: `yaoddmuse-send-bug-report'
-;;      
+;; 2014/03/06
+;;      * `yaoddmuse-post-dired': add sit-for 5 for emacswiki to void upload files failed.
+;;
 ;; 2010/03/20
 ;;      * Add Emacswiki-specific commands for convenience:
 ;;        `emacswiki'
@@ -572,9 +545,6 @@
 (require 'sgml-mode)
 (require 'skeleton)
 (require 'url)
-(require 'thingatpt)
-(require 'find-func)
-(require 'dired)
 
 ;;; Code:
 
@@ -914,7 +884,7 @@ It must print the page to stdout.
   "An alist of file extensions and corresponding MIME content-types.")
 
 (defvar yaoddmuse-imenu-regexp "^\\(=+\\)\\s-*\\(.*?\\)\\s-*\\1"
- "A regular expression for headings to be added to an index menu.")
+  "A regular expression for headings to be added to an index menu.")
 
 
 (defvar yaoddmuse-mode-map
@@ -969,7 +939,7 @@ It must print the page to stdout.
      ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 2 'yaoddmuse-image-link-name)
      ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
      ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
-     ("\\<[A-Z\xc0-\xdeÀÈÌÒÙÁÉÍÓÚÖÜ]+[àèìòùáéíóúüöa-z\xdf-\xff]+\\([ÀÈÌÒÙÁÉÍÓÚÖÜA-Z\xc0-\xde]+[àèìòùáéíóúüöa-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
+     ("\\<[A-Z\xc0-\xde]+[a-z\xdf-\xff]+\\([A-Z\xc0-\xde]+[a-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
      ("\\[\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-link)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 1 'yaoddmuse-lisp-keyword)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 2 'yaoddmuse-lisp-file)
@@ -1030,7 +1000,6 @@ It must print the page to stdout.
 
 ;;; Edit.
 
-;;;###autoload
 (defun yaoddmuse-edit (&optional wikiname pagename prefix)
   "Edit a page on a wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1047,7 +1016,6 @@ Use a PREFIX argument to force a reload of the page."
                               'yaoddmuse-handle-get
                             'yaoddmuse-handle-get-or-display)))
 
-;;;###autoload
 (defun yaoddmuse-edit-default (prefix)
   "Edit a page with default wiki `yaoddmuse-default-wiki'.
 Use a PREFIX argument to force a reload of the page."
@@ -1071,7 +1039,6 @@ page name when can't find page name around point."
 
 ;;; Post
 
-;;;###autoload
 (defun yaoddmuse-post-buffer (&optional post-buffer summary prefix)
   "Post the BUFFER to the current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1096,7 +1063,6 @@ If PREFIX is non-nil, will view page after post successful."
                   summary
                   prefix))
 
-;;;###autoload
 (defun yaoddmuse-post-current-buffer (prefix)
   "Post current buffer to current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1104,7 +1070,6 @@ Use a PREFIX argument to browse page after post successful."
   (interactive "P")
   (yaoddmuse-post-buffer (current-buffer) nil prefix))
 
-;;;###autoload
 (defun yaoddmuse-post-file (&optional filename wikiname pagename summary prefix)
   "Post file to current wiki.
 The current wiki is taken from `yaoddmuse-wiki'.
@@ -1130,14 +1095,12 @@ If PREFIX is non-nil, will view page after post successful."
     ;; Error when invalid file name.
     (message "Invalid file name %s" filename)))
 
-;;;###autoload
 (defun yaoddmuse-post-file-default (prefix)
   "Post file to default wiki.
 If PREFIX is non-nil, will view page after post successful."
   (interactive "P")
   (yaoddmuse-post-file nil yaoddmuse-default-wiki nil nil prefix))
 
-;;;###autoload
 (defun yaoddmuse-post-library (&optional library wikiname pagename summary prefix)
   "Post library to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1153,7 +1116,6 @@ If PREFIX is non-nil, will view page after post successful."
   (let ((filename (find-library-name library)))
     (yaoddmuse-post-file filename wikiname pagename summary prefix)))
 
-;;;###autoload
 (defun yaoddmuse-post-library-default (prefix)
   "Post library to default wiki.
 Use a PREFIX argument to browse page after post successful."
@@ -1164,7 +1126,6 @@ Use a PREFIX argument to browse page after post successful."
     ;; Post library to default wiki.
     (yaoddmuse-post-file filename yaoddmuse-default-wiki pagename nil prefix)))
 
-;;;###autoload
 (defun yaoddmuse-post-dired (&optional wikiname summary prefix)
   "Post dired marked files to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1180,17 +1141,20 @@ If PREFIX is non-nil, will view page after post successful."
             (dolist (file (dired-get-marked-files))
               (setq filename file)
               (setq pagename (file-name-nondirectory filename))
-              (yaoddmuse-post-file filename wikiname pagename summary prefix))))
+              (yaoddmuse-post-file filename wikiname pagename summary prefix)
+              (when (string-equal "EmacsWiki" wikiname)
+                ;; We need add 5 seconds delay for post files to emacswiki, otherwise emacswiki will banned connection that 10 hits in 20 seconds.
+                (sit-for 5)
+                )
+              )))
     (message "This command in only for `dired-mode'.")))
 
-;;;###autoload
 (defun yaoddmuse-post-dired-default (prefix)
   "Post dired marked files to default wiki.
 Use a PREFIX argument to browse page after post successful."
   (interactive "P")
   (yaoddmuse-post-dired yaoddmuse-default-wiki nil prefix))
 
-;;;###autoload
 (defun yaoddmuse-post-screenshot (&optional wikiname summary prefix)
   "Post screenshot to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
@@ -1208,7 +1172,6 @@ If PREFIX is non-nil, will view page after post successful."
         (yaoddmuse-post-file yaoddmuse-screenshot-filename wikiname nil "Screenshot by yaoddmuse.el" prefix))
     (message "Please make sure have install program '%s'." yaoddmuse-screenshot-program)))
 
-;;;###autoload
 (defun yaoddmuse-post-screenshot-default (prefix)
   "Post screenshot to default wiki.
 Use a PREFIX argument to browse page after post successful."
@@ -1222,7 +1185,6 @@ Use a PREFIX argument to browse page after post successful."
   (interactive)
   (yaoddmuse-get-page yaoddmuse-wikiname yaoddmuse-pagename))
 
-;;;###autoload
 (defun yaoddmuse-browse-page (&optional wikiname pagename)
   "Browse special page in wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1230,13 +1192,11 @@ PAGENAME is the pagename of the page you want to edit."
   (interactive)
   (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse))
 
-;;;###autoload
 (defun yaoddmuse-browse-page-default ()
   "Brose special page with `yaoddmuse-default-wiki'."
   (interactive)
   (yaoddmuse-browse-page yaoddmuse-default-wiki))
 
-;;;###autoload
 (defun yaoddmuse-browse-page-diff (&optional wikiname pagename)
   "Browse special page diff in wiki.
 WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
@@ -1244,9 +1204,8 @@ PAGENAME is the pagename of the page you want to edit."
   (interactive)
   (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse-diff))
 
-;;;###autoload
 (defun yaoddmuse-browse-page-default-diff ()
-  "Browse special page with `yaoddmuse-default-wiki'."
+  "Brose special page with `yaoddmuse-default-wiki'."
   (interactive)
   (yaoddmuse-browse-page-diff yaoddmuse-default-wiki))
 
@@ -1367,7 +1326,6 @@ such as picture or compress."
         (insert data)
         (write-file (read-file-name (format "File: (Suffix: %s) " suffix)))))))
 
-;;;###autoload
 (defun emacswiki (&optional pagename prefix)
   "Edit a page on the EmacsWiki.
 PAGENAME is the pagename of the page you want to edit.
@@ -1723,17 +1681,17 @@ unless option PROMPT is non-nil."
   "Get the URL of oddmuse wiki.
 WIKINAME is wiki name for view.
 PAGENAME is page name for view."
-  (or (ignore-errors
-        (concat (yaoddmuse-get-url wikiname) "/" pagename))
-      (error (format "Invalid wiki name: '%s'" wikiname))))
+  (condition-case v
+      (concat (or (yaoddmuse-get-url wikiname) (error)) "/" pagename)
+    (error (format "Invalid wiki name: '%s'" wikiname))))
 
 (defun yaoddmuse-url-diff (wikiname pagename)
   "Get the URL of oddmuse wiki.
 WIKINAME is wiki name for view.
 PAGENAME is page name for view."
-  (or (ignore-errors
-        (concat (yaoddmuse-get-url wikiname) "/?action=browse;diff=2;id=" pagename))
-      (error (format "Invalid wiki name: '%s'" wikiname))))
+  (condition-case v
+      (concat (or (yaoddmuse-get-url wikiname) (error)) "/?action=browse;diff=2;id=" pagename)
+    (error (format "Invalid wiki name: '%s'" wikiname))))
 
 (defun yaoddmuse-get-pagename-table (wikiname)
   "Get table from `yaoddmuse-pages-hash'.
@@ -1780,6 +1738,7 @@ Uses `current-time' to make buffer name unique."
 
 (defun yaoddmuse-get-library ()
   "Get library name."
+  (require 'find-func)
   (let* ((dirs load-path)
          (suffixes (find-library-suffixes)))
     (completing-read (format "Library name (%s): " (or (yaoddmuse-region-or-thing) ""))
@@ -2046,30 +2005,6 @@ Otherwise display [Minor] at mode-line."
                                       'face 'yaoddmuse-edit-status-face))
   ;; Update mode line.
   (force-mode-line-update))
-
-;;;; Bug report
-(defvar yaoddmuse-maintainer-mail-address
-  (concat "rubiki" "tch@ru" "by-lang.org"))
-(defvar yaoddmuse-bug-report-salutation
-  "Describe bug below, using a precise recipe.
-
-When I executed M-x ...
-
-How to send a bug report:
-  1) Be sure to use the LATEST version of yaoddmuse.el.
-  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
-  3) Use Lisp version instead of compiled one: (load \"yaoddmuse.el\")
-  4) If you got an error, please paste *Backtrace* buffer.
-  5) Type C-c C-c to send.
-# If you are a Japanese, please write in Japanese:-)")
-(defun yaoddmuse-send-bug-report ()
-  (interactive)
-  (reporter-submit-bug-report
-   yaoddmuse-maintainer-mail-address
-   "yaoddmuse.el"
-   (apropos-internal "^yaoddmuse-" 'boundp)
-   nil nil
-   yaoddmuse-bug-report-salutation))
 
 (provide 'yaoddmuse)
 
