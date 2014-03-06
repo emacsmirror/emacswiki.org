@@ -77,7 +77,7 @@
 ;;; Code:
 
 (defun find-function-or-variable-at-point (&optional prefix)
-  "Find function or variable define at current point."
+  "Find function, variable define at current point."
   (interactive "P")
   (if (equal 0 (variable-at-point))     ;if have not variable at current point
       (if (function-called-at-point)    ;if have function call at current point
