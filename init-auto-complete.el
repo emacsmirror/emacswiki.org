@@ -81,11 +81,11 @@
 
 ;;; Require
 
-
+(require 'auto-complete-config)
+(require 'auto-complete-clang-extension)
 
 ;;; Code:
 
-(require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "/usr/share/deepin-emacs/site-lisp/extensions/auto-complete/dict")
 (ac-config-default)
 (setq ac-use-quick-help nil)
