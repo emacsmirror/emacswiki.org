@@ -77,10 +77,10 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defcustom shell-command-passwd nil
-  "The passwd for super user to execute command."
-  :type 'string
-  :group 'shell-command)
+;; (defcustom my-root-passwd nil
+;;   "The passwd for super user to execute command."
+;;   :type 'string
+;;   :group 'shell-command)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Advices ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defadvice shell-command (around surpress-popup-window)
@@ -107,14 +107,15 @@ Argument CMD the main command."
     ;; Execute command.
     (shell-command cmd command-buffer)
     ;; Try to input password.
-    (sit-for 1)
-    (with-current-buffer command-buffer
-      (goto-char (point-min))
-      (if (search-forward-regexp (format "\\[sudo\\] password for %s: $" (user-login-name)) nil t)
-          (progn
-            (insert shell-command-passwd)
-            (comint-send-input))
-        (call-interactively 'move-end-of-line)))))
+    ;; (sit-for 1)
+    ;; (with-current-buffer command-buffer
+    ;;   (goto-char (point-min))
+    ;;   (if (search-forward-regexp (format "\\[sudo\\] password for %s: $" (user-login-name)) nil t)
+    ;;       (progn
+    ;;         (insert my-root-passwd)
+    ;;         (comint-send-input))
+    ;;     (call-interactively 'move-end-of-line)))
+    ))
 
 (defun shell-aliase (alias)
   "Execute shell aliase in term.
@@ -140,4 +141,3 @@ Argument ALIAS the alias name that define in bash."
 (provide 'shell-command-extension)
 
 ;;; shell-command-extension.el ends here
-
