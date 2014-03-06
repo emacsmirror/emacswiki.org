@@ -1,17 +1,17 @@
-;;; init-auto-save.el --- 自动保存的设置
+;;; init-auto-save.el --- Init for auto-save.el
 
 ;; Filename: init-auto-save.el
-;; Description: 自动保存的设置设置
-;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
-;; Created: 2008-10-20 09:14:21
+;; Description: Init for auto-save.el
+;; Author: Andy Stewart <lazycat.manatee@gmail.com>
+;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
+;; Copyright (C) 2014, Andy Stewart, all rights reserved.
+;; Created: 2014-01-04 14:18:20
 ;; Version: 0.1
-;; Last-Updated: 2008-10-20 09:14:25
+;; Last-Updated: 2014-01-04 14:18:20
 ;;           By: Andy Stewart
-;; URL:
-;; Keywords: autosave
-;; Compatibility: GNU Emacs 23.0.60.1
+;; URL: http://www.emacswiki.org/emacs/download/init-auto-save.el
+;; Keywords:
+;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -39,7 +39,7 @@
 
 ;;; Commentary:
 ;;
-;; 自动保存的设置设置
+;; Init for auto-save.el
 ;;
 
 ;;; Installation:
@@ -55,10 +55,18 @@
 ;;
 ;; No need more.
 
+;;; Customize:
+;;
+;;
+;;
+;; All of the above can customize by:
+;;      M-x customize-group RET init-auto-save RET
+;;
+
 ;;; Change log:
 ;;
-;; 2008/10/20
-;;      First released.
+;; 2014/01/04
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -73,12 +81,12 @@
 
 ;;; Require
 
+(require 'auto-save)
 
 ;;; Code:
 
-(setq auto-save-interval 10)            ;击键10次保存
-(setq auto-save-timeout 1)              ;空闲1秒时就保存
-(setq auto-save-visited-file-name t)    ;当前buffer关联一个已存在的文件名时才保存
+(auto-save-enable)
+(setq auto-save-slient t)
 
 (provide 'init-auto-save)
 
