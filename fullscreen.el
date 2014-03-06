@@ -104,6 +104,14 @@
                          ;; if first parameter is '2', can toggle fullscreen status
                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 
+(defun maximize ()
+  "Maximize window."
+  (interactive)
+  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                         '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                         '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+
 (provide 'fullscreen)
 
 ;;; fullscreen.el ends here
