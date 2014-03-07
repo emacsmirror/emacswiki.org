@@ -1,3 +1,4 @@
 [new:AlexSchroeder:2014-03-07 08:12 UTC]
 Emacs Wiki should have much better Simplified Chinese translations. UI only, I'm afraid: it only affects the little texts when looking at recent changes, page history, page diff, and the like.
 Thank you very much, AndyStewart.
+At the same time, the main script should now be able to differentiate between the language preferences of zh-cn (simplified) and zh-tw (traditional).
