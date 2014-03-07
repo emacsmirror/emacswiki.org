@@ -99,6 +99,12 @@
   (interactive "*p")
   (move-text-internal (- arg)))
 
+;;;###autoload
+(defun move-text-default-bindings ()
+  "Bind `move-text-up' and `move-text-down' to M-up and M-down."
+  (global-set-key [M-up] 'move-text-up)
+  (global-set-key [M-down] 'move-text-down))
+
 (provide 'move-text)
 
 ;;; move-text.el ends here
