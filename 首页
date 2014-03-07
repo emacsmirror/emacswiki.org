@@ -2,15 +2,15 @@
 
 欢迎来到EmacsWiki， EmacsWiki 是全世界Emacs黑客智慧的聚集地， 这里每天都有惊喜等你去探索！  -- AndyStewart
 
-==了解Emacs==
+==了解==
 * [[什么是 Emacs]] -- Emacs 都能做什么？
 * [[Emacs 的魅力]] -- Emacs是对技术极限不懈追求的信仰！
 
-==使用Emacs==
+==使用==
 * [[基本操作]] -- 十分钟入门Emacs
 
-==探索Emacs==
+==探索==
 *  [[怎么探索Emacs]] -- Emacs 是一个不折不扣的操作系统
 
-==贡献Emacs==
+==贡献==
 * [[怎么变成贡献者]] -- 学完Elisp不是探索的终点， 而是乐趣的开始!
