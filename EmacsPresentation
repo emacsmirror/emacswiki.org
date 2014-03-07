@@ -36,7 +36,7 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 == Solutions ==
 
-* [[http://museslidy.net][Muse Slidy]] -- An emacs package to create standalone web-ready presentations from within emacs
+* [[http://museslidy.net]] -- An emacs package to create standalone web-ready presentations from within emacs
 
 * [http://shebang.ws/emacs-outline-presentation-mode.html outline-presentation-mode] -- a minor mode for outline-mode to make presentations from within Emacs.
 
