@@ -2,3 +2,9 @@
 Emacs Wiki should have much better Simplified Chinese translations. UI only, I'm afraid: it only affects the little texts when looking at recent changes, page history, page diff, and the like.
 Thank you very much, AndyStewart.
 At the same time, the main script should now be able to differentiate between the language preferences of zh-cn (simplified) and zh-tw (traditional).
+If you visit the WikiLanguageMenu, you will still see only one Chinese link. I need to add a second link, there. Perhaps
+[http://www.emacswiki.org/emacs-zh-cn 中文 （简化字）] for simplified characters
+and
+[http://www.emacswiki.org/emacs-zh-tw 中文 （正體字/繁體字）] for traditional characters?
+
+As always, visiting [http://www.emacswiki.org/ emacswiki.org] will pick the language you prefer based on your browser settings.
