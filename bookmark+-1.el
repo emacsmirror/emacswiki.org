@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jan  2 08:03:02 2014 (-0800)
+;; Last-Updated: Fri Mar  7 19:29:06 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7073
+;;     Update #: 7080
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3074,7 +3074,14 @@ Run `bookmark-exit-hook', then save bookmarks if they were updated.
 Then save menu-list state to file `bmkp-bmenu-state-file', but only if
 that option is non-nil."
   (run-hooks 'bookmark-exit-hook)
-  (when (bookmark-time-to-save-p t) (bookmark-save))
+  (when (bookmark-time-to-save-p t)
+    (condition-case err                 ; Do NOT raise error.  (Need to be able to exit.)
+        (bookmark-save)
+      (error (if (fboundp 'display-warning)
+                 (display-warning 'bookmark-plus (error-message-string err))
+               (message (error-message-string err))
+               (sit-for 4))
+             nil)))
   (bmkp-save-menu-list-state))
  
 ;;(@* "Bookmark+ Functions (`bmkp-*')")
@@ -10221,6 +10228,8 @@ See `bmkp-cycle' for descriptions of the arguments."
                                  (bookmark-jump bmkp-current-nav-bookmark))))))
     (and bookmark  bmkp-current-nav-bookmark))) ; Return nil if not a valid bookmark.
 
+;; Same as `icicle-list-position' in `icicles-fn.el'.
+;; Simple version of `cl-position' for all Emacs versions.
 (defun bmkp-list-position (item items &optional test)
   "Find the first occurrence of ITEM in list ITEMS.
 Return the index of the matching item, or nil if not found.
