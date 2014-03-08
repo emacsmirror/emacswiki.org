@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Mar  6 13:15:49 2014 (-0800)
+;; Last-Updated: Sat Mar  8 10:11:22 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 19350
+;;     Update #: 19355
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -214,6 +214,7 @@
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-highlight-saved-candidates',
+;;    `icicle-toggle-icomplete-mode',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
@@ -251,6 +252,7 @@
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-highlight-saved-candidates',
+;;    `toggle-icicle-icomplete-mode',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-include-cached-files',
@@ -7842,6 +7844,20 @@ commands, for how `C-$' might affect them."
     (icicle-msg-maybe-in-minibuffer icicle-toggle-transforming-message
                                     (icicle-propertize (if icicle-transform-function "ON" "OFF")
                                                        'face 'icicle-msg-emphasis))))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+(defalias 'toggle-icicle-icomplete-mode 'icicle-toggle-icomplete-mode)
+(defun icicle-toggle-icomplete-mode ()  ; Bound to `C-M-#' in minibuffer.
+  "Toggle Icomplete mode, if loaded.  If on, turn it off, and vice versa.
+If `icomplete.el' has not yet been loaded then do nothing.
+Bound to `C-M-#' in the minibuffer."
+  (interactive)
+  (when (featurep 'icomplete)
+    (icomplete-mode (if icomplete-mode -1 1))
+    (icicle-msg-maybe-in-minibuffer
+     "Icomplete mode is now %s"
+     (icicle-propertize (if icomplete-mode "ON" "OFF") 'face 'icicle-msg-emphasis))))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
