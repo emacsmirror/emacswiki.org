@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Tue Mar  4 13:33:32 2014 (-0800)
+;; Last-Updated: Fri Mar  7 13:45:43 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1789
+;;     Update #: 1791
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -860,7 +860,7 @@ RING-ITEM is an item in `kmacro-ring' or `(kmacro-ring-head)'.")
 
 (defvar icicle-last-completion-command nil "Last completion command used.")
 
-(defvar icicle-last-icomplete-mode-value (and (boundp icomplete-mode)  icomplete-mode)
+(defvar icicle-last-icomplete-mode-value (and (featurep 'icomplete)  icomplete-mode)
   "Value of `icomplete-mode' when completion started.")
 
 (defvar icicle-last-input "" "Last minibuffer input typed (not from cycling).")
