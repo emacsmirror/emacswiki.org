@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Feb 22 10:55:02 2014 (-0800)
+;; Last-Updated: Sat Mar  8 10:53:46 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 26740
+;;     Update #: 26870
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2236,7 +2236,7 @@ separate the words (any strings, in fact, including regexps) using
                                                         (if (null ',pref-arg)
                                                             (user-variable-p s)
                                                           (get s 'variable-documentation)))))))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize (pattern): " obarray (and icompletep  pred) nil nil 'regexp-history)
            pref-arg
@@ -2292,7 +2292,7 @@ See `icicle-customize-apropos'."
    (let* ((pred                                    (lambda (s)
                                                      (unless (symbolp s) (setq s  (intern s)))
                                                      (custom-facep s)))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize faces (pattern): " obarray (and icompletep  pred)
                             nil nil 'regexp-history)
@@ -2311,7 +2311,7 @@ See `icicle-customize-apropos'."
    (let* ((pred                                    (lambda (s)
                                                      (unless (symbolp s) (setq s  (intern s)))
                                                      (get s 'custom-group)))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize groups (pattern): " obarray (and icompletep  pred)
                             nil nil 'regexp-history)
@@ -2340,7 +2340,7 @@ the customize buffer."
                                                        (user-variable-p s)
                                                        (and ',pref-arg
                                                         (get s 'variable-documentation))))))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (completing-read "Customize options (pattern): " obarray (and icompletep  pred)
                             nil nil 'regexp-history)
@@ -2462,8 +2462,7 @@ See `icicle-apropos' for a description of PATTERN."
                                                                   (unless (symbolp s) (setq s  (intern s)))
                                                                   (and (boundp s)
                                                                        (get s 'variable-documentation))))
-                     (icompletep                                (and (boundp 'icomplete-mode)
-                                                                     icomplete-mode))
+                     (icompletep                                (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
                                                                     (icicle-alt-act-fn-for-type "variable")))
@@ -2491,7 +2490,7 @@ See `icicle-apropos' for a description of PATTERN."
       (let* ((pred                                    (lambda (s)
                                                         (unless (symbolp s) (setq s  (intern s)))
                                                         (user-variable-p s)))
-             (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+             (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
              (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
         (list (completing-read
                (concat "Apropos user option (regexp" (and (>= emacs-major-version 22)  " or words")
@@ -2525,7 +2524,7 @@ See `icicle-apropos' for a description of PATTERN."
                      (pred                                     (lambda (s)
                                                                  (unless (symbolp s) (setq s  (intern s)))
                                                                  (fboundp s)))
-                     (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                   (icicle-alt-act-fn-for-type "function")))
@@ -2553,7 +2552,7 @@ See `icicle-apropos' for a description of PATTERN."
       (let* ((pred                                      (lambda (s)
                                                           (unless (symbolp s) (setq s  (intern s)))
                                                           (commandp s)))
-             (icompletep                                (and (boundp 'icomplete-mode)  icomplete-mode))
+             (icompletep                                (and (featurep 'icomplete)  icomplete-mode))
              (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
              (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
                                                             (icicle-alt-act-fn-for-type "command")))
@@ -2601,7 +2600,7 @@ using face `icicle-special-candidate'."
                                                                 (lambda (s)
                                                                   (unless (symbolp s) (setq s  (intern s)))
                                                                   (user-variable-p s))))
-                     (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                   (icicle-alt-act-fn-for-type
@@ -2659,7 +2658,7 @@ of strings is used as a word list."
                                                                 (lambda (s)
                                                                   (unless (symbolp s) (setq s  (intern s)))
                                                                   (commandp s))))
-                     (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn           (or icicle-candidate-alt-action-fn
                                                                    (icicle-alt-act-fn-for-type
@@ -2745,6 +2744,9 @@ Return the list of matches."
           (and matches  (princ "\n\n")))))
     matches))                           ; Return matching Zippyisms.
 
+
+(put 'icicle-apropos-value 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-apropos-value 'icicle-turn-off-incremental-completion t)
 (icicle-define-command icicle-apropos-value
   "Choose a variable, function, or other symbol description.
 This is similar to vanilla command `apropos-value', but you can match
@@ -2771,16 +2773,20 @@ none: only user options (+ values)
  > 0: only faces (+ plists)
  = 0: only options (+ values), commands (+ defs), faces (+ plists)
 
-Remember that you can use \\<minibuffer-local-completion-map>\
-`\\[icicle-cycle-incremental-completion]' to toggle incremental completion.
-
 See also:
 * `icicle-apropos-vars-w-val-satisfying',
   `icicle-describe-vars-w-val-satisfying' - values satisfy a predicate
 * `icicle-plist' - similar to this command with positive prefix arg
 * `icicle-vardoc', `icicle-fundoc', `icicle-doc' - match name & doc
 * `icicle-apropos-options-of-type', `icicle-describe-option-of-type' -
-  match name & defcustom type"
+  match name & defcustom type
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
+ * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'."
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((cands  (and (consp pref-arg)  icicle-apropos-value-last-initial-cand-set))
@@ -2880,6 +2886,9 @@ See also:
                         ((and pref-arg  (> num-arg 0)) " and their plists")
                         (t " and their values")))))
 
+
+(put 'icicle-describe-option-of-type 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-describe-option-of-type 'icicle-turn-off-incremental-completion t)
 (icicle-define-command icicle-describe-option-of-type ; Bound to `C-h C-o'.  Command name
   "Describe a user option that was defined with a given `defcustom' type.
 Enter patterns for the OPTION name and TYPE definition in the
@@ -2978,12 +2987,16 @@ If you instead want all Icicles options whose type definition contains
 
  icicle C-M-j string
 
-Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion.
-
 See also:
-* `icicle-apropos-options-of-type', to show options of a given type
-* `icicle-apropos-value', using `C-$' to filter to options only" ; Doc string
+ * `icicle-apropos-options-of-type', to show options of a given type
+ * `icicle-apropos-value', using `C-$' to filter to options only
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
+ * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'." ; Doc string
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
@@ -3157,7 +3170,7 @@ return the symbol with that name."
                                                     (and
                                                      (funcall #',symbpred sy)
                                                      (funcall #',valpred (symbol-value sy)))))
-         (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+         (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
          (icicle-must-pass-after-match-predicate  (and (not icompletep)  varpred))
          (varpat                                  (completing-read
                                                    prompt obarray (and icompletep  varpred) nil nil nil
@@ -3704,6 +3717,7 @@ directory (default directory)."
     (unless file-names (error "No files or directories chosen"))
     (dired (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
+
 (put 'icicle-dired-saved-file-candidates-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-dired-chosen-files-other-window 'icicle-dired-saved-file-candidates-other-window)
 (defun icicle-dired-saved-file-candidates-other-window (prompt-for-dir-p) ; Bound `C-M-<' in Dired.
@@ -3734,6 +3748,7 @@ directory (default directory)."
                                            (icicle-file-list)))))
     (unless file-names (error "No files or directories chosen"))
     (dired-other-window (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
+
 
 (put 'icicle-dired-project 'icicle-Completions-window-max-height 200)
 (defun icicle-dired-project (prompt-for-dir-p)
@@ -3777,6 +3792,7 @@ you use library `Bookmark+'."
                                               file))
                                           file-names))))))
     (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil)))
+
 
 (put 'icicle-dired-project-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-dired-project-other-window (prompt-for-dir-p) ; Bound to `C-{' in Dired.
@@ -3951,7 +3967,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    (pred                                    (lambda (c)
                                               (unless (symbolp c) (setq c  (intern-soft c)))
                                               (commandp c)))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
@@ -4020,7 +4036,6 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
            (when (> count 1) (message "(%d times)" count)))
           ((commandp cmd)
            (run-hooks 'post-command-hook)
-           (run-hooks 'pre-command-hook)
            (let ((enable-recursive-minibuffers            t)
                  ;; Restore this before we invoke command, since it might use completion.
                  (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred)
@@ -4028,6 +4043,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                  ;; to be `cmd' during the `C-RET' part, but `last-command' must not be `cmd'
                  ;; during the `next' part.
                  (this-command                            cmd))
+             (run-hooks 'pre-command-hook)
              (define-key minibuffer-local-must-match-map ; Restore `SPC'.  CMD might turn off Icicle mode...
                  " " (if icicle-mode 'icicle-self-insert 'minibuffer-complete-word))
              (call-interactively cmd 'record-it)))
@@ -4133,7 +4149,7 @@ You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as ann
    (pred                                    (lambda (c)
                                               (unless (symbolp c) (setq c  (intern-soft c)))
                                               (commandp c)))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
@@ -4268,7 +4284,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    (pred                                    (lambda (fn)
                                               (unless (symbolp fn) (setq fn  (intern fn)))
                                               (and (commandp fn)  (arrayp (symbol-function fn)))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
@@ -4355,7 +4371,7 @@ candidates, as follows:
            (lambda (x)
              (unless (symbolp x) (setq x  (intern x)))
              (and (boundp x)  (icicle-binary-option-p x)  (eq nil (symbol-value x)))))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
@@ -4474,7 +4490,7 @@ With a prefix arg, all variables are candidates." ; Doc string
                                               (lambda (x)
                                                 (unless (symbolp x) (setq x  (intern x)))
                                                 (and (boundp x)  (user-variable-p x)  (symbol-value x)))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
@@ -4509,7 +4525,7 @@ candidates, as follows:
           (current-prefix-arg (lambda (c) (unless (symbolp c) (setq c  (intern c))) (boundp c)))
           (t                  (lambda (c)
                                 (unless (symbolp c) (setq c  (intern c))) (icicle-binary-option-p c)))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
@@ -4539,7 +4555,7 @@ This command needs library `doremi.el'." ; Doc string
    (pred                                    (lambda (symb)
                                               (unless (symbolp symb) (setq symb  (intern-soft symb)))
                                               (memq (get symb 'custom-type) '(number integer float))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
@@ -4573,7 +4589,7 @@ This command needs library `doremi.el'." ; Doc string
                                               (lambda (symb)
                                                 (unless (symbolp symb) (setq symb  (intern symb)))
                                                 (boundp symb))))
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn
@@ -4606,7 +4622,7 @@ Raises an error if VARIABLE's value is not a number."
                                                      (lambda (s)
                                                        (unless (symbolp s) (setq s  (intern s)))
                                                        (boundp s))))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
      (list (intern (completing-read "Increment variable: " obarray (and icompletep  pred) t nil nil
                                     (and symb  (symbol-name symb)) t))
@@ -7478,6 +7494,7 @@ then customize option `icicle-top-level-key-bindings'."
   (funcall (icicle-find-file-abs-no-search-action-1 'OTHER-WINDOW-P 'READ-ONLY-P) file))
 
 
+(put 'icicle-find-file-abs-no-search 'icicle-hide-common-match t)
 (put 'icicle-find-file-abs-no-search 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-abs-no-search () ; Bound to `C-u C-x f' in Icicle mode.
   "Visit a file or directory, given its absolute name.
@@ -7501,10 +7518,6 @@ Also, you cannot move up and down the file hierarchy the same way you
 can for ordinary (non-absolute) file-name completion.  To change to a
 different directory, with its files as candidates, use \\<minibuffer-local-completion-map>`C-c C-d' from
 the minibuffer - it prompts you for the new directory.
-
-Remember that you can use `C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
@@ -7548,12 +7561,17 @@ Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."
+Ido-like behavior.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (interactive)
   (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-no-search-action))
     (icicle-find-file-abs-no-search-1)))
 
 
+(put 'icicle-find-file-abs-no-search-other-window 'icicle-hide-common-match t)
 (put 'icicle-find-file-abs-no-search-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-abs-no-search-other-window () ; Bound to `C-u C-x 4 f'
   "Same as `icicle-find-file-abs-no-search' except uses another window."
@@ -7779,6 +7797,7 @@ Other than using read-only mode, this is like `icicle-find-file'."
     (let ((current-prefix-arg  (not current-prefix-arg))) (icicle-find-file-no-search-other-window))))
 
 
+(put 'icicle-find-file-abs-read-only 'icicle-hide-common-match t)
 (put 'icicle-find-file-abs-read-only 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-abs-read-only ()
   "Visit a file or directory in read-only mode, given its absolute file name.
@@ -7791,6 +7810,7 @@ Same as `icicle-find-file-absolute', but visit the target read-only."
       (icicle-find-file-abs-no-search-1))))
 
 
+(put 'icicle-find-file-abs-read-only-other-window 'icicle-hide-common-match t)
 (put 'icicle-find-file-abs-read-only-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-abs-read-only-other-window () ; Bound to `C-x 4 r' in Icicle mode.
   "Same as `icicle-find-file-abs-read-only' except uses another window."
@@ -7985,6 +8005,7 @@ can use the following keys:
     (funcall (icicle-find-file-abs-of-content-action-1 'OTHER-WINDOW-P 'READ-ONLY-P) file))
 
 
+  (put 'icicle-find-file-abs-of-content 'icicle-hide-common-match t)
   (put 'icicle-find-file-abs-of-content 'icicle-Completions-window-max-height 200)
   (defun icicle-find-file-abs-of-content () ; Bound (indirectly) to `C-u C-x C-f'.
     "Visit a file or directory, given its absolute file name.
@@ -8003,10 +8024,6 @@ You cannot move up and down the file hierarchy the same way you can
 for ordinary (non-absolute) file-name completion.  To change to a
 different directory, with its files as candidates, use \\<minibuffer-local-completion-map>`C-c C-d' from
 the minibuffer - it prompts you for the new directory.
-
-Remember that you can use `C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 When you use this command with a prefix arg, you can choose also by
 date: Completion candidates include the last modification date.
@@ -8081,12 +8098,17 @@ Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."
+Ido-like behavior.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
     (interactive)
     (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-of-content-action))
       (icicle-find-file-abs-of-content-1)))
 
 
+  (put 'icicle-find-file-abs-of-content-other-window 'icicle-hide-common-match t)
   (put 'icicle-find-file-abs-of-content-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-find-file-abs-of-content-other-window () ; Bound (indirectly) to `C-u C-x 4 f'.
     "Same as `icicle-find-file-abs-of-content' except uses another window."
@@ -8160,17 +8182,14 @@ Ido-like behavior."
     'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
 
 
-  (put 'icicle-recent-file-of-content 'icicle-Completions-window-max-height 200)
+    (put 'icicle-recent-file-of-content 'icicle-hide-common-match t)
+    (put 'icicle-recent-file-of-content 'icicle-Completions-window-max-height 200)
   (defun icicle-recent-file-of-content ()
     "Open a recently used file.
 Completion candidates here are absolute, not relative, file names.
 Completion here matches candidates as ordinary strings.  It knows
 nothing of file names per se.  In particular, you cannot use remote
 file-name syntax.
-
-Remember that you can use `C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 When you use this command with a prefix arg, you can choose also by
 date: Completion candidates include the last modification date.
@@ -8243,12 +8262,17 @@ Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."
+Ido-like behavior.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
     (interactive)
     (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-of-content-action))
       (icicle-recent-file-of-content-1)))
 
 
+  (put 'icicle-recent-file-of-content-other-window 'icicle-hide-common-match t)
   (put 'icicle-recent-file-of-content-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-recent-file-of-content-other-window ()
     "Same as `icicle-recent-file-of-content' except uses another window."
@@ -8326,6 +8350,9 @@ Ido-like behavior."
     'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
 
 
+  (put 'icicle-locate-file-of-content 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-file-of-content 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-file-of-content 'icicle-hide-common-match t)
   (put 'icicle-locate-file-of-content 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-file-of-content ()
     "Visit a file within one or more directories or their subdirectories.
@@ -8347,10 +8374,6 @@ A prefix argument determines the behavior, as follows:
 The absolute names of all files within a directory and all of its
 subdirectories are targets for completion.  Regexp input is matched
 against all parts of the absolute name, not just the file-name part.
-
-Remember that you can use `C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 You can use this command to find all files within your file system
 that match a regexp, but be aware that gathering and matching the file
@@ -8407,13 +8430,27 @@ For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000)))"
+                      (> (nth 7 (file-attributes file)) 5000)))
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
+ * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
     (interactive)
     (let ((icicle-find-file-abs-action-fn    'icicle-find-file-abs-of-content-action)
           (icicle-locate-file-no-symlinks-p  nil))
       (icicle-locate-file-of-content-1)))
 
 
+  (put 'icicle-locate-file-of-content-other-window 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-file-of-content-other-window 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-file-of-content-other-window 'icicle-hide-common-match t)
   (put 'icicle-locate-file-of-content-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-file-of-content-other-window ()
     "Same as `icicle-locate-file-of-content' except uses another window.
@@ -8425,6 +8462,9 @@ does not follow symbolic links."
       (icicle-locate-file-of-content-1)))
 
 
+  (put 'icicle-locate-of-content 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-of-content 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-of-content 'icicle-hide-common-match t)
   (put 'icicle-locate-of-content 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-of-content ()
     "Run the external program `locate', then visit files.
@@ -8460,10 +8500,6 @@ After you input the search pattern for program `locate', normal
 Icicles input pattern matching is available for completion.  This is
 absolute file-name completion, so your input can match any parts of
 the name, including directory components.
-
-Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
@@ -8502,13 +8538,28 @@ For example, to show only names of files larger than 5000 bytes, you
 could temporarily set `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000)))"
+                      (> (nth 7 (file-attributes file)) 5000)))
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode
+ * Iciciles incremental completion.  You can cycle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-incremental-completion]'.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
     (interactive)
     (let ((icicle-find-file-abs-action-fn   'icicle-find-file-abs-of-content-action)
           (icicle-locate-file-use-locate-p  t))
       (icicle-locate-file-of-content-1)))
 
 
+  (put 'icicle-locate-of-content-other-window 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-of-content-other-window 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-of-content-other-window 'icicle-hide-common-match t)
   (put 'icicle-locate-of-content-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-of-content-other-window ()
     "Same as `icicle-locate-of-content' except uses another window."
@@ -8518,6 +8569,9 @@ could temporarily set `icicle-file-predicate' to:
       (icicle-locate-file-of-content-1)))
 
 
+  (put 'icicle-locate-file-of-content-no-symlinks 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-file-of-content-no-symlinks 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-file-of-content-no-symlinks 'icicle-hide-common-match t)
   (put 'icicle-locate-file-of-content-no-symlinks 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-file-of-content-no-symlinks ()
     "Same as `icicle-locate-file-of-content', except do not follow symlinks."
@@ -8527,6 +8581,9 @@ could temporarily set `icicle-file-predicate' to:
       (icicle-locate-file-of-content-1)))
 
 
+  (put 'icicle-locate-file-of-content-no-symlinks-other-window 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-locate-file-of-content-no-symlinks-other-window 'icicle-turn-off-incremental-completion t)
+  (put 'icicle-locate-file-of-content-no-symlinks-other-window 'icicle-hide-common-match t)
   (put 'icicle-locate-file-of-content-no-symlinks-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-locate-file-of-content-no-symlinks-other-window ()
     "Same as `icicle-locate-file-of-content-no-symlinks', except uses another window."
@@ -8608,6 +8665,12 @@ could temporarily set `icicle-file-predicate' to:
       (icicle-existing-bufs                   (buffer-list))
       (icicle-new-bufs-to-kill                ())
       (icicle-new-bufs-to-keep                ())
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                   (mapcar #'icicle-transform-multi-completion files))))))
+      (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
+      (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))
       (cleanup-code                     ; Use for both undo code and last code.
        (lambda ()
          (icicle-unbind-file-candidate-keys)
@@ -8622,13 +8685,7 @@ could temporarily set `icicle-file-predicate' to:
 ;;;                  (with-current-buffer buf
 ;;;                    (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
 ;;;                    (kill-buffer buf))))))))
-             (when (and (buffer-live-p buf)  (not (memq buf icicle-new-bufs-to-keep))) (kill-buffer buf))))))
-      (icicle-all-candidates-list-alt-action-fn ; `M-|'
-       (lambda (files) (let ((enable-recursive-minibuffers  t))
-                         (dired-other-window (cons (read-string "Dired buffer name: ")
-                                                   (mapcar #'icicle-transform-multi-completion files))))))
-      (icicle-special-candidate-regexp        (or icicle-special-candidate-regexp  ".+/$"))
-      (icicle-candidate-properties-alist      (and icicle-pref-arg  '((1 (face icicle-candidate-part)))))))
+             (when (and (buffer-live-p buf)  (not (memq buf icicle-new-bufs-to-keep))) (kill-buffer buf))))))))
     (progn                              ; First code
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
       (setq current-prefix-arg  nil)    ; Reset, so can use it in action function.
@@ -8640,6 +8697,9 @@ could temporarily set `icicle-file-predicate' to:
     (funcall cleanup-code)              ; Last code
     'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
 
+
+  (put 'icicle-find-file-of-content-in-tags-table 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-find-file-of-content-in-tags-table 'icicle-turn-off-incremental-completion t)
   (put 'icicle-find-file-of-content-in-tags-table 'icicle-Completions-window-max-height 200)
   (defun icicle-find-file-of-content-in-tags-table ()
     "Visit a file listed in a tags table.
@@ -8659,6 +8719,8 @@ that command for more information."
       (icicle-find-file-of-content-in-tags-table-1)))
 
 
+  (put 'icicle-find-file-of-content-in-tags-table-other-window 'icicle-turn-off-icomplete-mode t)
+  (put 'icicle-find-file-of-content-in-tags-table-other-window 'icicle-turn-off-incremental-completion t)
   (put 'icicle-find-file-of-content-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
   (defun icicle-find-file-of-content-in-tags-table-other-window ()
     "Same as `icicle-find-file-of-content-in-tags-table', but uses another window."
@@ -8819,6 +8881,7 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
 
 
 
+(put 'icicle-recent-file-no-search 'icicle-hide-common-match t)
 (put 'icicle-recent-file-no-search 'icicle-Completions-window-max-height 200)
 (defun icicle-recent-file-no-search ()
   "Open a recently used file.
@@ -8828,10 +8891,6 @@ candidates include the last modification date.
 Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
-
-Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
@@ -8868,12 +8927,17 @@ Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."
+Ido-like behavior.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (interactive)
   (let ((icicle-find-file-abs-action-fn  'icicle-find-file-abs-of-content-action))
     (icicle-recent-file-no-search-1)))
 
 
+(put 'icicle-recent-file-no-search-other-window 'icicle-hide-common-match t)
 (put 'icicle-recent-file-no-search-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-recent-file-no-search-other-window ()
   "Same as `icicle-recent-file-no-search' except uses another window."
@@ -8950,6 +9014,9 @@ Ido-like behavior."
   (message "`%s' removed from `recentf-list'" (icicle-propertize file 'face 'icicle-msg-emphasis)))
 
 
+(put 'icicle-locate-file-no-search 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-search 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-search 'icicle-hide-common-match t)
 (put 'icicle-locate-file-no-search 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-no-search ()
   "Visit a file within one or more directories or their subdirectories.
@@ -8971,10 +9038,6 @@ A prefix argument determines the behavior, as follows:
 The absolute names of all files within a directory and all of its
 subdirectories are targets for completion.  Regexp input is matched
 against all parts of the absolute name, not just the file-name part.
-
-Remember that you can use `C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 You can use this command to find all files within your file system
 that match a regexp, but be aware that gathering and matching the file
@@ -9031,13 +9094,28 @@ For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000)))"
+                      (> (nth 7 (file-attributes file)) 5000)))
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode
+ * Iciciles incremental completion.  You can cycle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-incremental-completion]'.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (interactive)
   (let ((icicle-find-file-abs-action-fn    'icicle-find-file-abs-no-search-action)
         (icicle-locate-file-no-symlinks-p  nil))
     (icicle-locate-file-no-search-1)))
 
 
+(put 'icicle-locate-file-no-search-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-search-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-search-other-window 'icicle-hide-common-match t)
 (put 'icicle-locate-file-no-search-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-no-search-other-window ()
   "Same as `icicle-locate-file-no-search' except uses another window.
@@ -9050,6 +9128,9 @@ not follow symbolic links."
     (icicle-locate-file-no-search-1)))
 
 
+(put 'icicle-locate-no-search 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-no-search 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-no-search 'icicle-hide-common-match t)
 (put 'icicle-locate-no-search 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-no-search ()
   "Run the external program `locate', then visit files.
@@ -9085,10 +9166,6 @@ After you input the search pattern for program `locate', normal
 Icicles input pattern matching is available for completion.  This is
 absolute file-name completion, so your input can match any parts of
 the name, including directory components.
-
-Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
-each candidate.  That can be particularly helpful for files that are
-in a common directory.
 
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
@@ -9127,13 +9204,28 @@ For example, to show only names of files larger than 5000 bytes, you
 could temporarily set `icicle-file-predicate' to:
 
   (lambda (file) (and (numberp (nth 7 (file-attributes file)))
-                      (> (nth 7 (file-attributes file)) 5000)))"
+                      (> (nth 7 (file-attributes file)) 5000)))
+
+Because you will often use this command in contexts that result in
+many, many completion candidates, the following are turned off by
+default for this command:
+
+ * Icomplete mode
+ * Iciciles incremental completion.  You can cycle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-incremental-completion]'.
+
+Because absolute file names can be long, with common prefixes, the
+common match portion of each candidate is hidden by default.  You can
+toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (interactive)
   (let ((icicle-find-file-abs-action-fn   'icicle-find-file-abs-no-search-action)
         (icicle-locate-file-use-locate-p  t))
     (icicle-locate-file-no-search-1)))
 
 
+(put 'icicle-locate-no-search-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-no-search-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-no-search-other-window 'icicle-hide-common-match t)
 (put 'icicle-locate-no-search-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-no-search-other-window ()
   "Same as `icicle-locate-no-search' except uses another window."
@@ -9143,6 +9235,9 @@ could temporarily set `icicle-file-predicate' to:
     (icicle-locate-file-no-search-1)))
 
 
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-hide-common-match t)
 (put 'icicle-locate-file-no-search-no-symlinks 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-no-search-no-symlinks ()
   "Same as `icicle-locate-file-no-search', except do not follow symlinks."
@@ -9152,6 +9247,9 @@ could temporarily set `icicle-file-predicate' to:
     (icicle-locate-file-no-search-1)))
 
 
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-search-no-symlinks 'icicle-hide-common-match t)
 (put 'icicle-locate-file-no-search-no-symlinks-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-no-search-no-symlinks-other-window ()
   "Same as `icicle-locate-file-no-search-no-symlinks', except uses another window."
@@ -9355,60 +9453,113 @@ command for more information."
   (list (list file (format-time-string "%Y %m %d %T" (nth 5 (file-attributes file))))))
 
 
+(put 'icicle-find-file 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
                                 'icicle-find-file-of-content
                               'icicle-find-file-no-search))
 
+
+(put 'icicle-find-file-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file-other-window (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
                                              'icicle-find-file-of-content-other-window
                                            'icicle-find-file-no-search-other-window))
 
+
+(put 'icicle-find-file-absolute 'icicle-hide-common-match t)
+(put 'icicle-find-file-absolute 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file-absolute (if (fboundp 'icicle-find-file-abs-of-content) ; Emacs 23+
                                          'icicle-find-file-abs-of-content
                                        'icicle-find-file-abs-no-search))
 
+
+(put 'icicle-find-file-absolute-other-window 'icicle-hide-common-match t)
+(put 'icicle-find-file-absolute-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file-absolute-other-window (if (fboundp 'icicle-find-file-abs-of-content) ; Emacs 23+
                                                       'icicle-find-file-abs-of-content-other-window
                                                     'icicle-find-file-abs-no-search-other-window))
 
+
+(put 'icicle-recent-file 'icicle-hide-common-match t)
+(put 'icicle-recent-file 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-recent-file (if (fboundp 'icicle-recent-file-of-content) ; Emacs 23+
                                   'icicle-recent-file-of-content
                                 'icicle-recent-file-no-search))
 
+
+(put 'icicle-recent-file-other-window 'icicle-hide-common-match t)
+(put 'icicle-recent-file-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-recent-file-other-window (if (fboundp 'icicle-recent-file-of-content) ; Emacs 23+
                                                'icicle-recent-file-of-content-other-window
                                              'icicle-recent-file-no-search-other-window))
 
+
+(put 'icicle-locate-file 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file 'icicle-hide-common-match t)
+(put 'icicle-locate-file 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate-file (if (fboundp 'icicle-locate-file-of-content) ; Emacs 23+
                                   'icicle-locate-file-of-content
                                 'icicle-locate-file-no-search))
 
+
+(put 'icicle-locate-file-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-other-window 'icicle-hide-common-match t)
+(put 'icicle-locate-file-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate-file-other-window (if (fboundp 'icicle-locate-file-of-content) ; Emacs 23+
                                                'icicle-locate-file-of-content-other-window
                                              'icicle-locate-file-no-search-other-window))
 
+
+(put 'icicle-locate-file-no-symlinks 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-symlinks 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-symlinks 'icicle-hide-common-match t)
+(put 'icicle-locate-file-no-symlinks 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate-file-no-symlinks (if (fboundp 'icicle-locate-file-of-content) ; Emacs 23+
                                               'icicle-locate-file-of-content-no-symlinks
                                             'icicle-locate-file-no-search-no-symlinks))
 
+
+(put 'icicle-locate-file-no-symlinks-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-file-no-symlinks-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-file-no-symlinks-other-window 'icicle-hide-common-match t)
+(put 'icicle-locate-file-no-symlinks-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate-file-no-symlinks-other-window
     (if (fboundp 'icicle-locate-file-of-content) ; Emacs 23+
         'icicle-locate-file-of-content-no-symlinks-other-window
       'icicle-locate-file-no-search-no-symlinks-other-window))
 
+
+(put 'icicle-locate 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate 'icicle-hide-common-match t)
+(put 'icicle-locate 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate (if (fboundp 'icicle-locate-of-content) ; Emacs 23+
                              'icicle-locate-of-content
                            'icicle-locate-no-search))
 
+
+(put 'icicle-locate-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-locate-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-locate-other-window 'icicle-hide-common-match t)
+(put 'icicle-locate-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-locate-other-window (if (fboundp 'icicle-locate-of-content) ; Emacs 23+
                                           'icicle-locate-of-content-other-window
                                         'icicle-locate-no-search-other-window))
 
+
+(put 'icicle-find-file-in-tags-table 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-find-file-in-tags-table 'icicle-turn-off-incremental-completion t)
+(put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file-in-tags-table
     (if (fboundp 'icicle-find-file-of-content-in-tags-table) ; Emacs 23+
         'icicle-find-file-of-content-in-tags-table
       'icicle-find-file-no-search-in-tags-table))
 
+
+(put 'icicle-find-file-in-tags-table-other-window 'icicle-turn-off-icomplete-mode t)
+(put 'icicle-find-file-in-tags-table-other-window 'icicle-turn-off-incremental-completion t)
+(put 'icicle-find-file-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-find-file-in-tags-table-other-window
     (if (fboundp 'icicle-find-file-of-content-in-tags-table) ; Emacs 23+
         'icicle-find-file-of-content-in-tags-table-other-window
@@ -9621,7 +9772,7 @@ the behavior."                          ; Doc string
                                                 completion-ignore-case))
    (icicle-must-match-regexp                icicle-buffer-match-regexp)
    (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
-   (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  icicle-buffer-predicate))
    (icicle-require-match-flag               icicle-buffer-require-match-flag)
    (icicle-extra-candidates                 icicle-buffer-extras)
