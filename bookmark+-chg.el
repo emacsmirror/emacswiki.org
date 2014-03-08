@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jan  2 07:55:53 2014 (-0800)
+;; Last-Updated: Fri Mar  7 19:31:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15461
+;;     Update #: 15462
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/03/07 dadams
+;;     bookmark-exit-hook-internal: Do not raise error, since this is on kill-emacs-hook.
+;;     Bug reported: http://superuser.com/q/726057/250462.
 ;; 2014/01/02 dadams
 ;;     Reverted yesterday's change.  Just use cond instead of case.
 ;; 2014/01/01 dadams
