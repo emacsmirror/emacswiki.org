@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Mon Feb 24 08:48:11 2014 (-0800)
+;; Last-Updated: Sat Mar  8 09:41:16 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 9841
+;;     Update #: 9870
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -274,7 +274,7 @@ bindings in `*Completions*'.")
 
 ;;; Icicle mode command ----------------------------------------------
 
-;; Main command.  Inspired from `icomplete-mode'.
+;; Main command.
 (defalias 'icy-mode 'icicle-mode)
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (when (> emacs-major-version 22)
@@ -813,15 +813,17 @@ Used on `pre-command-hook'."
 (defun icicle-top-level-prep ()
   "Do top-level stuff.  Used in `pre-command-hook'."
   ;; Reset `icicle-current-TAB-method' and `icicle-apropos-complete-match-fn' if temporary.
-  ;; Save this top-level command as `icicle-last-top-level-command'
+  ;; Save this top-level command as `icicle-last-top-level-command'.
   ;; Reset `icicle-candidates-alist' to ().
-  (when (= 0 (recursion-depth))
+  (unless (> (minibuffer-depth) 0)
     (let ((TAB-method  (get 'icicle-last-top-level-command 'icicle-current-TAB-method))
           (apropos-fn  (get 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn)))
       (when TAB-method (setq icicle-current-TAB-method  TAB-method))
       (when apropos-fn (setq icicle-apropos-complete-match-fn  apropos-fn)))
-    (setq icicle-last-top-level-command   this-command
-          icicle-candidates-alist         ())))
+    (unless (memq this-command '(minibuffer-complete-and-exit icicle-minibuffer-complete-and-exit
+                                 exit-minibuffer              icicle-exit-minibuffer))
+      (setq icicle-last-top-level-command   this-command))
+    (setq icicle-candidates-alist  ())))
 
 (defun icicle-define-icicle-maps ()
   "Define `icicle-mode-map' and `icicle-menu-map'."
@@ -907,6 +909,9 @@ Used on `pre-command-hook'."
     (define-key icicle-options-menu-map [icicle-cycle-incremental-completion]
       '(menu-item "Cycle Incremental Completion" icicle-cycle-incremental-completion
         :keys "C-#" :help "Cycle option `icicle-incremental-completion'"))
+    (define-key icicle-options-menu-map [icicle-toggle-icomplete-mode]
+      '(menu-item "Toggle Icomplete Mode" icicle-toggle-icomplete-mode
+        :help "Toggle Icomplete mode" :enable (featurep 'icomplete-mode) :keys "C-M-#"))
     (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
       '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
         :help "Toggle option `icicle-show-multi-completion-flag'"))
@@ -3275,6 +3280,9 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; Reset prompt, because some commands (e.g. `find-file') don't use `read-file-name'
     ;; or `completing-read'.  Reset other stuff too.
     (setq icicle-candidate-nb                    nil
+          icicle-last-icomplete-mode-value       (and (featurep 'icomplete)
+                                                      (or icomplete-mode
+                                                          icicle-last-icomplete-mode-value))
           icicle-completion-candidates           nil
           ;; This is so that cycling works right initially, without first hitting `TAB' or `S-TAB'.
           icicle-current-completion-mode         (and (< (minibuffer-depth) 2)
@@ -3769,6 +3777,10 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode 1)))))
   (if (featurep 'recentf) (eval-after-load "icicles-mode" form) (eval-after-load "recentf" form)))
 
+;;; `icomplete.el'.  Reset `icicle-last-icomplete-mode-value', so it gets reinitialized properly.
+(eval-after-load "icomplete"
+  (defadvice icomplete-mode (after icicle-reset-last-icomplete-mode activate)
+    (when (interactive-p) (setq icicle-last-icomplete-mode-value  nil))))
 
 ;; Do this last.
 ;;
