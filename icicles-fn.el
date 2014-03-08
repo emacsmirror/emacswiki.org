@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Mar  6 13:24:50 2014 (-0800)
+;; Last-Updated: Fri Mar  7 15:11:08 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14431
+;;     Update #: 14446
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -354,6 +354,8 @@
 
 (defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
+(defvar crm-local-completion-map)       ; In `crm.el'
+(defvar crm-local-must-match-map)       ; In `crm.el'
 (defvar crm-separator)                  ; In `crm.el'
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
 (defvar doremi-boost-up-keys)           ; In `doremi.el'
@@ -3444,8 +3446,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                        (save-excursion
                          (save-restriction
                            (narrow-to-region beg end) ; Restrict to the completion candidate.
-                           (when (and icicle-hide-common-match-in-Completions-flag
-                                      icicle-common-match-string)
+                           (when (and icicle-hide-common-match-in-Completions-flag  icicle-common-match-string)
                              (when (re-search-forward (regexp-quote icicle-common-match-string) nil t)
                                (if (> emacs-major-version 20)
                                    (put-text-property (match-beginning 0) (point) 'display "...")
