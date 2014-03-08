@@ -12,6 +12,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * AxcessMode -- also Netlinx
 * BefungeMode -- interpreter for the esoteric Befunge language
 * BisonMode
+* BooMode
 * CamlMode -- ObjectiveCaml
 * CPerlMode -- improved PerlMode
 * CcMode -- C, C++ (cpp), Objective C, Java, etc.
