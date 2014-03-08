@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar  6 14:11:01 2014 (-0800)
+;; Last-Updated: Sat Mar  8 10:12:12 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23531
+;;     Update #: 23532
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -421,6 +421,7 @@
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-highlight-saved-candidates',
+;;    `icicle-toggle-icomplete-mode',
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
@@ -459,6 +460,7 @@
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-highlight-saved-candidates',
+;;    `toggle-icicle-icomplete-mode',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
 ;;    `toggle-icicle-include-cached-files',
