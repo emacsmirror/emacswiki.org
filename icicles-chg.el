@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Mar  6 14:24:26 2014 (-0800)
+;; Last-Updated: Sat Mar  8 11:17:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10681
+;;     Update #: 10737
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/03/08 dadams
+;;     Use (featurep 'icomplete), not (boundp 'icomplete-mode), everywhere.
+;;     icicle-execute-extended-command-1: Move run of pre-command-hook after binding of this-command.
+;;     icicle-apropos-value, icicle-describe-option-of-type, *-find-file*-in-tags-table*:
+;;       Put properties icicle-turn-off-(icomplete-mode|incremental-completion).
+;;     icicle-(recent-file|find-file-abs)*: Put property icicle-hide-common-match.
+;;     icicle-locate*: Put properties icicle-turn-off* and icicle-hide-common-match.
+;;     icicle-find-file*(-in-tags-table*): Put property icicle-Completions-window-max-height.
 ;; 2014/02/22 dadams
 ;;     icicle-lisp-complete-symbol: Fixed regression introduced by 2014-01-15 change:
 ;;       Max, not min, of point and BEG.  If END is nil, use BEG for PATTERN.  Go to BEG before insert.
@@ -1057,6 +1065,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/03/08 dadams
+;;     Use (featurep 'icomplete), not (boundp 'icomplete-mode), everywhere.
 ;; 2014/03/03 dadams
 ;;     icicle-search-xml-element: Try to handle attributes and <ELTNAME/> too.
 ;; 2014/03/24 dadams
@@ -3905,6 +3915,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/03/08 dadams
+;;     icicle(-file)-define-command:
+;;       Use generated let-var CHOICE for (CMD|FILE)-CHOICE.
+;;       Handle hiding common match, incremental completion and icomplete mode per command properties.
 ;; 2013/12/01 dadams
 ;;     icicle-define-command, icicle-define-file-command:
 ;;       Wrap FIRST-SEXP, minibuf read (with UNDO-SEXP), and LAST-SEXP in a catch, to ensure LAST-SEXP.
@@ -4131,6 +4145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/03/08 dadams
+;;     Added: icicle-toggle-icomplete-mode.
 ;; 2014/03/06 dadams
 ;;     icicle-change-sort-order: Set icicle-last-sort-comparer to current comparer, before changing.
 ;; 2014/02/09 dadams
@@ -5812,6 +5828,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/03/08 dadams
+;;     icicle-top-level-prep:
+;;       Test minibuffer-depth, not recursion-depth.  Do not set icicle-last-top-level-command for
+;;       commands: (icicle)-minibuffer-complete-and-exit, (icicle-)exit-minibuffer.
+;;     icicle-define-icicle-maps: Added icicle-toggle-icomplete-mode.
+;;     icicle-minibuffer-setup: Reinitialize icicle-last-icomplete-mode-value.
+;;     Added defadvice for interactive icomplete-mode, to reset icicle-last-icomplete-mode-value.
 ;; 2014/02/24 dadams
 ;;     icicle-define-icicle-maps, icicle-define-minibuffer-maps, icicle-bind-completion-keys:
 ;;       Added menu item Show Available Keys (icicle-complete-keys).
@@ -7047,6 +7070,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/03/08 dadams
+;;     icicle-Completions-toggle-submenu: Added icicle-toggle-icomplete-mode.
+;;     icicle-completion-key-bindings: Bind icicle-toggle-icomplete-mode to C-M-#.
 ;; 2014/03/06 dadams
 ;;     Added: icicle-icomplete-mode-max-candidates, icicle-sorting-max-candidates.
 ;; 2014/02/24 dadams
@@ -7921,6 +7947,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2014/03/08 dadams
+;;     icicle-last-icomplete-mode-value: Use (featurep 'icomplete), not (boundp 'icomplete-mode).
 ;; 2014/03/06 dadams
 ;;     Added: icicle-last-icomplete-mode-value.
 ;; 2014/01/05 dadams
