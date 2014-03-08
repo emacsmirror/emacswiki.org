@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Thu Mar  6 14:11:59 2014 (-0800)
+;; Last-Updated: Sat Mar  8 09:26:24 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 5922
+;;     Update #: 5924
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -500,6 +500,8 @@
         icicle-toggle-show-multi-completion)
        (incremental-completion menu-item "Cycle Incremental Completion"
         icicle-cycle-incremental-completion)
+       (icomplete-mode menu-item "Toggle Icomplete Mode"
+        icicle-toggle-icomplete-mode)
        (matching-of-newlines menu-item "Toggle `.' Matching of Newlines Too"
         icicle-toggle-dot)
        (literal-vs-regexp menu-item "Toggle Escaping Special Chars"
@@ -1652,6 +1654,7 @@ value incrementally."
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-?'
     (,(icicle-kbd "C-.")       icicle-dispatch-C-. t)                                 ; `C-.'
     (,(icicle-kbd "C-#")       icicle-cycle-incremental-completion t)                 ; `C-#'
+    (,(icicle-kbd "C-M-#")     icicle-toggle-icomplete-mode t)                        ; `C-M-#'
     (,(icicle-kbd "C-\"")      icicle-toggle-expand-to-common-match t)                ; `C-"'
     (,(icicle-kbd "C-M-\"")    icicle-cycle-expand-to-common-match t)                 ; `C-M-"'
     (,(icicle-kbd "M-\;")      icicle-toggle-search-replace-common-match t)           ; `M-;'
