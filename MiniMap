@@ -13,7 +13,7 @@ With Proggyfont Tiny, Height 20:
 
 http://randomsample.de/minimap2.jpg
 
-It is in GNU ELPA, so you can get it directly from `M-x install-package', or you can find its code at http://bzr.savannah.gnu.org/lh/emacs/elpa/files/head:/packages/minimap/
+It is in GNU ELPA, so you can get it directly from `M-x package-install', or you can find its code at http://bzr.savannah.gnu.org/lh/emacs/elpa/files/head:/packages/minimap/
 
 Also in Marmalade http://marmalade-repo.org/packages/minimap/1.0
 
