@@ -1,0 +1,10 @@
+Boo is "an object oriented statically typed programming language for .NET and Mono with a python inspired syntax and a special focus on meta-programming through language and compiler extensibility features such as macros and custom compilation pipelines." See [http://boo.codehaus.org/ Boo Homepage] and [http://boo.codehaus.org/BooManifesto.pdf Boo Manifesto].
+
+== Installation ==
+Boo Mode is available at [https://github.com/algoterranean/boo-mode the github repo].
+
+Boo mode depends on [https://github.com/fgallina/python.el GNU python.el] for indentation purposes. 
+
+== Notes ==
+
+Boo Mode is largely a work in progress still. Feel free to contribute!
