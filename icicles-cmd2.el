@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Mar  3 09:11:42 2014 (-0800)
+;; Last-Updated: Fri Mar  7 10:57:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6763
+;;     Update #: 6766
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -535,7 +535,7 @@ all of the given input tags are completion candidates."
                                                                   (unless (member tag btgs)
                                                                     (throw 'icicle-untag-a-file nil)))
                                                                 t)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))))
 
   ;;$$$  Do not bother with autofiles that have a PREFIX.
@@ -721,7 +721,7 @@ at point, or if none then the visited file."
                                                    (and btgs  (bmkp-every `(lambda (tag)
                                                                             (bmkp-has-tag-p ',bmk tag))
                                                                           ',tags)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -743,7 +743,7 @@ at point, or if none then the visited file."
                                                    (and btgs  (bmkp-every `(lambda (tag)
                                                                             (bmkp-has-tag-p ',bmk tag))
                                                                           ',tags)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -767,7 +767,7 @@ at point, or if none then the visited file."
                                                                             (string-match
                                                                              ',regexp (bmkp-tag-name tag)))
                                                                           btgs)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -789,7 +789,7 @@ at point, or if none then the visited file."
                                                                             (string-match
                                                                              ',regexp (bmkp-tag-name tag)))
                                                                           btgs)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -818,7 +818,7 @@ at point, or if none then the visited file."
                                                    (and btgs  (bmkp-some `(lambda (tag)
                                                                            (bmkp-has-tag-p ',bmk tag))
                                                                          ',tags)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -840,7 +840,7 @@ at point, or if none then the visited file."
                                                    (and btgs  (bmkp-some `(lambda (tag)
                                                                            (bmkp-has-tag-p ',bmk tag))
                                                                          ',tags)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -864,7 +864,7 @@ at point, or if none then the visited file."
                                                                `(lambda (tag)
                                                                  (string-match ',regexp (bmkp-tag-name tag)))
                                                                btgs)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -886,7 +886,7 @@ at point, or if none then the visited file."
                                                                `(lambda (tag)
                                                                  (string-match ',regexp (bmkp-tag-name tag)))
                                                                btgs)))))
-      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
     nil                                 ; Undo code.
@@ -2969,7 +2969,7 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                      (and (commandp cand)
                                                           (where-is-internal cand overriding-local-map
                                                                              'non-ascii))))))
-   (icompletep                                 (and (boundp 'icomplete-mode)  icomplete-mode))
+   (icompletep                                 (and (featurep 'icomplete)  icomplete-mode))
    (icicle-must-pass-after-match-predicate     (and (not icompletep)  pred))
    (icicle-candidate-help-fn
     (lambda (cand)
@@ -3399,7 +3399,7 @@ matched."
                                                                    '(consp (car (symbol-value s)))
                                                                    '(string-match "alist$"
                                                                      (symbol-name s))))))
-                  (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                  (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                   (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                   (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                (icicle-alt-act-fn-for-type "variable")))
@@ -3412,7 +3412,7 @@ matched."
           (let* ((pred                                    (lambda (s)
                                                             (unless (symbolp s) (setq s  (intern s)))
                                                             (functionp s)))
-                 (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                 (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                  (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                  (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                               (icicle-alt-act-fn-for-type "function")))
@@ -7229,7 +7229,7 @@ variable."
          (pred                                    (lambda (s)
                                                     (unless (symbolp s) (setq s  (intern s)))
                                                     (boundp s)))
-         (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+         (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
          (var
           (if askp
@@ -7643,7 +7643,7 @@ filtering:
                    completion-ignore-case))
               (icicle-must-match-regexp                icicle-buffer-match-regexp)
               (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
-              (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+              (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
               (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
               (icicle-require-match-flag               icicle-buffer-require-match-flag)
               (icicle-extra-candidates                 icicle-buffer-extras)
@@ -7688,7 +7688,7 @@ filtering:
       (command (let* ((pred                                    (lambda (s)
                                                                  (unless (symbolp s) (setq s  (intern s)))
                                                                  (commandp s)))
-                      (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                       (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                    (icicle-alt-act-fn-for-type "command")))
@@ -7721,8 +7721,7 @@ filtering:
       (function (let* ((pred                                    (lambda (s)
                                                                   (unless (symbolp s) (setq s  (intern s)))
                                                                   (fboundp s)))
-                       (icompletep                              (and (boundp 'icomplete-mode)
-                                                                     icomplete-mode))
+                       (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                        (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                        (icicle-candidate-alt-action-fn
                         (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
@@ -7733,7 +7732,7 @@ filtering:
       (option (let* ((pred                                    (lambda (s)
                                                                 (unless (symbolp s) (setq s  (intern s)))
                                                                 (user-variable-p s)))
-                     (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                      (icicle-candidate-alt-action-fn
                       (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "option")))
@@ -7756,8 +7755,7 @@ filtering:
       (variable (let* ((pred                                    (lambda (s)
                                                                   (unless (symbolp s) (setq s  (intern s)))
                                                                   (boundp s)))
-                       (icompletep                              (and (boundp 'icomplete-mode)
-                                                                     icomplete-mode))
+                       (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                        (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
                        (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                     (icicle-alt-act-fn-for-type "variable")))
@@ -7784,7 +7782,7 @@ filtering:
                                                      (unless (symbolp s) (setq s  (intern s)))
                                                      (and (boundp s)
                                                       (funcall ',predicate (symbol-value s)))))
-          (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
+          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
           (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                        (icicle-alt-act-fn-for-type "variable")))
@@ -8319,8 +8317,7 @@ VAR is symbol `icicle-(S-)TAB-completion-methods(-alist)'."
                                                                      (unless (symbolp c)
                                                                        (setq c  (intern c)))
                                                                      (commandp c)))
-                          (icompletep                              (and (boundp 'icomplete-mode)
-                                                                        icomplete-mode))
+                          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                           (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
                      (completing-read "Command: " obarray (and icompletep  pred) t))))
         (methods  ()))
