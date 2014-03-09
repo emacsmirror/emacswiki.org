@@ -59,7 +59,7 @@ makes it hard to edit it!
 To retrieve it, use '''`C-l''''
 (`icicle-retrieve-previous-input') during completion.  You can repeat `C-l' to retrieve older completion inputs, cycling among them, and you can use
 `C-S-l' (that is, '''`##C-L##'''') to cycle previous inputs in the other
-direction -- see [[Icicles - History Enhancements]].  You can use[[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' to turn off expanded-common-match completion altogether, if you prefer.   You can cycle the value of this option from the minibuffer at any time, using '''`##C-M-"##''''.
+direction -- see [[Icicles - History Enhancements]].  You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' to turn off expanded-common-match completion altogether, if you prefer.   You can cycle the value of this option from the minibuffer at any time, using '''`##C-M-"##''''.
 
 Just what is meant by the '''[::expanded common match]''' that '''Icicles'''
 finds?  It is the longest match of your input pattern that is ''common to all candidates''
