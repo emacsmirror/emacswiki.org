@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Feb 10 23:30:09 2014 (-0800)
+;; Last-Updated: Sun Mar  9 14:32:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29486
+;;     Update #: 29498
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -103,10 +103,10 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Ido and IswitchB")
 ;;  (@file :file-name "icicles-doc1.el" :to "*Completions* Display")
 ;;  (@file :file-name "icicles-doc1.el" :to "Icompletion")
-;;    (@file :file-name "icicles-doc1.el" :to "icomplete+.el Displays the Number of Other Prefix Candidates")
-;;    (@file :file-name "icicles-doc1.el" :to "Icicles Highlights the Input that Won't Complete")
+;;    (@file :file-name "icicles-doc1.el" :to "Using Icicles with Icomplete Mode")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icompletion in *Completions*: Apropos and Prefix Completion")
 ;;    (@file :file-name "icicles-doc1.el" :to "Incremental Completion (Input Expansion) in the Minibuffer")
+;;    (@file :file-name "icicles-doc1.el" :to "Icicles Highlights the Input that Won't Complete")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Sorting Candidates and Removing Duplicates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Changing the Sort Order")
@@ -5208,6 +5208,20 @@
 ;;    `icicle-incremental-completion-threshold' together cause a delay
 ;;    before incremental completion takes effect.
 ;;    See (@file :file-name "icicles-doc1.el" :to "Icompletion").
+;;
+;;  * User option `icicle-sorting-max-candidates' automatically
+;;    toggles candidate sorting off and on, depending on the current
+;;    number of candidates.  Set it to `nil' to turn off such
+;;    toggling.  Set it to a larger or smaller maximum number of
+;;    candidates to reduce or increase its effect.  See also
+;;    (@file :file-name "icicles-doc1.el" :to "Different Sorts for Different Sorts of Uses").
+;;
+;;  * User option `icicle-icomplete-mode-max-candidates' automatically
+;;    toggles Icomplete mode off and on, depending on the current
+;;    number of candidates.  Set it to `nil' to turn off such
+;;    toggling.  Set it to a larger or smaller maximum number of
+;;    candidates to reduce or increase its effect.  See also
+;;    (@file :file-name "icicles-doc1.el" :to "Using Icicles with Icomplete Mode").
 ;;
 ;;  * User option `icicle-Completions-display-min-input-chars' is the
 ;;    minimum number of input characters that allow buffer
