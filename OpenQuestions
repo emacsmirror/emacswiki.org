@@ -10,6 +10,12 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+[new]
+==Saving Perspectives between Emacs Sessions==
+I also asked it on stackoverflow (http://stackoverflow.com/questions/22280274/saving-perspectives-when-an-emacs-session-is-saved). 
+I have been using perspectives package in emacs (from Nathan Weizenbaum, https://github.com/nex3/perspective-el). I save my emacs session on exit so that it saves the existing buffers and loads them up on next start. The line added in .emacs file to achieve this is : (desktop-save-mode 1). But it doesn't save perspectives, so that all the saved buffers open under a single perspective, when emacs is started. Is there any implementation that will achieve the saving of perspectives between emacs sessions?
+
+
 [new] 
 
 ===Emacs for Prose===
