@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Mar  8 09:26:24 2014 (-0800)
+;; Last-Updated: Sun Mar  9 10:57:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5924
+;;     Update #: 5925
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3939,7 +3939,7 @@ have the suffix `-cp' (for \"component predicate\") instead of `-p'."
             (function :tag "Final Predicate" :value icicle-case-string-less-p))))
   :group 'Icicles-Matching :group 'Icicles-Completions-Display)
 
-(defcustom icicle-sorting-max-candidates 1000
+(defcustom icicle-sorting-max-candidates 10000
   "*Automatically turn off completion sorting when there are more candidates.
 If not an integer, the value must be nil, meaning do not automatically
 turn off sorting.
