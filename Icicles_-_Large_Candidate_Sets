@@ -25,10 +25,13 @@ does both of these, recompute the set and redisplay it, each time you type or de
 
 Here are some tips to improve performance with a large set of candidates:
 
-* ''Turn off incremental completion'' display
-   in buffer `*Completions*'.  You can do this on the fly at any
-   time by using `<tt>C-#</tt>' in the minibuffer -- use `<tt>C-#</tt>' again to turn
-   it back on.  See [[Icicles - Icompletion]].
+* ''Turn off [[IcompleteMode|Icomplete mode]]''.  You can use '''`<tt>C-M-#</tt>'''' in the minibuffer to do this anytime.
+
+* ''Turn off candidate [[Icicles - Sorting Candidates|sorting]]'', or avoid sort orders that are particularly costly.  Use '''`##C-,##'''' to change the sort order or turn sorting off.
+
+* Tell particular '''Icicles''' [[multi-command]]s to turn off [[incremental completion or Icomplete mode, by giving their symbols property
+'''`icicle-turn-off-incremental-completion'''' or
+'''`icicle-turn-off-icomplete-mode''''.
 
 * Compute a large candidate set only once,
    ''cache'' the result, and reuse it later by reading the cache
@@ -49,11 +52,18 @@ Here are some tips to improve performance with a large set of candidates:
    never display it.
 
 
-(The documentation refers to the keys that do this as
+: (The documentation refers to the keys that do this as
 `C-M-S-TAB' and `C-M-TAB'.  Actually, this is only by default.
 You can customize this, using [[option]]s
 '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>'''' and
 '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)
+
+
+'''See Also:'''
+
+* [[Icicles - Icompletion]] for information about incremental completion and Icomplete mode
+
+* [[Icicles - Sorting Candidates]]  for information about sorting candidates
 
 ----
 
