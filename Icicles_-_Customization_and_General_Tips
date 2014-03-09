@@ -1038,6 +1038,34 @@ User options '''`icicle-incremental-completion-delay'''' and
 '''`icicle-incremental-completion-threshold'''' together cause a delay
 before incremental completion takes effect.  See [[Icicles - Icompletion]].
 
+
+
+
+----
+[:icicle-sorting-max-candidates]
+==== Option icicle-sorting-max-candidates ====
+
+User option '''`icicle-sorting-max-candidates'''' automatically
+toggles candidate sorting off and on, depending on the current
+number of candidates.  Set it to `nil' to turn off such
+toggling.  Set it to a larger or smaller maximum number of
+candidates to reduce or increase its effect.  See also
+[[Icicles - Sorting Candidates]].
+
+
+
+----
+[:icicle-icomplete-mode-max-candidates]
+==== Option icicle-icomplete-mode-max-candidates ====
+
+User option '''`icicle-icomplete-mode-max-candidates'''' automatically
+toggles [[IcompleteMode|Icomplete mode]] off and on, depending on the current
+number of candidates.  Set it to `nil' to turn off such
+toggling.  Set it to a larger or smaller maximum number of
+candidates to reduce or increase its effect.  See also
+[[Icicles - Icompletion#UsingIciclesWithIcomplete|Using Icicles with Icomplete Mode ]].
+
+
 ----
 [:icicle-Completions-display-min-input-chars]
 ==== Option icicle-Completions-display-min-input-chars ====
