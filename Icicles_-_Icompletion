@@ -6,21 +6,32 @@
 
 == Icompletion ==
 
-Emacs incremental completion, or '''icompletion''', provided by standard
-library `##icomplete.el##', displays matching [[prefix completion]]s in
-the [[minibuffer]].  This display is updated incrementally as you type
-characters.  In spite of the name, icompletion does ''not'', in fact,
-provide any [[completion]]; it provides completion ''help'', letting you
-know which (prefix) completions are available.
+Emacs incremental completion, or '''icompletion''', provided by
+[[IcompleteMode|Icomplete mode]] from standard library `##icomplete.el##', displays
+matching completions in the [[minibuffer]].  The completions are,
+however, what vanilla Emacs thinks they are.
 
-'''Icicles''' enhances Emacs icompletion in three ways:
+In general, this means [[prefix completion]]s, but whatever it might
+mean in any context, the point is that these completions might not
+be those that you see when you use '''Icicles''' completion.  For
+example, if you use '''Icicles''' [[apropos completion]] (`S-TAB') then the
+candidates are typically not reflected in the candidates that
+Icomplete mode shows in the minibuffer.
 
-* It works with my library '''`<tt>[[icomplete+.el]]</tt>'''' to provide minibuffer
-feedback on the number of completion candidates.
+Icomplete mode provides completion help, letting you know which
+(prefix) completions are available.  The display of candidates
+shown by Icomplete mode is updated incrementally as you type
+characters.
 
-* It highlights the part of your input that does not match any completion candidate.
 
-* It provides a new kind of icompletion, using [[buffer]]
+'''Icicles''' enhances Emacs incremental completion in these ways:
+
+1. It plays well with standard Icomplete mode.
+
+2. It highlights the part of your input that does not match any
+completion candidate.
+
+3. It provides a new kind of incremental completion, using [[buffer]]
 `*Completions*'.
 
 
@@ -34,21 +45,60 @@ feedback on the number of completion candidates.
 
 
 
-[:icomplete+.el]
-=== icomplete+.el Displays the Number of Other Prefix Candidates ===
 
-Library '''<tt>[[icomplete+.el]]</tt>''' enhances `##icomplete.el##' in various ways.
-One of these ways is to complement '''Icicles''' by displaying the
-number of other prefix-completion candidates when cycling.  This
-number is displayed whenever you change direction when [[Icicles - Cycling Completions | cycling]].
-For example:
+
+
+[:icomplete+.el]
+[:UsingIciclesWithIcomplete]
+=== Using Icicles with Icomplete Mode ===
+
+'''Icicles''' interacts with [[IcompleteMode|Icomplete mode]] in a number of ways.
+
+* In ''Icicle'' mode you can toggle Icomplete mode on and off using
+'''`<tt>C-M-#</tt>''''' anytime in the minibuffer (assuming you have already
+loaded library `##icomplete.el##' or <tt>[[icomplete+.el]]</tt>).
+
+* '''Icicles''' can automatically turn Icomplete mode off and on,
+depending on the number of current candidates.  This is a
+performance optimization, to eliminate the (independent)
+calculation by Icomplete mode of a large set of candidates.
+
+: You can control this behavior by customizing [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-icomplete-mode-max-candidates|icicle-icomplete-mode-max-candidates]]</tt>''''.
+Set it to `nil' to turn off this automatic Icomplete mode toggling.  Set it to a larger
+or smaller maximum number of candidates to reduce or increase
+its effect.
+
+: It is the act of ''completion'' that causes '''Icicles''' to check the
+number of candidates against the option value and thus perhaps
+toggle the mode.  This is the case regardless of how completion
+is initiated: whether manually (`TAB' or `S-TAB') or
+automatically (see [[#CompletionsIcompletion|Apropos and Prefix Completion]], below).
+
+* In addition to this automatic toggling, '''Icicles''' [[multi-command]]s
+that typically display a large number of completion candidates
+automatically turn off Icomplete mode.  When this happens, a
+message informs you.  Just use `<tt>C-M-#</tt>' to turn it back on.
+
+: You can control which commands do this, by adding/removing
+property '''`icicle-turn-off-icomplete-mode'''' to/from the command
+symbol.  For example, command `icicle-locate-file' has the
+non-`nil' property by default.  If you do not want this command
+to turn off Icomplete mode then add this to your [[init file]]
+(##~/.emacs##):
+
+
+    (put 'icicle-locate-file 'icicle-turn-off-icomplete-mode nil)
+
+
+* '''Icicles''' works with my library <tt>[[icomplete+.el]]</tt> to provide minibuffer feedback on the number of Icomplete-completion
+candidates when you cycle.    This
+number is displayed whenever you change direction when [[Icicles - Cycling Completions | cycling]].  For example:
 
 [new]
 : ##M-x forward-line   [Matched]  ##'''''<tt>(13 more)</tt>'''''
 [new]
 
-Like `##icomplete.el##', `<tt>[[icomplete+.el]]</tt>' provides help for only ''prefix'' completions, not [[apropos completion]]s. (Reminder: There is no icompletion for file-name completion -- see
-standard library `##icomplete.el##'.) 
 
 '''See also:''' [[IcompleteMode#IcompleteModePlus|Icomplete+]]
 
@@ -112,7 +162,7 @@ greater than '''`<tt>[[Icicles - Customization and General Tips#icicle-increment
 delay can improve performance when there are many candidates.  It
 lets you type ahead before any candidate redisplay occurs.
 
-You can cycle incremental completion at any time (changing `icicle-incremental-completion' among `nil', 
+You can cycle '''Icicles''' incremental completion at any time (changing `icicle-incremental-completion' among `nil', 
 `t', and `always') using command `icicle-cycle-incremental-completion', which is bound to
 '''`<tt>C-#</tt>'''' in the minibuffer.  If the number of completion candidates
 is very large, then use `<tt>C-#</tt>' to turn off incremental completion -- that will save time by not updating `*Completions*'. See also
@@ -122,16 +172,20 @@ Note: Incremental completion is effectively turned off whenever a
 remote file name is read, that is, whenever your file-name input
 matches a remote-file syntax.
 
+
+
+
 There are several advantages of using `*Completions*' for
-icompletion, as opposed to the minibuffer as in vanilla Emacs:
+icompletion, as opposed to the minibuffer as in vanilla Emacs ([[IcompleteMode|Icomplete mode]]):
 
 1. Many ''more candidates'' can be displayed in `*Completions*' than can
-   be displayed by standard icompletion, which uses the minibuffer
+   be displayed by Icomplete mode, which uses the minibuffer
    for feedback.
 
-2. Standard (minibuffer) icompletion provides feedback only on matches for
-   prefix completion.  If you use both standard icompletion and
-   '''Icicles''' icompletion, you can have incremental help for both
+2. Icomplete mode provides feedback wrt vanilla Emacs completions,
+which do not necessarily correspond to the current '''Icicles'''
+completions (e.g., for `S-TAB').  If you use both Icomplete mode and
+   '''Icicles''' incremental completion then you can have incremental help for both
    prefix completion and apropos completion at the same time, one
    in the minibuffer and the other in `*Completions*'.
 
@@ -140,6 +194,22 @@ icompletion, as opposed to the minibuffer as in vanilla Emacs:
    match root, highlighting of
 previously used candidates, and so on.  See
    [[Icicles - Completions Display]].
+
+Although you can cycle '''Icicles''' incremental completion at any time
+using `<tt>C-#</tt>', '''Icicles''' [[multi-command]]s that typically display a large
+number of completion candidates ''automatically turn off'' incremental
+completion.  When this happens, a message informs you.  Just use
+`<tt>C-#</tt>' to turn it back on.
+
+You can control which commands do this, by adding/removing
+property '''`icicle-turn-off-incremental-completion'''' to/from the
+command symbol.  For example, command `icicle-locate-file' has the
+non-`nil' property by default.  If you do not want this command to
+turn off '''Icicles''' incremental completion then add this to your [[init file]] (##~/.emacs##):
+
+
+    (put 'icicle-locate-file 'icicle-turn-off-incremental-completion nil)
+
 
 
 
