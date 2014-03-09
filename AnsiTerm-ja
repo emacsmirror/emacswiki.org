@@ -1,29 +1,16 @@
-#FILE text/plain 
-W1tBbnNpVGVybS1qYV1dCuOBk+OCjOOBr+OAgUVtYWNzTGlzcCDjgafmm7jjgYvjgozjgZ/jgr/j
-g7zjg5/jg4rjg6vjgqjjg5/jg6Xjg6zjg7zjgr/jgafjgZnjgIIK54++5Zyo44Gn44Gv44CBRW1h
-Y3Mg44OQ44OD44OV44Kh5YaF44GnIHZpICjjgb7jgZ/jga8gbXV0dCAoTXV0dEluRW1hY3Mg44KS
-5Y+C54WnKSAo44GC44KL44GE44GvIEVtYWNzIOOCgiA6KSnjgYzlrp/ooYzjgafjgY3jgb7jgZnj
-gIIKCuWun+ihjOOBmeOCi+OBq+OBryBgTS14IGFuc2ktdGVybScg44Kz44Oe44Oz44OJ44KS5L2/
-55So44GX44Gm5LiL44GV44GE44CCCgrmrbTlj7LnmoTntYznt6/jgavjgojjgorjgIFgTS14IGFu
-c2ktdGVybScg44Gv44Kr44Op44O844KS44Os44Oz44OA44Oq44Oz44Kw44Gn44GN44G+44GZ44GM
-44CBYE0teCB0ZXJtJyDjga7mlrnjga/jgafjgY3jgb7jgZvjgpPjgafjgZfjgZ/jgILjgZfjgYvj
-gZfmnIDov5EoW2h0dHBzOi8vbGlzdHMuZ251Lm9yZy9hcmNoaXZlL2h0bWwvaGVscC1nbnUtZW1h
-Y3MvMjAwNy0xMi9tc2cwMDE5OS5odG1sIHJlZl0p5L+u5q2j44GM6KGM44KP44KM44Gf44Gu44Gn
-44CB5a6f6Zqb44Gu5Li744Gq6YGV44GE44Gv44CBYW5zaS10ZXJt44GMIGBDLXgnIOOCkiBwcmVm
-aXgg44Kt44O844Go44GX44Gm5L2/55So44GZ44KL44GT44Go44Gn44GZ44CC44Gd44KM44Gr5a++
-44GX44Gm44CBdGVybSDjga8gYEMtYycg44Gu44OQ44Kk44Oz44OH44Kj44Oz44Kw44GX44GL5ouY
-5p2f44GX44G+44Gb44KT44CC44G+44Gf44CB44OQ44OD44OV44Kh44Gu5ZCN5YmN44KC5bCR44GX
-55Ww44Gq44KK44G+44GZ44CCCgpFbWFjcyAyMiDjgafjga/jgIFgQy14JyDjgpLkvb/nlKjjgZfj
-gZ/mqJnmupbjga7jgq3jg7zjgrPjg57jg7Pjg4njgafjga/oqo3orZjjgZXjgozjgarjgYTjgqLj
-gq/jgrfjg6fjg7PjgpIgcHJlZml4IOOBmeOCi+OCiOOBhuOBq+OBquOCiuOBvuOBl+OBn+OAguOB
-n+OBqOOBiOOBsOOAgWBNLXgnIOOBryBgQy14IE0teCcg44Gr44Gq44KK44G+44GZ44CCCgroqbPj
-gZfjgYToqK3lrprjgqrjg5fjgrfjg6fjg7PjgavplqLjgZfjgabjga/jgIEgQW5zaVRlcm1IaW50
-cyDjgpLopovjgabkuIvjgZXjgYTjgIIKCuazqDogYW5zaS10ZXJtIOOBqCB0ZXJtIOOBr+S6kuOB
-hOOBq+WvhuaOpeOBq+mWoumAo+OBl+OBpuOBhOOBvuOBmeOBjOOAgWBNLXggdGVybWluYWwtZW11
-bGF0b3InIOODkeODg+OCseODvOOCuOOBqOOBr+WujOWFqOOBq+WIpeeJqeOBquOBruOBp+OAgea3
-t+WQjOOBl+OBquOBhOOCiOOBhuOBq+OBl+OBpuS4i+OBleOBhOOAguOBk+OBruODkeODg+OCseOD
-vOOCuOOBr+OAgUVtYWNzIDI0LjQg44Gn44GvIG9ic29sZXRlIOOBquODleOCoeOCpOODq+OBqOOB
-l+OBpuWRiuefpeOBleOCjOOBpuOBhOOBvuOBmeOAgiBbaHR0cDovL2dpdC5zYXZhbm5haC5nbnUu
-b3JnL2NnaXQvZW1hY3MuZ2l0L3RyZWUvZXRjL05FV1M/aWQ9NTVkNWIzZTM1YWMwZGUyNmZiMDk1
-MjVlNjRkNTI4ZGIyMThmMDRlMCNuOTA5IE5FV1NdIAoKLS0tLQpDYXRlZ29yeUV4dGVybmFsVXRp
-bGl0aWVzCg==
+[[en:AnsiTerm]]
+これは、 EmacsLisp で書かれたターミナルエミュレータです。
+現在では、Emacs バッファ内で vi (または mutt (MuttInEmacs を参照) (あるいは Emacs も:))が実行できます。
+
+実行するには `M-x ansi-term' コマンドを使用して下さい。
+
+歴史的経緯により、`M-x ansi-term' はカラーをレンダリングできますが、`M-x term' の方はできませんでした。しかし最近([https://lists.gnu.org/archive/html/help-gnu-emacs/2007-12/msg00199.html ref])修正が行われたので、実際の主な違いは、ansi-termが `C-x' を prefix キーとして使用するのに対して、term は `C-c' のバインディングしか拘束しません。また、バッファの名前も少し異なります。
+
+Emacs 22 では、`C-x' を使用した標準のキーコマンドでは認識されないアクションを prefix するようになりました。たとえば、`M-x' は `C-x M-x' になります。
+
+詳しい設定オプションに関しては、 AnsiTermHints を見て下さい。
+
+注: ansi-term と term は互いに密接に関連していますが、`M-x terminal-emulator' パッケージとは完全に別物なので、混同しないようにして下さい。このパッケージは、Emacs 24.4 では obsolete なファイルとして告知されています。 [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?id=55d5b3e35ac0de26fb09525e64d528db218f04e0#n909 NEWS] 
+
+----
+CategoryExternalUtilities
