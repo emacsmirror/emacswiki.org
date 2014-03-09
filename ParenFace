@@ -1,4 +1,4 @@
-The parenface and paren-face dim (or highlight) all parentheses in some modes of you choosing. They use the same face for all parens, so if you want to use different colors depending on the nesting you will have to use something else.
+The parenface and paren-face packages dim (or highlight) all parentheses in some modes of you choosing. They use the same face for all parens, so if you want to use different colors depending on the nesting you will have to use something else.
 
 == Implementations ==
 
