@@ -41,6 +41,8 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 
 
 
+* [[view-kill.el]] – Displays the entire kill ring as a menu.
+
 * KillRingSearch -- incremental search of the kill ring
 
 * <tt>[[popup-kill-ring.el]]</tt> -- interactively insert item from kill-ring
