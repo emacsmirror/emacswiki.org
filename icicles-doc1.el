@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Feb  8 08:45:49 2014 (-0800)
+;; Last-Updated: Sun Mar  9 16:44:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28067
+;;     Update #: 28165
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -225,10 +225,10 @@
 ;;  (@> "Ido and IswitchB")
 ;;  (@> "*Completions* Display")
 ;;  (@> "Icompletion")
-;;    (@> "icomplete+.el Displays the Number of Other Prefix Candidates")
-;;    (@> "Icicles Highlights the Input that Won't Complete")
+;;    (@> "Using Icicles with Icomplete Mode")
 ;;    (@> "Icompletion in *Completions*: Apropos and Prefix Completion")
 ;;    (@> "Incremental Completion (Input Expansion) in the Minibuffer")
+;;    (@> "Icicles Highlights the Input that Won't Complete")
 ;;
 ;;  (@> "Sorting Candidates and Removing Duplicates")
 ;;    (@> "Changing the Sort Order")
@@ -2728,7 +2728,29 @@
 ;;  can cycle the value of this option from the minibuffer at any
 ;;  time, using `C-M-"'.
 ;;
-;;  Just what is meant by the "expanded common match" that Icicles
+;;  Sometimes the current completion candidates can be quite long, and
+;;  so can their common match part.  In this situation it can
+;;  sometimes help to tell Icicles to hide the common match part.
+;;  User option `icicle-hide-common-match-in-Completions-flag'
+;;  controls whether this part is hidden, in the `*Completions*'
+;;  display.  You can toggle this option from the minibuffer anytime
+;;  using `C-x .'
+;;
+;;  Some Icicles multi-commands that typically display long candidates
+;;  automatically turn this option on, to hide the common match
+;;  portion, for clarity.  This is the case for file-finding commands
+;;  that expect an absolute file name.  Just use `C-x .' to turn
+;;  hiding off again.
+;;
+;;  You can control which commands do this, by adding/removing
+;;  property `icicle-hide-common-match' to/from the command symbol.
+;;  For example, command `icicle-locate-file' has the non-`nil'
+;;  property by default.  If you do not want this command to hide the
+;;  common match then add this to your init file (`~/.emacs'):
+;;
+;;    (put 'icicle-locate-file 'icicle-hide-common-match nil)
+;;
+;;  But just what is meant by the "expanded common match" that Icicles
 ;;  finds?  It is the longest match of your input pattern that is
 ;;  common to all candidates and also contains the first input match
 ;;  in the first or second candidate, whichever is longer.
@@ -2779,10 +2801,10 @@
 ;;  is common to both candidates, but it is not matched by the
 ;;  (complete) input pattern.
 ;;
-;;  Finally, note that in Emacs 20 no common match is found if your
-;;  input or any of the candidates contains binary data.  This is
-;;  because function `string-match' cannot handle strings with binary
-;;  data in Emacs 20.
+;;  (Note that in Emacs 20 no common match is found if your input or
+;;  any of the candidates contains binary data.  This is because
+;;  function `string-match' cannot handle strings with binary data in
+;;  Emacs 20.)
  
 ;;(@* "Progressive Completion")
 ;;
@@ -4032,39 +4054,80 @@
 ;;  Icompletion
 ;;  -----------
 ;;
-;;  Emacs incremental completion, or icompletion, provided by standard
-;;  library `icomplete.el', displays matching prefix completions in
-;;  the minibuffer.  This display is updated incrementally as you type
-;;  characters.  In spite of the name, icompletion does not, in fact,
-;;  provide any completion; it provides completion help, letting you
-;;  know which (prefix) completions are available.
+;;  Emacs incremental completion, or icompletion, provided by
+;;  Icomplete mode from standard library `icomplete.el', displays
+;;  matching completions in the minibuffer.  The completions are,
+;;  however, what vanilla Emacs thinks they are.
 ;;
-;;  Icicles enhances Emacs icompletion in three ways:
+;;  In general, this means prefix completions, but whatever it might
+;;  mean in any context, the point is that these completions might not
+;;  be those that you see when you use Icicles completion.  For
+;;  example, if you use Icicles apropos completion (`S-TAB') then the
+;;  candidates are typically not reflected in the candidates that
+;;  Icomplete mode shows in the minibuffer.
 ;;
-;;  1. It works with my library `icomplete+.el' to provide minibuffer
-;;     feedback on the number of completion candidates.
+;;  Icomplete mode provides completion help, letting you know which
+;;  (prefix) completions are available.  The display of candidates
+;;  shown by Icomplete mode is updated incrementally as you type
+;;  characters.
+;;
+;;  Icicles enhances Emacs incremental completion in these ways:
+;;
+;;  1. It plays well with standard Icomplete mode.
 ;;
 ;;  2. It highlights the part of your input that does not match any
 ;;     completion candidate.
 ;;
-;;  3. It provides a new kind of icompletion, using buffer
+;;  3. It provides a new kind of incremental completion, using buffer
 ;;     `*Completions*'.
 ;;
-;;(@* "icomplete+.el Displays the Number of Other Prefix Candidates")
-;;  ** icomplete+.el Displays the Number of Other Prefix Candidates **
+;;(@* "Using Icicles with Icomplete Mode")
+;;  ** Using Icicles with Icomplete Mode **
 ;;
-;;  Library `icomplete+.el' enhances `icomplete.el' in various ways.
-;;  One of these ways is to complement Icicles by displaying the
-;;  number of other prefix-completion candidates when cycling.  This
-;;  number is displayed whenever you change direction when cycling.
-;;  For example:
+;;  Icicles interacts with Icomplete mode in a number of ways.
+;;
+;;  * In Icicle mode you can toggle Icomplete mode on and off using
+;;    `C-M-#' anytime in the minibuffer (assuming you have already
+;;    loaded library `icomplete(+).el').
+;;
+;;  * Icicles can automatically turn Icomplete mode off and on,
+;;    depending on the number of current candidates.  This is a
+;;    performance optimization, to eliminate the (independent)
+;;    calculation by Icomplete mode of a large set of candidates.
+;;
+;;    You can control this behavior by customizing user option
+;;    `icicle-icomplete-mode-max-candidates'.  Set it to `nil' to turn
+;;    off this automatic Icomplete mode toggling.  Set it to a larger
+;;    or smaller maximum number of candidates to reduce or increase
+;;    its effect.
+;;
+;;    It is the act of completion that causes Icicles to check the
+;;    number of candidates against the option value and thus perhaps
+;;    toggle the mode.  This is the case regardless of how completion
+;;    is initiated: whether manually (`TAB' or `S-TAB') or
+;;    automatically (see
+;;    (@* "Icompletion in *Completions*: Apropos and Prefix Completion"), below).
+;;
+;;  * In addition to this automatic toggling, Icicles multi-commands
+;;    that typically display a large number of completion candidates
+;;    automatically turn off Icomplete mode.  When this happens, a
+;;    message informs you.  Just use `C-M-#' to turn it back on.
+;;
+;;    You can control which commands do this, by adding/removing
+;;    property `icicle-turn-off-icomplete-mode' to/from the command
+;;    symbol.  For example, command `icicle-locate-file' has the
+;;    non-`nil' property by default.  If you do not want this command
+;;    to turn off Icomplete mode then add this to your init file
+;;    (`~/.emacs'):
+;;
+;;      (put 'icicle-locate-file 'icicle-turn-off-icomplete-mode nil)
+;;
+;;  * Icicles works with my library `icomplete+.el' to provide
+;;    minibuffer feedback on the number of Icomplete-completion
+;;    candidates when you cycle.  This number is displayed whenever
+;;    you change direction when cycling.  For example:
 ;;
 ;;      M-x forward-line   [Matched]  (13 more)
-;;
-;;  Like `icomplete.el', `icomplete+.el' provides help for only prefix
-;;  completions, not apropos completions.  (Reminder: There is no
-;;  icompletion for file-name completion - see standard library
-;;  `icomplete.el'.)
 ;;
 ;;(@* "Icompletion in *Completions*: Apropos and Prefix Completion")
 ;;  ** Icompletion in *Completions*: Apropos and Prefix Completion **
@@ -4121,7 +4184,7 @@
 ;;  performance when there are many candidates.  It lets you type
 ;;  ahead before candidate redisplay occurs.
 ;;
-;;  You can cycle incremental completion at any time (changing
+;;  You can cycle Icicles incremental completion at any time (changing
 ;;  `icicle-incremental-completion' among `nil', `t', and `always')
 ;;  using command `icicle-cycle-incremental-completion', which is
 ;;  bound to `C-#' in the minibuffer.  If the number of completion
@@ -4135,23 +4198,42 @@
 ;;  matches a remote-file syntax.
 ;;
 ;;  There are several advantages of using `*Completions*' for
-;;  icompletion, as opposed to the minibuffer as in vanilla Emacs:
+;;  icompletion, as opposed to the minibuffer as in vanilla Emacs
+;;  (Icomplete mode):
 ;;
 ;;  1. Many more candidates can be displayed in `*Completions*' than
-;;     can be displayed by standard icompletion, which uses the
-;;     minibuffer for feedback.
+;;     can be displayed by Icomplete mode, which uses the minibuffer
+;;     for feedback.
 ;;
-;;  2. Standard (minibuffer) icompletion provides feedback only on
-;;     matches for prefix completion.  If you use both standard
-;;     icompletion and Icicles icompletion, you can have incremental
-;;     help for both prefix completion and apropos completion at the
-;;     same time, one in the minibuffer and the other in
-;;     `*Completions*'.
+;;  2. Icomplete mode provides feedback wrt vanilla Emacs completions,
+;;     which do not necessarily correspond to the current Icicles
+;;     completions (e.g., for `S-TAB').  If you use both Icomplete
+;;     mode and Icicles incremental completion then you can have
+;;     incremental help for both prefix completion and apropos
+;;     completion at the same time, one in the minibuffer and the
+;;     other in `*Completions*'.
 ;;
 ;;  3. The other Icicles `*Completions*' features are available for
 ;;     the current set of matching candidates: cycling, highlighting
 ;;     of match root, highlighting of previously used candidates, and
 ;;     so on.  See (@> "*Completions* Display").
+;;
+;;  Although you can cycle Icicles incremental completion at any time
+;;  using `C-#', Icicles multi-commands that typically display a large
+;;  number of completion candidates automatically turn off incremental
+;;  completion.  When this happens, a message informs you.  Just use
+;;  `C-#' to turn it back on.
+;;
+;;  You can control which commands do this, by adding/removing
+;;  property `icicle-turn-off-incremental-completion' to/from the
+;;  command symbol.  For example, command `icicle-locate-file' has the
+;;  non-`nil' property by default.  If you do not want this command to
+;;  turn off Icicles incremental completion then add this to your init
+;;  file (`~/.emacs'):
+;;
+;;    (put 'icicle-locate-file
+;;         'icicle-turn-off-incremental-completion
+;;         nil)
 ;;
 ;;(@* "Incremental Completion (Input Expansion) in the Minibuffer")
 ;;  ** Incremental Completion (Input Expansion) in the Minibuffer **
@@ -4323,10 +4405,11 @@
 ;;  Sorting Candidates and Removing Duplicates
 ;;  ------------------------------------------
 ;;
-;;  By default, completion candidates are usually presented in buffer
-;;  `*Completions*' in alphabetic order.  But some commands use
-;;  different sort orders by default.  Whatever sort order is used for
-;;  `*Completions*' is also the order of cycling among candidates.
+;;  The current set of completion candidates matching your minibuffer
+;;  input can be sorted in various ways.  The sort order affects not
+;;  only the display in buffer `*Completions*' but also cycling among
+;;  candidates.  In general, candidate sorting is alphabetical by
+;;  default, but some commands use different sort orders by default.
 ;;
 ;;  Also, duplicate candidates are typically removed as completion
 ;;  choices, by default.  But for some commands duplicates are
@@ -4340,8 +4423,24 @@
 ;;  duplicates are removed.  Use `C-,' during completion to choose a
 ;;  different sort order or to turn off sorting altogether (one of the
 ;;  available sort orders is in fact called "turned OFF").  Use `C-$'
-;;  to toggle the removal of duplicate candidates.  A few commands,
-;;  for which sorting is inappropriate, prevent you from sorting.
+;;  to toggle the removal of duplicate candidates.
+;;
+;;  A few commands, for which sorting is inappropriate, prevent you
+;;  from sorting.  For all other commands, Icicles can automatically
+;;  turn candidate sorting off and on, depending on the number of
+;;  completion candidates.  This is a performance optimization, for
+;;  use when the current set of candidates is large.
+;;
+;;  You can control this behavior by customizing user option
+;;  `icicle-sorting-max-candidates'.  Set it to `nil' to turn off this
+;;  automatic toggling of sorting.  Set it to a larger or smaller
+;;  maximum number of candidates to reduce or increase its effect.
+;;
+;;  It is the act of completion that causes Icicles to check the
+;;  number of candidates against the option value and thus perhaps
+;;  toggle sorting.  This is the case regardless of how completion is
+;;  initiated: whether manually (`TAB' or `S-TAB') or automatically
+;;  (see (@* "Icompletion in *Completions*: Apropos and Prefix Completion")).
 ;;
 ;;  The available sort orders for `C-,' are those defined by user
 ;;  option `icicle-sort-orders-alist' - see
@@ -4433,7 +4532,7 @@
 ;;  from are those in user option `icicle-sort-orders-alist'.  You can
 ;;  customize this option to add or remove available sort orders.  A
 ;;  better way to define a new sort order is to use macro
-;;  `icicle-define-sort-command' in your Emacs init file (~/.emacs).
+;;  `icicle-define-sort-command' in your Emacs init file (`~/.emacs').
 ;;  This defines a new Icicles command, named `icicle-sort-ORDER',
 ;;  where `ORDER' is the name of the new sort order.  The definition
 ;;  of the "alphabetical" sort order provides an example:
@@ -8166,11 +8265,6 @@
 ;;  There are also `-other-window' versions of all of the Icicles
 ;;  commands that read file names.
 ;;
-;;  When using a command that reads an absolute file name, remember
-;;  that, to save space, you can use `C-x .' to toggle hiding of the
-;;  common match portions of the candidates in `*Completions*'.  This
-;;  portion is often a long directory substring.
-;;
 ;;  The Icicles commands that use `completing-read' to read file names
 ;;  have an additional feature: you can use a prefix argument to tell
 ;;  them to combine the last modification date with the file name, as
@@ -8178,6 +8272,26 @@
 ;;  that you can easily look up files whose modification time or date
 ;;  matches some (regexp) criterion, such as being sometime in July
 ;;  2008.
+;;
+;;  When using a command that reads an absolute file name, remember
+;;  that, to save space, you can use `C-x .' to toggle hiding of the
+;;  common match portions of the candidates in `*Completions*'.  This
+;;  portion is often a long directory substring.
+;;
+;;  Because this generally facilitates the use of absolute file-name
+;;  commands, by default Icicles automatically does this for you.  You
+;;  can unhide the common-match portion by hitting the toggle `C-x .'.
+;;
+;;  You can control which commands automatically turn on hiding of the
+;;  expanded common match, by adding/removing property
+;;  `icicle-hide-common-match' to/from the command symbol.  For
+;;  example, if you do not want `icicle-locate-file' to hide the
+;;  common match then add this to your init file (`~/.emacs'):
+;;
+;;    (put 'icicle-locate-file 'icicle-hide-common-match nil)
+;;
+;;  On the other hand, you can make any command hide the common match
+;;  by putting a non-`nil' value on its symbol.
 ;;
 ;;(@* "`icicle-file', `icicle-find-file', `icicle-find-file-absolute'")
 ;;  *** `icicle-file', `icicle-find-file', `icicle-find-file-absolute' ***
@@ -8440,6 +8554,41 @@
 ;;  (@> "Persistent Sets of Completion Candidates"), for how to do
 ;;  this.
 ;;
+;;  You can also do a few things to improve performance when using a
+;;  command like `icicle-locate-file' that involves a large set of
+;;  completion candidates: Turn off Icomplete mode, Icicles
+;;  incremental completion, and sorting.  You can use keys `C-M-#',
+;;  `C-#', and `C-,', respectively, to do this.  But because it is
+;;  likely that you will want to do these things most, if not all, of
+;;  the time, Icicles does this for you automatically, by default.
+;;
+;;  User options `icicle-icomplete-mode-max-candidates' and
+;;  `icicle-sorting-max-candidates' automatically turn off Icomplete
+;;  mode and sorting when there are more completion candidates than
+;;  the option values, and then they turn these back on when there are
+;;  fewer candidates.  This is the case regardless of the current
+;;  command.
+;;
+;;  In addition, Icicles multi-commands that typically have a large
+;;  number of candidates turn off Icomplete mode and Icicles
+;;  incremental completion, and do not turn them on again, regardless
+;;  of the number of current candidates at any moment.  When this
+;;  happens, a message informs you.  Just use `C-M-#' and `C-#' to
+;;  turn these back on.
+;;
+;;  You can control which commands do this, by adding/removing
+;;  properties `icicle-turn-off-icomplete-mode' and
+;;  `icicle-turn-off-incremental-completion' to/from the command
+;;  symbol.  For example, if you do not want `icicle-locate-file' to
+;;  turn either of these off then add this to your init file
+;;  (`~/.emacs'):
+;;
+;;    (put 'icicle-locate-file 'icicle-turn-off-icomplete-mode nil)
+;;    (put 'icicle-locate-file 'icicle-turn-off-incremental-completion nil)
+;;
+;;  On the other hand, you can make any command turn one of these off
+;;  by putting a non-`nil' value on its symbol.
+;;
 ;;(@* "Absolute File Names and Different Directories")
 ;;  ** Absolute File Names and Different Directories **
 ;;
@@ -8613,7 +8762,7 @@
 ;;  associated with the cache files in user option
 ;;  `icicle-saved-completion-sets'.  This is an alist of entries, each
 ;;  of which is of the form (SET-NAME . CACHE-FILE-NAME).  You can
-;;  customize this option, or set it in your init file (~/.emacs).
+;;  customize this option, or set it in your init file (`~/.emacs').
 ;;
 ;;  You can use command `icicle-add/update-saved-completion-set' to
 ;;  add a new set to `icicle-saved-completion-sets' or update
@@ -8871,6 +9020,18 @@
 ;;    using `C-#' in the minibuffer - use `C-#' again to turn it back
 ;;    on.  See (@> "Icompletion").
 ;;
+;;  * Turn off Icomplete mode.  You can use `C-M-#' in the minibuffer
+;;    to do this anytime.
+;;
+;;  * Turn off candidate sorting, or avoid sort orders that are
+;;    particularly costly.  Use `C-,' to change the sort order or turn
+;;    sorting off.
+;;
+;;  * Tell particular Icicles multi-commands to turn off incremental
+;;    completion or Icomplete mode, by giving their symbols property
+;;    `icicle-turn-off-incremental-completion' or
+;;    `icicle-turn-off-icomplete-mode'.
+;;
 ;;  * Compute a large candidate set only once, cache the result, and
 ;;    reuse it later by reading the cache instead of recomputing.
 ;;    This is useful, for instance, for the candidate set of all files
@@ -8895,6 +9056,14 @@
 ;;    You can customize this, using options
 ;;    `icicle-apropos-complete-no-display-keys' and
 ;;    `icicle-prefix-complete-no-display-keys'.)
+;;
+;;  See Also:
+;;
+;;  * (@> "Icompletion") for information about incremental completion
+;;    and Icomplete mode
+;;
+;;  * (@> "Sorting Candidates and Removing Duplicates") for
+;;    information about sorting candidates
  
 ;;(@* "History Enhancements")
 ;;
@@ -9408,11 +9577,9 @@
 ;;    * Icicles search (`icicle-search') interface, reusing the
 ;;      Isearch search string (by default).
 ;;
-;;  See Also:
-;;
-;;  * (@file :file-name "icicles-doc2.el" :to "Support for Projects")
-;;    for information about using `grep' to search all of the files in
-;;    a project.
+;;  See Also: (@file :file-name "icicles-doc2.el" :to "Support for Projects")
+;;  for information about using `grep' to search all of the files in a
+;;  project.
 ;;
 ;;(@* "Isearch Completion Against the Search History")
 ;;  ** Isearch Completion Against the Search History **
