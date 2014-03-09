@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Mar  8 11:17:51 2014 (-0800)
+;; Last-Updated: Sun Mar  9 10:00:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10737
+;;     Update #: 10738
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/03/09 dadams
+;;     icicle-file(-other-window): Set this-command so user sees msgs appropriate to the command.
 ;; 2014/03/08 dadams
 ;;     Use (featurep 'icomplete), not (boundp 'icomplete-mode), everywhere.
 ;;     icicle-execute-extended-command-1: Move run of pre-command-hook after binding of this-command.
