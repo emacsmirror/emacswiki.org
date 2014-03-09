@@ -1,17 +1,10 @@
-parenface.el, written by DavePearson, is an Emacs hack that lets you define a [[Face]] in which parens should appear -- e.g., colored parentheses. It's nice to "tone down" parens in Lisp source, for instance.
+The parenface and paren-face dim (or highlight) all parentheses in some modes of you choosing. They use the same face for all parens, so if you want to use different colors depending on the nesting you will have to use something else.
 
-== Link ==
+== Implementations ==
 
-You can find it here:
-
-http://www.davep.org/emacs/parenface.el
-
-== Color suggestion ==
-
-Dark blue parentheses:
-
-    (require 'parenface)
-    (set-face-foreground 'paren-face "blue4")
+* The original http://www.davep.org/emacs/parenface.el
+* A fork with enables it for more major modes and paren types https://github.com/grettke/parenface
+* A cleaner implementation https://github.com/tarsius/paren-face
 
 ----
 CategoryParentheses ParenthesesAppearance
