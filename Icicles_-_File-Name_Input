@@ -248,11 +248,6 @@ multi-commands `icicle-find-file-absolute', `icicle-find-file-in-tags-table', `i
 There are also `-other-window' versions of all of the '''Icicles'''
 commands that read file names.
 
-When using a command that reads an absolute file name, remember
-that, to save space, you can use '''`##C-x .##'''' to toggle hiding of the
-common match portions of the candidates in `*Completions*'.  This
-portion is often a long directory substring.
-
 
 [:LocateByDate]
 The '''Icicles''' commands that use `completing-read' to read file names have an
@@ -261,6 +256,29 @@ combine the last modification date with the file name, as a
 [[multi-completion]]. This means that you can easily look up files whose modification
 time or date matches some (regexp) criterion, such as being
 sometime in July 2008.
+
+When using a command that reads an absolute file name, remember
+that, to save space, you can use '''`##C-x .##'''' to toggle hiding of the
+common match portions of the candidates in `*Completions*'.  This
+portion is often a long directory substring.
+
+Because this generally facilitates the use of absolute file-name
+commands, by default '''Icicles''' ''automatically does this'' for you.  You
+can unhide the common-match portion by hitting the toggle `<tt>C-x .</tt>'.
+
+You can control which commands automatically turn on hiding of the
+expanded common match, by adding/removing property
+'''`icicle-hide-common-match'''' to/from the command symbol.  For
+example, if you do not want `icicle-locate-file' to hide the
+common match then add this to your [[init file]] (##~/.emacs##):
+
+    (put 'icicle-locate-file 'icicle-hide-common-match nil)
+
+On the other hand, you can make any command hide the common match
+by putting a non-`nil' value on its symbol.
+
+
+
 
 
 
@@ -327,9 +345,6 @@ available, so commands such as `icicle-file' are aliased to them.
 actually aliased to commands that let you search content, and
 which have '''`-of-content'''' in their name.)
 
-
-
-
 If you provide a pattern to match file content
 then all files whose names match the file-name part of your input
 are searched for the content pattern.  '''Icicles''' looks only for a single
@@ -362,7 +377,6 @@ This automatic extra-buffers cleanup is controlled by option
 option for the command duration.  (This is not true for the
 commands that read absolute file names.  For them, a prefix
 argument has a different meaning.)
-
 
 You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-file-skip-functions|icicle-file-skip-functions]]</tt>'''' to specify patterns for file names to exclude from content-searching
 when you provide a content-matching pattern.
@@ -400,7 +414,6 @@ The parts of your input pattern
 that match any of the candidate parts can be empty.  For example, this matches files with any name, whose last modification date matches `2013 07', and whose contents match `recent file':
 
     C-- C-x C-f C-M-j 2013 07 C-M-j recent file
-
 
 
 '''See Also:'''
@@ -559,6 +572,42 @@ of a performance penalty -- you pay for what you get.
 However, even if you do not have command `locate', there of having your cake and eating it too.
 You can gather all of the file names in your file system ''once'', and
 save that list of completion candidates to a ''cache file on disk'', as a snapshot.  See [[Icicles - Persistent Completions]] for how to do this.
+
+You can also do a few things to improve performance when using a
+command like `icicle-locate-file' that involves a large set of
+completion candidates: Turn off [[IcompleteMode|Icomplete mode]], '''Icicles''' [[incremental completion]], and [[Icicles - Sorting Candidates|sorting]].  You can use keys '''`<tt>C-M-#</tt>'''', '''`<tt>C-#</tt>'''', and
+'''`##C-,##'''', respectively, to do this.  But because it is likely that
+you will want to do these things most, if not all, of the time,
+'''Icicles''' ''does this for you automatically'', by default.
+
+[[user option|User options]] '''`<tt>[[Icicles - Customization and General Tips#icicle-icomplete-mode-max-candidates|icicle-icomplete-mode-max-candidates]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-sorting-max-candidates|icicle-sorting-max-candidates]]</tt>'''' ''automatically turn off'' Icomplete mode and sorting ''when there are more completion candidates'' than
+the option values, and then they turn these back on when there are
+fewer candidates.  This is the case regardless of the current
+command.
+
+In addition, '''Icicles''' [[multi-command]]s that typically have a large
+number of candidates turn off Icomplete mode and '''Icicles'''
+incremental completion, and do not turn them on again, regardless
+of the number of current candidates at any moment.  When this
+happens, a message informs you.  Just use `<tt>C-M-#</tt>' and `<tt>C-#</tt>' to
+turn these back on.
+
+You can control which commands do this, by adding/removing
+properties '''`icicle-turn-off-icomplete-mode'''' and
+'''`icicle-turn-off-incremental-completion'''' to/from the command
+symbol.  For example, if you do not want `icicle-locate-file' to
+turn either of these off then add this to your [[init file]]
+(##~/.emacs##):
+
+    (put 'icicle-locate-file 'icicle-turn-off-icomplete-mode nil)
+    (put 'icicle-locate-file 'icicle-turn-off-incremental-completion nil)
+
+On the other hand, you can make any command turn one of these off
+by putting a non-`nil' value on its symbol.
+
+
+
+
 
 
 
