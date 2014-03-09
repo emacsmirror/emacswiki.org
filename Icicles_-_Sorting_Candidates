@@ -6,10 +6,11 @@
 
 == Sorting Candidates and Removing Duplicates ==
 
-By default, [[completion]] candidates are usually presented in [[buffer]]
-`*Completions*' in ''alphabetic'' order.  But some commands use
-different sort orders by default.  Whatever sort order is used for `*Completions*' is also the order of
-[[Icicles - Cycling Completions | cycling]] among candidates.
+The current set of [[completion]] candidates matching your [[minibuffer]]
+input can be sorted in various ways.  The sort order affects not
+only the display in [[buffer]] `*Completions*' but also [[Icicles - Cycling Completions | cycling]] among
+candidates.  In general, candidate sorting is ''alphabetical'' by
+default, but some commands use different sort orders by default.
 
 Also, ''duplicate'' candidates
 are typically removed as completion choices, by default.  But for some [[command]]s duplicates are appropriate, so they are not removed.
@@ -21,8 +22,24 @@ You can interactively control the order of candidates
 and whether duplicates are removed.  Use '''`##C-,##'''' during completion
 to choose a different sort order or to turn off sorting altogether
 (one of the available sort orders is in fact called "##turned OFF##").  Use
-'''`##C-$##'''' to toggle the removal of duplicate candidates.  A few commands, for which sorting is inappropriate, prevent you
-from sorting.
+'''`##C-$##'''' to toggle the removal of duplicate candidates.
+
+A few commands, for which sorting is inappropriate, prevent you
+from sorting.  For all other commands, '''Icicles''' can ''automatically
+turn candidate sorting off and on'', depending on the number of
+completion candidates.  This is a performance optimization, for
+use ''when the current set of candidates is large''.
+
+You can control this behavior by customizing [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-sorting-max-candidates|icicle-sorting-max-candidates]]</tt>''''.  Set it to `nil' to turn off this
+automatic toggling of sorting.  Set it to a larger or smaller
+maximum number of candidates to reduce or increase its effect.
+
+It is the act of [[completion]] that causes '''Icicles''' to check the
+number of candidates against the option value and thus perhaps
+toggle sorting.  This is the case regardless of how completion is
+initiated: whether manually (`TAB' or `S-TAB') or automatically
+(see [[Icicles - Icompletion#CompletionsIcompletion|Apropos and Prefix Completion]]).
 
 The available sort orders for `##C-,##' are those defined by  [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>'''' -- see [[#DefiningNewSortOrders|Defining New Sort Orders]], below.
 However, some commands adjust this list of possibilities by adding
