@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Mar  8 10:53:46 2014 (-0800)
+;; Last-Updated: Sun Mar  9 09:59:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26870
+;;     Update #: 26878
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2785,7 +2785,8 @@ Because you will often use this command in contexts that result in
 many, many completion candidates, the following are turned off by
 default for this command:
 
- * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-icomplete-mode]'.
  * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'."
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
@@ -2995,8 +2996,9 @@ Because you will often use this command in contexts that result in
 many, many completion candidates, the following are turned off by
 default for this command:
 
- * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
- * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'." ; Doc string
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-icomplete-mode]'.
+ * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'."
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
@@ -7464,7 +7466,9 @@ then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
   (if arg
       (let ((current-prefix-arg  (not (wholenump (prefix-numeric-value arg)))))
+        (setq this-command  'icicle-find-file-absolute) ; So user sees msgs appropriate to the command.
         (icicle-find-file-absolute))
+    (setq this-command  'icicle-find-file) ; So user sees msgs appropriate to the command.
     (icicle-find-file)))
 
 
@@ -7474,7 +7478,9 @@ then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
   (if arg
       (let ((current-prefix-arg  (not (wholenump (prefix-numeric-value arg)))))
+        (setq this-command  'icicle-find-file-absolute-other-window) ; So user sees appropriate msgs.
         (icicle-find-file-absolute-other-window))
+    (setq this-command  'icicle-find-file-other-window) ; So user sees msgs appropriate to the command.
     (icicle-find-file-other-window)))
 
 (defun icicle-find-file-abs-no-search-action (file)
@@ -8436,7 +8442,8 @@ Because you will often use this command in contexts that result in
 many, many completion candidates, the following are turned off by
 default for this command:
 
- * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>`\\[icicle-toggle-icomplete-mode]'.
+ * Icomplete mode.  You can toggle this using \\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-icomplete-mode]'.
  * Icicles incremental completion.  You can cycle this using `\\[icicle-cycle-incremental-completion]'.
 
 Because absolute file names can be long, with common prefixes, the
