@@ -61,7 +61,31 @@ To retrieve it, use '''`C-l''''
 `C-S-l' (that is, '''`##C-L##'''') to cycle previous inputs in the other
 direction -- see [[Icicles - History Enhancements]].  You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' to turn off expanded-common-match completion altogether, if you prefer.   You can cycle the value of this option from the minibuffer at any time, using '''`##C-M-"##''''.
 
-Just what is meant by the '''[::expanded common match]''' that '''Icicles'''
+Sometimes the current completion candidates can be quite long, and
+so can their common match part.  In this situation it can
+sometimes help to tell Icicles to hide the common match part.
+User option '''`<tt>[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]]</tt>''''
+controls whether this part is hidden, in the `*Completions*'
+display.  You can toggle this option from the minibuffer anytime
+using '''`##C-x .##''''
+
+Some '''Icicles''' [[multi-command]]s that typically display long candidates
+automatically turn this option on, to hide the common match
+portion, for clarity.  This is the case for file-finding commands
+that expect an absolute file name.  Just use `##C-x .##' to turn
+hiding off again.
+
+You can control which commands do this, by adding/removing
+property '''`icicle-hide-common-match'''' to/from the command symbol.
+For example, command `icicle-locate-file' has the non-`nil'
+property by default.  If you do not want this command to hide the
+common match then add this to your [[init file]] (##~/.emacs##):
+
+
+    (put 'icicle-locate-file 'icicle-hide-common-match nil)
+
+
+But just what is meant by the '''[::expanded common match]''' that '''Icicles'''
 finds?  It is the longest match of your input pattern that is ''common to all candidates''
 and also ''contains the first input match'' in the ''first or second candidate'', whichever is longer.
 
@@ -109,10 +133,10 @@ example, with apropos completion input `##a.z##' and candidates `abz' and `apz',
 ''no'' expanded common match.  The substring `a' is common to both
 candidates, but it is not matched by the (complete) input pattern.
 
-Finally, note that in Emacs 20 no common match is found if your
+(Note that in Emacs 20 no common match is found if your
 input or any of the candidates contains binary data.  This is
 because function `string-match' cannot handle strings with binary
-data in Emacs 20.
+data in Emacs 20.)
 
 Here is a screenshot showing the highlighting of the extended common match in the [[minibuffer]] and in [[buffer]] `*Completions*'. 
 
