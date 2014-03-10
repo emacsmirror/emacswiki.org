@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Mar 10 09:45:30 2014 (-0700)
+;; Last-Updated: Mon Mar 10 11:01:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7087
+;;     Update #: 7095
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2811,7 +2811,7 @@ If called from Lisp:
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
 ;; 5. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
 ;;    Remove them also from bookmark names in a sequence bookmark `sequence' entry.
-;; 6. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
+;; 6. Bind `print-circle' around `pp', to record bNAME with `bmkp-full-record' prop, when appropriate.
 ;; 7. Use `case', not `cond'.
 ;; 8. Run `bmkp-write-bookmark-file-hook' functions after writing the bookmark file.
 ;;
@@ -2862,7 +2862,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                        (put-text-property 0 (length bname) (car (cadr entry)) nil bname)))))
             (setcar bmk bname)
             (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
-            (let ((print-circle  t))
+            (let ((print-circle  bmkp-propertize-bookmark-names-flag))
               (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
                   (pp bmk (current-buffer))
                 ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
@@ -3673,7 +3673,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                 ";; either a string or a cons whose key is a string.\n;;\n"
                 ";; DO NOT MODIFY THESE COMMENTS.\n;;\n"
                 ";; Type \\<bmkp-edit-tags-mode-map>`\\[bmkp-edit-tags-send]' when done.\n\n")))
-      (let ((print-circle  t)) (pp btags))
+      (let ((print-circle  bmkp-propertize-bookmark-names-flag)) (pp btags))
       (goto-char (point-min)))
     (pop-to-buffer edbuf)
     (buffer-enable-undo)
@@ -3908,7 +3908,7 @@ Non-interactively, optional arg MSG-P means display progress messages."
         (delete-region (point-min) (point-max))
         (let ((print-length           nil)
               (print-level            nil)
-              (print-circle           t)
+              (print-circle           bmkp-propertize-bookmark-names-flag)
               (version-control        (case bookmark-version-control
                                         ((nil)      nil)
                                         (never      'never)
@@ -8424,7 +8424,7 @@ VARIABLES is the list of variables.  Each entry in VARIABLES is either
              (condition-case nil
                  (let ((print-readably  t)
                        (print-level     nil)
-                       (print-circle    t))
+                       (print-circle    bmkp-propertize-bookmark-names-flag))
                    (prin1 value (current-buffer)) ; Print value into a buffer and try to read back.
                    (read (point-min-marker))
                    t)
