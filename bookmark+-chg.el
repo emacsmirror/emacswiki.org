@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar 10 09:57:44 2014 (-0700)
+;; Last-Updated: Mon Mar 10 11:13:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15468
+;;     Update #: 15479
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -149,6 +149,8 @@
 ;; 2014/03/10 dadams
 ;;     bookmark-write-file:
 ;;       Remove prop face & Icicles props, anyway (but not bothering for sequence entry of seq bmks).
+;;     bookmark-write-file, bmkp-edit-tags, bmkp-save-menu-list-state, bmkp-readable-p:
+;;       Bind print-circle to bmkp-propertize-bookmark-names-flag, not t, to avoid string reuse.
 ;; 2014/03/07 dadams
 ;;     bookmark-exit-hook-internal: Do not raise error, since this is on kill-emacs-hook.
 ;;     Bug reported: http://superuser.com/q/726057/250462.
@@ -979,6 +981,8 @@
 ;;
 ;; 2014/03/10 dadams
 ;;     bmkp-maybe-unpropertize-bookmark-names: Remove prop face & Icicles props, in any case.
+;;     bmkp-bmenu-define(-jump-marked|-full-snapshot)-command, bmkp-define-tags-sort-command:
+;;       Bind print-circle to bmkp-propertize-bookmark-names-flag, not t, to avoid string reuse.
 ;; 2013/12/13 dadams
 ;;     bmkp-bmenu-mode-line:
 ;;       To avoid Emacs crashes from bug #12867: Do not define it for Emacs 22-23, and wrap
