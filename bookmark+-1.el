@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar  7 19:29:06 2014 (-0800)
+;; Last-Updated: Mon Mar 10 09:45:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7080
+;;     Update #: 7087
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2832,6 +2832,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
       (delete-region (point-min) (point-max))
       (let ((print-length  nil)
             (print-level   nil)
+            (rem-all-p     (or (not (> emacs-major-version 20)) ; Cannot do `(not (boundp 'print-circle))'.
+                               (not bmkp-propertize-bookmark-names-flag)))
             bname fname last-fname)
         (bookmark-insert-file-format-version-stamp)
         (insert "(")
@@ -2839,17 +2841,29 @@ contain a `%s' construct, so that it can be passed along with FILE to
           (unless (bmkp-temporary-bookmark-p bmk)
             (setq bname  (car bmk)
                   fname  (bookmark-get-filename bmk))
-            ;; Remove text properties from bookmark name.
-            (when (or (not (> emacs-major-version 20)) ; Emacs 20 cannot do `(not (boundp 'print-circle))'.
-                      (not bmkp-propertize-bookmark-names-flag))
-              (set-text-properties 0 (length bname) () bname)
-              (when fname (set-text-properties 0 (length fname) () fname)))
+            (cond (rem-all-p            ; Remove text properties from bookmark name and file name.
+                   (set-text-properties 0 (length bname) () bname)
+                   (when fname (set-text-properties 0 (length fname) () fname)))
+                  (t                    ; Remove property `face' and any Icicles internal properties.
+                   (remove-text-properties
+                    0 (length bname) '(face                     nil
+                                       display                  nil
+                                       help-echo                nil
+                                       rear-nonsticky           nil
+                                       icicle-fancy-candidates  nil
+                                       icicle-mode-line-help    nil
+                                       icicle-special-candidate nil
+                                       icicle-user-plain-dot    nil
+                                       icicle-whole-candidate   nil
+                                       invisible                nil)
+                    bname)
+                   (when (boundp 'icicle-candidate-properties-alist) ; Multi-completion indexes + text props.
+                     (dolist (entry  icicle-candidate-properties-alist)
+                       (put-text-property 0 (length bname) (car (cadr entry)) nil bname)))))
             (setcar bmk bname)
             (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
             (let ((print-circle  t))
-              (if (not (and (or (not (> emacs-major-version 20)) ; Emacs 20.
-                                (not bmkp-propertize-bookmark-names-flag))
-                            (bmkp-sequence-bookmark-p bmk)))
+              (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
                   (pp bmk (current-buffer))
                 ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
                 (insert "(\"" (let ((sname  (copy-sequence (car bmk))))
