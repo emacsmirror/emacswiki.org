@@ -69,11 +69,12 @@ Set it to `nil' to turn off this automatic Icomplete mode toggling.  Set it to a
 or smaller maximum number of candidates to reduce or increase
 its effect.
 
-: It is the act of ''completion'' that causes '''Icicles''' to check the
+: It is the act of displaying completion candidates that causes '''Icicles''' to check the
 number of candidates against the option value and thus perhaps
 toggle the mode.  This is the case regardless of how completion
 is initiated: whether manually (`TAB' or `S-TAB') or
-automatically (see [[#CompletionsIcompletion|Apropos and Prefix Completion]], below).
+automatically.  But it is not the case for
+'''Icicles''' completion that does not display candidates (`C-M-TAB', `C-M-S-TAB').  (See also [[#CompletionsIcompletion|Apropos and Prefix Completion]], below).
 
 * In addition to this automatic toggling, '''Icicles''' [[multi-command]]s
 that typically display a large number of completion candidates
