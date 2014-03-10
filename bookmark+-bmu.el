@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec 26 08:31:14 2013 (-0800)
+;; Last-Updated: Mon Mar 10 09:18:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2593
+;;     Update #: 2614
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4128,17 +4128,34 @@ Non-nil optional arg COPY means copy also each element of LIST.  Use
 this if, for example, you have bookmark lists that share bookmarks and
 you want to treat the shared bookmarks separately.
 
-Do nothing in Emacs 21 or later or if
-`bmkp-propertize-bookmark-names-flag' is nil.  In these cases, just
-return the list."
-  (if (and (> emacs-major-version 20)   ; Emacs 21+.  Cannot just use (boundp 'print-circle).
-           bmkp-propertize-bookmark-names-flag)
-      list
-    (let ((new-list  (copy-sequence list)))
-      (dolist (bmk  new-list)
-        (when (and (consp bmk)  (stringp (car bmk))) (setq bmk  (car bmk)))
-        (when (stringp bmk) (set-text-properties 0 (length bmk) nil bmk)))
-      (if copy (mapcar #'copy-sequence new-list) new-list))))
+Always strip property `face' and internal Icicles properties.  Remove
+other text properties only if using Emacs 20 or if option
+`bmkp-propertize-bookmark-names-flag' is non-nil."
+  (let ((new-list   (copy-sequence list))
+        (rem-all-p  (or (not bmkp-propertize-bookmark-names-flag)
+                        (< emacs-major-version 21)))) ; Cannot just use (not (boundp 'print-circle)).
+    (dolist (bmk  new-list)
+      (when (and (consp bmk)  (stringp (car bmk))) (setq bmk  (car bmk)))
+      (when (stringp bmk)
+        (let ((len  (length bmk)))
+          (if rem-all-p
+              (set-text-properties 0 len nil bmk)
+            (remove-text-properties     ; Remove property `face' and any Icicles internal properties.
+             0 len '(face                     nil
+                     display                  nil
+                     help-echo                nil
+                     rear-nonsticky           nil
+                     icicle-fancy-candidates  nil
+                     icicle-mode-line-help    nil
+                     icicle-special-candidate nil
+                     icicle-user-plain-dot    nil
+                     icicle-whole-candidate   nil
+                     invisible                nil)
+             bmk)
+            (when (boundp 'icicle-candidate-properties-alist) ; Multi-completion indexes + text props.
+              (dolist (entry  icicle-candidate-properties-alist)
+                (put-text-property 0 len (car (cadr entry)) nil bmk)))))))
+    (if copy (mapcar #'copy-sequence new-list) new-list)))
 
 (defun bmkp-maybe-unpropertize-string (string &optional copy)
   "Strip properties from STRING.
@@ -4147,8 +4164,8 @@ Non-nil optional arg COPY means return a copy of the unpropertized
 STRING.
 
 Do nothing in Emacs 21 or later or if
-`bmkp-propertize-bookmark-names-flag' is nil.  In these cases, just
-return STRING unmodified."
+`bmkp-propertize-bookmark-names-flag' is non-nil.  In these cases,
+just return STRING unmodified."
   (unless (and (> emacs-major-version 20) ; Emacs 21+.  Cannot just use (boundp 'print-circle).
                bmkp-propertize-bookmark-names-flag)
     (set-text-properties 0 (length string) nil string)
