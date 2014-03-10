@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar 10 09:18:17 2014 (-0700)
+;; Last-Updated: Mon Mar 10 11:01:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2614
+;;     Update #: 2616
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3965,7 +3965,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
-            (print-circle           t)
+            (print-circle           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4015,7 +4015,7 @@ Use the command at any time to restore them."
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
-            (print-circle           t)
+            (print-circle           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4096,7 +4096,7 @@ the omit list and the sort & filter information."
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
-            (print-circle           t)
+            (print-circle           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4214,7 +4214,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
-            (print-circle           t)
+            (print-circle           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
