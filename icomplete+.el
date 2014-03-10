@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar  5 10:53:10 2014 (-0800)
+;; Last-Updated: Mon Mar 10 10:26:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1669
+;;     Update #: 1671
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/10 dadams
+;;     icomplete-exhibit: Reverted fix from 2014-03-05 for Emacs < 23 (broke progressive completion).
 ;; 2014/03/05 dadams
 ;;     icomplete-exhibit: Wrap body with with-current-buffer, to prevent using *Completions* buffer.
 ;; 2014/01/11 dadams
@@ -388,46 +390,45 @@ This has no effect unless library `icicles.el' is being used."
 Should be run via minibuffer `post-command-hook'.
 See `icomplete-mode' and `minibuffer-setup-hook'."
     (when (icomplete-simple-completing-p)
-      (with-current-buffer (window-buffer (active-minibuffer-window))
-        (save-match-data
-          (let* ((minibuf-begin     (if (< emacs-major-version 21)
-                                        (point-min)
-                                      (minibuffer-prompt-end)))
-                 (contents          (buffer-substring minibuf-begin (point-max)))
-                 (buffer-undo-list  t))
-            (save-excursion
-              (goto-char (point-max))
-              ;; Register the end of input, so we know where the extra stuff
-              ;; (match-status info) begins:
-              (unless (boundp 'icomplete-eoinput)
-                ;; In case it got wiped out by major mode business:
-                (make-local-variable 'icomplete-eoinput))
-              (setq icomplete-eoinput  (point))
-              ;; Insert the match-status information:
-              (when (and (> (point-max) minibuf-begin)
-                         (save-excursion ; Do nothing if looking at a list, string, etc.
-                           (goto-char minibuf-begin)
-                           (not (looking-at ; No (, ", ', 9 etc. at start.
-                                 "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)")))
-                         (or
-                          ;; Do not bother with delay after certain number of chars:
-                          (> (point-max) icomplete-max-delay-chars)
-                          ;; Do not delay if alternatives number is small enough:
-                          (if minibuffer-completion-table
-                              (cond ((numberp minibuffer-completion-table)
-                                     (< minibuffer-completion-table
-                                        icomplete-delay-completions-threshold))
-                                    ((sequencep minibuffer-completion-table)
-                                     (< (length minibuffer-completion-table)
-                                        icomplete-delay-completions-threshold))))
-                          ;; Delay - give some grace time for next keystroke, before
-                          ;; embarking on computing completions:
-                          (sit-for icomplete-compute-delay)))
-                (insert
-                 (icomplete-completions contents minibuffer-completion-table
-                                        minibuffer-completion-predicate
-                                        (not minibuffer-completion-confirm)))))
-            (setq deactivate-mark  nil))))))) ; Don't let the insert deactivate the mark.
+      (save-match-data
+        (let* ((minibuf-begin     (if (< emacs-major-version 21)
+                                      (point-min)
+                                    (minibuffer-prompt-end)))
+               (contents          (buffer-substring minibuf-begin (point-max)))
+               (buffer-undo-list  t))
+          (save-excursion
+            (goto-char (point-max))
+            ;; Register the end of input, so we know where the extra stuff
+            ;; (match-status info) begins:
+            (unless (boundp 'icomplete-eoinput)
+              ;; In case it got wiped out by major mode business:
+              (make-local-variable 'icomplete-eoinput))
+            (setq icomplete-eoinput  (point))
+            ;; Insert the match-status information:
+            (when (and (> (point-max) minibuf-begin)
+                       (save-excursion  ; Do nothing if looking at a list, string, etc.
+                         (goto-char minibuf-begin)
+                         (not (looking-at ; No (, ", ', 9 etc. at start.
+                               "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)")))
+                       (or
+                        ;; Do not bother with delay after certain number of chars:
+                        (> (point-max) icomplete-max-delay-chars)
+                        ;; Do not delay if alternatives number is small enough:
+                        (if minibuffer-completion-table
+                            (cond ((numberp minibuffer-completion-table)
+                                   (< minibuffer-completion-table
+                                      icomplete-delay-completions-threshold))
+                                  ((sequencep minibuffer-completion-table)
+                                   (< (length minibuffer-completion-table)
+                                      icomplete-delay-completions-threshold))))
+                        ;; Delay - give some grace time for next keystroke, before
+                        ;; embarking on computing completions:
+                        (sit-for icomplete-compute-delay)))
+              (insert
+               (icomplete-completions contents minibuffer-completion-table
+                                      minibuffer-completion-predicate
+                                      (not minibuffer-completion-confirm)))))
+          (setq deactivate-mark  nil)))))) ; Don't let the insert deactivate the mark.
 
 
 ;;; These two macros are defined in `subr.el' for Emacs 23+.
