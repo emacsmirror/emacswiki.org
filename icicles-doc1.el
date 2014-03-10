@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Mar  9 16:44:07 2014 (-0700)
+;; Last-Updated: Sun Mar  9 17:04:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28165
+;;     Update #: 28167
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4101,11 +4101,13 @@
 ;;    or smaller maximum number of candidates to reduce or increase
 ;;    its effect.
 ;;
-;;    It is the act of completion that causes Icicles to check the
-;;    number of candidates against the option value and thus perhaps
-;;    toggle the mode.  This is the case regardless of how completion
-;;    is initiated: whether manually (`TAB' or `S-TAB') or
-;;    automatically (see
+;;    It is the act of displaying completion candidates that causes
+;;    Icicles to check the number of candidates against the option
+;;    value and thus perhaps toggle the mode.  This is the case
+;;    regardless of how completion is initiated: whether manually
+;;    (`TAB' or `S-TAB') or automatically.  But it is not the case for
+;;    Icicles completion that does not display candidates (`C-M-TAB',
+;;    `C-M-S-TAB').  (See also
 ;;    (@* "Icompletion in *Completions*: Apropos and Prefix Completion"), below).
 ;;
 ;;  * In addition to this automatic toggling, Icicles multi-commands
