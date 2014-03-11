@@ -23,7 +23,7 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 
 The development version is at:
 
-    git clone git://repo.or.cz/org-mode.git
+    git clone git://orgmode.org/org-mode.git
 
 There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
 
