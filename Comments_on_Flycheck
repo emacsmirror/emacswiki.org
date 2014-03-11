@@ -1,8 +1,8 @@
 Can you please add this to the absolute top of the page:
-
+{{{
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'flycheck-mode-hook 'flycheck-list-errors) ;; For wide screens
-
+}}}
 -- David E 2014-03-11 18:44 UTC
 
 
