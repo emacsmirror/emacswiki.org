@@ -1,23 +1,19 @@
 [[en:SelfDocumentation]]
 
-Emacs est un éditeur qui auto-documente.
-Cette documentation est principalement disponible en anglais seulement.
+Emacs est un éditeur auto-documenté.
+Cette documentation est disponible en anglais seulement.
 
-* <code>C-h a</code> -- Recherche parmi les commandes interactives (M-x)
+* <code>C-h a</code> -- Recherche parmi les commandes interactives (c'est-à-dire susceptibles d'être appelées avec M-x).
 * <code>C-h i d m Emacs</code> -- Ouvre le manuel (Info) d'emacs. Utilisez <code>`i'</code> pour aller à un point particulier ou utilisez  <code>`s'</code>  pour chercher un texte. 
-* <code>C-h k</code> -- Cette commande suivi d'une touche (ou combinaison de touches) explique la commande qui aurait été invoquée dans le contexte actuel.
+* <code>C-h k</code> -- Cette commande, suivie d'une touche ou d'une combinaison de touches ou d'un clic sur un item de menu, explique la commande qui aurait été invoquée dans le contexte actuel.
 * <code>M-x apropos-documentation</code> -- Recherche dans la documentation.
-* <code>C-h F</code> -- Affiche la FAQ. utilisez 'i' et 's' pour chercher.
-* <code>M-x apropos</code> -- Recherche dans les noms des fonctions et variables.
+* <code>C-h F</code> -- Affiche la FAQ. Puis utilisez <code>`i'</code> ou <code>`s'</code> pour chercher dans la FAQ.
+* <code>M-x apropos</code> -- Recherche dans les noms des variables, fonctions et commandes (qui sont des fonctions interactives).
 * <code>C-h p</code> -- Liste les 'packages' par catégories.
-
-Vous pouvez aussi tapez un préfixe suivi de <code>C-h</code> pour voir
-la liste des touches possibles à la suite de ce préfixe, sauf si
-<code>C-h</code> est lui même une touche possible.
-
+* <code><prefix> C-h</code> -- Liste les touches possibles à la suite de ce préfixe, sauf si <code>C-h</code> est lui même une touche possible.
 Par exemple, si vous vous rappelez que <code>C-x r</code> est le
-préfixe pour diverses commandes relatives aux registres et en voulez
-la liste, vous tapez <code>C-x r C-h</code>
+préfixe pour diverses commandes relatives aux registres et que vous en voulez
+la liste, vous pouvez taper <code>C-x r C-h</code>
 
 ----
 CatégorieAide
