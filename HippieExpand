@@ -235,6 +235,37 @@ In order for the above to work with lisp code (which include hyphens) change str
 
 -- ScottJaderholm
 
+[new]
+You mean `thing-at-point'? :-)
+
+Also the code might be refactored a bit:
+
+* The <code>(if (not old) ...)</code> expression:
+
+<pre>
+  (unless old
+    (he-init-string (he-lisp-symbol-beg) (point))
+    (if (not (he-string-member he-search-string he-tried-table))
+        (setq he-tried-table (cons he-search-string he-tried-table)))
+    (setq he-expand-list
+          (and (not (equal he-search-string ""))
+               (he-flexible-abbrev-collect he-search-string))))
+</pre>
+
+* And <code>(if (null he-expand-list) ...)</code> should be replace by `cond' since both clauses have `progn':
+
+<pre>
+  (cond ((null he-expand-list)
+         (if old (he-reset-string))
+         nil)
+        (t
+         (he-substitute-string (car he-expand-list))
+         (setq he-expand-list (cdr he-expand-list))
+         t))
+</pre>
+
+-- DuongNguyen
+
 == Don't add extra paren when expanding line with paredit ==
 If you use paredit or something to add closing parens then hippie expand line can be problematic because you will end up with an extra closing paren. This could should fix that
 <pre>
