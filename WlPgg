@@ -1,4 +1,4 @@
-The SEMI package ships with an out of date version of pgg which does not, for example, support gpg-agent. Unfortunately, at least on Ubuntu, this outdated PGG overrides the version shipped with Emacs 22.
+Some older versions of SEMI ship with an out of date version of pgg which does not, for example, support gpg-agent. Unfortunately, at least on Ubuntu, this outdated PGG overrides the version shipped with Emacs 22.
 
 Fortunately, SEMI seems to work fine with a more up-to-date PGG. To use the more up-to-date version of PGG, simply delete all pgg*.elc? files shipped with SEMI.
 
