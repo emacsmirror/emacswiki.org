@@ -235,7 +235,7 @@ In order for the above to work with lisp code (which include hyphens) change str
 
 -- ScottJaderholm
 
-[new]
+[new:DuongNguyen:2014-03-11 11:57 UTC+7]
 You mean `thing-at-point'? :-)
 
 Also the code might be refactored a bit:
@@ -262,6 +262,12 @@ Also the code might be refactored a bit:
          (he-substitute-string (car he-expand-list))
          (setq he-expand-list (cdr he-expand-list))
          t))
+</pre>
+
+* And last, `add-to-list' is better than `setq' (last line):
+
+<pre>
+(add-to-list 'hippie-expand-try-functions-list 'try-expand-flexible-abbrev)
 </pre>
 
 -- DuongNguyen
