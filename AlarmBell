@@ -125,6 +125,36 @@ Two points. The LED numbers are different on different hardware.  And on some sy
 	   (call-process-shell-command "xset led named 'Scroll Lock'")
 	   (call-process-shell-command "xset -led named 'Scroll Lock'")))
 
+The following version of caps lock flash uses emacs-deferred for async, timing and error checking.
+
+    (defvar flash-scroll-lock-enabled t)
+    (defvar flash-scroll-lock-active nil)
+    (defun flash-scroll-lock ()
+      (interactive)
+      (when (and
+             (not flash-scroll-lock-active)
+             flash-scroll-lock-enabled)
+        (setq flash-scroll-lock-active t)
+        (deferred:$
+          (deferred:$
+            (deferred:process  "xset" "led" "named" "Scroll Lock")
+            (deferred:nextc it
+              (lambda ()
+                (deferred:wait 300)))
+            (deferred:nextc it
+              (lambda ()
+                (deferred:process  "xset" "-led" "named" "Scroll Lock")))
+            (deferred:nextc it
+              (lambda ()
+                (deferred:wait 500)))
+            (deferred:nextc it
+              (lambda ()
+                (setq flash-scroll-lock-active nil))))
+          (deferred:error it
+            (lambda (err)
+              (setq flash-scroll-lock-active nil)
+              (setq flash-scroll-lock-enabled nil))))))
+
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
 == A predicate for suppressing the bell at night ==
