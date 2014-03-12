@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:47:41 2013 (-0800)
+;; Last-Updated: Wed Mar 12 09:07:21 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1243
+;;     Update #: 1245
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/03/12 dadams
+;;     Bind C-M-^ to up-list, i.e., forward direction.
 ;; 2013/11/18 dadams
 ;;     Bind C-x C-; to comment-region-lines instead of comment-region.
 ;;     Do not require simple+.el.
@@ -396,6 +398,8 @@
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary) ; In `mouse.el'.
 (global-set-key [C-M-mouse-3] 'mouse-secondary-save-then-kill) ; `second-sel.el'. `C-M-mouse-3'
 (global-set-key [C-M-mouse-2] 'mouse-yank-secondary) ; `mouse+.el' or `mouse.el'  `C-M-mouse-2'
+
+(global-set-key "\C-\M-^" 'up-list)                                              ; `C-M-^'
 
 (eval-after-load "mouse+"
   '(progn                               ; Highlight yank position or call `M-x' in echo area.
