@@ -56,4 +56,8 @@ Processing <tt>speck.texi</tt> with <tt>makeinfo</tt> 4.0 gives:
     speck.texi:729: Misplaced }.
   
 ----
+[new:emelin:2014-03-12 12:02 UTC]
+
+Has anybody seen speck dealing with german Umlaute on emacs 24 ?? Can't get it run without failing at each ä, ü, ö etc.
+----
 CategorySpelling
