@@ -41,88 +41,40 @@ On dark backgrounds, I recommend checking out bitmap fonts instead of TrueType o
 
 == Variations ==
 
-=== For 1920x1080 27" ===
-
+=== 27", 1920x1080 ===
 A  good customer rated 27" monitor cost from $270 and give you most inch per dollar ($27) in contrast to other dimensions. Also, the free graphic driver Nouveau are stable and works fine with many graphic cards.
 
 *DejaVu Sans Mono 12* was very good.
 
 -- David Englund
 
-=== For 1024x600, 8.9" ===
+=== 19", 1600x1200 ===
+* ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder) -- '''neep''' might require ##(setq x-use-underline-position-properties nil)##
 
-* ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
+: Debian's ##xfonts-jmk## package fixes the underline position bug as of 3.0-17.
 
-=== For 1280x768, 10.6" ===
-
-* 20-point Lucida Console full-screens to 80x28, and is quite nice and readable. (EdwardOConnor)
-
-=== For 1024x768, 14" (iBook) ===
-
-* Monaco, the default used by the CarbonEmacsPackage (AlexSchroeder, [http://www.emacswiki.org/alex/pics/pink-bliss.png screenshot])
-
-=== For 1024x768, 15" (LCD) ===
-
-* ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder, [http://www.emacswiki.org/alex/pics/root-2003-11-01.png screenshot]) -- '''neep''' might require <code>(setq x-use-underline-position-properties nil)</code>. Gives 37 lines and 100 columns.
-: Debian's xfonts-jmk package fixes the underline position bug as of 3.0-17.
-
-* ##-*-terminus-medium-r-*-*-*-140-75-75-*-*-iso8859-15## -- gives 53 lines and 125 columns, or even
-
-* ##-*-terminus-medium-r-*-*-*-120-75-75-*-*-iso8859-15## -- with <code>(setq line-spacing 2)</code> for 62 lines and 167 columns. --EmilioLopes
-
-* ##-raster-Fixedsys-normal-r-normal-normal-12-90-96-96-c-*-*-*## (MacChan)
-
-* 9-point fixedsys windows xp
-
-: http://static.flickr.com/72/165054405_0296134b44_o.jpg
-
-=== For 1024x768, 17" (CRT) ===
-
-* ##-xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1## (JorgenSchaefer)
-
-=== For 1280x1024, 17" (LCD) ===
-
-* ##-*-Monaco-normal-r-*-*-17-102-120-120-c-*-iso8859-1## (MacChan)
-
-* 10-point Monaco Windows XP with ClearType enable
-
-=== For 1024x768, 19" ===
-
-* ##7x14## (AlexSchroeder)
-* ##-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-2## (JakubNarebski)
-
-=== 1280x1024 or 1600x1200, 19" ===
-
+=== 19", 1600x1200 or 1280x1024 ===
 * -*-'''''Lucida Console-normal'''''-r-*-*-14-112-96-96-c-*-iso8859-1 -- on Windows (DrewAdams)
 [[image:DrewEmacsFontEg]]
-
 * ##-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso8859-1## (WalterHiggins)
 http://static.flickr.com/112/252293241_63415bf385_o.gif?type=.png
-
 * ##-dec-terminal-medium-r-normal-*-*-140-*-*-c-*-iso8859-1## (ErikBourget)
 * ##-xos4-terminus-medium-r-normal--14-140-*-*-*-*-*-*## (JeremyCowgar)
 
-=== 1280x800, 13" ===
+=== 19", 1024x768 ===
+* ##7x14## (AlexSchroeder)
+* ##-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-2## (JakubNarebski)
 
-* [http://www.levien.com/type/myfonts/inconsolata.html Inconsolata] ##(set-face-attribute 'default nil :family "Inconsolata" :height 140)## (AmitPatel)
+=== 17" (LCD), 1280x1024 ===
+* ##-*-Monaco-normal-r-*-*-17-102-120-120-c-*-iso8859-1## (MacChan)
+* 10-point Monaco Windows XP with ClearType enable
 
-: http://lh5.ggpht.com/_kV9ZnGnZL7M/Sol67UA6LlI/AAAAAAAABB0/9b1jkiM2XBU/s800/Inconsolata%20on%20Mac.png
+=== 17" (CRT), 1024x768 ===
+* ##-xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1## (JorgenSchaefer)
 
-* [http://www.ms-studio.com/FontSales/anonymouspro.html Anonymous Pro]: ##(set-face-attribute 'default nil :family "Anonymous Pro" :height 140)## (AmitPatel)
-
-: http://lh6.ggpht.com/_kV9ZnGnZL7M/Sol718cBLnI/AAAAAAAABB4/C5WO42ZSIPU/s800/Anonymous%20Pro%20on%20Mac.png
-
-=== For 1600x1200, 19" ===
-
-* ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder) -- '''neep''' might require ##(setq x-use-underline-position-properties nil)##
-: Debian's ##xfonts-jmk## package fixes the underline position bug as of 3.0-17.
-
-=== For 1600x1200, 15" (LCD) ===
-
+=== 15" (LCD), 1600x1200 ===
 * ##neep-alt-24## -- Most XFree86 distributions come with Lucida Typewriter as a fixed-width font.  It's about the best I've found.  I know a lot of others use it as well.  The size depends on your monitor.  I typically use 12pt. -- LathI
-
 * ##-*-lucidatypewriter-medium-*-*-*-12-*-*-*-*-*-*-*## -- In addition, if you want the italic shape, which isn't available in the free lucidatypewriter, try the iso8859-1 encoding of GNU Intlfonts (Where is this font? Is it the same as misc-fixed?) or the misc-fixed font (which is part of the standard XFree86 4.1 distro).  If you only have occasional italics, it's reasonable to mix the faces, e.g. with an extra X resource as follows.  -- fx
-
 * ##Emacs.italic.attributeFont:  -*-fixed-medium-o-*-*-*-120-*-*-*-*-*-*## -- The lucydatypewriter font is missing some more unicode characters than the fixed fonts.  If you want to use lucidatypewriter but display unicode characters like math symbols or line drawing characters with the fixed font you can do this with FontSets.
 
 : The following lines are from my ##~/.Xresources##
@@ -144,6 +96,7 @@ http://static.flickr.com/112/252293241_63415bf385_o.gif?type=.png
 : Which is the tiniest bit larger than I'd like it to be, but every character is unmistakable, and it looks a lot like ol' lucidatypewriter ([http://deneb.collapsar.net/~mdxi/cruft/bvsm.png sample]). (ShawnBoyette)
 
 [new]
+
 :: http://www.lowing.org/fonts/ has a good overview of monospaced fonts for coding (AadityaSood)
 
 [new]
@@ -172,6 +125,35 @@ Update @2008-04-01: This is Liberation Mono 12. Note a somewhat better hinting:
 [[image:DmFontLiberationTwelve]]
 
 If you need a better Unicode coverage, GNU Unifont might work.  However, it only gives you regular (i.e. no bold / italics).
+
+=== 15" (LCD), 1024x768 ===
+* ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder, [http://www.emacswiki.org/alex/pics/root-2003-11-01.png screenshot]) -- '''neep''' might require <code>(setq x-use-underline-position-properties nil)</code>. Gives 37 lines and 100 columns.
+
+: Debian's xfonts-jmk package fixes the underline position bug as of 3.0-17.
+
+* ##-*-terminus-medium-r-*-*-*-140-75-75-*-*-iso8859-15## -- gives 53 lines and 125 columns, or even
+* ##-*-terminus-medium-r-*-*-*-120-75-75-*-*-iso8859-15## -- with <code>(setq line-spacing 2)</code> for 62 lines and 167 columns. --EmilioLopes
+* ##-raster-Fixedsys-normal-r-normal-normal-12-90-96-96-c-*-*-*## (MacChan)
+* 9-point fixedsys windows xp
+
+: http://static.flickr.com/72/165054405_0296134b44_o.jpg
+
+=== 14" (iBook), 1024x768 ===
+* Monaco, the default used by the CarbonEmacsPackage (AlexSchroeder, [http://www.emacswiki.org/alex/pics/pink-bliss.png screenshot])
+
+=== 13", 1280x800 ===
+* [http://www.levien.com/type/myfonts/inconsolata.html Inconsolata] ##(set-face-attribute 'default nil :family "Inconsolata" :height 140)## (AmitPatel)
+: http://lh5.ggpht.com/_kV9ZnGnZL7M/Sol67UA6LlI/AAAAAAAABB0/9b1jkiM2XBU/s800/Inconsolata%20on%20Mac.png
+
+* [http://www.ms-studio.com/FontSales/anonymouspro.html Anonymous Pro]: ##(set-face-attribute 'default nil :family "Anonymous Pro" :height 140)## (AmitPatel)
+
+: http://lh6.ggpht.com/_kV9ZnGnZL7M/Sol718cBLnI/AAAAAAAABB4/C5WO42ZSIPU/s800/Anonymous%20Pro%20on%20Mac.png
+
+=== 10.6", 1280x768 ===
+* 20-point Lucida Console full-screens to 80x28, and is quite nice and readable. (EdwardOConnor)
+
+=== 8.9", 1024x600 ===
+* ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
 
 == Test ==
 
