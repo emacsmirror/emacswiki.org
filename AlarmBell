@@ -146,7 +146,7 @@ The following version of caps lock flash uses emacs-deferred for async, timing a
                 (deferred:process  "xset" "-led" "named" "Scroll Lock")))
             (deferred:nextc it
               (lambda ()
-                (deferred:wait 500)))
+                (deferred:wait 200)))
             (deferred:nextc it
               (lambda ()
                 (setq flash-scroll-lock-active nil))))
