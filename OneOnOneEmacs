@@ -601,4 +601,64 @@ To find the problem yourself, try commenting out parts of that autoloads file yo
 
 ----
 
+[new:JohanWiden:2014-03-13 07:20 UTC]
+I have found oneonone, together with autofit-frame, to be very useful, especially when want to have many frames.
+
+When I initially tried oneonone I was put off by the fact that oneonone was incompatible with my color theme, that it overrode my choice of font,
+and that it can not be used from emacsdaemon.
+Below I describe how I worked around these problems. It's a quick an dirty solution: I commented out som lines in oneonone.el.
+
+The changes are against oneonone.el version 20131227.143.
+
+In lon1-minibuffer-frame-alist I commented out
+  (or (assq 'font minibuffer-frame-alist)
+      (cons 'font lon1-minibuffer-frame-font))
+
+In lon1-default-frame-alist I commented out
+  (or (assq 'foreground-color default-frame-alist)
+      (cons 'foreground-color lon1-default-frame-foreground))
+  (or (assq 'background-color default-frame-alist)
+      (cons 'background-color lon1-default-frame-background))
+  (or (assq 'font default-frame-alist)
+      (cons 'font lon1-default-frame-font))
+
+In lon1-special-display-frame-alist I commented out
+  (or (assq 'font special-display-frame-alist)
+      (cons 'font lon1-default-special-frame-font))
+and
+  (or (assq 'foreground-color special-display-frame-alist)
+      (cons 'foreground-color lon1-default-special-frame-foreground)
+
+In my emacs start up code I require oneonone.el and configure it only
+when emacs is not running as a daemon:
+
+  (unless (daemonp)
+    code to require oneonone, and configure it
+  )
+
+This way I can have en emmacsdaemon running without oneonone, and I can also start
+a non daemon emacs that uses oneonone.
+
+Below are some configuration settings for oneonone that I use together with the zenburn color theme.
+I make no claim that the choice of background color for minibuffer and help text are optimal,
+but I think they are reasonable.
+These are som quick choices I made to get legible text.
+  ; Do not allow the minibuffer to eat up a lot of screen real estate
+  (setq lon1-minibuffer-frame-width 80)
+
+  ; colors
+  (setq lon1-minibuffer-frame-foreground "YellowGreen")
+  (setq lon1-minibuffer-frame-background "brown4")
+  (setq lon1-active-minibuffer-frame-background "gray10")
+  (setq lon1-inactive-minibuffer-frame-background "brown4")
+  (setq lon1-isearch-minibuffer-frame-background "sienna4")
+  (setq lon1-minibuffer-frame-cursor-color "Red")
+  (setq lon1-help-frame-background "black")
+  (setq lon1-completions-frame-background "tan4")
+  (setq lon1-default-special-frame-background "IndianRed4")
+  (setq lon1-default-frame-cursor-color "firebrick")
+
+---
+
+
 CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize
