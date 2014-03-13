@@ -39,7 +39,9 @@ recommendations by users for specific situations.  See also SetFonts.
 [new]
 On dark backgrounds, I recommend checking out bitmap fonts instead of TrueType ones.
 
-== For 1920x1080 27" ==
+== Variations ==
+
+=== For 1920x1080 27" ===
 
 A  good customer rated 27" monitor cost from $270 and give you most inch per dollar ($27) in contrast to other dimensions. Also, the free graphic driver Nouveau are stable and works fine with many graphic cards.
 
@@ -47,19 +49,19 @@ A  good customer rated 27" monitor cost from $270 and give you most inch per dol
 
 -- David Englund
 
-== For 1024x600, 8.9" ==
+=== For 1024x600, 8.9" ===
 
 * ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
 
-== For 1280x768, 10.6" ==
+=== For 1280x768, 10.6" ===
 
 * 20-point Lucida Console full-screens to 80x28, and is quite nice and readable. (EdwardOConnor)
 
-== For 1024x768, 14" (iBook) ==
+=== For 1024x768, 14" (iBook) ===
 
 * Monaco, the default used by the CarbonEmacsPackage (AlexSchroeder, [http://www.emacswiki.org/alex/pics/pink-bliss.png screenshot])
 
-== For 1024x768, 15" (LCD) ==
+=== For 1024x768, 15" (LCD) ===
 
 * ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder, [http://www.emacswiki.org/alex/pics/root-2003-11-01.png screenshot]) -- '''neep''' might require <code>(setq x-use-underline-position-properties nil)</code>. Gives 37 lines and 100 columns.
 : Debian's xfonts-jmk package fixes the underline position bug as of 3.0-17.
@@ -74,11 +76,11 @@ A  good customer rated 27" monitor cost from $270 and give you most inch per dol
 
 : http://static.flickr.com/72/165054405_0296134b44_o.jpg
 
-== For 1024x768, 17" (CRT) ==
+=== For 1024x768, 17" (CRT) ===
 
 * ##-xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1## (JorgenSchaefer)
 
-== For 1280x1024, 17" (LCD) ==
+=== For 1280x1024, 17" (LCD) ===
 
 * ##-*-Monaco-normal-r-*-*-17-102-120-120-c-*-iso8859-1## (MacChan)
 
@@ -87,12 +89,12 @@ A  good customer rated 27" monitor cost from $270 and give you most inch per dol
 : http://photos21.flickr.com/34135728_376c2837ba_o_d.png
 
 
-== For 1024x768, 19" ==
+=== For 1024x768, 19" ===
 
 * ##7x14## (AlexSchroeder)
 * ##-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-2## (JakubNarebski)
 
-== 1280x1024 or 1600x1200, 19" ==
+=== 1280x1024 or 1600x1200, 19" ===
 
 * -*-'''''Lucida Console-normal'''''-r-*-*-14-112-96-96-c-*-iso8859-1 -- on Windows (DrewAdams)
 [[image:DrewEmacsFontEg]]
@@ -103,7 +105,7 @@ http://static.flickr.com/112/252293241_63415bf385_o.gif?type=.png
 * ##-dec-terminal-medium-r-normal-*-*-140-*-*-c-*-iso8859-1## (ErikBourget)
 * ##-xos4-terminus-medium-r-normal--14-140-*-*-*-*-*-*## (JeremyCowgar)
 
-== 1280x800, 13" ==
+=== 1280x800, 13" ===
 
 * [http://www.levien.com/type/myfonts/inconsolata.html Inconsolata] ##(set-face-attribute 'default nil :family "Inconsolata" :height 140)## (AmitPatel)
 
@@ -113,12 +115,12 @@ http://static.flickr.com/112/252293241_63415bf385_o.gif?type=.png
 
 : http://lh6.ggpht.com/_kV9ZnGnZL7M/Sol718cBLnI/AAAAAAAABB4/C5WO42ZSIPU/s800/Anonymous%20Pro%20on%20Mac.png
 
-== For 1600x1200, 19" ==
+=== For 1600x1200, 19" ===
 
 * ##-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1## (AlexSchroeder) -- '''neep''' might require ##(setq x-use-underline-position-properties nil)##
 : Debian's ##xfonts-jmk## package fixes the underline position bug as of 3.0-17.
 
-== For 1600x1200, 15" (LCD) ==
+=== For 1600x1200, 15" (LCD) ===
 
 * ##neep-alt-24## -- Most XFree86 distributions come with Lucida Typewriter as a fixed-width font.  It's about the best I've found.  I know a lot of others use it as well.  The size depends on your monitor.  I typically use 12pt. -- LathI
 
