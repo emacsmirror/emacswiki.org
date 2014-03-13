@@ -221,6 +221,7 @@ I just read about AllOut mode and wanted to see what it looked like; it would ha
 The highest resolution at GoodFonts are 1600x1200, 19" (see [[GoodFonts#toc11|#TOC11]]). Now, a  good customer rated 27" cost $270 which gives you most inch per dollar ($27) in compared to larger screens. Also, the free graphic driver Nouveau are stable and works with many NVIDIA cards. 
 
 Can you please add 1920x1080, 27" to GoodFonts
+
 --David Englund
 
 == GoodFont screen resolutions list should be sorted DESC == 
@@ -234,8 +235,11 @@ Can you please sort the list descending at GoodFonts like this:
 * For 1280x1024, 17" (LCD)
 * ...
 
-Display resolution list in in software configurations usually begin with highest resolution anyways. For example in terminal see xrandr -q
+Display resolution list in in software configurations usually begin with highest resolution anyways.
 
+For example in terminal see xrandr -q
+
+--David Englund
 
 ----
 CategoryEmacsWikiSite
