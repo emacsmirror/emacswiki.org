@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 134 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 135 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
@@ -62,7 +62,7 @@ __Minor Mode Survey__
 | byte-opt                                         |                   1 |
 | bytecomp                                         |                   2 |
 | cc-mode                                          |                   2 |
-| cl                                               |                  12 |
+| cl                                               |                  13 |
 | cl-macs                                          |                   1 |
 | color                                            |                   1 |
 | column-number-mode                               |                  90 |
@@ -83,7 +83,7 @@ __Minor Mode Survey__
 | desktop                                          |                   3 |
 | desktop-save-mode                                |                  31 |
 | diff-mode                                        |                   2 |
-| dired                                            |                   3 |
+| dired                                            |                   4 |
 | dired-aux                                        |                   4 |
 | dired-hide-details-mode                          |                  16 |
 | dired-x                                          |                  45 |
@@ -97,9 +97,9 @@ __Minor Mode Survey__
 | ediff                                            |                   6 |
 | edmacro                                          |                   2 |
 | eldoc-mode                                       |                  51 |
-| electric-indent-mode                             |                  14 |
+| electric-indent-mode                             |                  15 |
 | electric-layout-mode                             |                   3 |
-| electric-pair-mode                               |                  11 |
+| electric-pair-mode                               |                  12 |
 | emacs-lisp-mode                                  |                   5 |
 | epa-file-enable                                  |                   5 |
 | erc-mode                                         |                   5 |
@@ -112,8 +112,8 @@ __Minor Mode Survey__
 | files                                            |                   1 |
 | find-func                                        |                   1 |
 | finder                                           |                   1 |
-| flyspell-mode                                    |                  53 |
-| font-lock-mode                                   |                  52 |
+| flyspell-mode                                    |                  54 |
+| font-lock-mode                                   |                  53 |
 | frame                                            |                   2 |
 | frameset                                         |                   1 |
 | generic-x                                        |                   5 |
@@ -175,11 +175,11 @@ __Minor Mode Survey__
 | mwheel                                           |                   1 |
 | newcomment                                       |                   1 |
 | nxml-mode                                        |                   2 |
-| org-capture                                      |                  23 |
-| org-mode                                         |                  56 |
-| org-src-mode                                     |                   8 |
+| org-capture                                      |                  24 |
+| org-mode                                         |                  57 |
+| org-src-mode                                     |                   9 |
 | orgstruct++-mode                                 |                   2 |
-| orgtbl-mode                                      |                   7 |
+| orgtbl-mode                                      |                   8 |
 | outline                                          |                   3 |
 | outline-minor-mode                               |                   3 |
 | ox-html                                          |                   1 |
