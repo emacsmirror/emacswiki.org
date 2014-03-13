@@ -45,6 +45,8 @@ A  good customer rated 27" monitor cost from $270 and give you most inch per dol
 
 * DejaVu Sans Mono 12 was very good.
 
+-- David Englund
+
 == For 1024x600, 8.9" ==
 
 * ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
