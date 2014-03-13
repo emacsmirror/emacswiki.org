@@ -1,5 +1,7 @@
 == Auto-indent new lines ==
 
+NOTE: Recent changes, during Emacs 24.3, have swapped effects of ##RET## and ##C-j##, so ##RET## typically does newline-and-indent.
+
 '''If you want automatic indentation, try to use ##C-j## instead of ##RET## for a while. ##C-j## usually runs ##newline-and-indent##. If you really like it, you might want to bind it to ##RET##.''' Add something along the following lines to your ##.emacs##:
 
 {{{
