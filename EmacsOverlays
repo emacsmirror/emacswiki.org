@@ -7,7 +7,7 @@ Since overlays are not attached to the text itself, they are lost when you kill 
 Overlays were introduced to GnuEmacs following the development of [[XEmacsExtents|extents]]
 in XEmacs. Recently XEmacs introduced a compatibility layer that translates overlays to extents.
 
-See also: Manual:Overlays.
+See also: Manual:Overlays
 
 Here is a [[command]] to list the overlays at [[point]]:
 
