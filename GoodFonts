@@ -3,14 +3,11 @@ It's pain in the rear to hunt down the font, install it and see for yourself whe
 
 == Recommendations ==
 
-After searching high and low for a font to use in Emacs, I finally found http://www.proggyfonts.com and http://www.tobias-jung.de/seekingprofont which both contain a good number of free monospace fonts that remain perfectly readable at extremely small sizes. --TimAnderson
+After searching high and low for a font to use in Emacs, I finally found http://www.tobias-jung.de/seekingprofont which both contain a good number of free monospace fonts that remain perfectly readable at extremely small sizes. --TimAnderson
 
 Not so much a recommendation but I have just installed Dina.  It has the
 virtue of including italic and bold italic variants.  I have not yet
 decided whether I will stick with it.  --JohnYates
-http://www.donationcoder.com/Software/Jibz/Dina/index.html
-http://forums.gentoo.org/viewtopic-t-533782-highlight-dina.html
-http://ahri.net/static/dina.pcfs.tar.bz2
 
 [new]
 The proggy fonts are nice and I used them for more than a year.  But I use Emacs for a lot more than programming alone.  I also write and read prose in form of e-mail and (La)TeX documents and much of it in languages other than English.  I found it annoying that *all* of the many proggy fonts fail to provide all of the Latin-1 glyphs I need (áâãäéêíïóôõöúüçß).
