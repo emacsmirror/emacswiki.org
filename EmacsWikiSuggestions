@@ -232,7 +232,7 @@ Can you please sort the list descending at GoodFonts like this:
 * For 1600x1200 or 1280x1024, 19"
 * For 1600x1200, 15" (LCD)
 * For 1280x1024, 17" (LCD)
-...
+* ...
 
 Display resolution list in in software configurations usually begin with highest resolution anyways. See XFCE - Applications Menu - Settings - Display for example.
 
