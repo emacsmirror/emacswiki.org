@@ -218,14 +218,14 @@ I just read about AllOut mode and wanted to see what it looked like; it would ha
 --LuisFernandes
 
 == GoodFont for 1920x1080, 27" == 
-The highest resolution at emacswiki.org/emacs/GoodFonts are 1600x1200, 19" (see emacswiki.org/emacs/GoodFonts#toc11). A brand new  27" monitor with good customer rating can be bought for as little as $270 so most people can afford one plus that the free and stable Nouveau driver support a lot of NVIDIA cards. 
+The highest resolution at GoodFonts are 1600x1200, 19" (see GoodFonts#toc11). Now, a brand new  27" monitor with good customer rating can be bought for as little as $270 so most people can afford one plus that the free and stable Nouveau driver support a lot of NVIDIA cards. 
 
-Can you please add 1920x1080, 27" to emacswiki.org/emacs/GoodFonts
+Can you please add 1920x1080, 27" to GoodFonts
 --David Englund
 
 == GoodFont resolutions should be sorted DESC == 
 
-Can you please sort the list descending at emacswiki.org/emacs/GoodFonts like this:
+Can you please sort the list descending at GoodFonts like this:
 
 For 1920x1080, 27"
 For 1600x1200, 19"
