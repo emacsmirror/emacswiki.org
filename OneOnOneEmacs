@@ -602,7 +602,7 @@ To find the problem yourself, try commenting out parts of that autoloads file yo
 ----
 
 [new:JohanWiden:2014-03-13 07:20 UTC]
-I have found oneonone, together with autofit-frame, to be very useful, especially when want to have many frames.
+I have found oneonone, together with autofit-frame, to be very useful, especially when I want to have many frames.
 
 When I initially tried oneonone I was put off by the fact that oneonone was incompatible with my color theme, that it overrode my choice of font,
 and that it can not be used from emacsdaemon.
