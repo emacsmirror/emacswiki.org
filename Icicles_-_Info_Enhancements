@@ -55,7 +55,7 @@ As usual in '''Icicles''', you can sort completion candidates in various
 ways, using `##C-,##' (`icicle-change-sort-order').  For `g', in particular, although the default order is alphabetical, you can choose '''`in
 book order'''', which shows the node candidates in the same order as in the book.
 In that case, using `g' and then navigating among candidates
-sequentially using ``C-down', C-up', `C-next', `C-prior', `C-end', or `C-home', visits
+sequentially using `C-down', `C-up', `C-next', `C-prior', `C-end', or `C-home', visits
 the nodes in their natural order.
 
 As a special case of this, if you use a negative [[prefix argument]]
