@@ -39,6 +39,12 @@ recommendations by users for specific situations.  See also SetFonts.
 [new]
 On dark backgrounds, I recommend checking out bitmap fonts instead of TrueType ones.
 
+== For 1920x1080 27" ==
+
+A  good customer rated 27" monitor cost from $270 and give you most inch per dollar ($27) in contrast to other dimensions. Also, the free graphic driver Nouveau are stable and works fine with many graphic cards.
+
+* DejaVu Sans Mono 12 was very good.
+
 == For 1024x600, 8.9" ==
 
 * ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
