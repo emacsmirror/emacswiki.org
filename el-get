@@ -10,6 +10,25 @@ Think apt-get for Emacs, and check out [http://github.com/dimitri/el-get el-get]
 
 Of course, my emacs setup is managed in a private git repository. Some people on #emacs are using [http://www.kernel.org/pub/software/scm/git/docs/git-submodule.html git submodules] (or was it straight /import/) for managing external repositories in there, but all I can say is that I frown on this idea. I want an easy canonical list of packages I depend on to run Emacs, and I want this documentation to be usable as-is. Enters [http://www.emacswiki.org/emacs/el-get.el el-get]!
 
+=== How is el-get different from ELPA? ===
+
+ELPA is the *Emacs Lisp Package Archive* and is also known as ##package.el##, to be included in Emacs 24. This allows emacs list extension authors to *package* their work. That means they have to follow some guidelines and format their contribution, then propose it for upload.
+
+This requires licence checks (good) and for the [http://elpa.gnu.org/ new official ELPA mirror] it even requires dead-tree papers exchange and contracts and copyright assignments, I believe.
+
+=== Why have both? ===
+
+While ELPA is a great thing to have, it's so easy to find some high quality Emacs extension out there that are not part of the offer. Either authors are not interrested into uploading to ELPA, or they don't know how to properly *package* for it (it's only simple for single file extensions, see).
+
+So el-get is a pragmatic answer here. It's there because it so happens that I don't depend only on emacs extensions that are available with Emacs itself, in my distribution ##site-lisp## and in ELPA. I need some more, and I don't need it to be complex to find it, fetch it, init it and use it.
+
+Of course I could try and package any extension I find I need and submit it to ELPA, but really, to do that nicely I'd need to contact the extension author (*upstream*) for him to accept my patch, and then consider a fork.
+
+=== What about MELPA? ===
+
+MELPA has been described as "server-side el-get". Since all the fetching is done on the server it does offer some more convenience. However, it also takes away control: MELPA only offers the latest version of the package, whereas el-get can get any revision you want, or even use a different fork. Since el-get uses package.el as one of the fetching methods, MELPA's convenience is still available.
+
+== Example Usage ==
 The following is an example of how to use it in your ##.emacs##, you could also consider starting from the [https://github.com/dimitri/emacs-kicker emacs-kicker].
 
 {{{
@@ -82,20 +101,6 @@ The following is an example of how to use it in your ##.emacs##, you could also 
 So now you have a pretty good documentation of the packages you want installed, where to get them, and how to install them. For the *advanced* methods (such as ELPA or ##apt-get##), you basically just need the package name. When relying on a bare git repository, you need to give some more information, such as the ##URL## to /clone/ and the /build/ steps if any. Then also what *features* to ##require## and maybe where to find the *texinfo* documentation of the package, for automatic inclusion into your local *Info* menu.
 
 The good news is that not only you now have a solid readable description of all that in a central place, but this very description is all ##(el-get)## needs to do its magic. This command will check that each and every package is installed on your system (in ##el-get-dir##) and if that's not the case, it will actually install it. Then, it will *init* the packages: that means caring about the ##load-path##, the ##Info-directory-list## (and ##dir## texinfo menu building) the *loading* of the EmacsLisp files, and finally it will ##require## the *features*.
-
-== How is el-get different from ELPA? ==
-
-ELPA is the *Emacs Lisp Package Archive* and is also known as ##package.el##, to be included in Emacs 24. This allows emacs list extension authors to *package* their work. That means they have to follow some guidelines and format their contribution, then propose it for upload.
-
-This requires licence checks (good) and for the [http://elpa.gnu.org/ new official ELPA mirror] it even requires dead-tree papers exchange and contracts and copyright assignments, I believe.
-
-== Why have both? ==
-
-While ELPA is a great thing to have, it's so easy to find some high quality Emacs extension out there that are not part of the offer. Either authors are not interrested into uploading to ELPA, or they don't know how to properly *package* for it (it's only simple for single file extensions, see).
-
-So el-get is a pragmatic answer here. It's there because it so happens that I don't depend only on emacs extensions that are available with Emacs itself, in my distribution ##site-lisp## and in ELPA. I need some more, and I don't need it to be complex to find it, fetch it, init it and use it.
-
-Of course I could try and package any extension I find I need and submit it to ELPA, but really, to do that nicely I'd need to contact the extension author (*upstream*) for him to accept my patch, and then consider a fork.
 
 == Social Packaging ==
 
