@@ -2,7 +2,8 @@
 * [http://www.software-ninja.com Blog]
 ==Projects==
 * StarTeam
-* [https://github.com/m0smith/malabar-mode malabar-mode]
+* [https://github.com/m0smith/malabar-mode malabar-mode] Add on to java-mode to interact with the JVM and Maven
+* [https://github.com/m0smith/malabar-mode maven-pom-mode] Major mode for editting MAven pom files
 * [https://github.com/m0smith/dotfiles dotfiles] emacs initialization
 ==Code==
 Here is some of the code I use
