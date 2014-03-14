@@ -3,7 +3,7 @@
 ==Projects==
 * StarTeam - no longer maintained by me
 * [https://github.com/m0smith/malabar-mode malabar-mode] Add on to java-mode to interact with the JVM and Maven
-* [https://github.com/m0smith/malabar-mode maven-pom-mode] Major mode for editting MAven pom files
+* MavenPomMode
 * [https://github.com/m0smith/dotfiles dotfiles] emacs initialization
 ==Code==
 Here is some of the code I use
