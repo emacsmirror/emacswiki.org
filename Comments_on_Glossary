@@ -6,3 +6,10 @@ I see all these neat packages and want to install them correctly
 
 -- toucansam313 2014-03-13 16:34 UTC
 
+
+----
+
+See InstallingPackages and CategoryPackaging. For smaller bits of lisp that aren't really full fledged packages, you can copy them into your init.el file. You can also copy to scratch and evaluate but then the effect won't last after restarting emacs.
+
+-- npostavs 2014-03-14 02:45 UTC
+
