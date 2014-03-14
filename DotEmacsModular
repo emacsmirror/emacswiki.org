@@ -130,4 +130,10 @@ $> tree .emacs.d/
 [[targzeta]]
 ----------
 
+== Emacs Modular Configuration ==
+Making modular your config file.
+[https://github.com/targzeta/emacs-modular-configuration Info and source.]
+
+by [[targzeta]]
+
 CategoryDotEmacs
