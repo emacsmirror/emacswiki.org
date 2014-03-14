@@ -83,7 +83,6 @@
 
 (require 'web-mode)
 (require 'emmet-mode)
-(require 'indent-vline)
 
 ;;; Code:
 
@@ -95,8 +94,17 @@
   (add-hook hook (lambda ()
                    (setq emmet-preview-default nil) ;don't show preview when expand code
                    (emmet-mode)
-                   (indent-hint-fixed)
                    )))
+
+(lazy-set-mode-autoload-key
+ '(
+   ("M-(" . web-mode-element-wrap)
+   ("M-)" . sgml-delete-tag)
+   ("M-k" . web-mode-element-kill)
+   ("C-M-SPC" . web-mode-mark-and-expand)
+   ("%" . web-mode-match-paren)
+   )
+ web-mode-map nil "web-mode-extension")
 
 (provide 'init-web-mode)
 
