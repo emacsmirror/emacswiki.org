@@ -1,0 +1,4 @@
+Is there any way to add bunch of files automatically? I set (setq prj-autotracking nil) because bunch of org files were added automatically, so now I have to manually add files to a project. It would be great if there is a way to add files by a rule (e.g., *.py)
+
+-- joon 2014-03-15 00:55 UTC
+
