@@ -1,5 +1,6 @@
-A documentation string, or '''[::doc string]''', documents an EmacsLisp object (typically a function or variable) associated with a [[symbol]].  Doc strings are an important part
-of SelfDocumentation.
+A documentation string, or '''[::doc string]''', documents an EmacsLisp object 
+(typically a function or variable) associated with a [[symbol]].  
+Doc strings are an important part of SelfDocumentation.
 For example, the various `describe-*' commands use doc strings.
 
 A doc string might explain to a user what a function or variable is for,
@@ -8,8 +9,9 @@ what other functions or variables the user might be interested in, where to find
 more information and so on.
 
 Doc strings are defined when you define the function or variable.  For example `defun', the
-command to define new functions, has the syntax ##(defun NAME
-ARGLIST [DOCSTRING] BODY...)##, where the optional argument for
+command to define new functions, has the syntax 
+##(defun NAME ARGLIST [DOCSTRING] BODY...)##, 
+where the optional argument for
 defining the string can be seen.  Thus in the example
 
     (defun hello-world nil
@@ -18,15 +20,18 @@ defining the string can be seen.  Thus in the example
       (interactive)
       (message "Hello world!"))
 
-the doc string is 
+the doc string, which can be obtained with (documentation 'hello-world), is 
 
       "Greet the world.
     This function implements the canonical example program.".
 
-Remember that doc strings and comments are different.  Comments are
-visible only to someone who takes a look at the source code.  They are typically directed at developers of the code, not at its users. Doc strings are primarily for users.
+Remember that doc strings and comments are different.  
+Comments are visible only to someone who takes a look at the source code.  
+They are typically directed at developers of the code, not at its users. 
+Doc strings are primarily for users.
 
-With good CodingStyle the first line of a doc string should be a complete sentence that gives a summary description of the object.  More verbose
+With good CodingStyle the first line of a doc string should be a complete sentence 
+that gives a summary description of the object.  More verbose
 text can follow.  See also: CheckDoc.
 
 ----
