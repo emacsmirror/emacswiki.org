@@ -69,6 +69,9 @@ nickserv login and password saved to an erc-auth file to be loaded by erc.
 
 /Yeah, that's an issue indeed. As a temporary hotfix I set erc-server-auto-reconnect to nil/
 
+Is there a plan to provide some real fix for this issue? Workaround does not look as 'solution'. :(
+-- gour
+
 === Symbol's function definition is void: erc-tls ===
 
 [new]Hey, put (require 'erc) in your ~/.emacs. -- talau
