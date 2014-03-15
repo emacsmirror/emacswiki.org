@@ -1,13 +1,18 @@
+= has been subsumed by EdiffMode =
+From Ediff.el:
+    The present version of Ediff supersedes Emerge.  It provides a superior user interface and has numerous major features not found in Emerge.  In particular, it can do patching, and 2-way and 3-way file comparison, merging, and directory operations.
+
+= Reference =
 Emerge is a graphical frontend to the UNIX "diff" and "diff3" commands. It is useful if two programmers on a project team both changed the same file and you need to integrate their changes.
 
 Here is the Ediff manual section for emerge:
 http://www-2.cs.cmu.edu/cgi-bin/info2www?(emacs)Emerge
 
-Also, you might want to set the "emerge-diff-options" variable to "--ignore-all-space", so that emerge doesn't waste your time by displaying differences in whitespace. You can do so by putting the following line in your ~/.emacs:
+Useful settings for emerge:
 
     (setq emerge-diff-options "--ignore-all-space")
 
-= start emerge faster for git-mergetool =
+Start emerge faster for git-mergetool =
 If you want to use emerge as git-mergetool, and want to start emacs using emacs -Q, then
 
 * create a script $HOME/bin/emerge-for-git, and run chmod +x on it.
@@ -22,11 +27,6 @@ If you want to use emerge as git-mergetool, and want to start emacs using emacs 
 
 Now git-mergetool should start emacs using emacs -Q. I still don't know how to use emacsclient for emerge.
 
-* Experiment:
-    For emacsclient I put like this in ~/bin/edif
-    emacsclient -t --eval "(ediff-files \"$1\" \"$2\")" 
-    
-    But I have not tried integrating this with git yet.
 
 * Experiment 
 Try this for emacsclient
@@ -40,19 +40,6 @@ Or if you prefer "emerge"
 Since the "emacs -Q $*" version will actually be expand to 
 
     emacs -Q -f emerge-files-command /tmp/fileA fileB
-
-* Experiment
-Also here is an approach to have Subversion to work with Emacs ediff
-
-     Write a shell script in ~/bin/ediff_for_svn with following command
-
-     #!/bin/bash
-     working_copy=$( echo $3 | sed -e 's/[ \t][ \t]*(revision [^)]*)//' )
-     emacsclient -c --eval "(ediff \"$working_copy\" \"$6\")"
-
-Then you can call svn diff with following parameters
-
-    svn diff <your file> --diff-cmd ~/bin/ediff_for_svn
 
 
 ----
