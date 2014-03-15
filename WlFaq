@@ -158,7 +158,7 @@ I expected to find a simpler method, which is safe, fast and can be invoked with
 === How can I make my "Sent" folder show TO rather than FROM in the list ===
 Provided you sent folder has the word "Sent" somewhere use:
 {{{
-(setq wl-summary-showto-folder-regexp ".*Sent.*)
+(setq wl-summary-showto-folder-regexp ".*Sent.*")
 }}}
 And also add your email-addresses to <code>wl-user-mail-address-list</code>.
 {{{
