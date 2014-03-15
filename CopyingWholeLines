@@ -35,7 +35,15 @@ This section presents some additional ways to copy a line, besides those availab
 
 [:GeneralPurposeCopyLine]
 ==== A copy-line with variable arguments ====
+  (defun copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring.
+  Pretend the last line of the buffer has a trailing newline to avoid insanity."
+    (interactive "p")
+    (kill-ring-save (line-beginning-position) (line-end-position arg))
+    (kill-append "\n" nil)
+    (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
+===== Slight variation: Always do message. Don't append newline for last buffer line ======
     (defun copy-line (arg)
       "Copy lines (as many as prefix argument) in the kill ring"
       (interactive "p")
