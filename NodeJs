@@ -16,6 +16,7 @@ NOTE: tab-completion doesn't work
 
 Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
 
+Check https://github.com/redguardtoo/js-comint for latest version. old version 0.0.1 has some compatibility issue with node.js
 == Using nodejs-repl ==
 
 * TAB completion same as Node.js REPL 
