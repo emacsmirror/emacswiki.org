@@ -25,7 +25,7 @@ A similar solution that works with emacs 24 and supports eshell aliases -- Russe
           (goto-char eshell-last-output-end)
           (let ((esym (eshell-find-alias-function (current-word)))
                 (sym (intern-soft (current-word))))
-            (setq ad-return-value (or esym sum))))))
+            (setq ad-return-value (or esym sym))))))
 
 
 When in eshell, use M-x eldoc-mode to activate it.  Now the following will work as well:
