@@ -233,9 +233,11 @@ Will delete blank line after execute `paredit-splice-sexp'."
   (interactive)
   (if (and (equal (current-column) 0)
            (blank-line-p))
-      (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
+      (progn
+        (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
+        (back-to-indentation))
     (paredit-kill))
-  (back-to-indentation))
+  )
 
 (defun paredit--is-at-start-of-sexp ()
   (and (looking-at "(\\|\\[")
