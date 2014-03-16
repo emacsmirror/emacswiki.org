@@ -7,15 +7,15 @@
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-03-14 21:45:07
 ;; Version: 0.1
-;; Last-Updated: 2014-03-14 21:45:07
+;; Last-Updated: 2014-03-16 17:10:13
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/web-mode-extension.el
-;; Keywords: 
+;; Keywords:
 ;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
 ;;
-;; 
+;;
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -37,10 +37,10 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; Extension for web-mode
-;; 
+;;
 
 ;;; Installation:
 ;;
@@ -57,26 +57,29 @@
 
 ;;; Customize:
 ;;
-;; 
+;;
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET web-mode-extension RET
 ;;
 
 ;;; Change log:
-;;	
+;;
+;; 2014/03/16
+;;      * Add `web-mode-element-unwrap'.
+;;
 ;; 2014/03/14
 ;;      * First released.
-;; 
+;;
 
 ;;; Acknowledgements:
 ;;
-;; 
+;;
 ;;
 
 ;;; TODO
 ;;
-;; 
+;;
 ;;
 
 ;;; Require
@@ -94,6 +97,18 @@
         ((looking-back ">")
          (sgml-skip-tag-backward 1))
         (t (self-insert-command (or arg 1)))))
+
+(defun web-mode-element-unwrap ()
+  "Like `web-mode-element-vanish', but you don't need jump parent tag to unwrap.
+Just like `paredit-splice-sexp+' style."
+  (interactive)
+  (unwind-protect
+      (progn
+        (web-mode-element-parent)
+        (web-mode-element-vanish)
+        (back-to-indentation)
+        )
+    ))
 
 (provide 'web-mode-extension)
 
