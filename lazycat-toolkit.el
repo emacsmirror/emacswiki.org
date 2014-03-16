@@ -7,7 +7,7 @@
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-01-10 23:18:47
 ;; Version: 0.1
-;; Last-Updated: 2009-01-10 23:18:47
+;; Last-Updated: 2014-03-16 14:55:25
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/lazycat-toolkit.el
 ;; Keywords: lazycat, toolkit
@@ -70,6 +70,9 @@
 ;; No need more.
 
 ;;; Change log:
+;;
+;; 2014/03/16
+;;      * Add `goto-line-with-feedback'.
 ;;
 ;; 2009/01/10
 ;;      * First released.
@@ -635,6 +638,19 @@ Otherwise, use the value of said variable as argument to a funcall."
     (narrow-to-region start end)
     (goto-char (point-min))
     (shrink-window-if-larger-than-buffer)))
+
+(defun goto-line-with-feedback ()
+  "Show line numbers temporarily, while prompting for the line number input.
+This function will detect current linum-mode status, it won't disable linum-mode if current buffer has enable it."
+  (interactive)
+  (let ((linum-mode-p linum-mode))
+    (unwind-protect
+        (progn
+          (linum-mode 1)
+          (goto-line (read-number "Goto line: ")))
+      (unless linum-mode-p
+        (linum-mode -1))
+      )))
 
 (provide 'lazycat-toolkit)
 
