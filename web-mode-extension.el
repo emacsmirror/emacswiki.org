@@ -103,11 +103,9 @@
 Just like `paredit-splice-sexp+' style."
   (interactive)
   (save-excursion
-    (progn
-      (web-mode-element-parent)
-      (web-mode-element-vanish)
-      (back-to-indentation)
-      )
+    (web-mode-element-parent)
+    (web-mode-element-vanish)
+    (back-to-indentation)
     ))
 
 (provide 'web-mode-extension)
