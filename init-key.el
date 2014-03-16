@@ -1,7 +1,7 @@
 ;;; ### Unset key ###
 ;;; --- 卸载按键
 (lazy-unset-key                         ;全局按键的卸载
- '("C-x C-f" "C-z" "C-q" "s-W" "s-z" "M-h" "C-x C-c" "C-\\"))
+ '("C-x C-f" "C-z" "C-q" "s-W" "s-z" "M-h" "C-x C-c" "C-\\" "C-x o"))
 ;;; ### Vi-move ###
 ;;; --- Vi式移动
 (defvar vi-move-key-alist nil
@@ -41,9 +41,9 @@
    ("<print>" . save-screenshots)           ;截屏
    ("<M-s-return>" . toggle-debug-on-error) ;切换调试模式
    ("s-1" . sort-lines)                     ;排序
-   ("s-2" . elisp-depend-insert-comment)    ;插入 `...' 注释代码
-   ("s-3" . hanconvert-region)              ;转换简体或繁体中文
-   ("s-4" . uniquify-all-lines-buffer)      ;删除重复的行
+   ("s-2" . hanconvert-region)              ;转换简体或繁体中文
+   ("s-3" . uniquify-all-lines-buffer)      ;删除重复的行
+   ("s-4" . elisp-depend-insert-comment)    ;插入 `...' 注释代码
    ("s-5" . elisp-depend-insert-require)    ;插入 (require '...) 语句
    ("s-[" . eval-expression)                ;执行表达式
    ("s-\\" . artist-mode)                   ;绘制模式
@@ -216,6 +216,8 @@
    ("C-s-7" . select-next-window)                 ;选择下一个窗口
    ("C-s-8" . select-prev-window)                 ;选择上一个窗口
    ("M-s-o" . toggle-one-window)                  ;切换一个窗口
+   ("C-x o" . other-window)
+   ("C-x O" . toggle-window-split)
    )
  "window-extension")
 ;;; ### Tabbar ###
@@ -331,6 +333,7 @@
    ("M-:" . paredit-close-round-and-newline+)   ;跳出 ( ) 或 " " 并换行
    ("M-?" . paredit-forward-sexp-and-newline)   ;移动到下一个表达式, 并换行
    ("M-)" . paredit-splice-sexp+)               ;去除包围对象的括号, 并删除空行
+   ("C-S-k" . paredit-duplicate-closest-sexp)   ;复制光标处的语法块
    )
  "paredit-extension")
 ;;; ### Thingh-edit ###
@@ -555,6 +558,9 @@
 (lazy-set-autoload-key
  '(
    ("M-s-i" . ielm-toggle)              ;切换ielm
+   ("s-6" . insert-standard-date)       ;插入标准时间
+   ("s-7" . insert-changelog-date)      ;插入Changlog时间
+   ("M-g" . goto-line-with-feedback)    ;有提示的行跳转
    )
  "lazycat-toolkit")
 (eval-after-load 'ielm-mode
