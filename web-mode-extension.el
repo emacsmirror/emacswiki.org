@@ -102,12 +102,12 @@
   "Like `web-mode-element-vanish', but you don't need jump parent tag to unwrap.
 Just like `paredit-splice-sexp+' style."
   (interactive)
-  (unwind-protect
-      (progn
-        (web-mode-element-parent)
-        (web-mode-element-vanish)
-        (back-to-indentation)
-        )
+  (save-excursion
+    (progn
+      (web-mode-element-parent)
+      (web-mode-element-vanish)
+      (back-to-indentation)
+      )
     ))
 
 (provide 'web-mode-extension)
