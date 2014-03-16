@@ -99,12 +99,17 @@
 (lazy-set-mode-autoload-key
  '(
    ("M-(" . web-mode-element-wrap)
-   ("M-)" . sgml-delete-tag)
+   ("M-)" . web-mode-element-unwrap)
    ("M-k" . web-mode-element-kill)
    ("C-M-SPC" . web-mode-mark-and-expand)
    ("%" . web-mode-match-paren)
+   ("C-:" . web-mode-comment-or-uncomment)
    )
  web-mode-map nil "web-mode-extension")
+(lazy-set-mode-autoload-key
+ '(
+   ("C-c C-r" . mc/mark-sgml-tag-pair))
+ web-mode-map nil "multiple-cursors")
 
 (provide 'init-web-mode)
 
