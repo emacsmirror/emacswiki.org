@@ -5,7 +5,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
 ;; Version: 0.1
-;; Last-Updated: 2008-07-28 16:32:55
+;; Last-Updated: 2014-03-16 13:29:15
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -45,8 +45,11 @@
 
 ;;; Change log:
 ;;
+;; 2014/03/16
+;;          Add `paredit-kill+'.
+;;
 ;; 2008/07/28
-;;         First release.
+;;          First release.
 ;;
 
 ;;; Acknowledgments:
@@ -222,6 +225,16 @@ Will delete blank line after execute `paredit-splice-sexp'."
     (call-interactively 'move-beginning-of-line)
     (kill-line)
     (back-to-indentation)))
+
+(defun paredit-kill+()
+  "It's annoying that we need re-indent line after we delete blank line with `paredit-kill'.
+`paredt-kill+' fixed this problem."
+  (interactive)
+  (if (and (equal (current-column) 0)
+           (blank-line-p))
+      (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
+    (paredit-kill))
+  (back-to-indentation))
 
 (provide 'paredit-extension)
 
