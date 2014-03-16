@@ -27,7 +27,6 @@
 ;;; --- 工具函数
 (lazy-set-key
  '(
-   ("C-x C-c" . checkdoc)                   ;检查文档
    ("C-c ns" . notes-search)                ;便签搜索
    ("C-c nn" . notes-new)                   ;新建便签
    ("s-c o" . one-key-menu-directory)       ;目录打开菜单
@@ -245,6 +244,7 @@
    ("<f3>" . visit-tags-table)                   ;查找TAGS文件 (更新TAGS表)
    ("<f4>" . generate-gtags-files)               ;生成gtags引用文件
    ("<f5>" . emacs-session-save)                 ;退出emacs
+   ("C-x C-c" . emacs-session-save)              ;退出emacs
    ("<f6>" . lock-screen)                        ;锁屏
    ("<f8>" . dired-jump)                         ;文件管理起
    ("<f9>" . list-load-path-shadows)             ;显示重复加载的库
@@ -298,7 +298,6 @@
    ;; 删除
    ("M-o" . paredit-backward-delete)          ;向后删除
    ("C-d" . paredit-forward-delete)           ;向前删除
-   ("C-k" . paredit-kill)                     ;删除
    ("C-M-m" . paredit-forward-kill-word)      ;向前按词删除
    ("C-M-n" . paredit-backward-kill-word)     ;向后按词删除
    ;; 移动
@@ -322,6 +321,10 @@
    ("M-s-'" . one-key-menu-paredit)     ;Paredit 菜单
    )
  paredit-mode-map)
+(lazy-set-mode-autoload-key
+ '(
+   ("C-k" . paredit-kill+))             ;增强的 paredit-kill
+ paredit-mode-map nil "paredit-extension")
 (lazy-set-autoload-key
  '(
    ("C-M-:" . paredit-comment-list-and-newline) ;注释当前LIST并换行
@@ -695,5 +698,10 @@
    ("s-/" . webkit-open-url)
    )
  "webkit")
+;;; ### yaoddmuse ###
+(lazy-set-autoload-key
+ '(
+   ("C-s-z" . yaoddmuse-post-library-default))
+ "yaoddmuse-extension")
 
 (provide 'init-key)
