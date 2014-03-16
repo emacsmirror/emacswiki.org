@@ -5,11 +5,11 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.8.10
-;; Last-Updated: <2014-01-16 22:05:43 Thursday by gcv>
+;; Version: 0.8.11
+;; Last-Updated: 2014-03-17 01:03:17
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
-;; Compatibility: GNU Emacs 23.2.1
+;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.3.50
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -126,6 +126,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/03/17   Andy Stewart
+;;      * Swap key binding of `term-send-raw' and `term-send-input', i think it's better send yank data when user hit ctrl+m.
+;;
 ;; 2014/01/16
 ;;      * Fix breakage introduced in Emacs 24.4.
 ;;
@@ -315,7 +319,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("C-n" . next-line)
     ("C-s" . isearch-forward)
     ("C-r" . isearch-backward)
-    ("C-m" . term-send-raw)
+    ("C-m" . term-send-input)
     ("M-f" . term-send-forward-word)
     ("M-b" . term-send-backward-word)
     ("M-o" . term-send-backspace)
@@ -324,7 +328,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("M-M" . term-send-forward-kill-word)
     ("M-N" . term-send-backward-kill-word)
     ("M-r" . term-send-reverse-search-history)
-    ("M-," . term-send-input)
+    ("M-," . term-send-raw)
     ("M-." . comint-dynamic-complete))
   "The key alist that will need to be bind.
 If you do not like default setup, modify it, with (KEY . COMMAND) format."
@@ -569,7 +573,7 @@ If option DEDICATED-WINDOW is `non-nil' will create dedicated `multi-term' windo
       ;; Make term, details to see function `make-term' in `term.el'.
       (if multi-term-program-switches
           (make-term term-name shell-name nil multi-term-program-switches)
-          (make-term term-name shell-name)))))
+        (make-term term-name shell-name)))))
 
 
 (defun multi-term-handle-close ()
