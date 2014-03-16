@@ -5,7 +5,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
 ;; Version: 0.1
-;; Last-Updated: 2014-03-16 13:29:15
+;; Last-Updated: 2014-03-16 14:41:33
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -47,6 +47,7 @@
 ;;
 ;; 2014/03/16
 ;;          Add `paredit-kill+'.
+;;          Add `paredit-duplicate-closest-sexp'.
 ;;
 ;; 2008/07/28
 ;;          First release.
@@ -235,6 +236,30 @@ Will delete blank line after execute `paredit-splice-sexp'."
       (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
     (paredit-kill))
   (back-to-indentation))
+
+(defun paredit--is-at-start-of-sexp ()
+  (and (looking-at "(\\|\\[")
+       (not (nth 3 (syntax-ppss)))   ;; inside string
+       (not (nth 4 (syntax-ppss))))) ;; inside comment
+
+(defun paredit-duplicate-closest-sexp ()
+  (interactive)
+  ;; skips to start of current sexp
+  (while (not (paredit--is-at-start-of-sexp))
+    (paredit-backward))
+  (set-mark-command nil)
+  ;; while we find sexps we move forward on the line
+  (while (and (bounds-of-thing-at-point 'sexp)
+              (<= (point) (car (bounds-of-thing-at-point 'sexp)))
+              (not (= (point) (line-end-position))))
+    (forward-sexp)
+    (while (looking-at " ")
+      (forward-char)))
+  (kill-ring-save (mark) (point))
+  ;; go to the next line and copy the sexprs we encountered
+  (paredit-newline)
+  (yank)
+  (exchange-point-and-mark))
 
 (provide 'paredit-extension)
 
