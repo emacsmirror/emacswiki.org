@@ -431,6 +431,79 @@ You may, for example, enable urgency hint when the activity list is updated and 
 
 --EvgenyZubok
 
+[new]
+
+I've been using jabber.el as my primary chat client for a few months now on Windows with great success.
+
+I've been using a command line toast notification program (there is a few out there with simple interfaces) to display notifications for chat messages that currently don't have a window. Which is a nice way to only show notifications when you wouldn't otherwise see the message:
+<pre>
+
+;; simple toast wrapper, M-x: toast <ret> "Hello, World!" <ret> is fun
+(defun toast (message)
+  "Display a toast notification."
+  (interactive "sMessage: ")
+  (if (processp (ignore-errors
+		  (start-process "toast-proc" "*toast-notifications*" "toast" (format "%s" message))))
+      message
+    (warn "Could not create toast notification, is toast installed?")))
+
+;; toast alert hook function
+(defun jorbi-jabber/toast-notification (from buffer text title)
+  "Show a toast notification if chat buffer not visible."
+  (unless (get-buffer-window buffer)
+    (toast (format "%s\n%s" title text))))
+
+;; add it to alert hook
+(add-hook 'jabber-alert-message-hooks
+				  'jorbi-jabber/toast-notification)
+				  
+</pre>
+
+I also have a smtp mail system set up so that If I get a chat message and I've been idle for 5 minutes, it sends me an email with the message which I will get on my phone.
+
+<pre>
+(defun jorbi/mail-it (subject body)
+	"Send an email to yourself with SUBJECT and BODY."
+  (require 'smtpmail)
+  (let ((mail-interactive nil))
+    (with-temp-buffer
+      (insert "From:  <placeholder@nothing>\nTo: \nSubject: \n--text follows this line--\n")
+      (mail-to) (insert "your-email-address@website.foo")
+      (mail-subject) (insert subject)
+      (mail-text) (insert body)
+      (mail-send))))
+
+
+(defvar jorbi-jabber/send-mail-idle-time 300
+  "Emacs must be idle for this many seconds in order to send mail for jabber messages.")
+
+;; I had problems with sending mail in a hook, the blocking mail process would always
+;; fail so I postpone the mail until the other hooks are done running by
+;; performing the mail send on an idle timer that is started by a default
+;; 2 second timer. Kind of hacky but it works for what I need and doesn't
+;; kill the other hooks.
+(defun jorbi-jabber/send-mail-notification (from buffer text title)
+  "Set up an idle task to send an email to myself with the message if I've \
+been idle for a little bit when the message comes in."
+  (when (> (time-to-seconds (or (current-idle-time) (seconds-to-time 0)))
+	   (or jorbi-jabber/send-mail-idle-time 300))
+    (run-with-timer
+     2 nil
+     (lambda (from buffer text title)
+       (run-with-idle-timer
+        2 nil
+        (lambda (from buffer text title)
+          (jorbi/mail-it (format "JABBERNOT: (%s)" title)
+		   (format "AUTOMATIC NOTIFICATION FROM JABBERNOT-BOT 9000\n\n[%s]: %s"
+			   from text)))
+        from buffer text title))
+     from buffer text title)))
+
+;; add it to alert hook
+(add-hook 'jabber-alert-message-hooks
+				  'jorbi-jabber/send-mail-notification)
+</pre>
+
 == Page discussion ==
 
 [new]
