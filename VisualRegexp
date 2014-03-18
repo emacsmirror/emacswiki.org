@@ -17,7 +17,7 @@ Hosted under https://github.com/benma/visual-regexp-steroids.el/.
 
 This is an extension to ##visual-regexp## which lets you use an external, modern regexp engine for searching and replacing. The package comes with an interface to Python's regexp engine out of the box. 
 
-Note the absence of escape characters:
+Note the absence of escape characters in the search string:
 [[image:VisualRegexpSteroidsSearch]]
 
 Besides having a nicer regexp syntax, you can also use Python expressions for replacements, as seen in the following example:
