@@ -28,8 +28,8 @@ This category is about regular expressions.  See also CategorySearchAndReplace.
 
 
 == Programming with Regular Expressions ==
-
 * ReBuilder -- build a regexp string and watch what it matches as you type
+* [[VisualRegexp]] -- like `M-x replace-regexp', but with live visual feedback directly in the buffer. Improvement over ##ReBuilder##.
 * Regex-tool -- similar to ReBuilder, found at http://github.com/jwiegley/regex-tool. See article [[http://www.newartisans.com/2007/10/a-regular-expression-ide-for-emacs.html|A regular expression IDE for Emacs]] by JohnWiegley 
 * SymbolicRegexp -- for programmers who want to write readable regular expressions
 * [[rx]] -- macro that generates regexps from SymbolicRegexp
