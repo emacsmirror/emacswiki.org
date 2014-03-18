@@ -26,11 +26,8 @@ Besides having a nicer regexp syntax, you can also use Python expressions for re
 The package can also be used to power ##isearch-forward-regexp## and ##isearch-backward-regexp## with a modern regexp engine. See the project page for details.
 ----
 
-CategoryAccessibility
 CategoryCommands 
 CategoryEditing
 CategoryExternalUtilities
-CategoryInterface
-CategoryProgrammerUtils
 CategoryRegexp
 CategorySearchAndReplace
