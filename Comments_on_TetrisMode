@@ -1,0 +1,6 @@
+Is there any way to have tetris-mode use two characters (block glyphs) side-by-side for each "pixel" or tile of the board?
+The natural proportions of characters makes this tetris very narrow and difficult to play. This is tetris-mode in
+console emacs, of course. The X11-windowed emacs does not draw using characters.
+
+-- q 2014-03-18 10:47 UTC
+
