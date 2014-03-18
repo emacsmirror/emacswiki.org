@@ -15,13 +15,13 @@ Vanilla:
 * OccurMode -- ‘M-x occur’ and `multi-occur'. Similar to [[GrepMode|grep]], but for buffers, not files.
 
 Additional:
-
 * [[AceJump]] -- a minor mode for Emacs, enabling direct cursor-moving in current view.
 * AcmeSearch -- Simple right-click searching.
 * BuffersMisc
 * [[Icicles]] -- two unrelated features: `icicle-search' and [[completion]] for Isearch:
 ** [[Icicles - Search Commands, Overview|Icicles search]]: [[regexp|Regexp]] search within ''search contexts'': text zones defined using regexps (and their subgroups) or using [[text property|text or overlay property]] values.  Combine syntactic and semantic (predicate) searching. (Cf. [[Isearch+]].)
 ** Use completion against previous [[Icicles - Isearch Enhancements|Isearch search strings]].
+* [[VisualRegexp]] -- using the ##visual-regexp-steroids## extension, you can use a modern regexp engine to power ##isearch##.
 
 [:IsearchPlusContexts]
 * [[Isearch+]] -- Many extensions to Emacs' standard [[Isearch]], including search within ''search contexts'': [[text property|text or overlay property]] zones, [[ImenuMode|Imenu]] definitions, and Emacs THINGs (sexps, lists, symbols, paragraphs, whatever). (Cf. [[Icicles - Search Commands, Overview|Icicles search]].)
@@ -60,6 +60,8 @@ Vanilla:
 * IbufferMode -- Operate on multiple buffers, including query replace (Emacs 22).
 
 Additional:
+
+* [[VisualRegexp]] -- like `M-x replace-regexp', but with live visual feedback directly in the buffer.
 
 * [[Anything]] -- `M-x anything-regexp', `M-x anything-query-replace-regexp': narrow the matched lines by multiple patterns and replace.
 
