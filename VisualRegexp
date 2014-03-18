@@ -2,7 +2,7 @@
 
 The project is hosted under GitHub - https://github.com/benma/visual-regexp.el. 
 
-##visual-regexp## for Emacs is like ##replace-regexp##, but with live visual feedback directly in the buffer.
+##visual-regexp## for Emacs is like ##replace-regexp## (or ##query-replace-regexp##), but with live visual feedback directly in the buffer.
 
 While constructing the regexp in the minibuffer, you get live visual feedback for the matches, including group matches:
 
@@ -15,8 +15,13 @@ While constructing the replacement in the minibuffer, you get live visual feedba
 
 Hosted under https://github.com/benma/visual-regexp-steroids.el/.
 
-This is an extension to ##visual-regexp## which lets you use an external, modern regexp engine for searching and replacing. The package comes with an interface to Python's regexp engine. 
+This is an extension to ##visual-regexp## which lets you use an external, modern regexp engine for searching and replacing. The package comes with an interface to Python's regexp engine. Note the absence of escape characters:
 
+[[image:VisualRegexpSteroidsSearch]]
+
+Besides having a nicer regexp syntax, you can also use Python expressions for replacements, as seen in the following example:
+
+[[image:VisualRegexpSteroidsExpression]]
 
 ----
 
