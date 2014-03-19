@@ -33,9 +33,7 @@ Composing or replying an article with long lines will choose a more resilient en
 Just enabling `use-hard-newlines' in `message-mode' (as documented) is *not enough* to compose a flowed message and will most likely (as of 01/2011) kill all the formatting in your message.
 
 == Displaying and composing flowed messages ==
-(Warning 30/12/2011: Using Emacs 24 this produces weird spaces in long paragraphs when messages are viewed in gmail. Definitely test...)
-
-The following only works since Emacs 23, where `word-wrap' and `truncate-lines' was introduced. We can use Emacs's built-in word-wrapping functionality and avoid `auto-fill' and `use-hard-newlines' entirely with the following ([http://article.gmane.org/gmane.emacs.gnus.user/14508 source]):
+The following only works since Emacs 23, where `word-wrap' and `truncate-lines' was introduced. We can use Emacs' built-in word-wrapping functionality and avoid `auto-fill' and `use-hard-newlines' entirely with the following ([http://article.gmane.org/gmane.emacs.gnus.user/14508 source]):
 
 {{{
 
@@ -46,6 +44,9 @@ The following only works since Emacs 23, where `word-wrap' and `truncate-lines' 
       (put-text-property (1- (point)) (point) 'hard t))))
 
 (setq fill-flowed-display-column nil)
+
+;; The following line is needed since emacs 24.1:
+(setq gnus-treat-fill-long-lines nil)
 
 (add-hook 'message-setup-hook
   (lambda ()
@@ -73,9 +74,6 @@ The gotcha here is to avoid using `use-hard-newlines' entirely, and simply compo
 
 By default, composing a flowed message is only enabled for mail, but it also works for groups coming from mail-to-news gateways such as [http://www.gmane.org GMane]. Change `message-setup-hook' accordingly if you wish to do that.
 
-== Note About Fill Long Lines ==
-
-You can also customize `gnus-treat-fill-long-lines' to prevent gnus from wrapping long lines. Not sure if this is the same thing as the format=flowed stuff above, but I always land on this page when trying to remember how to disable "word wrap" in gnus :).
 
 ----
 CategoryGnus
