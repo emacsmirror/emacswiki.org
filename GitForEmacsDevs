@@ -211,7 +211,6 @@ branch, by merging them:
 
       git merge master
       git status                  # (recommended) sanity check -- lists changed and unknown files
-      git commit -m "Merge from master."
 
 The merge may fail due to an upstream change that conflicts with your
 branch.  You'll need to fix the problem (looking for conflict markers
@@ -278,6 +277,7 @@ First, update your repository:
       git checkout master
       git pull
       git merge ../TASKNAME
+      git push
 
 Run the tests:
 
@@ -308,7 +308,7 @@ Bazaar: if your mirror is not up-to-date because another developer has
 committed since you last updated, your commit will fail.  In this case
 you should abort the merge
 
-      git revert
+      git reset
 
 do another ##git pull##, merge from the ##TASKNAME## branch again, and
 commit.
