@@ -9,7 +9,7 @@ A plain string is a regular expression that matches the string exactly.  The abo
     "alexa?"
 
 Some characters have special meanings in a regular expression.  The question mark, for example, says that the preceding expression (the character "a" in this case)  may or may not be present.  The above regular expression matches "alex" or "alexa".
-
+S
 Regexps are important to Emacs users in many ways, including these:
 * We search with them interactively.  Try `C-M-s' (command <code>isearch-forward-regexp</code>).
 * Emacs code uses them to parse text.  We use regexps all the time, without knowing it, when we use Emacs.
@@ -222,7 +222,7 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 [:LearningRegexps]
 == Study and Practice ==
 
-* Read about regexps in the [[Manual:Regexps|Elisp manual]]). See also RegexpReferences. Study EmacsLisp code that uses regexps.
+* Read about regexps in the [[Manual:Regexps|Elisp manual]]. See also RegexpReferences. Study EmacsLisp code that uses regexps.
 
 * Regexp searching (`C-M-s') is a great way to learn about regexps -- see [[IncrementalSearch#RegexpSearches|Regexp Searches]]. Change your regexp on the fly and see immediately what difference the change makes.
 
