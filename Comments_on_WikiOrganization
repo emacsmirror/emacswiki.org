@@ -1,0 +1,6 @@
+    The reason this is not all automated is because a) it would require the maintenance of a separate link database, and b) in a double linked graph there may be potentially a lot of irrelevant pages pointing to the current page, so you do not always want to list them. Thus, the manual strategy of adding category tags or parent pages at the end.
+
+That's only true if a category tag is the same thing as a link (as is now); this is a wiki; while we ''can'' use a file to saw and a saw to file, there is no excuse to go into a forest armed only with a file.
+
+-- MichaelPaulukonis 2014-03-19 15:57 UTC
+
