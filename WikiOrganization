@@ -1,7 +1,7 @@
 [[es:OrganizaciónDeLaWiki]]
 The entire organization of the wiki is hand written.
-We use both a top-down approach (also known as a ForwardIndex)
-and a bottom-up approach (also known as a ReverseIndex).
+We use both a top-down approach (also known as a [MeatBall:ForwardIndex forward index])
+and a bottom-up approach (also known as a [MeatBall:ReverseIndex reverse index]).
 
 # The SiteMap links to some high-level category pages.
 # The category pages link to all pages in the category.
