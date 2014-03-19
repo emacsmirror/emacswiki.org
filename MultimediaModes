@@ -14,6 +14,7 @@ But see MusicPlayers.
 * JpegMode -- details of jpeg file internals
 * LookMode -- opens a list of files in a temporary, writable buffer.  Allows safe resizing of images with EmacsImageManipulation mode.
 * MusicPlayers -- play CDs and MP3s in your favourite editor
+* [[Processing]] -- mode for editing, running, compiling (etc.) Processing <code>.pde</code> files
 * PictureMode -- ASCII art
 * ThumbsMode -- image browsing
 * [[Tumme]] -- image browsing
