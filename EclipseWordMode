@@ -1,0 +1,7 @@
+An Emacs minor mode for handling words (almost) like Eclipse does.
+
+See http://github.com/pronobis/eclipseword-mode/blob/master/README.md for documentation. 
+
+Feel free to make contributions/fixes by sending a pull request to
+http://github.com/pronobis/eclipseword-mode
+and comment/discuss below.
