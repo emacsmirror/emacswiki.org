@@ -3,9 +3,9 @@ The entire organization of the wiki is hand written.
 We use both a top-down approach (also known as a ForwardIndex)
 and a bottom-up approach (also known as a ReverseIndex).
 
-# The SiteMap links to all category pages.
+# The SiteMap links to some high-level category pages.
 # The category pages link to all pages in the category.
-# Every page links to the category pages it belongs to.
+# Every page ''should'' link to the category pages it belongs to.
 
 When pages have "parent" pages or belong to a certain category explicit backlinks
 are added manually.  Add the
