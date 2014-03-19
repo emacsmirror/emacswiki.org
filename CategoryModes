@@ -55,6 +55,7 @@ Other pages (could this please be split in major and minor modes?):
 * DoListMode -- freely editable do list based on org-mode
 * DrelaMode -- mode for editing input files to a suite of popular aerodynamics codes
 * EbuildMode -- mode for Gentoo specific files, like ebuilds and eclasses
+* EclipseWordMode -- A minor mode for handling words (almost) like Eclipse does.
 * EevMode -- lets you to interpret e-scripts(execute shell commands/follow EmacsLisp hyperlinks in a buffer)
 * EdiMode -- mode for editing EDI files
 * EmacsWikiMode
