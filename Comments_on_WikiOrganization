@@ -4,3 +4,16 @@ That's only true if a category tag is the same thing as a link (as is now); this
 
 -- MichaelPaulukonis 2014-03-19 15:57 UTC
 
+
+----
+
+What exactly are you proposing? On a different site, I'm using tags with a typed link: ##[[tag:Something]]## together with a simple database to keep track of them. I'm mostly concerned about category pages:
+
+# do we want to keep them?
+# if we want to keep them, will we still maintain them by hand?
+# if we maintain them by hand, what's the benefit of using ##[[tag:Something]]## as opposed to ##CategorySomething##?
+
+Or are you arguing that we don't need a bottom-up categorization of pages, we can do a top-down categorization. If a category page links to a page, that page automatically belongs to that category and can link back to the category without being modified? If so, I guess we could define a set of /entry/ pages (such as the SiteMap) which links to /category/ pages (as it does), and the category pages would still be maintained by hand, but it is no longer necessary to mention the categories on the page itself.
+
+-- AlexSchroeder 2014-03-19 17:40 UTC
+
