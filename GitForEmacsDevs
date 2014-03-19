@@ -236,6 +236,14 @@ publishing your branch (see [[#PublishBranch]]) or sending a bundle
 (see [[#SendABundle]]), and if you are a committer you can merge to
 upstream yourself (see [[#MergeToUpstream]]).
 
+[:GoodCommentingPractice]
+=== Good Commenting Practice ===
+
+Comments should have a standalone first line not over 72 characters long - 50 is better.  Do this so the summary listings displayed by gitk(1) and similar tools are intelligible.
+
+Avoid using git hashes as references to previous commits.  These will break if we ever have to change version-control systems again; given that Emacs has been through no fewer that four VCSes in its lifetime it is not a good idea to depend on this never happening again.  Instead, quote a distinguishing part of the comment for the commit, or write something like "my last commit" when appropriate.
+
+
 [:SendAPatchSet]
 === Sending a Patch Set for Review ===
 
