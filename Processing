@@ -1,0 +1,63 @@
+== Processing 2 mode ==
+A major mode for the editing and execution of [http://processing.org/ Processing] files, an ''open source programming language and integrated development environment (IDE) built for the electronic arts, new media art, and visual design communities''. [https://en.wikipedia.org/wiki/Processing_%28programming_language%29]
+
+* [https://github.com/ptrv/processing2-emacs github for processing2]
+* [http://forum.processing.org/one/topic/processing-2-0-and-emacs.html processing-forum on the new mode]
+
+=== Installation ===
+The easiest way is to install the ELPA package from MELPA with <code>M-x package-install RET processing-mode</code>.
+
+=== Configuration ===
+Set variables in <code>.emacs</code> or with <code>customize-group RET processing RET</code> (this works only after processing-mode has been loaded):
+
+{{{(setq processing-location "/path/to/processing-java")
+(setq processing-application-dir "/path/to/processing-application-dir")
+(setq processing-sketchbook-dir "/path/to/processing-sketchbook-dir")
+}}}
+
+For example, on Mac the default settings are the following:
+
+{{{(setq processing-location "/usr/bin/processing-java")
+(setq processing-application-dir "/Applications/Processing.app")
+(setq processing-sketchbook-dir "~/Documents/Processing")
+}}}
+
+Usually when you run a processing sketch, the build files are generated in a sub-directory called output in the current sketch directory. It is also possible to set the <code>processing-output-dir</code> to another directory:
+
+<code>(setq processing-output-dir "/tmp")</code>
+
+Optionally it is also possible to set up basic AutoComplete support to have keyword completion.
+
+{{{(defun processing-mode-init ()
+  (make-local-variable 'ac-sources)
+  (setq ac-sources '(ac-source-dictionary ac-source-yasnippet))
+  (make-local-variable 'ac-user-dictionary)
+  (setq ac-user-dictionary (append processing-functions
+                                   processing-builtins
+                                   processing-constants)))
+
+(add-to-list 'ac-modes 'processing-mode)
+(add-hook 'processing-mode-hook 'processing-mode-init)
+}}}
+
+
+=== Keybindings ===
+{{{
+C-c C-p r    Run a sketch.
+C-c C-p b    Compile a sketch into .class files.
+C-c C-p p    Run a sketch full screen.
+C-c C-p e    Export sketch.
+C-c C-p d    Find in reference.
+C-c C-p f    Find or create sketch.
+C-c C-p s    Search in Processing forum.
+}}}
+
+
+== pre-existing page? ==
+Are there any pages on Processing already in the wiki?
+I can't find them.
+
+== Categories ==
+ProgrammingModes MultiMediaModes
+
+NOTE: "Processing" is a such a generic term, that it is often hard to find relevant search matches. Historically, the language had been referred to as "Proce55ing" which ''is'' easier to search for. The use of "p5" also can reduce false positives. If this comment is removed or rewritten, please leave references to "Proce55ing" and "p5" somewhere.
