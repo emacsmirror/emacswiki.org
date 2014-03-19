@@ -20,8 +20,8 @@ useful if you are making substantial changes to Emacs.
 === Conventions and basic info ===
 
 * Whenever we need to refer to the Emacs repository on the GNU
-  *servers, we'll use URL_TO_UPSTREAM_MASTER*. At the time of this
-  *writing, it is ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##.
+  servers, we'll use URL_TO_UPSTREAM_MASTER. At the time of this
+  writing, it is ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##.
 
 * ##git help /command/## is an easy way to get documentation about
     /command/. Use this for learning useful command line options.
@@ -38,7 +38,7 @@ your name among humans and the other to set your email address:
 
 Next, you need to clone a copy of the Emacs repository:
 
-* ##git clone URL_TO_UPSTREAM_TRUNK##
+* ##git clone URL_TO_UPSTREAM_MASTER##
 
 This will take a couple of minutes even on a fast connection;
 it downloads about 300MB of data.
