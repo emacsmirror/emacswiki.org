@@ -31,3 +31,10 @@ Tagging, categorizing is human-powered manual activity, but aggregating and list
 
 -- MichaelPaulukonis 2014-03-20 15:53 UTC
 
+
+----
+
+OK, I think I understand your proposal, now. One problem remains, as far as I can see: Simple aggregation and listings are often inferior to well-written category pages. Take CategoryAccessibility, for example: I don't want to replace it with an automated list. Even a simple list like CategoryBookmarking has a little summary for every page instead of just the page name. Would you also support markup to identify the tagline for each page, or would you just take the first sentence of the first paragraph, or nothing at all?
+
+-- AlexSchroeder 2014-03-20 17:15 UTC
+
