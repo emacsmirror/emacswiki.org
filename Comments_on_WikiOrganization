@@ -17,3 +17,17 @@ Or are you arguing that we don't need a bottom-up categorization of pages, we ca
 
 -- AlexSchroeder 2014-03-19 17:40 UTC
 
+
+----
+
+I'm proposing that category tags not be links, they be something distinct -- as far as wiki markup goes. When rendered, they'd act like a link and look like a link (depending upon css or other presentational issues).
+
+But having a category tag be ''distinct'' from a link, would allow for automatic aggregation of ''tagged'' pages, as opposed to linked pages.
+
+Somebody's profile could link to <code>CategorySomething</code> -- but it would be a link.
+An actual article that is tagged <code>[[tag:Something]]</code> would render as a link to, and be auto-included on the <code>CategorySomething</code> page (presuming a mechanism exists for listing all pages with tags).
+
+Tagging, categorizing is human-powered manual activity, but aggregating and listing pages tagged should be automatic.
+
+-- MichaelPaulukonis 2014-03-20 15:53 UTC
+
