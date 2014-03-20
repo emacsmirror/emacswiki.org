@@ -38,3 +38,18 @@ OK, I think I understand your proposal, now. One problem remains, as far as I ca
 
 -- AlexSchroeder 2014-03-20 17:15 UTC
 
+
+----
+
+What I'm proposing is two forms of markup -- one that makes a tag distinct from a link (markup-wise), and one that can list all pages marked with a tag (or with other parameters -- a pagelist if you will).
+
+This way, the page CategoryAccessibility can be handcrafted -- an intro, an outro, a hand-curated list of links, **or** an intro, an outro, and a list of all pages that contain the <code>[[tag:Accessibility]]</code> markup
+
+The model I have in mind is [http://www.pmwiki.org/wiki/PmWiki/PageLists PmWiki's pagelist] markup -- which is written in PHP and in the source noted to be somewhat hermetic. It's pretty powerful, but a small subset of features would be nice -- wildcard inclusions and exclusions, for instance.
+
+Pagelists themselves are rendered according to a template) or a default template -- which could mean including the entire page (g-d forbid!), a sentence, a paragraph, the full title, a summary, or some other portion of the page or page's metadata.
+
+While Pmwiki's own site implements category pages [http://www.pmwiki.org/wiki/PmWiki/Categories automatically] -- see [http://www.pmwiki.org/wiki/Category/Administration Category.Administration] for example -- that's configurable. In our case, manually including the listing-markup is probably preferable.
+
+-- MichaelPaulukonis 2014-03-20 21:09 UTC
+
