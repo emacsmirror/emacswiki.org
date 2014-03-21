@@ -34,16 +34,21 @@ This section presents some additional ways to copy a line, besides those availab
 === New commands ===
 
 [:GeneralPurposeCopyLine]
-==== A copy-line with variable arguments ====
+==== Best ease of use features for adding to standard emacs ====
   (defun copy-line (arg)
     "Copy lines (as many as prefix argument) in the kill ring.
-  Pretend the last line of the buffer has a trailing newline to avoid insanity."
+    Ease of use features:
+    - Move to start of next line.
+    - Appends the copy on sequential calls.
+    - Use newline as last char even on the last line of the buffer."
     (interactive "p")
     (kill-ring-save (line-beginning-position) (line-end-position arg))
     (kill-append "\n" nil)
+    (beginning-of-line 2)
     (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
-===== Slight variation: Always do message. Don't append newline for last buffer line ======
+
+===== Simple copy line ======
     (defun copy-line (arg)
       "Copy lines (as many as prefix argument) in the kill ring"
       (interactive "p")
