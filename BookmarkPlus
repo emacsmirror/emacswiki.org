@@ -3964,6 +3964,8 @@ Here is an icon you can use to indicate image-file bookmarks in the `##*Bookmark
 The following hack is used to save bookmarks desktop files before quiting emacs and switching to another desktop bookmark file. This means your bookmark files are always up-to date, without explicetly saving them. Furthermore, the function checks if Gnus *Group* buffer is open. If so it will close it without prompting, switch to the other desktop and then reopen gnus. The hacks might not be optimal, but they work!
 
 
+ (require 'bookmark+)
+ (require 'desktop)
 
  ;; the original jump desktop
  ;; added the automatic saving of the desktop bookmark file before switching
@@ -4009,14 +4011,12 @@ The following hack is used to save bookmarks desktop files before quiting emacs 
                               (if current-desktop-file
                                   (my-save-desktop current-desktop-file nil nil))
                               ))
-
  ;; this function automatically saves the bookmark file. it was copied
  ;; from the original save-desktop function and then modified.
  (defun my-save-desktop (filepath release auto-save)
   (interactive)
   (save-excursion
     (let ((eager nil ))
-
       (with-temp-buffer
         (insert
          ";; -*- mode: emacs-lisp; coding: emacs-mule; -*-\n"
@@ -4039,7 +4039,6 @@ The following hack is used to save bookmarks desktop files before quiting emacs 
            "(setq kill-ring-yank-pointer (nthcdr "
            (int-to-string (- (length kill-ring) (length kill-ring-yank-pointer)))
            " kill-ring))\n"))
-
         (insert "\n;; Buffer section -- buffers listed in same order as in buffer list:\n")
         (dolist (l (mapcar 'desktop-buffer-info (buffer-list)))
           (let ((base (pop l)))
