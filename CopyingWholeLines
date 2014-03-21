@@ -34,7 +34,7 @@ This section presents some additional ways to copy a line, besides those availab
 === New commands ===
 
 [:GeneralPurposeCopyLine]
-==== Best ease of use features for adding to standard emacs ====
+==== Best overall imo for adding to standard emacs ====
   (defun copy-line (arg)
     "Copy lines (as many as prefix argument) in the kill ring.
     Ease of use features:
