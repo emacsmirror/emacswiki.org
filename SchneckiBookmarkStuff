@@ -25,9 +25,8 @@ The following hack is used to save bookmarks desktop files before quiting emacs 
 
 
 {{{
-
- (require 'bookmark+)
- (require 'desktop)
+(require 'bookmark+)
+(require 'desktop)
 
  ;; the original jump desktop
  ;; added the automatic saving of the desktop bookmark file before switching
