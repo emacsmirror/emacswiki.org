@@ -1,0 +1,133 @@
+This page is for stuff created by [[schnecki]] that is related to bookmarks.
+
+
+== Desktop Bookmarks ==
+
+This tries to enhance '''[[Bookmark+]]''' [[BookmarkPlus#DesktopBookmarks|desktop bookmarks]] so that accessing (jumping to) them (a) automatically saves the current desktop file, if any, before jumping and (b) closes the Gnus `*Group*' buffer beforehand and reopens Gnus after restoring the target desktop.
+
+[new:DrewAdams:2014-03-21 16:17 UTC]
+I moved this material here. It was originally posted to page BookmarkPlus.  
+
+The code is not too clear to me.  For one thing, I would think that the current desktop file already gets saved automatically, provided a user has adjusted variables `desktop-save-mode' and `desktop-save' (which see).  Also, I would think that `kill-emacs-hook' would be what you want, not `before-save-hook'.
+
+Please consider adding such code as a separate library, e.g., `##schnecki-desktop-bmk.el##' or some such.  And use a library-specific prefix for the names (e.g. `sdb-current-desktop-file').  At least do not use prefix `bmkp-', please.
+
+If you describe what problem you really encounter using '''Bookmark+''', step by step, I will consider trying to deal with it in '''Bookmark+'''.  For example, turning off/on Gnus sounds like it might be a reasonable enhancement.  The other things you address I do not yet see as real problems, but if you describe each in detail I will be glad to take a look.  Thx -- DrewAdams
+
+[new]
+
+
+
+
+----
+
+The following hack is used to save bookmarks desktop files before quiting emacs and switching to another desktop bookmark file. This means your bookmark files are always up-to date, without explicetly saving them. Furthermore, the function checks if Gnus *Group* buffer is open. If so it will close it without prompting, switch to the other desktop and then reopen gnus. The hacks might not be optimal, but they work!
+
+
+{{{
+
+ (require 'bookmark+)
+ (require 'desktop)
+
+ ;; the original jump desktop
+ ;; added the automatic saving of the desktop bookmark file before switching
+ (defun bmkp-jump-desktop-original (bookmark)
+   "Jump to desktop bookmark BOOKMARK. 
+ Handler function for record returned by `bmkp-make-desktop-record'.
+ BOOKMARK is a bookmark name or a bookmark record."
+  (let ((desktop-file  (bookmark-prop-get bookmark 'desktop-file)))
+    (if current-desktop-file
+        (my-save-desktop current-desktop-file nil nil))
+    ;; (setq current-desktop-file bookmark)
+    (setq current-desktop-file (bookmark-prop-get bookmark 'desktop-file))
+    (unless (condition-case nil (require 'desktop nil t) (error nil))
+      (error "You must have library `desktop.el' to use this command"))
+    ;; (unless desktop-file (error "Not a desktop-bookmark: %S" bookmark)) ; Shouldn't happen.
+    (bmkp-desktop-change-dir desktop-file)
+    (unless (bmkp-desktop-read desktop-file) (error "Could not load desktop file"))))
+
+
+ ;; function that check for gnus and the calls jump desktop, afterwards
+ ;; open gnus again
+  (defun bmkp-jump-desktop (bookmark)
+  "Check if Gnus is open. If so, close it, load bookmark, then reopen it."
+  (let (buf)
+    ;; preset the current desktop file
+    (if (not (boundp 'current-desktop-file))
+        (setq current-desktop-file nil))
+    (let ((gnusAlive (and (fboundp 'gnus-alive-p)
+                          (gnus-alive-p)
+                          (bufferp (setq buf (get-buffer "*Group*"))))))
+      (when gnusAlive
+        (gnus-group-exit))
+      ;; (bmkp-set-desktop-bookmark (bookmark-prop-get bmkp-current-desktop-file 'desktop-file) t)
+      (bmkp-jump-desktop-original bookmark)
+      (when gnusAlive
+        (gnus)))))
+
+
+ ;; save desktop before quitting emacs (in case one was loaded)
+ (add-hook 'before-save-hook (lambda ()
+                              (if (not (boundp 'current-desktop-file))
+                                      (setq current-desktop-file nil))
+                              (if current-desktop-file
+                                  (my-save-desktop current-desktop-file nil nil))
+                              ))
+ ;; this function automatically saves the bookmark file. it was copied
+ ;; from the original save-desktop function and then modified.
+ (defun my-save-desktop (filepath release auto-save)
+  (interactive)
+  (save-excursion
+    (let ((eager nil ))
+      (with-temp-buffer
+        (insert
+         ";; -*- mode: emacs-lisp; coding: emacs-mule; -*-\n"
+         desktop-header
+         ";; Created " (current-time-string) "\n"
+         ";; Desktop file format version " desktop-file-version "\n"
+         ";; Emacs version " emacs-version "\n")
+        (save-excursion (run-hooks 'desktop-save-hook))
+        (goto-char (point-max))
+        (insert "\n;; Global section:\n")
+        ;; Called here because we save the window/frame state as a global
+        ;; variable for compatibility with previous Emacsen.
+        ;; (desktop-save-frameset)
+        (unless (memq 'desktop-saved-frameset desktop-globals-to-save)
+          (desktop-outvar 'desktop-saved-frameset))
+        (mapc (function desktop-outvar) desktop-globals-to-save)
+        (setq desktop-saved-frameset nil) ; after saving desktop-globals-to-save
+        (when (memq 'kill-ring desktop-globals-to-save)
+          (insert
+           "(setq kill-ring-yank-pointer (nthcdr "
+           (int-to-string (- (length kill-ring) (length kill-ring-yank-pointer)))
+           " kill-ring))\n"))
+        (insert "\n;; Buffer section -- buffers listed in same order as in buffer list:\n")
+        (dolist (l (mapcar 'desktop-buffer-info (buffer-list)))
+          (let ((base (pop l)))
+            (when (apply 'desktop-save-buffer-p l)
+              (insert "("
+                      (if (or (not (integerp eager))
+                              (if (zerop eager)
+                                  nil
+                                (setq eager (1- eager))))
+                          "desktop-create-buffer"
+                        "desktop-append-buffer-args")
+                      " "
+                      desktop-file-version)
+              ;; If there's a non-empty base name, we save it instead of the buffer name
+              ;; (when (and base (not (string= base "")))
+              (setcar (nthcdr 1 l) base)
+              ;; )
+              (dolist (e l)
+                (insert "\n  " (desktop-value-to-string e)))
+              (insert ")\n\n"))))
+        (write-region (point-min) (point-max) filepath nil 'nomessage)))))
+
+}}}
+
+
+
+
+
+----
+CategoryBookmarking
