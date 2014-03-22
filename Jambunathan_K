@@ -1,3 +1,7 @@
 I am the author of  Orgmode's OpenDocumentText Exporter.   I no longer contribute to Emacs or participate actively in the mailing lists.  However, I continue to improve the exporter in my own personal repository.  See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter ODT Expoter]] for more information.  If you want to report a bug in the exporter or request a specific feature, don't hesitate to leave a note here.  I will try my best to help you.
 
 As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane.org/gmane.emacs.devel/170713 Personal gift - INR 10,000  (Ten Thousand) - to new contributors]] for more information.
+
+----
+
+Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
