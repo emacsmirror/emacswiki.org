@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar 23 11:44:28 2014 (-0700)
+;; Last-Updated: Sun Mar 23 12:35:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2734
+;;     Update #: 2778
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1366,8 +1366,7 @@ Here:
 Anywhere:
 
 \\[bmkp-toggle-autotemp-on-set]\t- Toggle making bookmarks temporary when setting them
-\\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file     \
-\(`\\[bmkp-bookmark-file-jump]' to load)
+\\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file (`j y' to visit/load it)
 \\[bmkp-delete-bookmarks]\t- Delete some bookmarks at point or all in buffer
 \\[bmkp-make-function-bookmark]\t- Create a function bookmark
 \\[bmkp-choose-navlist-of-type]\t- Set the navlist to the bookmarks of a type you choose
@@ -1401,58 +1400,62 @@ Jump to (Visit) Bookmarks
 
 \\[bmkp-bmenu-jump-to-marked]\t- Bookmarks marked `>', in other windows
 
-\\[bookmark-jump]\t- Bookmark by name
-\\[bmkp-jump-in-navlist]\t- Bookmark in the navigation list
-\\[bmkp-lighted-jump]\t- Highlighted bookmark
+Prefix `j' uses another window; prefix `J' reuses this window:
 
-\\[bmkp-jump-to-type]\t- Bookmark by type
-\\[bmkp-autonamed-jump]\t- Autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump]\t- Autonamed bookmark in this buffer
-\\[bmkp-temporary-jump]\t- Temporary bookmark
+\\[bookmark-jump-other-window]\t- Bookmark by name
+\\[bmkp-jump-in-navlist-other-window]\t- Bookmark in the navigation list
+\\[bmkp-lighted-jump-other-window]\t- Highlighted bookmark
 
-\\[bmkp-autofile-jump]\t- Autofile bookmark
-\\[bmkp-dired-jump]\t- Dired bookmark
-\\[bmkp-file-jump]\t- File or directory bookmark
-\\[bmkp-dired-this-dir-jump]\t- Dired bookmark for this dir
-\\[bmkp-file-this-dir-jump]\t- Bookmark for a file or subdir in this dir
-\\[bmkp-local-file-jump]\t- Local-file bookmark
-\\[bmkp-remote-file-jump]\t- Remote-file bookmark
-\\[bmkp-non-file-jump]\t- Non-file (buffer) bookmark
+\\[bmkp-jump-to-type-other-window]\t- Bookmark by type
+\\[bmkp-autonamed-jump-other-window]\t- Autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump-other-window]\t- Autonamed bookmark in this buffer
+\\[bmkp-temporary-jump-other-window]\t- Temporary bookmark
 
-\\[bmkp-desktop-jump]\t- Desktop bookmark
-\\[bmkp-bookmark-list-jump]\t- Bookmark-list bookmark
-\\[bmkp-bookmark-file-jump]\t- Bookmark-file bookmark
+\\[bmkp-autofile-jump-other-window]\t- Autofile bookmark
+\\[bmkp-dired-jump-other-window]\t- Dired bookmark
+\\[bmkp-file-jump-other-window]\t- File or directory bookmark
+\\[bmkp-dired-this-dir-jump-other-window]\t- Dired bookmark for this dir
+\\[bmkp-file-this-dir-jump-other-window]\t- Bookmark for a file or subdir in this dir
+\\[bmkp-local-file-jump-other-window]\t- Local-file bookmark
+\\[bmkp-remote-file-jump-other-window]\t- Remote-file bookmark
+\\[bmkp-non-file-jump-other-window]\t- Non-file (buffer) bookmark
 
-\\[bmkp-region-jump]\t- Region bookmark (restores region)
-\\[bmkp-snippet-to-kill-ring]\t- Snippet bookmark (copy to `kill-ring')
-\\[bmkp-image-jump]\t- Image-file bookmark
-\\[bmkp-info-jump]\t- Info bookmark
-\\[bmkp-man-jump]\t- `man'-page bookmark
-\\[bmkp-gnus-jump]\t- Gnus bookmark
-\\[bmkp-url-jump]\t- URL bookmark
-\\[bmkp-variable-list-jump]\t- Variable-list bookmark
+j K\t- Desktop bookmark
+j B\t- Bookmark-list bookmark
+j y\t- Bookmark-file bookmark
 
-\\[bmkp-some-tags-jump]\t- Bookmark having some tags you specify
-\\[bmkp-all-tags-jump]\t- Bookmark having each tag you specify
-\\[bmkp-some-tags-regexp-jump]\t- Bookmark having a tag that matches a regexp
-\\[bmkp-all-tags-regexp-jump]\t- Bookmark having all its tags match a regexp
-\\[bmkp-file-some-tags-jump]\t- File bookmark having some tags you specify
-\\[bmkp-file-all-tags-jump]\t- File bookmark having each tag you specify
-\\[bmkp-file-some-tags-regexp-jump]\t- File bookmark having a tag that matches a regexp
-\\[bmkp-file-all-tags-regexp-jump]\t- File bookmark having all its tags match a regexp
-\\[bmkp-file-this-dir-some-tags-jump]\t- File in this dir having some tags you specify
-\\[bmkp-file-this-dir-all-tags-jump]\t- File in this dir having each tag you specify
-\\[bmkp-file-this-dir-some-tags-regexp-jump]\t- File in this dir having a tag that matches a regexp
-\\[bmkp-file-this-dir-all-tags-regexp-jump]\t- File in this dir having all its tags match a regexp
+\\[bmkp-region-jump-other-window]\t- Region bookmark (restores region)
+j M-w\t- Snippet bookmark (copy to `kill-ring')
+\\[bmkp-image-jump-other-window]\t- Image-file bookmark
+\\[bmkp-info-jump-other-window]\t- Info bookmark
+\\[bmkp-man-jump-other-window]\t- `man'-page bookmark
+\\[bmkp-gnus-jump-other-window]\t- Gnus bookmark
+\\[bmkp-url-jump-other-window]\t- URL bookmark
+j v\t- Variable-list bookmark
+
+\\[bmkp-some-tags-jump-other-window]\t- Bookmark having some tags you specify
+\\[bmkp-all-tags-jump-other-window]\t- Bookmark having each tag you specify
+\\[bmkp-some-tags-regexp-jump-other-window]\t- Bookmark having a tag that matches a regexp
+\\[bmkp-all-tags-regexp-jump-other-window]\t- Bookmark having all its tags match a regexp
+\\[bmkp-file-some-tags-jump-other-window]\t- File bookmark having some tags you specify
+\\[bmkp-file-all-tags-jump-other-window]\t- File bookmark having each tag you specify
+\\[bmkp-file-some-tags-regexp-jump-other-window]\t- File bookmark having a tag that matches a regexp
+\\[bmkp-file-all-tags-regexp-jump-other-window]\t- File bookmark having all its tags match a regexp
+\\[bmkp-file-this-dir-some-tags-jump-other-window]\t- File in this dir having some tags you specify
+\\[bmkp-file-this-dir-all-tags-jump-other-window]\t- File in this dir having each tag you specify
+\\[bmkp-file-this-dir-some-tags-regexp-jump-other-window]\t- \
+File in this dir having a tag that matches a regexp
+\\[bmkp-file-this-dir-all-tags-regexp-jump-other-window]\t- \
+File in this dir having all its tags match a regexp
 
 
-Autonamed Bookmarks (anywhere)
+Autonamed Bookmarks
 -------------------
 
 \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
 C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookmarks in current buffer
-\\[bmkp-autonamed-jump]\t\t- Jump to an autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump]\t- Jump to an autonamed bookmark in a given buffer
+\\[bmkp-autonamed-jump-other-window]\t\t- Jump to an autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump-other-window]\t\t- Jump to an autonamed bookmark in a given buffer
 
 
 Cycle Bookmarks (anywhere)
@@ -1606,7 +1609,7 @@ Bookmark Highlighting
 \\[bmkp-unlight-bookmarks]\t- Unhighlight bookmarks (see prefix arg)
 \\[bmkp-bookmarks-lighted-at-point]\t- List bookmarks highlighted at point
 \\[bmkp-unlight-bookmark-here]\t- Unhighlight a bookmark at point or on same line
-\\[bmkp-lighted-jump]\t- Jump to a highlighted bookmark
+\\[bmkp-lighted-jump-other-window]\t- Jump to a highlighted bookmark (other window)
 
 
 Sort `*Bookmark List*' (`s C-h' to see this)
@@ -4965,55 +4968,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bookmark-bmenu-mode-map "\M-I\M-M"             'bmkp-bmenu-mark-image-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-I\M-S"             'bmkp-bmenu-show-only-image-files)
 
-(define-key bookmark-bmenu-mode-map "j"                    nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "j,"                   nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "j."                   nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "j>"                   'bmkp-bmenu-jump-to-marked)          ; `j >'
-(define-key bookmark-bmenu-mode-map "j:"                   'bmkp-jump-to-type)                  ; `j :'
-(define-key bookmark-bmenu-mode-map "j#"                   'bmkp-autonamed-jump)                ; `j #'
-(define-key bookmark-bmenu-mode-map "j,#"                  'bmkp-autonamed-this-buffer-jump)    ; `j , #'
-(define-key bookmark-bmenu-mode-map "ja"                   'bmkp-autofile-jump)                 ; `j a'
-(define-key bookmark-bmenu-mode-map "jb"                   'bmkp-non-file-jump)                 ; `j b'
-(define-key bookmark-bmenu-mode-map "jB"                   'bmkp-bookmark-list-jump)            ; `j B'
-(define-key bookmark-bmenu-mode-map "jd"                   'bmkp-dired-jump)                    ; `j d'
-(define-key bookmark-bmenu-mode-map "j.d"                  'bmkp-dired-this-dir-jump)           ; `j . d'
-(define-key bookmark-bmenu-mode-map "jf"                   'bmkp-file-jump)                     ; `j f'
-(define-key bookmark-bmenu-mode-map "j.f"                  'bmkp-file-this-dir-jump)            ; `j . f'
-(define-key bookmark-bmenu-mode-map "jg"                   'bmkp-gnus-jump)                     ; `j g'
-(define-key bookmark-bmenu-mode-map "jh"                   'bmkp-lighted-jump)                  ; `j h'
-(define-key bookmark-bmenu-mode-map "ji"                   'bmkp-info-jump)                     ; `j i'
-(define-key bookmark-bmenu-mode-map "j\M-i"                'bmkp-image-jump)                    ; `j M-i'
-(define-key bookmark-bmenu-mode-map "jj"                   'bookmark-jump)                      ; `j j'
-(define-key bookmark-bmenu-mode-map "jK"                   'bmkp-desktop-jump)                  ; `j K'
-(define-key bookmark-bmenu-mode-map "jl"                   'bmkp-local-file-jump)               ; `j l'
-(define-key bookmark-bmenu-mode-map "jm"                   'bmkp-man-jump)                      ; `j m'
-(define-key bookmark-bmenu-mode-map "jn"                   'bmkp-remote-file-jump)              ; `j n'
-(define-key bookmark-bmenu-mode-map "jN"                   'bmkp-jump-in-navlist)               ; `j N'
-(define-key bookmark-bmenu-mode-map "jr"                   'bmkp-region-jump)                   ; `j r'
-(define-key bookmark-bmenu-mode-map "ju"                   'bmkp-url-jump)                      ; `j u'
-(define-key bookmark-bmenu-mode-map "jv"                   'bmkp-variable-list-jump)            ; `j v'
-(define-key bookmark-bmenu-mode-map "jx"                   'bmkp-temporary-jump)                ; `j x'
-(define-key bookmark-bmenu-mode-map "j\M-w"                'bmkp-snippet-to-kill-ring)          ; `j M-w'
-(define-key bookmark-bmenu-mode-map "jy"                   'bmkp-bookmark-file-jump)            ; `j y'
-
-(define-key bookmark-bmenu-mode-map "jt"          nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jt%"         nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jtf"         nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jtf%"        nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jt."         nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jt.%"        nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "jt+"         'bmkp-some-tags-jump)                     ; `j t +'
-(define-key bookmark-bmenu-mode-map "jt*"         'bmkp-all-tags-jump)                      ; `j t *'
-(define-key bookmark-bmenu-mode-map "jt%+"        'bmkp-some-tags-regexp-jump)              ; `j t % +'
-(define-key bookmark-bmenu-mode-map "jt%*"        'bmkp-all-tags-regexp-jump)               ; `j t % *'
-(define-key bookmark-bmenu-mode-map "jtf+"        'bmkp-file-some-tags-jump)                ; `j t f +'
-(define-key bookmark-bmenu-mode-map "jtf*"        'bmkp-file-all-tags-jump)                 ; `j t f *'
-(define-key bookmark-bmenu-mode-map "jtf%+"       'bmkp-file-some-tags-regexp-jump)         ; `j t f % +'
-(define-key bookmark-bmenu-mode-map "jtf%*"       'bmkp-file-all-tags-regexp-jump)          ; `j t f % *'
-(define-key bookmark-bmenu-mode-map "jt.+"        'bmkp-file-this-dir-some-tags-jump)       ; `j t . +'
-(define-key bookmark-bmenu-mode-map "jt.*"        'bmkp-file-this-dir-all-tags-jump)        ; `j t , *'
-(define-key bookmark-bmenu-mode-map "jt.%+"       'bmkp-file-this-dir-some-tags-regexp-jump); `j t . % +'
-(define-key bookmark-bmenu-mode-map "jt.%*"       'bmkp-file-this-dir-all-tags-regexp-jump) ; `j t . % *'
+;; Prefix `j' and `J' bindings are made in `bookmark+-key.el', by binding `bmkp-jump(-other-window)-map'.
 
 (define-key bookmark-bmenu-mode-map "k"                    'bmkp-bmenu-flag-for-deletion)
 (define-key bookmark-bmenu-mode-map "K"                    nil) ; For Emacs 20
