@@ -250,6 +250,9 @@ Then use a convenient key to send ESC to terminal. I am fine with "C-c C-e"
 
 --Noorul
 
+[new] 
+I have merge term-send-esc feature in lastest multi-term.el , thanks Noorul -- AndyStewart 
+
 [new]
 Hi!  Please add 256 color support to multiterm!
 
