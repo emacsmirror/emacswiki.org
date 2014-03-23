@@ -15,7 +15,9 @@ Alternatives include:
 
 == Installing from source on Debian and similar ==
 
-You can use git to get the source:
+To install a bleeding-edge version of Emacs direct from Bazaar, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, one can use [[https://github.com/rrthomas/src-emacs-on-debian|this handy script and Debian package]] by Michael Olson. 
+
+Alternatively, do it yourself. First, use git to get the sources:
 
     git clone --depth 1 git://git.sv.gnu.org/emacs.git
 
@@ -39,6 +41,7 @@ The following packages are available through apt-get/aptitude and might need to 
 * libotf-dev
 
 === Building from the source ===
+
 In order to build after installing required dependencies:
 
 {{{
