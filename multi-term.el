@@ -2,7 +2,7 @@
 
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: ahei <ahei0802@gmail.com>
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2008, 2009, 2014 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
 ;; Version: 0.8.14
