@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Thu Dec 26 08:32:00 2013 (-0800)
+;; Last-Updated: Sun Mar 23 10:00:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 668
+;;     Update #: 673
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -133,6 +133,10 @@
  
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
+
+;; `bookmark-bmenu-mode-map'
+
+(define-key bookmark-bmenu-mode-map [(control shift ?l)] 'bookmark-bmenu-locate) ; `C-L' (aka `C-S-l')
 
 ;; `bookmark-map'
 
