@@ -197,6 +197,12 @@ However I found one deficiency:
 
 It may be a good idea to add this functionality to multi-term.el
 
+[new]
+After multi-term.el 0.8.13 , you just need use below code to make you happy: -- AndyStewart
+{{{
+(setq multi-term-dedicated-close-back-to-open-buffer-p t)
+}}}
+
 Ilya - you might watch to use select-window and selected-window rather than switching buffers when you restore state. ---MPH
 
 [new]
