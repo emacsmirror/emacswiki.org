@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.8.13
-;; Last-Updated: 2014-03-23 15:34:23
+;; Version: 0.8.14
+;; Last-Updated: 2014-03-23 15:46:28
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.3.50
@@ -130,6 +130,7 @@
 ;; 2014/03/23
 ;;      * Add `term-send-esc' and binding with 'C-c C-e', send esc is useful for some program, such as vim. ;)
 ;;      * Add new option `multi-term-dedicated-close-back-to-open-buffer-p' .
+;;      * Bind C-y with `term-paste' to avoid paste content can't insert in term mode.
 ;;
 ;; 2014/03/17   Andy Stewart
 ;;      * Swap key binding of `term-send-raw' and `term-send-input', i think it's better send yank data when user hit ctrl+m.
@@ -325,6 +326,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("C-s" . isearch-forward)
     ("C-r" . isearch-backward)
     ("C-m" . term-send-input)
+    ("C-y" . term-paste)
     ("M-f" . term-send-forward-word)
     ("M-b" . term-send-backward-word)
     ("M-o" . term-send-backspace)
