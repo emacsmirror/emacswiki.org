@@ -5,7 +5,7 @@
 You'll need to have Apple's developer tools installed.
 
 * If you don't want to build yourself: We provide daily (universal) binaries, compiled fresh from our Git master branch, which you can download.  
-* Don't forget to subscribe to the [http://lists.sourceforge.net/lists/listinfo/aquamacs-devel aquamacs-devel mailing list]. 
+* Don't forget to subscribe to the [http://lists.aquamacs.org/ aquamacs-devel mailing list]. 
 
 == Obtaining ==
 
