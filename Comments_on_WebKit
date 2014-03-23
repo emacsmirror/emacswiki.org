@@ -2,3 +2,10 @@ Is it mode work on Linux only?
 
 -- [http://https://plus.google.com/106879590264146208723/posts Netsu] 2014-03-23 13:03 UTC
 
+
+----
+
+It need PyQt5 and Python-EPC, it possible to build those depend on non-linux platform, but i just test it on Linux.
+
+-- AndyStewart 2014-03-23 13:47 UTC
+
