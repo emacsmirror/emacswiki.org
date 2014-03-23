@@ -1,14 +1,14 @@
 == Emacs, Xemacs and related packages in debian ==
 
+One can obtain Debian and Ubuntu packages newer than those included in the official versions, as well as build from source: see details [[EmacsSnapshotAndDebian|here]].
+
+=== Debian related emacs libraries === 
+
+One can find lots of emacs-related Debian packages with [[http://www.debian.org/distrib/packages#search_packages|its search engine]] or with your favorite [[https://en.wikipedia.org/wiki/Advanced_Packaging_Tool|APT]] package management tool.
+
 * Debian emacs documentation is (as of 2013-06-05) in package `*emacs24-common-non-dfsg*` if `C-h i' isn't working for you.
 
 * Debian package `emacs-goodies-el': Miscellaneous add-ons for Emacs at https://alioth.debian.org/projects/pkg-goodies-el
-
-* Debian and Ubuntu `emacs-snapshot' packages: http://emacs.naquadah.org/
-
-* Lots of others, check out http://www.debian.org/distrib/packages#search_packages or use your favorite apt package managemennt tool.
-
-=== Debian related emacs libraries === 
 
 * http://www.netfort.gr.jp/~dancer/software/devscripts-el.html.en "Debian Developer's emacs utilities"
 * apt-cache.el
@@ -59,11 +59,6 @@ The init files of the external packages should not, by default (or through an op
 Most debian packages that contain add on el files that would be installed site wide actually already do this.
 
 If a specific package installs itself site wide, and you later decide that this is not what you want, you can always remove the offending file from /etc/emacs/site-start.d/  This change is sancrosant, and a Debian package will not later reinstall this file. (If it does, please file an RC bug using reportbug with Severity: serious)
-
-
-=== Using development sources with Debian === 
-
-If you want to install a bleeding-edge version of Emacs direct from Bazaar, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, a handy script and Debian package by Michael Olson are available at https://github.com/rrthomas/src-emacs-on-debian
 
 ----
 CategoryPorts
