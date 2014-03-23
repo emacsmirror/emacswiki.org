@@ -1,9 +1,20 @@
-There are good packages for Emacs Snapshot (a daily snapshot of the latest HEAD in the source repository) and also for Emacs 24 releases.
+There are good Debian and Ubuntu packages that provide emacs versions newer than the official packages. One can also install from source for maximum freshness.
 
-== Ubuntu PPA ==
-There is also an [[https://launchpad.net/~cassou/+archive/emacs|Ubuntu PPA]].
+== Debian packages ==
 
-== Installing from source on Debian and Debian alikes ==
+The Debian packages [[http://emacs.naquadah.org/|emacs-snapshot*]] are no longer maintained as of 11 Jan 2014. Alternatives include:
+
+* [[https://packages.debian.org/search?keywords=emacs24&searchon=names&suite=all&section=all&sourceid=mozilla-search|packages=emacs-24*]]: gets latest released emacs-24 version.
+
+== Ubuntu packages ==
+
+Alternatives include:
+
+* Damien Cassou's [[https://launchpad.net/~cassou/+archive/emacs|bimonthly-build Ubuntu PPA]]
+* Robert Parks' [[https://launchpad.net/~ubuntu-elisp/+archive/ppa/|daily-build Ubuntu PPA]]
+
+== Installing from source on Debian and similar ==
+
 You can use git to get the source:
 
     git clone --depth 1 git://git.sv.gnu.org/emacs.git
@@ -49,4 +60,4 @@ make bootstrap
 make install
 }}}
 
-Then use {{{~/emacs-20131123/bin/emacs}}} to start it.
+Then use ##~/emacs-20131123/bin/emacs## to start it.
