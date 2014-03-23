@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.8.11
-;; Last-Updated: 2014-03-17 01:03:17
+;; Version: 0.8.12
+;; Last-Updated: 2014-03-23 15:02:47
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.3.50
@@ -126,6 +126,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/03/23
+;;      * Add `term-send-esc' and binding with 'C-c C-e', send esc is useful for some program, such as vim. ;)
 ;;
 ;; 2014/03/17   Andy Stewart
 ;;      * Swap key binding of `term-send-raw' and `term-send-input', i think it's better send yank data when user hit ctrl+m.
@@ -315,6 +318,7 @@ If this option is nil, don't switch other `multi-term' buffer."
 (defcustom term-bind-key-alist
   '(
     ("C-c C-c" . term-interrupt-subjob)
+    ("C-c C-e" . term-send-esc)
     ("C-p" . previous-line)
     ("C-n" . next-line)
     ("C-s" . isearch-forward)
@@ -489,6 +493,11 @@ Will prompt you shell name when you type `C-u' before this command."
   (if (multi-term-dedicated-exist-p)
       (select-window multi-term-dedicated-window)
     (message "`multi-term' window is not exist.")))
+
+(defun term-send-esc ()
+  "Send ESC in term mode."
+  (interactive)
+  (term-send-raw-string "\e"))
 
 (defun term-send-backward-kill-word ()
   "Backward kill word in term mode."
