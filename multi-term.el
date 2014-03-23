@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.8.12
-;; Last-Updated: 2014-03-23 15:02:47
+;; Version: 0.8.13
+;; Last-Updated: 2014-03-23 15:34:23
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.3.50
@@ -129,6 +129,7 @@
 ;;
 ;; 2014/03/23
 ;;      * Add `term-send-esc' and binding with 'C-c C-e', send esc is useful for some program, such as vim. ;)
+;;      * Add new option `multi-term-dedicated-close-back-to-open-buffer-p' .
 ;;
 ;; 2014/03/17   Andy Stewart
 ;;      * Swap key binding of `term-send-raw' and `term-send-input', i think it's better send yank data when user hit ctrl+m.
@@ -379,6 +380,15 @@ Default is nil."
   :type 'boolean
   :group 'multi-term)
 
+(defcustom multi-term-dedicated-close-back-to-open-buffer-p nil
+  "Some userlike the cursor return to the position it was before I opened the dedicated terminal window.
+Please make this option with t if you want it. ;)
+
+Default is nil."
+  :type 'boolean
+  :group 'multi-term
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Constant ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defconst multi-term-dedicated-buffer-name "MULTI-TERM-DEDICATED"
   "The buffer name of dedicated `multi-term'.")
@@ -389,6 +399,10 @@ Default is nil."
 
 (defvar multi-term-dedicated-buffer nil
   "The dedicated `multi-term' buffer.")
+
+(defvar multi-term-dedicated-close-buffer nil
+  "The buffer that first time open dedicated `multi-term' buffer.
+Details look option `multi-term-dedicated-close-back-to-open-buffer-p'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;###autoload
@@ -483,8 +497,16 @@ Will prompt you shell name when you type `C-u' before this command."
   "Toggle dedicated `multi-term' window."
   (interactive)
   (if (multi-term-dedicated-exist-p)
-      (multi-term-dedicated-close)
-    (multi-term-dedicated-open)))
+      (progn
+        (multi-term-dedicated-close)
+        (if (and multi-term-dedicated-close-back-to-open-buffer-p
+                 multi-term-dedicated-close-buffer)
+            (switch-to-buffer multi-term-dedicated-close-buffer)
+          ))
+    (multi-term-dedicated-open)
+    (if multi-term-dedicated-close-back-to-open-buffer-p
+        (setq multi-term-dedicated-close-buffer (current-buffer)))
+    ))
 
 ;;;###autoload
 (defun multi-term-dedicated-select ()
