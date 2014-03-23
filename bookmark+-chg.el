@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 23 11:50:26 2014 (-0700)
+;; Last-Updated: Sun Mar 23 12:38:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15492
+;;     Update #: 15495
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -981,7 +981,7 @@
 ;;
 ;; 2014/03/23 dadams
 ;;     bookmark-bmenu-mode-map:
-;;       Bind jump commands to j prefix (like C-x j j).
+;;       Bind jump commands to j prefix and J prefix (like C-x 4 j and C-x j).
 ;;       Bind bookmark-bmenu-locate to C-S-l, since w is used as a prefix key now.
 ;;     bookmark-bmenu-mode: New jump bindings.  Added bmkp-bmenu-copy-tags.
 ;; 2014/03/21 dadams
@@ -1409,6 +1409,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2014/03/23 dadams
+;;     Bind j and J in bookmark-bmenu-mode-map.  Bind also j > there.
 ;; 2013/10/29 dadams
 ;;     Bind bookmark-set's previous keys to bmkp-bookmark-set-confirm-overwrite.
 ;;     Bind bookmark-set to C-x r M, not C-x r m.
