@@ -467,7 +467,7 @@ access the complete documentation.  (Use button `Customize' to customize all '''
 
 * It is easy to recognize orphaned and invalid bookmarks.
 
-** Invalid bookmarks are shown in a special face in the bookmark-list display.
+** Invalid bookmarks are shown in a special face in the [[#BookmarkListDisplay|bookmark-list display]].
 
 ** You can easily mark all of the orphaned bookmarks, that is,
 those whose recorded files have been renamed or deleted.
@@ -612,7 +612,7 @@ file rules (it is all there is).  You can use `C-x p L'
 reflect the file --- just accept the default value, "switching" to
 the same file.
 
-The bookmark-list display (#3) is a snapshot view of the bookmarks
+The [[#BookmarkListDisplay|bookmark-list display]] (#3) is a snapshot view of the bookmarks
 in the bookmark list.  As such, what you see there reflects the
 state of the bookmark list at some point in time.  So here again,
 the two, list and display, can be out of sync.  Hitting `g' in the
@@ -686,7 +686,7 @@ User option '''`bookmark-save-flag'''' controls whether and how often to
 automatically save the bookmark list to the bookmark file.  You
 can toggle this option using '''`##M-~##'''' in the bookmark-list display.
 
-In the bookmark-list display, you can tell whether
+In the [[#BookmarkListDisplay|bookmark-list display]], you can tell whether
 individual bookmarks have been modified since the last save: they
 are marked with '''`##*##''''.  I believe that this indication is robust and
 accurate (if not, please report a bug), but a word of caution: do
@@ -761,7 +761,10 @@ commands: `##bmkp-##<tt>__dired__</tt>##-jump##', `##bmkp-##<tt>__info__</tt>##-
 commands to jump to bookmarks for the current buffer or for particular buffers or files (see [[#SpecificFilesOrBuffers|Bookmarks for Specific Files or Buffers]]).
 
 All bookmark jump commands are bound to keys that have the prefix '''`C-x j''''.  There is an other-window version of most jump commands, and it is bound to the same key as the same-window command, except the prefix is '''`##C-x ##<tt>__4__</tt>## j##'''', not '''`C-x j''''.  For instance,
-`bmkp-dired-jump-other-window' is bound to `C-x j  4 d'.
+`bmkp-dired-jump-other-window' is bound to `C-x j 4 d'.
+
+(In the [[#BookmarkListDisplay|bookmark-list display]], you can use just '''`j'''' instead of
+`C-x 4 j', and just '''`J'''' (uppercase) instead of `C-x j'.)
 
 More precisely, the bookmark jump commands are on the prefix maps
 '''`bmkp-jump-map'''' and '''`bmkp-jump-other-window-map'''', which have the
@@ -1114,7 +1117,7 @@ to the sequence being updated (or created), either before or after
 its existing members, according to the prefix arg (which is passed to `bmkp-set-sequence-bookmark').
 
 Command '''`bmkp-bmenu-make-sequence-from-marked'''' creates a
-sequence from the marked bookmarks in the bookmark-list display, in their
+sequence from the marked bookmarks in the [[#BookmarkListDisplay|bookmark-list display]], in their
 current order.
 
 Command '''`bmkp-create-dired-bookmarks-recursive'''' creates a Dired
@@ -1161,7 +1164,7 @@ There is no easy way to really edit a bookmark.
 
 With '''Bookmark+''':
 
-* You can use '''`r'''' in the bookmark-list display (or '''`C-x p r'''' elsewhere) to edit the ''name'' and the
+* You can use '''`r'''' in the [[#BookmarkListDisplay|bookmark-list display]] (or '''`C-x p r'''' elsewhere) to edit the ''name'' and the
 target ''file name'' (bookmarked location) of a bookmark.  You are prompted for the
 new names.
 
@@ -1359,7 +1362,7 @@ stepping stone to the files and directories you use most.
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked with '''`##>##'''' for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.  Deletion flags ('''`D'''') and
 modification indicators ('''`##*##'''') are purposefully ''not'' saved as part of the display state --- they are lost when you quit the display.
 
-You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
+You can turn off this automatic [[#BookmarkListDisplay|bookmark-list display]] state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
 
 
 
@@ -1372,7 +1375,7 @@ You can turn off this automatic bookmark-list display state saving, if you want,
 === State-Restoring Commands and Bookmarks ===
 
 In addition to automatically saving/restoring the final
-bookmark-list display state, you can save this state at any time, any
+[[#BookmarkListDisplay|bookmark-list display]] state, you can save this state at any time, any
 number of times, for later restoration.  This gives you the
 ability to create multiple persistent views of your bookmarks.
 
@@ -1586,7 +1589,7 @@ When you bookmark a target file that Emacs recognizes as an image
 or sound file, an appropriate handler is used automatically.
 
 After you create individual bookmarks for, say, music or image
-files, you can use `##P B##' in the bookmark-list display to show only
+files, you can use `##P B##' in the [[#BookmarkListDisplay|bookmark-list display]] to show only
 those bookmarks, and then use `C-x r m' to bookmark that state of
 the bookmark-list.
 
@@ -1703,7 +1706,7 @@ to open a bookmark whose file name matches that pattern, using its
 Windows file-association program.
 
 You can also specify '''`w32-browser'''' as the bookmark "type" when you
-use command `bmkp-jump-to-type' (`C-x j :').  Either of these
+use command `bmkp-jump-to-type' (`##C-x j :##').  Either of these
 approaches gives you a way to use completion to choose a bookmark
 to open using a Windows file association.
 
@@ -2045,7 +2048,7 @@ automatically.
 
 But you can have multiple bookmark files if you
 want, and at any time you can change the bookmark file that is
-current.  To do that, use '''`C-x p L'''' (or just '''`L'''' in the bookmark-list display), which is
+current.  To do that, use '''`C-x p L'''' (or just '''`L'''' in the [[#BookmarkListDisplay|bookmark-list display]]), which is
 bound to command '''`bmkp-switch-bookmark-file-create''''.
 Having multiple bookmark files gives you an added degree of
 flexibility.
@@ -2227,6 +2230,22 @@ information about the bookmark list, including the following:
 * The current status of sorting, filtering, and marking.
 * A legend for the faces used for different bookmark types.
 
+
+
+
+
+
+
+
+
+[:JumpingFromBookmarkListDisplay]
+=== Jumping To Bookmarks from the Bookmark List Display ===
+
+Bookmark visiting (jumping) commands are globally on [[prefix key]]s
+`C-x j' and `C-x 4 j'.  In the [[#BookmarkListDisplay|bookmark-list display]]  they are
+additionally on '''`j'''' (other window) and '''`J'''' (same window).  In
+addition, '''`##j >##'''' is bound to '''`bmkp-bmenu-jump-to-marked'''', which
+jumps to each of the marked bookmarks in other windows.
 
 
 
@@ -2754,7 +2773,7 @@ bookmark later you must have a buffer of the same name
 '''Bookmark+''' provides commands to handle these different use cases:
 specific files and specific buffers.  The
 keys bound to these commands use `f' for file and `b' for buffer.
-In the bookmark-list display, the following keys affect the
+In the [[#BookmarkListDisplay|bookmark-list display]], the following keys affect the
 bookmarks for a particular file or buffer whose name you provide
 (with completion).
 
@@ -3227,7 +3246,7 @@ which is '''not''' automatically saved to disk.  If you do not
 explicitly save it yourself then the bookmarks are lost when your
 Emacs session ends -- they are only temporary.
 
-This command is bound to '''`M-L'''' in the bookmark-list display buffer
+This command is bound to '''`M-L'''' in the [[#BookmarkListDisplay|bookmark-list display]] buffer
 (`##*Bookmark List*##').  The suffix '''`L'''' indicates that this has to do
 with <u>'''''l'''''</u>oading a bookmark file.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
 
@@ -3379,7 +3398,7 @@ automatic bookmarking sets autonamed bookmarks, then
 `bmkp-autonamed-bookmark-p' or
 `bmkp-autonamed-this-buffer-bookmark-p' (it includes both of these by default).  Remember that you can
 toggle whether a given bookmark is temporary or savable, using
-'''`M-X'''' in the bookmark-list display (buffer `##*Bookmark List*##').
+'''`M-X'''' in the [[#BookmarkListDisplay|bookmark-list display]] (buffer `##*Bookmark List*##').
 
 If you want the bookmarks to be automatically highlighted, then
 customize option '''`bmkp-auto-light-when-set'''' to highlight bookmarks
@@ -3495,7 +3514,7 @@ condition to a sexp such as this:
 If you hit `n' at the prompt then `##:no-light##' is returned and the
 bookmark is not highlighted.
 
-In the bookmark-list display, a pink-background, one-character
+In the [[#BookmarkListDisplay|bookmark-list display]], a pink-background, one-character
 highlight is used next to each bookmark that has a highlight
 override wrt the default.  You can see what that override setting
 is by using `C-u C-h RET' -- look for the `lighting' entry in the
@@ -3594,7 +3613,7 @@ such operations, but you can easily define others.
 
 In addition to such specific commands, you can also apply general
 operations to the highlighted or unhighlighted bookmarks, using
-the bookmark-list display (`##*Bookmark List*##').  '''`##H S##'''' shows only
+the [[#BookmarkListDisplay|bookmark-list display]] (`##*Bookmark List*##').  '''`##H S##'''' shows only
 the bookmarks that are currently highlighted, and '''`##H M##'''' marks
 them.  You can then perform any of the available bookmark-list
 operations on them.
@@ -3667,7 +3686,7 @@ whatever command `bmkp-bookmark-set-confirm-overwrite' would normally be bound t
 bookmark overwrite.
 
 During completion of a bookmark name, most features of the
-bookmark-list display (see [[#BookmarkListDisplay|The Bookmark List Display]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
+[[#BookmarkListDisplay|bookmark-list display]] (see [[#BookmarkListDisplay|The Bookmark List Display]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
 
 * Candidates are highlighted in the `*Completions*' window
   according to their bookmark type.
@@ -3832,7 +3851,7 @@ name).
 
 Note that when the option value is non-`nil', propertized bookmark
 names are saved not only to your bookmark file but also to any
-full snapshots you create of the bookmark-list display state using
+full snapshots you create of the [[#BookmarkListDisplay|bookmark-list display]] state using
 command `bmkp-bmenu-define-full-snapshot-command'.
 See [[#State-Restoring Commands and Bookmarks]].
 
