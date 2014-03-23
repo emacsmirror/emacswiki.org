@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar 10 11:01:43 2014 (-0700)
+;; Last-Updated: Sun Mar 23 09:30:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2616
+;;     Update #: 2632
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1535,6 +1535,8 @@ C-u \\[bmkp-bmenu-show-or-edit-annotation]\t- Edit bookmark's annotation
 Bookmark Tags
 -------------
 
+Here:
+
 \\[bmkp-add-tags]\t- Add some tags to a bookmark
 \\[bmkp-remove-tags]\t- Remove some tags from a bookmark (`C-u': from all bookmarks)
 \\[bmkp-remove-all-tags]\t- Remove all tags from a bookmark
@@ -1572,6 +1574,16 @@ in a set   (AND)
 in a set      (NOT OR)
 \\[bmkp-bmenu-unmark-bookmarks-tagged-not-all]\t- Unmark bookmarks not having all tags \
 in a set      (NOT AND)
+
+Anywhere:
+
+\\[bmkp-copy-tags]\t- Copy tags from a bookmark (for subsequent pasting)
+\\[bmkp-paste-add-tags]\t- Add (paste) tags copied from a bookmark
+\\[bmkp-paste-replace-tags]\t- Replace (paste) a bookmark's tags with copied tags
+\\[bmkp-set-tag-value-for-navlist]\t- Set a tag value for each bookmark in navlist
+\\[bmkp-edit-tags]\t- Edit a bookmark's tags (prompt for the bookmark)
+\\[bmkp-tag-a-file]\t- Add tags to a file (create/update an autofile bookmark)
+\\[bmkp-untag-a-file]\t- Remove tags from a file (an autofile bookmark)
 
 
 Bookmark Highlighting
