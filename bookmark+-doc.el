@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec 26 08:31:46 2013 (-0800)
+;; Last-Updated: Sun Mar 23 13:30:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14748
+;;     Update #: 14752
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -141,6 +141,7 @@
 ;;    (@> "Using Multiple Bookmark Files")
 ;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "The Bookmark List Display")
+;;      (@> "Jumping To Bookmarks from the Bookmark List Display")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Tags: Sets of Bookmarks")
 ;;      (@> "Open Dired for the Marked File Bookmarks")
@@ -714,6 +715,9 @@
 ;;  and it is bound to the same key as the same-window command, except
 ;;  the prefix is `C-x 4 j', not `C-x j'.  For instance,
 ;;  `bmkp-dired-jump-other-window' is bound to `C-x 4 j d'.
+;;
+;;  (In the bookmark-list display, you can use just `j' instead of
+;;  `C-x 4 j', and just `J' (uppercase) instead of `C-x j'.)
 ;;
 ;;  More precisely, the bookmark jump commands are on the prefix maps
 ;;  `bmkp-jump-map' and `bmkp-jump-other-window-map', which have the
@@ -2050,6 +2054,16 @@
 ;;  * The current status of sorting, filtering, and marking.
 ;;
 ;;  * A legend for the faces used for different bookmark types.
+;;
+;;
+;;(@* "Jumping To Bookmarks from the Bookmark List Display")
+;;  *** Jumping To Bookmarks from the Bookmark List Display ***
+;;
+;;  Bookmark visiting (jumping) commands are globally on prefix keys
+;;  `C-x j' and `C-x 4 j'.  In the bookmark-list display they are
+;;  additionally on `j' (other window) and `J' (same window).  In
+;;  addition, `j >' is bound to `bmkp-bmenu-jump-to-marked', which
+;;  jumps to each of the marked bookmarks in other windows.
 ;;
 ;;
 ;;(@* "Tag Commands and Keys")
