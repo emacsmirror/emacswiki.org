@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar 10 11:13:40 2014 (-0700)
+;; Last-Updated: Sun Mar 23 09:37:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15479
+;;     Update #: 15481
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -979,6 +979,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/03/21 dadams
+;;     bookmark-bmenu-mode: List also global bindings for tag commands.
 ;; 2014/03/10 dadams
 ;;     bmkp-maybe-unpropertize-bookmark-names: Remove prop face & Icicles props, in any case.
 ;;     bmkp-bmenu-define(-jump-marked|-full-snapshot)-command, bmkp-define-tags-sort-command:
