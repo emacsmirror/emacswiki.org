@@ -1,0 +1,9 @@
+*Font Lock Studio* is an interactive debugger for FontLockMode keywords (Emacs syntax highlighting rules).
+
+Font Lock Studio lets you *single-step* Font Lock keywords -- matchers, highlights, and anchored rules, so that you can see what happens when a buffer is fontified. You can set *breakpoints* on or inside rules and *run* until one has been hit. When inside a rule, matches are *visualized* using a palette of background colors. The *explainer* can describe a rule in plain-text english. Tight integration with *Edebug* allows you to step into Lisp expressions that are part of the Font Lock keywords.
+
+When using the debugger, an *interface buffer* is displayed, it contains all the keywords and is used for navigation and visalization of match data.
+
+== Download ==
+
+Font Lock Studio can be found at https://github.com/Lindydancer/font-lock-studio
