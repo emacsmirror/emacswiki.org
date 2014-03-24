@@ -14,3 +14,4 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 ***** Got it. I was using a stale styles.xml, not your version, hence the missing OrgCite. THANK YOU!
 
 * How do I get a space after a citation when it is followed by a word, but no space when followed by "." or ","?
+** Space(s) in the ##.org## file should be preserved on the output.   Is that the behaviour that you are not seeing?
