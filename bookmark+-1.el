@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar 23 17:41:08 2014 (-0700)
+;; Last-Updated: Sun Mar 23 17:51:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7102
+;;     Update #: 7103
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6840,14 +6840,14 @@ Non-interactively:
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
                                  (and (require 'ffap nil t)  (ffap-guesser)))
                                (bmkp-thing-at-point 'filename)
-                               (buffer-file-name))))
-     prefix-only
-     (if prefix-only
-         (read-string "Prefix for bookmark name: ")
-       (bmkp-completing-read-lax "Bookmark name"))
-     no-overw
-     nil
-     'MSG))
+                               (buffer-file-name)))
+           prefix-only
+           (if prefix-only
+               (read-string "Prefix for bookmark name: ")
+             (bmkp-completing-read-lax "Bookmark name"))
+           no-overw
+           nil
+           'MSG)))
   (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (bmkp-make-record-for-target-file file))
         bmk failure)
