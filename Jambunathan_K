@@ -8,10 +8,10 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 
 * Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
 ** See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]].  Is that what you are looking for? Please acknowledge.
-*** I think that is what I'm looking for, but that page says, "Citation references use a style named OrgCite. Modify this style to use Subscript. Then follow the procedure outline under", but I do not see "OrgCite" under the "Styles and Formatting" menu. It also mentions "Subscript" but I think is actually discussing "Superscript". 
+*** I think that is what I'm looking for, but that page says, ##"Citation references use a style named OrgCite. Modify this style to use Subscript. Then follow the procedure outline under"##, but I do not see ##"OrgCite"## under the ##"Styles and Formatting"## menu. 
 
 **** Check your ##*Messages*## buffer and see where from the Styles file is picked from.  It should come from the ELPA directory for ##org-odt##.  If the style file is coming from wrong directory, then you need to fix up ##org-odt-data-dir## (as outlined in my personal wiki page).  
-***** Got it. I was using a stale styles.xml, not your version, hence the missing OrgCite. THANK YOU!
+***** Got it. I was using a stale styles.xml, not your version, hence the missing ##OrgCite##. THANK YOU!
 
 * How do I get a space after a citation when it is followed by a word, but no space when followed by "." or ","?
 ** Space(s) in the ##.org## file should be preserved on output.   May be in some cases space(s) are not geting preserved?
