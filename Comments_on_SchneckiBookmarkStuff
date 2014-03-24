@@ -1,0 +1,14 @@
+Hi DrewAdams
+
+well I want to Emacs to start up clean (without loading any desktop file) and then select the project which I like working on using your Bookmark+ extension.
+
+Therefore, I need ‘desktop-save-mode’ to 'nil'. That means desktops do not get saved, no matter if I load any with Bookmark+. The variable ‘desktop-save’ (which is set to ‘ask-if-new‘ in my configuration) will be ignored also.
+
+That means if I'd like to save the latest state of my desktop (before switching to another desktop file using Bookmark+ or closing emacs) I need to do that manually. This is the reason for those funtions. 
+
+> Also, I would think that ‘kill-emacs-hook’ would be what you want, not ‘before-save-hook’.
+
+upps...yeah that was the wrong hook :) thanks
+
+-- schnecki 2014-03-24 11:23 UTC
+
