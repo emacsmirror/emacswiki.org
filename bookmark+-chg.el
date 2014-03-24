@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 23 17:13:29 2014 (-0700)
+;; Last-Updated: Sun Mar 23 17:43:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15500
+;;     Update #: 15505
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/03/23 dadams
+;;     bmkp-file-target-set, bmkp-autofile-set, bmkp-autofile-(add|remove)-tags:
+;;       Soft-require ffap.el before using ffap-guesser.
 ;; 2014/03/10 dadams
 ;;     bookmark-write-file:
 ;;       Remove prop face & Icicles props, anyway (but not bothering for sequence entry of seq bmks).
