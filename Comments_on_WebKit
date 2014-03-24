@@ -28,5 +28,7 @@ Python-EPC:  I downloaded it from https://github.com/tkf/python-epc, got hold of
 
 At his point I still get the error referred to at the top if this message.
 
+UPDATE: I also installed  72 Packages (+7 Dependent packages) withthe command yum install "qt5*". Same error message.
+
 -- [http://none Reik Reid] 2014-03-24 22:45 UTC
 
