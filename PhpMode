@@ -300,6 +300,28 @@ Add this to php-mode-hook:
     (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close)))
 }}}
 
+== Closures ==
+Php 5.4 introduce anonymous function and indent for those is wrong, here is a patch (kind of hack):
+{{{
+(defun unindent-closure ()
+  "Fix php-mode indent of closures"
+  (let ((syntax (mapcar 'car c-syntactic-context)))
+    (if (and (member 'arglist-cont-nonempty syntax)
+             (or
+              (member 'statement-block-intro syntax)
+              (member 'brace-list-intro syntax)
+              (member 'brace-list-close syntax)
+              (member 'block-close syntax)))
+       (save-excursion
+          (beginning-of-line)
+          (delete-char (* (count 'arglist-cont-nonempty syntax)
+                          c-basic-offset))) )))
+
+(add-hook 'php-mode-hook
+          (lambda ()
+            (add-hook 'c-special-indent-hook 'unindent-closure)))
+}}}
+
 == Multimode Indentation ==
 
 As I wasn't able to find anything that would handle indentation of multilingual code properly, I wrote the Web Mixed Indentation.
