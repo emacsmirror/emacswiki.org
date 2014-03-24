@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Mar 10 11:01:01 2014 (-0700)
+;; Last-Updated: Sun Mar 23 17:41:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7095
+;;     Update #: 7102
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6838,7 +6838,7 @@ Non-interactively:
      (list (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (ffap-guesser))
+                                 (and (require 'ffap nil t)  (ffap-guesser)))
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
      prefix-only
@@ -6950,7 +6950,8 @@ Non-interactively:
                                      def)
                                  (when (setq def  (buffer-file-name)) (push def deflts))
                                  (when (setq def  (bmkp-thing-at-point 'filename)) (push def deflts))
-                                 (when (setq def  (ffap-guesser)) (push def deflts))
+                                 (when (setq def  (and (require 'ffap nil t)  (ffap-guesser)))
+                                   (push def deflts))
                                  (when (and (boundp 'file-name-at-point-functions)
                                             (setq def  (run-hook-with-args-until-success
                                                         'file-name-at-point-functions)))
@@ -6958,7 +6959,7 @@ Non-interactively:
                                  deflts)
                              (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                      (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                   (ffap-guesser))
+                                   (and (require 'ffap nil t)  (ffap-guesser)))
                                  (bmkp-thing-at-point 'filename)
                                  (buffer-file-name)))))
          nil
@@ -7039,7 +7040,7 @@ Non-interactively:
            (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (ffap-guesser))
+                                 (and (require 'ffap nil t)  (ffap-guesser)))
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
          (bmkp-read-tags-completing nil nil (and current-prefix-arg
@@ -7093,7 +7094,7 @@ Non-interactively:
                               "File: " nil
                               (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                       (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                    (ffap-guesser))
+                                    (and (require 'ffap nil t)  (ffap-guesser)))
                                   (bmkp-thing-at-point 'filename)
                                   (buffer-file-name))
                               t nil (lambda (ff) ; PREDICATE - only for Emacs 22+.
@@ -7104,9 +7105,10 @@ Non-interactively:
                                                        (when (not (member tag btgs))
                                                          (throw 'bmkp-autofile-remove-tags-pred nil)))
                                                      t)))))
-                           (error (read-file-name "File: " nil (or (ffap-guesser)
-                                                                   (bmkp-thing-at-point 'filename)
-                                                                   (buffer-file-name)))))))
+                           (error (read-file-name "File: " nil
+                                                  (or (and (require 'ffap nil t)  (ffap-guesser))
+                                                      (bmkp-thing-at-point 'filename)
+                                                      (buffer-file-name)))))))
      (list fil tgs nil pref nil 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
 
