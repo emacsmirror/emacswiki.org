@@ -97,5 +97,8 @@ To enable lexical binding in your elisp library put a line like this at the top 
 
 This will enable lexical-binding for the code in the file, but global variables declared with `defvar' will still be
 dynamically bound.
+
+=== Real world issues ===
+One problem with using lexical binding is debugging. `eval' in especially in edebbug is unusable because the `print'ed version of the closures would take half a screen. Is there any way to tell emacs to reduce the printout a closure (e.g. #<closure>)? --LinhDang
 ----
 CategoryCode
