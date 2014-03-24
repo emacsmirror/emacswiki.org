@@ -1,4 +1,4 @@
-I am the author of  Orgmode's OpenDocumentText Exporter.   I no longer contribute to Emacs or participate actively in the mailing lists.  However, I continue to improve the exporter in my own personal repository.  See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter ODT Expoter]] for more information.  If you want to report a bug in the exporter or request a specific feature, don't hesitate to leave a note here.  I will try my best to help you.  That said, it is very likely that you will find an answer to your question in [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ FAQs on ODT and JabRef Exporters]]
+I am the author of  Orgmode's OpenDocumentText Exporter.   I no longer contribute to Emacs or participate actively in the mailing lists.  However, I continue to improve the exporter in my own personal repository.  See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter ODT Expoter]] for more information.  If you want to report a bug in the exporter or request a specific feature, don't hesitate to leave a note here.  I will try my best to help you.  That said, it is very likely that you will find an answer to your question in [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]]
 
 As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane.org/gmane.emacs.devel/170713 Personal gift - INR 10,000  (Ten Thousand) - to new contributors]] for more information.
 
@@ -6,5 +6,6 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 
 = User Questions =
 
-# Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
+* Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
 ** See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]].  Is that what you are looking for? Please acknowledge.
+*** I think that is what I'm looking for, but that page says, "Citation references use a style named OrgCite. Modify this style to use Subscript. Then follow the procedure outline under", but I do not see "OrgCite" under the "Styles and Formatting" menu. It also mentions "Subscript" but I think is actually discussing "Superscript". 
