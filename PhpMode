@@ -304,7 +304,7 @@ Add this to php-mode-hook:
 Php 5.4 introduce anonymous function and indent for those is wrong, here is a patch (kind of hack):
 {{{
 (defun unindent-closure ()
-  "Fix php-mode indent of closures"
+  "Fix php-mode indent for closures"
   (let ((syntax (mapcar 'car c-syntactic-context)))
     (if (and (member 'arglist-cont-nonempty syntax)
              (or
