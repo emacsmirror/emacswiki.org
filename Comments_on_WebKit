@@ -9,3 +9,22 @@ It need PyQt5 and Python-EPC, it possible to build those depend on non-linux pla
 
 -- AndyStewart 2014-03-23 13:47 UTC
 
+
+----
+
+When I try  to load the file webkit.el into emacs I get the following error message:
+
+Loading /home/blah/lisp/webkit/webkit.el (source)...
+load-with-code-conversion: Symbol's value as variable is void: <!DOCTYPE
+user-error: Minibuffer window is not active
+
+What does this error message mean? I also am having some trouble installingthe prerequisite libraries on Fedora 19:
+
+PyQt5:        not tried yet, should this be in yum or do I really have to install it from http://www.riverbankcomputing.co.uk/software/pyqt/intro
+Python-Xlib: I got it from yum install python-xlib.noarch  
+Python-EPC:  I downloaded it from https://github.com/tkf/python-epc, got hold of pip and ran sudo pip install epc ., it claimed success
+
+At his point I still get the error referred to at the top if this message.
+
+-- [http://none Reik Reid] 2014-03-24 22:45 UTC
+
