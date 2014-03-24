@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun Mar 23 12:15:10 2014 (-0700)
+;; Last-Updated: Sun Mar 23 16:37:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 681
+;;     Update #: 687
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1087,6 +1087,12 @@
     :help "Jump to a bookmark of any type, in another window"))
 (define-key bmkp-jump-menu [bookmark-jump]
   '(menu-item "Any..." bookmark-jump :help "Jump to a bookmark of any type, in this window"))
+
+(define-key bmkp-jump-menu [bmkp-bmenu-jump-to-marked]
+  '(menu-item "Marked" bmkp-bmenu-jump-to-marked
+    :help "Jump to each bookmark marked `>', in another window"
+    :enable (and bmkp-bmenu-marked-bookmarks  (equal (buffer-name (current-buffer))
+                                               "*Bookmark List*"))))
 
 ;; `File' > `Find File or Autofile' submenu
 ;; or, for Emacs 20-21, single item `File' > `Find File or Autofile...'.
