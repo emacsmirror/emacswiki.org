@@ -12,7 +12,7 @@ To add font-lock rules to a MajorMode, see FontLockForNewModes.
 
 See CustomizingFaces to change the font [[Face]] settings used by font-lock.
 
-You can debug Font Lock keywords using FontLockStudio.
+You can debug Font Lock keywords using FontLockStudio and [[Icicles]] [[multi-command]] `icicle-font-lock-keyword'.
 
 ----
 CategoryFaces
