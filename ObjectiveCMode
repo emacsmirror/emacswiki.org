@@ -1,10 +1,24 @@
-Emacs and CcMode don't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful. This is [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=2732 Bug #2732].
+Objective-C is an object-oriented extension to C. It is the "system language" of OS X and iOS.
+
+Emacs provides an `objc-mode', based on CcMode.
+
+== Support packages ==
+
+The package ObjcFontLock highlights Objective-C method calls, which are otherwise notoriously hard to read.
+
+== Objective-C++ ==
+
+Some tools allow you to mix Objective-C and C++, this is known as Objective-C++, although there is no formal description of this "language".
+
+Unfortunately, Emacs and CcMode don't know about Objective C++. If you open a ".mm" file, it'll be in text-mode or lisp-mode or whatever your default is, which is not very useful. This is [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=2732 Bug #2732].
 
 Unfortunately, until someone writes an objc++-mode, you have to choose between objc-mode and c++-mode. Either one is going to have incomplete syntax highlighting, but the latter also often gets confused with indentation. So, add something like this to your .emacs to open ".mm" files as objc-mode:
 
 {{{
 (add-to-list 'auto-mode-alist '("\\.mm\\'" . objc-mode))
 }}}
+
+== Configuration ==
 
 The default mode for .h files is c-mode. This works reasonably well for C++ headers, although it has incomplete syntax highlighting, but it's much worse for Objective C, where you get things like parameters not lining up properly by their colons. You can handle this by adding a function to magic-mode-alist, like this:
 {{{
@@ -50,6 +64,10 @@ Of course you'll also want to add the framework paths to cc-search-directories. 
 			      "/System/Library/Frameworks" "/Library/Frameworks"))
 }}}
 
+== See Also ==
+
+* CcMode
+* IndentingC
+* [http://andrewd.ces.clemson.edu/courses/cpsc102/notes/ObjC.pdf The Objective-C Programming Language]
 ----
-CategoryProgramming
-CategoryModes
+ProgrammingModes
