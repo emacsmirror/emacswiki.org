@@ -1,10 +1,38 @@
-Author of Lisp:ctypes.el.
+I've been using Emacs since it was black-and-white -- back in the late eighties.
 
-Anders used to be at these locations:
+== Packages ==
 
-* http://www.andersl.com/emacs
-* http://user.it.uu.se/~andersl/emacs.shtml
+Packages written or co-written by me:
 
-but he appears to have dropped off the Internet.
+* FollowMode -- Make side-by-side windows behave like a tall virtual window (bundled with Emacs)
+* CWarnMode -- Highlight suspicious C construct like assignment inside expressions (bundled with Emacs)
+* AutoRevertMode -- Automatically reloads buffer when file has been changed (bundled with Emacs)
+* FontLockStudio -- Interactive debugger for FontLockMode keywords
+* [[Multicolumn]] -- Support for multiple side-by-side windows
+* CMakeFontLock -- Advanced highlight rules for [[CMake]]
+* ObjcFontLock -- Highlight Objective-C method calls
+* [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
+* ErlangMode -- Major mode for Erlang (co-authored with Robert Virding and many others)
+* FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
+* [[Faceup]] -- Regression test system for font-lock packages
+* [[El2Markdown]] -- Generates MarkDown text files from Commentary section in emacs-lisp source files
+
+== Obsolete packages ==
+
+* [[CTypes]] -- Collected C and C++ type information back when FontLockMode required an explicit list
+* [[AndersLJavaFontLock]] -- An, at the time, wide-spread set of highlight rules for Java
+
+== Other Emacs-related activities ==
+
+I'm somewhat involved in the OS X port of Emacs.
+
+== Alias ==
+
+I go under the name of [[Lindydancer]] on sites like [https://github.com/Lindydancer Github] and [http://stackoverflow.com/users/623133/lindydancer Stack Overflow].
+
+== Other ==
+
+By profession, I develop compiler for the embedded industry at [http://www.iar.com IAR Systems].
+
 ----
 CategoryHomepage
