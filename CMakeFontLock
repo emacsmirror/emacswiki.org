@@ -1,0 +1,19 @@
+[https://github.com/Lindydancer/cmake-font-lock CMake Font Lock] provides advanced highlight rules for [[CMake]], written by [[AndersLindgren|Anders Lindgren]].
+
+This is a replacement for the somewhat rudimentary font-lock support provided by CMakeMode.
+
+== What is colored ==
+
+* Comments and quoted strings.
+* Special functions like ##if##, ##while##, ##function##, and ##include## are colored as font-lock keywords (not to be confused with keywords in the CMake sense).
+* Other function name are colored as, well, functions.
+* The arguments of functions are colored according to the type, as specified by the function signature. The built-in signatures can color an arguments as a variable, a function, a property, a target, a policy, and finally a CMake keyword is colored as a type.
+* The constants ##true##, ##false##, ##yes##, ##no##, ##y##, ##n##, ##on##, and ##off## are colored as constants.
+* ##${...}## constructs are fontified as variables. Nested constructs are supported.
+* For ##$ENV{...}##, ##ENV## is fontified as a variable and the content as a constant.
+* For ##$<name:...>## constructs, name is colored as a constant.
+* For preprocessor definitions like ##-DNAME##, ##NAME## is colored as a constant.
+
+== Getting the package ==
+
+The *CMake Font Lock* package is located on [https://github.com/Lindydancer/cmake-font-lock Github].
