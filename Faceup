@@ -1,0 +1,9 @@
+[https://github.com/Lindydancer/faceup|Faceup] is a markup language and a regression test system for FontLockMode packages, written by [[AndersLindgren|Anders Lindgren]].
+
+It integrates into the [[Ert]] regression test system.
+
+*Faceup* supports checking highlight of snippets of code in inline tests up to full-scale tests where earlier highlight results have been saved to a file using the faceup markup.
+
+== Getting the package ==
+
+The *faceup* package is located on [https://github.com/Lindydancer/faceup Github].
