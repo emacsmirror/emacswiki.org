@@ -6,7 +6,7 @@ CMake comes with a major mode, see [https://github.com/Kitware/CMake/tree/master
 
 == Advanced Font Lock Rules ==
 
-An alternative, more advanced, set of highlight rules for CMake is provided by [https://github.com/Lindydancer/cmake-font-lock CMakeFontLock].
+An alternative, more advanced, set of highlight rules for CMake is provided by CMakeFontLock.
 
 == CMake-Projects ==
 
