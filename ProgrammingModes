@@ -20,8 +20,9 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * CgMode -- Cg, nvidia language for graphics cards
 * ChillMode -- CHILL (CCITT High Level Language) Mode for XEmacs
 * ChillModePackage -- CHILL (CCITT High Level Language) Mode for Emacs
-* CheetahMode  -- Cheetah Templates Mode.
-* ClojureMode -- [http://clojure.codestuffs.com/ clojure-mode] for [http://clojure.org Clojure].
+* CheetahMode  -- Cheetah Templates Mode
+* ClojureMode -- [http://clojure.codestuffs.com/ clojure-mode] for [http://clojure.org Clojure]
+* CMakeMode -- Major mode for editing [[CMake]] cross-platform build scripts
 * CobolMode
 * CSharpMode -- C#
 * CudaMode  -- Cuda, the successor to GPGPU from NVIDIA. 
