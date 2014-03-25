@@ -1,16 +1,1 @@
-[http://www.cmake.org/ CMake] is text-based build system by [http://www.kitware.com Kitware] that can generate a number of build systems, including UNIX Makefiles, Visual Studio projects, and XCode projects.
-
-== Major Mode ==
-
-CMake comes with a major mode, see [https://github.com/Kitware/CMake/tree/master/Auxiliary CMake Git repository].
-
-== Advanced Font Lock Rules ==
-
-An alternative, more advanced, set of highlight rules for CMake is provided by CMakeFontLock.
-
-== CMake-Projects ==
-
-The package [https://github.com/alamaison/emacs-cmake-project CMakeProjects] integrates CMake with the Emacs build system and with FlyMake.
-
-----
-CategoryModes
+See CMakeMode.
