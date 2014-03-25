@@ -62,6 +62,7 @@ Other pages (could this please be split in major and minor modes?):
 * EpubMode -- mode for reading epub e-books in Emacs
 * FaqMode -- easy FAQ browsing
 * FetchmailMode -- mode for editing fetchmail configuration files
+* FollowMode -- make side-by-side windows behave like one tall window
 * FortuneMode -- interface to write fortunes quickly
 * FreexMode -- a personal wiki on steroids
 * FvwmMode -- major mode to edit FVWM configuration files
