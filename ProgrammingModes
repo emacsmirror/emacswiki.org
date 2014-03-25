@@ -40,6 +40,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * EmacsCodeBrowser (ECB)
 * EmacsLispMode
 * EnformMode -- Major mode for Tandem Enform files.
+* ErlangMode -- Major mode for Erlang
 * FlashActionscript -- Flash Actionscript specific programming
 * FlexMode
 * [[Forth-mode]] -- for Forth, typically included with gforth
