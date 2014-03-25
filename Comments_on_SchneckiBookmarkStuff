@@ -28,3 +28,10 @@ What do you mean with that? Think about what?
 
 -- schnecki 2014-03-25 10:23 UTC
 
+
+----
+
+If you want, I will think about possible enhancement to the existing Bookmark+ code, to, for example, (optionally) save a current desktop before switching, etc.  I don't have time to look at this more right now, but I will keep it in mind.  And it is of course good if you provide your code as a separate library as well.
+
+-- DrewAdams 2014-03-25 14:40 UTC
+
