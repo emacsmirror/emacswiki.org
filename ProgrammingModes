@@ -76,6 +76,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * MaudeMode
 * MuPACS -- MuPAD editing mode
 * MythrylMode -- Mythryl mode
+* ObjectiveCMode -- for Objective-C, the "system language" of OS X and iOS
 * OccamMode -- for editing occam sourcecode
 * PascalMode -- see also DelphiMode
 * [[PDDLMode]] -- Planning Domain Definition Language
