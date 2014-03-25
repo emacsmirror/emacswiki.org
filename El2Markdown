@@ -1,0 +1,5 @@
+[https://github.com/Lindydancer/el2markdown el2markdown] converts the Commentary section in emacs-list files to MarkDown format, used on sites like [http://github.com GitHub]. This package was written by [[AndersLindgren|Anders Lindgren]].
+
+== Getting the package ==
+
+The *el2markdown* package is located on [https://github.com/Lindydancer/el2markdown Github].
