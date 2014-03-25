@@ -33,5 +33,9 @@ The chess.el project also contains an unrelated implementation of ICS
 communication, called chess-ics.el.  To startup chess.el against
 a ICS server, use C-u M-x chess RET ics RET
 
+== Chess Piece Images ==
+
+If you are looking for chess piece images in XPM format, suitable for use with XBoard then you might wish to look at Better XBoards ( http://better-xboards.sourceforge.net/ )
+
 ----
 CategoryGames
