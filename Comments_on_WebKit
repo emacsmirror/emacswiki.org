@@ -34,7 +34,7 @@ UPDATE2: I have now compiled PyQt5 and make-install'ed it. Still same error mess
 
 UPDATE3: github website had given me the html instead of py files, hence the error. Webkit.el loads, next test the browser...
 
-UPDATE4: I did M-X webkit-open-url , enterted http://www.google.com , a buffer came up but the wepage is not showing.
+UPDATE4: I did M-X webkit-open-url , entered http://www.google.com , a buffer came up but the wepage is not showing.
 There is a process /bin/python /my/path/webkit/browser.py running, but it uses little cpu if any.
 There is a minibuffer status message  that says 
 
