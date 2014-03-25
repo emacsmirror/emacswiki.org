@@ -1,4 +1,4 @@
-[https://github.com/Lindydancer/cmake-font-lock CMake Font Lock] provides advanced highlight rules for [[CMake]], written by [[AndersLindgren|Anders Lindgren]].
+[https://github.com/Lindydancer/cmake-font-lock CMake Font Lock] provides advanced highlight rules for [[CMakeMode]], written by [[AndersLindgren|Anders Lindgren]].
 
 This is a replacement for the somewhat rudimentary font-lock support provided by CMakeMode.
 
