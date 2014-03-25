@@ -1,0 +1,9 @@
+[https://github.com/Lindydancer/objc-font-lock Objc Font Lock] is a package that highlights Objective-C method calls, written by [[AndersLindgren|Anders Lindgren]].
+
+Objective-C use a syntax for method calls it has inherited from Smalltalk. Unfortunately, this syntax is frustratingly hard to read -- when browsing through code, method calls tend to "disappear" as they are different from normal C function calls.
+
+By highlighting method calls, it is possible to read the same piece of code faster and more accurate.
+
+== Getting the package ==
+
+The *Objc Font Lock* package is located on [https://github.com/Lindydancer/objc-font-lock Github].
