@@ -261,7 +261,7 @@ Chris: I like this native win32 cscope version: http://code.google.com/p/cscope-
 
 ascope is an improvement over xcscope that runs all queries through a single cscope process, instead of starting a new process and reloading the database for each query. It was made by Staton Sun as a merge between xscope and another single-process interface, bscope (not listed here) [http://lists.gnu.org/archive/html/gnu-emacs-sources/2008-04/msg00021.html Original ML post]. A copy of the file is made available here: Lisp:ascope.el
 
-I just ran some benchmarks, and I'm pretty sure the performance benefits of this are way overblown: [http://notes.secretsauce.net/notes/2014/03/25_cscope-benchmarks.html]. If I'm wrong about something here, please tell me.
+I just ran some benchmarks, and I'm pretty sure the performance benefits of this are way overblown: http://notes.secretsauce.net/notes/2014/03/25_cscope-benchmarks.html . If I'm wrong about something here, please tell me.
 
 == cscope.el ==
 
