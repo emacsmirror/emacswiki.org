@@ -1,0 +1,17 @@
+*Multicolumn* is a package for handling multiple side-by-side windows written by [[AndersLindgren|Anders Lindgren]].
+
+Using multiple side-by-side windows is a great way to utilize the large high-resolution displays that exists today. This package provides the "missing features" of Emacs to create a side-by-side layout, to navigate efficiently, and to manage the windows.
+
+This package is especially useful in conjunction with FollowMode, a package provided with Emacs that create the illusion that several windows showing the same buffer form a very tall virtual window. For example, I use six side-by-side windows spread out across two monitors, which lets me see 888 consecutive lines of code. Concretely, this allows me to see all of the code in this package at once.
+
+== Main features ==
+
+* Resize a frame to fit a number of side-by-side windows.
+* Split windows evenly into a multiple side-by-side windows.
+* Navigation, for example commands to select the left- and rightmost windows.
+* Trackpad navigation.
+* Window management: transpose windows, extend left and right, and collect windows.
+
+== Getting the package ==
+
+The *multicolumn* package is located on [https://github.com/Lindydancer/multicolumn Github].
