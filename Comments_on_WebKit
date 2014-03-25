@@ -40,6 +40,8 @@ There is a minibuffer status message  that says
 
 Focus view: "e890abd1-1c97-4b29-9c9d-d842ddf56d62"
 
+If I try kill-buffer on the relevant buffer, I get the error message  "Process epc con 3 not running". I also cannot exit emacs normally, becaie I get thjat same messgae. Emacs has to be shut down with a kill -9 PID command.
+
 Any ideas for me?
 
 -- [http://none Reik Reid] 2014-03-24 22:45 UTC
