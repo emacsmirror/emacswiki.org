@@ -1,9 +1,15 @@
-If two windows show the same buffer, such as after splitting one
-window vertically, you can use M-x follow-mode.
+*Follow Mode* make side-by-side windows behave like a tall virtual window, written by [[AndersLindgren|Anders Lindgren]]. This package is bundled with Emacs.
 
+== Basics ==
 
-To tie two arbitrary windows not sharing the same buffer, see
-MasterMode or ScrollAllMode.
+You can start Follow mode and setting up a basic two-window layout using ##M-x follow-delete-other-windows-and-split RET##.
+
+When you move one window, the other(s) follow (hence the name "Follow Mode"). If you move the point outside the window, it will move to the adjacent window (if it shows the same buffer).
+
+== Related packages ==
+
+* To tie two arbitrary windows not sharing the same buffer, see MasterMode or ScrollAllMode
+* To setup and maintain a multicolumn environment, see [[Multicolumn]].
 
 ----
 CategoryDisplay
