@@ -1,4 +1,4 @@
-*Multicolumn* is a package for handling multiple side-by-side windows written by [[AndersLindgren|Anders Lindgren]].
+[https://github.com/Lindydancer/multicolumn Multicolumn] is a package for handling multiple side-by-side windows written by [[AndersLindgren|Anders Lindgren]].
 
 Using multiple side-by-side windows is a great way to utilize the large high-resolution displays that exists today. This package provides the "missing features" of Emacs to create a side-by-side layout, to navigate efficiently, and to manage the windows.
 
