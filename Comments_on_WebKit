@@ -32,5 +32,7 @@ UPDATE: I also installed  72 Packages (+7 Dependent packages) withthe command yu
 
 UPDATE2: I have now compiled PyQt5 and make-install'ed it. Still same error message when loading webkit.el.
 
+UPDATE3: github website had given me the html instead of py files, hence the error. Webkit.el loads, next test the browser...
+
 -- [http://none Reik Reid] 2014-03-24 22:45 UTC
 
