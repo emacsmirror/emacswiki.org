@@ -1,0 +1,16 @@
+Windows-style .ini files are used in many systems. There are a number of modes for editing ini files.
+
+== IniGenericMode ==
+
+The mode `ini-generic-mode' is bundled with Emacs and is part of the `generic-x.el' file.
+
+== IniMode ==
+
+[https://github.com/Lindydancer/ini-mode ini-mode] is a simple modern implementation of a major mode for .ini files, written by [[AndersLindgren|Anders Lindgren]]. Major features are highlighting, support for C-, C++, and lisp-style comments, and that it inherits from ProgMode, thus making it easy for global minor modes to enable themselves in this mode.
+
+== AnyIniMode ==
+
+AnyIniMode is a major mode for .ini files with many bells and whistles.
+
+-----
+ProgrammingModes
