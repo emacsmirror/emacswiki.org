@@ -1,4 +1,4 @@
-[http://www.princeton.edu/~gdetre/software/freex/docs/index.html Emacs Freex mode] is a minor mode for organizing and editing a massively-hyperlinked database of your notes and ideas. It's a personal wiki on steroids.
+[https://code.google.com/p/emacs-freex/ Emacs Freex mode] is a minor mode for organizing and editing a massively-hyperlinked database of your notes and ideas. It's a personal wiki on steroids.
 
 It has features and ideals in common with MuseMode, HowmMode, LinkdMode, OrgMode, and probably a flotilla of other modes that we don't even know about.
 
@@ -22,7 +22,7 @@ As a result, Freex mode has a variety of handy features for taking notes:
 
 * Powerful querying syntax, that allows you to easily create queries like 'list all the nuggets that belong to both 'emacs' and 'python', and contain the term "sql"'. The really cool part is that you get instantaneous tab-completion, so Freex will list all the nuggets matching your query so far, as well as suggesting further categories to whittle down your search.
 
-See the [http://www.princeton.edu/~gdetre/software/freex/docs/index.html main Freex page] for more information.
+See the [https://code.google.com/p/emacs-freex/ main Freex page] for more information.
 
 ----
 CategoryHypermedia | CategoryPersonalInformationManager | CategoryModes | MarkupModes
