@@ -1,0 +1,28 @@
+`prog-mode' is a major mode provided by Emacs. Typically, it is not used directly, instead many programming-related major modes are derived from this mode.
+
+A user can add things to `prog-mode-hook', which are executed for all programming modes (that are derived from `prog-mode').
+
+One benefit of using this mode is that global minor modes no longer have to maintain a long list of suitable major modes. Instead, they can simply check if a mode is derived from one of the base modes.
+
+Other often used base modes include `special-mode' and `text-mode'.
+
+== Examples ==
+
+You can define a new major mode derived from `prog-mode' using the following:
+
+    (define-derived-mode alpha-mode prog-mode "Alpha"
+        "Major mode for editing alpha files."
+        ...)
+
+You can check if the major mode of the current buffer is derived from `prog-mode' using:
+
+    (derived-mode-p 'prog-mode)
+
+A global minor mode that will be enabled for all `prog-mode' modes can be defined using:
+
+    (define-global-minor-mode my-global-mode my-mode
+      (lambda ()
+        (when (derived-mode-p 'prog-mode)
+          (my-mode 1))))
+-----
+ProgrammingModes
