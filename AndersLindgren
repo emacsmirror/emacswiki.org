@@ -16,6 +16,8 @@ Packages written or co-written by me:
 * FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
 * [[Faceup]] -- Regression test system for font-lock packages
 * [[El2Markdown]] -- Generates MarkDown text files from Commentary section in emacs-lisp source files
+* [[IsoOem]] -- Use a Windows OEM font to display Latin-1
+* [[RexxMode]] -- Major mode for REXX
 
 == Obsolete packages ==
 
