@@ -6,3 +6,5 @@ El modo Rexx es un modo mayor para la edición de ficheros Rexx bajo Emacs. Orig
 http://emacs-es.manticore.es/paginas-replica/rexx/rexx.es.html
 
 También, por consistencia, he decidido hacer una entrega "falsa" con el número de versión 1.2, que incluya las fuentes texinfo y los documentos Info de las que carece el original (no sólo en inglés, sino también en castellano). 
+
+NOTE: The english original has been updated.
