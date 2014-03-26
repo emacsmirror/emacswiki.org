@@ -37,7 +37,9 @@ David O'Toole has written a [http://orgmode.org/worg/org-tutorials/orgtutorial_d
 
 One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD). Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
 
-Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage. Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
+Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets]. Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org]. SachaChua has [http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ a graphical map for learning Org]. 
+
+Somewhat dated (2007): Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage. Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
 
 [:publish]
 == Publishing ==
