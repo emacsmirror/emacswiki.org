@@ -14,6 +14,7 @@ Packages written or co-written by me:
 * [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
 * ErlangMode -- Major mode for Erlang (co-authored with Robert Virding and many others)
 * FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
+* IniMode -- Major mode for editing ini files (there are many packages that does this)
 * [[Faceup]] -- Regression test system for font-lock packages
 * [[El2Markdown]] -- Generates MarkDown text files from Commentary section in emacs-lisp source files
 * [[IsoOem]] -- Use a Windows OEM font to display Latin-1
