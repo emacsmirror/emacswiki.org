@@ -35,3 +35,14 @@ If you want, I will think about possible enhancement to the existing Bookmark+ c
 
 -- DrewAdams 2014-03-25 14:40 UTC
 
+
+----
+
+OK sounds good.
+
+I added some information to the file and changed the first function so that it doesn't start with bmkp prefix. The second one overwrites your bookmark+ function and therefore needs to have the same name. 
+
+For a whole library that seems a little bit too small for me.
+
+-- schnecki 2014-03-26 08:54 UTC
+
