@@ -1,7 +1,2 @@
 [[es:ModoRexx]]
-Rexx-mode is a major mode for editing Rexx files under Emacs. Originally written by Anders Lingren years ago, it hasn't been touched since. Then James Perrin started to write rexx (actually ARexx on Amiga) with Emacs19 and he decided to add font-lock support. This led him to take over the rexx-mode maintainance from Anders and even he built a homepage for it.  Perrin discontinued its support and the page disappeared, resting a copy in the Web Archive, from where I had made a mirror in a more accessible location (from a suggestion in the emacs-help list):
-
-http://emacs-es.manticore.es/paginas-replica/rexx/rexx.html (As of January 11, 2014, this appears to be a dead link.)
-
-
-Also, for consistency, I've decided to do a "fake" release with version number 1.2, including the missing texinfo sources and the Info documents (not only in English, but also in Spanish). 
+Rexx-mode is a major mode for editing Rexx files under Emacs. Originally written by [[AndersLindgren|Anders Lindgren]] years ago, it hasn't been touched since. Then James Perrin started to write rexx (actually ARexx on Amiga) with Emacs19 and he decided to add font-lock support. This led him to take over the rexx-mode maintainance from Anders and even he built a homepage for it.  Perrin discontinued its support and the page disappeared, resting a copy in the Web Archive. It can now be found in the EmacsAttic on: [https://github.com/emacsattic/rexx-mode GitHub].
