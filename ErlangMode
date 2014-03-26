@@ -1,3 +1,9 @@
-*Erlang Mode* is a major mode for editing Erlang. It was written by Robert Virding, [[AndersLindgren|Anders Lindgren]], and others.
+*Erlang Mode* is a major mode for editing [[ErlangLanguage|Erlang]]. It was written by Robert Virding, [[AndersLindgren|Anders Lindgren]], and others.
+
+== See Also ==
+
+* [http://www.erlang.org/doc/man/erlang.el.html The manual]
+* [http://www.erlang.org/download/contrib/erlang.el erlang.el]
+
 ------
 ProgrammingModes
