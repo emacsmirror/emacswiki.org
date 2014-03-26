@@ -46,11 +46,6 @@ See also its uses in noweb.el and haskell-latex.el in the same directory.
 
 Multi-mode is used by [http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el], which is a mode for editing ASPX files in emacs.  aspx-mode handles HTML, browser Javascript blocks, CSS blocks, and C#, with proper highlighting and indenting, all in one buffer.
 
-
-= mmm.el =
-
-Multiple Major Modes for XEmacs by JerryChen.
-
 = two-mode-mode.el =
 
 Two Mode Mode by DavidWelton.
