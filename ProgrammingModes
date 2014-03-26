@@ -86,6 +86,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * PhpMode
 * PlsqlMode
 * [[Processing]] -- mode for editing Processing <code>.pde</code> files
+* ProgMode -- Base mode for other programming modes, provided by Emacs
 * PrologMode
 * ProcommMode -- mode for editing Procomm ASPECT scripts
 * PythonProgrammingInEmacs -- python modes (Note: PythonMode redirects there. OldDiscussionPythonMode has historical info.)
