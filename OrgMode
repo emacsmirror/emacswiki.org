@@ -288,6 +288,20 @@ If you use WThreeM, add the following instead:
                    (setq outline-regexp "=+")))
 </pre>
 
+=== Export UTF-8 checkboxes ===
+
+This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
+
+<pre>
+(defun sacha/org-html-checkbox (checkbox)
+  "Format CHECKBOX into HTML."
+  (case checkbox (on "<span class=\"check\">&#x2611;</span>") ; checkbox (checked)
+	(off "<span class=\"checkbox\">&#x2610;</span>")
+	(trans "<code>[-]</code>")
+	(t "")))
+(defadvice org-html-checkbox (around sacha activate)
+  (setq ad-return-value (sacha/org-html-checkbox (ad-get-arg 0))))
+</pre>
 
 [:discussion]
 == Discussion ==
