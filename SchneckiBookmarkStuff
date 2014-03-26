@@ -106,12 +106,12 @@ The following hack is used to save bookmarks desktop files before quiting emacs 
   (if current-desktop-file
    (my-save-desktop current-desktop-file nil nil))
   ;; (setq current-desktop-file bookmark)
-  (setq current-desktop-file (bookmark-prop-get bookmark 'desktop-file))
-  (unless (condition-case nil (require 'desktop nil t) (error nil))
+   (unless (condition-case nil (require 'desktop nil t) (error nil))
     (error "You must have library `desktop.el' to use this command"))
   ;; (unless desktop-file (error "Not a desktop-bookmark: %S" bookmark)) ; Shouldn't happen.
   (bmkp-desktop-change-dir desktop-file)
-  (unless (bmkp-desktop-read desktop-file) (error "Could not load desktop file"))))
+  (unless (bmkp-desktop-read desktop-file) (error "Could not load desktop file"))
+  (setq current-desktop-file (bookmark-prop-get bookmark 'desktop-file))))
 
 
  ;; THIS FUNCTION OVERWRITES THE ORIGINAL BMKP-JUMP-DESKTOP FUNCTION
