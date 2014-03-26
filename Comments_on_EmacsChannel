@@ -2,10 +2,3 @@ I'm sure we don't like drive-by questions but I don't see how there are going to
 
 -- AlexSchroeder 2013-03-04 08:11 UTC
 
-
-----
-
-Is this a proper channel to ask a question? I can't get emacs to run remotely and display on my local X window DISPLAY. xeyes works, emacs will only open in terminal/text mode. I have an ssh connection from my windows desktop to amazon linux server, with X11 port forwarding enabled - hence xeyes does work. What am I missing? Thanks, Mike.
-
--- koodawg 2014-03-26 18:11 UTC
-
