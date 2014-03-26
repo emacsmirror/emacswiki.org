@@ -63,6 +63,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * HaxeMode
 * IdlMode, IdlWaveMode
 * ILispMode -- CommonLisp / [[Scheme]]
+* IniMode -- Windows-style .ini files
 * JasminMode -- Jasmin Java bytecode assembler
 * JavaCCMode -- Java Compiler Compiler mode
 * JavaDevelopmentEnvironment (JDE)
