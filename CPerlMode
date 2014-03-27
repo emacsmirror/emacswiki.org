@@ -642,5 +642,10 @@ i.e., the indentation of bar is calculated against the containing block's indent
 
 [new]
 See [http://www.emacswiki.org/emacs/IndentingPerl this], in particular the cperl-indent-parens-as-block variable
+
+[new]
+'''Question'''
+Is it possible to configure cperl-indent to not touch the here-doc sections?  I need to set some custom indentations in the here-doc and I don't want `cperl-indent-region` to touch that. I am using cperl version 20140309.122 from MELPA and doing cperl autodentation on here-doc flushes all the text to the margin.
+
 ----
 ProgrammingModes CategoryDotEmacs
