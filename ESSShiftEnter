@@ -51,6 +51,26 @@ This is quite useful, saving keystrokes, especially starting R.
 
 ----
 
+Rather than looking for a buffer named "%%*R*%%", it might be more robust to test for major-modes and look for `inferior-ess-process'. With the obvious disadvantage that it gets confusing if ESS is running different processes.
+
+
+  (defun my-ess-start-R ()
+    (interactive)
+    (or (assq 'inferior-ess-mode
+              (mapcar 
+                (lambda (buff) (list (buffer-local-value 'major-mode buff)))
+                (buffer-list)))
+     (progn
+       (delete-other-windows)
+       (setq w1 (selected-window))
+       (setq w1name (buffer-name))
+       (setq w2 (split-window w1 nil t))
+       (R)
+       (set-window-buffer w2 "*R*")
+       (set-window-buffer w1 w1name))))
+
+----
+
 Exactly the same functionality is available on `C-RET' (`ess-eval-region-or-line-and-step') in ESS v.12.09 and higher.
 
 ----
