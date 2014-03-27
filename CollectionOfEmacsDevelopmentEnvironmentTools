@@ -46,7 +46,7 @@ Issues
 Links to some comments, pictures etc
 
 * SemanticLibraryParsing has some special configuration options for parsing certain libraries.
-* A (gigantic?) gif demo showing what is supposed to be CEDET%%/%%Semantic: [http://mathrick.org/files/emacs-demo.gif The gigantic demo gif] (as of Jan 20, 2009, the file's host, mathrick.org, appears to be gone but there does seem to be a copy of the original file [http://www.imada.sdu.dk/~makat05/emacs-demo.gif here])
+* A (gigantic?) gif demo showing what is supposed to be CEDET%%/%%Semantic: [http://mathrick.org/files/emacs-demo.gif The gigantic demo gif] (as of Jan 20, 2009, the file's host, mathrick.org, appears to be gone but there does seem to be a copy of the original file [http://web.archive.org/web/20070611232517/http://www.imada.sdu.dk/~makat05/emacs-demo.gif here])
 * A blog post with an image: http://vkk.blogspot.com/2005/04/emacs-code-browser.html
 * An SWF demo: http://platypope.org/yada/emacs-demo/
 * [http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html An article about Cedet] - how to install and use it.
