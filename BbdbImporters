@@ -88,7 +88,7 @@ file, but I guess that can be easily fixed.
 
 If you can manage to arrange your data in CSV (comma separated value) 
 form, you can use ''lookout.el''. This package allows for importing calendar 
-and address data from CSV files. ''lookout.el'' is available from http://ulf.epplejasper.de/. (Note that you also need ''csv.el'' which can be found at the same place.)
+and address data from CSV files. ''lookout.el'' is available from http://ulf.epplejasper.de/EmacsCalendarAndDiary.html. You also need ''csv.el'' which can be found at http://ulf.epplejasper.de/EmacsGeneralPurpose.html.
 
 For those too lazy to look through the code, the first line of your file should name each column. From the code:
 
