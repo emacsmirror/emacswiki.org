@@ -49,3 +49,37 @@ I wrote rst file in Chinese, when typing <code>C-c p t</code> to display content
 ----
 
 Seems like this mode operates *really* slowly right now (05th April 2008).  Trying to edit a reStructuredText file with about 800 lines forces me to wait at least one second before anything I've typed will show up.  I found [http://lists.alioth.debian.org/pipermail/pkg-exppsy-maintainers/2008-February/000369.html this message] regarding the switch to jit-lock, and it helps a little, but not enough to make rst-mode actually usable with syntax highlighting.  This is not exactly a slow machine either (3.0 GHz P4 HT).  Does anybody have any ideas on how to speed it up, or is this more an implementation efficiency problem?  (UPDATE: it turns out that currently setting "rst-mode-lazy" to nil disables section and block highlighting, but improves speed incredibly.)  -- TaylorVenable
+
+----
+
+Code to check that a buffer of reStructured Text is valid when saving:
+
+<pre>
+(defun rst-validate-buffer ()
+  "Tests to see if buffer is valid reStructured Text."
+  (interactive)
+  (if (eq major-mode 'rst-mode)         ; only runs in rst-mode
+      (let ((name (buffer-name))
+            (filename (buffer-file-name)))
+        (cond
+         ((not (file-exists-p "/usr/bin/rst2pseudoxml")) ; check that the program used to process file is present
+              (error "Docutils programs not available."))
+         ((not (file-exists-p filename)) ; check that the file of the buffer exists
+              (error "Buffer '%s' is not visiting a file!" name))
+         (t                             ; ok, process the file, producing pseudoxml output
+          (let* ((pseudoxml (split-string (shell-command-to-string (concat "rst2pseudoxml " filename)) "\n"))
+                 (firstline (car pseudoxml)) ; take first line of output
+                 (lastline (nth (- (length pseudoxml) 2) pseudoxml))) ; take last line of output text
+            (if (or (string-match "ERROR/" firstline)
+                    (string-match "WARNING/" firstline)
+                    ;; for reasons I don't understand, sometimes the warnings/errors are at the end of output
+                    (string-match "ERROR/" lastline)
+                    (string-match "WARNING/" lastline))
+                (progn (ding)
+                       (message "There's an problem in this buffer."))
+              (message "Buffer is valid reStructured Text."))))))))
+
+(add-hook 'rst-mode-hook
+          (lambda()
+              (add-hook 'after-save-hook 'rst-validate-buffer)))
+</pre>
