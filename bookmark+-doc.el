@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 23 13:30:26 2014 (-0700)
+;; Last-Updated: Fri Mar 28 10:19:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14752
+;;     Update #: 14761
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -478,6 +478,10 @@
 ;;         And again, a prefix arg (`C-u C-h RET') means show the full
 ;;         (internal) bookmark information.
 ;;
+;;         `C-h >' shows the same information that `C-h RET' shows,
+;;         but for all of the marked bookmarks, in the current sort
+;;         order.  That is, it describes each of the marked bookmarks.
+;;
 ;;     - General Bookmark+ documentation.
 ;;
 ;;       . Anywhere in Emacs, `M-x bmkp-bmenu-mode-status-help' shows
@@ -914,7 +918,9 @@
 ;;  Most commands pertaining to tags are by default on prefix key `C-x
 ;;  p t' - use `C-x p t C-h' to see them.  In buffer `*Bookmark
 ;;  List*', commands pertaining to tags are on prefix key `T' - use `T
-;;  C-h' to see them.
+;;  C-h' to see them.  And remember that you can use `C-h >' to
+;;  describe all of the marked bookmarks, in the current sort order.
+;;  The bookmark descriptions include the tags.
 ;;
 ;;  When combined with other Bookmark+ commands (e.g. search,
 ;;  query-replace) that apply to the marked bookmarks in the
@@ -2078,9 +2084,10 @@
 ;;  key `T'.  Elsewhere, they begin with prefix key `C-x p t' (or `C-x
 ;;  j t', for jump commands - see (@> "Different Types of Jump Commands")).
 ;;
-;;  `C-h m' (or `?') is your friend, of course.  Likewise `T C-h' and
-;;  `C-x p t C-h'.  Beyond that, the tag-related keys that are more
-;;  than two keystrokes are organized as follows:
+;;  `C-h m' (or `?') is your friend, of course.  Likewise `T C-h',
+;;  `C-x p t C-h', and `C-h >' (which describes the marked bookmarks).
+;;  Beyond that, the tag-related keys that are more than two
+;;  keystrokes are organized as follows:
 ;;
 ;;    They all have the prefix key `T'.
 ;;
@@ -2141,6 +2148,10 @@
 ;;  * `C-h RET' (`C-x p ?') shows you the tags that belong to a
 ;;    bookmark.  With a prefix argument it shows you the full internal
 ;;    form of the tags, that is, the name+value pairs.
+;;
+;;  * `C-h >' describes all of the marked bookmarks, in the current
+;;    sort order.  The descriptions include the tags.  (You can use `T
+;;    m * RET' to mark all of the tagged bookmarks.)
 ;;
 ;;  * `T e' (`C-x p t e') lets you edit a bookmark's tags.
 ;;
