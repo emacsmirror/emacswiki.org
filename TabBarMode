@@ -50,10 +50,11 @@ keyboard shortcut to switch tab or tab group.
 What is considered a tab group can be customized (see section Customization
 below). You can even set it up to include every buffer in one group.
 
-Tab bar mode is implemented using a special Emacs display area at the top of the
+Tab bar mode is implemented using a special Emacs display area (called
+the header line) at the top of the
 Emacs window, not the Emacs frame. (From this it follows that each Emacs window
 will have its own tab bar, no matter how many times you split the frame.) Some
-other modes also use this area, for instance Info, Dired, Slime, [[ERC]],
+other modes also use this header line, for instance Info, Dired, Slime, [[ERC]],
 ruler-mode, etc. These modes override tabbar for their own purposes, but you can
 get the tabs back by typing <code>M-x tabbar-local-mode</code>.
 
