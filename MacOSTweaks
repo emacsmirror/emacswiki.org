@@ -184,6 +184,19 @@ I haven't had much success launching multiple instances (not frames) of the Andr
 
 Via Terminal.app, like `/Applications/Emacs.app/Contents/MacOS/Emacs' you can start multiple instances. I haven't used it, but at least confirmation on exit doesn't work that way with the Carbon Emacs.
 
+----
+[new]
+To accomplish multiple instances of Emacs I use [code]open -n -a /Applications/Emacs.app[/code] in terminal
+
+You can also accomplish this with AppleScript, allowing you to open Emacs from spotlight, rather then having to use terminal. The script will give you new instance of Emacs.app separate from any previously loaded instances every time you call it.
+
+[code] do shell script "open -n -a /path/to/Emacs.app" [/code]
+/Open AppleScript editor, Paste above line, Save as an application with any name other than "Emacs"/
+
+*note:* all the instances will appear in the application switcher (CMD+Tab bar) and the Dock with the same icon and name, this is not an issue, but it can be a bit annoying.
+
+This [https://gist.github.com/jaeschliman/8591515 Gist] shows a modification made to Emacs source which opens each new instance of Emacs with a unique icon. There is a [http://www.reddit.com/r/emacs/comments/1w04hq/change_running_emacsapp_icon/ reddit discussion] that goes into further detail about this hack.
+
 === Problems with shell-mode or TrampMode? ===
 
 If you cannot get TrampMode to login via ssh or even sshx, and you cannot start an ssh session from within ShellMode, try:
