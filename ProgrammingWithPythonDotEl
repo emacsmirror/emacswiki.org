@@ -15,7 +15,7 @@ In python-mode.el RET is bound to py-newline-and-indent, which  indents the next
 
 Using python-complete-symbol in the inferior python buffer causes an infinite loop in python.el as of 080117, changing python-imports from the default nil to 'None' solves this. 2008-01-17, patch submitted.
 
-:Iâm a little confused - It appears when I set flymake-mode to be automatically on for python mode, py-help-at-point doesnât work. I tried switching from python-mode.el to python.el, but not this doesnât seem to solve it; However, there is no advice here on *how* to use python.el, so Iâm not entirely sure Iâm doing it right...
+:I'm a little confused - It appears when I set flymake-mode to be automatically on for python mode, py-help-at-point doesnât work. I tried switching from python-mode.el to python.el, but not this doesn't seem to solve it; However, there is no advice here on *how* to use python.el, so I'm not entirely sure I'm doing it right...
 :: The above refers to python.el as packaged with Emacs 22; loveshack-python.el completion can't generally work in the inferior buffer because it sends input to that buffer.  The loveshack- python.el doesn't actually define python-complete-symbol.  You can use the interpreter rlcompleter module as normal if you want.
 
 == YaSnippet ===
