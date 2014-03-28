@@ -128,6 +128,8 @@ The initial stable version of Muse has been released.  Nested list support and c
 
 PlannerMode has been ported to Muse.  See PlannerMusePort for history.
 
+On 2/1/2010, Michael Olson released the 3.20 version and claimed it would be his last release of Emacs Muse. There was no active maintainer since then.
+
 == Why use Muse? ==
 
 The big question is: Why shouldn't I just use EmacsWikiMode for
