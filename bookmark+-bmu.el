@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar 23 17:02:54 2014 (-0700)
+;; Last-Updated: Fri Mar 28 10:07:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2822
+;;     Update #: 2831
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4851,14 +4851,14 @@ With a prefix argument, show the internal definition of the bookmark."
 
 ;;;###autoload (autoload 'bmkp-bmenu-describe-marked "bookmark+")
 (defun bmkp-bmenu-describe-marked (&optional defn) ; Bound to `C-h >' in bookmark list
-  "Describe the marked bookmarks.
+  "Describe the marked bookmarks, in the current sort order.
 With a prefix argument, show the internal definitions.
 If no bookmark is marked, act on the bookmark of the current line."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
-    (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all))
+    (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all)))
       (if defn
           (let* ((bname      (bmkp-bookmark-name-from-record bmk))
                  (help-text  (format "%s\n%s\n\n%s" bname (make-string (length bname) ?-)
