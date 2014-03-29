@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Mar 29 09:19:15 2014 (-0700)
+;; Last-Updated: Sat Mar 29 11:48:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2837
+;;     Update #: 2860
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5227,20 +5227,28 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 
 ;;; `Toggle' submenu -------------------------------------------------
 (define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-marked-temporary/savable]
-  '(menu-item "Toggle Temporary/Savable (X) for Marked" bmkp-bmenu-toggle-marked-temporary/savable
+  '(menu-item "Temporary/Savable (`X') for Marked" bmkp-bmenu-toggle-marked-temporary/savable
     :help "Toggle the temporary (`X') vs. savable status of the marked bookmarks"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-temporary-bookmarking-mode]
-  '(menu-item "Toggle Temporary Bookmarking Mode..." bmkp-temporary-bookmarking-mode
-    :help "Toggle temporary-only bookmarking (empty bookmark file *replaces* current bookmarks)"))
+  (bmkp-menu-bar-make-toggle bmkp-temporary-bookmarking-mode bmkp-temporary-bookmarking-mode
+                             "Temporary Bookmarking"
+                             "Temporary bookmarking mode is now %s"
+                             "Toggle automatically saving bookmark changes"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-autotemp-on-set]
-  '(menu-item "Toggle Automatically Making Temporary" bmkp-toggle-autotemp-on-set
-    :help "Toggle automatically making any bookmark temporary whenever it is set"))
+  (bmkp-menu-bar-make-toggle bmkp-toggle-autotemp-on-set bmkp-autotemp-all-when-set-p
+                             "Automatically Make Bookmarks Temporary"
+                             "Automatically making bookmarks temporary when you set them is now %s"
+                             "Toggle automatically making a bookmark temporary when you set it"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-menu-list-state]
-  '(menu-item "Toggle Autosaving Display State" bmkp-toggle-saving-menu-list-state
-    :help "Toggle the value of option `bmkp-bmenu-state-file'"))
+  (bmkp-menu-bar-make-toggle bmkp-toggle-saving-menu-list-state bmkp-bmenu-state-file
+                             "Autosaving Display State"
+                             "Autosaving of bookmark list state is now %s"
+                             "Toggle the value of option `bmkp-bmenu-state-file'"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-bookmark-file]
-  '(menu-item "Toggle Autosaving Bookmark File" bmkp-toggle-saving-bookmark-file
-    :help "Toggle the value of option `bookmark-save-flag'"))
+  (bmkp-menu-bar-make-toggle bmkp-toggle-saving-bookmark-file bookmark-save-flag
+                             "Autosaving Bookmark File"
+                             "Automatically saving the bookmark file (`bookmark-save-flag') is now %s"
+                             "Toggle the value of option `bookmark-save-flag'"))
 
 
 ;;; `Highlight' submenu ----------------------------------------------
