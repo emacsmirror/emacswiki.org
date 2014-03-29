@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 28 10:09:17 2014 (-0700)
+;; Last-Updated: Sat Mar 29 09:25:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15510
+;;     Update #: 15516
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -983,6 +983,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/03/29 dadams
+;;     Added variable bmkp-bmenu-define-command-history.
+;;     bmkp-bmenu-define(-jump-marked|-full-snapshot)-command, :
+;;       Removed quote before bmkp-bmenu-define-command-history.
 ;; 2014/03/28 dadams
 ;;     bmkp-bmenu-describe-marked: Apply bmkp-sort-omit, to show bookmarks in the current sort order.
 ;; 2014/03/23 dadams
