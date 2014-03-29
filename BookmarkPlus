@@ -183,7 +183,7 @@ same name but in different directories.
 * '''Dired bookmarks.''' You can bookmark a ''[[DiredMode|Dired]]'' buffer, recording and restoring its `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
 [:DiredTreeBookmarks]
-* '''Dired-tree bookmarks.''' A set of [[DiredMode|Dired]]bookmarks that represent a directory hierarchy and are opened together.
+* '''Dired-tree bookmarks.''' A set of [[DiredMode|Dired]] bookmarks that represent a directory hierarchy and are opened together.
 
 [:BookmarkListBookmarks]
 * '''Bookmark-list bookmarks.'''  You can bookmark the current state of buffer `##*Bookmark List*##' -- a ''list of bookmarks''.  Jumping to such a bookmark restores the recorded [[#SortingBookmarks|sort]] order, [[#FilteringBookmarks|filter]], markings, title, and [[#OmittingBookmarks|omit list]].
