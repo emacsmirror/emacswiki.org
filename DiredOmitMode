@@ -60,3 +60,28 @@ Toggleable dotfile visibility:
 	    (dired-do-kill-lines))
 	(progn (revert-buffer) ; otherwise just revert to re-show
 	       (set (make-local-variable 'dired-dotfiles-show-p) t)))))
+
+== "Remember" omit state ==
+I prefer Dired "remember" my omit state --- that is to say, when enabling/disabling `omit-mode', the `omit-mode' will keep enabled/disabled in another Dired buffer:
+
+   (defvar v-dired-omit t
+     "If dired-omit-mode enabled by default. Don't setq me.")
+   (defun dired-omit-switch ()
+     "This function is a small enhancement for `dired-omit-mode', which will
+   \"remember\" omit state across Dired buffers."
+     (interactive)
+     (if (eq v-dired-omit t)
+         (setq v-dired-omit nil)
+       (setq v-dired-omit t))
+     (dired-omit-caller)
+     (revert-buffer))
+   
+   (defun dired-omit-caller ()
+     (if v-dired-omit
+         (setq dired-omit-mode t)
+       (setq dired-omit-mode nil)))
+   
+   (define-key dired-mode-map (kbd "C-x M-o") 'dired-omit-switch)
+   (add-hook 'dired-mode-hook 'dired-omit-caller)
+
+--- kuanyui
