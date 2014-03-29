@@ -2377,7 +2377,7 @@ How would you sort your bookmarks, to show all those tagged both `blue' and `moo
 
 # `##s >##' to sort the marked bookmarks first (see [[#SortingBookmarks]], below).
 
-If you wanted to show only the marked bookmarks, instead of sorting to put them first in the list, you would use `##>##' instead of `##s >##'.
+If you wanted to ''show'' only the marked bookmarks, instead of sorting to put them first in the list, you would use `##>##' instead of `##s >##'.
 
 How would you query-replace the set of files that are tagged with
 ''any'' of the tags `alpha', `beta', and `gamma', but are ''not'' tagged
