@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar 28 10:07:12 2014 (-0700)
+;; Last-Updated: Sat Mar 29 09:19:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2831
+;;     Update #: 2837
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -255,6 +255,7 @@
 ;;
 ;;    `bmkp-bmenu-before-hide-marked-alist',
 ;;    `bmkp-bmenu-before-hide-unmarked-alist',
+;;    `bmkp-bmenu-define-command-history',
 ;;    `bmkp-bmenu-define-command-menu', `bmkp-bmenu-delete-menu',
 ;;    `bmkp-bmenu-filter-function', `bmkp-bmenu-filter-pattern',
 ;;    `bmkp-bmenu-filter-timer', `bmkp-bmenu-first-time-p',
@@ -814,6 +815,9 @@ Bookmark names thus begin in this column number (since zero-based).")
 
 (defvar bmkp-bmenu-before-hide-unmarked-alist ()
   "Copy of `bookmark-alist' made before hiding unmarked bookmarks.")
+
+(defvar bmkp-bmenu-define-command-history ()
+  "History of names of commands you have defined for `*Bookmark List*'.")
 
 (defvar bmkp-bmenu-filter-function  nil "Latest filtering function for `*Bookmark List*' display.")
 
@@ -3978,7 +3982,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
                                                                          bmkp-bmenu-omitted-bookmarks))
                                           bmkp-bmenu-marked-bookmarks))))
          (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
-                                      'bmkp-bmenu-define-command-history)))
+                                      bmkp-bmenu-define-command-history)))
          (def    `(defun ,fn (bookmark-name &optional use-region-p)
                    (interactive (list (bmkp-read-bookmark-for-type nil ',cands t) current-prefix-arg))
                    (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))))
@@ -4015,7 +4019,7 @@ buffer `*Bookmark List*' are encapsulated as part of the command.
 Use the command at any time to restore them."
   (interactive)
   (let* ((fn   (intern (read-string "Define sort+filter command: " nil
-                                    'bmkp-bmenu-define-command-history)))
+                                    bmkp-bmenu-define-command-history)))
          (def  `(defun ,fn ()
                  (interactive)
                  (setq
@@ -4067,7 +4071,7 @@ bookmarks, marked bookmarks, etc.).  For a lighter weight command, use
 the omit list and the sort & filter information."
   (interactive)
   (let* ((fn   (intern (read-string "Define restore-snapshot command: " nil
-                                    'bmkp-bmenu-define-command-history)))
+                                    bmkp-bmenu-define-command-history)))
          (def  `(defun ,fn ()
                  (interactive)
                  (setq
