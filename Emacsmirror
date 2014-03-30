@@ -9,7 +9,7 @@ distributed elsewhere.  A few have have been left out for various reasons.
 
 The respective repositories on the mirror contain the full history
 beginning with the 30th August 2009 though the commit messages are just
-timestamps. Since the 20th November 2011 are potentially meaningful.
+timestamps. Since the 20th November 2011 they are potentially meaningful.
 
 You might also be interested in the [[Git repository]] which mirrors all
 pages and files from the Emacswiki.
@@ -26,29 +26,3 @@ me where they can be found.
 
 Of course you don't actually need to be it's maintainer to report where
 some missing package can be found.
-
-== Discussion ==
-
-Please feel free to discuss this project here or send
-[mailto:jonas@emacsmirror.org me] an email.  Instead of sending me
-emails about missing packages you may also report them here.
--- JonasBernoulli
-
-[new]
-Maybe githubs 'gist' could be used to host many of the elisp snippets
-found here on emacswiki? --CH
-
-[new]
-I agree this would be nice. But it is unlikely to happen because many
-of the most active Emacswiki contributers don't use git regularly and
-have likely never used github. (How can I tell? Well they are not fans,
-so...). In any regard, if you want gist integration the only way to make
-it happen is to start working on it yourself. If we had a nice implementation
-then people might actually like it - otherwise it will be hard to
-convince anybody. -- JonasBernoulli
-
-[new] Color theme solarized is not in the repo, [https://github.com/sellout/emacs-color-theme-solarized here]
-
-
-[new:MichaelPaulukonis:2013-05-23 02:29 UTC]
-[[Gists]] have been added to emacswiki as of 2013.01 --MichaelPaulukonis
