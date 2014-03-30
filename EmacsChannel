@@ -82,15 +82,6 @@ In addition to addressing the bots like any other person, by prefixing the messa
 
 The bots generally provide help if you ask them for it.  Better do that in private though, to keep it off the channel.
 
-'''[::birny]'''
-
-Commands to BirnyTheBot begin with an initial period.  Birny searches its knowledge database for things following a question mark.
-
-    <kensanata> .seen rms
-    <birny> I've never seen rms before.
-
-One of the most beloved commands of birny is '''.quote'''.
-
 '''[::fsbot]'''
 
 Fsbot, an instance of ErBot, is the simplest to use.  It has pointers to nearly all the pages on this wiki, among massive amounts of other usefulness.  Fsbot commands start with an initial comma.  It's cunning enough to respond to other syntaxes too.
