@@ -2,4 +2,4 @@
 
 It is available from https://github.com/clojure-emacs/cider/
 
-Cider was formerly known as [[nrepl.el]] but was renamed to avoid confusion with the nREPL Clojure backend.
+Cider was formerly known as [[nREPL.el]] but was renamed to avoid confusion with the nREPL Clojure backend.
