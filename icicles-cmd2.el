@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Mar  7 10:57:51 2014 (-0800)
+;; Last-Updated: Sun Mar 30 19:36:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6766
+;;     Update #: 6774
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -591,7 +591,7 @@ can use the following keys:
     (lambda (f) (bmkp-find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
-    (icicle-file-bindings               ; Bindings
+    (icicle-file-bindings               ; Pre bindings
      ((prompt                             "FILE `C-M-j' TAGS: ")
       ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
       (icicle-full-cand-fn                    (lambda (file)
@@ -608,7 +608,12 @@ can use the following keys:
       (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
       (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
-      (icicle-whole-candidate-as-text-prop-p  t)))
+      (icicle-whole-candidate-as-text-prop-p  t))
+     ((icicle-candidate-help-fn               (lambda (cand) ; Post bindings
+                                                (setq cand  (icicle-transform-multi-completion cand))
+                                                (icicle-describe-file cand
+                                                                      current-prefix-arg
+                                                                      t)))))
     (progn                              ; First code
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
       (icicle-highlight-lighter)
@@ -622,7 +627,7 @@ can use the following keys:
     (lambda (f) (bmkp-find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
-    (icicle-file-bindings               ; Bindings
+    (icicle-file-bindings               ; Pre bindings
      ((prompt                                 "FILE `C-M-j' TAGS: ")
       ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
       (icicle-full-cand-fn                    (lambda (file)
@@ -639,7 +644,10 @@ can use the following keys:
       (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
       (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
-      (icicle-whole-candidate-as-text-prop-p  t)))
+      (icicle-whole-candidate-as-text-prop-p  t))
+     ((icicle-candidate-help-fn               (lambda (cand) ; Post bindings
+                                                (setq cand  (icicle-transform-multi-completion cand))
+                                                (icicle-describe-file cand current-prefix-arg t)))))
     (progn                              ; First code
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
       (icicle-highlight-lighter)
