@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 452 $
+;; RCS Version: $Rev: 453 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -353,6 +353,12 @@ Commander panes."
 (defcustom sr-kill-unused-buffers t
   "Whether buffers should be killed automatically by Sunrise when not displayed
 in any of the panes."
+  :group 'sunrise
+  :type 'boolean)
+
+(defcustom sr-kill-quick-view-buffers t
+  "Whether opening a new buffer in quick-view mode should kill any other buffer
+opened previously in the same manner."
   :group 'sunrise
   :type 'boolean)
 
@@ -2257,8 +2263,9 @@ Kills any other buffer opened previously the same way."
           (progn
             (sr-select-viewer-window)
             (find-file filename)
-            (if (and (not (eq (current-buffer) other-window-scroll-buffer))
-                          (buffer-live-p other-window-scroll-buffer))
+            (if (and sr-kill-quick-view-buffers
+                     (not (eq (current-buffer) other-window-scroll-buffer))
+                     (buffer-live-p other-window-scroll-buffer))
                 (kill-buffer other-window-scroll-buffer))
             (sr-scrollable-viewer (current-buffer)))
         (error (message "%s" (cadr description)))))))
