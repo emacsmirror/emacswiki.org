@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Mar 29 11:48:31 2014 (-0700)
+;; Last-Updated: Mon Mar 31 14:50:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2860
+;;     Update #: 2870
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1556,6 +1556,7 @@ Here:
 \\[bmkp-remove-tags-from-all]\t- Remove some tags from all bookmarks
 \\[bmkp-rename-tag]\t- Rename a tag in all bookmarks
 \\[bmkp-list-all-tags]\t- List all tags used in any bookmarks (`C-u': show tag values)
+\\[bmkp-bmenu-list-tags-of-marked]\t- List tags used in the marked bookmarks (`C-u': show tag values)
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
 \\[bmkp-bmenu-set-tag-value]\t- Set the value of a tag (as attribute)
 
@@ -5037,6 +5038,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
 (define-key bookmark-bmenu-mode-map "T>-"                  'bmkp-bmenu-remove-tags-from-marked)
 (define-key bookmark-bmenu-mode-map "T>e"                  'bmkp-bmenu-edit-marked)
+(define-key bookmark-bmenu-mode-map "T>l"                  'bmkp-bmenu-list-tags-of-marked)
 (define-key bookmark-bmenu-mode-map "T>p"                  'bmkp-bmenu-paste-add-tags-to-marked)
 (define-key bookmark-bmenu-mode-map "T>q"                  'bmkp-bmenu-paste-replace-tags-for-marked)
 (define-key bookmark-bmenu-mode-map "T>v"                  'bmkp-bmenu-set-tag-value-for-marked)
@@ -5272,7 +5274,11 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 
 ;;; `Tags' submenu ---------------------------------------------------
 (define-key bmkp-bmenu-tags-menu [bmkp-list-all-tags]
-  '(menu-item "List All Tags" bmkp-list-all-tags :help "List all tags used for any bookmarks"))
+  '(menu-item "List All Tags" bmkp-list-all-tags
+    :help "List all tags used for any bookmarks (`C-u': show full, internal form)"))
+(define-key bmkp-bmenu-tags-menu [bmkp-bmenu-list-tags-of-marked]
+  '(menu-item "List Tags of Marked" bmkp-bmenu-list-tags-of-marked
+    :help "List all tags used in the marked bookmarks (`C-u': show full, internal form)"))
 (define-key bmkp-bmenu-tags-menu [bmkp-purge-notags-autofiles]
   '(menu-item "Purge Autofiles with No Tags..." bmkp-purge-notags-autofiles
     :help "Delete all autofile bookmarks that have no tags"))
