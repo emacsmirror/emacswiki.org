@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Mar  9 10:00:46 2014 (-0700)
+;; Last-Updated: Sun Mar 30 19:38:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10738
+;;     Update #: 10740
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1067,6 +1067,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/03/30 dadams
+;;     icicle-find-file-tagged(-other-window): Rebind icicle-candidate-help-fn to appropriate help fn.
 ;; 2014/03/08 dadams
 ;;     Use (featurep 'icomplete), not (boundp 'icomplete-mode), everywhere.
 ;; 2014/03/03 dadams
