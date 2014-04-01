@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Apr  1 11:03:33 2014 (-0700)
+;; Last-Updated: Tue Apr  1 13:02:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6775
+;;     Update #: 6781
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -60,6 +60,8 @@
 ;;
 ;;    (+)`a', (+)`any', (+)`buffer', (+)`file', (+)`icicle-anything',
 ;;    (+)`icicle-apply', (+)`icicle-bookmark-a-file',
+;;    (+)`icicle-bookmark-tagged',
+;;    (+)`icicle-bookmark-tagged-other-window',
 ;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
@@ -451,6 +453,202 @@
 
 (defun icicle-cmd2-after-load-bookmark+ ()
   "Things to do for `icicles-cmd2.el' after loading `bookmark+.el'."
+
+  (icicle-define-command icicle-bookmark-tagged ; `C-x j t j'
+    "Jump to one or more bookmarks with tags that match your input.
+Only tagged bookmarks are candidates.
+
+A prefix argument reverses the effect of option
+`icicle-bookmark-refresh-cache-flag'.  See the doc for that option.
+In particular, if the option value is nil and you try to jump to a
+bookmark that is not up to date or does not exist, then try invoking
+the command again with a prefix arg, to refresh the cache.
+
+Each completion candidate is a multi-completion composed of two
+fields: the bookmark name and the bookmark tags, separated by
+`icicle-list-join-string' \(\"^G^J\", by default).  As always, you can
+type `C-M-j' to insert this separator into the minibuffer.
+
+For this command, by default `.' in your input matches any character,
+including a newline.  As always, you can use `C-M-.' to toggle
+this (so `.' does not match newline).
+
+You can match your input against the bookmark name or tags or both.
+
+E.g., type:
+
+`red S-TAB'                  to match all bookmarks with the tag `red'
+`red S-SPC green S-SPC blue' to match all bookmarks with tags `red',
+                             `green', and `blue' (in any order)
+
+This assumes that these tags do not also match any bookmark names.
+
+If you need to match against a particular field (e.g. the bookmark
+name or a specific tag position), then use the field separator.
+Otherwise, just use progressive completion, as shown above.
+
+E.g., to match only tags and not the bookmark name, start with `C-M-j'
+to get past the bookmark-name field.  To match both bookmark name and
+tags, type something to match the bookmark name before hitting
+`C-M-j'.  E.g., type:
+
+`trips C-M-j red S-SPC blue' to match all bookmarks tagged `red' and
+                             `blue' that have `trips' in their names
+
+In other respects this command is like `icicle-bookmark'.  See its doc
+for more information, including about actions and keys available
+during completion."                     ; Doc string
+    (lambda (cand) (icicle-bookmark-jump (icicle-transform-multi-completion cand))) ; Action
+    prompt icicle-candidates-alist      ; `completing-read' args
+    nil nil nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
+    (and (boundp 'bookmark-current-bookmark)  bookmark-current-bookmark) nil
+    ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
+     (completion-ignore-case                 bookmark-completion-ignore-case)
+     (prompt                                 "Bookmark `C-M-j' TAGS: ")
+     (icicle-list-use-nth-parts              '(1))
+     (icicle-dot-string                      (icicle-anychar-regexp))
+     (icicle-candidate-properties-alist      '((2 (face bookmark-menu-heading))))
+     (icicle-multi-completing-p              t)
+     (icicle-list-use-nth-parts              '(1))
+     (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
+     (icicle-whole-candidate-as-text-prop-p  t)
+     (icicle-transform-before-sort-p         t)
+     (icicle-candidate-help-fn               (lambda (cand)
+                                               (setq cand  (caar (funcall icicle-get-alist-candidate-function
+                                                                          cand)))
+                                               (if current-prefix-arg
+                                                   (bmkp-describe-bookmark-internals cand)
+                                                 (bmkp-describe-bookmark cand))))
+     (icicle-candidate-alt-action-fn         (or icicle-candidate-alt-action-fn  'icicle-bookmark-act-on-prop))
+     (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
+     (icicle-sort-orders-alist
+      (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+                ("by bookmark name" . icicle-alpha-p))
+              (and (featurep 'bookmark+)
+                   '(("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+                     ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p)
+                     ("by last buffer or file access" (bmkp-buffer-last-access-cp
+                                                       bmkp-local-file-accessed-more-recently-cp)
+                      icicle-alpha-p)
+                     ("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
+                      icicle-alpha-p)
+                     ("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                     ("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)
+                     ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
+                     ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
+                      icicle-alpha-p)
+                     ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
+                      icicle-alpha-p)
+                     ("by Info location" (bmkp-info-cp) icicle-alpha-p)
+                     ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
+                     ("by URL" (bmkp-url-cp) icicle-alpha-p)
+                     ("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
+                                          bmkp-local-file-type-cp bmkp-handler-cp)
+                      icicle-alpha-p)))
+              '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+                ("case insensitive" . icicle-case-insensitive-string-less-p))))
+     (icicle-candidates-alist           ; An alist whose items are ((BOOKMARK-NAME TAG...)).
+      (let ((result  ()))
+        (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+        (dolist (bmk  (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
+                                        (not (consp current-prefix-arg)))
+                                   (and icicle-bookmark-refresh-cache-flag  (consp current-prefix-arg)))
+                               bmkp-sorted-alist)
+                          (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist))))
+          (icicle-condition-case-no-debug nil ; Ignore errors, e.g. from bad or stale bookmark records.
+              (let ((tags  (bmkp-get-tags bmk))
+                    bname)
+                (when tags
+                  (setq bname  (bmkp-bookmark-name-from-record bmk))
+                  (push `((,(icicle-candidate-short-help
+                             (icicle-bookmark-help-string bname)
+                             (icicle-bookmark-propertize-candidate bname))
+                           ,@(and tags  (list (format "%S" tags)))))
+                        result)))
+            (error nil)))
+        result)))
+    (progn                              ; First code
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (icicle-highlight-lighter)
+      (message "Gathering tagged bookmarks..."))
+    nil nil)                            ; Undo code, last code.
+
+  (icicle-define-command icicle-bookmark-tagged-other-window ; `C-x 4 j t j'
+    "Same as `icicle-bookmark-tagged', except uses another window." ; Doc string
+    (lambda (cand) (icicle-bookmark-jump-other-window (icicle-transform-multi-completion cand))) ; Action
+    prompt icicle-candidates-alist      ; `completing-read' args
+    nil nil nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
+    (and (boundp 'bookmark-current-bookmark)  bookmark-current-bookmark) nil
+    ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
+     (completion-ignore-case                 bookmark-completion-ignore-case)
+     (prompt                                 "Bookmark `C-M-j' TAGS: ")
+     (icicle-list-use-nth-parts              '(1))
+     (icicle-dot-string                      (icicle-anychar-regexp))
+     (icicle-candidate-properties-alist      '((2 (face icicle-msg-emphasis))))
+     (icicle-multi-completing-p              t)
+     (icicle-list-use-nth-parts              '(1))
+     (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
+     (icicle-whole-candidate-as-text-prop-p  t)
+     (icicle-transform-before-sort-p         t)
+     (icicle-candidate-help-fn               (lambda (cand)
+                                               (setq cand  (caar (funcall icicle-get-alist-candidate-function
+                                                                          cand)))
+                                               (if current-prefix-arg
+                                                   (bmkp-describe-bookmark-internals cand)
+                                                 (bmkp-describe-bookmark cand))))
+     (icicle-candidate-alt-action-fn         (or icicle-candidate-alt-action-fn  'icicle-bookmark-act-on-prop))
+     (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
+     (icicle-sort-orders-alist
+      (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+                ("by bookmark name" . icicle-alpha-p))
+              (and (featurep 'bookmark+)
+                   '(("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+                     ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p)
+                     ("by last buffer or file access" (bmkp-buffer-last-access-cp
+                                                       bmkp-local-file-accessed-more-recently-cp)
+                      icicle-alpha-p)
+                     ("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
+                      icicle-alpha-p)
+                     ("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                     ("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)
+                     ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
+                     ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
+                      icicle-alpha-p)
+                     ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
+                      icicle-alpha-p)
+                     ("by Info location" (bmkp-info-cp) icicle-alpha-p)
+                     ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
+                     ("by URL" (bmkp-url-cp) icicle-alpha-p)
+                     ("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
+                                          bmkp-local-file-type-cp bmkp-handler-cp)
+                      icicle-alpha-p)))
+              '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+                ("case insensitive" . icicle-case-insensitive-string-less-p))))
+     (icicle-candidates-alist           ; An alist whose items are ((BOOKMARK-NAME TAG...)).
+      (let ((result  ()))
+        (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+        (dolist (bmk  (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
+                                        (not (consp current-prefix-arg)))
+                                   (and icicle-bookmark-refresh-cache-flag  (consp current-prefix-arg)))
+                               bmkp-sorted-alist)
+                          (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist))))
+          (icicle-condition-case-no-debug nil ; Ignore errors, e.g. from bad or stale bookmark records.
+              (let ((tags  (bmkp-get-tags bmk))
+                    bname)
+                (when tags
+                  (setq bname  (bmkp-bookmark-name-from-record bmk))
+                  (push `((,(icicle-candidate-short-help
+                             (icicle-bookmark-help-string bname)
+                             (icicle-bookmark-propertize-candidate bname))
+                           ,@(and tags  (list (format "%S" tags)))))
+                        result)))
+            (error nil)))
+        result)))
+    (progn                              ; First code
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (icicle-highlight-lighter)
+      (message "Gathering tagged bookmarks..."))
+    nil nil)                            ; Undo code, last code.
 
   (icicle-define-file-command icicle-bookmark-a-file ; `C-x p c a'
     "Bookmark a file (create an autofile bookmark).
