@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Apr  1 07:53:08 2014 (-0700)
+;; Last-Updated: Tue Apr  1 13:15:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5926
+;;     Update #: 5942
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4526,201 +4526,205 @@ toggle Icicle mode off and then back on."
     ;; The following are available only if you use library `bookmark+.el'.
 
     ;; Bookmark `read-file-name' autofile commands
-    ("\C-xjt\C-f\C-f"              icicle-find-file-tagged ; `C-x j t C-f C-f'
-     (featurep 'bookmark+))
-    ("\C-x4jt\C-f\C-f"             icicle-find-file-tagged-other-window ; `C-x 4 j t C-f C-f'
-     (featurep 'bookmark+))
-    (bmkp-autofile-set icicle-bookmark-a-file  (fboundp 'bmkp-bookmark-a-file)) ; `C-x p c a'
-    (bmkp-tag-a-file icicle-tag-a-file         (fboundp 'bmkp-tag-a-file)) ; `C-x p t + a'
-    (bmkp-untag-a-file icicle-untag-a-file     (fboundp 'bmkp-untag-a-file)) ; `C-x p t - a'
+    (bmkp-autofile-set icicle-bookmark-a-file  (fboundp 'bmkp-bookmark-a-file))        ; `C-x p c a'
+    (bmkp-tag-a-file icicle-tag-a-file         (fboundp 'bmkp-tag-a-file))             ; `C-x p t + a'
+    (bmkp-untag-a-file icicle-untag-a-file     (fboundp 'bmkp-untag-a-file))           ; `C-x p t - a'
 
     ;; Bookmark jump commands
     (bmkp-find-file
-     icicle-find-file-handle-bookmark (fboundp 'bmkp-find-file)) ; `C-x j C-f'
+     icicle-find-file-handle-bookmark (fboundp 'bmkp-find-file))                       ; `C-x j C-f'
     (bmkp-find-file-other-window
      icicle-find-file-handle-bookmark-other-window
-     (fboundp 'bmkp-find-file-other-window)) ; `C-x 4 j C-f'
-    (bmkp-autofile-jump icicle-bookmark-autofile (fboundp 'bmkp-autofile-jump)) ; `C-x j a'
+     (fboundp 'bmkp-find-file-other-window))                                           ; `C-x 4 j C-f'
+    (bmkp-autofile-jump icicle-bookmark-autofile (fboundp 'bmkp-autofile-jump))        ; `C-x j a'
     (bmkp-autofile-jump-other-window
-     icicle-bookmark-autofile-other-window (fboundp 'bmkp-autofile-jump)) ; `C-x 4 j a'
-    (bmkp-autonamed-jump icicle-bookmark-autonamed (fboundp 'bmkp-autonamed-jump)) ; `C-x j #'
+     icicle-bookmark-autofile-other-window (fboundp 'bmkp-autofile-jump))              ; `C-x 4 j a'
+    (bmkp-autonamed-jump icicle-bookmark-autonamed (fboundp 'bmkp-autonamed-jump))     ; `C-x j #'
     (bmkp-autonamed-jump-other-window
-     icicle-bookmark-autonamed-other-window (fboundp 'bmkp-autonamed-jump)) ; `C-x 4 j #'
+     icicle-bookmark-autonamed-other-window (fboundp 'bmkp-autonamed-jump))            ; `C-x 4 j #'
     (bmkp-autonamed-this-buffer-jump
      icicle-bookmark-autonamed-this-buffer (fboundp 'bmkp-autonamed-this-buffer-jump)) ; `C-x j , #'
     ;;     (bmkp-autonamed-this-buffer-jump-other-window
     ;;      icicle-bookmark-autonamed-this-buffer-other-window
     ;;      (fboundp 'bmkp-autonamed-jump-this-buffer-other-window)) ; `C-x 4 j , #'
     (bmkp-bookmark-file-jump            ;   (Other-window means nothing for a bookmark file.)
-     icicle-bookmark-bookmark-file (fboundp 'bmkp-bookmark-file-jump)) ; `C-x j y'
+     icicle-bookmark-bookmark-file (fboundp 'bmkp-bookmark-file-jump))                 ; `C-x j y'
     ;;   (Other-window means nothing for a bookmark list.)
     (bmkp-bookmark-list-jump
-     icicle-bookmark-bookmark-list (fboundp 'bmkp-bookmark-list-jump)) ; `C-x j B'
+     icicle-bookmark-bookmark-list (fboundp 'bmkp-bookmark-list-jump))                 ; `C-x j B'
     ;;   (Other-window means nothing for a desktop.)
-    (bmkp-desktop-jump icicle-bookmark-desktop (fboundp 'bmkp-desktop-jump)) ; `C-x j K'
-    (bmkp-dired-jump icicle-bookmark-dired (fboundp 'bmkp-dired-jump)) ; `C-x j d'
+    (bmkp-desktop-jump icicle-bookmark-desktop (fboundp 'bmkp-desktop-jump))           ; `C-x j K'
+    (bmkp-dired-jump icicle-bookmark-dired (fboundp 'bmkp-dired-jump))                 ; `C-x j d'
     (bmkp-dired-jump-other-window
-     icicle-bookmark-dired-other-window (fboundp 'bmkp-dired-jump)) ; `C-x 4 j d'
-    (bmkp-file-jump icicle-bookmark-file (fboundp 'bmkp-file-jump)) ; `C-x j f'
+     icicle-bookmark-dired-other-window (fboundp 'bmkp-dired-jump))                    ; `C-x 4 j d'
+    (bmkp-file-jump icicle-bookmark-file (fboundp 'bmkp-file-jump))                    ; `C-x j f'
     (bmkp-file-jump-other-window
-     icicle-bookmark-file-other-window (fboundp 'bmkp-file-jump)) ; `C-x 4 j f'
+     icicle-bookmark-file-other-window (fboundp 'bmkp-file-jump))                      ; `C-x 4 j f'
     (bmkp-file-this-dir-jump
-     icicle-bookmark-file-this-dir (fboundp 'bmkp-file-this-dir-jump)) ; `C-x j . f'
+     icicle-bookmark-file-this-dir (fboundp 'bmkp-file-this-dir-jump))                 ; `C-x j . f'
     (bmkp-file-this-dir-jump-other-window
-     icicle-bookmark-file-this-dir-other-window (fboundp 'bmkp-file-this-dir-jump)) ; `C-x 4 j . f'
-    (bmkp-gnus-jump icicle-bookmark-gnus (fboundp 'bmkp-gnus-jump)) ; `C-x j g'
+     icicle-bookmark-file-this-dir-other-window (fboundp 'bmkp-file-this-dir-jump))    ; `C-x 4 j . f'
+    (bmkp-gnus-jump icicle-bookmark-gnus (fboundp 'bmkp-gnus-jump))                    ; `C-x j g'
     (bmkp-gnus-jump-other-window
-     icicle-bookmark-gnus-other-window (fboundp 'bmkp-gnus-jump)) ; `C-x 4 j g'
-    (bmkp-image-jump icicle-bookmark-image (fboundp 'bmkp-image-jump)) ; `C-x j M-i'
+     icicle-bookmark-gnus-other-window (fboundp 'bmkp-gnus-jump))                      ; `C-x 4 j g'
+    (bmkp-image-jump icicle-bookmark-image (fboundp 'bmkp-image-jump))                 ; `C-x j M-i'
     (bmkp-image-jump-other-window
-     icicle-bookmark-image-other-window (fboundp 'bmkp-image-jump)) ; `C-x 4 j M-i'
-    (bmkp-info-jump icicle-bookmark-info (fboundp 'bmkp-info-jump)) ; `C-x j i'
+     icicle-bookmark-image-other-window (fboundp 'bmkp-image-jump))                    ; `C-x 4 j M-i'
+    (bmkp-info-jump icicle-bookmark-info (fboundp 'bmkp-info-jump))                    ; `C-x j i'
     (bmkp-info-jump-other-window
-     icicle-bookmark-info-other-window (fboundp 'bmkp-info-jump)) ; `C-x 4 j i'
-    (bmkp-local-file-jump icicle-bookmark-local-file (fboundp 'bmkp-local-file-jump)) ; `C-x j l'
+     icicle-bookmark-info-other-window (fboundp 'bmkp-info-jump))                      ; `C-x 4 j i'
+    (bmkp-local-file-jump icicle-bookmark-local-file (fboundp 'bmkp-local-file-jump))  ; `C-x j l'
     (bmkp-local-file-jump-other-window
-     icicle-bookmark-local-file-other-window (fboundp 'bmkp-local-file-jump)) ; `C-x 4 j l'
-    (bmkp-man-jump icicle-bookmark-man  (fboundp 'bmkp-man-jump)) ; `C-x j m'
+     icicle-bookmark-local-file-other-window (fboundp 'bmkp-local-file-jump))          ; `C-x 4 j l'
+    (bmkp-man-jump icicle-bookmark-man  (fboundp 'bmkp-man-jump))                      ; `C-x j m'
     (bmkp-man-jump-other-window icicle-bookmark-man-other-window  (fboundp 'bmkp-man-jump)) ; `C-x 4 j m'
-    (bmkp-non-file-jump icicle-bookmark-non-file (fboundp 'bmkp-non-file-jump)) ; `C-x j b'
+    (bmkp-non-file-jump icicle-bookmark-non-file (fboundp 'bmkp-non-file-jump))        ; `C-x j b'
     (bmkp-non-file-jump-other-window
-     icicle-bookmark-non-file-other-window (fboundp 'bmkp-non-file-jump)) ; `C-x 4 j b'
-    (bmkp-region-jump icicle-bookmark-region (fboundp 'bmkp-region-jump)) ; `C-x j r'
+     icicle-bookmark-non-file-other-window (fboundp 'bmkp-non-file-jump))              ; `C-x 4 j b'
+    (bmkp-region-jump icicle-bookmark-region (fboundp 'bmkp-region-jump))              ; `C-x j r'
     (bmkp-region-jump-other-window
-     icicle-bookmark-region-other-window (fboundp 'bmkp-region-jump)) ; `C-x 4 j r'
+     icicle-bookmark-region-other-window (fboundp 'bmkp-region-jump))                  ; `C-x 4 j r'
     (bmkp-remote-file-jump icicle-bookmark-remote-file (fboundp 'bmkp-remote-file-jump)) ; `C-x j n'
     (bmkp-remote-file-jump-other-window
-     icicle-bookmark-remote-file-other-window (fboundp 'bmkp-remote-file-jump)) ; `C-x 4 j n'
+     icicle-bookmark-remote-file-other-window (fboundp 'bmkp-remote-file-jump))        ; `C-x 4 j n'
     (bmkp-specific-buffers-jump
-     icicle-bookmark-specific-buffers (fboundp 'bmkp-specific-buffers-jump)) ; `C-x j = b'
+     icicle-bookmark-specific-buffers (fboundp 'bmkp-specific-buffers-jump))           ; `C-x j = b'
     (bmkp-specific-buffers-jump-other-window
      icicle-bookmark-specific-buffers-other-window (fboundp 'bmkp-specific-buffers-jump)) ; `C-x 4 j = b'
     (bmkp-specific-files-jump
-     icicle-bookmark-specific-files (fboundp 'bmkp-specific-files-jump)) ; `C-x j = f'
+     icicle-bookmark-specific-files (fboundp 'bmkp-specific-files-jump))               ; `C-x j = f'
     (bmkp-specific-files-jump-other-window
-     icicle-bookmark-specific-files-other-window (fboundp 'bmkp-specific-files-jump)) ; `C-x 4 j = f'
-    (bmkp-temporary-jump icicle-bookmark-temporary (fboundp 'bmkp-temporary-jump)) ; `C-x j x'
+     icicle-bookmark-specific-files-other-window (fboundp 'bmkp-specific-files-jump))  ; `C-x 4 j = f'
+    (bmkp-temporary-jump icicle-bookmark-temporary (fboundp 'bmkp-temporary-jump))     ; `C-x j x'
     (bmkp-temporary-jump-other-window
-     icicle-bookmark-temporary-other-window (fboundp 'bmkp-temporary-jump)) ; `C-x 4 j x'
+     icicle-bookmark-temporary-other-window (fboundp 'bmkp-temporary-jump))            ; `C-x 4 j x'
     (bmkp-this-buffer-jump icicle-bookmark-this-buffer (fboundp 'bmkp-this-buffer-jump)) ; `C-x j , ,'
     (bmkp-this-buffer-jump-other-window
-     icicle-bookmark-this-buffer-other-window (fboundp 'bmkp-this-buffer-jump)) ; `C-x 4 j , ,'
-    (bmkp-url-jump icicle-bookmark-url (fboundp 'bmkp-url-jump)) ; `C-x j u'
+     icicle-bookmark-this-buffer-other-window (fboundp 'bmkp-this-buffer-jump))        ; `C-x 4 j , ,'
+    (bmkp-url-jump icicle-bookmark-url (fboundp 'bmkp-url-jump))                       ; `C-x j u'
     (bmkp-url-jump-other-window icicle-bookmark-url-other-window (fboundp 'bmkp-url-jump)) ; `C-x 4 j u'
-    (bmkp-w3m-jump icicle-bookmark-w3m (fboundp 'bmkp-w3m-jump)) ; `C-x j w'
+    (bmkp-w3m-jump icicle-bookmark-w3m (fboundp 'bmkp-w3m-jump))                       ; `C-x j w'
     (bmkp-w3m-jump-other-window icicle-bookmark-w3m-other-window (fboundp 'bmkp-w3m-jump)) ; `C-x 4 j w'
 
     ;; Bookmark tags jump commands
+    ("\C-xjtj"                     icicle-bookmark-tagged                           ; `C-x j t j'
+     (featurep 'bookmark+))
+    ("\C-x4jtj"                    icicle-bookmark-tagged-other-window              ; `C-x 4 j t j'
+     (featurep 'bookmark+))
+    ("\C-xjt\C-f\C-f"              icicle-find-file-tagged                          ; `C-x j t C-f C-f'
+     (featurep 'bookmark+))
+    ("\C-x4jt\C-f\C-f"             icicle-find-file-tagged-other-window             ; `C-x 4 j t C-f C-f'
+     (featurep 'bookmark+))
     (bmkp-find-file-all-tags
-     icicle-find-file-all-tags (fboundp 'bmkp-find-file-all-tags)) ; `C-x j t C-f *'
+     icicle-find-file-all-tags (fboundp 'bmkp-find-file-all-tags))                  ; `C-x j t C-f *'
     (bmkp-find-file-all-tags-other-window
-     icicle-find-file-all-tags-other-window (fboundp 'bmkp-find-file-all-tags)) ; `C-x 4 j t C-f *'
+     icicle-find-file-all-tags-other-window (fboundp 'bmkp-find-file-all-tags))     ; `C-x 4 j t C-f *'
     (bmkp-find-file-all-tags-regexp
      icicle-find-file-all-tags-regexp
-     (fboundp 'bmkp-find-file-all-tags-regexp)) ; `C-x j t C-f % *'
+     (fboundp 'bmkp-find-file-all-tags-regexp))                                     ; `C-x j t C-f % *'
     (bmkp-find-file-all-tags-regexp-other-window
      icicle-find-file-all-tags-regexp-other-window
-     (fboundp 'bmkp-find-file-all-tags-regexp-other-window)) ; `C-x 4 j t C-f % *'
+     (fboundp 'bmkp-find-file-all-tags-regexp-other-window))                        ; `C-x 4 j t C-f % *'
     (bmkp-find-file-some-tags
-     icicle-find-file-some-tags (fboundp 'bmkp-find-file-some-tags)) ; `C-x j t C-f +'
+     icicle-find-file-some-tags (fboundp 'bmkp-find-file-some-tags))                ; `C-x j t C-f +'
     (bmkp-find-file-some-tags-other-window
      icicle-find-file-some-tags-other-window
-     (fboundp 'bmkp-find-file-some-tags-other-window)) ; `C-x 4 j t C-f +'
+     (fboundp 'bmkp-find-file-some-tags-other-window))                               ; `C-x 4 j t C-f +'
     (bmkp-find-file-some-tags-regexp
-     icicle-find-file-some-tags-regexp (fboundp 'bmkp-find-file-some-tags-regexp)) ; `C-x j t C-f % +'
+     icicle-find-file-some-tags-regexp (fboundp 'bmkp-find-file-some-tags-regexp))   ; `C-x j t C-f % +'
     (bmkp-find-file-some-tags-regexp-other-window
      icicle-find-file-some-tags-regexp-other-window
-     (fboundp 'bmkp-find-file-some-tags-regexp-other-window)) ; `C-x 4 j t C-f % +'
+     (fboundp 'bmkp-find-file-some-tags-regexp-other-window))                       ; `C-x 4 j t C-f % +'
     (bmkp-autofile-all-tags-jump
-     icicle-bookmark-autofile-all-tags (fboundp 'bmkp-autofile-all-tags-jump)) ; `C-x j t a *'
+     icicle-bookmark-autofile-all-tags (fboundp 'bmkp-autofile-all-tags-jump))      ; `C-x j t a *'
     (bmkp-autofile-all-tags-jump-other-window
      icicle-bookmark-autofile-all-tags-other-window
-     (fboundp 'bmkp-autofile-all-tags-jump)) ; `C-x 4 j t a *'
+     (fboundp 'bmkp-autofile-all-tags-jump))                                        ; `C-x 4 j t a *'
     (bmkp-autofile-all-tags-regexp-jump
      icicle-bookmark-autofile-all-tags-regexp
-     (fboundp 'bmkp-autofile-all-tags-regexp-jump)) ; `C-x j t a % *'
+     (fboundp 'bmkp-autofile-all-tags-regexp-jump))                                 ; `C-x j t a % *'
     (bmkp-autofile-all-tags-regexp-jump-other-window
      icicle-bookmark-autofile-all-tags-regexp-other-window
-     (fboundp 'bmkp-autofile-all-tags-regexp-jump)) ; `C-x 4 j t a % *'
+     (fboundp 'bmkp-autofile-all-tags-regexp-jump))                                 ; `C-x 4 j t a % *'
     (bmkp-autofile-some-tags-jump
-     icicle-bookmark-autofile-some-tags (fboundp 'bmkp-autofile-some-tags-jump)) ; `C-x j t a +'
+     icicle-bookmark-autofile-some-tags (fboundp 'bmkp-autofile-some-tags-jump))    ; `C-x j t a +'
     (bmkp-autofile-some-tags-jump-other-window
      icicle-bookmark-autofile-some-tags-other-window
-     (fboundp 'bmkp-autofile-some-tags-jump)) ; `C-x 4 j t a +'
+     (fboundp 'bmkp-autofile-some-tags-jump))                                       ; `C-x 4 j t a +'
     (bmkp-autofile-some-tags-regexp-jump
      icicle-bookmark-autofile-some-tags-regexp
-     (fboundp 'bmkp-autofile-some-tags-regexp-jump)) ; `C-x j t a % +'
+     (fboundp 'bmkp-autofile-some-tags-regexp-jump))                                ; `C-x j t a % +'
     (bmkp-autofile-some-tags-regexp-jump-other-window
      icicle-bookmark-autofile-some-tags-regexp-other-window
-     (fboundp 'bmkp-autofile-some-tags-regexp-jump)) ; `C-x 4 j t a % +'
-    (bmkp-all-tags-jump icicle-bookmark-all-tags (fboundp 'bmkp-all-tags-jump)) ; `C-x j t *'
+     (fboundp 'bmkp-autofile-some-tags-regexp-jump))                                ; `C-x 4 j t a % +'
+    (bmkp-all-tags-jump icicle-bookmark-all-tags (fboundp 'bmkp-all-tags-jump))     ; `C-x j t *'
     (bmkp-all-tags-jump-other-window
-     icicle-bookmark-all-tags-other-window (fboundp 'bmkp-all-tags-jump)) ; `C-x 4 j t *'
+     icicle-bookmark-all-tags-other-window (fboundp 'bmkp-all-tags-jump))           ; `C-x 4 j t *'
     (bmkp-all-tags-regexp-jump
-     icicle-bookmark-all-tags-regexp (fboundp 'bmkp-all-tags-regexp-jump)) ; `C-x j t % *'
+     icicle-bookmark-all-tags-regexp (fboundp 'bmkp-all-tags-regexp-jump))          ; `C-x j t % *'
     (bmkp-all-tags-regexp-jump-other-window
      icicle-bookmark-all-tags-regexp-other-window (fboundp 'bmkp-all-tags-regexp-jump)) ; `C-x 4 j t % *'
-    (bmkp-some-tags-jump icicle-bookmark-some-tags (fboundp 'bmkp-some-tags-jump)) ; `C-x j t +'
+    (bmkp-some-tags-jump icicle-bookmark-some-tags (fboundp 'bmkp-some-tags-jump))  ; `C-x j t +'
     (bmkp-some-tags-jump-other-window
-     icicle-bookmark-some-tags-other-window (fboundp 'bmkp-some-tags-jump)) ; `C-x 4 j t +'
+     icicle-bookmark-some-tags-other-window (fboundp 'bmkp-some-tags-jump))         ; `C-x 4 j t +'
     (bmkp-some-tags-regexp-jump
-     icicle-bookmark-some-tags-regexp (fboundp 'bmkp-some-tags-regexp-jump)) ; `C-x j t % +'
+     icicle-bookmark-some-tags-regexp (fboundp 'bmkp-some-tags-regexp-jump))        ; `C-x j t % +'
     (bmkp-some-tags-regexp-jump-other-window
      icicle-bookmark-some-tags-regexp-other-window
-     (fboundp 'bmkp-some-tags-regexp-jump)) ; `C-x 4 j t % +'
+     (fboundp 'bmkp-some-tags-regexp-jump))                                         ; `C-x 4 j t % +'
     (bmkp-file-all-tags-jump
-     icicle-bookmark-file-all-tags (fboundp 'bmkp-file-all-tags-jump)) ; `C-x j t f *'
+     icicle-bookmark-file-all-tags (fboundp 'bmkp-file-all-tags-jump))              ; `C-x j t f *'
     (bmkp-file-all-tags-jump-other-window
      icicle-bookmark-file-all-tags-other-window (fboundp 'bmkp-file-all-tags-jump)) ; `C-x 4 j t f *'
     (bmkp-file-all-tags-regexp-jump
      icicle-bookmark-file-all-tags-regexp (fboundp 'bmkp-file-all-tags-regexp-jump)) ; `C-x j t f % *'
     (bmkp-file-all-tags-regexp-jump-other-window
      icicle-bookmark-file-all-tags-regexp-other-window
-     (fboundp 'bmkp-file-all-tags-regexp-jump)) ; `C-x 4 j t f % *'
+     (fboundp 'bmkp-file-all-tags-regexp-jump))                                     ; `C-x 4 j t f % *'
     (bmkp-file-some-tags-jump
-     icicle-bookmark-file-some-tags (fboundp 'bmkp-file-some-tags-jump)) ; `C-x j t f +'
+     icicle-bookmark-file-some-tags (fboundp 'bmkp-file-some-tags-jump))            ; `C-x j t f +'
     (bmkp-file-some-tags-jump-other-window
      icicle-bookmark-file-some-tags-other-window (fboundp 'bmkp-file-some-tags-jump)) ; `C-x 4 j t f +'
     (bmkp-file-some-tags-regexp-jump
      icicle-bookmark-file-some-tags-regexp (fboundp 'bmkp-file-some-tags-regexp-jump)) ; `C-x j t f % +'
     (bmkp-file-some-tags-regexp-jump-other-window
      icicle-bookmark-file-some-tags-regexp-other-window
-     (fboundp 'bmkp-file-some-tags-regexp-jump)) ; `C-x 4 j t f % +'
+     (fboundp 'bmkp-file-some-tags-regexp-jump))                                    ; `C-x 4 j t f % +'
     (bmkp-file-this-dir-all-tags-jump
      icicle-bookmark-file-this-dir-all-tags
-     (fboundp 'bmkp-file-this-dir-all-tags-jump)) ; `C-x j t . *'
+     (fboundp 'bmkp-file-this-dir-all-tags-jump))                                   ; `C-x j t . *'
     (bmkp-file-this-dir-all-tags-jump-other-window
      icicle-bookmark-file-this-dir-all-tags-other-window
-     (fboundp 'bmkp-file-this-dir-all-tags-jump)) ; `C-x 4 j t . *'
+     (fboundp 'bmkp-file-this-dir-all-tags-jump))                                   ; `C-x 4 j t . *'
     (bmkp-file-this-dir-all-tags-regexp-jump
-     icicle-bookmark-file-this-dir-all-tags-regexp ; `C-x j t . % *'
+     icicle-bookmark-file-this-dir-all-tags-regexp                                  ; `C-x j t . % *'
      (fboundp 'bmkp-file-this-dir-all-tags-regexp-jump))
     (bmkp-file-this-dir-all-tags-regexp-jump-other-window
      icicle-bookmark-file-this-dir-all-tags-regexp-other-window
-     (fboundp 'bmkp-file-this-dir-all-tags-regexp-jump)) ; `C-x 4 j t . % *'
+     (fboundp 'bmkp-file-this-dir-all-tags-regexp-jump))                            ; `C-x 4 j t . % *'
     (bmkp-file-this-dir-some-tags-jump
      icicle-bookmark-file-this-dir-some-tags
-     (fboundp 'bmkp-file-this-dir-some-tags-jump)) ; `C-x j t . +'
+     (fboundp 'bmkp-file-this-dir-some-tags-jump))                                  ; `C-x j t . +'
     (bmkp-file-this-dir-some-tags-jump-other-window
      icicle-bookmark-file-this-dir-some-tags-other-window
-     (fboundp 'bmkp-file-this-dir-some-tags-jump)) ; `C-x 4 j t . +'
+     (fboundp 'bmkp-file-this-dir-some-tags-jump))                                  ; `C-x 4 j t . +'
     (bmkp-file-this-dir-some-tags-regexp-jump
      icicle-bookmark-file-this-dir-some-tags-regexp
-     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump)) ; `C-x j t . % +'
+     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump))                           ; `C-x j t . % +'
     (bmkp-file-this-dir-some-tags-regexp-jump-other-window
      icicle-bookmark-file-this-dir-some-tags-regexp-other-window
-     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump)) ; `C-x 4 j t . % +'
+     (fboundp 'bmkp-file-this-dir-some-tags-regexp-jump))                           ; `C-x 4 j t . % +'
 
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
     (find-tag                      icicle-find-tag              (fboundp 'command-remapping)) ; `M-.'
-    (find-tag-other-window         icicle-find-first-tag-other-window  t) ; `C-x 4 .'
+    (find-tag-other-window         icicle-find-first-tag-other-window  t)           ; `C-x 4 .'
     (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
     (eval-expression     icicle-pp-eval-expression    (fboundp 'command-remapping)) ; `M-:'
     (pp-eval-expression  icicle-pp-eval-expression    (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
     ([S-f10]             icicle-complete-menu-bar     (fboundp 'icicle-complete-menu-bar)) ; `S-f10'
     ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
-    ("\e\M-x"            lacarte-execute-command ; `ESC M-x'
+    ("\e\M-x"            lacarte-execute-command                                    ; `ESC M-x'
      (fboundp 'lacarte-execute-command))
     ("\M-`"                        lacarte-execute-menu-command ; `M-`' - replaces `tmm-menubar'.
      (fboundp 'lacarte-execute-menu-command))
