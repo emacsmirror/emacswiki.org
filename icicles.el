@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  8 10:12:12 2014 (-0800)
+;; Last-Updated: Tue Apr  1 12:55:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23532
+;;     Update #: 23533
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -201,6 +201,7 @@
 ;;    `icicle-bookmark-specific-buffers-other-window',
 ;;    `icicle-bookmark-specific-files',
 ;;    `icicle-bookmark-specific-files-other-window',
+;;    `icicle-bookmark-tagged', `icicle-bookmark-tagged-other-window',
 ;;    `icicle-bookmark-temporary',
 ;;    `icicle-bookmark-temporary-other-window',
 ;;    `icicle-bookmark-this-buffer',
