@@ -1,0 +1,5 @@
+[https://github.com/Lindydancer/iso-oem IsoOem] Rearranges the display table to that a Windows OEM font can be used to edit Latin-1 texts. Unfortunately, this does not work for recent Emacs version, however it works for Emacs 22. This package was written by [[AndersLindgren|Anders Lindgren]].
+
+== Getting the package ==
+
+The *IsoOem* package is located on [https://github.com/Lindydancer/iso-oem Github].
