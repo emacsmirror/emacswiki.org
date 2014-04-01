@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Apr  1 11:19:46 2014 (-0700)
+;; Last-Updated: Tue Apr  1 13:26:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10754
+;;     Update #: 10757
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1071,6 +1071,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2014/04/01 dadams
+;;     Added: icicle-bookmark-tagged, icicle-bookmark-tagged-other-window.
 ;;     icicle-search-bookmark:
 ;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
 ;; 2014/03/30 dadams
@@ -7087,6 +7088,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/04/01 dadams
+;;     icicle-top-level-key-bindings: Bind icicle-bookmark-tagged(-other-window) to C-x (4) j t j.
 ;; 2014/03/08 dadams
 ;;     icicle-Completions-toggle-submenu: Added icicle-toggle-icomplete-mode.
 ;;     icicle-completion-key-bindings: Bind icicle-toggle-icomplete-mode to C-M-#.
