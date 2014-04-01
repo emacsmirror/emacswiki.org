@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sat Mar  8 09:56:38 2014 (-0800)
+;; Last-Updated: Tue Apr  1 11:05:45 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1222
+;;     Update #: 1224
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -888,10 +888,8 @@ to update the list of tags available for completion." "")) ; Doc string
      (icicle-list-use-nth-parts              '(1))
      (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                  ()
-                                               (if (facep 'file-name-shadow)
-                                                   '((2 (face file-name-shadow))
-                                                     (3 (face bookmark-menu-heading)))
-                                                 '((3 (face bookmark-menu-heading))))))
+                                               '((2 (face icicle-annotation))
+                                                 (3 (face icicle-msg-emphasis)))))
      (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
@@ -978,10 +976,8 @@ You need library `Bookmark+' for this command." type type) ; Doc string
      (icicle-list-use-nth-parts                '(1))
      (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                    ()
-                                                 (if (facep 'file-name-shadow)
-                                                     '((2 (face file-name-shadow))
-                                                       (3 (face bookmark-menu-heading)))
-                                                   '((3 (face bookmark-menu-heading))))))
+                                                 '((2 (face icicle-annotation))
+                                                   (3 (face icicle-msg-emphasis)))))
      (icicle-transform-function                (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p    t)
      (icicle-transform-before-sort-p           t)
