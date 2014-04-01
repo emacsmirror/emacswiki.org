@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Apr  1 13:02:08 2014 (-0700)
+;; Last-Updated: Tue Apr  1 14:46:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6781
+;;     Update #: 6788
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -497,7 +497,15 @@ tags, type something to match the bookmark name before hitting
 
 In other respects this command is like `icicle-bookmark'.  See its doc
 for more information, including about actions and keys available
-during completion."                     ; Doc string
+during completion.
+
+NOTE: You can get the same effect as this command using other
+`icicle-bookmark*' commands, by using two multi-completion separators,
+so that you match only bookmarks that have tags:
+
+.* C-M-j .* C-M-j
+
+In other words, this command is essentially just a convenience." ; Doc string
     (lambda (cand) (icicle-bookmark-jump (icicle-transform-multi-completion cand))) ; Action
     prompt icicle-candidates-alist      ; `completing-read' args
     nil nil nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
