@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Mar 30 19:38:53 2014 (-0700)
+;; Last-Updated: Tue Apr  1 08:16:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10740
+;;     Update #: 10741
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1983,6 +1983,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/04/01 dadams
+;;     icicle-insert-candidates: Do not use icomplete-tidy for Emacs 20-22.
 ;; 2014/03/06 dadams
 ;;     icicle-insert-candidates:
 ;;       Respect new options icicle-icomplete-mode-max-candidates and icicle-sorting-max-candidates.
