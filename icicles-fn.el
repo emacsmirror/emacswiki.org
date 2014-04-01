@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Apr  1 08:14:31 2014 (-0700)
+;; Last-Updated: Tue Apr  1 10:41:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14458
+;;     Update #: 14459
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3525,7 +3525,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                     (start      0)
                                     (end        0)
                                     (partnum    1)
-                                    (join       (concat "\\(" icicle-list-join-string "\\|$\\)"))
+                                    (join       (concat "\\(" icicle-list-join-string "\\|\\'\\)"))
                                     (len-cand   (length candidate))
                                     (len-join   (length icicle-list-join-string))
                                     (first      t))
