@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Mar  9 09:59:48 2014 (-0700)
+;; Last-Updated: Tue Apr  1 10:57:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26878
+;;     Update #: 26882
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4750,10 +4750,8 @@ instead of those for the current buffer."
                (icicle-list-use-nth-parts              '(1))
                (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                            ()
-                                                         (if (facep 'file-name-shadow)
-                                                             '((2 (face file-name-shadow))
-                                                               (3 (face bookmark-menu-heading)))
-                                                           '((3 (face bookmark-menu-heading))))))
+                                                         '((2 (face icicle-annotation))
+                                                           (3 (face icicle-msg-emphasis)))))
                (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
@@ -5105,10 +5103,8 @@ position is highlighted."               ; Doc string
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
-                                             (if (facep 'file-name-shadow)
-                                                 '((2 (face file-name-shadow))
-                                                   (3 (face bookmark-menu-heading)))
-                                               '((3 (face bookmark-menu-heading))))))
+                                             '((2 (face icicle-annotation))
+                                               (3 (face icicle-msg-emphasis)))))
    (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
@@ -5178,10 +5174,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
-                                             (if (facep 'file-name-shadow)
-                                                 '((2 (face file-name-shadow))
-                                                   (3 (face bookmark-menu-heading)))
-                                               '((3 (face bookmark-menu-heading))))))
+                                             '((2 (face icicle-annotation))
+                                               (3 (face icicle-msg-emphasis)))))
    (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
@@ -9861,10 +9855,8 @@ Non-interactively:
    (icicle-list-use-nth-parts                   '(1))
    (icicle-candidate-properties-alist           (if (not icicle-multi-completing-p)
                                                     ()
-                                                  (if (facep 'file-name-shadow)
-                                                      '((2 (face file-name-shadow))
-                                                        (3 (face bookmark-menu-heading)))
-                                                    '((3 (face bookmark-menu-heading))))))
+                                                  '((2 (face icicle-annotation))
+                                                    (3 (face icicle-msg-emphasis)))))
    (icicle-transform-function                   (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p       t)
    (icicle-transform-before-sort-p              t)
