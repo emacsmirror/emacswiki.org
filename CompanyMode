@@ -8,7 +8,9 @@ http://company-mode.github.io/
 Back-ends are single functions, they look like this:
 
   (defun company-my-backend (command &optional arg &rest ignored)
+    (interactive (list 'interactive))
     (case command
+      (interactive (company-begin-backend 'company-my-backend))
       (prefix (when (looking-back "foo\\>")
                 (match-string 0)))
       (candidates (when (equal arg "foo")
