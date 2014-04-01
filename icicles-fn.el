@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Mar  7 15:11:08 2014 (-0800)
+;; Last-Updated: Tue Apr  1 08:14:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14446
+;;     Update #: 14458
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3839,7 +3839,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
                 (icomplete-mode -1)
               (icomplete-mode 1)
               (icomplete-exhibit))
-          (icomplete-tidy)
+          (when (boundp 'icomplete-overlay) (icomplete-tidy)) ; Cannot use `icomplete-tidy' here with Emacs < 23.
           (icomplete-mode -1)))
       ;; Turn sorting on or off, depending on NB-CANDS.
       (when (natnump icicle-sorting-max-candidates)
