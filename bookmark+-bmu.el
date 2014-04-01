@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Mar 31 14:50:54 2014 (-0700)
+;; Last-Updated: Tue Apr  1 06:27:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2870
+;;     Update #: 2875
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3402,6 +3402,30 @@ Non-interactively, non-nil MSG-P means display messages."
     (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
     (when (and msg-p  tags) (message "Tags removed: %S" tags))))
+
+;;;###autoload (autoload 'bmkp-bmenu-list-tags-of-marked "bookmark+")
+(defun bmkp-bmenu-list-tags-of-marked (fullp &optional msg-p)
+                                        ; Bound to `T > l' in bookmark list
+  "List the tags used in the marked bookmarks.
+Show the list in the minibuffer or, if not enough space, in buffer
+`*All Tags*'.  The tags are listed alphabetically, respecting option
+`case-fold-search'.
+
+With no prefix arg, list only the tag names.  With a prefix arg, list
+the full alist of tags.  Note that when the full tags alist is shown,
+the same tag name appears once for each of its different values.
+
+Non-interactively, non-nil MSG-P means display a status message."
+  (interactive "P\np")
+  (require 'pp)
+  (when msg-p (message "Gathering tags..."))
+  (pp-display-expression (sort (let ((bookmark-alist  (bmkp-marked-bookmarks-only))
+                                     bmkp-tags-alist) ; Prevent updating it.
+                                 (bmkp-tags-list (not fullp) t))
+                               (if fullp
+                                   (lambda (t1 t2) (bmkp-string-less-case-fold-p (car t1) (car t2)))
+                                 'bmkp-string-less-case-fold-p))
+                         "*Tags of Marked Bookmarks*"))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-bookmarks-tagged-regexp "bookmark+")
 (defun bmkp-bmenu-mark-bookmarks-tagged-regexp (regexp &optional notp no-re-sort-p msg-p)
