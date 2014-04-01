@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Apr  1 08:16:00 2014 (-0700)
+;; Last-Updated: Tue Apr  1 11:19:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10741
+;;     Update #: 10754
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/04/01 dadams
+;;     icicle-bookmark(-other-window|-list|-set):
+;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
 ;; 2014/03/09 dadams
 ;;     icicle-file(-other-window): Set this-command so user sees msgs appropriate to the command.
 ;; 2014/03/08 dadams
@@ -1067,6 +1070,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/04/01 dadams
+;;     icicle-search-bookmark:
+;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
 ;; 2014/03/30 dadams
 ;;     icicle-find-file-tagged(-other-window): Rebind icicle-candidate-help-fn to appropriate help fn.
 ;; 2014/03/08 dadams
@@ -1984,6 +1990,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2014/04/01 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       For icicle-candidate-properties-alist, use \', not $, in regexp for string-match.
 ;;     icicle-insert-candidates: Do not use icomplete-tidy for Emacs 20-22.
 ;; 2014/03/06 dadams
 ;;     icicle-insert-candidates:
@@ -3921,6 +3929,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/04/01 dadams
+;;     icicle-define-bookmark-command-1:
+;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
 ;; 2013/03/08 dadams
 ;;     icicle(-file)-define-command:
 ;;       Use generated let-var CHOICE for (CMD|FILE)-CHOICE.
