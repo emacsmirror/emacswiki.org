@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Mar 30 19:36:33 2014 (-0700)
+;; Last-Updated: Tue Apr  1 11:03:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6774
+;;     Update #: 6775
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4950,10 +4950,8 @@ future search commands, not the current one.)" ; Doc string
    (icicle-list-use-nth-parts                '(1))
    (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                  ()
-                                               (if (facep 'file-name-shadow)
-                                                   '((2 (face file-name-shadow))
-                                                     (3 (face bookmark-menu-heading)))
-                                                 '((3 (face bookmark-menu-heading))))))
+                                               '((2 (face icicle-annotation))
+                                                 (3 (face icicle-msg-emphasis)))))
    (icicle-transform-function                (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p    t)
    (icicle-transform-before-sort-p           t)
