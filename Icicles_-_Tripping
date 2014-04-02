@@ -69,6 +69,7 @@ navigate.
 [:icicle-bookmark-file-all-tags-regexp]
 [:icicle-bookmark-file-some-tags]
 [:icicle-bookmark-file-some-tags-regexp]
+[:icicle-bookmark-tagged]
 [:icicle-bookmark-url]
 [:icicle-bookmark-w3m]
 [:icicle-bookmark-temporary]
@@ -153,7 +154,6 @@ Here are some of the '''Icicles''' tripping commands:
 
 * Trips among tagged files ([[http://delicious.com|delicious]]-style tagging -- requires library '''[[Bookmark+]]''').  (The `C-f' is a reminder that the command uses `read-file-name', like `find-file'.
 The '''`a'''' indicates that the command completes an [[autofile bookmark]] name.)
-
 (Use prefix key `C-x 4 j' for other-window commands.)
 
 ** '''`icicle-find-file-tagged''''  ('''`##C-x j t C-f C-f##'''') -- Tagged files (like `icicle-fundoc': match file name and tags dynamically)
@@ -172,7 +172,11 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 
 
 
-* '''`icicle-bookmark-other-window'''' ('''`C-- C-x r m'''') -- Trip among [[bookmark]]s of all types.  (Also bound to '''`C-x 4 j j'''' if library <tt>[[bookmark+.el]]</tt> is used.)
+* Trips among bookmarks of all types:
+
+** '''`icicle-bookmark'''' ('''`C-x j j'''', '''`C-- C-x r m'''')
+** '''`icicle-bookmark-tagged'''' ('''`C-x j t j'''')
+
 
 * Type-specific bookmark trips (requires library <tt>[[bookmark+.el]]</tt>).
 (Use prefix key `C-x 4 j' for other-window commands.)
