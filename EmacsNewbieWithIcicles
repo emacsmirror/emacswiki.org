@@ -36,7 +36,7 @@ However, '''Icicles''' provides features that can help you find your way around 
 
 Here's the best news: After you load '''Icicles''', you can turn it (''Icicle'' mode) on and off at will, using `M-x icy-mode'.  When ''Icicle'' mode is off, what you experience '''''is''''' vanilla Emacs. So, my suggestion is to try '''Icicles''' from the start, and turn off ''Icicle'' mode whenever you feel that you want to experience the "raw" deal ;-).
 
-As to learning '''Icicles''' -- You can access most '''Icicles''' features from the [[menu bar]] menus '''[[Icicles - Nutshell View#IciclesMenuBarMenu|Icicles]]''' and '''[[Icicles - Nutshell View#MinibufMenuBarMenu|Minibuf]]'''. The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active. Using menus can let you know what's available, and it can help you find your way around without struggling at the same time to learn key bindings. 
+As to learning '''Icicles''' -- You can access most '''Icicles''' features from the [[menu bar]] menus '''[[Icicles_-_Icicles_Menu|Icicles]]''' and '''[[Icicles_-_Minibuf_Menu|Minibuf]]'''. The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active. Using menus can let you know what's available, and it can help you find your way around without struggling at the same time to learn key bindings. 
 
 
 
@@ -166,7 +166,7 @@ Whenever you type input and hit `TAB' or `S-TAB', buffer `*Completions*' shows y
 
 Emacs has help keys for buffers (`C-h m'), functions (`C-h f'), keys (`C-h k'), variables (`C-h v'), language environments (`C-h L'), coding systems (`C-h C'), input methods (`C-h I') and packages (`C-h P').  '''Icicles''' provides help for all of these types of input and more, on the fly, by clicking '''`C-M-mouse-2'''' on the completion candidate in `*Completions*'. You get the right kind of help, depending on the type of input: buffer, file, function, variable, and so on. And even without clicking `C-M-mouse-2', '''Icicles''' shows candidate help in the [[mode line]] automatically, whenever you cycle among candidates. (With `C-M-mouse-2' you get the entire [[doc string]], not just one line of help.)
 
-Oh, and there's also a '''[[Icicles - Nutshell View#CompletionCandidateMenu|Completion Candidate]]''' contextual menu in buffer `*Completions*' -- just click `C-mouse-3' on a candidate there to see what you can do with it.
+Oh, and there's also a '''[[Icicles_-_Completion_Menu|Completion Candidate]]''' contextual menu in buffer `*Completions*' -- just click `C-mouse-3' on a candidate there to see what you can do with it.
 
 And, just as for help on keys, you can continue to click other candidates, getting help on them. This is a great way to explore and learn about everything in Emacs: commands, modes, and variables, in particular.
 
