@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Apr  1 06:27:02 2014 (-0700)
+;; Last-Updated: Wed Apr  2 09:42:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2875
+;;     Update #: 2914
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3687,7 +3687,13 @@ sort order is marked first or last (`s >'), then re-sort."
 
 ;;;###autoload (autoload 'bmkp-bmenu-copy-tags "bookmark+")
 (defun bmkp-bmenu-copy-tags (&optional msg-p) ; `T c', `T M-w', `mouse-3' menu in bookmark list.
-  "Copy tags from this bookmark, so you can paste them to another bookmark."
+  "Copy tags from this bookmark, so you can paste them to another bookmark.
+NOTE: It is by design that you can *remove all* tags from a bookmark
+by copying an empty set of tags and then pasting to that bookmark
+using replacement.  So be careful pasting with replacement.  If you
+want to be sure that you do not replace tags with an empty list of
+tags, you can check the value of variable `bmkp-copied-tags' before
+pasting."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
@@ -3703,7 +3709,12 @@ sort order is marked first or last (`s >'), then re-sort."
 
 ;;;###autoload (autoload 'bmkp-bmenu-paste-replace-tags "bookmark+")
 (defun bmkp-bmenu-paste-replace-tags (&optional msg-p) ; `T q', `mouse-3' menu.
-  "Replace tags for this bookmark with those copied from another bookmark."
+  "Replace tags for this bookmark with those copied from another bookmark.
+NOTE: It is by design that you can *remove all* tags from a bookmark
+by copying an empty set of tags and then pasting to that bookmark
+using this command.  So be careful using it.  If you want to be sure
+that you do not replace tags with an empty list of tags, you can check
+the value of variable `bmkp-copied-tags' before pasting."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
@@ -3731,7 +3742,13 @@ With a prefix arg, act on all bookmarks."
 (defun bmkp-bmenu-paste-replace-tags-for-marked (&optional allp msg-p) ; `T > q'
   "Replace tags for the marked bookmarks with tags copied previously.
 If no bookmark is marked, act on the bookmark of the current line.
-With a prefix arg, act on all bookmarks."
+With a prefix arg, act on all bookmarks.
+
+NOTE: It is by design that you can *remove all* tags from a bookmark
+by copying an empty set of tags and then pasting to that bookmark
+using this command.  So be careful using it.  If you want to be sure
+that you do not replace tags with an empty list of tags, you can check
+the value of variable `bmkp-copied-tags' before pasting."
   (interactive (list current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked              (bmkp-bmenu-marked-or-this-or-all allp))
@@ -5335,10 +5352,14 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
     :help "Add a set of tags to each of the marked bookmarks"))
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-paste-replace-tags-for-marked]
   '(menu-item "Paste Tags to Marked (Replace)..." bmkp-bmenu-paste-replace-tags-for-marked
-    :help "Replace tags for the marked bookmarks with tags copied previously"))
+    :help "Replace tags for the marked bookmarks with set of tags copied previously"))
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-paste-add-tags-to-marked]
   '(menu-item "Paste Tags to Marked (Add)..." bmkp-bmenu-paste-add-tags-to-marked
-    :help "Add tags copied from another bookmark to the marked bookmarks"))
+    :help "Add tags copied from another bookmark to the marked bookmarks"
+    :enable bmkp-copied-tags))
+(define-key bmkp-bmenu-tags-menu [bmkp-bmenu-copy-tags]
+  '(menu-item "Copy Tags from This Bookmark" bmkp-bmenu-copy-tags
+    :help "Copy tags from this bookmark, so you can paste them to other bookmarks"))
 
 
 ;;; `Search' submenu -------------------------------------------------
@@ -5731,9 +5752,15 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
                                     ["Edit Tags..." bmkp-bmenu-edit-tags
                                      :active (bmkp-get-tags bmk-name)]
                                     ["Copy Tags" bmkp-bmenu-copy-tags
-                                     :active (bmkp-get-tags bmk-name)]
-                                    ["Paste Tags (Add)" bmkp-bmenu-paste-add-tags]
-                                    ["Paste Tags (Replace)" bmkp-bmenu-paste-replace-tags]
+                                     ;; You can copy an empty list of tags and paste-replace with it.
+                                     ;; :active (bmkp-get-tags bmk-name)
+                                     ]
+                                    ["Paste Tags (Add)" bmkp-bmenu-paste-add-tags
+                                     :active bmkp-copied-tags]
+                                    ["Paste Tags (Replace)" bmkp-bmenu-paste-replace-tags
+                                     ;; You can paste an empty list of tags to replace tags.
+                                     ;; :active bmkp-copied-tags
+                                     ]
                                     ["Add Some Tags..." bmkp-bmenu-add-tags]
                                     ["Remove Some Tags..." bmkp-bmenu-remove-tags
                                      :active (bmkp-get-tags bmk-name)]
