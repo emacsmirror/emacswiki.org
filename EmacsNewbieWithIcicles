@@ -132,9 +132,9 @@ Anyway, let's say that you are now aware in general about Emacs key bindings, an
 [:KeyHelpAndCompletion]
 Even in vanilla Emacs, you can always use `C-h k' to learn what any individual key sequence does. And you can use `C-h b' to learn which key bindings are current, that is, what the key sequences are currently bound to. And you can then look up what a given [[command]] bound to a [[KeySequence | key sequence]] does, using `C-h f'. You can also use `C-h m' to get information about which key sequences are special to the current [[buffer]] mode. 
 
-What '''Icicles''' offers is a quick way to get all of this information, ''on the fly'' -- while you are using the keys. Type '''`S-TAB'''' at the top level of Emacs (that is, when Emacs is not asking for input in the [[minibuffer]]). 
+What '''Icicles''' offers is a quick way to get all of this information, ''on the fly'' -- while you are using the keys. Type '''`S-TAB'''' at the top level of Emacs (that is, when Emacs is not asking for input in the [[minibuffer]]).  Or choose '''Show Available Keys (Complete Key)''' in the [[menu bar|menu-bar]] '''Icicles''' menu.
 
-* Every [[KeySequence | key sequence]] that you can possibly type (with the exception of keys such as `b' that just insert characters) is displayed in buffer `*Completions*'. This tells you which keys are available now.
+* Every [[KeySequence | key sequence]] that you can possibly type in the current context (with the exception of keys such as `b' that just insert characters) is displayed in buffer `*Completions*'. This tells you which keys are available '''''now'''''.
 
 * The [[command]] that each key sequence is bound to is also shown in `*Completions*', next to the key name (e.g. `##b  =  bookmark-jump##'). This gives you a rough idea what the key (e.g. `b') does.
 
