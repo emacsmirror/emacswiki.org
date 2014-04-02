@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Apr  2 10:49:31 2014 (-0700)
+;; Last-Updated: Wed Apr  2 13:59:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28175
+;;     Update #: 28177
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6679,6 +6679,10 @@
 ;;
 ;;    (global-set-key [menu-bar edit icicle-complete-keys]
 ;;                    '("Complete Keys" . icicle-complete-keys))
+;;
+;;  This has already been done for you: menu item `Show Available Keys
+;;  (Complete Key)' in the menu-bar `Icicles' menu performs top-level
+;;  key completion.
 ;;
 ;;(@* "Navigate the Key-Binding Hierarchy")
 ;;  ** Navigate the Key-Binding Hierarchy **
