@@ -168,7 +168,7 @@ menu, as follows:
                   '("Complete Keys" . icicle-complete-keys))
 
 This has already been done for you: menu item '''Show Available Keys (Complete Key)''' in the [[menu bar|menu-bar]] '''Icicles''' menu performs top-level
-key completion.
+key completion.  Use it to see which keys are possible in the current context.
 
 
 
