@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar 23 17:51:54 2014 (-0700)
+;; Last-Updated: Wed Apr  2 09:37:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7103
+;;     Update #: 7107
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4851,7 +4851,14 @@ Non-interactively:
   "Replace tags for BOOKMARK with those copied from another bookmark.
 Return the number of tags for BOOKMARK.
 The tags are copied from `bmkp-copied-tags'.
-Any previously existing tags for BOOKMARK are lost.
+Any previously existing tags for BOOKMARK are *lost*.
+
+NOTE: It is by design that you can *remove all* tags from a bookmark
+by copying an empty set of tags and then pasting to that bookmark
+using this command.  So be careful using it.  If you want to be sure
+that you do not replace tags with an empty list of tags, you can check
+the value of variable `bmkp-copied-tags' before pasting.
+
 Non-interactively:
 * Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
   do not refresh/rebuild the bookmark-list display.
