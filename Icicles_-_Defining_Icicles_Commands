@@ -265,6 +265,7 @@ Several top-level '''Icicles''' commands have been defined using
 [:icicle-bookmark-some-tags-regexp]
 [:icicle-bookmark-specific-buffers]
 [:icicle-bookmark-specific-files]
+[:icicle-bookmark-tagged]
 [:icicle-bookmark-this-buffer]
 [:icicle-bookmark-url]
 [:icicle-bookmark-w3m]
@@ -373,12 +374,13 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-bookmark-non-file'''' -- Jump to a bookmarked non-file [[buffer]]
 * '''`icicle-bookmark-region'''' -- Jump to a bookmarked [[region]]
 * '''`icicle-bookmark-remote-file'''' -- Jump to a bookmarked remote file
-* '''`icicle-bookmark-some-tags'''' -- Jump: bookmark with some of its tags matching a given set
-* '''`icicle-bookmark-some-tags-regexp'''' -- Jump: bookmark with some of its tags matching a given [[regexp]]
+* '''`icicle-bookmark-some-tags'''' -- Jump to a bookmark with some of its tags matching a given set
+* '''`icicle-bookmark-some-tags-regexp'''' -- Jump to a bookmark with some of its tags matching a given [[regexp]]
 
-* '''`icicle-bookmark-specific-buffers'''' -- Jump: specific-buffer bookmark
-* '''`icicle-bookmark-specific-files'''' -- Jump: specific-file bookmark
-* '''`icicle-bookmark-this-buffer'''' -- Jump: bookmark for this buffer
+* '''`icicle-bookmark-specific-buffers'''' -- Jump to a  specific-buffer bookmark
+* '''`icicle-bookmark-specific-files'''' -- Jump to a specific-file bookmark
+* '''`icicle-bookmark-tagged'''' -- Jump to a bookmark with matching tags
+* '''`icicle-bookmark-this-buffer'''' -- Jump to a bookmark for this buffer
 * '''`icicle-bookmark-url'''' -- Jump to a bookmarked URL
 * '''`icicle-bookmark-w3m'''' -- Jump to a [[w3m]] bookmark
 * '''`icicle-buffer''''      -- Switch to another buffer
