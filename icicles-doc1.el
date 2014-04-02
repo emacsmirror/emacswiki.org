@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Mar  9 17:04:19 2014 (-0700)
+;; Last-Updated: Wed Apr  2 10:49:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28167
+;;     Update #: 28175
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6357,9 +6357,11 @@
 ;;    `icicle-bookmark-autofile-some-tags'        (`C-x j t a +')
 ;;    `icicle-bookmark-autofile-some-tags-regexp' (`C-x j t a % +')
 ;;
-;;  * `icicle-bookmark-other-window' - (`C-- C-x r m')
-;;    Trip among bookmarks of all types.  (Also bound to `C-x 4 j j'
-;;    if library `bookmark+.el' is used.)
+;;  * Trips among bookmarks of all types:
+;;
+;;    `icicle-bookmark'                           (`C-x j j',
+;;                                                 `C-- C-x r m')
+;;    `icicle-bookmark-tagged'                    (`C-x j t j')
 ;;
 ;;  * Type-specific bookmark trips (requires library `bookmark+.el').
 ;;    (Use prefix key `C-x 4 j' for other-window commands.)
