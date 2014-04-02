@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr  1 06:29:12 2014 (-0700)
+;; Last-Updated: Wed Apr  2 09:50:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15522
+;;     Update #: 15531
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/04/02 dadams
+;;     bmkp-paste-replace-tags: Added Note to doc string about pasting an empty list of tags.
 ;; 2014/03/23 dadams
 ;;     bmkp-file-target-set: Fix interactive spec (parens).
 ;;     bmkp-file-target-set, bmkp-autofile-set, bmkp-autofile-(add|remove)-tags:
@@ -983,6 +985,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/04/02 dadams
+;;     bmkp-bmenu-copy-tags, bmkp-bmenu-paste-replace-tags(for-marked):
+;;       Added Note to doc string about pasting an empty list of tags.
+;;     bmkp-bmenu-tags-menu: Added item Copy Tags from This Bookmark for bmkp-bmenu-copy-tags.
+;;     bmkp-bmenu-mouse-3-menu: Added :active bmkp-copied-tags for bmkp-bmenu-paste-add-tags.
 ;; 2014/04/01 dadams
 ;;     Added: bmkp-bmenu-list-tags-of-marked.
 ;;       Bind it to T > l in bookmark-bmenu-mode-map.
