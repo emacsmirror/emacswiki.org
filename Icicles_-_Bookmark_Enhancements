@@ -165,7 +165,9 @@ E.g., type:
 : `##2011 C-M-j red S-SPC blue##'    to match files tagged `red' and
 `blue' that have `2011' in their names
 
-
+(Command '''`icicle-bookmark-tagged'''' ('''`C-x j t j'''') acts the same as
+`icicle-find-file-tagged', but for all tagged bookmarks, not just
+autofiles.)
 
 
 
