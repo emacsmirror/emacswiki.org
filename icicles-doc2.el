@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Mar  9 14:32:56 2014 (-0700)
+;; Last-Updated: Wed Apr  2 10:55:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29498
+;;     Update #: 29503
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1877,6 +1877,10 @@
 ;;   `2011 C-M-j red S-SPC blue'    to match files tagged `red' and
 ;;                                  `blue' that have `2011' in their
 ;;                                  names
+;;
+;;  (Command `icicle-bookmark-tagged' (`C-x j t j') acts the same as
+;;  `icicle-find-file-tagged', but for all tagged bookmarks, not just
+;;  autofiles.)
 ;;
 ;;(@* "Jumping to Tagged Files (Other)")
 ;;  *** Jumping to Tagged Files (Other) ***
@@ -8461,6 +8465,7 @@
 ;;  `icicle-bookmark-some-tags-regexp'- matching a regexp
 ;;  `icicle-bookmark-specific-buffers'- Jump: specific-buffer bookmark
 ;;  `icicle-bookmark-specific-files' - Jump: specific-file bookmark
+;;  `icicle-bookmark-tagged' - Jump to a bookmark with matching tags
 ;;  `icicle-bookmark-this-buffer' - Jump: bookmark for this buffer
 ;;  `icicle-bookmark-url' - Jump: bookmarked URL
 ;;  `icicle-bookmark-w3m' - Jump: W3M bookmark
