@@ -42,54 +42,7 @@ amount of email sent per day which you may run up against, especially
 when testing the system. Namely: gmail, which limits SMTP to a couple
 hundred messages/day.)
 
-You will probably want to run rss2email in a cron. But first, we need
-to get it running.
-
-Unpack rss2email somewhere convenient. Edit the config.py file as
-necessary or appropriate.
-
-You need these to send email:
-
-    DEFAULT_FROM = "me@example.org"
-    SMTP_SEND    = 1              # or 0, if you use sendmail
-    
-    SMTP_SERVER  = "localhost:25" # set appropriately
-    AUTHREQUIRED = 0              # if you need to use SMTP AUTH set to 1
-    SMTP_USER    = 'username'     # for SMTP AUTH, set SMTP username here
-    SMTP_PASS    = 'password'     # for SMTP AUTH, set SMTP password here
-
-It is strong opinion that you should set the following to avoid
-bounced messages to somebody who did not send the message:
-
-    FORCE_FROM = 1
-
-Personally, I think HTML email is a mistake, and that email should we
-wrapped:
-
-    HTML_MAIL  = 0
-    BODY_WIDTH = 72
-
-Finally, the default ##CHARSET_LIST## shipped with rss2email had me
-receiving messages in Big-5 encoding, which did not seem right.
-##US-ASCII## or ##UTF-8## is all I need:
-
-    CHARSET_LIST = 'US-ASCII', 'UTF-8'
-
-Having made those & any other appropriate modifications to the
-config.py, we are ready to add a feed! Add it:
-
-    ./r2e add http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml
-
-Let’s try to fetch the feed and send emails:
-
-    ./r2e run
-
-If all goes well, r2e should print nothing (turn on the `VERBOSE' option
-if you want to see more).
-
-Time to check your email! If all went well, you should have the latest
-news headlines from the BBC in your inbox. If not, perhaps there are
-difficulties with sending mail. Check your SMTP settings.
+(There used to be a lot of information here about configuring rss2email, but the version found here https://github.com/wking/rss2email contains details instructions on installing and configuring.)
 
 == Reading with Wanderlust ==
 
