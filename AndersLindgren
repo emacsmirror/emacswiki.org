@@ -12,6 +12,7 @@ Packages written or co-written by me:
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
 * ObjcFontLock -- Highlight Objective-C method calls
 * [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
+* CAlignOperands -- Indentation and electric commands for indenting C operators first on line
 * ErlangMode -- Major mode for Erlang (co-authored with Robert Virding and many others)
 * FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
 * IniMode -- Major mode for editing ini files (there are many packages that does this)
