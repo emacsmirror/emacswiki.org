@@ -20,7 +20,7 @@ Beyond the basic Python modes described above, there are a number of modes that 
 * [https://github.com/aculich/virtualenv.el virtualenv.el], a mode for working with virtualenvs
 * [https://bitbucket.org/durin42/nosemacs nosemacs], a mode to run the nosetests testing framework
 * [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
-* [https://github.com/burakbayramli/kod/blob/master/site-lisp/pytexipy-notebook.py], an Emacs extension that allows execution of notebook python code inside a TeX buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to a ipython kernel to execute code. 
+* [https://github.com/burakbayramli/kod/blob/master/site-lisp/pytexipy-notebook.py pytexipy], an Emacs extension that allows execution of notebook python code inside a TeX buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to a ipython kernel to execute code. 
 
 Video from  EuroPython 2013 displays how to setup a complete IDE employing a few lines of code:
 https://ep2013.europython.eu/conference/p/andrea-crotti resp. http://www.youtube.com/watch?v=0cZ7szFuz18
