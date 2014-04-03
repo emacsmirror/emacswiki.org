@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Mar  8 09:41:16 2014 (-0800)
+;; Last-Updated: Wed Apr  2 19:57:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 9870
+;;     Update #: 9873
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1234,8 +1234,8 @@ Used on `pre-command-hook'."
           (t
            (defvar icicle-search-goto-menu-map (make-sparse-keymap)
              "`Icicles' > `Go To' menu.")
-           (define-key icicle-menu-map [search]
-             (list 'menu-item "Go To" icicle-search-menu-map))))
+           (define-key icicle-menu-map [goto]
+             (list 'menu-item "Go To" icicle-search-goto-menu-map))))
 
     (define-key icicle-search-goto-menu-map [icicle-goto-global-marker]
       '(menu-item "+ Global Marker..." icicle-goto-global-marker
