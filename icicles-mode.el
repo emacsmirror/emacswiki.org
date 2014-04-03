@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Apr  2 19:57:26 2014 (-0700)
+;; Last-Updated: Wed Apr  2 22:39:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 9873
+;;     Update #: 9923
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1228,7 +1228,7 @@ Used on `pre-command-hook'."
                     (list 'menu-item "Icicles" icicle-search-goto-menu-map)))
                  (t
                   (defvar icicle-search-goto-menu-map (make-sparse-keymap)
-                    "Icicles `Go To' submenu of `Search' menu.")
+                    "`Search' > `Icicles' > `Go To' menu.")
                   (define-key icicle-search-menu-map [goto]
                     (list 'menu-item "Go To" icicle-search-goto-menu-map)))))
           (t
@@ -1620,216 +1620,56 @@ Used on `pre-command-hook'."
 
     ;; `Bookmarks' ---------------------------------------------------
     (require 'bookmark)                 ; `bookmark-buffer-name' is not autoloaded.
-    (cond ((not icicle-touche-pas-aux-menus-flag)
-           (cond ((boundp 'bmkp-jump-menu)
 
-                  ;; Bookmark+: `Bookmarks' > `Jump To'.
+    ;; Different cases, depending on whether `Bookmark+' is available.  If it is, whether or not
+    ;; `icicle-touche-pas-aux-menus-flag', we just reuse the `Bookmark+' menus.  Option
+    ;; `icicle-top-level-key-bindings' replaces many of the commands used there with Icicles versions.
+    ;; This means that these Icicles commands are not shown with `+ ' in front of the menu items.
+    (cond ((not icicle-touche-pas-aux-menus-flag)
+           (cond ((boundp 'bmkp-jump-menu) ; Bookmark+
+
+                  ;; Reuse the Bookmark+ menus, but the commands are Icicles commands.
+                  ;; Because of the menu reuse, the menu items do not start with `+ ', however.
+
                   ;; Use `copy-keymap' so that turning off Icicle mode restores the ordinary commands.
                   (defvar icicle-bookmark-menu-map (copy-keymap bmkp-jump-menu)
-                    "`Bookmarks' > `Jump To' > `Icicles' submenu.")
+                    "`Search' > `Bookmarks' > `Jump To' submenu.")
 
-                  ;; Bookmark+: `Bookmarks' > `Jump To' > `With Tags'.
                   ;; Use `copy-keymap' so that turning off Icicle mode restores the ordinary commands.
                   (defvar icicle-bookmark-with-tags-menu-map (copy-keymap bmkp-jump-tags-menu)
-                    "`Bookmarks' > `Jump To' > `With Tags' > `Icicles' submenu."))
+                    "`Search' > `Bookmarks' > `Jump To' > `With Tags' submenu."))
+
                  (t                     ; Vanilla `bookmark.el' only, not Bookmark+.
+
                   (defvar icicle-bookmark-menu-map (make-sparse-keymap)
                     "`Bookmarks' > `Icicles' submenu.")
                   (define-key menu-bar-bookmark-map [icicles]
-                    (list 'menu-item "Icicles" icicle-bookmark-menu-map :visible 'icicle-mode))
-                  (defvar icicle-bookmark-with-tags-menu-map (make-sparse-keymap)
-                    "For tags commands on `icicle-bookmark-menu-map'.")
-                  (setq icicle-bookmark-with-tags-menu-map  icicle-bookmark-menu-map))))
+                    (list 'menu-item "Icicles" icicle-bookmark-menu-map :visible 'icicle-mode)))))
           (t
-           (defvar icicle-bookmark-menu-map (make-sparse-keymap)
-             "`Icicles' > `Bookmarks' submenu.")
-           (define-key icicle-menu-map [bookmarks]
-             (list 'menu-item "Bookmarks" icicle-bookmark-menu-map))
-           (defvar icicle-bookmark-with-tags-menu-map (make-sparse-keymap)
-             "For tags commands on `icicle-bookmark-menu-map'.")
-           (setq icicle-bookmark-with-tags-menu-map  icicle-bookmark-menu-map)))
+           (cond ((boundp 'bmkp-jump-menu) ; Bookmark+
 
-    (when (featurep 'bookmark+)
-      (define-key icicle-bookmark-with-tags-menu-map
-          [bmkp-file-this-dir-all-tags-regexp-jump-other-window]
-        '(menu-item "File This Dir, All Tags Matching Regexp..."
-          icicle-bookmark-file-this-dir-all-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file bookmark for this dir, where each tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map
-          [bmkp-file-this-dir-some-tags-regexp-jump-other-window]
-        '(menu-item "File This Dir, Any Tag Matching Regexp..."
-          icicle-bookmark-file-this-dir-some-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file bookmark for this dir, where some tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-this-dir-all-tags-jump-other-window]
-        '(menu-item "File This Dir, All Tags in Set..."
-          icicle-bookmark-file-this-dir-all-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file bookmark for this dir, which has all of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-this-dir-some-tags-jump-other-window]
-        '(menu-item "File This Dir, Any Tag in Set..."
-          icicle-bookmark-file-this-dir-some-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file bookmark for this dir, which has some of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-all-tags-regexp-jump-other-window]
-        '(menu-item "File, All Tags Matching Regexp..."
-          icicle-bookmark-file-all-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file or dir bookmark where each tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-some-tags-regexp-jump-other-window]
-        '(menu-item "File, Any Tag Matching Regexp..."
-          icicle-bookmark-file-some-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file or dir bookmark where at least one tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-all-tags-jump-other-window]
-        '(menu-item "File, All Tags in Set..." icicle-bookmark-file-all-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file or dir bookmark that has all of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-file-some-tags-jump-other-window]
-        '(menu-item "File, Any Tag in Set..." icicle-bookmark-file-some-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file or dir bookmark that has some of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-autofile-all-tags-regexp-jump-other-window]
-        '(menu-item "Autofile, All Tags Matching Regexp..."
-          icicle-bookmark-autofile-all-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autofile bookmark where each tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-autofile-some-tags-regexp-jump-other-window]
-        '(menu-item "Autofile, Any Tag Matching Regexp..."
-          icicle-bookmark-autofile-some-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autofile bookmark where at least one tag matches a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-autofile-all-tags-jump-other-window]
-        '(menu-item "Autofile, All Tags in Set..."
-          icicle-bookmark-autofile-all-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autofile bookmark that has all of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-autofile-some-tags-jump-other-window]
-        '(menu-item "Autofile, Any Tag in Set..."
-          icicle-bookmark-autofile-some-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autofile bookmark that has some of a set of tags"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-all-tags-regexp-jump-other-window]
-        '(menu-item "All Tags Matching Regexp..." icicle-bookmark-all-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark that has each tag matching a regexp that you enter"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-some-tags-regexp-jump-other-window]
-        '(menu-item "Any Tag Matching Regexp..." icicle-bookmark-some-tags-regexp-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark with at least one tag matching a regexp"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-all-tags-jump-other-window]
-        '(menu-item "All Tags in Set..." icicle-bookmark-all-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark that has all of a set of tags that you enter"))
-      (define-key icicle-bookmark-with-tags-menu-map [bmkp-some-tags-jump-other-window]
-        '(menu-item "Any Tag in Set..." icicle-bookmark-some-tags-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark that has some of a set of tags that you enter"))
-      (define-key icicle-bookmark-menu-map [bmkp-temporary-jump-other-window]
-        '(menu-item "+ Jump to Temporary Bookmark..." icicle-bookmark-temporary-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a temporary bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-autofile-jump-other-window]
-        '(menu-item "+ Jump to Autofile Bookmark..." icicle-bookmark-autofile-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autofile bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-autonamed-this-buffer-jump]
-        '(menu-item "+ Jump to Autonamed Bookmark for This Buffer..."
-          icicle-bookmark-autonamed-this-buffer-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autonamed bookmark for this buffer"))
-      (define-key icicle-bookmark-menu-map [bmkp-autonamed-jump-other-window]
-        '(menu-item "+ Jump to Autonamed Bookmark..."
-          icicle-bookmark-autonamed-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an autonamed bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-specific-files-jump-other-window]
-        '(menu-item "+ Jump to Bookmark for Specific Files..."
-          icicle-bookmark-specific-files-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to bookmarks for specific files that you choose"))
-      (define-key icicle-bookmark-menu-map [bmkp-specific-buffers-jump-other-window]
-        '(menu-item "+ Jump to Bookmark for Specific Buffers..."
-          icicle-bookmark-specific-buffers-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to bookmarks for specific buffers that you choose"))
-      (define-key icicle-bookmark-menu-map [bmkp-this-buffer-jump]
-        '(menu-item "+ Jump to Bookmark for This Buffer..."
-          icicle-bookmark-this-buffer-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark for this buffer"))
-      (define-key icicle-bookmark-menu-map [bmkp-url-jump-other-window]
-        '(menu-item "+ Jump to URL Bookmark..." icicle-bookmark-url-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a URL bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-gnus-jump-other-window]
-        '(menu-item "+ Jump to Gnus Bookmark..." icicle-bookmark-gnus-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a Gnus bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-man-jump-other-window]
-        '(menu-item "+ Jump to `man' Bookmark..." icicle-bookmark-man-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a `man'-page bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-info-jump-other-window]
-        '(menu-item "+ Jump to Info Bookmark..." icicle-bookmark-info-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an Info bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-image-jump-other-window]
-        '(menu-item "+ Jump to Image Bookmark..."
-          icicle-bookmark-image-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an image bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-non-file-jump-other-window]
-        '(menu-item "+ Jump to Buffer (Non-File) Bookmark..."
-          icicle-bookmark-non-file-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a buffer (i.e., a non-file) bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-region-jump-other-window]
-        '(menu-item "+ Jump to Region Bookmark..." icicle-bookmark-region-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark and activate its recorded region"))
-      (define-key icicle-bookmark-menu-map [bmkp-remote-file-jump-other-window]
-        '(menu-item "+ Jump to Remote-File Bookmark..."
-          icicle-bookmark-remote-file-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a remote-file bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-local-file-jump-other-window]
-        '(menu-item "+ Jump to Local-File Bookmark..."
-          icicle-bookmark-local-file-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a local-file bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-file-jump-other-window]
-        '(menu-item "+ Jump to File Bookmark..." icicle-bookmark-file-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a file bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-dired-jump-other-window]
-        '(menu-item "+ Jump to Dired Bookmark..." icicle-bookmark-dired-other-window
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a Dired bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-bookmark-file-jump]
-        '(menu-item "+ Jump to Bookmark-File Bookmark..."
-          icicle-bookmark-bookmark-file
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark-file bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-bookmark-list-jump]
-        '(menu-item "+ Jump to Bookmark-List Bookmark..."
-          icicle-bookmark-bookmark-list
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to a bookmark-list bookmark"))
-      (define-key icicle-bookmark-menu-map [bmkp-desktop-jump]
-        '(menu-item "+ Jump to Desktop Bookmark..." icicle-bookmark-desktop
-          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-          :help "Jump to an Emacs desktop bookmark")))
+                  ;; Use `copy-keymap' so that turning off Icicle mode restores the ordinary commands.
+                  (defvar icicle-bookmark-menu-map (copy-keymap bmkp-jump-menu)
+                    "`Icicles' > `Jump To' submenu.")
 
-    (define-key icicle-bookmark-menu-map [bookmark-jump-other-window]
-      '(menu-item "+ Jump to Bookmark..." icicle-bookmark-other-window
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
-    (define-key icicle-bookmark-menu-map [bookmark-jump]
-      '(menu-item "+ Jump to Bookmark (Same Window)..." icicle-bookmark
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
+                  ;; Use `copy-keymap' so that turning off Icicle mode restores the ordinary commands.
+                  (defvar icicle-bookmark-with-tags-menu-map (copy-keymap bmkp-jump-tags-menu)
+                    "`Icicles' > `Jump To' > `With Tags' submenu."))
+
+                 (t                     ; Vanilla `bookmark.el' only, not Bookmark+.
+                  (defvar icicle-bookmark-menu-map (make-sparse-keymap)
+                    "`Icicles' > `Go To' submenu.") ; Put it on this map, since there is little.
+                  (setq icicle-bookmark-menu-map  icicle-search-goto-menu-map)))))
+
+    (unless (featurep 'bookmark+)
+      (define-key icicle-bookmark-menu-map [bookmark-jump-other-window]
+        '(menu-item "+ Bookmark..." icicle-bookmark-other-window
+          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+          :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')"))
+      (define-key icicle-bookmark-menu-map [bookmark-jump]
+        '(menu-item "+ Bookmark (Same Window)..." icicle-bookmark
+          :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+          :help "Jump to a bookmark (C-u: reverse `icicle-bookmark-refresh-cache-flag')")))
 
 
     ;; `Edit' --------------------------------------------------------
