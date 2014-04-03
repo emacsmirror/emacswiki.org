@@ -9,7 +9,7 @@ Read about enriched mode in the Emacs manual, at [[Manual:Enriched mode]] (<code
 Use `M-g b' to add the bold face to some text, such that it
 looks like this:
 
-: This is *bold*.  This is not.
+: *This is bold*.  This is not.
 
 Then use `M-x enriched-mode' and save.  If you reload your file, the
 bold text will still be bold.  If you use `M-x find-file-literally',
