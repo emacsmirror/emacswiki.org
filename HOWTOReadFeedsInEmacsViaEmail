@@ -27,18 +27,7 @@ Use rss2email.
 
 The rest of this document tells you how.
 
-The first step is to get rss2email, either from the official site
-http://www.allthingsrss.com/rss2email/ or with my patches.
-http://e6h.org/~egh/hg/rss2email/. While either one should work, my
-version has the following enhancements:
-
-* multi-threading, so that it processes much faster
-* better wrapping of blockquotes and list items with html2text
-* latest feedparser avoids pathological regular expressions that can
-  lock up python.
-* adds an ##X-RSS-URL## header for fast loading of the original page
-* fix for empty entry ids
-* fix for formatting of addresses
+The first step is to get rss2email. The best version I have found is here: https://github.com/wking/rss2email
 
 Install this in a place where it can be run regularly via cron or some
 other mechanism, and has an SMTP server available to it.
