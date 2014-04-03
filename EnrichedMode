@@ -18,7 +18,7 @@ however, you can see how Emacs saved the face information:
  Content-Type: text/enriched
  Text-Width: 70
  
- This is <bold>bold</bold>.  This is not.
+ <bold>This is bold</bold>.  This is not.
 
 == Development ==
 
