@@ -1,0 +1,13 @@
+[https://github.com/Lindydancer/c-align-operands C Align Operands] is a package for writing C operators in aligned columns first on the list, written by [[AndersLindgren|Anders Lindgren]].
+
+The package provides indentation support and electric commands.
+
+Example:
+
+    if (   alpha
+        && (   beta
+            || gamma))
+
+== Getting the package ==
+
+The *C Align Operands* package is located on [https://github.com/Lindydancer/c-align-operands Github].
