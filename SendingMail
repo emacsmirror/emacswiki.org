@@ -55,7 +55,7 @@ You can use the variable `gnutls-algorithm-priority' to control which encryption
 See the section about priority strings of the documentation of GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings
 
 ==== Fixing Issues ====
-Some servers use sloppy implementations of the TLS and SSL standards and it may happen that connections are dropped unexpectedly.  In this situations, it can help to update GnuTLS or to add a setting that allows GnuTLS to be more forgiving with respect to deviations from these standards:
+Some servers use sloppy implementations of the TLS and SSL standards and it may happen that connections are dropped unexpectedly.  In these situations, it can help to update GnuTLS or to add a setting that allows GnuTLS to be more forgiving with respect to deviations from the standards:
 
  (setq gnutls-algorithm-priority "NORMAL:%COMPAT")
 
