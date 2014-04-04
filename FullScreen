@@ -165,7 +165,7 @@ In .emacs or elsewhere one can
 
 It can be called interactively by M-x toggle-fullscreen, or bound to a key.
 
-This solution does nothing else but toggles active Emacs frame to fullscreen and back. If you want more it can be built above it.
+This solution does nothing else but toggles active Emacs frame to fullscreen and back. If you want more it can be built on top of it.
 
 ==== Maximizing window (not real full-screen) ====
 To get a maximized window you can use: (w32-send-sys-command #xf030)
