@@ -35,7 +35,7 @@ Once you're editing a wiki page, here are some useful keybindings:
 ; `C-c C-r' : look at recent changes of the wiki you're currently working with
 ; `C-c C-h' : look at the history of the page you are editing
 ; `C-x v l' : look at /all/ past changes of the page you are editing
-; `C-x v =' : look at the diff of what you will be posting
+; ##‘C-x v =’## : look at the diff of what you will be posting
 ; `C-x C-v' : revert your changes
 
 ----
