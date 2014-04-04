@@ -151,8 +151,21 @@ Here is a part of my .emacs file. Emacs will start in full-screen mode. Menu-bar
 ===== Topmost window=====
 emacs_fullscreen.exe supports --topmost command line switch. If this switch is present, then Emacs window will be topmost. It will hide task bar and all other windows. The downside is that if you want to switch to other window, you cannot use Alt+Tab directly, you have to turn off the full screen mode first (see [[https://bitbucket.org/dacap/emacs-fullscreen-win32/changeset/866d015f9a7b|866d015f9a7b]] changeset).
 
+==== Another Fullscreen ====
+While trying above solutions I have found some minor annoyances: some solutions are leaving few row of pixels on the bottom of the screen uncovered so I can see backrgound behind and none of them will restore window back to original position.
 
+To fix those annoyances I have hacked my own small version of toggle-fullscreen window. Unfortunately I also had to go with extern binary since Emacs does not have built-in functionality to correctly detect its own frame geometry (at least what I know by now). I am using windows function to detect frame size and position and std in/out to communicate back those for restoring after fullscreen mode. It is just simple and crude hack, but it works :).
 
+Binary can be downloaded from [https://github.com/amno1/toggle-fullscr-ew32 Github]. Source code along with makefile for gcc/mingw are also provided (just compile main.c to emacs_fullscr.exe). Binary should be placed somewhere in the path.
+
+Function toggle-fullscreen is found in [https://github.com/amno1/toggle-fullscr-ew32/blob/master/toggle-fullscreen.el toggle-fullscreen.el]. Place file somwhere in emacs elisp path and byte-compile it.
+
+In .emacs or elsewhere one can
+(require 'toggle-fullscreen).
+
+It can be called interactively by M-x toggle-fullscreen, or bound to a key.
+
+This solution does not anything else but toggles active Emacs frame to fullscreen and back. If you want more it can be built above it.
 
 ==== Maximizing window (not real full-screen) ====
 To get a maximized window you can use: (w32-send-sys-command #xf030)
