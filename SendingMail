@@ -30,27 +30,27 @@ If you are using MessageMode (part of Gnus, see CategoryGnus), add this:
 === Using Encryption ===
 There are several ways to achieve encrypted communication with the server when sending emails.  One possibility is to use SSL:
 
- (setq send-mail-function    'smtpmail-send-it
-       smtpmail-smtp-server  "example.org"
-       smtpmail-stream-type  'ssl
-       smtpmail-smtp-service 465)
+    (setq send-mail-function    'smtpmail-send-it
+          smtpmail-smtp-server  "example.org"
+          smtpmail-stream-type  'ssl
+          smtpmail-smtp-service 465)
 
-Since no credentials are given in this configuration, Emacs will look them up in {{{$(HOME)/.authinfo}}} or {{{$(HOME)/.authinfo.gpg}}} (encrypted).  The content of this file should follow this scheme:
+Since no credentials are given in this configuration, Emacs will look them up in <code>$(HOME)/.authinfo</code> or <code>$(HOME)/.authinfo.gpg</code> (encrypted).  The content of this file should follow this scheme:
 
- machine example.org login [your login name] password [your password]
+    machine example.org login [your login name] password [your password]
 
 If the authinfo file is encrypted, Emacs will prompt you for the password when you send the first email but not when sending subsequent emails.
 
 An alternative to SSL is STARTTLS:
 
- (setq send-mail-function    'smtpmail-send-it
-       smtpmail-smtp-server  "example.org"
-       starttls-use-gnutls   t
-       smtpmail-smtp-service 587)
+    (setq send-mail-function    'smtpmail-send-it
+          smtpmail-smtp-server  "example.org"
+          smtpmail-stream-type  'starttls
+          smtpmail-smtp-service 587)
 
-You can use the variable {{{gnutls-algorithm-priority}}} to control which encryption algorithms should be used.  For example the following setting restricts the range of algorithms that are offered to the server to those implementing perfect forward secrecy:
+You can use the variable `gnutls-algorithm-priority' to control which encryption algorithms should be used.  For example the following setting restricts the range of algorithms that are offered to the server to those implementing perfect forward secrecy:
 
- (setq gnutls-algorithm-priority "PFS")
+    (setq gnutls-algorithm-priority "PFS")
 
 See the section about priority strings of the documentation of GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings
 
