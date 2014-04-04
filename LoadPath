@@ -115,7 +115,7 @@ to move them along with your configuration to a different machine.
 == Debugging ==
 
 First, check the value of your `load-path' by asking for help on the
-variable: `M-h v load-path RET' should give you the documentation for
+variable: `C-h v load-path RET' should give you the documentation for
 the variable and its current value. If your directory is not listed,
 you must add it (see above).
 
