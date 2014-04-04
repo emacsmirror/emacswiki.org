@@ -1,0 +1,42 @@
+Oddmuse Curl Mode is a fork of a very old revision of OddmuseMode maintained by AlexSchroeder.
+
+The code is maintained on Savannah using Git:
+
+* [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/contrib/oddmuse-curl.el oddmuse-curl.el]
+* [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/contrib/vc-oddmuse.el vc-oddmuse.el]
+
+Here's a typical setup:
+
+{{{
+;;; Oddmuse
+
+(setq oddmuse-username "AlexSchroeder")
+(add-to-list 'auto-mode-alist '("/Users/alex/.emacs.d/oddmuse" . oddmuse-mode))
+(autoload 'oddmuse-edit "oddmuse-curl"
+  "Edit a page on an Oddmuse wiki." t)
+(add-to-list 'vc-handled-backends 'oddmuse)
+(defun vc-oddmuse-registered (file)
+  "Handle files in `oddmuse-directory'."
+  (string-match (concat "^" (expand-file-name oddmuse-directory))
+		(file-name-directory file)))
+}}}
+
+== Important Entry Points ==
+
+`oddmuse-edit' asks you for a wiki and a page name and allows you to edit it.
+
+Once you're editing a wiki page, here are some useful keybindings:
+
+; `C-c C-c' : post the changes you made
+; `C-c C-m' : toggle posting minor changes -- often people will make a big change and continue fixing later typos using minor changes
+; `C-c C-o' : follow ("open") the link under point
+; `C-c C-f' : find a different page to edit
+; `C-c C-i' : insert an existing page name (avoiding typos)
+; `C-c C-r' : look at recent changes of the wiki you're currently working with
+; `C-c C-h' : look at the history of the page you are editing
+; `C-x v l' : look at /all/ past changes of the page you are editing
+; `C-x v =' : look at the diff of what you will be posting
+; `C-x C-v' : revert your changes
+
+----
+CategoryHypertext
