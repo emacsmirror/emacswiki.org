@@ -58,7 +58,7 @@ While Pmwiki's own site implements category pages [http://www.pmwiki.org/wiki/Pm
 
 I installed two modules: The [[Oddmuse:Tagging Extension]] implements the ##[[tag:...]]## markup; [[Oddmuse:Search List Extension]] creates a list based on a query.
 The syntax is simple: ##<list search terms>##. The search terms apply to title and page content
-(and therefore this is extremely slow unless you limit yourself to tags, ie. ##<list search tag:...>##. 
+(and therefore this is extremely slow unless you limit yourself to tags, ie. ##<list tag:...>##. 
 Check out this example: [[Deutsche Seiten]]. 
 
 -- AlexSchroeder 2014-03-21
