@@ -1,10 +1,11 @@
-Recently, I switched to Emacs after using Vim for over ten years.  I like Vim's editing philosophy but Emacs has more powerful and mature extensions.  The solution for me is to use [[Evil]], a fantastic Vim emulation in Emacs.  Evil made almost all my dreams come true -- at least those related to text editing.
+I switched to Emacs after having used Vim for over ten years.  I like Vim's editing philosophy but Emacs has Elisp.  The solution for me is to use [[Evil]], a fantastic Vim emulation in Emacs.  Evil made almost all my dreams come true -- at least those related to text editing.
 
+Here you find some of my minor contributions to the Emacs ecosystem:
 
-
-
-
-
+* [https://github.com/emacs-helm/helm-dictionary helm-dictionary], an interface for various dictionaries using the helm framework ([http://melpa.milkbox.net/#/helm-dictionary available on MELPA]).
+* [https://github.com/emacs-helm/helm-mu helm-mu], a helm source for searching emails indexed using [https://github.com/djcb/mu mu].
+* [https://gist.github.com/tmalsburg/9747104 vcard2org-contacts.py], a Python script for converting contacts in vCard format to org-contacts. 
+* [https://github.com/tmalsburg/tango-plus-theme tango-plus-theme], a color theme for Emacs ([http://melpa.milkbox.net/#/tango-plus-theme available on MELPA])
 
 [new:DrewAdams:2012-02-25 00:58 UTC]
 Welcome to the wiki. -- DrewAdams
