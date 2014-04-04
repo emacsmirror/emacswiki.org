@@ -154,7 +154,7 @@ emacs_fullscreen.exe supports --topmost command line switch. If this switch is p
 ==== Another Fullscreen ====
 While trying above solutions I have found some minor annoyances: some solutions are leaving few row of pixels on the bottom of the screen uncovered so I can see backrgound behind and none of them will restore window back to original position.
 
-To fix those annoyances I have hacked my own small version of toggle-fullscreen window. Unfortunately I also had to go with extern binary since Emacs does not have built-in functionality to correctly detect its own frame geometry (at least what I know by now). I am using Windows functions to detect frame size and position and std in/out to communicate back those for restoring after fullscreen mode. It is just simple and crude hack, but it works :).
+To fix those annoyances I have hacked my own small version of toggle-fullscreen window. Unfortunately I also had to go with extern binary since Emacs does not have built-in functionality to correctly detect its own frame geometry (at least what I know by now). I am using win32 functions to detect frame size and position and std in/out to communicate back those for restoring after fullscreen mode. It is just simple and crude hack, but it works :).
 
 Binary can be downloaded from [https://github.com/amno1/toggle-fullscr-ew32 Github]. Source code along with makefile for gcc/mingw are also provided (just compile main.c to emacs_fullscr.exe). Binary should be placed somewhere in the path.
 
