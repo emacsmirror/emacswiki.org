@@ -30,6 +30,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * [[Alienmangel]] -- a graphical action/adventure-game inspired by Rodent's revenge
 * BefungeMode -- interpreter for the funny Befunge programming language
 * ChessMode
+* [https://github.com/alezost/ducpel Ducpel] -- logic game with sokoban elements.
 * EmacsRobots -- like crobots and friends
 * GoMode -- play GNU Go within Emacs
 ** IgsGoMode -- play Go over the internet
