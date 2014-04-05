@@ -34,6 +34,7 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 : '''Edit''' submenu:
 ::: [[image:drew-emacs-icicle-Edit-menu]]
 
+
 : '''Jump To Bookmarks''' submenu (see also '''[[Bookmark+]]'''):
 ::: [[image:drew-emacs-icicle-Bookmarks-menu]]
 
@@ -48,13 +49,22 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 : '''Go To''' submenu:
 ::: [[image:drew-emacs-icicle-Go-To-menu]]
 
+:: '''Go To''' > '''Definition''' submenu:
+:::: [[image:drew-emacs-icicle-Go-To-Definition-menu]]
 
-:: '''Go To''' > '''Bookmarks''' submenu:
-:::: [[image:drew-emacs-icicle-Go-To-Bookmarks-menu]]
 
+: '''Search''' submenu:
+::: [[image:drew-emacs-icicle-Search-menu]]
 
-:: '''Go To''' > '''Emacs Tags''' submenu:
-:::: [[image:drew-emacs-icicle-Go-To-Emacs-Tags-menu]]
+:: '''Search''' > '''Definitions''' submenu:
+:::: [[image:drew-emacs-icicle-Search-Definitions-menu]]
+
+:: '''Search''' > '''Bookmarks''' submenu:
+:::: [[image:drew-emacs-icicle-Search-Bookmarks-menu]]
+
+:: '''Search''' > '''Emacs Tags''' submenu:
+:::: [[image:drew-emacs-icicle-Search-Emacs-Tags-menu]]
+
 
 : '''Describe''' submenu:
 ::: [[image:drew-emacs-icicle-Describe-menu]]
