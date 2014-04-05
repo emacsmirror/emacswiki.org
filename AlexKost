@@ -12,7 +12,9 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 
 * [[MakeColor]] -- "pick" a color by changing a sample with r/g/b/... keys.
 
-* [https://github.com/alezost/aurel aurel] -- search and download [https://aur.archlinux.org/ AUR packages].
+* [https://github.com/alezost/aurel aurel] -- search, vote and download [https://aur.archlinux.org/ AUR packages].
+
+* [https://github.com/alezost/ducpel ducpel] -- logic game.
 
 
 
