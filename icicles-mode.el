@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Fri Apr  4 21:09:20 2014 (-0700)
+;; Last-Updated: Sat Apr  5 10:06:35 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10042
+;;     Update #: 10135
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -98,11 +98,11 @@
 ;;    `icicle-describe-menu-map', `icicle-dired-multiple-menu-map',
 ;;    `icicle-dired-recursive-marked-menu-map',
 ;;    `icicle-edit-menu-map', `icicle-file-menu-map',
-;;    `icicle-frames-menu-map', `icicle-info-menu-map',
+;;    `icicle-frames-menu-map', `icicle-goto-imenu-menu-map',
+;;    `icicle-goto-menu-map', `icicle-info-menu-map',
 ;;    `icicle-mode-map', `icicle-options-menu-map',
 ;;    `icicle-options-choose-menu-map',
-;;    `icicle-options-toggle-menu-map', `icicle-search-menu-map',
-;;    `icicle-search-tags-menu-map'.
+;;    `icicle-options-toggle-menu-map', `icicle-search-menu-map'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
  
@@ -882,24 +882,31 @@ Used on `pre-command-hook'."
       '(menu-item "Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"
         :help "Toggle option `icicle-use-C-for-actions-flag'"))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-~-for-home-dir]
-      '(menu-item "Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
-        :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
+      (icicle-menu-bar-make-toggle icicle-use-~-for-home-dir-flag icicle-use-~-for-home-dir-flag
+                                   "Using `~' for $HOME"
+                                   "Using `~' for home directory is now %s"
+                                   "Toggle option `icicle-use-~-for-home-dir-flag'")) ; :keys "M-~"
     (define-key icicle-options-toggle-menu-map [icicle-toggle-search-cleanup]
       '(menu-item "Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
         :keys "C-." :help "Toggle option `icicle-search-cleanup-flag'"))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-search-replace-common-match]
-      '(menu-item "Replacing Longest Common Match"
-        icicle-toggle-search-replace-common-match :enable icicle-searching-p :keys "M-;"
-        :help "Toggle option `icicle-search-replace-common-match-flag'"))
+      (icicle-menu-bar-make-toggle icicle-search-replace-common-match-flag
+                                   icicle-search-replace-common-match-flag
+                                   "Replacing Longest Common Match"
+                                   "Removal of Icicles search highlighting is now %s"
+                                   "Toggle option `icicle-search-replace-common-match-flag'")) ; :keys "M-;"
     (define-key icicle-options-toggle-menu-map [icicle-toggle-search-replace-whole]
-      '(menu-item "Replacing Whole Search Hit" icicle-toggle-search-replace-whole
-        :enable icicle-searching-p :keys "M-_"
-        :help "Toggle option `icicle-search-replace-whole-candidate-flag'"))
+      (icicle-menu-bar-make-toggle icicle-search-replace-whole-candidate-flag
+                                   icicle-search-replace-whole-candidate-flag
+                                   "Replacing Whole Search Hit"
+                                   "Replacing whole search context is now %s"
+                                   "Toggle option `icicle-search-replace-whole-candidate-flag'"))
+                                        ; :keys "M-_"
     (define-key icicle-options-toggle-menu-map [icicle-toggle-search-whole-word]
-      '(menu-item "Whole-Word Searching (Icicles Search)"
-        icicle-toggle-search-whole-word
-        :enable icicle-searching-p :keys "M-q"
-        :help "Toggle `icicle-search-whole-word-flag'"))
+      (icicle-menu-bar-make-toggle icicle-search-whole-word-flag icicle-search-whole-word-flag
+                                   "Whole-Word Searching (Icicles Search)"
+                                   "Whole-word searching is now %s, starting with next search"
+                                   "Toggle `icicle-search-whole-word-flag'")) ; :keys "M-q"
     (define-key icicle-options-toggle-menu-map [icicle-toggle-regexp-quote]
       '(menu-item "Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"
         :help "Toggle option `icicle-regexp-quote-flag'"))
@@ -914,7 +921,7 @@ Used on `pre-command-hook'."
         :help "Toggle option `icicle-show-multi-completion-flag'"))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-completions-format]
       '(menu-item "Horizontal/Vertical Layout" icicle-toggle-completions-format
-        :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
+        :keys "C-M-^" :help "Toggle `icicle-completions-format' between vertical and horizontal."))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-hiding-non-matching-lines]
       '(menu-item "Hiding Non-Matching Lines"
         icicle-toggle-hiding-non-matching-lines
@@ -947,8 +954,10 @@ Used on `pre-command-hook'."
         icicle-toggle-annotation :keys "C-x C-a"
         :help "Toggle option `icicle-show-annotations-flag': hide/show annotations"))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-WYSIWYG-Completions]
-      '(menu-item "WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions
-        :keys "C-S-pause" :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
+      (icicle-menu-bar-make-toggle icicle-WYSIWYG-Completions-flag icicle-WYSIWYG-Completions-flag
+                                   "WYSIWYG for `*Completions*'"
+                                   "Using WYSIWYG for `*Completions*' display is now %s"
+                                   "Toggle `icicle-WYSIWYG-Completions-flag'")) ; :keys "C-S-pause"
     (define-key icicle-options-toggle-menu-map [icicle-toggle-highlight-saved-candidates]
       '(menu-item "Highlighting Saved Candidates"
         icicle-toggle-highlight-saved-candidates :keys "S-pause"
@@ -1079,6 +1088,35 @@ Used on `pre-command-hook'."
         :help "Read the name of a keyboard macro, then execute it"))
 
 
+    ;; `Frames' ----------------------------------------------------
+    (cond ((and (not icicle-touche-pas-aux-menus-flag)
+                (boundp 'menu-bar-frames-menu)) ; Use `Frames' menu, defined in `menu-bar+.el'.
+           (defvar icicle-frames-menu-map (make-sparse-keymap)
+             "`Frames' > `Icicles' submenu.")
+           (define-key menu-bar-frames-menu [icicles]
+             (list 'menu-item "Icicles" icicle-frames-menu-map :visible 'icicle-mode)))
+          (t
+           (defvar icicle-frames-menu-map (make-sparse-keymap)
+             "`Icicles' > `Frames' submenu.")
+           (define-key icicle-menu-map [frames]
+             (list 'menu-item "Frames" icicle-frames-menu-map))))
+
+    (define-key icicle-frames-menu-map [icicle-font]
+      '(menu-item "+ Change Font of Frame..." icicle-font
+        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+        :help "Change font of current frame."))
+    (define-key icicle-frames-menu-map [icicle-frame-fg]
+      '(menu-item "+ Change Foreground of Frame..." icicle-frame-fg
+        :visible (fboundp 'icicle-frame-fg) ; Requires `hexrgb.el'
+        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+        :help "Change foreground of current frame."))
+    (define-key icicle-frames-menu-map [icicle-frame-bg]
+      '(menu-item "+ Change Background of Frame..." icicle-frame-bg
+        :visible (fboundp 'icicle-frame-bg) ; Requires `hexrgb.el'
+        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
+        :help "Change background of current frame."))
+
+
     ;; `Customize' ---------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (defvar icicle-custom-menu-map (make-sparse-keymap)
@@ -1101,11 +1139,11 @@ Used on `pre-command-hook'."
       '(menu-item "Faces Matching..." icicle-customize-apropos-faces
         :help "Customize faces that match a regexp"))
     (define-key icicle-custom-menu-map [icicle-customize-apropos-opts-w-val-satisfying]
-      '(menu-item "Options Matching with a Value Satisfying..."
+      '(menu-item "+ Options Matching with a Value Satisfying..."
         icicle-customize-apropos-opts-w-val-satisfying
         :help "Customize options whose values satisfy a predicate that match a regexp"))
     (define-key icicle-custom-menu-map [icicle-customize-apropos-options-of-type]
-      '(menu-item "Options of Type Matching..."
+      '(menu-item "+ Options of Type Matching..."
         icicle-customize-apropos-options-of-type
         :help "Customize user options of a given type that match a regexp"))
     (define-key icicle-custom-menu-map [icicle-customize-apropos-options]
@@ -1136,16 +1174,16 @@ Used on `pre-command-hook'."
              '(menu-item "Symbols..." icicle-apropos
                :help "Like `apropos', but lets you see the list of matches (with `S-TAB')"))
            (define-key icicle-apropos-menu-map [icicle-apropos-vars-w-val-satisfying]
-             '(menu-item "Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
+             '(menu-item "+ Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
                :help "Show variables whose values satisfy a given predicate"))
            (define-key icicle-apropos-menu-map [icicle-apropos-value]
-             '(menu-item "Variables with Values..." icicle-apropos-value
+             '(menu-item "+ Variables with Values..." icicle-apropos-value
                :help "Show variables that match by name and/or value"))
            (define-key icicle-apropos-menu-map [icicle-apropos-variable]
              '(menu-item "Variables..." icicle-apropos-variable
                :help "Show variables that match PATTERN"))
            (define-key icicle-apropos-menu-map [icicle-apropos-options-of-type]
-             '(menu-item "Options of Type..." icicle-apropos-options-of-type
+             '(menu-item "+ Options of Type..." icicle-apropos-options-of-type
                :help "Show user options (variables) of a given `defcustom' type"))
            (define-key icicle-apropos-menu-map [icicle-apropos-option]
              '(menu-item "Options..." icicle-apropos-option
@@ -1208,143 +1246,115 @@ Used on `pre-command-hook'."
       (define-key icicle-menu-map [icicle-separator-about] '("--")))
 
 
-    ;; `Search' and `Emacs Tags' (or `Tags') -------------------------
+    ;; `Search' ------------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (cond ((boundp 'menu-bar-search-tags-menu) ; `Tags' menu defined in `menu-bar+.el'.
                   (defvar icicle-search-menu-map (make-sparse-keymap)
                     "`Search' > `Icicles' menu.")
                   (define-key menu-bar-search-menu [icicles]
-                    (list 'menu-item "Icicles" icicle-search-menu-map :visible 'icicle-mode))
-                  (defvar icicle-search-tags-menu-map (make-sparse-keymap)
-                    "`Search' >  `Tags' > `Icicles' menu.")
-                  (define-key menu-bar-search-tags-menu [icicles]
-                    (list 'menu-item "Icicles" icicle-search-tags-menu-map :visible 'icicle-mode)))
+                    (list 'menu-item "Icicles" icicle-search-menu-map :visible 'icicle-mode)))
                  (t
                   (defvar icicle-search-menu-map (make-sparse-keymap)
                     "`Search' > `Icicles' menu.")
                   (define-key menu-bar-search-menu [icicles]
-                    (list 'menu-item "Icicles" icicle-search-menu-map :visible 'icicle-mode))
-                  (defvar icicle-search-tags-menu-map (make-sparse-keymap)
-                    "`Search' > `Icicles' > `Emacs Tags' menu.")
-                  (define-key icicle-search-menu-map [emacs-tags]
-                    (list 'menu-item "Emacs Tags" icicle-search-tags-menu-map
-                          :visible 'icicle-mode)))))
+                    (list 'menu-item "Icicles" icicle-search-menu-map :visible 'icicle-mode)))))
           (t
            (defvar icicle-search-menu-map (make-sparse-keymap)
-             "`Icicles' > `Search' menu.")
+             "`Icicles' > `Icicles Search' menu.")
            (define-key icicle-menu-map [search]
-             (list 'menu-item "Search" icicle-search-menu-map))
-           (defvar icicle-search-tags-menu-map (make-sparse-keymap)
-             "`Icicles' > `Search' > `Emacs Tags' menu.")
-           (define-key icicle-search-menu-map [emacs-tags]
-             (list 'menu-item "Emacs Tags" icicle-search-tags-menu-map :visible 'icicle-mode))))
+             (list 'menu-item "Icicles Search" icicle-search-menu-map))))
 
     ;; `Go To' -------------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (cond ((boundp 'menu-bar-goto-menu)
-                  (defvar icicle-search-goto-menu-map (make-sparse-keymap)
+                  (defvar icicle-goto-menu-map (make-sparse-keymap)
                     "`Go To' > `Icicles' menu.")
                   (define-key menu-bar-goto-menu [icicles]
-                    (list 'menu-item "Icicles" icicle-search-goto-menu-map)))
+                    (list 'menu-item "Icicles" icicle-goto-menu-map)))
                  (t
-                  (defvar icicle-search-goto-menu-map (make-sparse-keymap)
+                  (defvar icicle-goto-menu-map (make-sparse-keymap)
                     "`Search' > `Icicles' > `Go To' menu.")
                   (define-key icicle-search-menu-map [goto]
-                    (list 'menu-item "Go To" icicle-search-goto-menu-map)))))
+                    (list 'menu-item "Go To" icicle-goto-menu-map)))))
           (t
-           (defvar icicle-search-goto-menu-map (make-sparse-keymap)
+           (defvar icicle-goto-menu-map (make-sparse-keymap)
              "`Icicles' > `Go To' menu.")
            (define-key icicle-menu-map [goto]
-             (list 'menu-item "Go To" icicle-search-goto-menu-map))))
+             (list 'menu-item "Go To" icicle-goto-menu-map))))
 
-    (define-key icicle-search-goto-menu-map [icicle-goto-global-marker]
-      '(menu-item "+ Global Marker..." icicle-goto-global-marker
-        :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"
-        :help "Go to a global marker, choosing it by the line that includes it"))
-    (define-key icicle-search-goto-menu-map [icicle-goto-marker]
-      '(menu-item "+ Marker..." icicle-goto-marker
-        :enable (mark t) :keys "C-- C-SPC"
-        :help "Go to a marker in this buffer, choosing it by the line that includes it"))
-    (define-key icicle-search-goto-menu-map [icicle-select-bookmarked-region]
-      '(menu-item "+ Select Bookmarked Region..." icicle-select-bookmarked-region
-        :enable (featurep 'bookmark+) :keys "C-u C-x C-x"
-        :help "Jump to a bookmarked region in other window, and select (activate) it"))
-
-    ;; `Go To' > `Definition' menu.
-    (defvar icicle-search-goto-imenu-menu-map (make-sparse-keymap)
-      "Icicles `Definition' submenu of `Go To' menu.")
-    (define-key icicle-search-goto-menu-map [imenu]
-      (list 'menu-item "Definition" icicle-search-goto-imenu-menu-map
-            :visible 'imenu-generic-expression))
-
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-key-explicit-map]
-      '(menu-item "+ Key in Map..." icicle-imenu-key-explicit-map
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a key definition in some map, using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-key-implicit-map]
-      '(menu-item "+ Key..." icicle-imenu-key-implicit-map
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a (global) key definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-variable]
-      '(menu-item "+ Variable..." icicle-imenu-variable
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a variable definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-user-option]
-      '(menu-item "+ User Option..." icicle-imenu-user-option
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to an option definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-face]
-      '(menu-item "+ Face..." icicle-imenu-face
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a face definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-macro]
-      '(menu-item "+ Macro..." icicle-imenu-macro
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a Lisp macro definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-non-interactive-function]
-      '(menu-item "+ Non-Interactive Function..." icicle-imenu-non-interactive-function
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a non-command function definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-command]
-      '(menu-item "+ Command..." icicle-imenu-command
-        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
-        :help "Go to a command definition using `icicle-search'"))
-    (define-key icicle-search-goto-imenu-menu-map [icicle-imenu]
-      '(menu-item "+ Any..." icicle-imenu
-        :enable imenu-generic-expression :help "Go to a definition using `icicle-search'"))
-
-    ;; `Search' > `Emacs Tags' (or `Tags') menu
-    (define-key icicle-search-tags-menu-map [icicle-tags-search]
-      '(menu-item "+ Search Tagged Files ..." icicle-tags-search
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Search all source files listed in tags tables for matches for a regexp"))
-    (define-key icicle-search-tags-menu-map [icicle-pop-tag-mark]
-      '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark
+    (define-key icicle-goto-menu-map [icicle-pop-tag-mark]
+      '(menu-item "+ Back (Pop Emacs Tag Mark)" icicle-pop-tag-mark
         :enable (and (boundp 'find-tag-marker-ring)
                  (not (ring-empty-p find-tag-marker-ring))
                  (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))
         :help "Pop back to where `M-.' was last invoked"))
-    (define-key icicle-search-tags-menu-map [icicle-find-first-tag-other-window]
-      '(menu-item "+ Find First Tag ..." icicle-find-first-tag-other-window
+    (define-key icicle-goto-menu-map [icicle-find-first-tag-other-window]
+      '(menu-item "+ Find First Emacs Tag ..." icicle-find-first-tag-other-window
         :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Find first tag in current tags table whose name matches your input"))
-    (define-key icicle-search-tags-menu-map [icicle-find-tag]
-      '(menu-item "+ Find Tag ..." icicle-find-tag
+        :help "Find first tag in current Emacs TAGS table whose name matches your input"))
+    (define-key icicle-goto-menu-map [icicle-find-tag]
+      '(menu-item "+ Find Emacs Tag ..." icicle-find-tag
         :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Navigate among all tags that match a regexp"))
+        :help "Navigate among all Emacs TAGS table tags that match a regexp"))
+    (define-key icicle-goto-menu-map [separator-goto-1] '("--"))
+
+    (define-key icicle-goto-menu-map [icicle-goto-global-marker]
+      '(menu-item "+ Global Marker..." icicle-goto-global-marker
+        :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"
+        :help "Go to a global marker, choosing it by the line that includes it"))
+    (define-key icicle-goto-menu-map [icicle-goto-marker]
+      '(menu-item "+ Marker..." icicle-goto-marker
+        :enable (mark t) :keys "C-- C-SPC"
+        :help "Go to a marker in this buffer, choosing it by the line that includes it"))
+    (define-key icicle-goto-menu-map [icicle-select-bookmarked-region]
+      '(menu-item "+ Select Bookmarked Region..." icicle-select-bookmarked-region
+        :enable (featurep 'bookmark+) :keys "C-u C-x C-x"
+        :help "Jump to a bookmarked region in other window, and select (activate) it"))
+
+    ;; `Go To' > `Definition (Imenu)' menu.
+    (defvar icicle-goto-imenu-menu-map (make-sparse-keymap)
+      "Icicles `Definition (Imenu)' submenu of `Go To' menu.")
+    (define-key icicle-goto-menu-map [imenu]
+      (list 'menu-item "Definition (Imenu)" icicle-goto-imenu-menu-map
+            :visible 'imenu-generic-expression))
+
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-key-explicit-map]
+      '(menu-item "+ Key in Map..." icicle-imenu-key-explicit-map
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a key definition in some map, using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-key-implicit-map]
+      '(menu-item "+ Key..." icicle-imenu-key-implicit-map
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a (global) key definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-variable]
+      '(menu-item "+ Variable..." icicle-imenu-variable
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a variable definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-user-option]
+      '(menu-item "+ User Option..." icicle-imenu-user-option
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to an option definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-face]
+      '(menu-item "+ Face..." icicle-imenu-face
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a face definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-macro]
+      '(menu-item "+ Macro..." icicle-imenu-macro
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a Lisp macro definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-non-interactive-function]
+      '(menu-item "+ Non-Interactive Function..." icicle-imenu-non-interactive-function
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a non-command function definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu-command]
+      '(menu-item "+ Command..." icicle-imenu-command
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
+        :help "Go to a command definition using `icicle-search'"))
+    (define-key icicle-goto-imenu-menu-map [icicle-imenu]
+      '(menu-item "+ Any..." icicle-imenu
+        :enable imenu-generic-expression :help "Go to a definition using `icicle-search'"))
 
     ;; `Search' menu
-    (define-key icicle-search-menu-map [icicle-search-highlight-cleanup]
-      '(menu-item "Remove Icicle-Search Highlighting..." icicle-search-highlight-cleanup
-        :enable (or icicle-search-overlays
-                 (overlayp icicle-search-current-overlay)
-                 (overlayp icicle-search-refined-overlays) icicle-search-refined-overlays)
-        :help "Remove all highlighting from the last use of `icicle-search'"))
-    (define-key icicle-search-menu-map [icicle-search-define-replacement]
-      '(menu-item "Define Replacement String..." icicle-search-define-replacement
-        :help "Set the replacement string for use in `icicle-search'"))
-    (define-key icicle-search-menu-map [separator-search-1] '("--"))
-
     (define-key icicle-search-menu-map [icicle-compilation-search]
       '(menu-item "+ Search Compilation/Grep Hits (Regexp)..."
         icicle-compilation-search
@@ -1357,9 +1367,22 @@ Used on `pre-command-hook'."
         icicle-grep-saved-file-candidates
         :enable icicle-saved-completion-candidates
         :help "Run `grep' on the set of completion candidates saved using `C-M->'"))
+    (define-key icicle-search-menu-map [separator-search-0] '("--"))
+
+    (define-key icicle-search-menu-map [icicle-search-highlight-cleanup]
+      '(menu-item "Remove Icicle-Search Highlighting..." icicle-search-highlight-cleanup
+        :enable (or icicle-search-overlays
+                 (overlayp icicle-search-current-overlay)
+                 (overlayp icicle-search-refined-overlays) icicle-search-refined-overlays)
+        :help "Remove all highlighting from the last use of `icicle-search'"))
+    (define-key icicle-search-menu-map [icicle-search-define-replacement]
+      '(menu-item "Define Replacement String..." icicle-search-define-replacement
+        :help "Set the replacement string for use in `icicle-search'"))
+    (define-key icicle-search-menu-map [separator-search-1] '("--"))
+
     (define-key icicle-search-menu-map [icicle-tags-search]
-      '(menu-item "+ Search Tagged Files ..." icicle-tags-search
-        :help "Search all source files listed in tags tables for matches for a regexp"))
+      '(menu-item "+ Search Emacs-Tagged Files ..." icicle-tags-search
+        :help "Search all source files listed in Emacs TAGS tables for matches for a regexp"))
     (define-key icicle-search-menu-map [icicle-search-file]
       '(menu-item "+ Search Files (Regexp)..." icicle-search-file
         :help "Search multiple files completely"))
@@ -1607,35 +1630,6 @@ Used on `pre-command-hook'."
     (define-key icicle-search-imenu-menu-map [icicle-imenu-full]
       '(menu-item "+ Any..." icicle-imenu-full
         :enable imenu-generic-expression :help "Search a definition using `icicle-search'"))
-
-
-    ;; `Frames' ----------------------------------------------------
-    (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-frames-menu)) ; Use `Frames' menu, defined in `menu-bar+.el'.
-           (defvar icicle-frames-menu-map (make-sparse-keymap)
-             "`Frames' > `Icicles' submenu.")
-           (define-key menu-bar-frames-menu [icicles]
-             (list 'menu-item "Icicles" icicle-frames-menu-map :visible 'icicle-mode)))
-          (t
-           (defvar icicle-frames-menu-map (make-sparse-keymap)
-             "`Icicles' > `Frames' submenu.")
-           (define-key icicle-menu-map [frames]
-             (list 'menu-item "Frames" icicle-frames-menu-map))))
-
-    (define-key icicle-frames-menu-map [icicle-font]
-      '(menu-item "+ Change Font of Frame..." icicle-font
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Change font of current frame."))
-    (define-key icicle-frames-menu-map [icicle-frame-fg]
-      '(menu-item "+ Change Foreground of Frame..." icicle-frame-fg
-        :visible (fboundp 'icicle-frame-fg) ; Requires `hexrgb.el'
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Change foreground of current frame."))
-    (define-key icicle-frames-menu-map [icicle-frame-bg]
-      '(menu-item "+ Change Background of Frame..." icicle-frame-bg
-        :visible (fboundp 'icicle-frame-bg) ; Requires `hexrgb.el'
-        :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))
-        :help "Change background of current frame."))
 
 
     ;; `Bookmarks' ---------------------------------------------------
