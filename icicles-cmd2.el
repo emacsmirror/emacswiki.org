@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Apr  1 14:46:55 2014 (-0700)
+;; Last-Updated: Sat Apr  5 07:44:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6788
+;;     Update #: 6811
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5142,7 +5142,11 @@ You can alternatively choose to search, not the search contexts as
 defined by the context regexp, but the non-contexts, that is, the text
 in the bookmarked buffer that does not match the regexp.  To do this,
 use `C-M-~' during completion.  (This is a toggle, and it affects only
-future search commands, not the current one.)" ; Doc string
+future search commands, not the current one.)
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'."                       ; Doc string
   icicle-search-bookmark-action         ; Action function
   prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
   nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
@@ -5345,7 +5349,11 @@ that is outside THINGs.  To do this, use `C-M-~' during completion.
 \(This is a toggle, and it affects only future search commands, not
 the current one.)
 
-This command is intended only for use in Icicle mode.
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, in particular for
+information about the arguments and the use of a prefix argument to
+search multiple regions, buffers, or files, see the doc for command
+`icicle-search'.
 
 NOTE:
 
@@ -5788,7 +5796,13 @@ search commands, not the current one.)
 
 You will no doubt need nXML for this command.  It is included in
 vanilla Emacs, starting with Emacs 23.  And you will need to load
-`thingatpt+.el', because of bugs in vanilla `thingatpt.el'."
+`thingatpt+.el', because of bugs in vanilla `thingatpt.el'.
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, in particular for
+information about the arguments and the use of a prefix argument to
+search multiple regions, buffers, or files, see the doc for command
+`icicle-search'."
   (interactive
    (let* ((where    (icicle-search-where-arg))
           (beg+end  (icicle-region-or-buffer-limits))
@@ -5825,7 +5839,13 @@ affects only future search commands, not the current one.)
 
 You will no doubt need nXML for this command.  It is included in
 vanilla Emacs, starting with Emacs 23.  And you will need to load
-`thingatpt+.el', because of bugs in vanilla `thingatpt.el'."
+`thingatpt+.el', because of bugs in vanilla `thingatpt.el'.
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, in particular for
+information about the arguments and the use of a prefix argument to
+search multiple regions, buffers, or files, see the doc for command
+`icicle-search'."
   (interactive
    (let* ((where    (icicle-search-where-arg))
           (beg+end  (icicle-region-or-buffer-limits))
@@ -6206,9 +6226,6 @@ end on a word boundary.
 At the prompt for a word, you can use completion against previous
 Icicles search inputs to choose the word, or you can enter a new word.
 
-Non-interactively, WORD-REGEXP should be a regexp that matches a word.
-The other arguments are the same as for `icicle-search'.
-
 You can alternatively choose to search, not the word search contexts
 you define, but the buffer text that is outside these contexts: the
 non-word text.  To do this, use `C-M-~' during completion.  \(This is
@@ -6219,7 +6236,10 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, in particular for
 information about the arguments and the use of a prefix argument to
 search multiple regions, buffers, or files, see the doc for command
-`icicle-search'."
+`icicle-search'.
+
+Non-interactively, WORD-REGEXP should be a regexp that matches a word.
+The other arguments are the same as for `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits)
                  ,(icicle-search-read-word)
                  ,(not icicle-show-multi-completion-flag)
@@ -6229,9 +6249,6 @@ search multiple regions, buffers, or files, see the doc for command
 (defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match ; Bound to `M-s M-s J'.
                                          &rest args)
   "Search bookmarks, together.
-The arguments are the same as for `icicle-search', but without
-arguments BEG, END, and WHERE.
-
 This is the same as using a plain prefix arg, `C-u', with
 `icicle-search'.
 
@@ -6248,7 +6265,12 @@ use `C-M-~' during completion.  (This is a toggle, and it affects only
 future search commands, not the current one.)
 
 An alternative is multi-command `icicle-search-bookmark', which
-searches the bookmarked regions/buffers you choose one at a time."
+searches the bookmarked regions/buffers you choose one at a time.
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6263,14 +6285,17 @@ searches the bookmarked regions/buffers you choose one at a time."
 Same as using a non-negative numeric prefix arg, such as `C-9', with
 `icicle-search'.  You are prompted for the buffers to search.  All of
 each buffer is searched.  Any existing buffers can be chosen.
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE.
 
 You can alternatively choose to search, not the search contexts as
 defined by the context regexp you provide, but the non-contexts, that
 is, the text in the buffers that does not match the regexp.  To do
 this, use `C-M-~' during completion.  (This is a toggle, and it
-affects only future search commands, not the current one.)"
+affects only future search commands, not the current one.)
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6290,14 +6315,18 @@ affects only future search commands, not the current one.)"
 Same as using a negative numeric prefix arg, such as `C--', with
 `icicle-search'.  You are prompted for the files to search.  All of
 each file is searched.  Any existing files in the current directory
-can be chosen.  Arguments are the same as for `icicle-search', but
-without arguments BEG, END, and WHERE.
+can be chosen.
 
 You can alternatively choose to search, not the search contexts as
 defined by the context regexp you provide, but the non-contexts, that
 is, the text in the files that does not match the regexp.  To do this,
 use `C-M-~' during completion.  (This is a toggle, and it affects only
-future search commands, not the current one.)"
+future search commands, not the current one.)
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6314,8 +6343,11 @@ future search commands, not the current one.)"
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in `*Bookmark List*'.
   "Search the files of the marked bookmarks in `*Bookmark List*'.
 Same as using `C-0' with `icicle-search' in `*Bookmark List*'.
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE."
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6410,9 +6442,11 @@ This is also bound by default to `M-+ C-S' in Dired.
 See also `icicle-occur-dired-marked-recursive', bound to `M-+ C-S-o',
 aka `M-+ C-O' (letter `O', not zero), in Dired.
 
-Non-interactively, the arguments other than IGNORE-MARKS-P are the
-same as for `icicle-search', but without arguments BEG, END, and
-WHERE.
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  Non-interactively, the arguments other than
+IGNORE-MARKS-P are the same as for `icicle-search', but without
+arguments BEG, END, and WHERE.
 
 You need library `Dired+' for this command."
   (interactive
@@ -6442,9 +6476,11 @@ This is bound by default to `C-S-s', aka `C-S', in Dired.  See also
 `icicle-search-dired-marked-recursive', bound to `M-+ C-S' (and other
 keys) in Dired.
 
-Non-interactively, the arguments other than IGNORE-MARKS-P are the
-same as for `icicle-search', but without arguments BEG, END, and
-WHERE.
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  Non-interactively, the arguments other than
+IGNORE-MARKS-P are the same as for `icicle-search', but without
+arguments BEG, END, and WHERE.
 
 You need library `Dired+' for this command."
   (interactive
@@ -6476,8 +6512,11 @@ You need library `Dired+' for this command."
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
   "Search the marked buffers in Ibuffer, in order.
 Same as using `C-0' with `icicle-search' in Ibuffer.
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE."
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6493,8 +6532,11 @@ BEG, END, and WHERE."
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in `*Buffer List*'.
   "Search the marked buffers in Buffer Menu, in order.
 Same as using `C-0' with `icicle-search' in `*Buffer List*'.
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE."
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'.  The arguments here are the same as for
+`icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
@@ -6844,7 +6886,11 @@ then a prefix argument changes the behavior, as follows:
 2. You choose an Isearch string using completion.  It is copied to the
    `kill-ring'.
 3. You can yank that string anytime during Icicles search, to search
-   for it within the search contexts defined by the regexp matches."
+   for it within the search contexts defined by the regexp matches.
+
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information, see the doc for command
+`icicle-search'."
   (interactive "P")
   (isearch-done)
   (if (or (not use-context-p)  (not (boundp 'isearch-allow-scroll)))
@@ -7381,6 +7427,9 @@ If your TAGS file references source files that no longer exist, those
 files are listed.  In that case, you might want to update your TAGS
 file.
 
+This command is intended only for use in Icicle mode.  It is defined
+using `icicle-search'.  For more information see the doc for command
+`icicle-search'.
 
 You can alternatively choose to search, not the search contexts as
 defined by the context regexp you provide, but the non-contexts, that
