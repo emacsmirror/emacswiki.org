@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Fri Apr  4 15:23:09 2014 (-0700)
+;; Last-Updated: Fri Apr  4 21:09:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10023
+;;     Update #: 10042
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -100,7 +100,9 @@
 ;;    `icicle-edit-menu-map', `icicle-file-menu-map',
 ;;    `icicle-frames-menu-map', `icicle-info-menu-map',
 ;;    `icicle-mode-map', `icicle-options-menu-map',
-;;    `icicle-search-menu-map', `icicle-search-tags-menu-map'.
+;;    `icicle-options-choose-menu-map',
+;;    `icicle-options-toggle-menu-map', `icicle-search-menu-map',
+;;    `icicle-search-tags-menu-map'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
  
@@ -847,7 +849,7 @@ Used on `pre-command-hook'."
         :help "Display help for minibuffer input and completion" :keys "M-? in minibuf"))
 
 
-    ;; `Options' -----------------------------------------------------
+    ;; `Icicle Options' -----------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (defvar icicle-options-menu-map (make-sparse-keymap)
              "`Options' > `Icicles' submenu.")
@@ -868,149 +870,167 @@ Used on `pre-command-hook'."
     (define-key icicle-options-menu-map [icicle-toggle-option]
       '(menu-item "+ Toggle Any Option..." icicle-toggle-option
         :help "Toggle boolean option (C-u: any user option, C--: any var)"))
-    (define-key icicle-options-menu-map [icicle-toggle-C-for-actions]
-      '(menu-item "Toggle Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"
+
+
+    ;; `Icicle Options' > `Toggle' ------------------------------------------
+    (defvar icicle-options-toggle-menu-map (make-sparse-keymap)
+      "`Toggle' submenu of Icicles options menu.")
+    (define-key icicle-options-menu-map [toggle]
+      (list 'menu-item "Toggle" icicle-options-toggle-menu-map :visible 'icicle-mode))
+
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-C-for-actions]
+      '(menu-item "Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"
         :help "Toggle option `icicle-use-C-for-actions-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-~-for-home-dir]
-      '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-~-for-home-dir]
+      '(menu-item "Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
         :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
-    (define-key icicle-options-menu-map [icicle-next-TAB-completion-method]
-      '(menu-item "Next `TAB' Completion Method" icicle-next-TAB-completion-method
-        :keys "C-(" :help "Cycle to the next `TAB' completion method (C-u: ONE-OFF)"))
-    (define-key icicle-options-menu-map [icicle-next-S-TAB-completion-method]
-      '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
-        :keys "M-(" :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
-    (when (fboundp 'icicle-cycle-image-file-thumbnail)
-      (define-key icicle-options-menu-map [icicle-cycle-image-file-thumbnail]
-        '(menu-item "Next Image-File Thumbnail Setting" icicle-cycle-image-file-thumbnail
-          :keys "C-x t" :help "Cycle Thumbnail Image File Setting")))
-    (define-key icicle-options-menu-map [icicle-toggle-search-cleanup]
-      '(menu-item "Toggle Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-search-cleanup]
+      '(menu-item "Icicle-Search Highlighting Cleanup" icicle-toggle-search-cleanup
         :keys "C-." :help "Toggle option `icicle-search-cleanup-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-search-replace-common-match]
-      '(menu-item "Toggle Replacing Longest Common Match"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-search-replace-common-match]
+      '(menu-item "Replacing Longest Common Match"
         icicle-toggle-search-replace-common-match :enable icicle-searching-p :keys "M-;"
         :help "Toggle option `icicle-search-replace-common-match-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-search-replace-whole]
-      '(menu-item "Toggle Replacing Whole Search Hit" icicle-toggle-search-replace-whole
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-search-replace-whole]
+      '(menu-item "Replacing Whole Search Hit" icicle-toggle-search-replace-whole
         :enable icicle-searching-p :keys "M-_"
         :help "Toggle option `icicle-search-replace-whole-candidate-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-search-whole-word]
-      '(menu-item "Toggle Whole-Word Searching (Icicles Search)"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-search-whole-word]
+      '(menu-item "Whole-Word Searching (Icicles Search)"
         icicle-toggle-search-whole-word
         :enable icicle-searching-p :keys "M-q"
         :help "Toggle `icicle-search-whole-word-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-regexp-quote]
-      '(menu-item "Toggle Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-regexp-quote]
+      '(menu-item "Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"
         :help "Toggle option `icicle-regexp-quote-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-dot]
-      '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot :keys "C-M-."
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-dot]
+      '(menu-item "Dot (`.') Matching Newlines Too" icicle-toggle-dot :keys "C-M-."
         :help "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'"))
-    (define-key icicle-options-menu-map [icicle-cycle-incremental-completion]
-      '(menu-item "Cycle Incremental Completion" icicle-cycle-incremental-completion
-        :keys "C-#" :help "Cycle option `icicle-incremental-completion'"))
-    (define-key icicle-options-menu-map [icicle-toggle-icomplete-mode]
-      '(menu-item "Toggle Icomplete Mode" icicle-toggle-icomplete-mode
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-icomplete-mode]
+      '(menu-item "Icomplete Mode" icicle-toggle-icomplete-mode
         :help "Toggle Icomplete mode" :enable (featurep 'icomplete-mode) :keys "C-M-#"))
-    (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
-      '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-show-multi-completion]
+      '(menu-item "Showing Multi-Completions" icicle-toggle-show-multi-completion
         :help "Toggle option `icicle-show-multi-completion-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-completions-format]
-      '(menu-item "Toggle Horizontal/Vertical Layout" icicle-toggle-completions-format
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-completions-format]
+      '(menu-item "Horizontal/Vertical Layout" icicle-toggle-completions-format
         :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-hiding-non-matching-lines]
-      '(menu-item "Toggle Hiding Non-Matching Lines"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-hiding-non-matching-lines]
+      '(menu-item "Hiding Non-Matching Lines"
         icicle-toggle-hiding-non-matching-lines
         :keys "C-u C-x ." :help "Toggle option `icicle-hide-non-matching-lines-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-hiding-common-match]
-      '(menu-item "Toggle Hiding Common Match" icicle-toggle-hiding-common-match
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-hiding-common-match]
+      '(menu-item "Hiding Common Match" icicle-toggle-hiding-common-match
         :keys "C-x ." :help "Toggle option `icicle-hide-common-match-in-Completions-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-expand-to-common-match]
-      '(menu-item "Toggle Expansion to Common Match" icicle-toggle-expand-to-common-match
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-expand-to-common-match]
+      '(menu-item "Expansion to Common Match" icicle-toggle-expand-to-common-match
         :keys "C-\"" :help "Toggle option `icicle-expand-input-to-common-match'"))
-    (define-key icicle-options-menu-map [icicle-toggle-ignoring-comments]
-      '(menu-item "Toggle Ignoring Comments" icicle-toggle-ignoring-comments
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-ignoring-comments]
+      '(menu-item "Ignoring Comments" icicle-toggle-ignoring-comments
         :keys "C-M-;" :help "Toggle option `icicle-ignore-comments-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-ignored-space-prefix]
-      '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-ignored-space-prefix]
+      '(menu-item "Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
         :keys "M-_" :help "Toggle option `icicle-buffer-ignore-space-prefix-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-ignored-extensions]
-      '(menu-item "Toggle Ignored File Extensions" icicle-toggle-ignored-extensions
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-ignored-extensions]
+      '(menu-item "Ignored File Extensions" icicle-toggle-ignored-extensions
         :keys "C-." :help "Toggle respect of `completion-ignored-extensions'"))
-    (define-key icicle-options-menu-map [icicle-toggle-remote-file-testing]
-      '(menu-item "Toggle Remote File Handling" icicle-toggle-remote-file-testing
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-remote-file-testing]
+      '(menu-item "Remote File Handling" icicle-toggle-remote-file-testing
         :enable (not icicle-searching-p) :keys "C-^"
         :help "Toggle option `icicle-test-for-remote-files-flag'"))
     (when (> emacs-major-version 20)
-      (define-key icicle-options-menu-map [icicle-toggle-angle-brackets]
-        '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
+      (define-key icicle-options-toggle-menu-map [icicle-toggle-angle-brackets]
+        '(menu-item "Angle Brackets" icicle-toggle-angle-brackets
           :help "Toggle option `icicle-key-descriptions-use-<>-flag'")))
-    (define-key icicle-options-menu-map [icicle-toggle-annotation]
-      '(menu-item "Toggle Candidate Annotation"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-annotation]
+      '(menu-item "Candidate Annotation"
         icicle-toggle-annotation :keys "C-x C-a"
         :help "Toggle option `icicle-show-annotations-flag': hide/show annotations"))
-    (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
-      '(menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-WYSIWYG-Completions]
+      '(menu-item "WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions
         :keys "C-S-pause" :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-highlight-saved-candidates]
-      '(menu-item "Toggle Highlighting Saved Candidates"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-highlight-saved-candidates]
+      '(menu-item "Highlighting Saved Candidates"
         icicle-toggle-highlight-saved-candidates :keys "S-pause"
         :help "Toggle option `icicle-highlight-saved-candidates-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-highlight-historical-candidates]
-      '(menu-item "Toggle Highlighting Past Inputs"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-highlight-historical-candidates]
+      '(menu-item "Highlighting Past Inputs"
         icicle-toggle-highlight-historical-candidates :keys "C-pause"
         :help "Toggle option `icicle-highlight-historical-candidates-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-case-sensitivity]
-      '(menu-item "Toggle Case Sensitivity" icicle-toggle-case-sensitivity :keys "C-A"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-case-sensitivity]
+      '(menu-item "Case Sensitivity" icicle-toggle-case-sensitivity :keys "C-A"
         :help "Toggle `case-fold-search', `completion-ignore-case' (C-u: file & buffer too)"))
-    (define-key icicle-options-menu-map [icicle-toggle-proxy-candidates]
-      '(menu-item "Toggle Including Proxy Candidates" icicle-toggle-proxy-candidates
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-proxy-candidates]
+      '(menu-item "Including Proxy Candidates" icicle-toggle-proxy-candidates
         :keys "C-M-_" :help "Toggle option `icicle-add-proxy-candidates-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-transforming]
-      '(menu-item "Toggle Duplicate Removal" icicle-toggle-transforming :keys "C-$"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-transforming]
+      '(menu-item "Duplicate Removal" icicle-toggle-transforming :keys "C-$"
         :help "Toggle use of `icicle-transform-function' (default: remove dups)"))
-    (define-key icicle-options-menu-map [icicle-toggle-alternative-sorting]
-      '(menu-item "Swap Alternative Sort" icicle-toggle-alternative-sorting :keys "C-M-,"
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-alternative-sorting]
+      '(menu-item "Alternative Sort (Swap)" icicle-toggle-alternative-sorting :keys "C-M-,"
         :help "Swap current sort order for current alternative sort order"))
-    (define-key icicle-options-menu-map [icicle-change-alternative-sort-order]
-      '(menu-item "Change Alternative Sort Order" icicle-change-alternative-sort-order
+
+
+    ;; `Icicle Options' > `Choose' ------------------------------------------
+    (defvar icicle-options-choose-menu-map (make-sparse-keymap)
+      "`Choose' submenu of Icicles options menu.")
+    (define-key icicle-options-menu-map [choose]
+      (list 'menu-item "Choose" icicle-options-choose-menu-map :visible 'icicle-mode))
+
+    (when (fboundp 'doremi)
+      (define-key icicle-options-choose-menu-map [icicle-doremi-increment-swank-prefix-length+]
+        '(menu-item "Swank Min Match Chars - Do Re Mi"
+          icicle-doremi-increment-swank-prefix-length+
+          :enable (eq (icicle-current-TAB-method) 'swank) :keys "C-x 2"
+          :help "Change `icicle-swank-prefix-length' incrementally"))
+      (define-key icicle-options-choose-menu-map [icicle-doremi-increment-swank-timeout+]
+        '(menu-item "Swank Timeout - Do Re Mi"
+          icicle-doremi-increment-swank-timeout+
+          :enable  (eq (icicle-current-TAB-method) 'swank) :keys "C-x 1"
+          :help "Change `icicle-swank-timeout' incrementally")))
+    (define-key icicle-options-choose-menu-map [icicle-next-TAB-completion-method]
+      '(menu-item "`TAB' Completion Method" icicle-next-TAB-completion-method
+        :keys "C-(" :help "Cycle to the next `TAB' completion method (C-u: ONE-OFF)"))
+    (define-key icicle-options-choose-menu-map [icicle-next-S-TAB-completion-method]
+      '(menu-item "`S-TAB' Completion Method" icicle-next-S-TAB-completion-method
+        :keys "M-(" :help "Cycle to the next `S-TAB' completion method (C-u: ONE-OFF)"))
+    (when (fboundp 'icicle-cycle-image-file-thumbnail)
+      (define-key icicle-options-choose-menu-map [icicle-cycle-image-file-thumbnail]
+        '(menu-item "Image-File Thumbnail Setting" icicle-cycle-image-file-thumbnail
+          :keys "C-x t" :help "Cycle Thumbnail Image File Setting")))
+    (define-key icicle-options-choose-menu-map [icicle-change-alternative-sort-order]
+      '(menu-item "Alternative Sort Order" icicle-change-alternative-sort-order
         :keys "M-," :help "Choose alt sort order (C-9: reverse, C-u: cyle/complete)"))
-    (define-key icicle-options-menu-map [icicle-change-sort-order]
-      '(menu-item "Change Sort Order" icicle-change-sort-order
+    (define-key icicle-options-choose-menu-map [icicle-change-sort-order]
+      '(menu-item "Sort Order" icicle-change-sort-order
         :enable (not icicle-inhibit-sort-p) :keys "C-,"
         :help "Choose sort order (C-9: reverse, C-u: cyle/complete)"))
     (when (fboundp 'doremi)
       (when (fboundp 'text-scale-increase) ; Emacs 23+.
-        (define-key icicle-options-menu-map [icicle-doremi-zoom-Completions+]
+        (define-key icicle-options-choose-menu-map [icicle-doremi-zoom-Completions+]
           '(menu-item "*Completions* Zoom Factor - Do Re Mi"
             icicle-doremi-zoom-Completions+
-            :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x -"
+            :enable (get-buffer-window "*Completions*" 'visible) :keys "C-x -"
             :help "Zoom text in `*Completions*' incrementally")))
-      (define-key icicle-options-menu-map [icicle-doremi-inter-candidates-min-spaces+]
+      (define-key icicle-options-choose-menu-map [icicle-doremi-inter-candidates-min-spaces+]
         '(menu-item "*Completions* Candidate Spacing - Do Re Mi"
           icicle-doremi-inter-candidates-min-spaces+
-          :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x |"
+          :enable (get-buffer-window "*Completions*" 'visible) :keys "C-x |"
           :help "Change `icicle-inter-candidates-min-spaces' incrementally"))
-      (define-key icicle-options-menu-map [icicle-doremi-candidate-width-factor+]
+      (define-key icicle-options-choose-menu-map [icicle-doremi-candidate-width-factor+]
         '(menu-item "*Completions* Column Width - Do Re Mi"
           icicle-doremi-candidate-width-factor+
-          :visible (get-buffer-window "*Completions*" 'visible) :keys "C-x w"
+          :enable (get-buffer-window "*Completions*" 'visible) :keys "C-x w"
           :help "Change `icicle-candidate-width-factor' incrementally"))
-      (define-key icicle-options-menu-map [icicle-doremi-increment-swank-prefix-length+]
-        '(menu-item "Swank Min Match Chars - Do Re Mi"
-          icicle-doremi-increment-swank-prefix-length+
-          :visible (eq (icicle-current-TAB-method) 'swank) :keys "C-x 2"
-          :help "Change `icicle-swank-prefix-length' incrementally"))
-      (define-key icicle-options-menu-map [icicle-doremi-increment-swank-timeout+]
-        '(menu-item "Swank Timeout - Do Re Mi"
-          icicle-doremi-increment-swank-timeout+
-          :visible  (eq (icicle-current-TAB-method) 'swank) :keys "C-x 1"
-          :help "Change `icicle-swank-timeout' incrementally"))
-      (define-key icicle-options-menu-map [icicle-doremi-increment-max-candidates+]
+      (define-key icicle-options-choose-menu-map [icicle-doremi-increment-max-candidates+]
         '(menu-item "Max # of Completions - Do Re Mi"
           icicle-doremi-increment-max-candidates+
-          :visible (active-minibuffer-window) :keys "C-x #"
+          :enable (active-minibuffer-window) :keys "C-x #"
           :help "Change `icicle-max-candidates' incrementally")))
+    (define-key icicle-options-choose-menu-map [icicle-cycle-incremental-completion]
+      '(menu-item "Incremental Completion" icicle-cycle-incremental-completion
+        :keys "C-#" :help "Cycle option `icicle-incremental-completion'"))
+
 
 
     ;; Beginning of non-submenu `Icicles' menu -----------------------
