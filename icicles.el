@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr  1 12:55:57 2014 (-0700)
+;; Last-Updated: Fri Apr  4 21:07:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23533
+;;     Update #: 23535
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1419,7 +1419,8 @@
 ;;    `icicle-new-bufs-to-keep', `icicle-new-bufs-to-kill',
 ;;    `icicle-new-last-cmd', `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
-;;    `icicle-options-menu-map', `icicle-orig-buff',
+;;    `icicle-options-menu-map', `icicle-options-choose-menu-map',
+;;    `icicle-options-toggle-menu-map', `icicle-orig-buff',
 ;;    `icicle-ORIG-crm-local-completion-map',
 ;;    `icicle-ORIG-crm-local-must-match-map',
 ;;    `icicle-orig-extra-cands', `icicle-orig-font',
