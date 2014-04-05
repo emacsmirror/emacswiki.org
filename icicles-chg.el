@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Apr  4 21:08:35 2014 (-0700)
+;; Last-Updated: Sat Apr  5 10:12:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10780
+;;     Update #: 10808
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3930,6 +3930,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/04/05 dadams
+;;     Added: icicle-menu-bar-make-toggle - same as bmkp-menu-bar-make-toggle in bookmark+-mac.el.
 ;; 2014/04/01 dadams
 ;;     icicle-define-bookmark-command-1:
 ;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
@@ -5846,6 +5848,21 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/04/05 dadams
+;;     Removed: icicle-search-tags-menu-map.
+;;     Renamed: icicle-search-goto-menu-map       to icicle-goto-menu-map,
+;;              icicle-search-goto-imenu-menu-map to icicle-goto-imenu-menu-map.
+;;     icicle-search-menu-map: Renamed submenu from Search to Icicles Search.  Reordered.
+;;                             icicle-tags-search: Renamed Tagged to Emacs Tagged.
+;;     icicle-goto-imenu-menu-map: Renamed submenu from Definition to Definition (Imenu).
+;;     icicle-goto-menu-map: Moved Emacs TAGS stuff here (from deleted icicle-search-tags-menu-map).
+;;     icicle-options-toggle-menu-map:
+;;       Use icicle-menu-bar-make-toggle (new) for
+;;         icicle-toggle-(~-for-home-dir|search-replace-common-match|search-replace-whole
+;;                        |search-whole-word|WYSIWYG-Completions),
+;;       Corrected :help and :keys for icicle-toggle-completions-format (typo).
+;;     Moved Frames menu after Customize menu.
+;;     icicle-custom-menu-map, icicle-apropos-menu-map: Added `+ ' prefix for multi-command menu items.
 ;; 2014/04/04 dadams
 ;;     Added: icicle-options-choose-menu-map, icicle-options-toggle-menu-map.
 ;;     icicle-options-menu-map: Added submenus Choose and Toggle.  Renamed items, removing Toggle etc.
