@@ -29,11 +29,11 @@ To change the default font for new (non special-display) frames, put either of t
 
 : ##(add-to-list 'default-frame-alist '(font . ## ''##FONT##'' ##))##
 
-: ##(set-frame-attribute 'default t :font ## ''##FONT##'' ##))##
+: ##(set-face-attribute 'default t :font ## ''##FONT##'' ##))##
 
 To change the default font for the current frame, as well as future frames, put either of these in your init file:
 
-: ##(set-frame-attribute 'default nil :font ## ''##FONT##'' ##))##
+: ##(set-face-attribute 'default nil :font ## ''##FONT##'' ##))##
 
 : ##(set-frame-font  ## ''##FONT##'' ##nil t)##
 
