@@ -1,12 +1,10 @@
-FlyMake performs on-the-fly syntax checks on the files being edited
-using the external syntax check tool (usually the compiler).
-Highlights erroneous lines and displays associated
-error messages.  Flymake is part of Emacs 23 and some of the tips
-below works out-of-the-box there.
+FlyMake performs on-the-fly syntax checks on the files being edited using the external syntax check tool (usually the compiler). Highlights erroneous lines and displays associated error messages.  Flymake is part of Emacs 23 and some of the tips below works out-of-the-box there.
 
 * http://flymake.sourceforge.net/
 
 Unfortunately, this project is outdated and last change was 3 years ago.
+
+For a modern alternative, check out Flycheck.
 
 Currently new and improved version of Flymake is maintained by Sam Graham and available on github:
 
