@@ -1,6 +1,79 @@
-From the package website: "thing-at-point-utils.el: Delivers a set of functions to return,
-mover over or manipulate a given THING. THING may be a
-well known form as symbol', `list', `sexp', `defun' but
-also a new defined and abstract thing."
+Deliver a set of functions to return, mover over or  manipulate a given THING. 
+
+THING may be a well known form as word, paragraph, but also a char class as  `alnum' or a new defined thing.
+
+For example `ar-alnum-atpt' will return  alpha-numerical chars below and around cursor as a
+ string. 
+`ar-bounds-of-alnum-atpt' returns the  borders of that string as a list and so on.
+
+
+Some example key-settings
+
+ (global-set-key [(super \()] 'ar-parentize-region-atpt)
+
+ (global-set-key [(super \/)] 'ar-slash-region-atpt)
+
+ (global-set-key [(super \<)] 'ar-lesser-angle-region-atpt)
+
+ (global-set-key [(super \>)] 'ar-greater-angle-region-atpt)
+
+ (global-set-key [(super \[)] 'ar-bracket-region-atpt)
+
+ (global-set-key [(super \\)] 'ar-backslash-region-atpt)
+
+ (global-set-key [(super \{)] 'ar-brace-region-atpt)
+
+
+Beside of <super>, the key already tells what to pick.
+ Quite often used are commands like this:
+
+ (global-set-key [(control c)(\")] 'ar-doublequote-or-copy-atpt)
+
+ (global-set-key [(control c)(\')] 'ar-singlequote-or-copy-atpt)
+
+A whole bunch of commands are available:
+
+ ar-THING-atpt
+
+ ar-THING-bounds-atpt
+
+ ar-THING-beginning-position-atpt
+
+ ar-THING-end-position-atpt
+
+ ar-THING-beginning-atpt
+
+ ar-THING-end-atpt
+
+ ar-THING-length-atpt
+
+ ar-THING-copy-atpt
+
+ ar-THING-kill-atpt
+
+ ar-THING-forward-atpt
+
+ ar-THING-backward-atpt
+
+ ar-THING-transpose-atpt
+
+ ar-THING-sort-atpt
+
+ ar-THING-check-atpt
+
+
+Also a couple of commands, whose use is much less probable:
+
+ ar-THING-slash-atpt
+
+ ar-THING-double-backslash-atpt
+
+ ar-THING-doubleslash-atpt
+
+ ar-THING-delete-in-region
+
+...
+
+and several hundreds more
 
 https://launchpad.net/s-x-emacs-werkstatt
