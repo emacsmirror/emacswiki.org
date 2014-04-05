@@ -81,6 +81,14 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 : '''Icicles Options''' submenu:
 ::: [[image:drew-emacs-icicle-Icicles-Options-menu]]
 
+:: '''Icicles Options''' > '''Choose''' submenu:
+:::: [[image:drew-emacs-icicle-Icicles-Options-Choose-menu]]
+
+:: '''Icicles Options''' > '''Toggle''' submenu:
+:::: [[image:drew-emacs-icicle-Icicles-Options-Toggle-menu]]
+
+
+
 
 
 
