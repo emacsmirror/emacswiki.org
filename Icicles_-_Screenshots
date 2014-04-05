@@ -34,8 +34,12 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 : '''Edit''' submenu:
 ::: [[image:drew-emacs-icicle-Edit-menu]]
 
-: '''Bookmarks''' submenu (see also '''[[Bookmark+]]'''):
+: '''Jump To Bookmarks''' submenu (see also '''[[Bookmark+]]'''):
 ::: [[image:drew-emacs-icicle-Bookmarks-menu]]
+
+:: '''Jump To Bookmarks''' > '''With Tags''' submenu (see also '''[[Bookmark+]]'''):
+:::: [[image:drew-emacs-icicle-Bookmarks-With-Tags-menu]]
+
 
 : '''Frames''' submenu:
 ::: [[image:drew-emacs-icicle-Frames-menu]]
