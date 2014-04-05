@@ -4,7 +4,7 @@ FlyMake performs on-the-fly syntax checks on the files being edited using the ex
 
 Unfortunately, this project is outdated and last change was 3 years ago.
 
-For a modern alternative, check out Flycheck.
+For a modern alternative, check out [[Flycheck]]
 
 Currently new and improved version of Flymake is maintained by Sam Graham and available on github:
 
