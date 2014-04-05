@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Apr  4 15:25:23 2014 (-0700)
+;; Last-Updated: Fri Apr  4 21:08:35 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10773
+;;     Update #: 10780
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5847,6 +5847,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
 ;; 2014/04/04 dadams
+;;     Added: icicle-options-choose-menu-map, icicle-options-toggle-menu-map.
+;;     icicle-options-menu-map: Added submenus Choose and Toggle.  Renamed items, removing Toggle etc.
+;;                              Changed :visible to :enable for Do Re Mi, swank, etc.
 ;;     icicle-define-icicle-maps:
 ;;       Put Icicles bookmark jump commands on Icicles menu, wherever it might be.  Use `+ ' prefix.
 ;;       Added commands icicle-find-file-tagged-other-window and icicle-bookmark-tagged-other-window.
