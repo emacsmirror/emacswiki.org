@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Tue Apr  1 11:05:45 2014 (-0700)
+;; Last-Updated: Sat Apr  5 09:44:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1224
+;;     Update #: 1232
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -37,7 +37,8 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-user-error', `icicle-with-selected-window'.
+;;    `icicle-menu-bar-make-toggle', `icicle-user-error',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -1037,6 +1038,20 @@ You need library `Bookmark+' for this command." type type) ; Doc string
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
            (icicle-bookmark-cleanup)))) ; Last code
+
+;; Same as `bmkp-menu-bar-make-toggle' in `bookmark+-mac.el'.
+(defmacro icicle-menu-bar-make-toggle (name variable doc message help &rest body)
+  "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
+NAME is the name of the toggle command to define.
+VARIABLE is the variable to set.
+DOC is the menu-item name.
+MESSAGE is the toggle message, minus status.
+HELP is `:help' string.
+BODY is the function body to use.  If present, it is responsible for
+setting the variable and displaying a status message (not MESSAGE)."
+  (if (< emacs-major-version 21)
+      `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
+    `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
