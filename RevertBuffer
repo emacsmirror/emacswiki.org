@@ -10,7 +10,7 @@ Is there a quick way of re-visiting the file in current buffer? This is useful w
 # ##(global-set-key [(control c) r] 'revert-buffer)##
 # ##C-x RET r RET RET##
 
-The fourth one runs =revert-buffer-with-coding-system= and prompt you for a new coding system (first =RET=). Also if a more recent autosave file is available, it will select it by default in the second =RET= (not necessarily what you want).
+The fourth one runs `revert-buffer-with-coding-system' and prompt you for a new coding system (first `RET'). Also if a more recent autosave file is available, it will select it by default in the second `RET' (not necessarily what you want).
 The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit RET to re-read the file from disk.  Before I knew about find-alternate-file, I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the C-c keymap.
 
 
