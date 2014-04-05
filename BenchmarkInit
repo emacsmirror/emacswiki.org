@@ -1,0 +1,49 @@
+== Description ==
+
+benchmark-init records the duration of time spent in `require' and `load' operations.  By
+loading the module early on in the Emacs init file it will essentially benchmark each
+Emacs module as it is being loaded.
+
+The results can be shown both in a tabular format or as a tree based on the origin of
+the recorded operations.
+
+== Usage ==
+
+Load benchmark-init.el as early as possible in the Emacs initialization file by adding:
+
+[code]
+(load "/path/to/benchmark-init.el")
+[/code]
+
+The results are displayed by calling either of the functions:
+
+ * `benchmark-init/show-durations-tabulated'
+
+[code]
+| Module                       |  Type   | ms [^] |
++------------------------------+---------+--------+
+| eldoc-eval                   | require |    204 |
+| eldoc                        | require |    183 |
+| ido                          | require |     59 |
+| ispell                       | require |     16 |
+| grep                         | require |      6 |
+| ~/.emacs.d/benchmark-init.el | load    |      1 |
+[/code]
+
+ * `benchmark-init/show-durations-tree'
+
+[code]
+╼►[benchmark-init/root nil 0ms]
+  ├─[benchmark-init-modes require 8ms]
+  ├─[eldoc-eval require 2ms]
+  │ ╰─[eldoc require 125ms]
+  ├─[~/.emacs.d/el-get/benchmark-init/benchmark-init.el load 4ms]
+  ╰─[auto-dictionary require 72ms]
+    ╰─[flyspell require 9ms]
+      ╰─[ispell require 24ms]
+[/code]
+
+== Download ==
+
+The module is available on github:
+https://github.com/dholm/benchmark-init-el
