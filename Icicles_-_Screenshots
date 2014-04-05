@@ -42,28 +42,21 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 :::: [[image:drew-emacs-icicle-Bookmarks-With-Tags-menu]]
 
 
-: '''Frames''' submenu:
-::: [[image:drew-emacs-icicle-Frames-menu]]
-
-
 : '''Go To''' submenu:
 ::: [[image:drew-emacs-icicle-Go-To-menu]]
 
-:: '''Go To''' > '''Definition''' submenu:
+:: '''Go To''' > '''Definition (Imenu)''' submenu:
 :::: [[image:drew-emacs-icicle-Go-To-Definition-menu]]
 
 
-: '''Search''' submenu:
+: '''Icicles Search''' submenu:
 ::: [[image:drew-emacs-icicle-Search-menu]]
 
-:: '''Search''' > '''Definitions''' submenu:
+:: '''Icicles Search''' > '''Definitions''' submenu:
 :::: [[image:drew-emacs-icicle-Search-Definitions-menu]]
 
-:: '''Search''' > '''Bookmarks''' submenu:
+:: '''Icicles Search''' > '''Bookmarks''' submenu:
 :::: [[image:drew-emacs-icicle-Search-Bookmarks-menu]]
-
-:: '''Search''' > '''Emacs Tags''' submenu:
-:::: [[image:drew-emacs-icicle-Search-Emacs-Tags-menu]]
 
 
 : '''Describe''' submenu:
@@ -76,6 +69,10 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 
 : '''Customize''' submenu:
 ::: [[image:drew-emacs-icicle-Customize-menu]]
+
+
+: '''Frames''' submenu:
+::: [[image:drew-emacs-icicle-Frames-menu]]
 
 
 : '''Icicles Options''' submenu:
