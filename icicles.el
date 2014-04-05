@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  4 21:07:33 2014 (-0700)
+;; Last-Updated: Sat Apr  5 10:05:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23535
+;;     Update #: 23539
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -109,8 +109,9 @@
 ;;    `icicle-find-file-abs-of-content-action-1',
 ;;    `icicle-find-file-no-search-action-1',
 ;;    `icicle-find-file-of-content-action-1',
-;;    `icicle-maybe-cached-action', `icicle-search-modes',
-;;    `icicle-with-comments-hidden', `icicle-with-selected-window'.
+;;    `icicle-maybe-cached-action', `icicle-menu-bar-make-toggle',
+;;    `icicle-search-modes', `icicle-with-comments-hidden',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -1379,6 +1380,7 @@
 ;;    `icicle-fundoc-last-initial-cand-set',
 ;;    `icicle-general-help-string',
 ;;    `icicle-get-alist-candidate-function',
+;;    `icicle-goto-imenu-menu-map', `icicle-goto-menu-map',
 ;;    `icicle-hist-cands-no-highlight', `icicle-hist-var',
 ;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
 ;;    `icicle-incremental-completion-p', `icicle-info-buff',
