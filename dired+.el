@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb 16 07:49:05 2014 (-0800)
+;; Last-Updated: Sat Apr  5 17:21:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7410
+;;     Update #: 7451
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -276,6 +276,7 @@
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
 ;;    `diredp-dired-union-other-window',
 ;;    `diredp-do-async-shell-command-recursive', `diredp-do-bookmark',
+;;    `diredp-do-bookmark-dirs-recursive',
 ;;    `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-bookmark-in-bookmark-file-recursive',
 ;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
@@ -512,6 +513,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/05 dadams
+;;     Added: diredp-do-bookmark-dirs-recursive.
+;;            Renamed from bmkp-create-dired-bookmarks-recursive in bookmark+-1.el (removed).
+;;       Bound to M-B (M-S-b).
+;;       Added to menus *-subdir-menu, *-operate-bookmarks-menu, *-bookmarks-menu.
+;;     diredp-get-confirmation-recursive: Added optional TYPE arg.
+;;     diredp-insert-subdirs-recursive: Call diredp-get-confirmation-recursive with TYPE arg.
 ;; 2014/02/16 dadams
 ;;     dired-pop-to-buffer: Do not redefine for Emacs > 24.1.
 ;;     dired-mark-pop-up: Updated doc string.
@@ -2352,6 +2360,9 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Create Bookmark-File Bookmark (Here and Below)..."
     diredp-set-bookmark-file-bookmark-for-marked-recursive
     :help "Create a bookmark-file bookmark for marked files, including in marked subdirs"))
+(define-key diredp-menu-bar-operate-bookmarks-menu [diredp-do-bookmark-dirs-recursive]
+    '(menu-item "Bookmark Dirs (Here and Below)..." diredp-do-bookmark-dirs-recursive
+      :help "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively."))
 (define-key diredp-menu-bar-operate-bookmarks-menu [diredp-do-bookmark-recursive]
   '(menu-item "Bookmark (Here and Below)..." diredp-do-bookmark-recursive
     :help "Bookmark the marked files, including those in marked subdirs"))
@@ -2536,15 +2547,18 @@ If no one is selected, symmetric encryption will be performed.  "
   (cons "Bookmark" diredp-menu-bar-bookmarks-recursive-menu))
 (define-key diredp-menu-bar-bookmarks-recursive-menu
     [diredp-do-bookmark-in-bookmark-file-recursive]
-    '(menu-item "Bookmark in Bookmark File" diredp-do-bookmark-in-bookmark-file-recursive
+    '(menu-item "Bookmark in Bookmark File..." diredp-do-bookmark-in-bookmark-file-recursive
       :help "Bookmark marked files, including those in marked subdirs, in a bookmark file"))
 (define-key diredp-menu-bar-bookmarks-recursive-menu
     [diredp-set-bookmark-file-bookmark-for-marked-recursive]
-  '(menu-item "Create Bookmark-File Bookmark"
+  '(menu-item "Create Bookmark-File Bookmark..."
     diredp-set-bookmark-file-bookmark-for-marked-recursive
     :help "Create a bookmark-file bookmark for marked files, including in marked subdirs"))
+(define-key diredp-menu-bar-bookmarks-recursive-menu [diredp-do-bookmark-dirs-recursive]
+    '(menu-item "Bookmark Dirs..." diredp-do-bookmark-dirs-recursive
+      :help "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively."))
 (define-key diredp-menu-bar-bookmarks-recursive-menu [diredp-do-bookmark-recursive]
-    '(menu-item "Bookmark" diredp-do-bookmark-recursive
+    '(menu-item "Bookmark..." diredp-do-bookmark-recursive
       :help "Bookmark the marked files, including those in marked subdirs"))
 
 
@@ -2783,6 +2797,9 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
+(define-key diredp-menu-bar-subdir-menu [diredp-do-bookmark-dirs-recursive]
+    '(menu-item "Bookmark Dirs Here and Below..." diredp-do-bookmark-dirs-recursive
+      :help "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively."))
 (define-key diredp-menu-bar-subdir-menu [bookmark-dired]
   '(menu-item "Bookmark Dired Buffer..." bookmark-set :help "Bookmark this Dired buffer"))
 (define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
@@ -2979,6 +2996,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
 (define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
+(define-key diredp-recursive-map [(meta shift ?b)] 'diredp-do-bookmark-dirs-recursive)  ; `M-B'
 (define-key diredp-recursive-map (kbd "C-M-b")                                          ; `C-M-b'
   'diredp-set-bookmark-file-bookmark-for-marked-recursive)
 (define-key diredp-recursive-map [(control meta shift ?b)]                              ; `C-M-B'
@@ -3977,12 +3995,14 @@ A simple, recursive version of the classic `maplist'."
 
 ;;; Commands operating on marked at all levels below (recursively)
 
-(defun diredp-get-confirmation-recursive ()
-  "Get confirmation from user to act on all files here and below.
+(defun diredp-get-confirmation-recursive (&optional type)
+  "Get confirmation from user to act on all TYPE here and below.
+If TYPE is nil use \"files\" in the confirmation prompt, else use TYPE.
 Raise an error if not confirmed.
 Raise an error first if not in Dired mode."
   (diredp-ensure-mode)
-  (unless (y-or-n-p "Act on ALL files (or all marked if any) in and UNDER this dir? ")
+  (unless (y-or-n-p (format "Act on ALL %s (or all marked if any) in and UNDER this dir? "
+                            (or type 'files)))
     (error "OK, canceled")))
 
 ;;;###autoload
@@ -4008,7 +4028,7 @@ subdirs are inserted...).
 
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive 'subdirs) (list current-prefix-arg)))
   (dolist (subdir  (diredp-get-files ignore-marks-p #'file-directory-p 'INCLUDE-SUBDIRS-P))
     (dired-maybe-insert-subdir subdir)))
 
@@ -4316,6 +4336,57 @@ Dired buffer and all subdirs, recursively."
                                  (read-string "Prefix for bookmark name: ")))))
   (dolist (file  (diredp-get-files ignore-marks-p))
     (diredp-bookmark prefix file 'NO-MSG-P)))
+
+;;;###autoload
+(defun diredp-do-bookmark-dirs-recursive (ignore-marks-p &optional msg-p)
+  "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively.
+Create a Dired bookmark for this directory and for each of its marked
+subdirectories.  Handle each of the marked subdirectory similarly:
+bookmark it and its marked subdirectories, and so on, recursively.
+Name each of these Dired bookmarks with the Dired buffer name.
+
+After creating the Dired bookmarks, create a sequence bookmark, named
+`DIRBUF and subdirs', where DIRBUF is the name of the original buffer.
+This bookmark represents the whole Dired tree rooted in the directory
+where you invoked the command.  Jumping to this sequence bookmark
+restores all of the Dired buffers making up the tree, by jumping to
+each of their bookmarks.
+
+With a prefix arg, bookmark the marked and unmarked subdirectory Dired
+buffers, recursively, that is, ignore markings.
+
+Note:
+
+* If there is more than one Dired buffer for a given subdirectory then
+  only the first such is used.
+
+* This command creates new bookmarks.  It never updates or overwrites
+  an existing bookmark.
+
+You need library `Bookmark+' for this command."
+  (interactive (progn (unless (featurep 'bookmark+)
+                        (error "You need library `Bookmark+' for this command"))
+                      (diredp-get-confirmation-recursive 'subdirs)
+                      (list current-prefix-arg t)))
+  (diredp-ensure-mode)
+  (let ((sdirs   (diredp-get-subdirs ignore-marks-p))
+        (snames  ()))
+    (when (and msg-p  sdirs) (message "Checking descendent directories..."))
+    (dolist (dir  (cons default-directory sdirs))
+      (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
+        (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
+          (let ((bname  (bookmark-buffer-name))
+                (count  2))
+            (while (and (bmkp-get-bookmark-in-alist bname 'NOERROR)
+                        (setq bname  (format "%s[%d]" bname count))))
+            (bookmark-set bname nil nil 'NO-UPDATE-P) ; Inhibit updating displayed list.
+            (push bname snames)))))
+    (let ((bname  (format "%s and subdirs" (bookmark-buffer-name)))
+          (count  2))
+      (while (and (bmkp-get-bookmark-in-alist bname 'NOERROR)
+                  (setq bname  (format "%s[%d]" bname count))))
+      (bmkp-set-sequence-bookmark bname (nreverse snames) -1 'MSGP))
+    (bmkp-refresh/rebuild-menu-list nil)))
 
 ;;;###autoload
 (defun diredp-do-bookmark-in-bookmark-file-recursive (bookmark-file ; Bound to `M-+ C-M-B')
