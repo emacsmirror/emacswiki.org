@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.07.23
+;; Version: 2014.04.06
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr  5 10:05:32 2014 (-0700)
+;; Last-Updated: Sun Apr  6 07:26:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23539
+;;     Update #: 23542
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1593,10 +1593,10 @@
 (require 'icicles-opt)  ;; Requires face
 (require 'icicles-var)  ;; Requires opt
 (require 'icicles-fn)   ;; Requires mac, opt, var
-(require 'icicles-mcmd) ;; Requires opt, var, fn, mac
+(require 'icicles-mcmd) ;; Requires mac, opt, var, fn
 (require 'icicles-cmd1) ;; Requires mac, opt, var, fn, mcmd
 (require 'icicles-cmd2) ;; Requires mac, opt, var, fn, mcmd, cmd1
-(require 'icicles-mode) ;; Requires face, opt, cmd
+(require 'icicles-mode) ;; Requires mac, face, opt, cmd1, cmd2
 
  
 ;;(@* "Miscellaneous")
