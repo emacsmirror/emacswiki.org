@@ -131,6 +131,26 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
+How to disable the hide common match in Completion feature ? I've put the `(setq icicle-hide-common-match-in-Completions-flag nil)' in my `.emacs' and using for example `icicle-recent-file' display "Turned OF: Showing Completion Match "C-x ." " but in fact it is not turned off.
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
 [:AyvangoMultiTaggingInOrgMode]
 
 [new:Ayvango:2013-04-07 01:43 UTC]
