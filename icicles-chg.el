@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Apr  5 10:12:04 2014 (-0700)
+;; Last-Updated: Sun Apr  6 07:33:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10808
+;;     Update #: 10810
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5848,6 +5848,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/04/06 dadams
+;;     Require icicles-mac.el, for icicle-menu-bar-make-toggle.
 ;; 2014/04/05 dadams
 ;;     Removed: icicle-search-tags-menu-map.
 ;;     Renamed: icicle-search-goto-menu-map       to icicle-goto-menu-map,
@@ -8439,6 +8441,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2014/04/06 dadams
+;;     New version - updated icicles-mac.el.
 ;; 2012/03/11 dadams
 ;;     Font-lock keywords for emacs-lisp-mode, for all Emacs versions, 20-24.
 ;; 2013/03/10 dadams
