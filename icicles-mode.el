@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Apr  5 10:06:35 2014 (-0700)
+;; Last-Updated: Sun Apr  6 07:27:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10135
+;;     Update #: 10136
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -147,6 +147,12 @@
   ;; ad-activate, ad-copy-advice-info, ad-deactivate, ad-disable-advice, ad-enable-advice,
   ;; ad-find-some-advice, ad-get-arg, ad-is-active, ad-set-advice-info, defadvice
 
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
+  ;; icicle-menu-bar-make-toggle
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
   ;; icicle-default-cycling-mode, icicle-incremental-completion, icicle-default-value, icicle-kbd,
