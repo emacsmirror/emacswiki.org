@@ -1123,10 +1123,11 @@ Command '''`bmkp-bmenu-make-sequence-from-marked'''' creates a
 sequence from the marked bookmarks in the [[#BookmarkListDisplay|bookmark-list display]], in their
 current order.
 
-Command '''`bmkp-create-dired-bookmarks-recursive'''' creates a Dired
+If you use library '''[[Dired+]]''' then you can use command
+'''`diredp-do-bookmark-dirs-recursive'''' to create a Dired
 bookmark for the current Dired buffer and each of its marked
 subdirectories.  Each of those subdirectories is handled
-similarly, and so on, recursively.  And it creates a sequence
+similarly, and so on, recursively.  This command also creates a sequence
 bookmark that includes all of these Dired bookmarks, so that it
 represents a tree (hierarchy) of Dired buffers that are opened
 together.    This
