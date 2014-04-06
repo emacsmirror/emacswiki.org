@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 28 10:19:06 2014 (-0700)
+;; Last-Updated: Sat Apr  5 16:56:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14761
+;;     Update #: 14763
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1075,16 +1075,17 @@
 ;;  bookmark from the marked bookmarks in the bookmark-list display,
 ;;  in their current order.
 ;;
-;;  Command `bmkp-create-dired-bookmarks-recursive' creates a Dired
-;;  bookmark for the current Dired buffer and each of its marked
-;;  subdirectories.  Each of those subdirectories is handled
-;;  similarly, and so on, recursively.  And it creates a sequence
-;;  bookmark that includes all of these Dired bookmarks, so that it
-;;  represents a tree (hierarchy) of Dired buffers that are opened
-;;  together.  This provides an alternative to inserting all of the
-;;  relevant subdirectories into the same Dired buffer.  With a prefix
-;;  argument, all of the descendent Dired buffers are included,
-;;  whether or not they are marked.
+;;  If you use library `Dired+' (`dired+.el') then you can use command
+;;  `diredp-do-bookmark-dirs-recursive' to create a Dired bookmark for
+;;  the current Dired buffer and each of its marked subdirectories.
+;;  Each of those subdirectories is handled similarly, and so on,
+;;  recursively.  This command also creates a sequence bookmark that
+;;  includes all of these Dired bookmarks, so that it represents a
+;;  tree (hierarchy) of Dired buffers that are opened together.  This
+;;  provides an alternative to inserting all of the relevant
+;;  subdirectories into the same Dired buffer.  With a prefix arg, all
+;;  of the descendent Dired buffers are included, whether or not they
+;;  are marked.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
 ;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
