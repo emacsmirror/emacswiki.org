@@ -1,5 +1,7 @@
 GNU Emacs has a built-in capability for finding 'other' files from the current buffer. These are intended to be related files such as C/C++ header files. This capability was added some time in 2002, and so should be more or less universally available by now. 
 
+== Usage ==
+
 The command to invoke is <code>ff-find-other-file</code>, which is also available under the possibly more descriptive alias <code>ff-find-related-file</code>. In addition there is a <code>ff-get-other-file</code> command which disables detection of include files (see below). No keys are bound by default, but can obviously be added, see CategoryKeys.
 
 There are many options which can be set to customize the way in which the other files are located. The docstring describes them as follows:
