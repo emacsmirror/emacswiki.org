@@ -1,0 +1,90 @@
+GNU Emacs has a built-in capability for finding 'other' files from the current buffer. These are intended to be related files such as C/C++ header files. This capability was added some time in 2002, and so should be more or less universally available by now. 
+
+The command to invoke is <code>ff-find-other-file</code>, which is also available under the possibly more descriptive alias <code>ff-find-related-file</code>. In addition there is a <code>ff-get-other-file</code> command which disables detection of include files (see below). No keys are bound by default, but can obviously be added, see CategoryKeys.
+
+There are many options which can be set to customize the way in which the other files are located. The docstring describes them as follows:
+
+{{{
+ff-find-other-file is an interactive autoloaded compiled Lisp function in `find-file.el'.
+
+(ff-find-other-file &optional IN-OTHER-WINDOW IGNORE-INCLUDE)
+
+Find the header or source file corresponding to this file.
+Being on a `#include' line pulls in that file.
+
+If optional IN-OTHER-WINDOW is non-nil, find the file in the other window.
+If optional IGNORE-INCLUDE is non-nil, ignore being on `#include' lines.
+
+Variables of interest include:
+
+ - `ff-case-fold-search'
+   Non-nil means ignore cases in matches (see `case-fold-search').
+   If you have extensions in different cases, you will want this to be nil.
+
+ - `ff-always-in-other-window'
+   If non-nil, always open the other file in another window, unless an
+   argument is given to `ff-find-other-file'.
+
+ - `ff-ignore-include'
+   If non-nil, ignores #include lines.
+
+ - `ff-always-try-to-create'
+   If non-nil, always attempt to create the other file if it was not found.
+
+ - `ff-quiet-mode'
+   If non-nil, traces which directories are being searched.
+
+ - `ff-special-constructs'
+   A list of regular expressions specifying how to recognize special
+   constructs such as include files etc, and an associated method for
+   extracting the filename from that construct.
+
+ - `ff-other-file-alist'
+   Alist of extensions to find given the current file's extension.
+
+ - `ff-search-directories'
+   List of directories searched through with each extension specified in
+   `ff-other-file-alist' that matches this file's extension.
+
+ - `ff-pre-find-hook'
+   List of functions to be called before the search for the file starts.
+
+ - `ff-pre-load-hook'
+   List of functions to be called before the other file is loaded.
+
+ - `ff-post-load-hook'
+   List of functions to be called after the other file is loaded.
+
+ - `ff-not-found-hook'
+   List of functions to be called if the other file could not be found.
+
+ - `ff-file-created-hook'
+   List of functions to be called if the other file has been created.
+}}}
+
+== Example Init ==
+
+For example, the following InitFile code would be suitable for setting up C/C++ header file switching using <code>M-o</code>
+
+{{{
+(defvar my-cpp-other-file-alist
+  '(("\\.cpp\\'" (".hpp" ".ipp"))
+    ("\\.ipp\\'" (".hpp" ".cpp"))
+    ("\\.hpp\\'" (".ipp" ".cpp"))
+    ("\\.cxx\\'" (".hxx" ".ixx"))
+    ("\\.ixx\\'" (".cxx" ".hxx"))
+    ("\\.hxx\\'" (".ixx" ".cxx"))
+    ("\\.c\\'" (".h"))
+    ("\\.h\\'" (".c"))
+    ))
+
+(setq-default ff-other-file-alist 'my-cpp-other-file-alist)
+
+(add-hook 'c-initialization-hook (lambda ()
+    (define-key c-mode-base-map [(meta o)] 'ft-get-other-file))
+)
+}}}
+
+== Limitations ==
+
+Generally there is little point setting up more than one 'other' file for any given file. This is because <code>ff-find-other-file</code> always prefers to switch to an existing buffer over a unvisited file. This generally means that invoking the command two times will take you back to the original buffer, and not (say) a third, unvisited file.
