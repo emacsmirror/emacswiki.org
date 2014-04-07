@@ -59,7 +59,8 @@ This will add M-o and M-m combinations to your c-mode. M-m will produce method/f
 = Alternatives =
 
 * [https://github.com/michaelw/buftoggle buftoggle.el] provides functions to switch between related files and buffers, and also allows to set up search paths on a per-directory basis.
-* [[toggle.el]] quickly open corresponding file (eg test vs impl)
+* [[toggle.el]] quickly open corresponding file (eg test vs imll)
+* FindOtherFile -- built-in capability for GNU Emacs
 
 ----
 CategoryProgrammerUtils
