@@ -2,13 +2,15 @@ BufferMenu has various options to sort the listing of buffers.  According to the
 
 : ''The buffers are listed in the order that they were current; the buffers that were current most recently come first.''
 
-What the manual fails to mention is that you can change the sorting with `M-x Buffer-menu-sort'.
+What the manual fails to mention is that you can change the sorting with `M-x Buffer-menu-sort'
 
 ; `M-2 M-x Buffer-menu-sort': Sort by buffer ''name''.
 ; `M-3 M-x Buffer-menu-sort': Sort by buffer ''size'' (ascending).
 ; `M-4 M-x Buffer-menu-sort': Sort by buffer ''mode'' name.
 ; `M-5 M-x Buffer-menu-sort': Sort by buffer ''file'' name.
 ; `M-x Buffer-menu-sort': Sort by ''display time'' (default).
+
+Some of these might vary by version. Also note that in some GUI versions, you can just click on the column's name (e.g. click on Size to sort by size).
 
 If you hit the S key (bound to tabulated-list-sort) in the Buffer Menu, the Buffer Menu is sorted by column.  Unfortunately, there's no command I found for returning tabulated-list-sort-key variable to its default nil value -- except to kill-buffer then buffer-menu to bring it back.
 
