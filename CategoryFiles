@@ -23,6 +23,7 @@ files.
 * FilesPlus -- enhancements to standard library ##files.el##
 * FindFileAtPoint -- filename (or URL and other things) at point
 * FindFilesCommand -- do a file find with emacs only functionality
+* FindOtherFile -- GNU Emacs has this built-in capability for finding related files (e.g. C/C++ header files)
 * ForceBackups -- Force backups for each save. Good with version-control.
 * GlobalFF -- find and open any file on your system regardless of where it is
 * [[Gpicker]] -- quickly pick a file in project by typing just few characters of it's name
