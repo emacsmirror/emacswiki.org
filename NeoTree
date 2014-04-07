@@ -1,1 +1,24 @@
+= About =
+
+A emacs tree plugin like NerdTree.
+
 https://github.com/jaypei/emacs-neotree
+
+[img]https://raw.githubusercontent.com/wiki/jaypei/emacs-neotree/imgs/neotree-1.png[/img]
+
+
+= Installation =
+
+Clone project:
+
+  $ cd /some/path
+  $ git clone https://github.com/jaypei/emacs-neotree.git neotree
+
+Add emacs config:
+
+  (add-to-list 'load-path "/some/path/neotree")
+  (require 'neotree)
+
+Open NeoTree:
+
+  M-x neotree RET
