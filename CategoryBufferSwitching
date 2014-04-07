@@ -38,3 +38,4 @@ using arrow keys and/or mouse wheel
 * TabBarMode -- buffer tabs
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
 * [[ShortList]] -- an efficient way to access a short list of buffers
+* [https://github.com/renard/quick-buffer-switch Quick Buffer Switch] -- Switch to buffer using intelligent predicates.
