@@ -27,6 +27,7 @@ using arrow keys and/or mouse wheel
 * CategorizingInformationManager -- `ee-buffers' for buffer switching
 * BufferQuickSwitcher -- Another way to switch buffers
 * EasyBufferSwitch -- A combination of number-indexed switch and cycle switch
+* FindOtherFile -- GNU Emacs has this built-in capability for finding related files (e.g. C/C++ header files)
 * [[Lisp:contentswitch.el]] -- switch buffers by their content
 * [[Lisp:jump-or-exec.el]] -- Jump to a buffer matched by buffer name, or call function when not found. See also [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
 * [[cOpenRelational]] -- keeping in touch between header file and source file for C or C++
@@ -37,4 +38,3 @@ using arrow keys and/or mouse wheel
 * TabBarMode -- buffer tabs
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
 * [[ShortList]] -- an efficient way to access a short list of buffers
-
