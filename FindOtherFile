@@ -90,3 +90,7 @@ For example, the following InitFile code would be suitable for setting up C/C++ 
 == Limitations ==
 
 Generally there is little point setting up more than one 'other' file for any given file. This is because <code>ff-find-other-file</code> always prefers to switch to an existing buffer over a unvisited file. This generally means that invoking the command two times will take you back to the original buffer, and not (say) a third, unvisited file.
+
+
+----
+CategoryBufferSwitching CategoryFiles 
