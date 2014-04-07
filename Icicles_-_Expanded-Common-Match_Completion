@@ -61,6 +61,9 @@ To retrieve it, use '''`C-l''''
 `C-S-l' (that is, '''`##C-L##'''') to cycle previous inputs in the other
 direction -- see [[Icicles - History Enhancements]].  You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' to turn off expanded-common-match completion altogether, if you prefer.   You can cycle the value of this option from the minibuffer at any time, using '''`##C-M-"##''''.
 
+
+
+[:icicle-hide-common-match-in-Completions-flag]
 Sometimes the current completion candidates can be quite long, and
 so can their common match part.  In this situation it can
 sometimes help to tell Icicles to hide the common match part.
