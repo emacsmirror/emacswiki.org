@@ -1,6 +1,6 @@
 = About =
 
-A emacs tree plugin like NerdTree.
+A emacs tree plugin like [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] for Vim.
 
 https://github.com/jaypei/emacs-neotree
 
