@@ -131,7 +131,21 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
-How to disable the hide common match in Completion feature ? I've put the `(setq icicle-hide-common-match-in-Completions-flag nil)' in my `.emacs' and using for example `icicle-recent-file' display "Turned OF: Showing Completion Match "C-x ." " but in fact it is not turned off.
+[new]
+How to disable the hide common match in Completion feature ? I've put the `(setq icicle-hide-common-match-in-Completions-flag nil)' in my `.emacs' and using for example `icicle-recent-file' display "Turned OF: Showing Completion Match "C-x ." " but in fact it is not turned off. -- [[JohnDoe974]]
+
+[new:DrewAdams:2014-04-07 14:05 UTC]
+See [[Icicles - Expanded-Common-Match Completion#icicle-hide-common-match-in-Completions-flag|Expanded-Common-Match Completion]] for how to control the behavior. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
 
 
 <pre>
