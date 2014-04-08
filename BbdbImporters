@@ -83,8 +83,14 @@ file, but I guess that can be easily fixed.
     	      (buffer-substring (match-beginning 1) (match-end 1)) nil
     	      (buffer-substring (match-beginning 3) (match-end 3)) nil nil nil) )
           (forward-line))))
+
+== Importing from CSV files into bbdb 3 ==
+
+Simply download bbdb3-csv-import.el from https://gitorious.org/bbdb3-csv-import and follow the instructions at the top of the file.
+
+This project was created due to too many bugs in the bbdb 2 importer below. 
     
-== Importing from CSV files ==
+== Importing from CSV files into bbdb 2 ==
 
 If you can manage to arrange your data in CSV (comma separated value) 
 form, you can use ''lookout.el''. This package allows for importing calendar 
