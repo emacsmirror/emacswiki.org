@@ -1,0 +1,23 @@
+== sync-window-mode ==
+Keeps two side-by-side windows synchronized.
+You can switch it on by {{{M-x sync-window-mode}}}.
+
+The mode resulted from a discussion on [[http://stackoverflow.com/questions/20254174/in-split-window-emacs-how-to-search-the-other-buffer-first-line-for-then/20264759#comment33445763_20264759|stackoverflow]].
+
+It is only tested with GnuEmacs 24 and is still experimental.
+
+To use it with mercurial.el put the following lines into your configuration:
+{{{
+;; mercury related stuff:
+(add-hook 'sync-window-master-hook 'mercury-blame-resize)
+
+(add-hook 'sync-window-mode-hook '(lambda ()
+                    (set (make-local-variable 'isearch-update-post-hook) #'(lambda () (set-window-hscroll (selected-window) 0)))))
+}}}
+
+== Discussion about improvements ==
+
+* TODO: From [[http://stackoverflow.com/users/2639885/ammari|user Ammari at stackoverflow]]: Basically I would like to have both windows synced, so scrolling in one window would scroll the other as well.
+* TODO: Make the mode more stable.
+* TODO: Maybe, introduce Master-slave principle instead of the requirement that only two side-by-side windows are open?
+* TODO: Maybe, allow more windows in frame to be synchronized?
