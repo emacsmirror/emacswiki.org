@@ -117,13 +117,6 @@ See also [[GrowShrinkWindows]], with similar functionality. -- DavidHouse.
 
 See also [https://github.com/ramnes/move-border move-border] for an extended version of GrowShrinkWindows, packaged with vertical support.
 
-See also [https://github.com/cinsk/emacs-scripts/blob/master/snippets/window-frame.el window-frame.el] with similar functionality but support for multiple border handling.
-See the functions with the name "move-window-border-*" -- cinsk
-
-[new:IanYang:2011-11-30 14:33 UTC]
-
-Where does the magic number 4 in ##(+ fr-width 4)## come from? I have to use 2 instead.
-
 = Interactively Resizing Windows =
 
 Note: For CVS Emacs (version 22) you may want to try winsize.el that is part of [NxhtmlMode nXhtml] or windresize.el from http://www.cognition.ens.fr/~guerry/u/windresize.el
