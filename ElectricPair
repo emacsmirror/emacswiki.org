@@ -29,7 +29,6 @@ A better solution may be skeleton-insert-pair-maybe (see AutoPairs).
 
 
 ----
-That python binding did not work for me. Just performing M-x electric-pair-mode in a python file worked. No need to add lisp into your config to get it work.
-----
+
 CategoryParentheses
 
