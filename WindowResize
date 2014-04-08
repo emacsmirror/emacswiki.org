@@ -115,6 +115,8 @@ them. -- MathiasDahl
 
 See also [[GrowShrinkWindows]], with similar functionality. -- DavidHouse.
 
+See also [https://github.com/ramnes/move-border move-border] for an extended version of GrowShrinkWindows, packaged with vertical support.
+
 See also [https://github.com/cinsk/emacs-scripts/blob/master/snippets/window-frame.el window-frame.el] with similar functionality but support for multiple border handling.
 See the functions with the name "move-window-border-*" -- cinsk
 
