@@ -217,5 +217,23 @@ I just read about AllOut mode and wanted to see what it looked like; it would ha
 
 --LuisFernandes
 
+== Protect users with only linking to signed downloads and/or signed checksums ==
+
+The development community is a great target for peers with ill intent.
+And what better place to attack than the editors/IDEs that devs use to write code all the other devs use.
+
+Whether sitting on university, coffee shop or a conference public wifi, devs often work in public spaces where the network can be compromised.
+Compromising wifi networks is pretty easy too these days: add one of these to a shopping cart and off you go https://wifipineapple.com/
+
+Therefore, please protect us by only offering downloads to and only linking to downloads that offer either an encrypted download or an encrypted checksum.
+The encryption would have to be verifiable: HTTPS is a good starting place, GPG and HTTPS hosted public keys could work too.
+
+Here's an example of a link that raised this concern: http://sourceforge.net/projects/jdee/files/jdee/2.4.1/
+Here's an example of Eclipse offering secure checksums https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR2/eclipse-standard-kepler-SR2-linux-gtk-x86_64.tar.gz offers a link to https://www.eclipse.org/downloads/sums.php?file=/technology/epp/downloads/release/kepler/SR2/eclipse-standard-kepler-SR2-linux-gtk-x86_64.tar.gz&type=sha1
+Not ideal, but if you are in a public area you can check and then trust the download.
+
+Many Thanks
+
+-- Anonymous
 ----
 CategoryEmacsWikiSite
