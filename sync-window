@@ -1,5 +1,5 @@
 == sync-window-mode ==
-Keeps two side-by-side windows synchronized.
+The minor mode [[http://www.emacswiki.org/emacs/sync-window.el|sync-window-mode]] keeps two side-by-side windows synchronized.
 You can switch it on by {{{M-x sync-window-mode}}}.
 
 The mode resulted from a discussion on [[http://stackoverflow.com/questions/20254174/in-split-window-emacs-how-to-search-the-other-buffer-first-line-for-then/20264759#comment33445763_20264759|stackoverflow]].
