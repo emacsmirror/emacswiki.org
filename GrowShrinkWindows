@@ -44,3 +44,6 @@ So here's my effort. M-[ grows the window to the left, and M-] grows it to the r
 If you are using Emacs 22 (not yet released) then you may also be interested in
 http://ourcomments.org/Emacs/DL/elisp/bw-interactive.el which I have forgotten to mention somewhere.
 (But your effort above reminded me about it ...)
+
+[new]
+See also [https://github.com/ramnes/move-border move-border] for an extended version of the above script, packaged with vertical support.
