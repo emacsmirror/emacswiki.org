@@ -3,6 +3,7 @@ I switched to Emacs after having used Vim for over ten years.  I like Vim's edit
 Here you find some of my minor contributions to the Emacs ecosystem:
 
 * [https://github.com/emacs-helm/helm-dictionary helm-dictionary], an interface for various dictionaries using the helm framework ([http://melpa.milkbox.net/#/helm-dictionary available on MELPA]).
+* [https://github.com/tmalsburg/helm-bibtex helm-bibtex], a search engine for bibliographic entries in BibTeX files.
 * [https://github.com/emacs-helm/helm-mu helm-mu], a helm source for searching emails indexed using [https://github.com/djcb/mu mu].
 * [https://gist.github.com/tmalsburg/9747104 vcard2org-contacts.py], a Python script for converting contacts in vCard format to org-contacts. 
 * [https://github.com/tmalsburg/tango-plus-theme tango-plus-theme], a color theme for Emacs ([http://melpa.milkbox.net/#/tango-plus-theme available on MELPA])
