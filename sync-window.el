@@ -118,12 +118,5 @@ only when the buffer of the active window is in `sync-window-mode'."
                 'horizontal)
       (error))))))
 
-
-;; mercury related stuff:
-(add-hook 'sync-window-master-hook 'mercury-blame-resize)
-
-(add-hook 'sync-window-mode-hook '(lambda ()
-                    (set (make-local-variable 'isearch-update-post-hook) #'(lambda () (set-window-hscroll (selected-window) 0)))))
-
 (provide 'sync-window)
 ;;; sync-windows.el ends here
