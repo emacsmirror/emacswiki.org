@@ -3,9 +3,10 @@
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2014, Arthur Miller <arthur.miller@live.com>, all rights reserved.
 ;; Created: 2008-06-08 00:42:07
-;; Version: 1.2.1
-;; Last-Updated: 2009-01-20 17:25:40
+;; Version: 1.2.2
+;; Last-Updated: 2014-04-09 23:31:18
 ;; URL: http://www.emacswiki.org/emacs/download/thing-edit.el
 ;; Keywords: thingatpt, edit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -93,6 +94,10 @@
 
 ;;; Change log:
 ;;
+;; 2014/04/09
+;;      * Merge Arthur's new functions `thing-copy-paragraph' and `thing-paste-paragraph', thanks!
+;;      * Merge Arthur's autoload patch, thanks a lot!
+;;
 ;; 2009/01/13
 ;;      * Add many functions.
 ;;
@@ -133,6 +138,17 @@
 
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defgroup thing-edit nil
+  "Thing edit."
+  :group 'term)
+
+(defcustom thing-edit-show-message-p t
+  "Set this option to nil if want thing-edit work silencely.
+Default is nil."
+  :type 'boolean
+  :group 'thing-edit)
+
 (defun thing-edit-internal (object-beg object-end &optional kill-conditional)
   "A fast edit complexes object.
 Argument OBJECT-BEG the begin position that object.
@@ -141,9 +157,11 @@ Optional argument KILL-CONDITIONAL default is do copy handle, if KILL-CONDITIONA
   (interactive)
   (if kill-conditional
       (progn
-        (message "%s pasted." (buffer-substring object-beg object-end))
+        (if thing-edit-show-message-p
+            (message "%s pasted." (buffer-substring object-beg object-end)))
         (kill-region object-beg object-end))
-    (message "%s copied." (buffer-substring object-beg object-end))
+    (if thing-edit-show-message-p
+        (message "%s copied." (buffer-substring object-beg object-end)))
     (kill-ring-save object-beg object-end)))
 
 (defun thing-edit (thing &optional kill-conditional)
@@ -154,122 +172,159 @@ otherwise copy object."
     (thing-edit-internal (beginning-of-thing thing)
                          (end-of-thing thing)
                          kill-conditional)))
-
+;;;###autoload
 (defun thing-paste-sexp ()
   "Paste regular expression at current point."
   (interactive)
   (thing-edit 'sexp t))
 
+;;;###autoload
 (defun thing-copy-sexp ()
   "Copy regular expression at current point."
   (interactive)
   (thing-edit 'sexp))
 
+;;;###autoload
 (defun thing-paste-email ()
   "Paste email at current point."
   (interactive)
   (thing-edit 'email t))
 
+;;;###autoload
 (defun thing-copy-email ()
   "Copy email at current point."
   (interactive)
   (thing-edit 'email))
 
+;;;###autoload
 (defun thing-paste-filename ()
   "Paste filename at current point."
   (interactive)
   (thing-edit 'filename t))
 
+;;;###autoload
 (defun thing-copy-filename ()
   "Copy filename at current point."
   (interactive)
   (thing-edit 'filename))
 
+;;;###autoload
 (defun thing-paste-url ()
   "Paste url at current point."
   (interactive)
   (thing-edit 'url t))
 
+;;;###autoload
 (defun thing-copy-url ()
   "Copy url at current point."
   (interactive)
   (thing-edit 'url))
 
+;;;###autoload
 (defun thing-paste-word ()
   "Paste words at point."
   (interactive)
   (thing-edit 'word t))
 
+;;;###autoload
 (defun thing-copy-word ()
   "Copy words at point."
   (interactive)
   (thing-edit 'word))
 
+;;;###autoload
 (defun thing-paste-symbol ()
   "Paste symbol around point."
   (interactive)
   (thing-edit 'symbol t))
 
+;;;###autoload
 (defun thing-copy-symbol ()
   "Copy symbol around point."
   (interactive)
   (thing-edit 'symbol))
 
+;;;###autoload
 (defun thing-paste-line ()
   "Paste current line into Kill-Ring without mark the line."
   (interactive)
   (thing-edit 'line t))
 
+;;;###autoload
 (defun thing-copy-line ()
   "Copy current line into Kill-Ring without mark the line."
   (interactive)
   (thing-edit 'line))
 
+;;;###autoload
+(defun thing-copy-paragraph (&optional kill-conditional)
+  "Copy current paragraph around the point"
+  (interactive)
+  (thing-edit 'paragraph)
+  )
+
+;;;###autoload
+(defun thing-paste-paragraph (&optional kill-conditional)
+  "Paste current paragraph around the point"
+  (interactive)
+  (thing-edit 'paragraph t)
+  )
+
+;;;###autoload
 (defun thing-paste-defun ()
   "Paste function around point."
   (interactive)
   (thing-edit 'defun t))
 
+;;;###autoload
 (defun thing-copy-defun ()
   "Paste function around point."
   (interactive)
   (thing-edit 'defun))
 
+;;;###autoload
 (defun thing-paste-list ()
   "Paste list around point."
   (interactive)
   (thing-edit 'list t))
 
+;;;###autoload
 (defun thing-copy-list ()
   "Paste list around point."
   (interactive)
   (thing-edit 'list))
 
+;;;###autoload
 (defun thing-paste-sentence ()
   "Paste sentence around point."
   (interactive)
   (thing-edit 'sentence t))
 
+;;;###autoload
 (defun thing-copy-sentence ()
   "Paste sentence around point."
   (interactive)
   (thing-edit 'sentence))
 
+;;;###autoload
 (defun thing-paste-whitespace ()
   "Paste whitespace around point."
   (interactive)
   (thing-edit 'whitespace t))
 
+;;;###autoload
 (defun thing-copy-whitespace ()
   "Paste whitespace around point."
   (interactive)
   (thing-edit 'whitespace))
 
+;;;###autoload
 (defun thing-paste-page ()
   "Paste page around point."
   (interactive)
   (thing-edit 'page t))
 
+;;;###autoload
 (defun thing-copy-page ()
   "Paste page around point."
   (interactive)
@@ -277,11 +332,13 @@ otherwise copy object."
 
 ;; Below function is not base on thingatpt, but it's effect like above function.
 ;; So i add to this package.
+;;;###autoload
 (defun thing-paste-to-line-end ()
   "Paste content from current point to line end."
   (interactive)
   (thing-copy-to-line-end t))
 
+;;;###autoload
 (defun thing-copy-to-line-end (&optional kill-conditional)
   "Copy content from current point to line end.
 If `KILL-CONDITIONAL' is non-nil, kill object,
@@ -292,11 +349,13 @@ otherwise copy object."
                          (line-end-position)
                          kill-conditional)))
 
+;;;###autoload
 (defun thing-paste-to-line-beginning ()
   "Paste content from current point to line beginning."
   (interactive)
   (thing-copy-to-line-beginning t))
 
+;;;###autoload
 (defun thing-copy-to-line-beginning (&optional kill-conditional)
   "Copy content from current point tot line beginning.
 If `KILL-CONDITIONAL' is non-nil, kill object,
@@ -307,12 +366,14 @@ otherwise copy object."
                          (point)
                          kill-conditional)))
 
+;;;###autoload
 (defun thing-paste-comment ()
   "Paste the comment around line.
 If mark is active, it can paste all comment that in mark."
   (interactive)
   (thing-copy-comment t))
 
+;;;###autoload
 (defun thing-copy-comment (&optional kill-conditional)
   "Copy the comment around line.
 If mark is active, it can copy all comment that in mark.
