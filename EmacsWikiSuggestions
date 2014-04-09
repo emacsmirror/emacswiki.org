@@ -211,11 +211,16 @@ Finally, if a few people were interested, we could add an _email subscription_ e
 
 == Screenshots for major modes == 
 
+[new]
 I would like to see a screenshot showing what each mode looks like.
 
 I just read about AllOut mode and wanted to see what it looked like; it would have been nice if there was a screenshot.
 
 --LuisFernandes
+
+[new]
+Yeah, technically this is possible and DrewAdams does it a lot for the documentation of his Icicles package.
+It's a lot of work, unfortunately. -- Alex
 
 == Protect users with only linking to signed downloads and/or signed checksums ==
 
@@ -236,6 +241,7 @@ Many Thanks
 
 -- Anonymous
 
+[new]
 I'm not sure /how/ we should go about doing that... Check every outbound link? Scrape target websites? This is way too much work. Are you concerned only about the downloads from the ElispArea? Anybody can come and edit the files. What additional security would encryption and checksums provide, given that there is no security at the page level?
 
 *If, as a user, you are concerned about the code, you must refrain from downloading source code from Emacs Wiki.* I would think that you should also only download code from trusted sources (and by that I mean code signed by particular people you know). This is the point where we must realize that security is not just cryptography. It's also an open society, the ability to criticize, publish, talk, double check.
