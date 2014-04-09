@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 135 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 136 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
@@ -50,7 +50,7 @@ __Minor Mode Survey__
 | auto-composition-mode                            |                  12 |
 | auto-compression-mode                            |                  16 |
 | auto-encryption-mode                             |                  20 |
-| auto-fill-mode                                   |                  41 |
+| auto-fill-mode                                   |                  42 |
 | auto-image-file-mode                             |                   4 |
 | autoinsert                                       |                   4 |
 | bat-mode                                         |                   1 |
@@ -83,10 +83,10 @@ __Minor Mode Survey__
 | desktop                                          |                   3 |
 | desktop-save-mode                                |                  31 |
 | diff-mode                                        |                   2 |
-| dired                                            |                   4 |
+| dired                                            |                   5 |
 | dired-aux                                        |                   4 |
 | dired-hide-details-mode                          |                  16 |
-| dired-x                                          |                  45 |
+| dired-x                                          |                  46 |
 | display-battery-mode                             |                   1 |
 | display-time-mode                                |                  29 |
 | easy-mmode                                       |                   1 |
@@ -100,9 +100,9 @@ __Minor Mode Survey__
 | electric-indent-mode                             |                  15 |
 | electric-layout-mode                             |                   3 |
 | electric-pair-mode                               |                  12 |
-| emacs-lisp-mode                                  |                   5 |
+| emacs-lisp-mode                                  |                   6 |
 | epa-file-enable                                  |                   5 |
-| erc-mode                                         |                   5 |
+| erc-mode                                         |                   6 |
 | etags                                            |                   2 |
 | face-remap                                       |                   1 |
 | facemenu                                         |                   1 |
@@ -112,8 +112,8 @@ __Minor Mode Survey__
 | files                                            |                   1 |
 | find-func                                        |                   1 |
 | finder                                           |                   1 |
-| flyspell-mode                                    |                  54 |
-| font-lock-mode                                   |                  53 |
+| flyspell-mode                                    |                  55 |
+| font-lock-mode                                   |                  54 |
 | frame                                            |                   2 |
 | frameset                                         |                   1 |
 | generic-x                                        |                   5 |
@@ -146,7 +146,7 @@ __Minor Mode Survey__
 | hs-minor-mode                                    |                  12 |
 | ibuffer                                          |                  59 |
 | icomplete-mode                                   |                  20 |
-| ido-everywhere                                   |                  44 |
+| ido-everywhere                                   |                  45 |
 | ido-mode                                         |                  82 |
 | image                                            |                   1 |
 | image-dired                                      |                   3 |
@@ -176,7 +176,7 @@ __Minor Mode Survey__
 | newcomment                                       |                   1 |
 | nxml-mode                                        |                   2 |
 | org-capture                                      |                  24 |
-| org-mode                                         |                  57 |
+| org-mode                                         |                  58 |
 | org-src-mode                                     |                   9 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   8 |
@@ -198,7 +198,7 @@ __Minor Mode Survey__
 | register                                         |                   3 |
 | replace                                          |                   1 |
 | ring                                             |                   2 |
-| ruby-mode                                        |                   1 |
+| ruby-mode                                        |                   2 |
 | ruler-mode                                       |                   1 |
 | savehist-mode                                    |                  26 |
 | saveplace                                        |                  30 |
@@ -217,7 +217,7 @@ __Minor Mode Survey__
 | timer                                            |                   1 |
 | tool-bar                                         |                   1 |
 | tooltip-mode                                     |                  19 |
-| tramp                                            |                  29 |
+| tramp                                            |                  30 |
 | tramp-ftp                                        |                   1 |
 | transient-mark-mode                              |                  68 |
 | uniquify                                         |                  92 |
