@@ -36,6 +36,15 @@ as a news server and subscribe to <code>gmane.emacs.wiki.general</code>.
 This service is provided by Gmane, which is a mailing list to news
 gateway.
 
+Howto: (from http://wikemacs.org/index.php/Gnus)
+
+
+1. in group buffer , press B (browser foreign server)
+2. type "nntp" when asked "which back end"
+3. type news.gmane.org when asked "address"
+4. browse different groups, press u to subscribe
+
+
 == Internet ==
 
 * Newsreader-like Gmane interface: http://news.gmane.org/gmane.emacs.wiki.general
