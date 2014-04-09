@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 21:23:56
-;; Version: 0.1
-;; Last-Updated: 2014-01-01 13:23:56
+;; Version: 0.2
+;; Last-Updated: 2014-04-09 09:36:11
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/qml-mode.el
 ;; Keywords:
@@ -64,6 +64,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/04/09
+;;      * Derived-mode from text-mode, and not prog-mode.
+;;      * Fixed syntax highlight and indent problem.
 ;;
 ;; 2014/01/01
 ;;      * Fixed keywords regexp
@@ -171,16 +175,20 @@ This is run before the process is cranked up."
     ("/\\*.*\\*/\\|//.*"
      (0 font-lock-comment-face t t))
     ;; Constants.
-    ("\\<\\(true\\|false\\|[A-Z][a-zA-Z0-9]*\\.[A-Z][a-zA-Z0-9]*\\)\\>"
+    ("\\<\\(true\\|false\\|parent\\|[A-Z][a-zA-Z0-9]*\\.[A-Z][a-zA-Z0-9]*\\)\\>"
      (0 font-lock-constant-face))
+    ;; String.
+    ("\"[^\"]*\""
+     (0 font-lock-string-face))
     ;; Keyword.
-    ("\\<\\(parent\\|import\\|if\\|else[ \t]+if\\)\\>"
+    ("\\<\\(import\\|if\\|else\\|[ \t]+if\\)\\>"
      (1 font-lock-keyword-face nil t))
     ;; Import
-    ("\\(^import\\)[ \t]+\\([a-zA-Z0-9\.]+\\)[ \t]+\\([^ /\*]+\\)"
+    ("\\(^import\\)[ \t]+\\([a-zA-Z0-9\.]+\\)[ \t]+\\([^ \n/\*]+\\)"
      (1 font-lock-keyword-face nil t)
      (2 font-lock-function-name-face nil t)
-     (3 font-lock-constant-face nil t))
+     (3 font-lock-constant-face nil t)
+     )
     ;; Element
     ("\\([A-Z][a-zA-Z0-9]*\\)[ \t]+{"
      (1 font-lock-function-name-face nil t))
@@ -192,6 +200,8 @@ This is run before the process is cranked up."
      (0 font-lock-variable-name-face nil t))
     ;; Properties.
     ("\\([ \t]?[a-zA-Z0-9\.]+\\):"
+     (1 font-lock-variable-name-face nil t))
+    ("\\<\\(anchors\\|margins\\)\\>"
      (1 font-lock-variable-name-face nil t))
     ;; Method
     ("\\<\\(function\\) +\\([a-z][a-zA-Z0-9]*\\)\\>"
@@ -207,10 +217,9 @@ This is run before the process is cranked up."
 
 ;;;###autoload
 
-(define-derived-mode qml-mode prog-mode "QML"
+(define-derived-mode qml-mode text-mode "QML"
   "Major mode for Qt declarative UI"
   (interactive)
-  (kill-all-local-variables)
   (set-syntax-table qml-mode-syntax-table)
   (set (make-local-variable 'font-lock-defaults) '(qml-font-lock-keywords))
   (set (make-local-variable 'tab-width) qml-indent-width)
@@ -220,8 +229,10 @@ This is run before the process is cranked up."
   (set (make-local-variable 'comment-end) " */")
   (setq major-mode 'qml-mode)
   (setq mode-name "qml")
+
+  (electric-indent-mode -1)
+
   (use-local-map qml-mode-map)
-  (run-hooks 'pron-mode-hook)
   (run-hooks 'qml-mode-hook)
   )
 
