@@ -10,6 +10,9 @@ git clone git://gaffer.ptitcanardnoir.org/lunar-mode-line.git
 [new]
 It would be cool if it would use xpm's or some sort of icon in X frames. Unfortunately I'm totally untalented in this regard.
 
+[new]
+You can try https://github.com/atykhonov/lunar-mode-line . I just updated lunar-mode-line so it can represent moon phases by means of images.
+
 ----
 CategoryModeLine
 CategoryModeLineConfiguration
