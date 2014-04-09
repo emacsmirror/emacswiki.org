@@ -82,6 +82,9 @@
 ;;
 ;; thing-paste-comment             paste comment.
 ;; thing-copy-comment              copy comment.
+;; 
+;; thing-paste-paragrap            paste paragraph around cursor.
+;; thing-copy-paragrap             copy paragraph around cursor.
 ;;
 
 ;;; Installation:
