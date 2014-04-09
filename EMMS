@@ -619,7 +619,7 @@ See AlsaPlayer notes, above.
 === How about using the Apple Remote control? ===
 
 === How about scrobbling to libre.fm? ===
-emms-lastfm used to be able to scrobble to libre.fm simply by setting the emms-lastfm-server variable, but the git version of emms changed the lastfm setup to use some sort of api key authorisation method... has anyone got it working with libre.fm?
+[new] Emms (from the main git repo) now has Libre.fm support for both scrobbling and streaming music, and will be included in the upcoming 4.0 release. Last.fm support has been removed.
 
 === How about MPD? ===
 
