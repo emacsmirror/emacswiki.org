@@ -242,6 +242,8 @@ I'm not sure /how/ we should go about doing that... Check every outbound link? S
 
 *If, as an author, you are concerned about other people changing your code, you must refrain from uploading source code to Emacs Wiki.*
 
+Perhaps the download button should carry a warning? Then again, perhaps every page should carry a warning... But, if every page carries a warning, it means nothing. Thus I'd argue that the status quo is good enough. Visitors know that *a wiki implies a lack of security*.
+
 -- AlexSchroeder
 
 
