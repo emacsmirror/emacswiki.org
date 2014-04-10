@@ -5,19 +5,35 @@ To connect to password protected servers you need to store authentication inform
 ; ##~/.netrc##: the old format
 
 Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
+Ideally you already have GPG set up on your system.
+Emacs will ask you to select the recipients for encryption.
+Pick your own name from the list. This will allow you to save the file without any hassles.
+If no one is selected, symmetric encryption will be performed.
+This means that you will have to provide and confirm the password every time you save the file.
+Don't do it.
 
-Create it with only read-write rights for the user:
+Create the file with only read-write rights for the user:
 
-    touch ~/.authinfo
-    chmod 600 ~/.authinfo
+    chmod 600 ~/.authinfo.gpg
 
-Add a line for each user like this:
+Add a line for each account like this:
 
     machine HOST login NAME password VALUE port NUMBER
 
-i.e. in following example from John Doe's ~/.authinfo:
+Example:
 
-    machine imap.gmail.com login john_doe@gmail.com password notapassword port 993
+    machine imap.gmail.com login john_doe@gmail.com password "*secret*"
+
+== Problems ==
+
+If you think you provided the correct information in the file, and Gnus asks you for your
+password as it tries to connect, and Gnus still fails to authenticate, it's time to check
+your authinfo file. Use `M-x netrc-parse' and test your file. Perhaps you misplaced some
+quotes, or you used multibyte Unicode characters. These are problematic because Emacs
+keeps a cache of the authinfo file in memory. The cache is obfuscated using
+`base64-encode-string' and `rot13-string'. The problem is that base64 requires bytes and will
+refuse to encode multibyte characters. Unfortunately for you this error messages is
+surpressed when Gnus tries to connect to servers...
 
 == Different Files for Different Server Methods ==
 
