@@ -1,0 +1,10 @@
+The octicon font provided by github (https://github.com/styleguide/css/7.0) provides some nice icons embedded in a font.
+This package provides an easier access to them and must be used with the relevant face (octicons).
+
+I do not provide the octicon font. You will need to install it yourself from the github styleguide site (search in the page source).
+
+https://raw.githubusercontent.com/rougier/emacs-octicons/master/octicons-modeline.png
+
+
+For more details on these features, see github page:
+https://github.com/rougier/emacs-octicons
