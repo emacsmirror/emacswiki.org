@@ -1,4 +1,4 @@
-To connect to password protected servers you need the .authinfo file.
+To connect to password protected servers you need the ##.authinfo## file.
 
 Create it with only read-write rights for the user. Under Unix say
 
