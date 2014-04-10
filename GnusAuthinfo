@@ -37,8 +37,10 @@ Using the nnimap backend you can connect to another box by giving the domain, us
 
  machine <mailserver> login "<domain>/<username>/<boxname>" password "secret"
 
-== Encrypting passwords
-It is possible to encrypt the whole file so that Emacs asks a passwords to access it. See [[GnusEncryptedAuthInfo]].
+== Encrypting passwords ==
+
+It is possible to encrypt the whole file so that Emacs asks a passwords to access it.
+Just use ##~/.authinfo.gpg##.
 
 ----
 CategoryGnus
