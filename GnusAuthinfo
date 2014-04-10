@@ -5,7 +5,7 @@ Create it with only read-write rights for the user. Under Unix say
  touch ~/.authinfo
  chmod 600 ~/.authinfo
 
-in a shell. Consider encrypting it ([[GnusEncryptedAuthInfo]]).
+in a shell.
 
 Add a line for each user like this with following field(s) {where applicable}:
 
