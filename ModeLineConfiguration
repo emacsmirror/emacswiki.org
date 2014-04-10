@@ -21,6 +21,7 @@ Here are particular enhancements to the mode line:
 * NyanMode -- Indicate your position in the buffer in the mode line, with a little help from [http://en.wikipedia.org/wiki/Nyan_Cat Nyan Cat].
 * PowerLine -- How to make VIM-like [https://github.com/Lokaltog/vim-powerline powerline].
 * SmartModeLine -- Smart, sexy, and space efficient mode line. [https://github.com/Bruce-Connor/smart-mode-line/]
+* OcticonsModeLine -- Nice icons in the mode line thanks to the [https://github.com/rougier/emacs-octicons octicons] font.
 
 Customize the mode line by altering the `mode-line-format' variable.  The `header-line-format' variable customizes the HeaderLine.
 
