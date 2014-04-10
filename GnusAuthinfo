@@ -5,6 +5,9 @@ To connect to password protected servers you need to store authentication inform
 ; ##~/.netrc##: the old format
 
 Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
+
+== GPG ==
+
 Ideally you already have GPG set up on your system.
 Emacs will ask you to select the recipients for encryption.
 Pick your own name from the list. This will allow you to save the file without any hassles.
@@ -12,9 +15,13 @@ If no one is selected, symmetric encryption will be performed.
 This means that you will have to provide and confirm the password every time you save the file.
 Don't do it.
 
+== Permissions ==
+
 Create the file with only read-write rights for the user:
 
     chmod 600 ~/.authinfo.gpg
+
+== File Format ==
 
 Add a line for each account like this:
 
