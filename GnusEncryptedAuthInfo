@@ -1,3 +1,8 @@
+*Obsolete*: This page contains obsolete information. Gnus comes with GPG integration: It uses ##auth-sources## which lists ##~/.authinfo##, ##~/.authinfo.gpg## and ##~/.netrc##.
+Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
+
+----
+
 This page addresses following wishes:
 * [[Gnus]] is asking you your main IMAP/SMTP... password all the time and you are getting tired of it
 * You would like Gnus to ask you a shorter one instead
