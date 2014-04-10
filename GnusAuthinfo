@@ -1,28 +1,25 @@
-To connect to password protected servers you need the ##.authinfo## file.
+To connect to password protected servers you need to store authentication information in one of these files:
 
-Create it with only read-write rights for the user. Under Unix say
+; ##~/.authinfo.gpg##: encrypted (use this!)
+; ##~/.authinfo##: not encrypted
+; ##~/.netrc##: the old format
 
- touch ~/.authinfo
- chmod 600 ~/.authinfo
+Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
 
-in a shell.
+Create it with only read-write rights for the user:
 
-Add a line for each user like this with following field(s) {where applicable}:
+    touch ~/.authinfo
+    chmod 600 ~/.authinfo
 
-<code>machine HOST login NAME password VALUE port NUMBER</code>
+Add a line for each user like this:
+
+    machine HOST login NAME password VALUE port NUMBER
 
 i.e. in following example from John Doe's ~/.authinfo:
 
-<code>machine imap.gmail.com login john_doe@gmail.com password notapassword port 993</code>
+    machine imap.gmail.com login john_doe@gmail.com password notapassword port 993
 
-The relevant IMAP fields would map as:
-
-machine -> <code>imap.gmail.com</code> ;
-login -> <code>johnDoe@gmail.com</code> ;
-password -> <code>notapassowrd</code> ; 
-port -> <code>993</code> ;
-
-Optional parameters are (depending on protocol) might include <code>port number</code> (you can also use symbolic names like <code>imap</code> here), <code>force yes</code> and <code>default</code>.
+== Different Files for Different Server Methods ==
 
 You can use different authinfo files for different server methods. For example use this variable:
 
@@ -33,14 +30,10 @@ You can use different authinfo files for different server methods. For example u
 <code>smtpmail-auth-credentials</code> for setting the smtpmail authinfo file
 
 == Connecting to another Box on an Exchange Server ==
+
 Using the nnimap backend you can connect to another box by giving the domain, username and boxname explicitly:
 
- machine <mailserver> login "<domain>/<username>/<boxname>" password "secret"
-
-== Encrypting passwords ==
-
-It is possible to encrypt the whole file so that Emacs asks a passwords to access it.
-Just use ##~/.authinfo.gpg##.
+    machine <mailserver> login "<domain>/<username>/<boxname>" password "secret"
 
 ----
 CategoryGnus
