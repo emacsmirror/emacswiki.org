@@ -279,6 +279,11 @@ An auto-complete source for the caml and tuareg modes, gets symbols from caml-he
     (symbol . "s")))
 }}}
 
+== etags ==
+[https://gist.github.com/targzeta/10499354 auto-complete-etags.el]. Using TagsFile with auto-complete.
+
+-- [[targzeta]]
+
 == Writing your own sources ==
 
 [http://www.cx4a.org/software/auto-complete/manual.html The manual] contains a tutorial on how to write your own sources.
