@@ -1,6 +1,6 @@
 This is a mode for editing pages in a [http://www.atlassian.com/software/confluence/ Confluence wiki].
 
-For more information and downloads, please visit the [http://code.google.com/p/confluence-el/ Confluence-el Project].
+For more information and downloads, please visit the [https://sourceforge.net/projects/confluence-el/ Confluence-el Project].
 
 A quick feature list:
 
@@ -12,6 +12,7 @@ A quick feature list:
 * viewing/editing of labels
 * viewing/download of attachments
 * the quick-start describes how to use LongLines mode, which makes editing the wiki-markup much more pleasant.
+* conversion between xml and wiki format using [http://www.amnet.net.au/~ghannington/confluence/readme.html Graham Hannington's converter]
 * much, much more...
 
 Note, this mode uses a slightly modified version of the XmlRpc library, which is included in the download.
