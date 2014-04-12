@@ -368,7 +368,7 @@ I know this is fairly simple to do for emacs only, but I've never looked into ho
 === Drivers ===
 There are also these drivers: [http://www.sysinternals.com/ntw2k/source/ctrl2cap.shtml ctrl2cap.sys] or [http://www.sysinternals.com/win9x/utilities/ctrl2cap95.shtml ctrl2cap.vxd].
 
-http://www.gnu.org/software/emacs/windows/faq3.html#capscontrol has more info about this.
+http://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Swap-CapsLock-and-Control.html#Swap-CapsLock-and-Control has more info about this.
 
 Microsoft also provides an utility [http://www.microsoft.com/technet/sysinternals/Miscellaneous/Ctrl2Cap.mspx Ctrl2Cap] to replace the caps lock with the ctrl key.  (Note that you will lose the caps lock.)
 It allows you to reverse it as well.
