@@ -1,0 +1,18 @@
+In my .emacs I have the follow setting:
+
+(define-key evil-motion-state-map "\C-u" 'scroll-up-command)
+This works well.
+
+But what if I wanted to change it to spacebar or Return key?
+
+(define-key evil-motion-state-map "<return>" 'scroll-up-command)
+(define-key evil-motion-state-map "SPC" 'scroll-up-command)
+Nothing spectular will happen, the return/Enter key and spacebar are behaving their standard behaviour. I looked around for the right keys, and it seems they're the rights keys. For example,
+
+(global-set-key (kbd "<return>") 'save-buffer) 
+Works fine.
+
+What am I doing wrong in Emacs/Evil with the Enter key?
+
+-- ReneFroger 2014-04-12 00:47 UTC
+
