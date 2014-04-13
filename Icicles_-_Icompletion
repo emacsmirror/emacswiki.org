@@ -233,7 +233,7 @@ At one extreme (value '''##0##'''), your input is never expanded (except
 when you use `C-M-TAB' or `C-M-S-TAB', which do not display
 `*Completions*').  This is unlike vanilla Emacs but similar to Ido
 and IswitchB: you look to `*Completions*' for the matches, and you
-keep typing (or you cycle) narrow things down and choose.  If you
+keep typing (or you cycle) to narrow things down and choose.  If you
 use a non-`nil', non-`t' value for `icicle-incremental-completion'
 then you might also want to try a value of ##0## for
 `icicle-expand-input-to-common-match'.
