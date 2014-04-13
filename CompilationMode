@@ -189,8 +189,24 @@ Here is some code to make the background on all lines on which emacs found error
 
   -- This just makes the lines in the compilation buffer pink though, right? Not the lines in the actual source code (mike hearn)
 
-----
+== Java stack traces ==
 
+Here's a snippet that adds Java stack trace support to `compilation-mode' and `next-error'. More details here: https://snarfed.org/java-stack-traces-in-emacs-compilation-mode
+
+    (defvar java-stack-trace-dir "src/")
+    (defun java-stack-trace-regexp-to-filename ()
+      "Generates a relative filename from java-stack-trace regexp match data."
+      (concat java-stack-trace-dir
+              (replace-regexp-in-string "\\." "/" (match-string 1))
+              (match-string 2)))
+    
+    (add-to-list 'compilation-error-regexp-alist 'java-stack-trace)
+    (add-to-list 'compilation-error-regexp-alist-alist
+      '(java-stack-trace .
+        ("^[[:space:]]*at \\(\\(?:[[:lower:]]+\\.\\)+\\)[^(]+(\\([[:alnum:]]+\\.java\\):\\([[:digit:]]+\\))"
+         java-stack-trace-regexp-to-filename 3)))
+
+----
 '''See Also''': GrepMode
 
 ----
