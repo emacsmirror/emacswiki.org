@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Apr  1 13:15:56 2014 (-0700)
+;; Last-Updated: Sun Apr 13 14:36:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5942
+;;     Update #: 5947
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2281,7 +2281,7 @@ the possible values using \\<minibuffer-local-completion-map>\
   Expand it also automatically whenever only one candidate matches it.
 
 3 Expand your input when you use `TAB' or `S-TAB'.
-  Expand it also whenever  only one candidate matches it.
+  Expand it also whenever only one candidate matches it.
   Expand it also automatically, during incremental prefix completion.
 
 4 Expand your input always, including for incremental completion.
@@ -2290,9 +2290,9 @@ If you want to return to your original, unexpanded input, use \\<minibuffer-loca
 `\\[icicle-retrieve-previous-input]'.
 
 For apropos completion, your input is, in general, a regexp.  Setting
-the value to `never', `explicit', or `nil' lets you always work with a
-regexp in the minibuffer for apropos completion - your regexp is never
-replaced by the expanded common match.
+the option to a value other than four (4) lets you more easily work
+with a regexp in the minibuffer for apropos completion - your regexp
+is not replaced automatically by the expanded common match.
 
 If you want to just toggle between the current value of this option
 and one of the other values, then see also option
