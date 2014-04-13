@@ -2,9 +2,7 @@ portrait:http://ryan.barrett.name/ryan.jpg
 
 I use Emacs, and occasionally write Elisp code.
 
-* http://snarfed.org/ -- My blog
-* http://ryan.barrett.name/ -- My personal page
-* <code>emacswiki at ryanb dot org</code> -- My email
+* http://snarfed.org/ -- My web site
 
 The one significant piece of elisp I've contributed is a minor mode,
 [[Fillcode]] ([[fillcode.el]]),
