@@ -27,6 +27,7 @@ I've posted other emacs tips and tricks on [http://snarfed.org/ snarfed.org]:
 * [http://snarfed.org/space/gnu+emacs+backup+files Centralizing backup and autosave files]
 * [http://snarfed.org/space/emacs+page+up+page+down Making page up and page down behave like other editors]
 * [http://snarfed.org/space/control+arrow+keys+in+rxvt%2C+tcsh%2C+and+emacs Control-arrow keys in emacs -nw under various terminals and shells]
+* [https://snarfed.org/java-stack-traces-in-emacs-compilation-mode Java stack traces in Emacs compilation-mode]
 
 [new]
 I didn't want to go through the hassle of registering for yet another site, so I'll add a comment here instead.
