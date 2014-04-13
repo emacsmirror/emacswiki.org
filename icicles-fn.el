@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Apr  1 10:41:24 2014 (-0700)
+;; Last-Updated: Sun Apr 13 15:58:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14459
+;;     Update #: 14461
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3025,7 +3025,7 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'.
 ARG is passed to `dired-mark-prompt' as its first arg, for the prompt.
 FILES are the files for which the shell command should be appropriate.
 Optional arg HISTORY is an alternative minibuffer history to use,
- instead of the default, `shell-command-history'.  (HISTORy is not
+ instead of the default, `shell-command-history'.  (HISTORY is not
  available for vanilla `dired-read-shell-command'.)"
   (let ((icicle-files  files))
     (minibuffer-with-setup-hook
@@ -3834,13 +3834,16 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
            startpos endpos string)
       ;; Turn Icomplete mode on or off, depending on NB-CANDS.
       (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates))
-        (if (< nb-cands icicle-icomplete-mode-max-candidates)
-            (if (not icicle-last-icomplete-mode-value)
-                (icomplete-mode -1)
-              (icomplete-mode 1)
-              (icomplete-exhibit))
-          (when (boundp 'icomplete-overlay) (icomplete-tidy)) ; Cannot use `icomplete-tidy' here with Emacs < 23.
-          (icomplete-mode -1)))
+        (with-current-buffer (if (active-minibuffer-window)
+                                 (window-buffer (active-minibuffer-window))
+                               (current-buffer))
+          (if (< nb-cands icicle-icomplete-mode-max-candidates)
+              (if (not icicle-last-icomplete-mode-value)
+                  (icomplete-mode -1)
+                (icomplete-mode 1)
+                (icomplete-exhibit))
+            (when (boundp 'icomplete-overlay) (icomplete-tidy)) ; Cannot use `icomplete-tidy' with Emacs < 23.
+            (icomplete-mode -1))))
       ;; Turn sorting on or off, depending on NB-CANDS.
       (when (natnump icicle-sorting-max-candidates)
         (if (< nb-cands icicle-sorting-max-candidates)
