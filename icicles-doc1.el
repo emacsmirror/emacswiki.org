@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Apr  2 14:36:58 2014 (-0700)
+;; Last-Updated: Sun Apr 13 14:08:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28178
+;;     Update #: 28179
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4253,10 +4253,10 @@
 ;;  when you use `C-M-TAB' or `C-M-S-TAB', which do not display
 ;;  `*Completions*').  This is unlike vanilla Emacs but similar to Ido
 ;;  and IswitchB: you look to `*Completions*' for the matches, and you
-;;  keep typing (or you cycle) narrow things down and choose.  If you
-;;  use a non-`nil', non-`t' value for `icicle-incremental-completion'
-;;  then you might also want to try a value of 0 for
-;;  `icicle-expand-input-to-common-match'.
+;;  keep typing (or you cycle) to narrow things down and choose.  If
+;;  you use a non-`nil', non-`t' value for
+;;  `icicle-incremental-completion' then you might also want to try a
+;;  value of 0 for `icicle-expand-input-to-common-match'.
 ;;
 ;;  At the other extreme (value 4), your input is expanded in the
 ;;  minibuffer whenever it is completed in `*Completions*'.  This
