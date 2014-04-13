@@ -969,7 +969,7 @@ you are also cycling among candidates then you might need to hit
 `icicle-expand-input-to-common-match' to a value other than ##4## is
 if you want to always work with a [[regexp]] in the minibuffer when
 you use [[Icicles - Apropos Completions|apropos completion]].  (With a value of ##4## the regexp is
-replaced by the match expansion.)
+replaced automatically by the match expansion.)
 
 '''See Also:'''
 
