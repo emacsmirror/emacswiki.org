@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.04.06
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  6 07:26:59 2014 (-0700)
+;; Last-Updated: Sun Apr 13 19:14:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23542
+;;     Update #: 23543
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1323,15 +1323,15 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-anychar-regexp',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
 ;;    `icicle-apropos-value-last-initial-cand-set',
-;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
-;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
-;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
-;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
-;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
-;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
-;;    `icicle-char-property-value-history',
+;;    `icicle-auto-no-sort-p', `icicle-bookmark-history',
+;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-menu-map',
+;;    `icicle-bookmark-types', `icicle-buffer-config-history',
+;;    `icicle-buffer-name-input-p', `icicle-buffer-sort-first-time-p',
+;;    `icicle-bufflist', `icicle-candidate-action-fn',
+;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
+;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
+;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
+;;    `icicle-cands-to-narrow', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
