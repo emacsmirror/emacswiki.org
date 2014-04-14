@@ -1,0 +1,9 @@
+Several bits of code with launcher functionality:
+
+* Anything Launcher http://www.emacswiki.org/emacs/AnythingLauncher
+* emacs-launcher 
+  The web page for emacs launcher indicates that it "supersedes anything-launcher"
+* emacs-launcher (wjk) https://github.com/wjk/emacs-launcher
+* dired-launch https://github.com/thomp/dired-launch
+  Launch programs from dired.
+* launch https://github.com/sfllaw/emacs-launch
