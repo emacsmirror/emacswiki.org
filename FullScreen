@@ -211,6 +211,31 @@ If you need to minimize the frame, you can use something like this:
 
 -- [[MikeVeldink]]
 
+==== Using a AutoHotKey script in order to remove the gaps left by borderless fullscreen ====
+I dabbled with a AutoHotKey script for getting this to work properly, and this is my solution:
+{{{
+SetTitleMatchMode 1 ; matches only the start of the window name
+WinMaximize, emacs@ ; emacs@ refers to the title of the window
+WinSet, Style, -0x40000, emacs@ ; removes the thick frame
+WinSet, Style, -0x800000, emacs@ ; removes the rest of the border
+}}}
+Put this into a text file, change the extension to .ahk and right click and select compile in order to compile it (you need AutoHotKey installed).
+The 3rd and 4th line disables thick borders (WS_THICKFRAME) and the border (WS_BORDER) respectively.
+If done in this order, I get no gaps where the background shines through.
+In order to do this automatically every time you start emacs, add this to your .emacs
+{{{
+(shell-command "<name of compiled ahk script>")
+}}}
+Where the <> and contents is replaced by the filename (with extension) of the complied ahk script.
+Make sure the complied script is in your path (search for changing environmental variables in a search engine if you don't know how to do this).
+I'm using the GNU distribution of Emacs 24.3, using 2560x1600 resolution with the Terminus font (size 9). I'm running this on Windows 8.1. 
+Note that I have also added
+{{{
+(tool-bar-mode -1)
+}}}
+to my .emacs (which is when the problems started occuring.)
+
+I've experimented with other fonts and different font sizes. This seems robust.
 
 === X Windows ===
 ==== Emacs Frame Properties ====
