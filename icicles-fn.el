@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Apr 13 15:58:31 2014 (-0700)
+;; Last-Updated: Sun Apr 13 19:36:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14461
+;;     Update #: 14462
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3845,15 +3845,19 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
             (when (boundp 'icomplete-overlay) (icomplete-tidy)) ; Cannot use `icomplete-tidy' with Emacs < 23.
             (icomplete-mode -1))))
       ;; Turn sorting on or off, depending on NB-CANDS.
+      ;; Turn it on only if it has already been turned off here (non-nil `icicle-auto-no-sort-p'), for this
+      ;; minibuffer reading.  When turn it off, set flag `icicle-auto-no-sort-p'.
       (when (natnump icicle-sorting-max-candidates)
         (if (< nb-cands icicle-sorting-max-candidates)
-            (unless icicle-sort-comparer (setq icicle-sort-comparer  icicle-last-sort-comparer))
+            (when (and icicle-auto-no-sort-p  (not icicle-sort-comparer))
+              (setq icicle-sort-comparer  icicle-last-sort-comparer))
           (setq icicle-last-sort-comparer  (or icicle-sort-comparer
                                                icicle-last-sort-comparer
                                                (let ((cval  (or (get 'icicle-sort-comparer 'saved-value)
                                                                 (get 'icicle-sort-comparer 'standard-value))))
                                                  (condition-case nil (eval (car cval)) (error nil))))
-                icicle-sort-comparer       nil)))
+                icicle-sort-comparer       nil
+                icicle-auto-no-sort-p      t)))
       (when (eq 1 columns) (setq wwidth  colwidth))
       (dolist (cand  candidates)
         (setq endpos  (point))
