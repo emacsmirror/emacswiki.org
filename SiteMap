@@ -110,7 +110,6 @@ External Programs and Remote Services:
 * [[CategoryInterface|Interface]] -- accessing online utilities
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
 ** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
-* [[Launchers]] -- launch other programs via Emacs
 * [[CategoryMail|Mail]] -- reading email in Emacs
 ** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
