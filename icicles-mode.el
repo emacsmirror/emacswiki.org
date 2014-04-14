@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Apr  6 07:27:55 2014 (-0700)
+;; Last-Updated: Sun Apr 13 19:19:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10136
+;;     Update #: 10137
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3325,6 +3325,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-last-input                      nil
           icicle-input-fail-pos                  nil
           icicle-saved-proxy-candidates          nil
+          icicle-auto-no-sort-p                  nil
           ;; `other-buffer' doesn't work, because it looks for a buffer only from the same frame.
           icicle-pre-minibuffer-buffer           (cadr (buffer-list)) ; $$$$$$ (other-buffer nil t)
           )
