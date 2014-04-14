@@ -12,3 +12,10 @@ we don't write a <package>-pkg.el file.
 
 -- [http://stephe-leake.org/ stephen_leake] 2013-12-22 14:13 UTC
 
+
+----
+
+One thing this page doesn't touch on, which I found a bit odd: how to actually install a package.
+
+-- [http://www.linkedin.com/in/kenahoo kenahoo] 2014-04-14 03:32 UTC
+
