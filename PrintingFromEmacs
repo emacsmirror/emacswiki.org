@@ -1,4 +1,3 @@
-[[de:hindi]]
 The topic of this page is printing from within Emacs. This includes printing Emacs buffers and regions. It includes printing using different operating systems, color printing, etc.
 
 == Ways to Print Emacs Buffers and Regions ==
