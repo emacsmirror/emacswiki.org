@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Apr 13 14:36:18 2014 (-0700)
+;; Last-Updated: Mon Apr 14 07:59:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5947
+;;     Update #: 5948
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2749,8 +2749,8 @@ is reenabled when the number of candidates falls below the option
 value.  Icicles does not turn Icomplete mode on unless it was on when
 the minibuffer was activated.
 
-If the option value is not an integer, then it be nil.  In this case,
-Icicles does not turn Icomplete mode off and on.
+If the option value is not an integer, then it must be nil.  In this
+case, Icicles does not turn Icomplete mode off and on.
 
 \(Note that this is about Emacs `icomplete-mode', not Icicles
 incremental completion.)"
