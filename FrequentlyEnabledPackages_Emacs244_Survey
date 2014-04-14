@@ -33,12 +33,12 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 136 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 137 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
 |--------------------------------------------------+---------------------|
-| abbrev-mode                                      |                  39 |
+| abbrev-mode                                      |                  40 |
 | ada-mode                                         |                   1 |
 | advice                                           |                   1 |
 | align                                            |                   1 |
@@ -46,27 +46,27 @@ __Minor Mode Survey__
 | ansi-color                                       |                   1 |
 | antlr-mode                                       |                   1 |
 | apropos                                          |                   4 |
-| auto-completion-mode                             |                   7 |
+| auto-completion-mode                             |                   8|
 | auto-composition-mode                            |                  12 |
 | auto-compression-mode                            |                  16 |
 | auto-encryption-mode                             |                  20 |
-| auto-fill-mode                                   |                  42 |
+| auto-fill-mode                                   |                  43 |
 | auto-image-file-mode                             |                   4 |
 | autoinsert                                       |                   4 |
 | bat-mode                                         |                   1 |
-| blink-cursor-mode                                |                  53 |
+| blink-cursor-mode                                |                  54 |
 | bookmark                                         |                   4 |
 | bs-show                                          |                   4 |
 | buff-menu                                        |                   1 |
 | buffer-menu-mode                                 |                   2 |
 | byte-opt                                         |                   1 |
 | bytecomp                                         |                   2 |
-| cc-mode                                          |                   2 |
+| cc-mode                                          |                   3 |
 | cl                                               |                  13 |
 | cl-macs                                          |                   1 |
 | color                                            |                   1 |
-| column-number-mode                               |                  90 |
-| comint                                           |                   6 |
+| column-number-mode                               |                  91 |
+| comint                                           |                   7 |
 | compilation-minor-mode                           |                  12 |
 | compile                                          |                   2 |
 | copyright                                        |                   1 |
@@ -81,12 +81,12 @@ __Minor Mode Survey__
 | delsel                                           |                   2 |
 | descr-text                                       |                   2 |
 | desktop                                          |                   3 |
-| desktop-save-mode                                |                  31 |
+| desktop-save-mode                                |                  32 |
 | diff-mode                                        |                   2 |
 | dired                                            |                   5 |
 | dired-aux                                        |                   4 |
 | dired-hide-details-mode                          |                  16 |
-| dired-x                                          |                  46 |
+| dired-x                                          |                  47 |
 | display-battery-mode                             |                   1 |
 | display-time-mode                                |                  29 |
 | easy-mmode                                       |                   1 |
@@ -94,13 +94,13 @@ __Minor Mode Survey__
 | ebnf2ps                                          |                   2 |
 | ede-minor-mode                                   |                   1 |
 | edebug-mode                                      |                   7 |
-| ediff                                            |                   6 |
+| ediff                                            |                   7 |
 | edmacro                                          |                   2 |
-| eldoc-mode                                       |                  51 |
+| eldoc-mode                                       |                  52 |
 | electric-indent-mode                             |                  15 |
 | electric-layout-mode                             |                   3 |
 | electric-pair-mode                               |                  12 |
-| emacs-lisp-mode                                  |                   6 |
+| emacs-lisp-mode                                  |                   7 |
 | epa-file-enable                                  |                   5 |
 | erc-mode                                         |                   6 |
 | etags                                            |                   2 |
@@ -112,15 +112,15 @@ __Minor Mode Survey__
 | files                                            |                   1 |
 | find-func                                        |                   1 |
 | finder                                           |                   1 |
-| flyspell-mode                                    |                  55 |
-| font-lock-mode                                   |                  54 |
+| flyspell-mode                                    |                  56 |
+| font-lock-mode                                   |                  55 |
 | frame                                            |                   2 |
 | frameset                                         |                   1 |
 | generic-x                                        |                   5 |
 | global-auto-revert-mode                          |                  14 |
 | global-cwarn-mode                                |                   5 |
 | global-ede-mode                                  |                   1 |
-| global-font-lock-mode                            |                  48 |
+| global-font-lock-mode                            |                  49 |
 | global-hi-lock-mode                              |                   5 |
 | global-hl-line-mode                              |                  16 |
 | global-linum-mode                                |                  14 |
@@ -141,13 +141,13 @@ __Minor Mode Survey__
 | help-fns                                         |                   1 |
 | help-mode                                        |                   2 |
 | hide-ifdef-mode                                  |                   6 |
-| hippie-exp                                       |                  27 |
+| hippie-exp                                       |                  28 |
 | hl-line                                          |                   3 |
 | hs-minor-mode                                    |                  12 |
-| ibuffer                                          |                  59 |
+| ibuffer                                          |                  60 |
 | icomplete-mode                                   |                  20 |
 | ido-everywhere                                   |                  45 |
-| ido-mode                                         |                  82 |
+| ido-mode                                         |                  83 |
 | image                                            |                   1 |
 | image-dired                                      |                   3 |
 | image-file                                       |                   1 |
@@ -159,7 +159,7 @@ __Minor Mode Survey__
 | iswitchb-mode                                    |                   9 |
 | kill-whole-line                                  |                  12 |
 | kmacro                                           |                   2 |
-| line-number-mode                                 |                  48 |
+| line-number-mode                                 |                  49 |
 | linum-mode                                       |                  16 |
 | lisp-mnt                                         |                   1 |
 | lisp-mode                                        |                   4 |
@@ -171,12 +171,12 @@ __Minor Mode Survey__
 | misearch                                         |                   1 |
 | mouse                                            |                   1 |
 | mouse-avoidance-mode                             |                   6 |
-| mouse-wheel-mode                                 |                  18 |
+| mouse-wheel-mode                                 |                  19 |
 | mwheel                                           |                   1 |
 | newcomment                                       |                   1 |
 | nxml-mode                                        |                   2 |
-| org-capture                                      |                  24 |
-| org-mode                                         |                  58 |
+| org-capture                                      |                  25|
+| org-mode                                         |                  59 |
 | org-src-mode                                     |                   9 |
 | orgstruct++-mode                                 |                   2 |
 | orgtbl-mode                                      |                   8 |
@@ -191,7 +191,7 @@ __Minor Mode Survey__
 | printing                                         |                   7 |
 | ps-mode                                          |                   1 |
 | ps-print                                         |                   3 |
-| recentf-mode                                     |                  57 |
+| recentf-mode                                     |                  58 |
 | rectangle-mark-mode                              |                   8 |
 | reftex-mode                                      |                  12 |
 | regexp-opt                                       |                   4 |
@@ -220,7 +220,7 @@ __Minor Mode Survey__
 | tramp                                            |                  30 |
 | tramp-ftp                                        |                   1 |
 | transient-mark-mode                              |                  68 |
-| uniquify                                         |                  92 |
+| uniquify                                         |                  93 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
 | url-vars                                         |                   1 |
