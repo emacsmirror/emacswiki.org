@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 30 08:57:55 2014 (-0800)
+;; Last-Updated: Tue Apr 15 10:24:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1796
+;;     Update #: 1807
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/15 dadams
+;;     query-replace(-read-args|-w-options|-regexp), replace-(string|regexp):
+;;       Update version test for Emacs 24.4 pretest - use version<.
 ;; 2014/01/30 dadams
 ;;     query-replace, interactive spec: Swapped return lists - it is Emacs 24.4+ that has 6 args. 
 ;;     defadvices: Removed extra nil before interactive spec.
@@ -729,8 +732,7 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
                     (query-replace-read-to from prompt regexp-flag))))
       (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
       (if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
-                                               (or (> emacs-minor-version 3)
-                                                   (replacep-string-match-p "24.3.50" emacs-version))))
+                                               (not (version< emacs-version "24.3.50"))))
           (list from
                 to
                 (and current-prefix-arg  (not (eq current-prefix-arg '-)))
@@ -805,8 +807,7 @@ replacement."
   (interactive
    (let* ((emacs24.4+   (or (> emacs-major-version 24)
                             (and (= emacs-major-version 24)
-                                 (or (> emacs-minor-version 3)
-                                     (replacep-string-match-p "24.3.50" emacs-version)))))
+                                 (not (version< emacs-version "24.3.50")))))
           (qr-kind      (cond ((consp current-prefix-arg) " WORD") ; `C-u'
                               ((and emacs24.4+  (eq `- current-prefix-arg)) " STRING BACKWARD") ; `-'
                               ((and emacs24.4+
@@ -865,8 +866,7 @@ replacement."
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
-                                  (or (> emacs-minor-version 3)
-                                      (replacep-string-match-p "24.3.50" emacs-version)))))
+                                  (not (version< emacs-version "24.3.50")))))
 
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
@@ -903,8 +903,7 @@ replacement."
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
-                                  (or (> emacs-minor-version 3)
-                                      (replacep-string-match-p "24.3.50" emacs-version)))))
+                                  (not (version< emacs-version "24.3.50")))))
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -941,8 +940,7 @@ replacement."
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
-                                  (or (> emacs-minor-version 3)
-                                      (replacep-string-match-p "24.3.50" emacs-version)))))
+                                  (not (version< emacs-version "24.3.50")))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -979,8 +977,7 @@ replacement."
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
                              (and (= emacs-major-version 24)
-                                  (or (> emacs-minor-version 3)
-                                      (replacep-string-match-p "24.3.50" emacs-version)))))
+                                  (not (version< emacs-version "24.3.50")))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
