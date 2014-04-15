@@ -66,6 +66,26 @@ See: [[Icicles - Tripping]].
 [:mark-thing]
 [:cycle-thing-region]
 [:thing-region]
+
+== unpop mark ===
+
+Allows you to navigate forward on the mark ring, while using pop-to-mark-command to navigate backward.
+Other variants are discussed here http://stackoverflow.com/questions/3393834/how-to-move-forward-and-backward-in-emacs-mark-ring.
+
+      (defun unpop-to-mark-command ()
+        "Unpop off mark ring. Does nothing if mark ring is empty."
+        (interactive)
+        (when mark-ring
+          (let ((pos (marker-position (car (last mark-ring)))))
+            (if (not (= (point) pos))
+                (goto-char pos)
+              (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+              (set-marker (mark-marker) pos)
+              (setq mark-ring (nbutlast mark-ring))
+              (goto-char (marker-position (car (last mark-ring))))))))
+
+
+
 == Marking Things ==
 
 You can use library <tt>[[thing-cmds.el]]</tt> to quickly mark (select) various kinds of things. Use it, for example, to mark successive [[sexp]]s, lines, paragraphs, or words. Additional types of things are available. Commands:
