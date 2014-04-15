@@ -3,8 +3,7 @@ Customizable faces and number of marks to display.
 Can display marks from the mark ring in the normal backward direction,
 and in the forward direction.
 
-Additional useful functions like unpoping the mark are listed
-http://www.emacswiki.org/emacs/MarkCommands
+Related useful functions like unpoping the mark are listed MarkCommands
 
 Get it from
 melpa or
@@ -20,8 +19,6 @@ Tip: I find setting a colored underline face less in-your-face than a colored
 background for the visible marks - especially if you're displaying all marks on 
 the mark ring.
 
-[new:rubikitch:2010-04-04 11:44 UTC]
-I use VisibleBookmarks as a visible mark -- [[rubikitch]]
 
 
 
@@ -44,6 +41,7 @@ but hide them easily when they annoy. -- MarkTKennedy
 * AutoMark - makes you free from pushing marks
 * MarkCommands - useful mark navigation commands
 * MakingMarkVisible - Like VisibleMark, but extremely simplistic. Only shows active mark.
+* VisibleBookmarks - can be used like visible mark
 ----
 CategoryFaces
 CategoryRegion
