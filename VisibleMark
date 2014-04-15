@@ -62,7 +62,6 @@ control-super-left/right  (super is usually windoze keys on PCs):
 	   (setq abscount (- abscount 1)))
 	 (when (number-or-marker-p (cdar cur))
 	   (goto-char (cdar cur))))))
-
   (defun buffer-order-prev-mark (arg)
     (interactive "p")
     (buffer-order-next-mark
@@ -86,7 +85,7 @@ but hide them easily when they annoy. -- MarkTKennedy
 == See Also ==
 
 * AutoMark - makes you free from pushing marks
-
+* MarkCommands - useful mark navigation commands
 ----
 CategoryFaces
 CategoryRegion
