@@ -7,7 +7,9 @@ Get it from
 melpa or
 https://gitlab.com/iankelling/visible-mark
 
-Related useful functions like unpoping the mark are listed MarkCommands
+== Tips ==
+
+Useful functions like unpoping the mark are listed in MarkCommands
 
 [new]
 Tip: I like not highlighting the region with visible-mark and allowing marks to override paren highlights. -- [[IanKelling]]
