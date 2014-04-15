@@ -7,12 +7,8 @@ Additional useful functions like unpoping the mark are listed
 http://www.emacswiki.org/emacs/MarkCommands
 
 Get it from
+melpa or
 https://gitlab.com/iankelling/visible-mark
-or just
-https://gitlab.com/iankelling/visible-mark/blob/master/visible-mark.el
-
-The version on melpa is an old, outdated version.
-
 
 [new]
 Tip: I find setting a colored underline face less in-your-face than a colored 
