@@ -359,10 +359,10 @@ A working customization code (April 2011, using Debian, Emacs 23, No Gnus 0.16 (
 
 To solve problems first suppress any "encrypt-to" in your ~/.gnupg/gpg.conf (beware: it can lead to new problems because you may therefore produce cyphered files/mail NOT cyphered using your key)
 
-=== OS X ===
+== OS X ==
 I could not get decrypting to work in emacs on OS X - emacs would background a pinentry-curses process which I wouldn't be able to access, since emacs was not launched from a terminal. Having installed [https://gpgtools.org/ MacGPG2] I get a graphical prompt for my gpg key.
 
--sh
+ -sh
 
 ----
 CategoryCryptography
