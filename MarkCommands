@@ -244,7 +244,8 @@ I don't see any advantage of this over [[#mark-thing]] or [[#cycle-thing-region]
 
 == Showing the Mark ==
 
-MakingMarkVisible describes how to show the mark as a cursor. This is convenient when you need visible feedback what your region looks like. --[[Patrick Gundlach]]
+VisibleMark for highlighting the mark with custom faces. Including multiple forward and backward marks. --[[IanKelling]]
+
 
 [:Automark]
 == Automark ==
