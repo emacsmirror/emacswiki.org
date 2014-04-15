@@ -89,6 +89,7 @@ but hide them easily when they annoy. -- MarkTKennedy
 
 * AutoMark - makes you free from pushing marks
 * MarkCommands - useful mark navigation commands
+* MakingMarkVisible - Like VisibleMark, but extremely simplistic. Only shows active mark.
 ----
 CategoryFaces
 CategoryRegion
