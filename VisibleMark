@@ -10,9 +10,11 @@ https://gitlab.com/iankelling/visible-mark
 Related useful functions like unpoping the mark are listed MarkCommands
 
 [new]
-Tip: I like not highlighting the region with visible-mark. 
+Tip: I like not highlighting the region with visible-mark and allowing marks to override paren highlights. -- [[IanKelling]]
+ 
+  (setq show-paren-priority 999)
   (set-face-background 'region nil)
--- [[IanKelling]]
+
   
 [new]
 Tip: I find setting a colored underline face less in-your-face than a colored 
@@ -20,9 +22,6 @@ background for the visible marks - especially if you're displaying all marks on
 the mark ring.
 
 
-== Occur for mark ring ==
-
-I wrote some elisp that displays the points in the mark ring.  It's modeled after Occur.  The line number for each point in the mark-ring is displayed as well as the contents of that line.  Pressing RET on the line will take you to the point from the mark-ring.  The function is called 'show-marks' and is available at http://therowes.net/~greg/code/emacs/emacs.d/mark.el
 
 == See Also ==
 
@@ -31,6 +30,7 @@ I wrote some elisp that displays the points in the mark ring.  It's modeled afte
 * MakingMarkVisible - Like VisibleMark, but extremely simplistic. Only shows active mark.
 * VisibleBookmarks - can be used like visible mark
 * Old XEmacs only mark highlighting Lisp:himarks-mode.el
+* Occur for mark ring - (dead link when I checked in 04-2014) http://therowes.net/~greg/code/emacs/emacs.d/mark.el
 ----
 CategoryFaces
 CategoryRegion
