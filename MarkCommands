@@ -247,6 +247,54 @@ I don't see any advantage of this over [[#mark-thing]] or [[#cycle-thing-region]
 VisibleMark for highlighting the mark with custom faces. Including multiple forward and backward marks. --[[IanKelling]]
 
 
+== Visible (Buffer) Order Mark Navigation ==
+
+If you're using visible mark and displaying all the marks on the mark
+ring, you may find yourself wanting to navigate to them in the order they're 
+displayed relative to the current point rather than the order you pushed 
+them onto the mark ring - following allows you to move to the next/previous
+mark on the mark ring relative to the point in buffer order with
+control-super-left/right  (super is usually windoze keys on PCs):
+
+  (defun buffer-order-next-mark (arg)
+    (interactive "p")
+    (when (mark)
+    (let* ((p (point))
+  	 (m (mark))
+  	 (n p)
+  	 (count (if (null arg) 1 arg))
+	 (abscount (abs count))
+	 (rel
+	  (funcall
+	   (if (< 0 count) 'identity 'reverse)
+	   (sort (cons (cons 0 p)
+		       (cons (cons (- m p) m)
+			     (if mark-ring
+				 (mapcar (lambda (mrm)
+					   (cons (- mrm p) mrm))
+					 mark-ring)
+			       nil)))
+		 (lambda (c d) (< (car c) (car d))))))
+	  (cur rel))
+	 (while (and (numberp (caar cur)) (/= (caar cur) 0))
+	   (setq cur (cdr cur)))
+	 (while (and (numberp (caadr cur)) (= (caadr cur) 0))
+	   (setq cur (cdr cur)))
+	 (while (< 0 abscount)
+	   (setq cur (cdr cur))
+	   (when (null cur) (setq cur rel))
+	   (setq abscount (- abscount 1)))
+	 (when (number-or-marker-p (cdar cur))
+	   (goto-char (cdar cur))))))
+  (defun buffer-order-prev-mark (arg)
+    (interactive "p")
+    (buffer-order-next-mark
+     (if (null arg) -1 (- arg))))
+
+  (global-set-key [C-s-right] 'buffer-order-next-mark)
+  (global-set-key [C-s-left] 'buffer-order-prev-mark)
+
+
 [:Automark]
 == Automark ==
 
