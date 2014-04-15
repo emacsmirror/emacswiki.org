@@ -21,6 +21,10 @@ Please do not just merge them. Restructure them if you like, and add cross refer
 
 But before doing anything, perhaps my question above needs to be answered: just what was this page for? The page title suggests something to do with Control and ALT, but most of the content here is not about that. -- DrewAdams
 
+[new]
+@DrewAdams - In MS Windows, Alt-TAB cycles between apps' open windows, while Ctrl-TAB does the same **within** compliant apps that are capable of opening multiple "windows" (frames). Not sure of the cycle-order, not that relevant since it just whizzes through them all, user just stops when he gets to the one he wants.
+--HansBKK
+
 ----
 
 [:BufferStack]
