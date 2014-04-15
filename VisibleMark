@@ -1,17 +1,24 @@
-Code request on #emacs. This doesn't work with XEmacs, since XEmacs
-define-minor-mode doesn't have a BODY argument. Feel free to fix.
+Displays an overlay face on mark location(s).
+Customizable faces and number of marks to display.
+Can display marks from the mark ring in the normal backward direction,
+and in the forward direction.
 
-[[visible-mark.el]]
+Additional useful functions like unpoping the mark are listed
+http://www.emacswiki.org/emacs/MarkCommands
 
-YannHodique fixed some nullMarkerException ;), provided a global-mode, and an exception list.
+Get it from
+https://gitlab.com/iankelling/visible-mark
+or just
+https://gitlab.com/iankelling/visible-mark/blob/master/visible-mark.el
 
-There is Lisp:himarks-mode.el available, which is known to work on XEmacs --ZajcevEvgeny
+The version on melpa is an old, outdated version.
 
-[new:DrewAdams:2007-04-27 16:35 UTC]
-: On the other hand, Lisp:himarks-mode.el doesn't work with GNUEmacs. -- DrewAdams
 
 [new]
-Divide into emacs lisp file [[visible-mark.el]]. And added some function. -- [[Matsuyama]]
+There is Lisp:himarks-mode.el available, which is known to work on XEmacs --ZajcevEvgeny
+
+This doesn't work with XEmacs, since XEmacs define-minor-mode doesn't have a BODY argument. Feel free to fix.
+
 
 [new]
 It would be nice if a C-G (keyboard-quit) made the existing visible marks
