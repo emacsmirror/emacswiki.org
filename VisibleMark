@@ -11,6 +11,10 @@ melpa or
 https://gitlab.com/iankelling/visible-mark
 
 [new]
+Tip: I like not highlighting the region with visible-mark. --[[iankelling]]
+  (set-face-background 'region nil)
+  
+[new]
 Tip: I find setting a colored underline face less in-your-face than a colored 
 background for the visible marks - especially if you're displaying all marks on 
 the mark ring.
