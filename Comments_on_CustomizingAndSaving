@@ -1,0 +1,41 @@
+The whole taxonomy of the various types of variables is clear as mud for a noob like me.
+
+official definition: Customizable variables, also called user options, are global Lisp variables whose values can be set through the Customize interface (HH +faces)
+
+From official "NEWS" page for 24.3:
+
+			** Docstrings starting with `*' no longer indicate user options.
+			Only variables defined using `defcustom' are considered user options.
+			The function `user-variable-p' is now an obsolete alias for`custom-variable-p'.
+
+For a start, this changes the "odd definition" on this wiki page.
+
+	Elsewhere there is a comment that the last statement above is not true:
+		‘user-variable-p’ corresponds to ‘set-variable’
+		‘custom-variable-p’ corresponds to ‘customize-variable’
+
+So is the ‘user-variable-p’ set a superset of ALL variables or orthogonal to user options?
+	and does ‘custom-variable-p’ give the user options list based on the old '*' docstring method or the new (defvar vs defcustom) one?
+
+----------------
+I'm trying to build up my understanding from the POV of "how do I get a global list of X-type variables?" - them's that know please confirm/clarify/correct.
+
+ALL variables
+	M-x describe-var RET, TAB
+	also set-variable, find-variable
+
+above should be the superset
+	
+	customize-option         (M-x customize-option, also on the menu-bar)
+		custom-variable-p
+	
+	user-variable-p
+		
+	(from obsolete options.el)
+		M-x list-options
+
+I'll also check out 
+	https://github.com/Bruce-Connor/emacs-online-documentation
+
+-- HansBKK 2014-04-15 13:04 UTC
+
