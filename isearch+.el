@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 10 11:03:48 2014 (-0800)
+;; Last-Updated: Tue Apr 15 09:58:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3402
+;;     Update #: 3404
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -522,6 +522,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/04/15 dadams
+;;     isearch-printing-char: Update version test for Emacs 24.4 pretest - use version<.
 ;; 2014/01/10 dadams
 ;;     isearch-mouse-2: Do not call isearchp-set-sel-and-yank unless mark is defined.
 ;;     isearchp-set-sel-and-yank: No-op unless mark is defined.
@@ -2165,7 +2167,8 @@ outside of Isearch."
 ;; 1. If `isearchp-drop-mismatch' is `replace-last' then remove the last mismatched input.
 ;; 2. Use ?\ , not ?\s, so compatible with older Emacs versions.
 ;;
-(if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+(if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)
+                                         (not (version< emacs-version "24.3.50"))))
     (defun isearch-printing-char (&optional char count)
       "Append ordinary printing character CHAR to the search string, then search.
 CHAR defaults to the last printing character typed.
