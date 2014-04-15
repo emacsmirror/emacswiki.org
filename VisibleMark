@@ -72,6 +72,9 @@ control-super-left/right  (super is usually windoze keys on PCs):
 
 
 [new]
+I wrote some elisp that displays the points in the mark ring.  It's modeled after Occur.  The line number for each point in the mark-ring is displayed as well as the contents of that line.  Pressing RET on the line will take you to the point from the mark-ring.  The function is called 'show-marks' and is available at http://therowes.net/~greg/code/emacs/emacs.d/mark.el
+
+[new]
 There is also Lisp:himarks-mode.el available, which is known to work on XEmacs but not Gnu EMacs 
 VisibleMark doesn't work with XEmacs, since XEmacs define-minor-mode doesn't have a BODY argument, which would be a minor fix.
 
