@@ -3,11 +3,11 @@ Customizable faces and number of marks to display.
 Can display marks from the mark ring in the normal backward direction,
 and in the forward direction.
 
-Related useful functions like unpoping the mark are listed MarkCommands
-
 Get it from
 melpa or
 https://gitlab.com/iankelling/visible-mark
+
+Related useful functions like unpoping the mark are listed MarkCommands
 
 [new]
 Tip: I like not highlighting the region with visible-mark. 
@@ -20,21 +20,9 @@ background for the visible marks - especially if you're displaying all marks on
 the mark ring.
 
 
+== Occur for mark ring ==
 
-
-[new]
 I wrote some elisp that displays the points in the mark ring.  It's modeled after Occur.  The line number for each point in the mark-ring is displayed as well as the contents of that line.  Pressing RET on the line will take you to the point from the mark-ring.  The function is called 'show-marks' and is available at http://therowes.net/~greg/code/emacs/emacs.d/mark.el
-
-[new]
-There is also Lisp:himarks-mode.el available, which is known to work on XEmacs but not Gnu EMacs 
-VisibleMark doesn't work with XEmacs, since XEmacs define-minor-mode doesn't have a BODY argument, which would be a minor fix.
-
-
-[new]
-It would be nice if a C-G (keyboard-quit) made the existing visible marks
-invisible again (kind of a transient-visible-marks-mode).  That would let
-you see them when you want them (e.g. while preparing for a transpose-region)
-but hide them easily when they annoy. -- MarkTKennedy
 
 == See Also ==
 
@@ -42,6 +30,7 @@ but hide them easily when they annoy. -- MarkTKennedy
 * MarkCommands - useful mark navigation commands
 * MakingMarkVisible - Like VisibleMark, but extremely simplistic. Only shows active mark.
 * VisibleBookmarks - can be used like visible mark
+* Old XEmacs only mark highlighting Lisp:himarks-mode.el
 ----
 CategoryFaces
 CategoryRegion
