@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 13 15:16:25 2014 (-0700)
+;; Last-Updated: Tue Apr 15 09:48:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1676
+;;     Update #: 1682
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -123,6 +123,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/15 dadams
+;;     icomplete-exhibit: Update version tests, for Emacs 24.4 pretest (23.90.1).
 ;; 2014/04/13 dadams
 ;;     icomplete-exhibit, fix Emacs bug #17165: Ensure no error because (icomplete--field-*) is nil.
 ;; 2014/03/10 dadams
@@ -530,7 +532,8 @@ menu-bar bindings in the l of keys (Emacs 23+ only)."
 ;;
 (when (and (> emacs-major-version 22)   ; Emacs 23 through Emacs 24.3.
            (or (< emacs-major-version 24)
-               (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
+               (and (= emacs-major-version 24)  (< emacs-minor-version 4)
+                    (version< emacs-version "24.3.50"))))
   (defun icomplete-exhibit ()
     "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
@@ -583,7 +586,7 @@ and `minibuffer-setup-hook'."
 ;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3))
-          (and (= emacs-major-version 24)  (string-match-p "24.3.50" emacs-version))) ;@@@@ TO REMOVE
+          (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50")))) ;@@@@ TO REMOVE
   (defun icomplete-exhibit ()
     "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
