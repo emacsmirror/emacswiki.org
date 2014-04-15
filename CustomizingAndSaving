@@ -12,9 +12,9 @@ So, what's a face? See [[Face]].
 
 So, what's a '''[::user option]'''? It's a variable that was defined using `defcustom' (or equivalent EmacsLisp code).  Prior to Emacs 24.3 it was a bit more general: any variable whose DocString begins with `*'.
 
-The EmacsLisp predicate that describes a user option is `user-variable-p'.  Starting with Emacs 24.3, this predicate is the same as `custom-variable-p'.
+The EmacsLisp predicate that describes a user option is `user-variable-p'.  Starting with Emacs 24.3, this predicate is the same as `custom-variable-p'.  Another way to characterize a user option is as something that you can change using `set-variable'.
 
-Other ways to characterize a user option are as something that you can see using `list-options' and something that you can change using `set-variable'. In general, a user option is a variable that is intended to be changed by users -- you -- as opposed to an internal variable that is modified by program only.
+In general, a user option is a variable that is intended to be changed by users -- you -- as opposed to an internal variable that is modified by program only.
 
 Prior to Emacs 24.3, because some user options could be defined without using `defcustom', you could not save those user options.  Starting with 24.3, only `defcustom' variables are user options -- and you can of course use Customize to save any of these.
 
