@@ -10,41 +10,50 @@ The first thing to recognize is that not every Emacs setting is a savable prefer
 
 So, what's a face? See [[Face]].
 
-So, what's a '''user option'''? It's a variable whose DocString begins with `*'. That's an odd definition, but that's what a user option is. The Lisp predicate that describes this class of beasts is `user-variable-p'. Other ways to characterize a user option are as something that you can see using `list-options' and something that you can change using `set-variable'. In general, a user option is a variable that is intended to be changed by users -- you -- as opposed to an internal variable that is modified by program only.
+So, what's a '''[::user option]'''? It's a variable that was defined using `defcustom' (or equivalent EmacsLisp code).  Prior to Emacs 24.3 it was a bit more general: any variable whose DocString begins with `*'.
 
-[new:DrewAdams:2005-02-01 19:24 UTC]
-There has been some discussion lately on the bug list ([[emacs-pretest-bug]]) about what term to use for what I've called here "preference". I think that the decision will be to change the term "user option" to mean that (a preference, whether variable or face), and to use only "user variable" for a variable that is `user-variable-p'. Until that change is made (in the UI and the doc), I'll leave "preference" as the term here, to avoid confusion. -- DrewAdams [new]
+The EmacsLisp predicate that describes a user option is `user-variable-p'.  Starting with Emacs 24.3, this predicate is the same as `custom-variable-p'.
 
-Actually, if you use Customize to save preferences, then not all user options can be saved. You can only use Customize to save those things (user options and faces) that you can change within the Customize user interface (UI). In other words, ''Customize handles a'' '''''subset''''' ''of user options'', and user options are a subset of all variables. While `user-variable-p' corresponds to `set-variable', `custom-variable-p' corresponds to `customize-variable'. The latter two functions test whether you can use Customize with a given variable and set such a variable, respectively.
+Other ways to characterize a user option are as something that you can see using `list-options' and something that you can change using `set-variable'. In general, a user option is a variable that is intended to be changed by users -- you -- as opposed to an internal variable that is modified by program only.
 
-You can always save any preferences by inserting appropriate Lisp code in your init file (##.emacs##). But this page is concerned with preferences that you save using Customize.
+Prior to Emacs 24.3, because some user options could be defined without using `defcustom', you could not save those user options.  Starting with 24.3, only `defcustom' variables are user options -- and you can of course use Customize to save any of these.
+
+You can always save any preferences (options or faces) by inserting appropriate Lisp code in your [[init file]].  But this page is concerned with preferences that you save using Customize.
+
+
+
 
 == How Can I Revisit Changed Preferences and Save Them? ==
 
-A very useful command, which is not bound to any key sequence, by default, is `customize-unsaved'. This command opens a Customize buffer with all of the preferences that you have changed in the current session but not yet saved. You can then look over the changes and save individual preferences.
+A very useful command, which is not bound to any key sequence, by default, is `customize-unsaved'.  This command opens a Customize buffer with all of the preferences that you have changed in the current session but not yet saved. You can then look over the changes and save individual preferences.
 
 Another useful command (also not bound, by default) is `customize-save-customized' -- it saves '''''all''''' of the changes you have made in the current session.
 
 However, it is important to realize that both of these commands work only with the set of changes that Customize recognizes, and '''''not every preference change is recognized by Customize'''''. This is an important ''gotcha!!'' -- see next.
 
+
 == Customize and Emacs Don't Always Play Well Together ==
 
-Changes you make outside Customize are not always taken into account by Customize. Usually Customize will recognize that a change has been made, but it normally does not consider such an outside change as equivalent to the corresponding change within Customize. This is unfortunate: Emacs behaves correctly according to changes that you have made, but Customize does not recognize the change.
+Changes you make outside Customize (e.g., using `setq' for an option) are not always taken into account by Customize.  Usually Customize will recognize that a change has been made, but it normally does not consider such an outside change as equivalent to the corresponding change within Customize.  This is unfortunate: Emacs behaves correctly according to changes that you have made, but Customize does not recognize the change.
 
-''For example:'' If you set the value of a user variable using `set-variable' or `setq' instead of changing it using the Customize UI, then Customize will declare that the value has changed outside Customize and that it is ''not'' considered ''set'' for the current session. This is a strange status: the variable has in fact had its value changed for the current session, but Customize does not want to recognize that. Go figure...
+''For example:'' If you set the value of a user variable using `set-variable' or `setq' instead of changing it using the Customize UI, then Customize will declare that the value has changed outside Customize and that it is ''not'' considered ''set'' for the current session. This is a strange status: the variable has in fact had its value changed for the current session, but Customize does not want to recognize that.  Go figure...
 
-So, why is this important? Not only because it can help you understand why Customize doesn't seem to recognize changes you have made using things like `set-variable' (well, maybe "understand why" is too strong here; let's say "recognize that"). More importantly, you need to be aware of this if you write Lisp code that others will use. If you create, for example, a command that lets users change the color of a face, then you need to know that such a change will generally not be reflected in the Customize UI -- so, users will not be able to save such a change using Customize.
+So, why is this important?  Not only because it can help you understand why Customize doesn't seem to recognize changes you have made using things like `set-variable' (well, maybe "understand why" is too strong here; let's say "recognize that").  More importantly, you need to be aware of this if you write Lisp code that others will use.  If you create, for example, a command that lets users change the color of a face, then you need to know that such a change will generally not be reflected in the Customize UI -- so, users will not be able to save such a change using Customize.
+
+
+
 
 [:GetCustomizeToRecognizeChangedPreference]
 == How Can I Get Customize to Recognize a Changed Preference? ==
 
-This is the key question for this page. And finding the answer is not as simple as you might expect. The Lisp code that implements Customize is, well, not the easiest code to understand. So, without further suspense, and at no expense to you, here are the secrets discovered from untold diggings among the ruins of Customize code:
+This is the key question for this page. And finding the answer is not as simple as you might expect. The Lisp code that implements Customize is, well, not the easiest code to understand.  So, without further suspense, and at no expense to you, here are the secrets discovered from untold diggings among the ruins of Customize code:
 
     (put variable 'customized-value (list (custom-quote (eval variable))))
 
 where `variable' is a symbol that names a variable.
 
-That's it! That's all you have to add to your Lisp code that sets user option `variable', in order to tell Customize that it has been set to its current value, ##(eval variable)##. You can do this interactively using command `tell-customize-var-has-changed', which is defined in library Lisp:frame-cmds.el using the one-liner shown here.
+That's it! That's all you have to add to your Lisp code that sets user option `variable', in order to tell Customize that it has been set to its current value, ##(eval variable)##.  You can do this interactively using command `tell-customize-var-has-changed', which is defined in library <tt>[[frame-cmds.el]]</tt> using the one-liner shown here.
+
 
 === How To Tell Customize that a Face Has Changed ===
 
@@ -53,13 +62,15 @@ To tell Customize that the definition of a face has changed (e.g. different fore
     (put face 'customized-face spec)
     (face-spec-set face spec)
 
-where `face' is a face and `spec' is its new definition (face specification). This code is available as function `doremi-face-set' in library Lisp:doremi-frm.el.
+where `face' is a face and `spec' is its new definition (face specification). This code is available as function `doremi-face-set' in library <tt>[[doremi-frm.el]]</tt>.
+
+
 
 [:CheckForPreferenceChanges]
 == How to Check Whether a Preference Has Changed ==
 
 [new]
-[[#GetCustomizeToRecognizeChangedPreference|How Can I Get Customize to Recognize a Changed Preference?]] explains how to set a value that Customize will recognize. How do I do the opposite, namely making my own code recognize that Customize (the user) has set a value for a certain variable? -- VegardOye
+[[#GetCustomizeToRecognizeChangedPreference|How Can I Get Customize to Recognize a Changed Preference?]] explains how to set a value that Customize will recognize. How do I do the opposite, namely make my own code recognize that Customize (the user) has set a value for a certain variable? -- VegardOye
 
 [new:DrewAdams:2010-01-14 16:04 UTC]
 What you're looking for is this, I believe:
@@ -69,7 +80,7 @@ What you're looking for is this, I believe:
 See, for instance, `custom-ignore-unsaved-preference' in <tt>[[cus-edit+.el]]</tt>. -- DrewAdams
 
 [new]
-That is useful. Thanks. Why Customize doesn't ship with ready-made functions for these things is beyond me. I may put the phrase "secrets discovered from untold diggings among the ruins of Customize code" in a code comment. :) -- VegardOye
+That is useful. Thanks.  Why Customize doesn't ship with ready-made functions for these things is beyond me.  I may put the phrase "secrets discovered from untold diggings among the ruins of Customize code" in a code comment. :) -- VegardOye
 
 [new]
 '''Update:''' After some more excavation, I discovered that Customize stores ''saved'' values (for future sessions) in the property ##saved-value##. The line above checks if Customize has changed the value during the current session, while the function below also returns non-##nil## when the variable is Customize'd in ##.emacs##. -- VegardOye
@@ -81,52 +92,57 @@ That is useful. Thanks. Why Customize doesn't ship with ready-made functions for
           (get symbol 'saved-value)))
 
 
+
 [:SavingFrameParameters]
 == Setting and Saving Frame Parameters ==
 
-Each Emacs [[Frame]] has a set of frame parameters, or properties, that define its behavior and appearance. These parameters are not variables, and they are not faces (though a few of the parameters correspond to standard faces). Each frame has its own set of parameter values, so if you change, say, the `background-color' parameter value of one frame it does not usually affect the value of that parameter for another frame.
+Each Emacs [[frame]] has a set of '''frame parameters''', or properties, that define its behavior and appearance.  These parameters are not variables, and they are not faces (though a few of the parameters correspond to standard faces).  Each frame has its own set of parameter values, so if you change, say, the `background-color' parameter value of one frame it does not usually affect the value of that parameter for another frame.
 
-You can change various parameter values for a given frame in different ways. See, for instance, the commands in library Lisp:doremi-frm.el. But, suppose that you change a frame so that, for instance, it has the right color background, and you would like to use that color for all of your frames in the future. What do you do?
+You can change various parameter values for a given frame in different ways. See, for instance, the commands in library <tt>[[doremi-frm.el]]</tt>. But, suppose that you change a frame so that, for instance, it has the right color background, and you would like to use that color for all of your frames in the future. What do you do?
 
 First, since a frame parameter is neither a variable nor a face, it is not a Customize preference. So, it would appear that you cannot save such a property for future use.
 
 However, there are two things that come to your rescue here:
 
-* color themes -- These are color schemes that you can save. Essentially, they set up a set of variables to save frame and face colors. See ColorTheme.
+* custom themes and color themes -- These are color schemes that you can save. Essentially, they set up a set of variables to save frame and face colors.  See ColorTheme.
 
-* frame-alist variables -- These are standard variables that hold frame parameters and their values. They include `default-frame-alist', which defines the properties of most new frames that you create.
+* frame-alist variables -- These are standard variables that hold frame parameters and their values. They include '''`default-frame-alist'''', which defines the properties of most new frames that you create.
 
-So, you can use frame-alist variables to save frame parameters for future sessions. But how can you copy frame parameter values from a given frame that you like to a frame-alist variable like `default-frame-alist'? There are two commands defined in library Lisp:frame-cmds.el that help here:
+So, you can use frame-alist variables to save frame parameters for future sessions. But how can you copy frame parameter values from a given frame that you like to a frame-alist variable like `default-frame-alist'?  There are two commands defined in library <tt>[[frame-cmds.el]]</tt> that help here:
 
-* `set-frame-alist-parameter-from-frame' -- Copies the value of a particular frame parameter from a given frame (the selected frame, by default) to a given frame-alist, such as `default-frame-alist'. If you use library Lisp:menu-bar+.el, then this is item '''Set Frame Parameter from Frame''' on the '''Frames''' menu.
+* '''`set-frame-alist-parameter-from-frame'''' -- Copies the value of a particular frame parameter from a given frame (the selected frame, by default) to a given frame-alist, such as `default-frame-alist'. If you use library <tt>[[menu-bar+.el]]</tt>, then this is item '''Set Frame Parameter from Frame''' on the '''Frames''' menu.
 
-* `set-all-frame-alist-parameters-from-frame' -- Copies all of the frame-parameter values from a given frame to a given frame-alist. If you use library Lisp:menu-bar+.el, then this is item '''Set All Frame Parameters from Frame''' on the '''Frames''' menu.
+* '''`set-all-frame-alist-parameters-from-frame'''' -- Copies all of the frame-parameter values from a given frame to a given frame-alist. If you use library <tt>[[menu-bar+.el]]</tt>, then this is item '''Set All Frame Parameters from Frame''' on the '''Frames''' menu.
 
-Of course, a few frame parameters that it really doen't make sense to copy. For example, the frame parameter `window-id' is a unique frame ID used to communicate between Emacs and the window manager. You wouldn't want to copy that to `default-frame-alist' so that all new frames would get the same ID.
+Of course, there are a few frame parameters that it really doen't make sense to copy.  For example, the frame parameter `window-id' is a unique frame ID used to communicate between Emacs and the window manager.  You wouldn't want to copy that to `default-frame-alist' so that all new frames would get the same ID.
 
-For that reason, there is a user option, `frame-parameters-to-exclude', which is a list of frame parameters to not copy when using the `set-*-frame-alist-*' commands. It is an option so that you can tweak which parameters are included and excluded from copying.
+For that reason, there is a user option, '''`frame-parameters-to-exclude'''', which is a list of frame parameters to not copy when using the `set-*-frame-alist-*' commands. It is an option so that you can tweak which parameters are included and excluded from copying.
 
 '''Example:''' Here's a typical example of using these commands.
 
-# You use command `doremi-bg' to modify the background color of a frame (any frame): Let's say that you change its red, green, and blue components, or you darken or brighten it ("value").
+# You use command '''`doremi-bg'''' to modify the background color of a frame (any frame): Let's say that you change its red, green, and blue components, or you darken or brighten it ("value").
 
-# You use command `set-frame-alist-parameter-from-frame' to copy the `background-color' parameter from the frame you changed to `default-frame-alist'.
+# You use command '''`set-frame-alist-parameter-from-frame'''' to copy the `background-color' parameter from the frame you changed to `default-frame-alist'.
 
-# You save user option `default-frame-alist' in Customize (after using `customize-customized' to get to its Customize buffer).
+# You save user option '''`default-frame-alist'''' in Customize (after using `customize-customized' to get to its Customize buffer).
 
 (Each of the `set-*-frame-alist-*' commands takes care of letting Customize know that the frame-alist user option has been changed.)
 
+
+
+
+
 == So, Why Is Customize So Blind? ==
 
-You might be wondering, "Why doesn't Customize get along better with the rest of Emacs?" "Why doesn't it pay attention to changes made outside it?" Don't ask. But that might become a topic for discussion for the next (post 22.1) Emacs release. The time seems ripe for looking the question in the face.
+You might be wondering, "Why doesn't Customize get along better with the rest of Emacs?"  "Why doesn't it pay attention to changes made outside it?"  Don't ask.  But that might become a topic for discussion for a future Emacs release.
 
-The historical explanation might be that Customize grew up as a separate library, and it hasn't yet completely taken hold or become significant enough to be more tightly integrated with the rest of Emacs. It is a lot more integrated now than it was a few releases ago, however, and as a result it has become more and more ''expected'' that it play well with Emacs.
+The historical explanation might be that Customize grew up as a separate library, and it hasn't yet completely taken hold or become significant enough to be more tightly integrated with the rest of Emacs.  It is a lot more integrated now than it was a few releases ago, however, and as a result it has become more and more ''expected'' that it play well with Emacs.
 
-Another explanation might be that an initial goal for Customize was to provide a way to customize Emacs that would not require users to be Lisp programmers. In that Customize has succeeded. As such, many Lispers who use Emacs have not bothered much with Customize ("real Emacs users don't use Customize" seems to be their credo). The idea is that Customize doesn't need to play well with Emacs because there are two separate Emacs user groups: the non-Lispers, who won't change things outside Customize, and the Lispers, who won't change things inside Customize.
+Another explanation might be that an initial goal for Customize was to provide a way to customize Emacs that would not require users to be Lisp programmers.  In that, Customize has succeeded.  As such, many Lispers who use Emacs have not bothered much with Customize ("real Emacs users don't use Customize" seems to be their credo).  The idea is that Customize doesn't need to play well with Emacs because there are two separate Emacs user groups: the non-Lispers, who won't change things outside Customize, and the Lispers, who won't change things inside Customize.
 
-But this split into two different kind of users is pretty artificial -- things are not so black and white. In practice, Emacs has always been about ''looking under the hood'' -- or at least being ''able'' to look under the hood if you're curious or you just like to fiddle with the guts of a machine. Many Emacs users are just a little Lispian, and even newbies often like to learn some Lisp, even when they don't have to.
+But this split into two different kind of users is pretty artificial -- things are not so black and white.  In practice, Emacs has always been about ''looking under the hood'' -- or at least being ''able'' to look under the hood if you're curious or you just like to fiddle with the guts of a machine.  Many Emacs users are just a little Lispian, and even newbies often like to learn some Lisp, even when they don't have to.
 
-So, some folks figure that it would be good if ''all'' changes to user options and faces were ''automatically'' recognized as new preference settings by Customize (recognized, but not saved, by default). The idea would be that you can change something anywhere and the change is taken into account elsewhere. See, for example, [[#CustomizePlus]].
+So, some folks figure that it would be good if ''all'' changes to user options and faces were ''automatically'' recognized as new preference settings by Customize (recognized, but not saved, by default).  The idea would be that you can change something anywhere and the change is taken into account elsewhere. See, for example, [[#CustomizePlus]].
 
 '''''What do you think?''''' Are there good reasons for Customize ''not'' to recognize changes to user options by `set-variable', `setq', and so on?
 
@@ -166,13 +182,18 @@ The idea is to open up Customize, so that it sees changes that are made elsewher
 
 
 
+
+
+
+
+
 [:CustomizePlus]
 [:cus-edit+.el]
 == Customize+: Making Customize Behave as It Should All the Time ==
 
-After I wrote the text on this page a few days ago, I set about trying to come up with a better solution than requiring individual functions to inform Customize that they've set something. The result is library Lisp:cus-edit+.el. Here is the executive summary (from the source-code commentary):
+After I wrote the text on this page, I set about trying to come up with a better solution than requiring individual functions to inform Customize that they've set something. The result is library <tt>[[cus-edit+.el]]</tt>.  Here is the executive summary (from the source-code commentary):
 
-: This library in effect gets rid of the useless ''"changed outside of Customize"'' state. User preferences have only the `standard', `saved', or `set' (= unsaved) state, regardless of how they are set. Someday, Customize might be more integrated with the rest of Emacs, and "changed outside of Customize" will make no more sense than "changed outside of Emacs". Customize will then be just one possible way to access the space of user preferences, the same preference space that other parts of Emacs can access differently. If we're writing on the same blackboard, you can see what I erase, and I can see what you write. Simple.
+: This library in effect gets rid of the useless ''"changed outside of Customize"'' state.  User preferences have only the `standard', `saved', or `set' (= unsaved) state, regardless of how they are set.  Someday, Customize might be more integrated with the rest of Emacs, and "changed outside of Customize" will make no more sense than "changed outside of Emacs".  Customize will then be just one possible way to access the space of user preferences, the same preference space that other parts of Emacs can access differently.  If we're writing on the same blackboard, you can see what I erase, and I can see what you write. Simple.
 
 
 
@@ -194,37 +215,37 @@ Here is one user's [[http://msnyder.info/posts/2014/01/cus-edit-plus/|takeaway]]
 
 There is a detailed explanation of what that library does in the source-code comments, so I won't repeat that all here. Here are the highlights:
 
-* Emacs informs you when you quit (`C-x C-c') if you have unsaved customizations. It asks if you want to review them. If so, it opens a Customize buffer with all of your changes -- variables and faces. This is analogous to Emacs asking you about files you've changed but not saved, before letting you exit.
+* Emacs informs you when you quit (`C-x C-c') if you have unsaved customizations. It asks if you want to review them.  If so, it opens a Customize buffer with all of your changes -- variables and faces.  This is analogous to Emacs asking you about files you've changed but not saved, before letting you exit.
 
-* Emacs does this by using `customize-customized' as a `kill-emacs-query-functions' hook -- or, rather, it uses a new version of `customize-customized' that does the following:
+* Emacs does this by using '''`customize-customized'''' as a `kill-emacs-query-functions' hook -- or, rather, it uses a new version of `customize-customized' that does the following:
 
-** It ignores any preferences listed in variable `customize-customized-ignore'. Typically, you list variables there that you modify frequently and don't care about saving. Examples are `case-fold-search' and `debug-on-error' -- you don't really care about saving their changes, and you certainly don't want to be asked whether or not you want to save them each you quit Emacs. (A prefix argument to `customize-customized' lets you override this ignoring.)
+** It ignores any preferences listed in variable '''`customize-customized-ignore''''.  Typically, you list variables there that you modify frequently and don't care about saving. Examples are `case-fold-search' and `debug-on-error' -- you don't really care about saving their changes, and you certainly don't want to be asked whether or not you want to save them each you quit Emacs.  (A prefix argument to `customize-customized' lets you override this ignoring.)
 
 ** If not run interactively (e.g. when run as a `kill-emacs-query-functions' hook), it asks you for confirmation before proceeding.
 
-* All Customize buffers have been modified to provide buttons and menu items ('''Ignore Unsaved Changes''') to let you add preferences (variables and faces) to `customize-customized-ignore'. You can, for instance, add every preference in a Customize buffer to the ignore list with one click -- just as you can save all changes in a Customize buffer with one click.
+* All Customize buffers have been modified to provide buttons and menu items ('''Ignore Unsaved Changes''') to let you add preferences (variables and faces) to `customize-customized-ignore'.  You can, for instance, add every preference in a Customize buffer to the ignore list with one click -- just as you can save all changes in a Customize buffer with one click.
 
-* New commands `customize-update-all-vars', `customize-update-all-faces', and `customize-update-all' (which does both of the first two) dig up all of the variables and faces that have been modified outside of Customize and tell Customize to consider them as having been modified inside Customize. IOW, they bring everything that is outside of Customize into the Customize fold. Using these commands, you can manually update Customize at any time, to synch Customize with the wider Emacs world. These updating commands are also available as buttons and menu items ('''Set from External Changes''').
+* New commands '''`customize-update-all-vars'''', '''`customize-update-all-faces'''', and '''`customize-update-all'''' (which does both of the first two) dig up all of the variables and faces that have been modified outside of Customize and tell Customize to consider them as having been modified inside Customize.  IOW, they bring everything that is outside of Customize into the Customize fold.  Using these commands, you can manually update Customize at any time, to synch Customize with the wider Emacs world.  These updating commands are also available as buttons and menu items ('''Set from External Changes''').
 
-* `customize-update-all' can run as an idle timer, ''synching up Customize in idle moments'', so you don't need to do anything to make Customize behave as it should. You can then change anything anywhere in Emacs. When you exit, Emacs will inform you of all the changes and ask if you want to save them. You can modify how long the idle period needs to be before an update is done.
+* `customize-update-all' can run as an idle timer, ''synching up Customize in idle moments'', so you don't need to do anything to make Customize behave as it should. You can then change anything anywhere in Emacs.  When you exit, Emacs will inform you of all the changes and ask if you want to save them.  You can modify how long the idle period needs to be before an update is done.
 
-Interestingly, it turns out that even if you don't change any preferences, when you quit Emacs the first time you try [[#CustomizePlus]] (`##cus-edit+.el##'), you are informed that there are ''lots'' of changed preferences. Those changes represent all of the user preferences that Emacs and various Emacs libraries have changed behind the back of Customize -- even before you do anything.
+Interestingly, it turns out that even if you don't change any preferences, when you quit Emacs the first time you try [[#CustomizePlus]] (`##cus-edit+.el##'), you are informed that there are ''lots'' of changed preferences.  Those changes represent all of the user preferences that Emacs and various Emacs libraries have changed behind the back of Customize -- even before you do anything.
 
-You'll see user options like `baud-rate' that are set in Emacs C code without informing Customize to mark their settings as `standard' (= installed). There should ''not'' be any such apparent "changes", since this is all part of standard Emacs (or libraries that you load), but that's the way it is, for now. Someday, I hope, you'll be able to live with Customize without [[#CustomizePlus]] ;-).
+You'll see user options like `baud-rate' that are set in Emacs C code without informing Customize to mark their settings as `standard' (= installed).  There should ''not'' be any such apparent "changes", since this is all part of standard Emacs (or libraries that you load), but that's the way it is, for now.  Someday, I hope, you'll be able to live with Customize without [[#CustomizePlus]] ;-).
 
-If you choose to save these preference changes, you will never again be bothered by being informed that they have changed (unless you change them yourself). So, that's one solution to this bother: just click '''Save''' to save all the phony customizations. Alternatively, you can click '''Ignore Unsaved Changes''' to ignore them all in the future; either way, this is only a one-time nuisance. And of course, you can save some and ignore other changes, individually.
+If you choose to save these preference changes, you will never again be bothered by being informed that they have changed (unless you change them yourself).  So, that's one solution to this bother: just click '''Save''' to save all the phony customizations. Alternatively, you can click '''Ignore Unsaved Changes''' to ignore them all in the future; either way, this is only a one-time nuisance.  And of course, you can save some and ignore other changes, individually.
 
-There is a third way, in addition to saving and ignoring such "spurious" changes (that is, changes that you didn't really make yourself, interactively): tell Customize to treat them as if they were saved, but ''not'' to save them -- menu items/button '''Consider Unchanged'''. Unlike '''Save''' and '''Ignore''', this has a non-persistent effect. It just resets the state for the preferences in question to "saved", so that they are not considered changed, but if you change them later (in the same session) they are then treated as changed.
+There is a third way, in addition to saving and ignoring such "spurious" changes (that is, changes that you didn't really make yourself, interactively): tell Customize to treat them as if they were saved, but ''not'' to save them -- menu items/button '''Consider Unchanged'''.  Unlike '''Save''' and '''Ignore''', this has a non-persistent effect.  It just resets the state for the preferences in question to "saved", so that they are not considered changed, but if you change them later (in the same session) they are then treated as changed.
 
-This is useful for dealing with user-preference changes that are done by libraries that you might load, including some standard libraries that don't correctly tell Customize to consider the settings they make as "standard". It can also be used for your own interactive changes that you might not want to save immediately, but that you want to treat as base-line values for a time.
+This is useful for dealing with user-preference changes that are done by libraries that you might load, including some standard libraries that don't correctly tell Customize to consider the settings they make as "standard".  It can also be used for your own interactive changes that you might not want to save immediately, but that you want to treat as base-line values for a time.
 
-However, unlike the case of "saved" and "standard" values, there is no way to reset to such a virtually saved value. It is designed for settings that are taken care of by program in a sure way -- instead of such settings coming from your custom file, they come from a library. You don't want to see such non-personal changes popping up each time you check for changes, but you also don't usually want to save them to your custom file (which could even have a perverse effect if a library depends on a value not yet being set when it is loaded). Usually, when you load a library that messes with a user preference, you want to know that, but you then want to "reset" the status to unchanged ('''Consider Unchanged'''), so you can notice any further changes to it. Since loading the library again will (usually) reestablish the same user-preference values, there is no need to save them in your custom file (and that could have a perverse effect, as mentioned).
+However, unlike the case of "saved" and "standard" values, there is no way to reset to such a virtually saved value.  It is designed for settings that are taken care of by program in a sure way -- instead of such settings coming from your custom file, they come from a library.  You don't want to see such non-personal changes popping up each time you check for changes, but you also don't usually want to save them to your custom file (which could even have a perverse effect if a library depends on a value not yet being set when it is loaded).  Usually, when you load a library that messes with a user preference, you want to know that, but you then want to "reset" the status to unchanged ('''Consider Unchanged'''), so you can notice any further changes to it.  Since loading the library again will (usually) reestablish the same user-preference values, there is no need to save them in your custom file (and that could have a perverse effect, as mentioned).
 
 In the menus, '''Ignore Unsaved Changes''' is active only if there are such changes; '''Consider Unchanged''' is active only if the current preference values have not been saved; and '''Set from External Changes''' (manual updating) is active only if there actually are external changes to update to.
 
-Customize is still fairly new, and lots of Emacs libraries still define and change user preferences without going through Customize -- that's the reason for a large set of behind-the-scenes changes. In fact, Customize does not at all make it easy for Lisp code to go through Customize to ''update'' variables and faces -- you really have to know what you're doing to get that done at all (see the rest of this page, above). Customize was designed, I guess, as an enclave apart (why, I don't know).
+Lots of Emacs libraries still define and change user preferences without going through Customize -- that's the reason for a large set of behind-the-scenes changes.  In fact, Customize does not at all make it easy for Lisp code to go through Customize to ''update'' variables and faces -- you really have to know what you're doing to get that done at all (see the rest of this page, above).  Customize was designed, I guess, as an enclave apart (why, I don't know).
 
-Anyway, I hope that [[#CustomizePlus]] will help people get more out of Customize, and, more importantly, encourage Lisp authors to come up with new ways to let users define and modify preferences. That's the idea behind the ''direct manipulation'' of DoReMi, and [[#CustomizePlus]] might open the door to other new ways to change settings. For now, try the idea out with DoReMi and [[#CustomizePlus]]: incrementally change face colors and settings, and then use Customize to save your changes.
+Anyway, I hope that [[#CustomizePlus]] will help people get more out of Customize, and, more importantly, encourage Lisp authors to come up with new ways to let users define and modify preferences.  That's the idea behind the ''direct manipulation'' of DoReMi, and [[#CustomizePlus]] might open the door to other new ways to change settings.  For now, try the idea out with DoReMi and [[#CustomizePlus]]: incrementally change face colors and settings, and then use Customize to save your changes.
 
 ----
 CategoryCustomize CategoryGlossary CategoryFrames CategoryFaces CategoryPersistence CategoryCode
