@@ -219,7 +219,7 @@ If you'd like to use Flyspell's menu selection in the terminal, or just prefer t
              (menu (mapcar
                     (lambda (arg) (if (consp arg) (car arg) arg))
                     base-menu)))
-        (assoc (popup-menu* menu :scroll-bar t) base-menu)))
+        (cadr (assoc (popup-menu* menu :scroll-bar t) base-menu))))
 </pre>
 and put this in your init file:
 <pre>
