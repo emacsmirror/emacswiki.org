@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 26 12:51:48 2014 (-0800)
+;; Last-Updated: Tue Apr 15 10:02:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1718
+;;     Update #: 1721
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -312,6 +312,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/15 dadams
+;;     mouse3-noregion-popup-misc-submenu: Update version test for Emacs 24.4 pretest - use version<.
 ;; 2014/02/26 dadams
 ;;     mouse3-noregion-popup-misc-submenu, mouse3-noregion-popup-x-popup-panes: Use hlt-(un)highlight-symbol.
 ;; 2014/02/24 dadams
@@ -1286,7 +1288,7 @@ restore it by yanking."
         :enable (save-excursion
                   (mouse-set-point last-nonmenu-event)
                   (if (or (> emacs-major-version 24) ; Do not use `browse-url-url-at-point'.
-                          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+                          (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50"))))
                       (thing-at-point 'url t)
                     (thing-at-point 'url))))
        (find-file menu-item "Visit File" ffap-at-mouse
