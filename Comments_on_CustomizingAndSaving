@@ -39,3 +39,26 @@ I'll also check out
 
 -- HansBKK 2014-04-15 13:04 UTC
 
+
+----
+
+I will update the page a bit later, unless you beat me to it. ;-)
+
+Yes, `user-variable-p' is now an alias for `custom-variable-p' (starting with Emacs 24.3).  You can no longer define a user variable, which you could set using `M-x set-variable', by just prefixing a `defvar' doc string with `##*##'.  Now `set-variable' works only for `defcustom' variables, aka user options, aka user variables.
+
+To get a list of all custom types:
+
+    (let ((result  ()))
+      (mapatoms
+       (lambda (symb)  ; FREE here: RESULT.
+         (when (if (fboundp 'custom-variable-p)
+                   (custom-variable-p symb)
+                 (user-variable-p symb))
+           (condition-case nil
+               (push (list symb (get symb 'custom-type)) result)
+             (error nil))))))
+
+The `if' above matters only if you support also older Emacs versions that do not have `custom-variable-p'.
+
+-- DrewAdams 2014-04-15 14:42 UTC
+
