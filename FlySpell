@@ -177,5 +177,57 @@ If I add a word during a flyspell session, it's still marked up as misspelled.  
 When the subword mode is on, especially with cc-mode, the words are distinguished more skilfully, e.g., "GoodBadType" -> "Good", "Bad", and "Type". How do I set the flyspell to work in this context?
 
 -Kiwon
+
+== Flyspell with popup.el ==
+If you'd like to use Flyspell's menu selection in the terminal, or just prefer to use popup.el over the graphical menu, stick this somewhere in your load path:
+<pre>
+    (defun flyspell-emacs-popup-textual (event poss word)
+      "A textual flyspell popup menu."
+      (require 'popup)
+      (if (not event)
+          (let* ((mouse-pos  (mouse-position))
+                 (mouse-pos  (if (nth 1 mouse-pos)
+                                 mouse-pos
+                               (set-mouse-position (car mouse-pos)
+                                                   (/ (frame-width) 2) 2)
+                               (mouse-position))))
+            (setq event (list (list (car (cdr mouse-pos))
+                                    (1+ (cdr (cdr mouse-pos))))
+                              (car mouse-pos)))))
+      (let* ((corrects (if flyspell-sort-corrections
+                           (sort (car (cdr (cdr poss))) 'string<)
+                         (car (cdr (cdr poss)))))
+             (cor-menu (if (consp corrects)
+                           (mapcar (lambda (correct)
+                                     (list correct correct))
+                                   corrects)
+                         '()))
+             (affix (car (cdr (cdr (cdr poss)))))
+             show-affix-info
+             (base-menu  (let ((save (if (and (consp affix) show-affix-info)
+                                         (list
+                                          (list (concat "Save affix: " (car affix))
+                                                'save)
+                                          '("Accept (session)" session)
+                                          '("Accept (buffer)" buffer))
+                                       '(("Save word" save)
+                                         ("Accept (session)" session)
+                                         ("Accept (buffer)" buffer)))))
+                           (if (consp cor-menu)
+                               (append cor-menu (cons "" save))
+                             save)))
+             (menu (mapcar
+                    (lambda (arg) (if (consp arg) (car arg) arg))
+                    base-menu)))
+        (assoc (popup-menu* menu :scroll-bar t) base-menu)))
+</pre>
+and put this in your init file:
+<pre>
+    (eval-after-load "flyspell"
+      '(progn
+         (fset 'flyspell-emacs-popup 'flyspell-emacs-popup-textual)))
+</pre>
+Now calling "flyspell-correct-word-before-point" or middle-clicking a word will create a textual popup.
+
 ----
 CategoryModes | CategorySpelling
