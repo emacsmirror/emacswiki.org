@@ -1,9 +1,7 @@
-Balance-mode is what I use to keep track of my checking account.  It is a modified version of the balance-mode.el by Bob Newell and Jason Baietto.  It is available at
+Balance-mode can be used to keep track of checking accounts.  It is a modified version of the balance-mode.el by Bob Newell and Jason Baietto.  It is available at
 http://vh213601.truman.edu/~belanger/Elisp/balance.el
-I use a simplified version, http://vh213601.truman.edu/~belanger/Elisp/creditcard.el
-to keep track of my credit cards.
-
-JayBelanger
+A simplified version, http://vh213601.truman.edu/~belanger/Elisp/credit-card.el
+can keep track of credit cards.
 
 ----
 CategoryFinancial 
