@@ -544,7 +544,7 @@ that if there is ht's overlay at at the top then return 'default"
     ;; remove any highlight-tail's overlays at point
     (let ((overlays-at-start-point (highlight-tail-overlays-at start-point))
           highlight-tail-overlay)
-      (mapcar '(lambda (overlay)
+      (mapcar (lambda (overlay)
                  (when (highlight-tail-overlay-get overlay 'highlight-tail)
                    (setq highlight-tail-overlay overlay)))
               overlays-at-start-point)
@@ -763,7 +763,7 @@ Where 'default is `highlight-tail-default-background-color'"
            (for-what-colors-list
             (let ((temp (mapcar         ; *copy* elements of
                                         ; `highlight-tail-colors-with-100'
-                         '(lambda (elem) elem) ; to temporary variable
+                         (lambda (elem) elem) ; to temporary variable
                          highlight-tail-colors-with-100)))
               (setcar (last temp) (cons for-what 100))
               temp))
@@ -880,7 +880,7 @@ From COLOR-FROM to COLOR-TO             ; STEPS-COUNT length."
             (color-values color-name)))
     ;; color intensities take two bits, and we want them to take one
     (setq colors-list-to-return
-          (mapcar '(lambda (elem) (round (* (/ elem 65535.0) 255)))
+          (mapcar (lambda (elem) (round (* (/ elem 65535.0) 255)))
                   colors-list-to-return))
     (add-to-list 'colors-list-to-return color-name)
     colors-list-to-return))
@@ -954,7 +954,7 @@ Run it, when you've made changes to some highlight-tail-mode variables."
   ;; correctly by the user
   (let ((previous-elem-value -1)   ;first elem should be 0 and 0>-1 :)
         (httmp-signal-error-function
-         '(lambda (elem explanation)
+         (lambda (elem explanation)
             (error
              (format "%s element in `highlight-tail-colors' is wrong! %s"
                      elem explanation)))))
@@ -964,7 +964,7 @@ Run it, when you've made changes to some highlight-tail-mode variables."
              (format "First (%s)" (car highlight-tail-colors))
              (list "Value should be zero.")))
     ;; Check that every element is greater than previous one.
-    (mapcar '(lambda (elem)
+    (mapcar (lambda (elem)
                (if (<= (cdr elem) previous-elem-value)
                    (apply httmp-signal-error-function
                           elem
@@ -985,7 +985,7 @@ Run it, when you've made changes to some highlight-tail-mode variables."
          ;; create a list of "t"s, color lists '(red 255 0 0) and nils
          ;; in place of colors that doesn't exist
          (mapcar
-          '(lambda (elem)
+          (lambda (elem)
              (let ((color-name (car elem)))
                (if (highlight-tail-color-in-hex-format color-name)
                    ;; does not need to be on system list
@@ -1021,7 +1021,7 @@ Run it, when you've made changes to some highlight-tail-mode variables."
          (percents-vector (make-vector colors-with-100-length nil))
          ;; below: scaled to `highlight-tail-steps'
          (percents-vector-scaled (make-vector colors-with-100-length nil)))
-    (setq percents-vector (mapcar '(lambda (elem)
+    (setq percents-vector (mapcar (lambda (elem)
                                      (cdr elem))
                                   highlight-tail-colors-with-100))
     (setq highlight-tail-stepsperfade-vector
