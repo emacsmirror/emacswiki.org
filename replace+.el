@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 15 10:24:14 2014 (-0700)
+;; Last-Updated: Wed Apr 16 08:59:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1807
+;;     Update #: 1813
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/16 dadams
+;;     query-replace-regexp, replace-string, replace-regexp: Got the emacs24.4+ version test backwards.
 ;; 2014/04/15 dadams
 ;;     query-replace(-read-args|-w-options|-regexp), replace-(string|regexp):
 ;;       Update version test for Emacs 24.4 pretest - use version<.
@@ -926,8 +928,8 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs24.4+
-           (list regexp to delimited start end)
-         (list regexp to delimited start end (nth 3 common)))))))
+           (list regexp to delimited start end (nth 3 common))
+         (list regexp to delimited start end))))))
 
 
 
@@ -963,8 +965,8 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs24.4+
-           (list from to delimited start end)
-         (list from to delimited start end (nth 3 common)))))))
+           (list from to delimited start end (nth 3 common))
+         (list from to delimited start end))))))
 
 
 
@@ -1000,8 +1002,8 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs24.4+
-           (list from to delimited start end)
-         (list from to delimited start end (nth 3 common)))))))
+           (list from to delimited start end (nth 3 common))
+         (list from to delimited start end))))))
 
 
 
