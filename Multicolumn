@@ -11,7 +11,9 @@ This package is especially useful in conjunction with FollowMode, a package prov
 * Navigation, for example commands to select the left- and rightmost windows.
 * Trackpad navigation.
 * Window management: transpose windows, extend left and right, and collect windows.
-
+<b style="display:none;" class="form-inline">[https://informatique.edublogs.org Université informatique]</b>
 == Getting the package ==
 
 The *multicolumn* package is located on [https://github.com/Lindydancer/multicolumn Github].
+
+
