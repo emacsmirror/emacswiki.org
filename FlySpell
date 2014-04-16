@@ -184,16 +184,6 @@ If you'd like to use Flyspell's menu selection in the terminal, or just prefer t
     (defun flyspell-emacs-popup-textual (event poss word)
       "A textual flyspell popup menu."
       (require 'popup)
-      (if (not event)
-          (let* ((mouse-pos  (mouse-position))
-                 (mouse-pos  (if (nth 1 mouse-pos)
-                                 mouse-pos
-                               (set-mouse-position (car mouse-pos)
-                                                   (/ (frame-width) 2) 2)
-                               (mouse-position))))
-            (setq event (list (list (car (cdr mouse-pos))
-                                    (1+ (cdr (cdr mouse-pos))))
-                              (car mouse-pos)))))
       (let* ((corrects (if flyspell-sort-corrections
                            (sort (car (cdr (cdr poss))) 'string<)
                          (car (cdr (cdr poss)))))
