@@ -91,7 +91,7 @@ outpr)
   "Changes the shell working directory to the current buffer's one."
   (interactive)
   (setq sprocess (process-shell-choose))
-  (setq com (format "cd %s" (file-name-directory (buffer-file-name))))
+  (setq com (format "cd %s" (file-name-directory default-directory)))
   (shell-eval-line sprocess com))
 
 
