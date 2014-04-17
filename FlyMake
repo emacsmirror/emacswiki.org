@@ -465,8 +465,11 @@ RichardRiley: The solution below was from Dave Love on gnu.emacs.help:-
 
  (add-hook 'post-command-hook 'my-flymake-show-help)
 
-
 </pre>
+
+[new]
+The above my-flymake-show-help will work, when you cursor very slowly.  But let's suppose you hold the arrow key continuously; what happens in that case is everything slows down.  Scrolling goes very very slowly.  See http://www.emacswiki.org/emacs/flymake-cursor.el
+
 
 [new]
 Something rather similar is used in [NxhtmlMode nXhtml] where (colored) flymake errors are shown in the echo area by default when point enters the flymake error marking.
