@@ -15,7 +15,7 @@ Besides the question of ''where'' text is completed (minibuffer or other buffer)
 [:MinibufferCompletion]
 == Minibuffer Input Completion ==
 
-The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is explained in the `Completion' section of the EmacsManual (`C-h i m Completion RET').
+The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is explained in the `Completion' section of the EmacsManual (`C-h i m Emacs RET m Completition').
 
 
 * CompletingHelp -- show descriptions or help with candidates
