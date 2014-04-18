@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr  5 16:56:24 2014 (-0700)
+;; Last-Updated: Fri Apr 18 14:10:36 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14763
+;;     Update #: 14764
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1984,7 +1984,7 @@
 ;;  by jumping to a bookmark-file bookmark.
 ;;
 ;;  You use command `bmkp-set-bookmark-file-bookmark', bound to `C-x p
-;;  x', to create a bookmark-file bookmark.  Jumping to such a
+;;  y', to create a bookmark-file bookmark.  Jumping to such a
 ;;  bookmark just loads the bookmark file that it records.  With `C-u'
 ;;  (e.g. `C-u C-x p j project-foo'), jumping switches bookmark files.
 ;;  Without `C-u' it accumulates the loaded bookmarks.
