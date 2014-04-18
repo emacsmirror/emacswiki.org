@@ -126,6 +126,9 @@ http://i42.tinypic.com/29pdmjd.jpg
 
 == Comments / Remarks / Gripes ==
 
+=== With Omnisharp, it's amazing. ===
+I have been using csharp-mode everyday in combination with [http://github.com/sp3ctum/omnisharp-emacs Omnisharp-Emacs] and it has been a joy. I am able to manage large solutions, and do my building from emacs. The code completion, and IDE like features from omnisharp provide little reason to use Visual Studio any longer. The base of csharp-mode is old and not updated, but it handles indenting and fontification and that's really all I need from it.
+    
 === Works Well ===
 
 I currently use csharp-mode 0.7.5, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
