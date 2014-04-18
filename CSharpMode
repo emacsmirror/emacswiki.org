@@ -117,6 +117,7 @@ http://i42.tinypic.com/29pdmjd.jpg
 ||[http://code.google.com/p/csharpmode/source/browse/trunk/csharp-completion.el code completion] ||||Code completion elisp logic, that is integrated with csharp-mode.  It runs powershell as an inferior shell within emacs, to dynamically compile code snippets, and then introspect the result to provide realtime (subsecond) code completion in csharp buffers. To get it to work, you need the [http://code.google.com/p/csharpmode/source/browse/trunk/CscompUtilities.cs C# code], and be sure to read the [http://code.google.com/p/csharpmode/source/browse/trunk/Readme.txt readme]. Works only on Windows. Requires Powershell (free). Does not require Visual Studio, or SharpDevelop.||
 ||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible? This is an alternative code completion effort that pre-dates the above.||
 ||[http://code.google.com/p/idebridge/ ide-bridge]||||C# Code Completion/refactoring/navigation/compilation. Integrates Emacs with SharpDevelop.||
+||[http://github.com/sp3ctum/omnisharp-emacs Omnisharp-Emacs]||||Provides smart completion, refactoring, finding implementations/usages, eldoc integration and more.||
 
 
 
@@ -513,7 +514,11 @@ get {} set {} if {} else {} else if {}
 
 And when set - comments are indented incorrectly.
 
+screenshot:
+
 http://i30.tinypic.com/29da3hj.png
+
+screenshot:
 
 http://i26.tinypic.com/2exuis3.jpg
 
