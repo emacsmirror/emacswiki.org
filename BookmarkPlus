@@ -2145,7 +2145,7 @@ You can load a bookmark file using `C-x p L' (switch) or `C-x p l'
 (accumulate).  As a convenience, you can also load a bookmark file
 by jumping to a ''bookmark-file bookmark''.
 
-You use command '''`bmkp-set-bookmark-file-bookmark'''', bound to `C-x p x', to create a bookmark-file bookmark.  Jumping to such a
+You use command '''`bmkp-set-bookmark-file-bookmark'''', bound to `C-x p y', to create a bookmark-file bookmark.  Jumping to such a
 bookmark just loads the bookmark file that it records.  With `C-u'
 (e.g. `C-u C-x p j project-foo'), jumping ''switches'' bookmark files.
 Without `C-u' it ''accumulates'' the loaded bookmarks.
