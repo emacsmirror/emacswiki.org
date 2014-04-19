@@ -1,10 +1,10 @@
 Maybe you found something on the wiki that needs some help.  Great!  Arguably, you should just go ahead and make the change. Be brave!  Old revisions are saved, and stored in source control, so you can't break anything.  That said, maybe there are time pressures with daily life, or maybe you feel like you don't have enough experience, or a host of other reasons.   That's where this category comes in.
 
-If you flag a with CategoryNeedsAttention, that means some !WikiGnome can get in there, and fix the problem.   Try to localize the portion of the wiki that needs attention, and put in a small explanation as to what exactly needs attention.  
+If you flag a with CategoryNeedsAttention, that means another helpful visitor can get in there and fix the problem.   Try to localize the portion of the wiki that needs attention, and put in a small explanation as to what exactly needs attention.  
 
 There might also be some discussion of areas in need of work in EmacsWikiContent
 
-=== Examples === 
+=== How To === 
 
 Say you find some elisp code that sucks, and doesn't work with a current Emacs. Here's what you do:
 
