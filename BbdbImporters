@@ -86,7 +86,7 @@ file, but I guess that can be easily fixed.
 
 == Importing from CSV files into bbdb 3 ==
 
-Download bbdb3-csv-import.el from https://gitlab.com/iankelling/bbdb3-csv-import and follow the instructions at the top of the file.
+Download bbdb-csv-import.el from https://gitlab.com/iankelling/bbdb-csv-import and follow the instructions at the top of the file.
 
 This project was created due to too many bugs in the bbdb 2 importer below. 
     
