@@ -53,16 +53,6 @@ Yes, just bind `company-manual-begin', `company-complete-common', `company-compl
 
 Alternatively, you can set `company-idle-delay' to t, to always complete immediately.
 
-==== Can I complete only after running `self-insert-command'? When moving around the cursor I find it very annoying to get completions (for code which is already good). ====
-
-Yes, set `company-begin-commands':
-
-  (setq company-begin-commands '(self-insert-command))
-
--- [[nschum]]
-
-This is the default value since the version 0.6.12.
-
 ==== I don't like the default colors! ====
 
 Contributions welcome.
