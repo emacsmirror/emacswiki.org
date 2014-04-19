@@ -12,8 +12,10 @@ Say you find some elisp code that sucks, and doesn't work with a current Emacs. 
 # find the item where it says that this page "needs attention" and provide a reason
 # click the Submit button
 
-If you provided "outdated lisp" as the reason, this add the following to the bottom of the page:
+If you provided "outdated lisp" as the reason, clicking the Submit button adds the following to the bottom of the page:
 
-    CategoryNeedsAttention (outdated lisp)
+{{{
+CategoryNeedsAttention (outdated lisp)
+}}}
 
 People interested in fixing pages that need attention can click on the header of this page and find all the pages that mention it.
