@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Apr  1 10:57:03 2014 (-0700)
+;; Last-Updated: Sun Apr 20 16:18:41 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26882
+;;     Update #: 26933
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -518,33 +518,34 @@
   ;; icicle-bind-buffer-candidate-keys, icicle-bind-file-candidate-keys, icicle-unbind-buffer-candidate-keys,
   ;; icicle-unbind-file-candidate-keys, icicle-yank
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-add-proxy-candidates-flag, icicle-buffer-configs, icicle-buffer-extras,
-  ;; icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp,
+  ;; icicle-act-before-cycle-flag, icicle-add-proxy-candidates-flag, icicle-buffer-configs,
+  ;; icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp,
   ;; icicle-buffer-no-match-regexp, icicle-buffer-predicate, icicle-buffer-require-match-flag,
-  ;; icicle-buffer-sort, icicle-color-themes, icicle-kbd, icicle-saved-completion-sets,
-  ;; icicle-sort-comparer, icicle-transform-function
+  ;; icicle-buffer-sort, icicle-color-themes, icicle-delete-candidate-object, icicle-kbd, icicle-recenter,
+  ;; icicle-saved-completion-sets, icicle-shell-command-candidates-cache, icicle-sort-comparer,
+  ;; icicle-sort-orders-alist, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
-  ;; icicle-abs-file-candidates, icicle-all-candidates-list-action-fn,
-  ;; icicle-all-candidates-list-alt-action-fn, icicle-bookmark-history,
-  ;; icicle-bookmark-list-names-only-p, icicle-bookmark-types, icicle-buffer-config-history,
-  ;; icicle-bufflist, icicle-candidate-action-fn, icicle-candidate-alt-action-fn,
-  ;; icicle-candidate-help-fn, icicle-candidate-nb, icicle-candidate-properties-alist,
-  ;; icicle-candidates-alist, icicle-color-theme-history, icicle-command-abbrev-history,
-  ;; icicle-commands-for-abbrev, icicle-comp-base-is-default-dir-p, icicle-completion-candidates,
-  ;; icicle-completion-set-history, icicle-current-input, icicle-delete-candidate-object,
-  ;; icicle-explore-final-choice, icicle-explore-final-choice-full,
-  ;; icicle-extra-candidates, icicle-face-name-history, icicle-frame-alist, icicle-frame-name-history,
-  ;; icicle-full-cand-fn, icicle-function-name-history, icicle-get-alist-candidate-function, icicle-hist-var,
+  ;; icicle-abs-file-candidates, icicle-all-candidates-action, icicle-all-candidates-list-action-fn,
+  ;; icicle-all-candidates-list-alt-action-fn, icicle-allowed-sort-predicate, icicle-apropos-complete-match-fn,
+  ;; icicle-apropos-value-last-initial-cand-set, icicle-bookmark-list-names-only-p, icicle-bookmark-types,
+  ;; icicle-buffer-complete-fn, icicle-bufflist, icicle-candidate-action-fn, icicle-candidate-alt-action-fn,
+  ;; icicle-candidate-help-fn, icicle-candidate-nb, icicle-candidate-properties-alist, icicle-candidates-alist,
+  ;; icicle-command-abbrev-history, icicle-commands-for-abbrev, icicle-comp-base-is-default-dir-p,
+  ;; icicle-completion-candidates, icicle-compute-narrowing-regexp-p, icicle-current-completion-mode,
+  ;; icicle-current-input, icicle-exclude-default-proxies, icicle-explore-final-choice,
+  ;; icicle-explore-final-choice-full, icicle-extra-candidates, icicle-fancy-candidates-p, icicle-frame-alist,
+  ;; icicle-frame-name-history, icicle-full-cand-fn, icicle-get-alist-candidate-function, icicle-hist-var,
   ;; icicle-incremental-completion-p, icicle-inhibit-sort-p, icicle-inhibit-try-switch-buffer,
-  ;; icicle-kill-history, icicle-kmacro-alist, icicle-kmacro-history,icicle-list-use-nth-parts,
-  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
+  ;; icicle-kmacro-alist, icicle-last-apropos-complete-match-fn, icicle-last-transform-function,
+  ;; icicle-list-use-nth-parts, icicle-multi-completing-p, icicle-must-match-regexp,
+  ;; icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate, icicle-narrow-regexp,
   ;; icicle-new-last-cmd, icicle-orig-buff, icicle-orig-must-pass-after-match-pred, icicle-orig-pt-explore,
-  ;; icicle-orig-window, icicle-orig-win-explore, icicle-pref-arg, icicle-previous-raw-file-name-inputs,
-  ;; icicle-previous-raw-non-file-name-inputs, icicle-prompt, icicle-proxy-candidates,
-  ;; icicle-read-expression-map, icicle-remove-icicles-props-p, icicle-re-no-dot,
+  ;; icicle-orig-window, icicle-orig-win-explore, icicle-other-window, icicle-path-variables,
+  ;; icicle-predicate-types-alist, icicle-pref-arg, icicle-pre-minibuffer-buffer,
+  ;; icicle-previous-raw-file-name-inputs, icicle-previous-raw-non-file-name-inputs, icicle-prompt,
+  ;; icicle-proxy-candidates, icicle-read-expression-map, icicle-remove-icicles-props-p, icicle-re-no-dot,
   ;; icicle-saved-completion-candidates, icicle-search-history, icicle-transform-before-sort-p,
-  ;; icicle-use-candidates-only-once-alt-p, icicle-whole-candidate-as-text-prop-p,
-  ;; icicle-variable-name-history
+  ;; icicle-use-candidates-only-once-alt-p, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-delete-dups, icicle-highlight-lighter, icicle-multi-comp-apropos-complete-match,
   ;; icicle-read-from-minibuf-nil-default, icicle-read-regexp, icicle-string-match-p
@@ -2176,7 +2177,6 @@ This is an Icicles command - see command `icicle-mode'."
   "Open Customize buffer on all faces in list FACES."
   (let ((icicle-list-nth-parts-join-string  ": ")
         (icicle-list-join-string            ": ")
-        ;; $$$$$$ (icicle-list-end-string   "")
         (icicle-list-use-nth-parts          '(1)))
     (custom-buffer-create
      (custom-sort-items
@@ -2899,9 +2899,10 @@ by default.  (`^G' here means the Control-g character, input using
 
 Remember that you can insert `icicle-list-join-string' using `C-M-j'.
 
-This command binds option `icicle-dot-string' to the value of
-`icicle-anychar-regexp' for the duration, which means that `.' in your
-input to this command matches any character, including a newline char.
+This command binds option `icicle-dot-string' to the value returned by
+function `icicle-anychar-regexp', for the duration, which means that
+`.' in your input to this command matches any character, including a
+newline char.
 
 This is for convenience because `defcustom' type sexps are often
 multiline.  This is particularly important for progressive completion,
@@ -3005,7 +3006,7 @@ default for this command:
   ((prompt                                 "OPTION `C-M-j' TYPE: ") ; Bindings
    (icicle-multi-completing-p              t)
    (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
-   (icicle-dot-string                      icicle-anychar-regexp)
+   (icicle-dot-string                      (icicle-anychar-regexp))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
@@ -3077,9 +3078,7 @@ This is used as the value of `minibuffer-completion-table'."
           ;; FREE here: ICICLE-HELP-IN-MODE-LINE-DELAY, ICICLE-LIST-JOIN-STRING, TOOLTIP-MODE.
           (mapcar (lambda (entry)
                     (let* ((opt+typ-string
-                            ;; $$$$$$ (concat (mapconcat (lambda (e) (pp-to-string e))
-                            ;;                           entry icicle-list-join-string)
-                            ;;                icicle-list-end-string)) ; $$$$$$
+                            ;; $$$$$$ (mapconcat (lambda (e) (pp-to-string e)) entry icicle-list-join-string))
                             (mapconcat (lambda (e) (pp-to-string e))  entry  icicle-list-join-string))
                            (doc         ; Don't bother to look up doc, if user won't see it.
                             (and (or (> icicle-help-in-mode-line-delay 0)
@@ -4320,7 +4319,7 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
     (lexical-let ((count  0))
       (setq icicle-kmacro-alist
             (mapcar (lambda (x) (cons (format "%d" (setq count  (1+ count))) x)) ; FREE here: COUNT.
-                    ;; @@@@@@@ Why the (if nil...) here?
+                    ;; $$$$$$ Why the (if nil...) here?
                     (reverse (if nil kmacro-ring (cons (kmacro-ring-head) kmacro-ring))))))
     nil 'NO-EXIT-WO-MATCH nil 'icicle-kmacro-history
     (and (kmacro-ring-head)  (null kmacro-ring)  "1") nil
@@ -6110,8 +6109,11 @@ Each element has the form (FNAME . FRAME), where FNAME names FRAME.
 See `icicle-make-frame-alist' for more about FNAME."
   (interactive (let* ((alist    (icicle-make-frame-alist))
                       (default  (car (rassoc (selected-frame) alist)))
-                      (input    (completing-read "Select frame: " alist nil t nil
-                                                 'frame-name-history default)))
+                      (input    (completing-read
+                                 "Select frame: " alist nil t nil (if (boundp 'frame-name-history)
+                                                                      'frame-name-history
+                                                                    'icicle-frame-name-history)
+                                 default)))
                  (list (if (= (length input) 0) default input)
                        alist)))
   (unless frame-alist (setq frame-alist  (or (and (boundp 'icicle-frame-alist)  icicle-frame-alist)
@@ -9707,7 +9709,6 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
                                               "Choose face (`RET' when done): ")) ; Bindings
    (icicle-list-nth-parts-join-string     ": ")
    (icicle-list-join-string               ": ")
-   ;; $$$$$$ (icicle-list-end-string      "")
    (icicle-multi-completing-p             t)
    (icicle-list-use-nth-parts             '(1))
    (icicle-use-candidates-only-once-flag  t)
