@@ -51,7 +51,7 @@ General Use:
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
 * [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, '''Customize'''
-** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]] (##~/.emacs.d/init.el##, ##~/.emacs## or ##_emacs##).
+** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]] (##~/.emacs## or ##_emacs##).
 ** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s...)
 ** [[CategoryFaces|Faces]] -- text highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [[frame]]s (window-manager windows).
