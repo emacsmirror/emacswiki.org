@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Apr 14 07:59:25 2014 (-0700)
+;; Last-Updated: Sun Apr 20 08:20:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5948
+;;     Update #: 5961
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2271,20 +2271,25 @@ This option controls when such expansion occurs.  You can cycle among
 the possible values using \\<minibuffer-local-completion-map>\
 `\\[icicle-cycle-expand-to-common-match]' in the minibuffer.
 
-0 Do not expand your input, except when you use `C-M-TAB' or
+0 Do not expand your input ever, except when you use `C-M-TAB' or
   `C-M-S-TAB', which does not display `*Completions*'.
 
 1 Do not expand your input automatically, during incremental
-  completion.  Expand it only when you use `TAB' or `S-TAB'.
+  completion.  Expand it only when you complete explictly, i.e., when
+  you use `TAB' or `S-TAB'.
 
-2 Expand your input when you use `TAB' or `S-TAB'.
-  Expand it also automatically whenever only one candidate matches it.
+2 Like 1, but expand your input also when it matches only one
+  completion candidate.
 
-3 Expand your input when you use `TAB' or `S-TAB'.
-  Expand it also whenever only one candidate matches it.
-  Expand it also automatically, during incremental prefix completion.
+3 Like 2, but expand your input also during incremental prefix
+  completion.
 
-4 Expand your input always, including for incremental completion.
+4 Expand your input always.  Like 3, but expand it also during
+  incremental apropos completion.
+
+As the value increases there are thus more contexts in which your
+input can be expanded to the common match.  The expansion contexts for
+each value include those for all lower values.
 
 If you want to return to your original, unexpanded input, use \\<minibuffer-local-completion-map>\
 `\\[icicle-retrieve-previous-input]'.
