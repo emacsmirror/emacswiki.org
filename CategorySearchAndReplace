@@ -56,7 +56,7 @@ Additional:
 Vanilla:
 
 * ReplaceRegexp -- Query-replace, possibly evaluating an EmacsLisp [[sexp]] to compute the replacement text.
-* After starting Isearch, 'query-replace' (`M-%')  or ‘query-replace-regexp’ (or `C-M-%') using the current search string.
+* After starting Isearch, `query-replace' with M-% or `query-replace-regexp' with C-M-% using the current search string.
 * IbufferMode -- Operate on multiple buffers, including query replace (Emacs 22).
 
 Additional:
