@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Apr 13 19:19:55 2014 (-0700)
+;; Last-Updated: Sun Apr 20 16:14:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10137
+;;     Update #: 10188
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -154,34 +154,44 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-menu-bar-make-toggle
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
-  ;; icicle-default-cycling-mode, icicle-incremental-completion, icicle-default-value, icicle-kbd,
-  ;; icicle-kmacro-ring-max, icicle-minibuffer-setup-hook, icicle-modal-cycle-down-keys,
-  ;; icicle-modal-cycle-up-keys, icicle-functions-to-redefine, icicle-regexp-search-ring-max,
-  ;; icicle-region-background, icicle-search-ring-max, icicle-show-Completions-initially-flag,
+  ;; icicle-add-proxy-candidates-flag, icicle-buffer-configs, icicle-buffer-extras,
+  ;; icicle-change-region-background-flag, icicle-current-TAB-method, icicle-default-cycling-mode,
+  ;; icicle-incremental-completion, icicle-default-value, icicle-kbd, icicle-kmacro-ring-max,
+  ;; icicle-minibuffer-setup-hook, icicle-modal-cycle-down-keys, icicle-modal-cycle-up-keys,
+  ;; icicle-functions-to-redefine, icicle-regexp-search-ring-max, icicle-region-background,
+  ;; icicle-search-ring-max, icicle-shell-command-candidates-cache, icicle-show-Completions-initially-flag,
   ;; icicle-top-level-key-bindings, icicle-touche-pas-aux-menus-flag, icicle-word-completion-keys
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-cmd1.el'.)
   ;; icicle-completing-p, icicle-toggle-icicle-mode-twice, icicle-unhighlight-lighter
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
-  ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-cmd-calling-for-completion,
-  ;; icicle-completing-p, icicle-completion-candidates, icicle-current-completion-mode,
+  ;; icicle-advice-info-list, icicle-all-candidates-action, icicle-all-candidates-list-action-fn,
+  ;; icicle-all-candidates-list-alt-action-fn, icicle-apropos-complete-match-fn,
+  ;; icicle-auto-no-icomplete-mode-p, icicle-auto-no-sort-p, icicle-candidate-action-fn,
+  ;; icicle-candidate-alt-action-fn, icicle-candidate-nb, icicle-candidates-alist,
+  ;; icicle-cmd-calling-for-completion, icicle-cmd-reading-input, icicle-completing-p,
+  ;; icicle-completing-read+insert-candidates, icicle-completion-candidates,
+  ;; icicle-completion-prompt-overlay, icicle-current-completion-mode, icicle-ess-use-ido,
   ;; icicle-ignored-extensions, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
-  ;; icicle-initial-value, icicle-last-completion-candidate, icicle-last-completion-command,
-  ;; icicle-last-input, icicle-menu-map, icicle-pre-minibuffer-buffer, icicle-minor-mode-map-entry,
-  ;; icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
-  ;; icicle-saved-regexp-search-ring-max, icicle-saved-region-background, icicle-saved-search-ring-max,
-  ;; icicle-search-current-overlay, icicle-search-overlays, icicle-search-refined-overlays
+  ;; icicle-inhibit-advice-functions, icicle-inhibit-sort-p, icicle-initial-value,
+  ;; icicle-input-completion-fail-overlay, icicle-input-fail-pos, icicle-last-completion-candidate,
+  ;; icicle-last-completion-command, icicle-last-icomplete-mode-value, icicle-last-input,
+  ;; icicle-last-top-level-command, icicle-multi-completing-p, icicle-menu-map, icicle-minor-mode-map-entry,
+  ;; icicle-orig-read-file-name-fn, icicle-pre-minibuffer-buffer, icicle-previous-raw-file-name-inputs,
+  ;; icicle-previous-raw-non-file-name-inputs, icicle-progressive-completing-p, icicle-proxy-candidates,
+  ;; icicle-saved-candidate-overlays, icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
+  ;; icicle-saved-proxy-candidates, icicle-saved-regexp-search-ring-max, icicle-saved-region-background,
+  ;; icicle-saved-search-ring-max, icicle-search-complement-domain-p, icicle-search-current-overlay,
+  ;; icicle-search-map, icicle-search-overlays, icicle-search-refined-overlays
 (require 'icicles-cmd1)                 ; (This is required anyway by `icicles-cmd2.el'.)
   ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-customize-face-other-window,
   ;; icicle-select-bookmarked-region
 (require 'icicles-cmd2)
   ;; icicle-imenu, icicle-imenu-command, icicle-imenu-command-full, icicle-imenu-face,
   ;; icicle-imenu-face-full, icicle-imenu-full, icicle-imenu-key-explicit-map,
-  ;; icicle-imenu-key-explicit-map-full, icicle-imenu-key-implicit-map,
-  ;; icicle-imenu-key-implicit-map-full, icicle-imenu-macro, icicle-imenu-macro-full,
-  ;; icicle-imenu-non-interactive-function, icicle-imenu-non-interactive-function-full,
-  ;; icicle-imenu-user-option, icicle-imenu-user-option-full, icicle-imenu-variable,
-  ;; icicle-imenu-variable-full, icicle-occur, icicle-occur-dired-marked,
+  ;; icicle-imenu-key-explicit-map-full, icicle-imenu-key-implicit-map, icicle-imenu-key-implicit-map-full,
+  ;; icicle-imenu-macro, icicle-imenu-macro-full, icicle-imenu-non-interactive-function,
+  ;; icicle-imenu-non-interactive-function-full, icicle-imenu-user-option, icicle-imenu-user-option-full,
+  ;; icicle-imenu-variable, icicle-imenu-variable-full, icicle-occur, icicle-occur-dired-marked,
   ;; icicle-occur-dired-marked-recursive, icicle-search, icicle-search-all-tags-bookmark,
   ;; icicle-search-all-tags-regexp-bookmark, icicle-search-autofile-bookmark,
   ;; icicle-search-autonamed-bookmark, icicle-search-bookmark, icicle-search-bookmark-list-bookmark,
@@ -189,7 +199,7 @@
   ;; icicle-search-buff-menu-marked, icicle-search-char-property, icicle-search-dired-bookmark,
   ;; icicle-search-dired-marked, icicle-search-dired-marked-recursive, icicle-search-file,
   ;; icicle-search-file-bookmark, icicle-search-gnus-bookmark, icicle-search-highlight-cleanup,
-  ;; icicle-search-ibuffer-marked, icicle-search-info-bookmark, icicle-search-keywords,
+  ;; icicle-search-ibuffer-marked, icicle-search-info-bookmark, icicle-searching-p, icicle-search-keywords,
   ;; icicle-search-local-file-bookmark, icicle-search-man-bookmark, icicle-search-non-file-bookmark,
   ;; icicle-search-overlay-property, icicle-search-pages, icicle-search-paragraphs,
   ;; icicle-search-region-bookmark, icicle-search-remote-file-bookmark, icicle-search-sentences,
@@ -1020,6 +1030,9 @@ Used on `pre-command-hook'."
       '(menu-item "Sort Order" icicle-change-sort-order
         :enable (not icicle-inhibit-sort-p) :keys "C-,"
         :help "Choose sort order (C-9: reverse, C-u: cyle/complete)"))
+    (define-key icicle-options-choose-menu-map [icicle-cycle-expand-to-common-match]
+      '(menu-item "Expansion to Common Match" icicle-cycle-expand-to-common-match
+        :keys "C-M-\"" :help "Choose value for option `icicle-expand-input-to-common-match'"))
     (when (fboundp 'doremi)
       (when (fboundp 'text-scale-increase) ; Emacs 23+.
         (define-key icicle-options-choose-menu-map [icicle-doremi-zoom-Completions+]
@@ -3303,9 +3316,6 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; Reset prompt, because some commands (e.g. `find-file') don't use `read-file-name'
     ;; or `completing-read'.  Reset other stuff too.
     (setq icicle-candidate-nb                    nil
-          icicle-last-icomplete-mode-value       (and (featurep 'icomplete)
-                                                      (or icomplete-mode
-                                                          icicle-last-icomplete-mode-value))
           icicle-completion-candidates           nil
           ;; This is so that cycling works right initially, without first hitting `TAB' or `S-TAB'.
           icicle-current-completion-mode         (and (< (minibuffer-depth) 2)
@@ -3325,6 +3335,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-last-input                      nil
           icicle-input-fail-pos                  nil
           icicle-saved-proxy-candidates          nil
+          icicle-auto-no-icomplete-mode-p        nil
           icicle-auto-no-sort-p                  nil
           ;; `other-buffer' doesn't work, because it looks for a buffer only from the same frame.
           icicle-pre-minibuffer-buffer           (cadr (buffer-list)) ; $$$$$$ (other-buffer nil t)
