@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Apr 13 19:22:45 2014 (-0700)
+;; Last-Updated: Sun Apr 20 08:26:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1797
+;;     Update #: 1800
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -40,15 +40,16 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
 ;;    `icicle-apropos-complete-match-fn',
 ;;    `icicle-apropos-value-last-initial-cand-set',
-;;    `icicle-auto-no-sort-p', `icicle-bookmark-history',
-;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
-;;    `icicle-buffer-complete-fn', `icicle-buffer-config-history',
-;;    `icicle-buffer-name-input-p', `icicle-buffer-sort-first-time-p',
-;;    `icicle-bufflist', `icicle-candidate-action-fn',
-;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
-;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
-;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
-;;    `icicle-cands-to-narrow', `icicle-char-property-value-history',
+;;    `icicle-auto-no-icomplete-mode-p', `icicle-auto-no-sort-p',
+;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
+;;    `icicle-bookmark-types', `icicle-buffer-complete-fn',
+;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
+;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
+;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
+;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
+;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
+;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -272,6 +273,11 @@ not filtered by the input, except possibly by a function-valued
 
 (defvar icicle-apropos-value-last-initial-cand-set ()
   "Cache for initial set of completion cands for `icicle-apropos-value'.")
+
+(defvar icicle-auto-no-icomplete-mode-p nil
+  "Non-nil means Icomplete mode has been turned off for this minibuffer activation.
+This automatic turning off happens when there are at least
+`icicle-icomplete-mode-max-candidates' completion candidates.")
 
 (defvar icicle-auto-no-sort-p nil
   "Non-nil means sorting has been turned off for this minibuffer activation.
@@ -634,7 +640,8 @@ noted in parentheses.
 * `icicle-deletion-action-flag'          - `S-delete' deletes?
 * `icicle-dot-show-regexp-flag'          - Show regexp for `.'?
 * `icicle-dot-string'                    - String that `.' inserts
-* `icicle-expand-input-to-common-match'  - Expand your input? (`C-\"')
+* `icicle-expand-input-to-common-match'  - Expand your input? (`C-M-\"')
+* `icicle-expand-input-to-common-match-alt' - Expand your input? (`C-\"')
 * `icicle-file-*'                        - `icicle-file' options
 * `icicle-filesets-as-saved-completion-sets-flag'- Use filesets?
 * `icicle-guess-commands-in-path'        - Shell commands to complete
