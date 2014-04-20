@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Mar  8 10:11:22 2014 (-0800)
+;; Last-Updated: Sun Apr 20 16:02:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19355
+;;     Update #: 19502
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -398,30 +398,50 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-define-sort-command
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-alternative-sort-comparer, icicle-buffer-ignore-space-prefix-flag,
-  ;; icicle-move-Completions-frame, icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
-  ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match,
-  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
-  ;; icicle-incremental-completion, icicle-input-string, icicle-kbd,
+  ;; icicle-act-before-cycle-flag, icicle-add-proxy-candidates-flag, icicle-alternative-sort-comparer,
+  ;; icicle-anychar-regexp, icicle-buffer-ignore-space-prefix-flag, icicle-dot-string-internal,
+  ;; icicle-move-Completions-frame, icicle-Completions-mouse-3-menu-entries, icicle-current-TAB-method,
+  ;; icicle-default-cycling-mode, icicle-default-thing-insertion, icicle-delete-candidate-object,
+  ;; icicle-expand-input-to-common-match, icicle-hide-common-match-in-Completions-flag,
+  ;; icicle-hide-non-matching-lines-flag, icicle-incremental-completion, icicle-input-string, icicle-kbd,
   ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
   ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
   ;; icicle-transform-function
 (eval-and-compile (require 'icicles-var)) ; (This is required anyway by `icicles-fn.el'.)
-  ;; lacarte-menu-items-alist, icicle-buffer-name-input-p, icicle-candidate-action-fn,
-  ;; icicle-candidate-nb, icicle-complete-keys-alist, icicle-completion-candidates,
-  ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode,
-  ;; icicle-current-input, icicle-current-raw-input, icicle-default-thing-insertion-flipped-p,
-  ;; icicle-edit-update-p, icicle-general-help-string, icicle-get-alist-candidate-function,
+  ;; lacarte-menu-items-alist, icicle-abs-file-candidates, icicle-acting-on-next/prev,
+  ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
+  ;; icicle-allowed-sort-predicate, icicle-apropos-complete-match-fn, icicle-buffer-name-input-p,
+  ;; icicle-bufflist, icicle-candidate-action-fn, icicle-candidate-alt-action-fn, icicle-candidate-help-fn,
+  ;; icicle-candidate-nb, icicle-candidates-alist, icicle-cands-to-narrow, icicle-cmd-reading-input,
+  ;; icicle-command-abbrev-history, icicle-complete-keys-alist, icicle-completing-keys-p,
+  ;; icicle-completing-p, icicle-completing-read+insert-candidates, icicle-completion-candidates,
+  ;; icicle-compute-narrowing-regexp-p, icicle-confirm-exit-commands,
+  ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode, icicle-current-input,
+  ;; icicle-current-raw-input, icicle-cycling-p, icicle-default-thing-insertion-flipped-p,
+  ;; icicle-edit-update-p, icicle-extra-candidates-dir-insert-p, icicle-full-cand-fn,
+  ;; icicle-general-help-string, icicle-get-alist-candidate-function, icicle-hist-var,
   ;; icicle-ignored-extensions, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
-  ;; icicle-insert-string-at-pt-end, `icicle-insert-string-at-pt-start, icicle-last-completion-candidate,
+  ;; icicle-inhibit-sort-p, icicle-input-completion-fail-overlay, icicle-input-fail-pos,
+  ;; icicle-insert-string-at-pt-end, icicle-insert-string-at-pt-start,
+  ;; icicle-last-apropos-complete-match-fn, icicle-last-completion-candidate,
   ;; icicle-last-completion-command, icicle-last-input, icicle-last-sort-comparer,
-  ;; icicle-last-transform-function, icicle-nb-of-other-cycle-candidates, icicle-pre-minibuffer-buffer,
+  ;; icicle-last-top-level-command, icicle-last-transform-function, icicle-list-use-nth-parts,
+  ;; icicle-minibuffer-message-ok-p, icicle-mode-line-help, icicle-multi-completing-p,
+  ;; icicle-multi-inputs-action-fn, icicle-must-pass-after-match-predicate, icicle-narrow-regexp,
+  ;; icicle-nb-of-other-cycle-candidates, icicle-next-apropos-complete-cycles-p,
+  ;; icicle-next-prefix-complete-cycles-p, icicle-orig-buff, icicle-orig-must-pass-after-match-pred,
+  ;; icicle-orig-window, icicle-other-window, icicle-pref-arg, icicle-pre-minibuffer-buffer,
+  ;; icicle-previous-raw-file-name-inputs, icicle-previous-raw-non-file-name-inputs,
+  ;; icicle-progressive-completing-p, icicle-require-match-p, icicle-reverse-sort-p,
   ;; icicle-saved-candidates-variables-obarray, icicle-saved-completion-candidates,
-  ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
-  ;; icicle-universal-argument-map, icicle-variable-name-history
+  ;; icicle-saved-completion-candidates-internal, icicle-saved-ignored-extensions,
+  ;; icicle-saved-proxy-candidates, icicle-scroll-Completions-reverse-p, icicle-search-complement-domain-p,
+  ;; icicle-searching-p, icicle-search-replacement, icicle-successive-grab-count,
+  ;; icicle-thing-at-pt-fns-pointer, icicle-universal-argument-map, icicle-use-candidates-only-once-alt-p,
+  ;; icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)
-  ;; icicle-minibuf-input-sans-dir, icicle-read-regexp, icicle-string-match-p,
+  ;; icicle-minibuf-input-sans-dir, icicle-read-regexp, icicle-scan-fn-or-regexp, icicle-string-match-p,
   ;; icicle-toggle-icicle-mode-twice, icicle-unlist
 
 (require 'doremi nil t) ;; (no error if not found):
@@ -1858,7 +1878,13 @@ vice versa.
 
 This command updates `icicle-sort-comparer'.  Non-interactively,
 optional arg ALTERNATIVEP means change the current alternative sort
-order instead, updating `icicle-alternative-sort-comparer'."
+order instead, updating `icicle-alternative-sort-comparer'.
+
+NOTE: If sorting has been turned off automatically for the current
+minibuffer invocation because there are more candidates than
+`icicle-sorting-max-candidates', this does not turn sorting back on.
+The newly chosen sort order takes effect only when sorting is turned
+on again (e.g. because there are fewer candidates)."
   (interactive "P")
   (setq icicle-sort-orders-alist  (delq nil icicle-sort-orders-alist)) ; Purge any nil entries.
   (if (and (interactive-p)  icicle-inhibit-sort-p)
@@ -3875,8 +3901,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (cond (;; Do not expand input in minibuffer - just show `*Completions*'.
                     (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
                          (or (eq 0 icicle-expand-input-to-common-match) ; `never'
-                             (and icicle-edit-update-p ; `explicit' means no auto-expansion.
-                                  (eq 1 icicle-expand-input-to-common-match)))) ; `explicit'
+                             (and icicle-edit-update-p
+                                  (eq 1 icicle-expand-input-to-common-match)))) ; `explicit' only
                     (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
                     (icicle-display-candidates-in-Completions))
                    (t
@@ -3967,17 +3993,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                       (setq icicle-mode-line-help  icicle-current-input)))))
 
             ;; Multiple candidates.
-
-            (;; Do not expand input in minibuffer - just show `*Completions*'.
-             (and (not no-display-p)    ; Always expand for NO-DISPLAY-P.
-                  (or (eq 0 icicle-expand-input-to-common-match) ; `never'
-                      (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match'
-                           (memq icicle-expand-input-to-common-match '(1 2)))))
-             (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
-             (icicle-display-candidates-in-Completions))
-
             (t
-             ;; Complete: expand input to match common prefix.
              (if icicle-edit-update-p
                  (if (or (not icicle-incremental-completion-p)
                          (not (sit-for icicle-incremental-completion-delay)))
@@ -3986,9 +4002,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      ;; pending.
                      (icicle-display-candidates-in-Completions nil no-display-p)
                    (icicle-display-candidates-in-Completions nil no-display-p)
-                   (when (icicle-prefix-complete-2 word-p)
+                   (when (icicle-prefix-complete-2 no-display-p word-p)
                      (setq icicle-mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
-               (when (icicle-prefix-complete-2 word-p)
+               (when (icicle-prefix-complete-2 no-display-p word-p) ; Add help if complete.
                  (setq icicle-mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
@@ -4074,37 +4090,42 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                                    'leave-envvars)))))
       return-value)))
 
-(defun icicle-prefix-complete-2 (word-p)
-  "Replace minibuffer content with highlighted current input.
-Call `icicle-highlight-initial-whitespace'.
-If completing file name, set default dir based on current completion.
+(defun icicle-prefix-complete-2 (no-display-p word-p)
+  "Possibly expand input in minibuffer, and perhaps highlight it. 
+Do nothing if WORD-P or if `icicle-expand-input-to-common-match' says
+not to expand input.  Return nil in this case.
 
-If input is complete and we are not in the process of exiting the
-minibuffer, then call `icicle-highlight-complete-input'.  Return the
-value of this condition: nil or non-nil.
+Otherwise, after expanding input:
 
-Non-nil WORD-P means this is word completion, so just highlight
-existing content (do not replace it), and set default dir."
-  (unless word-p
+1. Fit minibuffer frame, if standalone minibuffer.
+2. Highlight initial whitespace of expanded input.
+3. If expanded input is complete and we are not in the process of
+   exiting the minibuffer, highlight it to show it is complete.
+4. If expanded input is complete, return it, else return nil."
+  (if (and (not word-p)
+           (not no-display-p)           ; Always expand for NO-DISPLAY-P.
+           (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+               (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match'
+                    (memq icicle-expand-input-to-common-match '(1 2)))))
+      nil
     (icicle-clear-minibuffer)
     (save-window-excursion
-      ;; Shouldn't need to explicitly select minibuffer like this, since `*Completions*' input is
-      ;; directed there.  But there seems to be an Emacs bug somewhere, because although using just
+      ;; Should not need to explicitly select minibuffer like this, since `*Completions*' input is
+      ;; redirected there.  But there seems to be an Emacs bug somewhere, because although using just
       ;; `insert' inserts the input in the minibuffer OK, in some cases the cursor might not follow the
       ;; insertion.
       (select-window (active-minibuffer-window))
       (insert icicle-current-input))
-    ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-    (when (and (boundp '1on1-fit-minibuffer-frame-flag)
-               1on1-fit-minibuffer-frame-flag
+    ;; Should not need to do this if it is on `post-command-hook', but it seems we need to.
+    (when (and (boundp '1on1-fit-minibuffer-frame-flag)  1on1-fit-minibuffer-frame-flag
                (require 'fit-frame nil t))
-      (1on1-fit-minibuffer-frame)))
-  (deactivate-mark)
-  (icicle-highlight-initial-whitespace icicle-current-input)
-  (let ((complete-&-not-exiting-p  (and (not (boundp 'icicle-prefix-complete-and-exit-p))
-                                        (icicle-input-is-a-completion-p icicle-current-input))))
-    (when complete-&-not-exiting-p (icicle-highlight-complete-input))
-    complete-&-not-exiting-p))
+      (1on1-fit-minibuffer-frame))
+    (deactivate-mark)
+    (icicle-highlight-initial-whitespace icicle-current-input)
+    (let ((complete-&-not-exiting-p  (and (not (boundp 'icicle-prefix-complete-and-exit-p))
+                                          (icicle-input-is-a-completion-p icicle-current-input))))
+      (when complete-&-not-exiting-p (icicle-highlight-complete-input))
+      complete-&-not-exiting-p)))
 
 (defun icicle-input-is-a-completion-p (&optional input)
   "Return non-nil if the input is a valid completion.
@@ -4274,8 +4295,8 @@ message either.  NO-DISPLAY-P is passed to
            (cond (;; Do not expand input in minibuffer - just show `*Completions*'.
                   (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
                        (or (eq 0 icicle-expand-input-to-common-match) ; `never'
-                           (and icicle-edit-update-p ; `explicit' means no auto-expansion.
-                                (eq 1 icicle-expand-input-to-common-match)))) ; `explicit'
+                           (and icicle-edit-update-p
+                                (eq 1 icicle-expand-input-to-common-match)))) ; `explicit' only
                   (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
                   (icicle-display-candidates-in-Completions))
                  (t                     ; Expand input to sole match in minibuffer.
@@ -4368,17 +4389,7 @@ message either.  NO-DISPLAY-P is passed to
                     (setq icicle-mode-line-help  (car icicle-completion-candidates))))))
 
           ;; Multiple candidates.
-
-          (;; Do not expand input in minibuffer - just show `*Completions*'.
-           (and (not no-display-p)      ; Always expand for NO-DISPLAY-P.
-                (or (eq 0 icicle-expand-input-to-common-match) ; `never'
-                    (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match', `prefix'
-                         (memq icicle-expand-input-to-common-match '(1 2 3)))))
-           (when icicle-incremental-completion-p  (sit-for icicle-incremental-completion-delay))
-           (icicle-display-candidates-in-Completions))
-
           (t
-           ;; Complete: expand input to match common prefix.
            (if icicle-edit-update-p
                (if (or (not icicle-incremental-completion-p)
                        (not (sit-for icicle-incremental-completion-delay)))
@@ -4387,10 +4398,11 @@ message either.  NO-DISPLAY-P is passed to
                    ;; pending.
                    (icicle-display-candidates-in-Completions nil no-display-p)
                  (icicle-display-candidates-in-Completions nil no-display-p)
-                 (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
+                 (let ((complete-input-sans-dir  (icicle-apropos-complete-2 no-display-p)))
                    (when complete-input-sans-dir  (setq icicle-mode-line-help  complete-input-sans-dir))))
-             (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
-               (when complete-input-sans-dir  (setq icicle-mode-line-help  complete-input-sans-dir)))
+             (let ((complete-input-sans-dir  (icicle-apropos-complete-2 no-display-p)))
+               (when complete-input-sans-dir ; Add help if complete.
+                 (setq icicle-mode-line-help  complete-input-sans-dir)))
              (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
                     (get-buffer-window "*Completions*" 0)
                     (if (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
@@ -4437,29 +4449,40 @@ message either.  NO-DISPLAY-P is passed to
                                                              (icicle-input-from-minibuffer))))
     icicle-completion-candidates))
 
-(defun icicle-apropos-complete-2 ()
-  "Replace minibuffer content with highlighted current input.
-Call `icicle-highlight-initial-whitespace'.
-If completing file name, set default dir based on current completion.
+(defun icicle-apropos-complete-2 (no-display-p)
+  "Possibly expand input in minibuffer, and perhaps highlight it. 
+Do nothing if `icicle-expand-input-to-common-match' says not to expand
+input.  Return nil in this case.
 
-If input is complete and we are not in the process of exiting the
-minibuffer, then call `icicle-highlight-complete-input'.  Return the
-value of this condition: nil or non-nil."
-  (icicle-clear-minibuffer)
-  (insert icicle-current-input)         ; Update minibuffer.
-  ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-  (when (and (boundp '1on1-fit-minibuffer-frame-flag)  1on1-fit-minibuffer-frame-flag
-             (require 'fit-frame nil t))
-    (1on1-fit-minibuffer-frame))        ; In `oneonone.el'.
-  (deactivate-mark)
-  (icicle-highlight-initial-whitespace icicle-current-input)
-  (let* ((input-sans-dir            (icicle-minibuf-input-sans-dir icicle-current-input))
-         (complete-&-not-exiting-p  (and (member (icicle-upcase-if-ignore-case input-sans-dir)
-                                                 (mapcar #'icicle-upcase-if-ignore-case
-                                                         icicle-completion-candidates))
-                                         (not (boundp 'icicle-apropos-complete-and-exit-p)))))
-    (when complete-&-not-exiting-p (icicle-highlight-complete-input))
-    (and complete-&-not-exiting-p  input-sans-dir)))
+Otherwise, after expanding input:
+
+1. Fit minibuffer frame, if standalone minibuffer.
+2. Highlight initial whitespace of expanded input.
+3. If expanded input is complete and we are not in the process of
+   exiting the minibuffer, highlight it to show it is complete.
+4. If expanded input is complete, return it (without directory if
+   file-name input), else return nil."
+  (if (and (not no-display-p)           ; Always expand for NO-DISPLAY-P.
+           (or (eq 0 icicle-expand-input-to-common-match) ; `never'
+               (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match', `prefix'.
+                    (memq icicle-expand-input-to-common-match '(1 2 3)))))
+      nil                               ; Do nothing and return nil, if no expansion done.
+    (icicle-clear-minibuffer)
+    (insert icicle-current-input)       ; Update minibuffer.
+    ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
+    (when (and (boundp '1on1-fit-minibuffer-frame-flag)  1on1-fit-minibuffer-frame-flag
+               (require 'fit-frame nil t))
+      (1on1-fit-minibuffer-frame))      ; In `oneonone.el'.
+    (deactivate-mark)
+    (icicle-highlight-initial-whitespace (icicle-minibuf-input))
+    (let* ((input-sans-dir            (icicle-minibuf-input-sans-dir icicle-current-input))
+           (complete-&-not-exiting-p  (and (member (icicle-upcase-if-ignore-case input-sans-dir)
+                                                   (mapcar #'icicle-upcase-if-ignore-case
+                                                           icicle-completion-candidates))
+                                           (not (boundp 'icicle-apropos-complete-and-exit-p)))))
+      (when complete-&-not-exiting-p (icicle-highlight-complete-input))
+      (and complete-&-not-exiting-p     ; Return nil if not complete or exiting.
+           input-sans-dir))))           ; Else return input, without dir part of file name.
 
 ;; Not used anymore.
 (defun icicle-transform-sole-candidate ()
@@ -7851,10 +7874,14 @@ commands, for how `C-$' might affect them."
 (defun icicle-toggle-icomplete-mode ()  ; Bound to `C-M-#' in minibuffer.
   "Toggle Icomplete mode, if loaded.  If on, turn it off, and vice versa.
 If `icomplete.el' has not yet been loaded then do nothing.
-Bound to `C-M-#' in the minibuffer."
+Bound to `C-M-#' in the minibuffer.
+
+For Emacs versions prior to Emacs 23, the change takes effect only for
+the next minibuffer invocation."
   (interactive)
   (when (featurep 'icomplete)
     (icomplete-mode (if icomplete-mode -1 1))
+    (when (and icomplete-mode  (> emacs-major-version 22)) (icomplete-exhibit))
     (icicle-msg-maybe-in-minibuffer
      "Icomplete mode is now %s"
      (icicle-propertize (if icomplete-mode "ON" "OFF") 'face 'icicle-msg-emphasis))))
