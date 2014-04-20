@@ -55,10 +55,11 @@ completion candidate.
 '''Icicles''' interacts with [[IcompleteMode|Icomplete mode]] in a number of ways.
 
 * In ''Icicle'' mode you can toggle Icomplete mode on and off using
-'''`<tt>C-M-#</tt>''''' anytime in the minibuffer (assuming you have already
-loaded library `##icomplete.el##' or <tt>[[icomplete+.el]]</tt>).
+'''`<tt>C-M-#</tt>'''' (command '''`icicle-toggle-icomplete-mode'''')  anytime in the minibuffer (assuming you have already
+loaded library `##icomplete.el##' or <tt>[[icomplete+.el]]</tt>).    For Emacs versions prior to Emacs 23, the
+change takes effect only at the next minibuffer invocation.
 
-* '''Icicles''' can automatically turn Icomplete mode off and on,
+* Starting with Emacs 23, '''Icicles''' can automatically turn Icomplete mode off and on,
 depending on the number of current candidates.  This is a
 performance optimization, to eliminate the (independent)
 calculation by Icomplete mode of a large set of candidates.
@@ -79,9 +80,10 @@ automatically.  But it is not the case for
 * In addition to this automatic toggling, '''Icicles''' [[multi-command]]s
 that typically display a large number of completion candidates
 automatically turn off Icomplete mode.  When this happens, a
-message informs you.  Just use `<tt>C-M-#</tt>' to turn it back on.
+message informs you.  Just use `<tt>C-M-#</tt>' (command
+'''`icicle-toggle-icomplete-mode'''') to turn it back on.
 
-: You can control which commands do this, by adding/removing
+: You can control which commands do this automatic toggling, by adding/removing
 property '''`icicle-turn-off-icomplete-mode'''' to/from the command
 symbol.  For example, command `icicle-locate-file' has the
 non-`nil' property by default.  If you do not want this command
