@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Apr 13 19:36:26 2014 (-0700)
+;; Last-Updated: Sun Apr 20 16:01:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14462
+;;     Update #: 14591
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -299,26 +299,43 @@
   ;; icicle-with-selected-window
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-buffer-ignore-space-prefix-flag, icicle-Completions-display-min-input-chars,
-  ;; icicle-expand-input-to-common-match, icicle-hide-common-match-in-Completions-flag,
-  ;; icicle-hide-non-matching-lines-flag, icicle-highlight-historical-candidates-flag,
-  ;; icicle-highlight-input-initial-whitespace-flag, icicle-incremental-completion-delay,
-  ;; icicle-incremental-completion, icicle-incremental-completion-threshold,
+  ;; icicle-add-proxy-candidates-flag, icicle-buffer-ignore-space-prefix-flag,
+  ;; icicle-Completions-display-min-input-chars, icicle-current-TAB-method, icicle-expand-input-to-common-match,
+  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
+  ;; icicle-highlight-historical-candidates-flag, icicle-highlight-input-initial-whitespace-flag,
+  ;; icicle-incremental-completion-delay, icicle-incremental-completion, icicle-incremental-completion-threshold,
   ;; icicle-default-value, icicle-list-join-string, icicle-mark-position-in-candidate,
   ;; icicle-point-position-in-candidate, icicle-regexp-quote-flag, icicle-require-match-flag,
-  ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
-  ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
+  ;; icicle-shell-command-candidates-cache, icicle-show-Completions-help-flag, icicle-sort-comparer,
+  ;; icicle-sort-orders-alist, icicle-special-candidate-regexp, icicle-transform-function,
+  ;; icicle-use-~-for-home-dir-flag
 
 (require 'icicles-var)
-  ;; icicle-buffer-name-input-p, icicle-candidate-nb, icicle-candidate-action-fn,
-  ;; icicle-candidate-properties-alist, icicle-cmd-calling-for-completion, icicle-common-match-string,
-  ;; icicle-complete-input-overlay, icicle-completing-p (variable), icicle-completion-candidates,
-  ;; icicle-current-completion-mode, icicle-current-input, icicle-current-raw-input,
-  ;; icicle-edit-update-p, icicle-extra-candidates, icicle-ignored-extensions-regexp,
-  ;; icicle-incremental-completion-p, icicle-initial-value, icicle-last-completion-candidate,
-  ;; icicle-last-input, icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-predicate,
-  ;; icicle-must-pass-after-match-predicate, icicle-nb-of-other-cycle-candidates, icicle-re-no-dot,
-  ;; icicle-reverse-sort-p, icicle-saved-completion-candidates
+  ;; icicle-abs-file-candidates, icicle-all-candidates-action, icicle-apropos-complete-match-fn,
+  ;; icicle-auto-no-icomplete-mode-p, icicle-auto-no-sort-p, icicle-buffer-name-input-p,
+  ;; icicle-candidate-alt-action-fn, icicle-candidate-nb, icicle-candidate-action-fn,
+  ;; icicle-candidate-properties-alist, icicle-candidates-alist, icicle-cmd-calling-for-completion,
+  ;; icicle-common-match-string, icicle-comp-base-is-default-dir-p, icicle-complete-input-overlay,
+  ;; icicle-completing-keys-p, icicle-completing-p (variable), icicle-completion-candidates,
+  ;; icicle-current-completion-mode, icicle-current-input, icicle-current-raw-input, icicle-cycling-p,
+  ;; icicle-dir-candidate-can-exit-p, icicle-edit-update-p, icicle-exclude-default-proxies,
+  ;; icicle-extra-candidates, icicle-extra-candidates-dir-insert-p, icicle-fancy-candidates-p,
+  ;; icicle-fancy-cands-internal-p, icicle-file-name-completion-table, icicle-filtered-default-value,
+  ;; icicle-hist-cands-no-highlight, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
+  ;; icicle-initial-value, icicle-input-completion-fail-overlay, icicle-input-fail-pos,
+  ;; icicle-last-completion-candidate, icicle-last-icomplete-mode-value, icicle-last-input,
+  ;; icicle-last-sort-comparer, icicle-last-top-level-command, icicle-lighter-truncation,
+  ;; icicle-list-use-nth-parts, icicle-minibuffer-message-ok-p, icicle-mode-line-help,
+  ;; icicle-ms-windows-drive-hash, icicle-multi-completing-p, icicle-must-match-regexp,
+  ;; icicle-must-not-match-regexp, icicle-must-pass-predicate, icicle-must-pass-after-match-predicate,
+  ;; icicle-nb-candidates-before-truncation, icicle-nb-of-other-cycle-candidates,
+  ;; icicle-orig-must-pass-after-match-pred, icicle-orig-read-file-name-fn, icicle-orig-window,
+  ;; icicle-pre-minibuffer-buffer, icicle-previous-raw-file-name-inputs,
+  ;; icicle-previous-raw-non-file-name-inputs, icicle-proxy-candidate-regexp, icicle-proxy-candidates,
+  ;; icicle-read-char-history, icicle-require-match-p, icicle-remove-icicles-props-p, icicle-re-no-dot,
+  ;; icicle-reverse-multi-sort-p, icicle-reverse-sort-p, icicle-saved-candidate-overlays,
+  ;; icicle-saved-completion-candidate, icicle-saved-completion-candidates, icicle-transform-before-sort-p,
+  ;; icicle-whole-candidate-as-text-prop-p, lacarte-menu-items-alist
 
 ;; This requirement is real, but leads to recursion.
 ;; You should, in any case, just load everything by loading `icicles.el'.
@@ -368,12 +385,11 @@
 (defvar font-weight-table)              ; In C code.
 (defvar font-slant-table)               ; In C code.
 (defvar history-delete-duplicates)      ; In C code for Emacs 22+.
-(defvar icicle-file-name-completion-table) ; In `icicles-var.el' for Emacs 23+.
+(defvar icicle-file-name-completion-table) ; In `icicles-var.el' for Emacs 24+.
 (defvar icicle-Info-hist-list)          ; In `icicles-cmd2.el'
 (defvar icicle-Info-index-nodes)        ; In `icicles-cmd2.el'
 (defvar icicle-Info-manual)             ; In `icicles-cmd2.el'
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
-(defvar icicle-read-file-name-internal-fn) ; In `icicles-var.el' for Emacs 24+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
 (defvar minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
@@ -1273,11 +1289,7 @@ See the source code for details."
            (cond ((and (consp cand)     ; Multi-completion: (("aa" "bb") . cc) ->
                        (consp (car cand)) ; ("aa^G\nbb\n\n" ("aa" "bb") . cc)
                        (stringp (caar cand)))
-                  ;; $$$$$$
-                  ;; (when (string-match "\n" icicle-list-join-string)
-                  ;;   (setq icicle-completions-format-internal  'horizontal)) ; Override
-                  ;; $$$$$$ (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
-                  ;;                      icicle-list-end-string) ; $$$$$$
+                  ;; $$$$$$ (cons (mapconcat #'identity (car cand) icicle-list-join-string)
                   (cons (mapconcat #'identity (car cand) icicle-list-join-string) cand))
                  ((and (consp cand)  (stringp (car cand))) ; ("aa" . cc) -> ("aa" "aa" . cc)
                   (cons (copy-sequence (car cand)) cand))
@@ -2293,7 +2305,6 @@ candidate `*point face name*' to use the face at point."
          (let ((icicle-multi-completing-p          t)
                (icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
-               ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
                 (append
@@ -2337,7 +2348,6 @@ candidate `*point face name*' to use the face at point."
          (let ((icicle-multi-completing-p          t)
                (icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
-               ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
                 (append
@@ -2466,7 +2476,6 @@ choose proxy candidate `*point face name*' to use the face at point."
                   (let ((icicle-multi-completing-p          t)
                         (icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
-                        ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
                         (face-list                          (face-list))
                         (def                                (if faces
@@ -2565,7 +2574,6 @@ choose proxy candidate `*point face name*' to use the face at point."
                   (let ((icicle-multi-completing-p          t)
                         (icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
-                        ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
                         (face-list                          (face-list))
                         face)
@@ -3832,25 +3840,41 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
            (rows             (ceiling nb-cands columns))
  	   (row              0)
            startpos endpos string)
+
       ;; Turn Icomplete mode on or off, depending on NB-CANDS.
-      (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates))
+      ;; Turn it on only if it has already been turned off here (non-nil `icicle-auto-no-icomplete-mode-p'),
+      ;; for this minibuffer reading.  When turn it off, set flag `icicle-auto-no-icomplete-mode-p'.
+      (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates)
+                 (> emacs-major-version 22)) ; `icomplete-tidy' does not use overlay with Emacs < 23.
         (with-current-buffer (if (active-minibuffer-window)
                                  (window-buffer (active-minibuffer-window))
                                (current-buffer))
           (if (< nb-cands icicle-icomplete-mode-max-candidates)
-              (if (not icicle-last-icomplete-mode-value)
-                  (icomplete-mode -1)
-                (icomplete-mode 1)
-                (icomplete-exhibit))
-            (when (boundp 'icomplete-overlay) (icomplete-tidy)) ; Cannot use `icomplete-tidy' with Emacs < 23.
-            (icomplete-mode -1))))
+              (if (and icicle-auto-no-icomplete-mode-p  (not icomplete-mode)) ; Was turned off automatically.
+                  (progn
+                    (if (not icicle-last-icomplete-mode-value)
+                        (icomplete-mode -1)
+                      (icomplete-mode 1)    ; Turn it back on.
+                      (icomplete-exhibit))
+                    (setq icicle-auto-no-icomplete-mode-p  nil)) ; And reset this.
+                (when icomplete-mode (icomplete-exhibit)))
+            (setq icicle-last-icomplete-mode-value  (or icomplete-mode
+                                                        icicle-last-icomplete-mode-value
+                                                        (let ((cval  (or (get 'icomplete-mode 'saved-value)
+                                                                         (get 'icomplete-mode 'standard-value))))
+                                                          (condition-case nil (eval (car cval)) (error nil)))))
+            (icomplete-tidy)
+            (icomplete-mode -1)
+            (setq icicle-auto-no-icomplete-mode-p  t))))
+
       ;; Turn sorting on or off, depending on NB-CANDS.
       ;; Turn it on only if it has already been turned off here (non-nil `icicle-auto-no-sort-p'), for this
       ;; minibuffer reading.  When turn it off, set flag `icicle-auto-no-sort-p'.
       (when (natnump icicle-sorting-max-candidates)
         (if (< nb-cands icicle-sorting-max-candidates)
-            (when (and icicle-auto-no-sort-p  (not icicle-sort-comparer))
-              (setq icicle-sort-comparer  icicle-last-sort-comparer))
+            (when (and icicle-auto-no-sort-p  (not icicle-sort-comparer)) ; Was turned off automatically.
+              (setq icicle-sort-comparer   icicle-last-sort-comparer ; Turn it back on.
+                    icicle-auto-no-sort-p  nil)) ; And reset this.
           (setq icicle-last-sort-comparer  (or icicle-sort-comparer
                                                icicle-last-sort-comparer
                                                (let ((cval  (or (get 'icicle-sort-comparer 'saved-value)
@@ -5170,8 +5194,7 @@ The parts to join are specified by `icicle-list-use-nth-parts'."
       (if icicle-list-use-nth-parts
           (icicle-join-nth-parts parts) ; Join mult-completion parts per `icicle-list-use-nth-parts'.
         ;; Multi-completion, but no joining specified.  Reconstitute the display candidate.
-        ;; $$$$$$        (concat (mapconcat #'identity parts icicle-list-join-string)
-        ;;                       icicle-list-end-string) ; $$$$$$
+        ;; $$$$$$ (mapconcat #'identity parts icicle-list-join-string)
         (mapconcat #'identity parts icicle-list-join-string)))))
 
 (defun icicle-file-name-directory (filename)
@@ -6675,8 +6698,7 @@ If FILTER-KEYS is empty, then ALIST is returned, not a copy."
       (icicle-remove-if-not
        (lambda (item)
          (member (if (consp (car item))
-                     ;; $$$$$$  (concat (mapconcat #'identity (car item) icicle-list-join-string)
-                     ;;                 icicle-list-end-string) ; $$$$$$
+                     ;; $$$$$$ (mapconcat #'identity (car item) icicle-list-join-string)
                      (mapconcat #'identity (car item) icicle-list-join-string)
                    (car item))
                  filter-keys))
@@ -6715,9 +6737,7 @@ the concatenated multi-completion parts, joined by
         (when (or (and (consp (caar candidates)) ; Multi-completion candidate
                        (save-match-data
                          (string-match (regexp-quote cand)
-                                       ;; $$$$$$ (concat (mapconcat #'identity (caar candidates)
-                                       ;;                           icicle-list-join-string)
-                                       ;;                icicle-list-end-string) ; $$$$$$
+                                       ;; $$$$$$ (mapconcat #'identity (caar candidates) icicle-list-join-string)
                                        (mapconcat #'identity (caar candidates)
                                                   icicle-list-join-string))))
                   (equal cand (caar candidates)))
