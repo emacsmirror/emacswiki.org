@@ -1062,7 +1062,8 @@ User option '''`icicle-icomplete-mode-max-candidates'''' automatically
 toggles [[IcompleteMode|Icomplete mode]] off and on, depending on the current
 number of candidates.  Set it to `nil' to turn off such
 toggling.  Set it to a larger or smaller maximum number of
-candidates to reduce or increase its effect.  See also
+candidates to reduce or increase its effect.  This option has no
+effect for Emacs versions prior to Emacs 23.  See also
 [[Icicles - Icompletion#UsingIciclesWithIcomplete|Using Icicles with Icomplete Mode ]].
 
 
