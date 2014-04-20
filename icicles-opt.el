@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Apr 20 08:24:44 2014 (-0700)
+;; Last-Updated: Sun Apr 20 10:19:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5962
+;;     Update #: 5963
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2758,7 +2758,9 @@ If the option value is not an integer, then it must be nil.  In this
 case, Icicles does not turn Icomplete mode off and on.
 
 \(Note that this is about Emacs `icomplete-mode', not Icicles
-incremental completion.)"
+incremental completion.)
+
+This option has no effect for Emacs versions prior to Emacs 23."
   :type '(choice
           (integer :tag "Max number of candidates before inhibiting Icomplete mode" :value 10)
           (const :tag "No maximum - do not automatically inhibit Icomplete mode"))
