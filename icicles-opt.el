@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Apr 20 10:19:50 2014 (-0700)
+;; Last-Updated: Sun Apr 20 15:05:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5963
+;;     Update #: 5968
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -220,6 +220,10 @@
 ;;    `icicle-edmacro-parse-keys', `icicle-image-file-p',
 ;;    `icicle-kbd', `icicle-remap', `icicle-thing-at-point',
 ;;    `icicle-widgetp'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `icicle-current-TAB-method', `icicle-delete-candidate-object'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -544,6 +548,10 @@
        (set-boolean-to-t menu-item "+ Set Boolean Option to `t'..." icicle-set-option-to-t
         :visible (not current-prefix-arg))))
   "Submenu for toggling, cycling or changing a variable or a behavior.")
+
+(defvar icicle-current-TAB-method nil
+  "*Current completion method for \
+`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.")
 
 (defconst icicle-doremi-submenu
     '(doremi-menu
@@ -1552,6 +1560,24 @@ If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Miscellaneous)
+
+(defvar icicle-delete-candidate-object nil
+  "Defines deletion action for command `icicle-delete-candidate-object'.
+The value can be a function or a symbol bound to an alist.
+
+If the value is a function, then the function is called on the current
+completion candidate (a string) to delete some corresponding object.
+
+If the value is a symbol (variable) bound to an alist, then
+`icicle-delete-current-candidate-object' is called to delete the
+corresponding object from that alist.  If the variable is also a user
+option, then the option is saved after the candidate is deleted.
+
+Note that if the value is a variable and you use multi-completion
+candidates during completion, then the alist value of the variable
+must itself contain multi-completions.  Otherwise, no candidate will
+be deleted, because `icicle-delete-current-candidate-object' deletes
+the full candidate object.")
 
 (defcustom icicle-completion-key-bindings
   `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t)                     ;`M-RET'
@@ -3034,29 +3060,6 @@ If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Matching)
-
-;;; $$$$$$
-;;; (defcustom icicle-list-end-string "
-
-;;; "
-;;;   "*String appended to a completion candidate that is a list of strings.
-;;; When a completion candidate is a list of strings, they are joined
-;;; pairwise using `icicle-list-join-string', and `icicle-list-end-string'
-;;; is appended to the joined strings.  The result is what is displayed as
-;;; a completion candidate in buffer `*Completions*', and that is what is
-;;; matched by your minibuffer input.
-
-;;; The purpose of `icicle-list-end-string' is to allow some separation
-;;; between the displayed completion candidates.  Candidates that are
-;;; provided to input-reading functions such as `completing-read' as lists
-;;; of strings are often displayed using multiple lines of text.  If
-;;; `icicle-list-end-string' is \"\", then the candidates appear run
-;;; together, with no visual separation.
-
-;;; It is important to remember that `icicle-list-end-string' is part of
-;;; each completion candidate in such circumstances.  This matters if you
-;;; use a regexp that ends in `$', matching the end of the candidate."
-;;;   :type 'string :group 'Icicles-Completions-Display)
 
 ;; Note: If your copy of this file does not have the two-character string "^G^J"
 ;; (Control-G, Control-J) or, equivalently, \007\012, as the default value, you will want
