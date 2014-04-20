@@ -1,40 +1,6 @@
-There were plans to have IncrementalSearch incorporate and support `query-replace' for a long time.[http://lists.gnu.org/archive/html/emacs-devel/2004-06/msg00520.html]  The feature finally appeared in Emacs 22.1.
-
 IncrementalSearch in allows you to interactively start a `query-replace' (or `query-replace-regexp') session using the current search string (or regular expression) providing roughly an "Incremental replace" feature.
 
-Typing ##`M-%'## (or ##`C-M-%'##) after starting Isearch with `C-s' is not intuitive to how many probably accomplish searching and replacing in Emacs.  The default `query-replace' available at  ##`M-%'## (or ##`C-M-%'## for `query-replace-regexp') could be made to always be "Incremental".  This would make a more intuitive and interactive isearch-and-replace.
-
-The following code provides this in Emacs 22
-
-  (defvar ireplace-isearch-mode-map
-    (let ((map (make-sparse-keymap)))
-      ;; Maintain any customizations to isearch-mode-map.
-      (set-keymap-parent map isearch-mode-map)
-      (define-key map "\r" 'isearch-query-replace)
-      map)
-    "Keymap for `ireplace-mode'.")
-
-  (defun ireplace-query-replace-interactive ()
-    "Query replace using Isearch.
-
-  \\{ireplace-isearch-mode-map}"
-    (interactive)
-    (let ((isearch-mode-map ireplace-isearch-mode-map))
-      (call-interactively 'isearch-forward)))
-
-  (defun ireplace-query-replace-regexp-interactive ()
-    "Query replace using Isearch.
-
-  \\{ireplace-isearch-mode-map}"
-    (interactive)
-    (let ((isearch-mode-map ireplace-isearch-mode-map))
-      ;; TODO: Change Isearch's mini-buffer string to "Query replace".
-      (call-interactively 'isearch-forward-regexp)))
-
-  (global-set-key [?\M-%] 'ireplace-query-replace-interactive)
-  (global-set-key [?\C-\M-%] 'ireplace-query-replace-regexp-interactive)
-
-The downside of the above to traditional `query-replace' (and in particular the new  `query-replace' in Emacs 22) is it doesn't provide the command history and default values, nor abilities to repeat search-and-replace commands easily by hitting `RET'.  For the above, previous search and replace strings are only available by hitting `M-p' and `M-n' (and the other methods of repeating searches in only Isearch).
+Typing ##`M-%'## (or ##`C-M-%'##) after starting Isearch with `C-s'
 
 ----
 CategorySearchAndReplace
