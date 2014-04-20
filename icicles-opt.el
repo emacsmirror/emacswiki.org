@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Apr 20 08:20:33 2014 (-0700)
+;; Last-Updated: Sun Apr 20 08:24:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5961
+;;     Update #: 5962
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2320,7 +2320,7 @@ are the same.  You can use \\<minibuffer-local-completion-map>\
   :type '(choice
           (const :tag "Never expand (except for `C-M-TAB' and `C-M-S-TAB')"       0)
           (const :tag "No auto-expansion.  Expand only for explicit completion"   1)
-          (const :tag "Auto-expand when only one matching completion"             2)
+          (const :tag "Auto-expand when only one completion candidate matches"    2)
           (const :tag "Auto-expand for prefix completion or when only one match"  3)
           (const :tag "Auto-expand always: both prefix and apropos completion"    4))
   :group 'Icicles-Matching)
