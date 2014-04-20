@@ -88,6 +88,13 @@ buffer names are sorted from small to large buffer size, then `##C-9 C-,##' sort
 Whenever you change the sort order, the new sort order is echoed, so you can use `##C-9 C-,##' twice to just
 remind yourself of the current sort order.
 
+Note that if sorting has been turned off automatically for the
+current minibuffer invocation because there are more candidates
+than '''`<tt>[[Icicles - Customization and General Tips#icicle-sorting-max-candidates|icicle-sorting-max-candidates]]</tt>'''', using '''`##C-,##'''' to choose a new
+sort order does ''not'' turn sorting back on.  The newly chosen sort
+order takes effect only when sorting is turned on again
+(e.g. because there are fewer candidates).
+
 In addition to the current sort order, which is defined by the
 value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>'''', an '''[::alternative sort order]''' is available at all times.  It is the value of option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-comparer|icicle-alternative-sort-comparer]]</tt>''''.  By default, this sorts
