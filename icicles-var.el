@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Apr 20 08:26:51 2014 (-0700)
+;; Last-Updated: Sun Apr 20 15:05:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1800
+;;     Update #: 1803
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -66,10 +66,9 @@
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode',
 ;;    `icicle-current-font-lock-part', `icicle-current-input',
-;;    `icicle-current-raw-input', `icicle-current-TAB-method',
-;;    `icicle-cycling-p', `icicle-default-thing-insertion-flipped-p',
-;;    `icicle-delete-candidate-object', `icicle-dictionary-history',
-;;    `icicle-dir-candidate-can-exit-p',
+;;    `icicle-current-raw-input', `icicle-cycling-p',
+;;    `icicle-default-thing-insertion-flipped-p',
+;;    `icicle-dictionary-history', `icicle-dir-candidate-can-exit-p',
 ;;    `icicle-doc-last-initial-cand-set',
 ;;    `icicle-dot-string-internal', `icicle-edit-update-p',
 ;;    `icicle-ess-use-ido', `icicle-exclude-default-proxies',
@@ -460,10 +459,6 @@ Updated by `icicle-next-font-lock-keywords(-repeat)'.")
 
 (defvar icicle-current-input "" "Current minibuffer input.")
 
-(defvar icicle-current-TAB-method nil
-  "*Current completion method for \
-`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.")
-
 (defvar icicle-current-raw-input "" "Current minibuffer raw (unexpanded) input.
 This can be different from `icicle-current-input' only when
 `icicle-expand-input-to-common-match' causes your input to expand.")
@@ -475,24 +470,6 @@ This can be different from `icicle-current-input' only when
   "Non-nil means a previous `M-.' in this succession was used with `C-u'.
 This means that the meaning of `icicle-default-thing-insertion' has
 been reversed.")
-
-(defvar icicle-delete-candidate-object nil
-  "Defines deletion action for command `icicle-delete-candidate-object'.
-The value can be a function or a symbol bound to an alist.
-
-If the value is a function, then the function is called on the current
-completion candidate (a string) to delete some corresponding object.
-
-If the value is a symbol (variable) bound to an alist, then
-`icicle-delete-current-candidate-object' is called to delete the
-corresponding object from that alist.  If the variable is also a user
-option, then the option is saved after the candidate is deleted.
-
-Note that if the value is a variable and you use multi-completion
-candidates during completion, then the alist value of the variable
-must itself contain multi-completions.  Otherwise, no candidate will
-be deleted, because `icicle-delete-current-candidate-object' deletes
-the full candidate object.")
 
 (defvar icicle-dictionary-history nil "History for dictionary entries.")
 
