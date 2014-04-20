@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Apr 13 14:08:30 2014 (-0700)
+;; Last-Updated: Sun Apr 20 10:38:35 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28179
+;;     Update #: 28187
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4087,13 +4087,16 @@
 ;;  Icicles interacts with Icomplete mode in a number of ways.
 ;;
 ;;  * In Icicle mode you can toggle Icomplete mode on and off using
-;;    `C-M-#' anytime in the minibuffer (assuming you have already
-;;    loaded library `icomplete(+).el').
+;;    `C-M-#' (command `icicle-toggle-icomplete-mode') anytime in the
+;;    minibuffer, assuming you have already loaded library
+;;    `icomplete(+).el'.  For Emacs versions prior to Emacs 23, the
+;;    change takes effect only at the next minibuffer invocation.
 ;;
-;;  * Icicles can automatically turn Icomplete mode off and on,
-;;    depending on the number of current candidates.  This is a
-;;    performance optimization, to eliminate the (independent)
-;;    calculation by Icomplete mode of a large set of candidates.
+;;  * Starting with Emacs 23, Icicles can automatically turn Icomplete
+;;    mode off and on, depending on the number of current candidates.
+;;    This is a performance optimization, to eliminate the
+;;    (independent) calculation by Icomplete mode of a large set of
+;;    candidates.
 ;;
 ;;    You can control this behavior by customizing user option
 ;;    `icicle-icomplete-mode-max-candidates'.  Set it to `nil' to turn
@@ -4113,14 +4116,15 @@
 ;;  * In addition to this automatic toggling, Icicles multi-commands
 ;;    that typically display a large number of completion candidates
 ;;    automatically turn off Icomplete mode.  When this happens, a
-;;    message informs you.  Just use `C-M-#' to turn it back on.
+;;    message informs you.  Just use `C-M-#' (command
+;;    `icicle-toggle-icomplete-mode') to turn it back on.
 ;;
-;;    You can control which commands do this, by adding/removing
-;;    property `icicle-turn-off-icomplete-mode' to/from the command
-;;    symbol.  For example, command `icicle-locate-file' has the
-;;    non-`nil' property by default.  If you do not want this command
-;;    to turn off Icomplete mode then add this to your init file
-;;    (`~/.emacs'):
+;;    You can control which commands do this automatic toggling, by
+;;    adding/removing property `icicle-turn-off-icomplete-mode'
+;;    to/from the command symbol.  For example, command
+;;    `icicle-locate-file' has the non-`nil' property by default.  If
+;;    you do not want this command to turn off Icomplete mode then add
+;;    this to your init file (`~/.emacs'):
 ;;
 ;;      (put 'icicle-locate-file 'icicle-turn-off-icomplete-mode nil)
 ;;
@@ -4499,6 +4503,13 @@
 ;;  Whenever you change the sort order, the new sort order is echoed,
 ;;  so you can use `C-9 C-,' twice to just remind yourself of the
 ;;  current sort order.
+;;
+;;  Note that if sorting has been turned off automatically for the
+;;  current minibuffer invocation because there are more candidates
+;;  than `icicle-sorting-max-candidates', using `C-,' to choose a new
+;;  sort order does not turn sorting back on.  The newly chosen sort
+;;  order takes effect only when sorting is turned on again
+;;  (e.g. because there are fewer candidates).
 ;;
 ;;  In addition to the current sort order, which is defined by the
 ;;  value of user option `icicle-sort-comparer', an alternative sort
