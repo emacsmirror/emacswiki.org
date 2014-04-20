@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Apr  5 07:44:50 2014 (-0700)
+;; Last-Updated: Sun Apr 20 16:21:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6811
+;;     Update #: 6835
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -347,47 +347,47 @@
 (require 'icicles-mcmd)
   ;; icicle-search-define-replacement
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
-  ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
-  ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-ignored-prefix-keys,
-  ;; icicle-complete-keys-self-insert-ranges, icicle-key-descriptions-use-<>-flag, icicle-recenter,
+  ;; icicle-act-before-cycle-flag, icicle-alternative-sort-comparer, icicle-buffer-extras,
+  ;; icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp, icicle-buffer-no-match-regexp,
+  ;; icicle-buffer-predicate, icicle-buffer-require-match-flag, icicle-buffer-sort,
+  ;; icicle-complete-keys-ignored-prefix-keys, icicle-complete-keys-self-insert-ranges,
+  ;; icicle-delete-candidate-object, icicle-key-descriptions-use-<>-flag, icicle-recenter,
   ;; icicle-require-match-flag, icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-kbd,
   ;; icicle-search-highlight-all-current-flag, icicle-search-highlight-threshold, icicle-search-hook,
-  ;; icicle-sort-comparer, icicle-transform-function
+  ;; icicle-sort-comparer, icicle-sort-orders-alist, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-abs-file-candidates, icicle-acting-on-next/prev, icicle-all-candidates-action,
-  ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
-  ;; icicle-apply-nomsg, icicle-bookmark-history, icicle-buffer-sort-first-time-p,
-  ;; icicle-candidate-action-fn, icicle-candidate-alt-action-fn, icicle-candidate-entry-fn,
-  ;; icicle-candidate-help-fn, icicle-candidate-nb, icicle-candidate-properties-alist,
-  ;; icicle-candidates-alist, icicle-char-property-value-history, icicle-complete-keys-alist,
+  ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn, icicle-apply-nomsg,
+  ;; icicle-apropos-complete-match-fn, icicle-buffer-sort-first-time-p, icicle-candidate-action-fn,
+  ;; icicle-candidate-alt-action-fn, icicle-candidate-entry-fn, icicle-candidate-help-fn, icicle-candidate-nb,
+  ;; icicle-candidate-properties-alist, icicle-candidates-alist, icicle-complete-keys-alist,
   ;; icicle-completing-keys-p, icicle-completion-candidates, icicle-current-completion-mode,
-  ;; icicle-current-input, icicle-delete-candidate-object,  icicle-doc-last-initial-cand-set,
-  ;; icicle-explore-final-choice, icicle-explore-final-choice-full, icicle-extra-candidates,
-  ;; icicle-extra-candidates-dir-insert-p, icicle-full-cand-fn, icicle-fundoc-last-initial-cand-set,
-  ;; icicle-get-alist-candidate-function, icicle-hist-cands-no-highlight, icicle-hist-var,
-  ;; icicle-Info-only-rest-of-book-p, icicle-key-prefix-description, icicle-last-completion-candidate,
-  ;; icicle-last-completion-command, icicle-last-input, icicle-last-sort-comparer,
-  ;; icicle-last-transform-function, icicle-list-use-nth-parts, icicle-minibuffer-message-ok-p,
-  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
-  ;; icicle-nb-of-other-cycle-candidates, icicle-orig-buff, icicle-orig-pt-explore, icicle-orig-window,
-  ;; icicle-orig-win-explore, icicle-other-window, icicle-plist-last-initial-cand-set,
-  ;; icicle-predicate-types-alist, icicle-prompt, icicle-proxy-candidate-regexp,
-  ;; icicle-proxy-candidates, icicle-require-match-p, icicle-saved-completion-candidate,
-  ;; icicle-saved-completion-candidates, icicle-scan-fn-or-regexp, icicle-search-command,
-  ;; icicle-search-complement-domain-p, icicle-search-context-level, icicle-search-context-regexp,
-  ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-in-context-fn,
-  ;; icicle-searching-p, icicle-search-level-overlays, icicle-search-modes, icicle-search-overlays,
-  ;; icicle-search-refined-overlays, icicle-search-replacement, icicle-transform-before-sort-p,
-  ;; icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
+  ;; icicle-current-input, icicle-doc-last-initial-cand-set, icicle-explore-final-choice,
+  ;; icicle-explore-final-choice-full, icicle-extra-candidates, icicle-extra-candidates-dir-insert-p,
+  ;; icicle-full-cand-fn, icicle-fundoc-last-initial-cand-set, icicle-get-alist-candidate-function,
+  ;; icicle-hist-cands-no-highlight, icicle-hist-var, icicle-Info-only-rest-of-book-p,
+  ;; icicle-Info-tag-table-posn, icicle-key-prefix-description, icicle-last-apropos-complete-match-fn,
+  ;; icicle-last-completion-candidate, icicle-last-completion-command, icicle-last-input,
+  ;; icicle-last-sort-comparer, icicle-last-transform-function, icicle-list-use-nth-parts,
+  ;; icicle-minibuffer-message-ok-p, icicle-mode-line-help, icicle-multi-completing-p, icicle-must-match-regexp,
+  ;; icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate, icicle-nb-of-other-cycle-candidates,
+  ;; icicle-orig-buff, icicle-orig-pt-explore, icicle-orig-window, icicle-orig-win-explore, icicle-other-window,
+  ;; icicle-plist-last-initial-cand-set, icicle-predicate-types-alist, icicle-pref-arg, icicle-prompt,
+  ;; icicle-proxy-candidate-regexp, icicle-proxy-candidates, icicle-require-match-p,
+  ;; icicle-saved-completion-candidate, icicle-saved-completion-candidates, icicle-scan-fn-or-regexp,
+  ;; icicle-search-command, icicle-search-complement-domain-p, icicle-search-context-level,
+  ;; icicle-search-context-regexp, icicle-search-current-overlay, icicle-search-final-choice,
+  ;; icicle-search-in-context-fn, icicle-searching-p, icicle-search-level-overlays, icicle-search-modes,
+  ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
+  ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
   ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp, icicle-string-match-p, icicle-unlist
 (require 'icicles-cmd1)
-  ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd,
-  ;; icicle-bookmark-help-string, icicle-bookmark-propertize-candidate, icicle-buffer-list,
-  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-bookmark-candidate,
-  ;; icicle-make-frame-alist, icicle-select-bookmarked-region
+  ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
+  ;; icicle-bookmark-propertize-candidate, icicle-buffer-list, icicle-explore, icicle-face-list,
+  ;; icicle-file-list, icicle-keyword-list, icicle-make-bookmark-candidate, icicle-make-frame-alist,
+  ;; icicle-select-bookmarked-region
 
 ;;; (require 'icicles-mode)
 ;;;   ;; icicle-ORIG-Info-goto-node, icicle-ORIG-Info-index, icicle-ORIG-Info-menu
@@ -1265,7 +1265,6 @@ used with `C-u', with Icicle mode turned off)."
               icicle-candidate-help-fn           completion-ignore-case
               icicle-transform-function          icicle-sort-orders-alist
               icicle-list-nth-parts-join-string  icicle-list-join-string
-              ;; $$$$$$ icicle-list-end-string
               icicle-proxy-candidate-regexp      icicle-named-colors
               icicle-proxy-candidates)
           ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
@@ -1276,10 +1275,6 @@ used with `C-u', with Icicle mode turned off)."
           (setq icicle-proxy-candidates
                 (append icicle-proxy-candidates
                         (mapcar         ; Convert multi-completions to strings.
-                         ;; $$$$$$ (lambda (entry)
-                         ;;         (concat (mapconcat #'identity (car entry)
-                         ;;                            icicle-list-join-string)
-                         ;;                 icicle-list-end-string)) ; $$$$$$
                          (lambda (entry) (mapconcat #'identity (car entry) icicle-list-join-string))
                          '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
                 color  (let ((icicle-orig-window  (selected-window))
@@ -1310,7 +1305,6 @@ used with `C-u', with Icicle mode turned off)."
                  (if mouse-pseudo-color-p
                      (let ((icicle-list-nth-parts-join-string  ": ")
                            (icicle-list-join-string            ": ")
-                           ;; $$$$$$ (icicle-list-end-string             "")
                            (icicle-list-use-nth-parts
                             (or (and arg  (if (< arg 2) '(1) '(2))) ; 1 or 2, via program or `C-1' or `C-2'.
                                 icicle-list-use-nth-parts ; Bound externally by program.
@@ -1401,7 +1395,6 @@ This command is intended only for use in Icicle mode." ; Doc string
 
      icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
      icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-     ;; $$$$$$ icicle-list-end-string
      icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
     (icicle-color-completion-setup)     ; First code - needs `hexrgb.el'
     (modify-frame-parameters icicle-orig-frame (list (cons 'background-color orig-bg))) ; Undo code
@@ -1427,7 +1420,6 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
 
      icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
      icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
-     ;; $$$$$$ icicle-list-end-string
      icicle-proxy-candidate-regexp      icicle-named-colors          icicle-proxy-candidates)
     (icicle-color-completion-setup)     ; First code - needs `hexrgb.el'
     (modify-frame-parameters icicle-orig-frame (list (cons 'foreground-color orig-bg))) ; Undo code
@@ -1481,17 +1473,13 @@ Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
           ;; candidates in `*Completions*'.
           icicle-list-nth-parts-join-string  ": "
           icicle-list-join-string            ": "
-          ;; $$$$$$ icicle-list-end-string             ""
           icicle-proxy-candidate-regexp      "^[*'].+[*']"
 
           icicle-named-colors                (mapcar #'icicle-make-color-candidate
                                                      (hexrgb-defined-colors))
           icicle-proxy-candidates
           (mapcar                       ; Convert multi-completions to strings.
-           (lambda (entry)
-             ;; $$$$$$ (concat (mapconcat #'identity (car entry) icicle-list-join-string)
-             ;;                icicle-list-end-string) ; $$$$$$
-             (mapconcat #'identity (car entry) icicle-list-join-string))
+           (lambda (entry) (mapconcat #'identity (car entry) icicle-list-join-string))
            (append
             (and (fboundp 'eyedrop-foreground-at-point)
                  (append (and eyedrop-picked-foreground ; Multi-completions.
@@ -1739,7 +1727,6 @@ returned."
       (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
@@ -1765,7 +1752,6 @@ returned."
       (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
@@ -1791,7 +1777,6 @@ returned."
       (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string   "")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
@@ -2095,7 +2080,7 @@ to match (no prompting)."               ; Doc string
     ((num-arg (prefix-numeric-value current-prefix-arg)) ; Bindings
      (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
      (appendp (eq synonyms-append-result-flag (and (wholenump num-arg)  (/= 16 num-arg))))
-     (icicle-sort-function 'icicle-case-insensitive-string-less-p))
+     (icicle-sort-comparer 'icicle-case-insensitive-string-less-p))
     (synonyms-ensure-synonyms-read-from-cache)) ; First code: initialize `synonyms-obarray', for completion.
 
   (icicle-define-command icicle-insert-thesaurus-entry ; Command name
@@ -3760,7 +3745,6 @@ marker's buffer, to facilitate orientation."
   (let ((icicle-multi-completing-p          icicle-show-multi-completion-flag)
         (icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
-        ;; $$$$$$ (icicle-list-end-string             "")
         (icicle-sort-orders-alist           (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
                                                   icicle-sort-orders-alist))
         (icicle-sort-comparer               'icicle-part-1-cdr-lessp)
@@ -4272,7 +4256,6 @@ This command is intended for use only in Icicle mode."
          (icicle-current-input               "")
          (icicle-list-nth-parts-join-string  "\t")
          (icicle-list-join-string            "\t")
-         ;; $$$$$$ (icicle-list-end-string   "")
          ;; In general, we do not assume that `C-0' implies the use of multi-completions.
          (current-prefix-arg                 (or icicle-pref-arg  current-prefix-arg))
          (icicle-multi-completing-p          (and current-prefix-arg
@@ -8072,9 +8055,6 @@ This command requires library `expand-region.el'."
 (defvar icicle-active-map nil
   "An active keymap.")
 
-;;; $$$$$$(defvar icicle-orig-buff-key-complete nil
-;;;         "Current buffer when you invoked `icicle-complete-keys'.")
-
 (defvar icicle-orig-extra-cands ()
   "Value of `icicle-extra-candidates', before command.")
 
@@ -8083,9 +8063,6 @@ This command requires library `expand-region.el'."
 
 (defvar icicle-orig-sort-orders-alist ()
   "Value of `icicle-sort-orders-alist', before command.")
-
-;;; $$$$$$(defvar icicle-orig-win-key-complete nil
-;;;         "Selected window when you invoked `icicle-complete-keys'.")
 
 (defvar icicle-this-cmd-keys ()
   "Value of `this-command-keys-vector' at some point in key completion.")
@@ -8183,8 +8160,6 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           ;; $$$$$$$$ (icicle-orig-buff-key-complete       (current-buffer))
-           ;; $$$$$$$$ (icicle-orig-win-key-complete        (selected-window))
            ;; $$$$$$ (icicle-orig-buff                      (current-buffer))
            ;; $$$$$$ (icicle-orig-window                    (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
@@ -8211,8 +8186,6 @@ information."
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
-           ;; $$$$$$$$ (icicle-orig-buff-key-complete       (current-buffer))
-           ;; $$$$$$$$ (icicle-orig-win-key-complete        (selected-window))
            ;; $$$$$$ (icicle-orig-buff                      (current-buffer))
            ;; $$$$$$ (icicle-orig-window                    (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
@@ -8293,8 +8266,6 @@ Each is a vector."
            (action-window  (selected-window)))
       (unwind-protect
            (progn
-             ;; $$$$$$ (set-buffer icicle-orig-buff-key-complete)
-             ;; $$$$$$ (select-window icicle-orig-win-key-complete)
              (set-buffer icicle-orig-buff)
              (select-window icicle-orig-window)
              (if (string= ".." candidate)
