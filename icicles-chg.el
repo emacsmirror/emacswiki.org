@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Apr 20 16:24:58 2014 (-0700)
+;; Last-Updated: Mon Apr 21 09:10:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10862
+;;     Update #: 10864
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5874,6 +5874,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/04/21 dadams
+;;     describe-face (defadvice): First arg depends on Emacs version.
 ;; 2014/04/20 dadams
 ;;     icicle-minibuffer-setup:
 ;;       Do not set icicle-last-icomplete-mode-value here.  Done in icicle-insert-candidates now.
