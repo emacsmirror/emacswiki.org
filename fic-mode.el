@@ -82,6 +82,7 @@
         (font-lock-add-keywords nil kwlist)
       (font-lock-remove-keywords nil kwlist))))
 
+;;;###autoload
 (defun turn-on-fic-mode ()
   "turn fic-mode on"
   (interactive)
