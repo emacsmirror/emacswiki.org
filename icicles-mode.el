@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Apr 20 16:14:23 2014 (-0700)
+;; Last-Updated: Mon Apr 21 09:09:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10188
+;;     Update #: 10189
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -343,7 +343,9 @@ bindings in `*Completions*'.")
       "`read-face-name' respects `icicle-WYSIWYG-Completions-flag'.
 If non-nil, then it does not use `completing-read-multiple' (which
 cannot take advantage of WYSIWYG)."
-      (interactive (list (read-face-name "Describe face" "= `default' face"
+      (interactive (list (read-face-name "Describe face" (if (> emacs-major-version 23)
+                                                             (or (face-at-point t)  'default)
+                                                           "= `default' face")
                                          (not icicle-WYSIWYG-Completions-flag))))))
 
   ;; Eval this so that even if the library is byte-compiled with Emacs 20,
