@@ -55,3 +55,10 @@ See URL `https://github.com/FND/jslint-reporter'."
 8. Test by opening above <code>test.js</code>.
 
 [[image:JslintFlycheckOnWindowsScreenshot]]
+
+
+==  Flycheck checker for C# ==
+
+As of April 2014, Flycheck has no built-in support for C#. Fortunately support is straight forward to add, see
+ [http://dinochiesa.net/?p=1079 this post].
+
