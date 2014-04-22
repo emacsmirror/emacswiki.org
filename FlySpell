@@ -219,5 +219,26 @@ and put this in your init file:
 </pre>
 Now calling "flyspell-correct-word-before-point" or middle-clicking a word will create a textual popup.
 
+== Automatically displaying a textual popup in a terminal while using the usual emacs menu in the GUI ==
+[new]
+
+If you run an emacs server with both terminal and GUI clients you may wish for the type of menu to be selected automatically depending on which client you are using.  Instead of redefining flyspell-emacs-popup it's better to advise it so that flyspell-emacs-popup-textual (defined above) or the original function can be called as necessary
+
+First a small helper function to use as the advice:
+<pre>
+  (defun flyspell-emacs-popup-choose (org-fun event poss word)
+    (if (window-system)
+        (funcall org-fun event poss word)
+      (flyspell-emacs-popup-textual event poss word)))
+</pre>
+Now put this in your init file:
+<pre>
+    (eval-after-load "flyspell"
+      '(progn
+          (advice-add 'flyspell-emacs-popup :around #'flyspell-emacs-popup-choose)))
+</pre>
+
+Note:  I have used the new syntax for advice.  If you don't have the latest emacs you may need to change this to the old syntax.
+[[Bernard Hurley]]
 ----
 CategoryModes | CategorySpelling
