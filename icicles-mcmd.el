@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Apr 20 16:02:30 2014 (-0700)
+;; Last-Updated: Wed Apr 23 07:52:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19502
+;;     Update #: 19503
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1666,7 +1666,7 @@ Optional arg PLAINP means convert to plain `.'.
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 (when (require 'image-dired nil t)      ; Emacs 22+.
-  (defalias 'cycle-icicle-image-file-thumbnail 'icicle-toggle-show-image-file-thumbnail)
+  (defalias 'cycle-icicle-image-file-thumbnail 'icicle-cycle-image-file-thumbnail)
   (defun icicle-cycle-image-file-thumbnail () ; Bound to `C-x t' in minibuffer.
     "Toggle `icicle-image-files-in-Completions'.
 This has no effect if you do not have library `image-dired.el' (Emacs 23+).
