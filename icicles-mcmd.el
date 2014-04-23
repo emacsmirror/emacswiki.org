@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Apr 23 07:52:17 2014 (-0700)
+;; Last-Updated: Wed Apr 23 10:49:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19503
+;;     Update #: 19508
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6876,9 +6876,13 @@ If the region is active in `*Completions*', then
        (defun icicle-mouse-save-then-kill (click &optional arg)
          "`mouse-save-then-kill', but click same place saves selected candidates."
          (interactive "e\nP")
-         (flet ((mouse-save-then-kill-delete-region (beg end)
-                  (icicle-mouse-candidate-set-save-more nil arg)))
-           (mouse-save-then-kill click))
+         (if (fboundp 'cl-flet)
+             (cl-flet ((mouse-save-then-kill-delete-region (beg end)
+                         (icicle-mouse-candidate-set-save-more nil arg)))
+               (mouse-save-then-kill click))
+           (flet ((mouse-save-then-kill-delete-region (beg end)
+                    (icicle-mouse-candidate-set-save-more nil arg)))
+             (mouse-save-then-kill click)))
          (setq this-command  'mouse-save-then-kill)))
 
       (t
