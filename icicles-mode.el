@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Mon Apr 21 09:09:23 2014 (-0700)
+;; Last-Updated: Wed Apr 23 10:56:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10189
+;;     Update #: 10194
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -315,23 +315,37 @@ bindings in `*Completions*'.")
     (defadvice ess-internal-complete-object-name (around icicle-ess-internal-complete-object-name
                                                          disable activate)
       "`ess-internal-complete-object-name', but in Icicle mode use Icicles completion."
-      (flet ((comint-dynamic-simple-complete (stub candidates)
-               (icicle-comint-dynamic-simple-complete stub candidates)))
-        ad-do-it))
+      (if (fboundp 'cl-flet)
+          (cl-flet ((comint-dynamic-simple-complete (stub candidates)
+                      (icicle-comint-dynamic-simple-complete stub candidates)))
+            ad-do-it)
+        (flet ((comint-dynamic-simple-complete (stub candidates)
+                 (icicle-comint-dynamic-simple-complete stub candidates)))
+          ad-do-it)))
 
     (defadvice ess-complete-filename (around icicle-ess-complete-filename disable activate)
       "`ess-complete-filename', but in Icicle mode use Icicles completion."
-      (flet ((comint-dynamic-complete-filename (&optional replace-to-eol-p)
-               (icicle-comint-dynamic-complete-filename replace-to-eol-p))
-             (comint-replace-by-expanded-filename () ; This one is not used for recent ESS versions.
-               (icicle-comint-replace-by-expanded-filename)))
-        ad-do-it))
+      (if (fboundp 'cl-flet)
+          (cl-flet ((comint-dynamic-complete-filename (&optional replace-to-eol-p)
+                      (icicle-comint-dynamic-complete-filename replace-to-eol-p))
+                    (comint-replace-by-expanded-filename () ; This one is not used for recent ESS versions.
+                      (icicle-comint-replace-by-expanded-filename)))
+            ad-do-it)
+        (flet ((comint-dynamic-complete-filename (&optional replace-to-eol-p)
+                 (icicle-comint-dynamic-complete-filename replace-to-eol-p))
+               (comint-replace-by-expanded-filename () ; This one is not used for recent ESS versions.
+                 (icicle-comint-replace-by-expanded-filename)))
+          ad-do-it)))
 
     (defadvice ess-R-complete-object-name (around icicle-ess-R-complete-object-name disable activate)
       "`ess-R-complete-object-name', but in Icicle mode use Icicles completion."
-      (flet ((comint-dynamic-simple-complete (stub candidates)
-               (icicle-comint-dynamic-simple-complete stub candidates)))
-        ad-do-it))
+      (if (fboundp 'cl-flet)
+          (cl-flet ((comint-dynamic-simple-complete (stub candidates)
+                      (icicle-comint-dynamic-simple-complete stub candidates)))
+            ad-do-it)
+        (flet ((comint-dynamic-simple-complete (stub candidates)
+                 (icicle-comint-dynamic-simple-complete stub candidates)))
+          ad-do-it)))
 
     (defadvice ess-completing-read (around icicle-ess-completing-read disable activate)
       "Make `ess-completing-read' use Icicles completion in Icicle mode."
