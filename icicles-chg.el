@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Apr 23 07:54:26 2014 (-0700)
+;; Last-Updated: Wed Apr 23 11:04:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10868
+;;     Update #: 10874
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4186,6 +4186,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2014/04/23 dadams
+;;     Use cl-flet if available.
 ;;     Typo: icicle-toggle-show-image-file-thumbnail -> icicle-cycle-image-file-thumbnail.
 ;; 2014/04/20 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
@@ -5878,6 +5879,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/04/23 dadams
+;;     Use cl-flet if available.
 ;; 2014/04/21 dadams
 ;;     describe-face (defadvice): First arg depends on Emacs version.
 ;; 2014/04/20 dadams
@@ -8491,6 +8494,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2014/04/23 dadams
+;;     Put common-lisp-indent-function property on cl-flet.
 ;; 2014/04/06 dadams
 ;;     New version - updated icicles-mac.el.
 ;; 2012/03/11 dadams
