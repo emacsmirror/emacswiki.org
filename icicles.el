@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.04.06
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 13 19:14:58 2014 (-0700)
+;; Last-Updated: Wed Apr 23 10:50:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23543
+;;     Update #: 23544
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1635,6 +1635,10 @@
 (put 'icicle-with-selected-window                 'common-lisp-indent-function '(4 &body))
 (put 'icicle-condition-case-no-debug              'common-lisp-indent-function '(4 4 &body))
 
+(unless (fboundp 'cl-flet)
+  (put 'cl-flet 'common-lisp-indent-function '((&whole 4 &rest
+                                                (&whole 1 &lambda &body))
+                                               &body)))
 
 
 ;; You might also want to use the following or something similar.
