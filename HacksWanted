@@ -4,7 +4,13 @@ Here's a list of people and projects you could hack on:
 
 * GnuEmacs [http://debbugs.gnu.org/db/ix/full.html
  bugs] needing fixing (in many cases there is a patch to apply or the fix is otherwise simple). 
-* [[Fuco]] has stuff in [[https://github.com/Fuco1/litable/blob/master/litable.el#L248|litable]] that you could do
+* [[Fuco]] (contact on emacs [[IRC]]) has stuff that you could do in:
+** [[https://github.com/Fuco1/litable/blob/master/litable.el#L248|litable]] (lots of stuff for beginners)
+** [[https://github.com/Fuco1/dired-hacks|dired hacks]] (this includes 6 projects right now with various states of breakage, something for beginners too)
+** [[https://github.com/Fuco1/petulant-dangerzone|plist/alist api project]] (abstract thinking required, elisp knowledge is not essential)
+** [[https://github.com/Fuco1/justify-kp|pretty justification engine]] (required for epub reader, that project is not created yet)
+** [[https://github.com/Fuco1/ballin-octo-shame|better pairs parser for smartparens]] (this is a bit more difficult, not a great project for beginners)
+** Write a package for inlining of images in org-mode, with support for various "image webs" (imgur albums, indirect links, deviant-art profiles, galleries etc.).  A direct-link embedding is a start.  Planned features: in-place zooming, rotation and stuff (see also dired-images in dired hacks project)
 * NicFerrier has stuff in [[https://github.com/nicferrier/elwikicreole/blob/master/creole.el|WikiCreole]], we need to add lots of OddMuse support
 
 ----
