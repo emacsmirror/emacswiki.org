@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Apr 20 16:18:41 2014 (-0700)
+;; Last-Updated: Tue Apr 22 13:08:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26933
+;;     Update #: 26956
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2442,10 +2442,10 @@ separate the words (any strings, in fact, including regexps) using
   (apropos pattern do-all))
 
 (cond
-  ;; Use my versions of the `apropos*' commands, defined in `apropos-fn+var.el'.
-  ;; Note that unlike my versions of `apropos-option' and `apropos-command', the `icicle-'
-  ;; versions here do not respect `apropos-do-all': they always work with options and commands.
-  ((fboundp 'apropos-option)
+  ;; Use `apropos-variable' and `apropos-option' from `apropos-fn+var.el',
+  ;; or use Emacs 24.4+ `apropos-variable' and `apropos-user-option'.
+  ;; Note that `icicle-apropos-option' does not respect `apropos-do-all': it always works with only options.
+  ((or (featurep 'apropos-fn+var)  (fboundp 'apropos-user-option)) ; Emacs 24.4 defines `apropos-user-option'.
    (defun icicle-apropos-variable (pattern &optional msgp)
      "Show variables that match PATTERN.
 This includes variables that are not user options.
@@ -2507,8 +2507,68 @@ See `icicle-apropos' for a description of PATTERN."
          (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
        (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
        (when msgp (message "Gathering data apropos user options..."))
-       (apropos-option pattern)))
+       (apropos-option pattern))))
 
+  ;; `apropos-fn+var.el' not available, and Emacs < 24.4.  Use pre-24.4 vanilla Emacs versions.
+  (t
+   (defun icicle-apropos-variable (pattern &optional do-all msgp)
+     "Show variables that match PATTERN.
+You can see the list of matches with `S-TAB'.
+See `icicle-apropos' for a description of PATTERN.
+
+By default, only user options are candidates.  With optional prefix
+DO-ALL, or if `apropos-do-all' is non-nil, all variables are
+candidates.  In that case, the user-option candidates are highlighted
+using face `icicle-special-candidate'."
+     (interactive
+      (list
+       (unwind-protect
+            (progn
+              (unless (or (boundp 'apropos-do-all)  (require 'apropos nil t))
+                (error "Library `apropos' not found"))
+              (when (or current-prefix-arg  apropos-do-all)
+                (mapatoms (lambda (symb)
+                            (when (user-variable-p symb) (put symb 'icicle-special-candidate t)))))
+              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg  apropos-do-all))
+                     (pred                                    (if (or current-prefix-arg  apropos-do-all)
+                                                                  (lambda (s)
+                                                                    (unless (symbolp s)
+                                                                      (setq s  (intern s)))
+                                                                    (and (boundp s)
+                                                                         (get s 'variable-documentation)))
+                                                                (lambda (s)
+                                                                  (unless (symbolp s) (setq s  (intern s)))
+                                                                  (user-variable-p s))))
+                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
+                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                                  (icicle-alt-act-fn-for-type
+                                                                   (if icicle-fancy-candidates-p
+                                                                       "variable"
+                                                                     "option"))))
+                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
+                      (or icicle-all-candidates-list-alt-action-fn
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "variable" "option")))))
+                (completing-read
+                 (concat "Apropos " (if (or current-prefix-arg  apropos-do-all) "variable" "user option")
+                         " (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
+                 obarray (and icompletep  pred) nil nil 'regexp-history)))
+         (when (or current-prefix-arg  apropos-do-all)
+           (mapatoms (lambda (symb) (put symb 'icicle-special-candidate nil)))))
+       current-prefix-arg
+       t))
+     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
+                (string= (regexp-quote pattern) pattern)
+                (not (string= "" pattern)))
+       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
+     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+     (when msgp (message (format "Gathering data apropos %s..." (if do-all "variables" "options"))))
+     (apropos-variable pattern do-all))))
+
+(cond
+  ;; Use `apropos-function' and `apropos-command' from `apropos-fn+var.el'.
+  ;; Note that `icicle-apropos-command' does not respect `apropos-do-all': it always works with only commands.
+  ((featurep 'apropos-fn+var)
    (defun icicle-apropos-function (pattern &optional msgp)
      "Show functions that match PATTERN.
 This includes functions that are not commands.
@@ -2570,62 +2630,8 @@ See `icicle-apropos' for a description of PATTERN."
      (when msgp (message "Gathering data apropos commands..."))
      (let ((apropos-do-all  nil))  (apropos-command pattern))))
 
-  ;; My versions are not available.  Use the vanilla Emacs versions of the `apropos...' commands.
+  ;; `apropos-fn+var.el' not available.  Use vanilla Emacs `apropos-command'.
   (t
-   (defun icicle-apropos-variable (pattern &optional do-all msgp)
-     "Show variables that match PATTERN.
-You can see the list of matches with `S-TAB'.
-See `icicle-apropos' for a description of PATTERN.
-
-By default, only user options are candidates.  With optional prefix
-DO-ALL, or if `apropos-do-all' is non-nil, all variables are
-candidates.  In that case, the user-option candidates are highlighted
-using face `icicle-special-candidate'."
-     (interactive
-      (list
-       (unwind-protect
-            (progn
-              (unless (or (boundp 'apropos-do-all)  (require 'apropos nil t))
-                (error "Library `apropos' not found"))
-              (when (or current-prefix-arg  apropos-do-all)
-                (mapatoms (lambda (symb)
-                            (when (user-variable-p symb) (put symb 'icicle-special-candidate t)))))
-              (let* ((icicle-fancy-candidates-p               (or current-prefix-arg  apropos-do-all))
-                     (pred                                    (if (or current-prefix-arg  apropos-do-all)
-                                                                  (lambda (s)
-                                                                    (unless (symbolp s)
-                                                                      (setq s  (intern s)))
-                                                                    (and (boundp s)
-                                                                         (get s 'variable-documentation)))
-                                                                (lambda (s)
-                                                                  (unless (symbolp s) (setq s  (intern s)))
-                                                                  (user-variable-p s))))
-                     (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
-                     (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
-                     (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
-                                                                  (icicle-alt-act-fn-for-type
-                                                                   (if icicle-fancy-candidates-p
-                                                                       "variable"
-                                                                     "option"))))
-                     (icicle-all-candidates-list-alt-action-fn ; `M-|'
-                      (or icicle-all-candidates-list-alt-action-fn
-                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "variable" "option")))))
-                (completing-read
-                 (concat "Apropos " (if (or current-prefix-arg  apropos-do-all) "variable" "user option")
-                         " (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
-                 obarray (and icompletep  pred) nil nil 'regexp-history)))
-         (when (or current-prefix-arg  apropos-do-all)
-           (mapatoms (lambda (symb) (put symb 'icicle-special-candidate nil)))))
-       current-prefix-arg
-       t))
-     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
-                (string= (regexp-quote pattern) pattern)
-                (not (string= "" pattern)))
-       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
-     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
-     (when msgp (message (format "Gathering data apropos %s..." (if do-all "variables" "options"))))
-     (apropos-variable pattern do-all))
-
    (defun icicle-apropos-command (pattern &optional do-all var-predicate msgp)
      "Show commands (interactively callable functions) that match PATTERN.
 You can see the list of matches with `S-TAB'.
