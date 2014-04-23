@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr  5 17:21:23 2014 (-0700)
+;; Last-Updated: Wed Apr 23 14:09:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7451
+;;     Update #: 7459
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -404,7 +404,7 @@
 ;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
 ;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-internal-do-deletions', `diredp-list-files',
-;;    `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-looking-at-p', `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
@@ -513,6 +513,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/23 dadams
+;;     Added: diredp-looking-at-p.
+;;     dired-insert-set-properties: Applied fix for bug #17228.
 ;; 2014/04/05 dadams
 ;;     Added: diredp-do-bookmark-dirs-recursive.
 ;;            Renamed from bmkp-create-dired-bookmarks-recursive in bookmark+-1.el (removed).
@@ -1398,6 +1401,12 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   (defun diredp-string-match-p (regexp string &optional start)
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
+
+(if (fboundp 'looking-at-p)
+    (defalias 'diredp-looking-at-p 'looking-at-p) ; Emacs 23+
+  (defun diredp-looking-at-p (regexp)
+    "Like `looking-at', but this saves and restores the match data."
+    (save-match-data (looking-at regexp))))
 
 (defun diredp-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -6578,8 +6587,10 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
                        (put-text-property (+ (point) 4) (line-end-position)
                                           'invisible 'dired-hide-details-link))))
                   ((fboundp 'dired-hide-details-mode) ; Emacs 24.4+
-                   (put-text-property (line-beginning-position) (1+ (line-end-position))
-                                      'invisible 'dired-hide-details-information)))
+                   (unless (or (diredp-looking-at-p "^$")
+                               (diredp-looking-at-p dired-subdir-regexp))
+                     (put-text-property (line-beginning-position) (1+ (line-end-position))
+                                        'invisible 'dired-hide-details-information))))
           (error nil))
         (forward-line 1)))))
 
