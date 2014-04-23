@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:04:28 2013 (-0800)
+;; Last-Updated: Tue Apr 22 20:00:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2164
+;;     Update #: 2177
 ;; URL: http://www.emacswiki.org/help+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns', `info', `info+', `misc-fns',
-;;   `naked', `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `fit-frame', `frame-fns', `help-fns', `info', `info+',
+;;   `misc-fns', `naked', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -27,6 +27,11 @@
 ;;
 ;;    Extensions to `help.el' for Emacs 22 and later.  For similar
 ;;    extensions to `help.el' for Emacs 20, see `help+20.el'.
+;;
+;;    Note: As of Emacs 24.4, byte-compiling this file in one Emacs
+;;    version and using the compiled file in another Emacs version
+;;    does not work.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -71,6 +76,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/22 dadams
+;;     Updated for Emacs 24.4: with-help-window, not with-output-to-temp-buffer - bug #17109.
+;;     help-on-click/key: save-excursion.set-buffer -> with-current-buffer.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -253,38 +261,71 @@ Return nil if KEY is undefined; else return t."
                  (aset sequence 0 'mouse-1)
                  (setq defn-up-tricky  (key-binding sequence nil nil
                                                     (event-start up-event))))))
-           (with-output-to-temp-buffer (help-buffer)
-             (princ (help-key-description key untranslated))
-             (princ (format "\
+           (if (fboundp 'with-help-window)
+               (with-help-window (help-buffer)
+                 (princ (help-key-description key untranslated))
+                 (princ (format "\
 %s runs the command %S, which is "
-                            mouse-msg defn))
-             (describe-function-1 defn)
-             (when up-event
-               (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
-                 (princ (format "
+                                mouse-msg defn))
+                 (describe-function-1 defn)
+                 (when up-event
+                   (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
+                     (princ (format "
 
 ----------------- up-event %s----------------
 
 <%S>%s%s runs the command %S, which is "
-                                (if mouse-1-tricky "(short click) " "")
-                                ev-type mouse-msg
-                                (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
-                                defn-up))
-                 (describe-function-1 defn-up))
-               (unless (or (null defn-up-tricky)
-                           (integerp defn-up-tricky)
-                           (eq defn-up-tricky 'undefined))
-                 (princ (format "
+                                    (if mouse-1-tricky "(short click) " "")
+                                    ev-type mouse-msg
+                                    (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
+                                    defn-up))
+                     (describe-function-1 defn-up))
+                   (unless (or (null defn-up-tricky)
+                               (integerp defn-up-tricky)
+                               (eq defn-up-tricky 'undefined))
+                     (princ (format "
 
 ----------------- up-event (long click) ----------------
 
 Pressing <%S>%s for longer than %d milli-seconds
 runs the command %S, which is "
-                                ev-type mouse-msg
-                                mouse-1-click-follows-link
-                                defn-up-tricky))
-                 (describe-function-1 defn-up-tricky)))
-             (print-help-return-message)))))) ; Return t: defined.
+                                    ev-type mouse-msg
+                                    mouse-1-click-follows-link
+                                    defn-up-tricky))
+                     (describe-function-1 defn-up-tricky)))
+                 (print-help-return-message))
+             (with-output-to-temp-buffer (help-buffer) ; Emacs 22-24.3.
+               (princ (help-key-description key untranslated))
+               (princ (format "\
+%s runs the command %S, which is "
+                              mouse-msg defn))
+               (describe-function-1 defn)
+               (when up-event
+                 (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
+                   (princ (format "
+
+----------------- up-event %s----------------
+
+<%S>%s%s runs the command %S, which is "
+                                  (if mouse-1-tricky "(short click) " "")
+                                  ev-type mouse-msg
+                                  (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
+                                  defn-up))
+                   (describe-function-1 defn-up))
+                 (unless (or (null defn-up-tricky)
+                             (integerp defn-up-tricky)
+                             (eq defn-up-tricky 'undefined))
+                   (princ (format "
+
+----------------- up-event (long click) ----------------
+
+Pressing <%S>%s for longer than %d milli-seconds
+runs the command %S, which is "
+                                  ev-type mouse-msg
+                                  mouse-1-click-follows-link
+                                  defn-up-tricky))
+                   (describe-function-1 defn-up-tricky)))
+               (print-help-return-message))))))) ; Return t: defined.
 
 
 ;; REPLACES ORIGINAL in `help.el':
@@ -530,8 +571,7 @@ If you click elsewhere in a buffer other than the minibuffer, then
                                                  (regexp-quote
                                                   (setq symb  (format "%s" symb))))))
                                     (when found-doc
-                                      (save-excursion
-                                        (set-buffer (get-buffer "*Apropos*"))
+                                      (with-current-buffer (get-buffer "*Apropos*")
                                         (rename-buffer "*Apropos Doc*"))
                                       (when (fboundp '1-window-frames-on) ; In `frame-fns.el'.
                                         (let ((frames  (1-window-frames-on "*Apropos Doc*")))
