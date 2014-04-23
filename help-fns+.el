@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Apr 21 10:06:29 2014 (-0700)
+;; Last-Updated: Tue Apr 22 19:57:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1765
+;;     Update #: 1786
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl-lib', `help-fns', `help-mode', `info', `macroexp',
-;;   `naked', `wid-edit', `wid-edit+'.
+;;   `backquote', `button', `bytecomp', `cconv', `cl-lib',
+;;   `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -28,16 +29,9 @@
 ;;    Extensions to `help-fns.el'.  Also includes a redefinition of
 ;;    `describe-face', which is from `faces.el'.
 ;;
-;;    ************************** IMPORTANT ***************************
-;;    *                                                              *
-;;    *  Byte-compiling this file in one Emacs version and using the *
-;;    *  compiled file in another version works ONLY as follows:     *
-;;    *                                                              *
-;;    *  If you compile in Emacs 22, use it only for Emacs 22.       *
-;;    *  If you compile in Emacs 23. use it for Emacs 22, 23, or 24. *
-;;    *  If you compile in Emacs 24, use it only for Emacs 24.       *
-;;    *                                                              *
-;;    ****************************************************************
+;;    Note: As of Emacs 24.4, byte-compiling this file in one Emacs
+;;    version and using the compiled file in another Emacs version
+;;    does not work.
 ;;
 ;;
 ;;  Keys bound here:
@@ -579,7 +573,6 @@ so that matches are exact (ignoring case).")
             (insert (format "* %-38s (%s)%s.%s\n"  (format "%s [%s]:" (nth 1 entry) (nth 0 entry))
                             (nth 0 entry)  (nth 2 entry)
                             (if (nth 3 entry) (format " (line %s)" (nth 3 entry)) ""))))))))
-
   (add-to-list 'Info-virtual-files '("\\`\\*Indexed\\*\\'"
                                      (find-file . Info-indexed-find-file)
                                      (find-node . Info-indexed-find-node)
@@ -613,8 +606,6 @@ the manuals."
               (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
               (insert ".")
               (unless no-newlines-after-p (insert "\n\n"))))))))
-
-
   (when (and (> emacs-major-version 21)
              (condition-case nil (require 'help-mode nil t) (error nil))
              (get 'help-xref 'button-category-symbol)) ; In `button.el'
