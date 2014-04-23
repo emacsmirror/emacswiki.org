@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Apr 21 09:10:29 2014 (-0700)
+;; Last-Updated: Wed Apr 23 07:54:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10864
+;;     Update #: 10868
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/04/22 dadams
+;;     icicle-apropos-*: Updated to use Emacs 24.4 apropos-user-option.
 ;; 2014/04/20 dadams
 ;;     icicle-describe-option-of-type: Use the function icicle-anychar-regexp, not the variable.
 ;;     icicle-select-frame-by-name: Use frame-name-history if available.
@@ -4183,6 +4185,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/04/23 dadams
+;;     Typo: icicle-toggle-show-image-file-thumbnail -> icicle-cycle-image-file-thumbnail.
 ;; 2014/04/20 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       Removed cond clause about not not expanding in minibuffer - it prevented cycling etc.
