@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 24 08:04:19 2014 (-0700)
+;; Last-Updated: Thu Apr 24 13:52:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7464
+;;     Update #: 7485
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -377,8 +377,10 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `diff-switches', `diredp-hide-details-initially-flag' (Emacs
-;;    24.4+), `diredp-hide-details-propagate-flag' (Emacs 24.4+),
+;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
+;;    `diredp-image-preview-in-tooltip', `diff-switches',
+;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
+;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
@@ -514,6 +516,9 @@
 ;;; Change Log:
 ;;
 ;; 2014/04/24 dadams
+;;     Added: diredp-mouseover-help, diredp-auto-focus-frame-for-thumbnail-tooltip-flag,
+;;            diredp-image-preview-in-tooltip.
+;;     dired-insert-set-properties: Show image-file preview in tooltip.
 ;;     diredp-image-dired-create-thumb: Return thumbnail file name or nil.
 ;; 2014/04/23 dadams
 ;;     Added: diredp-looking-at-p.
@@ -1181,7 +1186,10 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar image-dired-line-up-method)     ; In `image-dired.el'
 (defvar image-dired-main-image-directory) ; In `image-dired.el'
 (defvar image-dired-thumbnail-buffer)   ; In `image-dired.el'
+(defvar image-dired-thumb-height)       ; In `image-dired.el'
+(defvar image-dired-thumb-width)        ; In `image-dired.el'
 (defvar image-dired-widget-list)        ; In `image-dired.el'
+(defvar tooltip-mode)                   ; In `tooltip.el'
 (defvar minibuffer-default-add-function) ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)          ; In `mouse3.el'
 (defvar w32-browser-wait-time)          ; In `w32-browser.el'
@@ -1193,6 +1201,30 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 
 ;; `dired-do-toggle' was renamed to `dired-toggle-marks' after Emacs 20.
 (unless (fboundp 'dired-toggle-marks) (defalias 'dired-toggle-marks 'dired-do-toggle))
+
+;;;###autoload
+(defcustom diredp-auto-focus-frame-for-thumbnail-tooltip-flag nil
+  "*Non-nil means automatically focus the frame for a thumbnail tooltip.
+If nil then you will not see a thumbnail image tooltip when you
+mouseover an image-file name in Dired, unless you first give the frame
+the input focus (e.g., by clicking its title bar).
+
+This option has no effect if `diredp-image-preview-in-tooltip' is nil.
+It also has no effect for Emacs versions prior to Emacs 22."
+  :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-image-preview-in-tooltip (or (and (boundp 'image-dired-thumb-size)
+                                                    image-dired-thumb-size)
+                                               100)
+  "*Whether and what kind of image preview to show in a tooltip.
+This option has no effect for Emacs versions prior to Emacs 22."
+  :type '(choice
+          (restricted-sexp :tag "Show a thumnail image of size"
+           :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
+          (const :tag "Show a full-size image preview"      full)
+          (const :tag "OFF: Do not show an image preview"   nil))
+  :group 'Dired-Plus)
 
 ;;; This is duplicated in `diff.el' and `vc.el'.
 ;;;###autoload
@@ -6561,10 +6593,13 @@ the variable `window-min-height'."
     (dired-rmail)))
 
 
+
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
 ;; 1. Put `mouse-face' on whole line, not just file name.
 ;; 2. Add text property `dired-filename' to only the file name.
+;; 3. Show image-file preview on mouseover, if `tooltip-mode'
+;;    and if `diredp-image-preview-in-tooltip'.
 ;;
 (defun dired-insert-set-properties (beg end)
   "Add various text properties to the lines in the region.
@@ -6578,11 +6613,10 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
         (condition-case nil
             (cond ((dired-move-to-filename)
                    (add-text-properties (line-beginning-position) (line-end-position)
-                                        '(mouse-face highlight
-                                          help-echo "mouse-2: visit this file in other window"))
-                   (put-text-property (point) (save-excursion (dired-move-to-end-of-filename)
-                                                              (point))
-                                      'dired-filename t)
+                                        '(mouse-face highlight help-echo diredp-mouseover-help))
+                   (put-text-property
+                    (point) (save-excursion (dired-move-to-end-of-filename) (point))
+                    'dired-filename t)
                    (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
                      (put-text-property (+ (line-beginning-position) 1) (1- (point))
                                         'invisible 'dired-hide-details-detail)
@@ -6598,6 +6632,34 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
           (error nil))
         (forward-line 1)))))
 
+(defun diredp-mouseover-help (window buffer pos)
+  "Show `help-echo' help for a file name, in Dired.
+If `tooltip-mode' is on and `diredp-image-preview-in-tooltip' says to
+show an image preview, then do so.  Otherwise, show text help."
+  (let ((image-dired-thumb-width   (or (and (wholenump diredp-image-preview-in-tooltip)
+                                            diredp-image-preview-in-tooltip)
+                                       image-dired-thumb-width))
+        (image-dired-thumb-height  (or (and (wholenump diredp-image-preview-in-tooltip)
+                                            diredp-image-preview-in-tooltip)
+                                       image-dired-thumb-height))
+        file)
+    (or (and (boundp 'tooltip-mode)  tooltip-mode
+             (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
+             diredp-image-preview-in-tooltip
+             (condition-case nil
+                 (and (with-current-buffer buffer
+                        (goto-char pos)
+                        (diredp-string-match-p (image-file-name-regexp)
+                                               (setq file  (dired-get-filename nil 'NO-ERROR))))
+                      (or (not diredp-auto-focus-frame-for-thumbnail-tooltip-flag)
+                          (progn (select-frame-set-input-focus (window-frame window)) t))
+                      (let ((img-file
+                             (if (eq 'full diredp-image-preview-in-tooltip)
+                                 file
+                               (diredp-image-dired-create-thumb file))))
+                        (propertize " " 'display (create-image img-file))))
+               (error nil)))
+        "mouse-2: visit this file in another window")))
 
 ;; `dired-hide-details-mode' enhancements.
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
