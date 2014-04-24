@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 23 14:09:11 2014 (-0700)
+;; Last-Updated: Thu Apr 24 08:04:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7459
+;;     Update #: 7464
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -513,6 +513,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/24 dadams
+;;     diredp-image-dired-create-thumb: Return thumbnail file name or nil.
 ;; 2014/04/23 dadams
 ;;     Added: diredp-looking-at-p.
 ;;     dired-insert-set-properties: Applied fix for bug #17228.
@@ -1812,17 +1814,19 @@ Move backward using `S-TAB'.  Click `Save' to save your edits or
       (widget-setup)
       (widget-forward 1)))              ; Jump to the first widget.
 
-  ;; Corresponds to `image-dired-create-thumbs'.
+  ;; See `image-dired-create-thumb'.
   (defun diredp-image-dired-create-thumb (&optional arg)
-    "Create thumbnail image for this file.
-With a prefix arg, replace any existing thumbnail for the file."
+    "Create thumbnail image file for this file.
+With a prefix arg, replace any existing thumbnail for the file.
+Return the name of the thumbnail image file, or nil if none."
     (interactive "P")
     (let* ((curr-file   (dired-get-filename))
            (thumb-name  (image-dired-thumb-name curr-file)))
       (when arg (clear-image-cache))
       (when (or arg  (not (file-exists-p thumb-name)))
         (unless (zerop (image-dired-create-thumb curr-file (image-dired-thumb-name curr-file)))
-          (error "Thumbnail could not be created")))))
+          (error "Thumbnail image file could not be created")))
+      (and (file-exists-p thumb-name)  thumb-name)))
   )
 
 
