@@ -12,6 +12,7 @@ Here's a list of people and projects you could hack on:
 ** [[https://github.com/Fuco1/ballin-octo-shame|better pairs parser for smartparens]] (this is a bit more difficult, not a great project for beginners)
 ** Write a package for inlining of images in org-mode, with support for various "image webs" (imgur albums, indirect links, deviant-art profiles, galleries etc.).  A direct-link embedding is a start.  Planned features: in-place zooming, rotation and stuff (see also dired-images in dired hacks project)
 * NicFerrier has stuff in [[https://github.com/nicferrier/elwikicreole/blob/master/creole.el|WikiCreole]], we need to add lots of OddMuse support
+* [[JoeBloggs]] has a TODO list on his [[JoeBloggs|page]]
 
 ----
 CategoryCode
