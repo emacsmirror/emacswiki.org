@@ -40,6 +40,7 @@ Addons for SES,
 
 * [[Chart]] -- stock quotes, with refresh.
 * [http://furius.ca/pubcode/pub/conf/bin/ses2any.html ses2any] -- a script to convert SES files into other spreadsheet formats
+* [https://github.com/Dewdrops/ses-noadvice ses-noadvice] -- this plugin reimplements ses' killing/yanking feature without using advices, so ses can cooperate well with some other emacs extensions like [http://www.emacswiki.org/emacs/VolatileHighlights volatile-highlights], etc.
   
 
 
