@@ -309,6 +309,30 @@ This can then be installed in ##/Library/LaunchAgents## and loaded via:
 
 For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
 
+== Systemd user service on startup ==
+
+It's simple enough to run the emacs daemon with [http://www.freedesktop.org/wiki/Software/systemd systemd].
+
+{{{
+$ cat ~/.config/systemd/user/emacs.service
+[Unit]
+Description=Emacs: the extensible, self-documenting text editor
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Restart=always
+
+[Install]
+WantedBy=default.target
+}}}
+
+Enable the unit for your user
+{{{
+systemctl enable --user emacs
+systemctl start --user emacs
+}}}
 
 == Stopping the Emacs Daemon ==
 
@@ -417,31 +441,6 @@ nil are ignored."
 see the discussion at 
 http://stackoverflow.com/questions/1167484/how-to-gracefully-shutdown-emacs-daemon/2270603
 
-== An example systemd startup service ==
-
-It's simple enough to run the emacs daemon with [http://www.freedesktop.org/wiki/Software/systemd systemd].
-
-{{{
-$ cat /etc/systemd/system/emacs@.service
-[Unit]
-Description=Emacs: the extensible, self-documenting text editor
-
-[Service]
-Type=forking
-ExecStart=/usr/bin/emacs --daemon
-ExecStop=/usr/bin/emacsclient --eval "(progn (setq kill-emacs-hook 'nil) (kill-emacs))"
-Restart=always
-User=%i
-WorkingDirectory=%h
-
-[Install]
-WantedBy=multi-user.target
-}}}
-Enable the unit for your user
-{{{
-systemctl enable emacs@<username>
-systemctl start emacs@<username>
-}}}
 == Shutdown emacs server ==
 
 This function will ask if you want to save any modified buffers, quit your session, and shutdown the associated emacs server instance.
