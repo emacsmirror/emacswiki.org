@@ -112,5 +112,13 @@ But it works like follows:
 
 -- LarsSchmidtThieme
 
+== mode-compile is unmaintained==
+
+Ok, so I am not an expert, but this mode is unmaintained
+many other mode seem to need it, at least to use them to their full potential lile CPerl-Mode for example
+is this an issue? (maybe it isnt, maybe it doesnt need any updated, i dont know, but someone more knowlegeable about it use should day so)
+
+is there a replacement? is mode-compile replaced by a new framework for compilation?
+i dont know, things seem unclear, and googling doesnt help much
 
 See Also : SmartCompile, CompileCommand
