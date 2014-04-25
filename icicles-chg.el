@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Apr 23 11:04:08 2014 (-0700)
+;; Last-Updated: Fri Apr 25 10:22:05 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10874
+;;     Update #: 10877
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7164,6 +7164,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/04/25 dadams
+;;     icicle-top-level-key-bindings:
+;;       Added binding for apropos-user-option (Emacs 24.4).  Adjust condition for apropos-variable.
+;;     icicle-image-files-in-Completions: Typo in doc string: image-only, not image.
 ;; 2014/04/20 dadams
 ;;     Moved here from icicles-opt.el (this is loaded first):
 ;;       icicle-current-TAB-method, icicle-delete-candidate-object.
