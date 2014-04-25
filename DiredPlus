@@ -35,6 +35,8 @@ hidden subdirectories of the selected Dired listings.
 
 * Adds a context-sensitive popup menu on `mouse-3'. The menu differs, depending on whether or not a region is active in Dired.
 
+* Shows an image preview in a tooltip when you mouseover an image-file name in Dired.  User [option] '''`diredp-image-preview-in-tooltip'''' controls whether this happens and how (full-size image, thumbnail preview of what size).
+
 * Provides ''fancy'' highlighting (customizable through user variables).
 ** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
 ** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
