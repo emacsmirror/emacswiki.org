@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 24 19:28:39 2014 (-0700)
+;; Last-Updated: Fri Apr 25 07:50:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7487
+;;     Update #: 7489
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -515,6 +515,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/25 dadams
+;;     diredp-image-dired-create-thumb:
+;;       Do not call diredp-image-dired-create-thumb twice: reuse THUMB-NAME.
 ;; 2014/04/24 dadams
 ;;     Added: diredp-mouseover-help, diredp-auto-focus-frame-for-thumbnail-tooltip-flag,
 ;;            diredp-image-preview-in-tooltip.
@@ -1860,7 +1863,7 @@ Return the name of the thumbnail image file, or nil if none."
            (thumb-name  (image-dired-thumb-name curr-file)))
       (when arg (clear-image-cache))
       (when (or arg  (not (file-exists-p thumb-name)))
-        (unless (zerop (image-dired-create-thumb curr-file (image-dired-thumb-name curr-file)))
+        (unless (zerop (image-dired-create-thumb curr-file thumb-name))
           (error "Thumbnail image file could not be created")))
       (and (file-exists-p thumb-name)  thumb-name)))
   )
