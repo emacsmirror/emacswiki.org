@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Apr 20 15:05:13 2014 (-0700)
+;; Last-Updated: Fri Apr 25 10:18:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5968
+;;     Update #: 5972
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2812,9 +2812,9 @@ toggle the option."
   "*Non-nil means show thumbnail images for image files in `*Completions*'.
 This has no effect if your Emacs version does not have image support.
 
- `nil'   means show only file names.
- `image' means show only thumbnail images.
- `t'     means show both file names and thumbnail images.
+ `nil'        means show only file names.
+ `image-only' means show only thumbnail images.
+ `t'          means show both file names and thumbnail images.
 
 You can cycle the value during completion using `C-x t'."
   :type '(choice
@@ -4475,9 +4475,11 @@ toggle Icicle mode off and then back on."
     (apropos                       icicle-apropos                      t)
     (apropos-command               icicle-apropos-command              t) ; `C-h a'
     (apropos-value                 icicle-apropos-value                t)
+    (apropos-user-option           icicle-apropos-option
+     (and (fboundp 'icicle-apropos-option)  (fboundp 'apropos-user-option))) ; Emacs 24.4+
     (apropos-variable              icicle-apropos-option
-     (fboundp 'icicle-apropos-option))
-    (apropos-variable              icicle-apropos-variable
+     (and (fboundp 'icicle-apropos-option)  (not (fboundp 'apropos-user-option)))) ; Emacs < 24.4
+    (apropos-variable              icicle-apropos-variable ; Emacs < 24.4 and not `apropos-fn+var.el'
      (not (fboundp 'icicle-apropos-option)))
     (apropos-zippy                 icicle-apropos-zippy                t)
     (bookmark-jump                 icicle-bookmark
