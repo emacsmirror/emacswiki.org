@@ -1218,7 +1218,8 @@ It also has no effect for Emacs versions prior to Emacs 22."
                                                     image-dired-thumb-size)
                                                100)
   "*Whether and what kind of image preview to show in a tooltip.
-This option has no effect for Emacs versions prior to Emacs 22."
+This option has no effect for Emacs versions prior to Emacs 22.
+See also option `diredp-auto-focus-frame-for-thumbnail-tooltip-flag'."
   :type '(choice
           (restricted-sexp :tag "Show a thumnail image of size"
            :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
