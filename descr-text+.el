@@ -8,9 +8,9 @@
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:50:43 2013 (-0800)
+;; Last-Updated: Thu Apr 24 19:51:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 276
+;;     Update #: 280
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -25,17 +25,9 @@
 ;;
 ;;    Extensions to `descr-text.el'.
 ;;
-;;
-;;    ************************** IMPORTANT ***************************
-;;    *                                                              *
-;;    *  Byte-compiling this file in one Emacs version and using the *
-;;    *  compiled file in another version works ONLY as follows:     *
-;;    *                                                              *
-;;    *  If you compile in Emacs 22, use it only for Emacs 22.       *
-;;    *  If you compile in Emacs 23. use it only for Emacs 23 or 24. *
-;;    *  If you compile in Emacs 24, use it only for Emacs 24.       *
-;;    *                                                              *
-;;    ****************************************************************
+;;    Note: As of Emacs 24.4, byte-compiling this file in one Emacs
+;;    version and using the compiled file in another Emacs version
+;;    does not work.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `descr-text.el'
@@ -54,6 +46,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/04/24 dadams
+;;     describe-text-sexp: Updated for Emacs 24.4: Use with-help-window if defined.  See bug #17109.
 ;; 2013/05/11 dadams
 ;;     describe-char: Updated per Emacs bug #14360 fix.
 ;; 2012/11/01 dadams
@@ -139,8 +133,11 @@ If nil, a width of 70 is used, which is the default value of
     	     (<= (length pp) (- width (current-column))))
 	(insert pp)
       (insert-text-button
-       "[Show]" 'action `(lambda (&rest ignore)
-			   (with-output-to-temp-buffer "*Pp Eval Output*" (princ ',pp)))
+       "[Show]" 'action (if (fboundp 'with-help-window)
+                            `(lambda (&rest ignore)
+                               (with-help-window "*Pp Eval Output*" (princ ',pp)))
+                          `(lambda (&rest ignore)
+                             (with-output-to-temp-buffer "*Pp Eval Output*" (princ ',pp))))
        'help-echo "mouse-2, RET: pretty print value in another buffer"))))
 
 
