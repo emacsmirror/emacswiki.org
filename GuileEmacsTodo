@@ -3,37 +3,21 @@
 * Shrink regexp cache after GC
 * GC messages
 * Automatic deletion of undo list elements updating freed markers
-* '''DONE''' Fix backtraces ''(fixed Vlexical_binding bug)''
-* '''DONE''' Use Guile facilities for control flow
 * QUIT at each SCM_TICK
-* '''DONE''' Use guile-snarf for subr definition
 * Installation instructions
 * Debugging instructions
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
-* '''DONE''' Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
-* '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
 * Test gdb configuration
-* '''DONE''' Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
-* '''DONE''' Fix hashing. <code>(let ((table (make-hash-table :test 'equal))) (puthash "1234567890" "foo" table) (gethash "1234567890" table)) => nil</code>. Some other (most?) keys work; I couldn't see a pattern in what does and doesn't work. If you use the same object for both keys (i.e. they're `eq') then it seems to always work, so don't let-bind keys if you want to test this.
-* '''DONE''' Smob equality
-* '''DONE''' Smob printing
-* '''DONE''' Use libguile hash functions
 * Use libguile hash tables
-* '''DONE''' Fix profiler.c
 * remove unexec support code
-* '''DONE''' Test non-gtk x toolkits
-* '''DONE''' Update nextstep support
-* '''DONE''' Test mingw build
-* '''DONE''' Fix mingw build
-* '''DONE''' Use scm_boot_guile
 * Fix coccinelle parsing of loop macros with single-statement body
 
 == User-visible issues ==
 
 wip-bdw-gc branch:
 # Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
-# There seem to be memory leaks, or another reason which causes the GC to exhaust the heap, usually resulting in a segfault.
+# There seem to be memory leaks, or another reason which causes the GC to exhaust the heap, usually resulting in a segfault. Or maybe it was just Gnus having a problem with a huge e-mail, I'm not sure. -- TaylanUB
 
 ----
 CategoryGuileEmacs
