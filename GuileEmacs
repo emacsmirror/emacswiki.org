@@ -24,6 +24,8 @@ On 2002-07-16, there was a discussion started on [[emacs-devel]] about [http://l
 
 By 2006-01-03, according to Ken "Some stuff does work, actually. Non-tty displays don't".  This was for reasons that "have less to do directly with Guile than with the fact that the Guile library isn't unexec-safe".  Consequently, Ken was not doing the unexec step.  Guile Emacs in a terminal window has a "shell mode, browses directories, does font-lock coloring of C source files, etc."
 
+[http://wingolog.org/archives/2009/01/07/a-brief-history-of-guile A Brief History of Guile] by Andy Wingo
+
 As of 2009-06-11, Ken has provided [http://www.mit.edu/~raeburn/guilemacs/ an updated snapshot] of the work.
 
 As brought to our attention in [[2010-04-16]] by AlexSchroeder:
@@ -33,24 +35,25 @@ As brought to our attention in [[2010-04-16]] by AlexSchroeder:
 
 On 2011-02-16, [http://lists.gnu.org/archive/html/guile-devel/2011-02/msg00173.html Guile 2.0 was released] with some Emacs Lisp support.
 
-For GoogleSummerOfCode 2011, work was done on Emacs Lisp support in Guile.  Read [http://lists.gnu.org/archive/html/guile-devel/2011-07/msg00054.html the status report on 2011-07-21] posted to the [[guile-devel]] list.
-
-* [http://wingolog.org/archives/2009/01/07/a-brief-history-of-guile A Brief History of Guile] by Andy Wingo
+For GoogleSummerOfCode 2011, work was done on Emacs Lisp support in Guile.  Read [http://lists.gnu.org/archive/html/guile-devel/2011-07/msg00054.html the status report on 2011-07-21] posted to the guile-devel mailing list.
 
 On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode projects that included adding libguile to Emacs and using it as the interpreter.  It was followed by some mailing list discussion.
 
 * [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00276.html GSoC projects related to Emacs] 
 * [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00291.html Re: Emacs and Guile]
 
+The 2013 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the author:
 
-== Current State ==
-As of 2013-03, the latest state of "guilemacs" as some call it, can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress has slowed since the end of GoogleSummerOfCode, but there are still signs of life, and commits being made. Contributions are very welcome; it seems to be almost there. It compiles and runs ERC, Gnus, etc. all fine, behaving indistinguishable from a normal Emacs build, but not entirely without issues; see GuileEmacsTodo.
-
-As of 2013-05, a GoogleSummerOfCode 2013 project for the continuation of the effort so far has been announced, with BT Templeton as the author again:
-
-* [http://www.google-melange.com/gsoc/proposal/review/google/gsoc2013/bpt/35002 The GSoC project]
 * [https://lists.gnu.org/archive/html/guile-user/2013-05/msg00081.html The announcement of the GSoC project on guile-user.]
 * [https://lists.gnu.org/archive/html/emacs-devel/2013-05/msg00622.html The announcement of the GSoC project on emacs-devel.]
+
+At this point an Emacs branch with libguile embedded and providing part of the Elisp data types and able to provide an `eval-scheme' function to Elisp is available, but not fully replacing the Elisp interpreter yet.
+
+
+== Current State ==
+The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress usually pauses between GoogleSummerOfCode periods. Word has it that BT Templeton has some unpushed commits that replace the whole Elisp interpreter, just booting up Emacs very slow because the Elisp is not compiled.
+
+The 2014 GoogleSummerOfCode once again has GuileEmacs with BT Templeton: [https://www.google-melange.com/gsoc/project/details/google/gsoc2014/bpt/5803402760028160 Guile-Emacs]
 
 
 == See Also ==
