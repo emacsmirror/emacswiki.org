@@ -19,6 +19,9 @@ Put something like this in your .emacs:
       "Command to kill a compilation launched by `mode-compile'" t)
     (global-set-key "\C-ck" 'mode-compile-kill)
 
+
+See Also : SmartCompile, CompileCommand
+
 == mode-compile and SQL ==
 I've been using this for running SQL scripts, , patch is at ModeCompileSql --TimAnderson
 
@@ -122,4 +125,6 @@ is this an issue? (maybe it isnt, maybe it doesnt need any updated, i dont know,
 is there a replacement? is mode-compile replaced by a new framework for compilation?
 i dont know, things seem unclear, and googling doesnt help much
 
-See Also : SmartCompile, CompileCommand
+[new]
+My guess is that most people just use `M-x compile' and are happy enough with the defaults. See CompileCommand.
+-- AlexSchroeder
