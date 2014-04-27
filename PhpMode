@@ -9,7 +9,7 @@ Contributions to a new php-mode are very welcome!
 
 == Download ==
 
-* http://php-mode.sourceforge.net -- maintained by AaronHawley that supports Emacs 22 (CcMode 5.31).
+* https://sourceforge.net/projects/php-mode/ -- maintained by EricJMRitz
 ** By default, in GNU Emacs 23.2.1, <tt><nowiki>//</nowiki></tt> comments are not formatted correctly by M-q. The problem is a bug in c-mode, which php-mode 1.5.0 depends on. A [http://lists.gnu.org/archive/html/help-gnu-emacs/2010-12/msg01114.html patch] is available and works, but it has to be applied manually: Line numbers don't match.
 ** [NxhtmlMode nXhtml] contains a variation of the latest php-mode (1.5.0), with some bug fixes and extensions.
 ** There is also Lisp:php-mode-improved.el, a version by DavidHouse branched from the version in nxhtml-mode that fixes a couple of annoying bugs (see the comments at the top of that file).
