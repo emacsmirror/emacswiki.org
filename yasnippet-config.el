@@ -1,5 +1,5 @@
 ;;;; yasnippet-config.el --- Configuration of yasnippet.el
-;; $Id: yasnippet-config.el,v 1.28 2012/07/27 06:33:30 rubikitch Exp $
+;; $Id: yasnippet-config.el,v 1.34 2014/04/27 18:58:19 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010, 2012  rubikitch
 
@@ -34,19 +34,19 @@
 ;;    Obsolete. DO NOT USE.
 ;;  `yas/oneshot-snippet'
 ;;    Register/expand oneshot snippet.
-;;  `yas/new-snippet-with-content'
+;;  `yas-new-snippet-with-content'
 ;;    Create snippet from region to speed-up snippet development.
 ;;  `yas/make-placeholder'
 ;;    Make yasnippet placeholder from region.
-;;  `yas/expand-sync'
-;;    Execute `yas/expand'. This function exits after expanding snippet.
+;;  `yas-expand-sync'
+;;    Execute `yas-expand'. This function exits after expanding snippet.
 ;;
 ;;; Customizable Options:
 ;;
 ;; Below are customizable option list:
 ;;
 ;;  `yas/init-snippet-template'
-;;    *Initial snippet for `yas/new-snippet-with-content'.
+;;    *Initial snippet for `yas-new-snippet-with-content'.
 ;;    default = "# -*- mode: snippet -*-\n# name: $1\n# key: ${2:${1:$(replace-regexp-in-string \"\\\\\\\\(\\\\\\\\w+\\\\\\\\).*\" \"\\\\\\\\1\" yas/text)}}\n# --\n"
 
 ;;; Installation:
@@ -61,20 +61,38 @@
 ;; (yas/set-ac-modes)
 ;; (yas/enable-emacs-lisp-paren-hack)
 ;; before `auto-complete' settings.
-;; 
+;;
 
 
 ;;; History:
 
 ;; $Log: yasnippet-config.el,v $
+;; Revision 1.34  2014/04/27 18:58:19  rubikitch
+;; oneshot-snippet: defalias old names
+;;
+;; Revision 1.33  2014/02/11 08:05:02  rubikitch
+;; some yas/ -> yas- replacement
+;;
+;; Revision 1.32  2014/02/11 07:48:09  rubikitch
+;; (defvaralias 'yas/init-snippet-template 'yas-new-snippet-default)
+;;
+;; Revision 1.31  2013/12/19 05:41:50  rubikitch
+;; some replacement: yas/ -> yas-
+;;
+;; Revision 1.30  2012/10/02 09:33:47  rubikitch
+;; yas-expand-oneshot-snippet: yas/version error fix
+;;
+;; Revision 1.29  2012/10/02 09:32:16  rubikitch
+;; yas-expand-link: indent
+;;
 ;; Revision 1.28  2012/07/27 06:33:30  rubikitch
-;; yas/new-snippet-with-content: fix escape problem
+;; yas-new-snippet-with-content: fix escape problem
 ;;
 ;; Revision 1.27  2012/07/27 02:41:32  rubikitch
 ;; `yas/delete-current-link-maybe': fix regexp
 ;;
 ;; Revision 1.26  2012/07/27 02:27:29  rubikitch
-;; yas/expand-link, yas/expand-snippet-link: Do not delete link if it is in comment line.
+;; yas-expand-link, yas-expand-snippet-link: Do not delete link if it is in comment line.
 ;;
 ;; Revision 1.25  2012/07/26 14:44:06  rubikitch
 ;; Remove advice for yas/delete-all: because of undefined function
@@ -86,13 +104,13 @@
 ;; New function: `yas/delete-keys'
 ;;
 ;; Revision 1.22  2012/07/25 03:07:01  rubikitch
-;; New function: `yas/expand-link', `yas/expand-snippet-link', `yas/expand-link-choice'
+;; New function: `yas-expand-link', `yas-expand-snippet-link', `yas-expand-link-choice'
 ;;
 ;; Revision 1.21  2012/07/24 04:46:07  rubikitch
 ;; Silence warning about `paredit-raise-sexp'
 ;;
 ;; Revision 1.20  2012/07/24 04:28:02  rubikitch
-;; New command: yas/expand-sync / New function: yas/expand-snippet-sync
+;; New command: yas-expand-sync / New function: yas-expand-snippet-sync
 ;;
 ;; Revision 1.19  2012/07/22 10:22:07  rubikitch
 ;; paredit-mode boundp check
@@ -110,7 +128,7 @@
 ;; Update copyright
 ;;
 ;; Revision 1.14  2012/07/22 03:30:10  rubikitch
-;; New command: yas/new-snippet-with-content
+;; New command: yas-new-snippet-with-content
 ;; Add some document.
 ;;
 ;; Revision 1.13  2012/07/22 03:15:36  rubikitch
@@ -120,7 +138,7 @@
 ;; remove buffer local condition workaround
 ;;
 ;; Revision 1.11  2012/07/20 09:01:40  rubikitch
-;; skk hack: use yas/minor-mode only
+;; skk hack: use yas-minor-mode only
 ;;
 ;; Revision 1.10  2012/07/20 09:01:00  rubikitch
 ;; `yas/setup' makes error now.
@@ -157,7 +175,7 @@
 
 ;;; Code:
 
-(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.28 2012/07/27 06:33:30 rubikitch Exp $")
+(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.34 2014/04/27 18:58:19 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (require 'yasnippet) ;; not yasnippet-bundle
@@ -174,20 +192,20 @@
 
 ;;;; With `skk-mode'
 (defadvice skk-j-mode-on (after yasnippet activate)
-  (yas/minor-mode -1))
+  (yas-minor-mode -1))
 (defadvice skk-mode-exit (after yasnippet activate)
-  (yas/minor-mode 1))
+  (yas-minor-mode 1))
 (defadvice skk-latin-mode-on (after yasnippet activate)
-  (yas/minor-mode 1))
+  (yas-minor-mode 1))
 (defun yas/disable-when-skk-is-enabled ()
   (when (and (boundp 'skk-mode) skk-mode)
-    (yas/minor-mode -1)))
+    (yas-minor-mode -1)))
 (add-hook 'after-change-major-mode-hook 'yas/disable-when-skk-is-enabled t)
 
 ;;;; Disable flymake during expansion
 (defvar flymake-is-active-flag nil)
 
-(defadvice yas/expand-snippet
+(defadvice yas-expand-snippet
   (before inhibit-flymake-syntax-checking-while-expanding-snippet activate)
   (setq flymake-is-active-flag
         (or flymake-is-active-flag
@@ -195,7 +213,7 @@
   (when flymake-is-active-flag
     (flymake-mode-off)))
 
-(add-hook 'yas/after-exit-snippet-hook
+(add-hook 'yas-after-exit-snippet-hook
           '(lambda ()
              (when flymake-is-active-flag
                (flymake-mode-on)
@@ -203,20 +221,25 @@
 
 ;;;; oneshot snippet
 (defvar yas/oneshot-snippet nil)
-(defun yas/register-oneshot-snippet (s e)
+(defun yas-register-oneshot-snippet (s e)
   (interactive "r")
   (setq yas/oneshot-snippet (buffer-substring-no-properties s e))
   (delete-region s e)
-  (yas/expand-oneshot-snippet)
-  (message "%s" (substitute-command-keys "Press \\[yas/expand-oneshot-snippet] to expand.")))
+  (yas-expand-oneshot-snippet)
+  (message "%s" (substitute-command-keys "Press \\[yas-expand-oneshot-snippet] to expand.")))
+(defalias 'yas/register-oneshot-snippet 'yas-register-oneshot-snippet)
 
-(defun yas/expand-oneshot-snippet ()
+(defun yas/version ()
+  yas--version)
+
+(defun yas-expand-oneshot-snippet ()
   (interactive)
-  (if (string< "0.6" yas/version)
-      (yas/expand-snippet yas/oneshot-snippet)
-    (yas/expand-snippet (point) (point) yas/oneshot-snippet)))
+  (if (string< "0.6" (yas/version))
+      (yas-expand-snippet yas/oneshot-snippet)
+    (yas-expand-snippet (point) (point) yas/oneshot-snippet)))
+(defalias 'yas/expand-oneshot-snippet 'yas-expand-oneshot-snippet)
 
-(defun yas/oneshot-snippet ()
+(defun yas-oneshot-snippet ()
   "Register/expand oneshot snippet.
 
 If `transient-mark-mode' is enabled and region is selected,
@@ -224,59 +247,52 @@ register the region as oneshot snippet, Otherwise expand it."
   (interactive)
   (if (region-active-p)
       (yas/register-oneshot-snippet (region-beginning) (region-end))
-    (yas/expand-oneshot-snippet)))
+    (yas-expand-oneshot-snippet)))
+(defalias 'yas/oneshot-snippet 'yas-oneshot-snippet)
 
 ;;;; auto-complete
 (defun yas/set-ac-modes ()
-  "Add modes in `yas/snippet-dirs' to `ac-modes'.
+  "Add modes in `yas-snippet-dirs' to `ac-modes'.
 
 Call (yas/set-ac-modes) BEFORE (global-auto-complete-mode 1) or (ac-config-default)."
   (eval-after-load "auto-complete"
     '(setq ac-modes
           (append
            (apply 'append (mapcar (lambda (dir) (mapcar 'intern (directory-files dir nil "-mode$")))
-                                  (yas/snippet-dirs)))
+                                  (yas-snippet-dirs)))
            ac-modes))))
 
 (provide 'yasnippet-config)
 
-;;;; yas/new-snippet-with-content
-(defcustom yas/init-snippet-template "\
-# -*- mode: snippet -*-
-# name: $1
-# key: ${2:${1:$(replace-regexp-in-string \"\\\\\\\\(\\\\\\\\w+\\\\\\\\).*\" \"\\\\\\\\1\" yas/text)}}
-# --
-"
-  "*Initial snippet for `yas/new-snippet-with-content'."
-  :type 'string  
-  :group 'yasnippet)
+;;;; yas-new-snippet-with-content
+(defvaralias 'yas/init-snippet-template 'yas-new-snippet-default)
 
-(defun yas/new-snippet-with-content (s e)
+(defun yas-new-snippet-with-content (s e)
   "Create snippet from region to speed-up snippet development."
   (interactive "r")
   (let ((initial-text (buffer-substring s e))
-        (default-directory (file-name-as-directory (car (yas/snippet-dirs)))))
-    (yas/new-snippet t)
+        (default-directory (file-name-as-directory (car (yas-snippet-dirs)))))
+    (yas-new-snippet t)
     (save-excursion
       (when initial-text
         (insert initial-text)
         (goto-char (point-min))
         (while (re-search-forward "[\\$]" nil t)
           (replace-match "\\\\\\&"))))
-    (yas/expand-snippet yas/init-snippet-template)))
+    (yas-expand-snippet yas/init-snippet-template)))
 
 ;;;; make placeholder
 (defun yas/make-placeholder (s e)
   "Make yasnippet placeholder from region."
   (interactive "r")
   (let ((text (buffer-substring s e)))
-    (yas/expand-snippet "\\${$1:`text`}" s e)))
+    (yas-expand-snippet "\\${$1:`text`}" s e)))
 (define-key snippet-mode-map "\C-c\C-n" 'yas/make-placeholder)
 
 
 ;;;; parentheses hack in `emacs-lisp-mode'
 (declare-function paredit-raise-sexp "ext:paredit")
-(declare-function yas/reload-all "yasnippet")
+(declare-function yas-reload-all "yasnippet")
 (defun yas/before-expand-snippet-hook--emacs-lisp-remove-parenthsis (content)
   (when (and (boundp 'paredit-mode) paredit-mode
              (memq major-mode '(emacs-lisp-mode lisp-interaction-mode ielm-mode))
@@ -288,29 +304,29 @@ Call (yas/set-ac-modes) BEFORE (global-auto-complete-mode 1) or (ac-config-defau
         (paredit-raise-sexp)
         ;; Remove original abbrev 1- by `paredit-raise-sexp'
         (delete-region (1- m2) (1- m))))))
-(defadvice yas/expand-snippet (before emacs-lisp-remove-parenthesis (content &optional start end expand-env))
+(defadvice yas-expand-snippet (before emacs-lisp-remove-parenthesis (content &optional start end expand-env))
   "Remove parentheses when yasnippet abbrev is expanded in function position."
   (setq start (and start (move-marker (make-marker) start)))
   (setq end (and start (move-marker (make-marker) end)))
   (and start end (yas/before-expand-snippet-hook--emacs-lisp-remove-parenthsis content)))
 
 (defun yas/enable-emacs-lisp-paren-hack ()
-  "Enable advice in `yas/expand-snippet' emacs-lisp-remove-parenthesis."
-  (ad-enable-advice 'yas/expand-snippet 'before 'emacs-lisp-remove-parenthesis)
-  (ad-update 'yas/expand-snippet))
+  "Enable advice in `yas-expand-snippet' emacs-lisp-remove-parenthesis."
+  (ad-enable-advice 'yas-expand-snippet 'before 'emacs-lisp-remove-parenthesis)
+  (ad-update 'yas-expand-snippet))
 
 ;;;; Expand snippet synchronously
 (defvar yas/recursive-edit-flag nil)
-(defun yas/expand-sync ()
-  "Execute `yas/expand'. This function exits after expanding snippet."
+(defun yas-expand-sync ()
+  "Execute `yas-expand'. This function exits after expanding snippet."
   (interactive)
   (let ((yas/recursive-edit-flag t))
-    (call-interactively 'yas/expand)
+    (call-interactively 'yas-expand)
     (recursive-edit)))
-(defun yas/expand-snippet-sync (content &optional start end expand-env)
-  "Execute `yas/expand-snippet'. This function exits after expanding snippet."
+(defun yas-expand-snippet-sync (content &optional start end expand-env)
+  "Execute `yas-expand-snippet'. This function exits after expanding snippet."
   (let ((yas/recursive-edit-flag t))
-    (yas/expand-snippet content start end expand-env)
+    (yas-expand-snippet content start end expand-env)
     (recursive-edit)))
 (defun yas/after-exit-snippet-hook--recursive-edit ()
   (when yas/recursive-edit-flag
@@ -326,21 +342,22 @@ Call (yas/set-ac-modes) BEFORE (global-auto-complete-mode 1) or (ac-config-defau
         (beginning-of-line)
       (delete-region (point) (progn (forward-sexp -1) (point))))))
 
-(defun yas/expand-link (key)
+(defun yas-expand-link (key)
   "Hyperlink function for yasnippet expansion."
   (yas/delete-current-link-maybe)
+  (indent-for-tab-command)
   (insert key)
-  (yas/expand))
+  (yas-expand))
 
-(defun yas/expand-snippet-link (content)
+(defun yas-expand-snippet-link (content)
   (yas/delete-current-link-maybe)
-  (yas/expand-snippet content))
-;; (yas/expand-snippet-link "$1 = 2\n")
+  (yas-expand-snippet content))
+;; (yas-expand-snippet-link "$1 = 2\n")
 
-(defun yas/expand-link-choice (&rest keys)
+(defun yas-expand-link-choice (&rest keys)
   "Hyperlink to select yasnippet template."
-  (yas/expand-link (yas/choose-value keys)))
-;; (yas/expand-link-choice "defgp" "defcm")
+  (yas-expand-link (yas-choose-value keys)))
+;; (yas-expand-link-choice "defgp" "defcm")
 
 ;;;; Disable some standard snippets
 (defun yas/delete-keys (mode &rest keys)
@@ -357,7 +374,7 @@ a symbol that must match the major mode for this element to apply.
 
 Associate CONDITION with SNIPPET-KEY in `auto-insert-alist'.
 Optional AFTER means to insert snippet after all existing snippets for CONDITION."
-  (add-to-list 'auto-insert-alist `(,condition . (lambda () (yas/expand-link ,snippet-key))) after))
+  (add-to-list 'auto-insert-alist `(,condition . (lambda () (yas-expand-link ,snippet-key))) after))
 
 
 ;; How to save (DO NOT REMOVE!!)
