@@ -69,14 +69,14 @@ Buffers:
 === starts-with and ends-with predicates ===
 
     (defun string/ends-with (s ending)
-      "return non-nil if string S ends with ENDING."
+      "Return non-nil if string S ends with ENDING"
       (cond ((>= (length s) (length ending))
              (let ((elength (length ending)))
                (string= (substring s (- 0 elength)) ending)))
             (t nil)))
 
     (defun string/starts-with (s begins)
-      "returns non-nil if string S starts with BEGINS.  Else nil."
+      "Return non-nil if string S starts with BEGINS."
       (cond ((>= (length s) (length begins))
              (string-equal (substring s 0 (length begins)) begins))
             (t nil)))
