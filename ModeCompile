@@ -124,13 +124,12 @@ is this an issue? (maybe it isnt, maybe it doesnt need any updated, i dont know,
 
 is there a replacement? is mode-compile replaced by a new framework for compilation?
 i dont know, things seem unclear, and googling doesnt help much
+--SysTems
 
-[new]
 My guess is that most people just use `M-x compile' and are happy enough with the defaults. See CompileCommand.
 -- AlexSchroeder
 
 I dont think M-x compile is a replacement to M-x mode-compile, 
 I needed mode-compile for CPerlMode, to be able to execute Perl script inside emacs, and get the output in an emacs buffer
-
 M-x compile seem to call Make
 --SysTems
