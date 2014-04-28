@@ -211,6 +211,9 @@ I switched from XEmacs back to GnuEmacs about 2 years ago because CPerlMode work
 
 :: -- AdamR
 
+I started with Zemacs on a Symbolics LispMachine around 1986. Switched back and forth between GnuEmacs abd Xemacs between 1988 and 1995. I finally switched to XEmacs in 1995 and have been using it ever since. I have too much idiosyncratic customization and code (customized menubuffers, toolbars, subprocesses, inserting pngs in buffers, calls to shell-comand) to warrant the trouble to switch back. If I had to start over I might choose Gnu Emacs now, but Xemacs is perfectly adequate, Almost any shortcoming I can fix with a workaround in elisp.
+
+::--JavierThayer
 ----
 CategoryHistory ElispCompatibility
 
