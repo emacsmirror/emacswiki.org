@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 137 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 138 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
@@ -62,7 +62,7 @@ __Minor Mode Survey__
 | byte-opt                                         |                   1 |
 | bytecomp                                         |                   2 |
 | cc-mode                                          |                   3 |
-| cl                                               |                  13 |
+| cl                                               |                  14 |
 | cl-macs                                          |                   1 |
 | color                                            |                   1 |
 | column-number-mode                               |                  91 |
@@ -96,6 +96,7 @@ __Minor Mode Survey__
 | edebug-mode                                      |                   7 |
 | ediff                                            |                   7 |
 | edmacro                                          |                   2 |
+| eieio                                              |                   1 |
 | eldoc-mode                                       |                  52 |
 | electric-indent-mode                             |                  15 |
 | electric-layout-mode                             |                   3 |
