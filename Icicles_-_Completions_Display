@@ -285,6 +285,24 @@ completion.
 
 
 
+[:ThumbnailImageTooltips]
+=== Show Thumnail Image Tooltips on Mouseover ===
+
+Starting with Emacs 22, if option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-image-preview-in-tooltip|icicle-image-preview-in-tooltip]]</tt>'''' is non-`nil' and `tooltip-mode' is on, then passing the mouse over an image-file candidate in
+`*Completions*' can pop up a tooltip showing a preview of the
+image.  The possible values are `nil' (do not show a tooltip
+preview), '''`full'''' (show a full-size tooltip preview), and a
+positive integer (show a thumbnail tooltip preview of that
+size).
+
+However, thumbnail tooltip previews are ''not'' shown if thumbnails
+are already shown in `*Completions*', that is, if option 
+`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>' is non-`nil' and
+`icicle-image-preview-in-tooltip' is not `full'.
+
+
+
 
 [:ScrollCompletions]
 === Scroll *Completions* ===
