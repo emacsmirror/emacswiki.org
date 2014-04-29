@@ -115,7 +115,6 @@ External Programs and Remote Services:
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
 ** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
 ** [[WanderLust|WanderLust]] -- another Emacs reader of news and mail.
-* [[CategoryPasteBin]] -- Pastebin services
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
