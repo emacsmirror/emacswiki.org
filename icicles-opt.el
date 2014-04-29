@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Apr 25 10:18:44 2014 (-0700)
+;; Last-Updated: Tue Apr 29 08:44:37 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5972
+;;     Update #: 5977
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -125,6 +125,7 @@
 ;;    `icicle-icomplete-mode-max-candidates',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-image-files-in-Completions',
+;;    `icicle-image-preview-in-tooltip',
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
@@ -2821,6 +2822,37 @@ You can cycle the value during completion using `C-x t'."
           (const :tag "Both name and thumbnail"  t)
           (const :tag "Thumbnail image only"     image-only)
           (const :tag "File name only"           nil))
+  :group 'Icicles-Completions-Display)
+
+(defcustom icicle-image-preview-in-tooltip (if icicle-image-files-in-Completions
+                                               'full
+                                             (if (boundp 'diredp-image-preview-in-tooltip)
+                                                 diredp-image-preview-in-tooltip
+                                               (or (and (boundp 'image-dired-thumb-size)
+                                                        image-dired-thumb-size)
+                                                   100)))
+  "*Whether & what kind of image preview to show in a *Completions* tooltip.
+The possible values are:
+
+ `nil'       : do not show a tooltip preview
+ integer N>0 : show a thumbnail preview of that size
+ `full'      : show a full-size preview of the image
+
+A tooltip image preview is shown only if either
+`icicle-image-files-in-Completions' is nil or
+`icicle-image-preview-in-tooltip' is `full'.  (A thumbnail tooltip
+preview is not shown on mouseover if thumbnails are already shown in
+`*Completions*'.)
+
+To enable tooltip image preview you must turn on `tooltip-mode' and
+load library `image-dired.el'.
+
+This option has no effect for Emacs versions prior to Emacs 22."
+  :type '(choice
+          (restricted-sexp :tag "Show a thumnail image of size"
+           :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
+          (const :tag "Show a full-size image preview"      full)
+          (const :tag "OFF: Do not show an image preview"   nil))
   :group 'Icicles-Completions-Display)
 
 (defcustom icicle-incremental-completion-delay 0.7
