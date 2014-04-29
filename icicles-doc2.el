@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Apr 20 10:21:31 2014 (-0700)
+;; Last-Updated: Tue Apr 29 08:59:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29505
+;;     Update #: 29509
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5360,6 +5360,17 @@
 ;;    the file names are also shown.  You can cycle the option value
 ;;    using `C-x t' in the minibuffer at any time during completion.
 ;;    This feature is available starting with Emacs 22.
+;;
+;;  * Non-`nil' option `icicle-image-preview-in-tooltip' means that if
+;;    `tooltip-mode' is on then passing the mouse over an image-file
+;;    candidate in `*Completions*' can pop up a tooltip showing a
+;;    preview of the image.  If the value is `full' then a full-size
+;;    image is shown.  If the value is a positive integer then a
+;;    thumbnail image of that size is shown.  However, thumbnail
+;;    tooltips are not shown if thumbnails are already shown in
+;;    `*Completions*', that is, if `icicle-image-files-in-Completions'
+;;    is non-`nil' and `icicle-image-preview-in-tooltip' is not
+;;    `full'.
 ;;
 ;;  * Option `icicle-completions-format' controls whether candidates
 ;;    displayed in `*Completions*' are laid out horizontally (the
