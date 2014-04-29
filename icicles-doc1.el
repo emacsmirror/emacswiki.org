@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Apr 20 10:38:35 2014 (-0700)
+;; Last-Updated: Tue Apr 29 08:56:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28187
+;;     Update #: 28193
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3893,6 +3893,20 @@
 ;;    shown.  If it is otherwise non-`nil' then the file names are
 ;;    also shown.  You can cycle the option value using `C-x t' in the
 ;;    minibuffer at any time during completion.
+;;
+;;  * Starting with Emacs 22, if option
+;;    `icicle-image-preview-in-tooltip' is non-`nil' and
+;;    `tooltip-mode' is on, then passing the mouse over an image-file
+;;    candidate in `*Completions*' can pop up a tooltip showing a
+;;    preview of the image.  The possible values are `nil' (do not
+;;    show a tooltip preview), `full' (show a full-size tooltip
+;;    preview), and a positive integer (show a thumbnail tooltip
+;;    preview of that size).
+;;
+;;    However, thumbnail tooltip previews are not shown if thumbnails
+;;    are already shown in `*Completions*', that is, if option
+;;    `icicle-image-files-in-Completions' is non-`nil' and
+;;    `icicle-image-preview-in-tooltip' is not `full'.
 ;;
 ;;  * You can scroll `*Completions*' down using `C-v', and up using
 ;;    `M-v'.  You can use `C-u' at any time to reverse the scroll
