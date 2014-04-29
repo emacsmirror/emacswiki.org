@@ -1245,10 +1245,30 @@ spacing.
 Non-`nil' option '''`icicle-image-files-in-Completions'''' means that
 thumbnail images are shown in `*Completions*' for candidates
 that are either (relative or absolute) names of image files or names of image-file bookmarks (see '''[[Bookmark+]]''').  The default value is `t'.  If
-the value is `image-only', then only the thumbnail images are    shown.  If it is otherwise non-`nil' then the file names are also
+the value is '''`image-only'''', then only the thumbnail images are    shown.  If it is otherwise non-`nil' then the file names are also
 shown.  You can cycle the option value using '''`C-x t'''' in the
 minibuffer at any time during completion.  This feature is
 available starting with Emacs 22.
+
+
+
+----
+[:icicle-image-preview-in-tooltip]
+==== Option icicle-image-preview-in-tooltip ====
+
+Non-`nil' option '''`icicle-image-preview-in-tooltip'''' means that if
+`tooltip-mode' is on then passing the mouse over an image-file
+candidate in `*Completions*' can pop up a tooltip showing a
+preview of the image.  If the value is '''`full'''' then a full-size
+image is shown.  If the value is a positive integer then a
+thumbnail image of that size is shown.
+
+However, thumbnail
+tooltips are not shown if thumbnails are already shown in
+`*Completions*', that is, if `icicle-image-files-in-Completions'
+is non-`nil' and `icicle-image-preview-in-tooltip' is not
+`full'.
+
 
 
 
@@ -2533,7 +2553,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
