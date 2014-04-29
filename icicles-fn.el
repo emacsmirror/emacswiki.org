@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Apr 20 16:01:04 2014 (-0700)
+;; Last-Updated: Tue Apr 29 07:19:41 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14591
+;;     Update #: 14617
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -72,11 +72,11 @@
 ;;    `icicle-completion-all-completions',
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion--embedded-envvar-table',
-;;    `icicle-completion-try-completion', `icicle-current-TAB-method',
-;;    `icicle-custom-type', `icicle-defaults-at-point',
-;;    `icicle-define-crm-completion-map', `icicle-delete-alist-dups',
-;;    `icicle-delete-count', `icicle-delete-dups',
-;;    `icicle-delete-whitespace-from-string',
+;;    `icicle-completion-try-completion', `icicle-create-thumb',
+;;    `icicle-current-TAB-method', `icicle-custom-type',
+;;    `icicle-defaults-at-point', `icicle-define-crm-completion-map',
+;;    `icicle-delete-alist-dups', `icicle-delete-count',
+;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards',
 ;;    `icicle-dirs-and-latest-use-first-p', `icicle-dirs-first-p',
@@ -138,7 +138,8 @@
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
-;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
+;;    `icicle-mouseover-help', `icicle-msg-maybe-in-minibuffer',
+;;    `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-next-candidate', `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-ORIG-choose-completion-string',
@@ -390,6 +391,8 @@
 (defvar icicle-Info-index-nodes)        ; In `icicles-cmd2.el'
 (defvar icicle-Info-manual)             ; In `icicles-cmd2.el'
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
+(defvar image-dired-thumb-height)       ; In `image-dired.el'.
+(defvar image-dired-thumb-width)        ; In `image-dired.el'.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
 (defvar minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
@@ -3355,12 +3358,11 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                         (histvar           (and (symbolp minibuffer-history-variable)
                                                 (boundp minibuffer-history-variable)
                                                 minibuffer-history-variable))
-                        (hist              (and histvar
-                                                (if filep
-                                                    (let ((default-directory  dir))
-                                                      (mapcar #'expand-file-name
-                                                              (symbol-value histvar)))
-                                                  (symbol-value histvar))))
+                        (hist              (and histvar  (if filep
+                                                             (let ((default-directory  dir))
+                                                               (mapcar #'expand-file-name
+                                                                       (symbol-value histvar)))
+                                                           (symbol-value histvar))))
                         (case-fold-search
                          ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
                          (if (and filep  (boundp 'read-file-name-completion-ignore-case))
@@ -3407,8 +3409,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                        ;; Highlight candidate (`*-historical-candidate') if it was used previously.
                        (when icicle-highlight-historical-candidates-flag
                          (let ((candidate  (icicle-current-completion-in-Completions)))
-                           (when (and (consp hist)
-                                      (not (member candidate icicle-hist-cands-no-highlight)))
+                           (when (and (consp hist)  (not (member candidate icicle-hist-cands-no-highlight)))
                              (let ((default-directory  dir))
                                (when (member (if filep
                                                  (expand-file-name (icicle-transform-multi-completion
@@ -3416,8 +3417,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                candidate)
                                              hist)
                                  (add-text-properties
-                                  beg end
-                                  `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
+                                  beg end `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
 
                        ;; Highlight Info index-entry cand (`icicle-historical-candidate-other')
                        ;; if its node has been visited.
@@ -3435,8 +3435,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                   candidate
                                                   #'icicle-Info-node-is-indexed-by-topic))
                              (add-text-properties
-                              beg end
-                              `(face ,(setq faces  (cons 'icicle-historical-candidate-other faces)))))))
+                              beg end `(face ,(setq faces  (cons 'icicle-historical-candidate-other faces)))))))
 
                        ;; Highlight, inside the candidate, the expanded common match.
                        (when (and icicle-current-input  (not (string= "" icicle-current-input)))
@@ -3477,14 +3476,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                             (icicle-levenshtein-match
                                              (if (= icicle-levenshtein-distance 1)
                                                  (lambda (input bound noerr)
-                                                   (re-search-forward
-                                                    (icicle-levenshtein-one-regexp input)
-                                                    bound noerr))
+                                                   (re-search-forward (icicle-levenshtein-one-regexp input)
+                                                                      bound noerr))
                                                're-search-forward))
                                             (otherwise 're-search-forward)))))
                                (save-excursion
-                                 (when (and (funcall fn (icicle-minibuf-input-sans-dir
-                                                         icicle-current-raw-input)
+                                 (when (and (funcall fn (icicle-minibuf-input-sans-dir icicle-current-raw-input)
                                                      nil t)
                                             (not (eq (match-beginning 0) (point))))
                                    (setq faces  (cons 'icicle-match-highlight-Completions faces))
@@ -3503,14 +3500,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                    (while (not (eobp))
                                      (unless (funcall fn input (line-end-position) t)
                                        (if (> emacs-major-version 20)
-                                           (put-text-property
-                                            (line-beginning-position)
-                                            (min (1+ (line-end-position)) (point-max))
-                                            'display "...\n")
-                                         (put-text-property
-                                          (line-beginning-position)
-                                          (min (1+ (line-end-position)) (point-max))
-                                          'invisible t)))
+                                           (put-text-property (line-beginning-position)
+                                                              (min (1+ (line-end-position)) (point-max))
+                                                              'display "...\n")
+                                         (put-text-property (line-beginning-position)
+                                                            (min (1+ (line-end-position)) (point-max))
+                                                            'invisible t)))
                                      (forward-line 1))))))))
 
                        ;; Highlight candidate if it has been saved.
@@ -3541,38 +3536,36 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                  (while (and (or first
                                                  (not (= end (match-beginning 0)))
                                                  (< (+ end len-join) len-cand))
-                                             (string-match join candidate
-                                                           (if (and (not first)
-                                                                    (= end (match-beginning 0))
-                                                                    (< end len-cand))
-                                                               (+ end len-join)
-                                                             end))
+                                             (string-match join candidate (if (and (not first)
+                                                                                   (= end (match-beginning 0))
+                                                                                   (< end len-cand))
+                                                                              (+ end len-join)
+                                                                            end))
                                              (< end len-cand))
                                    (setq first  nil
                                          end    (or (match-beginning 0)  len-cand))
-                                   (let* ((entry
-                                           (assq partnum icicle-candidate-properties-alist))
+                                   (let* ((entry                   (assq partnum
+                                                                         icicle-candidate-properties-alist))
                                           (properties              (cadr entry))
                                           (propertize-join-string  (car (cddr entry))))
                                      (when properties
-                                       (add-text-properties
-                                        (+ start orig-pt) (+ end orig-pt) properties))
+                                       (add-text-properties (+ start orig-pt) (+ end orig-pt) properties))
                                      (when propertize-join-string
-                                       (add-text-properties
-                                        (+ end orig-pt)
-                                        (+ end orig-pt len-join)
-                                        properties)))
+                                       (add-text-properties (+ end orig-pt) (+ end orig-pt len-join)
+                                                            properties)))
                                    (setq partnum  (1+ partnum)
                                          start    (match-end 0))))))))
 
-                       ;; Show thumbnail for an image file or image-file bookmark (Bookmark+).
-                       (when (and icicle-image-files-in-Completions
-                                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-                                  (or (and filep  (fboundp 'image-file-name-regexp))
-                                      (and icicle-show-multi-completion-flag
-                                           (symbolp icicle-last-top-level-command)
-                                           (string-match "^icicle-bookmark-"
-                                                         (symbol-name icicle-last-top-level-command)))))
+                       ;; Thumbnail image for an image file or image-file bookmark (Bookmark+): Maybe show it
+                       ;; in `*Completions*'; maybe show it only in `*Completions*' mouseover tooltip.
+                       (when (or (and icicle-image-files-in-Completions
+                                      (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                                      (or (and filep  (fboundp 'image-file-name-regexp))
+                                          (and icicle-show-multi-completion-flag
+                                               (symbolp icicle-last-top-level-command)
+                                               (string-match "^icicle-bookmark-"
+                                                             (symbol-name icicle-last-top-level-command)))))
+                                 (and (boundp 'tooltip-mode)  tooltip-mode  icicle-image-preview-in-tooltip))
                          (let ((image-file
                                 (if (and icicle-show-multi-completion-flag
                                          (symbolp icicle-last-top-level-command)
@@ -3590,32 +3583,42 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                            (when (and (require 'image-dired nil t)
                                       (icicle-string-match-p (image-file-name-regexp) image-file))
                              (let ((thumb-img  (append (image-dired-get-thumbnail-image image-file)
-                                                       '(:margin 2)))
-                                   (img-ov     (overlays-in (point) (min (point-max) (1+ (point))))))
-                               (if img-ov
-                                   (delete-overlay (car img-ov))
-                                 (put-image thumb-img beg)
-                                 (setq img-ov (loop for ov in (overlays-in
-                                                               (point) (min (point-max) (1+ (point))))
-                                                    when (overlay-get ov 'put-image) collect ov into ovs
-                                                    finally return (car ovs)))
-                                 (overlay-put img-ov 'image-file image-file)
-                                 (overlay-put img-ov 'thumb-img thumb-img)
-                                 (overlay-put img-ov 'image-size (image-size thumb-img))))
-                             ;; Replace file name with a space.
-                             (when (eq 'image-only icicle-image-files-in-Completions)
-                               (let ((name-ov  (overlays-in end end)))
-                                 (if name-ov
-                                     (delete-overlay (car name-ov))
-                                   (setq name-ov  (make-overlay beg end))
-                                   (overlay-put name-ov 'display " ")))))))
+                                                       '(:margin 2))))
+                               ;; In `tooltip-mode', show image preview on mouseover,
+                               ;; unless it is a thumbnail and `*Completions*' already shows thumbnails.
+                               (when (and (boundp 'tooltip-mode)  tooltip-mode
+                                          (or (not icicle-image-files-in-Completions)
+                                              (not (numberp icicle-image-preview-in-tooltip))))
+                                 (with-current-buffer "*Completions*"
+                                   (put-text-property
+                                    (point)
+                                    (+ (point) (length (icicle-current-completion-in-Completions)))
+                                    'help-echo 'icicle-mouseover-help)))
+                               (when icicle-image-files-in-Completions
+                                 (let ((img-ov     (overlays-in (point) (min (point-max) (1+ (point))))))
+                                   (if img-ov
+                                       (delete-overlay (car img-ov))
+                                     (put-image thumb-img beg)
+                                     (setq img-ov (loop for ov in (overlays-in
+                                                                   (point) (min (point-max) (1+ (point))))
+                                                     when (overlay-get ov 'put-image) collect ov into ovs
+                                                     finally return (car ovs)))
+                                     (overlay-put img-ov 'image-file image-file)
+                                     (overlay-put img-ov 'thumb-img thumb-img)
+                                     (overlay-put img-ov 'image-size (image-size thumb-img))))
+                                 ;; Replace file name with a space.
+                                 (when (eq 'image-only icicle-image-files-in-Completions)
+                                   (let ((name-ov  (overlays-in end end)))
+                                     (if name-ov
+                                         (delete-overlay (car name-ov))
+                                       (setq name-ov  (make-overlay beg end))
+                                       (overlay-put name-ov 'display " ")))))))))
                        (goto-char next)))
 
                    ;; Remove all newlines for images-only display.
                    (when (eq icicle-image-files-in-Completions 'image-only)
                      (save-excursion (goto-char (icicle-start-of-candidates-in-Completions))
-                                     (while (and (re-search-forward "$")  (not (eobp)))
-                                       (delete-char 1)))))
+                                     (while (and (re-search-forward "$")  (not (eobp))) (delete-char 1)))))
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
 
@@ -3627,10 +3630,9 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                           (if (and icicle-max-candidates
                                    (integerp icicle-max-candidates) ; Not `RESET'.
                                    (< icicle-max-candidates icicle-nb-candidates-before-truncation))
-                              (format
-                               "%s candidates shown"
-                               (icicle-propertize (format "/%d" icicle-nb-candidates-before-truncation)
-                                                  'face 'icicle-mode-line-help))
+                              (format "%s candidates shown"
+                                      (icicle-propertize (format "/%d" icicle-nb-candidates-before-truncation)
+                                                         'face 'icicle-mode-line-help))
                             " candidates")
                           (if (memq icicle-current-completion-mode '(prefix apropos))
                               (format ", %s completion"
@@ -3647,10 +3649,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                 "apropos"))
                                              ((eq 'prefix icicle-current-completion-mode)
                                               (case (icicle-current-TAB-method)
-                                                (fuzzy        "fuzzy")
-                                                (swank        "swank (fuzzy symbol)")
-                                                (vanilla      "vanilla")
-                                                (t            "prefix"))))
+                                                (fuzzy    "fuzzy")
+                                                (swank    "swank (fuzzy symbol)")
+                                                (vanilla  "vanilla")
+                                                (t        "prefix"))))
                                        'face 'icicle-mode-line-help))
                             "")
                           (icicle-propertize (or (car (rassoc icicle-sort-comparer icicle-sort-orders-alist))
@@ -3665,8 +3667,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                (when lighter
                  (setq lighter  (concat lighter " ")
                        props    (text-properties-at 0 lighter))
-                 (when (string-match regexp lighter)
-                   (setq lighter  (substring lighter 0 (match-beginning 0))))
+                 (when (string-match regexp lighter) (setq lighter  (substring lighter 0 (match-beginning 0))))
                  (add-text-properties 0 (length lighter) props lighter))
                (setq mode-line-format  (concat lighter mode-line-format)))
              (goto-char (icicle-start-of-candidates-in-Completions))
@@ -3682,15 +3683,61 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                       (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (one-window-p t);; $$$$$ Also this? (window-dedicated-p (selected-window))
+               (when (one-window-p t)   ; $$$$$ Also this? (window-dedicated-p (selected-window))
                  (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
                         (orig-font-fam  (and (window-live-p orig-win)
-                                             (save-window-excursion
-                                               (select-window orig-win)
-                                               (face-attribute 'default :family)))))
-                   (when orig-font-fam
-                     (set-face-attribute 'default (selected-frame) :family orig-font-fam))))))
+                                             (save-window-excursion (select-window orig-win)
+                                                                    (face-attribute 'default :family)))))
+                   (when orig-font-fam (set-face-attribute 'default (selected-frame) :family orig-font-fam))))))
            (message nil)))))            ; Clear out any "Looking for..."
+
+;; Similar to `diredp-mouseover-help'.
+(defun icicle-mouseover-help (window buffer pos)
+  "Show `help-echo' help for a file-name completion candidate.
+If `tooltip-mode' is on, file named at POS is an image file, and
+`icicle-image-preview-in-tooltip' is non-nil, then show image preview.
+Otherwise, show textual help."
+  (let ((image-dired-thumb-width   (or (and (wholenump icicle-image-preview-in-tooltip)
+                                            icicle-image-preview-in-tooltip)
+                                       image-dired-thumb-width))
+        (image-dired-thumb-height  (or (and (wholenump icicle-image-preview-in-tooltip)
+                                            icicle-image-preview-in-tooltip)
+                                       image-dired-thumb-height))
+        file)
+    (or (and (boundp 'tooltip-mode)  tooltip-mode
+             (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+             (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
+             icicle-image-preview-in-tooltip
+             (condition-case nil
+                 (and (with-current-buffer buffer
+                        (goto-char pos)
+                        (icicle-string-match-p (image-file-name-regexp)
+                                               (setq file  (icicle-expand-file-name-20
+                                                            (icicle-transform-multi-completion
+                                                             (icicle-current-completion-in-Completions))
+                                                            (icicle-file-name-directory-w-default
+                                                             icicle-current-input)))))
+                      (let ((img-file  (if (eq 'full icicle-image-preview-in-tooltip)
+                                           file
+                                         (icicle-create-thumb file))))
+                        (propertize " " 'display (create-image img-file))))
+               (error nil)))
+        "mouse-2: visit this file in another window")))
+
+;; Similar to `diredp-image-dired-create-thumb'.
+(defun icicle-create-thumb (file &optional msgp)
+  "Create thumbnail image file for FILE.
+Return the name of the thumbnail image file, or nil if none."
+  (interactive "fFile: \np")
+  (let ((thumb-name  (image-dired-thumb-name file))
+        result)
+    (unless (file-exists-p thumb-name)
+      (image-dired-create-thumb file thumb-name))
+    (setq result  (and (file-exists-p thumb-name)  thumb-name))
+    (when msgp (if result
+                   (message "Created thumbnail file `%s'" thumb-name)
+                 (message "Could not create thumbnail for `%s'" file)))
+    result))
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-node-is-indexed-by-topic (node topic)
