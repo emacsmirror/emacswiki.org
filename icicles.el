@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.04.06
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 23 10:50:29 2014 (-0700)
+;; Last-Updated: Tue Apr 29 07:16:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23544
+;;     Update #: 23547
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -833,6 +833,7 @@
 ;;    `icicle-icomplete-mode-max-candidates',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
 ;;    `icicle-image-files-in-Completions',
+;;    `icicle-image-preview-in-tooltip',
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
@@ -1014,7 +1015,7 @@
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion-try-completion',
 ;;    `icicle-compute-shell-command-candidates',
-;;    `icicle-convert-dots',
+;;    `icicle-convert-dots', `icicle-create-thumb',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
 ;;    `icicle-current-TAB-method',
@@ -1160,7 +1161,7 @@
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-minibuffer-setup',
 ;;    `icicle-mode-line-name-less-p',
-;;    `icicle-mouse-candidate-action-1',
+;;    `icicle-mouse-candidate-action-1', `icicle-mouseover-help',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-nb-Completions-cols',
