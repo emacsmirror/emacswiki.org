@@ -33,7 +33,7 @@ To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]
 
 __Minor Mode Survey__
 
-'''Number of people surveyed''': 138 [color=red][b] <- start here [/b][/color]
+'''Number of people surveyed''': 139 [color=red][b] <- start here [/b][/color]
 
 {{{
 | Packages/Modes                                   | Upvote / User count |
@@ -51,7 +51,7 @@ __Minor Mode Survey__
 | auto-compression-mode                            |                  16 |
 | auto-encryption-mode                             |                  20 |
 | auto-fill-mode                                   |                  43 |
-| auto-image-file-mode                             |                   4 |
+| auto-image-file-mode                             |                   5 |
 | autoinsert                                       |                   4 |
 | bat-mode                                         |                   1 |
 | blink-cursor-mode                                |                  54 |
@@ -65,7 +65,7 @@ __Minor Mode Survey__
 | cl                                               |                  14 |
 | cl-macs                                          |                   1 |
 | color                                            |                   1 |
-| column-number-mode                               |                  91 |
+| column-number-mode                               |                  92 |
 | comint                                           |                   7 |
 | compilation-minor-mode                           |                  12 |
 | compile                                          |                   2 |
@@ -78,7 +78,7 @@ __Minor Mode Survey__
 | debug                                            |                   2 |
 | delete-by-moving-to-trash                        |                   7 |
 | delete-selection-mode                            |                  33 |
-| delsel                                           |                   2 |
+| delsel                                           |                   3 |
 | descr-text                                       |                   2 |
 | desktop                                          |                   3 |
 | desktop-save-mode                                |                  32 |
@@ -114,11 +114,11 @@ __Minor Mode Survey__
 | find-func                                        |                   1 |
 | finder                                           |                   1 |
 | flyspell-mode                                    |                  56 |
-| font-lock-mode                                   |                  55 |
+| font-lock-mode                                   |                  56 |
 | frame                                            |                   2 |
 | frameset                                         |                   1 |
 | generic-x                                        |                   5 |
-| global-auto-revert-mode                          |                  14 |
+| global-auto-revert-mode                          |                  15 |
 | global-cwarn-mode                                |                   5 |
 | global-ede-mode                                  |                   1 |
 | global-font-lock-mode                            |                  49 |
@@ -148,7 +148,7 @@ __Minor Mode Survey__
 | ibuffer                                          |                  60 |
 | icomplete-mode                                   |                  20 |
 | ido-everywhere                                   |                  45 |
-| ido-mode                                         |                  83 |
+| ido-mode                                         |                  84 |
 | image                                            |                   1 |
 | image-dired                                      |                   3 |
 | image-file                                       |                   1 |
@@ -171,7 +171,7 @@ __Minor Mode Survey__
 | minibuffer-depth-indicate-mode                   |                   1 |
 | misearch                                         |                   1 |
 | mouse                                            |                   1 |
-| mouse-avoidance-mode                             |                   6 |
+| mouse-avoidance-mode                             |                   7 |
 | mouse-wheel-mode                                 |                  19 |
 | mwheel                                           |                   1 |
 | newcomment                                       |                   1 |
@@ -192,7 +192,7 @@ __Minor Mode Survey__
 | printing                                         |                   7 |
 | ps-mode                                          |                   1 |
 | ps-print                                         |                   3 |
-| recentf-mode                                     |                  58 |
+| recentf-mode                                     |                  59 |
 | rectangle-mark-mode                              |                   8 |
 | reftex-mode                                      |                  12 |
 | regexp-opt                                       |                   4 |
@@ -201,14 +201,14 @@ __Minor Mode Survey__
 | ring                                             |                   2 |
 | ruby-mode                                        |                   2 |
 | ruler-mode                                       |                   1 |
-| savehist-mode                                    |                  26 |
-| saveplace                                        |                  30 |
+| savehist-mode                                    |                  27 |
+| saveplace                                        |                  31 |
 | semantic-mode                                    |                   4 |
-| server-mode                                      |                  29 |
+| server-mode                                      |                  30 |
 | shadow                                           |                   1 |
 | shell                                            |                   2 |
 | shell-dirtrack-mode                              |                   8 |
-| show-paren-mode                                  |                  86 |
+| show-paren-mode                                  |                  87 |
 | simple                                           |                   1 |
 | size-indication-mode                             |                  19 |
 | subword-mode                                     |                  14 |
@@ -220,8 +220,8 @@ __Minor Mode Survey__
 | tooltip-mode                                     |                  19 |
 | tramp                                            |                  30 |
 | tramp-ftp                                        |                   1 |
-| transient-mark-mode                              |                  68 |
-| uniquify                                         |                  93 |
+| transient-mark-mode                              |                  69 |
+| uniquify                                         |                  94 |
 | url-handler-mode                                 |                   1 |
 | url-parse                                        |                   1 |
 | url-vars                                         |                   1 |
