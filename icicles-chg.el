@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Apr 28 16:44:28 2014 (-0700)
+;; Last-Updated: Tue Apr 29 07:16:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10879
+;;     Update #: 10886
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1999,6 +1999,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/04/29 dadams
+;;     Added: icicle-mouseover-help, icicle-create-thumb.
+;;     icicle-display-candidates-in-Completions: Provide mouseover tooltip image preview.
 ;; 2014/04/20 dadams
 ;;     icicle-insert-candidates:
 ;;       Automatic on/off of Icomplete mode and sorting: Turn on only if it was turned on here.
@@ -7166,6 +7169,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/04/29 dadams
+;;     Added: icicle-image-preview-in-tooltip.
 ;; 2014/04/25 dadams
 ;;     icicle-top-level-key-bindings:
 ;;       Added binding for apropos-user-option (Emacs 24.4).  Adjust condition for apropos-variable.
