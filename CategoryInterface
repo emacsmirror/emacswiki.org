@@ -63,6 +63,8 @@ Interfaces to code snippet sites on the Internet
 * Lisp:pastebox.el -- Paste to PasteBox-powered pastebins, such as [http://pastebin.ch pastebin.ch]
 * [[Debpaste]] -- Interface for [http://paste.debian.net/ paste.debian.net]
 * [http://repo.or.cz/w/facebook.el.git facebook.el] -- the beginnings of a Facebook interface
+* [[newpaste.el]] -- paste to [http://paste.lisp.org/ paste.lisp.org]
+* [[SCPaste]]
 
 Protocols
 
@@ -73,4 +75,3 @@ Tools and Utilities
 
 * HmacShaOne -- Generate HMAC-SHA1 authentication codes
 * OAuthLibrary -- Authentication using OAuth
-
