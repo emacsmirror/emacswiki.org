@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Apr 29 07:19:41 2014 (-0700)
+;; Last-Updated: Tue Apr 29 18:03:41 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14617
+;;     Update #: 14628
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3591,23 +3591,27 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                               (not (numberp icicle-image-preview-in-tooltip))))
                                  (with-current-buffer "*Completions*"
                                    (put-text-property
-                                    (point)
-                                    (+ (point) (length (icicle-current-completion-in-Completions)))
+                                    (point) (+ (point) (length (icicle-current-completion-in-Completions)))
                                     'help-echo 'icicle-mouseover-help)))
                                (when icicle-image-files-in-Completions
-                                 (let ((img-ov     (overlays-in (point) (min (point-max) (1+ (point))))))
+                                 (let ((img-ov  (overlays-in (point) (min (point-max) (1+ (point))))))
                                    (if img-ov
                                        (delete-overlay (car img-ov))
                                      (put-image thumb-img beg)
-                                     (setq img-ov (loop for ov in (overlays-in
-                                                                   (point) (min (point-max) (1+ (point))))
-                                                     when (overlay-get ov 'put-image) collect ov into ovs
-                                                     finally return (car ovs)))
+                                     (setq img-ov  (loop for ov in (overlays-in
+                                                                    (point) (min (point-max) (1+ (point))))
+                                                         when (overlay-get ov 'put-image) collect ov into ovs
+                                                         finally return (car ovs)))
                                      (overlay-put img-ov 'image-file image-file)
                                      (overlay-put img-ov 'thumb-img thumb-img)
                                      (overlay-put img-ov 'image-size (image-size thumb-img))))
-                                 ;; Replace file name with a space.
+                                 ;; `image-only'.  Replace file name with a space.
+                                 ;;                And hide mouse-face highlighting, as it just confuses.
                                  (when (eq 'image-only icicle-image-files-in-Completions)
+                                   (with-current-buffer "*Completions*"
+                                     (put-text-property
+                                      (point) (+ (point) (length (icicle-current-completion-in-Completions)))
+                                      'mouse-face 'default))
                                    (let ((name-ov  (overlays-in end end)))
                                      (if name-ov
                                          (delete-overlay (car name-ov))
