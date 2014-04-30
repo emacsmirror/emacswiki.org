@@ -50,6 +50,11 @@ Here is a simple, one-off command to kill all dired buffers:
               (kill-buffer buffer)))
           (message "Killed %i dired buffer(s)." count))))
 
+(Here is a more efficient 'kill-dired-buffers which does not require switching to every buffer alive, by making use of 'buffer-local-value)
+(defun kill-dired-buffers ()
+	 (interactive)
+	 (mapc (lambda (buffer) (when (eq (buffer-local-value 'major-mode buffer) 'dired-mode) (kill-buffer buffer))) (buffer-list)))
+
 To use this for BSBufferSelection, consider the following keybinding:
 
     (define-key bs-mode-map (kbd "D D") 'kill-all-dired-buffers)
