@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Apr 29 07:16:44 2014 (-0700)
+;; Last-Updated: Tue Apr 29 18:00:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10886
+;;     Update #: 10887
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2002,6 +2002,7 @@
 ;; 2014/04/29 dadams
 ;;     Added: icicle-mouseover-help, icicle-create-thumb.
 ;;     icicle-display-candidates-in-Completions: Provide mouseover tooltip image preview.
+;;                                               Hide mouse-face highlighting when image-only.
 ;; 2014/04/20 dadams
 ;;     icicle-insert-candidates:
 ;;       Automatic on/off of Icomplete mode and sorting: Turn on only if it was turned on here.
