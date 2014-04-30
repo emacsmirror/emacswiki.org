@@ -7,7 +7,7 @@
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2008/08/01 
 ;; Version: 0.1
-;; Last-Updated: 2013-05-13 16:36:29
+;; Last-Updated: 2014-04-30 14:36:29
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/eviews
 ;; Keywords: languages
@@ -81,12 +81,37 @@
 ;;; Code:
 
 (defvar eviews-mode-hook nil)
+
 (defvar eviews-mode-map
   (let ((eviews-mode-map (make-keymap)))
     (define-key eviews-mode-map "\C-j" 'newline-and-indent)
     eviews-mode-map)
   "Keymap for eviews major mode.")
+
+(defgroup eviews nil "`eviews-mode' customization")
+
+(defcustom eviews-outline-level 'outline-level
+  "Value of `outline-level' (which see) to use for `eviews-mode'."
+  :type 'symbol
+  :group 'eviews)
+
+(defcustom eviews-outline-regexp "'+"
+  "Value of `outline-regexp' (which see) to use for `eviews-mode'."
+  :type 'regexp
+  :group 'eviews)
+
+(defcustom eviews-outline-heading-alist nil
+  "Value of `outline-heading-alist' (which see) to use for `eviews-mode'."
+  :type '(alist :key-type string :value-type (integer :tag "Level"))
+  :group 'eviews)
+
+(defcustom eviews-outline-minor-mode t
+  "Whether or not to use `outline-minor-mode' by default in `eviews-mode'."
+  :type 'boolean
+  :group 'eviews)
+
 (add-to-list 'auto-mode-alist '("\\.prg\\'" . eviews-mode))
+
 (defconst eviews-font-lock-keywords-1
   (list
    ;; control statements
@@ -116,6 +141,7 @@
 (defvar eviews-font-lock-keywords eviews-font-lock-keywords-1
   "Default highlighting expressions for eviews mode.")
 
+;;;###autoload
 (defun eviews-indent-line ()
   "Indent current line as eviews code."
   (interactive)
@@ -155,6 +181,7 @@
     eviews-mode-syntax-table)
   "Syntax table for eviews-mode.")
 
+;;;###autoload
 (defun eviews-mode ()
   "Major mode for editing eviews programs."
   (interactive)
@@ -169,7 +196,11 @@
   (local-set-key (kbd "C-c C-u") 'uncomment-region)
   (setq major-mode 'eviews-mode)
   (setq mode-name "Eviews")
-  (run-hooks 'eviews-mode-hook))
+  (run-hooks 'eviews-mode-hook)
+  (setq outline-regexp eviews-outline-regexp
+        outline-level eviews-outline-level
+        outline-heading-alist eviews-outline-heading-alist)
+  (if eviews-outline-minor-mode (outline-minor-mode t)))
 
 (provide 'eviews)
 
