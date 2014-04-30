@@ -51,7 +51,8 @@ Here is a simple, one-off command to kill all dired buffers:
           (message "Killed %i dired buffer(s)." count))))
 
 (Here is a more efficient 'kill-dired-buffers which does not require switching to every buffer alive, by making use of 'buffer-local-value)
-(defun kill-dired-buffers ()
+
+    (defun kill-dired-buffers ()
 	 (interactive)
 	 (mapc (lambda (buffer) (when (eq (buffer-local-value 'major-mode buffer) 'dired-mode) (kill-buffer buffer))) (buffer-list)))
 
