@@ -23,7 +23,7 @@ Also, don't forget to use the ,parse "foo is bar" functionality to see lisp equi
 Similarly, the preferred, foolproof way to make fsbot do something in response to a keyword foo is to use ,(defun foo), rather than try ,foo is lisp (blah bla.) If you did the latter, then when you type ,foo blah, and if there happens to be another term called foo-blah in its database, fsbot may instead return the entry for the latter. That /is/ expected behavior because of its infobot-related functionality.
 
 
-Also, many/most of the bugs on the rest of this page are old and/or unresolved. For example, fsbot got immutable functions some time in 2005(?).
+Also, many/most of the bug reports on the rest of this page are outdated and/or fixed. For example, fsbot got immutable functions some time in 2005(?).
  
 - Deego, May 2014
 
