@@ -134,6 +134,7 @@ You can use wl as a NNTP client, and post to usenet newsgroups. In the folder vi
 
 Check the variable `wl-local-domain' and `stmp-local-domain'. It should have a real domain, at least "localhost". See the previous example.
 
+* When I send an email with starttls, wanderlust first stalls for a long time after "Opening...done" and the aborts with "invalid type: arrayp nil". This happens with three different accounts (web de, gmail, yahoo).
 
 == Getting Help ==
 Please read the Info Manual carefully:  (<code>M-x info RET >> C-s Wanderlust</code>). 
