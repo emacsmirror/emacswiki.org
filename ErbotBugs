@@ -5,7 +5,7 @@ part of skynet or there's a security exploit"</i>, e1f on #emacs
 
 Language-related inconveniences are not considered bugs by the author.  fsbot knows how to understand the lisp commands you give it. It also /tries/ to understand some plain English, but we simply cannot - and do not aim to - make it a general English parser.  
 
-Besides, the syntax for multiple English-requests often conflicts with each other. In such cases, fsbot's behavior always leans towards being an infobot when trying to parse your English request.
+Besides, multiple English-requests often conflict with each other in syntax. In such cases, fsbot's behavior always leans towards being an infobot when trying to parse your English request.
 
 Most things you think of as bugs will get resolved if you simply use lisp instead. For example:
 
