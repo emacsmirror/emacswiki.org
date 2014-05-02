@@ -15,6 +15,6 @@ Here are instructions how to make FlyMake work with HTML:
 	             '("line \\([0-9]+\\) column \\([0-9]+\\) - \\(Warning\\|Error\\): \\(.*\\)"
 	               nil 1 2 4))
 
-
+You can use html5-tidy from https://github.com/w3c/tidy-html5
 ----
 CategoryProgrammerUtils
