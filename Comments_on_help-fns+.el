@@ -17,3 +17,10 @@ Hi, It seems to break the <code>?</code>/<code>RET</code> key function (<code>pa
 
 -- JunkBlocker 2014-05-02 05:23 UTC
 
+
+----
+
+Should be OK now - please download and try the latest.  (Emacs Dev changed the development code recently to use a defstruct for the package description.)
+
+-- DrewAdams 2014-05-02 15:12 UTC
+
