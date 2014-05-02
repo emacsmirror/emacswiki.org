@@ -10,3 +10,10 @@ You can ignore all such compiler warnings.  The byte-compiler assumes that the c
 
 -- DrewAdams 2013-11-17 19:16 UTC
 
+
+----
+
+Hi, It seems to break the <code>?</code>/<code>RET</code> key function (<code>package-menu-describe-package</code>) in <code>M-x list-packages</code> .
+
+-- JunkBlocker 2014-05-02 05:23 UTC
+
