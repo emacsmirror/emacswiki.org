@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 22 19:57:00 2014 (-0700)
+;; Last-Updated: Fri May  2 07:32:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1786
+;;     Update #: 1800
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `button', `bytecomp', `cconv', `cl-lib',
-;;   `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
 ;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -118,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/02 dadams
+;;     describe-package: Updated for Emacs 24.4 - defstruct package-desc.
 ;; 2014/04/21 dadams
 ;;     with-selected-frame: Updated for Emacs 24.4.
 ;;     describe-face: Updated for Emacs 24.4: Try face-at-point for read-face-name default.
@@ -2654,28 +2656,29 @@ Completion is available for the keymap name."
   (defun describe-package (package)
     "Display the full documentation of PACKAGE (a symbol)."
     (interactive
-     (let* ((guess  (function-called-at-point))
-            packages val)
+     (let* ((guess  (function-called-at-point)))
        (require 'finder-inf nil t)
        ;; Load the package list if necessary (but don't activate them).
        (unless package--initialized (package-initialize t))
-       (setq packages  (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
-                               (mapcar 'car package--builtins)))
-       (unless (memq guess packages) (setq guess  nil))
-       (setq packages  (mapcar 'symbol-name packages))
-       (setq val  (completing-read (if guess
-                                       (format "Describe package (default %s): " guess)
-                                     "Describe package: ")
-                                   packages nil t nil nil guess))
-       (list (if (equal val "") guess (intern val)))))
-    (if (or (null package)  (not (symbolp package)))
+       (let ((packages  (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
+                                (mapcar 'car package--builtins))))
+         (unless (memq guess packages) (setq guess  nil))
+         (setq packages  (mapcar 'symbol-name packages))
+         (let ((val  (completing-read (if guess
+                                          (format "Describe package (default %s): " guess)
+                                        "Describe package: ")
+                                      packages nil t nil nil guess)))
+           (list (if (equal val "") guess (intern val)))))))
+    (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
+                 (and package (symbolp package))))
         (when (called-interactively-p 'interactive) (message "No package specified"))
       (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
       (with-help-window (help-buffer)
         (with-current-buffer standard-output
           (describe-package-1 package)
-          (Info-make-manuals-xref (concat (symbol-name package) " package") nil nil ; Link to manuals.
-                                  (not (called-interactively-p 'interactive))))))))
+          (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4+
+          (Info-make-manuals-xref (concat (symbol-name package) " package")
+                                  nil nil (not (called-interactively-p 'interactive)))))))) ; Link to manuals
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
