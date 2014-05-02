@@ -53,7 +53,7 @@ Emacs Interfaces to Online Utilities.
 * [[Anything]] -- M-x anything-surfraw-only shows URLs of many search engines.
 * BugzMode -- an interface to bugzilla servers.
 
-Interfaces to code snippet sites on the Internet [:CodeSnippetSites]
+[:CodeSnippetSites]Interfaces to code snippet sites on the Internet
 
 * [http://github.com/defunkt/gist.el gist.el] -- post snippets to [http://gist.github.com GitHub Gist]
 * SnipplrMode -- copy snippets to and from [http://snipplr.com Snipplr]
