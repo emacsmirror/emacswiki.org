@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May  3 08:36:07 2014 (-0700)
+;; Last-Updated: Sat May  3 08:44:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 4976
+;;     Update #: 4983
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -204,7 +204,9 @@
 ;;
 ;; 2014/05/03 dadams
 ;;     info-quotation-regexp, info-quoted+<>-regexp:
+;;       Handle also curly single quotes (Emacs 24.4+).
 ;;       Removed double * and moved openers outside \(...\) group.
+;;     info-fontify-quotations: Handle also curly single quotes (Emacs 24.4+).
 ;; 2014/03/04 dadams
 ;;     Renamed Info-toggle-breadcrumbs-in-header-line to Info-toggle-breadcrumbs-in-header.
 ;;       Declared old name obsolete.
@@ -4227,20 +4229,23 @@ You are prompted for the depth value."
     (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line))))
 
 
-;; Match has, inside "..." or `...', zero or more of these characters:
-;;   - any character except " or ', respectively
+;; Match has, inside "...", `...', or \x2018...\x2019, zero or more of these characters:
+;;   - any character except ", ', or \x2019, respectively
 ;;   - \ followed by any character
 ;;
 ;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
-;; The regexp matches also `...' and "..." where at least one of the `, ', or "
-;; is escaped by a backslash.  So we check those cases explicitly and don't highlight them.
+;; The regexp matches also `...', \x2018...\x2019, and "..." where at least one of the
+;; `, ', \x2018, \x2019, or " is escaped by a backslash.
+;; So we check those cases explicitly and do not highlight them.
+;;
 (defvar info-quotation-regexp
   (if (< emacs-major-version 21)
       (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|"   ; "..."
               "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'")        ; `...'
     (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-            "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'"))         ; `...'
+            "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
+            "\x2018\\([^\x2019]\\|\\\\\\(.\\|[\n]\\)\\)*\x2019")) ; \x2018...\x2019
   "Regexp to match `...', \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
@@ -4252,27 +4257,36 @@ If ... contains \" or ' then that character must be backslashed.")
               "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>")        ; <...>
     (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
             "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
+            "\x2018\\([^\x2019]\\|\\\\\\(.\\|[\n]\\)\\)*\x2019\\|" ; \x2018...\x2019
             "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>")) ; <...>
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains > then that character must be backslashed.")
 
 (defun info-fontify-quotations ()
-  "Fontify `...', \"...\" and possibly <...> and single '.
-If `Info-fontify-angle-bracketed-flag', fontify <...>.
-If `Info-fontify-single-quote-flag', fontify single '.
- `...' and <...>\t- use face `info-quoted-name'
+  ;; So that the code is usable by older Emacs versions, we use
+  ;; \x2018...\x2019 instead of the curly-quote chars themselves.
+  "Fontify `...', \x2018...\x2019, \"...\", and possibly <...> and single '.
+If `Info-fontify-angle-bracketed-flag' then fontify <...> also.
+If `Info-fontify-single-quote-flag' then fontify singleton ' also.
+
+ `...',  \x2018...\x2019, and <...>\t- use face `info-quoted-name'
  \"...\"\t- use face `info-string'
  '\t- use face `info-single-quote'"
   (let ((regexp    (if Info-fontify-angle-bracketed-flag info-quoted+<>-regexp info-quotation-regexp))
         (property  (if (> emacs-major-version 21) 'font-lock-face 'face)))
     (while (condition-case nil (re-search-forward regexp nil t) (error nil))
-      (cond ((and (eq ?` (aref (match-string 0) 0)) ; Single-quoted backslashes: `\', `\\', `\\\', etc.
+      (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
                   (goto-char (match-beginning 0))
                   (save-match-data (looking-at "\\(`\\\\+'\\)")))
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)))
-            ((and (eq ?` (aref (match-string 0) 0)) ; `...': If ` is preceded by \, then skip it
-                  (goto-char (match-beginning 0))
+            ((and (eq (aref (match-string 0) 0) ?\x2018) ; Single-quote wrapped backslashes:
+                  (goto-char (match-beginning 0)) ; \x2018\\x2019, \x2018\\\x2019, \x2018\\\\x2019, etc. 
+                  (save-match-data (looking-at "\\(\x2018\\\\+\x2019\\)")))
+             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+             (goto-char (match-end 0)))
+            ((and (memq (aref (match-string 0) 0) '(?` ?\x2018)) ; `...', \x2018...\x2019:
+                  (goto-char (match-beginning 0)) ; If ` or \x2018 is preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
             ((and Info-fontify-angle-bracketed-flag
@@ -4280,13 +4294,15 @@ If `Info-fontify-single-quote-flag', fontify single '.
                   (goto-char (match-beginning 0))
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
-            ((eq ?` (aref (match-string 0) 0)) ; `...'
+            ((memq (aref (match-string 0) 0) '(?` ?\x2018)) ; `...', \x2018...\x2019
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
             ((and Info-fontify-angle-bracketed-flag
                   (eq ?< (aref (match-string 0) 0))) ; <...>
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
+            ;; Don't try to handle strings correctly.  Check only the first " for being escaped.
+            ;; The second " ends the match, even if it is escaped (odd number of \s before it).
             ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
@@ -4295,9 +4311,9 @@ If `Info-fontify-single-quote-flag', fontify single '.
              (put-text-property (match-beginning 0) (match-end 0)
                                 property 'info-single-quote)
              (goto-char (match-end 0)) (forward-char 1))
-            ((not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
-             (put-text-property (match-beginning 0) (match-end 0)
-                                property 'info-string)
+            ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
+                  (not (string= "\x2019" (buffer-substring (match-beginning 0) (match-end 0)))))
+             (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
              (goto-char (match-end 0)) (forward-char 1))
             (t
              (goto-char (match-end 0)) (forward-char 1))))))
