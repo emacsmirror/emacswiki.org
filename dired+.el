@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 29 08:45:42 2014 (-0700)
+;; Last-Updated: Sat May  3 07:21:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7490
+;;     Update #: 7494
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -515,6 +515,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/03 dadams
+;;     dired-switches-escape-p: Use dired-switches-check if available, based on bug #17218 fix.
 ;; 2014/04/25 dadams
 ;;     diredp-image-dired-create-thumb:
 ;;       Do not call diredp-image-dired-create-thumb twice: reuse THUMB-NAME.
@@ -1610,10 +1612,12 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 ;;
 (defun dired-switches-escape-p (switches)
   "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
-  ;; Do not match things like "--block-size" that happen to contain "b".
-  (if (> emacs-major-version 21)        ; SWITCHES must be a string here, not nil.
-      (diredp-string-match-p "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
-    (diredp-string-match-p "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches)))
+  (if (fboundp 'dired-switches-check)   ; Emacs 24.4+ - see Emacs bug #17218.
+      (dired-switches-check switches "escape" "b")
+    ;; Do not match things like "--block-size" that happen to contain "b".
+    (if (> emacs-major-version 21)      ; SWITCHES must be a string here, not nil.
+        (diredp-string-match-p "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
+      (diredp-string-match-p "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches))))
 
 
 ;; From `dired.el'
