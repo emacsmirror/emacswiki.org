@@ -24,3 +24,10 @@ Should be OK now - please download and try the latest.  (Emacs Dev changed the d
 
 -- DrewAdams 2014-05-02 15:12 UTC
 
+
+----
+
+Thank you, DrewAdams, it is working correctly now.
+
+-- Anonymous 2014-05-03 03:42 UTC
+
