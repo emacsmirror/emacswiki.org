@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  4 10:41:47 2014 (-0800)
+;; Last-Updated: Sat May  3 08:36:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 4966
+;;     Update #: 4976
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -70,14 +70,14 @@
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
 ;;    `Info-insert-breadcrumbs-in-mode-line' (Emacs 23+),
-;;    `Info-isearch-search-p' (Emacs 23+), `info-quotation-regexp',
-;;    `Info-search-beg' (Emacs 23+), `Info-search-end' (Emacs 23+).
+;;    `Info-isearch-search-p' (Emacs 23+), `Info-search-beg' (Emacs
+;;    23+), `Info-search-end' (Emacs 23+).
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal' (Emacs 23+),
 ;;    `Info-merged-map', `Info-mode-syntax-table',
-;;    `info-quoted+<>-regexp'.
+;;    `info-quotation-regexp', `info-quoted+<>-regexp'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -202,6 +202,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/03 dadams
+;;     info-quotation-regexp, info-quoted+<>-regexp:
+;;       Removed double * and moved openers outside \(...\) group.
 ;; 2014/03/04 dadams
 ;;     Renamed Info-toggle-breadcrumbs-in-header-line to Info-toggle-breadcrumbs-in-header.
 ;;       Declared old name obsolete.
@@ -4234,22 +4237,22 @@ You are prompted for the depth value."
 ;; is escaped by a backslash.  So we check those cases explicitly and don't highlight them.
 (defvar info-quotation-regexp
   (if (< emacs-major-version 21)
-      (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|" ; "..."
-              "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'") ; `...'
+      (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|"   ; "..."
+              "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'")        ; `...'
     (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-            "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'")) ; `...'
+            "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'"))         ; `...'
   "Regexp to match `...', \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
 
 (defvar info-quoted+<>-regexp
   (if (< emacs-major-version 21)
-      (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|" ; "..."
-              "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
-              "\\(<[^>]*\\|\\\\\\(.\\|[\n]\\)\\)*>") ; <...>
+      (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|"   ; "..."
+              "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
+              "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>")        ; <...>
     (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-            "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"
-            "\\(<[^>]*\\|\\\\\\(.\\|[\n]\\)\\)*>")) ; <...>
+            "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
+            "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>")) ; <...>
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains > then that character must be backslashed.")
 
