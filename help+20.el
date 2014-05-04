@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:04:43 2013 (-0800)
+;; Last-Updated: Sun May  4 10:27:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2205
+;;     Update #: 2208
 ;; URL: http://www.emacswiki.org/help+20.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -92,6 +92,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     Soft-require info+20.el (new) instead of info+.el.
 ;; 2012/09/24 dadams
 ;;     describe-file: Added optional arg NO-ERROR-P.
 ;; 2012/08/21 dadams
@@ -250,8 +252,8 @@
 
 (require 'info nil t) ;; (no error if not found):
                       ;; Info-exit, Info-goto-node, Info-goto-emacs-key-command-node
-(require 'info+ nil t) ;; (no error if not found):
-                       ;; Info-goto-emacs-key-command-node (returns found-p)
+(require 'info+20 nil t) ;; (no error if not found):
+                         ;; Info-goto-emacs-key-command-node (returns found-p)
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
@@ -1152,7 +1154,7 @@ Function `Info-goto-emacs-key-command-node' is used to look up KEY."
   (let* ((described-p  (if (fboundp 'naked-key-description)
                            (naked-key-description key)
                          (key-description key)))
-         ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
+         ;; The version of `Info-goto-emacs-key-command-node' defined in `info+20.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
          (documented-p (Info-goto-emacs-key-command-node key))) ; nil if have only std version
     (when (and (not documented-p)(get-buffer-window "*info*" 'visible)) (Info-exit))
