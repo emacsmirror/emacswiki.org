@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:40:56 2013 (-0800)
+;; Last-Updated: Sun May  4 13:35:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3708
+;;     Update #: 3714
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -130,6 +130,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     Emacs 20-22: soft-require info+20.el (new) instead of info+.el.
 ;; 2013/11/-8 dadams
 ;;     Added comment-region-lines to menu-bar-edit-region-menu.
 ;; 2013/10/19 dadams
@@ -400,7 +402,9 @@
   (require 'help+ nil t) ;; (no error if not found): help-on-click/key
   (require 'help-fns+ nil t)) ;; (no error if not found): describe-keymap
 
-(require 'info+ nil t) ;; (no error if not found): menu-bar-read-lispref, info-emacs-manual,
+(if (> emacs-major-version 22)
+    (require 'info+ nil t) ;; (no error if not found): menu-bar-read-lispref, info-emacs-manual
+  (require 'info+20) nil t)
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
@@ -1502,7 +1506,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   (define-key menu-bar-emacs-lisp-manual-menu [elisp-index-search]
     '(menu-item "    Index..." elisp-index-search
       :help "Look up a topic in the Emacs Lisp manual index")))
-(when (fboundp 'menu-bar-read-lispref)  ; Defined in `info+.el'.
+(when (fboundp 'menu-bar-read-lispref)  ; Defined in `info+.el' or `info+20.el'.
   (define-key menu-bar-emacs-lisp-manual-menu [menu-bar-read-lispref]
     '(menu-item "Manual" menu-bar-read-lispref
       :help "Read the Emacs Lisp reference manual"))
