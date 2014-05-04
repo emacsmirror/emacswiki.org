@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 11 14:37:51 2014 (-0800)
+;; Last-Updated: Sun May  4 14:13:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3003
+;;     Update #: 3013
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     Use new library info+20.el for Emacs prior to 23.  info+.el is now only for Emacs 23 and later.
 ;; 2014/02/11 dadams
 ;;     Autoload of insert-time-string: swapped last two args.  See Emacs bug #16725.
 ;; 2013/08/23 dadams
@@ -639,7 +641,10 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (require 'font-lock+ nil t))             ; Enhancements to `font-lock.el'.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'zoom-frm nil t))            ; Zoom frame, changing its font size.
-(eval-after-load "info" '(require 'info+ nil t)) ; Extensions to `info.el'.
+(eval-after-load "info"
+  '(if (> emacs-major-version 22)
+    (require 'info+ nil t)
+    (require 'info+20 nil t)))          ; Extensions to `info.el'.
 (require 'fuzzy-match nil t)
 (require 'swiss-move nil t)             ; Binary-search scrolling.
 ;; Load `menu-bar+.el' before `setup-keys.el'.  Load `setup-keys.el' before `replace+.el'.
@@ -677,8 +682,12 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (require 'dired-details+ nil t))      ; Enhancements to `dired-details.el'.
 (require 'savehist-20+ nil t)           ; Save your history lists.
 (eval-after-load "faces" '(require 'faces+ nil t)) ; Extensions to `faces.el'.
-(autoload 'menu-bar-read-lispref "info+" "Access the Emacs Lisp manual via `Info'." t)
-(autoload 'info-emacs-manual "info+" "Access the Emacs manual via \"Info\"." t)
+(when (> emacs-major-version 22)
+  (autoload 'menu-bar-read-lispref "info+" "Access the Emacs Lisp manual via `Info'." t)
+  (autoload 'info-emacs-manual "info+" "Access the Emacs manual via \"Info\"." t))
+(when (< emacs-major-version 23)
+  (autoload 'menu-bar-read-lispref "info+20" "Access the Emacs Lisp manual via `Info'." t)
+  (autoload 'info-emacs-manual "info+20" "Access the Emacs manual via \"Info\"." t))
 (eval-after-load "macros" '(require 'macros+ nil t)) ; Extensions to `macros.el'.
 (require 'mouse+ nil t)                       ; Extensions to `mouse.el'.
 (when (> emacs-major-version 21) (require 'iedit nil t))
