@@ -8,10 +8,14 @@ Lisp:delight.el
 
 ==Example usage==
 
+Modifying a single mode:
+
  (require 'delight)
- 
  (delight 'abbrev-mode " Abv" "abbrev")
+
+Modifying multiple modes:
  
+ (require 'delight)
  (delight '((abbrev-mode " Abv" abbrev)
             (smart-tab-mode " \\t" smart-tab)
             (eldoc-mode nil "eldoc")
