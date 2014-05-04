@@ -16,13 +16,13 @@ Lisp:delight.el
             (smart-tab-mode " \\t" smart-tab)
             (eldoc-mode nil "eldoc")
             (rainbow-mode)
-            (emacs-lisp-mode "Elisp" "lisp-mode")))
+            (emacs-lisp-mode "Elisp" :major)))
 
 The first argument is the mode symbol.
 
 The second argument is the replacement name to use in the mode line (or nil to hide it).
 
-The third argument is passed to `eval-after-load' and should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library. If this argument is nil, the mode symbol will be passed as the feature. In the above example, ##rainbow-mode## is the symbol for both the minor mode and the feature which provides it, and its lighter text will be hidden from the mode line.
+The third argument is either the keyword #:major# for major modes, or the library which defines the minor mode. For minor modes, this will passed to `eval-after-load' and so should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library). If this argument is nil, the mode symbol will be passed as the feature. In the above example, ##rainbow-mode## is the symbol for both the minor mode and the feature which provides it, and its lighter text will be hidden from the mode line.
 
 To find the library which defines a mode, use e.g.: ##M-x find-library RET emacs-lisp-mode RET##
 
@@ -37,7 +37,7 @@ Conversely, you may incorporate additional mode-line constructs in your replacem
 
  (delight 'emacs-lisp-mode
           '("Elisp" (lexical-binding ":Lex" ":Dyn"))
-          'lisp-mode)
+          :major)
 
 See `mode-line-format' for information about mode-line constructs, and ##M-: (info "(elisp) Mode Line Format")## for further details.
 
