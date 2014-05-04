@@ -3,9 +3,9 @@ part of skynet or there's a security exploit"</i>, e1f on #emacs
 
 == A note by the author ==
 
-* Language-related inconveniences are not considered bugs by the author.  fsbot knows how to understand the lisp commands you give it. It also /tries/ to understand some plain English, but we simply cannot - and do not aim to - make it a general English parser.  
+* *Language-related inconveniences* are not considered bugs by the author.  fsbot knows how to understand the lisp commands you give it. It also /tries/ to understand some plain English, but we simply cannot - and do not aim to - make it a general English parser.  
 
-* Overloading: Besides, English has a lot of operator overloading: multiple English-requests often conflict with each other in syntax. In such cases, fsbot's behavior always leans towards being an infobot when trying to parse your English request.
+* *Overloading:* Besides, English has a lot of operator overloading: multiple English-requests often conflict with each other in syntax. In such cases, fsbot's behavior always leans towards being an infobot when trying to parse your English request.
 
 * Most things you think of as bugs will get resolved if you simply use lisp instead. For example:
 
@@ -18,14 +18,14 @@ part of skynet or there's a security exploit"</i>, e1f on #emacs
 , why is unecho why not?
 </pre>
 
-* Indeed, fsbot's English parser is already *huge* and takes care of a lot of special cases. Further fine-tuning any one behavior almost always breaks others, and is never-ending. Best to simply talk to the bot in lisp for hairy cases.
+* *Huge*: Indeed, fsbot's English parser is already *huge* and takes care of a lot of special cases. Further fine-tuning any one behavior almost always breaks others. Also, this task is never-ending, and has been for 15 years :D. Best to simply talk to the bot in lisp for hairy cases.
   
-* Parse: Thus, to reiterate, most things you think of as bugs will get resolved if you simply use lisp instead of English. To aid the process, don't forget to use the ,parse "foo is bar" functionality to see lisp equivalents..
+* *The parse functionality*: Thus, to reiterate, most things you think of as bugs will get resolved if you simply use lisp instead of English. To aid the process, don't forget to use the ,parse "foo is bar" functionality to see lisp equivalents..
 
-* Similarly, the preferred, foolproof way to make fsbot do something in response to a keyword foo is to use ,(defun foo), rather than try ,foo is lisp (blah bla.) If you did the latter, then when you type ,foo blah, and if there happens to be another term called foo-blah in its database, fsbot may instead return the entry for the latter. That /is/ expected behavior because of its infobot-related functionality.
+* *Defun:* Similarly, the preferred, foolproof way to make fsbot do something in response to a keyword foo is to use ,(defun foo), rather than try ,foo is lisp (blah bla.) If you did the latter, then when you type ,foo blah, and if there happens to be another term called foo-blah in its database, fsbot may instead return the entry for the latter. That /is/ expected behavior because of its infobot-related functionality.
 
 
-Also, many/most of the bug reports on the rest of this page are outdated and/or fixed. For example, fsbot got immutable functions some time in 2005(?).
+* *Outdated:* Also, many/most of the bug reports on the rest of this page are outdated and/or fixed. For example, fsbot got immutable functions some time in 2005(?).
  
 - Deego, May 2014
 
