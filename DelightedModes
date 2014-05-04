@@ -1,6 +1,6 @@
 *Delight* enables you to easily customise how major and minor modes appear in the ModeLine.
 
-It is similar in purpose to DiminishedModes but it accounts for major modes as well as minor modes, and also incorporates the necessary `eval-after-load' call, which makes the configuration much simpler.
+It is similar in purpose to DiminishedModes but it accounts for major modes as well as minor modes, and also incorporates the necessary `eval-after-load' call for minor modes, which makes the configuration simpler.
 
 ==Download==
 
