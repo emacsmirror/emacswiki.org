@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Apr 29 18:00:42 2014 (-0700)
+;; Last-Updated: Sun May  4 14:26:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10887
+;;     Update #: 10891
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/05/04 dadams
+;;     Added: icicle-repeat-complex-command--called-interactively-skip.
+;;     icicle-repeat-complex-command: Apply trick used to fix Emacs bug #14136.
 ;; 2014/04/22 dadams
 ;;     icicle-apropos-*: Updated to use Emacs 24.4 apropos-user-option.
 ;; 2014/04/20 dadams
