@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 22 20:00:47 2014 (-0700)
+;; Last-Updated: Sun May  4 13:36:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2177
+;;     Update #: 2180
 ;; URL: http://www.emacswiki.org/help+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns', `help-fns', `info', `info+',
+;;   `avoid', `fit-frame', `frame-fns', `info', `info+20',
 ;;   `misc-fns', `naked', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -76,6 +76,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     Emacs 20-22: soft-require info+20.el (new) instead of info+.el.
 ;; 2014/04/22 dadams
 ;;     Updated for Emacs 24.4: with-help-window, not with-output-to-temp-buffer - bug #17109.
 ;;     help-on-click/key: save-excursion.set-buffer -> with-current-buffer.
@@ -121,8 +123,10 @@
 
 (require 'info nil t)  ;; (no error if not found):
                        ;; Info-exit, Info-goto-node, Info-goto-emacs-key-command-node
-(require 'info+ nil t) ;; (no error if not found):
-                       ;; Info-goto-emacs-key-command-node (returns found-p)
+(if (> emacs-major-version 22);; (no error if not found):
+    ;; Info-goto-emacs-key-command-node (returns found-p)
+    (require 'info+ nil t)
+  (require 'info+20 nil t))
 (require 'thingatpt nil t)  ;; (no error if not found): symbol-at-point
 
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found)
