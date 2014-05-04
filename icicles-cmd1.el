@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Apr 22 13:08:08 2014 (-0700)
+;; Last-Updated: Sun May  4 14:25:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26956
+;;     Update #: 26961
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -361,6 +361,7 @@
 ;;    `icicle-remove-buffer-config-action',
 ;;    `icicle-remove-from-recentf-candidate-action',
 ;;    `icicle-remove-saved-set-action',
+;;    `icicle-repeat-complex-command--called-interactively-skip',
 ;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-as-command',
 ;;    `icicle-shell-dynamic-complete-as-environment-variable',
@@ -3240,12 +3241,29 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
                     (and (stringp (car command-history))
                          (setq command-history  (cdr command-history))))))
           ;; If command to be redone does not match front of history, add it to the history.
-          (or (equal newcmd (car command-history))
-              (setq command-history  (cons newcmd command-history)))
-          (eval newcmd))
+          (unless (equal newcmd (car command-history))
+            (setq command-history  (cons newcmd command-history)))
+          (if (> emacs-major-version 23) ; Trick `called-interactively-p' into thinking that this is an
+              (unwind-protect           ; interactive call of NEWCMD (Emacs bug #14136).
+                   (progn (add-hook 'called-interactively-p-functions
+                                    #'icicle-repeat-complex-command--called-interactively-skip)
+                          (eval newcmd))
+                (remove-hook 'called-interactively-p-functions
+                             #'icicle-repeat-complex-command--called-interactively-skip))
+            (eval newcmd)))
       (if command-history
           (icicle-user-error "Argument %d is beyond length of command history" arg)
         (icicle-user-error "There are no previous complex commands to repeat")))))
+
+;; Same as `repeat-complex-command--called-interactively-skip' in `simple.el', but tests for
+;; `icicle-repeat-complex-command', not `repeat-complex-command'.
+(when (> emacs-major-version 23)
+  (defun icicle-repeat-complex-command--called-interactively-skip (i _frame1 frame2)
+    "If currently `icicle-repeat-complex-command', return 1 to skip over it."
+    (and (eq 'eval (cadr frame2))  (eq 'icicle-repeat-complex-command
+                                       (cadr (backtrace-frame i #'called-interactively-p)))
+         1))
+  (byte-compile 'icicle-repeat-complex-command))
 
 (defun icicle-add-entry-to-saved-completion-set (set-name entry type)
   "Add ENTRY to saved completion-candidates set SET-NAME.
