@@ -1,6 +1,11 @@
 = Overview =
 
-/Note:/ '''[::IswitchB]''' package is part of standard Emacs; 
+[new:DrewAdams:2014-05-04 19:56 UTC]
+'''''Note:'''''  '''[::IswitchB]''' was part of GnuEmacs, but it has been removed starting with Emacs 24.4.  The Emacs `NEWS' (`C-h N') says to use IcompleteMode instead.  Emacs Dev has completely removed %%IswitchB%% from the product, and it is not available on GNU ELPA.  You can still find it, however -- here, for example:
+http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/iswitchb.el
+[new]
+
+
 
 By default, `C-x b' calls `switch-to-buffer'. An alternative, `iswitchb-buffer', is also available.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  And it is not limited to the beginning of the buffer name, either.  That means you could type "tch" to switch to the "*scratch*" buffer.
 
