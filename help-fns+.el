@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  2 07:32:58 2014 (-0700)
+;; Last-Updated: Sun May  4 13:32:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1800
+;;     Update #: 1829
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,9 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
-;;   `wid-edit', `wid-edit+'.
+;;   Symbol's value as variable is void: cl-builtin-gethash.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,6 +116,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     Use called-interactively only for Emacs 23.2+, since we pass it an arg.
 ;; 2014/05/02 dadams
 ;;     describe-package: Updated for Emacs 24.4 - defstruct package-desc.
 ;; 2014/04/21 dadams
@@ -764,8 +764,7 @@ By default, describe the current buffer."
     ;; (interactive "bDescribe buffer: ")
     (interactive "@")
     (unless buffer-name (setq buffer-name  (buffer-name)))
-    (help-setup-xref `(describe-buffer ,buffer-name)
-                     (if (fboundp 'called-interactively) (called-interactively-p 'interactive) (interactive-p)))
+    (help-setup-xref `(describe-buffer ,buffer-name) (called-interactively-p 'interactive))
     (let ((buf  (get-buffer buffer-name)))
       (unless (and buf  (buffer-live-p buf))  (error(format "No such live buffer `%s'" buffer-name)))
       (let* ((file       (or (buffer-file-name buf)
@@ -866,9 +865,8 @@ have their own back/forward buttons."
                                                          (format "indicator%s" indicator))))
                   (with-current-buffer standard-output
                     (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
-                  (Info-make-manuals-xref mode-function t nil (not (if (fboundp 'called-interactively)
-                                                                       (called-interactively-p 'interactive)
-                                                                     (interactive-p))))) ; Link manuals.
+                  (Info-make-manuals-xref mode-function
+                                          t nil (not (called-interactively-p 'interactive)))) ; Link manuals.
                 (insert-button pretty-minor-mode 'action (car help-button-cache)
                                'follow-link t 'help-echo "mouse-2, RET: show full information")
                 (newline)))
@@ -894,9 +892,8 @@ have their own back/forward buttons."
                (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
           (with-current-buffer standard-output
             (insert maj-doc)
-            (Info-make-manuals-xref maj t nil (not (if (fboundp 'called-interactively)
-                                                       (called-interactively-p 'interactive)
-                                                     (interactive-p))))))))) ; Link to manuals.
+            (Info-make-manuals-xref
+             maj t nil (not (called-interactively-p 'interactive)))))))) ; Link to manuals.
   )
 
 
@@ -931,7 +928,10 @@ Return the description that was displayed, as a string."
                                  (and (if current-prefix-arg (commandp fn) (fboundp fn))  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)) current-prefix-arg)))
   (if (or (not function)  (not (fboundp (intern-soft function))))
-      (when (if (fboundp 'called-interactively) (called-interactively-p 'interactive) (interactive-p))
+      (when (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                    (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                (called-interactively-p 'interactive)
+              (interactive-p))
         (if (not function)
             (message "You did not specify a defined function")
           (message "`%s' is not a defined function" function)))
@@ -939,7 +939,10 @@ Return the description that was displayed, as a string."
       (error "Not a defined Emacs command (interactive function): `%s'" function))
     ;;$$$  (unless (fboundp function) (error "Not a defined Emacs function: `%s'" function))
     (help-setup-xref (list #'describe-function function)
-                     (if (fboundp 'called-interactively) (called-interactively-p 'interactive) (interactive-p)))
+                     (if (or (> emacs-major-version 23)
+                             (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                         (called-interactively-p 'interactive)
+                       (interactive-p)))
     (save-excursion
       (if (fboundp 'with-help-window)
           (with-help-window  (help-buffer) ; Emacs 24.4 needs this - see Emacs bug #17109.
@@ -1782,7 +1785,11 @@ it is displayed along with the global value."
       (unless (buffer-live-p buffer) (setq buffer (current-buffer)))
       (unless (frame-live-p frame) (setq frame (selected-frame)))
       (if (not (symbolp variable))
-          (when (called-interactively-p 'interactive) (message "You did not specify a variable"))
+          (when (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                        (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                    (called-interactively-p 'interactive)
+                  (interactive-p))
+            (message "You did not specify a variable"))
         (unless (or (not optionp)  (user-variable-p variable))
           (error "Not a defined Emacs user option: `%s'" variable))
         ;;$$ (unless (boundp variable) (error "Not a defined Emacs variable: `%s'" variable))
@@ -1796,7 +1803,11 @@ it is displayed along with the global value."
                 (with-current-buffer buffer
                   (setq val    (symbol-value variable)
                         locus  (variable-binding-locus variable)))))
-            (help-setup-xref (list #'describe-variable variable buffer) (called-interactively-p 'interactive))
+            (help-setup-xref (list #'describe-variable variable buffer)
+                             (if (or (> emacs-major-version 23)
+                                     (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                                 (called-interactively-p 'interactive)
+                               (interactive-p)))
             (with-help-window (help-buffer)
               (with-current-buffer buffer
                 (prin1 variable)
@@ -1939,7 +1950,12 @@ file local variable.\n")
               (when (boundp 'Info-virtual-files) ; Emacs 23.2+
                 (unless valvoid
                   (with-current-buffer standard-output ; Link to manuals.
-                    (Info-make-manuals-xref variable nil nil (not (called-interactively-p 'interactive))))))
+                    (Info-make-manuals-xref variable nil nil
+                                            (not (if (or (> emacs-major-version 23)
+                                                         (and (= emacs-major-version 23)
+                                                              (> emacs-minor-version 1)))
+                                                     (called-interactively-p 'interactive)
+                                                   (interactive-p)))))))
               (with-current-buffer standard-output (buffer-string))))))))) ; Return the text displayed.
 
 
@@ -2494,7 +2510,10 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
   (interactive "FDescribe file: \nP")
   (unless filename (setq filename default-directory))
   (help-setup-xref `(describe-file ,filename ,internal-form-p ,no-error-p)
-                   (if (fboundp 'called-interactively) (called-interactively-p 'interactive) (interactive-p)))
+                   (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                           (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                       (called-interactively-p 'interactive)
+                     (interactive-p)))
   (let ((attrs  (file-attributes filename))
         ;; Functions `bmkp-*' are defined in `bookmark+.el'.
         (bmk    (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
@@ -2538,7 +2557,9 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                         (string-match-p (image-file-name-regexp) filename)
                                       (save-match-data
                                         (string-match (image-file-name-regexp) filename)))
-                                    (progn (when (if (fboundp 'called-interactively)
+                                    (progn (when (if (or (> emacs-major-version 23)
+                                                         (and (= emacs-major-version 23)
+                                                              (> emacs-minor-version 1)))
                                                      (called-interactively-p 'interactive)
                                                    (interactive-p))
                                              (message "Gathering image data..."))  t)
@@ -2622,14 +2643,19 @@ Completion is available for the keymap name."
                                                 nil 'ADD-HELP-BUTTONS)
                  (documentation-property keymap 'variable-documentation))))
     (help-setup-xref (list #'describe-keymap keymap)
-                     (if (fboundp 'called-interactively) (called-interactively-p 'interactive) (interactive-p)))
+                     (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                             (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                         (called-interactively-p 'interactive)
+                       (interactive-p)))
     (if (fboundp 'with-help-window)
         (with-help-window (help-buffer)
           (princ name) (terpri) (princ (make-string (length name) ?-)) (terpri) (terpri)
           (when doc
             (when (boundp 'Info-virtual-files) ; Emacs 23.2+
               (with-current-buffer "*Help*"    ; Link to manuals.
-                (Info-make-manuals-xref name nil nil (not (if (fboundp 'called-interactively)
+                (Info-make-manuals-xref name nil nil (not (if (or (> emacs-major-version 23)
+                                                                  (and (= emacs-major-version 23)
+                                                                       (> emacs-minor-version 1)))
                                                               (called-interactively-p 'interactive)
                                                             (interactive-p))))))
             (princ doc) (terpri) (terpri))
@@ -2640,7 +2666,9 @@ Completion is available for the keymap name."
         (when doc
           (when (boundp 'Info-virtual-files) ; Emacs 23.2+
             (with-current-buffer "*Help*"    ; Link to manuals.
-              (Info-make-manuals-xref name nil nil (not (if (fboundp 'called-interactively)
+              (Info-make-manuals-xref name nil nil (not (if (or (> emacs-major-version 23)
+                                                                (and (= emacs-major-version 23)
+                                                                     (> emacs-minor-version 1)))
                                                             (called-interactively-p 'interactive)
                                                           (interactive-p))))))
           (princ doc) (terpri) (terpri))
