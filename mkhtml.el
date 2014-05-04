@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Thu Dec 26 09:41:50 2013 (-0800)
+;; Last-Updated: Sun May  4 14:16:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2332
+;;     Update #: 2339
 ;; URL: http://www.emacswiki.org/mkhtml.el
 ;; Doc URL: http://emacswiki.org/SaveAsHtml
 ;; Keywords: tools, hypermedia, www, info
@@ -53,7 +53,7 @@
 ;; file with `mkhtml-file' is an HTML file for each node in the Info
 ;; file.  To produce a single HTML file with multiple Info nodes using
 ;; mkhtml, you need to first merge the nodes with the command
-;; `Info-merge-subnodes' (see file `info+.el').
+;; `Info-merge-subnodes' (see file `info+20.el').
 ;;
 ;; -------------------------------------------------------------------
 ;; Main new functions defined here:
@@ -115,7 +115,7 @@
 ;; `frame-fns.el': non-interactive frame and window functions
 ;; `htmlize.el': create HTML from font-lock'd buffers
 ;; `icomplete+.el': extends GNU `icomplete.el'
-;; `info+.el': extends GNU `info.el'
+;; `info+20.el': extends GNU `info.el'
 ;;    (uses `fit-frame.el', `strings.el', `thingatpt+.el')
 ;; `misc-fns.el': miscellaneous non-interactive functions
 ;; `mkhtml.el' (this file): extends `htmlize.el' to treat hyperlinks
@@ -131,18 +131,18 @@
 ;;     (require 'mkhtml)
 ;;
 ;; Only `mkhtml-htmlize.el' is strictly required by `mkhtml.el', but
-;; `info+.el' is also needed if you want to take advantage of certain
-;; functionalities in `mkhtml.el' (see next paragraph).  The other
-;; files in this package are not strictly required, but they let you
-;; take best advantage of `info+.el'.
+;; `info+20.el' is also needed if you want to take advantage of
+;; certain functionalities in `mkhtml.el' (see next paragraph).  The
+;; other files in this package are not strictly required, but they let
+;; you take best advantage of `info+20.el'.
 ;;
 ;; Commands `mkhtml-merged-info-buffer' and `mkhtml-any-buffer',
 ;; defined here, are able to convert merged Info buffers, which are
-;; created by command `Info-merge-subnodes' (see file `info+.el').  A
-;; merged Info buffer contains a merge of an Info node with all of its
-;; subnodes (perhaps recursively).  This can be useful for creating
-;; larger HTML files containing several nodes (otherwise, a separate
-;; HTML file is created for each node).
+;; created by command `Info-merge-subnodes' (see file `info+20.el').
+;; A merged Info buffer contains a merge of an Info node with all of
+;; its subnodes (perhaps recursively).  This can be useful for
+;; creating larger HTML files containing several nodes (otherwise, a
+;; separate HTML file is created for each node).
 ;;
 ;; File `setup-info.el' can be useful if you want to make HTML
 ;; versions of large Info indexes such as the Emacs manual Key Index.
@@ -194,6 +194,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/04 dadams
+;;     info+.el -> info+20.el, everywhere.
 ;; 2007/01/19 dadams
 ;;     Split H REF, so can upload to Emacs Wiki (else detected as spam).
 ;; 2001/01/05 dadams
@@ -240,7 +242,7 @@
      (eval-when-compile (require 'cl))) ;; (plus, for Emacs <20: when, unless)
 (require 'dired) ;; dired-get-filename, dired-get-marked-files,
                  ;; dired-replace-in-string
-(require 'info+ nil t) ;; (no error if not found): Info-merged-menu, Info-merged-map
+(require 'info+20 nil t) ;; (no error if not found): Info-merged-menu, Info-merged-map
 (require 'info) ;; Info-select-node, Info-get-token
 (require 'mkhtml-htmlize) ;; htmlize-face-boldp, htmlize-face-hash,
                           ;; htmlize-face-italicp, htmlize-face-rgb-background,
@@ -251,6 +253,8 @@
                           ;; htmlize-symbol-face-p, htmlize-version
 (require 'easymenu) ;; easy-menu-do-add-item
 
+;; Quiet the byte-compiler.
+(defvar info-file-face)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -262,7 +266,7 @@
   '("HTMLize Buffer" . mkhtml-any-buffer))
 
 ;; Add commands to the Info menubar menus.
-(when (and (boundp 'Info-mode-menu) Info-mode-menu) ; Defined in `info+.el'
+(when (and (boundp 'Info-mode-menu) Info-mode-menu) ; Defined in `info+20.el'
   (define-key Info-mode-map "c" 'mkhtml-info-buffer)
   (define-key Info-mode-map "w" 'mkhtml-file)
   (cond ((lookup-key Info-mode-menu [Edit\ Node]) ; Place before Edit Node.
@@ -280,7 +284,7 @@
                                 ["HTMLize Whole Info File" mkhtml-file t]
                                 "Exit"))))
 
-(when (and (boundp 'Info-merged-menu) Info-merged-menu) ; Defined in `info+.el'
+(when (and (boundp 'Info-merged-menu) Info-merged-menu) ; Defined in `info+20.el'
   (define-key Info-merged-map "c" 'mkhtml-buffer)
   (easy-menu-do-add-item Info-merged-menu ; Place before Quit.
                          ["HTMLize Buffer" mkhtml-merged-info-buffer t]
@@ -462,10 +466,10 @@ Dired buffers are treated as by `mkhtml-dired'.
 
 Info buffers are treated as by `mkhtml-info-buffer'.
 
-Merged Info buffers are treated as by `mkhtml-merged-info-buffer'.
-A merged Info buffer is one created by `Info-merge-subnodes' (defined
-in file `info+.el'), which is a merge of an Info node with all of
-its subnodes.
+Merged Info buffers are treated as by `mkhtml-merged-info-buffer'.  A
+merged Info buffer is one created by `Info-merge-subnodes' (defined in
+file `info+20.el'), which is a merge of an Info node with all of its
+subnodes.
 
 Other buffers are treated as by `mkhtml-plain-buffer': Note that HTML
 links resulting from mouse-face'd text there are likely to point
@@ -526,14 +530,14 @@ Node:[ \t]+[^:,\t\n]+,?")))
                 (let ((menu-item (or (mkhtml-non-file-menu-item)
                                      (mkhtml-file-menu-item))))
                   ;; Sub-node title line in merged Info buffer (from
-                  ;;`Info-merge-subnodes', defined in `info+.el').
+                  ;;`Info-merge-subnodes', defined in `info+20.el').
                   ;; Create anchor.
                   (when menu-item
                     (princ (concat "<A name=\"" menu-item "\">") html-buf))))
 
                ;; mouse-face link in EITHER a merged Info buffer (from
                ;;                           `Info-merge-subnodes', defined in
-               ;;                           `info+.el')
+               ;;                           `info+20.el')
                ;;                    OR a non-Info buffer.
                ((and no-node-p (>= (point) last-mouse-change))
                 (if (memq major-mode '(dired-mode vc-dired-mode))
@@ -758,7 +762,7 @@ IGNORED is ignored."
   "HTMLize merged Info BUFFER (default: current).  Mouse-face => links.
 Save merged Info BUFFER as a new HTML file in directory HTML-DIR.
 A merged Info buffer is one created via `Info-merge-subnodes',
-which is defined in file `info+.el'.
+which is defined in file `info+20.el'.
 
 Text with `mouse-face' property is converted to HTML links.
 The HTML file is named after the buffer.
