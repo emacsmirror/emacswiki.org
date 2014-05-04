@@ -8,10 +8,11 @@ Lisp:delight.el
 
 ==Example usage==
 
-Modifying a single mode:
+Modifying a single mode at a time:
 
  (require 'delight)
  (delight 'abbrev-mode " Abv" "abbrev")
+ (delight 'rainbow-mode)
 
 Modifying multiple modes:
  
