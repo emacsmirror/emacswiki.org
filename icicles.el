@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.04.06
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 29 07:16:14 2014 (-0700)
+;; Last-Updated: Sun May  4 14:26:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23547
+;;     Update #: 23548
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1228,6 +1228,7 @@
 ;;    `icicle-remove-if', `icicle-remove-if-not',
 ;;    `icicle-remove-property', `icicle-replace-mct-cand-in-mct',
 ;;    `icicle-remove-saved-set-action', `icicle-repeat-command',
+;;    `icicle-repeat-complex-command--called-interactively-skip',
 ;;    `icicle-replace-input-w-parent-dir', `icicle-require-match-p',
 ;;    `icicle-restore-completion-keys',
 ;;    `icicle-restore-custom-minibuffer-keys',
