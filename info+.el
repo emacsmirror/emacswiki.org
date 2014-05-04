@@ -1,4 +1,4 @@
-;;; info+.el --- Extensions to `info.el'.
+;;; info+.el --- Extensions to `info.el'.     -*- coding:utf-8 -*-
 ;;
 ;; Filename: info+.el
 ;; Description: Extensions to `info.el'.
@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 13:51:06 2014 (-0700)
+;; Last-Updated: Sun May  4 14:09:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5095
+;;     Update #: 5101
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -202,6 +202,7 @@
 ;;
 ;; 2014/05/04 dadams
 ;;     REMOVED SUPPORT for Emacs 20-22.  That support is offered by a new library now: info+20.el.
+;;     Added coding:utf-8 declaration.  Replace \x2018, \x2019 with literal ‘ and ’, since now Emacs 23+.
 ;; 2014/05/03 dadams
 ;;     info-quotation-regexp, info-quoted+<>-regexp:
 ;;       Handle also curly single quotes (Emacs 24.4+).
@@ -2981,38 +2982,38 @@ You are prompted for the depth value."
   (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line)))
 
 
-;; Match has, inside "...", `...', or \x2018...\x2019, zero or more of these characters:
-;;   - any character except ", ', or \x2019, respectively
+;; Match has, inside "...", `...', or ‘...’, zero or more of these characters:
+;;   - any character except ", ', or ’, respectively
 ;;   - \ followed by any character
 ;;
 ;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
-;; The regexp matches also `...', \x2018...\x2019, and "..." where at least one of the
-;; `, ', \x2018, \x2019, or " is escaped by a backslash.
+;; The regexp matches also `...', ‘...’, and "..." where at least one of the
+;; `, ', ‘, ’, or " is escaped by a backslash.
 ;; So we check those cases explicitly and do not highlight them.
 ;;
 (defvar info-quotation-regexp
   (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
           "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
-          "\x2018\\([^\x2019]\\|\\\\\\(.\\|[\n]\\)\\)*\x2019") ; \x2018...\x2019
-  "Regexp to match `...', \x2018...\x2019, \"...\", or just '.
+          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’") ; ‘...’
+  "Regexp to match `...', ‘...’, \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
 
 (defvar info-quoted+<>-regexp
   (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
           "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
-          "\x2018\\([^\x2019]\\|\\\\\\(.\\|[\n]\\)\\)*\x2019\\|" ; \x2018...\x2019
+          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|" ; ‘...’
           "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>") ; <...>
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains > then that character must be backslashed.")
 
 (defun info-fontify-quotations ()
-  "Fontify `...', \x2018...\x2019, \"...\", and possibly <...> and single '.
+  "Fontify `...', ‘...’, \"...\", and possibly <...> and single '.
 If `Info-fontify-angle-bracketed-flag' then fontify <...> also.
 If `Info-fontify-single-quote-flag' then fontify singleton ' also.
 
- `...',  \x2018...\x2019, and <...>\t- use face `info-quoted-name'
+ `...',  ‘...’, and <...>\t- use face `info-quoted-name'
  \"...\"\t- use face `info-string'
  '\t- use face `info-single-quote'"
   (let ((regexp    (if Info-fontify-angle-bracketed-flag info-quoted+<>-regexp info-quotation-regexp))
@@ -3023,13 +3024,13 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
                   (save-match-data (looking-at "\\(`\\\\+'\\)")))
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)))
-            ((and (eq (aref (match-string 0) 0) ?\x2018) ; Single-quote wrapped backslashes:
-                  (goto-char (match-beginning 0)) ; \x2018\\x2019, \x2018\\\x2019, \x2018\\\\x2019, etc. 
-                  (save-match-data (looking-at "\\(\x2018\\\\+\x2019\\)")))
+            ((and (eq (aref (match-string 0) 0) ?‘) ; Single-quote wrapped backslashes:
+                  (goto-char (match-beginning 0)) ; ‘\’, ‘\\’, ‘\\\’, etc. 
+                  (save-match-data (looking-at "\\(‘\\\\+’\\)")))
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)))
-            ((and (memq (aref (match-string 0) 0) '(?` ?\x2018)) ; `...', \x2018...\x2019
-                  (goto-char (match-beginning 0)) ; If ` or \x2018 is preceded by \, then skip it
+            ((and (memq (aref (match-string 0) 0) '(?` ?‘)) ; `...', ‘...’
+                  (goto-char (match-beginning 0)) ; If ` or ‘ is preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
             ((and Info-fontify-angle-bracketed-flag
@@ -3037,7 +3038,7 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
                   (goto-char (match-beginning 0))
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
-            ((memq (aref (match-string 0) 0) '(?` ?\x2018)) ; `...', \x2018...\x2019
+            ((memq (aref (match-string 0) 0) '(?` ?‘)) ; `...', ‘...’
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
             ((and Info-fontify-angle-bracketed-flag
@@ -3055,7 +3056,7 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
                                 property 'info-single-quote)
              (goto-char (match-end 0)) (forward-char 1))
             ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
-                  (not (string= "\x2019" (buffer-substring (match-beginning 0) (match-end 0)))))
+                  (not (string= "’" (buffer-substring (match-beginning 0) (match-end 0)))))
              (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
              (goto-char (match-end 0)) (forward-char 1))
             (t
