@@ -8,7 +8,7 @@
 ;; Copyright (C) 2009, Peter Lunicks, all rights reversed.
 ;; Created: 2008
 ;; Version: 0.1.9
-;; Last-Updated: 2013-03-09 20:56:35
+;; Last-Updated: 2014-05-05 04:10:56
 ;; URL: http://www.emacswiki.org/emacs/download/sr-speedbar.el
 ;; Keywords: speedbar, sr-speedbar.el
 ;; Compatibility: GNU Emacs 22 ~ GNU Emacs 24
@@ -308,8 +308,11 @@ Default is nil."
   :type 'boolean
   :set (lambda (symbol value)
          (set symbol value)
-         (when (ad-advised-definition-p 'other-window)
-           (sr-speedbar-handle-other-window-advice value)))
+         (if (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+             (when (ad-is-advised 'other-window)
+                   (sr-speedbar-handle-other-window-advice value))
+           (when (ad-advised-definition-p 'other-window)
+             (sr-speedbar-handle-other-window-advice value))))
   :group 'sr-speedbar)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Constant ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
