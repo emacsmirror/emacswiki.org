@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.124
+;; Version: 0.125
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 5-May-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Take out narrowing (Issue #41)
 ;; 5-May-2014    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Fix Issue #40
@@ -1851,22 +1854,18 @@ mode."
       (setq p1 (mark t))
       (setq p2 (point)))
     (save-excursion
-      (save-restriction
-        (narrow-to-region p1 p2)
-        (condition-case err
-            (run-hook-with-args 'auto-indent-after-yank-hook (point-min) (point-max))
-          (error
-           (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err)))))
+      (condition-case err
+          (run-hook-with-args 'auto-indent-after-yank-hook p1 p2)
+        (error
+         (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err))))
       (cond
        (auto-indent-on-yank-or-paste
         (indent-region p1 p2)))
-      (save-restriction
-        (narrow-to-region p1 p2)
-        (cond
-         ((eq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
-          (tabify (point-min) (point-max)))
-         (auto-indent-mode-untabify-on-yank-or-paste
-          (untabify (point-min) (point-max))))))))
+      (cond
+       ((eq auto-indent-mode-untabify-on-yank-or-paste 'tabify)
+        (tabify p1 p2))
+       (auto-indent-mode-untabify-on-yank-or-paste
+        (untabify p1 p2))))))
 
 (defun auto-indent-according-to-mode ()
   "Indent according to mode.
