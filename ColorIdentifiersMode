@@ -3,5 +3,9 @@ Color Identifiers is a minor mode for Emacs that highlights each source code ide
 * [https://github.com/ankurdave/color-identifiers-mode Color Identifiers Mode]
 * [http://youtu.be/g4qsiAo2aac Demo on YouTube]
 
+== Alternatives ==
+
+IdleHighlight highlights all occurrences in the buffer of the word under the point.
+
 ----
 CategoryFaces
