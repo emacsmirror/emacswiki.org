@@ -237,6 +237,9 @@ to my .emacs (which is when the problems started occuring.)
 
 I've experimented with other fonts and different font sizes. This seems robust.
 
+==== True Fullscreen for Emacs 24.4 ====
+Emacs 24.4 now supports true fullscreen on Windows, including support for multiple monitors.
+
 === X Windows ===
 ==== Emacs Frame Properties ====
 
