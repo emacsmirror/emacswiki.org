@@ -5,7 +5,11 @@ Color Identifiers is a minor mode for Emacs that highlights each source code ide
 
 == Alternatives ==
 
-IdleHighlight highlights all occurrences in the buffer of the word under the point.
+
+* HighlightLispFunctions (`hdefd-highlight-mode', <tt>[[hl-defined.el]]</tt>) highlights defined EmacsLisp symbols (functions or variables or both), and you can cycle among them.  Alternatively,  highlight the ''un''defined
+symbols.
+* `hlt-highlight-symbol', in HighlightLibrary, highlights all occurrences of a symbol (default, at point or mouse) in the [[region]] or [[buffer]]. You can cycle among the occurrences.
+* IdleHighlight highlights all occurrences in the buffer of the word under the point.
 
 ----
 CategoryFaces
