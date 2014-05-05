@@ -96,6 +96,10 @@
 
 ;;; Change log:
 ;;
+;; * 05 May 2014:
+;;   * Christian Brassat:
+;;      * 'ad-advised-definition-p' is not supported since Emacs 24.4.
+;;
 ;; * 09 March 2013:
 ;;   * Tharre:
 ;;      * Remove Emacs 21 compatibility code as it fails to compile on Emacs 24.
