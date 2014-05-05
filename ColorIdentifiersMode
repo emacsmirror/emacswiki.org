@@ -14,6 +14,7 @@ Color Identifiers is a minor mode for Emacs that highlights each source code ide
 symbols.
 * `hlt-highlight-symbol', in HighlightLibrary, highlights all occurrences of a symbol (default, at point or mouse) in the [[region]] or [[buffer]]. You can cycle among the occurrences.
 * IdleHighlight highlights all occurrences in the buffer of the word under the point.
+* [https://github.com/Fanael/rainbow-identifiers Rainbow identifiers mode] is an Emacs minor mode providing highlighting of identifiers based on their names. Each identifier gets a color based on a hash of its name.
 
 ----
 CategoryFaces
