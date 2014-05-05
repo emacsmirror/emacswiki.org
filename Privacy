@@ -6,6 +6,7 @@ The wiki uses a cookie that doesn't identify individual users. The cookie is use
 If you examine the cookie, you need to split it along the URL-encoded 0x1e byte (%251e). A typical user's cookie might look like this:
 ##euihnscuskc 1## (which indicates that you have answered the WikiPedia:CAPTCHA at least once), ##bootstrap 0## (if you prefer the Classic [[CSS]])
 and ##username AlexSchroeder## (which says which username you'd like to use when editing a page).
+Nothing requires usernames to be unique.
 
 == Tracking of IP numbers and hostnames of readers trackers by the wiki ==
   
