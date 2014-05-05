@@ -46,6 +46,7 @@ Here are some of the pages in CategoryFaces.
 ** HighlightEndOfBuffer
 ** HighlightSymbol – Highlight the current [[symbol]] throughout the buffer
 ** HighlightParentheses – Highlight parentheses surrounding [[point]]
+** IdleHighlight highlights all occurrences in the buffer of the word under the point
 ** PulseRegion - Fancy temporary pulsing of the region
 ** OnScreen - Highlight the last visible screenful when scrolling
 * HowtoChangeFrameColors
