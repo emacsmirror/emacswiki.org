@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.125
+;; Version: 0.126
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 5-May-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Marmalade version bump.
 ;; 5-May-2014    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Take out narrowing (Issue #41)
@@ -1963,7 +1966,8 @@ buffer."
         (tabify (point-min) (point-max)))
        ((or (and (not save) auto-indent-untabify-on-visit-file)
             (and save auto-indent-untabify-on-save-file))
-        (untabify (point-min) (point-max)))))))
+        (untabify (point-min) (point-max))))
+      nil)))
 
 (defun auto-indent-file-when-save ()
   "Auto-indent file when save."
