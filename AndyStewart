@@ -105,6 +105,8 @@ git clone https://github.com/linuxdeepin/deepin-emacs
 
 *** [http://www.emacswiki.org/emacs/window-number.el window-number.el] -- For fast switch in windows.
 
+*** [http://www.emacswiki.org/emacs/helm-autoload-commands.el helm-autoload-commands.el] -- Search command, load library, execute command in runtime.
+
 * Enhanced packages.
 
 : Below are enhanced packages, some packages need many depend libraries, so copy any code you like. :)
