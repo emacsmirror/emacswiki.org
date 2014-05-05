@@ -58,6 +58,9 @@ The simplest way to get near fullscreen editing is to hide the Windows taskbar a
 
 If the menubar on the emacs frame still bothers you, a call to emacs-fullscreen-win32 listed below will get rid of it.
 
+==== Emacs 24.4 ====
+Emacs 24.4 fully supports fullscreen on Windows. Use M-x toggle-frame-fullscreen to toggle it. The window will go fullscreen on the window's owning screen.
+
 ==== darkroom-mode ====
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
@@ -236,9 +239,6 @@ Note that I have also added
 to my .emacs (which is when the problems started occuring.)
 
 I've experimented with other fonts and different font sizes. This seems robust.
-
-==== True Fullscreen for Emacs 24.4 ====
-Emacs 24.4 now supports true fullscreen on Windows, including support for multiple monitors.
 
 === X Windows ===
 ==== Emacs Frame Properties ====
