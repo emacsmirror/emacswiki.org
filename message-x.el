@@ -217,6 +217,7 @@ cases, `message-x-call-completion-function' returns non-nil."
                   t)
                  (t nil))))))
 
+;;;###autoload
 (defun message-x-tab (&optional skip-completion)
   "Smart completion or indentation in message buffers.
 
