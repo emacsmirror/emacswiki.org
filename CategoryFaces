@@ -8,6 +8,7 @@ Here are some of the pages in CategoryFaces.
 * AnsiColor -- have Emacs interpret nasty escape sequences from subprocesses such as shells
 * AnSys -- make Emacs highlight your Ansys-Files
 * BufferBackgroundColor -- a temporary solution for buffer background color
+* ColorIdentifiersMode -- use colors to highlight identifiers (variables and the like) instead of keywords (if, then, else, and the like)
 * ColorPalette -- examine or modify colors in various ways, including by name, RGB, and HSV
 * ColorTheme -- a package with dozens of color themes to choose from
 * ColorThemeCollection -- a place for new color themes
