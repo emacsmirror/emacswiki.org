@@ -21,7 +21,7 @@ If you wish to have Return key automatically indent cursor on new line, add the 
 
 <code>
 (add-hook 'yaml-mode-hook
-		  '(lambda ()
+		  (lambda ()
 			 (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 </code>
 
