@@ -39,7 +39,7 @@ These pages can be edited by EmacsWikiAdministrators. When the pages are edited,
 
 Broken regular expressions will crash the script for all pages on the site.
 
-There are two additional defenses we use on this site.  [[Oddmuse:Page Locking]] is available to EmacsWikiAdministrators.
+There is one additional defense we use on this site.  [[Oddmuse:Page Locking]] is available to EmacsWikiAdministrators.
 
 == Does banning actually work? ==
 
