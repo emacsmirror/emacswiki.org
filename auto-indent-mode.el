@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.123
+;; Version: 0.124
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -359,6 +359,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 5-May-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Fix Issue #40
 ;; 20-Dec-2013    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Documentation about fixing #37.
@@ -1406,7 +1409,7 @@ indentation is may not specified for the current mode."
   :type '(repeat (symbol :tag "Ignored indent-function"))
   :group 'auto-indent)
 
-(defcustom auto-indent-newline-function 'reindent-newline-and-indent
+(defcustom auto-indent-newline-function 'reindent-then-newline-and-indent
   "Auto indentation function for the return key."
   :type '(choice
           (const :tag "Reindent the current line, insert the newline then indent the current line."
@@ -2592,7 +2595,8 @@ around and the whitespace was deleted from the line."
                              (or (not yap) (and yap (= 0 (length yap)))))))
               (save-excursion
                 (when (and auto-indent-last-pre-command-hook-point
-                           (eq auto-indent-newline-function 'reindent-then-newline-and-indent))
+                           (or (eq auto-indent-newline-function 'reindent-then-newline-and-indent)
+                               (eq auto-indent-newline-function 'reindent-newline-and-indent)))
                   (goto-char auto-indent-last-pre-command-hook-point)
                   ;; Use more conservative indent for prior line
                   (auto-indent-according-to-mode))
