@@ -3,6 +3,10 @@ Color Identifiers is a minor mode for Emacs that highlights each source code ide
 * [https://github.com/ankurdave/color-identifiers-mode Color Identifiers Mode]
 * [http://youtu.be/g4qsiAo2aac Demo on YouTube]
 
+== Dependency ==
+
+* [https://github.com/magnars/dash.el Dash] -- A modern list api for Emacs. No 'cl required.
+
 == Alternatives ==
 
 
