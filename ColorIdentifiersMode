@@ -1,0 +1,7 @@
+Color Identifiers is a minor mode for Emacs that highlights each source code identifier uniquely based on its name. It is inspired by [https://medium.com/p/3a6db2743a1e/ a post by Evan Brooks] where he says that we think "syntax highlighting makes the structure of code easier to understand" but instead of highlighting the obvious we should highlight the difference between the various variables. "Notice that instead of the built-in keywords being highlighted, everything else is. Each variable has its own color, so I can see where it’s used at a glance. Even when skimming the code, I can see how data flows through the function."
+
+* [http://youtu.be/g4qsiAo2aac Demo on YouTube]
+* [https://github.com/ankurdave/color-identifiers-mode Color Identifiers Mode] for Emacs
+
+----
+CategoryFaces
