@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.124
+* <b>Version </b> --  0.125
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -370,6 +370,9 @@ to the major mode's conventions.
 === Internal Variables ===
 == History ==
 
+5-May-2014    Matthew L. Fidler  
+Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+Take out narrowing (Issue #41)
 5-May-2014    Matthew L. Fidler  
 Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 Fix Issue #40
