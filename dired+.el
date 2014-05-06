@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue May  6 09:57:17 2014 (-0700)
+;; Last-Updated: Tue May  6 10:35:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7730
+;;     Update #: 7779
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -509,7 +509,8 @@
 ;;
 ;;  `dired-do-redisplay', `dired-get-marked-files',
 ;;  `dired-map-over-marks-check',
-;;  `image-dired-dired-insert-marked-thumbs'.
+;;  `image-dired-dired-insert-marked-thumbs',
+;;  `image-dired-dired-toggle-marked-thumbs'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dired-aux.el' have
@@ -544,7 +545,8 @@
 ;;
 ;; 2014/05/06 dadams
 ;;     Added: diredp-image-dired-required-msg, diredp-list-files-map,
-;;            diredp-find-line-file-other-window, diredp-mouse-find-line-file-other-window.
+;;            diredp-find-line-file-other-window, diredp-mouse-find-line-file-other-window,
+;;            image-dired-dired-toggle-marked-thumbs.
 ;;     Soft-require image-dired.el and image-file.el.
 ;;     diredp-image-dired-create-thumb: Define unconditionally.
 ;;     image-dired-dired-insert-marked-thumbs, diredp-image-dired-comment-file, 
@@ -553,13 +555,13 @@
 ;;       diredp-image-dired-edit-comment-and-tags, diredp-do-display-images:
 ;;         Define unconditionally and raise error if no image-(dired|file).el.
 ;;     diredp-menu-bar-immediate-image-menu, diredp-menu-bar-images-menu,
-;;       diredp-menu-bar-images-recursive-menu, image-dired-mark-tagged-files,
-;;       image-dired-dired-toggle-marked-thumbs:
+;;       diredp-menu-bar-images-recursive-menu, image-dired-mark-tagged-files:
 ;;         Define unconditionally and use :enable.
 ;;     diredp-menu-bar-images-menu, diredp-menu-bar-images-recursive-menu:
 ;;       Add defalias so can use menu-item with :enable.
 ;;     diredp-list-files: Add properties mouse-face, keymap, and help-echo.
 ;;     diredp-mouseover-help: Make it work also for diredp-list-files listings.
+;;     image-dired-dired-insert-marked-thumbs: Add autoload cookie.
 ;; 2014/05/03 dadams
 ;;     dired-switches-escape-p: Use dired-switches-check if available, based on bug #17218 fix.
 ;; 2014/04/25 dadams
@@ -845,7 +847,7 @@
 ;;         Use line-(beginning|end)-position.
 ;; 2011/12/16 dadams
 ;;     diredp-menu-bar-mark-menu: Removed Revert item.
-;;     diredp-menu-bar-subdir-menu: Added: image-dired-dired-toggle-marked-thumbs.
+;;     diredp-menu-bar-subdir-menu: Add image-dired-dired-toggle-marked-thumbs.
 ;;     diredp-mouse-3-menu:
 ;;       Use commands bound to keys, so the keys show up in the menu.  Prefer *-this-file.
 ;;       Correct the mark/unmark/flag menu-item visibility.  Added Capitalize.
@@ -1186,15 +1188,14 @@
  ;; image-dired-create-thumb, image-dired-create-thumbnail-buffer,
  ;; image-dired-dired-after-readin-hook, image-dired-delete-tag, image-dired-dired-comment-files,
  ;; image-dired-dired-display-external, image-dired-dired-display-image,
- ;; image-dired-dired-toggle-marked-thumbs, image-dired-display-thumbs, image-dired-get-comment,
- ;; image-dired-get-exif-file-name, image-dired-get-thumbnail-image,
- ;; image-dired-insert-thumbnail, image-dired-line-up, image-dired-line-up-dynamic,
- ;; image-dired-line-up-interactive, image-dired-line-up-method, image-dired-list-tags,
- ;; image-dired-main-image-directory, image-dired-mark-tagged-files, image-dired-read-comment,
- ;; image-dired-remove-tag, image-dired-save-information-from-widgets, image-dired-tag-files,
- ;; image-dired-thumb-height, image-dired-thumbnail-buffer, image-dired-thumb-name,
- ;; image-dired-thumb-size, image-dired-thumb-width, image-dired-widget-list,
- ;; image-dired-write-comments, image-dired-write-tags
+ ;; image-dired-display-thumbs, image-dired-get-comment, image-dired-get-exif-file-name,
+ ;; image-dired-get-thumbnail-image, image-dired-insert-thumbnail, image-dired-line-up,
+ ;; image-dired-line-up-dynamic, image-dired-line-up-interactive, image-dired-line-up-method,
+ ;; image-dired-list-tags, image-dired-main-image-directory, image-dired-mark-tagged-files,
+ ;; image-dired-read-comment, image-dired-remove-tag, image-dired-save-information-from-widgets,
+ ;; image-dired-tag-files, image-dired-thumb-height, image-dired-thumbnail-buffer,
+ ;; image-dired-thumb-name, image-dired-thumb-size, image-dired-thumb-width,
+ ;; image-dired-widget-list, image-dired-write-comments, image-dired-write-tags
 (when (memq system-type '(windows-nt ms-dos))
   ;; (no error if not found):
   (require 'w32-browser nil t));; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
@@ -1448,10 +1449,8 @@ Search starts at the beginning of the buffer, thus the car of the list
 BODY should not be too long, since it is expanded four times.
 If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
  of (FILENAME), if only one file is marked."
-  ;;
-  ;;Warning: BODY must not add new lines before point - this may cause an
-  ;;endless loop.
-  ;;This warning should not apply any longer, sk  2-Sep-1991 14:10.
+  ;; WARNING: BODY must not add new lines before point - this may cause an
+  ;; endless loop.  This warning should not apply any longer, sk  2-Sep-1991 14:10.
   `(prog1
     (let ((inhibit-read-only  t)
           (newarg             ,arg)
@@ -1819,8 +1818,14 @@ Return the name of the thumbnail image file, or nil if none."
              (error "Thumbnail image file could not be created")))
          (and (file-exists-p thumb-name)  thumb-name))))
 
-;; Similar to `image-dired-dired-toggle-marked-thumbs'.
-(defun image-dired-dired-insert-marked-thumbs () ; Not bound
+
+;; REPLACE ORIGINAL in `image-dired.el' (Emacs 22-23).
+;;
+;; 1. Raise an error if `image-dired.el' is not available.
+;; 2. Repro it here so it picks up `Dired+' version of `dired-map-over-marks'.
+;;
+;;;###autoload
+(defun image-dired-dired-insert-marked-thumbs () ; Bound to `C-t C-t' (Emacs 22-23)
   "Insert thumbnails before file names of marked files in the Dired buffer."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (dired-map-over-marks
@@ -1838,6 +1843,40 @@ Return the name of the thumbnail image file, or nil if none."
        (overlay-put overlay 'image-file image-file)
        (overlay-put overlay 'thumb-file thumb-file)))
    nil)
+  (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t))
+
+
+;; REPLACE ORIGINAL in `image-dired.el' (Emacs 24+).
+;;
+;; 1. Raise an error if `image-dired.el' is not available.
+;; 2. Repro it here so it picks up `Dired+' version of `dired-map-over-marks'.
+;;
+;;;###autoload
+(defun image-dired-dired-toggle-marked-thumbs (&optional arg) ; Bound to `C-t C-t' (Emacs 24+)
+  "Toggle thumbnails in front of file names in Dired.
+If no files are marked, insert or hide thumbnails on the current line.
+With a numeric prefix arg N, ignore marked files and act on the next N
+files (previous -N files, if N < 0)."
+  (interactive (progn (diredp-image-dired-required-msg) (list current-prefix-arg)))
+  (dired-map-over-marks
+   (let* ((image-pos   (dired-move-to-filename))
+          (image-file  (dired-get-filename nil t))
+          thumb-file  overlay)
+     (when (and image-file  (diredp-string-match-p (image-file-name-regexp) image-file))
+       (setq thumb-file  (image-dired-get-thumbnail-image image-file))
+       ;; If image is not already added, then add it.
+       (let* ((cur-ovs   (overlays-in (point) (1+ (point))))
+              (thumb-ov  (car (diredp-remove-if-not (lambda (ov) (overlay-get ov 'thumb-file))
+                                                    cur-ovs))))
+         (if thumb-ov
+             (delete-overlay thumb-ov)
+           (put-image thumb-file image-pos)
+           (setq overlay (car (delq nil (mapcar (lambda (o) (and (overlay-get o 'put-image)  o))
+                                                (overlays-in (point) (1+ (point)))))))
+           (overlay-put overlay 'image-file image-file)
+           (overlay-put overlay 'thumb-file thumb-file)))))
+   arg
+   'SHOW-PROGRESS)
   (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t))
 
 ;; Corresponds to `image-dired-dired-comment-files'.
@@ -2741,7 +2780,7 @@ If no one is selected, symmetric encryption will be performed.  "
 
 ;; "Mark" menu.
 ;;
-;; REPLACE ORIGINAL "Mark" menu in `dired.el'.
+;; REPLACE ORIGINAL `Mark' menu in `dired.el'.
 ;;
 (defvar diredp-menu-bar-mark-menu (make-sparse-keymap "Mark"))
 (define-key dired-mode-map [menu-bar mark] (cons "Mark" diredp-menu-bar-mark-menu))
@@ -2874,7 +2913,7 @@ If no one is selected, symmetric encryption will be performed.  "
 
 ;; "Dir" menu.
 ;;
-;; REPLACE ORIGINAL "Subdir" menu in `dired.el'.
+;; REPLACE ORIGINAL `Subdir' menu in `dired.el'.
 ;;
 (defvar diredp-menu-bar-subdir-menu (make-sparse-keymap "Dir"))
 (define-key dired-mode-map [menu-bar subdir] (cons "Dir" diredp-menu-bar-subdir-menu))
@@ -4334,7 +4373,7 @@ With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (let* ((file-list  (diredp-get-files ignore-marks-p))
-	 (command    (dired-mark-read-string
+         (command    (dired-mark-read-string
                       "Print %s with: "
                       (mapconcat #'identity (cons lpr-command (if (stringp lpr-switches)
                                                                   (list lpr-switches)
@@ -6956,10 +6995,10 @@ nil."
   (interactive "p")
   (or opoint (setq opoint (point)))
   (if (if (> arg 0)
-	  (re-search-forward dired-re-dir nil t arg)
-	(beginning-of-line)
-	(re-search-backward dired-re-dir nil t (- arg)))
-      (dired-move-to-filename)		; user may type `i' or `f'
+          (re-search-forward dired-re-dir nil t arg)
+        (beginning-of-line)
+        (re-search-backward dired-re-dir nil t (- arg)))
+      (dired-move-to-filename)          ; user may type `i' or `f'
     (if diredp-wrap-around-flag
         (let ((diredp-wrap-around-flag  nil))
           (goto-char (if (< arg 0) (point-max) (point-min)))
@@ -6987,18 +7026,18 @@ Non-nil NO-SKIP means do not move to end of header line, and return
 the position moved to so far."
   (interactive "p")
   (let ((this-dir  (dired-current-directory))
-	pos index)
+        pos index)
     ;; `nth' with negative arg does not return nil but the first element
     (setq index  (if diredp-wrap-around-flag
                      (mod (- (dired-subdir-index this-dir) arg) (length dired-subdir-alist))
                    (- (dired-subdir-index this-dir) arg))
           pos    (and (>= index 0)  (dired-get-subdir-min (nth index dired-subdir-alist))))
     (if pos
-	(progn (goto-char pos)
+        (progn (goto-char pos)
                (or no-skip  (skip-chars-forward "^\n\r"))
                (point))
       (if no-error-if-not-found
-          nil				; Return nil if not found
+          nil                           ; Return nil if not found
         (error "%s directory" (if (> arg 0) "Last" "First"))))))
 
 ;;;###autoload
@@ -7414,8 +7453,8 @@ object files--just `.o' will mark more than you might think.
 REGEXP is added to `regexp-search-ring', for regexp search."
   (interactive
    (list (dired-read-regexp (concat (if current-prefix-arg "Unmark" "Mark")
-				    " files (regexp): "))
-	 (and current-prefix-arg  ?\040)))
+                                    " files (regexp): "))
+         (and current-prefix-arg  ?\040)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring.
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (dired-mark-if (and (not (looking-at dired-re-dot))
@@ -8353,8 +8392,7 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos  (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (diredp-internal-do-deletions (dired-map-over-marks (cons (dired-get-filename)
-                                                            (point)) 1)
+  (diredp-internal-do-deletions (dired-map-over-marks (cons (dired-get-filename) (point)) 1)
                                 1
                                 'USE-TRASH-CAN) ; This arg is for Emacs 24+ only.
   (diredp-previous-line 1))
