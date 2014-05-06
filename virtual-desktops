@@ -34,18 +34,3 @@ virtual-desktops-update function will be called automatically when you use next/
 You can list all virtual desktops with M-x virtual-desktops-list. It will create a buffer which contains a list of all desktops with their buffers.
 This buffer is not yet interactive but this feature may be able "soon".
 
-
-== Notes ==
-
-Virtual desktops are not fully functional. This is my first "real" program in lisp so the code is not really optimized.
-If you want to contribute or just help me to make the code more efficient, you are welcome.
-
-
-== Todo ==
-
-* Learn lisp.
-* Make the list buffer interactive: RET should make a virtual-desktops-goto, D virtual-desktops-del-specific, ...
-* Make current desktop frame specific: each frame could host a specific desktop.
-* Improve code and restore algorithm.
-* Learn lisp.
-
