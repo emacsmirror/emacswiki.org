@@ -6,6 +6,8 @@ Virtual desktops for emacs is a global minor mode which mimics the virtual deskt
 Using this mode, the layout and the content (the buffer) of each of your windows can be saved as a desktop.
 When switching between desktops, the layout of the windows and their buffers are restored as is: in the same place, with the same size and the same content.
 
+== Download ==
+https://github.com/chep/virtual-desktops.el
 
 == How to use it ==
 
