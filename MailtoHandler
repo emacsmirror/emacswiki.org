@@ -1,17 +1,103 @@
-== Introduction ==
+Web browsers and other applications automatically launch an email program when a user clicks a [https://en.wikipedia.org/wiki/Mailto mailto link]. The application is customizable, but emacs would just see the mailto link as a filename to start editing. We can can easily fix that.
 
-Web browsers and other applications automatically launch an email program when a user clicks a ##mailto## link. The application is customizable, so we can set it to a shell script which tells emacs we want to handle a mailto link. By default emacs would simply start editing a file named after the mailto link.
+== Emails mailto handler ==
 
-== Invoke emacs mailto handler ==
+Name this script something like ##emacsmail## and set it as the default mailto handler.
 
  #!/bin/bash
- emacsclient --eval "(browse-url-mail \"$@\")"  
+ emacsclient -c --eval "(browse-url-mail \"$@\")"  
 
 
-[http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html Bash Beginners Guide]
+[http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html Bash Beginners Guide] 
+
+== Mu4e ==
+[[mu4e|Mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
+
+== Old / outdated manual mailto parsing ==
+Emacs has builtin functionality to parse a mailto link (which can include headers like subject and body) and populate the relevant fields in compose mail. Perhaps before this existed, people filled this page with code which did this separately. It makes sense to avoid this now. However, there may be some special behavior you want and this code could help you get it.
+
+=== Shell script which strips mailto headers and composes mail ===
+
+The following small shell script is meant to be executable and its purpose is to take a ##mailto## link as its argument and pass it to Emacs. Configure your web browser and operating system so that the script is the default email application. The script uses ##emacsclient## to open a new frame in Emacs session. You can change the command line to suit your needs and Emacs usage. The important part is the ##--eval "$elisp_expr"## option; leave that untouched.
+
+<pre>
+#!/bin/sh
+# emacs-mailto-handler
+
+mailto=$1
+mailto="mailto:${mailto#mailto:}"
+mailto=$(printf '%s\n' "$mailto" | sed -e 's/[\"]/\\&/g')
+elisp_expr="(mailto-compose-mail \"$mailto\")"
+
+emacsclient -a "" -c -n --eval "$elisp_expr" \
+	'(set-window-dedicated-p (selected-window) t)'
+</pre>
+
+=== Functions to handle mailto call when you use gnus-posting-styles ===
+
+Configure mozex addon in firefox to call the script below. by RichardRiley
+
+<pre>
+#!/bin/bash
+# gnumail
+#mailto=$(printf '%s\n' "$1" | sed -e 's/[\"]/\\&/g') ;; sed substitution that cleans all "\" but leaves "mailto:" before email address if it is there.
+mailto=$(printf '%s\n' "$1" | sed -e 's/mailto:/\\/' |sed -e 's/[\"]//g') ;; this cleans both "mailto:" and any occurrence of "\"
+elisp_expr=$(printf '(rgr/mailto "%s")' "$mailto")
+ 
+ emacsclient --alternate-editor="" -c -n \
+         --eval "$elisp_expr" \
+         --eval '(set-window-dedicated-p (selected-window) t)'
+</pre>
+
+Add the following to your .emacs (not your .gnus): it takes care of starting gnus if not done and allows you to configure a default posting style.
 
 
-== Emacs Lisp code : no gnus-posting-styles ==
+<pre>
+(setq gnus-default-mailto-group "INBOX.mail");; configure as appropriate
+
+(defun rgr/mailto (to)
+  "Send an email to 'to' but prompting for a posting style if not configured. Starts Gnus if not already running."
+  (require 'gnus)
+  (unless gnus-active-hashtb (gnus)) ;; Better way??
+  (let ((gnus-newsgroup-name
+         (if gnus-default-mailto-group gnus-default-mailto-group (completing-read "Use posting style of group: "
+                          gnus-active-hashtb nil
+                          (gnus-read-active-file-p)))))
+    (compose-mail to)))
+</pre>
+
+ErikArneson suggests this alternate function, based on rgr/mailto but using development Gnus:
+
+<pre>
+(defun ela/mailto (to)
+  "Send an email to 'to' but prompting for a posting style if not configured. Starts Gnus if not already running."
+  (require 'gnus)
+  (unless gnus-active-hashtb (gnus)) ;; Better way??
+  (let ((gnus-newsgroup-name (or gnus-default-mailto-group 
+                                 (completing-read "Use posting style of group: "
+                                                  gnus-active-hashtb nil
+                                                  (gnus-read-active-file-p)))))
+    (gnus-setup-message 'message (message-mail to))))
+</pre>
+
+=== Emacs Lisp code : Wanderlust ===
+
+Using emacs-mailto-handler as above, this function can be used to start composition of a new message in Wanderlust:
+ 
+<pre>
+(defun mailto-compose-mail (mailto-url)
+  (if (and (stringp mailto-url)
+           (string-match "\\`mailto:" mailto-url))
+      (progn
+        (require 'rfc2368)
+        (let* ((headers (mapcar (lambda (h) (cons (intern (car h)) (cdr h)))
+                          (rfc2368-parse-mailto-url mailto-url)))
+               (good-headers (remove-if (lambda (h) (member (car h) '(Body))) headers))
+               (body (cdr (assoc 'Body headers))))
+          (wl-draft good-headers nil nil body)))))
+</pre>
+
+=== Emacs Lisp code : no gnus-posting-styles ===
 
 Make the following Emacs Lisp function available for your Emacs. You can just put it in your Emacs init file (##~/.emacs##) or you can put it in some directory in your ##load-path## and add "##(autoload ...)##" command in your Emacs init file.
 
@@ -69,92 +155,6 @@ Make the following Emacs Lisp function available for your Emacs. You can just pu
                                 (insert string))
                               body))))
     (compose-mail)))
-</pre>
-
-== Functions to handle mailto call when you use gnus-posting-styles ==
-
-RichardRiley : added 24 August 2009 for launching gnus for Iceweasel/Firefox mailto URLs on Linux.
-
-Configure mozex addon in firefox to call gnumail script below.
-
-<pre>
-#!/bin/bash
-# gnumail
-#mailto=$(printf '%s\n' "$1" | sed -e 's/[\"]/\\&/g') ;; sed substitution that cleans all "\" but leaves "mailto:" before email address if it is there.
-mailto=$(printf '%s\n' "$1" | sed -e 's/mailto:/\\/' |sed -e 's/[\"]//g') ;; this cleans both "mailto:" and any occurrence of "\"
-elisp_expr=$(printf '(rgr/mailto "%s")' "$mailto")
- 
- emacsclient --alternate-editor="" -c -n \
-         --eval "$elisp_expr" \
-         --eval '(set-window-dedicated-p (selected-window) t)'
-</pre>
-
-Add the following to your .emacs (not your .gnus): it takes care of starting gnus if not done and allows you to configure a default posting style.
-
-
-<pre>
-(setq gnus-default-mailto-group "INBOX.mail");; configure as appropriate
-
-(defun rgr/mailto (to)
-  "Send an email to 'to' but prompting for a posting style if not configured. Starts Gnus if not already running."
-  (require 'gnus)
-  (unless gnus-active-hashtb (gnus)) ;; Better way??
-  (let ((gnus-newsgroup-name
-         (if gnus-default-mailto-group gnus-default-mailto-group (completing-read "Use posting style of group: "
-                          gnus-active-hashtb nil
-                          (gnus-read-active-file-p)))))
-    (compose-mail to)))
-</pre>
-
-ErikArneson suggests this alternate function, based on rgr/mailto but using development Gnus:
-
-<pre>
-(defun ela/mailto (to)
-  "Send an email to 'to' but prompting for a posting style if not configured. Starts Gnus if not already running."
-  (require 'gnus)
-  (unless gnus-active-hashtb (gnus)) ;; Better way??
-  (let ((gnus-newsgroup-name (or gnus-default-mailto-group 
-                                 (completing-read "Use posting style of group: "
-                                                  gnus-active-hashtb nil
-                                                  (gnus-read-active-file-p)))))
-    (gnus-setup-message 'message (message-mail to))))
-</pre>
-
-== Emacs Lisp code : Wanderlust ==
-
-Using emacs-mailto-handler as above, this function can be used to start composition of a new message in Wanderlust:
- 
-<pre>
-(defun mailto-compose-mail (mailto-url)
-  (if (and (stringp mailto-url)
-           (string-match "\\`mailto:" mailto-url))
-      (progn
-        (require 'rfc2368)
-        (let* ((headers (mapcar (lambda (h) (cons (intern (car h)) (cdr h)))
-                          (rfc2368-parse-mailto-url mailto-url)))
-               (good-headers (remove-if (lambda (h) (member (car h) '(Body))) headers))
-               (body (cdr (assoc 'Body headers))))
-          (wl-draft good-headers nil nil body)))))
-</pre>
-
-== Mu4e ==
-[[mu4e|Mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
-
-== Outdated: parse mailto in shell script ==
-
-The following small shell script is meant to be executable and its purpose is to take a ##mailto## link as its argument and pass it to Emacs. Configure your web browser and operating system so that the script is the default email application. The script uses ##emacsclient## to open a new frame in Emacs session. You can change the command line to suit your needs and Emacs usage. The important part is the ##--eval "$elisp_expr"## option; leave that untouched.
-
-<pre>
-#!/bin/sh
-# emacs-mailto-handler
-
-mailto=$1
-mailto="mailto:${mailto#mailto:}"
-mailto=$(printf '%s\n' "$mailto" | sed -e 's/[\"]/\\&/g')
-elisp_expr="(mailto-compose-mail \"$mailto\")"
-
-emacsclient -a "" -c -n --eval "$elisp_expr" \
-	'(set-window-dedicated-p (selected-window) t)'
 </pre>
 
 ----
