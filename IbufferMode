@@ -126,6 +126,7 @@ find a quick way to turn them off. So here is an advice that does the trick:
 
 ----
 
+
 == Sort by pathname ==
 
 I'm not quite sure where to add this, but to be able to sort by pathname (thereby grouping file buffers with dired buffers). PeterMielke
@@ -227,7 +228,23 @@ I don't like default "Size" column, so I write a human readable column instead o
 </pre>
 
 ----
+== Recycle move cursor ==
+With this, when you press `up/down` to the top/bottom of IBuffer, the cursor would keep move forward infinitely.
 
+  (defun ibuffer-previous-line ()
+    (interactive) (previous-line)
+    (if (<= (line-number-at-pos) 2)
+        (goto-line (- (count-lines (point-min) (point-max)) 2))))
+  (defun ibuffer-next-line ()
+    (interactive) (next-line)
+    (if (>= (line-number-at-pos) (- (count-lines (point-min) (point-max)) 1))
+        (goto-line 3)))
+  (define-key ibuffer-mode-map (kbd "<up>") 'ibuffer-previous-line)
+  (define-key ibuffer-mode-map (kbd "<down>") 'ibuffer-next-line)
+
+-- kuanyui
+
+---
 == Questions ==
 
 Is there any way to configure ibuffer so that switching to ibuffer puts the cursor on the most recent buffer? I'm finding that the cursor stays on the same line it was on the previous time ibuffer was invoked, which is a bit confusing when the buffers are sorted in visited order.
