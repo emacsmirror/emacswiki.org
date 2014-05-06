@@ -1,6 +1,6 @@
 == Introduction ==
 
-Web browsers and other applications automatically launch an email program when a user clicks a ##mailto## link. By default emacs would simply start editing a file named after the mailto link, but that is easy to change.
+Web browsers and other applications automatically launch an email program when a user clicks a ##mailto## link. The application is customizable, so we can set it to a shell script which tells emacs we want to handle a mailto link. By default emacs would simply start editing a file named after the mailto link.
 
 == Invoke emacs mailto handler ==
 
@@ -10,22 +10,6 @@ Web browsers and other applications automatically launch an email program when a
 
 [http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html Bash Beginners Guide]
 
-== Shell script ==
-
-The following small shell script is meant to be executable and its purpose is to take a ##mailto## link as its argument and pass it to Emacs. Configure your web browser and operating system so that the script is the default email application. The script uses ##emacsclient## to open a new frame in Emacs session. You can change the command line to suit your needs and Emacs usage. The important part is the ##--eval "$elisp_expr"## option; leave that untouched.
-
-<pre>
-#!/bin/sh
-# emacs-mailto-handler
-
-mailto=$1
-mailto="mailto:${mailto#mailto:}"
-mailto=$(printf '%s\n' "$mailto" | sed -e 's/[\"]/\\&/g')
-elisp_expr="(mailto-compose-mail \"$mailto\")"
-
-emacsclient -a "" -c -n --eval "$elisp_expr" \
-	'(set-window-dedicated-p (selected-window) t)'
-</pre>
 
 == Emacs Lisp code : no gnus-posting-styles ==
 
@@ -155,6 +139,23 @@ Using emacs-mailto-handler as above, this function can be used to start composit
 
 == Mu4e ==
 [[mu4e|Mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
+
+== Outdated: parse mailto in shell script ==
+
+The following small shell script is meant to be executable and its purpose is to take a ##mailto## link as its argument and pass it to Emacs. Configure your web browser and operating system so that the script is the default email application. The script uses ##emacsclient## to open a new frame in Emacs session. You can change the command line to suit your needs and Emacs usage. The important part is the ##--eval "$elisp_expr"## option; leave that untouched.
+
+<pre>
+#!/bin/sh
+# emacs-mailto-handler
+
+mailto=$1
+mailto="mailto:${mailto#mailto:}"
+mailto=$(printf '%s\n' "$mailto" | sed -e 's/[\"]/\\&/g')
+elisp_expr="(mailto-compose-mail \"$mailto\")"
+
+emacsclient -a "" -c -n --eval "$elisp_expr" \
+	'(set-window-dedicated-p (selected-window) t)'
+</pre>
 
 ----
 CategoryMail
