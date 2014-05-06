@@ -1,8 +1,14 @@
 == Introduction ==
 
-It's useful if user's preferred email application interacts well with other applications. Probably the most common example of such interaction is automatically launching an email application when user clicks a ##mailto## link in her web browser. Personal address book applications may also have links or buttons which start email application.
+Web browsers and other applications automatically launch an email program when a user clicks a ##mailto## link. By default emacs would simply start editing a file named after the mailto link, but that is easy to change.
 
-Unfortunately, by default Emacs email applications don't integrate very well with other programs. Fortunately the problem is relatively easy to solve because Emacs already contains many of the needed facilities, namely the ability to parse ##mailto## URLs. Only the "glue" between Emacs and other applications is missing. The following shell script and Emacs Lisp code together offer the missing glue.
+== Invoke emacs mailto handler ==
+
+ #!/bin/bash
+ emacsclient --eval "(browse-url-mail \"$@\")"  
+
+
+[http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html Bash Beginners Guide]
 
 == Shell script ==
 
