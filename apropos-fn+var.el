@@ -66,7 +66,7 @@
 ;;     Added: apropos-print--1 - factored out from apropos-print after next update:
 ;;     apropos-print: Updated for Emacs 24.4: Use with-help-window if defined.  See bug #17109.
 ;; 2013/10/27 dadams
-;;     apropos-print: Updated for Emacs 24.4+: apropos-macrop -&gt; macrop.
+;;     apropos-print: Updated for Emacs 24.4+: apropos-macrop -> macrop.
 ;; 2012/05/11 dadams
 ;;     apropos-print: Updated for Emacs 24.
 ;; 2012/03/31 dadams
@@ -121,7 +121,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-(if (&lt; emacs-major-version 22)
+(if (< emacs-major-version 22)
     (defun apropos-function (pattern)
       "Show functions that match PATTERN (a regular expression).
 This includes functions that are not commands."
@@ -154,8 +154,8 @@ while a list of strings is used as a word list."
 (or (fboundp 'apropos-option)
 (fset 'apropos-option (symbol-function 'apropos-variable)))
 
-(if (&lt; emacs-major-version 22)
-    (defun apropos-variable (pattern &amp;optional ignore)
+(if (< emacs-major-version 22)
+    (defun apropos-variable (pattern &optional ignore)
       "Show variables that match PATTERN (a regular expression).
 This includes variables that are not user options."
       (interactive "i")                 ; Ignored when interactive
@@ -163,7 +163,7 @@ This includes variables that are not user options."
           (let ((apropos-do-all t))
             (call-interactively 'apropos-option))
         (apropos-option pattern t)))
-  (defun apropos-variable (pattern &amp;optional ignore)
+  (defun apropos-variable (pattern &optional ignore)
     "Show variables that match PATTERN.
 This includes variables that are not user options.
 PATTERN can be a word, a list of words (separated by spaces),
@@ -180,7 +180,7 @@ words, search for matches for any two (or more) of those words."
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
 ;;; Use label "Option" for user options.
 ;;;
-(cond ((&lt; emacs-major-version 22)       ; Emacs 20 and 21.
+(cond ((< emacs-major-version 22)       ; Emacs 20 and 21.
        (defun apropos-print (do-keys spacing)
          "Output result of apropos searching into buffer `*Apropos*'.
 The value of `apropos-accumulator' is the list of items to output.
@@ -227,7 +227,7 @@ alphabetically by symbol name; but this function also sets
                               (let ((key  (car keys))
                                     (i    0)
                                     loser)
-                                (while (&lt; i (length key))
+                                (while (< i (length key))
                                   (when (or (framep (aref key i))  (bufferp (aref key i)))
                                     (setq loser  t))
                                   (setq i  (1+ i)))
@@ -283,8 +283,8 @@ alphabetically by symbol name; but this function also sets
          (prog1 apropos-accumulator
            (setq apropos-accumulator ()))))
 
-      ((&lt; emacs-major-version 24)       ; Emacs 22 and 23.
-       (defun apropos-print (do-keys spacing &amp;optional text nosubst)
+      ((< emacs-major-version 24)       ; Emacs 22 and 23.
+       (defun apropos-print (do-keys spacing &optional text nosubst)
          "Output result of apropos searching into buffer `*Apropos*'.
 The value of `apropos-accumulator' is the list of items to output.
 Each element should have the format
@@ -303,7 +303,7 @@ If non-nil TEXT is a string that will be printed as a heading."
                                               ;; It would be confusing.  -- rms.
                                               (if (and (boundp 'apropos-sort-by-scores)
                                                        apropos-sort-by-scores)
-                                                  (or (&gt; (cadr a) (cadr b))
+                                                  (or (> (cadr a) (cadr b))
                                                       (and (= (cadr a) (cadr b))
                                                            (string-lessp (car a) (car b))))
                                                 (string-lessp (car a) (car b))))))
@@ -349,7 +349,7 @@ If non-nil TEXT is a string that will be printed as a heading."
                               (let ((key  (car keys))
                                     (i    0)
                                     loser)
-                                (while (&lt; i (length key))
+                                (while (< i (length key))
                                   (when (or (framep (aref key i))  (bufferp (aref key i)))
                                     (setq loser  t))
                                   (setq i  (1+ i)))
@@ -397,7 +397,7 @@ If non-nil TEXT is a string that will be printed as a heading."
            (setq apropos-accumulator  ())))) ; Permit gc.
 
       (t                                ; Emacs 24+.
-       (defun apropos-print (do-keys spacing &amp;optional text nosubst)
+       (defun apropos-print (do-keys spacing &optional text nosubst)
          "Output result of apropos searching into buffer `*Apropos*'.
 The value of `apropos-accumulator' is the list of items to output.
 Each element should have the format
@@ -413,7 +413,7 @@ If non-nil, TEXT is a string that will be printed as a heading."
            (setq apropos-accumulator  (sort apropos-accumulator
                                             (lambda (a b)
                                               (if apropos-sort-by-scores
-                                                  (or (&gt; (cadr a) (cadr b))
+                                                  (or (> (cadr a) (cadr b))
                                                       (and (= (cadr a) (cadr b))
                                                            (string-lessp (car a) (car b))))
                                                 (string-lessp (car a) (car b))))))
@@ -425,7 +425,7 @@ If non-nil, TEXT is a string that will be printed as a heading."
          (prog1 apropos-accumulator
            (setq apropos-accumulator  ()))))) ; Permit gc.
 
-(when (&gt; emacs-major-version 23)
+(when (> emacs-major-version 23)
   ;; This just makes the `apropos-print' code a bit simpler.
   ;; Needed because of the Emacs 24.4 change to using `with-help-window'.
   (defun apropos-print--1 (do-keys spacing text nosubst)
@@ -468,7 +468,7 @@ If non-nil, TEXT is a string that will be printed as a heading."
                      (dolist (key  keys)
                        (let ((ii  0)
                              loser)
-                         (while (&lt; ii (length key))
+                         (while (< ii (length key))
                            (when (or (framep (aref key ii))  (bufferp (aref key ii)))
                              (setq loser  t))
                            (setq ii  (1+ ii)))
@@ -506,7 +506,7 @@ If non-nil, TEXT is a string that will be printed as a heading."
       (set (make-local-variable 'truncate-partial-width-windows) t)
       (set (make-local-variable 'truncate-lines) t))))
 
-(when (&gt;= emacs-major-version 22)
+(when (>= emacs-major-version 22)
   (defface apropos-option '((t (:inherit font-lock-variable-name-face)))
     "Face used for option names in Apropos buffers."
     :group 'apropos)
