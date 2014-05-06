@@ -1,14 +1,11 @@
 Web browsers and other applications automatically launch an email program when a user clicks a [https://en.wikipedia.org/wiki/Mailto mailto link]. The application is customizable, but emacs would just see the mailto link as a filename to start editing. We can can easily fix that.
 
-== Emails mailto handler ==
+== Launch emacs and start composing mail ==
 
-Name this script something like ##emacsmail## and set it as the default mailto handler.
+Name this script something like ##emacsmail##.
 
  #!/bin/bash
  emacsclient -c --eval "(browse-url-mail \"$@\")"  
-
-
-[http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html Bash Beginners Guide] 
 
 == Mu4e ==
 [[mu4e|Mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
