@@ -8,7 +8,7 @@ A first version of a native port was released August 2012. Quickly installable l
 
 I've tried recently using the Emacs app from the Play Store, but the software couldn't be downloaded because http://emacs.zielm.com/ can't be resolved.
 
-Anyway, even if that app is gone (or it doesn't meet our standards for free and open-source software because its compilation can't be easily reproduced from sources, as stated by by the F-Droid team), compiling Emacs against the Android environment (to get the paths correct for an app, and correct library links) and running it from inside a nice terminal in Android must be no big conceptual problem. So someone else might try to do this eventually to get an Emacs working even in an unrooted Android.
+Anyway, even if that app is gone (or it doesn't meet our standards for free and open-source software because its compilation can't be smoothly reproduced from sources, as [https://f-droid.org/forums/topic/emacs-port-to-android/#post-3725 stated by the F-Droid team]), compiling Emacs against the Android environment (to get the paths correct for an app, and correct library links) and running it from inside a nice terminal in Android must be no big conceptual problem. So someone else might try to do this eventually to get an Emacs working even in an unrooted Android.
 
 ===Keep Android, install Linux and Emacs in a jail, run Emacs from an Android shell client===
 ====GNU/Linux in a chroot jail (requires root)====
