@@ -1,4 +1,4 @@
-I switched to Emacs after having used Vim for over ten years.  I like Vim's editing philosophy but Emacs has Elisp.  The solution for this dilemma is to use [[Evil]], a fantastic Vim emulation in Emacs.  Evil made almost all my dreams come true -- at least those related to text editing.
+I switched to Emacs after having used Vim for over ten years.  I like Vim's editing philosophy but Emacs has Elisp.  The solution for this dilemma is [[Evil]], a fantastic Vim emulation in Emacs.  Evil made almost all my dreams come true -- at least those related to text editing.
 
 Here you find some of my minor contributions to the Emacs ecosystem:
 
