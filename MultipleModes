@@ -3,6 +3,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 = Comparison =
 
 || library        || elisp files || size  || last update || url                                                 ||
+|| polymode  || 7              || 120 kb || 2014-05-07 || https://github.com/vitoshka/polymode ||
 || web-mode       ||           1 || 279 kb ||  2014-03-03 || http://web-mode.org                  ||
 || mmm-mode       ||          17 || 185 kb ||  2013-10-27 || https://github.com/purcell/mmm-mode                 ||
 || multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
@@ -12,6 +13,13 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 (as of 2014-01-19)
 
 -----------
+= polymode =
+
+Polymode is an emacs package that offers support for multiple major modes inside a single emacs buffer. It is lightweight, object oriented and was designed for very quick addition of new polymodes and extension/configuration of existing ones. It is based on a rigorous class hierarchy and makes multi-mode addition and extension a matter of several lines of code. It is also very fast because it is based on indirect buffers and doesn't re-install the modes on chunk switching. 
+
+Polymode defines three major classes of multi-modes:  polymodes with one predefined chunk mode (like noweb), polymodes with multiple predefined inner modes (like webmode) and modes with automatic inner modes which covers the case when type of the inner mode is not known in advance (examples are markdown and org-moe).
+
+Polymode also provides highly configurable facilities for literate programming. Exporters, weavers and tanglers organically integrate into polymode system and are easy to create, configure and extend.
 
 = web-mode.el = 
 
