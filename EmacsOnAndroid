@@ -21,11 +21,11 @@ But it's also interesting to get a running Emacs from a ready GNU/Linux distro p
 
 And it's possible with the GNURoot app (with GNURoot Wheezy, for example)! It allows to use a GNU/Linux distro like Debian in an unrooted Android. There I could start Emacs, as well as ssh to my computers, and hopefully I'll be able to use TRAMP, too. (I haven't yet tried this out.)
 
-The GNURoot app does all this by means of a ["PTRACE container"](http://unix.stackexchange.com/a/9188/4319) implemented by ["proot"](http://proot.me/): interception of syscalls and "emulating" what should be done in the different Android and unprivileged environment. (Redirecting paths, faking the root user privileges, etc.)
+The GNURoot app does all this by means of a [http://unix.stackexchange.com/a/9188/4319 "PTRACE container"] implemented by [http://proot.me/ "proot"]: interception of syscalls and "emulating" what should be done in the different Android and unprivileged environment. (Redirecting paths, faking the root user privileges, etc.)
 
-[It was a while ago when I learned about such projects](https://groups.google.com/d/msg/proot_me/h3rDV8na9kc/4mSCyOsX28UJ).
+[https://groups.google.com/d/msg/proot_me/h3rDV8na9kc/4mSCyOsX28UJ It was a while ago when I learned about such projects].
 
-It's a pity that [the source code for GNURoot](https://github.com/corbinlc/gnuroot) seems not to be well documented, so it's not easy to start hacking with it right away or at least learn how all the things have been compiled and put together from source.
+It's a pity that [https://github.com/corbinlc/gnuroot the source code for GNURoot] seems not to be well documented, so it's not easy to start hacking with it right away or at least learn how all the things have been compiled and put together from source.
 
 ===Remove Android, install another GNU/Linux, install Emacs there===
 This is known to work, but you need to get root access to your tablet and remove Android.
