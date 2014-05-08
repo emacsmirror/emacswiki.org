@@ -56,7 +56,7 @@ A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is 
 
 * [https://github.com/Dewdrops/evil-extra-operator evil-extra-operator]: Operators for evaluating codes, translating text, taking notes, searching via google, etc.
 
-* [https://github.com/wcsmith/evil-args]: Motions and text objects for delimited arguments in Evil.
+* [https://github.com/wcsmith/evil-args evil-args]: Motions and text objects for delimited arguments in Evil.
 
 == Bug tracker ==
 
