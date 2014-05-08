@@ -35,7 +35,7 @@ See below for some experiences with particular tablets.
 This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed.
 
 You could also use VNC if you need graphics.
-===Or evenâ¦ use other programmer editor, and simulate Emacs behaviour there===
+===Or even use another editor, and simulate Emacs behavior there===
 There are libre editors which can be extended to use Emacs key bindings, for instance:
 * Terminal IDE: https://play.google.com/store/apps/details?id=com.spartacusrex.spartacuside&hl=en
 
