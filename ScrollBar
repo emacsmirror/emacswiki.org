@@ -94,6 +94,9 @@ Any thoughts?
 The Windows/NT ./configure script cannot deal with <code>--without-toolkit-scroll-bars --with-x-toolkit=no</code>. Is there another way to tell emacs to use its own scrollbars? 
 -- [[Zarza]]
 
+[new]
+<code>try ./configure --without-toolkit-scroll-bars --with-x-toolkit=yes</code>
+
 ----
 
 
