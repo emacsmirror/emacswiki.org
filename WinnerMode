@@ -1,6 +1,6 @@
 Winner Mode has been included with GNU Emacs since version 20.
 
-Winner Mode is a global minor mode.  When activated, it allows to "undo" (and "redo") changes in the window configuration with the key commands `C-c left' and `C-c right' (before Emacs 22, these were `C-x left' and `C-x right').
+Winner Mode is a global minor mode.  When activated, it allows you to "undo" (and "redo") changes in the window configuration with the key commands `C-c left' and `C-c right' (before Emacs 22, these were `C-x left' and `C-x right').
 
 Winner Mode is great when you depend a lot on working with Emacs windows.  To read code, you want one window.  To compare it with another file, you want two windows. When on IRC you want six windows, and while you're engaging in an important discussion, you want just one window, etc.  Getting from many windows to one window is easy: `C-x 1' will do it.  But getting back to a delicate WindowConfiguration is difficult.  This is where Winner Mode comes in: With it, going back to a previous session is easy.
 
@@ -9,7 +9,7 @@ Activate it with `M-x winner-mode RET' or add the following to your ~/.emacs:
     (when (fboundp 'winner-mode)
       (winner-mode 1))
 
-The `fbound' test is for those XEmacs installations that don't have
+The `fboundp' test is for those XEmacs installations that don't have
 winner-mode available. Similar functionality can be achieved with XEmacs' `pop-window-configuration' and `unpop-window-configuration' commands.
 
 ----
