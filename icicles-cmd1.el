@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun May  4 14:25:40 2014 (-0700)
+;; Last-Updated: Fri May  9 09:27:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26961
+;;     Update #: 26968
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3243,8 +3243,11 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
           ;; If command to be redone does not match front of history, add it to the history.
           (unless (equal newcmd (car command-history))
             (setq command-history  (cons newcmd command-history)))
-          (if (> emacs-major-version 23) ; Trick `called-interactively-p' into thinking that this is an
-              (unwind-protect           ; interactive call of NEWCMD (Emacs bug #14136).
+          ;; Trick `called-interactively-p' into thinking that this is an interactive call of NEWCMD
+          ;; (Emacs bug #14136).
+          (if (or (> emacs-major-version 24)
+                  (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50"))))
+              (unwind-protect
                    (progn (add-hook 'called-interactively-p-functions
                                     #'icicle-repeat-complex-command--called-interactively-skip)
                           (eval newcmd))
@@ -3257,7 +3260,8 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
 
 ;; Same as `repeat-complex-command--called-interactively-skip' in `simple.el', but tests for
 ;; `icicle-repeat-complex-command', not `repeat-complex-command'.
-(when (> emacs-major-version 23)
+(when (or (> emacs-major-version 24)
+          (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50"))))
   (defun icicle-repeat-complex-command--called-interactively-skip (i _frame1 frame2)
     "If currently `icicle-repeat-complex-command', return 1 to skip over it."
     (and (eq 'eval (cadr frame2))  (eq 'icicle-repeat-complex-command
