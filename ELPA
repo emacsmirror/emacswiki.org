@@ -39,6 +39,9 @@ You can also customize `package-archives'. Try:
 M-x customize-variable [RET] package-archives [RET]
 }}}
 
+=== Contributing to the official repo ===
+
+Package authors may wish (or be invited) to contribute their packages to the official ELPA respository. The first step is making sure you've completed your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]], and create an account. Once the account is created, you can request inclusion in the "emacs" group. Once that is granted, clone the ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from the "Member clone" section. Be sure to read the README file in the repository! You should now be able to push to the official repo.
 
 == How Packages work in Emacs 24 ==
 
