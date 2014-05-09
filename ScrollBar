@@ -95,7 +95,8 @@ The Windows/NT ./configure script cannot deal with <code>--without-toolkit-scrol
 -- [[Zarza]]
 
 [new]
-<code>try ./configure --without-toolkit-scroll-bars --with-x-toolkit=yes</code>
+try <code>./configure --without-toolkit-scroll-bars --with-x-toolkit=yes</code>
+this way I get native scroll bars with whatever x-toolkit I want on my debian system. Maybe it works like that on windows NT too.
 
 ----
 
