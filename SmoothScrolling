@@ -153,6 +153,16 @@ For GNU Emacs 24.3.1 I have normal scrolling, and with the "C key" pressed, you 
 (global-set-key (kbd "<C-mouse-4>") 'scroll-down-line)
 (global-set-key (kbd "<C-mouse-5>") 'scroll-up-line)
 </pre>
+
+[new]
+Have you got linum enabled? Try enabling linum-delay which will make up the difference. <code>M-x customize-group RET linum RET</code>
+<pre>
+;; Delay updates to give Emacs a chance for other changes
+(setq linum-delay t)
+;; scrolling to always be a line at a time
+(setq scroll-conservatively 10000)
+</pre>
+-- [[Gayan]]  [Emacs 24.3]
 ----
 CategoryDisplay
 CategoryMouse
