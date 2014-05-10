@@ -162,7 +162,7 @@ Have you got linum enabled? Try enabling linum-delay which will make up the diff
 ;; scrolling to always be a line at a time
 (setq scroll-conservatively 10000)
 </pre>
--- [[Gayan]]  [Emacs 24.3]
+-- [[Gayan Weerakutti]]  [Emacs 24.3]
 ----
 CategoryDisplay
 CategoryMouse
