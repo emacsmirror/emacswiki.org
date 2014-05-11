@@ -82,7 +82,10 @@ Seems to need the following in emacs 24 since make-local hook has been removed:
 
 = Indirect buffers =
 
-This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See IndirectBuffers.
+This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See also IndirectBuffers.
+
+Library <tt>[[narrow-indirect.el]]</tt> facilitates creating indirect buffers cloned and narrowed from other buffers.  And yes, you can use different [[major mode]]s in them, even fontifying them differently etc.  See NarrowIndirect.
+
 
 ---------------
 
