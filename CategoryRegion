@@ -10,6 +10,7 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 * CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
 * DeleteSelectionMode -- Replaces the region with what you type. Backspace (DEL) deletes the region.
 * KillingAndYanking -- The default Emacs behavior for copying, killing (cutting), and yanking (pasting).
+* NarrowIndirect -- Create indirect buffers cloned and narrowed from other buffers.
 * PcSelectionMode -- Treats the region like MS Windows and Motif.
 * RectangleCommands -- Operate on the column of text between point and mark.
 ** RectangleMark -- Highlights rectangular areas instead of a continuous stretches of text.
