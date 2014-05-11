@@ -1,5 +1,5 @@
 This page is about library '''<tt>[[narrow-indirect.el]]</tt>''', which lets you 
-create an indirect buffer that is a clone of the current buffer and that is narrowed to a particular portion of it.
+create an [[IndirectBuffers|indirect buffer]] that is a clone of the current buffer and that is narrowed to a particular portion of it.
 
 Such an indirect buffer gives you a different view of a portion of
 the buffer, or even of the whole buffer (use '''`C-x h C-x 4 n n'''').
