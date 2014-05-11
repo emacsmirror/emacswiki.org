@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 19:38:28 2014 (-0700)
+;; Last-Updated: Sun May 11 16:22:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1830
+;;     Update #: 1839
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/11 dadams
+;;     help-substitute-command-keys: Bug: \= was not being removed - C-h f replace-regexp showed \=\N, not \N.
+;;       Small loop for \=: changed \\\\=$ to \\\\=.
+;;       Main loop, when escaped (\=) and odd: Skip the \=: concat before \= with after \=.
 ;; 2014/05/04 dadams
 ;;     Use called-interactively only for Emacs 23.2+, since we pass it an arg.
 ;; 2014/05/02 dadams
@@ -191,8 +195,7 @@
 ;;     Info-make-manuals-xref: Do nothing if OBJECT is not a string or a symbol (e.g. is a keymap).
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
-;;     help-substitute-command-keys, describe-function-1:
-;;       Use naked-key-description if available.
+;;     help-substitute-command-keys, describe-function-1: Use naked-key-description if available.
 ;; 2011/08/22 dadams
 ;;     describe-variable (Emacs 23+): Added terpri after Value: (for multiline value).
 ;; 2011/07/25 dadams
@@ -419,14 +422,15 @@ descriptions, which link to the key's command help."
              (re-any        (concat "\\(" re-command  "\\|" re-keymap "\\|" re-bindings "\\)"))
              (keymap        (or overriding-terminal-local-map   overriding-local-map))
              (msg           nil)
-             key bindings ma mc mk mb)
+             key bindings  ma  mc  mk  mb)
         (while (< ii len-strg)
           (setq key       nil
-                bindings  nil
+                bindings  ()
                 strg      (substring strg ii))
+
           (save-match-data              ; ANY
             (setq ma  (string-match re-any strg))
-            (cond ((not ma)             ; No \[...], \{...}, or \<...>, but we need to handle \=
+            (cond ((not ma) ; No \[...], \{...}, or \<...>, but we need to handle \=
                    (setq jj       0
                          newstrg  (concat newstrg (replace-regexp-in-string
                                                    "\\\\=\\(.\\)" "\\1" strg nil nil nil jj)))
@@ -436,28 +440,28 @@ descriptions, which link to the key's command help."
                    (let ((escaped  nil)
                          (odd      nil))
                      (save-match-data
-                       (let ((ma1  ma))
+                       (let ((ma/=  ma))
                          (setq ii  ma)
-                         (while (string-match "\\\\=$" (substring strg 0 ma1))
-                           (setq odd  (not odd)
-                                 ma1  (match-beginning 0))
-                           (when odd
-                             (setq ii       (- ii 2)
-                                   escaped  ma1)))))
+                         (while (string-match "\\\\=" (substring strg 0 ma/=))
+                           (setq odd   (not odd)
+                                 ma/=  (match-beginning 0))
+                           (when odd (setq ii       (- ii 2)
+                                           escaped  ma/=)))))
                      (if (not escaped)
                          (setq ii       ma
                                jj       (match-end 0)
                                ma       (match-string-no-properties 0 strg)
                                newstrg  (concat newstrg (substring strg 0 ii)))
                        (setq jj       (match-end 0) ; End of \[...], \{...}, or \<...>
+                             ma       (and (not odd)  (match-string-no-properties 0 strg))
                              newstrg  (if odd
                                           (concat newstrg
-                                                  (substring strg 0 ii) ; Unescaped \='s
-                                                  (substring strg ma jj)) ; \[...], \{...}, or \<...>
-                                        (concat newstrg (substring strg 0 ii)))
-                             ma       (and (not odd)  (match-string-no-properties 0 strg))
-                             ii       jj))))))
+                                                  (substring strg 0 escaped) ; Before \='s
+                                                  (substring strg (+ 2 escaped) ii)) ; After \='s
+                                        (concat newstrg (substring strg 0 ii)))))))))
+
           (when ma
+
             (save-match-data            ; KEYMAP
               (setq ma  (copy-sequence ma))
               (setq mk  (string-match re-keymap ma))
@@ -468,6 +472,7 @@ descriptions, which link to the key's command help."
                     (setq keymap  (symbol-value keymap))
                   (setq msg  (format "\nUses keymap \"%s\", which is not currently defined.\n" keymap))
                   (setq keymap  (or overriding-terminal-local-map  overriding-local-map)))))
+
             (unless mk                  ; COMMAND
               (save-match-data
                 (setq ma  (copy-sequence ma))
@@ -487,6 +492,7 @@ descriptions, which link to the key's command help."
                                    (key-description key))
                                (concat "M-x " (symbol-name mc))))
                   (when add-help-buttons (setq key  (help-key-button-string key mc))))))
+
             (unless (or mk  mc)         ; BINDINGS
               (save-match-data
                 (setq ma  (copy-sequence ma))
@@ -500,9 +506,10 @@ descriptions, which link to the key's command help."
                          (setq msg  (format "\nUses keymap \"%s\", which is not currently defined.\n"
                                             bindings))
                          (setq bindings  nil))))))
-            (unless mk
-              (setq newstrg  (concat newstrg (or key  bindings  (substring strg ii jj)))))
+
+            (unless mk (setq newstrg  (concat newstrg (or key  bindings  (substring strg ii jj)))))
             (setq ii  (or jj  len-strg))))
+
         (if (string= string newstrg)
             string ; Return original string, not a copy, if no changes.
           newstrg))))
