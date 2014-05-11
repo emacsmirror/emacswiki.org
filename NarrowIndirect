@@ -1,0 +1,72 @@
+This page is about library '''<tt>[[narrow-indirect.el]]</tt>''', which lets you 
+create an indirect buffer that is a clone of the current buffer and that is narrowed to a particular portion of it.
+
+Such an indirect buffer gives you a different view of a portion of
+the buffer, or even of the whole buffer (use '''`C-x h C-x 4 n n'''').
+It always has the same text and text properties, but otherwise it
+is pretty independent.
+
+In particular, you can kill an indirect buffer without affecting
+its base buffer.  You will likely want to kill indirect narrowed
+buffers rather than widening them.
+
+''Note:'' Because the indirect clone shares text properties with it
+base buffer, if you give it a different major mode that uses
+different font-locking then the font-locking of the base buffer
+changes the same way.  However, you can restore the font-locking
+appropriate to the base buffer, by just toggling `font-lock-mode'
+off and on again there.
+
+See the Emacs manual, node [[Manual:Indirect Buffers|Indirect Buffers]] (Concept).
+
+It is helpful to be able to easily distinguish indirect buffers
+from non-indirect buffers.  Library <tt>[[narrow-indirect.el]]</tt> offers two ways to do
+this, for the indirect buffers it creates:
+
+* The buffer name of an indirect narrowed buffer starts with a
+  prefix that you can set using option `ni-buf-name-prefix'.  The
+  default value is '''`I-''''.
+
+* The name of an indirect narrowed buffer is highlighted in the
+  [[mode line]] using face '''`ni-mode-line-buffer-id'''' instead of face
+  `mode-line-buffer-id'.  To turn this off, just customize the
+  former to be the same as the latter.
+
+By default, the name of an indirect narrowed buffer reflects the
+name of its base buffer and the text of the narrowed region (or
+the name of the defined object, in the case of
+`ni-narrow-to-defun-other-window').  But you can control this in
+several ways.  See the command doc strings.
+
+To customize the behavior of this library, do this:
+
+  M-x customize-group Narrow-Indirect
+
+Suggested key bindings:
+
+ (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-other-window)
+ (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-other-window)
+ (define-key ctl-x-4-map "np" 'ni-narrow-to-page-other-window)
+
+
+Acknowledgments:
+
+The idea and original code for a command that combines narrowing
+with cloning a buffer as an indirect-buffer is due to ZaneAshby, [[http://demonastery.org/2013/04/emacs-narrow-to-region-indirect/ here]].
+
+In Emacs [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=17401|bug thread #17401]], PhilSainty proposed adding three
+commands to GnuEmacs based on this approach.  LennartBorgman
+contributed code that uses,  in
+the cloned buffer name, some text based on the narrowed region.
+
+The code in <tt>[[narrow-indirect.el]]</tt> extends this a bit and provides
+a couple of user options and some alternative ([[prefix argument|prefix-argument]])
+behavior.  It is doubtful that Emacs Dev will ever adopt features
+such as those defined here, and if they do then this library can
+at least help for Emacs versions prior to their addition.
+
+
+----
+CategoryRegion
+CategoryHideStuff
+MultipleModes
