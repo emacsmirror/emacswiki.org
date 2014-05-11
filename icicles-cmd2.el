@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Apr 20 16:21:00 2014 (-0700)
+;; Last-Updated: Sun May 11 10:25:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6835
+;;     Update #: 6837
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2311,37 +2311,33 @@ A help string text property is added to the string, with the
 `font-info', except for the first two items (OPENED-NAME and
 FULL-NAME)."
   (and (and icicle-WYSIWYG-Completions-flag  (> emacs-major-version 20))
-       (let ((ret-font  font))
-         (save-match-data
-           (let ((xlfd-regexp  "\\`\\(-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*\\)\
--[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*\\'"))
-             (or (not (string-match xlfd-regexp font))
-                 (setq font  (replace-match "\\1" nil nil font)))))
-         (and (not (string= font "-*-*-*-*-*-*"))
-              (let* ((font-info     (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
-                                             (and (boundp 'tooltip-mode)  tooltip-mode))
-                                         (font-info font)))
-                     (iii           (if (< emacs-major-version 21) 3 2))
-                     (help-string   (if font-info
-                                        (format
-                                         "pixelsize: %s, pixelheight: %s, offset: %s, compose: %s, ascent: %s"
-                                         (aref font-info iii) (aref font-info (+ iii 1))
-                                         (aref font-info (+ iii 2)) (aref font-info (+ iii 3))
-                                         (aref font-info (+ iii 4)))
-                                      "Font is not yet loaded (used)")))
-                (let* ((splits   (split-string font "-"))
-                       (foundry  (nth 1 splits))
-                       (family   (nth 2 splits))
-                       (weight   (nth 3 splits))
-                       (slant    (nth 4 splits))
-                       (width    (nth 5 splits))
-                       (style    (nth 6 splits)))
-                  (icicle-candidate-short-help
-                   help-string
-                   ;; If it were not for Emacs bug #14634, just `:font' should be enough.
-                   (icicle-propertize
-                    font 'face (list :font font :foundry foundry :family family :weight weight
-                                     :slant slant :width width :style style :height 100))))))))) ; 10 points
+       (and (not (string-match "\\`-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]\\'" font))
+            (let* ((font-info     (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
+                                           (and (boundp 'tooltip-mode)  tooltip-mode))
+                                       (condition-case nil
+                                           (font-info font)
+                                         (error nil))))
+                   (iii           (if (< emacs-major-version 21) 3 2))
+                   (help-string   (if font-info
+                                      (format
+                                       "pixelsize: %s, pixelheight: %s, offset: %s, compose: %s, ascent: %s"
+                                       (aref font-info iii) (aref font-info (+ iii 1))
+                                       (aref font-info (+ iii 2)) (aref font-info (+ iii 3))
+                                       (aref font-info (+ iii 4)))
+                                    "Font is not yet loaded (used)")))
+              (let* ((splits   (split-string font "-"))
+                     (foundry  (nth 1 splits))
+                     (family   (nth 2 splits))
+                     (weight   (nth 3 splits))
+                     (slant    (nth 4 splits))
+                     (width    (nth 5 splits))
+                     (style    (nth 6 splits)))
+                (icicle-candidate-short-help
+                 help-string
+                 ;; If it were not for Emacs bug #14634, just `:font' should be enough.
+                 (icicle-propertize
+                  font 'face (list :font font :foundry foundry :family family :weight weight
+                                   :slant slant :width width :style style :height 100)))))))) ; 10 points
 
 ;;; ;; No longer used.
 ;;; ;; Free var here: `icicle-orig-pixelsize' is bound in `icicle-font'.
