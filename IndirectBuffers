@@ -7,9 +7,16 @@ writing the mail, create an indirect buffer, put it in
 emacs-lisp-mode, write your lisp function, switch back to the original
 mail, and send it.
 
-: A comment: if I do as suggested above, although I can turn on lisp mode in the cloned buffer (Emacs 21) and get indentation etc correct, font locking is still as in the original buffer. Why? -- MaDa
-:: I have the opposite problem. Font locking works fine in the indirect buffer with the new mode, but when i go back, the rest of the base buffer is also colored according to the indirect major mode. Anyone with insights into the workings of font-lock-mode and indirect buffers/narrowing?
-::: The indirect buffer shares its text with the original buffer, including properties. 
+----
+
+[new]
+A comment: if I do as suggested above, although I can turn on lisp mode in the cloned buffer (Emacs 21) and get indentation etc correct, font locking is still as in the original buffer. Why? -- MaDa
+[new]
+I have the opposite problem. Font locking works fine in the indirect buffer with the new mode, but when i go back, the rest of the base buffer is also colored according to the indirect major mode. Anyone with insights into the workings of font-lock-mode and indirect buffers/narrowing? -- [[Anonymous]]
+[new]
+The indirect buffer shares its text with the original buffer, including properties. -- PeterMielke
+[new:DrewAdams:2014-05-11 20:58 UTC]
+That's OK -- no problem.  Just toggle `font-lock-mode' in the base buffer (twice) to get back its font-locking.  You can have different [[major mode]]s in the buffers, and they can use different font-locking. -- DrewAdams
 
 
 == Indirect Buffers that Clone and Narrow Other Buffers ==
