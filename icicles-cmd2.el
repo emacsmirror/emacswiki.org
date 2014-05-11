@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun May 11 10:25:00 2014 (-0700)
+;; Last-Updated: Sun May 11 12:43:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6837
+;;     Update #: 6839
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2312,19 +2312,21 @@ A help string text property is added to the string, with the
 FULL-NAME)."
   (and (and icicle-WYSIWYG-Completions-flag  (> emacs-major-version 20))
        (and (not (string-match "\\`-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]\\'" font))
-            (let* ((font-info     (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
+            (let* ((font-error    nil)
+                   (font-info     (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
                                            (and (boundp 'tooltip-mode)  tooltip-mode))
                                        (condition-case nil
                                            (font-info font)
-                                         (error nil))))
+                                         (error (setq font-error  t) nil))))
                    (iii           (if (< emacs-major-version 21) 3 2))
-                   (help-string   (if font-info
-                                      (format
-                                       "pixelsize: %s, pixelheight: %s, offset: %s, compose: %s, ascent: %s"
-                                       (aref font-info iii) (aref font-info (+ iii 1))
-                                       (aref font-info (+ iii 2)) (aref font-info (+ iii 3))
-                                       (aref font-info (+ iii 4)))
-                                    "Font is not yet loaded (used)")))
+                   (help-string   (cond (font-error "Font is invalid")
+                                        (font-info
+                                         (format
+                                          "pixelsize: %s, pixelheight: %s, offset: %s, compose: %s, ascent: %s"
+                                          (aref font-info iii) (aref font-info (+ iii 1))
+                                          (aref font-info (+ iii 2)) (aref font-info (+ iii 3))
+                                          (aref font-info (+ iii 4))))
+                                        (t "Font is not yet loaded (used)"))))
               (let* ((splits   (split-string font "-"))
                      (foundry  (nth 1 splits))
                      (family   (nth 2 splits))
