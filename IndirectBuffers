@@ -9,7 +9,14 @@ mail, and send it.
 
 : A comment: if I do as suggested above, although I can turn on lisp mode in the cloned buffer (Emacs 21) and get indentation etc correct, font locking is still as in the original buffer. Why? -- MaDa
 :: I have the opposite problem. Font locking works fine in the indirect buffer with the new mode, but when i go back, the rest of the base buffer is also colored according to the indirect major mode. Anyone with insights into the workings of font-lock-mode and indirect buffers/narrowing?
-::: The indirect buffer shares its text with the original buffer, including properties.  
+::: The indirect buffer shares its text with the original buffer, including properties. 
+
+
+== Indirect Buffers that Clone and Narrow Other Buffers ==
+
+Library NarrowIndirect provides simple commands to create an indirect buffer that is a clone of the current buffer and that is narrowed to a particular portion of it.  By default, it helps you distinguish such indirect buffers from non-indirect buffers, by using a buffer-name prefix (default '''`I-'''') and by using a different face for the buffer name in the [[mode line]].
+
+ 
 = Emacs 21 and More Recent =
 
 Emacs 21 provides functions to do this easily:
