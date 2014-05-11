@@ -11,4 +11,5 @@ would eliminate.
 * HideSearch -- hides non-matching lines incrementally
 * HideShow -- Hide parts of the buffer like an outline mode.
 * MultipleNarrowings -- Use `##C-x n x x x...##’ to cycle a ring of narrowings (buffer restrictions).
+* NarrowIndirect -- Indirect buffers cloned and narrowed from other buffers let you view different portions in different windows, modes, etc.
 * `set-selective-display' -- Hide lines beyond a certain level of indentation.
