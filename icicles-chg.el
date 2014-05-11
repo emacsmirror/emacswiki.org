@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun May 11 10:31:37 2014 (-0700)
+;; Last-Updated: Sun May 11 12:50:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10894
+;;     Update #: 10896
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1084,6 +1084,7 @@
 ;; 2014/05/11 dadams
 ;;     icicle-WYSIWYG-font:
 ;;       Fixed wrt Emacs bug #17457: Do not truncate before calling font-info, and ignore its errors.
+;;       Distinguish, for user, font-info error from its nil return (font not loaded).
 ;; 2014/04/20 dadams
 ;;     icicle-synonyms: Use icicle-sort-comparer, not icicle-sort-function (typo).
 ;;     Removed some old $$$$$ comments (cleanup).
