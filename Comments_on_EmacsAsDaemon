@@ -91,3 +91,15 @@ I'm open to suggestions. I just don't want to spend time on fiddling with this m
 
 -- AlexSchroeder 2013-02-23 15:13 UTC
 
+
+----
+
+Hi, a suggestion for this page.  Start with the big picture -- why would one want to run emacs in a daemon?  I landed on this page first in google trying to answer that question, and couldn't find it here.  I suggest putting an intro with something along the lines of:
+
+http://devblog.avdi.org/2011/10/27/running-emacs-as-a-server-emacs-reboot-15/
+
+Shawn 
+shawn (at) weirdness (dot) com
+
+-- realscrappy 2014-05-12 18:58 UTC
+
