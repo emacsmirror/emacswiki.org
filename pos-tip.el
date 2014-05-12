@@ -1,4 +1,4 @@
-;;; pos-tip.el -- Show tooltip at point -*- coding: utf-8 -*-
+;;; pos-tip.el --- Show tooltip at point -*- coding: utf-8 -*-
 
 ;; Copyright (C) 2010 S. Irie
 
