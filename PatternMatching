@@ -355,4 +355,46 @@ A recursive function for describing numbers in English.
 
 * See also [[WikiPedia:Pattern matching]], [[http://nic.ferrier.me.uk/blog/2013_03/refactoring-elisp-polymorphically|Nic Ferrier on using pcase for refactoring]]
 ----
+
+[new]
+I use the following code to make an experiment, and it works fine:
+
+{{{
+(pcase '(apple . (banana orange))
+  (`(,a . (,b ,c)) (list a b c)))
+==> (apple banana orange)
+}}}
+
+But when I macroexpand the expression, the result is:
+
+{{{
+(pp-macroexpand-expression 
+ '(pcase '(apple . (banana orange))
+    (`(,a . (,b ,c)) (list a b c))))
+
+==> 
+(if (consp '(apple banana orange))
+    (let* ((xcar (car '(apple banana orange)))
+           (xcdr (cdr '(apple banana orange))))
+      (if (consp xcdr)
+          (let* ((xcar (car xcdr))
+                 (xcdr (cdr xcdr)))
+            (if (consp xcdr)
+                (let* ((xcar (car xcdr))
+                       (xcdr (cdr xcdr)))
+                  (if (null xcdr)
+                      (let ((c xcar)
+                            (b xcar)
+                            (a xcar))
+                        (list a b c))
+                    nil))
+              nil))
+        nil))
+  nil)
+}}}
+
+It's clearly wrong that `a', `b', `c' all bound to `xcar' and the result is "(orange orange orange)".  It confuses me very much. Is it a bug of Emacs's macroexpand or I have missed some thing? My emacs version is "GNU Emacs 24.3.1"
+
+--xiepan
+
 CategoryCode
