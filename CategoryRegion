@@ -35,7 +35,7 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 * CopyingWholeLines -- Different ways of copying an entire line to the kill-ring.
 * CopyWithoutSelection -- Simply copy current line, current word and current paragraph to the kill-ring without select to each line, each word or each paragraph 
 * EevMode -- `M-x eev' saves region to a temporary script. Later you can execute the script.
-* https://github.com/magnars/expand-region.el Expand region increases the selected region 
+* [https://github.com/magnars/expand-region.el expand-region.el] -- Expand region increases the selected region 
 * FastNav -- Set mark quickly at the next/previous nth occurence of a character while [[point]] is kept.
 * HideRegion -- Hide and show multiple regions.
 * HighlightTemporarily -- Highlight a region (includes marker pens etc.).
