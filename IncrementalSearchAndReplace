@@ -1,8 +1,0 @@
-DeletedPage
-CategorySearchAndReplace covers this in a single sentance quite nicely.
-
-
-IncrementalSearch in allows you to interactively start a `query-replace' (or `query-replace-regexp') session using the current search string (or regular expression) providing roughly an "Incremental replace" feature. The default keybinds are ##`M-%'## (or ##`C-M-%'##) after starting Isearch.
-
-----
-CategorySearchAndReplace
