@@ -1,6 +1,6 @@
 [http://nschum.de/src/emacs/fringe-helper/ fringe-helper.el] contains helper functions for [[fringe]] bitmaps.
 
-fringe-helper-define allows you to to define fringe bitmaps using a visual string replesentation.  For example:
+fringe-helper-define allows you to to define fringe bitmaps using a visual string representation.  For example:
 
   (fringe-helper-define 'test-bitmap '(top repeat)
     "XX......"
