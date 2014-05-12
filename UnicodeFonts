@@ -14,9 +14,12 @@ https://raw.github.com/rolandwalker/unicode-fonts/master/native_mac_backend.png
 * Use an extended Latin font for your default face, such
   as Monaco, Consolas, or <nowiki>DejaVu</nowiki> Sans Mono.
 
-* (require 'unicode-fonts)
+* UnicodeFonts depends on FontUtils, UcsUtils and ListUtils, all by [[roland.walker]].
 
-* (unicode-fonts-setup)
+{{{
+(require 'unicode-fonts)
+(unicode-fonts-setup)
+}}}
 
 ==Testing==
 	C-h h                                         ; M-x view-hello-file
