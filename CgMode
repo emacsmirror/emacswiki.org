@@ -13,7 +13,7 @@ One way to load this, add to ~/.emacs (or see LoadPath):
 
 By default it is used for files with the .cg extension.
 ----
-CG might also mean [http://beta.visl.sdu.dk/constraint_grammar.html Constraint Grammar], there is also a [http://github.com/unhammer/cg-mode Constraint Grammar cg-mode].
+CG might also mean [http://beta.visl.sdu.dk/constraint_grammar.html Constraint Grammar], there is also a [http://beta.visl.sdu.dk/svn/visl/tools/vislcg3/trunk/emacs/cg.el Constraint Grammar cg-mode] (also in MELPA: http://melpa.milkbox.net/#/cg )
 
 ----
 CategoryModes
