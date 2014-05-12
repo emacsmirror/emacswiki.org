@@ -3,8 +3,8 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 = Comparison =
 
 || library        || elisp files || size  || last update || url                                                 ||
+|| web-mode       ||           1 || 353 kb ||  2014-05-11 || http://web-mode.org                  ||
 || polymode  || 7              || 120 kb || 2014-05-07 || https://github.com/vitoshka/polymode ||
-|| web-mode       ||           1 || 279 kb ||  2014-03-03 || http://web-mode.org                  ||
 || mmm-mode       ||          17 || 185 kb ||  2013-10-27 || https://github.com/purcell/mmm-mode                 ||
 || multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
 || mumamo          ||         115 || 3090 kb ||  2010-04-25 || http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html ||
