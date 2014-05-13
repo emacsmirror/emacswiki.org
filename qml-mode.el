@@ -7,8 +7,8 @@
 ;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 21:23:56
 ;; Version: 0.3
-;; Last-Updated: 2014-04-10 01:06:28
-;;           By: Andy Stewart
+;; Last-Updated: 2014-05-12 21:16:14
+;;           By: Andres Gomez Garcia
 ;; URL: http://www.emacswiki.org/emacs/download/qml-mode.el
 ;; Keywords:
 ;; Compatibility: GNU Emacs 24.3.50.1
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2014/05/12
+;;     * Fixed qml-indent-line
+;;     
 ;; 2014/04/10
 ;;      * Improve qml-font-lock-keywords.
 ;;
@@ -163,12 +166,12 @@ This is run before the process is cranked up."
             (setq cur-indent (current-indentation))
             (goto-char cur)
             (unless (string= (string (char-after (- (point) 1))) "{")
-              (setq cur-indent (+ cur-indent default-tab-width))
+              (setq cur-indent (+ cur-indent tab-width))
               )
             )))
     (indent-line-to cur-indent)
     (if (string= (string (char-after (point))) "}")
-        (indent-line-to (- cur-indent default-tab-width))
+        (indent-line-to (- cur-indent tab-width))
       )
     ))
 
