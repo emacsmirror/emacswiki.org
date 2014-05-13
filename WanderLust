@@ -33,6 +33,10 @@ It is the only emacs mail reader that I have used that seems to handle IMAP prop
 == Installing Wanderlust ==
 An easy way to get the latest Wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies from GitHub automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
 
+One of the developers Erik Hetzner [http://permalink.gmane.org/gmane.mail.wanderlust.general/5548 set up a package archive].
+
+    (add-to-list 'package-archives
+       '("e6h" . "http://www.e6h.org/packages/"))
 
 == Basic Usage ==
 Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
