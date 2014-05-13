@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:07:24 2013 (-0800)
+;; Last-Updated: Mon May 12 21:43:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 211
+;;     Update #: 222
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -270,6 +270,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/12 dadams
+;;     hc-highlight-chars: Clarified doc string for arg CHARS.
 ;; 2012/11/18 dadams
 ;;     hc-other-chars(-NOT): Added :set to reset the match-data cache.
 ;;     hc-other-chars-matcher: Allow nil values for options hc-other-chars(-NOT):
@@ -594,11 +596,13 @@ Uses face `hc-hyphen-space'."
 
 ;;;###autoload
 (defun hc-highlight-chars (chars face &optional offp msgp)
-  "Read a string of CHARS, read a FACE name, then highlight the CHARS.
-With a prefix arg, unhighlight the CHARS.
+  "Read a string of characters and a face name, then highlight the chars.
+With a prefix arg, unhighlight the chars.
 
-As an alternative to being a string of characters, CHARS can be any of
-the following (the last two are only for Emacs 22+):
+As an alternative to a string of characters, what you enter for the
+characters can be any of the possibilities for a single entry in
+`hc-other-chars'.  That is it can be any of the following (the last
+two are only for Emacs 22+):
 
 * A cons (C1 . C2), where C1 and C2 are characters, that is, integers,
   which you can represent using character notation.  This represents
@@ -615,11 +619,18 @@ the following (the last two are only for Emacs 22+):
 * A character set, such as `iso-8859-1' or `lao'.  This matches all
   characters in the set.
 
-If you mistype CHARS in one of the above representations, then what
-you type is interpreted as just a string of the characters to
-highlight.  For example, if you mean to type `[:digit:]' but you
-instead type `[:digit]' (no second colon), then the characters
-highlighted are [, :, d, g, i, t, and ]."
+If you mistype one of the above representations, then what you type is
+interpreted as just a string of the characters to highlight.  For
+example, if you mean to type `[:digit:]' but you instead type
+`[:digit]' (no second colon), then the characters highlighted are
+\[, :, d, g, i, t, and ].
+
+Non-interactively:
+
+* CHARS is a possible value for `hc-other-chars', that is, a list of
+  entries such as described above.
+* FACE is the highlighting face to use.
+* Non-nil OFFP non-nil means turn highlighing off."
   (interactive
    (let* ((prompt  (format "Chars to %shighlight: " (if current-prefix-arg "UN" "")))
           (chrs    (read-string prompt))
