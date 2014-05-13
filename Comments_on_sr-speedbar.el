@@ -1,6 +1,5 @@
-Add your comment here.
 Emacs 24.4.50.1, will broken with following error:
-
+{{{
 Debugger entered--Lisp error: (void-function sr-speedbar-handle-other-window-advice)
   (sr-speedbar-handle-other-window-advice value)
   (progn (sr-speedbar-handle-other-window-advice value))
@@ -17,6 +16,7 @@ Debugger entered--Lisp error: (void-function sr-speedbar-handle-other-window-adv
   eval-last-sexp(nil)
   call-interactively(eval-last-sexp nil nil)
   command-execute(eval-last-sexp)
+}}}
 
 -- 匿名者 2014-05-13 13:18 UTC
 
