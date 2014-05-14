@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 0
 ;; Package-Requires: ((fit-frame "0"))
-;; Last-Updated: Thu Dec 26 08:50:17 2013 (-0800)
+;; Last-Updated: Wed May 14 08:13:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 703
+;;     Update #: 706
 ;; URL: http://www.emacswiki.org/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
@@ -53,7 +53,10 @@
 ;;  To automatically fit frames that show a temporary buffer in their
 ;;  sole window, add this to your initialization file also:
 ;;
-;;    (add-hook 'temp-buffer-show-hook
+;;    (add-hook 'temp-buffer-show-hook                ; Emacs < 24.4
+;;              'fit-frame-if-one-window 'append)
+;;
+;;    (add-hook 'temp-buffer-window-show-hook         ; Emacs 24.4+
 ;;              'fit-frame-if-one-window 'append)
 ;;
 ;;  User option (variable) `autofit-frames-flag' turns on and off the
