@@ -22,8 +22,10 @@ Tramp Documentation:
 
 * http://www.gnu.org/software/tramp/
 
-== Quick-start tramp configuration ==
-    (require 'tramp)
+== Quick-start tramp  ==
+
+Faster than the default scp
+
     (setq tramp-default-method "ssh")
 
 For GNU Emacs
@@ -51,6 +53,10 @@ Also,
 }}}
 
 == Troubleshooting ==
+
+=== Older emacs versions===
+
+    (require 'tramp)
 
 === SELinux issues ===
 
