@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun May 11 12:50:46 2014 (-0700)
+;; Last-Updated: Wed May 14 09:29:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10896
+;;     Update #: 10898
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4200,6 +4200,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/05/14 dadams
+;;     icicle-prefix-complete-1: Bind temp-buffer-window-show-hook to nil also (Emacs 24.4+).
 ;; 2014/04/23 dadams
 ;;     Use cl-flet if available.
 ;;     Typo: icicle-toggle-show-image-file-thumbnail -> icicle-cycle-image-file-thumbnail.
