@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 14:13:30 2014 (-0700)
+;; Last-Updated: Wed May 14 10:28:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3013
+;;     Update #: 3019
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,20 +34,21 @@
 ;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
 ;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
 ;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
-;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
-;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
-;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
-;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
-;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-keys', `simple+', `speedbar',
-;;   `start', `strings', `subr-21', `swiss-move', `synonyms',
-;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `icomplete', `icomplete+', `image-dired', `image-file', `imenu',
+;;   `imenu+', `info', `info+20', `isearch+', `iso-transl',
+;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
+;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
+;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
+;;   `setup-keys', `simple+', `speedbar', `start', `strings',
+;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2014/05/14 dadams
+;;     Soft-require highlight-chars instead of autoloading stuff.
 ;; 2014/05/04 dadams
 ;;     Use new library info+20.el for Emacs prior to 23.  info+.el is now only for Emacs 23 and later.
 ;; 2014/02/11 dadams
@@ -718,24 +721,25 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (> emacs-major-version 21)
   (autoload 'register-list "register-list" "Display a list of registers." t))
 
-(autoload 'toggle-highlight-hard-hyphens "highlight-chars"
-  "Toggle highlighting of hard hyphen characters." t)
-(autoload 'hc-toggle-highlight-hard-hyphens "highlight-chars"
-  "Toggle highlighting of hard hyphen characters." t)
-(autoload 'toggle-highlight-hard-spaces "highlight-chars"
-  "Toggle highlighting of non-breaking space characters." t)
-(autoload 'hc-toggle-highlight-hard-spaces "highlight-chars"
-  "Toggle highlighting of non-breaking space characters." t)
-(autoload 'toggle-highlight-other-chars "highlight-chars"
-  "Toggle highlighting of chars in `hc-other-chars'." t)
-(autoload 'hc-toggle-highlight-other-chars "highlight-chars"
-  "Toggle highlighting of chars in `hc-other-chars'." t)
-(autoload 'toggle-highlight-tabs    "highlight-chars" "Toggle highlighting of TAB characters." t)
-(autoload 'hc-toggle-highlight-tabs "highlight-chars" "Toggle highlighting of TAB characters." t)
-(autoload 'toggle-highlight-trailing-whitespace "highlight-chars"
-  "Toggle highlighting of trailing whitespace." t)
-(autoload 'hc-toggle-highlight-trailing-whitespace "highlight-chars"
-  "Toggle highlighting of trailing whitespace." t)
+(require 'highlight-chars nil t)
+;;; (autoload 'toggle-highlight-hard-hyphens "highlight-chars"
+;;;   "Toggle highlighting of hard hyphen characters." t)
+;;; (autoload 'hc-toggle-highlight-hard-hyphens "highlight-chars"
+;;;   "Toggle highlighting of hard hyphen characters." t)
+;;; (autoload 'toggle-highlight-hard-spaces "highlight-chars"
+;;;   "Toggle highlighting of non-breaking space characters." t)
+;;; (autoload 'hc-toggle-highlight-hard-spaces "highlight-chars"
+;;;   "Toggle highlighting of non-breaking space characters." t)
+;;; (autoload 'toggle-highlight-other-chars "highlight-chars"
+;;;   "Toggle highlighting of chars in `hc-other-chars'." t)
+;;; (autoload 'hc-toggle-highlight-other-chars "highlight-chars"
+;;;   "Toggle highlighting of chars in `hc-other-chars'." t)
+;;; (autoload 'toggle-highlight-tabs    "highlight-chars" "Toggle highlighting of TAB characters." t)
+;;; (autoload 'hc-toggle-highlight-tabs "highlight-chars" "Toggle highlighting of TAB characters." t)
+;;; (autoload 'toggle-highlight-trailing-whitespace "highlight-chars"
+;;;   "Toggle highlighting of trailing whitespace." t)
+;;; (autoload 'hc-toggle-highlight-trailing-whitespace "highlight-chars"
+;;;   "Toggle highlighting of trailing whitespace." t)
 
 (autoload 'joc-cursor-type-set-hook "cursors" "Make cursor reflect insert/overwrite mode." t)
 
