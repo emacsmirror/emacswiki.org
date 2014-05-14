@@ -23,8 +23,6 @@ Possibilities:
 
 
 
-
-
 == Programmatically (e.g., in your init file) ==
 
 * Maximize:
@@ -65,7 +63,7 @@ These libraries let you resize frames either interactively or by program:
 
 * [[http://marmalade-repo.org/packages/framesize|FrameSize]] -- Functions to changing font-size on a frame.
 
-
+* [[Multicolumn]] -- Resize frame to fit a number of size-by-side windows, especially useful in conjunction with [[FollowMode]].
 
 ----
 CategoryFrames CategoryDisplay FrameModes CategoryGlossary
