@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 14 10:28:15 2014 (-0700)
+;; Last-Updated: Wed May 14 10:33:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3019
+;;     Update #: 3022
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -85,7 +85,8 @@
 ;; Change Log:
 ;;
 ;; 2014/05/14 dadams
-;;     Soft-require highlight-chars instead of autoloading stuff.
+;;     Soft-require highlight-chars.el instead of autoloading.
+;;     Soft-require narrow-indirect.el.
 ;; 2014/05/04 dadams
 ;;     Use new library info+20.el for Emacs prior to 23.  info+.el is now only for Emacs 23 and later.
 ;; 2014/02/11 dadams
@@ -543,6 +544,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (tap-put-thing-at-point-props))
 (when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
   (thgcmd-bind-keys))
+
+(when (fboundp 'clone-indirect-buffer) (require 'narrow-indirect nil t)) ; Emacs 22+
 
 (require 'imenu+ nil t)                 ; Extensions to `imenu.el'.
 (autoload 'imenu-create-hierarchical-index "hier-imenu" ; Hierarchical imenu for HTML, Tex
