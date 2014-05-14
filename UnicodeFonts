@@ -259,11 +259,23 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:unicode-fonts.el
 
-==Compatibility and Requirements==
+== Example Setup ==
 
-Tested only on GNU Emacs version 24.1
+The following setup just tries to get the [https://en.wikipedia.org/wiki/Emoticons_%28Unicode_block%29 Emoticons] to display correctly:
 
-Requires DynamicFonts, UcsUtils
+{{{
+;; I have all the packages installed in subdirectories of ~/elisp
+(dolist (lib '("font-utils" "unicode-fonts" "ucs-utils" "list-utils"))
+  (add-to-list 'load-path
+	       (expand-file-name lib (concat (getenv "HOME") "/elisp"))))
+;; keep only the Emoticons block, change only the default fontset
+(require 'unicode-fonts)
+(setq unicode-fonts-block-font-mapping
+      '(("Emoticons"
+	 ("Apple Color Emoji" "Symbola" "Quivira")))
+      unicode-fonts-fontset-names '("fontset-default"))
+(unicode-fonts-setup)
+}}}
 
 ----
 CategoryFaces
