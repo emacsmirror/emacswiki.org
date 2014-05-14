@@ -91,6 +91,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
@@ -229,6 +230,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 
 
