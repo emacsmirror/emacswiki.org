@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:50:56 2013 (-0800)
+;; Last-Updated: Wed May 14 08:23:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1960
+;;     Update #: 1963
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -21,7 +21,7 @@
 ;;   `cmds-menu', `cus-theme', `doremi', `doremi-cmd', `doremi-frm',
 ;;   `easymenu', `eyedropper', `faces', `faces+', `fit-frame',
 ;;   `frame-cmds', `frame-fns', `header2', `help+20', `hexrgb',
-;;   `highlight', `info', `info+', `isearch+', `iso-transl',
+;;   `highlight', `info', `info+20', `isearch+', `iso-transl',
 ;;   `lib-requires', `loadhist', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `mouse', `mouse+', `mwheel', `naked',
 ;;   `pp', `pp+', `replace+', `ring', `second-sel', `setup-keys',
@@ -58,6 +58,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/14 dadams
+;;     Added  fit-frame-if-one-window to temp-buffer-window-show-hook also (Emacs 24.4+).
 ;; 2013/12/17 dadams
 ;;     Turn off electric-indent-mode (Emacs 24.4 turns it on by default).
 ;; 2012/10/02 dadams
@@ -353,7 +355,8 @@
 
 ;; Automatically fit one-window frames containing "temporary" buffers (e.g. *Help*).
 (when (fboundp 'fit-frame-if-one-window) ; Defined in `autofit-frame.el'.
-  (add-hook 'temp-buffer-show-hook 'fit-frame-if-one-window 'append))
+  (add-hook 'temp-buffer-show-hook        'fit-frame-if-one-window 'append)
+  (add-hook 'temp-buffer-window-show-hook 'fit-frame-if-one-window 'append)) ; Emacs 24.4+
 
 ;; Automatically fit newly created frames.
 (when (fboundp 'fit-frame)              ; Defined in `fit-frame.el'.
