@@ -1,6 +1,6 @@
 == GNU Emacs ==
 
-Starting with Emacs 23, you can set the [[face]] for the current [[buffer]], using `M-x buffer-face-set'. You can toggle this on/off using `M-x buffer-face-mode'.
+Starting with Emacs 23, you can set the [[face]] for the current [[buffer]], using `M-x buffer-face-set'. You can toggle this on/off using `M-x buffer-face-mode'. Internally, this uses `face-map-add-relative' to remap faces. For example, `(face-remap-add-relative 'default :family "Source Code Pro" :height 140)'
 
 Prior to Emacs 23, you can use the fact that font-lock uses a variable with the same name as the font-lock face. For example, font-lock does not necessarily use `font-lock-comment-face' for comments.  It uses the face
 that is the value of [[variable]] `font-lock-comment-face', which by default
