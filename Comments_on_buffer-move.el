@@ -17,3 +17,10 @@ http://paste.lisp.org/display/142515
 
 -- [http://hackingbits.com geyslan] 2014-05-14 03:12 UTC
 
+
+----
+
+It'll be nice if you could patch the official one.
+
+-- [http://hackingbits.com geyslan] 2014-05-14 03:14 UTC
+
