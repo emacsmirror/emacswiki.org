@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Apr 23 10:49:31 2014 (-0700)
+;; Last-Updated: Wed May 14 09:29:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19508
+;;     Update #: 19510
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3845,9 +3845,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
           ;; beyond a complete candidate - e.g. `forwar-char' to `forward-char-'.
           (setq word-complete-input   (icicle-input-from-minibuffer)
                 return-value
-                (let ((temp-buffer-show-hook       nil) ; Don't let it fit frame here.
-                      (completion-auto-help        nil) ; Don't show `*Completions*'.
-                      (minibuffer-message-timeout  0)) ; No timeout.
+                (let ((temp-buffer-show-hook         nil) ; Don't let it fit frame here.
+                      (temp-buffer-window-show-hook  nil) ; Don't let it fit frame here (Emacs 24.4+).
+                      (completion-auto-help          nil) ; Don't show `*Completions*'.
+                      (minibuffer-message-timeout    0)) ; No timeout.
                   (icicle-clear-minibuffer)
                   (insert icicle-current-input)
                   (save-selected-window (minibuffer-complete-word)))
