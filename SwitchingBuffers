@@ -1,13 +1,13 @@
 == Recommendations for a Buffer Menu ==
 
 [new]
-I recommend BSBufferSelection, because it is easy to understand and still has configurations.  I don't need the power of IbufferMode. -- AlexSchroeder
+I recommend BufferSelection, because it is easy to understand and still has configurations.  I don't need the power of IbufferMode. -- AlexSchroeder
 
 [new:DrewAdams:2004-12-25 18:30 UTC]
 I recommend BufferMenuPlus, because it is straightforward and lets you do multiple operations to multiple buffers, at once. -- DrewAdams
 
 [new]
-I recommend BSBufferSelection, because it is simple and works really well, perfect for BufferSwitching. -- LinhDang
+I recommend BufferSelection, because it is simple and works really well, perfect for BufferSwitching. -- LinhDang
 
 == Recommendations for Name-Based Switching ==
 
