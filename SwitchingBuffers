@@ -150,6 +150,7 @@ If you have a window split showing two buffers, you can transpose the two buffer
 </pre>
 
 See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] written by Lukhas
+(also [https://github.com/lukhas/buffer-move on GitHub]).
 
 : -- e1f via retroj who suggests that 'C-x 4 t' is a logical binding for the function
 
