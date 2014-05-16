@@ -8,9 +8,9 @@
 ;; Created: Fri May 16 07:28:05 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 16 08:05:42 2014 (-0700)
+;; Last-Updated: Fri May 16 08:14:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 20
+;;     Update #: 24
 ;; URL: http://www.emacswiki.org/reveal-next.el
 ;; Doc URL: http://www.emacswiki.org/RevealNextTextMode
 ;; Keywords: hide show invisible learning
@@ -31,7 +31,7 @@
 ;; cursor in any way, more text is revealed (or hidden, if moving
 ;; backward).
 ;;
-;; There are two levels: show at least a line at atime or show at
+;; There are two levels: show at least a line at a time or show at
 ;; least a char at a time.  User option `reveal-next-char-level' sets
 ;; the level, but you can also switch levels using command
 ;; `reveal-next-char/line' or `reveal-next-cycle'.  The latter command
@@ -54,6 +54,10 @@
 ;; Internal variables defined here:
 ;;
 ;;    `reveal-next-overlay'.
+;;
+;;
+;; This library was inspired by this Stack Overflow question:
+;; http://stackoverflow.com/q/23677844/729907
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +121,8 @@ or beginning of next line."
             ((overlayp reveal-next-overlay) (move-overlay reveal-next-overlay start (point-max)))
             (t
              (setq reveal-next-overlay  (make-overlay start (point-max)))
+             ;; It would be better to just use property `invisible', but `next-line' hardcodes
+             ;; skipping over invisible text.
              (overlay-put reveal-next-overlay
                           'face (list :foreground (frame-parameter nil 'background-color))))))))
 
