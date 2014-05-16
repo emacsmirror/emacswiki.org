@@ -12,6 +12,7 @@ Click the title heading to search for all pages in this category.
 ** FlashMaker -- create flashcard decks from existing dictionaries
 * KanjiDictionary (kdic.el) -- practice your kanji
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
+* RevealNextTextMode -- progressively hide or show text after [[point]].
 * SpanishTest -- a small script for learning spanish vocabulary and verb conjugations
 * Speedreading -- Teach yourself to read faster http://www.bobnewell.net/elisp.html
 * ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
