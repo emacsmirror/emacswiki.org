@@ -8,9 +8,9 @@
 ;; Created: Fri May 16 07:28:05 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 16 08:14:53 2014 (-0700)
+;; Last-Updated: Fri May 16 08:20:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 24
+;;     Update #: 25
 ;; URL: http://www.emacswiki.org/reveal-next.el
 ;; Doc URL: http://www.emacswiki.org/RevealNextTextMode
 ;; Keywords: hide show invisible learning
@@ -122,7 +122,7 @@ or beginning of next line."
             (t
              (setq reveal-next-overlay  (make-overlay start (point-max)))
              ;; It would be better to just use property `invisible', but `next-line' hardcodes
-             ;; skipping over invisible text.
+             ;; skipping over invisible text (actually, it is `line-move-1' that does this).
              (overlay-put reveal-next-overlay
                           'face (list :foreground (frame-parameter nil 'background-color))))))))
 
