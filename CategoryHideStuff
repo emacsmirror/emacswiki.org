@@ -12,4 +12,5 @@ would eliminate.
 * HideShow -- Hide parts of the buffer like an outline mode.
 * MultipleNarrowings -- Use `##C-x n x x x...##’ to cycle a ring of narrowings (buffer restrictions).
 * NarrowIndirect -- Indirect buffers cloned and narrowed from other buffers let you view different portions in different windows, modes, etc.
+* RevealNextTextMode -- progressively hide or show text after [[point]].
 * `set-selective-display' -- Hide lines beyond a certain level of indentation.
