@@ -1,0 +1,15 @@
+This page is about library <tt>[[reveal-next.el]]</tt>, which lets you progressively hide or show text after [[point]]. 
+
+You can use this during a presentation, such as in a class, to progressively show more of the text in a buffer.  As you move the cursor in any way, more text is revealed (or hidden, if moving backward).
+
+There are two levels: show at least a [[line]] at a time or show at
+least a character at a time.  User [[option]] '''`reveal-next-char-level'''' sets
+the level, but you can also switch levels using command
+'''`reveal-next-char/line'''' or '''`reveal-next-cycle''''.  The latter command
+cycles among line-level, char-level, and off.
+
+This library was inspired by this Stack Overflow question:
+http://stackoverflow.com/q/23677844/729907
+----
+CategoryHideStuff
+CategoryEducation
