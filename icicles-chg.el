@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri May 16 21:24:03 2014 (-0700)
+;; Last-Updated: Sat May 17 09:15:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10906
+;;     Update #: 10921
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/05/17 dadams
+;;     icicle-shell-dynamic-complete-as-command, icicle-apropos-zippy, icicle-describe-process:
+;;       with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/09 dadams
 ;;     icicle-repeat-complex-command*: Use trick only for Emacs 24.4+.
 ;; 2014/05/04 dadams
@@ -1081,6 +1084,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/05/17 dadams
+;;     icicle-color-help, icicle-tags-search: with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/11 dadams
 ;;     icicle-WYSIWYG-font:
 ;;       Fixed wrt Emacs bug #17457: Do not truncate before calling font-info, and ignore its errors.
@@ -2008,6 +2013,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/05/17 dadams
+;;     icicle-read-shell-command-completing: with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/16 dadams
 ;;     icicle-completing-read, args DEF and INCLUDE passed to icicle-handle-default-for-prompt:
 ;;       If insert-default-directory then show DEF as relative to default-directory.
@@ -3967,6 +3974,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/05/17 dadams
+;;     Added: icicle-with-help-window.
 ;; 2014/04/28 dadams
 ;;     icicle(-file)-define-command: Fix pb introduced 2013-12-01: If icicle-top-level not called...
 ;; 2014/04/05 dadams
@@ -4204,6 +4213,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/05/17 dadams
+;;     icicle-minibuffer-help, icicle-all-candidates-action-1, icicle-describe-file:
+;;       with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/14 dadams
 ;;     icicle-prefix-complete-1: Bind temp-buffer-window-show-hook to nil also (Emacs 24.4+).
 ;; 2014/04/23 dadams
