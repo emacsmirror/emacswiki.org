@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Mon Apr 28 17:08:52 2014 (-0700)
+;; Last-Updated: Sat May 17 07:49:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1238
+;;     Update #: 1242
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -38,7 +38,7 @@
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
 ;;    `icicle-menu-bar-make-toggle', `icicle-user-error',
-;;    `icicle-with-selected-window'.
+;;    `icicle-with-help-window', `icicle-with-selected-window'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -1054,6 +1054,12 @@ setting the variable and displaying a status message (not MESSAGE)."
   (if (< emacs-major-version 21)
       `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
     `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
+
+(defmacro icicle-with-help-window (buffer &rest body)
+  "`with-help-window', if available; else `with-output-to-temp-buffer'."
+  (if (fboundp 'with-help-window)
+      `(with-help-window ,buffer ,@body)
+    `(with-output-to-temp-buffer ,buffer ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
