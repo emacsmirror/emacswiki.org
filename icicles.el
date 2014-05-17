@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.05.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 17 09:16:42 2014 (-0700)
+;; Last-Updated: Sat May 17 13:22:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23550
+;;     Update #: 23552
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1612,7 +1612,8 @@
                   '("icicle-define-add-to-alist-command" "icicle-define-bookmark-command"
                     "icicle-define-bookmark-other-window-command" "icicle-define-command"
                     "icicle-define-file-command" "icicle-define-search-bookmark-command"
-                    "icicle-define-sort-command")
+                    "icicle-define-sort-command" "icicle-with-help-window"
+                    "icicle-with-selected-window")
                   t)
              (if (> emacs-major-version 21)
                  "\\_>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?"
@@ -1634,6 +1635,7 @@
 (put 'icicle-define-file-command                  'common-lisp-indent-function '(4 &body))
 (put 'icicle-define-search-bookmark-command       'common-lisp-indent-function '(4 &body))
 (put 'icicle-define-sort-command                  'common-lisp-indent-function '(4 4 &body))
+(put 'icicle-with-help-window                     'common-lisp-indent-function '(4 &body))
 (put 'icicle-with-selected-window                 'common-lisp-indent-function '(4 &body))
 (put 'icicle-condition-case-no-debug              'common-lisp-indent-function '(4 4 &body))
 
