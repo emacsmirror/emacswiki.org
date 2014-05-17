@@ -23,6 +23,12 @@ documentation buffers, and any buffer with view-mode activated.
   (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode)
   (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
 
+If you want to enable this mode across "most" buffers you can take advantage of "after-change-major-mode-hook" which is the "normal hook run at the very end of major mode functions". -- [[mashdot]]
+
+   (add-hook 'after-change-major-mode-hook 'turn-on-tempbuf-mode)
+
+But for a much smarter implementation of this see: https://github.com/DarwinAwardWinner/dotemacs/blob/master/site-lisp/settings/tempbuf-settings.el
+
 ----
 
 [new:rubikitch:2009-04-09 21:20 UTC]
