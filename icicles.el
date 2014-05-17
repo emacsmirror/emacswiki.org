@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2014.04.06
+;; Version: 2014.05.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 14:26:17 2014 (-0700)
+;; Last-Updated: Sat May 17 09:16:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23548
+;;     Update #: 23550
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -29,12 +29,12 @@
 ;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
-;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
-;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `image-file', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
+;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -111,7 +111,7 @@
 ;;    `icicle-find-file-of-content-action-1',
 ;;    `icicle-maybe-cached-action', `icicle-menu-bar-make-toggle',
 ;;    `icicle-search-modes', `icicle-with-comments-hidden',
-;;    `icicle-with-selected-window'.
+;;    `icicle-with-help-window', `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
