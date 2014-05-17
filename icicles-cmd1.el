@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri May  9 09:27:47 2014 (-0700)
+;; Last-Updated: Fri May 16 23:36:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26968
+;;     Update #: 26969
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1128,7 +1128,7 @@ Return t if successful."
     (let ((success  (let ((comint-completion-addsuffix  nil)
                           (icicle-candidate-help-fn
                            (lambda (cand)
-                             (with-output-to-temp-buffer "*Help*"
+                             (icicle-with-help-window "*Help*"
                                (princ (shell-command-to-string (concat "apropos "
                                                                        (shell-quote-argument cand))))))))
                       (icicle-comint-dynamic-simple-complete filenondir completions))))
@@ -2744,7 +2744,7 @@ Return the list of matches."
                                                nil nil nil 'regexp-history)))))
   (let ((matches  (apropos-zippy icicle-current-input)))
     (when (interactive-p)
-      (with-output-to-temp-buffer "*Zippy Apropos*"
+      (icicle-with-help-window "*Zippy Apropos*"
         (while matches
           (princ (car matches))
           (setq matches  (cdr matches))
@@ -7356,7 +7356,7 @@ default separator."
   (defun icicle-describe-process (pid)
     "Describe the system process that has process id PID."
     (interactive "nPID: ")
-    (with-output-to-temp-buffer "*Help*"
+    (icicle-with-help-window "*Help*"
       (let* ((attributes  (process-attributes pid))
              (comm        (cdr-safe (assoc 'comm attributes)))
              (args        (cdr-safe (assoc 'args attributes)))
