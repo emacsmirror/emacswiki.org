@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun May 11 12:43:23 2014 (-0700)
+;; Last-Updated: Fri May 16 23:37:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6839
+;;     Update #: 6840
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1516,7 +1516,7 @@ COLOR is a color name, an RGB string, or a multi-completion of both.
 If only a color name, then just say \"No help\"."
     (if (not (member icicle-list-use-nth-parts '((1 2) (2))))
         (icicle-msg-maybe-in-minibuffer "No help")
-      (with-output-to-temp-buffer "*Help*"
+      (icicle-with-help-window "*Help*"
         (princ (format "Color: %s" color)) (terpri) (terpri)
         (let* ((icicle-list-use-nth-parts  '(2))
                (colr                       (icicle-transform-multi-completion color))
@@ -3247,7 +3247,7 @@ See also: `icicle-apropos-value'."      ; Doc string
 
 ;;; $$$$$$ (defun icicle-funvardoc-action (entry)
 ;;;   "Action function for `icicle-vardoc', `icicle-fundoc', `icicle-plist'."
-;;;   (with-output-to-temp-buffer "*Help*" (princ entry)))
+;;;   (icicle-with-help-window "*Help*" (princ entry)))
 
 (icicle-define-command icicle-fundoc    ; Command name
   "Choose a function description.
@@ -7447,7 +7447,7 @@ future search commands, not the current one.)"
           (setcar tail (cadr tail))
           (setcdr tail (cddr tail))))
       (when unreadable-files
-        (with-output-to-temp-buffer "*Unreadable Files*"
+        (icicle-with-help-window "*Unreadable Files*"
           (princ "These missing or unreadable files were ignored:") (terpri) (terpri)
           (dolist (file  unreadable-files) (princ file) (terpri)))))
     (select-window (minibuffer-window))
