@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sat May 17 07:49:34 2014 (-0700)
+;; Last-Updated: Sat May 17 13:18:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1242
+;;     Update #: 1243
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -47,11 +47,6 @@
 ;;  You might also be interested in my library `imenu+.el', which
 ;;  teaches the macros defined here to Imenu, so the functions defined
 ;;  with those macros show up in Imenu menus.
-;;
-;;  I've also included some commented-out code at the end, which you
-;;  might want to use in your init file (~/.emacs).  It provides
-;;  better indentation for the doc string when you use the macros here
-;;  in your code.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
