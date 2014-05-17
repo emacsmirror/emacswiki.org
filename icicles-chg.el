@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed May 14 09:29:19 2014 (-0700)
+;; Last-Updated: Fri May 16 21:24:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10898
+;;     Update #: 10906
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2008,6 +2008,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/05/16 dadams
+;;     icicle-completing-read, args DEF and INCLUDE passed to icicle-handle-default-for-prompt:
+;;       If insert-default-directory then show DEF as relative to default-directory.
+;;       Pass non-nil INCLUDE only if insert-default-directory does not insert it as input.
 ;; 2014/04/29 dadams
 ;;     Added: icicle-mouseover-help, icicle-create-thumb.
 ;;     icicle-display-candidates-in-Completions: Provide mouseover tooltip image preview.
@@ -7181,6 +7185,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/05/16 dadams
+;;     icicle-default-value: Updated doc string for change to t value behavior.
 ;; 2014/04/29 dadams
 ;;     Added: icicle-image-preview-in-tooltip.
 ;; 2014/04/25 dadams
