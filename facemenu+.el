@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 18 13:51:38 2014 (-0800)
+;; Last-Updated: Sat May 17 13:32:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1880
+;;     Update #: 1891
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -161,6 +161,10 @@
 ;;
 ;;    `help-facemenu-edit-color', `help-facemenu-set-face'.
 ;;
+;;  Macros defined here:
+;;
+;;    `facemenu+-with-help-window'.
+;;
 ;;
 ;;  ***** NOTE: The following functions defined in `facemenu.el'
 ;;              have been REDEFINED HERE:
@@ -194,6 +198,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/17 dadams
+;;     Added: facemenu+-with-help-window.
+;;     list-faces-display: with-output-to-temp-buffer -> facemenu+-with-help-window.
+;;                         save-excursion + set-buffer -> with-current-buffer.
 ;; 2014/02/17 dadams
 ;;     facemenup-set-face-attribute-at-point: Fixed prompt for reading attribute.
 ;; 2014/02/06 dadams
@@ -373,6 +381,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Same as `icicle-with-help-window'.
+(defmacro facemenu+-with-help-window (buffer &rest body)
+  "`with-help-window', if available; else `with-output-to-temp-buffer'."
+  (if (fboundp 'with-help-window)
+      `(with-help-window ,buffer ,@body)
+    `(with-output-to-temp-buffer ,buffer ,@body)))
+
+(put 'facemenu+-with-help-window 'common-lisp-indent-function '(4 &body))
 
 (defun facemenup-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -1397,9 +1413,8 @@ faces with matching names are displayed."
       (unless faces (error "No faces matching \"%s\"" regexp))
       (setq max-length   (1+ max-length)
             line-format  (format "%%-%ds" max-length))
-      (with-output-to-temp-buffer "*Faces*"
-        (save-excursion
-          (set-buffer standard-output)
+      (facemenu+-with-help-window "*Faces*"
+        (with-current-buffer standard-output
           (setq truncate-lines  t)
           (insert (funcall
                    (if (fboundp 'help-commands-to-key-buttons) ; In `help-fns.el'.
