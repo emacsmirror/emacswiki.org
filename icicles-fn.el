@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Apr 29 18:03:41 2014 (-0700)
+;; Last-Updated: Fri May 16 21:00:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14628
+;;     Update #: 14646
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1168,7 +1168,19 @@ Completion ignores case when `completion-ignore-case' is non-nil."
         (setq collection  (car c+p)     ; After banalizing for vanilla Emacs.
               predicate   (cadr c+p))))
     ;; $$$$$$ (setq minibuffer-completion-table  collection)
-    (when def (setq prompt  (icicle-handle-default-for-prompt prompt def (eq icicle-default-value t))))
+
+    (when def
+      (setq prompt  (icicle-handle-default-for-prompt
+                     prompt
+                     ;; If `insert-default-directory' then show DEF in prompt as relative to `default-directory'.
+                     (if (and def  (eq icicle-default-value t)  insert-default-directory)
+                         (file-relative-name def)
+                       def)
+                     (and (eq icicle-default-value t)
+                          ;; Include it in prompt only if `insert-default-directory' does not insert it as input.
+                          (or (not insert-default-directory)
+                              (not (icicle-file-name-input-p))
+                              (not (equal def default-directory)))))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
                           prompt collection predicate require-match initial-input
@@ -1229,7 +1241,7 @@ a default value according to these possible patterns:
  \" [___] \""
   (when (consp default) (setq default  (car default)))
   ;; Remove the default, if already there.
-  (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; Get rid of HINT if already there.
+  (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
                     minibuffer-default-in-prompt-regexps
                   '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
                     ("\\( \\[.*\\]\\):? *\\'"                       1))))
