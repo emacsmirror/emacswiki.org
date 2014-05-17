@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat May 17 09:15:24 2014 (-0700)
+;; Last-Updated: Sat May 17 13:45:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10921
+;;     Update #: 10924
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8535,6 +8535,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2014/05/17 dadams
+;;     icicle-with-help-window, icicle-with-selected-window: Added to font-lock-keywords.
+;;     icicle-with-help-window: Specified common-lisp-indent-function.
 ;; 2014/04/23 dadams
 ;;     Put common-lisp-indent-function property on cl-flet.
 ;; 2014/04/06 dadams
