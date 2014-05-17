@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri May 16 21:00:12 2014 (-0700)
+;; Last-Updated: Sat May 17 08:00:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14646
+;;     Update #: 14648
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3129,11 +3129,10 @@ the file's properties."
          (icicle-point-position-in-candidate          'input-end)
          (icicle-candidate-help-fn                    (lambda (cand)
                                                         (if (member cand icicle-extra-candidates)
-                                                            (with-output-to-temp-buffer "*Help*"
-                                                              (princ
-                                                               (shell-command-to-string
-                                                                (concat "apropos "
-                                                                        (shell-quote-argument cand)))))
+                                                            (icicle-with-help-window "*Help*"
+                                                              (princ (shell-command-to-string
+                                                                      (concat "apropos "
+                                                                              (shell-quote-argument cand)))))
                                                           (icicle-describe-file cand nil 'NO-ERROR-P))))
          (icicle-extra-candidates                     icicle-extra-candidates)
          (icicle-must-match-regexp                    icicle-file-match-regexp)
