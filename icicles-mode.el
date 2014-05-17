@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Apr 23 10:56:06 2014 (-0700)
+;; Last-Updated: Sat May 17 07:58:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10194
+;;     Update #: 10195
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -26,12 +26,12 @@
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
-;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `icicles-var', `image-dired', `image-file', `info', `info+20',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -386,7 +386,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
           (cond (icicle-mode
                  ;; (when (interactive-p)
                  ;;   (unless (or window-system  (and (fboundp 'daemonp)  (daemonp)))
-                 ;;     (with-output-to-temp-buffer "*Attention*"
+                 ;;     (icicle-with-help-window "*Attention*"
                  ;;       (princ "You are using Icicles in a text terminal (no window ")
                  ;;       (princ "system/manager).\n\nIcicles makes use of many keys that are ")
                  ;;      (princ "unavailable when running\nEmacs in a text terminal.  You will ")
@@ -537,7 +537,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
     (cond (icicle-mode
            ;; (when (interactive-p)
            ;;   (unless (or window-system  (and (fboundp 'daemonp)  (daemonp)))
-           ;;     (with-output-to-temp-buffer "*Attention*"
+           ;;     (icicle-with-help-window "*Attention*"
            ;;       (princ "You are using Icicles in a text terminal (no window ")
            ;;       (princ "system/manager).\n\nIcicles makes use of many keys that are ")
            ;;       (princ "unavailable when running\nEmacs in a text terminal.  You will ")
