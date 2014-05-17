@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Apr 29 08:59:02 2014 (-0700)
+;; Last-Updated: Fri May 16 21:30:36 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29509
+;;     Update #: 29514
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4682,9 +4682,19 @@
 ;;    default value for minibuffer input.  When the value is non-`nil'
 ;;    and the INITIAL-INPUT argument of minibuffer-reading functions
 ;;    is `nil' or "", the DEFAULT-VALUE argument can be inserted into
-;;    the minibuffer as the initial input.  For `completing-read', if
-;;    the option value is `t' then the default value is instead added
-;;    the prompt as a hint.
+;;    the minibuffer as the initial input.
+;;
+;;    For `completing-read' and `read-file-name', if the option value
+;;    is `t' then the default value is normally added the prompt as a
+;;    hint.  However, for `read-file-name', if option
+;;    `insert-default-directory' is non-`nil', then to avoid
+;;    duplication:
+;;
+;;    * If the default value is the same as the value of
+;;      `default-directory' then it is not added to the prompt.
+;;
+;;    * If the default value is added to the prompt then it is first
+;;      made relative to `default-directory'.
 ;;
 ;;    Adding the default value to the prompt corresponds to the more
 ;;    or less conventional behavior of vanilla Emacs.  But vanilla
