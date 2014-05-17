@@ -1,4 +1,4 @@
-;;; narrow-indirect.el --- Narrow using an indirect buffer that is a clone
+j;;; narrow-indirect.el --- Narrow using an indirect buffer that is a clone
 ;;
 ;; Filename: narrow-indirect.el
 ;; Description: Narrow using an indirect buffer that is a clone
@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 11 13:38:37 2014 (-0700)
+;; Last-Updated: Sat May 17 16:21:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 82
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -110,6 +110,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/17 dadams
+;;     Added autoload cookies.
 ;; 2014/05/11 dadams
 ;;     Created.
 ;;
@@ -166,6 +168,7 @@ buffers from the original."
   "Like `mode-line-buffer-id', but for a narrowed indirect clone buffer."
   :group 'Narrow-Indirect :group 'mode-line-faces :group 'basic-faces)
 
+;;;###autoload
 (defun ni-narrow-to-defun-other-window (&optional full-name text)
   "`narrow-to-defun' in a cloned indirect buffer in the other window.
 The name of the indirect buffer depends on the use of a prefix arg:
@@ -199,6 +202,7 @@ See `clone-indirect-buffer'."
      (region-beginning) (region-end) here full-name
      (and (not full-name)  (or text  (which-function))))))
 
+;;;###autoload
 (defun ni-narrow-to-region-other-window (start end here
                                                &optional full-name text msgp)
   "`narrow-to-region' in a cloned indirect buffer in the other window.
@@ -246,6 +250,7 @@ See `clone-indirect-buffer'."
             (list (propertize (car mode-line-buffer-identification)
                               'face 'ni-mode-line-buffer-id))))))
 
+;;;###autoload
 (defun ni-narrow-to-page-indirect-other-window (&optional arg)
   "`narrow-to-page' in a cloned indirect buffer in the other window.
 
