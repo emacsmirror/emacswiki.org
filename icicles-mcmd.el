@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed May 14 09:29:30 2014 (-0700)
+;; Last-Updated: Fri May 16 23:29:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19510
+;;     Update #: 19512
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2076,7 +2076,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
   (interactive)
   (let ((cur-buf        (current-buffer))
         (icicles-cmd-p  (or icicle-candidate-action-fn icicle-multi-completing-p)))
-    (with-output-to-temp-buffer "*Help*"
+    (icicle-with-help-window "*Help*"
       (help-setup-xref (list #'icicle-minibuffer-help) (interactive-p))
       (when (icicle-completing-p)
         (princ (format "You are completing input%s.%s"
@@ -4967,7 +4967,7 @@ ALTP is passed to `icicle-candidate-action-1'."
           (when error-msg (setq failures  (cons (cons (car candidates) error-msg) failures)))
           (setq candidates  (cdr candidates))))
       (when failures
-        (with-output-to-temp-buffer "*Help*"
+        (icicle-with-help-window "*Help*"
           (princ "Action failures:")(terpri)(terpri)
           (mapcar (lambda (entry)
                     (princ (car entry)) (princ ":") (terpri) (princ "  ")
@@ -5802,7 +5802,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                  (format "Inode:                      %S\n" inode)
                  (format "Device number:              %s\n" device)
                  image-info)))
-          (with-output-to-temp-buffer "*Help*"
+          (icicle-with-help-window "*Help*"
             (when bmk
               (if internal-form-p
                   (let* ((bname     (bookmark-name-from-full-record bmk))
