@@ -290,6 +290,10 @@ I am seeing this same issue.  I am using auto-complete 1.3.1, emacs 24.3.1 (i686
 I've had the same issue. It is fixed in https://github.com/auto-complete/auto-complete/pull/48. Solved for me by installing the latest from github
 --yhager
 
+[new]
+I have fixed this issue https://github.com/auto-complete/auto-complete/issues/321. Please upgrade.
+--syohex
+
 ----
 [new]
 <pre>
