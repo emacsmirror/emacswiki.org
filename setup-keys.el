@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 12 09:07:21 2014 (-0700)
+;; Last-Updated: Mon May 19 11:31:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1245
+;;     Update #: 1251
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -20,7 +20,7 @@
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `cus-theme',
 ;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
 ;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
-;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
+;;   `help+20', `hexrgb', `highlight', `info', `info+20', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
 ;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
@@ -68,6 +68,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/19 dadams
+;;     If use mouse+.el then get rid of Emacs 24+ minibuffer.el's mouse-1 in echo area.
+;;     Consolidate two eval-after-load's for mouse+.
 ;; 2014/03/12 dadams
 ;;     Bind C-M-^ to up-list, i.e., forward direction.
 ;; 2013/11/18 dadams
@@ -405,7 +408,11 @@
   '(progn                               ; Highlight yank position or call `M-x' in echo area.
     (global-set-key [down-mouse-2]   'mouse-flash-position-or-M-x)               ; `mouse-2'
     ;; Highlight line or `M-:'.
-    (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)))                 ; `S-mouse-2'
+    (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)                   ; `S-mouse-2'
+    (global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window)
+    (when (> emacs-major-version 23)
+      (define-key minibuffer-inactive-mode-map [down-mouse-1] nil)               ; `mouse-1'
+      (define-key minibuffer-inactive-mode-map [mouse-1] nil))))                 ; in echo area
 
 (eval-after-load "second-sel"
   '(progn
@@ -507,9 +514,6 @@
 ;;;   (global-set-key [nil C-mouse-1] 'ignore)
 ;;;   (global-set-key [nil S-down-mouse-1] 'iconify-everything)
 ;;;   (global-set-key [nil S-mouse-1] 'ignore)
-
-(eval-after-load "mouse+"
-  '(global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window))
 
 ;; These are defined in `fit-frame.el'.
 (eval-after-load "fit-frame"
