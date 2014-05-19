@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:42:31 2013 (-0800)
+;; Last-Updated: Mon May 19 10:45:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 555
+;;     Update #: 557
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
@@ -98,6 +98,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/19 dadams
+;;     mouse-drag-region: Handle incompatible change for Emacs 24.4+.
 ;; 2011/12/19 dadams
 ;;     mouse-scan-lines: Use line-(beginning|end)-position, not (beginning|end)-of-line.
 ;; 2011/01/04 dadams
@@ -444,7 +446,12 @@ If the click is in the echo area, then:
 
         ;; Give temporary modes such as isearch a chance to turn off.
         (run-hooks 'mouse-leave-buffer-hook)
-        (mouse-drag-track start-event t)))))
+        (let ((emacs24.4+  (or (> emacs-major-version 24)
+                               (and (= emacs-major-version 24)
+                                    (not (version< emacs-version "24.3.50"))))))
+          (if emacs24.4+
+              (mouse-drag-track start-event)
+            (mouse-drag-track start-event t)))))))
 
 
 
