@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat May 17 08:00:40 2014 (-0700)
+;; Last-Updated: Mon May 19 09:45:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14648
+;;     Update #: 14653
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1170,17 +1170,18 @@ Completion ignores case when `completion-ignore-case' is non-nil."
     ;; $$$$$$ (setq minibuffer-completion-table  collection)
 
     (when def
-      (setq prompt  (icicle-handle-default-for-prompt
-                     prompt
-                     ;; If `insert-default-directory' then show DEF in prompt as relative to `default-directory'.
-                     (if (and def  (eq icicle-default-value t)  insert-default-directory)
-                         (file-relative-name def)
-                       def)
-                     (and (eq icicle-default-value t)
-                          ;; Include it in prompt only if `insert-default-directory' does not insert it as input.
-                          (or (not insert-default-directory)
-                              (not (icicle-file-name-input-p))
-                              (not (equal def default-directory)))))))
+      (let ((def1  (if (listp def) (car def) def))) ; Use only the first default (for `file-relative-name').
+        (setq prompt  (icicle-handle-default-for-prompt
+                       prompt
+                       ;; If `insert-default-directory' then make DEF in prompt relative to `default-directory'.
+                       (if (and def1  (eq icicle-default-value t)  insert-default-directory)
+                           (file-relative-name def1)
+                         def1)
+                       (and (eq icicle-default-value t)
+                            ;; Include in prompt only if `insert-default-directory' does not insert it as input.
+                            (or (not insert-default-directory)
+                                (not (icicle-file-name-input-p))
+                                (not (equal def1 default-directory))))))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
                           prompt collection predicate require-match initial-input
