@@ -54,6 +54,7 @@ Some complete [[InitFile]]s:
 * ChrisForno's [http://jekor.com/emacs/dot-emacs.pdf .emacs] is a literate program written in Noweb.
 * [http://code.google.com/p/dea/ DEA] DEA stands for "Dot emacs of ahei", its target is provide powerful emacs profile for emacser. 
 * [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file].
+* [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
 
 .emacs on Windows: MsWindowsDotEmacs
 
