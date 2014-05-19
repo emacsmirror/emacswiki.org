@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat May 17 13:45:16 2014 (-0700)
+;; Last-Updated: Mon May 19 09:47:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10924
+;;     Update #: 10925
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2013,6 +2013,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/05/19 dadams
+;;     icicle-completing-read: Use only first default to prepare for icicle-handle-default-for-prompt.
 ;; 2014/05/17 dadams
 ;;     icicle-read-shell-command-completing: with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/16 dadams
