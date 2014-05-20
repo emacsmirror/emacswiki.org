@@ -6,6 +6,8 @@ How to encrypt and decrypt anything you might want to edit using Emacs.
 
 * EasyPG -- a package that interfaces with GPG
 
+* SimpleSecrets -- very easy and relatively safe password management using Emacs
+
 * MailCrypt -- a package that plugs encryption, decription, signing, and signature verification into mail and news
 
 * CryptPlusPlus -- Automatically work with encrypted and compressed files.
