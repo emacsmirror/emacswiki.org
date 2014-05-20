@@ -139,29 +139,25 @@ Add the following line to ~/.gnupg/gpg-agent.conf:
     pinentry-program /usr/bin/pinentry-curses
 
 
-=== Kludging GPG_TTY to get appropriate pinentry for each terminal ===
+=== Kludging GPG_TTY to get appropriate pinentry for each terminal or GUI frame ===
 
-gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where and how to perform pinentry.  If you use emacs --daemon with a mix of GUI and console terminal, GPG_TTY was probably inherited from emacs --daemon's shell and will be totally irrelevant and wrong; on the other hand, if you open even one GUI emacsclient frame at any time, gpg-agent/pinentry will attempt to use that frame's setting of DISPLAY.  So I kludged GPG_TTY on the creation of a new frame:
+gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where and how to perform pinentry.  If you use emacs --daemon with a mix of GUI and console terminal, GPG_TTY was probably inherited from emacs --daemon's shell and will be totally irrelevant and wrong; on the other hand, if you open even one GUI emacsclient frame at any time, gpg-agent/pinentry will attempt to use that frame's setting of DISPLAY.  So I made this small function to manipulate DISPLAY and GPG_TTY when the user changes emacsclients.
 
 {{{
 (defun wg/kludge-gpg-agent
-    (frame)
+    ()
   (if
-      (display-graphic-p frame)
+      (display-graphic-p)
       (setenv "DISPLAY"
-	      (terminal-name frame))
+              (terminal-name))
     (setenv "GPG_TTY"
-	    (terminal-name frame))
-    (setenv "DISPLAY" nil)))
+            (terminal-name))
+    (setenv "DISPLAY")))
 
-(add-hook 'after-make-frame-functions 'wg/kludge-gpg-agent) ;; We don't have a better hook for detecting a new emacsclient, as far as I know.
+(add-hook 'window-configuration-change-hook 'wg/kludge-gpg-agent)
 }}}
 
-This kludge seems to work adequately as of February 2014, with Emacs 24.3 and gpg + gpg-agent 2.0.22.  Bugs:
-
-1. Garbled/corrupted pinentry prompt text sometimes at console. 
-
-2. Currently you need to manually re-run this function with <code>(wg/kludge-gpg-agent (selected-frame))</code> when switching between existing emacsclient frames on different terminals.  TODO: find some way automatically to detect "focus" change when switching between existing emacsclients, and automatically rerun this function.
+N.B.: This hack used to use <code>after-make-frame-functions</code>, but <code>window-configuration-change-hook</code> works more smoothly, as it now handles the case of switching between existing emacsclient frames as well as making new ones.
 
 --[[wgreenhouse]]
 
