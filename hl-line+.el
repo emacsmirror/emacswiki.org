@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:26:18 2013 (-0800)
+;; Last-Updated: Tue May 20 20:18:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 485
+;;     Update #: 490
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
@@ -115,6 +115,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/20 dadams
+;;     (global-)hl-line-highlight: No-op if in the minibuffer (update for Emacs 24.4+).
 ;; 2013/06/08 dadams
 ;;     hl-line-inhibit-highlighting-for-modes: Corrected :type.
 ;;     global-hl-line-highlight defadvice: Respect in hl-line-inhibit-highlighting-for-modes.
@@ -230,13 +232,15 @@ Do NOT change this yourself; instead, use `\\[toggle-hl-line-when-idle]'.")
 
 (defadvice hl-line-highlight (after set-priority activate)
   "Set the overlay priority to `hl-line-overlay-priority'."
-  (overlay-put hl-line-overlay 'priority hl-line-overlay-priority))
+  (unless (window-minibuffer-p)
+    (overlay-put hl-line-overlay 'priority hl-line-overlay-priority)))
 
 (defadvice global-hl-line-highlight (around set-priority-+respect-mode-inhibit activate)
   "Set hl-line overlay priority and inhibit for specific modes.
 Set the overlay to `hl-line-overlay-priority'.
 Respect option `hl-line-inhibit-highlighting-for-modes'."
-  (unless (member major-mode hl-line-inhibit-highlighting-for-modes)
+  (unless (or (window-minibuffer-p)
+              (member major-mode hl-line-inhibit-highlighting-for-modes))
     ad-do-it
     (overlay-put global-hl-line-overlay 'priority hl-line-overlay-priority)))
 
