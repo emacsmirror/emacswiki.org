@@ -36,7 +36,7 @@ There are two VC implementations for Darcs available at
 * http://www.loveshack.ukfsn.org/emacs/vc-darcs.el.
 
 They seem to differ particularly in how they treat "revisions" for VC.
-The raison d'être of the latter is copyright assignment to the FSF, so
+The first one available from MELPA, while the raison d'être of the latter is copyright assignment to the FSF, so
 it is the one to contribute to if you want to try to get support into
 Emacs.
 
