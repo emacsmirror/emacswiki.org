@@ -4,7 +4,7 @@ There are five screenplay libraries known, two of which share the same name :(
 * http://www.nongnu.org/screenwriter/ -- improved fork of VanceSimpson's screenplay.el
 * Lisp:screenplay.el -- by AlexSchroeder
 * RubyTwoMode -- uses emacs + python + LaTeX to give industry standard Final Draft scripts.
-* [https://github.com/rnkn/fountain-mode Fountain Mode] -- by PaulRankin
+* FountainMode -- by PaulRankin
 
 There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
 You can find it on any CTAN-mirror.  
