@@ -46,7 +46,7 @@ directly (email in the source code header).
 
 Fountain Mode is available through [http://melpa.milkbox.net MELPA]
 
-Alternately, put ##fountain-mode.el## and ##s.el## in your ##load-path## and
+Alternately, download from [https://github.com/rnkn/fountain-mode GitHub] and put ##fountain-mode.el##, ##fountain-export.el## and ##s.el## in your ##load-path## and
 add the following line to your ##.emacs## or ##init.el## file:
 
     (require 'fountain-mode)
