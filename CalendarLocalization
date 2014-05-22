@@ -139,6 +139,14 @@ See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
 === Norwegian ===
 See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
 
+=== Latvian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Sv" "P" "O" "T" "C" "Pk" "S"]
+          calendar-month-name-array ["Janvāris" "Februāris" "Marts" "Aprīlis"
+                                     "Maijs" "Jūnijs" "Jūlijs" "Augusts"
+                                     "Septembris" "Oktobris" "Novembris" "Decembris"]
+
 == Localized National Holidays ==
 
 === Chinese ===
