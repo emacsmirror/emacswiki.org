@@ -13,6 +13,7 @@ My contact information is matthew dot fidler at gmail
 
 Also I work on the following projects
 
+ - ergoemacs-mode
  - NSIS mode
  - EmacsPortable.App
  - Emacs Speaks NONMEM
@@ -21,6 +22,9 @@ Also I work on the following projects
 
 [new]
 Thanks for moving your packages to github! --JonasBernoulli
+
+[new]
+No problem.  My packages are now at https://github.com/mlf176f2/ and https://github.com/ergoemacs/
 
 ----
 CategoryHomepage
