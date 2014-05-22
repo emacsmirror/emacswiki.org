@@ -217,6 +217,19 @@ Microsoft tools would respect environment settings like '''set lang=C'''
 
 -- RolfUnger
 
+[new]
+I'm not sure that "recognizing the prompt" is the problem. If you look at
+`sql-product-alist' you'll see that the prompt for ##ms## is "^[0-9]*>" which
+looks OK. Perhaps it's the EOL convention since you're saying that the process
+encoding is borked. Here is how to force Emacs to use code page 850 for every
+##sqlcmd## process and to force DOS line endings.
+
+{{{
+(add-to-list 'process-coding-system-alist '("sqlcmd" . cp850-dos))
+}}}
+
+-- AlexSchroeder
+
 ----
 CategoryModes
 CategorySql
