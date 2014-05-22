@@ -22,7 +22,7 @@ processor how to interpret the remaining text.
 * PsgmlMode -- for all kinds of SGML markup, if you have a DTD
 * RubyTwoMode -- write screenplays (or fiction) and convert to <nowiki>PostScript</nowiki>, HTML, or formatted text.
 * XmlMode -- for editing XML (simple sgml-mode, xml-lite, XAE)
-* ScreenPlay -- for writing movie scripts and screenplays in plain ASCII
+* [[Screenplay]] -- for writing movie scripts and screenplays in plain ASCII
 * [[reStructuredText]] -- Extended Text Mode, for editing reStructuredText
 * TextileMode -- for editing textile markup files
 * MarkdownMode -- for editing markdown files
