@@ -397,4 +397,8 @@ It's clearly wrong that `a', `b', `c' all bound to `xcar' and the result is "(or
 
 --xiepan
 
+[new:npostavs:2014-05-22 14:29 UTC]
+All those `xcar's are different symbols that happen to have the same string as a symbol name. If you <code>(setq print-gensym t)</code> you can see they will be printed as <code>#:xcar</code> indicating they are uninterned symbols.
+
+----
 CategoryCode
