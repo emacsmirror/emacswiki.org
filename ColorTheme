@@ -137,7 +137,7 @@ Also worth mentioning, if you define your own themes, are the commands in librar
 
 
 [:IciclesColorThemes]
-=== Icicles: Completion and Cycling of Color Themes ===
+=== Icicles: Completion and Cycling of Color Themes and Custom Themes ===
 
 You can use '''[[Icicles]]''' command `icicle-color-theme' or `icicle-custom-theme' to cycle among color themes or Emacs custom themes, respectively. This functionality is similar to that provided by [[#DoReMiColorThemes]] (above), but you can also ''complete'' the color-theme names, which means also that you can narrow the set of themes that you cycle among.  (You can also sort the set in various ways.)
 
