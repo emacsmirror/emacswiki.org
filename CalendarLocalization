@@ -145,7 +145,7 @@ See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
           calendar-day-name-array ["Sv" "P" "O" "T" "C" "Pk" "S"]
           calendar-month-name-array ["Janvāris" "Februāris" "Marts" "Aprīlis"
                                      "Maijs" "Jūnijs" "Jūlijs" "Augusts"
-                                     "Septembris" "Oktobris" "Novembris" "Decembris"]
+                                     "Septembris" "Oktobris" "Novembris" "Decembris"])
 
 == Localized National Holidays ==
 
