@@ -148,7 +148,7 @@ more broadly applicable) by RoyMathew at
 http://www.ibm.com/developerworks/data/library/techarticle/0206mathew/0206mathew.html
 Also check out the Oracle FAQ at http://www.orafaq.com/
 
-=== MS SQL server with ms-sql ===
+== MS SQL server with ms-sql ==
 
 If you're trying to use MS SQL Server in sql-mode, and the Microsoft command-line query processors osql and isql are not available to you, try jisql, a free, Java-based "workalike" provided by the clever (and generous) folks at Xigole Systems, Inc. http://www.xigole.com/software/jisql.jsp. Apache license.
 
