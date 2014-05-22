@@ -1,13 +1,14 @@
 == Variations ==
 
+* https://github.com/mlf176f2/EmacsPortable.App - under active development as of 2013.11
+** http://mlf176f2.github.io/EmacsPortable.App/
 * An answer to the Stack Overflow question [http://stackoverflow.com/questions/350345/how-can-i-have-a-portable-emacs "How can I have a portable Emacs?"] points out that ''the "normal" Emacs distribution for Windows is precompiled and just runs without having to do any install. Just get one of the *.zip files from the usual place, unpack it onto a USB disk, and you can use it directly. (The actual binary is inside the "bin/" directory.)''
-* http://esnm.sourceforge.net/download.html
-** By MatthewFidler, but moved to github
 * http://theblackdragon.wordpress.com/2006/05/12/portable-emacs/
 * http://pigpog.com/2007/10/22/portable-emacs-onna-stick/
 * http://code.google.com/p/clt-dotemacs/wiki/EmacsPortable
-* https://github.com/mlf176f2/EmacsPortable.App - under active development as of 2013.11
-** http://mlf176f2.github.io/EmacsPortable.App/
+
+* http://esnm.sourceforge.net/download.html
+** By MatthewFidler, but moved to github
 
 ----
 * CategoryNeedsAttention
