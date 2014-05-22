@@ -148,9 +148,74 @@ more broadly applicable) by RoyMathew at
 http://www.ibm.com/developerworks/data/library/techarticle/0206mathew/0206mathew.html
 Also check out the Oracle FAQ at http://www.orafaq.com/
 
+=== MS SQL server with ms-sql ===
+
 If you're trying to use MS SQL Server in sql-mode, and the Microsoft command-line query processors osql and isql are not available to you, try jisql, a free, Java-based "workalike" provided by the clever (and generous) folks at Xigole Systems, Inc. http://www.xigole.com/software/jisql.jsp. Apache license.
 
 Another option for users lacking access to osql/isql is sqsh, another Java-based command-line SQL client. The primary advantage to sqsh is that it is in the Debian/Ubuntu repositories (I can't speak for Fedora, etc.) making it easier to install. When using sqsh to connect to SQL Server, use M-x sql-sybase, not sql-ms. Otherwise, Emacs won't pass the right command-line parameters and it won't connect.
+
+----
+The different command line terminals that come with MS SQL server can give you
+some troubles:
+* '''isql''' goes back to SQL Server 2000 and is removed with Server 2008
+* '''osql''' is the terminal for which ''ms-sql'' is configured by default, but it is marked as depricated by Microsoft http://msdn.microsoft.com/en-us/library/ms162806.aspx
+* '''sqlcmd''' is the one that Microsoft recommends to use as it is likely to be available for the next 5 years
+
+I use this command line tools on a German MS Windows 7 (and GNU Emacs 24.3).
+Compared to what I am used from ''sql-oracle'' or ''sql-mysql'' (on Linux)
+working with ''sql-ms'' is a pain. The first 5 or 6 times I connected to a
+local MS SQL Express and a SQL-Server on a remote machine my sql-mode buffer
+was empty. I thought it is stuck somewhere and killed the ''sqlcmd.exe'' process
+with the Task-Manager and started another connect attempt. Unfortunately there
+is also no banner as it is displayed in ''sql-oracle'' with ''sqlplus''.
+
+At some point I realized that the comint-buffer is waiting for my input, it
+just doesn't show a prompt. Both ''osql'' and ''sqlcmd'' have <code>1></code>
+and it seems like this is not recognized as prompt by the underlying
+''comint-mode''.  Thankfully ''sqlcmd'' supports ''colon'' commands like <code>:help</code>
+that are not send to the server but directly respond with output. This brought
+me on the right track. So my next step was <code>SELECT 10+20</code> followed by
+<code>Enter</code> in order to get into the next line to add the <code>GO</code>
+for sending the query to the server. But *stuck again*, the wait cursor
+appears and won't let me type the <code>GO</code>.
+
+The usual brute force method to kill the ''sqlcmd'' process brought me out and
+after some time I also realized that a simple <code>C-g</code> will also help with the
+advantage that the connection to the server is kept alive. It seems like the
+lisp code is in some infinite loop waiting for a prompt or feedback that never
+comes. But as it is in lisp code it can be interrupted with <code>C-g</code>.
+
+So here is what I had to do:
+
+  SELECT 10+20 AS thirty      (Ctrl-j  brings you in the next line)
+  GO                          (Enter   sends this to the server)
+  thirty     
+  -----------
+           30
+  
+  (1 Zeilen betroffen)
+
+These works for SELECTs and UPDATEs, but it won't work for ALTER TABLE or
+CREATE VIEW. For these commands the wait cursor raises its ugly head again.
+Thankfully <code>C-g</code> can help us here, as well.
+So the sequence your fingers have to get trained for is:
+'''C-j .. GO .. Enter .. C-g'''. That's really difficult if you have used
+semicolon and Enter with all the other database clients, so far.
+
+And there is another catch: sqlcmd supports special characters like Umlauts,
+but it doesn't use Latin1 or windows-1252. Instead it is based on the old
+DOS code pages. So you'd better change the input mode for the comint process
+to cp850 or cp437: <code>C-x RET p</code> followed by <code>cp850</code>.
+
+The first thought that I had when working with ''sql-ms'' was: "How could this
+have ever been released at this state where nothing is working." Which is a
+bit strange because I haven't found any other voices on the internet complaining
+about the bad quality of the implementation. Maybe it is only related to my
+German environment which forces ''sql-ms'' to stumble? Any attempts to change
+the language of ''sqlcmd'' were without success. Only in an ideal world
+Microsoft tools would respect environment settings like '''set lang=C'''
+
+-- RolfUnger
 
 ----
 CategoryModes
