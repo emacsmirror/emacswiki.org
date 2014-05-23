@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 19 11:31:46 2014 (-0700)
+;; Last-Updated: Fri May 23 14:45:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1251
+;;     Update #: 1254
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/23 dadams
+;;     Bind narrow-indirect.el commands.
 ;; 2014/05/19 dadams
 ;;     If use mouse+.el then get rid of Emacs 24+ minibuffer.el's mouse-1 in echo area.
 ;;     Consolidate two eval-after-load's for mouse+.
@@ -421,6 +423,12 @@
     (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)         ; `C-M-y'
     (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)            ;`C-x C-M-SPC'
     (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)))     ;`C-x C-M-RET'
+
+(eval-after-load "narrow-indirect"
+  '(progn
+    (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-other-window)
+    (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-other-window)
+    (define-key ctl-x-4-map "np" 'ni-narrow-to-page-other-window)))
 
 ;; Because C-M- is being used for secondary.
 (eval-after-load "foldout" '(setq foldout-mouse-modifiers '(meta shift)))
