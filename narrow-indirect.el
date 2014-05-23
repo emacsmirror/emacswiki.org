@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 17 16:21:01 2014 (-0700)
+;; Last-Updated: Fri May 23 15:06:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 82
+;;     Update #: 87
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -36,7 +36,15 @@
 ;;  its base buffer.  You will likely want to kill indirect narrowed
 ;;  buffers rather than widening them.
 ;;
-;;  Note: Because the indirect clone shares text properties with it
+;;  You can use indirect buffers for more than you might think.  You
+;;  can use clones taken from portions of Dired buffers, for example,
+;;  to give you useful (active) views into a directory listing.  There
+;;  are only a few keys/commands (such as `g' to update the listing)
+;;  that do not work, because they depend on a view of the whole Dired
+;;  buffer.  Experiment, and you will no doubt find interesting new
+;;  uses for indirect buffers.
+;;
+;;  Note: Because an indirect clone shares text properties with its
 ;;  base buffer, if you give it a different major mode that uses
 ;;  different font-locking then the font-locking of the base buffer
 ;;  changes the same way.  However, you can restore the font-locking
