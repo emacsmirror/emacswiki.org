@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue May  6 14:02:35 2014 (-0700)
+;; Last-Updated: Fri May 23 09:31:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7843
+;;     Update #: 7852
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -22,11 +22,11 @@
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cmds-menu', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `ffap', `fit-frame', `frame-fns',
-;;   `help+20', `info', `info+20', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `second-sel',
-;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `help+20', `image-dired', `image-file', `info', `info+20',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
+;;   `pp+', `second-sel', `strings', `subr-21', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -457,6 +457,10 @@
 ;;    `diredp-menu-bar-regexp-menu', `diredp-menu-bar-subdir-menu',
 ;;    `diredp-re-no-dot', `diredp-w32-drives-mode-map'.
 ;;
+;;  Macros defined here:
+;;
+;;    `diredp-with-help-window'.
+;;
 ;;
 ;;  ***** NOTE: The following macros defined in `dired.el' have
 ;;              been REDEFINED HERE:
@@ -543,6 +547,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/23 dadams
+;;     Added: diredp-with-help-window.
+;;     diredp-list-files, diredp-dired-plus-help:
+;;       Use diredp-with-help-window, not with-output-to-temp-buffer.  See Emacs bug #17109.
 ;; 2014/05/06 dadams
 ;;     Added: diredp-image-dired-required-msg, diredp-list-files-map,
 ;;            diredp-find-line-file-other-window, diredp-mouse-find-line-file-other-window,
@@ -1504,6 +1512,13 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
           (if found results (list ,body)))))
     ;; `save-excursion' loses, again
     (dired-move-to-filename)))
+
+;; Same as `icicle-with-help-window' in `icicles-mac.el'.
+(defmacro diredp-with-help-window (buffer &rest body)
+  "`with-help-window', if available; else `with-output-to-temp-buffer'."
+  (if (fboundp 'with-help-window)
+      `(with-help-window ,buffer ,@body)
+    `(with-output-to-temp-buffer ,buffer ,@body)))
  
 ;;; Utility functions
 
@@ -4067,7 +4082,7 @@ Optional arg PREDICATE is a predicate used to filter FILES: only files
 File names listed are absolute.  Mouseover gives help or an image-file
 preview, and you can use `RET' or `mouse-2' to visit files."
   (unless bufname (setq bufname  (generate-new-buffer-name "*Files*")))
-  (with-output-to-temp-buffer bufname
+  (diredp-with-help-window bufname
     (princ "Files\n-----\n\n")
     (let ((all-files-no-wildcards  ())
           file-alist  file-dir)
@@ -8601,7 +8616,7 @@ For just the latter, use \\<dired-mode-map>`\\[diredp-dired-plus-help]'."
 (defun diredp-dired-plus-help ()
   "Describe Dired+."
   (interactive "@")
-  (with-output-to-temp-buffer "*Help*" (diredp-dired-plus-description+links)))
+  (diredp-with-help-window "*Help*" (diredp-dired-plus-description+links)))
 
 (defun diredp-dired-plus-description+links ()
   "Insert Dired+ help text in `*Help*'."
