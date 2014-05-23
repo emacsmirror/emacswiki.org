@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 23 09:31:18 2014 (-0700)
+;; Last-Updated: Fri May 23 10:17:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7852
+;;     Update #: 7855
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1519,6 +1519,8 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   (if (fboundp 'with-help-window)
       `(with-help-window ,buffer ,@body)
     `(with-output-to-temp-buffer ,buffer ,@body)))
+
+(put 'diredp-with-help-window 'common-lisp-indent-function '(4 &body))
  
 ;;; Utility functions
 
