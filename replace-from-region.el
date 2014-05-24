@@ -5,7 +5,7 @@
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2013, rubikitch, all rights reserved.
-;; Time-stamp: <2013-09-18 12:08:15 rubikitch>
+;; Time-stamp: <2014-05-24 20:21:05 rubikitch>
 ;; Created: 2013-01-28 14:49:07
 ;; Version: 0.1
 ;; URL: http://www.emacswiki.org/emacs/download/replace-from-region.el
@@ -32,8 +32,8 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; Replace commands whose query is from region
 ;; `query-replace' -> `query-replace-from-region'
 ;; `query-replace-regexp' -> `query-replace-regexp-from-region'
@@ -52,7 +52,7 @@
        (list from0
              (query-replace-read-to from0 "Query replace" nil)))))
   (deactivate-mark)
-  (goto-char (region-beginning))
+  (when (region-active-p) (goto-char (region-beginning)))
   (perform-replace from to t nil nil))
 
 ;;;###autoload
@@ -67,7 +67,7 @@
        (list from0
              (query-replace-read-to from0 "Query replace regexp" nil)))))
   (deactivate-mark)
-  (goto-char (region-beginning))
+  (when (region-active-p) (goto-char (region-beginning)))
   (perform-replace from to t t nil))
 
 ;;; borrowed from replace.el
