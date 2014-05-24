@@ -265,7 +265,7 @@ wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
 == OS X ==
 
-Open System Preferences â Keyboard and choose Modifier Keys:
+Open System Preferences → Keyboard and choose Modifier Keys:
 
 [[image:MacKeyboardPreferences.png|Mac Keyboard Preferences]]
 
