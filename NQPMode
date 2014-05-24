@@ -1,3 +1,7 @@
 A NQP mode for Not Quite Perl code.
 
 http://code.google.com/p/yisp/source/browse/modes/nqp-mode.el
+
+Or try this instead:
+
+https://github.com/duzy/.emacs/blob/master/extra-modes/nqp-mode.el
