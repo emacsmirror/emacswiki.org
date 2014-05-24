@@ -156,6 +156,7 @@ I don't get this when using regular speedbar. It seems like multiple sr-speedbar
 
 ----
 With emacs 24.4+, ad-advised-definition-p function has been removed. You can add it back to fix the problem:
+{{{
 (defun ad-advised-definition-p (definition)
   "Return non-nil if DEFINITION was generated from advice information."
   (if (or (ad-lambda-p definition)
@@ -164,6 +165,7 @@ With emacs 24.4+, ad-advised-definition-p function has been removed. You can add
       (let ((docstring (ad-docstring definition)))
 	(and (stringp docstring)
 	     (get-text-property 0 'dynamic-docstring-function docstring)))))
+}}}
 
 I'm not versed enough in emacs lisp to modify the sr-speedbar code to use some other function.
 
