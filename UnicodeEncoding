@@ -256,18 +256,6 @@ involve exchanging selections between old non-XFree86 or X.org releases...
 
 === Comments ===
 
-I wrote the support, and I'm unclear what this is about.  It seems
-confused about characters and coding systems.
-`utf-translate-cjk-mode' isn't released at least before Emacs 22.1.
-It mitigates Han unification for most users because the charsets it prefers
-depend on the language environment from which it was invoked.  It doesn't allow
-the whole of HELLO to be encoded.  In a released Emacs, you probably want to use
-Mule-UCS for CJK Unicode as above. -- fx
-
-I've tried to rewrite it.  Better now? -- AlexSchroeder
-
-I modified your introduction in order to make it clear that displaying and saving Asian texts is not working, even under my 21.4 version. Benefit of UTF-8 is when you edit mixed text including Arabic (yes it is not right to left on the screen but you can read the characters at least), Russian, Western European characters; but if you input a Japanese sentence (with any Japanese input method) you can't save it. Am I wrong ? -- NicolasBrouard 
-
 I read some xml comment that makes emacs open that file utf-8 converted similar to the bash annotation:
 
     # -*- coding: utf-8 -*-
@@ -284,8 +272,6 @@ specification in the XML declaration matches a coding system exactly,
 modulo case.  (The function `locale-charset-to-coding-system' in the
 emacs-unicode CVS branch is designed to cope with things like `ISO8859_1'
 versus `iso-8859-1'.)
-
-:: Emacs 22 should get xml right on its own, and for Emacs 21 (as a bit of shameless self-promotion) try XmlCoding.  -- KevinRyde, Jan08
 
 ----
 
