@@ -1,5 +1,3 @@
-== GNU Emacs 23 and Later ==
-
 Starting with GNU Emacs 23, there is relatively complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
 
 * You can use one of the Emacs InputMethods.
@@ -130,26 +128,6 @@ Mokurai 黙雷 Cherlin says:
 
 : Another point of contention is the Japanese modification of ASCII, JIS X 0201, to have the Yen sign (now U+00A5) in the location of the backslash, or REVERSE SOLIDUS, '\' (ASCII 0x5C, U+005C), and to substitute overline '¯', now U+00AF, for tilde '~' at 0x7E. This created inherent ambiguity in programming for Windows, where '\' is the separator in file paths, except in systems where '\' has been moved to 80h, thus breaking compatibility with the ISO 8859 encodings. Some Japanese programmers claim that Unicode is broken for not permitting the practice of overloading 0x5C to continue, and insisting that Japanese programmers should either label their files with the proper legacy encoding, or translate them properly to Unicode. This may require manual intervention to resolve the ambiguity, throughout a huge code base. Note that some Microsoft Windows fonts for Japan and Korea that claim to be Unicode-compliant have Yen sign or Korean Won sign at this code point.
 
-GNU Emacs 21 can read JIS (Japanese) encoded files, but in order to 
-save such a file as UTF-8, you need a mapping from the JIS codepoints
-to the corresponding Unicode codepoints.
-You can do this using `utf-translate-cjk-mode' in Emacs CVS,
-or by loading mule-ucs in GNU Emacs 21, or by using external character encoding conversion tools.  (The problem otherwise is that
-Emacs doesn't have character values to represent the relevant Unicodes
-in a char table for the CCL translation mechanism;
-Mule-UCS uses a complicated system of vectors to do the translation, and
-`utf-translate-cjk-mode' uses a new feature allowing hash tables to do
-the job.)
-In your InitFile:
-
-    (utf-translate-cjk-mode 1)
-
-Now you should be able to save the Japanese, Chinese, and Korean part
-of the etc/HELLO file using UTF-8.  To
-test it, copy a few CJK characters from the etc/HELLO file and
-save them in a UTF-8 file using `C-x C-m c utf-8 RET C-x C-s filename
-RET'.
-
 === Pasting ===
 
 Maybe worth noting that Windows, Mac, and Linux all have character selection tools designed to make cut/paste with special characters a little easier (e.g., linux utilities include gucharmap and kcharselect)?
@@ -162,17 +140,6 @@ reply using UTF-8 encoded text.
 Here's how to tell Emacs to request UTF-8 first:
 
    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-=== Comments ===
-
-Say you have opened an utf-8 encoded file and the encoding is wrong, what are, if any, the steps to being able to edit it correctly without having to reload the file? If it is impossible, can it be documented on this page?
-
-: That isn't generally possible---incorrect decoding loses information.
-The correct thing to do is just to re-find it with `C-x C-m c utf-8'.
-
-:: How is it lost? See ChangingEncodings
-
-::: It depends on what you mean by "the encoding is wrong". If you mean (for example) "the file is encoded in latin-1 on disk but that is wrong, it should be utf-8 instead (and Emacs is displaying the non-ascii characters correctly)" then yes, see ChangingEncodings. If you mean "the file is encoded in utf-8 on disk but Emacs guessed the encoding wrong (it interpreted it as latin-1, so the non-ascii characters are displayed as gibberish)" you should revisit it with the right coding system. I guess in this particular case no information was technically "lost" by the incorrect decoding (you could encode the gibberish back to bytes using latin-1 and decode the bytes using utf-8 and the result would make sense) but I am not sure if that is the case for all coding systems (it depends on what they do with invalid input (including corner cases like utf-8 "overlong forms" (see http://en.wikipedia.org/wiki/UTF-8) where simply leaving them as-is may not even be what the user wants!)
 
 == Combining characters ==
 
