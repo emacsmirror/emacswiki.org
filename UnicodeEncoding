@@ -20,38 +20,6 @@ insert, except that `SPC' characters in the character names are
 replaced by hyphens (`##-##'), and the command names are lowercase,
 not uppercase like the character names.
 
-----
-
-== Using Unicode with Emacs Releases Prior to Emacs 23 ==
-
-GNU Emacs 21 has built-in Unicode support which is sufficient for editing,
-for example, UTF-8-encoded Western technical text from the Basic
-Multilingual Plane.  It doesn't support most Far Eastern characters
-from the BMP, or combining characters (which can easily be added), but
-some support for them has been installed in the development sources,
-probably for GNU Emacs 22.1. On version 21.4, it means, for example, that reading a Japanese UTF-8 encoded text will not be displayed correctly but in three bytes instead of a single character. It also means that if you enter a text with a Japanese input method, it will be displayed correctly but you can't save the buffer in utf-8 (see section Saving CJK into Unicode): if your text mixes Arabic, Russian, West-European character and Japanese characters, all but the Japanese will be displayed and saved correctly. Also, saving and pasting from other applications, will not work (see Saving section). The GNU Emacs 21.2 PROBLEMS file is somewhat
-misleading about Unicode support.  GNU Emacs 21.3 contains support for
-UTF-16 encoding of the same characters as UTF-8 and its utf-8 coding
-system will encode characters from more Emacs charsets than in 21.2.
-
-Various Unicode-related extensions for GNU Emacs 21.2 are available from
-[http://www.loveshack.ukfsn.org/emacs/Mule/ http://www.loveshack.ukfsn.org/emacs/Mule/].  Beware that these currently have
-some bugs compared with the equivalent code installed in the Emacs
-development sources.
-
-* MuleUCS adds or extends unicode coding systems, in particular helping users of far Eastern scripts in Emacs 21.
-
-In future (probably Emacs 22), Mule will use an internal encoding
-which is a UTF-8 encoding of a superset of Unicode.  The basic
-implementation of that is done, but needs plenty more work.
-
-Note that the internal encoding is largely orthogonal to whether Emacs
-can satisfactorily edit unicoded documents, as the GNU Emacs 21
-implementations demonstrate.  <em>You do not need a Unicode-based
-Emacs to use Unicode.</em> UTF-8 is just another coding system; the
-only fundamental issue is whether all the relevant characters can be
-represented.
-
 === Input Characters Using an Input Method ===
 
 Assume you have an UTF-8 file, but your locale uses ISO-8859-1
@@ -101,19 +69,12 @@ method to use, but can find the code point of the character:
       (interactive (list (read-quoted-char "Char: ")))
       (ucs-insert char))
 
-
 You can find charts of the characters here: http://www.unicode.org/charts/
 
 If you use them, you might want to use the following setting to enter
-hexadecimal:
+hexadecimal using C-q:
 
     (setq read-quoted-char-radix 16)
-
-: How is this better than just using `ucs-insert', which I wrote for this
-job?
-
-If you know the emacs code point of the character, you can enter it
-with C-q instead.
 
 === `auto-coding-regexp-alist'  ===
 
@@ -131,51 +92,6 @@ edit them to cope with the set of documents you normally deal with.
 
 You can use `file-coding-system-alist' to specify that, say, .xml and .utf8
 files are utf-8-encoded.
-
-[new]
-But how can I get emacs to recognize utf-16 automatically?  
-This is the encoding used on Windows for many files, including *.xml files.
-So using the file extension is not the correct approach.  
-I am running gnu emacs version 21.2.1 on Windows XP.  
-I tried the suggestion at http://lists.gnu.org/archive/html/help-emacs-windows/2002-09/msg00011.html
-i.e. require utf-16.el but without success.  
-In any case I want to be able to say it after I am looking at a file in a
-buffer, not need to do it before hand.  Even better I want emacs to
-automatically recognize this.  This should be easy because the first two bytes in
-the file are the byte order mark.  See http://www.unicode.org/faq/utf_bom.html#BOM
-This shows that the file is utf-16 and also tells whether it is little endian or big endian.
-Steve Tolkin
-
-: With the coding systems defined by utf-16.el, just use `C-x C-m c' to
-specify the coding system when you find the file.  You can't sensibly do
-anything after finding it.  You need something like the following to
-auto-detect utf-16 with signature.  Note that we were confused about the
-correct names for the utf-16 coding systems, and they have changed after
-Emacs 21.3.
-
-    (setq coding-category-utf-16-le 'utf-16-le)
-    (push 'coding-category-utf-16-le coding-category-list)
-
-I (Steven Tolkin, who asked the question) added the above lines, but this was not enough.  In fact it seemed at one time to cause this error: "Symbol's function definition is void: utf-16-le-pre-write-conversion".  The fix, from http://www.gatago.com/gnu/emacs/help/20222624.html is to afterwards also add the following lines.  This now makes emacs 21.3.1 work on Windows XP, i.e. it correctly opens an UTF-16 file that starts with a BOM.
-<pre>
-    ;; Detect endianness of UTF-16 containing a Byte Order Mark U+FEFF 
-    (add-to-list 'auto-coding-regexp-alist '("^\xFF\xFE" . utf-16-le) t)
-    (add-to-list 'auto-coding-regexp-alist '("^\xFE\xFF" . utf-16-be) t)
-    ;; Add missing support functions
-    (defun utf-16-le-pre-write-conversion (start end) nil)
-    (defun utf-16-be-pre-write-conversion (start end) nil)
-</pre>
-
-A further refinement is to add support for auto detecting the line ending.  The following code will handle line ending differences:
-<pre>
-    ;; Detect endianness of UTF-16 containing a Byte Order Mark U+FEFF
-    ;; Detect EOL mode by looking for CR/LF on the first line
-    (add-to-list 'auto-coding-regexp-alist '("^\xFF\xFE.*\x0D\x00$" . utf-16-le-dos) t)
-    (add-to-list 'auto-coding-regexp-alist '("^\xFE\xFF.*\x0D\x00$" . utf-16-be-dos) t)
-    (add-to-list 'auto-coding-regexp-alist '("^\xFF\xFE" . utf-16-le) t)
-    (add-to-list 'auto-coding-regexp-alist '("^\xFE\xFF" . utf-16-be) t)
-</pre>
-
 
 === Saving CJK as Unicode ===
 
@@ -247,33 +163,7 @@ Here's how to tell Emacs to request UTF-8 first:
 
    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-Note that this was introduced post-Emacs 21.3, i.e. isn't released at the
-time of writing.  Also UTF8_STRING isn't documented yet by X, and the
-behaviour of XFree86 and GNOME, Mozilla &c for these things has been quite
-unstable over different releases, sigh.  The situation for selections is
-particularly complicated by X being a networked window system which may
-involve exchanging selections between old non-XFree86 or X.org releases...
-
 === Comments ===
-
-I read some xml comment that makes emacs open that file utf-8 converted similar to the bash annotation:
-
-    # -*- coding: utf-8 -*-
-
-and without configuration in emacs. But i cant find it anymore. some ideas?
-
-Do you simply mean <code><!-- -*- coding: utf-8 -*- --></code> ?
-
-: XML is utf-8 by default, so an entry was added to `file-coding-system-alist'
-post-21.3.  Then the coding cookie is only necessary if the encoding isn't
-utf-8, but a new mechanism (`auto-coding-functions') tries to figure that out
-without the cookie.  As far as I remember, it only works if the charset
-specification in the XML declaration matches a coding system exactly,
-modulo case.  (The function `locale-charset-to-coding-system' in the
-emacs-unicode CVS branch is designed to cope with things like `ISO8859_1'
-versus `iso-8859-1'.)
-
-----
 
 Say you have opened an utf-8 encoded file and the encoding is wrong, what are, if any, the steps to being able to edit it correctly without having to reload the file? If it is impossible, can it be documented on this page?
 
