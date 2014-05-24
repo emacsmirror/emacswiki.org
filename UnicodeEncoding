@@ -141,7 +141,7 @@ Here's how to tell Emacs to request UTF-8 first:
 
    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-== Combining characters ==
+=== Combining characters ===
 
 It seems Emacs does not support some combining characters. For instance if you paste or read from a file the word страни́ца (as seen in Wiktionary) you will see страни´ца. -- DanielClemente, Apr2012, 24.1.50.4 in X.org in Debian
 
