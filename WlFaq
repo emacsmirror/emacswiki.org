@@ -554,6 +554,11 @@ Wanderlust automatically saves the draft every second there's a change. If your 
 (setq wl-auto-save-drafts-interval nil)
 }}}
 
+Alternatively, you can use a local folder for draft by saying something like
+{{{
+(setq wl-draft-folder "+drafts")
+}}}
+
 == How can I unsubscribe from the wanderlust mailing list? ==
 For English mail list, send an email to <code>wl-en-ctl@ml.gentei.org</code> with "unsubscribe" in body.
 
