@@ -97,18 +97,33 @@ Copy, cut, paste, select all, ...
 
 See also: [[Region]].
 
-== Search or Find and Replace ==
+== Query-Replace: Search & Replace Individually or Not ==
 
-The powerful searching in emacs is called a query
+'''Query-replace literal string matches:'''
 
-* Search (or query) and Replace `M-%' string `RET' newstring `RET'
-* Same thing but with a regex use `C-M-%'
-* When the search is in progress:
-** `SPC' to replace the current match
-** `!' to replace all and finish
-** `RET' to finish without doing any more replacements
+: '''`##M-%##'''' ''string-to-find'' `RET' ''newstring'' `RET'
 
-There are a bunch of other features, but that'll get you going
+'''Query-replace [[regexp]] matches:'''
+
+: '''`##C-M-%##'''' ''regexp'' `RET' ''newstring'' `RET'
+
+: (''newstring'' can in fact be a patter that reuses the ''regexp'' in powerful ways -- use `C-h f query-replace-regexp' for more info)
+
+When query-replace is in progress:
+* `q' or `RET' to quit (no more replacements)
+* `##.##' to replace the current match and quit
+* `SPC' to replace the current match and find the next one
+* `##!##' to replace all remaining matches and then quit
+* `^' to go back to the previous match
+* `E' to change (edit) the replacement string
+* `C-r' to enter a recursive edit (`C-M-c' to resume this query-replace)
+* `C-w': like `C-r', but delete this match first
+* `C-l' to refresh the screen
+* `Y' to replace all across all buffers of a multi-buffer query-replace
+* `N' to skip to the next buffer  of a multi-buffer query-replace
+* '''`##?##'''' to '''see this help list''' of possibilities
+
+
 
 == Other Simple Editing ==
 
