@@ -225,8 +225,12 @@ Add this to your .wl (or .emacs):
 You should also have w3m installed and the mime-w3m.el in your load path. 
 
 === Keys in w3m are not very intuitive ===
-If you are not used to w3m key-bindings, and don't intend on using it
-on its own put this in your configuration file:
+Say
+{{{
+(setq w3m-key-binding 'info)
+}}}
+
+Alternatively, you can do something like this:
 {{{
 (eval-after-load "w3m"
  '(progn
