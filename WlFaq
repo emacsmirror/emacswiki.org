@@ -151,9 +151,7 @@ James
 == Summary Buffer ==
 
 === How to check for new messages ===
-Press the 's' key (##wl-summary-sync##), then it asks you the update method (allowed: ##no-sync first last cache-status mark rescan rescan-noscore rescan-thread update update-entirely all all-entirely##). Having that many choices has always baffled me. I tend to use ##all## and it works as you would expect in any other mail program.
-
-I expected to find a simpler method, which is safe, fast and can be invoked with one key. What would you use?
+Press the 's' key (##wl-summary-sync##), then it asks you the update method (allowed: ##no-sync first last cache-status mark rescan rescan-noscore rescan-thread update update-entirely all all-entirely##). You probably want to say 'update' (the default), which will query the server for what has changed since last time; if you want to re-check everything, say 'all'.
 
 === How can I make my "Sent" folder show TO rather than FROM in the list ===
 Provided you sent folder has the word "Sent" somewhere use:
