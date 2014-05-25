@@ -101,7 +101,7 @@ See also: [[Region]].
 
 The powerful searching in emacs is called a query
 
-* Search and Replace `M-%' string `RET' newstring `RET'
+* Search (or query) and Replace `M-%' string `RET' newstring `RET'
 * Same thing but with a regex use `C-M-%'
 * When the search is in progress:
 ** `SPC' to replace the current match
