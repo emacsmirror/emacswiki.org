@@ -97,6 +97,19 @@ Copy, cut, paste, select all, ...
 
 See also: [[Region]].
 
+== Search or Find and Replace ==
+
+The powerful searching in emacs is called a query
+
+* Search and Replace `M-%' string `RET' newstring `RET'
+* Same thing but with a regex use `C-M-%'
+* When the search is in progress:
+** `SPC' to replace the current match
+** `!' to replace all and finish
+** `RET' to finish without doing any more replacements
+
+There are a bunch of other features, but that'll get you going
+
 == Other Simple Editing ==
 
 * Make word uppercase: `M-u'
