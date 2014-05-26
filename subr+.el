@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 26 14:01:55 2014 (-0700)
+;; Last-Updated: Mon May 26 14:16:22 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 61
+;;     Update #: 62
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -242,8 +242,8 @@ Modifies the match data; use `save-match-data' if necessary.
 (defun next-single-char-prop-val-change (position property value notp &optional object limit)
   "Return next position after POSITION where PROPERTY VALUE changes.
 By default, return the next position where text or overlay PROPERTY
-has VALUE.  Non-nil optional arg NOTP means return the next position
-where PROPERTY does not have VALUE.
+begins to have VALUE.  Non-nil optional arg NOTP means return the next
+position where PROPERTY stops having VALUE.
 
 Scans chars forward from POSITION until it finds a position where
 PROPERTY having VALUE becomes true (false if NOTP).  Returns the
