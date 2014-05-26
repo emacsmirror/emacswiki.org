@@ -11,7 +11,7 @@ Emacs 21 [http://www.loveshack.ukfsn.org/emacs/eldoc.el back-port]
 * SemanticBovinator -- tools using that system
 * TaclMode -- Tandem/NSK/Guardian
 * TalMode -- Tandem/NSK/Guardian
-* Org-mode [https://bitbucket.org/ukaszg/org-eldoc]
+* [https://bitbucket.org/ukaszg/org-eldoc Org-mode]
 
 ElDoc runs each element of the function arglist through a filter function stored in the <tt>eldoc-argument-case</tt> variable, which defaults to <tt>upcase</tt>. This is why the
 arguments are capitalized by default. [This only applies for
@@ -383,7 +383,7 @@ Fetches function documentation from the net on demand:
 
 == Python + Rope support ==
 
-Eldoc support for Python using Rope extehttps://bitbucket.org/ukaszg/org-eldocnsion. Allow highlihting of current position in argument list, integration with flyspell(propely show errors in minibuffer). Advice for message function can be avoided I it is possible to switch off Pymacs traces in minibuffer(this advice just don't execute real message function in case of calling rope, because some indetifiers in source code cause Rope traces).
+Eldoc support for Python using Rope extension. Allow highlihting of current position in argument list, integration with flyspell(propely show errors in minibuffer). Advice for message function can be avoided I it is possible to switch off Pymacs traces in minibuffer(this advice just don't execute real message function in case of calling rope, because some indetifiers in source code cause Rope traces).
 
 <pre>
 (defun rope-eldoc-function ()
