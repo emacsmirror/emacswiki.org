@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 25 07:28:07 2014 (-0700)
+;; Last-Updated: Mon May 26 13:34:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27
+;;     Update #: 58
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -28,19 +28,24 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `next-char-predicate-change', `split-string-by-predicate',
-;;    `split-string-by-regexp', `split-string-trim-omit-push',
+;;    `next-char-predicate-change',
+;;    `next-single-char-prop-val-change', `split-string-by-predicate',
+;;    `split-string-by-property', `split-string-by-regexp',
+;;    `split-string-trim-omit-push',
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `simple.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;    `split-string' - Can also split by predicate.
+;;    `split-string' - Can also split by char property or predicate.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/26 dadams
+;;     Added: next-single-char-prop-val-change.
+;;     split-string-by-property: Handle change in VAL, not just PROP.
 ;; 2014/05/24 dadams
 ;;     Created.
 ;;
@@ -75,13 +80,17 @@
 
 ;; REPLACES ORIGINAL in `simple.el':
 ;;
-;; 1. Second arg can be a predicate, in addition to a regexp.
+;; 1. Second arg can be a character property list or a predicate, in
+;;    addition to a regexp.
 ;; 2. Addtional optional arg FLIP: to complement set of returned substrings.
 ;;
 (defun split-string (string &optional how omit-nulls trim flip)
   "Split STRING into substrings.
 Arg HOW determines how splitting is done.  it is one of the following:
 * a regexp (a string) - see function `split-string-by-regexp'
+* a list whose first element is a text or overlay property (a symbol)
+  and whose second element is the property value - see function
+  `split-string-by-property'
 * a predicate that accepts a character as its first argument - see
   function `split-string-by-predicate'
 
@@ -99,8 +108,8 @@ Modifies the match data; use `save-match-data' if necessary."
          (split-string-by-regexp string how omit-nulls trim flip))
         ((functionp how)
          (split-string-by-predicate string how omit-nulls trim flip))
-;;;         ((and (consp how)  (car how)  (symbolp (car how)))
-;;;          (split-string-by-property string how omit-nulls trim flip))
+        ((and (consp how)  (car how)  (symbolp (car how)))
+         (split-string-by-property string how omit-nulls trim flip))
         (t (error "`split-string', bad HOW arg: `%S'" how))))
 
 (defun split-string-trim-omit-push (string how omit-nulls trim start end parts)
@@ -185,52 +194,80 @@ Modifies the match data; use `save-match-data' if necessary."
                                                  this-beg this-end s-parts))
     (nreverse s-parts)))
 
-;;; (FUTURE)
-;;;
-;;; (defun split-string-by-property (string prop+val &optional omit-nulls trim flip)
-;;;   "Split STRING into substrings determined by a text or overlay property.
-;;; Return the list of substrings.
+(defun split-string-by-property (string prop+val &optional omit-nulls trim flip)
+  "Split STRING into substrings determined by a text or overlay property.
+Return the list of substrings.
 
-;;; By default, the substrings that have the property are removed, and the
-;;; substrings between these are collected as a list, which is returned.
-;;; With non-nil optional argument FLIP this is reversed: the list of
-;;; substrings that have the property is returned.
+By default, the substrings that have the given property with the given
+value are removed, and the substrings between these are collected as a
+list, which is returned.  With non-nil optional argument FLIP this is
+reversed: The list of substrings that have the property and value is
+returned, and the substrings that do not are removed.
 
-;;; PROP+VAL is a property list whose first element is the property (a
-;;; symbol) and whose second is the property value.  Arguments OMIT-NULLS
-;;; and TRIM are as for function `split-string-by-regexp'.
+PROP+VAL is a property list whose first element is the property (a
+symbol) and whose second is the property value.  Arguments OMIT-NULLS
+and TRIM are as for function `split-string-by-regexp'.
 
-;;; Modifies the match data; use `save-match-data' if necessary.
+Modifies the match data; use `save-match-data' if necessary.
 
-;;; \(This function requires Emacs 22 or later.)"
-;;;   (unless (fboundp 'next-single-char-property-change)
-;;;     (error "`split-string-by-property' requires Emacs 22 or later"))
-;;;   (let ((prop      (car prop+val))
-;;;         (val       (cadr prop+val))
-;;;         (s-len     (length string))
-;;;         (start     0)
-;;;         (notfirst  nil)
-;;;         (this-beg  nil)
-;;;         (this-end  nil)
-;;;         (has-prop  nil)
-;;;         (s-parts   ()))
-;;;     (while (and (< start s-len)
-;;;                 (setq this-end  (next-single-char-property-change
-;;;                                  start prop string)))
-;;;       (setq notfirst  t
-;;;             this-beg  start
-;;;             start     (next-single-char-property-change start prop string)
-;;;             has-prop  (get-char-property this-beg prop string))
-;;;       (when (if flip has-prop (not has-prop))
-;;;         (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
-;;;                                                     this-beg this-end s-parts))))
-;;;     (setq this-beg  start ; Handle the substring at the end of STRING.
-;;;           this-end  s-len
-;;;           has-prop  (get-char-property this-beg prop string))
-;;;     (when (if flip has-prop (not has-prop))
-;;;       (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
-;;;                                                   this-beg this-end s-parts)))
-;;;     (nreverse s-parts)))
+\(This function requires Emacs 22 or later.)"
+  (unless (fboundp 'next-single-char-property-change)
+    (error "`split-string-by-property' requires Emacs 22 or later"))
+  (let* ((prop      (car prop+val))
+         (val       (cadr prop+val))
+         (s-len     (length string))
+         (start     0)
+         (this-beg  nil)
+         (this-end  nil)
+         (has-prop  (eq (get-char-property start prop string) val))
+         (s-parts   ()))
+    (while (and (< start s-len)
+                (setq this-end  (next-single-char-prop-val-change
+                                 start prop val (if flip has-prop (not has-prop)) string)))
+      (setq this-beg  start)
+      (setq start     (next-single-char-prop-val-change
+                       start prop val (if flip (not has-prop) has-prop) string))
+      (setq has-prop  (eq (get-char-property this-beg prop string) val))
+      (when (if flip has-prop (not has-prop))
+        (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
+                                                    this-beg this-end s-parts))))
+    (setq this-beg  start) ; Handle the substring at the end of STRING.
+    (setq this-end  s-len)
+    (setq has-prop  (eq (get-char-property this-beg prop string) val))
+    (when (if flip has-prop (not has-prop))
+      (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
+                                                  this-beg this-end s-parts)))
+    (nreverse s-parts)))
+
+(defun next-single-char-prop-val-change (position property value notp &optional object limit)
+  "Return next position after POSITION where PROPERTY VALUE changes.
+By default, return the next position where PROPERTY has VALUE.
+Non-nil optional arg NOTP means return the next position where
+PROPERTY does not have VALUE.
+
+Scans chars forward from POSITION until it finds a position where
+PROPERTY having VALUE becomes true (false if NOTP).  Returns the
+position of this change.  Property values are compared using `eq'.
+
+Optional argument OBJECT is a string or buffer.  A nil value means the
+current buffer.  POSITION is a buffer position (integer or marker) or
+a 0-based index into the string.
+
+By default, the end of the buffer or string limits scanning.  Optional
+arg LIMIT non-nil and less than the end position means stop scanning
+at LIMIT.  If PROPERTY does not change from POSITION to the effective
+limit then return that limit."
+  (let* ((lim  (if object (length object) (point-max)))
+         (lim  (if limit (min limit lim) lim))
+         (pos  (next-single-char-property-change position property object lim))
+         (val  (get-char-property pos property object))
+         samep)
+    (while (and (< pos lim)
+                (progn (setq samep  (eq value (get-char-property pos property object)))
+                       (if notp samep (not samep))))
+      (setq pos  (next-single-char-property-change pos property object)))
+    (setq samep (eq value (get-char-property pos property object)))
+    (if (if notp (not samep) samep) pos lim)))
 
 (defun split-string-by-predicate (string predicate &optional omit-nulls trim flip)
   "Split STRING into substrings determined by a character predicate.
@@ -248,16 +285,13 @@ argument.  Arguments OMIT-NULLS and TRIM are as for function
 Modifies the match data; use `save-match-data' if necessary."
   (let ((s-len     (length string))
         (start     0)
-        (notfirst  nil)
         (this-beg  nil)
         (this-end  nil)
         (is-true   nil)
         (s-parts   ()))
     (while (and (< start s-len)
-                (setq this-end  (next-char-predicate-change
-                                 start predicate string)))
-      (setq notfirst  t
-            this-beg  start
+                (setq this-end  (next-char-predicate-change start predicate string)))
+      (setq this-beg  start
             start     (next-char-predicate-change start predicate string)
             is-true   (funcall predicate (aref string this-beg)))
       (when (if flip is-true (not is-true))
