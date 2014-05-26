@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 26 13:34:58 2014 (-0700)
+;; Last-Updated: Mon May 26 14:01:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 58
+;;     Update #: 61
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -88,8 +88,8 @@
   "Split STRING into substrings.
 Arg HOW determines how splitting is done.  it is one of the following:
 * a regexp (a string) - see function `split-string-by-regexp'
-* a list whose first element is a text or overlay property (a symbol)
-  and whose second element is the property value - see function
+* a list whose first element is a text property (a symbol) and whose
+  second element is the property value - see function
   `split-string-by-property'
 * a predicate that accepts a character as its first argument - see
   function `split-string-by-predicate'
@@ -195,7 +195,7 @@ Modifies the match data; use `save-match-data' if necessary."
     (nreverse s-parts)))
 
 (defun split-string-by-property (string prop+val &optional omit-nulls trim flip)
-  "Split STRING into substrings determined by a text or overlay property.
+  "Split STRING into substrings determined by a text property.
 Return the list of substrings.
 
 By default, the substrings that have the given property with the given
@@ -241,9 +241,9 @@ Modifies the match data; use `save-match-data' if necessary.
 
 (defun next-single-char-prop-val-change (position property value notp &optional object limit)
   "Return next position after POSITION where PROPERTY VALUE changes.
-By default, return the next position where PROPERTY has VALUE.
-Non-nil optional arg NOTP means return the next position where
-PROPERTY does not have VALUE.
+By default, return the next position where text or overlay PROPERTY
+has VALUE.  Non-nil optional arg NOTP means return the next position
+where PROPERTY does not have VALUE.
 
 Scans chars forward from POSITION until it finds a position where
 PROPERTY having VALUE becomes true (false if NOTP).  Returns the
