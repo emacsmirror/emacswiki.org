@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 14 10:33:48 2014 (-0700)
+;; Last-Updated: Tue May 27 10:49:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3022
+;;     Update #: 3025
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,10 +34,10 @@
 ;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
 ;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
 ;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
-;;   `icomplete', `icomplete+', `image-dired', `image-file', `imenu',
-;;   `imenu+', `info', `info+20', `isearch+', `iso-transl',
-;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `highlight-chars', `icomplete', `icomplete+', `image-dired',
+;;   `image-file', `imenu', `imenu+', `info', `info+20', `isearch+',
+;;   `iso-transl', `lacarte', `lib-requires', `lisp-mnt', `loadhist',
+;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
 ;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2014/05/27 dadams
+;;     Soft-require subr+.el.
 ;; 2014/05/14 dadams
 ;;     Soft-require highlight-chars.el instead of autoloading.
 ;;     Soft-require narrow-indirect.el.
@@ -545,6 +547,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
   (thgcmd-bind-keys))
 
+(require 'subr+ nil t)                  ; Extensions to `subr.el'.  String splitting.
 (when (fboundp 'clone-indirect-buffer) (require 'narrow-indirect nil t)) ; Emacs 22+
 
 (require 'imenu+ nil t)                 ; Extensions to `imenu.el'.
