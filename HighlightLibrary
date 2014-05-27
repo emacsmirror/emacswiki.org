@@ -6,8 +6,22 @@ This page is about library <tt>[[highlight.el]]</tt>, which provides commands to
 == Library `facemenu+.el' Puts Highlight on the Menu ==
 
 If you load library <tt>[[facemenu+.el]]</tt> after you load library
-<tt>[[highlight.el]]</tt>, then the commands in library ##highlight.el## will also be
+<tt>[[highlight.el]]</tt>, then the commands in library ##highlight.el## are also 
 available on a '''Highlight''' submenu in the '''Text Properties''' menus. See FaceMenuPlus for more about library ##facemenu+.el##.
+
+
+If you load library <tt>[[mouse3.el]]</tt> after you load library
+##highlight.el## then:
+
+* Commands defined in ##highlight.el## are also available on a '''Highlight'''
+submenu of the '''Region''' right-click popup menu.
+
+* Commands `hlt-highlight-symbol' and `hlt-unhighlight-symbol'
+are available on the '''Thing at Pointer''' submenu of the '''No Region''' right-click popup menu.
+
+
+
+
 
 
 
@@ -72,7 +86,7 @@ which does record highlighting permanently.  See [[Manual:Enriched Mode]].
 To save highlighting permanently, do the following:
 
 # `M-x enriched-mode', to put your file buffer in [[minor mode]]
-   `enriched-mode'.  You will see '''`Enriched'''' in the [[mode line]].
+   `enriched-mode'.  You see '''`Enriched'''' in the [[mode line]].
 
 # Choose text-property highlighting, not overlay highlighting, by
    setting [[option]] '''`<tt>[[#hlt-use-overlays-flag]]</tt>''''
@@ -88,12 +102,12 @@ To save highlighting permanently, do the following:
 
 # Save your file.  Note that, although highlighting in enriched-text mode modifies
    the buffer, it does not ''appear'' modified to Emacs (check the beginning of the mode line), so if you make no other
-   changes then using `C-x C-s' will ''not'' save your highlighting
+   changes then using `C-x C-s' does ''not'' save your highlighting
    changes.  To remedy this, just do something besides highlighting --- e.g., add
-   a space and delete it --- so that `C-x C-s' will save to disk.
+   a space and delete it --- so that `C-x C-s' saves to disk.
 
-When you reopen your file later, it will automatically be in
-enriched mode, and your highlighting will show.  However, be aware
+When you reopen your file later, it is automatically in
+enriched mode, and your highlighting shows.  However, be aware
 that [[FontLock|font-locking]] interferes with enriched mode, so you will
 probably want to use it on files where you don't use font-locking.
 
@@ -395,8 +409,8 @@ other faces, and command '''`hlt-show-only'''' does the opposite.  You
 can thus use these commands to specify exactly what faces should
 be invisible and visible.  Empty input means none: If you choose
 no faces to hide (that is, hit `RET' with an empty [[minibuffer]]),
-then all faces will be made visible; if you choose no faces to
-show, then all will be hidden.
+then all faces are made visible; if you choose no faces to
+show, then all are hidden.
 
 Currently, face attributes for highlighting are combined when
 overlays overlap, but the same is not true for text properties.
@@ -454,16 +468,17 @@ If the region is not active or it is empty, then:
 == Interference by Font Lock ==
 
 If you use Emacs 22 or later, then you can use library <tt>[[highlight.el]]</tt> in
-conjunction with library <tt>[[font-lock+.el]]</tt>.  That will prevent
+conjunction with library <tt>[[font-lock+.el]]</tt> (it is loaded
+automatically, if available).  That prevents
 font-locking from removing any highlighting face properties that
 you apply using the commands defined here.
 
-[If you also load library <tt>[[facemenu+.el]]</tt>, then the same applies to highlighting that you apply using the face menu (see FaceMenuPlus): that highlighting will also be protected from interference by font lock.]
+[If you also load library <tt>[[facemenu+.el]]</tt>, then the same applies to highlighting that you apply using the face menu (see FaceMenuPlus): that highlighting is also protected from interference by font lock.]
 
 Otherwise, when `hlt-use-overlays-flag' is `nil', font-lock
-highlighting will interfere with the highlighting of this library.
-In most cases, you will be able to highlight text, but sooner or
-later font-lock will erase that highlighting when it refontifies
+highlighting interferes with the highlighting of this library.
+In most cases, you can still highlight text, but sooner or
+later font-lock erases that highlighting when it refontifies
 the buffer.  If `hlt-use-overlays-flag' is non-`nil', there is no
 such problem : font-lock has no effect on overlays.
 
@@ -641,5 +656,4 @@ And yes, overlays are costly -- typically O(N), where N is the number of overlay
 DrewsElispLibraries mentioned here: Lisp:facemenu+.el, Lisp:font-lock+.el, Lisp:highlight.el.
 
 CategoryFaces CategoryHideStuff CategoryRegion
-
 
