@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr  5 16:59:25 2014 (-0700)
+;; Last-Updated: Tue May 27 09:39:49 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15534
+;;     Update #: 15544
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/05/27 dadams
+;;     bmkp-describe-bookmark(-internals), bmkp-list-defuns-in-commands-file:
+;;       Use bmkp-with-help-window, not with-output-to-temp-buffer (Emacs 24.4+ silliness).
 ;; 2014/04/05 dadams
 ;;     Removed bmkp-create-dired-bookmarks-recursive: 
 ;;      Moved to dired+.el and renamed diredp-do-bookmark-dirs-recursive.
@@ -988,6 +991,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/05/27 dadams
+;;     bmkp-bmenu-mode-status-help, bmkp-bmenu-describe-marked:
+;;       Use bmkp-with-help-window, not with-output-to-temp-buffer (Emacs 24.4+ silliness).
 ;; 2014/04/02 dadams
 ;;     bmkp-bmenu-copy-tags, bmkp-bmenu-paste-replace-tags(for-marked):
 ;;       Added Note to doc string about pasting an empty list of tags.
@@ -1603,6 +1609,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2014/05/27 dadams
+;;     Added: bmkp-with-help-window.
 ;; 2013/04/26 dadams
 ;;     Added: bmkp-with-bookmark-dir.  (Not used currently.  For user code.)
 ;; 2012/10/09 dadams
