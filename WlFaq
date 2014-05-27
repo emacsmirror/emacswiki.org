@@ -449,8 +449,9 @@ variable `elmo-multi-divide-number' to an appropriate value.
 
 == WL hangs when I wake from hibernation ==
 
-The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.
-You can work around it if you use emacs-server by issuing an emacsclient command approximately like this before hibernation:
+The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.  You can work around it by typing M-t M-t when you come back from hibernation.
+
+If you want this to happen automatically, you will need your system to run a command approximately like this before hibernation:
 
 {{{
     /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
