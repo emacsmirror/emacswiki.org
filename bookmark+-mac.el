@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Dec 26 08:32:30 2013 (-0800)
+;; Last-Updated: Tue May 27 09:19:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 126
+;;     Update #: 131
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -102,6 +102,7 @@
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
 ;;    `bmkp-menu-bar-make-toggle', `bmkp-with-bookmark-dir',
+;;    `bmkp-with-help-window',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -167,9 +168,20 @@
 
 ;;; Macros -----------------------------------------------------------
 
+;; Same as `icicle-with-help-window' in `icicles-mac.el'.
+;;;###autoload (autoload 'bmkp-with-help-window "bookmark+")
+(defmacro bmkp-with-help-window (buffer &rest body)
+  "`with-help-window', if available; else `with-output-to-temp-buffer'."
+  (if (fboundp 'with-help-window)
+      `(with-help-window ,buffer ,@body)
+    `(with-output-to-temp-buffer ,buffer ,@body)))
+
+(put 'bmkp-with-help-window 'common-lisp-indent-function '(4 &body))
+
+
 ;;;###autoload (autoload 'bmkp-with-output-to-plain-temp-buffer "bookmark+")
 (defmacro bmkp-with-output-to-plain-temp-buffer (buf &rest body)
-  "Like `with-output-to-temp-buffer', but with no *Help* navigation stuff."
+  "Like `with-output-to-temp-buffer', but with no `*Help*' navigation stuff."
   `(unwind-protect
     (progn
       (remove-hook 'temp-buffer-setup-hook 'help-mode-setup)
@@ -177,6 +189,9 @@
       (with-output-to-temp-buffer ,buf ,@body))
     (add-hook 'temp-buffer-setup-hook 'help-mode-setup)
     (add-hook 'temp-buffer-show-hook  'help-mode-finish)))
+
+(put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
+
 
 ;;;###autoload (autoload 'bmkp-define-cycle-command "bookmark+")
 (defmacro bmkp-define-cycle-command (type &optional otherp)
