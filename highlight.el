@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 27 09:01:53 2014 (-0700)
+;; Last-Updated: Tue May 27 09:29:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3514
+;;     Update #: 3517
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -877,10 +877,7 @@
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
 (when (> emacs-major-version 21) (require 'font-lock+ nil t)) ;; (no error if not found)
-;; (require 'icicles nil t)   ;; (no error if not found): icicle-define-command,
-                              ;; icicle-face-name-history, icicle-make-face-candidate,
-                              ;; icicle-read-string-completing, icicle-remove-if,
-                              ;; icicle-remove-if-not.
+;; (require 'icicles nil t)   ;; (no error if not found): icicle-read-string-completing.
 
 ;; Quiet the byte-compiler for Emacs 20
 (defvar hi-lock-mode)
@@ -1016,6 +1013,13 @@ Don't forget to mention your Emacs and library versions."))
                                (t (:foreground "dark blue")))
     "*Face for minibuffer prompts."
     :group 'basic-faces))
+
+;; Same as `icicle-remove-if-not' etc.
+(defun hlt-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
 
 (defun hlt-tty-colors ()
   "Colors available for use with Emacs in a terminal (`emacs -nw')."
@@ -2597,13 +2601,6 @@ If the region is empty or not active, then bob and eob are used."
   (if (not (hlt-nonempty-region-p))
       (list (point-min) (point-max))
     (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
-
-;; Same as `icicle-remove-if-not' etc.
-(defun hlt-remove-if-not (pred xs)
-  "A copy of list XS with only elements that satisfy predicate PRED."
-  (let ((result  ()))
-    (dolist (x xs) (when (funcall pred x) (push x result)))
-    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
