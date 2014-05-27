@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 27 08:39:18 2014 (-0700)
+;; Last-Updated: Tue May 27 09:01:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3512
+;;     Update #: 3514
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -547,6 +547,10 @@
 ;;  automatically, if available).  That prevents font-locking from
 ;;  removing any highlighting face properties that you apply using the
 ;;  commands defined here.
+;;
+;;  [If you also load library `facemenu+.el', then the same applies to
+;;  highlighting that you apply using the face menu: that highlighting
+;;  is also protected from interference by font lock.]
 ;;
 ;;  Otherwise, when `hlt-use-overlays-flag' is nil, font-lock
 ;;  highlighting interferes with the highlighting of this library.  In
