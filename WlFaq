@@ -538,8 +538,7 @@ hook:
 
 == If I receive a message with an encoded header field, WL does not decode it ==
 
-Simply tell SEMI to accept encoded sequences in header fields.
-
+Perhaps your correspondents are sending you incorrect headers?  You can tell SEMI to accept some incorrectly encoded headers by saying:
 {{{
 (setq mime-header-accept-quoted-encoded-words t)
 }}}
