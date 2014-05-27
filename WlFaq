@@ -570,8 +570,7 @@ The mime buttons is what shows up in the beginning and end of your messages as <
 
 == Wanderlust sometimes seem to hang emacs when I try to save mails with non-ascii characters — what should I do? ==
 
-Basically, Wanderlust’s mime-encoding does not play nice with Emacs 23. A workaround is to outsource the mime-encoding;
-add the following to your Wanderlust init file:
+In older versions of Wanderlust, mime-encoding did not play nice with Emacs 23. If you cannot upgrade, a workaround is to outsource the mime-encoding; add the following to your Wanderlust init file:
 
 {{{
 (setq mel-b-ccl-module nil)
