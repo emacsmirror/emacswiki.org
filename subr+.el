@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 26 14:16:22 2014 (-0700)
+;; Last-Updated: Tue May 27 10:18:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 62
+;;     Update #: 75
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -26,12 +26,28 @@
 ;;
 ;;    Extensions to standard library `subr.el'.
 ;;
+;;  This library extends `split-string' so that you can split a string
+;;  based on text properties or a character predicate, not just just
+;;  regexp matching.
+;;
+;;  To take advantage of this, your code can conditionally test
+;;  whether this library is loaded, or just test whether (fboundp
+;;  'subr+-split-string).  That function is an alias for `split-string'.
+;;
+;;  Utility functions `next-single-char-prop-val-change' and
+;;  `next-char-predicate-change' are also provided here.  The former
+;;  is modeled after `next-single-char-property-change'.  It finds the
+;;  next position where a given text or overlay property changes to or
+;;  from a given value.  The latter finds the next position where a
+;;  given character predicate is true.
+;;
+;;
 ;;  Functions defined here:
 ;;
 ;;    `next-char-predicate-change',
 ;;    `next-single-char-prop-val-change', `split-string-by-predicate',
 ;;    `split-string-by-property', `split-string-by-regexp',
-;;    `split-string-trim-omit-push',
+;;    `split-string-trim-omit-push', `subr+-split-string'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `simple.el' have
@@ -43,6 +59,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/27 dadams
+;;     Added subr+-split-string as alias for new split-string.
 ;; 2014/05/26 dadams
 ;;     Added: next-single-char-prop-val-change.
 ;;     split-string-by-property: Handle change in VAL, not just PROP.
@@ -111,6 +129,10 @@ Modifies the match data; use `save-match-data' if necessary."
         ((and (consp how)  (car how)  (symbolp (car how)))
          (split-string-by-property string how omit-nulls trim flip))
         (t (error "`split-string', bad HOW arg: `%S'" how))))
+
+;; Do this so code can test (fboundp 'subr+-split-string) to see if this version is
+;; available, e.g., to use property or predicate splitting.
+(defalias 'subr+-split-string 'split-string)
 
 (defun split-string-trim-omit-push (string how omit-nulls trim start end parts)
   "Push the substring of STRING from START to END to list PARTS.
