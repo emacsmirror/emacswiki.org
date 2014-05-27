@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 26 13:03:41 2014 (-0800)
+;; Last-Updated: Tue May 27 08:39:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3499
+;;     Update #: 3512
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -19,7 +19,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
@@ -138,17 +138,17 @@
 ;;  ** Libraries `facemenu+.el' and `mouse3.el' put Highlight on the Menu **
 ;;
 ;;  If you load library `facemenu+.el' after you load library
-;;  `highlight.el' then commands defined here will also be available
-;;  on a `Highlight' submenu in the Text Properties menus.
+;;  `highlight.el' then commands defined here are also available on a
+;;  `Highlight' submenu in the Text Properties menus.
 ;;
 ;;  If you load library `mouse3.el' after you load library
 ;;  `highlight.el' then:
 ;;
-;;    * Commands defined here will also be available on a `Highlight'
+;;    * Commands defined here are also available on a `Highlight'
 ;;      submenu of the `Region' right-click popup menu.
 ;;
 ;;    * Commands `hlt-highlight-symbol' and `hlt-unhighlight-symbol'
-;;      will be available on the `Thing at Pointer' submenu of the `No
+;;      are available on the `Thing at Pointer' submenu of the `No
 ;;      Region' right-click popup menu.
 ;;
 ;;(@* "User Option `hlt-use-overlays-flag'")
@@ -198,7 +198,7 @@
 ;;  To save highlighting permanently, do the following:
 ;;
 ;;  1. `M-x enriched-mode', to put your file buffer in minor mode
-;;     `enriched-mode'.  You will see `Enriched' in the mode line.
+;;     `enriched-mode'.  You see `Enriched' in the mode line.
 ;;
 ;;  2. Choose text-property highlighting, not overlay highlighting, by
 ;;     setting option `hlt-use-overlays-flag' to `nil'.  To do this
@@ -217,14 +217,14 @@
 ;;     Note that, although highlighting in enriched-text mode modifies
 ;;     the buffer, it does not appear modified (check the beginning of
 ;;     the mode line), so if you make no other changes then using `C-x
-;;     C-s' will not save your highlighting changes.  To remedy this,
+;;     C-s' does not save your highlighting changes.  To remedy this,
 ;;     just do something besides highlighting - e.g., add a space and
-;;     delete it - so that `C-x C-s' will save to disk.
+;;     delete it - so that `C-x C-s' saves to disk.
 ;;
-;;  When you reopen your file later, it will automatically be in
-;;  enriched mode, and your highlighting will show.  However, be aware
-;;  that font-locking interferes with enriched mode, so you will
-;;  probably want to use it on files where you don't use font-locking.
+;;  When you reopen your file later, it is automatically in enriched
+;;  mode, and your highlighting shows.  However, be aware that
+;;  font-locking interferes with enriched mode, so you will probably
+;;  want to use it on files where you don't use font-locking.
 ;;
 ;;(@* "Commands")
 ;;  ** Commands **
@@ -493,8 +493,8 @@
 ;;  the opposite.  You can thus use these commands to specify exactly
 ;;  what faces should be invisible and visible.  Empty input means
 ;;  none: If you choose no faces to hide (that is, hit `RET' with an
-;;  empty minibuffer), then all faces will be made visible; if you
-;;  choose no faces to show, then all will be hidden.
+;;  empty minibuffer), then all faces are made visible; if you choose
+;;  no faces to show, then all are hidden.
 ;;
 ;;  Currently, face attributes for highlighting are combined when
 ;;  overlays overlap, but the same is not true for text properties.
@@ -549,11 +549,11 @@
 ;;  commands defined here.
 ;;
 ;;  Otherwise, when `hlt-use-overlays-flag' is nil, font-lock
-;;  highlighting will interfere with the highlighting of this library.
-;;  In most cases, you will be able to highlight text, but sooner or
-;;  later font-lock will erase that highlighting when it refontifies
-;;  the buffer.  If `hlt-use-overlays-flag' is non-nil, there is no
-;;  such problem : font-lock has no effect on overlays.
+;;  highlighting interferes with the highlighting of this library.  In
+;;  most cases, you can still highlight text, but sooner or later
+;;  font-lock erases that highlighting when it refontifies the buffer.
+;;  If `hlt-use-overlays-flag' is non-nil, there is no such problem :
+;;  font-lock has no effect on overlays.
 ;;
 ;;(@* "Suggested Bindings")
 ;;  ** Suggested Bindings **
@@ -625,6 +625,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/05/27 dadams
+;;     hlt-(un)highlight-symbol: A prefix arg means act on all visible buffers.
 ;; 2014/02/25 dadams
 ;;     Added: hlt-highlight-symbol, hlt-unhighlight-symbol.
 ;;     hlt-+/--highlight-regexp-region: Prevent doing hlt-next-face more than once.
@@ -1010,12 +1012,6 @@ Don't forget to mention your Emacs and library versions."))
                                (t (:foreground "dark blue")))
     "*Face for minibuffer prompts."
     :group 'basic-faces))
-
-(defun hlt-remove-if-not (pred xs)
-  "A copy of list XS with only elements that satisfy predicate PRED."
-  (let ((result  ()))
-    (dolist (x xs) (when (funcall pred x) (push x result)))
-    (nreverse result)))
 
 (defun hlt-tty-colors ()
   "Colors available for use with Emacs in a terminal (`emacs -nw')."
@@ -1775,9 +1771,10 @@ Other arguments:
   (when msg-p (message "Replacing overlay highlighting face `%s'... done." old-face)))
 
 ;;;###autoload
-(defun hlt-highlight-symbol (symbol &optional start end)
+(defun hlt-highlight-symbol (symbol &optional start end all-buffers-p)
   "Highlight occurrences of SYMBOL.
 Use the region if active, or the buffer otherwise.
+With a prefix arg, use all buffers that are visible or iconified.
 \(This first unhighlights occurrences, to prevent stacking up multiple
 highlighting on the same occurrences.)"
   (interactive
@@ -1788,20 +1785,31 @@ highlighting on the same occurrences.)"
        (unless symb (error "No symbol %s" (if (listp last-nonmenu-event)
                                               "under mouse pointer"
                                             "at point")))
-       (list symb))))
+       (list symb nil nil current-prefix-arg))))
   (let ((hlt-auto-faces-flag  t)
-        (limits               (hlt-region-or-buffer-limits))
         (regexp               (format (if (> emacs-major-version 21)
                                           "\\_<%s\\_>"
                                         "%s")
-                                      symbol)))
-    (hlt-unhighlight-regexp-region (car limits) (cadr limits) regexp)
-    (hlt-highlight-regexp-region   (car limits) (cadr limits) regexp)))
+                                      symbol))
+        (bufs                 (if all-buffers-p
+                                  (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0))
+                                                     (buffer-list))
+                                (list (current-buffer))))
+        (first-buf-p          t)
+        limits)
+    (dolist (buf  bufs)
+      (with-current-buffer buf
+        (unless first-buf-p (setq hlt-auto-faces-flag  nil))
+        (setq limits  (hlt-region-or-buffer-limits))
+        (hlt-unhighlight-regexp-region (car limits) (cadr limits) regexp)
+        (hlt-highlight-regexp-region   (car limits) (cadr limits) regexp))
+      (setq first-buf-p  nil))))
 
 ;;;###autoload
-(defun hlt-unhighlight-symbol (symbol &optional start end)
+(defun hlt-unhighlight-symbol (symbol &optional start end all-buffers-p)
   "Unhighlight occurrences of SYMBOL.
-Use the region if active, or the buffer otherwise."
+Use the region if active, or the buffer otherwise.
+With a prefix arg, use all buffers that are visible or iconified."
   (interactive
    (save-excursion
      (when (listp last-nonmenu-event)
@@ -1810,14 +1818,21 @@ Use the region if active, or the buffer otherwise."
        (unless symb (error "No symbol %s" (if (listp last-nonmenu-event)
                                               "under mouse pointer"
                                             "at point")))
-       (list symb))))
+       (list symb nil nil current-prefix-arg))))
   (let ((hlt-auto-faces-flag  t)
-        (limits               (hlt-region-or-buffer-limits))
         (regexp               (format (if (> emacs-major-version 21)
                                           "\\_<%s\\_>"
                                         "%s")
-                                      symbol)))
-    (hlt-unhighlight-regexp-region (car limits) (cadr limits) regexp)))
+                                      symbol))
+        (bufs                 (if all-buffers-p
+                                  (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0))
+                                                     (buffer-list))
+                                (list (current-buffer))))
+        limits)
+    (dolist (buf  bufs)
+      (with-current-buffer buf
+        (setq limits  (hlt-region-or-buffer-limits))
+        (hlt-unhighlight-regexp-region (car limits) (cadr limits) regexp)))))
 
 ;;;###autoload
 (defun hlt-highlight-enclosing-list (arg &optional face mousep)
@@ -2571,13 +2586,20 @@ Args are the same as for `hlt-highlight-property-with-value'."
 
 ;;; General functions
 
-;; This is the same as `region-or-buffer-limits' in `misc-fns.el'.
+;; Same as `region-or-buffer-limits' in `misc-fns.el'.
 (defun hlt-region-or-buffer-limits ()
   "Return the start and end of the region as a list, smallest first.
 If the region is empty or not active, then bob and eob are used."
   (if (not (hlt-nonempty-region-p))
       (list (point-min) (point-max))
     (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
+
+;; Same as `icicle-remove-if-not' etc.
+(defun hlt-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
