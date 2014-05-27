@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Apr  2 09:42:15 2014 (-0700)
+;; Last-Updated: Tue May 27 09:38:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2914
+;;     Update #: 2916
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -18,7 +18,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `bookmark', `cmds-menu',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
@@ -352,7 +352,7 @@
          (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
-;; bmkp-define-sort-command, bmkp-with-output-to-plain-temp-buffer
+;; bmkp-define-sort-command, bmkp-with-help-window, bmkp-with-output-to-plain-temp-buffer
 
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
@@ -3818,7 +3818,7 @@ Unlike `bookmark-bmenu-select', this command:
   (interactive)
   (unless (string= (buffer-name) "*Help*") (bmkp-bmenu-barf-if-not-in-menu-list))
   (with-current-buffer (get-buffer-create "*Help*")
-    (with-output-to-temp-buffer "*Help*"
+    (bmkp-with-help-window "*Help*"
       (let ((buffer-read-only  nil)
             top)
         (erase-buffer)
@@ -4903,7 +4903,7 @@ If no bookmark is marked, act on the bookmark of the current line."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
-  (with-output-to-temp-buffer "*Help*"
+  (bmkp-with-help-window "*Help*"
     (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all)))
       (if defn
           (let* ((bname      (bmkp-bookmark-name-from-record bmk))
