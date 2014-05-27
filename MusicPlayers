@@ -13,7 +13,7 @@
 * [[Mpc]] -- major mode providing an interface to the [http://musicpd.org/ MPD] music player daemon, which aims to look and behave a bit like Rhythmbox. Bundled with Gnu Emacs 23.2 and later.
 * [[Mpg123]] -- interface to <code>mpg123</code> and <code>ogg123</code> -- works well!
 * [[MPRIS]] -- interface to media player via dbus, http://wiki.xmms2.xmms.se/wiki/MPRIS
-* [http://moc.daper.net/ MOC] -- Music On Console, powerful and easy to use. Works quite well if launched from term.
+* [http://moc.daper.net/ MOC] -- Music On Console, powerful and easy to use. ncurses interface is based on Midnight Commander's. Works quite well if launched from term.
 * MpthreePlayer -- Interface to mpg123 by JeanPhilippeTheberge
 * tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
 * <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
