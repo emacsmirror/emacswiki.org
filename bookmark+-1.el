@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr  5 16:41:03 2014 (-0700)
+;; Last-Updated: Tue May 27 09:21:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7109
+;;     Update #: 7113
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -620,9 +620,8 @@
          (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
-;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-with-output-to-plain-temp-buffer
-
-(put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
+;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-with-help-window,
+;; bmkp-with-output-to-plain-temp-buffer
 
 (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-before-hide-marked-alist,
@@ -7380,7 +7379,7 @@ Starting with Emacs 22, if the file is an image file then:
     (setq bookmark  (bookmark-get-bookmark bookmark))
     (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
     (let ((help-text  (bmkp-bookmark-description bookmark)))
-      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      (bmkp-with-help-window "*Help*" (princ help-text))
       (with-current-buffer "*Help*"
         (save-excursion
           (goto-char (point-min))
@@ -7563,7 +7562,7 @@ If it is a record then it need not belong to `bookmark-alist'."
          (bmk        (cons bname (bmkp-bookmark-data-from-record bookmark))) ; Fake bmk with stripped name.
          (help-text  (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
                              (pp-to-string bmk))))
-    (with-output-to-temp-buffer "*Help*" (princ help-text))
+    (bmkp-with-help-window "*Help*" (princ help-text))
     help-text))
 
 ;;;###autoload (autoload 'bmkp-list-defuns-in-commands-file "bookmark+")
@@ -7584,7 +7583,7 @@ Typically, these are all commands."
         (setq fns  (nreverse fns)
               fns  (sort fns 'string-lessp)))
       (when (buffer-live-p buf) (kill-buffer buf))
-      (with-output-to-temp-buffer "*Help*"
+      (bmkp-with-help-window "*Help*"
         (princ "Bookmark Commands You Defined (in `bmkp-bmenu-commands-file')") (terpri)
         (princ "------------------------------------------------------------------") (terpri)
         (terpri)
