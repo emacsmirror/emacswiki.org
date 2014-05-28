@@ -469,6 +469,34 @@ emms-streams)."
 ))
 </pre>
 
+=== More descriptive track lines in playlists ===
+
+<pre>
+(defun fg-emms-track-description (track)
+  "Return a somewhat nice track description."
+  (let ((artist (emms-track-get track 'info-artist))
+        (year (emms-track-get track 'info-year))
+        (album (emms-track-get track 'info-album))
+        (tracknumber (emms-track-get track 'info-tracknumber))
+        (title (emms-track-get track 'info-title)))
+    (cond
+     ((or artist title)
+      (concat (if (> (length artist) 0) artist "Unknown artist") " - "
+              (if (> (length year) 0) year "XXXX") " - "
+              (if (> (length album) 0) album "Unknown album") " - "
+              (if (> (length tracknumber) 0)
+                  (format "%02d" (string-to-number tracknumber))
+                "XX") " - "
+                (if (> (length title) 0) title "Unknown title")))
+     (t
+      (emms-track-simple-description track)))))
+
+(setq emms-track-description-function 'fg-emms-track-description)
+
+</pre>
+
+-- Filipp Gunbin
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]
