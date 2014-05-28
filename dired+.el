@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 23 10:17:15 2014 (-0700)
+;; Last-Updated: Wed May 28 12:23:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7855
+;;     Update #: 7857
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -547,6 +547,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/28 dadams
+;;     diredp-mode-line-marked: Use DarkViolet for both light and dark background modes.
 ;; 2014/05/23 dadams
 ;;     Added: diredp-with-help-window.
 ;;     diredp-list-files, diredp-dired-plus-help:
@@ -8999,9 +9001,7 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                               'face 'diredp-mode-line-flagged))))))))))
 
   (defface diredp-mode-line-marked
-      '((((background dark))
-         (:foreground "#6B6BFFFF2C2C")) ; a bright green
-        (t (:foreground "DarkViolet")))
+      '((t (:foreground "DarkViolet")))
     "*Face for marked number in mode line `mode-name' for Dired buffers."
     :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 
