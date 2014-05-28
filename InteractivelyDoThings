@@ -742,7 +742,10 @@ In Emacs 24.2.1, and maybe other versions, if you use IsearchPlus with Ido Ubiqu
 
 in your .emacs file.  When I first did this, I evaluated the form interactively and it didn't seem to fix the problem - I don't know why - but it worked next time I started up Emacs. -- [[Bernard Hurley]]
 
+=== Grouping files by directories.===
+[new: Sagar Jha:Wed 28 May 14 16:17:00 IST 2014]
 
+It will be very helpful, especially when browsing code, to be able to group files by directories (so that we get some sort of tree representation) in the ibuffer mode.
 
 
 
