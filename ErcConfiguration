@@ -88,6 +88,10 @@ This is what I use to provide channel-specific prompts (like #emacs> in the Emac
 
 Bug alert: (erc-default-target) returns nil when the prompt is first displayed. Also, this code is ugly and needs fixing. I'd love to hear about the fix - mail to sacha@free.net.ph
 
+This is what I use for channel specific prompt. It's simple and bug free ;) - l3thal@smashthestack.org
+
+    (setq erc-prompt (lambda () (concat "[" (buffer-name) "]")))
+
 == Auto-recipient ==
 
 When carrying on a conversation in IRC, most typically you want to address the person or people you last addressed.  This will automatically insert the last recipient after the prompt, providing it was less than 3 minutes ago:
