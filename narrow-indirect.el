@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 23 15:06:28 2014 (-0700)
+;; Last-Updated: Thu May 29 08:42:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 87
+;;     Update #: 147
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -85,7 +85,8 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `ni-buf-name-prefix', `ni-narrowed-buf-name-max'.
+;;    `ni-buf-name-prefix', `ni-narrowed-buf-name-max',
+;;    `ni-buf-name-separator'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -118,6 +119,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/29 dadams
+;;     Added: ni-buf-name-separator.  And use  | , not  / , as the value.
+;;     ni-narrow-to-region-other-window:
+;;      Soft-require subr+.el, for split-string-by-property.  Remove invisible text from name.  Use ni-buf-name-separator.
 ;; 2014/05/17 dadams
 ;;     Added autoload cookies.
 ;; 2014/05/11 dadams
@@ -152,16 +157,14 @@
 narrow-indirect.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Other Libraries by Drew" "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download" "http://www.emacswiki.org/narrow-indirect.el")
   :link '(url-link :tag "Description" "http://www.emacswiki.org/NarrowIndirect")
   :link '(emacs-commentary-link :tag "Commentary" "narrow-indirect"))
 
 (defcustom ni-narrowed-buf-name-max 60
   "Max length of cloned indirect buffer name, for narrowing commands."
-  :type '(restricted-sexp :tag "Max length of buffer name"
-          :match-alternatives ((lambda (x) (and (integerp x)  (> x 0))))
+  :type '(restricted-sexp :tag "Max length of buffer name" :match-alternatives ((lambda (x) (and (integerp x)  (> x 0))))
           :value ignore)
   :group 'Narrow-Indirect)
 
@@ -171,8 +174,13 @@ Using a non-empty prefix lets you easily distinguish the indirect
 buffers from the original."
   :type 'string :group 'Narrow-Indirect)
 
-(defface ni-mode-line-buffer-id '((t ; (:overline "green" :underline "green")
-                                   (:box (:line-width 1 :color "green"))))
+(defcustom ni-buf-name-separator " | "
+  "Separator string used between the buffer name and the object name.
+Used by `ni-narrow-to-region-other-window' (without a non-negative
+prefix arg)."
+  :type 'string :group 'Narrow-Indirect)
+
+(defface ni-mode-line-buffer-id '((t (:box (:line-width 1 :color "green"))))
   "Like `mode-line-buffer-id', but for a narrowed indirect clone buffer."
   :group 'Narrow-Indirect :group 'mode-line-faces :group 'basic-faces)
 
@@ -181,8 +189,10 @@ buffers from the original."
   "`narrow-to-defun' in a cloned indirect buffer in the other window.
 The name of the indirect buffer depends on the use of a prefix arg:
 
-* No prefix arg: the current buffer name, but with ` / NAME'
+* No prefix arg: the current buffer name, but with ` | NAME'
   appended, where NAME is the name of the object defined by the defun.
+  (Actually, option `ni-buf-name-separator' prefixes NAME.  \" | \" is
+  the default value of this option.)
 
 * Prefix arg < 0 : like no prefix arg, but you are prompted for NAME.
 
@@ -197,27 +207,24 @@ Non-interactively:
 
 See `clone-indirect-buffer'."
   (interactive
-   (list (and current-prefix-arg
-              (natnump (prefix-numeric-value current-prefix-arg))
-              (read-string "Buffer name: "))
-         (and current-prefix-arg
-              (< (prefix-numeric-value current-prefix-arg) 0)
-              (read-string "Buffer name suffix: "))))
+   (list (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))  (read-string "Buffer name: "))
+         (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)  (read-string "Buffer name suffix: "))))
   (require 'which-func)
   (let ((here  (point)))
     (mark-defun)
-    (ni-narrow-to-region-other-window
-     (region-beginning) (region-end) here full-name
-     (and (not full-name)  (or text  (which-function))))))
+    (ni-narrow-to-region-other-window (region-beginning) (region-end) here full-name (and (not full-name)
+                                                                                          (or text  (which-function))))))
 
 ;;;###autoload
-(defun ni-narrow-to-region-other-window (start end here
-                                               &optional full-name text msgp)
+(defun ni-narrow-to-region-other-window (start end here &optional full-name text msgp)
   "`narrow-to-region' in a cloned indirect buffer in the other window.
 The indirect buffer is named the same as the current buffer, except:
 
  * It is prefixed by the value of option `ni-buf-name-prefix'.
- * It is suffixed by ` / TEXT', where TEXT is the region text.
+ * It is suffixed by ` | TEXT', where TEXT is the region text,
+   filtered by collapsing whitespace and (for Emacs 24.4+) removing
+   invisible text.  (Actually, option `ni-buf-name-separator' prefixes
+   TEXT.  \" | \" is the default value of this option.)
 
 However, the buffer name is in any case truncated at
 `ni-narrowed-buf-name-max' chars.
@@ -225,38 +232,50 @@ However, the buffer name is in any case truncated at
 Non-interactively:
 START and END are the region beginning and end.
 HERE is where to place the cursor, relative to START.
-TEXT is prefixed by ` / ' and appended to the original
- buffer name, which is appended to `ni-buf-name-prefix' to name
- the new buffer.
+TEXT is prefixed by `ni-buf-name-separator' and appended to the
+ original buffer name, which is appended to `ni-buf-name-prefix' to
+ name the new buffer.
 If FULL-NAME is a string then it is used as the complete indirect
 buffer name.  (TEXT is then ignored.)
 
 See `clone-indirect-buffer'."
   (interactive
-   (list (region-beginning) (region-end) (point)
-         (and current-prefix-arg  (read-string "Buffer name: "))
-         nil 'MSGP))
+   (list (region-beginning) (region-end) (point) (and current-prefix-arg  (read-string "Buffer name: ")) nil 'MSGP))
   (if (and (= start end)  msgp)
       (message "Region is empty")
     (deactivate-mark)
-    (let* ((buf  (or full-name
-                     text
-                     (replace-regexp-in-string
-                      "\\(\s \\)+" "\1"
-                      (replace-regexp-in-string
-                       "\\`\s+\\|\s+\\'" ""
-                       (buffer-substring-no-properties start end)))))
-           (buf  (or full-name
-                     (concat ni-buf-name-prefix (buffer-name) " / " buf)))
-           (buf  (or full-name
-                     (substring buf 0 (min (length buf)
-                                           ni-narrowed-buf-name-max))))
-           (buf  (clone-indirect-buffer buf nil)))
+    (let* ((filter-buffer-substring-function  (or (and (require 'subr+ nil t) ; `split-string-by-property'
+                                                       (lambda (beg end _delete) ; Remove invisible text.
+                                                         (let* ((strg   (buffer-substring beg end))
+                                                                (parts  (split-string-by-property
+                                                                         strg '(invisible nil) 'OMIT-NULLS
+                                                                         split-string-default-separators))
+                                                                (strg   (apply #'concat parts)))
+                                                           (set-text-properties 0 (length strg) () strg)
+                                                           strg)))
+                                                  filter-buffer-substring-function)) ; No-op
+           ;; Older Emacs versions use `filter-buffer-substring-functions', not `filter-buffer-substring-function'.
+           (filter-buffer-substring-functions  (if (fboundp 'split-string-by-property)
+                                                   (list (lambda (fun beg end del)
+                                                           (funcall filter-buffer-substring-function beg end del)))
+                                                 filter-buffer-substring-functions)) ; No-op
+           (buftext                            (if (fboundp 'split-string-by-property)
+                                                   (filter-buffer-substring start end)
+                                                 (buffer-substring-no-properties start end)))
+           (buf                                (or full-name
+                                                   text
+                                                   (replace-regexp-in-string "\\(\s \\)+" "\1"
+                                                                             (replace-regexp-in-string "\\`\s+\\|\s+\\'"
+                                                                                                       "" buftext))))
+           (buf                                (or full-name
+                                                   (concat ni-buf-name-prefix  (buffer-name) ni-buf-name-separator buf)))
+           (buf                                (or full-name
+                                                   (substring buf 0 (min (length buf) ni-narrowed-buf-name-max))))
+           (buf                                (clone-indirect-buffer buf nil)))
       (with-current-buffer buf (narrow-to-region start end) (goto-char here))
       (pop-to-buffer buf)
-      (setq mode-line-buffer-identification
-            (list (propertize (car mode-line-buffer-identification)
-                              'face 'ni-mode-line-buffer-id))))))
+      (setq mode-line-buffer-identification  (list (propertize (car mode-line-buffer-identification)
+                                                               'face 'ni-mode-line-buffer-id))))))
 
 ;;;###autoload
 (defun ni-narrow-to-page-indirect-other-window (&optional arg)
@@ -265,8 +284,7 @@ See `clone-indirect-buffer'."
 See `clone-indirect-buffer'."
   (interactive "P")
   (let ((buf  (clone-indirect-buffer nil nil)))
-    (with-current-buffer buf (narrow-to-page arg))
-     (pop-to-buffer buf)))
+    (with-current-buffer buf (narrow-to-page arg)) (pop-to-buffer buf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
