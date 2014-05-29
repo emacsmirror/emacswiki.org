@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 29 08:42:54 2014 (-0700)
+;; Last-Updated: Thu May 29 08:53:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 147
+;;     Update #: 150
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -70,7 +70,16 @@
 ;;  name of its base buffer and the text of the narrowed region (or
 ;;  the name of the defined object, in the case of
 ;;  `ni-narrow-to-defun-other-window').  But you can control this in
-;;  several ways.  See the command doc strings.
+;;  several ways.  See the command doc strings and user options
+;;  `ni-buf-name-prefix', `ni-narrowed-buf-name-max', and
+;;  `ni-buf-name-separator'.
+;;
+;;  If you use Emacs 24.4 or later then invisible buffer text is
+;;  filtered out from the name of the indirect buffer.  For example,
+;;  if you invoke `ni-narrow-to-region-other-window' with an active
+;;  region in a Dired buffer that is hiding details, then the
+;;  (invisible) details will not be included in the indirect-buffer
+;;  name.
 ;;
 ;;  To customize the behavior of this library, do this:
 ;;
