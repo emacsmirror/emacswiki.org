@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 27 10:18:34 2014 (-0700)
+;; Last-Updated: Wed May 28 17:47:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 75
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -34,18 +34,14 @@
 ;;  whether this library is loaded, or just test whether (fboundp
 ;;  'subr+-split-string).  That function is an alias for `split-string'.
 ;;
-;;  Utility functions `next-single-char-prop-val-change' and
-;;  `next-char-predicate-change' are also provided here.  The former
-;;  is modeled after `next-single-char-property-change'.  It finds the
-;;  next position where a given text or overlay property changes to or
-;;  from a given value.  The latter finds the next position where a
-;;  given character predicate is true.
+;;  Function `split-string' provides a default behavior for splitting
+;;  according to text properties.  For more flexibility, use function
+;;  `split-string-by-property'.
 ;;
 ;;
 ;;  Functions defined here:
 ;;
-;;    `next-char-predicate-change',
-;;    `next-single-char-prop-val-change', `split-string-by-predicate',
+;;    `next-char-predicate-change', `split-string-by-predicate',
 ;;    `split-string-by-property', `split-string-by-regexp',
 ;;    `split-string-trim-omit-push', `subr+-split-string'.
 ;;
@@ -59,6 +55,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/28 dadams
+;;     Removed: next-single-char-prop-val-change.
+;;     split-string-by-property: Rewrote.
 ;; 2014/05/27 dadams
 ;;     Added subr+-split-string as alias for new split-string.
 ;; 2014/05/26 dadams
@@ -112,9 +111,12 @@ Arg HOW determines how splitting is done.  it is one of the following:
 * a predicate that accepts a character as its first argument - see
   function `split-string-by-predicate'
 
+For a plist HOW, the default behavior of `split-string-by-property' is
+used.  See that function for details.
+
 If optional arg OMIT-NULLS is t, then empty substrings are omitted
-from the returned list.  If nil, all zero-length substrings are
-retained, which correctly parses CSV format, for example.
+from the returned list.  If nil, zero-length substrings are retained,
+which correctly parses CSV format, for example.
 
 If TRIM is non-nil, it should be a regular expression to match text to
 trim from the beginning and end of each substring.  If trimming makes
@@ -216,19 +218,48 @@ Modifies the match data; use `save-match-data' if necessary."
                                                  this-beg this-end s-parts))
     (nreverse s-parts)))
 
-(defun split-string-by-property (string prop+val &optional omit-nulls trim flip)
+(defun split-string-by-property (string prop+val &optional omit-nulls trim flip test)
   "Split STRING into substrings determined by a text property.
 Return the list of substrings.
 
 By default, the substrings that have the given property with the given
 value are removed, and the substrings between these are collected as a
-list, which is returned.  With non-nil optional argument FLIP this is
-reversed: The list of substrings that have the property and value is
-returned, and the substrings that do not are removed.
+list, which is returned.
 
-PROP+VAL is a property list whose first element is the property (a
-symbol) and whose second is the property value.  Arguments OMIT-NULLS
-and TRIM are as for function `split-string-by-regexp'.
+With non-nil optional argument FLIP this behavior is reversed: The
+list of substrings that have the given property and value is returned,
+and the substrings that do not are removed.
+
+PROP+VAL is a list (PROPERTY VALUE), where PROPERTY is the text
+property (a symbol) and VALUE is the property value to match.
+
+Arguments OMIT-NULLS and TRIM are as for function
+`split-string-by-regexp'.
+
+Optional arg TEST is a binary predicate that accepts the actual value
+of PROPERTY for a given string position as its first arg and VALUE as
+its second.  It returns non-null if the char is part of an excluded
+substring (or an included one, if FLIP is non-nil).
+
+If TEST is omitted or nil (the default) then:
+
+* If VALUE is not `nil' then TEST is `eq'.  That is, if you provide
+  VALUE and no TEST then the actual value must match exactly.
+
+* If VALUE is `nil' then TEST checks only for a non-null value, that
+  is, for the presence of PROPERTY.
+
+By providing a TEST argument you can get fairly flexible behavior.
+For example:
+
+* You might want to test for an actual property value that belongs to
+  a given list of values.  E.g., test whether the actual value of
+  PROPERTY `invisible' belongs to the current
+  `buffer-invisibility-spec'.
+
+* You might want to test for an actual value that is a list that has
+  VALUE as a member.  E.g., test membership of a particular face
+  (VALUE) in a list of faces that is the value of PROPERTY `face').
 
 Modifies the match data; use `save-match-data' if necessary.
 
@@ -239,57 +270,37 @@ Modifies the match data; use `save-match-data' if necessary.
          (val       (cadr prop+val))
          (s-len     (length string))
          (start     0)
+         (ostart    0)
          (this-beg  nil)
          (this-end  nil)
-         (has-prop  (eq (get-char-property start prop string) val))
-         (s-parts   ()))
+         (s-parts   ())
+         has-val-b  has-val-e)
+    (unless test
+      (setq test  (if val #'eq (lambda (actual-prop-val _ignore) actual-prop-val))))
     (while (and (< start s-len)
-                (setq this-end  (next-single-char-prop-val-change
-                                 start prop val (if flip has-prop (not has-prop)) string)))
-      (setq this-beg  start)
-      (setq start     (next-single-char-prop-val-change
-                       start prop val (if flip (not has-prop) has-prop) string))
-      (setq has-prop  (eq (get-char-property this-beg prop string) val))
-      (when (if flip has-prop (not has-prop))
-        (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
-                                                    this-beg this-end s-parts))))
+                (setq this-end  (next-single-char-property-change start prop string)))
+      (setq this-beg   start)
+      (setq start      this-end)
+      (setq has-val-b  (funcall test (get-char-property this-beg prop string) val))
+      (setq has-val-e  (funcall test (get-char-property this-end prop string) val))
+
+      (cond ((and has-val-b  (not has-val-e))
+             (when flip
+               (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
+                                                           this-beg this-end s-parts)))
+             (setq ostart  start))
+            ((and (not flip)  has-val-e  (not has-val-b))
+             (when (funcall test (get-char-property ostart prop string) val)
+               (setq ostart  this-beg))
+             (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
+                                                         ostart this-end s-parts))
+             (setq ostart  start))))
     (setq this-beg  start) ; Handle the substring at the end of STRING.
     (setq this-end  s-len)
-    (setq has-prop  (eq (get-char-property this-beg prop string) val))
-    (when (if flip has-prop (not has-prop))
+    (unless (or flip  has-val-b)
       (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
-                                                  this-beg this-end s-parts)))
+                                                  ostart this-end s-parts)))
     (nreverse s-parts)))
-
-(defun next-single-char-prop-val-change (position property value notp &optional object limit)
-  "Return next position after POSITION where PROPERTY VALUE changes.
-By default, return the next position where text or overlay PROPERTY
-begins to have VALUE.  Non-nil optional arg NOTP means return the next
-position where PROPERTY stops having VALUE.
-
-Scans chars forward from POSITION until it finds a position where
-PROPERTY having VALUE becomes true (false if NOTP).  Returns the
-position of this change.  Property values are compared using `eq'.
-
-Optional argument OBJECT is a string or buffer.  A nil value means the
-current buffer.  POSITION is a buffer position (integer or marker) or
-a 0-based index into the string.
-
-By default, the end of the buffer or string limits scanning.  Optional
-arg LIMIT non-nil and less than the end position means stop scanning
-at LIMIT.  If PROPERTY does not change from POSITION to the effective
-limit then return that limit."
-  (let* ((lim  (if object (length object) (point-max)))
-         (lim  (if limit (min limit lim) lim))
-         (pos  (next-single-char-property-change position property object lim))
-         (val  (get-char-property pos property object))
-         samep)
-    (while (and (< pos lim)
-                (progn (setq samep  (eq value (get-char-property pos property object)))
-                       (if notp samep (not samep))))
-      (setq pos  (next-single-char-property-change pos property object)))
-    (setq samep (eq value (get-char-property pos property object)))
-    (if (if notp (not samep) samep) pos lim)))
 
 (defun split-string-by-predicate (string predicate &optional omit-nulls trim flip)
   "Split STRING into substrings determined by a character predicate.
