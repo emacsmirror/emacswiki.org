@@ -35,7 +35,7 @@ Modes that take text with peculiar formatting and ''add'' markup:
 * EmacsMuse -- A modular and more generalized derivate of EmacsWikiMode by the same author
 * FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
 * TableMode -- edit and convert tables to HTML/LaTeX/XML/SGML(TEI)/CALS
-* OrgMode -- based on OutlineMode, also exports to HTML
+* OrgMode -- based on OutlineMode, also exports to HTML and LaTeX
 
 ----
 CategoryModes
