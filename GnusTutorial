@@ -1,18 +1,3 @@
-The people at MyGnus have started to write a tutorial.
-
-Here's the link to the HTML version:
-
-* http://my.gnus.org/tutorial/
-
-(my.gnus.org seems to be dead 2007-12-03, latest wayback archive: http://web.archive.org/web/20070607231356/http://my.gnus.org/tutorial/)
-
-
-----
-
-Hey, I downloaded the last image of the Gnus Tutorial from the wayback
-machine, and then did a quick and dirty HTML to wiki conversion of it.
-Here is the result:
-
 == Introduction ==
 
 This tutorial introduces Gnus, an interface for reading e-mail and
