@@ -419,7 +419,7 @@ take place.
 
 ==== Subscribing to groups ====
 
-Gnus does subscribe you to some groups it thinks you should have a look
+Gnus may subscribe you to some groups it thinks you should have a look
 at, but most certainly that's not all you want. To subscribe to a group
 you know the name of, say U and enter the name of the group (use the
 tab-completion!). If you want the complete group list say A A or M-d if
