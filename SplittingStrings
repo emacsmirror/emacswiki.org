@@ -10,17 +10,19 @@ The version of `split-string' in library <tt>[[subr+.el]]</tt> has identical beh
 
 However the version of `split-string' in ##subr+.el## has two main enhancements:
 
-* An additional optional argument ##FLIP##, which if non-`nil' swaps which pieces are considered separators, so that what would normally be the separator matches are what are returned.  Obviously, you would not pass a typical regexp used for separation (e.g. matching whitespace or commas) in this case; you would instead use ##SEPARATORS## to match the substrings you want.
+* An additional optional argument ##FLIP##, which if non-`nil' swaps which pieces are considered separators, so that what would normally be the separator matches are the matches that are returned.  Obviously, you would not pass a typical regexp used for separation (e.g. matching whitespace or commas) in this case; you would instead use ##SEPARATORS## (a misnomer in this case) to match the substrings you ''want''.
 
 * Instead of a ##SEPARATORS## regexp, the second argument is more general.  Besides a regexp, it can be a character '''predicate''' or a doubleton '''[[plist]]''', ##(PROPERTY VALUE)##, where ##PROPERTY## is a [[text property]] property and ##VALUE## is one of its possible values.
 
-So the enhanced `split-string' in ##subr+.el## has this signature:
+The enhanced `split-string' in ##subr+.el## has this signature, which accepts two additional arguments:
 
-    (split-string STRING &optional HOW OMIT-NULLS TRIM FLIP)
+    (split-string STRING &optional HOW OMIT-NULLS TRIM FLIP TEST)
 
 If the second arg is a predicate, it must accept a character as its (first) argument.  Substrings whose characters all satisfy the predicate are thus distinguished from substrings whose characters do not.  By default, the former are used as separators, so the returned result is a list of substrings whose characters do not satisfy the predicate.  Non-`nil' arg ##FLIP## flips this, so the result is the substrings whose chars satisfy the predicate.
 
-If the second arg is a plist ##(PROPERTY VALUE)## it is used to distinguish substrings whose characters have property ##PROPERTY## with value ##VALUE##.  Again, with non-`nil' arg ##FLIP## the result is the substrings whose characters do not have property ##PROPERTY## with value ##VALUE## (either that property is absent from those chars or it has a different value from ##VALUE##).
+If the second arg is a plist ##(PROPERTY VALUE)##, it is used to distinguish substrings whose characters have property ##PROPERTY## with value ##VALUE##.  Again, with non-`nil' arg ##FLIP## the result is the substrings whose characters do not have property ##PROPERTY## with value ##VALUE##.
+
+Optional arg ##TEST## is used only when the second arg is a plist ##(PROPERTY VALUE)##, in which case it defines how the actual value of ##PROPERTY## must match ##VALUE##.  If ##TEST## is absent or `nil' and ##VALUE## is `nil' then ##PROPERTY## is simply tested for presence (a non-`nil' value).  If ##TEST## is absent and ##VALUE## is non-`nil' then `eq' is used for ##TEST##; that is, the actual value must be `eq' to ##VALUE##.
 
 Library <tt>[[subr+.el]]</tt> also defines a specialization of `split-string' for each of its possible ##HOW## arguments:
 
@@ -28,10 +30,10 @@ Library <tt>[[subr+.el]]</tt> also defines a specialization of `split-string' fo
 * '''`split-string-by-property'''' -- Split according to a [[text property]] value.
 * `split-string-by-predicate' -- Split by a predicate.
 
-In addition, the library adds these function, which are similar to standard function `next-single-char-property-change':
+See the doc string of `split-string-by-property' for more information about using 
+##TEST##, in particular for testing membership of the actual value in a list ##VALUE## and testing membership of ##VALUE## in an actual-value list.
 
-* '''`next-single-char-prop-val-change'''' -- Return the next string or [[buffer]] position where a given text or [[overlay]] property begins to have a given value (or stops having a given value, if optional arg ##NOTP## is non-`nil').
-* `next-char-predicate-change' -- Return the next string position where a given predicate is true of the char after that position.
+
 ----
 
 CategoryRegexp
