@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 28 17:47:38 2014 (-0700)
+;; Last-Updated: Wed May 28 17:55:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 125
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -34,10 +34,6 @@
 ;;  whether this library is loaded, or just test whether (fboundp
 ;;  'subr+-split-string).  That function is an alias for `split-string'.
 ;;
-;;  Function `split-string' provides a default behavior for splitting
-;;  according to text properties.  For more flexibility, use function
-;;  `split-string-by-property'.
-;;
 ;;
 ;;  Functions defined here:
 ;;
@@ -58,6 +54,7 @@
 ;; 2014/05/28 dadams
 ;;     Removed: next-single-char-prop-val-change.
 ;;     split-string-by-property: Rewrote.
+;;     split-string: Added optional arg TEST, for property splitting.
 ;; 2014/05/27 dadams
 ;;     Added subr+-split-string as alias for new split-string.
 ;; 2014/05/26 dadams
@@ -101,7 +98,7 @@
 ;;    addition to a regexp.
 ;; 2. Addtional optional arg FLIP: to complement set of returned substrings.
 ;;
-(defun split-string (string &optional how omit-nulls trim flip)
+(defun split-string (string &optional how omit-nulls trim flip test)
   "Split STRING into substrings.
 Arg HOW determines how splitting is done.  it is one of the following:
 * a regexp (a string) - see function `split-string-by-regexp'
@@ -111,9 +108,6 @@ Arg HOW determines how splitting is done.  it is one of the following:
 * a predicate that accepts a character as its first argument - see
   function `split-string-by-predicate'
 
-For a plist HOW, the default behavior of `split-string-by-property' is
-used.  See that function for details.
-
 If optional arg OMIT-NULLS is t, then empty substrings are omitted
 from the returned list.  If nil, zero-length substrings are retained,
 which correctly parses CSV format, for example.
@@ -122,6 +116,10 @@ If TRIM is non-nil, it should be a regular expression to match text to
 trim from the beginning and end of each substring.  If trimming makes
 a substring empty, it is treated according to OMIT-NULLS.
 
+Optional arg TEST is used only if HOW is a (PROPERTY VALUE) list, in
+which case it is passed to function `split-string-by-property' (which
+see).  Otherwise, it is ignored.
+
 Modifies the match data; use `save-match-data' if necessary."
   (unless how (setq how  split-string-default-separators))
   (cond ((stringp how)
@@ -129,7 +127,7 @@ Modifies the match data; use `save-match-data' if necessary."
         ((functionp how)
          (split-string-by-predicate string how omit-nulls trim flip))
         ((and (consp how)  (car how)  (symbolp (car how)))
-         (split-string-by-property string how omit-nulls trim flip))
+         (split-string-by-property string how omit-nulls trim flip test))
         (t (error "`split-string', bad HOW arg: `%S'" how))))
 
 ;; Do this so code can test (fboundp 'subr+-split-string) to see if this version is
