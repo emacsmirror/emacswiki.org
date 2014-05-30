@@ -2,7 +2,7 @@
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/DelightedModes
-;; Version: 1.02
+;; Version: 1.03
 
 ;; Commentary:
 ;;
@@ -52,6 +52,7 @@
 
 ;;; Changelog:
 ;;
+;; 1.03 - Added support for `mode-line-mode-menu'.
 ;; 1.02 - Bug fix for missing 'cl requirement for destructuring-bind macro.
 ;; 1.01 - Added support for using the keyword :major as the FILE argument
 ;;        for major modes, to avoid also processing them as minor modes.
@@ -99,7 +100,46 @@ to prevent the mode being treated as a minor mode."
           (eval-after-load (or file mode)
             `(let ((minor-delight (assq ',mode minor-mode-alist)))
                (when minor-delight
-                 (setcar (cdr minor-delight) ',value)))))))))
+                 (setcar (cdr minor-delight) ',value)
+                 (delight-mode-line-mode-menu ',mode ',value)))))))))
+
+(defun delight-mode-line-mode-menu (mode value)
+  "Delight `mode-line-mode-menu' (the \"Toggle minor modes\" menu)
+so that the Lighter text displayed in the menu matches that displayed in
+the mode line (when such menu items exist).
+
+The expected naming scheme for the menu items is: \"Friendly name (Lighter)\"
+e.g.: \"Highlight changes (Chg)\".
+
+We replace the \"Lighter\" portion of that with our delighted VALUE, for the
+specified MODE, unless VALUE is empty/nil, in which case we remove the text
+and parentheses altogether.
+
+If the delighted VALUE is not a string and not nil, we do nothing."
+  (when (string-or-null-p value)
+    (let* ((menu-keymap mode-line-mode-menu)
+           (menu-item (assq mode (cdr menu-keymap))))
+      (when menu-item
+        ;; Lighter text is typically prefixed with a space to separate
+        ;; it from the preceding lighter. We need to trim that space.
+        (let* ((trimmed-value (if (and value (string-match "\\`\\s-+" value))
+                                  (replace-match "" t t value)
+                                value))
+               (wrapped-value (if (> (length trimmed-value) 0)
+                                  (concat " (" trimmed-value ")")
+                                ""))
+               (menu-def (cdr menu-item))
+               (label (cadr menu-def))
+               (new-label (and (stringp label)
+                               (or (string-match "\\s-+(.+?)\\s-*\\'" label)
+                                   (string-match "\\s-*\\'" label))
+                               (replace-match wrapped-value t t label))))
+          (when new-label
+            ;; Pure storage is used for the default menu items, so we
+            ;; cannot modify those objects directly.
+            (setq menu-def (copy-sequence menu-def))
+            (setf (cadr menu-def) new-label)
+            (define-key menu-keymap (vector mode) menu-def)))))))
 
 (defun delight-major-mode ()
   "Delight the 'pretty name' of the current buffer's major mode
