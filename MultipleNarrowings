@@ -32,6 +32,15 @@ The narrowings can be nested, but they need not be. They can be any regions at a
 
 * You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.
 
+The [[mode line|mode-line]] lighter `Narrow' is still used for the ordinary
+Emacs narrowing commands.  But for `wide-n-repeat' (`C-x n x')
+the current restriction is indicated in the lighter by a
+identifying number: `Narrow-1', `Narrow-2', and so on.
+`mouse-2' on the `Narrow' part still widens completely, but
+`mouse-2' on the `-NUM' part uses `wide-n-repeat' to cycle to
+the next restriction.
+
+
 
 Emacs [[marker]]s are used to record restriction limits, so the same
 restriction is available even if you modify its context.  If for any reason `wide-n-restrictions' ever has any entries
