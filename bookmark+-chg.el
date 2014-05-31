@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May 27 09:39:49 2014 (-0700)
+;; Last-Updated: Fri May 30 17:54:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15544
+;;     Update #: 15545
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/05/30 dadams
+;;     bmkp-set-restrictions-bookmark: Updated for new restrictions format (wide-n.el).
 ;; 2014/05/27 dadams
 ;;     bmkp-describe-bookmark(-internals), bmkp-list-defuns-in-commands-file:
 ;;       Use bmkp-with-help-window, not with-output-to-temp-buffer (Emacs 24.4+ silliness).
