@@ -5,7 +5,9 @@ Tramp was formerly called RCP or rcp.el.
 
 It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
 
-If Tramp still isn't fast enough for you (or if you don't use linux), try http://linux.com/feature/54498 . Yes, in the case you only need to copy files from a remote host, sshfs is a good alternative. It consists in mounting on the fly a remote filesystem via ssh on a local mount point and to copy from it (see https://wiki.archlinux.org/index.php/Sshfs). It could be as simple (under emacs): 
+You can speed up Tramp by using ssh's "ControlMaster" feature — see http://linux.com/feature/54498 .
+
+A good alternative to Tramp that doesn't do anything at the Emacs level is sshfs. Sshfs allows mounting on the fly a remote filesystem via ssh on a local mount point and to copy from it (see https://wiki.archlinux.org/index.php/Sshfs). It could be as simple (under emacs): 
  'sshfs host: localmountpoint'
 or, if username, id and gid are different as complex as 
  'sshfs usernameathost@host: localmountpoint -o idmapfile,uidfile=uid,gidfile=gid'.
