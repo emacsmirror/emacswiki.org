@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 0
+;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:57:10 2013 (-0800)
+;; Last-Updated: Fri May 30 18:00:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 348
+;;     Update #: 412
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -55,6 +55,14 @@
 ;;    to command `wide-n', which is a non-repeatable version.
 ;;    Repeatability is not available before Emacs 22.
 ;;
+;;    The mode-line lighter `Narrow' is still used for the ordinary
+;;    Emacs narrowing commands.  But for `wide-n-repeat' (`C-x n x')
+;;    the current restriction is indicated in the lighter by a
+;;    identifying number: `Narrow-1', `Narrow-2', and so on.
+;;    `mouse-2' on the `Narrow' part still widens completely, but
+;;    `mouse-2' on the `-NUM' part uses `wide-n-repeat' to cycle to
+;;    the next restriction.
+;;
 ;;    Emacs markers are used to record restriction limits, so the same
 ;;    restriction is available even if you modify its context.  If for
 ;;    any reason `wide-n-restrictions' ever has any entries that use
@@ -84,15 +92,20 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `wide-n-markerize', `wide-n-push', `wide-n-repeat-command'.
+;;    `wide-n-highlight-lighter', `wide-n-markerize',
+;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-repeat-command',
+;;    `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `wide-n-push-anyway-p', `wide-n-restrictions'.
+;;    `wide-n-lighter-narrow-part', `wide-n-push-anyway-p',
+;;    `wide-n-rassoc-delete-all', `wide-n-restrictions'.
+;;
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
 ;;
 ;;    `narrow-to-region'.
+;;
 ;;
 ;;  ***** NOTE: The following functions defined in `lisp.el' and
 ;;              `page.el' have been REDEFINED here:
@@ -103,6 +116,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/30 dadams
+;;     Added: wide-n-lighter-narrow-part, wide-n-highlight-lighter, wide-n-string-match-p, wide-n-mem-regexp,
+;;            wide-n-rassoc-delete-all.
+;;     wide-n-restrictions: The format is now (NUM START . END), not (START . END).
+;;     wide-n: Set wide-n-lighter-narrow-part.  Use wide-n-highlight-lighter.  Bind wide-n-push-anyway-p
+;;             around narrow-to-region.
+;;     wide-n-markerize, wide-n-push: Use new wide-n-restrictions format.
+;;     wide-n-push: Added message about restriction.
 ;; 2011/04/09 dadams
 ;;     narrow-to-region defadvice:
 ;;       Use ad-get-arg - don't refer to args by name (work around Emacs bug #8457).
@@ -159,11 +180,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar wide-n-lighter-narrow-part ""
+  "String to append to \" Narrow\" in mode-line lighter.")
+(make-variable-buffer-local 'wide-n-lighter-narrow-part)
+
 (defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
-Each entry is either `all' or a cons (START . END), where START and
-END are the limits of a buffer restriction.
-`all' means no restriction (completely widened).")
+Each entry is either `all' or a cons (NUM START . END), where NUM is a
+counter identifying this buffer restriction, and START and END are its
+limits.  `all' means no restriction (completely widened).")
 (make-variable-buffer-local 'wide-n-restrictions)
 
 (defvar wide-n-push-anyway-p nil
@@ -189,11 +214,17 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
  widening, however.)"
   (interactive "P")
   (unless (cadr wide-n-restrictions) (error "Cannot widen; no previous narrowing"))
-  (cond ((or (null (cdr wide-n-restrictions)) (consp arg))
-         (widen) (message "No longer narrowed"))
+  (cond ((or (null (cdr wide-n-restrictions))  (consp arg))
+         (widen)
+         (setq wide-n-lighter-narrow-part  "")
+         (wide-n-highlight-lighter)
+         (message "No longer narrowed"))
         ((= (prefix-numeric-value arg) 0)
          (setq wide-n-restrictions  (list 'all))
-         (widen) (message "No longer narrowed; no more restrictions"))
+         (widen)
+         (setq wide-n-lighter-narrow-part  "")
+         (wide-n-highlight-lighter)
+         (message "No longer narrowed; no more restrictions"))
         (t
          (setq arg  (prefix-numeric-value arg))
          (let ((latest  ())
@@ -204,42 +235,102 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
            (setq latest  (nreverse latest))
            (when (< arg 0)
              (setq arg     (abs arg)
-                   latest  (if (member 'all latest) '(all) ())))
-           (setq wide-n-restrictions  (append (nthcdr arg wide-n-restrictions) latest)
-                 wide-n-restrictions  (mapcar #'wide-n-markerize wide-n-restrictions))
+                   latest  (if (member 'all latest) (list 'all) ())))
+           (setq wide-n-restrictions         (append (nthcdr arg wide-n-restrictions) latest)
+                 wide-n-restrictions         (mapcar #'wide-n-markerize wide-n-restrictions)
+                 wide-n-lighter-narrow-part  (if (eq 'all (car wide-n-restrictions))
+                                                 ""
+                                               (format "-%d" (caar wide-n-restrictions))))
            (if (not (eq 'all (car wide-n-restrictions)))
                (condition-case err
-                   (narrow-to-region (caar wide-n-restrictions)
-                                     (cdar wide-n-restrictions))
+                   (let ((wide-n-push-anyway-p  t))
+                     (narrow-to-region (cadr (car wide-n-restrictions)) (cddr (car wide-n-restrictions)))
+                     (wide-n-highlight-lighter))
                  (args-out-of-range
                   (setq wide-n-restrictions  (cdr wide-n-restrictions))
                   (error "Restriction removed because of invalid limits"))
-                 (error (error (error-message-string err))))
-             (widen) (message "No longer narrowed"))))))
+                 (error (error "%s" (error-message-string err))))
+             (widen)
+             (wide-n-highlight-lighter)
+             (message "No longer narrowed"))))))
+
+(defun wide-n-highlight-lighter ()
+  "Update minor-mode mode-line lighter to reflect narrowing/widening.
+Put `wide-n' on `mouse-2' for the lighter suffix."
+  (let* ((%n-cons  (wide-n-mem-regexp "%n\\(.*\\)\\'" mode-line-modes)))
+    (when %n-cons
+      (setcar %n-cons (replace-regexp-in-string
+                       "%n\\(.*\\)"
+                       (if (/= (- (point-max) (point-min)) (buffer-size)) ; `buffer-narrowed-p', for older Emacs
+                           wide-n-lighter-narrow-part
+                         "")
+                       (car %n-cons) nil nil 1))
+      (when (> (length (car %n-cons)) 2)
+        (set-text-properties 2 (length (car %n-cons)) '(local-map (keymap (mode-line keymap (mouse-2 . wide-n)))
+                                                        mouse-face mode-line-highlight
+                                                        help-echo "mouse-2: Next Restriction")
+                             (car %n-cons)))
+      ;; Dunno why we need to do this.  Tried adjusting `rear-sticky' and `front-sticky',
+      ;; but without this the whole field (not just the suffix) gets changed, in effect, to the above spec.
+      (set-text-properties 0 2 '(local-map (keymap (mode-line keymap (mouse-2 . mode-line-widen)))
+                                 mouse-face mode-line-highlight help-echo "mouse-2: Widen")
+                           (car %n-cons)))))
+
+(defun wide-n-mem-regexp (regexp xs)
+  "Like `member', but tests by matching REGEXP against cars."
+  (and (consp xs)  (if (and (stringp (car xs))  (wide-n-string-match-p regexp (car xs)))
+                       xs
+                     (wide-n-mem-regexp regexp (cdr xs)))))
+
+;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'wide-n-string-match-p 'string-match-p) ; Emacs 23+
+  (defun wide-n-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 (defun wide-n-markerize (restriction)
   "Convert RESTRICTION to use markers if it uses only positions.
-RESTRICTION is `all' or a cons of two buffer positions or markers.
-This is a nondestructive operation: returns a new cons of the markers."
-  (unless (or (atom restriction)
-              (and (markerp (car restriction)) (markerp (cdr restriction))))
-    (let ((mrk1  (make-marker))
-          (mrk2  (make-marker)))
-      (move-marker mrk1 (car restriction))
-      (move-marker mrk2 (cdr restriction))
-      (setq restriction  (cons mrk1 mrk2))))
+RESTRICTION is `all' or a dotted list of an identifier and two buffer
+positions or markers.  This is a nondestructive operation: returns a
+new cons."
+  (unless (or (atom restriction)  (and (markerp (cadr restriction))  (markerp (cddr restriction))))
+    (let ((mrk1     (make-marker))
+          (mrk2     (make-marker)))
+      (move-marker mrk1 (cadr restriction))
+      (move-marker mrk2 (cddr restriction))
+      (setcar (cdr restriction) mrk1)
+      (setcdr (cdr restriction) mrk2)))
   restriction)
 
 (defun wide-n-push (start end)
   "Push the region limits to `wide-n-restrictions'.
 START and END are as for `narrrow-to-region'."
   (let ((mrk1  (make-marker))
-        (mrk2  (make-marker)))
+        (mrk2  (make-marker))
+        sans-id  id-cons  id)
     (move-marker mrk1 start)
     (move-marker mrk2 end)
-    (setq wide-n-restrictions (remove (cons mrk1 mrk2) wide-n-restrictions))
-    (unless (and (= mrk1 1) (= mrk2 (1+ (buffer-size))))
-      (setq wide-n-restrictions  (cons (cons mrk1 mrk2) wide-n-restrictions)))))
+    (setq sans-id              `(,mrk1 . ,mrk2)
+          id-cons              (rassoc sans-id wide-n-restrictions)
+          id                   (if id-cons (car id-cons) (length wide-n-restrictions))
+          wide-n-restrictions  (wide-n-rassoc-delete-all sans-id wide-n-restrictions))
+    (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
+      (setq wide-n-restrictions  `((,id ,mrk1 . ,mrk2) ,@wide-n-restrictions)))
+    (message "Narrowed: %d to %d" (marker-position mrk1) (marker-position mrk2))))
+
+(defun wide-n-rassoc-delete-all (value alist)
+  "Delete from ALIST all elements whose cdr is `equal' to VALUE.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist))  (equal (cdar alist) value)) (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (cdar tail-cdr) value))
+	  (setcdr tail (cdr tail-cdr))
+	(setq tail  tail-cdr))))
+  alist)
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
@@ -256,11 +347,10 @@ This is a repeatable version of `wide-n'."
   (require 'repeat)
   (wide-n-repeat-command 'wide-n))
 
+
 (if (boundp 'narrow-map)
     (define-key narrow-map "x" 'wide-n-repeat)
-  (if (> emacs-major-version 21)
-      (define-key ctl-x-map "nx" 'wide-n-repeat)
-    (define-key ctl-x-map "nx" 'wide-n))) ; Non-repeatable version for Emacs 21.
+  (define-key ctl-x-map "nx" (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n)))
 
 
 ;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
@@ -284,28 +374,26 @@ Optional ARG is ignored."
   (interactive)
   (save-excursion
     (widen)
-    (let ((opoint (point))
+    (let ((opoint  (point))
 	  beg end)
-      ;; Try first in this order for the sake of languages with nested
-      ;; functions where several can end at the same place as with
-      ;; the offside rule, e.g. Python.
+      ;; Try first in this order for the sake of languages with nested functions
+      ;; where several can end at the same place as with the offside rule, e.g. Python.
       (beginning-of-defun)
-      (setq beg (point))
+      (setq beg  (point))
       (end-of-defun)
-      (setq end (point))
+      (setq end  (point))
       (while (looking-at "^\n")
 	(forward-line 1))
       (unless (> (point) opoint)
-	;; beginning-of-defun moved back one defun
-	;; so we got the wrong one.
+	;; `beginning-of-defun' moved back one defun, so we got the wrong one.
 	(goto-char opoint)
 	(end-of-defun)
-	(setq end (point))
+	(setq end  (point))
 	(beginning-of-defun)
-	(setq beg (point)))
+	(setq beg  (point)))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
-      (when (or (interactive-p) wide-n-push-anyway-p) (wide-n-push beg end))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end))
       (narrow-to-region beg end))))
 
 
@@ -319,47 +407,39 @@ Optional ARG is ignored."
 A numeric arg specifies to move forward or backward by that many pages,
 thus showing a page other than the one point was originally in."
   (interactive "P")
-  (setq arg (if arg (prefix-numeric-value arg) 0))
+  (setq arg  (if arg (prefix-numeric-value arg) 0))
   (save-excursion
     (widen)
     (if (> arg 0)
 	(forward-page arg)
       (if (< arg 0)
-	  (let ((adjust 0)
-		(opoint (point)))
-	    ;; If we are not now at the beginning of a page,
-	    ;; move back one extra time, to get to the start of this page.
+	  (let ((adjust  0)
+		(opoint  (point)))
+	    ;; If not now at the beginning of a page, move back one extra time, to get to start of this page.
 	    (save-excursion
 	      (beginning-of-line)
-	      (or (and (looking-at page-delimiter)
-		       (eq (match-end 0) opoint))
+	      (or (and (looking-at page-delimiter)  (eq (match-end 0) opoint))
 		  (setq adjust 1)))
 	    (forward-page (- arg adjust)))))
     ;; Find the end of the page.
     (set-match-data nil)
     (forward-page)
     ;; If we stopped due to end of buffer, stay there.
-    ;; If we stopped after a page delimiter, put end of restriction
-    ;; at the beginning of that line.
-    ;; Before checking the match that was found,
-    ;; verify that forward-page actually set the match data.
-    (if (and (match-beginning 0)
-	     (save-excursion
-	       (goto-char (match-beginning 0)) ; was (beginning-of-line)
-	       (looking-at page-delimiter)))
-	(goto-char (match-beginning 0))) ; was (beginning-of-line)
+    ;; If we stopped after a page delimiter, put end of restriction at the beginning of that line.
+    ;; Before checking the match that was found, verify that `forward-page' actually set the match data.
+    (if (and (match-beginning 0)  (save-excursion (goto-char (match-beginning 0))
+                                                  (looking-at page-delimiter)))
+	(goto-char (match-beginning 0)))
     (let ((beg  (point))
           (end  (progn
                   ;; Find the top of the page.
                   (forward-page -1)
                   ;; If we found beginning of buffer, stay there.
-                  ;; If extra text follows page delimiter on same line,
-                  ;; include it.
+                  ;; If extra text follows page delimiter on same line, include it.
                   ;; Otherwise, show text starting with following line.
-                  (if (and (eolp) (not (bobp)))
-                      (forward-line 1))
+                  (when (and (eolp)  (not (bobp))) (forward-line 1))
                   (point))))
-      (when (or (interactive-p) wide-n-push-anyway-p) (wide-n-push beg end))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end))
       (narrow-to-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;
