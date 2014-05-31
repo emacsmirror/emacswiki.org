@@ -10,12 +10,16 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 [:features]
 === Features ===
 
-* Deadlines, time stamps, scheduling events and TODO items. Integrates Emacs calendar and diary and can compile entries from many files into one view. 
-* Table editor (available as a minor mode for use in other major modes).
-* HTML and LaTeX export, among others.
-* Plain text URL-like links to http, file, gnus, rmail, vm, news, wanderlust, bbdb.
-* Integrates with RememberMode.
-* an environment for literate programming.
+* Outlines: headlines, TODO items, checklists, numbered lists, searching, filtering
+* Filing: outlines, tagging, refiling, archiving, sorting, flexible enough to build a "getting things done" workflow
+* Timestamp: deadlines, clocking in/out, scheduled items, repeating items, optionally integrated with emacs calendar and diary
+* Markup: bold, italic, lists, links, images, math (via LaTeX), code highlighting
+* Links to URLs, files, gnus, rmail, vm, news, wanderlust, bbdb, irc, shell commands, bookmarks, images, attachments
+* Table: editing, spreadsheets, formulas
+* Export: HTML, LaTeX, Markdown, iCalendar, OpenDocument, Beamer slides, PDF, and more via an extensible exporting system
+* Babel: Literate programming, reproducible research
+* Agenda: Overview of scheduled and TODO items across files
+
 
 [:install]
 == Download and Install ==
@@ -174,7 +178,7 @@ To make header lines more apparently visible in the buffer, set them a backgroun
 	     (2 (org-get-level-face 2)) (3 (org-get-level-face 3)))
 </pre>
 
-The only change is the `\xa' character is added before the last closing paren.
+The only change is the `\xa' character is added before the last closing paren. This feature has been added to org-mode; see `org-fontify-whole-heading-line'.
 
 === Following Links ===
 
