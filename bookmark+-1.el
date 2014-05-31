@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May 27 09:21:29 2014 (-0700)
+;; Last-Updated: Fri May 30 17:53:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7113
+;;     Update #: 7119
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8160,17 +8160,22 @@ in the same directory, then you will need to relock it.)"
   (defun bmkp-set-restrictions-bookmark ()
     "Save the ring of restrictions for the current buffer as a bookmark.
 You need library `wide-n.el' to use the bookmark created."
+    ;; If you use a version of `wide-n.el' older than 2014-05-30, then you will need to delete any
+    ;; restrictions bookmarks created with that older version.  The restrictions format changed on that date.
     (interactive)
     (let ((bookmark-make-record-function
            (lambda () (bmkp-make-variable-list-record
-                       `((wide-n-restrictions
+                       `((wide-n-restrictions ; Format is (NUM BEG . END).
                           . ,(mapcar (lambda (x)
                                        (if (eq x 'all)
                                            'all
-                                         (let ((beg  (car x)) ; Convert markers to number positions.
-                                               (end  (cdr x)))
-                                           (cons (if (markerp beg) (marker-position beg) beg)
-                                                 (if (markerp end) (marker-position end) end)))))
+                                         (let ((num  (car x))
+                                               (beg  (cadr x)) ; Convert markers to number positions.
+                                               (end  (cddr x)))
+                                           `(,num
+                                             ,(if (markerp beg) (marker-position beg) beg)
+                                             .
+                                             (if (markerp end) (marker-position end) end)))))
                                      wide-n-restrictions)))))))
       (call-interactively #'bookmark-set)
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
