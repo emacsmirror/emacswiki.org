@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 28 17:55:40 2014 (-0700)
+;; Last-Updated: Sat May 31 11:31:35 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 125
+;;     Update #: 154
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -34,12 +34,23 @@
 ;;  whether this library is loaded, or just test whether (fboundp
 ;;  'subr+-split-string).  That function is an alias for `split-string'.
 ;;
+;;  Buffer substring functions are also defined here, which return a
+;;  buffer substring that includes or excludes characters that have a
+;;  given text property.  In particular, `buffer-substring-of-visible'
+;;  include only visible chars, and `buffer-substring-of-invisible'
+;;  includes only invisible chars.
+;;
 ;;
 ;;  Functions defined here:
 ;;
-;;    `next-char-predicate-change', `split-string-by-predicate',
-;;    `split-string-by-property', `split-string-by-regexp',
-;;    `split-string-trim-omit-push', `subr+-split-string'.
+;;    `buffer-substring-of-faced', `buffer-substring-of-invisible',
+;;    `buffer-substring-of-propertied', `buffer-substring-of-unfaced',
+;;    `buffer-substring-of-unpropertied',
+;;    `buffer-substring-of-un/propertied-1',
+;;    `buffer-substring-of-visible', `next-char-predicate-change',
+;;    `split-string-by-predicate', `split-string-by-property',
+;;    `split-string-by-regexp', `split-string-trim-omit-push',
+;;    `subr+-split-string'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `simple.el' have
@@ -51,6 +62,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/05/31 dadams
+;;     Added: buffer-substring-of-*.
+;;     split-string-by-property: Corrected second cond clause for FLIP case.
 ;; 2014/05/28 dadams
 ;;     Removed: next-single-char-prop-val-change.
 ;;     split-string-by-property: Rewrote.
@@ -287,9 +301,10 @@ Modifies the match data; use `save-match-data' if necessary.
                (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
                                                            this-beg this-end s-parts)))
              (setq ostart  start))
-            ((and (not flip)  has-val-e  (not has-val-b))
-             (when (funcall test (get-char-property ostart prop string) val)
-               (setq ostart  this-beg))
+            ((and has-val-e  (if flip has-val-b (not has-val-b)))
+             (let ((has-val-o  (funcall test (get-char-property ostart prop string) val)))
+               (when (if flip (not has-val-o) has-val-o)
+                 (setq ostart  this-beg)))
              (setq s-parts  (split-string-trim-omit-push string prop+val omit-nulls trim
                                                          ostart this-end s-parts))
              (setq ostart  start))))
@@ -328,7 +343,7 @@ Modifies the match data; use `save-match-data' if necessary."
       (when (if flip is-true (not is-true))
         (setq s-parts  (split-string-trim-omit-push string predicate omit-nulls trim
                                                     this-beg this-end s-parts))))
-    (setq this-beg  start ; Handle the substring at the end of STRING.
+    (setq this-beg  start               ; Handle the substring at the end of STRING.
           this-end  s-len
           is-true   (funcall predicate this-beg))
     (when (if flip is-true (not is-true))
@@ -344,6 +359,65 @@ PREDICATE is a function accepting a character as its first argument."
     (while (and (< (setq position  (1+ position)) s-len)
                 (eq otruth (and (funcall predicate (aref string position))  t))))
     position))
+
+
+;; Buffer substring functions
+
+(defun buffer-substring-of-un/propertied-1 (start end property &optional flip)
+  "Helper for `buffer-substring-of-(un)propertied'.
+Optional arg FLIP is passed to `split-string-by-property', so non-nil
+FLIP gives `*-propertied', and nil gives `*-unpropertied'."
+  (unless (require 'subr+ nil t)        ; `split-string-by-property'
+    (error "This function requires library `subr+.el'"))
+  (when (> start end) (setq start (prog1 end (setq end start))))
+  (let* ((filter-buffer-substring-function   (lambda (beg end _delete)
+                                               (let* ((strg   (buffer-substring beg end))
+                                                      (parts  (split-string-by-property
+                                                               strg `(,property nil) 'OMIT-NULLS
+                                                               split-string-default-separators
+                                                               flip))
+                                                      (strg   (apply #'concat parts)))
+                                                 (set-text-properties 0 (length strg) () strg)
+                                                 strg)))
+         ;; Older Emacs versions use `filter-buffer-substring-functions'.
+         (filter-buffer-substring-functions  (list (lambda (fun beg end del)
+                                                     (funcall filter-buffer-substring-function
+                                                              beg end del)))))
+    (filter-buffer-substring start end)))
+
+(defun buffer-substring-of-unpropertied (start end property)
+  "Return unpropertied contents of buffer from START to END, as a string.
+Text from START to END that has PROPERTY is excluded from the string.
+START and END can be in either order."
+  (buffer-substring-of-un/propertied-1 start end property))
+
+(defun buffer-substring-of-propertied (start end property)
+  "Return PROPERTY'ed contents of buffer from START to END, as a string.
+Only text from START to END that has PROPERTY is included.
+START and END can be in either order."
+  (buffer-substring-of-un/propertied-1 start end property 'FLIP))
+  
+(defun buffer-substring-of-visible (start end)
+  "Return contents of visible part of buffer from START to END, as a string.
+START and END can be in either order."
+  (buffer-substring-of-unpropertied start end 'invisible))
+
+(defun buffer-substring-of-invisible (start end)
+  "Return contents of invisible part of buffer from START to END, as a string.
+START and END can be in either order."
+  (buffer-substring-of-propertied start end 'invisible))
+
+(defun buffer-substring-of-unfaced (start end)
+  "Return unfaced contents of buffer from START to END, as a string.
+That is, include only text that has no `face' property.
+START and END can be in either order."
+  (buffer-substring-of-unpropertied start end 'face))
+
+(defun buffer-substring-of-faced (start end)
+  "Return faced contents of buffer from START to END, as a string.
+That is, include only text that has property `face'.
+START and END can be in either order."
+  (buffer-substring-of-propertied start end 'face))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
