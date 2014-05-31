@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 30 18:00:54 2014 (-0700)
+;; Last-Updated: Fri May 30 18:04:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 412
+;;     Update #: 413
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -50,7 +50,7 @@
 ;;      negative arg also pops entries off the ring: it removes the
 ;;      ring entries from the most recent back through the (-)Nth one.
 ;;
-;;    Be default, `C-x n x' is bound to command `wide-n-repeat'.  If
+;;    By default, `C-x n x' is bound to command `wide-n-repeat'.  If
 ;;    you use Emacs 21 then you will want to change this key binding
 ;;    to command `wide-n', which is a non-repeatable version.
 ;;    Repeatability is not available before Emacs 22.
