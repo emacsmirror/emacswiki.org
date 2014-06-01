@@ -9,6 +9,6 @@ Since 2006 there is  preliminary support for viewing and editing OpenDocument fi
 
 ==Convert==
 
-Use [https://bitbucket.org/josemaria.alkala/odt2org/wiki/Home odt2org] to convert ODT files to OrgMode. The tool is Python-based and can handles lists, links, images, tables etc. 
+Use [https://bitbucket.org/josemaria.alkala/odt2org/wiki/Home odt2org] to convert ODT files to OrgMode. The tool is Python-based and can handle lists, links, images, tables etc. 
 
 Once a document is exported as an <code>.org</code> file, converting it to other file formats like HTML, PDF, LaTeX, DocBook, MediaWiki is quite a breeze.
