@@ -9,24 +9,31 @@ This highlight C file local variable/parameters, function call and some other to
 To install: 
 
 *** 1. download 
-zjl-hl.el, 
-region-list-edit.el(bellow)
-highlight.el on this emacswiki
+****** zjl-hl.el, 
+
+****** region-list-edit.el(bellow)
+
+****** highlight.el on this emacswiki
+
 
 *** 2. add these lines into .emacs (load-file can be replaced by require if wish).  
 
 These lines are minimum configuration needed in emacs 24.3
 
 (semantic-mode 1)
+
 (require 'semantic/bovine/c nil 'noerror)
 
 (load-file "~/.emacs.d/myconfig/site-lisp/highlight.el")
+
 (load-file "~/.emacs.d/myconfig/site-lisp/region-list-edit.el")
+
 (load-file "~/.emacs.d/myconfig/site-lisp/zjl-hl.el")
 
 (zjl-hl-enable-global 'c-mode)
 
 * 2 http://www.emacswiki.org/emacs/region-list-edit.el
+
 This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
 
 The above two el is updated at 20140602
