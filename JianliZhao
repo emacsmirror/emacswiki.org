@@ -3,23 +3,32 @@ I use Emacs since 2009.08.  I use Emacs to read and write c/asm/elisp code. so I
 My email: jianlizhao1@gmail.com. 
 
 My contribute:
-
+******************** 1 ******************************
 http://www.emacswiki.org/emacs/zjl-hl.el
 This package highlight things such as local variable, function call and bracket,  in C and ELISP.
-To install: download zjl-hl.el, and region-list-edit.el(bellow), then add these two lines into .emacs
+To install: 
+1. download 
+zjl-hl.el, 
+region-list-edit.el(bellow)
+highlight.el on this emacswiki
 
-(require 'zjl-hl)
+2. add these lines into .emacs (load-file can be replaced by require if wish).  These lines are minimum configuration needed in emacs 24.3
+(semantic-mode 1)
+(require 'semantic/bovine/c nil 'noerror)
 
-(zjl-hl-enable-global-all-modes);(zjl-hl-disable-global-all)
+(load-file "~/.emacs.d/myconfig/site-lisp/highlight.el")
+(load-file "~/.emacs.d/myconfig/site-lisp/region-list-edit.el")
+(load-file "~/.emacs.d/myconfig/site-lisp/zjl-hl.el")
+
+(zjl-hl-enable-global 'c-mode)
 
 
 
-
-
+******************** 2 ******************************
 http://www.emacswiki.org/emacs/region-list-edit.el
 This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
 
-The above two el is updated at July 2013
+The above two el is updated at 20140602
 
 [new:DrewAdams:2010-05-30 08:12 UTC]
 Welcome to the wiki. -- DrewAdams
