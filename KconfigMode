@@ -1,4 +1,6 @@
-;;;
+;;; kconfig.el - a major mode for editing linux kernel config (Kconfig) files
+;; Copyright © 2014 Yu Peng
+ 
 (defvar kconfig-mode-font-lock-keywords
   '(("^[\t, ]*\\_<bool\\_>" . font-lock-type-face)
     ("^[\t, ]*\\_<int\\_>" . font-lock-type-face)
