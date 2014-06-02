@@ -8,7 +8,7 @@ This highlight C file local variable/parameters, function call and some other to
 
 To install: 
 
-*** 1. download 
+***  download 
 ****** zjl-hl.el, 
 
 ****** region-list-edit.el(bellow)
@@ -16,7 +16,7 @@ To install:
 ****** highlight.el on this emacswiki
 
 
-*** 2. add these lines into .emacs (load-file can be replaced by require if wish).  
+***  add below into .emacs (load-file can be replaced by require if wish).  
 
 These lines are minimum configuration needed in emacs 24.3
 
