@@ -3,8 +3,10 @@ I use Emacs since 2009.08.  I use Emacs to read and write c/asm/elisp code. so I
 My email: jianlizhao1@gmail.com. 
 
 * 1 ******************************
+
 http://www.emacswiki.org/emacs/zjl-hl.el
-This package highlight C file local variable/parameters, function call and some other to make code easier to read
+
+This highlight C file local variable/parameters, function call and some other to make code easier to read
 
 To install: 
 
@@ -13,7 +15,10 @@ zjl-hl.el,
 region-list-edit.el(bellow)
 highlight.el on this emacswiki
 
-*** 2. add these lines into .emacs (load-file can be replaced by require if wish).  These lines are minimum configuration needed in emacs 24.3
+*** 2. add these lines into .emacs (load-file can be replaced by require if wish).  
+
+These lines are minimum configuration needed in emacs 24.3
+
 (semantic-mode 1)
 (require 'semantic/bovine/c nil 'noerror)
 
