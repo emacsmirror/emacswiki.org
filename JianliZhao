@@ -3,7 +3,7 @@ I use Emacs since 2009.08.  I use Emacs to read and write c/asm/elisp code. so I
 My email: jianlizhao1@gmail.com. 
 
 My contribute:
-******************** 1 ******************************
+******** 1 ******************************
 http://www.emacswiki.org/emacs/zjl-hl.el
 This package highlight things such as local variable, function call and bracket,  in C and ELISP.
 To install: 
@@ -22,9 +22,7 @@ highlight.el on this emacswiki
 
 (zjl-hl-enable-global 'c-mode)
 
-
-
-******************** 2 ******************************
+******** 2 ******************************
 http://www.emacswiki.org/emacs/region-list-edit.el
 This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
 
