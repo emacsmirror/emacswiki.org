@@ -207,7 +207,7 @@ The following elisp reformats them more legibly in ERC:
       (save-excursion
         (goto-char (point-min))
         (if (looking-at
-    	 "^<root> System message: Message from unknown participant \\([^:]+\\):")
+    	 "^<root> Message from unknown participant \\([^:]+\\):")
     	(replace-match "<\\1>"))))
     (add-hook 'erc-insert-modify-hook 'my-reformat-jabber-backlog)
 
