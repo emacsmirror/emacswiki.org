@@ -33,10 +33,10 @@ It works with GnuEmacs, yet it does not work with xemacs. Is there any similar t
 
 [new]
 Try adding something like
-
+{{{
 (global-unset-key "\C-z")
 (global-set-key "\C-z" 'advertised-undo)
-
+}}}
 to your .emacs, now undo (for me much more important than iconifying emacs) will be one of the easiest commands
 to reach, and iconifying is still bound to C-xz - very convenient I think.
 
