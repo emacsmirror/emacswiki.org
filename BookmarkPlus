@@ -157,6 +157,7 @@ name.)
   component bookmarks in turn.  A component bookmark can itself
   be a sequence bookmark.
 
+[:BookmarkedRegion]
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
      activated (see [[option]] '''`bmkp-use-region'''').  (Region
