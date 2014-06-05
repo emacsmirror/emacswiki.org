@@ -258,3 +258,5 @@ But it appears emacs does not have this feature. A casual glance at the source f
 
 [new:IainDalton:2009-02-12 10:17 UTC]
 edit-kbd-macro lists the names of the commands used in the function.  With some regexing you could turn this into a function.  Better yet, look in edmacro.el and write a function that writes the function.
+
+[new] The following package https://github.com/Silex/elmacro can record macros as elisp but it's still a work in progress.
