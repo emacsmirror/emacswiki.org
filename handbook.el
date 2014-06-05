@@ -1,7 +1,7 @@
 ;;; handbook.el --- Quick access to the FreeBSD handbook
 
 ;; Author: padik@live.com
-;; Website: http://padik.t15.org
+;; Website: padik.t15.org
 ;; Version: 1.0.0
 ;; Keywords: FreeBSD Handbook
 ;; URL: http://www.emacswiki.org/elisp/handbook.el
