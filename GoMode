@@ -15,15 +15,13 @@ latin-1-unix.  Better to use the default input coding system.  Whoever reading
 this with GNU Go write privs should delete the "set-process-coding-system" line
 (222) in gnugo.el. (Sorry about this over-specification bug. --ttn)
 
-Standalone gnugo.el is developed apart from the GNU Go project.  Its features
-find their way into GNU Go version sooner or later, but usually "later".
-EmacsLisp programmers are invited to check out the Commentary and send patches
-in the meantime, to influence the integration towards "sooner".  --ttn
+Standalone gnugo.el is developed apart from the GNU Go project, and is now part of GNU ELPA.  The homepage is now:
 
-See:
-* http://www.gnuvola.org/software/j/gnugo/
+* http://www.gnuvola.org/software/gnugo/
 
----- 
+EmacsLisp programmers are invited to check out the Commentary and send patches in the meantime.  --ttn
+
+----
 There is a mirror of [http://web.archive.org/web/20050310023415/http://www.glug.org/people/ttn/software/personal-elisp/standalone/gnugo.el-2.2.9 GnuGo2.2.9] (which appears to be the [http://web.archive.org/web/20051029073149/http://www.glug.org/people/ttn/software/personal-elisp/standalone/ latest] one) on the Wayback Machine, this seems to work with GNU Go 3.7.9 and Emacs 22.0.50.1 (2007-01-30).
 Also available from here: Lisp:gnugo.el.
 
@@ -31,7 +29,7 @@ Also available from here: Lisp:gnugo.el.
 
 = MoGo =
 Here is a simple major mode to interact with [http://www.lri.fr/~gelly/MoGo.htm MoGo]: Lisp:mogo.el.
-It has been tested with GNU Emacs 22 and 21.  
+It has been tested with GNU Emacs 22 and 21.
 
 !MoGo a new very strong Go program also using GTP, the protocol also used by [http://www.gnu.org/software/gnugo/gnugo.html GNU go].  So, theoretically it shouldn't be too hard to modiy Lisp:gnugo.el so it can also use !MoGo as a backend, but I haven't really looked into this.
 
