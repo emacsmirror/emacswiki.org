@@ -1,12 +1,11 @@
 ;;; merriam.el --- Look up a word in WWW Merriam-Webster dictionary
 
-;; Copyright (c) 2004 by Rhoderick Espineda <padik@live.com>
-;; Website: http://padik.co.nr
+;; Author: padik@live.com
+;; Website: padik.t15.org
 
 ;; Version: 1.0
 ;; Keywords: hypermedia
 ;; URL: http://www.emacswiki.org/elisp/merriam.el
-;; Date: March 31, 2004
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
