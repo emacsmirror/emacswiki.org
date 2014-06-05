@@ -40,6 +40,8 @@
 ;; 2014-06-04: calc-inline-region: Work on active region even if called non-interactively with b=e=nil.
 ;;  Add function calc-inline-starter-re used in calc-inline and calc-inline-region for identification of calc-inline lines/regions.
 ;;  Therewith also out-commented regions are recognized by calc-inline-region.
+;;
+;; 2014-06-05: Rename calc-inline to calc-inline-line and redefine calc-inline as calc-inline-region if region is active and calc-inline-line else.
 
 ;;; Code:
 
@@ -216,7 +218,7 @@ If NO-OUTPUT-FILTER is non-nil return the raw result of `calc-eval'."
   "Return starter regexp for calc-inline."
   (concat "^\\([[:blank:]]*\\(?:" comment-start "[[:blank:]]*\\)?\\)" (and full "\\(calc\\|lisp\\):")))
 
-(defun calc-inline ()
+(defun calc-inline-line ()
   "Evaluate calc-expression on current line.
 See help of calc-inline-mode for more information.
 "
@@ -280,8 +282,10 @@ See help of calc-inline-mode for more information.
 	  (goto-char endExpr)
 	  (if printOut
 	      (progn
-		(if (looking-at (concat "\n" comment-regexp "ans:"))
-		    (kill-region (match-beginning 0) (calc-inline-command-end-position 1)))
+		(if (save-excursion
+		      (forward-line)
+		      (looking-at (concat comment-regexp "ans:")))
+		    (kill-region (point) (calc-inline-command-end-position 1)))
 		(insert "\n" (if comment-str comment-str "") "ans:" output)
 		)))))))
 
@@ -297,8 +301,16 @@ For non-interactive calls b defaults to point-min and e defaults to point-max."
 		    (goto-char (point-min))
 		    (let ((re (calc-inline-starter-re 'full)))
 		      (while (search-forward-regexp re nil 'noError)
-			(calc-inline))
+			(calc-inline-line))
 		      ))))
+
+(defun calc-inline ()
+  "Evaluate calc-inline expressions on current line
+or in current region if region is active."
+  (interactive)
+  (if (use-region-p)
+      (calc-inline-region (region-beginning) (region-end))
+    (calc-inline-line)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; il-language support
