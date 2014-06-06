@@ -1,6 +1,10 @@
 [https://github.com/Lindydancer/cmake-font-lock CMake Font Lock] provides advanced highlight rules for [[CMakeMode]], written by [[AndersLindgren|Anders Lindgren]].
 
-This is a replacement for the somewhat rudimentary font-lock support provided by CMakeMode.
+The main feature of this package is to highlight function arguments according how it's used, as a keyword, a variable, etc. This is a replacement for the somewhat rudimentary font-lock support provided by CMakeMode.
+
+== Example ==
+
+[[image:CMakeFontLockScreenshot]]
 
 == What is colored ==
 
