@@ -40,6 +40,21 @@ I found the following to be useful:
 
 Use it to find X in all your rcirc buffers. I discovered what had happened: ##*** X MODE +oooo kensanata## -- aaaah! :)
 
+== OSX ==
+
+You have to install the following programs:
+
+* growl
+* growlnotify
+
+rcirc-notify tries to find growlnotify like this:
+
+{{{
+(executable-find "growlnotify")
+}}}
+
+if you can get that to work then probably rcirc-notify will work as well.
+
 == Windows ==
 
 Install [http://www.growlforwindows.com/gfw/ Growl for Windows] and run ##Growl.exe## in order to start the server.
