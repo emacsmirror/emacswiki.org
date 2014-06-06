@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.05.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 17 13:22:50 2014 (-0700)
+;; Last-Updated: Fri Jun  6 15:28:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23552
+;;     Update #: 23556
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -215,6 +215,7 @@
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order', `icicle-choose-faces',
 ;;    `icicle-choose-invisible-faces', `icicle-choose-visible-faces',
+;;    `icicle-choose-window-for-buffer-display',
 ;;    `icicle-clear-history', `icicle-clear-current-history',
 ;;    `icicle-color-theme', `icicle-comint-command',
 ;;    `icicle-comint-dynamic-complete',
@@ -538,7 +539,7 @@
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
 ;;    `icicle-change-sort-order', `icicle-choose-completion',
-;;    `icicle-clear-current-history',
+;;    `icicle-choose-window-by-name', `icicle-clear-current-history',
 ;;    `icicle-complete-current-candidate-as-input',
 ;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
@@ -1171,6 +1172,7 @@
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
+;;    `icicle-next-window-for-display-buffer',
 ;;    `icicle-non-whitespace-string-p',
 ;;    `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-ORIG-choose-completion-string',
@@ -1203,7 +1205,8 @@
 ;;    `icicle-read-args-w-val-satisfying', `icicle-read-char-by-name',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive',
-;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
+;;    `icicle-read-char-maybe-completing',
+;;    `icicle-read-choose-window-args', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-file-name-default',
 ;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
