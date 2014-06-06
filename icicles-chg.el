@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon May 19 09:47:10 2014 (-0700)
+;; Last-Updated: Fri Jun  6 16:28:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10925
+;;     Update #: 10937
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/06/06 dadams
+;;     Added: icicle-choose-window-for-buffer-display, icicle-choose-window-by-name,
+;;            icicle-read-choose-window-args.
+;;     Advised: display-buffer, switch-to-buffer, switch-to-buffer-other-window.
+;;     icicle-other-window-or-frame: C-u C-u does icicle-choose-window-for-buffer-display (Emacs 24+).
+;;     icicle-select-window-by-name:
+;;       Redefine using icicle-read-choose-window-args and icicle-choose-window-by-name.
 ;; 2014/05/17 dadams
 ;;     icicle-shell-dynamic-complete-as-command, icicle-apropos-zippy, icicle-describe-process:
 ;;       with-output-to-temp-buffer -> icicle-with-help-window.
@@ -8090,6 +8097,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2014/06/06 dadams
+;;     Added: icicle-next-window-for-display-buffer.
 ;; 2014/04/20 dadams
 ;;     Added: icicle-auto-no-icomplete-mode-p.
 ;;     Moved to icicles-opt.el (which is loaded first):
