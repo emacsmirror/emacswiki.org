@@ -27,7 +27,7 @@ Now, restart your machine.
 
 Ctrl2cap is a kernel-mode device driver that filters the system's keyboard class driver in order to convert caps-lock characters into control characters.
 
-[http://technet.microsoft.com/en-us/sysinternals/bb897578.aspx] 
+http://technet.microsoft.com/en-us/sysinternals/bb897578.aspx [http://technet.microsoft.com/en-us/sysinternals/bb897578.aspx] 
 
 ==== Swapping ALL Control and Alt Keys ====
 
