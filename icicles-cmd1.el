@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri May 16 23:36:19 2014 (-0700)
+;; Last-Updated: Fri Jun  6 16:21:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 26969
+;;     Update #: 27006
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -171,9 +171,10 @@
 ;;    (+)`icicle-buffer-no-search',
 ;;    (+)`icicle-buffer-no-search-other-window',
 ;;    (+)`icicle-buffer-other-window', `icicle-cd-for-abs-files',
-;;    `icicle-cd-for-loc-files', (+)`icicle-clear-history',
-;;    (+)`icicle-clear-current-history', (+)`icicle-color-theme',
-;;    `icicle-comint-dynamic-complete',
+;;    `icicle-cd-for-loc-files', `icicle-choose-window-by-name',
+;;    `icicle-choose-window-for-buffer-display',
+;;    (+)`icicle-clear-history', (+)`icicle-clear-current-history',
+;;    (+)`icicle-color-theme', `icicle-comint-dynamic-complete',
 ;;    `icicle-comint-dynamic-complete-filename',
 ;;    `icicle-comint-replace-by-expanded-filename',
 ;;    (+)`icicle-command-abbrev', (+)`icicle-command-abbrev-command',
@@ -355,6 +356,7 @@
 ;;    `icicle-bookmark-propertize-candidate',
 ;;    `icicle-pp-display-expression',
 ;;    `icicle-read-args-w-val-satisfying',
+;;    `icicle-read-choose-window-args',
 ;;    (+)`icicle-recent-file-of-content-1',
 ;;    `icicle-recent-files-without-buffers.',
 ;;    `icicle-remove-buffer-candidate-action',
@@ -414,6 +416,13 @@
 ;;  `customize-apropos-groups', `customize-apropos-options' -
 ;;     Use `completing-read' to read the regexp.
 ;;  `customize-face', `customize-face-other-window' - Multi-commands.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `window.el' are
+;;              ADVISED HERE:
+;;
+;;  `display-buffer', `switch-to-buffer',
+;;  `switch-to-buffer-other-window'.
 ;;
 ;;
 ;;  Key bindings made by Icicles: See "Key Bindings" in
@@ -540,11 +549,12 @@
   ;; icicle-kmacro-alist, icicle-last-apropos-complete-match-fn, icicle-last-transform-function,
   ;; icicle-list-use-nth-parts, icicle-multi-completing-p, icicle-must-match-regexp,
   ;; icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate, icicle-narrow-regexp,
-  ;; icicle-new-last-cmd, icicle-orig-buff, icicle-orig-must-pass-after-match-pred, icicle-orig-pt-explore,
-  ;; icicle-orig-window, icicle-orig-win-explore, icicle-other-window, icicle-path-variables,
-  ;; icicle-predicate-types-alist, icicle-pref-arg, icicle-pre-minibuffer-buffer,
-  ;; icicle-previous-raw-file-name-inputs, icicle-previous-raw-non-file-name-inputs, icicle-prompt,
-  ;; icicle-proxy-candidates, icicle-read-expression-map, icicle-remove-icicles-props-p, icicle-re-no-dot,
+  ;; icicle-new-last-cmd, icicle-next-window-for-display-buffer, icicle-orig-buff,
+  ;; icicle-orig-must-pass-after-match-pred, icicle-orig-pt-explore, icicle-orig-window,
+  ;; icicle-orig-win-explore, icicle-other-window, icicle-path-variables, icicle-predicate-types-alist,
+  ;; icicle-pref-arg, icicle-pre-minibuffer-buffer, icicle-previous-raw-file-name-inputs,
+  ;; icicle-previous-raw-non-file-name-inputs, icicle-prompt, icicle-proxy-candidates,
+  ;; icicle-read-expression-map, icicle-remove-icicles-props-p, icicle-re-no-dot,
   ;; icicle-saved-completion-candidates, icicle-search-history, icicle-transform-before-sort-p,
   ;; icicle-use-candidates-only-once-alt-p, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
@@ -6070,8 +6080,9 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
 (defun icicle-other-window-or-frame (arg) ; Bound to `C-x o' in Icicle mode.
   "Select a window or frame, by name or by order.
 This command combines Emacs commands `other-window' and `other-frame',
-together with Icicles multi-commands `icicle-select-window', and
-`icicle-select-frame'.  Use the prefix argument to choose, as follows:
+together with Icicles commands `icicle-select-window',
+`icicle-select-frame', and `icicle-choose-window-for-buffer-display'.
+Use the prefix argument to choose the behavior, as follows:
 
  With no prefix arg or a non-zero numeric prefix arg:
   If the selected frame has multiple windows, then this is
@@ -6087,6 +6098,11 @@ together with Icicles multi-commands `icicle-select-window', and
   `icicle-select-window' with windows from all visible frames as
   candidates.  Otherwise, this is `icicle-select-frame'.
 
+ With plain `C-u C-u' (Emacs 24+):
+  This is `icicle-choose-window-for-buffer-display', with windows from
+  all visible frames as candidates.  (For Emacs prior to Emacs 24,
+  `C-u C-u' has the same effect as `C-u'.)
+
 If you use library `oneonone.el' with a standalone minibuffer frame,
 and if option `1on1-remap-other-frame-command-flag' is non-nil, then
 frame selection can include the standalone minibuffer frame.
@@ -6097,8 +6113,13 @@ not want this remapping, then customize option
 `icicle-top-level-key-bindings'."
   (interactive "P")
   (let ((numarg  (prefix-numeric-value arg)))
-    (cond ((consp arg)
+    (cond ((and (consp arg)  (or (< (car arg) 16)  (< emacs-major-version 24)))
            (if (one-window-p) (icicle-select-frame) (icicle-select-window)))
+          ((consp arg)
+           (let* ((win-alist  (icicle-make-window-alist 'ALL))
+                  (args       (icicle-read-choose-window-args "Window for next buffer display: "
+                                                              win-alist)))
+             (icicle-choose-window-for-buffer-display (car args) win-alist)))
           ((zerop numarg)
            (if (one-window-p)
                (icicle-select-frame)
@@ -6187,32 +6208,136 @@ two windows showing buffer *Help*, one of the windows will be called
   (buffer-name (window-buffer (other-window 1))) nil
   ((icicle-window-alist  (icicle-make-window-alist current-prefix-arg)))) ; Bindings
 
-;; Free vars here: `icicle-window-alist' is bound in `icicle-select-window'.
-;;
-(defun icicle-select-window-by-name (name &optional window-alist)
-  "Select the window named NAME.
-Optional argument WINDOW-ALIST is an alist of windows to choose from.
+(defun icicle-choose-window-by-name (win-name &optional window-alist noselect)
+  "Choose the window named WIN-NAME.
+Optional arg WINDOW-ALIST is an alist of windows to choose from.  Each
+alist element has the form (WNAME . WINDOW), where WNAME names WINDOW.
+See `icicle-make-window-alist' for more about WNAME.  If WINDOW-ALIST
+is nil then use `icicle-make-window-alist' to create an alist of the
+windows in the selected frame.
+
+Non-nil optional arg NOSELECT means do not select the window, just set
+`icicle-next-window-for-display-buffer' to its name (Emacs 24+).
 
 Interactively:
- A prefix arg means windows from all visible frames are candidates.
- No prefix arg means windows from the selected frame are candidates.
+* No prefix arg means windows from the selected frame are candidates.
+* A prefix arg means windows from all visible frames are candidates.
+* (Emacs 24+) A negative prefix arg means do not select the window,
+  just make the next buffer-display operation use it.
 
-Each alist element has the form (WNAME . WINDOW), where WNAME names
-WINDOW.  See `icicle-make-window-alist' for more about WNAME.
-
-If `crosshairs.el' is loaded, then the target position is highlighted."
-  (interactive (let* ((alist    (icicle-make-window-alist current-prefix-arg))
-                      (default  (car (rassoc (selected-window) alist)))
-                      (input    (completing-read "Select window: " alist nil t nil nil default)))
-                 (list (if (= (length input) 0) default input) alist)))
+For Emacs versions prior to Emacs 24, this is the same as
+`icicle-select-window-by-name'."
+  (interactive
+   (let* ((nosel  (and (< (prefix-numeric-value current-prefix-arg) 0)  (> emacs-major-version 23)))
+          (args   (icicle-read-choose-window-args (and nosel  "Window for next buffer display: ")
+                                                  (icicle-make-window-alist current-prefix-arg))))
+     (list (car args) (cadr args) nosel)))
   (unless window-alist
     (setq window-alist  (or (and (boundp 'icicle-window-alist)  icicle-window-alist)
                             (icicle-make-window-alist))))
-  (let ((window  (cdr (assoc name window-alist))))
-    (unless window (icicle-user-error "No such window: `%s'" name))
-    (select-window window)
-    (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))
-    (select-frame-set-input-focus (selected-frame))))
+  (let ((window  (cdr (assoc win-name window-alist))))
+    (unless window (icicle-user-error "No such window: `%s'" win-name))
+    (cond ((and noselect  (> emacs-major-version 23))
+           (setq icicle-next-window-for-display-buffer  window))
+          (t
+           (select-window window)
+           (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))
+           (select-frame-set-input-focus (selected-frame))))))
+
+(defun icicle-choose-window-for-buffer-display (win-name &optional window-alist)
+  "Read the name of the window to use for the next `display-buffer' call.
+Uses command `icicle-choose-window-by-name' with non-nil NOSELECT.
+Sets `icicle-next-window-for-display-buffer' to the chosen window.
+
+For Emacs versions prior to Emacs 24, this does only what
+`icicle-select-window-by-name' does."
+  (interactive (icicle-read-choose-window-args (and (> emacs-major-version 23)
+                                                    "Window for next buffer display: ")
+                                               (icicle-make-window-alist 'ALL)))
+  (icicle-choose-window-by-name win-name window-alist 'NOSELECT))
+
+(when (> emacs-major-version 23)
+  (defadvice display-buffer (around icicle-choose-window activate)
+    "Just display in `icicle-next-window-for-display-buffer', if non-nil.
+A no-op if not in Icicle mode."
+    (if (not (and (boundp 'icicle-mode)  icicle-mode  (boundp 'display-buffer-base-action))) ; Emacs 24+
+        ad-do-it
+      (unwind-protect
+           (let ((win  icicle-next-window-for-display-buffer))
+             (if (not win)
+                 ad-do-it
+               (let ((display-buffer-base-action
+                      '((lambda (buf alist)
+                          (unless (or (cdr (assq 'inhibit-same-window alist))
+                                      (window-minibuffer-p win)
+                                      (window-dedicated-p win))
+                            (window--display-buffer buffer win 'reuse alist)))
+                        .
+                        nil)))
+                 ad-do-it)))
+        (setq icicle-next-window-for-display-buffer  nil))))
+
+  (defadvice switch-to-buffer (around icicle-choose-window activate)
+    "Use `icicle-next-window-for-display-buffer', if non-nil.
+A no-op if not in Icicle mode."
+    (if (not (and (boundp 'icicle-mode)  icicle-mode  (boundp 'display-buffer-base-action))) ; Emacs 24+
+        ad-do-it
+      (unwind-protect
+           (let ((win  icicle-next-window-for-display-buffer))
+             (if (not win)
+                 ad-do-it
+               (let ((display-buffer-base-action
+                      '((lambda (buf alist)
+                          (unless (or (cdr (assq 'inhibit-same-window alist))
+                                      (window-minibuffer-p win)
+                                      (window-dedicated-p win))
+                            (window--display-buffer buffer win 'reuse alist)))
+                        .
+                        nil)))
+                 (pop-to-buffer (ad-get-arg 0) (ad-get-arg 1)))))
+        (setq icicle-next-window-for-display-buffer  nil))))
+
+  (defadvice switch-to-buffer-other-window (around icicle-choose-window activate)
+    "Use `icicle-next-window-for-display-buffer', if non-nil.
+A no-op if not in Icicle mode."
+    (if (not (and (boundp 'icicle-mode)  icicle-mode  (boundp 'display-buffer-base-action))) ; Emacs 24+
+        ad-do-it
+      (unwind-protect
+           (let ((win  icicle-next-window-for-display-buffer))
+             (if (not win)
+                 ad-do-it
+               (let ((display-buffer-base-action
+                      '((lambda (buf alist)
+                          (unless (or (cdr (assq 'inhibit-same-window alist))
+                                      (window-minibuffer-p win)
+                                      (window-dedicated-p win))
+                            (window--display-buffer buffer win 'reuse alist)))
+                        .
+                        nil)))
+                 (pop-to-buffer (ad-get-arg 0) (ad-get-arg 1)))))
+        (setq icicle-next-window-for-display-buffer  nil)))))
+
+;; Free vars here: `icicle-window-alist' is bound in `icicle-select-window'.
+;;
+(defun icicle-select-window-by-name (win-name &optional window-alist)
+  "Use `icicle-choose-window-by-name' to select a window by name.
+If library `crosshairs.el' is loaded, highlight the target position."
+  (interactive (icicle-read-choose-window-args))
+  (icicle-choose-window-by-name win-name window-alist))
+
+(defun icicle-read-choose-window-args (&optional prompt alist)
+  "Read a window name.
+Prompt with PROMPT, if non-nil, else with \"Window: \".
+Read using completion against ALIST, if non-nil, or
+against `icicle-make-window-alist' if nil.
+Empty user input chooses the selected window.
+Return a list of the chosen name and the alist used for completing."
+  (unless prompt (setq prompt  "Window: "))
+  (let* ((alist    (or alist  (icicle-make-window-alist current-prefix-arg)))
+         (default  (car (rassoc (selected-window) alist)))
+         (input    (completing-read prompt alist nil t nil nil default)))
+    (list (if (= (length input) 0) default input)
+          alist)))
 
 (defun icicle-make-window-alist (&optional all-p)
   "Return an alist of entries (WNAME . WINDOW), where WNAME names WINDOW.
