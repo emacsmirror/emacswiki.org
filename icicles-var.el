@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Apr 20 15:05:17 2014 (-0700)
+;; Last-Updated: Fri Jun  6 16:03:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1803
+;;     Update #: 1806
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -112,7 +112,8 @@
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
-;;    `icicle-next-prefix-complete-cycles-p', `icicle-orig-buff',
+;;    `icicle-next-prefix-complete-cycles-p',
+;;    `icicle-next-window-for-display-buffer', `icicle-orig-buff',
 ;;    `icicle-orig-font-lock-keywords',
 ;;    `icicle-orig-minibuffer-completion-pred',
 ;;    `icicle-orig-minibuffer-completion-table',
@@ -971,6 +972,10 @@ Used by, e.g., `icicle-execute-extended-command'.")
 
 (defvar icicle-next-prefix-complete-cycles-p nil
   "Whether the next prefix-completion command should cycle.")
+
+(defvar icicle-next-window-for-display-buffer nil
+  "Name of the window to use for the next `display-buffer' call.
+\(Not used for Emacs versions prior to Emacs 24.)")
 
 (defvar icicle-orig-buff nil
   "Current buffer when you invoked an Icicles multi-command.")
