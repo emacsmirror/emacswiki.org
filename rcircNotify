@@ -1,15 +1,21 @@
 Libnotify notifications for [[rcirc]].
 
+== Installation ==
 Source:
 
 * [https://github.com/kensanata/elisp/blob/master/rcirc-notify.el rcirc-notify.el]
 
-To install, put it in your LoadPath and add the following to your InitFile:
+You can also download from marmalade-repo:
+
+{{{
+M-x package-install rcirc-notify
+}}}
+
+To install, put it in your LoadPath (or install from marmalade) and add the following to your InitFile:
 
     (eval-after-load 'rcirc '(require 'rcirc-notify))
 
 This library tries to use the following binaries to send the message:
-
 
 ; notify-send: Available in packages libnotify-bin on Ubuntu, for example
 ; growlnotify: Newer Mac OSX
