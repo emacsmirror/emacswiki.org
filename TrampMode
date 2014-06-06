@@ -150,6 +150,15 @@ None of the above worked for me so I decided to just change the SHELL environmen
 
 To connect to a very old system I had to switch the remote, default LANG to a ''non''-utf8 one (in ##/etc/sysconfig/i18n##) Otherwise tramp would hang right after sending ##exec /bin/sh##. Tracing showed any utf8 LANG to somehow output extra CRs characters, causing tramp to wait the prompt forever. This could be locale bug.
 
+=== Tramp hangs #5: Control-j .inputrc mapping ===
+
+If you have Control-j mapped in your .inputrc to something e.g. like this:
+
+{{{
+Control-j: menu-complete
+}}}
+
+it can cause tramp to never finish recognizing the shell prompt.
 
 == Tips and tricks ==
 
