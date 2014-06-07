@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Thu Dec 26 09:52:10 2013 (-0800)
+;; Last-Updated: Sat Jun  7 07:29:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2172
+;;     Update #: 2193
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -41,6 +41,7 @@
 ;;    `tap-bounds-of-color-at-point', `tap-bounds-of-form-at-point',
 ;;    `tap-bounds-of-form-nearest-point',
 ;;    `tap-bounds-of-list-at-point',
+;;    `tap-bounds-of-list-contents-at-point',
 ;;    `tap-bounds-of-list-nearest-point',
 ;;    `tap-bounds-of-number-at-point',
 ;;    `tap-bounds-of-number-at-point-decimal',
@@ -57,7 +58,8 @@
 ;;    `tap-define-aliases-wo-prefix', `tap-form-at-point-with-bounds',
 ;;    `tap-form-nearest-point', `tap-form-nearest-point-with-bounds',
 ;;    `tap-list-at/nearest-point-with-bounds',
-;;    `tap-list-at-point-with-bounds', `tap-list-nearest-point',
+;;    `tap-list-at-point-with-bounds', `tap-list-contents-at-point',
+;;    `tap-list-contents-nearest-point', `tap-list-nearest-point',
 ;;    `tap-list-nearest-point-with-bounds',
 ;;    `tap-list-nearest-point-as-string', `tap-looking-at-p',
 ;;    `tap-looking-back-p', `tap-non-nil-symbol-name-at-point',
@@ -136,11 +138,12 @@
 ;;  `tap-bounds-of-thing-at-point' does.
 ;;
 ;;  (If you do that then you need not invoke
-;;  `tap-put-thing-at-point-props', since the property values set by
-;;  vanilla library `thingatpt.el' will be OK because the functions
-;;  themselves will have been redefined in that case.)
+;;  `tap-put-thing-at-point-props' to pick up the versions defined
+;;  here of standard functions.  The property values set by vanilla
+;;  library `thingatpt.el' will be OK because the functions themselves
+;;  will have been redefined in that case.)
 ;;
-;;  So to get the most out of this library, I recommend that you put
+;;  To get the most out of this library, I recommend that you put
 ;;  (only) the following in your init file:
 ;;
 ;;    (eval-after-load "thingatpt"
@@ -236,6 +239,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/06/07 dadams
+;;     Added: tap-bounds-of-list-contents-at-point, tap-list-contents-at-point,
+;;            tap-list-contents-nearest-point.
+;;     Put tap-bounds-of-(string|list)-contents-at-point as bounds-of-thing-at-point property.
 ;; 2013/09/20 dadams
 ;;     Added: tap-bounds-of-string-contents-at-point, tap-string-contents-at-point,
 ;;            tap-string-contents-nearest-point.
@@ -1181,6 +1188,30 @@ If not \"\", the list in the string is what is returned by
 UP (default: 0) is the number of list levels to go up to start with."
   (let ((list+bds  (tap-list-nearest-point-with-bounds up 'UNQUOTED)))
     (if list+bds (format "%s" (car list+bds)) "")))
+
+(defun tap-bounds-of-list-contents-at-point ()
+  "Return the start and end locations for the list contents at point.
+Same as `tap-bounds-of-list-at-point', except that this does not
+include the enclosing `(' and `)' characters."
+  (let ((full  (tap-bounds-of-list-at-point)))
+    (and full  (cons (1+ (car full)) (1- (cdr full))))))
+
+;; Add this so that, for example, `thgcmd-defined-thing-p' in
+;; `thing-cmds.el' recognizes `list-contents' as a THING.
+(put 'list-contents 'bounds-of-thing-at-point 'tap-bounds-of-list-contents-at-point)
+
+(defun tap-list-contents-at-point ()
+  "Return the contents of the list at point as a string, or nil if none.
+Same as `tap-list-at-point-as-string', except that this does not
+include the enclosing `(' and `)' characters."
+  (let ((bounds  (tap-bounds-of-list-contents-at-point)))
+    (and bounds  (buffer-substring (car bounds) (cdr bounds)))))
+
+(defun tap-list-contents-nearest-point ()
+  "Return the contents of the list nearest point as a string, or nil.
+See `tap-list-contents-at-point'."
+  (let ((full  (tap-bounds-of-thing-nearest-point 'list)))
+    (and full  (buffer-substring (1+ (car full)) (1- (cdr full))))))
  
 ;;; SYMBOL NAMES, WORDS, SENTENCES, etc. -----------------------
 
@@ -1428,6 +1459,10 @@ Same as `tap-bounds-of-string-at-point', except that this does not
 include the enclosing `\"' characters."
     (let ((full  (tap-bounds-of-string-at-point)))
       (and full  (cons (1+ (car full)) (1- (cdr full))))))
+
+  ;; Add this so that, for example, `thgcmd-defined-thing-p' in
+  ;; `thing-cmds.el' recognizes `string-contents' as a THING.
+  (put 'string-contents 'bounds-of-thing-at-point 'tap-bounds-of-string-contents-at-point)
 
   (defun tap-string-contents-at-point ()
     "Return the contents of the string at point, or nil if none.
