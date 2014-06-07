@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Thu Dec 26 09:51:56 2013 (-0800)
+;; Last-Updated: Sat Jun  7 07:31:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 739
+;;     Update #: 741
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -203,9 +203,9 @@ if non-nil, set SYNTAX-TABLE for the duration."
                          (setq types  (cons "sexp" types))) ; Put `sexp' first.
 
   ;; ("sexp" "button" "char" "char-same-line" "comment" "decimal-number" "defun" "email"
-  ;;  "filename" "hex-number" "line" "list" "non-nil-symbol-name" "number" "overlay" "page"
-  ;;  "region-or-word" "sentence" "symbol" "unquoted-list" "url" "whitespace"
-  ;;  "whitespace-&-newlines" "word")
+  ;;  "filename" "hex-number" "line" "list" "list-contents" "non-nil-symbol-name" "number"
+  ;;  "overlay" "page" "region-or-word" "sentence" "string" "string-contents" "symbol"
+  ;;  "unquoted-list" "url" "whitespace" "whitespace-&-newlines" "word")
 
   "*List of thing types.
 Each is a string that names a type of text entity for which there is a
