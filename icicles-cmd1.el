@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jun  6 16:21:19 2014 (-0700)
+;; Last-Updated: Fri Jun  6 17:36:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27006
+;;     Update #: 27007
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6217,7 +6217,7 @@ is nil then use `icicle-make-window-alist' to create an alist of the
 windows in the selected frame.
 
 Non-nil optional arg NOSELECT means do not select the window, just set
-`icicle-next-window-for-display-buffer' to its name (Emacs 24+).
+`icicle-next-window-for-display-buffer' to it (Emacs 24+).
 
 Interactively:
 * No prefix arg means windows from the selected frame are candidates.
