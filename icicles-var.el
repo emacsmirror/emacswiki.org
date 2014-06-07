@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Fri Jun  6 16:03:19 2014 (-0700)
+;; Last-Updated: Fri Jun  6 17:34:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1806
+;;     Update #: 1807
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -974,7 +974,9 @@ Used by, e.g., `icicle-execute-extended-command'.")
   "Whether the next prefix-completion command should cycle.")
 
 (defvar icicle-next-window-for-display-buffer nil
-  "Name of the window to use for the next `display-buffer' call.
+  "The window to use for the next buffer-displaying call.
+Affects `display-buffer', `switch-to-buffer',
+`switch-to-buffer-other-window', and functions that call these.
 \(Not used for Emacs versions prior to Emacs 24.)")
 
 (defvar icicle-orig-buff nil
