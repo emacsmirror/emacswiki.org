@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri May 16 23:29:18 2014 (-0700)
+;; Last-Updated: Sat Jun  7 11:41:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19512
+;;     Update #: 19521
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4501,18 +4501,30 @@ Otherwise, after expanding input:
 ;; $$$$$$ Gets thrown off if user clicks in another frame.  Presumably more than one Emacs bug involved
 ;;        here, with frame focus, input focus, minibuffer msgs, etc.  See also Emacs bug #14810.
 (defun icicle-switch-to/from-minibuffer () ; Bound to `pause' in Icicle mode.
-  "Switch to minibuffer or previous buffer, in other window.
+  "Switch input focus to minibuffer or previous buffer, in other window.
 If current buffer is the minibuffer, then switch to the buffer that
 was previously current.  Otherwise, switch to the minibuffer."
   (interactive)
   (cond ((not (active-minibuffer-window))
-         (icicle-msg-maybe-in-minibuffer "Cannot switch buffer: minibuffer is not active"))
-        ((eq (selected-window) (active-minibuffer-window))
-         (switch-to-buffer-other-window icicle-pre-minibuffer-buffer)
-         (icicle-msg-maybe-in-minibuffer "Input in `%s' now" icicle-pre-minibuffer-buffer))
+         (message "Cannot switch focus: minibuffer is not active"))
+        ;; Do not use this test: (eq (selected-window) (active-minibuffer-window)).
+        ;; Instead, test for anything other than `icicle-pre-minibuffer-buffer'.  E.g., even if user
+        ;; manually selected (e.g. clicked in) another buffer then switch to `icicle-pre-minibuffer-buffer'.
+        ((not (eq (window-buffer) icicle-pre-minibuffer-buffer))
+         (let ((minibuffer-message-timeout  1))
+           (icicle-msg-maybe-in-minibuffer "Wait a sec - changing input focus to `%s'..."
+                                           icicle-pre-minibuffer-buffer))
+         (switch-to-buffer-other-window icicle-pre-minibuffer-buffer))
         (t
          (select-window (active-minibuffer-window))
-         (icicle-msg-maybe-in-minibuffer "Input in MINIBUFFER now"))))
+         (let ((minibuffer-message-timeout  1))
+           (icicle-msg-maybe-in-minibuffer "Wait a sec - changing input focus to MINIBUFFER..."))
+         ;; If standalone minibuffer frame had focus when minibuffer was entered, then this helps.
+         ;; Otherwise, the command does not bring focus back to the minibuffer frame.  Likewise,
+         ;; if some other frame has been selected manually while the minibuffer is active.
+         ;; But this breaks use when minibuffer frame did not have the initial focus.  So we don't use it.
+         ;; (select-frame-set-input-focus (window-frame (selected-window)))
+         )))
 
 (defun icicle-switch-to-Completions-buf () ; Bound to `C-insert' in minibuffer.
   "Select the completion list window.
