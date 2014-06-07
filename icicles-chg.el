@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun  6 16:28:17 2014 (-0700)
+;; Last-Updated: Sat Jun  7 11:47:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10937
+;;     Update #: 10942
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4222,6 +4222,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/06/07 dadams
+;;     icicle-switch-to/from-minibuffer:
+;;       Test for non icicle-pre-minibuffer-buffer, not for eq minibuf win.
+;;       Call icicle-msg-maybe-in-minibuffer before buffer switch.
+;;       Reduce minibuffer-message-timeout to 1.
 ;; 2014/05/17 dadams
 ;;     icicle-minibuffer-help, icicle-all-candidates-action-1, icicle-describe-file:
 ;;       with-output-to-temp-buffer -> icicle-with-help-window.
@@ -5921,6 +5926,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/06/07 dadams
+;;     Added: icicle-last-non-minibuffer-buffer.
+;;     icicle-minibuffer-setup: Use icicle-last-non-minibuffer-buffer for icicle-pre-minibuffer-buffer.
 ;; 2014/04/23 dadams
 ;;     Use cl-flet if available.
 ;; 2014/04/21 dadams
