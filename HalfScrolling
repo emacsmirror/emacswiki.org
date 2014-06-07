@@ -62,7 +62,7 @@ I bind this to shift-space. It's main feature is that your attention always goes
            ;; number of lines shown in selected window, one less due to mode line
            (winlines (1- (window-height (selected-window))))
            ;; number of lines above and below point
-           (above (+ (count-lines (window-start) (point))
+           (above (+ (cdr (nth 6 (posn-at-point)))
                      -1 (if (= (current-column) 0) 1 0)))
            (below (- winlines above 1)))
       ;; compute if we should go up or not
@@ -71,9 +71,9 @@ I bind this to shift-space. It's main feature is that your attention always goes
                            (memq last-command up-command-list))))
         ;; dispatch depending on whether point is in upper half or lower half
         (if (< above below)
-          (apply (if should-up 'scroll-down 'forward-line) ;upper
+          (apply (if should-up 'scroll-down 'next-line) ;upper
                  (list (- (floor (* winlines lower-percent)) above)))
-          (apply (if should-up 'forward-line 'scroll-down) ;lower
+          (apply (if should-up 'next-line 'scroll-down) ;lower
                  (list (- (floor (* winlines upper-percent)) above))))
         ;; done, remember last direction before exit
         (setq scroll-half-window-was-up should-up))))
