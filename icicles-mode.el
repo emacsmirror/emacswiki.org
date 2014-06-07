@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat May 17 07:58:31 2014 (-0700)
+;; Last-Updated: Sat Jun  7 11:47:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10195
+;;     Update #: 10211
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -66,8 +66,8 @@
 ;;    `icicle-bind-other-keymap-keys',
 ;;    `icicle-cancel-Help-redirection', `icicle-define-cycling-keys',
 ;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
-;;    `icicle-minibuffer-setup', `icicle-rebind-global',
-;;    `icicle-redefine-standard-functions',
+;;    `icicle-last-non-minibuffer-buffer', `icicle-minibuffer-setup',
+;;    `icicle-rebind-global', `icicle-redefine-standard-functions',
 ;;    `icicle-redefine-standard-options',
 ;;    `icicle-redefine-std-completion-fns',
 ;;    `icicle-restore-completion-keys',
@@ -3353,8 +3353,12 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-saved-proxy-candidates          nil
           icicle-auto-no-icomplete-mode-p        nil
           icicle-auto-no-sort-p                  nil
-          ;; `other-buffer' doesn't work, because it looks for a buffer only from the same frame.
-          icicle-pre-minibuffer-buffer           (cadr (buffer-list)) ; $$$$$$ (other-buffer nil t)
+          ;; Neither of these is OK:
+          ;;  `other-buffer' doesn't work, because it looks for a buffer only from the same frame.
+          ;;  And cadr of `buffer-list' could be just a higher-level minibuffer.
+          ;;    icicle-pre-minibuffer-buffer  (other-buffer nil t)
+          ;;    icicle-pre-minibuffer-buffer  (cadr (buffer-list)
+          icicle-pre-minibuffer-buffer           (icicle-last-non-minibuffer-buffer)
           )
     (when (and (icicle-completing-p)  (> emacs-major-version 20))
       (let ((prompt-prefix  (if icicle-candidate-action-fn "+ " ". ")))
@@ -3388,6 +3392,13 @@ Usually run by inclusion in `minibuffer-setup-hook'."
         (apropos    (icicle-apropos-complete))
         (otherwise  (icicle-prefix-complete)))) ; Prefix completion, by default.
     (run-hooks 'icicle-minibuffer-setup-hook)))
+
+(defun icicle-last-non-minibuffer-buffer ()
+  "Return the most recently used non-minibuffer buffer."
+  (if (fboundp 'minibufferp)            ; Emacs 22+
+      (let ((bufs  (icicle-remove-if 'minibufferp (buffer-list))))
+        (or (car bufs)  (car (buffer-list))))
+    (cadr (buffer-list))))              ; Punt - but could be just a higher-level minibuffer.
 
 (defun icicle-define-cycling-keys (map)
   "Define keys for cycling candidates.
