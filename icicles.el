@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.05.17
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  6 15:28:01 2014 (-0700)
+;; Last-Updated: Sat Jun  7 08:50:39 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23556
+;;     Update #: 23557
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1134,8 +1134,8 @@
 ;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
 ;;    `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
-;;    `icicle-kmacro-action', `icicle-latest-access-first-p',
-;;    `icicle-latest-input-first-p',
+;;    `icicle-kmacro-action', `icicle-last-non-minibuffer-buffer',
+;;    `icicle-latest-access-first-p', `icicle-latest-input-first-p',
 ;;    `icicle-latest-modification-first-p',
 ;;    `icicle-latest-use-first-p', `icicle-levenshtein-match',
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
