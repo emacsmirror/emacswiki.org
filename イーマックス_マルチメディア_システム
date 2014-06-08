@@ -27,12 +27,12 @@ Do we still need an async process which spits out the data, so we can process it
 * '''emms-lang.el''' - [[i18n]] サポート
 * '''emms-remote.el''' - ポップアップ ウィンドウ/フレーム with widgets for the main functions
 
-** Maybe a popup window like CEDET's bowser with the playlist would  be also interesting. For the main functions I have global keys (previous,  next, pause...) in four consecutive keys.
+** Maybe a popup window like CEDET's bowser with the playlist would  be also interesting.
+For the main functions I have global keys (previous,  next, pause...) in four consecutive keys.
 
-* Some more player files (xmms, xine)
+* いくつかのプレイヤーファイル (xmms, xine)
 
-(simple players like 'play' are trivial to implement with
-emms-player-simple - info is in the manual)
+(simple players like 'play' are trivial to implement with emms-player-simple - info is in the manual)
 
 ** mpg321の遠隔操作能力を使うことを考えたことがありますか(LOAD <file>, PAUSE, JUMP [+-]<frames>, STOP, QUIT)?
 *実装されました - emms-player-mpg321-remoteを見てください*
@@ -64,15 +64,13 @@ Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
 
 -- Aitherios
 
-=== sbagen Binaural Beat files ==
+=== sbagenバイノーラルビートファイル ==
 
     (define-emms-simple-player sbagen '(file) (emms-player-simple-regexp "sbg") "sbagen")
 
-Binaural Beats are sound files that try to induce mental states by playing sine-waves with
-phase differentials in ear phones.
+バイノーラルビートはイヤホンで位相差を伴った正弦波を再生することによって精神状態を誘導しようとするサウンドファイルです.
 
-The player definition is trivial, I just didnt occur to me previously that emacs can be a very nice 
-integrated binaural beat experimentation environment!
+The player definition is trivial, I just didnt occur to me previously that emacs can be a very nice integrated binaural beat experimentation environment!
 
 -- JoakimVerona
 
@@ -896,7 +894,8 @@ Lisp:anything-config.el has EMMS related sources, `anything-c-source-emms-stream
 
 == ディスク番号とディスクサブタイトル ==
 
-The discnumber tag is supported by at least mp3 and ogg files, and most players understand it. Is there a special reason EMMS ignores it ? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.
+ディスク番号タグは少なくともmp3とoggファイルでサポートされており, ほとんどのプレイヤーはそれを理解できます.
+EMMSがそれを無視する特別な理由がありますか? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.
 
 [new]
 I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
