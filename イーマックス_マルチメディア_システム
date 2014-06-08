@@ -692,11 +692,10 @@ JohnSturdy has written a major mode for creating and editing lyric files; it con
 
 LyricMode
 
-=== Getting it to work on win32 ===
-I've recently downloaded EMMS, mplayer for windows, and
-vorbis-tools in cygwin, but i can't seem to get emms to work. 
+=== win32上で動かす ===
+私は最近windows版のEMMSとmplayerとcygwin上のvorbis-toolsをダウンロードしましたが, しかしながらemmsが動いているように見ることができません. 
 
-The config i used is the following: 
+私が使っている設定は次の通り: 
 <pre>
 ;;EMMS player (a music/video player for emacs)
 (add-to-list 'load-path "D:/emacs/site-lisp/emms/")
@@ -711,11 +710,10 @@ The config i used is the following:
       emms-source-list '((emms-directory-tree "D:/My Music/")))
 </pre>
 
-Where C:/mplayer/mplayer.exe is where i downloaded the windows
-version of myplayer.
+Where C:/mplayer/mplayer.exe is where i downloaded the windows version of myplayer.
 
-When i enter emms-play-file D:/abc.mp3 (a small test file), it
-returns symbol's value as variable is void: emms-player-mplayer
+When i enter emms-play-file D:/abc.mp3 (a small test file),
+it returns symbol's value as variable is void: emms-player-mplayer
 Thanks alot!
 
 [new] You'll need to add
