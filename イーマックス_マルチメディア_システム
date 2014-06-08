@@ -1,3 +1,4 @@
+[[en:EMMS]]
 == 概要 ==
 
 EMMSはイーマックス マルチメディア システムの略です.
@@ -159,7 +160,7 @@ Don't know why above code doesn't work for me. Hence, I came with another simple
 
 [[EmmsEasyNotification]]を見てください ;-)
 
-=== Freedesktop/D-Bus 通知 ===
+=== Freedesktop/D-Bus通知 ===
 
 Use D-Bus to communicate with the Freedesktop notification service, or the minibuffer if D-Bus is not running.
 
