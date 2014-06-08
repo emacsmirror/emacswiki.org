@@ -96,6 +96,12 @@
 
 ;;; Change log:
 ;;
+;; * 08 June 2014:
+;;   * Gregor Zattler:
+;;      * test if symbol `ad-advised-definition-p' is defined,
+;;        since Christian Brassats version test failed on emacs
+;;        23.3.91.1
+;;
 ;; * 05 May 2014:
 ;;   * Christian Brassat:
 ;;      * `ad-advised-definition-p' is not supported since Emacs 24.4.
@@ -312,10 +318,10 @@ Default is nil."
   :type 'boolean
   :set (lambda (symbol value)
          (set symbol value)
-         (if (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
-             (when (ad-is-advised 'other-window)
-                   (sr-speedbar-handle-other-window-advice value))
-           (when (ad-advised-definition-p 'other-window)
+         (if (fboundp 'ad-advised-definition-p)
+             (when (ad-advised-definition-p 'other-window)
+               (sr-speedbar-handle-other-window-advice value))
+           (when (ad-is-advised 'other-window)
              (sr-speedbar-handle-other-window-advice value))))
   :group 'sr-speedbar)
 
