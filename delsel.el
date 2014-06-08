@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 10:24:25 2013 (-0800)
+;; Last-Updated: Sun Jun  8 08:31:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 361
+;;     Update #: 366
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/06/08 dadams
+;;     Added electric-newline-and-maybe-indent and reindent-then-newline-and-indent
+;;     for Emacs 24.4.  See Emacs bug #17737.
 ;; 2013/10/18 dadams
 ;;     Do not make insert-parentheses delete selection, for Emacs 22+.
 ;; 2012/08/12 dadams
@@ -331,6 +334,8 @@ either \\[customize] or function `delete-selection-mode'."
 (put 'backward-delete-char-untabify 'delete-selection 'supersede)
 (put 'delete-char 'delete-selection 'supersede)
 
+(put 'electric-newline-and-maybe-indent 'delete-selection t)
+(put 'reindent-then-newline-and-indent 'delete-selection t)
 (put 'newline-and-indent 'delete-selection t)
 (put 'newline 'delete-selection t)
 (put 'open-line 'delete-selection 'kill)
