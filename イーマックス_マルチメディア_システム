@@ -1,0 +1,901 @@
+== 概要 ==
+
+EMMSはイーマックス マルチメディア システムの略です.
+それはEmacsから外部プレイヤーを使ってクリーンで小さなアプリケーションであろうとします.
+多くのアイディアはMpthreePlayerから派生し,しかしそれはより一般的でクリーンであろうとします.
+それは[[Bongo]]に匹敵します.
+http://www.gnu.org/software/emms/
+
+== クイックスタート ==
+
+EMMSを始めるにあたって最善の方法は以下のクイックスタートガイドを読むことです:
+http://www.gnu.org/software/emms/quickstart.html
+
+どうやってEMMSを開発するかもしくはパッチを提出するかという情報は, [[EMMSDevelopment]] ページを訪ねてください.
+
+== 様々な注意事項 ==
+
+=== タグのキャッシング & 非同期読込 ===
+
+キャッシングは実装されました, そしてこれは主として遅いメタデータ収集の問題を解決します.
+
+Do we still need an async process which spits out the data, so we can process it in a filter?
+
+=== ないもの ===
+
+* '''emms-lang.el''' - [[i18n]] サポート
+* '''emms-remote.el''' - ポップアップ ウィンドウ/フレーム with widgets for the main functions
+
+** Maybe a popup window like CEDET's bowser with the playlist would  be also interesting. For the main functions I have global keys (previous,  next, pause...) in four consecutive keys.
+
+* Some more player files (xmms, xine)
+
+(simple players like 'play' are trivial to implement with
+emms-player-simple - info is in the manual)
+
+** mpg321の遠隔操作能力を使うことを考えたことがありますか(LOAD <file>, PAUSE, JUMP [+-]<frames>, STOP, QUIT)?
+*実装されました - emms-player-mpg321-remoteを見てください*
+
+=== MOD, XM, S3M そしてそれに似たようなやつ ===
+
+MOD, XM, S3M そしてそれに似たようなファイルを再生したいような人は, mikmodを使ったやりかたがここにあります:
+
+    (require 'emms-player-simple)
+    (define-emms-simple-player mikmod '(file)
+      (regexp-opt '(".669" ".AMF" ".DSM" ".FAR" ".GDM" ".IT" ".IMF"  
+                    ".MED" ".MTM" ".OKT" ".S3M" ".STM" ".STX" ".ULT" 
+                    ".APUN" ".XM" ".MOD" ".amf" ".dsm" ".far" ".gdm"                            
+                    ".it" ".imf" ".mod" ".med" ".mtm" ".okt" ".s3m" 
+                    ".stm" ".stx" ".ult" ".apun" ".xm" ".mod" ".MOD")
+                    ) "mikmod" "-q" "-p" "1" "-X")
+    (add-to-list 'emms-player-list 'emms-player-mikmod)
+
+しかしながら, 私が見るにmikmodは複数の引数を正しく渡せないので, あなたは恐らく~/.mikmodrc中のこれらの設定を有効にする必要があるでしょう:
+
+    LOOP=no
+    EXIT_AFTER=yes
+    PM_MODULE=no
+    PM_MULTI=no
+
+-- MartinSchoenmakers
+
+Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
+
+-- Aitherios
+
+=== sbagen Binaural Beat files ==
+
+    (define-emms-simple-player sbagen '(file) (emms-player-simple-regexp "sbg") "sbagen")
+
+Binaural Beats are sound files that try to induce mental states by playing sine-waves with
+phase differentials in ear phones.
+
+The player definition is trivial, I just didnt occur to me previously that emacs can be a very nice 
+integrated binaural beat experimentation environment!
+
+-- JoakimVerona
+
+=== Mix CD Creation ===
+
+While this code won't burn a CD for you (any suggestions there?),
+
+it will take your current EMMS playlist buffer and symlink those tracks (in the order they are in your playlist buffer) to a given directory.
+
+Please feel free to post improvements (but do note what you change; I'm curious).
+
+Note that you probably need to make some adjustments if you don't use a fairly uniform naming scheme for your music files.
+
+You definitely need to adjust at least one path in the code (just take a look).
+
+Here it is:
+
+<pre>
+(require 'emms-playlist-mode)
+(require 'cl)
+
+(defun emms-playlist-make-mix (dir)
+  "Eases mix creation by doing the symlinking for me."
+  (interactive "FWhere should I make the mix? ")
+  (save-excursion
+    (unless (progn (get-buffer-create emms-playlist-buffer)
+                   (set-buffer emms-playlist-buffer)
+                   (> (count-lines (point-min) (point-max)) 0))
+      (error "There is no playlist"))
+    (if (file-exists-p (if (string-match "/$" dir)
+                           (replace-in-string dir "/$" "")
+                         dir))
+        (if (not (file-directory-p dir))
+            (error "File %s exists and is not a directory" dir)
+          (unless (y-or-n-p "Directory exists. Continue? ")
+            (error "Not continuing")))
+      (make-directory dir))
+    (set-buffer emms-playlist-buffer)
+    (emms-playlist-current-select-first)
+    (let ((counter 1)
+          (lines (count-lines (point-min) (point-max))))
+      (unless (string-match "/$" dir)
+        (setq dir (concat dir "/")))
+      (while (<= counter lines)
+        (let ((track (cdr (third (emms-playlist-current-selected-track))))
+              (symlinkname (replace-in-string
+                            (cdr (third
+                                  (emms-playlist-current-selected-track)))
+                            "/home/user/media/music/.*/[0-9][0-9]-"
+                            (concat (if (< counter 10) "0")
+                                    (number-to-string counter)
+                                    "-"))))
+          (make-symbolic-link track (concat dir symlinkname) t)
+          (emms-playlist-current-select-next)
+          (setq counter (1+ counter)))))))
+</pre>
+
+=== KDE通知 ===
+
+Use knotify to display the current song. Requires Emacs with dbus:
+
+<pre>
+(defun ts/showsong ()
+  (emms-next-noerror)
+  (set 'notifyid (dbus-call-method :session "org.kde.knotify" "/Notify" "org.kde.KNotify" "event" "emms_song" "emacs" '(:array (:variant nil)) "Currently Playing" (emms-show) '(:array :byte 0 :byte 0 :byte 0 :byte 0) '(:array) :int64 0))
+  (run-at-time "5 sec" nil 'dbus-call-method :session "org.kde.knotify" "/Notify" "org.kde.KNotify" "closeNotification" :int32 notifyid)
+  )
+
+(setq emms-player-next-function 'ts/showsong)
+</pre>
+[new]
+Don't know why above code doesn't work for me. Hence, I came with another simple (and maybe rude one ;)
+
+<pre>
+;;; A rude way to make use of KNotify.  Tested on Debian/Squeeze. --lgfang
+(when (and window-system (executable-find "kdialog"))
+  (setq emms-player-next-function
+        (lambda ()
+          (emms-next-noerror)
+          (call-process "kdialog" nil nil nil "--title" "Emacs - EMMS"
+                        "--passivepopup" (emms-show) "5"))))
+</pre>
+
+=== Fluxbox/Gnome (そしてGTKベースのウィンドウマネージャ)通知 ===
+
+[[EmmsEasyNotification]]を見てください ;-)
+
+=== Freedesktop/D-Bus 通知 ===
+
+Use D-Bus to communicate with the Freedesktop notification service, or the minibuffer if D-Bus is not running.
+
+<pre>
+; choose D-Bus to disseminate messages, if it is running.
+(cond
+ ;; test to see if D-Bus notifications are available
+ ((if (and (require 'dbus nil t)
+	   (dbus-ping :session "org.freedesktop.Notifications"))
+      (progn
+	(setq notify-method 'notify-via-dbus-notifications)
+	(require 'notifications))))
+ ;; could use the message system otherwise
+ (t (setq notify-method 'notify-via-message)))
+
+(defun notify-via-notifications (title msg icon)
+  "Send notification with TITLE, MSG via `D-Bus'."
+  (notifications-notify
+   :title title
+   :body msg
+   :app-icon icon
+   :urgency 'low))
+
+(defun notify-via-messages (title msg)
+  "Send notification with TITLE, MSG to message."
+  (message "APPOINTMENT: %s" msg))
+
+(defun emms-notifications-dbus (track-name)
+  "Share track name via `D-Bus'."
+  (let ((icon "/usr/share/icons/gnome/24x24/categories/applications-multimedia.png"))
+    (notify-via-notifications "EMMS is now playing:" track-name icon)))
+
+(defun emms-notifications-message (track-name)
+  "Share track name via Emacs minibuffer."
+  (message "EMMS is now playing: %s" track-name))
+
+(setq emms-player-next-function 'emms-notify-and-next)
+
+(defun emms-notify-and-next ()
+  "Send a notification of track and start next."
+  (emms-next-noerror)
+  (let ((track-name (emms-track-description (emms-playlist-current-selected-track))))
+    (cond
+     ((eq notify-method 'notify-via-dbus-notifications)
+      (emms-notifications-dbus track-name))
+     (t (emms-notifications-message track-name)))))
+
+</pre>
+
+
+=== dired バッファーにて, "!" to add track to playlist ===
+Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
+
+<pre>
+;;; Add music file to playlist on '!', --lgfang
+(add-to-list 'dired-guess-shell-alist-user
+             (list "\\.\\(flac\\|mp3\\|ogg\\|wav\\)\\'"
+                   '(if (y-or-n-p "Add to emms playlist?")
+                        (progn (emms-add-file (dired-get-filename))
+                               (keyboard-quit))
+                      "mplayer")))
+</pre>
+
+=== FLAC トラックの”年”を表示するためのパッチ -lgfang ===
+<pre>
+*** /home/lgfang/tmp/emms/lisp/emms-info-metaflac.el	2011-01-09 21:53:40.904903408 +0800
+--- /home/storage/daily/my-notes/emacs/extensions/emms/emms-info-metaflac.el	2011-01-09 21:58:08.134903811 +0800
+***************
+*** 62,68 ****
+      "--show-tag=ARTIST"
+      "--show-tag=ALBUM"
+      "--show-tag=NOTE"
+!     "--show-tag=YEAR"
+      "--show-tag=TRACKNUMBER"
+      "--show-tag=GENRE")
+    "The argument to pass to `emms-info-metaflac-program-name'."
+--- 62,68 ----
+      "--show-tag=ARTIST"
+      "--show-tag=ALBUM"
+      "--show-tag=NOTE"
+!     "--show-tag=DATE"
+      "--show-tag=TRACKNUMBER"
+      "--show-tag=GENRE")
+    "The argument to pass to `emms-info-metaflac-program-name'."
+***************
+*** 91,97 ****
+                               (string-to-number (buffer-substring (point) (line-end-position))))))
+          (forward-line 1)
+          (while (looking-at "^\\([^=\n]+\\)=\\(.*\\)$")
+!           (let ((name (intern (concat "info-" (downcase (match-string 1)))))
+                  (value (match-string 2)))
+              (when (> (length value)
+                       0)
+--- 91,98 ----
+                               (string-to-number (buffer-substring (point) (line-end-position))))))
+          (forward-line 1)
+          (while (looking-at "^\\([^=\n]+\\)=\\(.*\\)$")
+!           (let ((name (intern (concat "info-" (if (string-equal "DATE" (match-string 1)) "year"
+!                                         (downcase (match-string 1))))))
+                  (value (match-string 2)))
+              (when (> (length value)
+                       0)
+
+</pre>
+
+
+=== Youtube, Vk.com and そしてストリームからタグを読む ===
+
+Inspired by /sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
+
+github.com/snoopcatt/vksearch/blob/master/vksearch
+
+github.com/renard/emms/blob/master/lisp/emms-stream-info.el
+
+I'm not a programmer, can you help me refactor this piece of code?
+
+
+1. w3m-bufferからyoutubeリンクを追加する 
+
+<pre>
+
+(defun w3m-open-link-or-image-in-chromium ()
+  "Open the current link or image in Firefox."
+  (interactive)
+  (let ((url (or (w3m-anchor) (w3m-image))))
+   (if (string-match "youtube" url) 
+       (let ((track (emms-track 'url url)))
+	  (emms-track-set track 'info-title (substring  (shell-command-to-string (concat "youtube-dl -e " url)) 0 -1))
+	  (with-current-emms-playlist
+	  (emms-playlist-insert-track track)))
+ (browse-url-generic url))))
+
+(define-key w3m-mode-map "z" 'w3m-open-link-or-image-in-chromium)
+
+</pre>
+
+2. youtubeの中を検索しw3m-bufferに表示する
+
+<pre>
+(defun emms-youtube-walk (node)
+      (when (listp node)
+	(let* ((title (car (nthcdr 2 (car (xml-get-children node 'title)))))
+	       (group (car (xml-get-children node 'media:group)))
+	       (description  (car (nthcdr 2 (car (xml-get-children group 'media:description)))))
+	       (url (xml-get-attribute (car (xml-get-children group 'media:player)) 'url))
+	       (thumbnail (xml-get-attribute (car (xml-get-children group 'media:thumbnail)) 'url)))
+	  (insert (concat "<li><a href=\"" url "\"><img src=\""thumbnail"\" ></a><b>"title"</b></li>"))
+	  )))
+
+
+(defun emms-add-youtube (search)
+(interactive "sYoutube Search:")
+(let* (
+       (link (concat "https://gdata.youtube.com/feeds/api/videos?q='" search "'&max-results=50&orderby=relevance&format=5&prettyprint=true&v=2&fields=entry(title,media:group(media:player,media:description,media:thumbnail[@yt:name='hqdefault'](@url)))"))
+)
+(url-retrieve  link 
+	       (lambda (s) 
+		 (beginning-of-buffer) 
+		 (search-forward "<" ) 
+		 (beginning-of-line) 
+		 (setq feed (xml-get-children (car (xml-parse-region (point) (point-max))) 'entry))
+		 (erase-buffer)
+		 (insert (concat "<html><head><title>Youtube Client "  "</title></head><body><ol>"))
+		 (mapc 'emms-youtube-walk feed)
+		 (insert "</ol></body></html>")
+		 (let ((filename (concat (make-temp-file "w3m-") ".html")))
+		   (unwind-protect
+		       (progn
+			 (write-region (point-min) (point-max) filename)
+			 (kill-buffer (current-buffer))
+;			 (w3m-copy-buffer nil nil nil t)
+			 (w3m-find-file filename))
+		     (delete-file filename)))
+))))
+</pre>
+
+
+3. 新しいプレイヤーを作る 
+
+<pre>
+(define-emms-simple-player youtube '(url)
+   "www.youtube.com\\|rtmp://" "~/apps/w3myou.sh" )
+(push 'emms-player-youtube emms-player-list)
+</pre>
+
+<pre>
+~/apps/w3myou.sh
+
+mplayer -quiet -really-quiet  -cookies -cookies-file /tmp/cookie.txt $(youtube-dl -g --max-quality 720p --cookies /tmp/cookie.txt $1)
+
+</pre>
+
+4. Vk.comの中を検索しemmsプレイリストバッファーに追加する
+
+<pre>
+
+(defun emms-add-vk (search)
+(interactive "sVk Search:")
+(let* (
+       (link (concat "https://api.vk.com/method/audio.search.xml?q=" search "&sort=2&auto_complete=1&lyrics=0&count=300&offset=0&access_token=3a582f82cd975ace6015cd56e3e6eb3fff57961dccec60850a6272915f547132d616ae4ea0330a19725b9"))
+)
+(url-retrieve  link 
+	       (lambda (s) 
+		 (beginning-of-buffer) 
+		 (search-forward "<" ) 
+		 (beginning-of-line) 
+		 (setq feed (xml-get-children (car (xml-parse-region (point) (point-max))) 'audio))
+		 (mapc 'emms-vk-walk feed)
+		 (kill-buffer (current-buffer))
+))))
+
+
+(defun emms-vk-walk (node)
+      (when (listp node)
+	(let* ((artist (decode-coding-string   (car (nthcdr 2 (car (xml-get-children node 'artist)))) 'utf-8))
+	       (title (decode-coding-string (car (nthcdr 2 (car (xml-get-children node 'title)))) 'utf-8))
+	       (url (car (nthcdr 2 (car (xml-get-children node 'url)))))
+	       (track (emms-track 'url url)))
+	  (emms-track-set track 'info-artist artist)
+	  (emms-track-set track 'info-title (car  (split-string title "\n")))
+	  (with-current-emms-playlist
+	  (emms-playlist-insert-track track)
+	  ))))
+
+</pre>
+
+5. Info from streaming audio (only for mplayer)
+
+<pre>
+
+(setq  emms-player-mplayer-parameters '("-slave" "-quiet")
+ emms-player-mplayer-playlist-parameters '("-slave" "-quiet" "-playlist"))
+
+(defun mplayer-stream-start-listening ()
+  "This emms-player-started-hook checks if the current track is a
+url and the process playing it is mplayer. If it is then the
+output filter mplayer-steam-filter is added to the process"
+(let ((type (emms-track-type (emms-playlist-current-selected-track))))
+ (if (or (eq  type 'url) (eq  type 'streamlist))
+      (let ((process (get-process emms-player-simple-process-name)))
+        (if (string= (car (process-command process)) "mplayer")
+            (set-process-filter process 'mplayer-stream-filter))
+        ))
+  ))
+
+(add-hook 'emms-player-started-hook 'mplayer-stream-start-listening)
+(defvar emms-mplayer-info-coding-system 'cp1251)
+(defmacro emms-mplayer-info-defreg (symname regexp)
+  "Set SYMNAME to be the match for REGEXP."
+  `(if (string-match ,regexp string)
+	(progn 
+	  (setq ,symname (decode-coding-string (match-string 1 string) emms-mplayer-info-coding-system))
+	  (if (> (length ,symname) 40)
+	      (setq ,symname (concat (substring ,symname 0 37) "..."))))
+      ))
+
+
+(defun mplayer-stream-filter (proc string)
+  "Checks mplayer output for ICY Info data. If any is found then the StreamTitle
+option is extracted and written to the track's 'info-title property. Because
+emms-info-track-description -- the function that creates the track name -- needs a
+title *and* an artist 'info-artist is set to the stream title (the one you see in
+emms-streams)."
+  (let ((name "")
+	(Title "")
+	(Artist "")
+	(Album "")
+	(genre "")
+	(bitrate "")
+	(nowplaying "")
+	(track (emms-playlist-current-selected-track))
+)
+	(emms-mplayer-info-defreg name "^Name[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg genre "^Genre[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg bitrate "^Bitrate[ ]*:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe station
+	(emms-mplayer-info-defreg nowplaying "^ICY Info: StreamTitle='\\(.*\\)'")
+	(emms-mplayer-info-defreg Artist "Artist:[ ]*\\(.*\\)\\b[ ]*$\\|^author:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(emms-mplayer-info-defreg Album "Album:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(emms-mplayer-info-defreg Title "Title:[ ]*\\(.*\\)\\b[ ]*$") ;;;;describe artist
+	(if (> (length (concat nowplaying Title)) 0)
+	(emms-track-set track 'info-title (concat nowplaying Title)))
+	(if (> (length (concat name Album)) 0)
+	(emms-track-set track 'info-album (concat name Album)))
+	(if (> (length Artist) 0)
+	(emms-track-set track 'info-artist Artist))
+	(if (not (or (emms-track-get track 'info-artist)
+		     (emms-track-get track 'info-album)
+		     (emms-track-get track 'info-title)))
+	    (emms-track-set track 'info-album
+			    (if (listp (emms-track-get track 'metadata))
+				(car (emms-track-get track 'metadata))
+			      "")))
+	(emms-track-updated track)
+))
+</pre>
+
+=== More descriptive track lines in playlists ===
+
+<pre>
+(defun fg-emms-track-description (track)
+  "Return a somewhat nice track description."
+  (let ((artist (emms-track-get track 'info-artist))
+        (year (emms-track-get track 'info-year))
+        (album (emms-track-get track 'info-album))
+        (tracknumber (emms-track-get track 'info-tracknumber))
+        (title (emms-track-get track 'info-title)))
+    (cond
+     ((or artist title)
+      (concat (if (> (length artist) 0) artist "Unknown artist") " - "
+              (if (> (length year) 0) year "XXXX") " - "
+              (if (> (length album) 0) album "Unknown album") " - "
+              (if (> (length tracknumber) 0)
+                  (format "%02d" (string-to-number tracknumber))
+                "XX") " - "
+                (if (> (length title) 0) title "Unknown title")))
+     (t
+      (emms-track-simple-description track)))))
+
+(setq emms-track-description-function 'fg-emms-track-description)
+
+</pre>
+
+-- Filipp Gunbin
+
+== スクリーンショット ==
+
+[http://www.gnu.org/software/emms/screenshots.html]
+
+[[EmmsEasyNotification]] produces notification like: [[http://santoro.tk/pics/emms-easy-notify.png|this]]
+
+== 質問 ==
+
+=== ムービーについてはどう, 字幕は? ===
+
+The home page says that EMMS supports playing movies too and I am
+too lazy to find out how far that goes? For example, does it
+support selecting of sub text files for mplayer or other players?
+Some more detailed information about this would be nice. -- MaDa
+
+[new] It supports movies, just define a new player than can play
+the extensions you want. What it doesn't support, though, is
+subtitles selection. If you have an idea about how to enable that,
+we'd like to hear it :) Currently I just use a custom python script
+that parses mplayer output and let me choose among the different
+tracks embedded in a .MKV. But for video clips, EMMS just works. --
+LucasBonnet
+
+[new] I am not aware of .MKV files, so I will ignore you just said
+that, for now. :) What I do know, however, is that sub text files
+most of the times have the same base name as the movie file, and
+ends in .srt or .sub. Yes, there are other variants too, with
+"vobsub" files. EMMS should be able to make quite good guesses. I
+have some example elisp at home that I can publish here later, that
+makes such guesses. Many times, mplayer will guess the correct file
+automatically though. -- MaDa
+
+[new] Here is the code I promised. I use it to more easily play
+movie files using mplayer in dired:
+
+<pre>
+(defvar dired-mplayer-program "c:/pgm/mplayer/mplayer.exe")
+
+(defun dired-mplayer ()
+  (interactive)
+  (let ((file (expand-file-name (dired-get-filename)))
+        ext files basename dir curr-file idx-file sub-file srt-file
+command options)
+    (setq basename (file-name-nondirectory
+(file-name-sans-extension file)))
+    (setq dir (file-name-directory file))
+    (setq files (directory-files dir t basename))
+    (delete file files)
+    (while files
+      (setq curr-file (car files))
+      (if (string= (file-name-extension curr-file) "idx")
+        (setq idx-file curr-file))
+      (if (string= (file-name-extension curr-file) "sub")
+        (setq sub-file curr-file))
+      (if (string= (file-name-extension curr-file) "srt")
+        (setq srt-file curr-file))
+      (setq files (cdr files)))
+    (if (and idx-file sub-file)
+        (setq options (format "-vobsub \"%s\""
+(file-name-sans-extension idx-file))))
+    (if (and sub-file
+             (not idx-file))
+        (setq options (format "-sub \"%s\"" sub-file)))
+    (if (and srt-file
+             (not sub-file))
+        (setq options (format "-sub \"%s\"" srt-file)))
+    (setq options (format "%s -font \"%s\" -subfont-text-scale 4
+-really-quiet" options "c:\\windows\\fonts\\arial.ttf"))
+    (setq command (format "\"%s\" \"%s\" %s" dired-mplayer-program
+file options))
+    (if (y-or-n-p (format "Run command %s?" command))
+        (shell-command command))))
+</pre>
+
+Use it in EMMS if you like.
+
+-- MaDa
+
+[new] Or simply put "sub-fuzziness=1" into your ~/.mplayer/config.
+
+-- WilliamXu
+
+=== ストリーミングラジオは? ===
+
+Can I use this package to listen to streaming radio (as is
+available from http://www.kfai.org for example)? -- JoeCorneli
+
+: ''Yes!  Now you can!  It's in CVS.  I've been using it for a
+while, and it works really well once you find a good station.  Just
+do (require 'emms-streaming) followed by `M-x emms-streams' to
+start it up. -- DanielBrockman''
+
+:: At least of my Debian EMMS (version 1.3), the correct require is
+(require 'emms-streams). -- LucaCapello
+
+RichardRiley: 3 Nov 2009
+
+Create or edit your emacs home directory file "emms-streams" and add/paste this in (editing appropriately) for BBC Radio streams around the world:-
+
+<pre>
+(("NDR Info" "http://ndr.ic.llnwd.net/stream/ndr_ndrinfo_hi_mp3" 1 url)
+ ("NDR Kultur" "http://ndr.ic.llnwd.net/stream/ndr_ndrkultur_hi_mp3" 1 url)
+ ("BBC Radio 1" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio1/radio1_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 2" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio2/radio2_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 3" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio3/radio3_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 4" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio4/radio4_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 5" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio5/radio5_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("Nectarine" "http://calcipher.verbrennung.org:8000/nectarine.ogg.m3u" 1 url))
+</pre>
+
+M-x emms-streams to reload
+
+=== AlsaPlayerについては? ===
+
+AlsaPlayer is a generic command line (--interface text) music
+player that can play back a large amount of file formats, including
+CDDA (CD) audio playback and icecast/shoutcast streaming support.
+
+The name AlsaPlayer might be confusing a bit today since it now
+supports a whole bunch of different output systems. The old default
+OSS audio interface is supported, as well as Esound, NAS (Network
+Audio Server), Sparc and SGI audio outputs. The most interesting
+new output is JACK.
+
+: ''Yes! You can! Follow these two simple steps.
+
+* Customize '''emms-player-list''' variable so that it looks like
+<pre>
+'(emms-player-list (quote (emms-player-alsaplayer)))
+</pre>
+in your '''custom-set-variables''' section of your .emacs file.
+
+* Conveniently add the following line in your .emacs file
+<pre>
+(define-emms-simple-player alsaplayer '(file url) (regexp-opt
+'(".ogg" ".mp3" ".wav" ".flac" ".pls" ".m3u" "http://"))
+"alsaplayer" "--quiet" "--nosave" "\"--interface text\"")
+</pre>
+
+Note: alsaplayer's icecast/shoutcast streaming support is not (yet)
+integrated with EMMS, but usable.
+
+=== CDプレイヤーについては ? ===
+Is emms-cd.el deprecated ?
+
+See AlsaPlayer notes, above.
+
+=== Apple リモートコントロールの使用については? ===
+
+=== How about scrobbling to libre.fm? ===
+[new] Emms (from the main git repo) now has Libre.fm support for both scrobbling and streaming music, and will be included in the upcoming 4.0 release. Last.fm support has been removed.
+
+=== MPDについては? ===
+
+MPD or MusicPD is an audio player. 
+It acts as a daemon that can be controlled with different user interfaces, all audio files must be on one directory.
+
+I found this, but I'm unable to configure emacs correctly.
+I would like to know how to play all the supported files with mpd and I have all my audio files on a specific directory in my user /home.
+
+http://cvs.savannah.gnu.org/viewvc/*checkout*/emms/emms/emms-mpd.el?revision=HEAD
+
+Here is the site: http://musicpd.org
+
+----
+
+Bug:  For some reason, if the playlist in MPD is very long (i.e., for listening to songs on random, out of an entire music selection), it always displays as the playing song the song prior to the actual currently-playing song in the playlist.
+
+Bug:  Also, using emms-cache-set-from-mpd-all (in ~/.emacs), even if the MPD cache is updated, calling this function either in a running emacs session or in a brand-new emacs session will fail to update the cache accordingly.
+
+=== UADEについては? ===
+
+UADE means Unix Amiga Delitracker Emulator. It emulates part of the Amiga computer hardware (using code from the UAE Amiga emulator) for running the original players of tons of audio formats, most of these formats are of the mod type and composed using tools known as "trackers". Amiga computers were mainly used by the multimedia stuff (before the term was invented), largely known by its games and demoscene productions, meaning there are tons of music files.
+
+Stuff like mikmod is usable for a few of formats, but it can't play lots of others from Amiga platforms and others.
+
+Site is here: http://zakalwe.fi/uade/
+
+
+=== emms-print-metadata binary ===
+Is there somewhere a win32 binary for emms-print-metadata or
+another way to get all my tags work?
+
+[new]
+I've uploaded w32 build of emms-print-metadata to [http://gashinsky.googlecode.com/files/emms-print-metadata.zip]. It is compiled with MinGW. --DiGash
+
+=== 歌詞の取得 ===
+I've written a few lines to get the lyrics to the song that emms is
+currently playing.  
+(Just the lyrics, it doesn't get the lyrics in the format that will
+allow emms to display the lyrics synchronically.)
+It's a bit rough, but it works for me, so I thought I'd post it.
+
+Lisp:emms-get-lyrics.el (2007), [[http://github.com/talau/elisp/blob/master/emms-get-lyrics.el|emms-get-lyrics.el]] (2010)
+(The original Lisp:emms-get-lyrics.el do not work for me, so I fixed
+it, removing mode-map, and adding some features: debug mode;
+variables for match/unmatch the lyric in the answer;
+match and remove ads;
+auto redirect to the correct lyric when the tag of audio file is wrong;
+when the lyric is not found, prepare buffer if the user want to write it;
+before try to find the lyric, check: required programs, and artist and title in the song. -- talau)
+
+
+Jay
+
+JohnSturdy has written a major mode for creating and editing lyric files; it connects directly to ogg123, and doesn't actually use EMMS, but might be useful alongside it.
+
+LyricMode
+
+=== Getting it to work on win32 ===
+I've recently downloaded EMMS, mplayer for windows, and
+vorbis-tools in cygwin, but i can't seem to get emms to work. 
+
+The config i used is the following: 
+<pre>
+;;EMMS player (a music/video player for emacs)
+(add-to-list 'load-path "D:/emacs/site-lisp/emms/")
+(add-to-list 'load-path "C:/mplayer/")
+(require 'emms)
+(require 'emms-player-simple)
+(require 'emms-source-file)
+(require 'emms-source-playlist)
+(setq emms-player-list '(emms-player-mpg321 
+			 emms-player-ogg123 
+			 emms-player-mplayer)
+      emms-source-list '((emms-directory-tree "D:/My Music/")))
+</pre>
+
+Where C:/mplayer/mplayer.exe is where i downloaded the windows
+version of myplayer.
+
+When i enter emms-play-file D:/abc.mp3 (a small test file), it
+returns symbol's value as variable is void: emms-player-mplayer
+Thanks alot!
+
+[new] You'll need to add
+<pre>
+(require 'emms-player-mplayer)
+</pre>
+as well.  --MichaelOlson
+
+[new] Well, i added that, but now when i tried to play the file, it
+gave me this error: Don't know how to play track: (*track* (type .
+file) (name . "D:/abc.mp3"))
+
+It is probably that i cannot figure out or find how to get
+mpg321/mpg123 working on windows, i got cygwin and vorbis-tools in
+it as per advice from MpthreePlayer page. Anyone got any ideas?
+
+Thanks alot!
+
+[new]You need to put the player executable
+(mpg321/mplayer/whatever) in Emacs' exec-path list:
+
+ (add-to-list 'exec-path "C:/mplayer/")
+
+--LucasBonnet
+
+=== プレイリストバッファーでイメージ? ===
+
+So on the EMMS website, there's a screenshot in which the playlist
+buffer (not just the browser buffer) displays cover images! I've
+tried googling around but haven't found the code that enables that
+particular feature, but would really like to prettify the playlist
+buffer some...basically, it would be cool to have the default
+display mode, plus images.
+
+Anyway...any response is much appreciated. And just think--then
+this'll be on the internet and will come up in google searches the
+first time around.
+
+[new]This is part of emms-browser.el - when you add tracks from the
+browser into the playlist, it automatically adds the images as
+well.
+If you want to use images without the browser, you'll need to write
+your own code to insert the images into the buffer.
+
+- Well, that's the thing! I always use emms-browser. When I add
+tracks from the browser into the playlist, it does *not* insert an
+image (whether inserting individual tracks, a whole album, or
+everything by an artist). And I use a recent (a few days old) darcs
+version (this didn't work on the Debian version either, back when I
+used that). What might be causing this abnormal behavior?
+
+[new]The playlist uses a different size image by default. Have a
+look at the variable `emms-browser-covers'
+
+[new]
+By default, emms will insert cover_small.jpg into browser buffer and
+ cover_med.jpg into playlist.  Therefore, you need to make sure there
+ are such image files for each directory.
+
+Here is the script I used to create such files from images:
+<pre>
+#!/bin/bash
+# Modified: Fang lungang 03/13/2010 21:55>
+for afile in "$@"; do
+    path=$(dirname "$afile")
+    convert -resize 60x60 "$afile" "$path/cover_small.jpg"
+    convert -resize 120x120 "$afile" "$path/cover_med.jpg"
+    # large cover not used
+done
+</pre>
+
+=== EMMSとWMA ===
+For one reason or another I have a bunch of WMA files. However, EMMS does not read the tags.
+Instead WMA tracks are just mixed together under Misc. EMMS will play back the tracks, however.
+Does somebody know how to make EMMS handle WMA tags? 
+
+== DVD's and CD's Using MPlayer Player? ==
+
+Is this possible? Would I just point EMMS to the /mnt/cdrom directory?
+
+== 元ファイルを削除することなくキャッシュからアイテムを削除するには ==
+
+Since EMMS seems to cache everything (which, normally, is useful
+since I like to use the Browser), is there a way to delete items
+from the cache without deleting the files? For example, I might
+move a file to a different location, eject a CD (if there's a way
+to play CD's), or delete it from somewhere else--in which case,
+when I try to remove it from the cache using "D" in browser-mode, I
+get an error about the file not existing (and the item remains in
+the cache), so I have to use "touch" to create new files for it to
+delete. Any thoughts?
+
+[new]
+Run M-x emms-cache-sync and it will look through your cache for
+files which have been updates or deleted.
+
+== Apache ディレクトリ リスティングからファイルを再生する ==
+
+I share my whole mp3-collection through a secret link (i.e. you need to know the exact link to access them) on my Apache server, and some of my friends does too. So I wanted an easy way to get EMMS to play all mp3 files found in such a directory listing. It was quite easy to do. Enjoy!
+
+<pre>
+(defun my-emms-play-apache-mp3-folder (folder-url)
+  "Plays mp3 files found in Apache directory listing."
+  (interactive "sURL to Apache directory listing: ")
+  (let ((tmp-file "~/.my-emms-play-apache-mp3-folder-tmp"))
+    (when (file-exists-p tmp-file)
+      (delete-file tmp-file))
+    (url-copy-file folder-url "~/.my-emms-play-apache-mp3-folder-tmp" t)
+    (while (not (file-exists-p tmp-file))
+      (sleep-for 0 500)
+      (message "Looking for file..."))
+    (message "Listing downloaded. Parsing...")
+    (with-temp-buffer
+      (insert-file-contents "~/.my-emms-play-apache-mp3-folder-tmp")
+      (goto-char (point-min))
+      (while (search-forward-regexp "a href=\"\\(.+\.mp3\\)\"" nil t)
+        (emms-add-url (concat folder-url (match-string 1))))
+      (message "Done."))))
+</pre>
+
+Usage: Copy the URL to a specific folder with mp3-files. Execute the command above and paste the URL. The URL needs to end in a slash, I was lazy and did not want to check for it in the code...
+
+-- MaDa
+
+== キーバインディング ==
+
+This code sets up the arrow keys to control the player:
+
+    (global-set-key (kbd "C-c e <up>") 'emms-start)
+    (global-set-key (kbd "C-c e <down>") 'emms-stop)
+    (global-set-key (kbd "C-c e <left>") 'emms-previous)
+    (global-set-key (kbd "C-c e <right>") 'emms-next)
+
+If you have "multimedia keys" on your keyboard, you might want to do the following:
+
+    (global-set-key (kbd "<XF86AudioPlay>") 'emms-pause)
+    (global-set-key (kbd "<XF86AudioStop>") 'emms-stop)
+    (global-set-key (kbd "<XF86AudioPrev>") 'emms-previous)
+    (global-set-key (kbd "<XF86AudioNext>") 'emms-next)
+
+Or... Are you running Emms inside your emacs daemon? Have you ever wanted to set it as your
+default, primary audio player? Have you ever wanted to switch to the next track (this 
+one suc*s!) but you where in Firefox/OpenOffice/whatever ?
+
+Well, then give a look to [[EmmsRemote]], in order to bind your Window-Manager keychain
+to Emacs/Emms ;-)
+
+
+== Calculating Total time of all tracks in emms playlist, below the point==
+emmsプレイリスト中の全てのトラックの合計時間を計算する
+
+I just started out with lisp and there can be any better thing to hack on but emms!
+
+<pre>
+(defun my-emms-playlist-total-time-below-point ()
+"Calculates the total time taken for all the tracks currently in playlist and below point"
+(interactive)
+(let ((move-forward t)
+      (total-playlist-time 0))
+  (save-excursion 		
+    (while move-forward
+      (setq total-playlist-time (+ total-playlist-time (or (emms-track-get (emms-playlist-track-at (point)) 'info-playing-time) 0)))
+      (forward-line 1)
+	(setq move-forward (next-single-property-change (point) 'emms-track))))
+(setq total-hour-only (/ total-playlist-time 3600)
+	total-minutes-only (/ (% total-playlist-time 3600) 60)
+	total-seconds-only (% total-playlist-time 60))
+(message "Total time is %dh:%dm:%ds" total-hour-only total-minutes-only total-seconds-only)))
+</pre>
+-- shyam_k
+
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Lisp:anything-config.el has EMMS related sources, `anything-c-source-emms-streams' and `anything-c-source-emms-dired'.
+
+== ディスク番号とディスクサブタイトル ==
+
+The discnumber tag is supported by at least mp3 and ogg files, and most players understand it. Is there a special reason EMMS ignores it ? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.
+
+[new]
+I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
