@@ -381,6 +381,8 @@ The following example is for instruction.  Normally standard function `string-to
            (str (if (stringp num)
                     num
                   (number-to-string num)))
+            ;; omitting any trailing non-digit chars
+            ;; NOTE: Calc supports BASE up to 36 (26 letters and 10 digits ;)
            (pt (or (string-match "[^0-9a-zA-Z]" str) (length str))))
       (while (> pt size)
         (setq str (concat (substring str 0 (- pt size))
