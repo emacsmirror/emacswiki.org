@@ -52,6 +52,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * SokobanMode
 * TypingOfEmacs -- a game for fast typers
 * TypingPractice -- typing practice in the minibuffer.
+* [https://github.com/ScottishPig/Elisp-2048/blob/master/2048.el 2048-mode] Port of popular game 2048 to Elisp
 * [https://github.com/killdash9/tron.el Tron] -- A tron game with a configurable number of opponents.
 * [[Whine]] -- complaint generator
 * MineSweeper -- a game of mine sweeper
