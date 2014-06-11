@@ -129,7 +129,7 @@ MOD, XM, S3M そしてそれに似たようなファイルを再生したいよ�
 </pre>
 
 === KDE通知 ===
-[new]
+
 現在の曲を表示するためにはknotifyを使ってください. D-BusとEmacsの連携を要求します:
 
 <pre>
@@ -210,7 +210,8 @@ Freedesktop通知サービスと通信するためD-Busか, もし走ってい�
 
 
 === dired バッファーにて, "!"でプレイリストにトラックを追加する ===
-元ネタ　http://tanstaafl.cn/Home/EmacsEmms.html
+元ネタ
+*http://tanstaafl.cn/Home/EmacsEmms.html
 
 <pre>
 ;;; Add music file to playlist on '!', --lgfang
@@ -267,9 +268,10 @@ Freedesktop通知サービスと通信するためD-Busか, もし走ってい�
 
 === Youtube, Vk.com, そしてストリームからタグを読む ===
 
-元ネタ sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
-       github.com/snoopcatt/vksearch/blob/master/vksearch
-       github.com/renard/emms/blob/master/lisp/emms-stream-info.el
+元ネタ
+* sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
+* github.com/snoopcatt/vksearch/blob/master/vksearch
+* github.com/renard/emms/blob/master/lisp/emms-stream-info.el
 
 I'm not a programmer, can you help me refactor this piece of code?
 
