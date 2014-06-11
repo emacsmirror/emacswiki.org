@@ -94,7 +94,7 @@ It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-
 [:grep.el]
 === grep.el ===
 
-grep.el is designed to be a drop-in replacement for GNU Grep under Windows.  It runs as a separate process so there is almost no difference in how you use it on Windows and how GNU Grep is used under Linux or FreeBSD.  It is written in 100% Emacs Lisp so if you have the native version of Emacs installed under Windows, it is likely you'll be able to run grep.el:
+grep.el is designed to be a drop-in replacement for GNU Grep under Windows.  It runs as a separate process so there is almost no difference in how it is used on Windows and how GNU Grep is used under Linux or FreeBSD.  It is written in 100% Emacs Lisp so if you have the native version of Emacs installed under Windows, it is likely you'll be able to run grep.el:
 
 * [http://www.serice.net/grep.el/ grep.el]
 
