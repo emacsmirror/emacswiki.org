@@ -152,7 +152,7 @@ To connect to a very old system I had to switch the remote, default LANG to a ''
 
 === Tramp hangs #5: Control-j .inputrc mapping ===
 
-If you have Control-j mapped in your .inputrc to something e.g. like this:
+If you have Control-j mapped in your ##~/.inputrc## to something e.g. like this:
 
 {{{
 Control-j: menu-complete
