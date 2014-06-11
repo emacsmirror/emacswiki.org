@@ -27,8 +27,9 @@ Do we still need an async process which spits out the data, so we can process it
 * '''emms-lang.el''' - [[i18n]] サポート
 * '''emms-remote.el''' - ポップアップ ウィンドウ/フレーム with widgets for the main functions
 
-** Maybe a popup window like CEDET's bowser with the playlist would  be also interesting.
-For the main functions I have global keys (previous,  next, pause...) in four consecutive keys.
+** 多分プレイリストがCEDETブラウザーのようなポップアップウィンドウならまた、興味深いものになるだろう.
+
+メーン関数向けに私は４つの連続したキーの中にグローバルキー (previous,  next, pause...)を持っている.
 
 * いくつかのプレイヤーファイル (xmms, xine)
 
@@ -70,17 +71,17 @@ Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
 
 バイノーラルビートはイヤホンで位相差を伴った正弦波を再生することによって精神状態を誘導しようとするサウンドファイルです.
 
-The player definition is trivial, I just didnt occur to me previously that emacs can be a very nice integrated binaural beat experimentation environment!
-
+プレイヤー定義は簡単です, 私には前のような起きませんでしたEmacsは非常に素晴らしい統合されたバイノーラルビート実験環境なりうるでしょう!
 -- JoakimVerona
 
-=== Mix CD Creation ===
+=== ミックスCD作成 ===
 
-While this code won't burn a CD for you (any suggestions there?),
+このコードがあなたのためにCDを焼かないであろうかぎり(何か提案ある?),
 
-it will take your current EMMS playlist buffer and symlink those tracks (in the order they are in your playlist buffer) to a given directory.
+それはあなたの現在のEMMSプレイリストバッファーとそれらのトラックのシンボリックリンクを(あなたのプレイリストバッファーの順番通りに)与えられたディレクトリに連れていくでしょう.
 
-Please feel free to post improvements (but do note what you change; I'm curious).
+改善を投稿することを自由に感じてください (しかしあなたが何を変えたかをノートしてください; 私は興味がある).
+
 
 Note that you probably need to make some adjustments if you don't use a fairly uniform naming scheme for your music files.
 
@@ -130,7 +131,7 @@ Here it is:
 
 === KDE通知 ===
 
-Use knotify to display the current song. Requires Emacs with dbus:
+現在の曲を表示するためにはknotifyを使ってください. D-BusをEmacsと連携させる必要があります:
 
 <pre>
 (defun ts/showsong ()
