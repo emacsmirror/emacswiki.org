@@ -34,7 +34,17 @@ or
 
        screen -DR <name>
 
+== Erbot Tip of the day ==
 
-Or not.  The bot should be running in your channels, so unless you want to change some things this is unnecessary (and, well, kind of defeated the purpose of screen).
+=== Functions for internal variables ===
+
+<pre>
+<deego> [FTOTD]: Many internal variables can be examined by calling a corresponding *function*. Eg: ,,(fs-features),,                                                                                         
+        which also gets invoked if you type ,features.
+<fsbot> (cc-mode cc-fonts cc-guess cc-menus cc-cmds cc-styles cc-align cc-engine cc-vars cc-defs etags dired-aux                                                                                              
+        add-log lpr parse-time vc-cvs dired help-fns yow cookie1 mail-utils url-cache url-http mail-parse rfc2231                                                                                             
+        rfc2047 rfc2045  ..[Type ,more]
+</pre>
+
 ----
 ErBot
