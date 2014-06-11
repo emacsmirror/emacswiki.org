@@ -211,7 +211,7 @@ Freedesktop通知サービスと通信するためD-Busか, もし走ってい�
 
 === dired バッファーにて, "!"でプレイリストにトラックを追加する ===
 元ネタ
-*http://tanstaafl.cn/Home/EmacsEmms.html
+* http://tanstaafl.cn/Home/EmacsEmms.html
 
 <pre>
 ;;; Add music file to playlist on '!', --lgfang
