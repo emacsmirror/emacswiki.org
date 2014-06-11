@@ -61,7 +61,7 @@ MOD, XM, S3M そしてそれに似たようなファイルを再生したいよ�
 
 -- MartinSchoenmakers
 
-Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
+修正済み: "mikmod" "-q" "-p" "1" "-X", 定義の最後にて
 
 -- Aitherios
 
@@ -83,11 +83,10 @@ Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
 改善を投稿することを自由に感じてください (しかしあなたが何を変えたかをノートしてください; 私は興味がある).
 
 
-Note that you probably need to make some adjustments if you don't use a fairly uniform naming scheme for your music files.
+注意してください、もしあなたがミュージックファイルのためにかなり均一な命名体系使っていないならあなたは恐らくいくつかの調整をする必要がある.
 
-You definitely need to adjust at least one path in the code (just take a look).
-
-Here it is:
+あなたは間違いなく少なくともコード中の１つのパスを調整する必要がある(注意して見てください).
+ここでは、次のとおりです:
 
 <pre>
 (require 'emms-playlist-mode)
@@ -131,7 +130,7 @@ Here it is:
 
 === KDE通知 ===
 
-現在の曲を表示するためにはknotifyを使ってください. D-BusをEmacsと連携させる必要があります:
+現在の曲を表示するためにはknotifyを使ってください.  D-BusとEmacsの連携を要求します:
 
 <pre>
 (defun ts/showsong ()
@@ -143,10 +142,10 @@ Here it is:
 (setq emms-player-next-function 'ts/showsong)
 </pre>
 [new]
-Don't know why above code doesn't work for me. Hence, I came with another simple (and maybe rude one ;)
+なんでかわからないけど上のコードが俺のところでは動かない. そこで,  別のシンプルなやつを付けといた(そして多分野暮ったいだろうけどね ;)
 
 <pre>
-;;; A rude way to make use of KNotify.  Tested on Debian/Squeeze. --lgfang
+;;; KNotifyを利用するための野暮ったいやり方.  Debian/Squeezeでテスト済み. --lgfang
 (when (and window-system (executable-find "kdialog"))
   (setq emms-player-next-function
         (lambda ()
@@ -161,12 +160,12 @@ Don't know why above code doesn't work for me. Hence, I came with another simple
 
 === Freedesktop/D-Bus通知 ===
 
-Use D-Bus to communicate with the Freedesktop notification service, or the minibuffer if D-Bus is not running.
+Freedesktop通知サービスと通信するためD-Busか, もし走っていなければミニバッファを使う.
 
 <pre>
-; choose D-Bus to disseminate messages, if it is running.
+; メッセージを広めるために、D-Busを選択する, もしそれが走っているならば.
 (cond
- ;; test to see if D-Bus notifications are available
+ ;; D-Busは通知が利用できるかどうかを確認するためのテスト
  ((if (and (require 'dbus nil t)
 	   (dbus-ping :session "org.freedesktop.Notifications"))
       (progn
@@ -176,7 +175,7 @@ Use D-Bus to communicate with the Freedesktop notification service, or the minib
  (t (setq notify-method 'notify-via-message)))
 
 (defun notify-via-notifications (title msg icon)
-  "Send notification with TITLE, MSG via `D-Bus'."
+  "`D-Bus'経由でTITLE, MSG付きで通知を送る."
   (notifications-notify
    :title title
    :body msg
@@ -184,22 +183,22 @@ Use D-Bus to communicate with the Freedesktop notification service, or the minib
    :urgency 'low))
 
 (defun notify-via-messages (title msg)
-  "Send notification with TITLE, MSG to message."
+  "messageへTITLE, MSG付きで通知を送る."
   (message "APPOINTMENT: %s" msg))
 
 (defun emms-notifications-dbus (track-name)
-  "Share track name via `D-Bus'."
+  "`D-Bus'経由でトラック名を共有する."
   (let ((icon "/usr/share/icons/gnome/24x24/categories/applications-multimedia.png"))
     (notify-via-notifications "EMMS is now playing:" track-name icon)))
 
 (defun emms-notifications-message (track-name)
-  "Share track name via Emacs minibuffer."
+  "Emacsミニバッファ経由でトラック名を共有する."
   (message "EMMS is now playing: %s" track-name))
 
 (setq emms-player-next-function 'emms-notify-and-next)
 
 (defun emms-notify-and-next ()
-  "Send a notification of track and start next."
+  "トラックと次のスタートの通知を送る."
   (emms-next-noerror)
   (let ((track-name (emms-track-description (emms-playlist-current-selected-track))))
     (cond
@@ -210,8 +209,8 @@ Use D-Bus to communicate with the Freedesktop notification service, or the minib
 </pre>
 
 
-=== dired バッファーにて, "!" to add track to playlist ===
-Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
+=== dired バッファーにて, "!"でプレイリストにトラックを追加する ===
+元ネタ　http://tanstaafl.cn/Home/EmacsEmms.html
 
 <pre>
 ;;; Add music file to playlist on '!', --lgfang
@@ -266,13 +265,11 @@ Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
 </pre>
 
 
-=== Youtube, Vk.com and そしてストリームからタグを読む ===
+=== Youtube, Vk.com, そしてストリームからタグを読む ===
 
-Inspired by /sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
-
-github.com/snoopcatt/vksearch/blob/master/vksearch
-
-github.com/renard/emms/blob/master/lisp/emms-stream-info.el
+元ネタ sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
+       github.com/snoopcatt/vksearch/blob/master/vksearch
+       github.com/renard/emms/blob/master/lisp/emms-stream-info.el
 
 I'm not a programmer, can you help me refactor this piece of code?
 
@@ -282,7 +279,7 @@ I'm not a programmer, can you help me refactor this piece of code?
 <pre>
 
 (defun w3m-open-link-or-image-in-chromium ()
-  "Open the current link or image in Firefox."
+  "Firefoxで現在のリンクもしくはイメージを開く."
   (interactive)
   (let ((url (or (w3m-anchor) (w3m-image))))
    (if (string-match "youtube" url) 
@@ -386,7 +383,7 @@ mplayer -quiet -really-quiet  -cookies -cookies-file /tmp/cookie.txt $(youtube-d
 
 </pre>
 
-5. Info from streaming audio (only for mplayer)
+5. ストリーミングオーディオからの情報 (mplayerだけ)
 
 <pre>
 
@@ -456,11 +453,11 @@ emms-streams)."
 ))
 </pre>
 
-=== More descriptive track lines in playlists ===
+=== プレイリスト中のより叙述的なトラック行 ===
 
 <pre>
 (defun fg-emms-track-description (track)
-  "Return a somewhat nice track description."
+  "いくらかナイスなトラック情報を返す."
   (let ((artist (emms-track-get track 'info-artist))
         (year (emms-track-get track 'info-year))
         (album (emms-track-get track 'info-album))
@@ -493,19 +490,18 @@ emms-streams)."
 == 質問 ==
 
 === ムービーについてはどう, 字幕は? ===
+EMMSは動画再生をサポートするとホームページでは謳われているが本当は
+私は調べるのが面倒だどのくらいでそれはなる? 例えば, 
+それはMPlayerか、他のプレーヤーのためのサブテキストファイルの選択をサポートしていますか？
+これについてのいくつかのより詳細な情報がいいだろう.
+-- MaDa
 
-The home page says that EMMS supports playing movies too and I am
-too lazy to find out how far that goes? For example, does it
-support selecting of sub text files for mplayer or other players?
-Some more detailed information about this would be nice. -- MaDa
-
-[new] It supports movies, just define a new player than can play
-the extensions you want. What it doesn't support, though, is
-subtitles selection. If you have an idea about how to enable that,
-we'd like to hear it :) Currently I just use a custom python script
-that parses mplayer output and let me choose among the different
-tracks embedded in a .MKV. But for video clips, EMMS just works. --
-LucasBonnet
+[new] It supports movies, just define a new player than can play the extensions you want.
+What it doesn't support, though, is subtitles selection.
+If you have an idea about how to enable that, we'd like to hear it :)
+現在俺はmplayer出力パースし.mkvに埋め込まれたたくさんの異なるトラックを俺に選ばせるカスタムpythonスクリプトをちょうど使っている.
+しかしビデオクリップのために,EMMSだけで動作します.
+-- LucasBonnet
 
 [new] I am not aware of .MKV files, so I will ignore you just said
 that, for now. :) What I do know, however, is that sub text files
