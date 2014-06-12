@@ -106,6 +106,7 @@ git clone https://github.com/linuxdeepin/deepin-emacs
 *** [http://www.emacswiki.org/emacs/window-number.el window-number.el] -- For fast switch in windows.
 
 *** [http://www.emacswiki.org/emacs/helm-autoload-commands.el helm-autoload-commands.el] -- Search command, load library, execute command in runtime.
+*** [http://www.emacswiki.org/emacs/helm-webkit.el helm-webkit.el] -- Search browse history of [http://www.emacswiki.org/emacs/WebKit emacs-webkit] .
 
 * Enhanced packages.
 
