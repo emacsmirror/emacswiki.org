@@ -79,8 +79,8 @@ It is fairly similar to CVS.  If you're using the command-line:
 
 Optionally, before doing a commit, you can do ##bzr status## to
 view the changed which will be committed by ##bzr commit## (with no
-filename arguments) and unknown files which will be ignored by ##bzr
-commit##.  "Unknown" means that the file neither matches a pattern in
+filename arguments) and unknown files which will be ignored by
+##bzr commit##.  "Unknown" means that the file neither matches a pattern in
 .bzrignore nor is registered with Bazaar.  Typically unknown files
 are newly added.  In order to track changes in them, use the ##bzr add##
 command:
