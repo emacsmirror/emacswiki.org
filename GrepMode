@@ -36,7 +36,6 @@ There are several ways to get a working `grep' and `find' on MS Windows.
 * CygWin -- see <tt>[[cygwin-mount.el]]</tt> and <tt>[[setup-cygwin.el]]</tt>
 * [[#GnuWin32]]
 * [[#MSYS]]
-* [[#grep.el]]
 
 Copy ##grep.exe## and ##find.exe## (as well as any necessary ##.dll## files) to Emacs' ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
 
@@ -90,16 +89,6 @@ It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-
 	         "\\([\\.~]\\)"
 	         "\\\\\\1"
 	         ad-return-value)))))
-
-[:grep.el]
-=== grep.el ===
-
-grep.el is designed to be a drop-in replacement for GNU Grep under Windows.  It runs as a separate process so there is almost no difference in how it is used on Windows and how GNU Grep is used under Linux or FreeBSD.  It is written in 100% Emacs Lisp so if you have the native version of Emacs installed under Windows, it is likely you'll be able to run grep.el:
-
-* [http://www.serice.net/grep.el/ grep.el]
-
-[new:DrewAdams:2014-06-11 13:58 UTC]
-This is a very bad name for your library.  It is the same name as the library for the Emacs `grep` commands that is distributed as part of Emacs.  Please consider coming up with a better, non-conflicting name. -- DrewAdams
 
 
 == Grep+: Enhancements to Emacs grep ==
