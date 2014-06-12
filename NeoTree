@@ -1,13 +1,14 @@
-= About =
 
 A emacs tree plugin like [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] for Vim.
 
 https://github.com/jaypei/emacs-neotree
 
+== About ==
+
 [img]https://raw.githubusercontent.com/wiki/jaypei/emacs-neotree/imgs/neotree-1.png[/img]
 
 
-= Installation =
+== Installation ==
 
 Clone project:
 
