@@ -1,4 +1,3 @@
-
 A emacs tree plugin like [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] for Vim.
 
 https://github.com/jaypei/emacs-neotree
@@ -15,11 +14,13 @@ Clone project:
   $ cd /some/path
   $ git clone https://github.com/jaypei/emacs-neotree.git neotree
 
-Add emacs config:
+Add config to emacs:
 
   (add-to-list 'load-path "/some/path/neotree")
   (require 'neotree)
+  (global-set-key [f8] 'neotree-toggle)
 
-Open NeoTree:
+Open (toggle) NeoTree:
 
-  M-x neotree RET
+  <F8>
+
