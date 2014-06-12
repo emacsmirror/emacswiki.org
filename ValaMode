@@ -1,6 +1,8 @@
 Vala-mode is based on CSharpMode. 
 Download Here
-[https://wiki.gnome.org/Projects/Vala/Emacs?action=AttachFile&do=view&target=vala-mode.el Vala-Made.el]
+[https://wiki.gnome.org/Projects/Vala/Emacs?action=AttachFile&do=view&target=vala-mode.el Vala-Mode.el]
+
+or Lisp:vala-mode.el
 
 Basic Setup
 <pre>
