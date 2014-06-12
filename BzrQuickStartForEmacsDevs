@@ -139,8 +139,8 @@ feature Foo".
 
 Before committing, not just the files you are committing but _all_
 your local source files must be up to date with upstream. So if
-somebody else commits to upstream between the ##bzr up## and the ##bzr
-commit## commands, you'll need to ##bzr up## again.
+somebody else commits to upstream between the ##bzr up## and the
+##bzr commit## commands, you'll need to ##bzr up## again.
 
 
 
