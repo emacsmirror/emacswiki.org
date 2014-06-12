@@ -2,8 +2,9 @@ A modified version of this file is now available at
 
 https://bitbucket.org/tws/bibtex-utils
 
-And it should be on MELPA soon.
+It should be on MELPA soon.
 
+{{{
 ;;; bibtex-utils.el --- utilities for BibTeX
 
 ;; Copyright (C) 2007 Bastien Guerry
@@ -124,3 +125,4 @@ the empty string will quit the prompt."
 ;;;;  User Options, Variables
 ;;;;##########################################################################
 
+}}}
