@@ -36,7 +36,7 @@ Do we still need an async process which spits out the data, so we can process it
 (simple players like 'play' are trivial to implement with emms-player-simple - info is in the manual)
 
 ** mpg321の遠隔操作能力を使うことを考えたことがありますか(LOAD <file>, PAUSE, JUMP [+-]<frames>, STOP, QUIT)?
-*実装されました - emms-player-mpg321-remoteを見てください*
+*** 実装されました - emms-player-mpg321-remoteを見てください*
 
 === MOD, XM, S3M そしてそれに似たようなやつ ===
 
@@ -72,6 +72,7 @@ MOD, XM, S3M そしてそれに似たようなファイルを再生したいよ�
 バイノーラルビートはイヤホンで位相差を伴った正弦波を再生することによって精神状態を誘導しようとするサウンドファイルです.
 
 プレイヤー定義は簡単です, 私には前のような起きませんでしたEmacsは非常に素晴らしい統合されたバイノーラルビート実験環境なりうるでしょう!
+
 -- JoakimVerona
 
 === ミックスCD作成 ===
@@ -214,7 +215,7 @@ Freedesktop通知サービスと通信するためD-Busか, もし走ってい�
 * http://tanstaafl.cn/Home/EmacsEmms.html
 
 <pre>
-;;; Add music file to playlist on '!', --lgfang
+;;; '!'でプレイリストにミュージッファイルを追加する, --lgfang
 (add-to-list 'dired-guess-shell-alist-user
              (list "\\.\\(flac\\|mp3\\|ogg\\|wav\\)\\'"
                    '(if (y-or-n-p "Add to emms playlist?")
@@ -393,9 +394,7 @@ mplayer -quiet -really-quiet  -cookies -cookies-file /tmp/cookie.txt $(youtube-d
  emms-player-mplayer-playlist-parameters '("-slave" "-quiet" "-playlist"))
 
 (defun mplayer-stream-start-listening ()
-  "This emms-player-started-hook checks if the current track is a
-url and the process playing it is mplayer. If it is then the
-output filter mplayer-steam-filter is added to the process"
+  "This emms-player-started-hook checks if the current track is a url and the process playing it is mplayer. If it is then the output filter mplayer-steam-filter is added to the process"
 (let ((type (emms-track-type (emms-playlist-current-selected-track))))
  (if (or (eq  type 'url) (eq  type 'streamlist))
       (let ((process (get-process emms-player-simple-process-name)))
@@ -417,11 +416,8 @@ output filter mplayer-steam-filter is added to the process"
 
 
 (defun mplayer-stream-filter (proc string)
-  "Checks mplayer output for ICY Info data. If any is found then the StreamTitle
-option is extracted and written to the track's 'info-title property. Because
-emms-info-track-description -- the function that creates the track name -- needs a
-title *and* an artist 'info-artist is set to the stream title (the one you see in
-emms-streams)."
+  "Checks mplayer output for ICY Info data. If any is found then the StreamTitle option is extracted and written to the track's 'info-title property.
+Because emms-info-track-description -- the function that creates the track name -- needs a title *and* an artist 'info-artist is set to the stream title (the one you see in emms-streams)."
   (let ((name "")
 	(Title "")
 	(Artist "")
@@ -498,24 +494,28 @@ EMMSは動画再生をサポートするとホームページでは謳われて�
 これについてのいくつかのより詳細な情報がいいだろう.
 -- MaDa
 
-[new] It supports movies, just define a new player than can play the extensions you want.
+[new]
+It supports movies, just define a new player than can play the extensions you want.
+
 What it doesn't support, though, is subtitles selection.
-If you have an idea about how to enable that, we'd like to hear it :)
+
+
+もし前がそれをどう有効にするかについてのアイディアを持っているなら, 聞かせてくれ :)
 現在俺はmplayer出力パースし.mkvに埋め込まれたたくさんの異なるトラックを俺に選ばせるカスタムpythonスクリプトをちょうど使っている.
 しかしビデオクリップのために,EMMSだけで動作します.
+
 -- LucasBonnet
 
-[new] I am not aware of .MKV files, so I will ignore you just said
-that, for now. :) What I do know, however, is that sub text files
-most of the times have the same base name as the movie file, and
-ends in .srt or .sub. Yes, there are other variants too, with
-"vobsub" files. EMMS should be able to make quite good guesses. I
-have some example elisp at home that I can publish here later, that
-makes such guesses. Many times, mplayer will guess the correct file
-automatically though. -- MaDa
+[new] 俺は .MKVファイルついては知らない,だから俺はお前がさっき行ったことは今のところ無視するよ. :)
+What I do know, however, is that sub text files most of the times have the same base name as the movie file, and ends in .srt or .sub.
 
-[new] Here is the code I promised. I use it to more easily play
-movie files using mplayer in dired:
+Yes, there are other variants too, with "vobsub" files. EMMS should be able to make quite good guesses.
+
+I have some example elisp at home that I can publish here later, that makes such guesses. Many times, mplayer will guess the correct file automatically though.
+
+-- MaDa
+
+[new] 約束したコードがここにある. 俺はdiredでmplayerを使って動画ファイルをより簡単に再生するために使っている:
 
 <pre>
 (defvar dired-mplayer-program "c:/pgm/mplayer/mplayer.exe")
@@ -556,8 +556,7 @@ file options))
         (shell-command command))))
 </pre>
 
-Use it in EMMS if you like.
-
+もし気に入ったらEMMSで使え.
 -- MaDa
 
 [new] Or simply put "sub-fuzziness=1" into your ~/.mplayer/config.
@@ -565,17 +564,19 @@ Use it in EMMS if you like.
 -- WilliamXu
 
 === ストリーミングラジオは? ===
+ストリーミングラジオを聞くためにこのパッケージを使うことができますか(例えばhttp://www.kfai.orgから使える)?
 
-Can I use this package to listen to streaming radio (as is
-available from http://www.kfai.org for example)? -- JoeCorneli
+-- JoeCorneli
 
-: ''Yes!  Now you can!  It's in CVS.  I've been using it for a
-while, and it works really well once you find a good station.  Just
-do (require 'emms-streaming) followed by `M-x emms-streams' to
-start it up. -- DanielBrockman''
+: ''はい!  今あなたはできる! それはCVSにあります.
+私はしばらくの間それを使ってきました, あなたが良い局を見つけたらそしてそれは本当によく働きます.
+(require 'emms-streaming) とするだけ`M-x emms-streams'とすれば立ち上がります. 
 
-:: At least of my Debian EMMS (version 1.3), the correct require is
-(require 'emms-streams). -- LucaCapello
+-- DanielBrockman''
+
+::  少なくとも私のDebian EMMS (version 1.3)は,正しいrequireは(require 'emms-streams)です.
+
+-- LucaCapello
 
 RichardRiley: 3 Nov 2009
 
@@ -596,33 +597,27 @@ M-x emms-streams to reload
 
 === AlsaPlayerについては? ===
 
-AlsaPlayer is a generic command line (--interface text) music
-player that can play back a large amount of file formats, including
-CDDA (CD) audio playback and icecast/shoutcast streaming support.
+AlsaPlayerはCDDA (CD)オーディオ再生とicecast/shoutcastストリーミングサポートを含む,たくさんのファイル形式を再生することができる汎用コマンドライン(--interface text)ミュージックプレイヤーです.
+それがいま非常にたくさんの異なる出力システムのサポートしているのでAlsaPlayerという名前は今日では少し迷うかもしれない.
+Esound, NAS (Network Audio Server), Sparc そして SGI オーディオ出力のような,古い既定のOSSオーディオインターフェースがサポートされています.
+最も興味深い新しい出力はJACKです.
 
-The name AlsaPlayer might be confusing a bit today since it now
-supports a whole bunch of different output systems. The old default
-OSS audio interface is supported, as well as Esound, NAS (Network
-Audio Server), Sparc and SGI audio outputs. The most interesting
-new output is JACK.
+: ''Yes! You can! これら２つの簡単なステップに従ってください.
 
-: ''Yes! You can! Follow these two simple steps.
-
-* Customize '''emms-player-list''' variable so that it looks like
+* 次のようにするために '''emms-player-list''' 変数をカスタマイズ
 <pre>
 '(emms-player-list (quote (emms-player-alsaplayer)))
 </pre>
 in your '''custom-set-variables''' section of your .emacs file.
 
-* Conveniently add the following line in your .emacs file
+*  あなたの.emacsファイルに次の行を便利に追加して
 <pre>
 (define-emms-simple-player alsaplayer '(file url) (regexp-opt
 '(".ogg" ".mp3" ".wav" ".flac" ".pls" ".m3u" "http://"))
 "alsaplayer" "--quiet" "--nosave" "\"--interface text\"")
 </pre>
 
-Note: alsaplayer's icecast/shoutcast streaming support is not (yet)
-integrated with EMMS, but usable.
+注意: alsaplayerのicecast/shoutcastストリーミングサポートは(まだ)EMMSに統合されていないが, 使用可能.
 
 === CDプレイヤーについては ? ===
 Is emms-cd.el deprecated ?
@@ -861,8 +856,7 @@ Well, then give a look to [[EmmsRemote]], in order to bind your Window-Manager k
 to Emacs/Emms ;-)
 
 
-== Calculating Total time of all tracks in emms playlist, below the point==
-emmsプレイリスト中の全てのトラックの合計時間を計算する
+== emmsプレイリスト中のポイント以下の全てのトラックの合計時間を計算する ==
 
 I just started out with lisp and there can be any better thing to hack on but emms!
 
@@ -884,15 +878,17 @@ I just started out with lisp and there can be any better thing to hack on but em
 </pre>
 -- shyam_k
 
-== Use with Anything ==
-'''[[Anything]]''' is a candidate selection framework.
+== Anythingで使う ==
+'''[[Anything]]''' は候補選択のフレームワークです.
 
 Lisp:anything-config.el has EMMS related sources, `anything-c-source-emms-streams' and `anything-c-source-emms-dired'.
 
 == ディスク番号とディスクサブタイトル ==
 
 ディスク番号タグは少なくともmp3とoggファイルでサポートされており, ほとんどのプレイヤーはそれを理解できます.
-EMMSがそれを無視する特別な理由がありますか? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.
+EMMSがそれを無視する特別な理由がありますか? 
+見かけ上ファイルがトラック番号によって再生されるので,それはちょっと私のメディアライブラリーを汚くする従って２つのディスクのアルバムの再生時に,両方の最初のトラックが再生され,次に両方の２番目のトラックというようになる.
 
 [new]
-I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
+私はディスク番号サポートを実装し,パッチをemms-patchesへ送りそしてここから閲覧可能: http://article.gmane.org/gmane.emacs.emms.patches/691 . まだ反応はない.
+-- ChristopheRhodes
