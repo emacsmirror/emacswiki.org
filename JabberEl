@@ -404,29 +404,25 @@ Function x-urgency-hint allows you to enable or disable urgency hint for the fra
 You may, for example, enable urgency hint when the activity list is updated and disable it when the list becomes empty. In this case your WM will start blinking by taskbar button or by window's header or perform other actions to attract the user's attention (the appearance depends on WM). Tested with emacs-jabber v0.7.91 and IceWM 1.2.35.
 
 <pre>
+(defun jabber-activity-set-urgency (from buffer text proposed-alert)
+  (x-urgency-hint (selected-frame) t))
+
+(defun jabber-activity-update-urgency ()
+  (if (zerop (length jabber-activity-jids))
+      (x-urgency-hint (selected-frame) nil)))
+
+(add-hook 'jabber-message-hooks 'jabber-activity-set-urgency)
+(add-hook 'jabber-activity-update-hook 'jabber-activity-update-urgency)
+
 (defun x-urgency-hint (frame arg &optional source)
   (let* ((wm-hints (append (x-window-property 
 			    "WM_HINTS" frame "WM_HINTS" source nil t) nil))
 	 (flags (car wm-hints)))
     (setcar wm-hints
 	    (if arg
-		(logior flags #x00000100)
-	      (logand flags #x1ffffeff)))
+		(logior flags #x100)
+	      (logand flags (lognot #x100))))
     (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
-
-;; usage example
-(defvar jabber-activity-jids-count 0)
-
-(defun jabber-urgency-hint ()
-  (let ((count (length jabber-activity-jids)))
-    (unless (= jabber-activity-jids-count count)
-      (if (zerop count)
-	  (x-urgency-hint (selected-frame) nil)
-	(x-urgency-hint (selected-frame) t))
-      (setq jabber-activity-jids-count count))))
-
-(add-hook 'jabber-activity-update-hook 'jabber-urgency-hint)
-
 </pre>
 
 --EvgenyZubok
