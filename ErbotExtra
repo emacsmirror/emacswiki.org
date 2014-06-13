@@ -46,5 +46,11 @@ or
         rfc2047 rfc2045  ..[Type ,more]
 </pre>
 
+=== ,df foo behavior ===
+<pre>
+<deego> [FTOTD] [re: jlf.. and ..  dwim] When you ,df foo, it  looks for both 'foo and 'fs-foo, in that                                                                                                       
+        order. (Exception: ,df fs-foo does not look for fs-fs-foo, of course!). Most English commands have such                                                                                               
+        adaptive, dwim behavior. Lispy invocations, otoh, tend to do-what-you-wrote.
+</pre>
 ----
 ErBot
