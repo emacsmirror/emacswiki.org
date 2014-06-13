@@ -13,79 +13,79 @@ EmacsWiki 致力于发展 EmacsAndXEmacs 还有 EmacsLisp.……参考 MissionSt
 任何人都可以提出贡献。请自由地加入新的內容和修改已有的文档。请参考HowTo 以取得更多信息。
 
 * [[讨论中文翻译]] -- 请先阅读
-<i> 翻译固然重要，针对中文世界的本地化原创wiki文档对 emacs 的普及也不可少。允迎您针对中文用户所做的贡献。</i>
+<i> 翻译固然重要，针对中文世界的本地化原创wiki文档对 emacs 的普及也不可少。欢迎您针对中文用户所做的贡献。</i>
 
 == 使用 Emacs Wiki ==
-你可以這樣做:
-* HowTo [[怎样作]]-- 怎樣編輯Wiki; Wikis的主要訊息
-* SandBox -- 在沙盒中試驗, 了解怎樣編輯Wiki
-* ElispArea -- 下載和上傳Emacs Lisp (elisp)文件
-其他可以作的:
-* DownloadPartOfWiki -- 應用`wget'下載小部分的Emacs Wiki, 
-* [EmacsWiki:action=all Download the Entire Emacs Wiki] 作為一個大HTML檔案下載全部Emacs Wiki-- 也許你'不想'這麽作.
-: 如果你的瀏覽器有支援，文件將在網頁伺服器中壓縮，否則此檔容量將達到3.5MB左右.
-== 下載和安裝 Emacs ==
+你可以这样做:
+* HowTo [[怎样作]]-- 怎样编辑Wiki; Wikis的主要内容
+* SandBox -- 在沙盒中试验, 了解怎样编辑Wiki
+* ElispArea -- 下载和上传Emacs Lisp (elisp)文件
+其他可以做的:
+* DownloadPartOfWiki -- 应用`wget'下载小部分的Emacs Wiki, 
+* [EmacsWiki:action=all Download the Entire Emacs Wiki] 作为一个大HTML档案下载全部Emacs Wiki-- 也许你'不想'这么作.
+: 如果你的浏览器支持，文件将在服务器上压缩，否则此档案容量将达到3.5MB左右.
+== 下载和安装 Emacs ==
 * CategoryPorts -- NT, Mac, GNU/Linux 包括 Debian, BSD
-* CategoryWThirtyTwo －－ w32 特定主題
+* CategoryWThirtyTwo －－ w32 特定主题
 
-== 學習 Emacs ==
-* [[Emacs初學者]] －－ 如果你完全是個新手的話
-* [[分類－說明]] －－ Emacs 或 Emacs 使用者的線上說明，辭彙，問題等
-* [[分類－文件]] －－ Emacs 本身就有很豐富的文件而且可從中獲得幫助
-* [[分類－歷史]] －－ Emacs 是怎麼開發出來的
-* [[中文Emacs網站]] -- 中文Emacs網路資源
+== 学习 Emacs ==
+* [[Emacs初学者]] －－ 如果你完全是个新手的话
+* [[分类－说明]] －－ Emacs 或 Emacs 使用者的线上说明，辞汇，问题等
+* [[分类－文件]] －－ Emacs 本身就有很丰富的文件而且可从中获得帮助
+* [[分类－历史]] －－ Emacs 是怎么开发出来的
+* [[中文Emacs网站]] -- 中文Emacs网络资源
 
-== Emacs 中的基本文字編輯 ==
-* CategoryFilling －－自動換行
-* CategoryIndentation －－控制文字或程式的內縮(indented)功能
+== Emacs 中的基本文字编辑 ==
+* CategoryFilling －－自动换行
+* CategoryIndentation －－控制文字或程式的缩进(indented)功能
 * CategoryParentheses －－ matching them, changing them
-* CategoryRegexp [[分類－正規表示式]] －－搜尋和取代等…
-* CategoryRegion [[分类－块操作]] －－在選取區域的操作
-* CategoryOutline －－隱藏一部分的暫存，使用 outlining 或是摺疊起來 ([[OutlineMode 中文]])
+* CategoryRegexp [[分类－正则表示式]] －－搜索和取代等…
+* CategoryRegion [[分类－块操作]] －－选区的操作
+* CategoryOutline －－隐藏一部分的缓存，使用 outlining 或是折叠起来 ([[OutlineMode 中文]])
 * CategoryEditing －－令你更有效地编辑的好主意
-** CategoryHideStuff －－隱藏暫存的任意部分
-* CategoryFiles －－本地端檔案，遠端檔案，備份
-* CategoryCommands －－ M-x 指令，指令的歷史記錄，開檔
-* CategoryBufferSwitching －－如何在暫存(buffer)中切換
-* CategoryTemplates -- using canned text, templates, forms, etc. to save typing
+** CategoryHideStuff －－隐藏缓存的任意部分
+* CategoryFiles －－本地文档，远程文档，备份
+* CategoryCommands －－ M-x 指令，指令的历史记录，开档
+* CategoryBufferSwitching －－如何在缓存(buffer)中切换
+* CategoryTemplates -- 模板，表单等使用
 
-== 編輯和操控各種文件格式和檔案形態的特殊模式(mode) ==
+== 编辑和操控各种文件格式和档案形态的特殊模式(mode) ==
 * CategoryHypermedia －－ HTML, Wikis, Info
-* [[分類－XML]] －－ XML 相關技術
-* [[分类 - SQL]] －－ SQL 和資料庫
-* CategoryTex －－ TeX 和 LaTeX 資料
-* CategoryModes -- pointers, documentation, and extensions to all the other modes
+* [[分类－XML]] －－ XML 相关技术
+* [[分类 - SQL]] －－ SQL 相关技术
+* CategoryTex －－ TeX 和 LaTeX 资料
+* CategoryModes -- 其他模式的提示，文档和扩展插件
 * CategoryVocab -- 学习新单词
-* CategoryDirectories -- Working with directories, otherwise known as dired.
+* CategoryDirectories -- 目录操作(Dired)
 
-== 其他特殊的功能; 和外部程式與遠端伺服器的互動 ==
-* CategoryCalculators －－互動的數學
-* CategoryCalendar －－日曆，日記，行程表
-** CategoryTodo －－維護 todo 列表
-* CategoryChatClient -- socializing while sitting alone in front of the monitor
-* CategoryGames -- 游戏less useful ways to waste your time with Emacs
-* [[分類－介面]] -- 一些線上工具的 Emacs 介面
-* CategoryProgrammerUtils [[分類-编程工具]]－－編程的好工具，如：程式碼瀏覽器等
-* CategoryRemoteEmacs －－在遠端執行 Emacs
+== 其他特殊的功能; 和调用外部程序和远程操作 ==
+* CategoryCalculators －－图表，计算器类
+* CategoryCalendar －－日历，日记，行程表
+** CategoryTodo －－维护 todo 列表
+* CategoryChatClient -- 聊天社交类
+* CategoryGames -- 游戏类
+* [[分类－介面]] -- 一些线上工具的 Emacs 介面
+* CategoryProgrammerUtils [[分类-编程工具]]－－编程的好工具，如：源码浏览器等
+* CategoryRemoteEmacs －－远程运行 Emacs
 * CategoryExternalUtilities -- 在 Emacs 中调用外部程序
-* CategoryMail －－簡單的郵件處理工具，和 Gnus 無關
-* [[分類－Gnus]] －－強大的新聞群組和郵件閱讀工具
-* CategoryBbdb -- Big Brother Database: 維護電話簿，郵件地址薄等
-* CategoryVersionControl －－ CVS, RCS 的介面（版本控制）
-* CategoryJournaling -- Emacs  之 web logs 介面
+* CategoryMail －－简单的邮件处理程序，和 Gnus 无关
+* [[分類－Gnus]] －－強大的新闻组和邮件处理程序
+* CategoryBbdb -- Big Brother Database: 维护电话簿，邮件地址簿等
+* CategoryVersionControl －－ 版本控制系统软件的集成
+* CategoryJournaling -- Emacs  之 web logs 介绍
 
-== 讓 Emacs 適應你的環境 ==
-* CategoryKeys -- 設定您的快捷鍵；可用性
-* CategoryDotEmacs -- stuff to put in your InitFile, for Elisp newbies
-* CategoryProgramming -- 人們為编程而做的設定
-* CategoryFaces -- syntax highlighting, colors, font-lock
-** CategoryDisplay -- 和顯示相關的東西(X-Window pointer shapes, frames, ...)
-* CategoryInternationalization -- Emacs 軟體的國際化（包括中文化）。
-* CategoryPaths -- 合併操作系统的路径和Emacs的路径。
+== 让 Emacs 适应你的环境 ==
+* CategoryKeys -- 设定您的快捷键；可用性
+* CategoryDotEmacs -- .emacs文件配置建议(ELisp新手专用)
+* CategoryProgramming -- 编程相关的配置
+* CategoryFaces -- 语法高亮/配色/字体相关
+** CategoryDisplay -- 和显示相关的东西(X-Window pointer shapes, frames, ...)
+* CategoryInternationalization -- Emacs 软件的国际化（包括中文化）。
+* CategoryPaths -- 合并操作系统的路径和Emacs的路径。
 
-== 修改 Emacs 的動作：Elisp 編程，研究(hacking) Emacs 的原始碼 ==
+== 修改 Emacs 的方法：Elisp 编程，研究(hacking) Emacs 的源码 ==
 * CategoryCode -- stuff for Elisp authors
-** CategoryDebug -- debugging Emacs, debugging with Emacs
+** CategoryDebug -- 如何调试Emacs
 * CategoryEshell -- 一个完全由 elisp 实现的 shell
 * CategoryBuilding -- 如何由源码编译 Emacs 
 * CategoryPatches -- Emacs 的补丁，主要针对 C 一级的扩展
