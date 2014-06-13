@@ -270,9 +270,9 @@ Freedesktop通知サービスと通信するためD-Busか, もし走ってい�
 === Youtube, Vk.com, そしてストリームからタグを読む ===
 
 元ネタ
-* sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
-* github.com/snoopcatt/vksearch/blob/master/vksearch
-* github.com/renard/emms/blob/master/lisp/emms-stream-info.el
+* http://sachachua.com/blog/2008/09/emacs-w3m-open-pages-in-external-browsers/
+* http://github.com/snoopcatt/vksearch/blob/master/vksearch
+* http://github.com/renard/emms/blob/master/lisp/emms-stream-info.el
 
 I'm not a programmer, can you help me refactor this piece of code?
 
@@ -602,7 +602,7 @@ AlsaPlayerはCDDA (CD)オーディオ再生とicecast/shoutcastストリーミ�
 Esound, NAS (Network Audio Server), Sparc そして SGI オーディオ出力のような,古い既定のOSSオーディオインターフェースがサポートされています.
 最も興味深い新しい出力はJACKです.
 
-: ''Yes! You can! これら２つの簡単なステップに従ってください.
+: ''はい! あなたはできる! これら２つの簡単なステップに従ってください.
 
 * 次のようにするために '''emms-player-list''' 変数をカスタマイズ
 <pre>
@@ -620,59 +620,60 @@ in your '''custom-set-variables''' section of your .emacs file.
 注意: alsaplayerのicecast/shoutcastストリーミングサポートは(まだ)EMMSに統合されていないが, 使用可能.
 
 === CDプレイヤーについては ? ===
-Is emms-cd.el deprecated ?
+emms-cd.elは推奨されていませんか?
 
-See AlsaPlayer notes, above.
+上記の,AlsaPlayerノートを見よ.
 
 === Apple リモートコントロールの使用については? ===
 
 === How about scrobbling to libre.fm? ===
-[new] Emms (from the main git repo) now has Libre.fm support for both scrobbling and streaming music, and will be included in the upcoming 4.0 release. Last.fm support has been removed.
+[new] (メーンgitリポジトリの)Emmsは今音楽のスクラブリングとストリーミングの両方のための Libre.fm サポートを持っています, そして今度の4.0 リリースでは含まれているでしょう. Last.fm サポートは除去されました.
 
 === MPDについては? ===
 
-MPD or MusicPD is an audio player. 
-It acts as a daemon that can be controlled with different user interfaces, all audio files must be on one directory.
+MPDもしくはMusicPDはオーディオプレイヤーです. 
 
-I found this, but I'm unable to configure emacs correctly.
-I would like to know how to play all the supported files with mpd and I have all my audio files on a specific directory in my user /home.
+それは異なるユーザインタフェースによって制御することができるデーモンとして振る舞い, 全てのオーディオファイルはひとつのディレクトリになければならない.
+
+私はこれを見つけたが, emacsを正しく設定できない.
+私はMPDで全てのサポートされているファイルをどうやって再生するのか知りたいそして私は私のユーザの/home中の特定のディレクトリ上で全ての私のオーディオファイルを持ちたい.
 
 http://cvs.savannah.gnu.org/viewvc/*checkout*/emms/emms/emms-mpd.el?revision=HEAD
 
-Here is the site: http://musicpd.org
+ここにサイトがあります: http://musicpd.org
 
 ----
 
-Bug:  For some reason, if the playlist in MPD is very long (i.e., for listening to songs on random, out of an entire music selection), it always displays as the playing song the song prior to the actual currently-playing song in the playlist.
+バグ:  何らかの理由で, もしMPDのプレイリストがとても長いと (すなわち, 選曲の全体のうち, ランダムに曲を聴くために),
+プレイリスト中の実際に再生されている現在の曲に先立ってその曲を再生している曲としていつも表示する.
 
-Bug:  Also, using emms-cache-set-from-mpd-all (in ~/.emacs), even if the MPD cache is updated, calling this function either in a running emacs session or in a brand-new emacs session will fail to update the cache accordingly.
+バグ:  同様に, emms-cache-set-from-mpd-all (in ~/.emacs)を使用すると, たとえもしMPDキャッシュが更新されたとしても,
+この関数を呼び出すとそれに応じて走っているemacsセッション中または新規emacsセッションのどちらかがキャッシュの更新に失敗する.
 
 === UADEについては? ===
 
-UADE means Unix Amiga Delitracker Emulator. It emulates part of the Amiga computer hardware (using code from the UAE Amiga emulator) for running the original players of tons of audio formats, most of these formats are of the mod type and composed using tools known as "trackers". Amiga computers were mainly used by the multimedia stuff (before the term was invented), largely known by its games and demoscene productions, meaning there are tons of music files.
+UADEはUnix Amiga Delitracker Emulatorの略です. It emulates part of the Amiga computer hardware (using code from the UAE Amiga emulator) for running the original players of tons of audio formats,
+most of these formats are of the mod type and composed using tools known as "trackers". Amiga computers were mainly used by the multimedia stuff (before the term was invented),
+largely known by its games and demoscene productions, meaning there are tons of music files.
 
 Stuff like mikmod is usable for a few of formats, but it can't play lots of others from Amiga platforms and others.
 
-Site is here: http://zakalwe.fi/uade/
+サイトはここです: http://zakalwe.fi/uade/
 
 
 === emms-print-metadata binary ===
-Is there somewhere a win32 binary for emms-print-metadata or
-another way to get all my tags work?
+Is there somewhere a win32 binary for emms-print-metadata or　another way to get all my tags work?
 
 [new]
 I've uploaded w32 build of emms-print-metadata to [http://gashinsky.googlecode.com/files/emms-print-metadata.zip]. It is compiled with MinGW. --DiGash
 
 === 歌詞の取得 ===
-I've written a few lines to get the lyrics to the song that emms is
-currently playing.  
-(Just the lyrics, it doesn't get the lyrics in the format that will
-allow emms to display the lyrics synchronically.)
+I've written a few lines to get the lyrics to the song that emms is　currently playing.  
+(Just the lyrics, it doesn't get the lyrics in the format that will　allow emms to display the lyrics synchronically.)
 It's a bit rough, but it works for me, so I thought I'd post it.
 
 Lisp:emms-get-lyrics.el (2007), [[http://github.com/talau/elisp/blob/master/emms-get-lyrics.el|emms-get-lyrics.el]] (2010)
-(The original Lisp:emms-get-lyrics.el do not work for me, so I fixed
-it, removing mode-map, and adding some features: debug mode;
+(The original Lisp:emms-get-lyrics.el do not work for me, so I fixed　it, removing mode-map, and adding some features: debug mode;
 variables for match/unmatch the lyric in the answer;
 match and remove ads;
 auto redirect to the correct lyric when the tag of audio file is wrong;
