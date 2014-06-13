@@ -661,29 +661,34 @@ Stuff like mikmod is usable for a few of formats, but it can't play lots of othe
 サイトはここです: http://zakalwe.fi/uade/
 
 
-=== emms-print-metadata binary ===
-Is there somewhere a win32 binary for emms-print-metadata or　another way to get all my tags work?
+=== emms-print-metadata バイナリー ===
+全ての私のタグを得る emms-pritn-metadataのwin32 バイナリーもしくはその他の方法はどこかにありますか?
 
 [new]
-I've uploaded w32 build of emms-print-metadata to [http://gashinsky.googlecode.com/files/emms-print-metadata.zip]. It is compiled with MinGW. --DiGash
+[http://gashinsky.googlecode.com/files/emms-print-metadata.zip]にemms-print-metadataのw32ビルドをアップロードしました. MinGWでコンパイルされています. --DiGash
+
 
 === 歌詞の取得 ===
-I've written a few lines to get the lyrics to the song that emms is　currently playing.  
-(Just the lyrics, it doesn't get the lyrics in the format that will　allow emms to display the lyrics synchronically.)
-It's a bit rough, but it works for me, so I thought I'd post it.
+私はemmsで現在再生中の曲の歌詞をゲットするため数行の書きました.  
+(歌詞だけで, emmsに歌詞を同期させて表示させるような形式の歌詞はゲットしない.)
+ちょっとラフだけど, それは俺のために働いてくれる, それで思ったそれを投稿しようと.
+
 
 Lisp:emms-get-lyrics.el (2007), [[http://github.com/talau/elisp/blob/master/emms-get-lyrics.el|emms-get-lyrics.el]] (2010)
-(The original Lisp:emms-get-lyrics.el do not work for me, so I fixed　it, removing mode-map, and adding some features: debug mode;
-variables for match/unmatch the lyric in the answer;
-match and remove ads;
-auto redirect to the correct lyric when the tag of audio file is wrong;
-when the lyric is not found, prepare buffer if the user want to write it;
-before try to find the lyric, check: required programs, and artist and title in the song. -- talau)
+(オリジナルのLisp:emms-get-lyrics.elは俺のところでは動かない, それで直した, mode-mapを除去し, いくつかの機能を追加した:
 
+* デバッグモード;
+* variables for match/unmatch the lyric in the answer;
 
+* 一致する広告の除去;
+* オーディオファイルのタグが間違っていた時正しい歌詞への自動リダイレクト;
+* 歌詞が見つからなかった時もしユーザーがそれを書きたいならばバッファを準備する;
+
+歌詞を探そうとする前に, 調べろ: 要求されるプログラム, そして曲のアーティストとタイトル. -- talau)
+　　　　
 Jay
 
-JohnSturdy has written a major mode for creating and editing lyric files; it connects directly to ogg123, and doesn't actually use EMMS, but might be useful alongside it.
+JohnSturdyは歌詞ファイルの作成と編集をするためのメジャーモードを書いています; それはogg123に直接接続し, そして実際にEMMSでは使わないだろうが, それと並んで役に立つかもしれない.
 
 LyricMode
 
@@ -717,20 +722,19 @@ Thanks alot!
 </pre>
 as well.  --MichaelOlson
 
-[new] Well, i added that, but now when i tried to play the file, it
-gave me this error: Don't know how to play track: (*track* (type .
-file) (name . "D:/abc.mp3"))
+[new] えっと, 俺はそれを追加したが今, ファイルを再生しようとした時,それは俺にこのエラーを与える:
+どうやってトラックを再生するかわからない:
+(*track* (type .file) (name . "D:/abc.mp3"))
 
-It is probably that i cannot figure out or find how to get
-mpg321/mpg123 working on windows, i got cygwin and vorbis-tools in
-it as per advice from MpthreePlayer page. Anyone got any ideas?
+どうやってwindowsで動くmpg321/mpg123を手に入れるか恐らく俺が見つけ出すことができないかもしくは見つけられない,
+俺はMpthreePlayerページからのアドバイスにしたがってcygwinとvorbis-toolsを手に入れた. 誰か何かアイディア持ってない?
 
-Thanks alot!
 
-[new]You need to put the player executable
-(mpg321/mplayer/whatever) in Emacs' exec-path list:
+どうもありがとう!
 
- (add-to-list 'exec-path "C:/mplayer/")
+[new]You need to put the player executable (mpg321/mplayer/whatever) in Emacs' exec-path list:
+
+(add-to-list 'exec-path "C:/mplayer/")
 
 --LucasBonnet
 
