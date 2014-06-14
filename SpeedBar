@@ -270,5 +270,10 @@ function `speedbar-add-supported-extension' to add a new extension at runtime, o
 </pre>
 to my InitFile lets me see my javascript files in the speedbar- note that <code>(speedbar 1)</code> or <code>(speedbar 0)</code> has to come first to load the package. -yary h
 ----
+Want to set up 
 CategoryProgrammerUtils
 CategoryNavigation
+----
+Integrate speedbar with projectile http://www.emacswiki.org/emacs/projectile-speedbar.el
+
+-AnshulVerma
