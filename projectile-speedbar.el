@@ -70,6 +70,11 @@
 ;; * 13 June 2014:
 ;;   * Anshul Verma
 ;;     * Initial feature with commentary
+;;
+;; * 13 June 2014
+;;   * Anshul Verma
+;;     * fix bug "should switch to file buffer after opening a file via projectile-find-file"
+;;
 
 ;;; Acknowledgments
 ;;
@@ -77,8 +82,6 @@
 ;;
 
 ;;; Bug
-;;
-;; * Should switch to file buffer after opening a file via projectile-find-file
 ;;
 ;; * Should select the current buffer file in directory listing after project switch
 ;;
@@ -129,7 +132,9 @@
       (select-window (get-buffer-window speedbar-buffer))
       (beginning-of-buffer)
       (nv-speedbar-expand-line-list parents)
-      (select-window original-window))))
+      (if (not (eq original-window (get-buffer-window speedbar-buffer)))
+          (select-window original-window)
+        (other-window 1)))))
 
 (add-hook 'projectile-find-dir-hook 'nv-speedbar-open-current-buffer-in-tree)
 (add-hook 'projectile-find-file-hook 'nv-speedbar-open-current-buffer-in-tree)
