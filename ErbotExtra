@@ -52,5 +52,12 @@ or
         order. (Exception: ,df fs-foo does not look for fs-fs-foo, of course!). Most English commands have such                                                                                               
         adaptive, dwim behavior. Lispy invocations, otoh, tend to do-what-you-wrote.
 </pre>
+
+=== ,dkb ===
+
+<pre>
+<deego> [FTOTD]: Use ,dkb (describe-key-briefly) instead of ,dk to avoid spamming the channel. ,,dkb C-x h      [14:00]
+<fsbot> mark-whole-buffer  ..(symbol)
+</pre>
 ----
 ErBot
