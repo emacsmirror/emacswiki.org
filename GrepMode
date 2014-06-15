@@ -94,7 +94,7 @@ It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-
 [:ernie]
 === ernie ===
 
-ernie provides a drop-in replacement for the command-line "grep" program.  It is written in 100% Emacs Lisp so it has no dependencies other than Emacs itself.  It should work with any of the grep frontends that are supported by emacs.  It can also be used stand-alone at the Command Prompt like any other grep.  "ernie" is an alias for "grep -r -n -i -e" where you drop the "grp" part and run the rest together.
+[http://www.serice.net/ernie/ ernie] provides a drop-in replacement for the command-line "grep" program.  It is written in 100% Emacs Lisp so it has no dependencies other than Emacs itself.  It should work with any of the grep frontends that are supported by emacs.  It can also be used stand-alone at the Command Prompt like any other grep.  "ernie" is an alias for "grep -r -n -i -e" where you drop the "grp" part and run the rest together.
 
 == Grep+: Enhancements to Emacs grep ==
 
