@@ -3,9 +3,9 @@
 
 * [[Amarok]] -- リモートコントロールジャイアントウルフ
 * [[Bongo]] -- 美しく, 柔軟で便利なメディアプレイヤー, EMMS 2.0と並行で開発された
-* [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, nothing to do
+* [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, 何もしない
 * [[EMMS]] -- イーマックス　マルチメディア　システム
-* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量な yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).
+* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量なさらに多用途なOgg/MP3プレイヤーfeaturing ソフトボリュームフェージング, 無制限プレイリスト(CD作成のような他の目的に最適な,シンボリックリンクのディレクトリとして実装される) そしてEmacs中のどこからでもあなたの音楽のグローバル制御 (バッファ切り替えの必要なし).
 Oh... and there's a pretty comprehensive manual in a variety of formats too
 
 * [[GIMME]] -- Emacs上のXMMS2クライアント
