@@ -189,6 +189,10 @@ The link posted by the other user has 2 issues:
 
 I am using Emacs in server environments where I do not have X11 available, so I use it in text terminal. Minimap shows fonts at same size as other buffers if used this way. Is it possible to solve this issue?
 
-----  
+----
+
+Note: I use the VHDL-Mode from http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html. To enable the minimap mode here, I had to add the VHDL-Mode to the list of minimap major modes: (add-to-list 'minimap-major-modes 'vhdl-mode) Thanks for this great feature.
+  
+----
 CategoryWindows   CategoryDisplay
 [http://www.sublimetext.com/ Minimap] is a feature provided by the Sublime editor. It shows a smaller, 
