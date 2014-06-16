@@ -29,8 +29,8 @@
    :matcher '(local-file "mid" "midi" "mod" "rcp" "r36" "g18" "g36"))
 
 もちろん, あなたのシーキングのような対話式操作のためのサポートがついている複雑なバックエンドを追加することは同様に可能です.
-例えば, [[BongoMPlayer]]を見よ.
-BongoHacksで気の利いたハッキングのコレクションがあります.
+例えば, BongoMPlayerを見よ.
+BongoHacksに気の利いたハッキングのコレクションがあります.
 
 == Last.fm ==
 
