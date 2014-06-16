@@ -10,11 +10,11 @@ Oh... and there's a pretty comprehensive manual in a variety of formats too
 
 * [[GIMME]] -- Emacs上のXMMS2クライアント
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
-* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- [http://musicpd.org/ MPD]のインターフェースへのelispライブラリ, a music player daemon. Contains a small interactive interface as well.
+* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- ミュージックプレイヤーデーモン[http://musicpd.org/ MPD]のインターフェースへのelispライブラリ. 小さな対話式インターフェースを含む.
 [[Ramkumar]]によって書かれた
-* [[Mingus]] -- [https://svn.musicpd.org/libmpdee/trunk/ libmpdee]を基にした[http://musicpd.org/ MPD]クライアント, contains, but not limited to, extensive playlist editing.
+* [[Mingus]] -- [https://svn.musicpd.org/libmpdee/trunk/ libmpdee]を(含む)基にした,これらに限定されない広範囲のプレイリスト編集を含む[http://musicpd.org/ MPD]クライアント.
 Niels Giesen (pft)によって書かれた
-* [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- Multimedia Object Navigator Kluge - Interface for reading mp3, CD audio, ogg and more
+* [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- マルチメディア オブジェクト ナビゲーター Kluge - mp3, CDオーデイオ, ogg そしてそれ以外を読むためのインターフェース
 * [[Mpc]] -- ちょっとRhythmboxに似た見た目と振る舞いを狙った,[http://musicpd.org/ MPD]ミュージックプレイヤーデーモンへのインターフェースを提供するメジャーモード.
 Gnu Emacs 23.2以降に付属.
 * [[Mpg123]] -- <code>mpg123</code>と<code>ogg123</code>へのインターフェース -- よく働く!
@@ -49,8 +49,8 @@ Gnu Emacs 23.2以降に付属.
 
 == 転写と同期 ==
 
-* LyricMode starts an ogg123 process and parses the timing information that comes back from it, letting you insert and edit synchronization tags
-
+* LyricModeはogg123プロセスを開始しそれから戻ってくる時間情報をパースし,あなたに同期タグを挿入と編集させる.
+　
 
 == 音楽と音の合成/デザイン/性能 ==
 
