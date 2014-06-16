@@ -1,22 +1,19 @@
 ボンゴは美しく, 柔軟で便利なEmacs向けのバッファ志向メディアプレイヤーで, [[EMMS]] 2.0から並行して開発されています.  Gnu Emacs 21以上で走ります.
 
 ; '''コード''': http://github.com/dbrock/bongo
-; '''メーリングリスト''': <code><bongo-devel@nongnu.org></code> (see http://lists.nongnu.org/mailman/listinfo/bongo-devel) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (see http://dir.gmane.org/gmane.emacs.bongo.devel)
+; '''メーリングリスト''': <code><bongo-devel@nongnu.org></code> (http://lists.nongnu.org/mailman/listinfo/bongo-develを見よ) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (http://dir.gmane.org/gmane.emacs.bongo.develを見よ)
 
 ボンゴに含まれている注目すべき機能
 * 分割プレイリストとライブラリバッファ(それぞれあなたはいくつものバッファーを持ってもいいでしょう --- もしあなたがプレイリストを機能的に必要としないのであれば両方共ゼロでもオッケーでしょう),
 * 各アーティストやアルバムのための折りたたみ可能なセクションを持つ階層的なバッファ,
 * ボンゴバッファーを編集をするためのEmacsに似たバインディング (edit playlists much like you would regular text),
 
-* プログレスメーターを兼ねたイケてるビジュアルシーキングインタフェース (hit `s'),
-
-* ビジュアルオーディオボリュームコントロール ([[Volume]], which is actually a stand-alone package),
-
+* プログレスメーターを兼ねたイケてるビジュアルシーキングインタフェース (`s'を押す),
+* ビジュアルオーディオボリュームコントロール ([[Volume]], は実際にはスタンドアローンパッケージです),
 * オーディオCDについての情報の取得と再生とのための内蔵サポート,
 * `lastfmsubmitd'を使ってLast.fmへ情報を提供するための内臓サポート,
-* the ability to perform arbitrary actions (stopping playback is a simple example) once playback reaches certain points in the playlist, using so-called “action tracks”,
-
-* zero-configuration, out-of-the-box rock’n’roll action.
+* いわゆる“action tracks”を用いて, 再生がプレイリスト内の特定のポイントに達するとアクションを処理するための能力(再生の停止は簡単な例),
+* 構成不要の, すぐに使えるロックンロールアクション.
 
 ボンゴは現在VLC, mpg321, ogg123, speexdec, Ti''''''MidityとMik''''''Modのためのバックエンドが存在します.
 全てのバックエンドは一時停止と再開をサポートしますが,VLCとmpg321は対話式のシーキングをサポートします.
