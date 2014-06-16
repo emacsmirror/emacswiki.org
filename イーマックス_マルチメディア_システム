@@ -4,7 +4,7 @@
 EMMSはイーマックス マルチメディア システムの略です.
 それはEmacsから外部プレイヤーを使ってクリーンで小さなアプリケーションであろうとします.
 多くのアイディアはMpthreePlayerから派生し,しかしそれはより一般的でクリーンであろうとします.
-それは[[Bongo]]に匹敵します.
+それは[[ボンゴ]]に匹敵します.
 http://www.gnu.org/software/emms/
 
 == クイックスタート ==
@@ -78,9 +78,7 @@ MOD, XM, S3M そしてそれに似たようなファイルを再生したいよ�
 === ミックスCD作成 ===
 
 このコードがあなたのためにCDを焼かないであろうかぎり(何か提案ある?),
-
 それはあなたの現在のEMMSプレイリストバッファーとそれらのトラックのシンボリックリンクを(あなたのプレイリストバッファーの順番通りに)与えられたディレクトリに連れていくでしょう.
-
 改善を投稿することを自由に感じてください (しかしあなたが何を変えたかをノートしてください; 私は興味がある).
 
 
@@ -120,7 +118,7 @@ MOD, XM, S3M そしてそれに似たようなファイルを再生したいよ�
               (symlinkname (replace-in-string
                             (cdr (third
                                   (emms-playlist-current-selected-track)))
-                            "/home/user/media/music/.*/[0-9][0-9]-"
+                              "/home/user/media/music/.*/[0-9][0-9]-"
                             (concat (if (< counter 10) "0")
                                     (number-to-string counter)
                                     "-"))))
@@ -564,7 +562,7 @@ file options))
 -- WilliamXu
 
 === ストリーミングラジオは? ===
-ストリーミングラジオを聞くためにこのパッケージを使うことができますか(例えばhttp://www.kfai.orgから使える)?
+ストリーミングラジオを聞くためにこのパッケージを使うことができますか(例えば[[http://www.kfai.org]]から使える)?
 
 -- JoeCorneli
 
@@ -593,7 +591,7 @@ Create or edit your emacs home directory file "emms-streams" and add/paste this 
  ("Nectarine" "http://calcipher.verbrennung.org:8000/nectarine.ogg.m3u" 1 url))
 </pre>
 
-M-x emms-streams to reload
+リロードするために M-x emms-streams
 
 === AlsaPlayerについては? ===
 
@@ -652,12 +650,15 @@ http://cvs.savannah.gnu.org/viewvc/*checkout*/emms/emms/emms-mpd.el?revision=HEA
 
 === UADEについては? ===
 
-UADEはUnix Amiga Delitracker Emulatorの略です. It emulates part of the Amiga computer hardware (using code from the UAE Amiga emulator) for running the original players of tons of audio formats,
-most of these formats are of the mod type and composed using tools known as "trackers". Amiga computers were mainly used by the multimedia stuff (before the term was invented),
+UADEはUnix Amiga Delitracker Emulatorの略です.
+それはたくさんのオーディオ形式のオリジナルプレイヤーを走らせるためにAmiga コンピューター ハードウェア (UAE Amiga エミュレーターからのコードを使って)の一部をエミュレートし,
+これらの形式の多くは改造タイプであることそして"trackers"として知られているツールを使って構成されている.
+Amiga computers were mainly used by the multimedia stuff (before the term was invented),
+Amiga コンピューターは主に使われている　マルチメディアスタッフによって　(その用語が発明される前に)
 largely known by its games and demoscene productions, meaning there are tons of music files.
-
+広く知られている　それらのゲームとデモシーン生成によって　意味するのはそこにはたくさんの音楽ファイルがある
 Stuff like mikmod is usable for a few of formats, but it can't play lots of others from Amiga platforms and others.
-
+スタッフが好きなmikmodはいくつかの形式のために利用可能ですが　それは　再生できない　他のたくさん　
 サイトはここです: http://zakalwe.fi/uade/
 
 
@@ -712,15 +713,15 @@ LyricMode
 
 Where C:/mplayer/mplayer.exe is where i downloaded the windows version of myplayer.
 
-When i enter emms-play-file D:/abc.mp3 (a small test file),
-it returns symbol's value as variable is void: emms-player-mplayer
-Thanks alot!
+When i enter emms-play-file D:/abc.mp3 (a small test file),it returns symbol's value as variable is void: emms-player-mplayer
 
-[new] You'll need to add
+どうもありがとう!
+
+[new] あなたはこれも追加する必要があるだろう.
 <pre>
 (require 'emms-player-mplayer)
 </pre>
-as well.  --MichaelOlson
+--MichaelOlson
 
 [new] えっと, 俺はそれを追加したが今, ファイルを再生しようとした時,それは俺にこのエラーを与える:
 どうやってトラックを再生するかわからない:
@@ -740,12 +741,9 @@ as well.  --MichaelOlson
 
 === プレイリストバッファーでイメージ? ===
 
-So on the EMMS website, there's a screenshot in which the playlist
-buffer (not just the browser buffer) displays cover images! I've
-tried googling around but haven't found the code that enables that
-particular feature, but would really like to prettify the playlist
-buffer some...basically, it would be cool to have the default
-display mode, plus images.
+So on the EMMS website, there's a screenshot in which the playlist　buffer (not just the browser buffer) displays cover images!
+I've　tried googling around but haven't found the code that enables that　particular feature,
+but would really like to prettify the playlist　buffer some...basically, it would be cool to have the default　display mode, plus images.
 
 Anyway...any response is much appreciated. And just think--then
 this'll be on the internet and will come up in google searches the
