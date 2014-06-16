@@ -1,13 +1,12 @@
 [[en:MusicPlayers]]
+== MP3/Ogg-Vorbis/その他ミュージックプレイヤー (アルファベット順) ==
 
-== MP3/Ogg-Vorbis/Other music players (in alphabetical order) ==
-
-* [[Amarok]] -- remote control the giant wolf
-* [[Bongo]] -- beautiful, flexible and usable media player, developed in parallel to EMMS 2.0
-* [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]] using MS Windows file associations -- simple player, nothing to do
-* [[EMMS]] -- The Emacs Multi-Media System
-* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - an extremely lightweight yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).  Oh... and there's a pretty comprehensive manual in a variety of formats too
-* [[GIMME]] -- XMMS2 client on Emacs
+* [[Amarok]] -- リモートコントロールジャイアントウルフ
+* [[Bongo]] -- 美しく, 柔軟で便利なメディアプレイヤー, EMMS 2.0と並行で開発された
+* [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, nothing to do
+* [[EMMS]] -- イーマックス　マルチメディア　システム
+* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量な yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).  Oh... and there's a pretty comprehensive manual in a variety of formats too
+* [[GIMME]] -- Emacs上のXMMS2クライアント
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
 * [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- An elisp library to interface with [http://musicpd.org/ MPD], a music player daemon. Contains a small interactive interface as well. Written by [[Ramkumar]]
 * [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://svn.musicpd.org/libmpdee/trunk/ libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
