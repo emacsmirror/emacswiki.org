@@ -59,5 +59,13 @@ or
 <deego> [FTOTD]: Use ,dkb (describe-key-briefly) instead of ,dk to avoid spamming the channel. ,,dkb C-x h      [14:00]
 <fsbot> mark-whole-buffer  ..(symbol)
 </pre>
-----
+
+=== , // ===
+<pre>
+<deego> oh, this reminds me [FTOTD]: ,,(// 4 3),, - tries to do be dwimmy, unlike /.
+</pre>
+
+
+
+-----
 ErBot
