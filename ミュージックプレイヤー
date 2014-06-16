@@ -5,41 +5,46 @@
 * [[Bongo]] -- 美しく, 柔軟で便利なメディアプレイヤー, EMMS 2.0と並行で開発された
 * [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, nothing to do
 * [[EMMS]] -- イーマックス　マルチメディア　システム
-* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量な yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).  Oh... and there's a pretty comprehensive manual in a variety of formats too
+* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量な yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).
+Oh... and there's a pretty comprehensive manual in a variety of formats too
+
 * [[GIMME]] -- Emacs上のXMMS2クライアント
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
-* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- An elisp library to interface with [http://musicpd.org/ MPD], a music player daemon. Contains a small interactive interface as well. Written by [[Ramkumar]]
-* [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://svn.musicpd.org/libmpdee/trunk/ libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
+* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- [http://musicpd.org/ MPD]のインターフェースへのelispライブラリ, a music player daemon. Contains a small interactive interface as well.
+[[Ramkumar]]によって書かれた
+* [[Mingus]] -- [https://svn.musicpd.org/libmpdee/trunk/ libmpdee]を基にした[http://musicpd.org/ MPD]クライアント, contains, but not limited to, extensive playlist editing.
+Niels Giesen (pft)によって書かれた
 * [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- Multimedia Object Navigator Kluge - Interface for reading mp3, CD audio, ogg and more
-* [[Mpc]] -- major mode providing an interface to the [http://musicpd.org/ MPD] music player daemon, which aims to look and behave a bit like Rhythmbox. Bundled with Gnu Emacs 23.2 and later.
-* [[Mpg123]] -- interface to <code>mpg123</code> and <code>ogg123</code> -- works well!
-* [[MPRIS]] -- interface to media player via dbus, http://wiki.xmms2.xmms.se/wiki/MPRIS
-* [http://moc.daper.net/ MOC] -- Music On Console, powerful and easy to use. ncurses interface is based on Midnight Commander's. Works quite well if launched from term.
-* MpthreePlayer -- Interface to mpg123 by JeanPhilippeTheberge
+* [[Mpc]] -- ちょっとRhythmboxに似た見た目と振る舞いを狙った,[http://musicpd.org/ MPD]ミュージックプレイヤーデーモンへのインターフェースを提供するメジャーモード.
+Gnu Emacs 23.2以降に付属.
+* [[Mpg123]] -- <code>mpg123</code>と<code>ogg123</code>へのインターフェース -- よく働く!
+* [[MPRIS]] -- dbus経由でのメディアプレイヤーへのインターフェース, http://wiki.xmms2.xmms.se/wiki/MPRIS
+* [http://moc.daper.net/ MOC] -- コンソール上で音楽を, パワフルで簡単に使える. Midnight Commander'sを基にしたNcursesインターフェース. ターミナルから起動すればとても良く働く.
+* MpthreePlayer -- mpg123へのインターフェース by JeanPhilippeTheberge
 * tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
 * <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
 
 
-== CD players ==
+== CD プレイヤー ==
 
 * CdInterface -- by MatthewHodges
 
 
-== Mixers (volume control) ==
+== ミキサー (ボリュームコントロール) ==
 
 * [[Aumix]] (in various ways)
 * [[Bongo]] volume.el
 
 
-== Encoding tracks ==
+== トラックのエンコード ==
 
-* OggelMode -- Encode CDs as ogg-vorbis files by Mario Domgoergen
+* OggelMode -- CDをエンコードするogg-vorbisファイルとして by Mario Domgoergen
 
 
 ==  Last.fm ==
 
-* [[EMMS]] -- features Last.fm support (streaming&scrobbling)
-* [[emacs-shellfm]] -- is a tiny Emacs interface to Shell.FM console player
+* [[EMMS]] -- はLast.fm サポート (ストリーミング&スクロビング)を搭載している
+* [[emacs-shellfm]] -- Shell.FMコンソールプレイヤーへのちっちゃなEmacsインターフェースです
 
 
 == Transcribing and synchronizing ==
