@@ -20,25 +20,25 @@ Gnu Emacs 23.2以降に付属.
 * [[Mpg123]] -- <code>mpg123</code>と<code>ogg123</code>へのインターフェース -- よく働く!
 * [[MPRIS]] -- dbus経由でのメディアプレイヤーへのインターフェース, http://wiki.xmms2.xmms.se/wiki/MPRIS
 * [http://moc.daper.net/ MOC] -- コンソール上で音楽を, パワフルで簡単に使える. Midnight Commander'sを基にしたNcursesインターフェース. ターミナルから起動すればとても良く働く.
-* MpthreePlayer -- mpg123へのインターフェース by JeanPhilippeTheberge
+* MpthreePlayer -- mpg123へのインターフェース -- JeanPhilippeThebergeによる
 * tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
 * <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
 
 
 == CD プレイヤー ==
 
-* CdInterface -- by MatthewHodges
+* CdInterface -- MatthewHodgesによる
 
 
 == ミキサー (ボリュームコントロール) ==
 
-* [[Aumix]] (in various ways)
+* [[Aumix]] (様々な方法で)
 * [[Bongo]] volume.el
 
 
 == トラックのエンコード ==
 
-* OggelMode -- CDをエンコードするogg-vorbisファイルとして by Mario Domgoergen
+* OggelMode -- ogg-vorbisファイルとしてCDをエンコードする -- Mario Domgoergenによる
 
 
 ==  Last.fm ==
@@ -47,12 +47,12 @@ Gnu Emacs 23.2以降に付属.
 * [[emacs-shellfm]] -- Shell.FMコンソールプレイヤーへのちっちゃなEmacsインターフェースです
 
 
-== Transcribing and synchronizing ==
+== 転写と同期 ==
 
 * LyricMode starts an ogg123 process and parses the timing information that comes back from it, letting you insert and edit synchronization tags
 
 
-== Music and Sound Composition/Design/Performance ==
+== 音楽と音の合成/デザイン/性能 ==
 
 SuperCollider
 
