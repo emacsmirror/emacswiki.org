@@ -1,3 +1,4 @@
+[[en:Bongo]]
 ボンゴは美しく, 柔軟で便利なEmacs向けのバッファ志向メディアプレイヤーで, [[EMMS]] 2.0から並行して開発されています.  Gnu Emacs 21以上で走ります.
 
 ; '''コード''': http://github.com/dbrock/bongo
