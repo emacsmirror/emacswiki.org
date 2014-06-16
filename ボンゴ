@@ -1,0 +1,34 @@
+Bongo is a beautiful, flexible and usable buffer-oriented media player for Emacs, developed in parallel to [[EMMS]] 2.0.  It runs on GNU Emacs 21 and above.
+
+; '''Code''': http://github.com/dbrock/bongo
+; '''Mailing list''': <code><bongo-devel@nongnu.org></code> (see http://lists.nongnu.org/mailman/listinfo/bongo-devel) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (see http://dir.gmane.org/gmane.emacs.bongo.devel)
+
+Notable features of Bongo include
+* separate playlist and library buffers (each of which you may have any number --- even zero of both is okay if you don’t need playlist functionality),
+* hierarchical buffers with collapsable sections for each artist and album,
+* familiar Emacs bindings for editing Bongo buffers (edit playlists much like you would regular text),
+* a nice visual seeking interface doubling as a progress meter (hit `s'),
+* a visual audio volume control ([[Volume]], which is actually a stand-alone package),
+* built-in support for playing and retreiving information about audio CDs,
+* built-in support for submitting information to Last.fm using `lastfmsubmitd',
+* the ability to perform arbitrary actions (stopping playback is a simple example) once playback reaches certain points in the playlist, using so-called “action tracks”,
+* an XMMS-like keymap for XMMS refugees,
+* zero-configuration, out-of-the-box rock’n’roll action.
+
+Bongo currently comes with backends for VLC, mpg321, ogg123, speexdec, Ti''''''Midity and Mik''''''Mod.  All backends support pausing and resuming, but only VLC and mpg321 support interactive seeking.  Defining your own non-interactive backends is very simple.  For example, this is how a couple of the built-in backends are defined:
+
+ (define-bongo-backend speexdec
+   :matcher '(local-file "spx"))
+
+ (define-bongo-backend timidity
+   :pretty-name "TiMidity"
+   :extra-program-arguments '("--quiet")
+   :matcher '(local-file "mid" "midi" "mod" "rcp" "r36" "g18" "g36"))
+
+Of course, it is also possible to add your own complex backends with support for interactive operations like seeking.  For example, see BongoMPlayer.
+
+There is a collection of nifty hacks at BongoHacks.
+
+== Last.fm ==
+
+'''As of November 11, 2006, the Last.fm functionality is enabled by default''' if the `lastfmsubmit' executable can be found (if it's not in your `exec-path', please customize `lastfmsubmit-program-name').  To toggle Bongo Last.fm mode for individual playlist buffers, use `bongo-lastfm-mode'.  To toggle it for all playlist buffers, use or customize `bongo-global-lastfm-mode'.  (The file bongo-lastfm.el has been merged into bongo.el, and if you use Custom it is no longer necessary to put anything in your <code>~/.emacs</code>.)
