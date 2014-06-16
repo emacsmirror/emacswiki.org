@@ -1,18 +1,22 @@
-Bongo is a beautiful, flexible and usable buffer-oriented media player for Emacs, developed in parallel to [[EMMS]] 2.0.  It runs on GNU Emacs 21 and above.
+ボンゴは美しく, 柔軟で便利なEmacs向けのバッファ志向メディアプレイヤーで, [[EMMS]] 2.0から並行して開発されています.  Gnu Emacs 21以上で走ります.
 
-; '''Code''': http://github.com/dbrock/bongo
-; '''Mailing list''': <code><bongo-devel@nongnu.org></code> (see http://lists.nongnu.org/mailman/listinfo/bongo-devel) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (see http://dir.gmane.org/gmane.emacs.bongo.devel)
+; '''コード''': http://github.com/dbrock/bongo
+; '''メーリングリスト''': <code><bongo-devel@nongnu.org></code> (see http://lists.nongnu.org/mailman/listinfo/bongo-devel) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (see http://dir.gmane.org/gmane.emacs.bongo.devel)
 
-Notable features of Bongo include
-* separate playlist and library buffers (each of which you may have any number --- even zero of both is okay if you don’t need playlist functionality),
-* hierarchical buffers with collapsable sections for each artist and album,
+ボンゴに含まれている注目すべき機能
+* 分割プレイリストとライブラリバッファ(それぞれあなたはいくつものバッファーを持ってもいいでしょう --- もしあなたがプレイリストを機能的に必要としないのであれば両方共ゼロでもオッケーでしょう),
+* 各アーティストやアルバムのための折りたたみ可能なセクションを持つ階層的なバッファ,
 * familiar Emacs bindings for editing Bongo buffers (edit playlists much like you would regular text),
+ボンゴバッファーを編集をするためのEmacsに似たバインディング()
 * a nice visual seeking interface doubling as a progress meter (hit `s'),
-* a visual audio volume control ([[Volume]], which is actually a stand-alone package),
-* built-in support for playing and retreiving information about audio CDs,
-* built-in support for submitting information to Last.fm using `lastfmsubmitd',
+
+* ビジュアルオーディオボリュームコントロール ([[Volume]], which is actually a stand-alone package),
+
+* オーディオCDについての情報の取得と再生とのための内蔵サポート,
+* `lastfmsubmitd'を使ってLast.fmへ情報を提供するための内臓サポート,
 * the ability to perform arbitrary actions (stopping playback is a simple example) once playback reaches certain points in the playlist, using so-called “action tracks”,
-* an XMMS-like keymap for XMMS refugees,
+
+* XMMS難民のためのXMMSライクなキーマップ,
 * zero-configuration, out-of-the-box rock’n’roll action.
 
 Bongo currently comes with backends for VLC, mpg321, ogg123, speexdec, Ti''''''Midity and Mik''''''Mod.  All backends support pausing and resuming, but only VLC and mpg321 support interactive seeking.  Defining your own non-interactive backends is very simple.  For example, this is how a couple of the built-in backends are defined:
