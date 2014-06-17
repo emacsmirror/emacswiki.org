@@ -6,8 +6,7 @@
 * [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, 何もしない
 * [[EMMS]] -- イーマックス　マルチメディア　システム
 * [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量なさらに多用途なOgg/MP3プレイヤーfeaturing ソフトボリュームフェージング, 無制限プレイリスト(CD作成のような他の目的に最適な,シンボリックリンクのディレクトリとして実装される) そしてEmacs中のどこからでもあなたの音楽のグローバル制御 (バッファ切り替えの必要なし).
-Oh... and there's a pretty comprehensive manual in a variety of formats too
-
+Oh... そしてあまりにも様々なフォーマットでのかなり包括的なマニュアルがあります.
 * [[GIMME]] -- Emacs上のXMMS2クライアント
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
 * [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- ミュージックプレイヤーデーモン[http://musicpd.org/ MPD]のインターフェースへのelispライブラリ. 小さな対話式インターフェースを含む.
