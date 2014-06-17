@@ -4,3 +4,10 @@ This item was removed from the newbie page because the linked document doesn't s
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2014-06-15 18:05 UTC
 
+
+----
+
+Actually, I removed it because it is present in LearningEmacs, which is linked from EmacsNewbie. This is the case of most of the links on LearningEmacs: they are generally pertinent for newbies learning Emacs. But it is good to have them factored out to their own page (LearningEmacs), and it makes little sense to have some of them also present on EmacsNewbie.
+
+-- DrewAdams 2014-06-17 15:05 UTC
+
