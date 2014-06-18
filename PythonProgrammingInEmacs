@@ -357,5 +357,35 @@ Not having the right encoding set leads to errors in ipython:
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
 
+=== Shortcuts to automatically write commands ===
+The code below adds some shortcuts to automatically write the frequently used python commands. 
+<pre>
+(define-key
+  python-mode-map
+  (kbd "C-c C-x l")
+  (lambda () (interactive)  (insert "lambda ")))
+
+(define-key
+  python-mode-map
+  (kbd "C-c C-x m")
+  (lambda ()
+    (interactive)
+    (insert "map()")
+    (backward-char) 1))
+
+(define-key python-mode-map
+  (kbd "C-c C-x r")
+  (lambda ()
+    (interactive)
+    (insert "reduce()")
+    (backward-char 1)))
+
+(define-key python-mode-map
+  (kbd "C-c C-x e")
+  (lambda ()
+    (interactive)
+    (insert "return ")))
+</pre>
+
 ----
 Categories: CategoryProgramming, ProgrammingModes
