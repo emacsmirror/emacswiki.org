@@ -64,5 +64,23 @@ Instead of /desproxy/, I use [http://www.agroman.net/corkscrew/ corkscrew] to tu
 
 Of course, you want to install /corkscrew/ first. --[[sthuebner]]
 
+== ERC through HTTP Proxy ==
+You can use the following to use an unauthenticated HTTP proxy for ERC without external tools:
+
+ (defvar http-proxy-host <proxyhost>
+  "Host address for http proxy")
+ (defvar http-proxy-port <proxyport>
+  "Host port for http proxy")
+
+ (defun open-http-proxy-stream (name buffer host service &rest parameters)
+  "Open network stream via http proxy. Proxy is defined by variables http-proxy-host and http-proxy-port."
+  (let ((tmp-process (apply 'open-network-stream name buffer http-proxy-host http-proxy-port parameters)))
+  (process-send-string name (format "CONNECT %s:%d HTTP/1.1\n\n" host service))
+  tmp-process))
+
+ (setq erc-server-connect-function 'open-http-proxy-stream)
+
+--[[blorbx]]
+
 -----
 [[ERC]]
