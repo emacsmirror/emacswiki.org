@@ -4,11 +4,37 @@ You can find me at [http://www-cs-students.stanford.edu/~amitp/] or [http://twit
 
 : Welcome to the wiki.  :)  Never change a winning team, eh?  -- AlexSchroeder
 
+== Configuration ==
+
+Among classmates and coworkers I'm usually the one who tries out new packages and shares customization tweaks.  I contribute small items to the Emacs Wiki, and I write [http://amitp.blogspot.com/search/label/emacs blog posts about my emacs setup].  However, I haven't written any big packages that I've shared with the world.
+
+One problem I have in and out of Emacs is keeping track of what window has focus.  Long ago I wrote a simple XEmacs package to [http://groups.google.com/group/comp.emacs.xemacs/browse_thread/thread/e8fc4fbc1bc4c4dc/33b406a4524d7db1#33b406a4524d7db1 change the modeline color of the active window].  I'm happy to see that GNU Emacs 22 has an active and inactive modeline color (`mode-line-inactive' face), although the active color is used even when Emacs doesn't have OS-level focus.  I also implemented something similar to highlight when the minibuffer is active, and it looks like GNU Emacs 22's `minibuffer-prompt' face can be used to achieve a similar effect.
+
+* [http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html My mode line setup]
+* [http://amitp.blogspot.com/2007/03/emacs-move-autosave-and-backup-files.html Move backup files elsewhere]
+* [http://amitp.blogspot.com/2007/05/emacs-highlighting-parentheses.html Highlighting parentheses]
+* [http://amitp.blogspot.com/2007/04/emacs-buffer-tabs.html Buffer tabs]
+* [http://amitp.blogspot.com/2007/04/emacs-color-in-shell-buffers.html Color in shell buffers]
+* [http://amitp.blogspot.com/2007/04/emacs-better-completion.html Completion]
+* [http://amitp.blogspot.com/2013/05/emacs-highlight-active-buffer.html Highlight active buffer in Emacs 23]
+* [http://amitp.blogspot.com/2014/04/building-mac-os-x-emacs.html Compiling the Yamamoto Mitsuharu version of Emacs 24 pretest on Mac OS]
+* [http://amitp.blogspot.com/2014/04/emacs-rainbow-identifiers.html Rainbow-identifiers and color-identifiers]
+* [http://amitp.blogspot.com/2014/06/emacs-find-files-anywhere.html Finding files from anywhere, using helm + locate]
+
 == Init file structure ==
 
 I try to share the same Emacs setup across machines, but there are machine-specific settings that I keep in separate files. I then load those files with this:
 
 {{{
+(defun get-hostname-and-parents (hostname)
+  "For a given hostname, return the list with that hostname and all suffixes, as symbols"
+  (let ((suffix "")
+        (results ()))
+    (loop for component in (reverse (split-string hostname "\\.")) do
+      (setq suffix (concat component (if (equal suffix "") "" ".") suffix))
+      (setq results (cons (intern suffix) results)))
+    results))
+
 (defvar my-modules
   `(
     ;; Loaded for all setups
@@ -50,22 +76,7 @@ I try to share the same Emacs setup across machines, but there are machine-speci
 
 For example, I have Mac-specific settings in <code>platform-darwin.el</code> and my Stanford settings in <code>stanford.el</code>.  Sometimes other people will copy my emacs setup but certain things are specific to me so I'll put them in <code>amitp.el</code> so that they're not automatically loaded by others. It's not a clean use of module names but it's simple and works reasonably well so far.
 
-== Contributions ==
-
-Among classmates and coworkers I'm usually the one who tries out new packages and shares customization tweaks.  I contribute small items to the Emacs Wiki, and I write [http://amitp.blogspot.com/search/label/emacs blog posts about my emacs setup].  However, I haven't written any big packages that I've shared with the world.
-
-One problem I have in and out of Emacs is keeping track of what window has focus.  Long ago I wrote a simple XEmacs package to [http://groups.google.com/group/comp.emacs.xemacs/browse_thread/thread/e8fc4fbc1bc4c4dc/33b406a4524d7db1#33b406a4524d7db1 change the modeline color of the active window].  I'm happy to see that GNU Emacs 22 has an active and inactive modeline color (`mode-line-inactive' face), although the active color is used even when Emacs doesn't have OS-level focus.  I also implemented something similar to highlight when the minibuffer is active, and it looks like GNU Emacs 22's `minibuffer-prompt' face can be used to achieve a similar effect.
-
-* [http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html My mode line setup]
-* [http://amitp.blogspot.com/2007/03/emacs-move-autosave-and-backup-files.html Move backup files elsewhere]
-* [http://amitp.blogspot.com/2007/05/emacs-highlighting-parentheses.html Highlighting parentheses]
-* [http://amitp.blogspot.com/2007/04/emacs-buffer-tabs.html Buffer tabs]
-* [http://amitp.blogspot.com/2007/04/emacs-color-in-shell-buffers.html Color in shell buffers]
-* [http://amitp.blogspot.com/2007/04/emacs-better-completion.html Completion]
-* [http://amitp.blogspot.com/2013/05/emacs-highlight-active-buffer.html Highlight active buffer in Emacs 23]
-* [http://amitp.blogspot.com/2014/04/building-mac-os-x-emacs.html Compiling the Yamamoto Mitsuharu version of Emacs 24 pretest on Mac OS]
-* [http://amitp.blogspot.com/2014/04/emacs-rainbow-identifiers.html Rainbow-identifiers and color-identifiers]
-* [http://amitp.blogspot.com/2014/06/emacs-find-files-anywhere.html Finding files from anywhere, using helm + locate]
+You can see that I like using the `loop' macro.
 
 == My Emacs history ==
 
