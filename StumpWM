@@ -233,7 +233,11 @@ Notes: [1] quicklisp-path is defined as in previous code.
 
 As of version stumpwm-20140316-git the quicklisp distribution of stumpwm does not contain the contrib directory.  The idea is that the various contribs should be in separate quicklisp packages but this has not happened yet.  This means that it no longer has stumpish or stumpwm-mode bundled with it.  There could also be issues if you lazy load swank, depending on how you do it.  A quick hack is to copy the contrib directory from an older installation to the new one.  Everything seems to work as advertised above, but it might be a good idea to ensure that the .lisp files in this directory have been compiled with the latest version of your Common Lisp you have installed.
 
-I will report back when the situation has become more stable.
+Most of the modules that used to be in the contrib directory can now be found at:
+
+https://github.com/stumpwm/stumpwm-contrib
+
+Which is good news for anyone using them, however stumpish and stumpwm-mode are not included.  Stumpwm-mode is now available on melpa but you still need stumpish installed to use it.  None of the contrib modules have appeared on quicklisp yet.
 
 ----
 CategoryRelated
