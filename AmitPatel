@@ -4,14 +4,6 @@ You can find me at [http://www-cs-students.stanford.edu/~amitp/] or [http://twit
 
 : Welcome to the wiki.  :)  Never change a winning team, eh?  -- AlexSchroeder
 
-== Catholic or Protestant? ==
-
-Short answer: I used GNU Emacs 18, then switched to Lucid 19 and stayed on the Lucid/XEmacs side for a long time, then switched back to GNU Emacs 22, and now use 22 or 23 on Mac, Windows, and Linux. I've tried SXEmacs but never got into it, in part because it feels alien but also because I use multiple platforms.
-
-Medium answer: I used GNU Emacs 18, and played with Epoch (!), and then switched to Lucid Emacs in 1992.  I'm a visual person and find colors and fonts to be very useful; at the time, Emacs 18 didn't have support for such things, so I switched.  I stuck with Lucid/XEmacs 19, 20, 21.  By the time XEmacs 21 came out, Emacs was starting to catch up, but it still didn't have things like proportional fonts.  XEmacs seems more polished and more useful out of the box (for example, it comes with python and ruby modes).  GNU Emacs seems faster and more actively developed.  By 2003 I was absolutely convinced that the two were diverging enough that I'd never be able to switch, nor would I want to.  However, since then, XEmacs development has slowed to a crawl, and I've gotten a Mac (where XEmacs isn't supported), and I've switched to Emacs 22/23 on Mac, Windows, and Linux.
-
-Long answer: [http://amitp.blogspot.com/2007/01/weekend-project-xemacs-to-emacs.html here].
-
 == Init file structure ==
 
 I try to share the same Emacs setup across machines, but there are machine-specific settings that I keep in separate files. I then load those files with this:
@@ -60,27 +52,25 @@ For example, I have Mac-specific settings in <code>platform-darwin.el</code> and
 
 == Contributions ==
 
-I haven't contributed much.  Among classmates and coworkers I'm usually the one who tries out new packages and shares customization tweaks.  I do contribute small items to the Emacs Wiki.  However, I haven't written any big packages that I've shared with the world.
+Among classmates and coworkers I'm usually the one who tries out new packages and shares customization tweaks.  I contribute small items to the Emacs Wiki, and I write [http://amitp.blogspot.com/search/label/emacs blog posts about my emacs setup].  However, I haven't written any big packages that I've shared with the world.
 
 One problem I have in and out of Emacs is keeping track of what window has focus.  Long ago I wrote a simple XEmacs package to [http://groups.google.com/group/comp.emacs.xemacs/browse_thread/thread/e8fc4fbc1bc4c4dc/33b406a4524d7db1#33b406a4524d7db1 change the modeline color of the active window].  I'm happy to see that GNU Emacs 22 has an active and inactive modeline color (`mode-line-inactive' face), although the active color is used even when Emacs doesn't have OS-level focus.  I also implemented something similar to highlight when the minibuffer is active, and it looks like GNU Emacs 22's `minibuffer-prompt' face can be used to achieve a similar effect.
 
-I should post my `.emacs' file someday.  I've posted parts of it in blog posts. None of these are likely to be interesting to emacswiki members though.
+* [http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html My mode line setup]
+* [http://amitp.blogspot.com/2007/03/emacs-move-autosave-and-backup-files.html Move backup files elsewhere]
+* [http://amitp.blogspot.com/2007/05/emacs-highlighting-parentheses.html Highlighting parentheses]
+* [http://amitp.blogspot.com/2007/04/emacs-buffer-tabs.html Buffer tabs]
+* [http://amitp.blogspot.com/2007/04/emacs-color-in-shell-buffers.html Color in shell buffers]
+* [http://amitp.blogspot.com/2007/04/emacs-better-completion.html Completion]
+* [http://amitp.blogspot.com/2013/05/emacs-highlight-active-buffer.html Highlight active buffer in Emacs 23]
+* [http://amitp.blogspot.com/2014/04/building-mac-os-x-emacs.html Compiling the Yamamoto Mitsuharu version of Emacs 24 pretest on Mac OS]
+* [http://amitp.blogspot.com/2014/04/emacs-rainbow-identifiers.html Rainbow-identifiers and color-identifiers]
+* [http://amitp.blogspot.com/2014/06/emacs-find-files-anywhere.html Finding files from anywhere, using helm + locate]
 
-[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html My mode line setup]
+== My Emacs history ==
 
-[http://amitp.blogspot.com/2007/03/emacs-move-autosave-and-backup-files.html Move backup files elsewhere]
+I started using GNU Emacs in 1990, then Epoch, then Lucid Emacs in 1992. I'm a visual person and find colors and fonts to be very useful; at the time, Emacs 18 didn't have support for such things, so I switched.  I stuck with Lucid/XEmacs 19, 20, 21.  By the time XEmacs 21 came out, Emacs was starting to catch up, but it still didn't have things like proportional fonts.  XEmacs seemed more polished and more useful out of the box (for example, it came with python and ruby modes, as well as a package manager, and on GNU Emacs you had to download them an install them yourself, without a package manager).  GNU Emacs seemed faster and more actively developed.  By 2003 I was absolutely convinced that the two were diverging enough that I'd never be able to switch, nor would I want to.  However, since then, XEmacs development has slowed to a crawl, [http://amitp.blogspot.com/2007/01/weekend-project-xemacs-to-emacs.html here I switched to GNU Emacs] on Mac, Windows, and Linux.
 
-[http://amitp.blogspot.com/2007/05/emacs-highlighting-parentheses.html Highlighting parentheses]
-
-[http://amitp.blogspot.com/2007/04/emacs-buffer-tabs.html Buffer tabs]
-
-[http://amitp.blogspot.com/2007/04/emacs-color-in-shell-buffers.html Color in shell buffers]
-
-[http://amitp.blogspot.com/2007/04/emacs-better-completion.html Completion]
-
-[http://amitp.blogspot.com/2012/10/emacs-helm-for-finding-files.html Using Helm with mdfind/locate]
-
-[http://amitp.blogspot.com/2013/05/emacs-highlight-active-buffer.html Highlight active buffer in Emacs 23]
 
 ----
 CategoryHomepage
