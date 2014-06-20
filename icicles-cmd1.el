@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jun  6 17:36:46 2014 (-0700)
+;; Last-Updated: Thu Jun 19 18:32:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27007
+;;     Update #: 27008
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3939,7 +3939,14 @@ To use `icicle-explore' to define a multi-command, you must also bind
 Though `icicle-explore' is typically used to define navigation
 commands, it need not be.  It can be useful anytime you need to use
 `completing-read' and also provide specific behavior for quitting
-\(`C-g'), completion errors, and final actions."
+\(`C-g'), completion errors, and final actions.
+
+Note: `icicle-explore' binds user option
+`icicle-incremental-completion' to `always', because I think you
+typically want to start it out with incremental completion turned on.
+Functions that call `icicle-explore' thus also turn on incremental
+completion.  Remember that you can use `C-#' (once or twice) to turn
+incremental completion off."
   (let ((icicle-incremental-completion          'always)
         (icicle-whole-candidate-as-text-prop-p  t)
         (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
