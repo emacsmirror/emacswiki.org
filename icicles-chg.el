@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jun  7 11:47:34 2014 (-0700)
+;; Last-Updated: Thu Jun 19 18:41:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10942
+;;     Update #: 10949
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/06/19 dadams
+;;     icicle-explore: Added note to doc string about binding *-incremental-completion to always.
 ;; 2014/06/06 dadams
 ;;     Added: icicle-choose-window-for-buffer-display, icicle-choose-window-by-name,
 ;;            icicle-read-choose-window-args.
@@ -1091,6 +1093,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/06/19 dadams
+;;     icicle-apply, icicle-search:
+;;       Added note to doc string about binding *-incremental-completion to always.
 ;; 2014/05/17 dadams
 ;;     icicle-color-help, icicle-tags-search: with-output-to-temp-buffer -> icicle-with-help-window.
 ;; 2014/05/11 dadams
