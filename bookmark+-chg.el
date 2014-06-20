@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri May 30 17:54:07 2014 (-0700)
+;; Last-Updated: Fri Jun 20 07:26:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15545
+;;     Update #: 15546
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -993,6 +993,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/06/20 dadams
+;;     bmkp-define-tags-sort-command: Load bookmark+-mac.el(c) in interactive spec.
 ;; 2014/05/27 dadams
 ;;     bmkp-bmenu-mode-status-help, bmkp-bmenu-describe-marked:
 ;;       Use bmkp-with-help-window, not with-output-to-temp-buffer (Emacs 24.4+ silliness).
