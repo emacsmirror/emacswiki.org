@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May 27 09:38:57 2014 (-0700)
+;; Last-Updated: Fri Jun 20 07:24:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2916
+;;     Update #: 2919
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4256,8 +4256,16 @@ name, alphabetically.
 
 The name of the new command is `bmkp-bmenu-sort-' followed by the
 specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
-\(\"alpha\" \"beta\"), the name is `bmkp-bmenu-sort-alpha-beta'."
-  (interactive (list (bmkp-read-tags-completing) 'MSG))
+\(\"alpha\" \"beta\"), the name is `bmkp-bmenu-sort-alpha-beta'.
+
+If you use this function non-interactively, be sure to load library
+`bookmark+-mac.el' first."
+  (interactive
+   (progn (or (condition-case nil       ; Load `bookmark+-mac.el' when called interactively.
+                  (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
+                (error nil))
+              (require 'bookmark+-mac))
+          (list (bmkp-read-tags-completing) 'MSG)))
   (let ((sort-order  (concat "tags-" (mapconcat #'identity tags "-")))
         (doc-string  (read-string "Doc string for command: "))
         (comparer    ())
