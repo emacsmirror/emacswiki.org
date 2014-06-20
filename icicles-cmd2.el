@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri May 16 23:37:04 2014 (-0700)
+;; Last-Updated: Thu Jun 19 18:36:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6840
+;;     Update #: 6844
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3583,9 +3583,16 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.  This is an Icicles command - see command
 `icicle-mode'.
 
-`icicle-apply' overrides `icicle-buffer-ignore-space-prefix-flag',
-binding it to nil so that candidates with initial spaces can be
-matched."
+Note:
+* `icicle-apply' overrides `icicle-buffer-ignore-space-prefix-flag',
+  binding it to nil so that candidates with initial spaces can be
+  matched.
+* `icicle-apply' binds user option `icicle-incremental-completion' to
+  `always', because I think you typically want to start it out with
+  incremental completion turned on.  Functions that call
+  `icicle-apply' thus also turn on incremental completion.
+  Remember that you can use `C-#' (once or twice) to turn incremental
+  completion off."
   (interactive
    (list (symbol-value
           (intern
@@ -4231,6 +4238,13 @@ Note that if SCAN-FN-OR-REGEXP is a regexp string, then function
 zones.  You can limit hits to regexp matches that also satisfy a
 predicate, by using `(PREDICATE)' as ARGS: PREDICATE is then passed to
 `icicle-search-regexp-scan' as its PREDICATE argument.
+
+Note: `icicle-search' effectively binds user option
+`icicle-incremental-completion' to `always', because I think you
+typically want to start it out with incremental completion turned on.
+Other Icicles search commands are defined using `icicle-search', so
+they also effectively turn on incremental completion.  Remember that
+you can use `C-#' (once or twice) to turn it off.
 
 This command is intended for use only in Icicle mode."
   (interactive `(,@(icicle-region-or-buffer-limits)
