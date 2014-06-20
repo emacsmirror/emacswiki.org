@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri May 16 21:30:36 2014 (-0700)
+;; Last-Updated: Thu Jun 19 18:26:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29514
+;;     Update #: 29529
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5218,6 +5218,12 @@
 ;;    values at any time using `C-#'.  For more information, see
 ;;    (@file :file-name "icicles-doc1.el" :to "Icompletion").
 ;;
+;;    Note: Several tripping (navigating) commands, including Icicles
+;;    search commands, bind option `icicle-incremental-completion' to
+;;    `always', because I think you typically want to start them out
+;;    with incremental completion turned on.  Remember that you can
+;;    use `C-#' (once or twice) to turn incremental completion off.
+;;
 ;;  * User options `icicle-incremental-completion-delay' and
 ;;    `icicle-incremental-completion-threshold' together cause a delay
 ;;    before incremental completion takes effect.
@@ -8650,9 +8656,9 @@
 ;;
 ;;  The best way to learn how to do this is to look at how the
 ;;  existing tripping commands are defined.  Some of them use macro
-;;  `icicle-define-command'; others do not.  Some use the
-;;  building-block functions `icicle-explore' or `icicle-apply';
-;;  others do not.  Several use `icicle-search' as a building block.
+;;  `icicle-define-command'; others do not.  Some use building-block
+;;  function `icicle-explore' or `icicle-apply'; others do not.
+;;  Several use `icicle-search' as a building block.
 ;;
 ;;(@* "Using `icicle-define-command'")
 ;;  ** Using `icicle-define-command' **
@@ -8701,6 +8707,16 @@
 ;;  `icicle-get-alist-candidate' to get the location information for a
 ;;  given display candidate.
 ;;
+;;  Note: `icicle-explore' binds user option
+;;  `icicle-incremental-completion' to `always', because I think you
+;;  typically want to start it out with incremental completion turned
+;;  on.  Functions that call `icicle-explore' thus also turn on
+;;  incremental completion.  This includes the predefined Icicles
+;;  commands `icicle-find-tag' and `icicle-search', and the many
+;;  specialized Icicles search commands derived from `icicle-search'.
+;;  Remember that you can use `C-#' (once or twice) to turn
+;;  incremental completion off.
+;;
 ;;(@* "Using `icicle-apply'")
 ;;  ** Using `icicle-apply' **
 ;;
@@ -8719,6 +8735,15 @@
 ;;  make no such provision, but with suitable arguments you can use
 ;;  them too to define tripping commands.
 ;;
+;;  Note: `icicle-apply' binds user option
+;;  `icicle-incremental-completion' to `always', because I think you
+;;  typically want to start it out with incremental completion turned
+;;  on.  Functions that call `icicle-apply' thus also turn on
+;;  incremental completion.  This includes the predefined Icicles
+;;  commands `icicle-goto-marker' and `icicle-goto-global-marker'.
+;;  Remember that you can use `C-#' (once or twice) to turn off
+;;  incremental completion.
+;;
 ;;(@* "Using `icicle-search'")
 ;;  ** Using `icicle-search' **
 ;;
@@ -8731,6 +8756,14 @@
 ;;  needed to define a trip command that uses search hits as
 ;;  completion candidates.  Several predefined Icicles tripping
 ;;  commands were defined using `icicle-search'.
+;;
+;;  Note: `icicle-search' effectively binds user option
+;;  `icicle-incremental-completion' to `always', because I think you
+;;  typically want to start it out with incremental completion turned
+;;  on.  Other Icicles search commands are defined using
+;;  `icicle-search', so they also effectively turn on incremental
+;;  completion.  Remember that you can use `C-#' (once or twice) to
+;;  turn it off.
 ;;
 ;;(@* "Tripping on Foot")
 ;;  ** Tripping on Foot **
