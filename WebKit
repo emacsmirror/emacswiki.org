@@ -25,3 +25,9 @@ Load it and enjoiy your browsing with M-x webkit-open-url !!!
 I spend almost all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, which leave me not so much time in the elisp world.
 
 It's a my pleasure to hava you [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build the most powerful browser for Emacs hackers!
+
+==WebKit with other extension==
+Below is screenshot of WebKit with my extension [http://www.emacswiki.org/emacs/ChmView ChmView] that browse CHM file in WebKit browser:
+
+[[image:webkit-chm.png]]
+ 
