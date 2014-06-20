@@ -284,15 +284,14 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by buffer name
 
 
-
-
-
-
 (You need library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.  You need library '''[[Dired+]]''' for `icicle-occur-dired-marked-recursive' and `icicle-search-dired-marked-recursive'.)
 
-
-
-
+Note: '''Icicles''' search commands and commands `icicle-find-tag',
+`icicle-goto-marker', and `icicle-goto-global-marker' effectively
+bind [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' to `always',
+because I think you typically want to start them out with
+incremental completion turned on.  Remember that you can use `<tt>C-#</tt>'
+(once or twice) to turn incremental completion off.
 
 
 
