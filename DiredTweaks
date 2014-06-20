@@ -16,6 +16,7 @@ This page provides supplementary information about DiredMode and some enhancemen
  '''##files 691##''' ##space used 49439 available 56233408##
 * DiredFindFileOtherFrame -- open a new frame from dired
 * DiredSorting – Dired tips and addons for sorting listings
+* [[https://github.com/Fuco1/dired-hacks|dired-hacks]] is a collection of dired packages adding various functionality such as filtering, subtrees, inteligent file opening, avfs support, coloring and more.  It is actively maintained and opened to patches, with clean and extensible design in mind.
 
 See also: [[DiredMode#DiredEnhancements|Other Dired Enhancements]].
 
