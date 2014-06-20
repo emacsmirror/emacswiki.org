@@ -14,8 +14,8 @@ programmers.
 
 The best way to learn how to do this is to look at how the
 existing tripping commands are defined.  Some of them use macro
-`icicle-define-command'; others do not.  Some use the
-building-block functions `icicle-explore' or `icicle-apply';
+`icicle-define-command'; others do not.  Some use 
+building-block function `icicle-explore' or `icicle-apply';
 others do not.  Several use `icicle-search' as a building block.
 
 
@@ -72,6 +72,16 @@ you need for an Icicles trip.  You can use function
 `icicle-get-alist-candidate' to get the location information for a
 given display candidate.
 
+Note: `icicle-explore' binds user option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' 
+`to `always', because I think you
+typically want to start it out with incremental completion turned
+on.  Functions that call `icicle-explore' thus also turn on
+incremental completion.  This includes the predefined '''Icicles'''
+commands `icicle-find-tag' and `icicle-search', and the many
+specialized '''Icicles''' [[Icicles - Search Commands, Overview|search commands]] derived from `icicle-search'.
+Remember that you can use `<tt>C-#</tt>' (once or twice) to turn 
+incremental completion off.
 
 
 [:icicle-apply]
@@ -92,6 +102,16 @@ macros `icicle-define-command' and `icicle-define-file-command'
 make no such provision, but with suitable arguments you can use
 them too to define tripping commands.
 
+Note: `icicle-apply' binds user option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' 
+`to `always', because I think you
+typically want to start it out with incremental completion turned
+on.  Functions that call `icicle-apply' thus also turn on
+incremental completion.  This includes the predefined '''Icicles'''
+commands `icicle-goto-marker' and `icicle-goto-global-marker'.
+Remember that you can use `<tt>C-#</tt>' (once or twice) to turn 
+incremental completion off.
+
 '''See Also:''' [[MarkCommands#IciclesGoToMarker|Icicles Commands to Go To a Marker]] 
 
 
@@ -110,7 +130,14 @@ needed to define a trip command that uses search hits as
 completion candidates.  Several predefined '''Icicles''' tripping
 commands were defined using `icicle-search'.
 
-
+Note: `icicle-search' effectively binds user option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' 
+`to `always', because I think you
+typically want to start it out with incremental completion turned
+on.  Other '''Icicles''' [[Icicles - Search Commands, Overview|search commands]] are defined using `icicle-search', so they also effectively 
+turn on incremental completion.
+Remember that you can use `<tt>C-#</tt>' (once or twice) to turn 
+incremental completion off.
 
 
 
@@ -191,7 +218,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
