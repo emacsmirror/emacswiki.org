@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jun 21 11:14:07 2014 (-0700)
+;; Last-Updated: Sat Jun 21 16:09:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10951
+;;     Update #: 10954
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1093,6 +1093,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/06/21 dadams
+;;     icicle-imenu-1: Handle multiple submenus with the same name (e.g. Functions).
 ;; 2014/06/19 dadams
 ;;     icicle-apply, icicle-search:
 ;;       Added note to doc string about binding *-incremental-completion to always.
@@ -7221,6 +7223,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/06/21 dadams
+;;     icicle-completion-key-bindings:
+;;       Added bindings for bmkp-(set|retrieve(-more)-icicle-search-hits-bookmark.
 ;; 2014/05/16 dadams
 ;;     icicle-default-value: Updated doc string for change to t value behavior.
 ;; 2014/04/29 dadams
