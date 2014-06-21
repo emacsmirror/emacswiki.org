@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Jun 19 18:26:58 2014 (-0700)
+;; Last-Updated: Sat Jun 21 15:46:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29529
+;;     Update #: 29537
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1492,14 +1492,14 @@
 ;;  you do not need to read/scan the whole list.
 ;;
 ;;  If you look at the definition of `icicle-imenu' you'll see that it
-;;  simply lets you choose an Imenu submenu (`Functions', `User
-;;  Options', and so on) that is appropriate for the current buffer
-;;  type, and then it calls `icicle-search', passing it the
-;;  appropriate Imenu regexp.  You can similarly define your own
-;;  specialized search commands using `icicle-search' to browse regexp
-;;  matches.  You get all of the features of `icicle-search' when you
-;;  do that.  For example, `icicle-imenu' gives you these advantages
-;;  over a standard Imenu menu:
+;;  simply lets you choose an Imenu submenu (`Functions', `Options',
+;;  and so on) that is appropriate for the current buffer type, and
+;;  then it calls `icicle-search', passing it the appropriate Imenu
+;;  regexp.  You can similarly define your own specialized search
+;;  commands using `icicle-search' to browse regexp matches.  You get
+;;  all of the features of `icicle-search' when you do that.  For
+;;  example, `icicle-imenu' gives you these advantages over a standard
+;;  Imenu menu:
 ;;
 ;;  * You can restrict navigation (search) to a region.
 ;;
@@ -1511,6 +1511,22 @@
 ;;
 ;;  * As for `icicle-search', you can search multiple bookmarks,
 ;;    multiple buffers, or multiple files.
+;;
+;;  When you use an Icicles Imenu command, first you choose a submenu
+;;  for a given object type (e.g. submenu `Functions' for functions),
+;;  and then you choose an object definition from that submenu.  But
+;;  multiple regexps can be used for a given Imenu submenu, such as
+;;  `Function'.  Icicles Imenu commands use these regexps separately,
+;;  so they present multiple completion candidates with the same name
+;;  when you choose the object type.
+;;
+;;  For example, if two different regexps are used to gather function
+;;  definitions then there might be two corresponding `Functions'
+;;  candidates (depending on whether there are matches for each of the
+;;  regexps).  Choosing one or the other of these submenu candidates
+;;  then gives you different function choices.  (Remember that you can
+;;  cycle to choose among multiple candidates that have the same
+;;  name.)
 ;;
 ;;(@* "Type-Specific Imenu Commands")
 ;;  *** Type-Specific Imenu Commands ***
@@ -8741,8 +8757,8 @@
 ;;  on.  Functions that call `icicle-apply' thus also turn on
 ;;  incremental completion.  This includes the predefined Icicles
 ;;  commands `icicle-goto-marker' and `icicle-goto-global-marker'.
-;;  Remember that you can use `C-#' (once or twice) to turn off
-;;  incremental completion.
+;;  Remember that you can use `C-#' (once or twice) to turn
+;;  incremental completion off.
 ;;
 ;;(@* "Using `icicle-search'")
 ;;  ** Using `icicle-search' **
