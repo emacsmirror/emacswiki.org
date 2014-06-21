@@ -2,8 +2,8 @@ Oddmuse Curl Mode is a fork of a very old revision of OddmuseMode maintained by 
 
 Cool features:
 
-* VC integration
-* Preview functionality using [[HtmlRendering|shr]]
+* [[VersionControl|VC]] integration
+* Preview using [[HtmlRendering|shr]]
 
 The code is maintained on Savannah using Git:
 
