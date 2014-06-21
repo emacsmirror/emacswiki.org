@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri May 30 17:53:12 2014 (-0700)
+;; Last-Updated: Sat Jun 21 16:44:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7119
+;;     Update #: 7138
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -240,12 +240,15 @@
 ;;    `bmkp-remote-file-jump', `bmkp-remote-file-jump-other-window',
 ;;    `bmkp-remove-all-tags', `bmkp-remove-tags',
 ;;    `bmkp-remove-tags-from-all', `bmkp-rename-tag',
+;;    `bmkp-retrieve-icicle-search-hits',
+;;    `bmkp-retrieve-more-icicle-search-hits',
 ;;    `bmkp-revert-bookmark-file', `bmkp-save-menu-list-state',
 ;;    `bmkp-send-bug-report', `bmkp-set-autonamed-bookmark',
 ;;    `bmkp-set-autonamed-bookmark-at-line',
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
+;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-restrictions-bookmark', `bmkp-set-sequence-bookmark',
 ;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
 ;;    `bmkp-set-tag-value-for-navlist',
@@ -382,18 +385,21 @@
 ;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
 ;;    `bmkp-gnus-bookmark-p', `bmkp-gnus-cp', `bmkp-goto-position',
 ;;    `bmkp-handle-region-default', `bmkp-handler-cp',
-;;    `bmkp-handler-pred', `bmkp-has-tag-p', `bmkp-image-alist-only',
+;;    `bmkp-handler-pred', `bmkp-has-tag-p',
+;;    `bmkp-icicle-search-hits-alist-only',
+;;    `bmkp-icicle-search-hits-bookmark-p', `bmkp-image-alist-only',
 ;;    `bmkp-image-bookmark-p', `bmkp-info-alist-only',
 ;;    `bmkp-info-bookmark-p', `bmkp-info-cp', `bmkp-isearch-bookmarks'
 ;;    (Emacs 23+), `bmkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bmkp-isearch-next-bookmark-buffer' (Emacs 23+), `bmkp-jump-1',
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-function',
-;;    `bmkp-jump-gnus', `bmkp-jump-man', `bmkp-jump-sequence',
-;;    `bmkp-jump-snippet', `bmkp-jump-url-browse',
-;;    `bmkp-jump-variable-list', `bmkp-jump-w3m',
-;;    `bmkp-jump-w3m-new-session', `bmkp-jump-w3m-only-one-tab',
-;;    `bmkp-jump-woman', `bmkp-last-specific-buffer-alist-only',
+;;    `bmkp-jump-gnus', `bmkp-jump-icicle-search-hits',
+;;    `bmkp-jump-man', `bmkp-jump-sequence', `bmkp-jump-snippet',
+;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
+;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-session',
+;;    `bmkp-jump-w3m-only-one-tab', `bmkp-jump-woman',
+;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
 ;;    `bmkp-last-specific-file-alist-only',
 ;;    `bmkp-last-specific-file-p', `bmkp-line-number-at-pos',
@@ -405,16 +411,17 @@
 ;;    `bmkp-make-bookmark-file-record',
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
 ;;    `bmkp-make-dired-record', `bmkp-make-gnus-record',
-;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
-;;    `bmkp-make-record-for-target-file', `bmkp-make-sequence-record',
-;;    `bmkp-make-url-browse-record', `bmkp-make-variable-list-record',
-;;    `bmkp-make-w3m-record', `bmkp-make-woman-record' (Emacs 21+),
-;;    `bmkp-man-alist-only', `bmkp-man-bookmark-p',
-;;    `bmkp-marked-bookmark-p', `bmkp-marked-bookmarks-only',
-;;    `bmkp-marked-cp', `bmkp-maybe-save-bookmarks',
-;;    `bmkp-modified-bookmark-p', `bmkp-modified-cp',
-;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
-;;    `bmkp-names-same-bookmark-p', `bmkp-new-bookmark-default-names',
+;;    `bmkp-make-icicle-search-hits-record', `bmkp-make-man-record',
+;;    `bmkp-make-plain-predicate', `bmkp-make-record-for-target-file',
+;;    `bmkp-make-sequence-record', `bmkp-make-url-browse-record',
+;;    `bmkp-make-variable-list-record', `bmkp-make-w3m-record',
+;;    `bmkp-make-woman-record' (Emacs 21+), `bmkp-man-alist-only',
+;;    `bmkp-man-bookmark-p', `bmkp-marked-bookmark-p',
+;;    `bmkp-marked-bookmarks-only', `bmkp-marked-cp',
+;;    `bmkp-maybe-save-bookmarks', `bmkp-modified-bookmark-p',
+;;    `bmkp-modified-cp', `bmkp-msg-about-sort-order',
+;;    `bmkp-multi-sort', `bmkp-names-same-bookmark-p',
+;;    `bmkp-new-bookmark-default-names',
 ;;    `bmkp-non-autonamed-alist-only', `bmkp-non-file-alist-only',
 ;;    `bmkp-non-file-bookmark-p',
 ;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
@@ -446,6 +453,7 @@
 ;;    `bmkp-remove-omitted',
 ;;    `bmkp-rename-for-marked-and-omitted-lists',
 ;;    `bmkp-repeat-command', `bmkp-replace-existing-bookmark',
+;;    `bmkp-retrieve-icicle-search-hits-1',
 ;;    `bmkp-root-or-sudo-logged-p', `bmkp-same-creation-time-p',
 ;;    `bmkp-same-file-p', `bmkp-save-new-region-location',
 ;;    `bmkp-select-buffer-other-window', `bmkp-sequence-alist-only',
@@ -464,10 +472,11 @@
 ;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
 ;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
 ;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
-;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
-;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
-;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
-;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
+;;    `bmkp-unpropertized-string', `bmkp-upcase',
+;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
+;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
+;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
+;;    `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -486,7 +495,8 @@
 ;;    `bmkp-edit-bookmark-records-mode-map',
 ;;    `bmkp-edit-bookmark-records-number', `bmkp-edit-tags-mode-map',
 ;;    `bmkp-file-bookmark-handlers', `bmkp-file-history',
-;;    `bmkp-gnus-history', `bmkp-image-history', `bmkp-info-history',
+;;    `bmkp-gnus-history', `bmkp-icicle-search-hits-retrieve-more',
+;;    `bmkp-image-history', `bmkp-info-history',
 ;;    `bmkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bmkp-jump-display-function', `bmkp-jump-other-window-map',
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
@@ -1359,6 +1369,10 @@ customizations.")
 (defvar bmkp-file-bookmark-handlers '(bmkp-jump-dired image-bookmark-jump)
   "List of functions that handle file or directory bookmarks.
 This is used to determine `bmkp-file-bookmark-p'.")
+
+(defvar bmkp-icicle-search-hits-retrieve-more nil
+  "Non-nil means add hits recorded in bookmark to current search hits.
+Otherwise, replace current with bookmark hits.")
 
 (defvar bmkp-last-bookmark-file bookmark-default-file
   "Last bookmark file used in this session (or default bookmark file).
@@ -4977,6 +4991,12 @@ If it is a record then it need not belong to `bookmark-alist'."
   (memq (bookmark-get-handler bookmark)
         '(gnus-summary-bookmark-jump bmkp-jump-gnus bmkext-jump-gnus)))
 
+(defun bmkp-icicle-search-hits-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK records a list of Icicles search hits.
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (eq (bookmark-get-handler bookmark) 'bmkp-jump-icicle-search-hits))
+
 (defun bmkp-image-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an image-file bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -5466,6 +5486,12 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-gnus-bookmark-p bookmark-alist))
 
+(defun bmkp-icicle-search-hits-alist-only ()
+  "`bookmark-alist', but only for Icicles search hits bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-icicle-search-hits-bookmark-p bookmark-alist))
+
 (defun bmkp-image-alist-only ()
   "`bookmark-alist', filtered to retain only image-file bookmarks.
 A new list is returned (no side effects)."
@@ -5739,6 +5765,13 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
           (push (car tail) new))
         (pop tail))
       (nreverse new))))
+
+(defun bmkp-unpropertized-string (string)
+  "Return a copy of STRING, but with properties removed.
+Does not change the original STRING."
+  (let ((strg  (copy-sequence string)))
+    (set-text-properties 0 (length strg) () strg)
+    strg))
 
 ;; For a name propertized with `bmkp-full-record', this is similar to `bmkp-assoc-delete-all'.
 (defun bmkp-delete-bookmark-name-from-list (delname bnames)
@@ -7433,6 +7466,7 @@ the file is an image file then the description includes the following:
         (sequence-p       (bmkp-sequence-bookmark-p bookmark))
         (function-p       (bmkp-function-bookmark-p bookmark))
         (variable-list-p  (bmkp-variable-list-bookmark-p bookmark))
+        (search-hits-p    (bmkp-icicle-search-hits-bookmark-p bookmark))
         (desktop-p        (bmkp-desktop-bookmark-p bookmark))
         (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark))
         (snippet-p        (bmkp-snippet-bookmark-p bookmark))
@@ -7446,7 +7480,7 @@ the file is an image file then the description includes the following:
         (annot            (bookmark-get-annotation bookmark))
         no-position-p)
     (setq no-position-p  (not start))
-    (when (or sequence-p function-p variable-list-p) (setq no-position-p  t))
+    (when (or sequence-p  function-p  variable-list-p  search-hits-p) (setq no-position-p  t))
     (let* ((temp-text  (if temp-p "TEMPORARY " ""))
            (help-text
             (concat
@@ -7467,6 +7501,14 @@ the file is an image file then the description includes the following:
                                                  (pp-to-string (bookmark-prop-get bookmark 'function))))))
                    (variable-list-p  (format "Variable list:\n%s\n"
                                              (pp-to-string (bookmark-prop-get bookmark 'variables))))
+                   (search-hits-p    (concat "Icicles search hits:\n%s\n"
+                                             (mapconcat (lambda (hit)
+                                                          (let ((hit-copy  (copy-sequence hit)))
+                                                            (set-text-properties 0 (length hit-copy) () hit-copy)
+                                                            hit-copy))
+                                                        (bookmark-prop-get bookmark 'hits)
+                                                        "\n\t")
+                                             "\n"))
                    (gnus-p           (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
                                              (bookmark-prop-get bookmark 'group)
                                              (bookmark-prop-get bookmark 'article)
@@ -8154,6 +8196,71 @@ in the same directory, then you will need to relock it.)"
       (when (fboundp 'desktop-release-lock) (desktop-release-lock))) ; Not defined for Emacs 20.
     (when (file-exists-p desktop-file) (delete-file desktop-file)))
   (bookmark-delete bookmark-name))
+
+;; Icicle search-hits bookmarks
+(defun bmkp-jump-icicle-search-hits (bookmark)
+  "Handle an Icicles search-hits bookmark BOOKMARK."
+  (let ((raw-cands  (bookmark-prop-get bookmark 'hits)))
+    (setq icicle-saved-completion-candidates
+          (if icicle-multi-completing-p
+              raw-cands ; But will not work if RAW-CANDS are not multi-completions.
+            (mapcar #'icicle-transform-multi-completion raw-cands)))
+    (if bmkp-icicle-search-hits-retrieve-more
+        (icicle-candidate-set-retrieve-more)
+      (icicle-candidate-set-retrieve))))
+
+;;;###autoload (autoload 'bmkp-retrieve-icicle-search-hits "bookmark+")
+(defun bmkp-retrieve-icicle-search-hits ()
+  "Replace the current set of Icicles search hits by those from a bookmark.
+You are prompted for the bookmark name.
+This makes sense only if the buffer(s) or file(s) currently being
+searched correspond to the recorded search hits."
+  (interactive)
+  (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (bmkp-retrieve-icicle-search-hits-1))
+
+;;;###autoload (autoload 'bmkp-retrieve-more-icicle-search-hits "bookmark+")
+(defun bmkp-retrieve-more-icicle-search-hits ()
+  "Add the Icicles search hits from a bookmark to the current set of hits.
+You are prompted for the bookmark name.
+This makes sense only if the buffer(s) or file(s) currently being
+searched correspond to the recorded search hits."
+  (interactive)
+  (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (bmkp-retrieve-icicle-search-hits-1 'MORE))
+
+(defun bmkp-retrieve-icicle-search-hits-1 (&optional morep)
+  "Helper for `bmkp-retrieve-(more-)icicle-search-hits'."
+  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
+    (error "This command can be used only during Icicles search"))
+  (let* ((hits-bmks                              (bmkp-icicle-search-hits-alist-only))
+         (bmk                                    (let ((icicle-completion-candidates  icicle-completion-candidates)
+                                                       (enable-recursive-minibuffers  t))
+                                                   (bookmark-completing-read
+                                                    "Bookmark name"
+                                                    (mapcar #'bmkp-bookmark-name-from-record hits-bmks)
+                                                    hits-bmks)))
+         (bmkp-icicle-search-hits-retrieve-more  morep))
+    (bookmark-jump bmk)))
+
+;;;###autoload (autoload 'bmkp-set-icicle-search-hits-bookmark "bookmark+")
+(defun bmkp-set-icicle-search-hits-bookmark ()
+  "Record the current set of Icicles search-hit candidates as a bookmark."
+  (interactive)
+  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
+    (error "This command can be used only during Icicles search"))
+  (unless icicle-completion-candidates (error "No search hits to record"))
+  (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (let ((bookmark-make-record-function  'bmkp-make-icicle-search-hits-record)
+        (enable-recursive-minibuffers   t))
+    (call-interactively #'bookmark-set)))
+
+(defun bmkp-make-icicle-search-hits-record ()
+  "Create and return an Icicles search-hits bookmark record."
+  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
+      (filename    . ,bmkp-non-file-filename)
+      (hits        . ,(mapcar #'bmkp-unpropertized-string icicle-completion-candidates))
+      (handler     . bmkp-jump-icicle-search-hits)))
 
 ;; Variable-list bookmarks
 (when (boundp 'wide-n-restrictions)
