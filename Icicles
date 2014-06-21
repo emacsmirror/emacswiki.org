@@ -139,7 +139,7 @@ The most important links are '''bold''' here.
 * [[Icicles - Isearch Enhancements]] -- enhancements to ordinary IncrementalSearch (Isearch)
 * '''[[Icicles - Search Commands, Overview]]''' -- Overview of '''Icicles''' search commands
 * '''[[Icicles - Search-And-Replace]]''' -- replacing text while searching
-* [[Icicles - Other Search Commands]] -- searching text with certain properties (e.g. [[face]]s); browsing code definitions (Imenu); browsing compilation and `grep' hits; reusing inputs in `*shell*'
+* '''[[Icicles - Other Search Commands]]''' -- searching text with certain properties (e.g. [[face]]s); browsing code definitions (Imenu); browsing compilation and `grep' hits; reusing inputs in `*shell*'
 * '''[[Icicles - Bookmark Enhancements]]''' -- enhancements involving Emacs [[bookmark]]s (see also '''[[Bookmark+]]''')
 * '''[[Icicles - Emacs Tags Enhancements]]''' -- finding source-code definitions ([[tags]])
 * [[Icicles - Shell-Command Enhancements]] -- completion for shell commands
