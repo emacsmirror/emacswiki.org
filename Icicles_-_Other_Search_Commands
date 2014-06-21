@@ -100,7 +100,7 @@ Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu 
 [[image:IciclesImenuScreenshot]]
 
 If you look at the definition of `icicle-imenu' you'll see that it
-simply lets you choose an Imenu submenu ('''Functions''', '''User Options''', and so on) that is appropriate for the
+simply lets you choose an Imenu submenu ('''Functions''', '''Options''', and so on) that is appropriate for the
 current buffer type, and then it calls `icicle-search', passing it the appropriate Imenu regexp.
 
 You can similarly define your own specialized search commands 
@@ -111,6 +111,20 @@ using `icicle-search' to browse regexp matches. You get all of the features of `
 * You can restrict the entries to browse using (regexp) pattern matching.
 * As for `icicle-search', you can search multiple bookmarks, multiple buffers, or multiple files.    
 
+When you use an '''Icicles''' Imenu command, first you choose a submenu
+for a given object type (e.g. submenu '''Functions''' for functions),
+and then you choose an object definition from that submenu.  But
+multiple [[regexp]]s can be used for a given Imenu submenu, such as
+'''Function'''.  '''Icicles''' Imenu commands use these regexps separately,
+so they present multiple completion candidates with the same name
+when you choose the object type.
+
+For example, if two different regexps are used to gather function
+definitions then there might be two corresponding '''Functions'''
+candidates (depending on whether there are matches for each of the
+regexps).  Choosing one or the other of these submenu candidates then gives
+you different function choices.  (Remember that you can cycle to
+choose among multiple candidates that have the same name.)
 
 
 
