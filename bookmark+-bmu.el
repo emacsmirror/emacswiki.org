@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jun 20 07:24:17 2014 (-0700)
+;; Last-Updated: Fri Jun 20 16:21:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2919
+;;     Update #: 2921
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3849,7 +3849,7 @@ Unlike `bookmark-bmenu-select', this command:
             (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
             (insert "\n\n")
             (goto-char (point-max))
-            (insert "\nSend a Bookmark+ bug report: `\\[icicle-send-bug-report]'.\n\n")
+            (insert "\nSend a Bookmark+ bug report: `\\[bmkp-send-bug-report]'.\n\n")
             (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
             (insert "           ")
             (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
@@ -4229,7 +4229,7 @@ other text properties only if using Emacs 20 or if option
   "Strip properties from STRING.
 Return the unpropertized STRING.
 Non-nil optional arg COPY means return a copy of the unpropertized
-STRING.
+STRING.  (STRING is modified before the copy is made.)
 
 Do nothing in Emacs 21 or later or if
 `bmkp-propertize-bookmark-names-flag' is non-nil.  In these cases,
