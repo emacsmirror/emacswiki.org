@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jun  7 11:41:01 2014 (-0700)
+;; Last-Updated: Sat Jun 21 11:02:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19521
+;;     Update #: 19531
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6674,9 +6674,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "Helper function for `icicle-candidate-set-retrieve(-more)'.
 ARG is the same as the raw prefix arg for `icicle-candidate-set-retrieve'.
 MOREP non-nil means add the saved candidates, don't replace existing."
-  (let ((name        nil)
-        (variablep   (and arg  (atom arg)))
-        (curr-cands  icicle-completion-candidates)
+  (let ((name            nil)
+        (variablep       (and arg  (atom arg)))
+        (curr-cands      icicle-completion-candidates)
+        (added/restored  (if morep "ADDED" "RESTORED"))
         saved-cands)
     (if arg
         (let ((icicle-whole-candidate-as-text-prop-p  nil)
@@ -6708,7 +6709,7 @@ MOREP non-nil means add the saved candidates, don't replace existing."
     (cond ((null saved-cands)
            (deactivate-mark)
            (icicle-display-candidates-in-Completions)
-           (message "No saved candidates to restore") (sit-for 2))
+           (message "No saved candidates to %s" (if morep "add" "restore")) (sit-for 2))
           (t
            (setq icicle-completion-candidates ; Remove directory part if completing file names
                  (if (icicle-file-name-input-p) ; using `read-file-name'.
@@ -6729,9 +6730,10 @@ MOREP non-nil means add the saved candidates, don't replace existing."
                   (save-selected-window
                     (select-window (minibuffer-window))
                     (minibuffer-message (if name
-                                            (format "  [Saved candidates RESTORED from %s `%s']"
+                                            (format "  [Saved candidates %s from %s `%s']"
+                                                    added/restored
                                                     (if variablep "variable" "cache file") name)
-                                          "  [Saved candidates RESTORED]")))
+                                          (format "  [Saved candidates %s]" added/restored))))
                   (let ((icicle-minibuffer-setup-hook ; Pre-complete
                          (cons (if (eq icicle-last-completion-command
                                        'icicle-apropos-complete-no-display)
