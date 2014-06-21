@@ -76,9 +76,8 @@ See also [https://github.com/nonsequitur/smex/pull/4 Update smex after function 
 You can see mnemonical commands (within completion) before the others with this code snippet:
 {{{
 ;;; Filters ido-matches setting acronynm matches in front of the results
-(defadvice ido-set-matches-1 (after ido-smex-acronym-matches activate)
-  (if (and (fboundp 'smex-already-running) (smex-already-running)
-           (> (length ido-text) 1))
+(defadvice ido-set-matches-1 (after ido-acronym-matches activate)
+  (if (> (length ido-text) 1)
       (let ((regex (concat "^" (mapconcat 'char-to-string ido-text "[^-]*-")))
             (acronym-matches (list))
             (remove-regexes '("-menu-")))
@@ -102,7 +101,7 @@ You can see mnemonical commands (within completion) before the others with this 
                       ad-return-value))
 
         (delete-dups ad-return-value)
-        (reverse ad-return-value)))))
+        (reverse ad-return-value))))
 }}}
 e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
@@ -112,4 +111,6 @@ e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
 { find-file-other-window | find-function-other-window | ediff-show-registry ...
 </pre>
-[[targzeta]]
+
+[new]
+<b>Warning:</b> as you can see, this is an advice for 'ido-set-matches-1' and it's run on every 'ido-completing-read'. Is there a way to ignore all calls but smex?
