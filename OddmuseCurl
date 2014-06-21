@@ -29,7 +29,9 @@ Once you're editing a wiki page, here are some useful keybindings:
 
 ; `C-c C-c' : post the changes you made
 ; `C-c C-m' : toggle posting minor changes -- often people will make a big change and continue fixing later typos using minor changes
+; `C-c C-n' : create a new page with the current date as the default page name (useful for blogging)
 ; `C-c C-o' : follow ("open") the link under point
+; `C-c C-p' : preview the current page
 ; `C-c C-f' : find a different page to edit
 ; `C-c C-i' : insert an existing page name (avoiding typos)
 ; `C-c C-r' : look at recent changes of the wiki you're currently working with
