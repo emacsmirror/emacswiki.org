@@ -15,7 +15,7 @@ Basic Setup
 </pre>
 
 I am using a modified version of C# flycheck hack for Vala here [https://github.com/mygnu/flycheck-vala.el github-repo]
-. Valac compiler syntax checker isn't that great, but it works just fine for me. All you have to do is add
+. Valac compiler syntax checker isn't that great, but it works just fine for me. All you have to do is add following at the top of your source file
 
 // flycheck: valac -pkg /[package name/] /[any.vala/] %f
 
