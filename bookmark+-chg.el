@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 20 07:26:31 2014 (-0700)
+;; Last-Updated: Sat Jun 21 16:27:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15546
+;;     Update #: 15556
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/06/21 dadams
+;;     Added: bmkp-icicle-search-hits-alist-only, bmkp-icicle-search-hits-bookmark-p,
+;;       bmkp-icicle-search-hits-retrieve-more, bmkp-jump-icicle-search-hits,
+;;       bmkp-retrieve-icicle-search-hits, bmkp-retrieve-more-icicle-search-hits,
+;;       bmkp-retrieve-icicle-search-hits-1, bmkp-set-icicle-search-hits-bookmark,
+;;       bmkp-make-icicle-search-hits-record, bmkp-unpropertized-string.
+;;     bmkp-bookmark-description: Handle Icicles search hits.
 ;; 2014/05/30 dadams
 ;;     bmkp-set-restrictions-bookmark: Updated for new restrictions format (wide-n.el).
 ;; 2014/05/27 dadams
