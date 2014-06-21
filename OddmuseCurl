@@ -50,7 +50,7 @@ Once you're editing a wiki page, here are some useful keybindings:
 ; ##‘C-x v =’## : look at the diff of what you will be posting
 ; `C-x C-v' : revert your changes
 
-== Why curl?
+== Why curl? ==
 
 This mode is in part an illustration of how to use a generic command line tool like `curl' to edit Oddmuse wikis.
 
