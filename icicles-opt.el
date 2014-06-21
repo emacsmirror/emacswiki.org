@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri May 16 21:17:31 2014 (-0700)
+;; Last-Updated: Sat Jun 21 16:08:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5984
+;;     Update #: 5985
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1728,6 +1728,12 @@ the full candidate object.")
     ;; NO - NEED TO DO THE SWANK PART AT RUNTIME, in icicles-mode.el
     (,(icicle-kbd "C-x 2") icicle-doremi-increment-swank-prefix-length+
      (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
+    (,(icicle-kbd "C-x C-M->") bmkp-set-icicle-search-hits-bookmark                   ; `C-x C-M->'
+      (fboundp 'bmkp-set-icicle-search-hits-bookmark))
+    (,(icicle-kbd "C-x C-M-<") bmkp-retrieve-icicle-search-hits                       ; `C-x C-M-<'
+      (fboundp 'bmkp-set-icicle-search-hits-bookmark))
+    (,(icicle-kbd "C-x C-<")   bmkp-retrieve-more-icicle-search-hits                  ; `C-x C-<'
+      (fboundp 'bmkp-set-icicle-search-hits-bookmark))
     ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
     (,(icicle-kbd "?")         icicle-self-insert t)                                  ; `?
     (,(icicle-kbd "SPC")       icicle-self-insert t)                                  ; " "
