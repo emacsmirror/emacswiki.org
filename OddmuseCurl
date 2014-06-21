@@ -21,6 +21,11 @@ Here's a typical setup:
 		(file-name-directory file)))
 }}}
 
+Adding to `vc-handled-backends' and the definition of `vc-oddmuse-registered' would be
+part of autoloads, if this file was distributed with Emacs. As it stands, you could
+instead ##(require 'vc-oddmuse)##. It's just that I want to keep my Emacs startup speed
+down and that's why I don't.
+
 == Important Entry Points ==
 
 `oddmuse-edit' asks you for a wiki and a page name and allows you to edit it.
