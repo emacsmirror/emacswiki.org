@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:35:50 2013 (-0800)
+;; Last-Updated: Sat Jun 21 14:23:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1017
+;;     Update #: 1027
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
@@ -77,6 +77,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/06/21 dadams
+;;     *-lisp-other-defn-regexp-[12], *-lisp-fn-defn-regexp-[12], *-lisp-var-defn-regexp:
+;;       Allow single-char names: \(\(\sw\|\s_\)+\), not \(\sw\(\sw\|\s_\)+\).
 ;; 2013/12/08 dadams
 ;;     Added: imenup-lisp-fn-defn-regexp-2.
 ;;     Renamed imenup-lisp-fn-defn-regexp to imenup-lisp-fn-defn-regexp-1.
@@ -258,7 +261,7 @@ See also `imenup-emacs-key-defn-regexp-1'.")
               (regexp-opt '("defgroup" "deftheme" "deftype" "cl-deftype" "defstruct" "cl-defstruct"
                             "defclass" "define-condition" "define-widget"
                             "defpackage") t)
-              "\\s-+'?\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+              "\\s-+'?\\(\\(\\sw\\|\\s_\\)+\\)")
     "(\\s-*def\\(type\\|class\\|ine-condition\\)\\s-+'?\\([^ \t()]+\\)")
   "*Regexp that recognizes other Lisp definitions.")
 
@@ -266,7 +269,7 @@ See also `imenup-emacs-key-defn-regexp-1'.")
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
               (regexp-opt '("defstruct" "cl-defstruct") t)
-              "\\s-+(\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+              "\\s-+(\\(\\(\\sw\\|\\s_\\)+\\)")
     "")
   "*Regexp that recognizes other Lisp defs, where the name is followed by (.")
 
@@ -280,19 +283,19 @@ See also `imenup-emacs-key-defn-regexp-1'.")
                             "define-setf-expander" "define-method-combination"
                             "defgeneric" "defmethod" "icicle-define-command"
                             "icicle-define-file-command") t)
-              "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+              "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)")
     (concat "^\\s-*("
             (regexp-opt
              '("defun" "defun*" "defsubst" "defadvice" "define-skeleton"
                "define-derived-mode" "defsetf" "icicle-define-add-to-alist-command"
                "icicle-define-command" "icicle-define-file-command") t)
-            "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"))
+            "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"))
   "*Regexp that recognizes Lisp function definitions.")
 
 (defvar imenup-lisp-fn-defn-regexp-2
   (concat "^\\s-*("
           (regexp-opt '("defalias" "fset") t)
-          "\\s-+'\\s-*\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
+          "\\s-+'\\s-*\\(\\(\\sw\\|\\s_\\)+\\)")
   "*Regexp that recognizes Lisp function definitions with a quoted name.")
 
 (defvar imenup-lisp-macro-defn-regexp
@@ -311,7 +314,7 @@ define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
       (concat "^\\s-*("
               (regexp-opt '("defvar" "defconst" "defconstant" "defcustom"
                             "defparameter" "define-symbol-macro") t)
-              "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"
+              "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"
               ;; Because \n has char syntax `>', not whitespace.  See Emacs bug #8638.
               "\\(\\s-\\|[\n]\\)+"
               "[^) \t\n]")
