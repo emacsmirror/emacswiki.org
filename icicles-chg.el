@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jun 19 18:41:42 2014 (-0700)
+;; Last-Updated: Sat Jun 21 11:14:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10949
+;;     Update #: 10951
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4227,6 +4227,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/06/21 dadams
+;;     icicle-candidate-set-retrieve-1: Mention whether added or restored in msg.
 ;; 2014/06/07 dadams
 ;;     icicle-switch-to/from-minibuffer:
 ;;       Test for non icicle-pre-minibuffer-buffer, not for eq minibuf win.
