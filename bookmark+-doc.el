@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 22 07:03:55 2014 (-0700)
+;; Last-Updated: Sun Jun 22 07:29:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14777
+;;     Update #: 14782
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3404,13 +3404,19 @@
 ;;
 ;;  During Icicles search (of anything, not just a bookmark
 ;;  destination), you can save sets of completion candidates, which
-;;  means sets of search hits, as bookmarks.  When you "jump" to such
-;;  a bookmark, it restores those search hits to Icicles search as
-;;  completion candidates, either replacing the current candidates or
-;;  adding to them.  This lets you save and later return to different
-;;  sets of search results, whether you search a file, a buffer,
-;;  multiple files, or multiple buffers.  (You can "jump" to an
-;;  Icicles search-hits bookmark only during Icicles search.)
+;;  means sets of search hits, as bookmarks.  And Icicles lets you use
+;;  set operations (complement, union, intersection, difference etc.)
+;;  on the current set of search hits.
+;;
+;;  When you "jump" to an Icicles search-hits bookmark, its recorded
+;;  search hits are restored to Icicles search as completion
+;;  candidates, either replacing the current candidates or adding to
+;;  them.
+;;
+;;  You can thus save and later return to different sets of search
+;;  results using different bookmarks.  You can "jump" to an Icicles
+;;  search-hits bookmark during any Icicles search, whether you search
+;;  a file, a buffer, multiple files, or multiple buffers.
  
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
