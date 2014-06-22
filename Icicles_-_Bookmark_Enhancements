@@ -38,6 +38,8 @@ These are the main '''Icicles''' bookmarking features:
 * Bookmarking the region and selecting a bookmarked region
 * Setting a bookmark and jumping to a bookmark
 * Searching the text of a bookmark's buffer or region
+* Saving sets of '''Icicles''' search hits as bookmarks -- "jump" to such
+a bookmark to restore the saved hits during a later search.
 * Applying an arbitrary function to any bookmark property
 
 Each is described in a little more detail below.  More generally,
@@ -529,6 +531,24 @@ caching.  Caching is also used for bookmark searching.
 
 
 
+
+[:BookmarkingIciclesSearchHits]
+== Bookmarking Icicles Search Hits ==
+
+When you use '''Icicles''' search (of any kind), you can use '''`<tt>C-x C-M-></tt>''''
+to save the current set of completion candidates (search hits) as
+an '''Icicles''' search-hits bookmark.  "Jumping" to such a bookmark
+during '''Icicles''' search (of anything) restores those search hits: '''`<tt>C-x C-M-<</tt>''''
+replaces the current search hits with them, and '''`<tt>C-x C-<</tt>'''' adds
+them to the set of current search hits.
+
+
+
+
+
+
+
+
 [:ActingOnBookmarkProperties]
 == Acting On Bookmark Properties ==
 
@@ -584,7 +604,6 @@ CategoryCode
 CategorySearchAndReplace
 CategoryShell
 CategoryRegion
-
 
 
 
