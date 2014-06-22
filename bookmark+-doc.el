@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 18 14:10:36 2014 (-0700)
+;; Last-Updated: Sat Jun 21 21:00:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14764
+;;     Update #: 14772
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -312,6 +312,10 @@
 ;;       (bookmark) name.  Then copy it to the `kill-ring' anytime, in
 ;;       any Emacs session.
 ;;
+;;     - Icicles search-hits bookmarks.  Save a set of search results
+;;       as a bookmark, then jump to the bookmark to restore them.
+;;       (You need library Icicles to use this feature.)
+;;
 ;;     In particular, note that you can use the following kinds of
 ;;     bookmarks to quickly switch among different projects (sets of
 ;;     bookmarks): Dired, Dired tree, bookmark-list, bookmark-file,
@@ -489,7 +493,7 @@
 ;;         bookmark list.  Click button `Doc in Commentary' or button
 ;;         `Doc on the Web' to access the complete documentation.
 ;;
-;;         (Use button `Customize' to customize all `Bookmark+'
+;;         (Use button `Customize' to customize all Bookmark+
 ;;         faces and options.)
 ;;
 ;;       . In the bookmark list, `?' and `C-h m' are the same as `M-x
@@ -3389,6 +3393,15 @@
 ;;
 ;;  * Remove tags from one or more files (autofile bookmarks), using
 ;;    `C-x a -'.
+;;
+;;  During Icicles search, you can save sets of completion candidates,
+;;  which means sets of search hits, as bookmarks.  When you "jump" to
+;;  such a bookmark, it restores those search hits to Icicles search
+;;  as completion candidates, either replacing the current candidates
+;;  or adding to them.  This lets you save and later return to
+;;  different sets of search results, whether you search a file, a
+;;  buffer, multiple files, or multiple buffers.  (You can "jump" to
+;;  an Icicles search-hits bookmark only during Icicles search.)
  
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
