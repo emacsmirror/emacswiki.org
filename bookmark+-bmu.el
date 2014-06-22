@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jun 21 17:32:12 2014 (-0700)
+;; Last-Updated: Sat Jun 21 18:50:22 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2922
+;;     Update #: 2929
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -580,7 +580,7 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-no-local
-    '((t (:foreground "gray60")))
+    '((t (:foreground "yellow")))
   "*Face used for a local file bookmark whose target file does not exist."
   :group 'bookmark-plus :group 'faces)
 
@@ -2058,6 +2058,21 @@ confirmation."
 ;;(@* "Menu-List (`*-bmenu-*') Filter Commands")
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
 
+;;;###autoload (autoload 'bmkp-bmenu-show-all "bookmark+")
+(defun bmkp-bmenu-show-all ()           ; Bound to `.' in bookmark list
+  "Show all bookmarks known to the bookmark list (aka \"menu list\").
+Omitted bookmarks are not shown, however.
+Also, this does not revert the bookmark list, to bring it up to date.
+To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-list]'."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  nil
+        bmkp-bmenu-title            "All Bookmarks"
+        bmkp-latest-bookmark-alist  bookmark-alist)
+  (bookmark-bmenu-list)
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
+
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-autofiles "bookmark+")
 (defun bmkp-bmenu-show-only-autofiles (&optional arg) ; Bound to `A S' in bookmark list
   "Display (only) the autofile bookmarks.
@@ -2104,19 +2119,6 @@ each bookmark name must have."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only bookmark-file bookmarks are shown")))
 
-;;;###autoload (autoload 'bmkp-bmenu-show-only-snippets "bookmark+")
-(defun bmkp-bmenu-show-only-snippets () ; Bound to `w S' in bookmark list
-  "Display (only) the snippet bookmarks."
-  (interactive)
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-snippet-alist-only
-        bmkp-bmenu-title            "Snippet Bookmarks")
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only snippet bookmarks are shown")))
-
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-desktops "bookmark+")
 (defun bmkp-bmenu-show-only-desktops () ; Bound to `K S' in bookmark list
   "Display (only) the desktop bookmarks."
@@ -2158,37 +2160,6 @@ With a prefix argument, do not include remote files or directories."
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only file bookmarks are shown")))
-
-;;;###autoload (autoload 'bmkp-bmenu-show-only-orphaned-local-files "bookmark+")
-(defun bmkp-bmenu-show-only-orphaned-local-files (arg) ; Bound to `O S' in bookmark list
-  "Display a list of orphaned local file and directory bookmarks (only).
-With a prefix argument, include remote orphans as well."
-  (interactive "P")
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  (if arg
-                                        'bmkp-orphaned-file-alist-only
-                                      'bmkp-orphaned-local-file-alist-only)
-        bmkp-bmenu-title            (if arg
-                                        "Orphaned File and Directory Bookmarks"
-                                      "Local Orphaned File and Directory Bookmarks"))
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only orphaned file bookmarks are shown")))
-
-;;;###autoload (autoload 'bmkp-bmenu-show-only-non-files "bookmark+")
-(defun bmkp-bmenu-show-only-non-files () ; Bound to `B S' in bookmark list
-  "Display (only) the non-file bookmarks."
-  (interactive)
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-non-file-alist-only
-        bmkp-bmenu-title            "Non-File Bookmarks")
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only non-file bookmarks are shown")))
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-gnus "bookmark+")
 (defun bmkp-bmenu-show-only-gnus ()     ; Bound to `G S' in bookmark list
@@ -2243,6 +2214,37 @@ With a prefix argument, include remote orphans as well."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only `man' page bookmarks are shown")))
 
+;;;###autoload (autoload 'bmkp-bmenu-show-only-non-files "bookmark+")
+(defun bmkp-bmenu-show-only-non-files () ; Bound to `B S' in bookmark list
+  "Display (only) the non-file bookmarks."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  'bmkp-non-file-alist-only
+        bmkp-bmenu-title            "Non-File Bookmarks")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only non-file bookmarks are shown")))
+
+;;;###autoload (autoload 'bmkp-bmenu-show-only-orphaned-local-files "bookmark+")
+(defun bmkp-bmenu-show-only-orphaned-local-files (arg) ; Bound to `O S' in bookmark list
+  "Display a list of orphaned local file and directory bookmarks (only).
+With a prefix argument, include remote orphans as well."
+  (interactive "P")
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  (if arg
+                                        'bmkp-orphaned-file-alist-only
+                                      'bmkp-orphaned-local-file-alist-only)
+        bmkp-bmenu-title            (if arg
+                                        "Orphaned File and Directory Bookmarks"
+                                      "Local Orphaned File and Directory Bookmarks"))
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only orphaned file bookmarks are shown")))
+
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-regions "bookmark+")
 (defun bmkp-bmenu-show-only-regions ()  ; Bound to `R S' in bookmark list
   "Display (only) the bookmarks that record a region."
@@ -2256,31 +2258,18 @@ With a prefix argument, include remote orphans as well."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only bookmarks with regions are shown")))
 
-;;;###autoload (autoload 'bmkp-bmenu-show-only-temporary "bookmark+")
-(defun bmkp-bmenu-show-only-temporary () ; Bound to `X S' in bookmark list
-  "Display (only) the temporary bookmarks."
+;;;###autoload (autoload 'bmkp-bmenu-show-only-snippets "bookmark+")
+(defun bmkp-bmenu-show-only-snippets () ; Bound to `w S' in bookmark list
+  "Display (only) the snippet bookmarks."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-temporary-alist-only
-        bmkp-bmenu-title            "TEMPORARY ONLY")
+  (setq bmkp-bmenu-filter-function  'bmkp-snippet-alist-only
+        bmkp-bmenu-title            "Snippet Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only temporary bookmarks are shown")))
-
-;;;###autoload (autoload 'bmkp-bmenu-show-only-variable-lists "bookmark+")
-(defun bmkp-bmenu-show-only-variable-lists () ; Bound to `V S' in bookmark list
-  "Display (only) the variable-list bookmarks."
-  (interactive)
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-variable-list-alist-only
-        bmkp-bmenu-title            "Variable-List Bookmarks")
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only variable-list bookmarks are shown")))
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only snippet bookmarks are shown")))
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-specific-buffer "bookmark+")
 (defun bmkp-bmenu-show-only-specific-buffer (&optional buffer) ; Bound to `= b S' in bookmark list
@@ -2318,6 +2307,32 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
                                (format "Only bookmarks for file `%s' are shown"
                                        bmkp-last-specific-file))))
 
+;;;###autoload (autoload 'bmkp-bmenu-show-only-temporary "bookmark+")
+(defun bmkp-bmenu-show-only-temporary () ; Bound to `X S' in bookmark list
+  "Display (only) the temporary bookmarks."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  'bmkp-temporary-alist-only
+        bmkp-bmenu-title            "TEMPORARY ONLY")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only temporary bookmarks are shown")))
+
+;;;###autoload (autoload 'bmkp-bmenu-show-only-variable-lists "bookmark+")
+(defun bmkp-bmenu-show-only-variable-lists () ; Bound to `V S' in bookmark list
+  "Display (only) the variable-list bookmarks."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  'bmkp-variable-list-alist-only
+        bmkp-bmenu-title            "Variable-List Bookmarks")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only variable-list bookmarks are shown")))
+
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-urls "bookmark+")
 (defun bmkp-bmenu-show-only-urls ()     ; Bound to `M-u M-s' in bookmark list
   "Display (only) the URL bookmarks."
@@ -2343,21 +2358,6 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only W3M bookmarks are shown")))
-
-;;;###autoload (autoload 'bmkp-bmenu-show-all "bookmark+")
-(defun bmkp-bmenu-show-all ()           ; Bound to `.' in bookmark list
-  "Show all bookmarks known to the bookmark list (aka \"menu list\").
-Omitted bookmarks are not shown, however.
-Also, this does not revert the bookmark list, to bring it up to date.
-To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-list]'."
-  (interactive)
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  nil
-        bmkp-bmenu-title            "All Bookmarks"
-        bmkp-latest-bookmark-alist  bookmark-alist)
-  (bookmark-bmenu-list)
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload (autoload 'bmkp-bmenu-refresh-menu-list "bookmark+")
 (defun bmkp-bmenu-refresh-menu-list (&optional arg msg-p) ; Bound to `g' in bookmark list
