@@ -128,7 +128,11 @@ Note that using a [[numeric prefix argument]] (`C-u' with a number)
 with `##C-M->##' and `##C-M-<##' saves or retrieves a completion-candidates
 set using a ''[[variable]]'' that you name, not a cache file.  See [[Icicles - Candidate Sets]].
 
-
+In addition to persistently saving a candidate set in a file,
+which is described in this section, if you also use library
+'''[[Bookmark+]]''' then you can alternatively save a set of '''Icicles'''
+search candidates [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHits|as a bookmark]].  You "jump" to the bookmark to
+restore those search results during another '''Icicles''' search.
 
 
 
@@ -328,7 +332,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
