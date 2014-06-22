@@ -1,0 +1,4 @@
+I notice that ffap can't locate C++ Library files such as `<iostream>` (but will work for C-headers such as `<stdio.h>`). Any idea how to make it work for C++ Library?
+
+-- spearman 2014-06-22 23:27 UTC
+
