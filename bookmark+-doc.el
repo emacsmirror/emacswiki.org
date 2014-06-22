@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 21 21:00:53 2014 (-0700)
+;; Last-Updated: Sat Jun 21 21:11:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14772
+;;     Update #: 14775
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3394,14 +3394,20 @@
 ;;  * Remove tags from one or more files (autofile bookmarks), using
 ;;    `C-x a -'.
 ;;
-;;  During Icicles search, you can save sets of completion candidates,
-;;  which means sets of search hits, as bookmarks.  When you "jump" to
-;;  such a bookmark, it restores those search hits to Icicles search
-;;  as completion candidates, either replacing the current candidates
-;;  or adding to them.  This lets you save and later return to
-;;  different sets of search results, whether you search a file, a
-;;  buffer, multiple files, or multiple buffers.  (You can "jump" to
-;;  an Icicles search-hits bookmark only during Icicles search.)
+;;  There are 25 Icicles commands for searching bookmark destinations!
+;;  The most general is `icicle-search-bookmark'.  Others let you
+;;  search specific kinds of bookmarks, or bookmarks having various
+;;  combinations of tags.
+;;
+;;  During Icicles search (of anything, not just a bookmark
+;;  destination), you can save sets of completion candidates, which
+;;  means sets of search hits, as bookmarks.  When you "jump" to such
+;;  a bookmark, it restores those search hits to Icicles search as
+;;  completion candidates, either replacing the current candidates or
+;;  adding to them.  This lets you save and later return to different
+;;  sets of search results, whether you search a file, a buffer,
+;;  multiple files, or multiple buffers.  (You can "jump" to an
+;;  Icicles search-hits bookmark only during Icicles search.)
  
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
