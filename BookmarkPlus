@@ -9,7 +9,9 @@ The internal bookmark format (data structure) used by '''Bookmark+''' is compati
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
 
 
-
+To report '''Bookmark+''' bugs: Use `M-x customize-group bookmark-plus'.
+Then follow (e.g. click) the link '''Send Bug Report''', which
+helps you prepare an email to me.
 
 
 
