@@ -3755,7 +3755,14 @@ the fly:
 * Remove tags from one or more files (autofile bookmarks), using '''`C-x a -''''.
 
 
-During '''Icicles''' search, you can save sets of [[completion]] candidates,
+There are 25 '''Icicles''' commands for searching bookmark
+destinations!  The most general is `icicle-search-bookmark'.
+Others let you search specific kinds of bookmarks, or bookmarks
+having various combinations of tags.
+
+
+
+During '''[[Icicles - Search Commands, Overview|Icicles search]]''' (of anything, not just a bookmark destination), you can save sets of [[completion]] candidates,
 which means ''sets of search hits'', as bookmarks.  When you "jump" to
 such a bookmark, it restores those search hits to '''Icicles''' search
 as completion candidates, either replacing the current candidates
