@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jun 21 21:24:12 2014 (-0700)
+;; Last-Updated: Sun Jun 22 07:35:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28202
+;;     Update #: 28207
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7504,6 +7504,12 @@
 ;;  adds to it.  See (@> "Persistent Sets of Completion Candidates")
 ;;  for ways to save candidates persistently.
 ;;
+;;  In addition to persistently saving a candidate set in a file, if
+;;  you also use library `Bookmark+' then you can save a set of
+;;  Icicles search candidates as a bookmark.  You "jump" to the
+;;  bookmark to restore those search results during another Icicles
+;;  search.
+;;
 ;;  One way you can save candidates is to use
 ;;  `icicle-candidate-set-save', bound to `C-M->'.  This saves all of
 ;;  the current candidates.
@@ -8744,6 +8750,7 @@
 ;;  You can save the current set of completions (whatever it is)
 ;;  persistently by supplying a plain prefix argument (`C-u') when you
 ;;  use `C-M->' (`icicle-candidate-set-save') during completion.
+;;
 ;;  Alternatively, you can use `C-}', bound to
 ;;  `icicle-candidate-set-save-persistently', which does the same
 ;;  thing.  To retrieve completion candidates that were previously
@@ -8762,6 +8769,12 @@
 ;;  with `C-M->' and `C-M-<' saves or retrieves a
 ;;  completion-candidates set using a variable that you name, not a
 ;;  cache file.  See (@> "Sets of Completion Candidates").
+;;
+;;  In addition to persistently saving a candidate set in a file,
+;;  which is described in this section, if you also use library
+;;  `Bookmark+' then you can alternatively save a set of Icicles
+;;  search candidates as a bookmark.  You "jump" to the bookmark to
+;;  restore those search results during another Icicles search.
 ;;
 ;;(@* "Saving Candidates in Cache Files")
 ;;  ** Saving Candidates in Cache Files **
