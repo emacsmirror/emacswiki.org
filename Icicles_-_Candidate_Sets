@@ -243,7 +243,7 @@ cache file) when you save or retrieve additional candidates.
 
 
 
-
+[:SavingMarkedFilesAndDirsInDired]
 == Saving Marked Files and Dirs in Dired ==
 
 Besides saving file and directory names that are completion
@@ -271,7 +271,7 @@ See [[Icicles - Dired Enhancements#SaveMarkedNamesHereAndBelow| Save Marked Name
 
 
 
-
+[:SetOperations]
 == Set Operations ==
 
 The other available set-operation commands for use with completion
@@ -409,7 +409,7 @@ completing your current input from scratch.
 
 
 
-
+[:SeeAlso]
 == See Also ==
 
 * [[Icicles - Multi-Commands]] for information about `C-RET'.
@@ -438,7 +438,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
