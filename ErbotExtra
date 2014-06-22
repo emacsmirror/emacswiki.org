@@ -71,5 +71,12 @@ or
 <deego> [FTOTD]: do a ,r/^/directonly / in TERM 0 to remove snarky autoreplies. Use directonly liberally when defining                                                                                        
         entries for things like "really" or "what", for obvious reasons.
 </pre>
+
+=== Forgoing dashes ===
+<pre>
+<deego> [FTOTD]: If a term exists for most-solved-problems, then simply typing ,most used problems (no need for -'s) will almost always find that term.                                 [14:42]
+</pre>
+
+
 -----
 ErBot
