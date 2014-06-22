@@ -8,9 +8,9 @@
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2013.07.23
-;; Last-Updated: Thu Dec 26 08:33:06 2013 (-0800)
+;; Last-Updated: Sun Jun 22 07:02:09 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15018
+;;     Update #: 15020
 ;; URL: http://www.emacswiki.org/bookmark+.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -21,7 +21,7 @@
 ;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `cl',
 ;;   `cmds-menu', `dired', `dired-aux', `dired-x', `ffap',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+',
+;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
 ;;   `pp+', `second-sel', `strings', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
@@ -63,6 +63,10 @@
 ;;
 ;;    (The commentary links in #1 and #3 work only if you have library
 ;;    `bookmark+-doc.el' in your `load-path'.)
+;;
+;;    To report Bookmark+ bugs: `M-x customize-group bookmark-plus'
+;;    and then follow (e.g. click) the link `Send Bug Report', which
+;;    helps you prepare an email to me.
 ;;
 ;;
 ;;    ****** NOTE ******
