@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jun 21 15:46:29 2014 (-0700)
+;; Last-Updated: Sat Jun 21 21:33:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29537
+;;     Update #: 29544
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -253,6 +253,7 @@
 ;;    (@> "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@> "Jumping to a Bookmark")
 ;;    (@> "Searching Bookmarked Objects")
+;;    (@> "Bookmarking Icicles Search Hits")
 ;;    (@> "Acting on Bookmark Properties")
 ;;
 ;;  (@> "Icicles Enhancements for Emacs Tags")
@@ -1789,7 +1790,9 @@
 ;;  * Tagging files (a la delicious) and jumping to tagged files
 ;;  * Bookmarking the region and selecting a bookmarked region
 ;;  * Setting a bookmark and jumping to a bookmark
-;;  * Searching the text of a bookmark's buffer or region
+;;  * Searching the text of a bookmark's destination buffer or region
+;;  * Saving sets of Icicles search hits as bookmarks - "jump" to such
+;;    a bookmark to restore the saved hits during a later search.
 ;;  * Applying an arbitrary function to any bookmark property
 ;;
 ;;  Each is described in a little more detail below.  More generally,
@@ -2214,6 +2217,16 @@
 ;;  * (@> "Jumping to a Bookmark") for information about bookmark
 ;;    caching.  Caching is also used for bookmark searching.
 ;;  * (@> "Support for Projects")
+;;
+;;(@* "Bookmarking Icicles Search Hits")
+;;  ** Bookmarking Icicles Search Hits **
+;;
+;;  When you use Icicles search (of any kind), you can use `C-x C-M->'
+;;  to save the current set of completion candidates (search hits) as
+;;  an Icicles search-hits bookmark.  "Jumping" to such a bookmark
+;;  during Icicles search (of anything) restores those search hits:
+;;  `C-x C-M-<' replaces the current search hits with them, and `C-x
+;;  C-<' adds them to the set of current search hits.
 ;;
 ;;(@* "Acting on Bookmark Properties")
 ;;  ** Acting on Bookmark Properties **
