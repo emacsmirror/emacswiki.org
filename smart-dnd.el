@@ -1,13 +1,12 @@
 ;;; smart-dnd.el --- user-configurable drag-n-drop feature
 
-;; Copyright (C) 2003-2008, 2012  by Seiji Zenitani
+;; Copyright (C) 2003-2008, 2012, 2014  by Seiji Zenitani
 
 ;; Author: Seiji Zenitani <zenitani@mac.com>
-;; $Id: smart-dnd.el 758 2012-06-13 15:10:53Z zenitani $
 ;; Keywords: tools
 ;; Created: 2003-04-27
-;; Compatibility: Emacs 22
-;; URL(en): http://www.emacswiki.org/emacs/smart-dnd.el
+;; Compatibility: Emacs 22 or later
+;; URL(en): https://github.com/zenitani/elisp/blob/master/smart-dnd.el
 ;; URL(jp): http://th.nao.ac.jp/MEMBER/zenitani/elisp-j.html#smart-dnd
 
 ;; This file is free software; you can redistribute it and/or modify
