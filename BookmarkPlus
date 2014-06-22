@@ -225,6 +225,11 @@ other bookmarks.
 (bookmark) name.  Then copy it to the [[kill ring]] anytime, in
 any Emacs session.
 
+[:IciclesSearchHitsBookmarks]
+* '''[[Icicles]] search-hits''' bookmarks.  Save a set of search results
+as a bookmark, then jump to the bookmark to restore them.
+(You need library '''Icicles''' to use this feature.)
+
 In particular, note that you can use the following kinds of bookmarks
 to quickly switch among different ''projects'' (sets of bookmarks):
 Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
@@ -3748,6 +3753,17 @@ the fly:
 * Add tags to one or more files (autofile bookmarks), using '''`##C-x a +##''''.
 
 * Remove tags from one or more files (autofile bookmarks), using '''`C-x a -''''.
+
+
+During '''Icicles''' search, you can save sets of [[completion]] candidates,
+which means ''sets of search hits'', as bookmarks.  When you "jump" to
+such a bookmark, it restores those search hits to '''Icicles''' search
+as completion candidates, either replacing the current candidates
+or adding to them.  This lets you save and later return to
+different sets of search results, whether you search a file, a
+buffer, multiple files, or multiple buffers.  (You can "jump" to
+an '''Icicles''' search-hits bookmark only during Icicles search.)
+
 
 
 '''See Also:''' [[Icicles - Bookmark Enhancements]].
