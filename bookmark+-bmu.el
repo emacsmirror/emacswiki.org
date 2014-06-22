@@ -5202,6 +5202,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bookmark-bmenu-mode-map "Y"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "YM"                   'bmkp-bmenu-mark-bookmark-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "YS"                   'bmkp-bmenu-show-only-bookmark-files)
+(define-key bookmark-bmenu-mode-map "Z"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "ZM"                   'bmkp-bmenu-mark-bookmark-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "ZS"                   'bmkp-bmenu-show-only-bookmark-lists)
 
