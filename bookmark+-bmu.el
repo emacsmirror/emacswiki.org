@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jun 20 16:21:40 2014 (-0700)
+;; Last-Updated: Sat Jun 21 17:32:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2921
+;;     Update #: 2922
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1104,12 +1104,7 @@ Non-interactively:
    * Use `bmkp-bmenu-title' not the default menu-list title.
    * Do not reset `bmkp-latest-bookmark-alist' to `bookmark-alist'.
 
- - Non-nil optional arg MSG-P means display progress messages.
-
-Non-interactively, non-nil optional argument FILTEREDP means the
-bookmark list has been filtered, which means:
- * Use `bmkp-bmenu-title' not the default menu-list title.
- * Do not reset `bmkp-latest-bookmark-alist' to `bookmark-alist'."
+ - Non-nil optional arg MSG-P means display progress messages."
   (interactive "i\np")
   (bookmark-maybe-load-default-file)
   (when msg-p (message "Gathering bookmarks to display..."))
