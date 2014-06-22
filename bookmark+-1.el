@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun 21 16:44:15 2014 (-0700)
+;; Last-Updated: Sat Jun 21 17:26:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7138
+;;     Update #: 7147
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8200,10 +8200,13 @@ in the same directory, then you will need to relock it.)"
 ;; Icicle search-hits bookmarks
 (defun bmkp-jump-icicle-search-hits (bookmark)
   "Handle an Icicles search-hits bookmark BOOKMARK."
+  (unless (and (boundp 'icicle-mode)  icicle-mode  (icicle-completing-p)
+               (condition-case nil (icicle-barf-if-outside-Completions-and-minibuffer) (error nil)))
+    (error "You can use this bookmark only in Icicle mode, and only during completion"))
   (let ((raw-cands  (bookmark-prop-get bookmark 'hits)))
     (setq icicle-saved-completion-candidates
           (if icicle-multi-completing-p
-              raw-cands ; But will not work if RAW-CANDS are not multi-completions.
+              raw-cands                 ; But will not work if RAW-CANDS are not multi-completions.
             (mapcar #'icicle-transform-multi-completion raw-cands)))
     (if bmkp-icicle-search-hits-retrieve-more
         (icicle-candidate-set-retrieve-more)
