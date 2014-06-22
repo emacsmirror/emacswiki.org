@@ -59,6 +59,13 @@ until the next save in the same Emacs session overwrites it or
 adds to it.  See [[Icicles - Persistent Completions]]
 for ways to save candidates persistently.
 
+In addition to persistently saving a candidate set in a file, if
+you also use library '''[[Bookmark+]]''' then you can save a set of
+'''Icicles''' search candidates [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHits|as a bookmark]].  You "jump" to the
+bookmark to restore those search results during another '''Icicles'''
+search.
+
+
 One way you can save candidates is to use
 '''`icicle-candidate-set-save'''', bound to '''`##C-M->##''''.  This saves ''all'' of the current candidates.
 
@@ -438,6 +445,5 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
