@@ -77,9 +77,8 @@ If you cant to just align line numbers to the right as well as have a little pad
 <pre>
 (defun linum-format-func (line)
   (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
-    (concat
-     (propertize (format (format "%%%dd" w) line) 'face 'linum)
-     (propertize " " 'face 'linum))))
+     (propertize (format (format "%%%dd " w) line) 'face 'linum)))
+(setq linum-format 'linum-format-func)
 </pre>
 
 -AnshulVerma
