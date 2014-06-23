@@ -250,20 +250,19 @@ Here is a style that pretty much matches the observed style of Microsoft (R)'s C
 
 ----
 
-Style for OpenBSD source code, also valid for OpenSSH and other BSD based OSs source.
+Style for <nowiki>OpenBSD</nowiki> source code, also valid for <nowiki>OpenSSH</nowiki> and other BSD based OSs source.
 
  (c-add-style "openbsd"
               '("bsd"
-                (indent-tabs-mode . t)
-                (defun-block-intro . 8)
-                (statement-block-intro . 8)
-                (statement-case-intro . 8)
-                (substatement-open . 4)
-                (substatement . 8)
-                (arglist-cont-nonempty . 4)
-                (inclass . 8)
-                (knr-argdecl-intro . 8)))
-
+                (c-backspace-function . delete-backward-char)
+                (c-syntactic-indentation-in-macros . nil)
+                (c-tab-always-indent . nil)
+                (c-hanging-braces-alist
+                 (block-close . c-snug-do-while))
+                (c-offsets-alist
+                 (arglist-cont-nonempty . *)
+                 (statement-cont . *))
+                (indent-tabs-mode . t)))
 
 ----
 
