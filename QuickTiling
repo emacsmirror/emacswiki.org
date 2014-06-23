@@ -17,7 +17,6 @@ I use this package together with windmove, buffermove, minner-mode. Download thi
 ;; and buffermove. The last one is not part of Emacs yet. Beneath is my
 ;; configuration:
 
-;; (provide 'tiling)
 ;; ;;; Windows related operations
 ;; ;; Split & Resize
 ;; (define-key global-map (kbd "C-x |") 'split-window-horizontally)
