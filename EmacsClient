@@ -69,6 +69,9 @@ Note: Make sure you have (server-start) in your .emacs file, so the first time e
 
 Note: I had to remove the quotes from around the %1, and then in the registry, have something like "c:\apps\emacs\bin\emacs.bat" "%1" for the shell/open/command entries. Otherwise file paths with spaces in them would get parsed incorrectly. 
 
+Since BAT files may not work for everything, I made a small launcher app that does the same as the aforementioned.
+https://github.com/mickbeaver/win32emacslauncher
+
 = Starting Emacs automatically =
 
 The tips for doing this are platform specific.
