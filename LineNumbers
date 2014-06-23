@@ -71,12 +71,18 @@ Another workaround that keeps the appearance of the dynamic linum-format is to u
 
 --Michael Hoffman
 
+[new:AnshulVerma:2014-06-23]
+If you cant to just align line numbers to the right as well as have a little padding on the right.
 
+<pre>
+(defun linum-format-func (line)
+  (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
+    (concat
+     (propertize (format (format "%%%dd" w) line) 'face 'linum)
+     (propertize " " 'face 'linum))))
+</pre>
 
-
-
-
-
+-AnshulVerma
 
 == Linum: Separating line numbers from text ==
 
