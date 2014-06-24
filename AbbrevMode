@@ -141,6 +141,16 @@ for the global-abbrev-table.  Here is mine:
 
 == Abbrev with Hooking ==
 
+If you prefer that the expansion character not be inserted, you can use a hook that returns non-nil (example here for latex-mode)
+
+  (defun dont-insert-expansion-char ()  t)    ;; this is the "hook" function
+  (put 'dont-insert-expansion-char 'no-self-insert t)   ;; the hook should have a "no-self-insert"-property set 
+  
+  (define-abbrev-table 'latex-mode-abbrev-table   '(
+      ("em" "\\emph{" dont-insert-expansion-char 0)
+
+
+
 [new]
 I'm wanting to write a Macro/Abbrev in Emacs/XEmacs so that when I type <code>sout</code> Emacs automatically replaces it with System.out.println("|") and positions the TextCursor in between the quotes.  A simple Abbrev gets me the replace, but how can I get it to reposition the cursor??  I realise this may not be the best place to ask these sorts of  questions, is there a page on this wiki for such things?
 
