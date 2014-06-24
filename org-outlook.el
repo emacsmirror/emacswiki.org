@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.8
+;; Version: 0.9
 ;; Last-Updated: Tue May 29 22:21:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 166
@@ -21,11 +21,17 @@
 ;; Org mode lets you organize your tasks. However, sometimes you may wish
 ;; to integrate org-mode with outlook since your company forces you to
 ;; use Microsoft Outlook.  [[file:org-outlook.el][org-outlook.el]] allows: 
+;; 
 ;; - Creating Tasks from outlook items:
 ;;   - org-outlook-task. All selected items in outlook will be added to a
 ;;     task-list at current point. This version requires org-protocol and   
 ;;     org-protocol.vbs.  The org-protocol.vbs has can be generated with
 ;;     the interactive function `org-outlook-create-vbs'.
+;; 
+;;   - If your organization has blocked all macro access OR you want to
+;;     have an action for a saved =.msg= email, org-outlook also adds
+;;     drag and drop support allowing =.msg= files to become org tasks.
+;;     This is enabled by default, but can be disabled by `org-outlook-no-dnd'
 ;; 
 ;; - Open Outlook Links in org-mode
 ;; 
@@ -44,55 +50,14 @@
 ;;      `f:\Documents\org\gtd.org' you can modify this script to your
 ;;      personal needs.
 ;; 
-;; The visual basic script for outlook is:
-;; 
-;; 
-;; 
-;; Sub CreateTaskFromItem()
-;;     Dim T As Variant
-;;     Dim Outlook As New Outlook.Application
-;;     Dim orgfile As Variant
-;;     Dim Pos As Integer
-;;     Dim taskf As Object
-;;     
-;;     Set myNamespace = Outlook.GetNamespace("MAPI")
-;;     Set myPersonalFolder = myNamespace.Folders.item("Personal Folders")
-;;     Set allPersonalFolders = myPersonalFolder.Folders
-;;     
-;;     T = ""
-;;     For Each Folder In allPersonalFolders
-;;         If Folder.Name = "@ActionTasks" Then
-;;             Set taskf = Folder
-;;             Exit For
-;;         End If
-;;     Next
-;;     
-;;     If Outlook.Application.ActiveExplorer.Selection.Count > 0 Then
-;;         For I = 1 To Outlook.Application.ActiveExplorer.Selection.Count
-;;                 Set objMail = Outlook.ActiveExplorer.Selection.item(I)
-;;                 Set objMail = objMail.Move(taskf)
-;;                 objMail.Save 'Maybe this will update EntryID
-;;                 T = T + "** TODO " + objMail.Subject + " :OFFICE:" + vbCrLf
-;;                 T = T + "[[outlook:" + objMail.EntryID + "][MESSAGE: " + objMail.Subject + " (" + objMail.SenderName + ")]]"
-;;                 T = T + vbCrLf + vbCrLf
-;;                 T = T + objMail.Body
-;;                 T = T + vbCrLf + vbCrLf
-;;         Next
-;;         ' Now that we have the org-mode tasks, add to org-mode file
-;;         orgfile = GetFile("f:\Documents\org\gtd.org")
-;;         Pos = InStr(1, orgfile, "* Tasks", vbTextCompare)
-;;         orgfile = Mid(orgfile, 1, Pos + Len("* Tasks") + 1) + vbCrLf + T + Mid(orgfile, Pos + Len("* Tasks") + 1, Len(orgfile))
-;;         orgfile = Replace(orgfile, vbCrLf, Chr(10)) ' Change to unix line endings.
-;;         WriteFile "f:\Documents\org\gtd.org", orgfile
-;;     Else
-;;         MsgBox "No Message(s) Selected"
-;;     End If
-;;  
-;; End Sub
+;; The visual basic script for outlook can be created by calling `M-x org-outlook-create-vbs'
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 24-Jun-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+;;    Add Drag and drop support for tasks
 ;; 12-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 ;;    Updated Visual Basic Script to be more robust, and have more options.
@@ -146,7 +111,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-(require 'cl)
+(eval-when-compile (require 'cl))
 (require 'org)
 (require 'org-protocol)
 
@@ -196,7 +161,7 @@
                                 (yes-or-no-p "Would you like to move the emails to a subfolder?")
                               nil))
          (script (concat 
-                 "'**************************************
+                  "'**************************************
 ' Name: URLEncode Function
 ' Description:Encodes a string to create legally formatted
 'QueryString for URL. This function is more flexible
@@ -302,18 +267,18 @@ Sub CreateTaskFromItem()
     
     Set myNamespace = Outlook.GetNamespace(\"MAPI\")
 "
-        (if move-to-folder
-            (concat "
+                (if move-to-folder
+                    (concat "
     Set myPersonalFolder = myNamespace.Folders.Item(\""
-                 (read-from-minibuffer "Personal Folder Name: ")
-  "\")
+                            (read-from-minibuffer "Personal Folder Name: ")
+                            "\")
     Set allPersonalFolders = myPersonalFolder")
-          "Set allPersonalFolders = myNamespace.GetDefaultFolder(olFolderInbox)")
-  "
+                  "Set allPersonalFolders = myNamespace.GetDefaultFolder(olFolderInbox)")
+                "
     
     T = \"\"
     Set taskf = OutlookFolderNames(allPersonalFolders,\""
-  (read-from-minibuffer "Subfolder to put tasks in: " "@ActionTasks") "\")\n")) "
+                (read-from-minibuffer "Subfolder to put tasks in: " "@ActionTasks") "\")\n")) "
     
     ' Send selected text to clipboard.
     ' SendKeys (\"%E\")
@@ -356,10 +321,13 @@ CanMove:
     End If
 End Sub")))
     (with-temp-file (expand-file-name "org-protocol.vbs" org-outlook-dir)
-      (insert script))))
+      (insert script))
+    (dired org-outlook-dir)
+    (message "Script saved to %s" (expand-file-name "org-protocol.vbs" org-outlook-dir))))
 
 ;;;###autoload
-(eval-after-load "org" '(org-add-link-type "outlook" 'org-outlook-open))
+(eval-after-load "org"
+  '(org-add-link-type "outlook" 'org-outlook-open))
 
 ;;;###autoload
 (defun org-protocol-outlook (info)
@@ -419,6 +387,50 @@ Placeholders Replacement
 
 (defvar org-stored-links '())
 
+(defun org-outlook-dnd-msg-file (uri action)
+  "Capture the Message files."
+  (let* ((template org-protocol-outlook-default-template-key)
+         (file (dnd-unescape-uri uri))
+         (url uri)
+         (title (dnd-unescape-uri (file-name-sans-extension (file-name-nondirectory uri))))
+         (sender "")
+         (type "file")
+         (sender-email "")
+         (orglink (org-make-link-string
+                   file title))
+         (capture-func org-outlook-capture)
+         (org-capture-link-is-already-stored t) ;; avoid call to org-store-link
+         remember-annotation-functions)
+    (setq org-stored-links
+          (cons (list url title) org-stored-links))
+    (kill-new orglink)
+    (org-store-link-props :type type
+                          :link url
+                          :sender sender
+                          :sender-email sender-email
+                          :description title
+                          :title title
+                          :annotation orglink)
+    (raise-frame)
+    (funcall capture-func nil template)))
+
+(defvar org-outlook-dnd-regexp "^file:.*\\.msg")
+(defun org-outlook-enable-msg-dnd ()
+  "Enable Drag and Drop support for message files."
+  (interactive)
+  (push '(,org-outlook-dnd-regexp . org-outlook-dnd-msg-file) dnd-protocol-alist))
+
+(defun org-outlook-enable-msg-dnd ()
+  "Disable Drag and Drop support for message files."
+  (interactive)
+  (let (new-dnd)
+    (dolist (dnd dnd-protocol-alist)
+      (unless (string= (car dnd) org-outlook-dnd-regexp)
+        (push new-dnd dnd)))
+    (setq dnd-protocol-alist (reverse new-dnd))))
+
+(org-outlook-enable-msg-dnd)
+
 ;;;###autoload
 (defun org-protocol-do-outlook-capture (info capture-func)
   "Support `org-capture' and `org-remember' alike.
@@ -437,9 +449,6 @@ CAPTURE-FUNC is either the symbol `org-remember' or `org-capture'."
                    url (if (string-match "[^[:space:]]" (format "%s (%s)" title sender)) (format "%s (%s)" title sender) url)))
          (org-capture-link-is-already-stored t) ;; avoid call to org-store-link
          remember-annotation-functions)
-                                        ;(with-temp-buffer
-                                        ;  (clipboard-yank)
-                                        ;  (setq region (buffer-substring (point-min) (point-max))))
     (setq org-stored-links
           (cons (list url title) org-stored-links))
     (kill-new orglink)
