@@ -14,7 +14,7 @@ vorher, als auf einer anderen Maschine, als mit der alten Version.
 
 There are numerous books and documentation available on using LaTeX.  A free LaTeXManual is available for use in Emacs InfoMode.
 
-In order to facilitate working with !LaTeX documents, files with the .latex and .ltx extension are put into latex-mode.  Files with the .tex extension are put into tex-mode.  tex-mode is more generic (ie. less features) because in the end LaTeX is just a collection of TeX macros.
+In order to facilitate working with !LaTeX documents, files with the .latex and .ltx extension are put into latex-mode.  Files with the .tex extension are examined to determine which mode is appropriate and if indeterminate are put into latex-mode.  tex-mode is more generic (ie. less features) because in the end LaTeX is just a collection of TeX macros.
 
 When editing a latex document, you can run the command `M-x imenu-add-menubar-index' to give you a quick menu of your document headings.  Very nice, and you can even add it to the reftex hooks on load (you ''do'' use reftex and AUCTeX, don't you?):
 
