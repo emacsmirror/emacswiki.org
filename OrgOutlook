@@ -8,7 +8,7 @@ Description:
 * <b>Author </b> --  Matthew L. Fidler
 Maintainer:
 * <b>Created </b> --  Mon May 10 09:44:59 2010 (-0500)
-* <b>Version </b> --  0.8
+* <b>Version </b> --  0.9
 * <b>Last-Updated </b> --  Tue May 29 22:21:06 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  166
@@ -20,11 +20,17 @@ Compatibility:
 Org mode lets you organize your tasks. However, sometimes you may wish
 to integrate org-mode with outlook since your company forces you to
 use Microsoft Outlook.  [[org-outlook.el]] allows: 
+
 * Creating Tasks from outlook items:
 * org-outlook-task. All selected items in outlook will be added to a
 task-list at current point. This version requires org-protocol and   
 org-protocol.vbs.  The org-protocol.vbs has can be generated with
 the interactive function <tt>org-outlook-create-vbs</tt>.
+
+* If your organization has blocked all macro access OR you want to
+have an action for a saved <tt>.msg</tt> email, org-outlook also adds
+drag and drop support allowing <tt>.msg</tt> files to become org tasks.
+This is enabled by default, but can be disabled by <tt>org-outlook-no-dnd</tt>
 
 * Open Outlook Links in org-mode
 
@@ -43,145 +49,19 @@ Note that you may also add tasks using visual basic directly. The script below p
 <tt>f:\Documents\org\gtd.org</tt> you can modify this script to your
 personal needs.
 
-The visual basic script for outlook is:
+The visual basic script for outlook can be created by calling <tt>M-x org-outlook-create-vbs</tt>
 
-<pre>
-
-Sub CreateTaskFromItem()
-    Dim T As Variant
-    Dim Outlook As New Outlook.Application
-    Dim orgfile As Variant
-    Dim Pos As Integer
-    Dim taskf As Object
-    
-    Set myNamespace = Outlook.GetNamespace("MAPI")
-    Set myPersonalFolder = myNamespace.Folders.item("Personal Folders")
-    Set allPersonalFolders = myPersonalFolder.Folders
-    
-    T = ""
-    For Each Folder In allPersonalFolders
-        If Folder.Name = "@ActionTasks" Then
-            Set taskf = Folder
-            Exit For
-        End If
-    Next
-    
-    If Outlook.Application.ActiveExplorer.Selection.Count > 0 Then
-        For I = 1 To Outlook.Application.ActiveExplorer.Selection.Count
-                Set objMail = Outlook.ActiveExplorer.Selection.item(I)
-                Set objMail = objMail.Move(taskf)
-                objMail.Save 'Maybe this will update EntryID
-                T = T + "** TODO " + objMail.Subject + " :OFFICE:" + vbCrLf
-                T = T + "MESSAGE: " + objMail.Subject + " (" + objMail.SenderName + ")"
-                T = T + vbCrLf + vbCrLf
-                T = T + objMail.Body
-                T = T + vbCrLf + vbCrLf
-        Next
-        ' Now that we have the org-mode tasks, add to org-mode file
-        orgfile = GetFile("f:\Documents\org\gtd.org")
-        Pos = InStr(1, orgfile, "* Tasks", vbTextCompare)
-        orgfile = Mid(orgfile, 1, Pos + Len("* Tasks") + 1) + vbCrLf + T + Mid(orgfile, Pos + Len("* Tasks") + 1, Len(orgfile))
-        orgfile = Replace(orgfile, vbCrLf, Chr(10)) ' Change to unix line endings.
-!WriteFile "f:\Documents\org\gtd.org", orgfile
-Else
-!MsgBox "No Message(s) Selected"
-End If
-
-End Sub
-</pre>
 == Functions ==
 === Interactive Functions ===
 
-==== org-outlook-create-vbs ====
-<tt>(org-outlook-create-vbs)</tt>
-
-Creates Visual Basic Code for Org-protocol
-
 === Internal Functions ===
-
-==== org-outlook-open ====
-<tt>(org-outlook-open ID)</tt>
-
-Open the Outlook item identified by ID.  ID should be an Outlook GUID.
-
-==== org-protocol-do-outlook-capture ====
-<tt>(org-protocol-do-outlook-capture INFO CAPTURE-FUNC)</tt>
-
-Support <tt>org-capture</tt> and <tt>org-remember</tt> alike.
-CAPTURE-FUNC is either the symbol <tt>org-remember</tt> or <tt>org-capture</tt>.
-
-==== org-protocol-outlook ====
-<tt>(org-protocol-outlook INFO)</tt>
-
-Process an org-protocol://outlook:// style url.
-
-The sub-protocol used to reach this function is set in
-<tt>org-protocol-protocol-alist</tt>.
-
-This function detects the Message ID, Subject, Sender and
-optional text separated by '/'.  For example either
-
-org-protocol://outlook:/ID/Subject/!SenderName/!SenderAddress
-
-or
-
-org-protocol://outlook:/o/ID/Subject/!SenderName/!SenderAddress
-
-works.
-
-By default, it uses the character
-<tt>org-protocol-outlook-default-template-key</tt>, which should be associated
-with a template in <tt>org-capture-templates</tt>.
-
-To use this plugin:
-* Copy the outlook macro (below) into outlook
-* Modify the outlook capture template (o) to capture the email as
-a task. An example is below.
-
-
-("o" "org-outlook" entry (file "~/org/refile.org") "* TODO Email %c %?
-%i
-%U" :clock-in t :clock-resume t)
-
-You may also use the following placeholders
-
-Placeholders Replacement 
-%:link URL of the email
-%:description The title of the message
-%:title The title of the message 
-%:initial Selected text.
-%:sender Sender's name
-%:sender-email Sender's Email
-
-* (optional) Modify the folder/location that outlook moves mail into (moving
-mail off the server changes the message ID.  Once off the
-server, the ID remains the same unless you move it back...)
-* (optional) Modify the capture template used (I use <tt>`o</tt>')
-* (optional) Make the macro !CreateTaskFromItem accessable
-anywhere from outlook by adding it to the quick access toolbar
-and/or the standard toolbar.
-
 == Variables ==
 === Customizable Variables ===
 
-==== org-outlook-capture ====
-Capturing system for org-protocol outlook: subprotocol.  Supports org-capture
-
-==== org-outlook-location ====
-* Microsoft Outlook 2007 location.
-
-==== org-protocol-outlook-default-template-key ====
-Default template for org-capture or remember.
-
 === Internal Variables ===
-
-==== org-outlook-dir ====
-Org outlook directory
-
-==== org-stored-links ====
-Contains the links stored with <tt>org-store-link</tt>.
 == History ==
 
+* <b>24-Jun-2014 </b> --   Add Drag and drop support for tasks (Matthew L. Fidler)
 * <b>12-Dec-2012 </b> --   Updated Visual Basic Script to be more robust, and have more options. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Should fix Issue #1. Also added org-outlook-create-vbs to create the VBS code based on a user's setup. (Matthew L. Fidler)
 * <b>26-May-2012 </b> --   Added (require 'cl), Thanks Robert Pluim (Matthew L. Fidler)
