@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.9
+;; Version: 0.10
 ;; Last-Updated: Tue May 29 22:21:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 166
@@ -55,6 +55,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 24-Jun-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+;;    Bugfix for Drag and Drop Support
 ;; 24-Jun-2014    Matthew L. Fidler  
 ;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 ;;    Add Drag and drop support for tasks
@@ -418,9 +421,9 @@ Placeholders Replacement
 (defun org-outlook-enable-msg-dnd ()
   "Enable Drag and Drop support for message files."
   (interactive)
-  (push '(,org-outlook-dnd-regexp . org-outlook-dnd-msg-file) dnd-protocol-alist))
+  (push `(,org-outlook-dnd-regexp . org-outlook-dnd-msg-file) dnd-protocol-alist))
 
-(defun org-outlook-enable-msg-dnd ()
+(defun org-outlook-disable-msg-dnd ()
   "Disable Drag and Drop support for message files."
   (interactive)
   (let (new-dnd)
@@ -467,11 +470,11 @@ CAPTURE-FUNC is either the symbol `org-remember' or `org-capture'."
 ;;;###autoload
 (eval-after-load "org-protocol"
   '(progn 
-    (if (not (boundp 'org-protocol-protocol-alist))
-        (setq org-protocol-protocol-alist nil))
-    (add-to-list 'org-protocol-protocol-alist
-                 '("outlook" :protocol "outlook"
-                   :function org-protocol-outlook :kill-client t))))
+     (if (not (boundp 'org-protocol-protocol-alist))
+         (setq org-protocol-protocol-alist nil))
+     (add-to-list 'org-protocol-protocol-alist
+                  '("outlook" :protocol "outlook"
+                    :function org-protocol-outlook :kill-client t))))
 
 (provide 'org-outlook)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
