@@ -8,6 +8,40 @@ Configuration Tips: CustomizeAquamacs
 
 If you've been using Emacs for decades and find yourself surprised by some of the changes to the user interface in Aquamacs, have a look at AquamacsEmacsCompatibilitySettings, which demonstrates how to turn off features that are most surprising to Emacs-oldtimers.
 
+== Trouble-shooting one's settings: which files are loaded at startup? ==
+
+In short, your settings should be stored in these files
+
+  ~/.emacs
+  ~/Library/Preferences/Aquamacs Emacs/Preferences.el
+  ~/Library/Preferences/Aquamacs Emacs/customizations.el  [Automatically written when you "Save Options"]
+
+
+There are further source files that will be loaded.  So, the complete answer is as follows.
+
+At startup, Aquamacs will load this file:
+  ~/.emacs
+
+Aquamacs will find any libraries in the following directories and their subdirectories, and also in the ~/.emacs.d directory.
+At startup, it will load files named customizations.el and Preferences.el from these directories at startup:
+
+  /Library/Application Support/Emacs  [deprecated: don't use!]
+  /Library/Application Support/Aquamacs Emacs
+  ~/Library/Application Support/Emacs     [deprecated: don't use!]
+  ~/Library/Application Support/Aquamacs Emacs
+  /Library/Preferences/Emacs 	         [deprecated: don't use!]
+  /Library/Preferences/Aquamacs Emacs 
+  ~/Library/Preferences/Emacs     [deprecated: don't use!]
+  ~/Library/Preferences/Aquamacs Emacs
+
+All of these directories are added to the load path list.
+
+Aquamacs will also automatically load all files names site-start.el[c] in the load path list.
+
+To trouble-shoot your own customizations, first start Aquamacs "without customizations", which you can do via a function found
+in the menu "Help/Diagnose and Report Bug".
+
+
 == Problems running LaTeX ==
 
 If pdflatex (or latex, etc.) aren't found when the LaTeX command is executed, then this may be due to an incorrect PATH setting.  (Aquamacs versions 1.3 and older were more lenient in this respect.)
@@ -269,7 +303,7 @@ Running `LaTeX' on `x' with ``%`pdflatex \nonstopmode%' x.tex''
 LaTeX exited abnormally with code 2 at Thu Jul 12 08:22:59
 </pre>
 
-is almost certainly due to an old installation of the EC Emacs plugin. Solution is to get rid of it or update to Aquamacs 1.7 or later (which disabled [[http://muzzles-for-dogs.com/basket-dog-muzzle.html|basket]] the plugin).
+is almost certainly due to an old installation of the EC Emacs plugin. Solution is to get rid of it or update to Aquamacs 1.7 or later (which disabled the plugin).
 
 == Making A Specific Color-Theme Stick ==
 
