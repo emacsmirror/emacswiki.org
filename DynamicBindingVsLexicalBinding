@@ -189,6 +189,7 @@ Most languages only have lexical bindings for names.
 * [[Scheme]] was the first language to introduce lexical binding.  Many [[Scheme]] implementations today support both kinds of behaviour, although dynamic binding is not specified by the [http://www.schemers.org/Documents/Standards/R5RS/HTML/r5rs.html Scheme Standard].   Variables subject to dynamic binding are usually refered to as "fluid variables" or "parameters" on these systems.
 [new]
 : Actually, ALGOL 60 had lexical scoping a decade earlier. C inherited it from ALGOL, and most pop lanugages got it from C. Scheme was the first Lisp with lexical scoping.
+:: Scheme was however the first language with lexical /closures/ which is probably what confused the original author.
 
 == Why Emacs has dynamic binding ==
 
