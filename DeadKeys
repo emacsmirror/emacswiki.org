@@ -1,5 +1,16 @@
-On some non-English systems, trying to type an accented character, for example with a tilde (##~##), will result in Emacs spitting out "##<dead_tilde>## is undefined". Some people suggest that by adding the following line to ##.emacs##, they can work around this problem:
+On some non-English systems running Linux, trying to type an accented character, for example with a tilde (##~##), will result in Emacs spitting out "##<dead_tilde>## is undefined".
+
+
+The root cause is that Emacs and some input method managers (ibus and SCIM) don't work together; see Ubuntu bugs [https://bugs.launchpad.net/emacs-snapshot/+bug/1251176 #1251176] and [https://bugs.launchpad.net/ubuntu/+source/emacs23/+bug/493766 #493766]. Here are some workarounds:
+
+* Load the <code>iso-transl</code> package, either by typing C-x 8 RET RET once, or explicitly by adding the following to your Emacs init file:
 
    (require 'iso-transl)
 
-Another solution is to change the language locale suffix to large letters, e.g., from ##LANG=nb_NO.utf8## to ##LANG=nb_NO.UTF-8##. See [https://bugs.launchpad.net/ubuntu/+bug/575084 Ubuntu bug #575084].
+* Run Emacs without the <code>XMODIFIERS</code> environment variable set, which disables input methods for just that program; i.e.
+
+  env XMODIFIERS= emacs
+
+* Disable input methods globally if you don't use them (this won't prevent e.g. the XKB-set Compose key from working), by adding this line to your <code>~/.xinputrc</code>:
+
+  run_im none
