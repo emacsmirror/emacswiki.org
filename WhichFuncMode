@@ -28,10 +28,10 @@ To show the function in the HeaderLine instead of the ModeLine,
 
 (Note: Emacs 24.2.91 seems to put the which-func configuration in `mode-line-misc-info' instead, so you may need to replace `mode-line-format' with `mode-line-misc-info' in the above snippet.)
 
-To get other languages to work with which-func, simple add the name of a programing mode with support for Imenu to `which-func-modes'.
+By default, which-func mode automatically enables itself in all modes which have imenu support. To configure a subset of languages for which-func mode, set `which-func-modes':
 
   (eval-after-load "which-func"
-      '(add-to-list 'which-func-modes 'java-mode))
+      '(setq which-func-modes '(java-mode c++-mode org-mode)))
 
 To configure a language for which-func mode, you need to configure it for ImenuMode.
 
