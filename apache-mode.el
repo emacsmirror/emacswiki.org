@@ -365,6 +365,7 @@
              "ProxyIOBufferSize"
              "ProxyMaxForwards"
              "ProxyPass"
+             "ProxyPassMatch"
              "ProxyPassReverse"
              "ProxyPreserveHost"
              "ProxyReceiveBufferSize"
