@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 26 15:59:54 2014 (-0700)
+;; Last-Updated: Thu Jun 26 16:19:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3010
+;;     Update #: 3013
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3218,7 +3218,7 @@ They will henceforth be available for display in the bookmark list.
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-omitted "bookmark+")
 (defun bmkp-bmenu-show-only-omitted ()  ; Bound to `- S' in bookmark list to show only omitted
   "Show only the omitted bookmarks.
-You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
+You can then mark some of them and use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-omit/unomit-marked]' to
  make those that are marked available again for the bookmark list."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
