@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 21 20:38:23 2014 (-0700)
+;; Last-Updated: Thu Jun 26 16:22:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15577
+;;     Update #: 15581
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1000,6 +1000,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/06/26 dadams
+;;     bmkp-bmenu-show-only-omitted:
+;;       Use bmkp-bmenu-omit/unomit-marked, not bmkp-bmenu-unomit-marked, in doc string.
+;;     bmkp-bmenu-remove-tags-from-marked:
+;;       Typo in interactive spec: allp -> current-prefix-arg.  Thx to Alan Wehmann.
 ;; 2014/06/21 dadams
 ;;     Added: bmkp-no-jump, bmkp-bmenu-mark-bookmark-list-bookmarks,
 ;;       bmkp-bmenu-mark-icicle-search-hits-bookmarks, bmkp-bmenu-show-only-bookmark-lists,
