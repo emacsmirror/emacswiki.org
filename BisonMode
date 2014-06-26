@@ -1,6 +1,6 @@
-Bison Mode by Eric Beuscher, 1998:
+For recent Emacsen, bison-mode: https://github.com/Wilfred/bison-mode
 
-* http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/bison-mode.el
+Originally by Eric Beuscher, 1998: http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/bison-mode.el
 
 This mode might need an additional <code>(require 'cc-mode)</code> and <code>(require 'font-lock)</code> to work with recent emacses.
 
