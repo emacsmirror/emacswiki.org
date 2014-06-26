@@ -8,7 +8,7 @@ By default, we're using a bootstrap theme.  In order to use a
 different style sheet, you just need to switch off bootstrap and
 provide a new CSS file.
 
-Turn bootrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 this link] or append <code>?boostrap=1</code> to most URLs
+Turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 this link] or append <code>?bootstrap=1</code> to most URLs
 
 
 == Style Sheets ==
@@ -102,9 +102,6 @@ It is useless for day-to-day browsing, in my not-so-humble opinion.
 * [http://www.emacswiki.org/css/pink-bliss.css Pink Bliss] -- Inspired by the ColorTheme PinkBliss ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pink-bliss.css;theme= use it])
 
 * [http://www.emacswiki.org/css/twb.css twb's favorite CSS] -- ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css%20/css/twb.css;theme= use it])
-
-* [http://theory.stanford.edu/~amitp/emacswiki.css AmitPatel's CSS] -- default theme with more orange -- 
-([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://theory.stanford.edu/~amitp/emacswiki.css use it])
 
 * [http://www.emacswiki.org/css/pedia.css Wikipedia] -- inspired by all those that want the Emacs Wiki to look like Wikipedia because they think that somehow transfers their moderators and thousands of volunteer editors to this site -- ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css use it])
 
