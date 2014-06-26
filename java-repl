@@ -1,0 +1,10 @@
+Emacs mode for jar from http://www.javarepl.com/console.html
+
+elisp file:
+https://github.com/cpc26/java-repl/blob/master/emacs/java-repl.el
+my repo:
+https://github.com/cpc26/java-repl
+
+This is a simple repl for Java
+It does some via custom but I have not "flushed" that out.
+COMINT based and it does the job and if you need a java repl for emacs.
