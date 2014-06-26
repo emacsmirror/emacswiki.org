@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jun 21 20:42:40 2014 (-0700)
+;; Last-Updated: Thu Jun 26 15:59:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3008
+;;     Update #: 3010
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3431,8 +3431,8 @@ Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag.
 
 Non-interactively, non-nil MSG-P means display messages."
-  (interactive (let ((cand-tags       ()))
-                 (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all allp))
+  (interactive (let ((cand-tags  ()))
+                 (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all current-prefix-arg))
                    (setq cand-tags  (bmkp-set-union cand-tags (bmkp-get-tags bmk))))
                  (unless cand-tags (error "No tags to remove"))
                  (list (bmkp-read-tags-completing cand-tags t) current-prefix-arg 'MSG)))
