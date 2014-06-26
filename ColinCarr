@@ -2,9 +2,14 @@ Write a few words about your relationship to Emacs: I have a very string relatio
 
 I use GNU Emacs as it is the One True Emacs™
 
-* init file:
+* init file: https://github.com/colincarr/home/blob/master/.emacs
+I am going to start cleaning this up and this is actually a "clean" one and my current in a portfolio of .emacs files.
+Right now I use so many systems and I need to change the character of this as I would like to have packages automated.
+jwiegley has an interesting macro that I will leverage to organize this and future .emacs
+https://github.com/jwiegley/use-package
 
 * ~/.gnus: 
+This one I am holding because I am off gnus for a while but I want to clean that up too.
 
 
 
