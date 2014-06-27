@@ -6,6 +6,9 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 
 = User Questions =
 
+* [[http://stackoverflow.com/questions/24434854/emacs-org-odt-export-as-odf-and-open-odt-outside-emacs How do I open an exported ODT file using LibreOffice]]?
+** Add this to your ##.emacs##.  ##(setcdr (assq 'system org-file-apps-defaults-gnu ) "xdg-open %s")##.  I assume that you are using a Linux box.
+
 * Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
 ** See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]].  Is that what you are looking for? Please acknowledge.
 *** I think that is what I'm looking for, but that page says, ##"Citation references use a style named OrgCite. Modify this style to use Subscript. Then follow the procedure outline under"##, but I do not see ##"OrgCite"## under the ##"Styles and Formatting"## menu. 
