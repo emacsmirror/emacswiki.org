@@ -150,6 +150,21 @@ And here is an example for a hypothetical global minor mode called broccoli mode
            (warn "broccoli is not found."))))
 }}}
 
+[:with-eval-after-load]
+=== Using `with-eval-after-load' for package config ===
+
+Starting in emacs 24.4, `with-eval-after-load' is simpler than `eval-after-load':
+
+{{{
+    (with-eval-after-load 'abcd-mode
+       (setq-default abcd-basic-offset 7) ; setting some option
+       (add-to-list 'abcd-globals-list "console") ; appending to a list option
+       (add-hook 'abcd-mode-hook 'prepare-some-abcd-soup) ; things to do for abcd mode buffers
+       (define-key abcd-mode-map (kbd "C-c C-c") 'play-some-abcd-song) ; add some key binding for abcd mode
+     )
+}}}
+
+
 === ELPA policy ===
 
 ELPA policy for Emacs 24 was discussed here: http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
