@@ -66,4 +66,4 @@ Once we have our Emacs server up and running, when we're done editing we want to
 And that's it. The only small drawback to this set up is that the first time you start Emacs you'll get a popup alert "Emacsclient ERROR" saying that EmacsClient couldn't find a server to use. (This happens just before it fails through to calling "runemacs.exe" to start a server.)  EmacsClient has an option that is supposed to mute this error ("--quiet" or "-q") but it doesn't work.
 
 =Auto raise/de-iconify=
-Usin 'raise-frame' instead of 'make-frame-visible' in the code above will get you a ready to type emacs frame regardless of its previous state.
+Using 'raise-frame' instead of 'make-frame-visible' in the code above will get you a ready-to- type emacs frame regardless of its previous state.
