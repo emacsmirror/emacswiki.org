@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun 21 17:26:43 2014 (-0700)
+;; Last-Updated: Fri Jun 27 07:33:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7147
+;;     Update #: 7150
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8004,7 +8004,7 @@ Handler for snippet bookmarks."
 
 ;;;###autoload (autoload 'bmkp-snippet-to-kill-ring "bookmark+")
 (defun bmkp-snippet-to-kill-ring (bookmark-name) ; `C-x j M-w'
-  "Jump to a desktop bookmark.
+  "Jump to a snippet bookmark: copy its saved text to the `kill-ring'.
 This is a specialization of `bookmark-jump' for snippet bookmarks."
   (interactive
    (let ((alist  (bmkp-snippet-alist-only)))
