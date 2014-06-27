@@ -102,7 +102,7 @@ See [[Icicles - Search Commands, Overview]].
 
 
 
-
+[:ImenuPlus]
 == Imenu+ == 
 
 Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
