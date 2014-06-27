@@ -6,7 +6,7 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 
 = User Questions =
 
-* [[http://stackoverflow.com/questions/24434854/emacs-org-odt-export-as-odf-and-open-odt-outside-emacs How do I open an exported ODT file using LibreOffice]]?
+* [[http://stackoverflow.com/questions/24434854/emacs-org-odt-export-as-odf-and-open-odt-outside-emacs How do I open an Orgmode exported ODT file using LibreOffice]]?
 ** Assuming that your are on a Linux system, use this ##(setcdr (assq 'system org-file-apps-defaults-gnu ) "xdg-open %s")##.  
 
 * Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
