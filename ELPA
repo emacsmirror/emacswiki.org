@@ -43,6 +43,16 @@ M-x customize-variable [RET] package-archives [RET]
 
 Package authors may wish (or be invited) to contribute their packages to the official ELPA respository. The first step is making sure you've completed your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]], and create an account. Once the account is created, you can request inclusion in the "emacs" group. Once that is granted, clone the ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from the "Member clone" section. Be sure to read the README file in the repository! You should now be able to push to the official repo.
 
+==Note On Usage==
+
+This is my first edit, so bear with me.
+
+I didnt see anything here about actually using the program. After setting the variable `package-archives' via the intstructions above, you want to refresh, via:
+`M-x package-refresh-contents'
+
+Then to install a program, for example `geiser', use:
+ `M-x package-install' [RET] `geiser' 
+
 == How Packages work in Emacs 24 ==
 
 [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
