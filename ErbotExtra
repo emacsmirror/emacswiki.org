@@ -77,6 +77,17 @@ or
 <deego> [FTOTD]: If a term exists for most-solved-problems, then simply typing ,most used problems (no need for -'s) will almost always find that term.                                 [14:42]
 </pre>
 
+=== Re-Using existing term-definitions ===
+
+Background: ,foo is lisp (long expression involving lispargs) usually results in an invocation ,foo bar being parsed by ,foo.    However, if a another foo-bar exists, then ,foo bar may describe that term instead. That's how fuzzy matching works, and is supposed to work for infobot functionality. The "is lisp" method is, thus, not a foolproof way of doing lispy stuff. Instead, you should ,(defun foo (long expression)).  When a function exists, then ,foo bar baz /always/ gets parsed by the function, and this is what was desired by the writer of ,foo. However, converting looong expressions into ,(defun)s can be a lot of work. Therefore, 
+
+<pre>
+<deego> [FTOTD] Instead of converting an elaborate ",foo is lisp (loooong ..)" into a ",(defun foo ... (loooong))" manually, you can simply add tack on a ,(defun foo (&rest args) (describe "foo")). That way, ",foo bar baz" will be guaranteed to bypass fuzzy matching and call a function, yet re-use the existing ".. is lisp" definition.
+
+
+</pre>
+
+ 
 
 -----
 ErBot
