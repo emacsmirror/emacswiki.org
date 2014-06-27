@@ -55,6 +55,8 @@ Then to install a program, for example `geiser', use:
 
 *note that geiser requires the marmalade repo.
 
+Another hint, if the installed package doesn't seem to work, is to confirm that the program actually installed via `package-list-packages', seach for the package name, and see if it is said to be installed on uninstalled. The reason I added this step was that I had use install a few times before it actually was verified as installed, after which it worked. During each installation, I got a question about saving the contents to a local file, and Im not sure what that was about. But in the end, I was able to get this running.
+
 == How Packages work in Emacs 24 ==
 
 [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
