@@ -53,6 +53,8 @@ I didnt see anything here about actually using the program. After setting the va
 Then to install a program, for example `geiser', use:
  `M-x package-install' [RET] `geiser' 
 
+*note that geiser requires the marmalade repo.
+
 == How Packages work in Emacs 24 ==
 
 [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
