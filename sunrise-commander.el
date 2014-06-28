@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 453 $
+;; RCS Version: $Rev: 454 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -132,6 +132,7 @@
 ;; than copying, in which all directories are recursively created with the same
 ;; names and structures at the destination, while what happens to the files
 ;; within them depends on the option you choose:
+;;    - "(F)ile System of..." clones the FS structure of paths in a VIRTUAL pane,
 ;;    - "(D)irectories only" ignores all files, copies only directories,
 ;;    - "(C)opies" performs a regular recursive copy of all files and dirs,
 ;;    - "(H)ardlinks" makes every new file a (hard) link to the original one
@@ -2890,10 +2891,23 @@ See `dired-make-relative-symlink'."
         (sr-do-delete)
       (message "(No deletions requested)"))))
 
-(defun sr-do-clone (&optional mode)
+(defun sr-do-clone-prompt (&optional is-fs)
+  "Prompt for the criteria to use when performing a clone operation."
+  (let* ((menu "(D)irectories only, (C)opies, (H)ardlinks, (S)ymlinks or (R)elative symlinks? ")
+         (maybe-fs (and (sr-virtual-source) (not (sr-virtual-target))))
+         (prompt (cond (is-fs (concat "Clone as file system of: " menu))
+                       (maybe-fs (concat "Clone as: (F)ile System of: " menu))
+                       (t (concat "Clone as: " menu))))
+         (resp (read-event prompt)))
+
+    (cond ((and maybe-fs (memq resp '(?f ?F))) (sr-do-clone-prompt t))
+          ((not (memq resp '(?d ?D ?c ?C ?h ?H ?s ?S ?r ?R))) (sr-do-clone-prompt))
+          (is-fs (list resp ?t))
+          (t (list resp)))))
+
+(defun sr-do-clone (&optional mode is-fs)
   "Clone all selected items recursively into the passive pane."
-  (interactive "cClone as: (D)irectories only, (C)opies, (H)ardlinks,\
- (S)ymlinks or (R)elative symlinks? ")
+  (interactive (sr-do-clone-prompt))
 
   (if (sr-virtual-target)
       (error "Cannot clone into a VIRTUAL buffer, try (C)opying instead"))
@@ -2914,7 +2928,9 @@ See `dired-make-relative-symlink'."
     (setq items (dired-get-marked-files nil))
     (setq progress (sr-make-progress-reporter
                     "cloning" (sr-files-size items)))
-    (sr-clone items target clone-op progress ?K)
+    (if is-fs
+        (sr-clone-fs (dired-get-marked-files t) target clone-op progress)
+      (sr-clone (dired-get-marked-files nil) target clone-op progress ?K))
     (dired-unmark-all-marks)
     (message "Done: %d items(s) dispatched" (length items))))
 
@@ -2930,8 +2946,25 @@ variable. Directories are not copied."
     (dired-do-copy-regexp "$" extension))
   (revert-buffer))
 
+(defun sr-clone-fs (items target clone-op progress)
+  "Clone all the given ITEMS (paths to files and/or directories)
+recursively to TARGET (a directory), but keeping the directory
+structure given by every path in ITEMS. CLONE-OP is the cloning
+operation and PROGRESS is the progress monitor."
+  (mapc (lambda (i)
+          (let* ((from (expand-file-name i))
+                 (to (concat (directory-file-name target) "/"
+                             (or (file-name-directory i) ""))))
+            (unless (file-exists-p to)
+              (make-directory to t))
+            (sr-clone (list from) to clone-op progress nil)))
+        items))
+
 (defun sr-clone (items target clone-op progress mark-char)
-  "Clone all given items (files and dirs) recursively into the passive pane."
+  "Clone all the given ITEMS (files and directories) recursively
+to TARGET (a directory) using CLONE-OP as the cloning operation
+and reporting progress to the given PROGRESS monitor. Finally,
+mark all resulting artifacts with the MARK-CHAR mark."
   (let ((names (mapcar #'file-name-nondirectory items))
         (inhibit-read-only t))
     (with-current-buffer (sr-other 'buffer)
@@ -2940,14 +2973,15 @@ variable. Directories are not copied."
       (sr-in-other
        (progn
          (revert-buffer)
-         (when (memq major-mode '(sr-mode sr-virtual-mode))
+         (when (and mark-char (memq major-mode '(sr-mode sr-virtual-mode)))
            (dired-mark-remembered
             (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names))
            (sr-focus-filename (car names))))))))
 
-(defun sr-clone-files (file-paths target-dir clone-op progress &optional do-overwrite)
-  "Clone all files in FILE-PATHS to TARGET-DIR using CLONE-OP to clone the files.
-FILE-PATHS should be a list of full paths."
+(defun sr-clone-files (file-paths target-dir clone-op progress
+                                  &optional do-overwrite)
+  "Clone all files in FILE-PATHS to TARGET-DIR using CLONE-OP to
+clone the files. FILE-PATHS should be a list of absolute paths."
   (setq target-dir (replace-regexp-in-string "/?$" "/" target-dir))
   (mapc
    (function
@@ -3037,14 +3071,19 @@ IN-DIR/D => TO-DIR/D using CLONE-OP to clone the files."
                           (expand-file-name from sr-other-directory))
                         marker)))
 
+(defun sr-virtual-source ()
+  "if the active pane is in VIRTUAL mode, return its name as a string.
+Otherwise return nil."
+  (if (eq major-mode 'sr-virtual-mode)
+      (or (buffer-file-name) "Sunrise VIRTUAL buffer")
+    nil))
+ 
 (defun sr-virtual-target ()
   "If the passive pane is in VIRTUAL mode, return its name as a string.
-Otherwise returns nil."
+Otherwise return nil."
   (save-window-excursion
     (switch-to-buffer (sr-other 'buffer))
-    (if (eq major-mode 'sr-virtual-mode)
-        (or (buffer-file-name) "Sunrise VIRTUAL buffer")
-      nil)))
+    (sr-virtual-source)))
 
 (defun sr-copy-virtual ()
   "Manage copying of files or directories to buffers in VIRTUAL mode."
