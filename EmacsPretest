@@ -2,6 +2,24 @@ Before a new release the Emacs maintainers make a "pretest" release of the Emacs
 
 * http://alpha.gnu.org/gnu/emacs/pretest/
 
+== Unofficial pretest binaries for Windows ==
+
+=== 64-bit Windows native version built by Chris Zheng ===
+
+http://sourceforge.net/projects/emacsbinw64/
+
+[new]
+I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well, with image support and all. -- MaDa
+
+=== Binaries by  Dani Moncayo ===
+
+http://sourceforge.net/projects/emacs-bin/files/releases/
+
+[new]
+I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well. No image support. -- MaDa
+
+== Other ==
+
 See also EmacsReleaseDates.
 
 ----
