@@ -2,6 +2,7 @@ In source-code one usually doesn't want filling to occur.  On the other
 hand, comments are really more like text than code.  This example shows
 how to set up filling for comments only in c-mode.
 
+{{{
  (add-hook 'c-mode-hook
 	   (lambda ()
 	     (auto-fill-mode 1)
@@ -9,13 +10,15 @@ how to set up filling for comments only in c-mode.
 		  (lambda ()
 		    (not (eq (get-text-property (point) 'face)
 			     'font-lock-comment-face))))))
+}}}
 
 : I'm using GNU EMACS from CVS (2004-08-28) and it seems that this feature is built in. Also AFAIR this feature was built in in 21.3.1  -- mina86
 
 In order to enable this feature, you can use the following in plain GNU Emacs (tested with 23.1).
 
+{{{
  (setq comment-auto-fill-only-comments t)
-
+}}}
 
 The package [http://www.iro.umontreal.ca/contrib/libit/dist/misc/rebox.el rebox.el] may also help with refilling multi-line comments within 
 a comment "box".  For example, 
