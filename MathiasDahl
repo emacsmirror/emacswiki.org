@@ -11,12 +11,10 @@ I use GNU Emacs on GNU/Linux and Windows and I have done some small elisp hacks 
 * HideRegion - hide regions of text in a buffer regardless of mode etc
 * WThirtyTwoMsgBox
 * FileProps - manage file properties
-* [[Tumme]] - included in Emacs 22.1 as `image-dired'
-* [[gds]] - Emacs interface to Google Desktop Search
+* [[Tumme]] - included in Emacs 22.1 and above as `image-dired'
+* [[gds]] - Emacs interface to Google Desktop Search -- probably does not work anymore...
 * [[VLF]] - View larger files than Emacs normally can. Kind of works, maybe... This has now been taken over by others much more competent and it can be installed from M-x list-packages in Emacs 24.3.
 * AnythingLauncher - Use Emacs as your launcher for commands, directories, web sites and whatever you can think of
-
-I also use OddMuse at home (mostly as an experiment): http://klibb.com/wiki
 
 === Contact info ===
 
