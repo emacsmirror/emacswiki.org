@@ -1,4 +1,5 @@
 [[zh:alert(String.fromCharCode(88,_83,_83))]]
+[[zh:alert(String.fromCharCode(88,_83,_83))]]
 # This page lists regular expressions that prevent the saving of a page.
 # The regexps are matched against any page or comment submitted.
 # The format is simple: # comments to the end of the line. Empty lines are ignored.
