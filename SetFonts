@@ -260,6 +260,7 @@ M-x mac-font-panel-mode is not available on Emacs builds downloaded from http://
 [new]
 From my personal experiences, there is no working-for-all-emacs solution for fontset.  For current Emacs 24.x (from http://emacsformacosx.com/), below script can be one of the solution:
 
+{{{
     (when (eq system-type 'darwin)
 
       ;; default Latin font (e.g. Consolas)
@@ -279,6 +280,7 @@ From my personal experiences, there is no working-for-all-emacs solution for fon
 
       ;; you may want to add different for other charset in this way.
       )
+}}}
 
 -- cinsk
 [new]
