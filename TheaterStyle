@@ -1,5 +1,6 @@
 The following code will allow you to create a [[Frame]] without MiniBuffer, ToolBar and MenuBar and run a command within it. For [[XEmacs]], use this:
 
+{{{
     (defun run-theater (command)
       "Open an Emacs frame with nothing other than the executed command."
       (interactive "CEnter command: ")
@@ -8,9 +9,11 @@ The following code will allow you to create a [[Frame]] without MiniBuffer, Tool
                                  menubar-visible-p nil has-modeline-p nil 
                                  minibuffer none)))  
       (call-interactively command))
+}}}
 
 In GnuEmacs, the FrameParameters are an alist instead of a plist, so you need to use this instead:
 
+{{{
     (defun run-theater (command)
       "Open an Emacs frame with nothing other than the executed command."
       (interactive "CEnter command: ")
@@ -20,6 +23,7 @@ In GnuEmacs, the FrameParameters are an alist instead of a plist, so you need to
                                  (toolbar . nil))))
       (setq-default mode-line-format nil)
       (call-interactively command))
+}}}
 
 You should modify top, left, width and height to make it right for you.  --GirishB
 
