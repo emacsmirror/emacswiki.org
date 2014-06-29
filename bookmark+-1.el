@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 29 11:31:59 2014 (-0700)
+;; Last-Updated: Sun Jun 29 12:16:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7216
+;;     Update #: 7219
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8174,9 +8174,10 @@ This function does nothing in Emacs versions prior to Emacs 22."
                             (and exists  (eq desktop-save 'ask-if-exists)))
                         (y-or-n-p "Save current desktop first? ")))))
     (condition-case err
-        (if (< emacs-major-version 22)
-            (desktop-save desktop-dirname) ; Emacs < 22 has no locking.
-          (desktop-save desktop-dirname 'RELEASE))
+        (if (or (< emacs-major-version 24)
+                (and (= emacs-major-version 24)  (< emacs-minor-version 4)))
+            (desktop-save desktop-dirname 'RELEASE)
+          (desktop-save desktop-dirname 'RELEASE 'AUTOSAVE)) ; Emacs 24.4 introduced `AUTOSAVE'.
       (file-error (unless (yes-or-no-p "Error while saving the desktop.  IGNORE? ")
                     (signal (car err) (cdr err))))))
   ;; Just release lock, regardless of whether this Emacs process is the owner.
