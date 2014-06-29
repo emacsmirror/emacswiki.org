@@ -6,7 +6,7 @@
 ;; Maintainer:      Alessandro Di Marco (dmr@ethzero.com)
 ;; Created:         Oct 27, 2007
 ;; Keywords:        convenience
-;; Latest Version:  Jun 27, 2014
+;; Latest Version:  Jun 28, 2014
 
 ;; This file is not part of Emacs
 
@@ -99,7 +99,7 @@ unsure say no less than 800."
   :group 'flyguess
   :type 'number)
 
-(defcustom flyguess-min-region-size 32
+(defcustom flyguess-min-region-size 16
   "Minimum guessing region size in chars. Pushing this too high
 will slow down the guessing process. Useful range > 0; if unsure
 say no more than 128."
@@ -174,9 +174,9 @@ attempt and another."
 
 (defun flyguess-focus-region (left right)
   (let ((left (save-excursion
-		(goto-char left)(forward-word 2)(backward-word)(point)))
+		(goto-char left)(forward-word 2)(backward-word 1)(point)))
 	(right (save-excursion
-		 (goto-char right)(backward-word 2)(forward-word)(point))))
+		 (goto-char right)(backward-word 2)(forward-word 1)(point))))
     (if (< left right)
 	(list left right)
       nil)))
@@ -186,19 +186,17 @@ attempt and another."
     (if region (apply 'flyguess-survey region))))
 
 (defun flyguess-toss-region ()
-  (let ((span (- (point-max) (point-min))))
-    (if (> span flyguess-min-region-size)
-	(catch 'break
-	  (dotimes (cycles flyguess-persistence nil)
-	    (let ((begin (random span)))
-	      (let ((width (- span begin)))
-		(let ((range (min (- width flyguess-min-region-size)
-				  flyguess-max-region-size)))
-		  (if (> range 0)
-		      (let ((end (+ begin
-				    (+ flyguess-min-region-size
-				       (random range)))))
-			(throw 'break (list begin end))))))))))))
+  (let ((pmin (point-min))
+	(pmax (point-max)))
+    (let ((span (- pmax pmin)))
+      (let ((rspan (- span flyguess-min-region-size)))
+	(if (= rspan 0)
+	    (list pmin pmax)
+	  (if (> rspan 0)
+	      (let ((begin (random rspan)))
+		(let ((range (min (- span begin) flyguess-max-region-size)))
+		  (let ((end (+ begin range)))
+		    (list (+ pmin begin) (+ pmin end)))))))))))
 
 (defun flyguess-toss-regions (size)
   (defun regions-intersect (r1 r2)
@@ -305,6 +303,7 @@ attempt and another."
 		(funcall prepare))
 	    ;; prevents potential buffer switches in helper
 	    (set-buffer new)
+	    ;; (message (buffer-string))
 	    (let ((guess (flyguess-guess dicts)))
 	      (if guess
 		  (if (= (cadr guess) 1)
