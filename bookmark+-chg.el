@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 26 16:22:16 2014 (-0700)
+;; Last-Updated: Sun Jun 29 11:32:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15581
+;;     Update #: 15594
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/06/29 dadams
+;;     Added: bmkp-before-jump-hook, bmkp-desktop-save, bmkp-desktop-save-as-last,
+;;            bmkp-desktop-current-file, bmkp-desktop-jump-save-before-flag.
+;;     bmkp-jump-1: Run bmkp-before-jump-hook.
+;;     bmkp-set-desktop-bookmark: Use bmkp-desktop-save.
+;;     bmkp-desktop-jump: If bmkp-desktop-jump-save-before-flag then bmkp-desktop-save-as-last.
 ;; 2014/06/21 dadams
 ;;     Added: bmkp-icicle-search-hits-alist-only, bmkp-icicle-search-hits-bookmark-p,
 ;;       bmkp-icicle-search-hits-retrieve-more, bmkp-jump-icicle-search-hits,
