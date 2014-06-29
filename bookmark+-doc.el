@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 22 07:29:42 2014 (-0700)
+;; Last-Updated: Sun Jun 29 11:38:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14782
+;;     Update #: 14792
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -286,13 +286,21 @@
 ;;
 ;;     - Desktop bookmarks.  You can bookmark the current Emacs
 ;;       desktop, as defined by library `desktop.el' - use command
-;;       `bmkp-set-desktop-bookmark' (`C-x p K').  You can "jump" to
-;;       (that is, restore) a saved desktop.  A desktop includes:
+;;       `bmkp-set-desktop-bookmark' (`C-x p K').  You can "jump" to a
+;;       desktop bookmark (that is, restore its saved desktop).  A
+;;       desktop includes:
 ;;
 ;;         - Some global variables.  To exclude variables normally
 ;;           saved, see option `bmkp-desktop-no-save-vars'.
 ;; 	   - The current set of buffers and their associated files.
 ;;           For each: its mode, point, mark, & some local variables.
+;;
+;;       If option `bmkp-desktop-jump-save-before-flag' is non-`nil',
+;;       and if the current desktop was made current by jumping to a
+;;       bookmark, then it is saved before jumping to the next
+;;       desktop.  If you want to save the last desktop jumped to when
+;;       you quit Emacs, then add `bmkp-desktop-save-as-last' to
+;;       `kill-emacs-hook'.
 ;;
 ;;     - Gnus bookmarks.  You can bookmark a Gnus article, a URL, a
 ;;       PDF file (DocView), a UNIX manual page (from the output of
