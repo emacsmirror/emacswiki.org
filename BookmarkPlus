@@ -198,12 +198,19 @@ loads the bookmarks in the file.
 [:DesktopBookmarks]
 * '''Desktop bookmarks.'''  You can bookmark the current Emacs ''[[DeskTop|desktop]]'', as defined by library
 ##desktop.el## -- use command '''`bmkp-set-desktop-bookmark''''
-('''`C-x p K'''').  You can "jump" to (that is, restore) a 
-saved desktop.  A desktop includes:
+('''`C-x p K'''').  You can "jump" to a desktop bookmark (that is, restore its
+saved desktop).  A desktop includes:
 
 ** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bmkp-desktop-no-save-vars''''.
 
 ** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
+
+: If option '''`bmkp-desktop-jump-save-before-flag'''' is non-`nil',
+and if the current desktop was made current by jumping to a
+bookmark, then it is saved before jumping to the next
+desktop.  If you want to save the last desktop jumped to when
+you quit Emacs, then add '''`bmkp-desktop-save-as-last'''' to
+`kill-emacs-hook'.
 
 [:GnusBookmarks]
 [:ManPageBookmarks]
