@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 29 10:40:51 2014 (-0700)
+;; Last-Updated: Sun Jun 29 11:31:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7190
+;;     Update #: 7216
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -351,9 +351,9 @@
 ;;    `bmkp-delete-temporary-no-confirm', `bmkp-desktop-alist-only',
 ;;    `bmkp-desktop-bookmark-p',
 ;;    `bmkp-desktop-file-p',`bmkp-desktop-kill', `bmkp-desktop-save',
-;;    `bmkp-dired-alist-only', `bmkp-dired-bookmark-p',
-;;    `bmkp-dired-remember-*-marks', `bmkp-dired-subdirs',
-;;    `bmkp-dired-this-dir-alist-only',
+;;    `bmkp-desktop-save-as-last', `bmkp-dired-alist-only',
+;;    `bmkp-dired-bookmark-p', `bmkp-dired-remember-*-marks',
+;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
 ;;    `bmkp-dired-this-dir-bookmark-p',
 ;;    `bmkp-dired-wildcards-bookmark-p',
 ;;    `bmkp-edit-bookmark-record-mode',
@@ -491,7 +491,7 @@
 ;;    `bmkp-bookmark-file-history', `bmkp-bookmark-list-history',
 ;;    `bmkp-bookmark-set-confirms-overwrite-p',
 ;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
-;;    `bmkp-desktop-history', `bmkp-desktop-last-file',
+;;    `bmkp-desktop-current-file', `bmkp-desktop-history',
 ;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
 ;;    `bmkp-edit-bookmark-records-mode-map',
 ;;    `bmkp-edit-bookmark-records-number', `bmkp-edit-tags-mode-map',
@@ -1378,7 +1378,7 @@ Loading a bookmark file does not change the value of
 `bookmark-default-file' is never changed, except by your
 customizations.")
 
-(defvar bmkp-desktop-last-file nil
+(defvar bmkp-desktop-current-file nil
   "Desktop file from last desktop bookmark jumped to.")
 
 (defvar bmkp-edit-bookmark-orig-record nil
@@ -8093,6 +8093,20 @@ the display of proxy candidates."
            (desktop-save desktop-dir 'RELEASE 'AUTOSAVE)))
     (message "Desktop saved in `%s'" desktop-file)))
 
+(defun bmkp-desktop-save-as-last ()
+  "Save desktop to the file that is the value of `bmkp-desktop-current-file'.
+Do nothing if any of these are true:
+
+ * `desktop-save-mode' is non-nil
+ * `bmkp-desktop-current-file' is nil
+ * `bmkp-desktop-current-file' does not seem to be current (a non-bookmark
+   desktop was last made current)
+
+You might want to use this on `kill-emacs-hook'."
+  (when (and (not desktop-save-mode)  bmkp-desktop-current-file
+             (bmkp-same-file-p (desktop-full-file-name) bmkp-desktop-current-file))
+    (bmkp-desktop-save bmkp-desktop-current-file)))
+
 (defun bmkp-desktop-file-p (file)
   "Return non-nil if FILE is readable and appears to be a desktop file.
 FILE is a file-name string."
@@ -9000,10 +9014,9 @@ particular for info about using a prefix argument."
    (let ((alist  (bmkp-desktop-alist-only)))
      (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history)
            current-prefix-arg)))
-  (when (and bmkp-desktop-jump-save-before-flag  bmkp-desktop-last-file)
-    (bmkp-desktop-save bmkp-desktop-last-file))
+  (when bmkp-desktop-jump-save-before-flag (bmkp-desktop-save-as-last))
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p)
-  (setq bmkp-desktop-last-file  (bookmark-prop-get bookmark-name 'desktop-file)))
+  (setq bmkp-desktop-current-file  (bookmark-prop-get bookmark-name 'desktop-file)))
 
 ;;;###autoload (autoload 'bmkp-dired-jump "bookmark+")
 (defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d', (`J' in Dired)
