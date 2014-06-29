@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 28 12:23:13 2014 (-0700)
+;; Last-Updated: Sun Jun 29 14:06:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7857
+;;     Update #: 7870
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -547,6 +547,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/06/29 dadams
+;;     dired-get-marked-files, diredp-internal-do-deletions:
+;;       Remove nils from dired-map-over-marks result.
 ;; 2014/05/28 dadams
 ;;     diredp-mode-line-marked: Use DarkViolet for both light and dark background modes.
 ;; 2014/05/23 dadams
@@ -1445,7 +1448,7 @@ Argument ARG:
 If no marked file could be found, execute BODY on the current line.
 ARG, if non-nil, specifies the files to use instead of the marked files.
  If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
-   In that case point is dragged along.  This is so that commands on
+   In that case, point is dragged along.  This is so that commands on
    the next ARG (instead of the marked) files can be easily chained.
  If ARG is a cons with element 16, 64, or 256, corresponding to
    `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
@@ -1456,12 +1459,16 @@ ARG, if non-nil, specifies the files to use instead of the marked files.
  If ARG is otherwise non-nil, use the current file.
 If optional third arg SHOW-PROGRESS evaluates to non-nil,
  redisplay the Dired buffer after each file is processed.
- No guarantee is made about the position on the marked line.
- BODY must ensure this itself, if it depends on this.
+
+No guarantee is made about the position on the marked line.  BODY must
+ensure this itself, if it depends on this.
+
 Search starts at the beginning of the buffer, thus the car of the list
- corresponds to the line nearest to the buffer's bottom.  This
- is also true for (positive and negative) integer values of ARG.
-BODY should not be too long, since it is expanded four times.
+corresponds to the line nearest the end of the buffer.  This is also
+true for (positive and negative) integer values of ARG.
+
+BODY should not be too long, because it is expanded four times.
+
 If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
  of (FILENAME), if only one file is marked."
   ;; WARNING: BODY must not add new lines before point - this may cause an
@@ -1588,9 +1595,11 @@ Optional third argument FILTER, if non-nil, is a function to select
 If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
  of (FILENAME), if only one file is marked.  Do not use non-nil
  DISTINGUISH-ONE-MARKED together with FILTER."
-  (let ((all-of-them  (save-excursion
-                        (dired-map-over-marks (dired-get-filename localp 'NO-ERROR-IF-NOT-FILEP)
-                                              arg nil distinguish-one-marked)))
+  (let ((all-of-them  (delq nil
+                            (save-excursion
+                              (dired-map-over-marks
+                               (dired-get-filename localp 'NO-ERROR-IF-NOT-FILEP)
+                               arg nil distinguish-one-marked))))
         result)
     (if (not filter)
         (if (and distinguish-one-marked  (eq (car all-of-them) t))
@@ -1657,7 +1666,7 @@ See Info node `(emacs)Subdir switches' for more details."
                                                               dired-subdir-switches
                                                               dired-actual-switches)))))
       (message "Redisplaying...")
-      ;; `message' much faster than making `dired-map-over-marks' show progress
+      ;; `message' is much faster than making `dired-map-over-marks' show progress
       (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
       (dired-map-over-marks (let ((fname                    (dired-get-filename))
                                   ;; Postpone readin hook map over all marked files (Bug#6810).
@@ -1684,7 +1693,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                              (and arg  (read-string "Switches for listing: "
                                                     dired-actual-switches)))
       (message "Redisplaying...")
-      ;; message much faster than making dired-map-over-marks show progress
+      ;; `message' is much faster than making dired-map-over-marks show progress
       (dired-uncache (if (consp dired-directory) (car dired-directory) dired-directory))
       (dired-map-over-marks (let ((fname  (dired-get-filename)))
                               (message "Redisplaying... `%s'" fname)
@@ -7409,6 +7418,7 @@ Non-nil TRASH means use the trash can."
   ;; the lines still to be changed, so the (point) values in FILE-ALIST
   ;; stay valid.  Also, for subdirs in natural order, a subdir's files are
   ;; deleted before the subdir itself - the other way around would not work."
+  (setq file-alist  (delq nil file-alist)) ; nils could come from `dired-map-over-marks'.
   (if (> emacs-major-version 23)
       (dired-internal-do-deletions file-alist arg trash)
     (dired-internal-do-deletions file-alist arg)))
