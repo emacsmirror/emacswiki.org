@@ -4,11 +4,15 @@ http://emacs.kldp.org/~jay/emacs/
 
 To completely remove the modeline from one buffer (buffer-specific) evaluate:
 
+{{{
     (setq mode-line-format nil)
+}}}
 
 and to make it affect all buffers evaluate:
 
+{{{
     (setq-default mode-line-format nil) 
+}}}
 
 ----
 CategoryDisplay
