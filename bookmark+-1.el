@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jun 27 07:33:07 2014 (-0700)
+;; Last-Updated: Sun Jun 29 10:40:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7150
+;;     Update #: 7190
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -294,6 +294,7 @@
 ;;    `bmkp-count-multi-mods-as-one-flag', `bmkp-crosshairs-flag',
 ;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handlers-for-file-types',
+;;    `bmkp-desktop-jump-save-before-flag.',
 ;;    `bmkp-desktop-no-save-vars',
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
@@ -349,7 +350,7 @@
 ;;    `bmkp-delete-bookmark-name-from-list',
 ;;    `bmkp-delete-temporary-no-confirm', `bmkp-desktop-alist-only',
 ;;    `bmkp-desktop-bookmark-p',
-;;    `bmkp-desktop-file-p',`bmkp-desktop-kill',
+;;    `bmkp-desktop-file-p',`bmkp-desktop-kill', `bmkp-desktop-save',
 ;;    `bmkp-dired-alist-only', `bmkp-dired-bookmark-p',
 ;;    `bmkp-dired-remember-*-marks', `bmkp-dired-subdirs',
 ;;    `bmkp-dired-this-dir-alist-only',
@@ -486,12 +487,12 @@
 ;;    `bmkp-after-set-hook', `bmkp-autofile-history',
 ;;    `bmkp-auto-idle-bookmark-mode-timer',
 ;;    `bmkp-auto-idle-bookmarks', `bmkp-autonamed-history',
-;;    `bmkp-autotemp-all-when-set-p', `bmkp-bookmark-file-history',
-;;    `bmkp-bookmark-list-history',
+;;    `bmkp-autotemp-all-when-set-p', `bmkp-before-jump-hook',
+;;    `bmkp-bookmark-file-history', `bmkp-bookmark-list-history',
 ;;    `bmkp-bookmark-set-confirms-overwrite-p',
 ;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
-;;    `bmkp-desktop-history', `bmkp-dired-history',
-;;    `bmkp-edit-bookmark-record-mode-map',
+;;    `bmkp-desktop-history', `bmkp-desktop-last-file',
+;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
 ;;    `bmkp-edit-bookmark-records-mode-map',
 ;;    `bmkp-edit-bookmark-records-number', `bmkp-edit-tags-mode-map',
 ;;    `bmkp-file-bookmark-handlers', `bmkp-file-history',
@@ -906,6 +907,11 @@ in the default handler.  For that it uses `dired-guess-default' and
           regexp :value-type
           (sexp :tag "Shell command (string) or Emacs function (symbol or lambda form)"))
   :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-desktop-jump-save-before-flag "bookmark+")
+(defcustom bmkp-desktop-jump-save-before-flag nil
+  "*Non-nil means `bmkp-desktop-jump' saves the desktop file before switching."
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-desktop-no-save-vars "bookmark+")
 (defcustom bmkp-desktop-no-save-vars '(search-ring regexp-search-ring kill-ring)
@@ -1342,6 +1348,15 @@ make it so, do this:
 ;;; Used to mark modified, unsaved bookmarks, in `*Bookmark List*'.
 ;;; Should not include any function that calls another in the list.")
 
+
+;; `defvar' Provided for older Emacs versions.
+(defvar bookmark-after-jump-hook nil
+  "Hook run after `bookmark-jump' jumps to a bookmark.
+Useful for example to unhide text in `outline-mode'.")
+
+(defvar bmkp-before-jump-hook nil
+  "Hook run before `bookmark-jump' jumps to a bookmark.")
+
 (defvar bmkp-copied-tags ()
   "List of tags copied from a bookmark, for pasting to other bookmarks.")
 
@@ -1362,6 +1377,9 @@ Loading a bookmark file does not change the value of
 `bmkp-last-as-first-bookmark-file' (which see).  The value of
 `bookmark-default-file' is never changed, except by your
 customizations.")
+
+(defvar bmkp-desktop-last-file nil
+  "Desktop file from last desktop bookmark jumped to.")
 
 (defvar bmkp-edit-bookmark-orig-record nil
   "Record of bookmark being edited.")
@@ -2270,8 +2288,7 @@ Otherwise, load `bookmark-default-file'."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Save DISPLAY-FUNCTION to `bmkp-jump-display-function' before calling
-;;    `bookmark-handle-bookmark'.
+;; 1. Save DISPLAY-FUNCTION to `bmkp-jump-display-function' before calling `bookmark-handle-bookmark'.
 ;; 2. Update the name and position of an autonamed bookmark, in case it moved.
 ;; 3. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-jump'.
 ;; 4. Added `catch', so a handler can throw to skip the rest of the processing if it wants.
@@ -3391,6 +3408,7 @@ DISPLAY-FUNCTION is passed to `bookmark--jump-via'.
 Non-nil USE-REGION-P means activate the region, if recorded."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (unless bookmark (error "No bookmark specified"))
+  (run-hooks 'bmkp-before-jump-hook)
   (bookmark-maybe-historicize-string (bmkp-bookmark-name-from-record bookmark))
   (let ((bmkp-use-region  (if use-region-p (not bmkp-use-region) bmkp-use-region)))
     (bookmark--jump-via bookmark display-function)))
@@ -8018,10 +8036,12 @@ This is a specialization of `bookmark-jump' for snippet bookmarks."
   "Save the desktop as a bookmark.
 You are prompted for the desktop-file location and the bookmark name.
 The default value for the desktop-file location is the current value
-of DESKTOP-FILE.  As always, you can use `M-n' to retrieve it.
+of `desktop-base-file-name'.  As always, you can use `M-n' to retrieve
+the default value.
 
-With a prefix arg, set a bookmark to an existing DESKTOP-FILE - do not
-save the current desktop; that is, do not overwrite DESKTOP-FILE.
+With a prefix arg, set a bookmark to an existing desktop file - do not
+save the current desktop.  Do not overwrite the file whose name you
+enter, just use it to set the bookmark.
 
 If you also use library Icicles, then the desktop files of all
 existing desktop bookmarks are available during the desktop file-name
@@ -8050,20 +8070,28 @@ the display of proxy candidates."
     (error "You must have library `desktop.el' to use this command"))
   (if nosavep
       (unless (bmkp-desktop-file-p desktop-file) (error "Not a desktop file: `%s'" desktop-file))
-    (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
-          (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
-          (desktop-dir              (file-name-directory desktop-file))
-          (desktop-restore-eager    t)  ; Don't bother with lazy restore.
-          (desktop-globals-to-save  (bmkp-remove-if (lambda (elt) (memq elt bmkp-desktop-no-save-vars))
-                                                    desktop-globals-to-save)))
-      (if (< emacs-major-version 22)
-          (desktop-save desktop-dir)    ; Emacs < 22 has no locking.
-        (desktop-save desktop-dir 'RELEASE))
-      (message "Desktop saved in `%s'" desktop-file)))
+    (bmkp-desktop-save desktop-file))
   (let ((bookmark-make-record-function  (lexical-let ((df  desktop-file))
                                           (lambda () (bmkp-make-desktop-record df))))
         (current-prefix-arg             99)) ; Use all bookmarks for completion, for `bookmark-set'.
     (call-interactively #'bookmark-set)))
+
+(defun bmkp-desktop-save (desktop-file)
+  "Save current desktop in DESKTOP-FILE."
+  (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
+        (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
+        (desktop-dir              (file-name-directory desktop-file))
+        (desktop-restore-eager    t)    ; Don't bother with lazy restore.
+        (desktop-globals-to-save  (bmkp-remove-if (lambda (elt) (memq elt bmkp-desktop-no-save-vars))
+                                                  desktop-globals-to-save)))
+    (cond ((< emacs-major-version 22)   ; Emacs 22 introduced `RELEASE' (locking).
+           (desktop-save desktop-dir))
+          ((or (< emacs-major-version 24)
+               (and (= emacs-major-version 24)  (< emacs-minor-version 4)))
+           (desktop-save desktop-dir 'RELEASE))
+          (t                            ; Emacs 24.4 introduced `AUTOSAVE'.
+           (desktop-save desktop-dir 'RELEASE 'AUTOSAVE)))
+    (message "Desktop saved in `%s'" desktop-file)))
 
 (defun bmkp-desktop-file-p (file)
   "Return non-nil if FILE is readable and appears to be a desktop file.
@@ -8962,13 +8990,20 @@ for info about using a prefix argument."
 ;;;###autoload (autoload 'bmkp-desktop-jump "bookmark+")
 (defun bmkp-desktop-jump (bookmark-name &optional use-region-p) ; `C-x j K'
   "Jump to a desktop bookmark.
-This is a specialization of `bookmark-jump' - see that, in particular
-for info about using a prefix argument."
+If option `bmkp-desktop-jump-save-before-flag' is non-nil, and if the
+current desktop was made current by jumping to a bookmark, then save
+it before jumping to the next desktop.
+
+This command is a specialization of `bookmark-jump' - see that, in
+particular for info about using a prefix argument."
   (interactive
    (let ((alist  (bmkp-desktop-alist-only)))
      (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history)
            current-prefix-arg)))
-  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+  (when (and bmkp-desktop-jump-save-before-flag  bmkp-desktop-last-file)
+    (bmkp-desktop-save bmkp-desktop-last-file))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p)
+  (setq bmkp-desktop-last-file  (bookmark-prop-get bookmark-name 'desktop-file)))
 
 ;;;###autoload (autoload 'bmkp-dired-jump "bookmark+")
 (defun bmkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d', (`J' in Dired)
