@@ -2,9 +2,7 @@ From the homepage:
 
 : One nice feature in modern IDEs is the display of a faint one-pixel wide righthand margin that offers a visual clue to the length of each source code line.  [...]  You can achieve similar functionality in Emacs by marking lines which exceed a specified length (usually 80 characters) [...]
 
-* http://www.xanadb.com/archive/emacs/20040630
-
-Note that the version posted is broken in CVS GNU Emacs.  The MARGIN-CHANGE function doesn't correctly handle being run in the background by jit-lock (since it refers to the extent of the current window).  The symptom is an interruptible hang (^G) with Emacs burning 100% of CPU.  Replace the function's definition with the following:
+This could use a bit more explanation:
 
   (defun margin-change (beg end)
     "Refresh margins in region BEG to END."
