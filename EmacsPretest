@@ -18,6 +18,12 @@ http://sourceforge.net/projects/emacs-bin/files/releases/
 [new]
 I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well. No image support. -- MaDa
 
+=== 64-bit Windows native version built by Fabrice Popineau ===
+
+http://semantic.supelec.fr/popineau/programming-emacs.html#sec-2
+
+This is a trunk release updated from time to time. Compiled with MSYS2/Gcc 4.9, optimized, with all supported libraries.
+
 == Other ==
 
 See also EmacsReleaseDates.
