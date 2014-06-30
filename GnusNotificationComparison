@@ -1,10 +1,13 @@
-A little comparison between notification agents alternatives (please add stuff here):
+== Notifications in the mode line ==
 
-* GnusNotify allows you to select which groups you want to include in the report (you need to use GnusDemon to set-up the automatic update)
-* [GnusNotify gnus-notify+] works with a timer, and each time it runs, slows down your Emacs for a moment
+* GnusNotify
+* [http://www.emacswiki.org/emacs-en/gnus-notify+.el gnus-notify+]
 * GnusBiff is „too primitive“ according to its own description
-* GnusDesktopNotify can be configured per-group and can call any arbitrary program in response to new mail
-* …
+
+== Desktop Notifications ==
+
+* GnusNotifications is included with GNUs itself, uses the `notifications' library that comes with emacs 24. It allows to set a minimum group level to hide notifications and fetch profile photos using the sender address and google+.
+* GnusDesktopNotify can be configured per-group, can collapse group names, and also call any arbitrary function/program in response to new mail.
 
 ----
 CategoryGnus
