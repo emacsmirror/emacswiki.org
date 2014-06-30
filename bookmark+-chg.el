@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 29 12:17:24 2014 (-0700)
+;; Last-Updated: Mon Jun 30 15:36:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15595
+;;     Update #: 15597
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1007,6 +1007,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/06/30 dadams
+;;     bmkp-bmenu-mouse-3-menu:
+;;       Bind bmkp-bmenu-flag-for-deletion, not bookmark-bmenu-delete.  See Emacs bug #17888.
 ;; 2014/06/26 dadams
 ;;     bmkp-bmenu-show-only-omitted:
 ;;       Use bmkp-bmenu-omit/unomit-marked, not bmkp-bmenu-unomit-marked, in doc string.
