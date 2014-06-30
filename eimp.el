@@ -420,6 +420,7 @@ string).  Return the process, if any."
       (eimp-save-buffer-state nil
         (remove-text-properties (point) (1+ (point)) '(eimp-proc))))))
 
+;;;###autoload
 (defun eimp-stop-all (&optional error)
   "Stop all running processes; remove queued processes.
 If ERROR, signal an error with this string."
@@ -665,21 +666,25 @@ Delete process if it doesn't"
     ;; Return nil
     nil))
 
+;;;###autoload
 (defun eimp-negate-image ()
   "Negate image."
   (interactive)
   (eimp-mogrify-image (list "-negate")))
 
+;;;###autoload
 (defun eimp-increase-image-size (arg)
   "Increase image size by ARG or default `eimp-resize-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-resize" (format "%d%%" (or arg eimp-resize-amount)))))
 
+;;;###autoload
 (defun eimp-decrease-image-size (arg)
   "Decrease image size by ARG or default `eimp-resize-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-resize" (format "%d%%" (* 100 (/ 100.0 (or arg eimp-resize-amount)))))))
 
+;;;###autoload
 (defun eimp-fit-image-to-window (arg)
   "Scale image to fit in the current window.
 With a prefix arg, ARG, don't preserve the aspect ratio."
@@ -690,12 +695,14 @@ With a prefix arg, ARG, don't preserve the aspect ratio."
     (eimp-mogrify-image `("-resize" ,(concat (format "%dx%d" width height)
                                              (and arg "!"))))))
 
+;;;###autoload
 (defun eimp-fit-image-to-whole-window ()
   "Scale image to fit the whole of the current window.
 The aspect ratio is not preserved."
   (interactive)
   (eimp-fit-image-to-window t))
 
+;;;###autoload
 (defun eimp-fit-image-height-to-window (arg)
   "Scale image height to fit in the current window.
 With a prefix arg, ARG, don't preserve the aspect ratio."
@@ -711,6 +718,7 @@ With a prefix arg, ARG, don't preserve the aspect ratio."
          `("-resize" ,(concat (format "%dx%d!" image-width height)))
        `("-resize" ,(format "%d%%" (* 100 (/ (float height) image-height))))))))
 
+;;;###autoload
 (defun eimp-fit-image-width-to-window (arg)
   "Scale image width to fit in the current window.
 With a prefix arg, ARG, don't preserve the aspect ratio."
@@ -726,12 +734,14 @@ With a prefix arg, ARG, don't preserve the aspect ratio."
          `("-resize" ,(concat (format "%dx%d!" width image-height)))
        `("-resize" ,(format "%d%%" (* 100 (/ (float width) image-width))))))))
 
+;;;###autoload
 (defun eimp-mouse-resize-image (event)
   "Resize image with mouse.
 Argument EVENT is a mouse event."
   (interactive "e")
   (eimp-mouse-resize-image-1 event nil))
 
+;;;###autoload
 (defun eimp-mouse-resize-image-preserve-aspect (event)
   "Resize image with mouse, preserving aspect ratio.
 Argument EVENT is a mouse event."
@@ -812,41 +822,49 @@ preserve the aspect ratio."
   (interactive "P")
   (eimp-mogrify-image (list "-blur" (format "%d" (or arg eimp-blur-amount)))))
 
+;;;###autoload
 (defun eimp-sharpen-image (arg)
   "Sharpen image by ARG or default `eimp-blur-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-sharpen" (format "%d" (or arg eimp-blur-amount)))))
 
+;;;###autoload
 (defun eimp-emboss-image (arg)
   "Emboss image by ARG or default `eimp-blur-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-emboss" (format "%d" (or arg eimp-blur-amount)))))
 
+;;;###autoload
 (defun eimp-gaussian-blur-image (arg)
   "Gaussian blur image by ARG or default `eimp-blur-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-gaussian" (format "%d" (or arg eimp-blur-amount)))))
 
+;;;###autoload
 (defun eimp-radial-blur-image (arg)
   "Radial blur image by ARG or default `eimp-blur-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-radial-blur" (format "%d" (or arg eimp-blur-amount)))))
 
+;;;###autoload
 (defun eimp-flip-image ()
   "Flip image vertically."
   (interactive)
   (eimp-mogrify-image (list "-flip" )))
 
+;;;###autoload
 (defun eimp-flop-image ()
   "Flip image horizontally."
   (interactive)
   (eimp-mogrify-image (list "-flop")))
 
+;;;###autoload
 (defun eimp-rotate-image-clockwise (arg)
   "Rotate image clockwise by ARG or default `eimp-rotate-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-rotate" (format "%d" (or arg eimp-rotate-amount)))))
 
+;;;###autoload
 (defun eimp-rotate-image-anticlockwise (arg)
   "Rotate image anticlockwise by ARG or default `eimp-rotate-amount'."
   (interactive "P")
@@ -856,44 +874,52 @@ preserve the aspect ratio."
   'eimp-rotate-image-anticlockwise)
 (put 'eimp-rotate-image-counterclockwise 'function-documentation "Rotate image counterclockwise.")
 
+;;;###autoload
 (defun eimp-increase-image-brightness (arg)
   "Increase image brightness by ARG or default `eimp-brightness-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-modulate" (format "%d" (+ 100 (or arg eimp-brightness-amount))))))
 
+;;;###autoload
 (defun eimp-decrease-image-brightness (arg)
   "Decrease image brightness by ARG or default `eimp-brightness-amount'."
   (interactive "P")
   (eimp-mogrify-image (list "-modulate" (format "%d" (- 100 (or arg eimp-brightness-amount))))))
 
+;;;###autoload
 (defun eimp-increase-image-contrast ()
   "Increase image contrast."
   (interactive)
   (eimp-mogrify-image (list "-contrast")))
 
+;;;###autoload
 (defun eimp-decrease-image-contrast ()
   "Decrease image contrast."
   (interactive)
   (eimp-mogrify-image (list "+contrast")))
 
+;;;###autoload
 (defun eimp-roll-image-right (arg)
   "Roll image right by ARG pixels."
   (interactive "P")
   (eimp-mogrify-image (list "-roll"
                             (format "+%d-0" (or arg eimp-roll-amount)))))
 
+;;;###autoload
 (defun eimp-roll-image-left (arg)
   "Roll image left by ARG pixels."
   (interactive "P")
   (eimp-mogrify-image (list "-roll"
                             (format "-%d-0" (or arg eimp-roll-amount)))))
 
+;;;###autoload
 (defun eimp-roll-image-up (arg)
   "Roll image up by ARG pixels."
   (interactive "P")
   (eimp-mogrify-image (list "-roll"
                             (format "+0-%d" (or arg eimp-roll-amount)))))
 
+;;;###autoload
 (defun eimp-roll-image-down (arg)
   "Roll image down by ARG pixels."
   (interactive "P")
