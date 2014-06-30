@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 26 16:19:31 2014 (-0700)
+;; Last-Updated: Mon Jun 30 15:19:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3013
+;;     Update #: 3015
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1996,7 +1996,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-show-annotation "bookmark+")
-(defun bookmark-bmenu-show-annotation (msg-p)
+(defun bookmark-bmenu-show-annotation (msg-p) ; Only in `mouse-3' menu.
   "Show the annotation for the current bookmark in another window.
 Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
@@ -5826,7 +5826,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
                                       (beginning-of-line)
                                       (if (bmkp-looking-at-p "^D")
                                           ["Unmark" bookmark-bmenu-unmark]
-                                        ["Flag for Deletion" bookmark-bmenu-delete]))
+                                        ["Flag for Deletion" bmkp-bmenu-flag-for-deletion]))
                                     ["Omit" bmkp-bmenu-omit]
                                     ["Jump To" bookmark-bmenu-this-window]
                                     ["Jump To in Other Window" bookmark-bmenu-other-window]
