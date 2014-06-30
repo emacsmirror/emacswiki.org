@@ -16,7 +16,11 @@ I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well, with 
 http://sourceforge.net/projects/emacs-bin/files/releases/
 
 [new]
-I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well. No image support. -- MaDa
+I tested this on 2014-06-29 (Windows 8, 64-bit) and it seems to work well.
+
+These binaries are packaged as give by "make install", so they don't bundle binaries of optional external libraries.  See [1] for instructions on setting up a runtime environment with those libraries.
+
+[1] http://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL.
 
 === 64-bit Windows native version built by Fabrice Popineau ===
 
