@@ -1,4 +1,4 @@
-GnusDesktopNotify is a mode that displays little popup notifications using [http://developer.gnome.org/libnotify/ libnotify] when receiving new mail through GnusDemon (you probably already saw these, they are used natively in many modern desktop applications). GnusDesktopNotify can be used also on OSX via Growl, and generally call any executable/function in response to new messages.
+GnusDesktopNotify is a global minor mode that displays desktop notifications in response to new group messages. It's usually used in conjunction with GnusDemon to periodically scan for new emails. GnusDesktopNotify uses the `notifications' library included in emacs 24 (if available) or execute  <code>notify-send</code> on emacs 23 and earlier. Group names can be collapsed automatically, and individual groups can be included/excluded from generating notifications. You can also select whether to generate an individual notification for each group, or collapse all groups in a single notification.
 
 GnusDesktopNotify can be downloaded at [http://www.thregr.org/~wavexx/hacks/gnus-desktop-notify/]. Usage instructions can be found on the web site and in the source.
 
