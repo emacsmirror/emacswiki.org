@@ -12,7 +12,7 @@ Folding mode was originally written by [[JamieLokier|Jamie Lokier]] and later ex
 
 The latest code is maintained by JariAalto. Report bugs to [http://savannah.nongnu.org/projects/emacs-tiny-tools Savannah bug tracker].
 
-* [http://git.savannah.gnu.org/cgit/emacs-tiny-tools.git/tree/lisp/other/folding.el?h=devel folding.el] '''The latest code'''. HEAD devel revision at Savannah TinyTools project. (Link appears dead 2014-04-03)
+* [https://raw.githubusercontent.com/jaalto/project-emacs--folding-mode/master/folding.el|folding.el] '''The latest code'''. HEAD devel revision at JariAalto's [https://github.com/jaalto/project-emacs--folding-mode|GitHub]
 * A clone of the TinyTools archive on [https://github.com/peterwang/folding.el|GitHub] Apr 28, 2013.
 * [http://cvs.xemacs.org/viewcvs.cgi/*checkout*/XEmacs/packages/xemacs-packages/text-modes/folding.el?rev=HEAD&content-type=text/plain folding.el] [[XEmacs]] HEAD revision at site: http://www.xemacs.org. The stable version from Savannah is updated here.
 * Lisp:folding.el ''Old''. RCS revision 1.13, 2003-02-05, probably from !RedHat
