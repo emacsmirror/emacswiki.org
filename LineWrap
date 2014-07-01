@@ -1,1 +1,93 @@
-Jerson Antonio Martinez Moreno
+'''Linewrapping''' comes in a few flavors:
+
+# By default, Emacs wraps a line that reaches the window width, except at a word boundary. The buffer text is not changed.
+# Modes such as AutoFillMode insert a [line ending] after the last word that occurs before the value of [[option]] `fill-column' (a column number).
+# Modes such as LongLines wrap a line after the last word before `fill-column', but ultimately they do not alter the buffer text. Long-line wrapping is essentially a display effect.
+# Modes such as VisualLineMode wrap a line right before the window edge, but ultimately they do not alter the buffer text. VisualLineMode wrapping is essentially a display effect.
+
+By default, when a line extends past the width of the window, Emacs wraps it,
+either displaying a backslash (`\') in the buffer or placing
+a bent arrow (&#x21a9;)
+in the window [[fringe]].  This does not happen at word boundaries.  To prevent
+Emacs from wrapping lines in this way and instead appear to truncate lines that are longer than the window width, use TruncateLines. Truncating lines does not alter your buffer text in any way -- the displayed backslash character of line-wrapping and the dollar (##$##) character of truncating are not part of the text (and so cannot be accessed).
+
+When you type past a certain column ([[option]] `fill-column'), Emacs inserts a [[line ending]].  This behavior is called '''filling''' a paragraph -- see AutoFillMode. 
+
+Besides relying on this fill-as-you-type behavior, you can manually fill an existing paragraph with [[command]] `fill-paragraph' (`M-q'). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending. For doing the opposite, i.e. removing all line ends from a paragraph, currently (as of Emacs 24.3) no built-in function exists -- see UnfillParagraph
+
+Modes such as Long Lines wrap lines on word boundaries as you type, by inserting ''temporary'' line-ending characters. These are removed when you save the buffer to a file or copy its text for [[yank]]ing elsewhere, so they are only for display purposes.
+
+Of these three flavors, only Auto Fill mode actually changes your file (saved buffer). The default behavior of line-wrapping or truncating (#1) changes only the way your text appears, and Long Lines mode (#3) changes your text only temporarily.
+
+[new]
+There is now a fourth flavor that kind of obsoletes Long Lines mode -- Kim Storm's word-wrap patch has landed in CVS (uh, I think early August or September 2008).  This patch changes the redisplay engine to wrap on \s+ (i.e., whitespace) and now Longlines/Notepad-like wrapping is available everywhere.  The line-number remains accurate, but you can use movement keys to scroll to the next displayed line without actually changing lines.  M-e and M-a also work better (I had problems in Latex with them).  It also has the benefit that when you resize, all the text goes with it, and it makes vertical splitting MUCH more readable, and no more backslashes to break up the text.
+
+There are two ways to enable it: the first is with M-x visual-line-mode (for those with real menus, apparently Options->Line Wrapping in this Buffer->Word Wrap), which will give you a minor mode "wrap" in the mode line.  As explained in C-h f visual-line-mode, one of the effects of this command is to subtly change the effect of commands that deal with "lines": C-a, C-e no longer go to the end of the line (as in \n), but go to the end of the line (as in display line).  M-a, M-e still work as they should.  In addition, vertical split windows are guaranteed to not be truncated, and resize properly on changing width.  Works wonderfully, especially if you have free form text that you're keeping in version control (like a thesis in Latex) where hard-wrapping just doesn't work out very well.  It also makes vertical splitting much more useful, especially with huge windows.  In my experience, it slows down redraw a little bit, but it's worth it.
+
+To enable it globally, there is a global-visual-line-mode which you would enable with ##M-x global-visual-line-mode##.
+
+To enable it as a file variable, it'd be ## -*- mode:blah ; mode:visual-line -*-##.
+
+If you don't want to use the visual-line-mode command because you don't want the behaviors changed (i.e., you want it to leave your C-a, C-e pure), the variable to set is `word-wrap': i.e., ##M-: (setq word-wrap t)##, or placing it as a file variable ##-*- mode:blah ; word-wrap:t -*-## in your first line. 
+
+Usage of the word-wrap feature is really dependent on whether or not you like to horizontally scroll or not (with `truncate-lines'). I don't, since I'm using Emacs to write at the moment and this makes it much easier to read.  If you're just truncating and wrapping, I highly recommend it. -- [[sword]]
+
+== Line-Wrap Character ==
+
+To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
+
+  M-: (set-display-table-slot standard-display-table 'wrap ?\ )
+
+You can also add this (the part in parentheses) to your [[init file]].
+Notice that after the `##\##'  there is a whitespace character (actually the backslash is optional for the whitespace, but it is used here for clarity), but you can add whatever you want:
+* "\b" -- a backspace character; if it works correctly on your box it will remove the backslash and replace it with nothing; however, it doesn't seem to work when you use more than one vertical window (it damages its layout); perhaps it's just a bug
+* "\a", "\t", "\r", "\u", etc. (same "bug", with some small variations)
+* "\n" -- it has the surprising effect of truncating the lines (if you use more than one vertical window, it only truncates the lines in the last one); probably a bug
+* "a", "b", ..., "<", "(", and any other ''single'' character (yes, it only accepts single characters)
+* "\x<octal>" -- another way to specify characters
+* "\" -- the default character (which you wanted to eliminate anyway, so you obviously don't need this minihowto for doing it) :)
+* "?<character>" could also be replaced by "0", but it may show the bug mentioned above
+
+[new:IainDalton:2010-02-12 20:24 UTC]
+Is there any code floating about that does "virtual indenting"--which is to indenting what visual-line-mode is to wrapping--like KDE's Kate?  The information needed to display lines at the right indentation may already be there--fill-paragraph does indentation as well as wrapping.  This would make editing someone else's non-wrapped code nicer, and make paragraphs in lists in markup languages (MarkDown, LaTeX, HTML) look nice without hard-wrapping, like:
+
+<pre>
+- This is a long paragraph in a list.  The quick brown fox jumped over
+  the lazy dog.
+</pre>
+
+instead of
+
+<pre>
+- This is a long paragraph in a list.  The quick brown fox jumped over
+the lazy dog.
+</pre>
+
+--- IainDalton
+
+Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together
+
+
+Response to statement about fill-paragraph: doesn't fill-paragraph modify the buffer?  If I understand correctly, IainDalton's idea is that the original buffer contains one long line, but the display of that line should wrap the line *and* indent the subsequent lines according to syntax.  So the virtual indenting I'm interested in is effectively fill-paragraph on the display only, not the underlying buffer.  --- Spezzer 
+
+RE: IainDalton's question.
+
+The ELPA package <tt>adaptive-wrap</tt> provides the desired effect.
+
+--- Chris
+
+RE: IainDalton's question.
+
+An easier solution which however only applies in <tt>org-mode</tt> is to simply use
+
+<code>
+(setq org-startup-indented t)
+</code>
+
+as described by http://orgmode.org/manual/Clean-view.html#Clean-view
+
+--- N.N.
+
+----
+CategoryFilling
+CategoryGlossary
