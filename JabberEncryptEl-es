@@ -4,7 +4,7 @@ Es posible encriptar los mensajes salientes y desencriptar los entrantes en Jabb
 
 Para poder hacer esto, debés utilizar Lisp:jabber-encrypt.el. 
 
-La técnica OTR (Cifrado Off-the-record) es una técnica que usa algoritmos simétricos. Ésta tiende a usar algoritmos asimétricos (de clave pública y privada). 
+La técnica OTR (Cifrado Off-the-record) es aquella que usa algoritmos simétricos. Ésta tiende a usar algoritmos asimétricos (de clave pública y privada). 
 
 == Objetivo ==
 
