@@ -1,9 +1,10 @@
 [[en:JabberEncryptEl]]
 
-Es posible encriptar los mensajes salientes y desencriptar los entrantes en JabberEl de forma transparente, sólo se debe indicar quién es el receptor del mensaje para seleccionar la clave pública a utilizar.
+Es posible encriptar los mensajes salientes y desencriptar los entrantes en JabberEl de forma transparente, sólo se debe indicar quién es el receptor del mensaje para seleccionar la clave pública a utilizar. 
 
 Para poder hacer esto, debés utilizar Lisp:jabber-encrypt.el. 
 
+La técnica OTR (Cifrado Off-the-record) es una técnica que usa algoritmos simétricos. Ésta tiende a usar algoritmos asimétricos (de clave pública y privada). 
 
 == Objetivo ==
 
