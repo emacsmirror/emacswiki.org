@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.10
+;; Version: 0.11
 ;; Last-Updated: Tue May 29 22:21:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 166
@@ -31,7 +31,18 @@
 ;;   - If your organization has blocked all macro access OR you want to
 ;;     have an action for a saved =.msg= email, org-outlook also adds
 ;;     drag and drop support allowing =.msg= files to become org tasks.
-;;     This is enabled by default, but can be disabled by `org-outlook-no-dnd'
+;;     This is enabled by default, but can be disabled by
+;;     `org-outlook-no-dnd'
+;; 
+;;   - With blocked emails, you may wish to delete the emails in a folder
+;;     after the task is completed.  This can be accomplished with
+;;     `org-protocol-delete-msgs'.  If you use it frequently, you may
+;;     wish to bind it to a key, like
+;; 
+;; 
+;;   (define-key org-mode-map (kbd "C-c d") 'org-protocol-delete-msgs)
+;; 
+;; 
 ;; 
 ;; - Open Outlook Links in org-mode
 ;; 
@@ -55,6 +66,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 1-Jul-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+;;    Add delete msg files support
 ;; 24-Jun-2014    Matthew L. Fidler  
 ;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 ;;    Bugfix for Drag and Drop Support
@@ -432,7 +446,23 @@ Placeholders Replacement
         (push new-dnd dnd)))
     (setq dnd-protocol-alist (reverse new-dnd))))
 
+;;;###autoload
 (org-outlook-enable-msg-dnd)
+
+;; Delete msg files for the task.
+
+(defun org-protocol-delete-msgs ()
+  "Delete Messages in task."
+  (interactive)
+  (when (y-or-n-p "Are you sure you want to delete all outlook .msg files in this task?")
+    (save-restriction
+      (save-excursion
+        (org-narrow-to-subtree)
+        (goto-char (point-min))
+        (while (re-search-forward org-bracket-link-regexp nil t)
+          (let ((file (org-link-unescape (match-string 1))))
+            (when (file-exists-p file)
+              (delete-file file))))))))
 
 ;;;###autoload
 (defun org-protocol-do-outlook-capture (info capture-func)
