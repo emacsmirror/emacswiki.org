@@ -1,4 +1,16 @@
-Emacs isn't displayed correctly in kde4 when maximized. I found a solution here:
+==Newer versions==
+
+# Right click on the Emacs image in the title bar.
+# More Actions > Special Window Settings...
+# Click on the Size & Position tab
+# Select the checkbox for 'Obey geometry restrictions'
+# Choose 'Force' in the dropdown menu
+# Select 'No' from the radio buttons to its right
+# Click the 'OK' button at the bottom
+
+==Older versions==
+
+Emacs isn't displayed correctly in KDE4 when maximized. I found a solution here:
 
 http://lists.gnu.org/archive/html/help-gnu-emacs/2011-02/msg00173.html
 
