@@ -199,8 +199,6 @@ I dislike the visible bell in terminals (i.e. flashing the whole terminal), so I
 
 In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to switch automatically depending on the currently-focused display. Unfortunately these variables aren't terminal-local, which makes it more awkward. My current approach is to use focus-in-hook, which doesn't catch all situations, but certainly accounts for many (and if you don't switch between GUI and terminal frames, it should be fine in any case). FWIW:
 
- (add-hook 'focus-in-hook 'my-configure-visible-bell)
- 
  (defun my-configure-visible-bell ()
    "Use a nicer visual bell in terminals."
    (if window-system
@@ -208,6 +206,17 @@ In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to s
              ring-bell-function nil)
      (setq visible-bell nil
            ring-bell-function 'my-terminal-visible-bell)))
+ 
+ (defun my-frame-config (frame)
+   "Custom behaviours for new frames."
+   (with-selected-frame frame
+     (my-configure-visible-bell)))
+ ;; Run now, for non-daemon Emacs...
+ (my-frame-config (selected-frame))
+ ;; ...and later, for new frames / emacsclient
+ (add-hook 'after-make-frame-functions 'my-frame-config)
+ ;; ...and whenever a frame gains input focus.
+ (add-hook 'focus-in-hook 'my-configure-visible-bell)
 
 ----
 CategoryDotEmacs
