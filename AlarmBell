@@ -185,6 +185,29 @@ When I use <tt>(setq visible-bell t)</tt> I see nothing.  So I use this as a vis
                                 (set-face-background 'default "DodgerBlue")
                                 (set-face-background 'default "black")))
 
+== Less obtrusive visible bell for terminals ==
+
+I dislike the visible bell in terminals (i.e. flashing the whole terminal), so I'm experimenting with the following, which thus far seems to work nicely:
+
+ (defun my-terminal-visible-bell ()
+   "A friendlier visual bell effect."
+   (invert-face 'mode-line)
+   (run-with-timer 0.1 nil 'invert-face 'mode-line))
+ 
+ (setq visible-bell nil
+       ring-bell-function 'my-terminal-visible-bell)
+
+In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to switch automatically depending on the currently-focused display. Unfortunately these variables aren't terminal-local, which makes it more awkward. My current approach is to use focus-in-hook, which doesn't catch all situations, but certainly accounts for many (and if you don't switch between GUI and terminal frames, it should be fine in any case). FWIW:
+
+ (add-hook 'focus-in-hook 'my-configure-visible-bell)
+ 
+ (defun my-configure-visible-bell ()
+   "Use a nicer visual bell in terminals."
+   (if window-system
+       (setq visible-bell t
+             ring-bell-function nil)
+     (setq visible-bell nil
+           ring-bell-function 'my-terminal-visible-bell)))
 
 ----
 CategoryDotEmacs
