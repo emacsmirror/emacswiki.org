@@ -1103,7 +1103,7 @@ has a suffienctly complex number of subdirectories.
           (files (directory-files dir nil nil t)))
         (dolist (file files)
           (unless (member file '("." ".."))
-            (let ((file (concat dir "/" file)))
+            (let ((file (concat (file-name-as-directory dir) file)))
               (when (file-directory-p file)
                 (setq dirs (append (cons file
                                          (directory-dirs file))
