@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jun 30 15:19:55 2014 (-0700)
+;; Last-Updated: Thu Jul  3 14:39:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3015
+;;     Update #: 3030
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -297,7 +297,6 @@
 ;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
-;;    `bookmark-bmenu-switch-other-window',
 ;;    `with-buffer-modified-unmodified' (Emacs < 23.2).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1363,6 +1362,8 @@ C-u \\[bmkp-switch-bookmark-file-create]\t- Switch back to the previous bookmark
 \\[bookmark-bmenu-load]\t- Add bookmarks from a different bookmark file    (extra load)
 \\[bmkp-bmenu-load-marked-bookmark-file-bookmarks]\t- Load marked bookmark-file bookmarks             \
 \(extra load)
+
+\\[bmkp-bmenu-copy-marked-to-bookmark-file]\t- Copy the marked bookmarks to a bookmark file
 
 
 General
@@ -3041,6 +3042,47 @@ of the buffer is the same as that of buffer `*Bookmark List*'."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-execute-deletions 'marked))
 
+;;;###autoload (autoload 'bmkp-bmenu-copy-marked-to-bookmark-file "bookmark+")
+(defun bmkp-bmenu-copy-marked-to-bookmark-file (file &optional batchp) ; Bound to `C' in bookmark list
+  "Copy the marked bookmarks to bookmark file FILE.
+You are prompted for FILE.
+The marked bookmarks are appended to those already in FILE.
+If any of them has the same name as a bookmark already in FILE then it
+is renamed by appending a numeric suffix \"<N>\" (N=2,3...)."
+  (interactive
+   (list (let* ((_IGNORE      (bmkp-bmenu-barf-if-not-in-menu-list))
+                (std-default  (bmkp-default-bookmark-file))
+                (default      (if (bmkp-same-file-p bmkp-current-bookmark-file bmkp-last-bookmark-file)
+                                  (if (bmkp-same-file-p bmkp-current-bookmark-file std-default)
+                                      (and (not (bmkp-same-file-p bmkp-current-bookmark-file
+                                                                  bookmark-default-file))
+                                           bookmark-default-file)
+                                    std-default)
+                                bmkp-last-bookmark-file)))
+           (bmkp-read-bookmark-file-name "Copy marked bookmarks to bookmark file: "
+                                         (or (and default  (file-name-directory default))  "~/")
+                                         default))))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (when (and (not (file-readable-p file))
+             (not batchp)
+             (not (y-or-n-p (format "Copy to NEW, EMPTY bookmark file `%s'? " file))))
+    (error "OK - canceled"))
+  (let* ((marked-bmks                        (bmkp-sort-omit (bmkp-marked-bookmarks-only)))
+         (bookmark-alist                     bookmark-alist)
+         (bookmark-alist-modification-count  bookmark-alist-modification-count))
+    (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+      (goto-char (point-min))
+      (if (file-exists-p file)
+          (bookmark-maybe-upgrade-file-format)
+        (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
+        (bookmark-insert-file-format-version-stamp) ; Insert timestamp and an empty bookmark list.
+        (insert "(\n)"))
+      (let ((blist  (bookmark-alist-from-buffer)))
+        (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
+        (setq bookmark-alist  blist)    ; Bookmarks in FILE
+        (bookmark-import-new-list marked-bmks)
+        (bookmark-write-file file)))))
+
 ;;;###autoload (autoload 'bmkp-bmenu-load-marked-bookmark-file-bookmarks "bookmark+")
 (defun bmkp-bmenu-load-marked-bookmark-file-bookmarks (&optional msg-p) ; Bound to `M-l' in bookmark list
   "Load the bookmark-file bookmarks that are marked, in display order.
@@ -4064,7 +4106,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
       'help-echo (purecopy "mouse-2, RET: Customize/Browse Bookmark+ Options & Faces")))
 
 ;;;###autoload (autoload 'bmkp-bmenu-define-jump-marked-command "bookmark+")
-(defun bmkp-bmenu-define-jump-marked-command () ; Bound to `M-c' in bookmark list
+(defun bmkp-bmenu-define-jump-marked-command () ; Bound to `C-c C-j' in bookmark list
   "Define a command to jump to a bookmark that is one of those now marked.
 The bookmarks marked now will be those that are completion candidates
 for the command (but omitted bookmarks are excluded).
@@ -4105,7 +4147,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
                                 fn bmkp-bmenu-commands-file))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-define-command "bookmark+")
-(defun bmkp-bmenu-define-command ()     ; Bound to `c' in bookmark list
+(defun bmkp-bmenu-define-command ()     ; Bound to `C-c C-c' in bookmark list
   "Define a command to use the current sort order, filter, and omit list.
 Prompt for the command name.  Save the command definition in
 `bmkp-bmenu-commands-file'.
@@ -4155,7 +4197,7 @@ Use the command at any time to restore them."
                                 fn bmkp-bmenu-commands-file))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-define-full-snapshot-command "bookmark+")
-(defun bmkp-bmenu-define-full-snapshot-command () ; Bound to `C' in bookmark list
+(defun bmkp-bmenu-define-full-snapshot-command () ; Bound to `C-c C-S-c' (aka `C-c C-C') in bookmark list
   "Define a command to restore the current bookmark-list state.
 Prompt for the command name.  Save the command definition in
 `bmkp-bmenu-commands-file'.
@@ -5033,9 +5075,10 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bookmark-bmenu-mode-map "B"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "BM"                   'bmkp-bmenu-mark-non-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "BS"                   'bmkp-bmenu-show-only-non-files)
-(define-key bookmark-bmenu-mode-map "c"                    'bmkp-bmenu-define-command)
-(define-key bookmark-bmenu-mode-map "C"                    'bmkp-bmenu-define-full-snapshot-command)
-(define-key bookmark-bmenu-mode-map "\M-c"                 'bmkp-bmenu-define-jump-marked-command)
+(define-key bookmark-bmenu-mode-map "C"                    'bmkp-bmenu-copy-marked-to-bookmark-file)
+(define-key bookmark-bmenu-mode-map (kbd "C-c C-c")        'bmkp-bmenu-define-command)
+(define-key bookmark-bmenu-mode-map (kbd "C-c C-S-c")      'bmkp-bmenu-define-full-snapshot-command)
+(define-key bookmark-bmenu-mode-map (kbd "C-c C-j")        'bmkp-bmenu-define-jump-marked-command)
 (define-key bookmark-bmenu-mode-map "d"                    'bmkp-bmenu-flag-for-deletion)
 (define-key bookmark-bmenu-mode-map "D"                    'bmkp-bmenu-delete-marked)
 (define-key bookmark-bmenu-mode-map "\C-d"                 'bmkp-bmenu-flag-for-deletion-backwards)
