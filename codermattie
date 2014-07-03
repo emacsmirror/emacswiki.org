@@ -12,14 +12,14 @@ jabber: codermattie@xmppnet.de
 
 == Projects ==
 
-* [[Grail]]
-* [[BufferRing]]
+* [[Grail]] - see in my git repo
+* [[BufferRing]] - see in my git repo
 * [[Submerge]] - No longer useful. Try Git.
 * [[ParserCompiler]] - Not likely to maintain in Elisp.
 
 == Full Config ==
 
-http://lispblivet.sx/gitweb/?p=emacs-config.git;a=tree;h=refs/heads/master;hb=refs/heads/master
+http://lispblivet.sx/git/?p=emacs.git;a=shortlog;h=refs/heads/master
 
 ----
 CategoryHomepage
