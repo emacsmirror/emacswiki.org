@@ -1,1 +1,167 @@
-I really enjoy the blog article.Really looking forward to read more. Fantastic. kaddefdebfeddggg
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Bookmark Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Shell-Command Enhancements]] ||
+
+----
+
+== Icicles Enhancements for Emacs Tags ==
+
+In Emacs and '''Icicles''', the word "'''tag'''" is used in multiple ways.
+This section is about [[tags]] as identifiers of source-code
+definitions.  Emacs uses [[tags file]]s, typically named `TAGS', to
+index these definition locations.
+
+What constitutes a "'''definition'''" is determined by the content of
+the tags file.  Typically, definition recognition is available for
+programming languages, but in fact a ''tags table can record any
+text at all as a definition''.  That is, if you create your own tags
+table, you can use the Emacs tags feature to navigate among any
+"definitions" of your own choosing.
+
+If you use '''`M-g'''' in the [[minibuffer]] to toggle option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''', then you can use just `next'
+instead of `C-next' to navigate when using any of the '''Icicles''' tags
+browsing [[command]]s described here.  See also [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]].
+
+'''See Also:'''
+* [[Icicles - Support for Projects]]
+* [[Icicles - File-Name Input#VisitFilesForEmacsTags|Visit Files for Emacs Tags]]
+
+
+
+[:icicle-find-tag]
+=== `icicle-find-tag': Find Tags in All Tags Tables ===
+
+In vanilla Emacs, you use commands such as `find-tag' (`##M-.##') to
+find a tag, `tags-loop-continue' (`##M-,##') to find another matching tag,
+`tags-apropos' to list all tags that match a [[regexp]], and
+`list-tags' to show all tags (definitions) in a given source file.
+
+In '''Icicles''', you can use [[multi-command]] '''`icicle-find-tag'''', bound
+to '''`##M-.##'''' in ''Icicle'' mode, to do all of this.  It is similar to the
+'''Icicles''' search commands.  It is a general tags browser, just as
+`icicle-imenu' is an [[ImenuMode|Imenu]] browser.  Being a multicommand, you can
+visit any number of tags, in any order, in a single `##M-.##'
+invocation.
+
+With `icicle-find-tag', you enter (using `RET') a regexp to
+match the tags you want to visit.  By default, all tags in all
+tags files are searched, and the matches become [[completion]]
+candidates (which you can of course match further by typing
+another pattern).  As always, you can use [[progressive completion]], [[Icicles - Nutshell View#ChippingAway|
+chip away the non-elephant]], and so on.  Just as with '''Icicles'''
+search commands, you use `C-RET', `C-mouse-2', `C-next', and so
+on, to visit the search hits.  You can use
+`##M-*##' (`icicle-pop-mark') to return to the place you invoked
+`##M-.##'.
+
+By default, the completion candidates are [[multi-completion]]s: the
+source file name is included.  This is an important aid, because
+there can be similar, or even identical, tags in different source
+files.  Your current input can of course filter the source-file
+name also, excluding certain files from the search.
+
+A [[prefix argument]] changes the default behavior, as follows:
+
+* If non-negative (>= 0), then only the current tag table is used,
+  instead of all tag tables.
+
+* If non-positive (<= 0), then the source file name is not part of
+  the completion candidate; only the tag itself is used.
+
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for general information about
+  '''Icicles''' search commmands.
+
+* [[Icicles - Nutshell View]] for information about
+  progressive completion and chipping away the non-elephant.
+
+
+
+[:icicle-find-first-tag]
+[:icicle-find-first-tag-other-window]
+=== `icicle-find-first-tag': Find First Tag in the Current Tags Table ===
+
+Sometimes you do not need the full power and flexibility of
+`icicle-find-tag'.  If you just want to find the first tag among
+several duplicates that match your input, and you just want to use
+the current tags table, then you can use '''`icicle-find-first-tag'''' or
+'''`icicle-find-first-tag-other-window''''.  These commands are like vanilla
+`find-tag', but they are multi-commands, so you can visit any
+number of tags in one invocation.  Unlike `find-tag', however, you
+cannot follow up to find another tag that matches using `##M-,##'.
+
+
+
+[:icicle-tags-search]
+=== `icicle-tags-search': Search and Replace Using Tags ===
+
+In vanilla Emacs, you use commands `tags-search',
+`tags-query-replace', and `tags-loop-continue' (`##M-,##') to search
+and replace text in source files whose definitions are indexed in
+a tags file.
+
+In '''Icicles''', you can use multi-command '''`icicle-tags-search'''' to
+search and replace.  It is in fact just command `icicle-search'
+applied to the relevant source files.
+
+'''See Also''' [[Icicles - Search Commands, Overview]] for information about `icicle-search'.
+
+
+
+
+
+
+
+[:EmacsTagBookmarks]
+=== Trip Among Emacs Tags Using Bookmarks ===
+
+The idea here is to (a) automatically set (that is, create and
+update) a bookmark each time you visit an Emacs tag and then (b)
+use an '''Icicles''' bookmark-jump multi-command to navigate among those
+bookmarks.
+
+For (a), just define a function that creates or sets a bookmark
+that has the same name as an Emacs tag.  Then use that function on
+`find-tag-hook'.  That hook is run in function
+`find-tag-noselect', which accepts the tag name as parameter
+##TAGNAME##.  This code will do the trick:
+
+   (defun bookmark-this-emacs-tag ()
+     "Bookmark the currently visited tag.
+   Use on `find-tag-hook'.  The bookmark name is the tagname, which
+   is the value of (free) variable `tagname'."
+     (bookmark-set tagname))
+
+   (add-hook 'find-tag-hook 'bookmark-this-emacs-tag)
+
+For (b), remember that with '''Icicles''' you can [[Icicles - Sorting Candidates|sort]] candidate
+bookmarks in various ways on the fly.  You can, for example, sort
+them by last access time or frequency of access.
+
+
+'''See Also:''' [[Icicles - Bookmark Enhancements#JumpingToABookmark|Jumping to a Bookmark]]
+
+----
+
+
+|| *Previous:*  [[Icicles - Bookmark Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Shell-Command Enhancements]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+CategoryRegion
+CategoryNavigation
