@@ -2,7 +2,7 @@ Emacs's built-in ispell package handles spell-checking and correction, while fly
 
 == Installing a spell checker ==
 
-Emacs supports three spelling checkers by default: Hunspell, which is now widely used by popular free software such as LibreOffice, OpenOffice, Firefox and Thunderbird; GNU Aspell, which pays particular attention to quality of suggestions, and the original Ispell. Emacs will use whichever it finds first, in that order.
+Emacs supports three spelling checkers by default: Hunspell, which is now widely used by popular free software such as LibreOffice, OpenOffice, Firefox and Thunderbird; GNU Aspell, which pays particular attention to quality of suggestions, and the original Ispell. If no spell checker is manually configured, Emacs will choose aspell over hunspell over ispell.
 
 === Hunspell ===
 
