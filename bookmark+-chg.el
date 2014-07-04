@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul  3 21:09:56 2014 (-0700)
+;; Last-Updated: Fri Jul  4 08:23:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15638
+;;     Update #: 15640
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1023,6 +1023,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/04 dadams
+;;     Added to Bookmark+ menu: bmkp-bmenu-(copy|move)-marked-to-bookmark-file.
 ;; 2014/07/03 dadams
 ;;     Added: bmkp-bmenu-copy-marked-to-bookmark-file, bmkp-bmenu-move-marked-to-bookmark-file.
 ;;            Bound to Y > + and Y > -.
