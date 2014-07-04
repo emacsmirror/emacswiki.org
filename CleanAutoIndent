@@ -1,15 +1,9 @@
 This page describes the extension 'Clean Auto Indent':
-[url]https://github.com/pmarinov/clean-aindent[/url]
+[url]https://github.com/pmarinov/clean-aindent-mode[/url]
 
-[[image:AIndentSimpleInitial]]
-[[image:AIndentSimpleDefault]]
-[[image:AIndentSimpleIndent]]
-
-[[image:AIndentUnindentInitial]]
-[[image:AIndentUnindentIndent]]
-[[image:AIndentUnindentUnindent]]
-
-When automatic indentation is enabled, upon entering new line Emacs
+[:clean_indent]
+== Clean Indent ==
+When automatic indentation is enabled (RET is bound to `newline-and-indent'), upon inserting a new line Emacs
 will put the cursor under the first non-blank character of the
 previous line. Because it is not designed to handle virtual spaces,
 Emacs will do that by inserting the necessary amount of white-space
@@ -47,9 +41,57 @@ central version control repository is shared. Your commits
 auto-indent operation and, if it is abandoned,
 *would take care to trim down the abandoned white space* characters.
 
-It will look like this after the line is abandoned:
+It will look like this after it will look like this after you move
+to the next line:
 
 [[image:AIndentClean]]
+
+[:simple_indent]
+== Simple Indent ==
+
+Simple indent, if activated, will bypass the default language dependent indentation of `newline-and-indent'.
+
+For example, look at this fragment of Javascript code. It is a typical technique of establishing namespaces by anonymous function at the top level. The desire, after that, is to have all functions nested in this namespace to start from column 1. But *indentation won't work by default*. Here cursor is at the end of the line.
+
+[[image:AIndentSimpleInitial]]
+
+You press RET (assuming it is bound to `newline-and-indent'). Based on the indentation configuration for Javascript, counting the number of nested curly braces, your cursor ends up indented at this position.
+
+[[image:AIndentSimpleDefault]]
+
+But this is not what you wanted, *you wanted to simply start at position 1*. Here you have two choices, the complicated one is to figure out how to configure the language indentation for Javascript, and the simple one is to activate simple indentation. The result after pressing RET will be this.
+
+[[image:AIndentSimpleIndent]]
+
+With simple indentation activated, *the cursor is always positioned at the indentation of the previous non-blank line*. After that, if needed, you can indent (via space or TAB) or unindent (via M-Backspace) in order to position based on the logic of the code you intend to enter.
+
+[:unindent]
+== Unindent ==
+
+Unindent is a function that *quickly navigates the indentation of the previous non-blank lines*.
+
+For example, this is your initial cursor position.
+
+[[image:AIndentUnindentInitial]]
+
+You press RET (assuming it is bound to `newline-and-indent', and simple indent activated), your cursor ends up at this indent position.
+
+[[image:AIndentUnindentIndent]]
+
+But you are done with this "progn" sequence, you intend to enter code at the nest level of "if", you can press Backspace 4 times or use `clean-aindent--bsunindent', which is bound to M-Backspace. The cursor jumps to the indentation preceding the current position based on the indentation of the previous non-blank lines.
+
+[[image:AIndentUnindentUnindent]]
+
+Backspace Unindent will work not only on blank lines but, also, if invoked while cursor is at the indentation space of a line or at the first non-blank character of the line. It will have the same effect, the entire line will be unindented based on the previous non-blank lines.
+
+[:summary]
+== Summary ==
+
+`clean-aindent-mode' is an extenstion that offers simple indentation (if configured so): no language mode magic, cursor is simply aligned under the previous non-blank line. It works in concert with the other feature, backspace unindent. If you press M-DEL, the cursor or the line is unindented, again looking at previous non-blank lines. And the third one, in its most minimal installation `clean-aindent-mode' will take care to strip unused blank space left by `newline-and-indent'.
+
+The combination of these 3 small features intends to implement a simple, but to me, powerful, mode of dealing with indentation. It used to exist in old Borland editors (Turbo C/Pascal).
+
+The installation and configuration instructions are inside README.adoc.
 
 (PetarMarinov)
 
