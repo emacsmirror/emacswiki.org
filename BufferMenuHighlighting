@@ -30,6 +30,8 @@ If you use ElectricBufferList, then simply use this instead for the last line:
 
 See also: BufferMenuPlus, which provides similar highlighting, and more. You can customize the faces used without affecting the font-lock faces.
 
+
+As of Emacs version 24.3, this appears to not work anymore.
 ----
 CategoryBufferSwitching
 CategoryFaces
