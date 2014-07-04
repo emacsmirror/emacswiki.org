@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jul  3 14:03:14 2014 (-0700)
+;; Last-Updated: Thu Jul  3 21:04:21 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7260
+;;     Update #: 7292
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -541,10 +541,10 @@
 ;;    `bookmark-import-new-list', `bookmark-handle-bookmark',
 ;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location',
 ;;    `bookmark-make-record', `bookmark-make-record-default',
-;;    `bookmark-maybe-load-default-file', `bookmark-prop-get' (Emacs
-;;    20-22), `bookmark-prop-set', `bookmark-show-annotation',
-;;    `bookmark-show-all-annotations', `bookmark-store' (Emacs 20-22),
-;;    `bookmark-write-file'.
+;;    `bookmark-maybe-load-default-file', `bookmark-maybe-rename',
+;;    `bookmark-prop-get' (Emacs 20-22), `bookmark-prop-set',
+;;    `bookmark-show-annotation', `bookmark-show-all-annotations',
+;;    `bookmark-store' (Emacs 20-22), `bookmark-write-file'.
 ;;
 ;;
 ;;  ***** NOTE: The following variables defined in `bookmark.el'
@@ -603,12 +603,12 @@
 ;; bookmark-completion-ignore-case, bookmark-current-bookmark, bookmark-default-file,
 ;; bookmark-edit-annotation, bookmark-get-annotation, bookmark-get-bookmark-record, bookmark-get-filename,
 ;; bookmark-get-front-context-string, bookmark-get-handler, bookmark-get-position,
-;; bookmark-get-rear-context-string, bookmark-import-new-list, bookmark-insert-file-format-version-stamp,
-;; bookmark-kill-line, bookmark-make-record, bookmark-maybe-historicize-string,
-;; bookmark-maybe-upgrade-file-format, bookmark-menu-popup-paned-menu, bookmark-name-from-full-record,
-;; bookmark-name-from-record, bookmark-popup-menu-and-apply-function, bookmark-prop-get, bookmark-save-flag,
-;; bookmark-search-size, bookmark-set-annotation, bookmark-set-filename, bookmark-set-position,
-;; bookmark-time-to-save-p, bookmark-use-annotations, bookmark-yank-point
+;; bookmark-get-rear-context-string, bookmark-insert-file-format-version-stamp, bookmark-kill-line,
+;; bookmark-make-record, bookmark-maybe-historicize-string, bookmark-maybe-upgrade-file-format,
+;; bookmark-menu-popup-paned-menu, bookmark-name-from-full-record, bookmark-name-from-record,
+;; bookmark-popup-menu-and-apply-function, bookmark-prop-get, bookmark-save-flag, bookmark-search-size,
+;; bookmark-set-annotation, bookmark-set-filename, bookmark-set-position, bookmark-time-to-save-p,
+;; bookmark-use-annotations, bookmark-yank-point
 
 
 ;; Some general Renamings.
@@ -2823,8 +2823,9 @@ If called from Lisp:
   (let ((file-to-save
          (cond ((and (not parg)  (not file))  bmkp-current-bookmark-file)
                ((and (not parg)  file)        file)
-               ((and parg  (not file))        (bmkp-read-bookmark-file-name "File to save bookmarks in: " nil
-                                                                            (bmkp-read-bookmark-file-default))))))
+               ((and parg  (not file))        (bmkp-read-bookmark-file-name
+                                               "File to save bookmarks in: " nil
+                                               (bmkp-read-bookmark-file-default))))))
     (when (and bmkp-last-as-first-bookmark-file
                bookmark-save-flag)      ; nil if temporary bookmarking mode.
       (customize-save-variable 'bmkp-last-as-first-bookmark-file file-to-save))
@@ -2881,7 +2882,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
         (bookmark-insert-file-format-version-stamp)
         (insert "(\n)"))
       (setq start  (or (save-excursion (goto-char (point-min))
-                                       (search-forward (concat bookmark-end-of-version-stamp-marker "(") nil t))
+                                       (search-forward (concat bookmark-end-of-version-stamp-marker "(")
+                                                       nil t))
                        (error "Invalid bookmark-file"))
             end    (or (save-excursion (goto-char (point-max)) (re-search-backward "^)" nil t))
                        (error "Invalid bookmark-file")))
@@ -2953,20 +2955,52 @@ contain a `%s' construct, so that it can be passed along with FILE to
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; If a bookmark in NEW-LIST is `equal' to a bookmark in `bookmark-alist'
-;; then do not rename it and do not add it - just ignore it.
+;; 1. Added optional arg DUPLICATES-OK.
 ;;
-(defun bookmark-import-new-list (new-list)
+;; 2. Unless DUPLICATES-OK is non-nil, if a bookmark in NEW-LIST is `equal' to a bookmark in `bookmark-alist'
+;;    then do not rename it and do not add it - just ignore it.
+;;
+;; 3. Return value indicates how many bookmarks were added and renamed.
+;;
+(defun bookmark-import-new-list (new-list &optional duplicates-ok)
   "Add NEW-LIST of bookmarks to `bookmark-alist'.
-Ignore bookmarks that are `equal' to bookmarks in `bookmark-alist'.
-Otherwise, rename new bookmarks as needed using suffix
-\"<N>\" (N=2,3...) when they conflict with existing bookmark names."
-  (let ((names  (bookmark-all-names)))
+Unless optional arg DUPLICATES-OK is non-nil, ignore bookmarks that
+are `equal' to bookmarks in `bookmark-alist'.
+
+Rename new bookmarks that are not ignored, as needed, using suffix
+\"<N>\" (N=2,3...) when they conflict with existing bookmark names.
+
+Return a cons of the number renamed and the number added."
+  (let ((names    (bookmark-all-names))
+        (added    0)
+        (renamed  0))
     (dolist (full-bmk  new-list)
-      (unless (member full-bmk bookmark-alist)
-        (bookmark-maybe-rename full-bmk names)
+      (when (or (and (not (member full-bmk bookmark-alist)) ; Check even if DUPLICATES-OK, to update ADDEDP.
+                     (setq added  (1+ added)))
+                duplicates-ok)
+        (when (bookmark-maybe-rename full-bmk names) (setq renamed  (1+ renamed)))
         (setq bookmark-alist  (nconc bookmark-alist (list full-bmk)))
-        (push (bookmark-name-from-full-record full-bmk) names)))))
+        (push (bookmark-name-from-full-record full-bmk) names)))
+    (cons renamed added)))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Return non-nil iff bookmark was renamed.
+;;
+(defun bookmark-maybe-rename (full-record names)
+  "Rename bookmark FULL-RECORD if its current name is already used.
+This is a helper for `bookmark-import-new-list'.
+Return non-nil if the bookmark was renamed, nil otherwise."
+  (let ((found-name  (bookmark-name-from-full-record full-record)))
+    (when (member found-name names)
+      (let ((count     2)
+            (new-name  found-name))
+        (while (member new-name names)
+          (setq new-name  (concat found-name (format "<%d>" count))
+                count     (1+ count)))
+        (bookmark-set-name full-record new-name)
+        (not (string= found-name new-name))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3065,14 +3099,16 @@ bookmark files that were created using the bookmark functions."
       (bookmark-maybe-upgrade-file-format)
       (let ((blist  (bookmark-alist-from-buffer)))
         (unless (listp blist) (error "Invalid bookmark list in `%s'" file))
-        (if (not overwrite)
-            (setq blist                              (bookmark-import-new-list blist)
-                  bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
-          (setq bmkp-last-bookmark-file            bmkp-current-bookmark-file
-                bmkp-current-bookmark-file         file
-                bookmark-alist                     blist
-                bookmark-alist-modification-count  0)
-          (when bmkp-last-as-first-bookmark-file (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
+        (cond (overwrite
+               (setq bmkp-last-bookmark-file            bmkp-current-bookmark-file
+                     bmkp-current-bookmark-file         file
+                     bookmark-alist                     blist
+                     bookmark-alist-modification-count  0)
+               (when bmkp-last-as-first-bookmark-file
+                 (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
+              (t
+               (bookmark-import-new-list blist)
+               (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))))
         (setq bookmarks-already-loaded  t ; Systematically, whenever any file is loaded.
               bmkp-sorted-alist         (bmkp-sort-omit bookmark-alist))
         (run-hook-with-args 'bmkp-read-bookmark-file-hook blist file))
@@ -7561,7 +7597,8 @@ the file is an image file then the description includes the following:
                    (search-hits-p    (concat "Icicles search hits:\n%s\n"
                                              (mapconcat (lambda (hit)
                                                           (let ((hit-copy  (copy-sequence hit)))
-                                                            (set-text-properties 0 (length hit-copy) () hit-copy)
+                                                            (set-text-properties 0 (length hit-copy) ()
+                                                                                 hit-copy)
                                                             hit-copy))
                                                         (bookmark-prop-get bookmark 'hits)
                                                         "\n\t")
@@ -8320,7 +8357,8 @@ searched correspond to the recorded search hits."
   (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
     (error "This command can be used only during Icicles search"))
   (let* ((hits-bmks                              (bmkp-icicle-search-hits-alist-only))
-         (bmk                                    (let ((icicle-completion-candidates  icicle-completion-candidates)
+         (bmk                                    (let ((icicle-completion-candidates
+                                                        icicle-completion-candidates)
                                                        (enable-recursive-minibuffers  t))
                                                    (bookmark-completing-read
                                                     "Bookmark name"
