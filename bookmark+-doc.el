@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 29 11:38:23 2014 (-0700)
+;; Last-Updated: Thu Jul  3 21:34:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14792
+;;     Update #: 14804
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -826,7 +826,7 @@
 ;;  for the bookmarks that belong to a given project.
 ;;
 ;;  One way to define such a command is to first mark the bookmarks
-;;  that you want to be the completion candidates, then use `M-c'
+;;  that you want to be the completion candidates, then use `C-c C-j'
 ;;  (command `bmkp-bmenu-define-jump-marked-command') in the bookmark
 ;;  list.
 ;;
@@ -1339,7 +1339,7 @@
 ;;  bookmark restores all of these.
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
-;;  but without creating another bookmark - use `c'
+;;  but without creating another bookmark - use `C-c C-c'
 ;;  (`bmkp-bmenu-define-command') in the bookmark list to do this.
 ;;  You are prompted for the name of the new command.  Use the command
 ;;  anytime (including in another Emacs session) to restore the
@@ -1358,13 +1358,13 @@
 ;;  saved, in order to save disk space and save/restore time.
 ;;
 ;;  Sometimes, however, you really want to save the entire
-;;  bookmark-list state, creating a full snapshot.  You can use `C'
-;;  (`bmkp-bmenu-define-full-snapshot-command') to do that.  This
-;;  defines a command that restores the bookmark list completely.
-;;  That is the same thing that happens automatically (by default)
-;;  whenever you quit the bookmark list (or Emacs), but defining
-;;  snapshot commands lets you have multiple saved states and switch
-;;  to them at will.
+;;  bookmark-list state, creating a full snapshot.  You can use `C-c
+;;  C-C' (aka `C-c C-S-c', `bmkp-bmenu-define-full-snapshot-command')
+;;  to do that.  This defines a command that restores the bookmark
+;;  list completely.  That is the same thing that happens
+;;  automatically (by default) whenever you quit the bookmark list (or
+;;  Emacs), but defining snapshot commands lets you have multiple
+;;  saved states and switch to them at will.
 ;;
 ;;  Be aware, however, that full-snapshot command definitions can be
 ;;  quite large, since they each contain a copy of the current
@@ -1984,6 +1984,14 @@
 ;;  Remember too that you can delete bookmarks from the current set
 ;;  using command `bookmark-delete' (`C-x p d') or, in the bookmark
 ;;  list, using `d' plus `x' or marking then `D'.
+;;
+;;  Deleting bookmarks from a bookmark file is one way of editing it.
+;;  Another is to copy or move bookmarks from one bookmark file to
+;;  another.  In the bookmark-list display, you can copy or move the
+;;  marked bookmarks (or the current bookmark, if none are marked)
+;;  from the current bookmark file to another that you name, using `Y
+;;  > +' (`bmkp-bmenu-copy-marked-to-bookmark-file') and `Y > -'
+;;  (`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.
 ;;
 ;;
 ;;(@* "Bookmark-File Bookmarks")
@@ -3426,7 +3434,7 @@
 ;;  search-hits bookmark during any Icicles search, whether you search
 ;;  a file, a buffer, multiple files, or multiple buffers.
  
-;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
+;;(@* " Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
 ;;  Bookmark+ is generally compatible with GNU Emacs versions 20 and
@@ -3525,8 +3533,8 @@
 ;;  Note that when the option value is non-`nil', propertized bookmark
 ;;  names are saved not only to your bookmark file but also to any
 ;;  full snapshots you create of the bookmark-list display state using
-;;  command `bmkp-bmenu-define-full-snapshot-command'.
-;;  See (@> "State-Restoring Commands and Bookmarks").
+;;  command `bmkp-bmenu-define-full-snapshot-command' (`C-c C-C', aka
+;;  `C-c C-S-c').  See (@> "State-Restoring Commands and Bookmarks").
  
 ;;(@* "New Bookmark Structure")
 ;;  ** New Bookmark Structure **
