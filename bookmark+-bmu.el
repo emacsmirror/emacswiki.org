@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jul  3 21:22:47 2014 (-0700)
+;; Last-Updated: Fri Jul  4 08:15:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3121
+;;     Update #: 3131
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5341,6 +5341,12 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-load-marked-bookmark-file-bookmarks]
   '(menu-item "Load Marked Bookmark-File Bookmarks..." bmkp-bmenu-load-marked-bookmark-file-bookmarks
     :help "Load the marked bookmark-file bookmarks, in order"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-move-marked-to-bookmark-file]
+  '(menu-item "Move Marked to Bookmark-File..." bmkp-bmenu-move-marked-to-bookmark-file
+    :help "Move the marked bookmarks (or current bookmark) to a different bookmark file"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-copy-marked-to-bookmark-file]
+  '(menu-item "Copy Marked to Bookmark-File..." bmkp-bmenu-copy-marked-to-bookmark-file
+    :help "Copy the marked bookmarks (or current bookmark) to a bookmark file"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-empty-file]
   '(menu-item "Empty Bookmark File..." bmkp-empty-file
     :help "Empty an existing bookmark file or create a new, empty bookmark file"))
