@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jul  3 21:04:21 2014 (-0700)
+;; Last-Updated: Fri Jul  4 08:18:35 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7292
+;;     Update #: 7299
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4083,10 +4083,18 @@ message."
 ;;;###autoload (autoload 'bmkp-revert-bookmark-file "bookmark+")
 (defun bmkp-revert-bookmark-file (&optional msg-p) ; Same as `C-u g' in bookmark list (but not bound).
   "Revert to the bookmarks in the current bookmark file.
-This discards all modifications to bookmarks and the bookmark list
-\(e.g. added/deleted bookmarks).
+You are asked for confirmation.
+
+This DISCARDS all modifications to bookmarks and the bookmark list
+\(e.g. added/deleted bookmarks) since the last bookmark-file save.
+IOW, it reloads the bookmark file, overwriting the current bookmark
+list.  This also removes any markings and omissions.
+
 This has the same effect as using `C-u \\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-refresh-menu-list]' in \
 buffer `*Bookmark List*'.
+To refresh the display from the current bookmark list instead of the
+bookmark file, use just `\\[bmkp-bmenu-refresh-menu-list]' (no `C-u').
+
 Non-interactively, non-nil MSG-P means display a status message."
   (interactive "p")
   (when (and msg-p  (not (yes-or-no-p (format "Revert to bookmarks saved in file `%s'? "
