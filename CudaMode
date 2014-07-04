@@ -1,3 +1,5 @@
+cuda-mode is now available in MELPA and is hosted at https://github.com/chachi/cuda-mode
+
 <pre>
 ;; Note: The interface used in this file requires CC Mode 5.30 or
 ;; later.
