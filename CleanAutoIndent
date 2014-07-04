@@ -1,6 +1,14 @@
 This page describes the extension 'Clean Auto Indent':
 [url]https://github.com/pmarinov/clean-aindent[/url]
 
+[[image:AIndentSimpleInitial]]
+[[image:AIndentSimpleDefault]]
+[[image:AIndentSimpleIndent]]
+
+[[image:AIndentUnindentInitial]]
+[[image:AIndentUnindentIndent]]
+[[image:AIndentUnindentUnindent]]
+
 When automatic indentation is enabled, upon entering new line Emacs
 will put the cursor under the first non-blank character of the
 previous line. Because it is not designed to handle virtual spaces,
