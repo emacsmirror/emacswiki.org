@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jul  3 21:14:04 2014 (-0700)
+;; Last-Updated: Thu Jul  3 21:22:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3119
+;;     Update #: 3121
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3078,8 +3078,8 @@ But if you use a prefix arg then such duplication is allowed."
                                 bmkp-last-bookmark-file)))
            (bmkp-read-bookmark-file-name "Move marked bookmarks to bookmark file: "
                                          (or (and default  (file-name-directory default))  "~/")
-                                         default)
-           current-prefix-arg)))
+                                         default))
+         current-prefix-arg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when (and (not (file-readable-p file))
              (not batchp)
