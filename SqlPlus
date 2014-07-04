@@ -1,3 +1,5 @@
+Lisp:sqlplus.el
+
 [[image:EmSqlPlus]]
 
 Facilitates interaction with Oracle via SQL*Plus (GNU Emacs 22 only).
