@@ -3434,7 +3434,7 @@
 ;;  search-hits bookmark during any Icicles search, whether you search
 ;;  a file, a buffer, multiple files, or multiple buffers.
  
-;;(@* " Emacs (`bookmark.el')")
+;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
 ;;  Bookmark+ is generally compatible with GNU Emacs versions 20 and
