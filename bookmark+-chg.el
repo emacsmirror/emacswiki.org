@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 30 15:36:24 2014 (-0700)
+;; Last-Updated: Thu Jul  3 21:09:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15597
+;;     Update #: 15638
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,22 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/07/03 dadams
+;;     Added: bmkp-read-bookmark-file-default.
+;;     Added redefinition of bookmark-import-new-list, bookmark-maybe-rename.
+;;     bookmark-load: Do not set blist to value of bookmark-import-new-list.
+;;     bookmark-alist-from-buffer: Added optional arg do-not-propertize-p.  (Not used anywhere yet.)
+;;     bookmark-save: Use bmkp-read-bookmark-file-default.
+;;     bookmark-write-file:
+;;       Added optional arg ADD.  Do not kill FILE buffer if it existed prior to invoking function.
+;;       Promoted inner let-bindings print-length etc.
+;;       Delete contents only if file does not exist (just in case). Else *-maybe-upgrade-file-format.
+;;       Do not delete region if ADD.  Position point depending on ADD.
+;;     bookmark-write-file, bookmark-default-handler, bmkp-save-menu-list-state, bmkp-goto-position,
+;;       bmkp-compilation-target-set:
+;;         Let-bind enable-local-variables around find-file-noselect.
+;;     bmkp-read-bookmark-file-name: Just pass DEFAULT-FILENAME to read-file-name.
+;;     bmkp-empty-file: Pass nil ADD arg to bookmark-write-file.
 ;; 2014/06/29 dadams
 ;;     Added: bmkp-before-jump-hook, bmkp-desktop-save, bmkp-desktop-save-as-last,
 ;;            bmkp-desktop-current-file, bmkp-desktop-jump-save-before-flag.
@@ -1007,6 +1023,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/03 dadams
+;;     Added: bmkp-bmenu-copy-marked-to-bookmark-file, bmkp-bmenu-move-marked-to-bookmark-file.
+;;            Bound to Y > + and Y > -.
+;;     bookmark-bmenu-mode: Mention bmkp-bmenu-(copy|move)-marked-to-bookmark-file in doc string.
+;;     bookmark-bmenu-execute-deletions, bmkp-bmenu-delete-marked:: Added optional arg NO-CONFIRM-P.
+;;     bmkp-bmenu-define(-full-snapshot|jump)-command: Changed to C-c C-c, C-c C-S-c, C-c C-j.
+;;     bmkp-bmenu-show-all: Mention C-u g in doc string.
 ;; 2014/06/30 dadams
 ;;     bmkp-bmenu-mouse-3-menu:
 ;;       Bind bmkp-bmenu-flag-for-deletion, not bookmark-bmenu-delete.  See Emacs bug #17888.
