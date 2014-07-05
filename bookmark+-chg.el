@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul  4 08:23:17 2014 (-0700)
+;; Last-Updated: Sat Jul  5 09:11:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15640
+;;     Update #: 15650
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1023,6 +1023,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/05 dadams
+;;     Added: bmkp-bmenu-create-bookmark-file-from-marked (bound to Y > 0),
+;;            bmkp-bmenu-bookmark-file-menu (Bookmark File).
+;;     Moved bookmark-file stuff to Bookmark File submenu.
+;;     bookmark-bmenu-mode: Updated doc string.
 ;; 2014/07/04 dadams
 ;;     Added to Bookmark+ menu: bmkp-bmenu-(copy|move)-marked-to-bookmark-file.
 ;; 2014/07/03 dadams
@@ -1507,6 +1512,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2014/07/05 dadams
+;;     Moved submenu bmkp-jump-tags-menu before individual menu items.
 ;; 2014/03/23 dadams
 ;;     Bind j and J in bookmark-bmenu-mode-map.  Bind also j > there.
 ;;     Add bmkp-bmenu-jump-to-marked to bmkp-jump-menu when in bookmark-list display.
