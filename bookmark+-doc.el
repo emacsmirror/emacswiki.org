@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul  3 21:34:16 2014 (-0700)
+;; Last-Updated: Sat Jul  5 07:38:36 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14804
+;;     Update #: 14809
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1992,6 +1992,25 @@
 ;;  from the current bookmark file to another that you name, using `Y
 ;;  > +' (`bmkp-bmenu-copy-marked-to-bookmark-file') and `Y > -'
 ;;  (`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.
+;;
+;;  NOTE:
+;;
+;;    Unlike the other ways of organizing bookmarks into sets (tags,
+;;    bookmark-list bookmarks, etc.) bookmark files represent
+;;    physical, not logical, groupings of bookmarks.  A bookmark file
+;;    contains complete bookmark records.
+;;
+;;    If you copy a bookmark from one bookmark file to another, the
+;;    copy is an independent bookmark: it has no relation to the
+;;    bookmark it was copied from.  Changes to the copy or the
+;;    bookmark it was copied from do not affect each other.
+;;
+;;    This means that to use bookmark files for organizing bookmarks
+;;    you will typically move, not copy, bookmarks between them (or
+;;    copy and later delete).  Remember that you can load multiple
+;;    bookmark files to access their bookmarks together in a session.
+;;    Think of your bookmark files as independent modules that you can
+;;    combine.
 ;;
 ;;
 ;;(@* "Bookmark-File Bookmarks")
