@@ -2146,6 +2146,24 @@ from the current bookmark file to another that you name, using '''##`Y > +##''''
 (`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.
 
 
+'''NOTE:'''
+
+: Unlike the other ways of organizing bookmarks into sets
+(tags, bookmark-list bookmarks, etc.) bookmark files represent
+''physical'', not logical, groupings of bookmarks.  A bookmark file
+contains complete bookmark records.
+
+: If you copy a
+bookmark from one bookmark file to another, the copy is an
+''independent'' bookmark: it has ''no relation to the bookmark it was
+copied from''.  Changes to the copy or the bookmark it was copied
+from do not affect each other.
+
+: This means that to use bookmark files for organizing bookmarks
+you will ''typically move'', not copy, bookmarks between them (or copy and later delete).
+Remember that you can ''load'' multiple bookmark files to access
+their bookmarks together in a session.  Think of your bookmark
+files as independent modules that you can combine.
 
 
 
