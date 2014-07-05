@@ -38,6 +38,12 @@ Where to get it:
 *** For other reasons the packages also includes [NxmlMode nXhtml].
 *** Untested versions of EmacsW32 (I use them myself though I am not satisfied enough with them) is uploaded more often to http://ourcomments.org/Emacs/DL/EmacsW32/test/.
 
+** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
+*** Unmodified source code from git mirror.
+*** Including development snapshot, pretests, and release.
+*** Supporting JPEG, GIF, PNG, TIFF, SVG, and XML2.
+*** Compiled with optimization.
+
 ** or build it yourself BuildingOnWindowsTableofContents.
 
 * Emacs for Windows Modified (http://vgoulet.act.ulaval.ca/en/emacs/windows) -- Latest stable release of Emacs with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
