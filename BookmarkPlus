@@ -3969,18 +3969,35 @@ The same menu is available on '''`C-mouse-3''''.
 
 ; '''Bookmark+''': [[image:BookmarkPlusMenuBarMenu]]
 
-It has submenus '''Icicles''' (if you use '''[[Icicles]]'''), '''Jump To''', '''Mark''', '''Omit''', '''Show''', '''Sort''', '''Tags''', '''Highlight''',  and '''Define Command'''.  The '''Jump To''' menu itself has a submenu '''With Tags'''.
+It has submenus '''Icicles''' (if you use '''[[Icicles]]'''), '''Jump To''', '''Delete''', '''Mark''', '''Omit''', '''Show''', '''Sort''', '''Search''', '''Tags''', '''Highlight''',  '''Toggle''', '''Bookmark File''', and '''Define Command'''.
+
+The '''Jump To''' menu has submenus '''Icicles''' (if you use '''[[Icicles]]''') and '''With Tags'''.  The '''Mark''' has submenu '''Bookmarks of Type'''.  The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 
 ;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuIcicles]]
+
 [:JumpToMenu]
 ;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
+;;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuJumpToIcicles]]
 ;;; '''With Tags''' (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuWithTags]]
+
+;; '''Delete''': [[image:BookmarkPlusMenuBarMenuDelete]]
+
+[:MarkMenu]
 ;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
+;;; '''Bookmarks of Type''': [[image:BookmarkPlusMenuBarMenuMarkOfType]]
+
 ;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
+
+[:ShowMenu]
 ;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
+;;; '''Only Bookmarks of Type''': [[image:BookmarkPlusMenuBarMenuShowOfType]]
+
 ;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
+;; '''Search''': [[image:BookmarkPlusMenuBarMenuSearch]] 
 ;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
 ;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
+;; '''Toggle''': [[image:BookmarkPlusMenuBarMenuToggle]]
+;; '''Bookmark File''': [[image:BookmarkPlusMenuBarMenuBookmarkFile]]
 ;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
 
