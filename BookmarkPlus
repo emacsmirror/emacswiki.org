@@ -2138,12 +2138,15 @@ Remember too that you can delete bookmarks from the current set using
 command `bookmark-delete' (`C-x p d') or, in the bookmark list,
 using `d' plus `x' or marking then `D'.
 
+[:CopyMoveBookmarks]
 Deleting bookmarks from a bookmark file is one way of editing it.
 Another is to ''copy'' or ''move bookmarks'' from one bookmark file to
 another.  In the bookmark-list display, you can copy or move the
 marked bookmarks (or the current bookmark, if none are marked)
 from the current bookmark file to another that you name, using '''##`Y > +##'''' (`bmkp-bmenu-copy-marked-to-bookmark-file') and '''`##Y > -##''''
-(`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.
+(`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.  You
+can also use '''`##Y > 0##'''' (`bmkp-bmenu-create-bookmark-file-from-marked') to create a new bookmark file by copying the
+marked bookmarks.
 
 
 '''NOTE:'''
