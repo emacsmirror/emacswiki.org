@@ -22,6 +22,7 @@ Started with ##M-x anything##　all things matching a given pattern will be show
 RETを打つとそのタイプのためにデフォルトアクションを起動し,TABを打つと全ての可能なアクションをリストします.
 
 [[image:AnythingScreenshotAllCandidates]]
+
 [[image:AnythingScreenshotNarrowingCandidates]]
 
 What's queried is given by a list of sources, namely ##anything-sources##, such as buffers, file names, bookmarks, and so on.
