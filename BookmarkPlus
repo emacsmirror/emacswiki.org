@@ -4035,9 +4035,9 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 [:VanillaFileMenu]
 === Vanilla File Menu ===
 
-'''Bookmark+''' adds submenu `Bookmarked File' to the vanilla '''File''' menu provided by Emacs.  
+'''Bookmark+''' adds submenu `Find File or Autofile' to the vanilla '''File''' menu provided by Emacs.  
 
-[[image:BookmarkPlusBookmarkedFileMenu]]
+[[image:BookmarkPlusFindFileOrAutofileMenu]]
 
 
 
