@@ -4014,10 +4014,11 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the '''Edit''' [[menu bar]] menu.  '''Bookmark+''' modifies it by adding several '''Bookmark+''' items and submenus.  
 
 ; '''Bookmarks''': [[image:BookmarkPlusBookmarkMenuBarMenu]]
-;; '''Icicles''': [[image:BookmarkPlusBookmarksIciclesMenu]]
 ;; '''Jump To''': Same as '''Bookmark+''' [[#JumpToMenu|submenu]] '''Jump To'''
 ;; '''Tags''': [[image:BookmarkPlusBookmarksTagsMenu]]
 ;; '''Toggle Option''': [[image:BookmarkPlusBookmarksToggleOptionMenu]]
+;; '''New/Update''': [[image:BookmarkPlusBookmarksNewUpdateMenu]]
+;; '''Delete''': [[image:BookmarkPlusBookmarksDeleteMenu]]
 ;; '''Highlight''': [[image:BookmarkPlusBookmarksHighlightMenu]]
 
 
