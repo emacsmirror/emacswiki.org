@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul  4 08:18:35 2014 (-0700)
+;; Last-Updated: Sat Jul  5 15:26:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7299
+;;     Update #: 7314
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2885,7 +2885,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                        (search-forward (concat bookmark-end-of-version-stamp-marker "(")
                                                        nil t))
                        (error "Invalid bookmark-file"))
-            end    (or (save-excursion (goto-char (point-max)) (re-search-backward "^)" nil t))
+            end    (or (save-excursion (goto-char start) (and (looking-at ")") start)) ; Empty bmk list: ().
+                       (save-excursion (goto-char (point-max)) (re-search-backward "^)" nil t))
                        (error "Invalid bookmark-file")))
       (unless add (delete-region start end))
       (goto-char (if (eq add 'append) end start))
@@ -4203,7 +4204,10 @@ NOTE: If FILE already exists and you confirm emptying it, no check is
       It is simply replaced by an empty bookmark file and saved.
 
 This does NOT also make FILE the current bookmark file.  To do that,
-use `\\[bmkp-switch-bookmark-file-create]' (`bmkp-switch-bookmark-file-create')."
+use `\\[bmkp-switch-bookmark-file-create]' (`bmkp-switch-bookmark-file-create').
+
+Interactively, and non-interactively if optional arg CONFIRMP is
+non-nil, require confirmation if the file already exists."
   (interactive (list (let ((icicle-unpropertize-completion-result-flag  t))
                        (read-file-name "Create empty bookmark file: " "~/"))
                      t))
