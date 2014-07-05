@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  5 12:42:35 2014 (-0700)
+;; Last-Updated: Sat Jul  5 15:42:05 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14812
+;;     Update #: 14815
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1991,9 +1991,11 @@
 ;;  marked bookmarks (or the current bookmark, if none are marked)
 ;;  from the current bookmark file to another that you name, using `Y
 ;;  > +' (`bmkp-bmenu-copy-marked-to-bookmark-file') and `Y > -'
-;;  (`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.  You
-;;  can also use `Y > 0' to create a new bookmark file by copying the
-;;  marked bookmarks.
+;;  (`bmkp-bmenu-move-marked-to-bookmark-file'), respectively.  And
+;;  you can use `Y > 0'
+;;  (`bmkp-bmenu-create-bookmark-file-from-marked') to create a new
+;;  bookmark file by copying the marked bookmarks.  With a prefix arg,
+;;  `Y > 0' creates also a bookmark-file bookmark.
 ;;
 ;;  NOTE:
 ;;
