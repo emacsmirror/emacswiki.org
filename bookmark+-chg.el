@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  5 09:11:51 2014 (-0700)
+;; Last-Updated: Sat Jul  5 15:34:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15650
+;;     Update #: 15659
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/07/05 dadams
+;;     bookmark-write-file: List in file could be (), in which case cannot search backward for \n).
 ;; 2014/07/03 dadams
 ;;     Added: bmkp-read-bookmark-file-default.
 ;;     Added redefinition of bookmark-import-new-list, bookmark-maybe-rename.
@@ -1025,9 +1027,11 @@
 ;;
 ;; 2014/07/05 dadams
 ;;     Added: bmkp-bmenu-create-bookmark-file-from-marked (bound to Y > 0),
-;;            bmkp-bmenu-bookmark-file-menu (Bookmark File).
+;;            bmkp-bmenu-set-bookmark-file-bookmark-from-marked, bmkp-bmenu-bookmark-file-menu.
 ;;     Moved bookmark-file stuff to Bookmark File submenu.
 ;;     bookmark-bmenu-mode: Updated doc string.
+;;     bmkp-bmenu-dired-marked: Use bmkp-bmenu-marked-or-this-or-all, not bmkp-marked-bookmarks-only.
+;;     bmkp-bmenu-marked-or-this-or-all: Added optional arg INCLUDE-OMITTED-P - else removed omitted.
 ;; 2014/07/04 dadams
 ;;     Added to Bookmark+ menu: bmkp-bmenu-(copy|move)-marked-to-bookmark-file.
 ;; 2014/07/03 dadams
