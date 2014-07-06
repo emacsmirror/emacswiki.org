@@ -1,3 +1,5 @@
+[http://lists.gnu.org/archive/html/bug-gnu-emacs/2012-06/msg00360.html Patch for Emacs 24] — after evaluating, you are done.
+
 This module is disabled by default.  To enable it use M-x customize-variable RET erc-modules.
 
 Using this module will keep the prompt line at the bottom of the window.
