@@ -4006,6 +4006,8 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 ;; '''Search''': [[image:BookmarkPlusMenuBarMenuSearch]] 
 ;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
 ;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
+
+[:ToggleMenu]
 ;; '''Toggle''': [[image:BookmarkPlusMenuBarMenuToggle]]
 ;; '''Bookmark File''': [[image:BookmarkPlusMenuBarMenuBookmarkFile]]
 ;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
@@ -4020,7 +4022,7 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 ; '''Bookmarks''': [[image:BookmarkPlusBookmarkMenuBarMenu]]
 ;; '''Jump To''': Same as '''Bookmark+''' [[#JumpToMenu|submenu]] '''Jump To'''
 ;; '''Tags''': [[image:BookmarkPlusBookmarksTagsMenu]]
-;; '''Toggle Option''': [[image:BookmarkPlusBookmarksToggleOptionMenu]]
+;; '''Toggle''': Same as '''Bookmark+''' [[#ToggleMenu|submenu]] '''Toggle'''
 ;; '''New/Update''': [[image:BookmarkPlusBookmarksNewUpdateMenu]]
 ;; '''Delete''': [[image:BookmarkPlusBookmarksDeleteMenu]]
 ;; '''Highlight''': [[image:BookmarkPlusBookmarksHighlightMenu]]
