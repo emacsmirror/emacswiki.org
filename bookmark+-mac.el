@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Tue May 27 09:19:31 2014 (-0700)
+;; Last-Updated: Sat Jul  5 22:25:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 131
+;;     Update #: 167
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -394,19 +394,46 @@ If either is a record then it need not belong to `bookmark-alist'."
             (t;; Neither is a file.
              nil)))))
 
+;; This is compatible with Emacs 20 and later.
 ;;;###autoload (autoload 'bmkp-menu-bar-make-toggle "bookmark+")
-(defmacro bmkp-menu-bar-make-toggle (name variable doc message help &rest body)
-  "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
-NAME is the name of the toggle command to define.
-VARIABLE is the variable to set.
-DOC is the menu-item name.
-MESSAGE is the toggle message, minus status.
-HELP is `:help' string.
-BODY is the function body to use.  If present, it is responsible for
-setting the variable and displaying a status message (not MESSAGE)."
-  (if (< emacs-major-version 21)
-      `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
-    `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
+(defmacro bmkp-menu-bar-make-toggle (command variable item-name message help
+                                     &optional setting-sexp &rest keywords)
+  "Define a menu-bar toggle command.
+COMMAND (a symbol) is the toggle command to define.
+VARIABLE (a symbol) is the variable to set.
+ITEM-NAME (a string) is the menu-item name.
+MESSAGE is a format string for the toggle message, with %s for the new
+ status.
+HELP (a string) is the `:help' tooltip text and the doc string first
+ line (minus final period) for the command.
+SETTING-SEXP is a Lisp sexp that sets VARIABLE, or it is nil meaning
+ set it according to its `defcustom' or using `set-default'.
+KEYWORDS is a plist for `menu-item' for keywords other than `:help'."
+  `(progn
+    (defun ,command (&optional interactively)
+      ,(concat "Toggle whether to " (downcase (substring help 0 1))
+               (substring help 1) ".
+In an interactive call, record this option as a candidate for saving
+by \"Save Options\" in Custom buffers.")
+      (interactive "p")
+      (if ,(if setting-sexp
+               `,setting-sexp
+               `(progn
+		 (custom-load-symbol ',variable)
+		 (let ((set (or (get ',variable 'custom-set) 'set-default))
+		       (get (or (get ',variable 'custom-get) 'default-value)))
+		   (funcall set ',variable (not (funcall get ',variable))))))
+          (message ,message "enabled globally")
+        (message ,message "disabled globally"))
+      ;; `customize-mark-as-set' must only be called when a variable is set interactively,
+      ;; because the purpose is to mark the variable as a candidate for `Save Options', and we
+      ;; do not want to save options that the user has already set explicitly in the init file.
+      (when (and interactively  (fboundp 'customize-mark-as-set))
+        (customize-mark-as-set ',variable)))
+    '(menu-item ,item-name ,command
+      :help ,help
+      :button (:toggle . (and (default-boundp ',variable) (default-value ',variable)))
+      ,@keywords)))
 
 ;;; Not used currently.  Provided so you can use it in your own code, if appropriate.
 ;;;###autoload (autoload 'bmkp-with-bookmark-dir "bookmark+")
