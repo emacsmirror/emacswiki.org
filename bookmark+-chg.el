@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  5 15:34:43 2014 (-0700)
+;; Last-Updated: Sun Jul  6 10:36:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15659
+;;     Update #: 15673
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,8 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/07/06 dadams
+;;     Renamed: bmkp-show-end-of-region, bmkp-w3m-allow-multi-tabs to *-flag.
 ;; 2014/07/05 dadams
 ;;     bookmark-write-file: List in file could be (), in which case cannot search backward for \n).
+;;     bmkp-read-bookmark-for-type: Added optional PROMPT arg.
+;;     bmkp-jump-snippet: Provide PROMPT to bmkp-read-bookmark-for-type.  Better msg.
 ;; 2014/07/03 dadams
 ;;     Added: bmkp-read-bookmark-file-default.
 ;;     Added redefinition of bookmark-import-new-list, bookmark-maybe-rename.
@@ -1025,6 +1029,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/06 dadams
+;;     Toggle submenu: added lots, improved.
 ;; 2014/07/05 dadams
 ;;     Added: bmkp-bmenu-create-bookmark-file-from-marked (bound to Y > 0),
 ;;            bmkp-bmenu-set-bookmark-file-bookmark-from-marked, bmkp-bmenu-bookmark-file-menu.
@@ -1624,6 +1630,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2014/07/06 dadams
+;;     Added: bmkp-last-auto-light-when-jump, bmkp-last-auto-light-when-set,
+;;            bmkp-toggle-auto-light-when-jump, bmkp-toggle-auto-light-when-set.
 ;; 2013/06/09 dadams
 ;;     Added vacuous defvars to suppress free-var warnings.
 ;; 2013/05/15 dadams
@@ -1684,6 +1693,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2014/07/06 dadams
+;;     bmkp-menu-bar-make-toggle: Redefined - no longer use menu-bar-make-toggle.  Support keywords.
 ;; 2014/05/27 dadams
 ;;     Added: bmkp-with-help-window.
 ;; 2013/04/26 dadams
