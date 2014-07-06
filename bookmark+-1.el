@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  5 18:48:37 2014 (-0700)
+;; Last-Updated: Sun Jul  6 09:13:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7324
+;;     Update #: 7329
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -304,13 +304,13 @@
 ;;    `bmkp-read-bookmark-file-hook', `bmkp-region-search-size',
 ;;    `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
-;;    `bmkp-show-end-of-region', `bmkp-sort-comparer',
+;;    `bmkp-show-end-of-region-flag', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
 ;;    `bmkp-temporary-bookmarking-mode',
 ;;    `bmkp-temporary-bookmarking-mode-hook',
 ;;    `bmkp-temporary-bookmarking-mode-lighter',
 ;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
-;;    `bmkp-w3m-allow-multi-tabs', `bmkp-write-bookmark-file-hook'.
+;;    `bmkp-w3m-allow-multi-tabs-flag', `bmkp-write-bookmark-file-hook'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -805,7 +805,6 @@ These are the predefined type predicates:
 ;;;###autoload (autoload 'bmkp-count-multi-mods-as-one-flag "bookmark+")
 (defcustom bmkp-count-multi-mods-as-one-flag t
   "*Non-nil means count multiple modifications as one.
-
 This is for `bookmark-alist-modification-count'.  Non-nil means that
 when you invoke a command that acts on multiple bookmarks or acts in
 multiple ways on one bookmark, all of changes together count as only
@@ -1044,8 +1043,8 @@ as part of the bookmark definition."
   "*Function used to display the bookmarks in a bookmark sequence."
   :type 'function :group 'bookmark-plus)
 
-;;;###autoload (autoload 'bmkp-show-end-of-region "bookmark+")
-(defcustom bmkp-show-end-of-region t
+;;;###autoload (autoload 'bmkp-show-end-of-region-flag "bookmark+")
+(defcustom bmkp-show-end-of-region-flag t
   "*Show end of region with `exchange-point-and-mark' when activating a region.
 If nil show only beginning of region."
   :type 'boolean :group 'bookmark-plus)
@@ -1254,8 +1253,8 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
           (const :tag "Activate bookmark region even during cycling"      cycling-too))
   :group 'bookmark-plus)
 
-;;;###autoload (autoload 'bmkp-w3m-allow-multi-tabs "bookmark+")
-(defcustom bmkp-w3m-allow-multi-tabs t
+;;;###autoload (autoload 'bmkp-w3m-allow-multi-tabs-flag "bookmark+")
+(defcustom bmkp-w3m-allow-multi-tabs-flag t
   "*Non-nil means jump to W3M bookmarks in a new session."
   :type 'boolean :group 'bookmark-plus)
 
@@ -3938,7 +3937,7 @@ Be sure to mention the `Update #' from header of the particular Bookmark+ file h
 
 ;;;###autoload (autoload 'bmkp-toggle-bookmark-set-refreshes "bookmark+")
 (defun bmkp-toggle-bookmark-set-refreshes () ; Not bound
-  "Toggle `bookmark-set' refreshing `bmkp-latest-bookmark-alist'.
+  "Toggle whether `bookmark-set' refreshes `bookmark-alist' as last filtered.
 Add/remove `bmkp-refresh-latest-bookmark-list' to/from
 `bmkp-after-set-hook'.
 \(Applies also to command `bmkp-bookmark-set-confirm-overwrite'.)"
@@ -7884,7 +7883,7 @@ If region was relocated, save it if user confirms saving."
            (goto-char pos)
            (push-mark end-pos 'nomsg 'activate)
            (setq deactivate-mark  nil)
-           (when bmkp-show-end-of-region
+           (when bmkp-show-end-of-region-flag
              (let ((end-win  (save-excursion (forward-line (window-height)) (line-end-position))))
                ;; Bounce point and mark.
                (save-excursion (sit-for 0.6) (exchange-point-and-mark) (sit-for 1))
@@ -8764,9 +8763,11 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-jump-w3m (bookmark)
   "Handler function for record returned by `bmkp-make-w3m-record'.
 BOOKMARK is a bookmark name or a bookmark record.
-Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs' is non-nil."
+Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs-flag' is non-nil."
   (require 'w3m)
-  (if bmkp-w3m-allow-multi-tabs (bmkp-jump-w3m-new-session bookmark) (bmkp-jump-w3m-only-one-tab bookmark)))
+  (if bmkp-w3m-allow-multi-tabs-flag
+      (bmkp-jump-w3m-new-session bookmark)
+    (bmkp-jump-w3m-only-one-tab bookmark)))
 
 
 ;; GNUS support for Emacs < 24.  More or less the same as `gnus-summary-bookmark-make-record' in Emacs 24+.
