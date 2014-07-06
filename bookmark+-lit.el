@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Dec 26 08:32:13 2013 (-0800)
+;; Last-Updated: Sun Jul  6 10:28:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 862
+;;     Update #: 887
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -108,6 +108,8 @@
 ;;    `bmkp-set-lighting-for-bookmark',
 ;;    `bmkp-set-lighting-for-buffer',
 ;;    `bmkp-set-lighting-for-this-buffer',
+;;    `bmkp-toggle-auto-light-when-jump',
+;;    `bmkp-toggle-auto-light-when-set',
 ;;    `bmkp-unlight-autonamed-this-buffer', `bmkp-unlight-bookmark',
 ;;    `bmkp-unlight-bookmark-here',
 ;;    `bmkp-unlight-bookmark-this-buffer', `bmkp-unlight-bookmarks',
@@ -150,7 +152,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `bmkp-autonamed-overlays', `bmkp-light-styles-alist',
+;;    `bmkp-autonamed-overlays', `bmkp-last-auto-light-when-jump',
+;;    `bmkp-last-auto-light-when-set', `bmkp-light-styles-alist',
 ;;    `bmkp-non-autonamed-overlays'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -295,6 +298,11 @@ will be the buffer before jumping."
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
 
+;; The value is not correct if user customizes `bmkp-auto-light-when-jump' to non-nil.
+;; So must compensate in `bmkp-toggle-auto-light-when-jump'.
+(defvar bmkp-last-auto-light-when-jump (and (not bmkp-auto-light-when-jump)  'all-in-buffer)
+  "Last value of `bmkp-auto-light-when-jump'.")
+
 ;;;###autoload (autoload 'bmkp-auto-light-when-set "bookmark+")
 (defcustom bmkp-auto-light-when-set nil
   "*Which bookmarks to automatically highlight when set."
@@ -307,6 +315,11 @@ will be the buffer before jumping."
           (const :tag "All bookmarks in buffer"            all-in-buffer)
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
+
+;; The value is not correct if user customizes `bmkp-auto-light-when-set' to non-nil.
+;; So must compensate in `bmkp-toggle-auto-light-when-set'.
+(defvar bmkp-last-auto-light-when-set (and (not bmkp-auto-light-when-set)  'all-in-buffer)
+  "Last value of `bmkp-auto-light-when-set'.")
 
 ;;;###autoload (autoload 'bmkp-light-priorities "bookmark+")
 (defcustom bmkp-light-priorities '((bmkp-autonamed-overlays        . 160)
@@ -498,6 +511,22 @@ Non-interactively:
       (when msgp (pp-eval-expression 'bmks)))
     bmks))
 
+;;;###autoload (autoload 'bmkp-toggle-auto-light-when-jump "bookmark+")
+(defun bmkp-toggle-auto-light-when-jump (&optional msgp) ; Not bound.
+  "Toggle automatic bookmark highlighting when a bookmark is jumped to.
+Set option `bmkp-auto-light-when-jump' to nil if non-nil, and to its
+last non-nil value if nil."
+  (interactive "p")
+  (when (and bmkp-auto-light-when-jump  bmkp-last-auto-light-when-jump) ; Compensate for wrong default
+    (setq bmkp-last-auto-light-when-jump  nil))
+  (setq bmkp-last-auto-light-when-jump
+        (prog1 bmkp-auto-light-when-jump ; Swap
+          (setq bmkp-auto-light-when-jump  bmkp-last-auto-light-when-jump)))
+  (when msgp (message "Automatic highlighting of bookmarks when jumping is now %s"
+                      (if bmkp-auto-light-when-jump
+                          (upcase (symbol-value bmkp-auto-light-when-jump))
+                        "OFF"))))
+                                        
 ;;;###autoload (autoload 'bmkp-lighted-jump "bookmark+")
 (defun bmkp-lighted-jump (bookmark-name &optional use-region-p) ; `C-x j h'
   "Jump to a highlighted bookmark.
@@ -623,6 +652,21 @@ Prefix arg, unhighlight them everywhere."
   (interactive)
   (bmkp-unlight-bookmarks))
 
+;;;###autoload (autoload 'bmkp-toggle-auto-light-when-set "bookmark+")
+(defun bmkp-toggle-auto-light-when-set (&optional msgp) ; Not bound.
+  "Toggle automatic bookmark highlighting when a bookmark is set.
+Set option `bmkp-auto-light-when-set' to nil if non-nil, and to its
+last non-nil value if nil."
+  (interactive "p")
+  (when (and bmkp-auto-light-when-set  bmkp-last-auto-light-when-set) ; Compensate for wrong default
+    (setq bmkp-last-auto-light-when-set  nil))
+  (setq bmkp-last-auto-light-when-set  (prog1 bmkp-auto-light-when-set ; Swap
+                                         (setq bmkp-auto-light-when-set  bmkp-last-auto-light-when-set)))
+  (when msgp (message "Automatic highlighting of bookmarks when setting is now %s"
+                      (if bmkp-auto-light-when-set
+                          (upcase (symbol-value bmkp-auto-light-when-set))
+                        "OFF"))))
+                                        
 ;;;###autoload (autoload 'bmkp-set-lighting-for-bookmark "bookmark+")
 (defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p)
   "Set the `lighting' property for bookmark BOOKMARK-NAME.
