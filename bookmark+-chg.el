@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul  6 10:36:31 2014 (-0700)
+;; Last-Updated: Sun Jul  6 11:05:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15673
+;;     Update #: 15678
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1522,6 +1522,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2014/07/06 dadams
+;;     Removed: bmkp-options-menu.  Use bmkp-bmenu-toggle-menu, and rename Toggle, not Toggle Option.
+;;     Removed individual toggle commands from menu-bar-bookmark-map (Bookmarks).
+;;     Reuse bmkp-bmenu-toggle-menu for menu-bar-bookmark-map [options].
 ;; 2014/07/05 dadams
 ;;     Moved submenu bmkp-jump-tags-menu before individual menu items.
 ;; 2014/03/23 dadams
