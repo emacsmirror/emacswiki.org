@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  5 15:26:12 2014 (-0700)
+;; Last-Updated: Sat Jul  5 18:48:37 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7314
+;;     Update #: 7324
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8107,7 +8107,7 @@ you can yank it using `C-y'."
   "Copy the text saved in BOOKMARK to the `kill-ring'.
 Handler for snippet bookmarks."
   (kill-new (bookmark-prop-get bookmark 'text))
-  (message "Snippet copied to `kill-ring'"))
+  (message "Snippet of bookmark `%s' copied to `kill-ring'" (bmkp-bookmark-name-from-record bookmark)))
 
 ;;;###autoload (autoload 'bmkp-snippet-to-kill-ring "bookmark+")
 (defun bmkp-snippet-to-kill-ring (bookmark-name) ; `C-x j M-w'
@@ -8115,7 +8115,8 @@ Handler for snippet bookmarks."
 This is a specialization of `bookmark-jump' for snippet bookmarks."
   (interactive
    (let ((alist  (bmkp-snippet-alist-only)))
-     (list (bmkp-read-bookmark-for-type "snippet" alist nil nil 'bmkp-snippet-history))))
+     (list (bmkp-read-bookmark-for-type "snippet" alist nil nil 'bmkp-snippet-history nil
+                                        "Copy snippet to kill ring"))))
   (bmkp-jump-1 bookmark-name 'ignore nil))
 
 ;; Desktop bookmarks
@@ -8972,7 +8973,7 @@ BOOKMARK is a bookmark name or a bookmark record."
       (save-excursion (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (goto-char (bookmark-get-position bookmark))))
 
-(defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action)
+(defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action prompt)
   "Read the name of a bookmark of type TYPE, with completion.
 TYPE is a string used in the prompt: \"Jump to TYPE bookmark: \".
 ALIST is the alist used for completion.  If nil then raise an error to
@@ -8980,10 +8981,11 @@ ALIST is the alist used for completion.  If nil then raise an error to
 Non-nil OTHER-WIN means append \" in another window\" to the prompt.
 Non-nil PRED is a predicate used for bookmark-name completion.
 Non-nil HIST is a history symbol.  Default is `bookmark-history'.
-ACTION is the action to mention in the prompt.  `Jump to ', if nil."
+Non-nil ACTION is the action mentioned in the prompt; nil: `Jump to '.
+Non-nil PROMPT is an alternative prompt."
   (unless alist (error "No bookmarks of type %s" type))
-  (bookmark-completing-read (concat (or action  "Jump to ") type " bookmark"
-                                    (and other-win  " in another window"))
+  (bookmark-completing-read (or prompt  (concat (or action  "Jump to ") type " bookmark"
+                                                (and other-win  " in another window")))
                             (bmkp-default-bookmark-name alist)
                             alist pred hist))
 
