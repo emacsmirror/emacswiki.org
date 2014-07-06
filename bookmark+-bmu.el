@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jul  5 15:32:06 2014 (-0700)
+;; Last-Updated: Sun Jul  6 10:25:09 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3226
+;;     Update #: 3342
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1170,7 +1170,7 @@ Non-interactively:
          (let ((bookmark-alist  (or bmkp-latest-bookmark-alist  bookmark-alist)))
            (bmkp-bmenu-list-1 'filteredp nil msg-p))
          ;; Propertize bookmark names if not already propertized (lists saved with Emacs 20 or
-         ;; not `bmkp-propertize-bookmark-names-flag').  Check only the first to guess propertized.
+         ;; not `bmkp-propertize-bookmark-names-flag').  Check only the first, to guess propertized.
          (when (and (consp bmkp-bmenu-marked-bookmarks)
                     (not (get-text-property 0 'bmkp-full-record (car bmkp-bmenu-marked-bookmarks))))
            (setq bmkp-bmenu-marked-bookmarks
@@ -5557,6 +5557,117 @@ are marked or ALLP is non-nil."
 
 
 ;;; `Toggle' submenu -------------------------------------------------
+
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-guess-default-file-handler]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-guess-default-file-handler
+                             bmkp-guess-default-handler-for-file-flag
+                             "Guessing Default File Handler"
+                             "Guessing the default handler when creating a file bookmark is now %s"
+                             "Toggle the value of option `bmkp-guess-default-handler-for-file-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-auto-light-when-set-menu]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-auto-light-when-set-menu bmkp-auto-light-when-set
+                             "Automatic Highlighting When Setting"
+                             "Bookmark highlighting when you set a bookmark is now %s"
+                             "Toggle the value of option `bmkp-auto-light-when-set'"
+                             (bmkp-toggle-auto-light-when-set)
+                             :visible (featurep 'bookmark+-lit)))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-prompt-for-tags]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-prompt-for-tags bmkp-prompt-for-tags-flag
+                             "Prompting for Tags When Setting"
+                             "Prompting for tags when you set a bookmark is now %s"
+                             "Toggle the value of option `bmkp-prompt-for-tags-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-propertize-bookmark-names]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-propertize-bookmark-names bmkp-propertize-bookmark-names-flag
+                             "Allowing Identical Bookmark Names"
+                             "Allowing multiple bookmarks with the same name is now %s"
+                             "Toggle the value of option `bmkp-propertize-bookmark-names-flag'"
+                             nil
+                             :visible (> emacs-major-version 20)))
+
+(define-key bmkp-bmenu-toggle-menu [sep4] '("--")) ; ------------ Jumping-behavior stuff
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-allow-multi-tabs-for-w3m]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-allow-multi-tabs-for-w3m bmkp-w3m-allow-multi-tabs-flag
+                             "Using Multi-Tabs for W3M"
+                             "Using multi-tabs when jumping to a W3M bookmark is now %s"
+                             "Toggle the value of option `bmkp-w3m-allow-multi-tabs-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-save-desktop-before-switching]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-save-desktop-before-switching bmkp-desktop-jump-save-before-flag
+                             "Autosaving the Desktop Before Switching"
+                             "Autosaving the desktop before jumping to a desktop bookmark is now %s"
+                             "Toggle the value of option `bmkp-desktop-jump-save-before-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-showing-region-end]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-showing-region-end bmkp-show-end-of-region-flag
+                             "Showing Region End"
+                             "Showing the end of the region when activating is now %s"
+                             "Toggle the value of option `bmkp-show-end-of-region-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-pop-to]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-pop-to bmkp-other-window-pop-to-flag
+                             "Using `pop-to-buffer'"
+                             "Using `pop-to-buffer' instead of `switch-to-buffer-other-window' is now %s"
+                             "Toggle the value of option `bmkp-other-window-pop-to-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-auto-light-when-jump-menu]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-auto-light-when-jump-menu bmkp-auto-light-when-jump
+                             "Automatic Highlighting When Jumping"
+                             "Bookmark highlighting when you jump to a bookmark is now %s"
+                             "Toggle the value of option `bmkp-auto-light-when-jump'"
+                             (progn (bmkp-toggle-auto-light-when-jump) bmkp-auto-light-when-jump)
+                             :visible (featurep 'bookmark+-lit)))
+(when (> emacs-major-version 21)
+  (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-crosshairs]
+    (bmkp-menu-bar-make-toggle bmkp-toggle-crosshairs bmkp-crosshairs-flag
+                               "Crosshairs Highlighting"
+                               "Highlighting bookmark location with crosshairs is now %s"
+                               "Toggle the value of option `bmkp-crosshairs-flag'"
+                               nil
+                               :visible (featurep 'crosshairs))))
+
+(define-key bmkp-bmenu-toggle-menu [sep3] '("--")) ; ------------ List display stuff
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-bookmark-set-refreshes]
+  '(menu-item "Autorefresh for `bmkp-latest-bookmark-alist'" bmkp-toggle-bookmark-set-refreshes
+    :help "Toggle whether `bookmark-set' refreshes `bmkp-latest-bookmark-alist'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-count-multi-mods-as-one]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-count-multi-mods-as-one bmkp-count-multi-mods-as-one-flag
+                             "Counting Multiple Modifications As One"
+                             "Counting multiple modifications as one is now %s"
+                             "Toggle the value of option `bmkp-count-multi-mods-as-one-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-marks]
+  '(menu-item "Marked/Unmarked" bmkp-bmenu-toggle-marks
+    :help "Unmark all marked bookmarks; mark all unmarked bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-reverse-sort-order]
+  '(menu-item "Sort Direction" bmkp-reverse-sort-order
+    :help "Toggle the current bookmark sort direction"
+    :enable (bmkp-current-sort-order)))
+(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-show-only-unmarked]
+  '(menu-item "Showing Only Unmarked" bmkp-bmenu-toggle-show-only-unmarked
+    :help "Alternately show unmarked or all bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-show-only-marked]
+  '(menu-item "Showing Only Marked" bmkp-bmenu-toggle-show-only-marked
+    :help "Alternately show unmarked or all bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-filenames]
+  (bmkp-menu-bar-make-toggle bmkp-bmenu-toggle-filenames bookmark-bmenu-toggle-filenames
+                             "Showing File Names"
+                             "Showing file names is now %s"
+                             "Toggle the value of option `bookmark-bmenu-toggle-filenames'"
+                             (progn
+                               (custom-load-symbol 'bookmark-bmenu-toggle-filenames)
+                               (let ((set (or (get 'bookmark-bmenu-toggle-filenames 'custom-set)
+                                              'set-default))
+                                     (get (or (get 'bookmark-bmenu-toggle-filenames 'custom-get)
+                                              'default-value)))
+                                 (funcall set 'bookmark-bmenu-toggle-filenames
+                                          (not (funcall get 'bookmark-bmenu-toggle-filenames))))
+                               (if bookmark-bmenu-toggle-filenames
+                                   (bookmark-bmenu-show-filenames)
+                                 (bookmark-bmenu-hide-filenames))
+                               bookmark-bmenu-toggle-filenames)
+                             :keys "M-t"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-menu-list-state]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-saving-menu-list-state bmkp-bmenu-state-file
+                             "Autosaving Display State"
+                             "Autosaving of bookmark list state is now %s"
+                             "Toggle the value of option `bmkp-bmenu-state-file'"))
+
+(define-key bmkp-bmenu-toggle-menu [sep2] '("--")) ; ------------ Temporary bookmark stuff
 (define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-marked-temporary/savable]
   '(menu-item "Temporary/Savable (`X') for Marked" bmkp-bmenu-toggle-marked-temporary/savable
     :help "Toggle the temporary (`X') vs. savable status of the marked bookmarks"))
@@ -5567,14 +5678,19 @@ are marked or ALLP is non-nil."
                              "Toggle automatically saving bookmark changes"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-autotemp-on-set]
   (bmkp-menu-bar-make-toggle bmkp-toggle-autotemp-on-set bmkp-autotemp-all-when-set-p
-                             "Automatically Make Bookmarks Temporary"
+                             "Making Bookmarks Temporary When Set"
                              "Automatically making bookmarks temporary when you set them is now %s"
                              "Toggle automatically making a bookmark temporary when you set it"))
-(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-menu-list-state]
-  (bmkp-menu-bar-make-toggle bmkp-toggle-saving-menu-list-state bmkp-bmenu-state-file
-                             "Autosaving Display State"
-                             "Autosaving of bookmark list state is now %s"
-                             "Toggle the value of option `bmkp-bmenu-state-file'"))
+
+(define-key bmkp-bmenu-toggle-menu [sep1] '("--")) ; ------------ Automatic stuff
+(define-key bmkp-bmenu-toggle-menu [bmkp-auto-idle-bookmark-mode]
+  '(menu-item "Automatically Creating Bookmarks" bmkp-auto-idle-bookmark-mode
+    :help "Toggle the periodic automatic creation of bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-relocated]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-saving-relocated bmkp-save-new-location-flag
+                             "Autosaving Relocated Bookmarks"
+                             "Automatically saving relocated bookmarks is now %s"
+                             "Toggle the value of option `bmkp-save-new-location-flag'"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-bookmark-file]
   (bmkp-menu-bar-make-toggle bmkp-toggle-saving-bookmark-file bookmark-save-flag
                              "Autosaving Bookmark File"
