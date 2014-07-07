@@ -3,10 +3,6 @@
 
 [[Ｅｌｉｓｐセクション]] / ElispArea は EmacsLisp で書かれた "Free Software" のページです。
 
-* Lisp:index.html -- アップロードされているリスプのリスト
-* Lisp:changelog.html -- アップロードされているリスプの changelog
-* http://www.emacswiki.org/cgi-bin/upload.pl -- アップロードする場所
-
 Wiki なので、アップロードするのに
 ログインもＦＴＰもパスワードも要りません。そのかわり悪意のあるコード
 を含んだファイルさえもアップロードされる可能性もあります。
