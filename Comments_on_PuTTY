@@ -2,3 +2,16 @@ Is it possible to use the mouse when using Emacs via PuTTY?
 
 -- Anonymous 2014-07-08 09:54 UTC
 
+
+----
+
+There is a very good article on this at Google Code, under EmacsSSH. But I found it by just typing your question into Google.
+
+Add this to the destination's .emacs:
+
+(xterm-mouse-mode t)
+
+I can select a new cursor position, or select a region, and I guess just about anything.  (I don't do much with images, so I've only used it on emacs text.)
+
+-- TomBaker 2014-07-08 18:02 UTC
+
