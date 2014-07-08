@@ -230,6 +230,30 @@ I don't like default "Size" column, so I write a human readable column instead o
 
 </pre>
 
+== Have some buffer groups collapsed by default ==
+
+I have some buffer groups that i prefer do be collapsed by default. Since i found no way to have this working i adviced ibuffer like this:
+<pre>
+(setq mp/ibuffer-collapsed-groups (list "Helm" "*Internal*"))
+
+(defadvice ibuffer (after collapse-helm)
+  (dolist (group mp/ibuffer-collapsed-groups)
+	  (progn
+	    (goto-char 1)
+	    (when (search-forward (concat "[ " group " ]") (point-max) t)
+	      (progn
+		(move-beginning-of-line nil)
+		(ibuffer-toggle-filter-group)
+		)
+	      )
+	    )
+	  )
+    (goto-char 1)
+    (search-forward "[ " (point-max) t)
+  )
+
+(ad-activate 'ibuffer)
+</pre>
 
 
 
