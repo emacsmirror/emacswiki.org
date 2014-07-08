@@ -48,7 +48,7 @@ TECO, Emacs, and Unix and the language C all contributed to a life changing new 
 
 TWO THINGS NEAR THE TOP OF MY .emacs file:
 
-0) Well, actually, this is the -third- . . . I have nearly nothing in .emacs.  Instead, it immediately jumps to my Emacs configuratino code, which I keep down in my confinguration code tree with the rest of my configuration codes.  Not only is that where I want them, but the 'configure' command wants to add code to my .emacs file and I felt safer this way.
+0) Well, actually, this is the -third- . . . I have nearly nothing in .emacs.  Instead, it immediately jumps to my Emacs configuration code, which I keep down in my confinguration code tree with the rest of my configuration codes.  Not only is that where I want them, but the 'configure' command wants to add code to my .emacs file and I felt safer this way.
 
 1) I have this, of course:    (setq inhibit-startup-message t )
    It is less distracting without it, and back in the day of slow connections, it saved bandwidth.
