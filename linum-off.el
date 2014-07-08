@@ -76,7 +76,7 @@
   (unless (or (minibufferp)
               (member major-mode linum-disabled-modes-list)
               (string-match "*" (buffer-name))
-              (> (buffer-size) 3000000)) ;; disable linum on buffer greater than 3MB, otherwise it's unbearably slow
+              (< (buffer-size) 3000000)) ;; disable linum on buffer greater than 3MB, otherwise it's unbearably slow
     (linum-mode 1)))
 
 (provide 'linum-off)
