@@ -11,7 +11,7 @@ Add this to the destination's .emacs:
 
 (xterm-mouse-mode t)
 
-I can select a new cursor position, or select a region, and I guess just about anything.  (I don't do much with images, so I've only used it on emacs text.)
+I can select a new cursor position, or select a region, and I guess just about anything.  (I don't do much with images, so I've only used it on emacs text.)  (Update: I also tried using the menu bar, but perhaps there is a problem there, it only opens the File menu into the usual text based menu.)
 
 -- TomBaker 2014-07-08 18:02 UTC
 
