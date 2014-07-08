@@ -34,6 +34,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** RegAdhoc -- automatically add [[register]]s and show their destinations
 ** BetterRegisters -- [[register]] enhancements, [[keyboard macro]]s
 ** UnifyKillringAndRegister -- make [[register]]s easy to use
+** RegisterChannel -- move around like switching TV channels
 * [[cursor|Cursor]] indication
 ** ChangingCursorDynamically -- change cursor type and color, depending on context
 ** CrosshairHighlighting – highlight the current [[line]] and column; track cursor or show cross hairs momentarily.
