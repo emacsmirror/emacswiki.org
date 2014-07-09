@@ -25,6 +25,33 @@ On my linux setup I use the following:
 )
 </pre>
 
+=== Hunspell, no external package ===
+
+The code below comes from http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language, and works for me.
+
+<pre>
+(add-to-list 'ispell-local-dictionary-alist '("deutsch-hunspell"
+                                              "[[:alpha:]]"
+                                              "[^[:alpha:]]"
+                                              "[']"
+                                              t
+                                              ("-d" "de_DE"); Dictionary file name
+                                              nil
+                                              iso-8859-1))
+
+(add-to-list 'ispell-local-dictionary-alist '("english-hunspell"
+                                              "[[:alpha:]]"
+                                              "[^[:alpha:]]"
+                                              "[']"
+                                              t
+                                              ("-d" "en_US")
+                                              nil
+                                              iso-8859-1))
+
+(setq ispell-program-name "hunspell"          ; Use hunspell to correct mistakes
+      ispell-dictionary   "deutsch-hunspell") ; Default dictionary to use
+</pre>
+
 === GNU Aspell ===
 
 [http://aspell.net/ Aspell] was originally designed as a replacement for Ispell; its primary advantage today is the quality of its suggested replacements. This is particularly useful when used with flyspell-auto-correct-previous-word, where you can iterate through suggested spellings -- it's much more useful when the correct spelling is near the head of the list.
