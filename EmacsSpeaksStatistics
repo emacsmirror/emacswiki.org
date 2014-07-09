@@ -52,3 +52,5 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 * [[ESSRParser|Format your code with R parser]]
 
 * [[ESSReadFromRegion|Read Table from Emacs Region]]
+
+* ESS can also be used to send a local buffer or some lines of a local buffer on a remote host where the statistical software is available. This can be the case for SAS. Former methods seem obsolete and following this [[http://emacs.1067599.n5.nabble.com/Fwd-ess-sas-interactive-remote-td283565i20.html thread]], you should first use ssh to connect to the remote host. Then, from this "***shell***" (the name is important) buffer, execute the emacs-command "ess-sas-interactive", it will launch sas (with -stdio) on the remote host in an interactive mode. Then move to your local .sas buffer and use the standard ESS commands to send (on the remote host) your line, region or whole buffer, to be executed by the remote sas. Of course, the libraries and data files to be used should reside on the remote host. 
