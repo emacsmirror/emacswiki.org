@@ -60,15 +60,16 @@ I meant that it won't download frame-fns when I install frame-cmds. You are righ
 
 No, it should not default ''anything'' about the version.  If a version is not specified then any version at all should suffice.  If none is specified and there are multiple versions available in the MELPA repository then any of them could be downloaded, i.e., no guarantee of which you get.  And in principle, if no specific version is specified as required then any version should be OK.
 
-But I'm glad you clarified that `Package-Requires' is NOT at all required by MELPA, just as I thought.  Just download the separate libraries you need -- end of story.
+But I'm glad you clarified that `Package-Requires' is NOT at all required by MELPA, just as I thought.  ''Just download the separate libraries you need -- end of story.''
 
 The reduction in your convenience by the source-code header not including `Package-Requires' in a case like this is offset by the increase in clarity and accuracy: ##frame-cmds.el## should NOT be specifying that it needs some particular version of ##frame-fns.el##, because it does not.
 
 What happens if I change the version number of ##frame-fns.el## but forget to also update the `Package-Requires' of ##frame-cmds.el##?  Your nifty automatic download is then broken.  Such an oversight is easy to make -- `Package-Requires' is not used by Lisp and is irrelevant to someone who has the necessary libraries in `load-path', as s?he should.  
 
-Using `Package-Requires' to specify dependencies, redundantly and inaccurately  (because overly specific) is just wrong.  The Lisp '''''code''''' deals with library dependencies, using software mechanisms that are rigorous (`require', `load-library', `autoload').  Automating package handling based on header comments is a less robust approach generally, and in the case of `Package-Requires', which mandates a version number, it is just plain wrong.
+Using `Package-Requires' to specify dependencies, redundantly and ''inaccurately''  (because overly specific) is just wrong.  The Lisp '''''code''''' deals with library dependencies, using software mechanisms that are rigorous (`require', `load-library', `autoload').  Automating package handling based on header comments is a less robust approach generally, and in the case of `Package-Requires', which mandates a version number, it is just plain ''wrong''.
 
-Users of Lisp libraries need to learn a minimum of information about `load-path', library dependencies (e.g. `require'), etc.  And in the case of my libraries they are additionally helped by the header section ##Features that might be required by this library"".  That should be more than enough.
+
+Users of Lisp libraries need to learn a minimum of information about `load-path', library dependencies (e.g. `require'), etc.  And in the case of my libraries they are additionally helped by the header section '''##Features that might be required by this library##'''.  That should be more than enough.
 
 For complex, multi-file libraries such as '''[[Icicles]]''' and '''[[Bookmark+]]''' I try to ensure that ##package.el## and [[MELPA]] do the right thing, by providing proper `autoload' cookies or sexps.  But for a simple file like <tt>[[frame-cmds.el]]</tt> I think users should be able to take care of downloading and "installing" what's needed.
 
@@ -77,7 +78,7 @@ For complex, multi-file libraries such as '''[[Icicles]]''' and '''[[Bookmark+]]
 
 ----
 
-By default I meant the author should be able to not specify a version. The tools should accommodate to the programer not the other way around. Although it is unfortunate that most of the time is the other way around. If you don't update the version file it doesn't break, because the version is meant as a minimum required version. I agree with the principle and that package.el has a design flaw. Btw, I have been negligent in thanking you for making my Emacs experience a little bit better. Thank you for writing frame-cmds.el.
+By default I meant the author should be able to not specify a version. The tools should accommodate to the programmer not the other way around. Although it is unfortunate that most of the time is the other way around. If you don't update the version file it doesn't break, because the version is meant as a minimum required version. I agree with the principle and that ##package.el## has a design flaw. Btw, I have been negligent in thanking you for making my Emacs experience a little bit better. Thank you for writing ##frame-cmds.el##.
 
 -- PuercoPop 2013-07-22 19:20 UTC
 
@@ -94,29 +95,29 @@ Thanks to you to for bringing this to my attention. I've been in contact with th
 Old discussion, I know...
 
 ; Fact #1 : You object about MELPA requiring devs to specify dependency versions. TBH, I agree to your abjection.
-; Fact #2 : You *are* actually publishing frame-cmds on MELPA.
-; Fact #3 : frame-cmds' dependency on frame-fns is not advertised anywhere outside of its source code. Not even in MELPA's long package description!
-; Fact #4 : Installation of frame-cmds throug MELPA *just plain fails*.
+; Fact #2 : You *are* actually publishing ##frame-cmds## on MELPA.
+; Fact #3 : ##frame-cmds##' dependency on ##frame-fns## is not advertised anywhere outside of its source code. Not even in MELPA's long package description!
+; Fact #4 : Installation of ##frame-cmds## through MELPA *just plain fails*.
 
 Given above facts I can only see 2 logical options:
-; You keep to your principles : Then you remove frame-cmds from MELPA and you happily move on. People'll find frame-cmds.el at EmacsWiki, read source, and install it without any further fuss.
-; You resolve to keep using MELPA which, some day, will maybe be perfect : Then you clench your teeth and someway arrange for the intended MELPA's installation workflow to actually work with your package. You could even hack a version 0 requirement as suggesed; at least until your pestering the folks at MELPA acomplishes something better ;-)
+; You keep to your principles : Then you remove ##frame-cmds## from MELPA and you happily move on. People'll find ##frame-cmds.el## at EmacsWiki, read source, and install it without any further fuss.
+; You resolve to keep using MELPA which, some day, will maybe be perfect : Then you clench your teeth and someway arrange for the intended MELPA's installation workflow to actually work with your package. You could even hack a version 0 requirement as suggested; at least until your pestering the folks at MELPA accomplishes something better ;-)
 
-Anything else (like keeping a package which cannot be installed without code reading and manual dependency installation in the repository) is just messing around and putting a spoke on MELPA's wheel. Anyway, let me ask a few, rethorical, questions in order to make my point clear
+Anything else (like keeping a package which cannot be installed without code reading and manual dependency installation in the repository) is just messing around and putting a spoke on MELPA's wheel. Anyway, let me ask a few, rhetorical, questions in order to make my point clear
 
-What'd be the point in using any package manager if users have to read sources in order to succesfully install a package?
+What'd be the point in using any package manager if users have to read sources in order to successfully install a package?
 That being the case, wouldn't it be more straightforward to just manually setup the whole thing?
-Does the following look like a sane workflow for frame-cmds installation?
+Does the following look like a sane workflow for ##frame-cmds## installation?
 * M-x package-list
-* Navigate to frame-cmds, then i, x
+* Navigate to ##frame-cmds##, then i, x
 * Check compilation messages to see why compilation failed
-* Back to packag list, RET, read description --> nothing mentioned...
+* Back to package list, RET, read description --> nothing mentioned...
 * d, x
-* Navigate to frame-fns, then i, x
-* Navigate to frame-cmds, then i, x
+* Navigate to ##frame-fns##, then i, x
+* Navigate to ##frame-cmds##, then i, x
 * [shouting] wohooo!! now onto some real work...
 
-Well, that's actually what I went through just an hour ago, thaks very much!
+Well, that's actually what I went through just an hour ago, thanks very much!
 
 -- DavidRequena 2014-07-10 12:36 UTC
 
