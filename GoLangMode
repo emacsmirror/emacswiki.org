@@ -1,3 +1,10 @@
 : ''See GoMode if you're interested in the game Go.''
 
 This page is about the programming language [https://en.wikipedia.org/wiki/Go_%28programming_language%29 Go].
+
+Getting a mode for Go and an intro on how to use it:
+
+* [http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs/ Writing Go in EmacsWriting Go in Emacs] by Dominik Honnef
+
+----
+ProgrammingModes
