@@ -110,7 +110,7 @@ evaluated after rmime.el is loaded:
 
 J. Rulnick's etach can receive and send attachments (i.e. it can attach attachments to outgoing mail and detach attachments from incoming mail).  By default, etach.el does not need any external tool. Thus you can use it on GNU/Linux, Microsoft Windows or MacOSX.
 
-Etach's detach facility does not work on Emacs 23 and later.  It dies immediately due to multiple incompatibilities.
+Etach's detach facility does not work on Emacs 23 and later.  It dies immediately because of multiple incompatibilities, including the switch to mbox format.  Rulnick was informed of this but declined to update the program.
 
 === Get it ===
 
