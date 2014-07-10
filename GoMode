@@ -1,3 +1,5 @@
+''See GoLangMode if you're looking for the programming language Go.''
+
 = GNU Go =
 
 Once you install GNU Go, you will have access to gnugo.el.  Use `M-x gnugo' to play.
