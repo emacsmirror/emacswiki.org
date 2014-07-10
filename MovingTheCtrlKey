@@ -1,3 +1,4 @@
+[[zh:MovingTheCtrlKey_zh_CN]]
 This page explains how to move the Control key. Some users find that this can help to avoid "Emacs pinky" (RepeatedStrainInjury).
 
 First several sections are devoted for Linux solutions. Note that the keyboard mappings are separate for X (graphical) and for virtual consoles. (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual consoles and X.)
