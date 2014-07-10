@@ -5,6 +5,7 @@ This page is about the programming language [https://en.wikipedia.org/wiki/Go_%2
 Getting a mode for Go and an intro on how to use it:
 
 * [http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs/ Writing Go in EmacsWriting Go in Emacs] by Dominik Honnef
+* [https://github.com/dominikh/go-mode.el go-mode.el] by Dominik Honnef, on GitHub
 
 ----
 ProgrammingModes
