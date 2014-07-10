@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 29 14:06:02 2014 (-0700)
+;; Last-Updated: Thu Jul 10 14:41:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7870
+;;     Update #: 7874
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -267,8 +267,8 @@
 ;;
 ;;    `diredp-compressed-file-suffix', `diredp-date-time',
 ;;    `diredp-deletion', `diredp-deletion-file-name',
-;;    `diredp-dir-heading', `diredp-dir-priv', `diredp-display-msg',
-;;    `diredp-exec-priv', `diredp-executable-tag', `diredp-file-name',
+;;    `diredp-dir-heading', `diredp-dir-priv', `diredp-exec-priv',
+;;    `diredp-executable-tag', `diredp-file-name',
 ;;    `diredp-file-suffix', `diredp-flag-mark',
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
 ;;    `diredp-ignored-file-name', `diredp-link-priv',
@@ -547,6 +547,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/10 dadams
+;;     Removed unused face: diredp-display-msg.
 ;; 2014/06/29 dadams
 ;;     dired-get-marked-files, diredp-internal-do-deletions:
 ;;       Remove nils from dired-map-over-marks result.
@@ -3271,14 +3273,6 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "dired+"))
  
 ;;; Face Definitions
-
-;;; Miscellaneous faces.
-(defface diredp-display-msg
-    '((((background dark)) (:foreground "Yellow"))
-      (t                   (:foreground "Blue")))
-  "*Face used for message display."
-  :group 'Dired-Plus)
-(defvar diredp-display-msg 'diredp-display-msg)
 
 ;;; Faces used to fontify buffer when using second level of fontifying.
 (defface diredp-dir-heading
