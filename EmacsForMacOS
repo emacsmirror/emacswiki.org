@@ -10,7 +10,7 @@ X11 Emacs is the "original" emacs running under X11 (installed by default in rec
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
 If you've used Emacs before and already have your own emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
 
-A similar page on a German blog: [http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
+A similar page on a German blog: [https://web.archive.org/web/20120630005123/http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
 
 === OS X Binary Vanilla builds ===
 These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
