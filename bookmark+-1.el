@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul 11 10:28:42 2014 (-0700)
+;; Last-Updated: Fri Jul 11 13:53:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7333
+;;     Update #: 7348
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -17,8 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `cl', `dired', `dired-aux',
-;;   `dired-x', `ffap', `pp', `thingatpt', `thingatpt+'.
+;;   `bookmark', `bookmark+-1', `ffap', `pp', `thingatpt',
+;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -588,7 +588,7 @@
 (unless (fboundp 'file-remote-p) (require 'ffap)) ;; ffap-file-remote-p
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
-(eval-when-compile (require 'cl)) ;; case, multiple-value-bind, typecase (plus, for Emacs 20: dolist)
+(eval-when-compile (require 'cl)) ;; case, multiple-value-bind, typecase (plus, for Emacs 20: dolist, push)
 
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found):
            (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
@@ -660,41 +660,49 @@
 
 ;; Quiet the byte-compiler
 
-(defvar bmkp-auto-light-when-set)       ; Defined in `bookmark+-lit.el'.
-(defvar bmkp-auto-light-when-jump)      ; Defined in `bookmark+-lit.el'.
-(defvar bmkp-light-priorities)          ; Defined in `bookmark+-lit.el'.
-(defvar bmkp-temporary-bookmarking-mode)
-(defvar bmkp-global-auto-idle-bookmark-mode)
-(defvar bookmark-current-point)         ; Defined in `bookmark.el', but not in Emacs 23+.
-(defvar bookmark-edit-annotation-text-func) ; Defined in `bookmark.el'.
-(defvar bookmark-read-annotation-text-func) ; Defined in `bookmark.el', but not in Emacs 23+.
-(defvar bookmark-make-record-function)  ; Defined in `bookmark.el'.
-(defvar desktop-basefilename)           ; Defined in `desktop.el' (Emacs < 22).
-(defvar desktop-base-file-name)         ; Defined in `desktop.el'.
-(defvar desktop-buffer-args-list)       ; Defined in `desktop.el'.
-(defvar desktop-delay-hook)             ; Defined in `desktop.el'.
-(defvar desktop-dirname)                ; Defined in `desktop.el'.
-(defvar desktop-file-modtime)           ; Defined in `desktop.el'.
-(defvar desktop-globals-to-save)        ; Defined in `desktop.el'.
-(defvar desktop-save-mode)              ; Defined in `desktop.el'.
-(defvar desktop-save)                   ; Defined in `desktop.el'.
-(defvar dired-actual-switches)          ; Defined in `dired.el'.
-(defvar dired-buffers)                  ; Defined in `dired.el'.
-(defvar dired-directory)                ; Defined in `dired.el'.
-(defvar dired-guess-shell-case-fold-search) ; Defined in `dired-x.el'.
-(defvar dired-subdir-alist)             ; Defined in `dired.el'.
-(defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
-(defvar icicle-mode)                    ; Defined in `icicle-mode.el'.
-(defvar Info-current-node)              ; Defined in `info.el'.
-(defvar Info-current-file)              ; Defined in `info.el'.
-(defvar Man-arguments)                  ; Defined in `man.el'.
-(defvar read-file-name-completion-ignore-case) ; Emacs 23+.
-(defvar last-repeatable-command)        ; Defined in `repeat.el'.
-(defvar w3m-current-title)              ; Defined in `w3m.el'.
-(defvar w3m-current-url)                ; Defined in `w3m.el'.
-(defvar w3m-mode-map)                   ; Defined in `w3m.el'.
-(defvar wide-n-restrictions)            ; Defined in `wide-n.el'.
-(defvar woman-last-file-name)           ; Defined in `woman.el'.
+(defvar bmkp-auto-light-when-set)       ; In `bookmark+-lit.el'
+(defvar bmkp-auto-light-when-jump)      ; In `bookmark+-lit.el'
+(defvar bmkp-edit-bookmark-record-mode-map) ; Here, via `define-derived-mode'
+(defvar bmkp-edit-bookmark-records-mode-map) ; Here, via `define-derived-mode'
+(defvar bmkp-edit-tags-mode-map)        ; Here, via `define-derived-mode'
+(defvar bmkp-light-priorities)          ; In `bookmark+-lit.el'
+(defvar bmkp-temporary-bookmarking-mode) ;  Here
+(defvar bmkp-global-auto-idle-bookmark-mode) ; Here, via `define-globalized-minor-mode'
+(defvar bookmark-current-point)         ; In `bookmark.el', but not in Emacs 23+
+(defvar bookmark-edit-annotation-text-func) ; In `bookmark.el'
+(defvar bookmark-read-annotation-text-func) ; In `bookmark.el', but not in Emacs 23+
+(defvar bookmark-make-record-function)  ; In `bookmark.el'
+(defvar desktop-basefilename)           ; In `desktop.el' (Emacs < 22)
+(defvar desktop-base-file-name)         ; In `desktop.el'
+(defvar desktop-buffer-args-list)       ; In `desktop.el'
+(defvar desktop-delay-hook)             ; In `desktop.el'
+(defvar desktop-dirname)                ; In `desktop.el'
+(defvar desktop-file-modtime)           ; In `desktop.el'
+(defvar desktop-globals-to-save)        ; In `desktop.el'
+(defvar desktop-save-mode)              ; In `desktop.el'
+(defvar desktop-save)                   ; In `desktop.el'
+(defvar dired-actual-switches)          ; In `dired.el'
+(defvar dired-buffers)                  ; In `dired.el'
+(defvar dired-directory)                ; In `dired.el'
+(defvar dired-guess-shell-case-fold-search) ; In `dired-x.el'
+(defvar dired-subdir-alist)             ; In `dired.el'
+(defvar gnus-article-current)           ; In `gnus-sum.el'
+(defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
+(defvar icicle-completion-candidates)	; In `icicles-var.el'
+(defvar icicle-mode)                    ; In `icicle-mode.el'
+(defvar icicle-multi-completing-p)	; In `icicles-var.el'
+(defvar icicle-saved-completion-candidates) ; In `icicles-var.el'
+(defvar icicle-searching-p)		; In `icicles-var.el'
+(defvar Info-current-node)              ; In `info.el'
+(defvar Info-current-file)              ; In `info.el'
+(defvar Man-arguments)                  ; In `man.el'
+(defvar read-file-name-completion-ignore-case) ; Emacs 23+
+(defvar last-repeatable-command)        ; In `repeat.el'
+(defvar w3m-current-title)              ; In `w3m.el'
+(defvar w3m-current-url)                ; In `w3m.el'
+(defvar w3m-mode-map)                   ; In `w3m.el'
+(defvar wide-n-restrictions)            ; In `wide-n.el'
+(defvar woman-last-file-name)           ; In `woman.el'
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
@@ -973,7 +981,7 @@ If an integer, then use a menu only if there are fewer bookmark
   (let ((fns  '((lambda () (let ((ff  (function-called-at-point)))
                              (and ff  (symbolp ff)  (symbol-name ff)))))))
     (when (fboundp 'region-or-non-nil-symbol-name-nearest-point) ; Defined in `thingatpt+.el'.
-      (push 'region-or-non-nil-symbol-name-nearest-point fns))
+      (setq fns  (cons 'region-or-non-nil-symbol-name-nearest-point fns)))
     fns)
   "Functions to produce the default name for a new bookmark.
 \(The default name for an *existing* bookmark is obtained using
