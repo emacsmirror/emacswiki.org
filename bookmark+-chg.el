@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul  6 11:05:26 2014 (-0700)
+;; Last-Updated: Fri Jul 11 10:32:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15678
+;;     Update #: 15681
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/07/11 dadams
+;;     bookmark-load: Do not customize-save-variable if no change to bmkp-last-as-first-bookmark-file.
 ;; 2014/07/06 dadams
 ;;     Renamed: bmkp-show-end-of-region, bmkp-w3m-allow-multi-tabs to *-flag.
 ;; 2014/07/05 dadams
