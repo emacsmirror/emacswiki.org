@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 27 10:49:20 2014 (-0700)
+;; Last-Updated: Fri Jul 11 14:11:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3025
+;;     Update #: 3029
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -44,11 +44,11 @@
 ;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
 ;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
 ;;   `setup-keys', `simple+', `speedbar', `start', `strings',
-;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `window+', `zoom-frm'.
+;;   `subr+', `subr-21', `swiss-move', `synonyms', `thing-cmds',
+;;   `thingatpt', `thingatpt+', `thumb-frm', `timer', `timer+',
+;;   `unaccent', `vc', `vc+', `vc-', `vc-hooks', `vc-hooks+',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
