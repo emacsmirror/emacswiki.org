@@ -179,7 +179,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: push)
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read,
