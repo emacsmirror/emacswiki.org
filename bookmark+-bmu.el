@@ -328,7 +328,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist)
+(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist, push)
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'bookmark)
