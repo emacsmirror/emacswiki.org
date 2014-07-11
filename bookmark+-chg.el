@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul 11 10:32:55 2014 (-0700)
+;; Last-Updated: Fri Jul 11 14:03:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15681
+;;     Update #: 15684
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,6 +148,7 @@
 ;;
 ;; 2014/07/11 dadams
 ;;     bookmark-load: Do not customize-save-variable if no change to bmkp-last-as-first-bookmark-file.
+;;     bmkp-new-bookmark-default-names: Use setq, not push, for Emacs 20.
 ;; 2014/07/06 dadams
 ;;     Renamed: bmkp-show-end-of-region, bmkp-w3m-allow-multi-tabs to *-flag.
 ;; 2014/07/05 dadams
@@ -1699,6 +1700,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2014/07/11 dadams
+;;     bmkp-define-sort-command: Use setq, not push, for Emacs 20.
 ;; 2014/07/06 dadams
 ;;     bmkp-menu-bar-make-toggle: Redefined - no longer use menu-bar-make-toggle.  Support keywords.
 ;; 2014/05/27 dadams
