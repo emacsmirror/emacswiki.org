@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 10 14:41:29 2014 (-0700)
+;; Last-Updated: Fri Jul 11 14:08:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7874
+;;     Update #: 7989
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -20,13 +20,13 @@
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `dired', `dired+',
-;;   `dired-aux', `dired-x', `ffap', `fit-frame', `frame-fns',
-;;   `help+20', `image-dired', `image-file', `info', `info+20',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
-;;   `pp+', `second-sel', `strings', `subr-21', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cmds-menu', `dired', `dired+', `dired-aux',
+;;   `dired-x', `easymenu', `ffap', `fit-frame', `frame-fns',
+;;   `help+20', `highlight', `image-dired', `image-file', `info',
+;;   `info+20', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -265,17 +265,17 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `diredp-compressed-file-suffix', `diredp-date-time',
-;;    `diredp-deletion', `diredp-deletion-file-name',
-;;    `diredp-dir-heading', `diredp-dir-priv', `diredp-exec-priv',
-;;    `diredp-executable-tag', `diredp-file-name',
-;;    `diredp-file-suffix', `diredp-flag-mark',
+;;    `diredp-autofile-name', `diredp-compressed-file-suffix',
+;;    `diredp-date-time', `diredp-deletion',
+;;    `diredp-deletion-file-name', `diredp-dir-heading',
+;;    `diredp-dir-priv', `diredp-exec-priv', `diredp-executable-tag',
+;;    `diredp-file-name', `diredp-file-suffix', `diredp-flag-mark',
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
 ;;    `diredp-ignored-file-name', `diredp-link-priv',
 ;;    `diredp-mode-line-flagged', `diredp-mode-line-marked'
 ;;    `diredp-no-priv', `diredp-number', `diredp-other-priv',
 ;;    `diredp-rare-priv', `diredp-read-priv', `diredp-symlink',
-;;    `diredp-write-priv'.
+;;    `diredp-tagged-autofile-name', `diredp-write-priv'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -327,6 +327,7 @@
 ;;    `diredp-find-line-file-other-window',
 ;;    `diredp-flag-region-files-for-deletion',
 ;;    `diredp-grep-this-file', `diredp-hardlink-this-file',
+;;    `diredp-highlight-autofiles-mode',
 ;;    `diredp-image-dired-comment-file',
 ;;    `diredp-image-dired-comment-files-recursive',
 ;;    `diredp-image-dired-copy-with-exif-name',
@@ -402,6 +403,7 @@
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
 ;;    `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
+;;    `diredp-highlight-autofiles-mode',
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
@@ -427,7 +429,7 @@
 ;;    `diredp-get-files-for-dir', `diredp-get-subdirs',
 ;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
 ;;    `diredp-hide/show-details' (Emacs 24.4+),
-;;    `diredp-image-dired-required-msg',
+;;    `diredp-highlight-autofiles', `diredp-image-dired-required-msg',
 ;;    `diredp-internal-do-deletions', `diredp-list-files',
 ;;    `diredp-looking-at-p', `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
@@ -548,6 +550,9 @@
 ;;; Change Log:
 ;;
 ;; 2014/07/10 dadams
+;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
+;;            diredp-autofile-name, diredp-tagged-autofile-name.
+;;     Soft-require bookmark+.el.  Soft-require highlight.el if bookmark+.el is provided.
 ;;     Removed unused face: diredp-display-msg.
 ;; 2014/06/29 dadams
 ;;     dired-get-marked-files, diredp-internal-do-deletions:
@@ -1202,6 +1207,18 @@
                      ;; dired-run-shell-command, dired-shell-stuff-it
 (require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
 (require 'autofit-frame nil t) ;; (no error if not found) fit-frame-if-one-window
+(require 'bookmark+ nil t) ;; (no error if not found)
+ ;; bmkp-autofile-add-tags, bmkp-autofile-remove-tags, bmkp-autofile-set, bmkp-copied-tags,
+ ;; bmkp-current-bookmark-file, bmkp-empty-file, bmkp-get-autofile-bookmark,
+ ;; bmkp-get-bookmark-in-alist, bmkp-get-tags, bmkp-read-tag-completing,
+ ;; bmkp-read-tags-completing, bmkp-refresh/rebuild-menu-list, bmkp-remove-all-tags,
+ ;; bmkp-same-file-p, bmkp-set-bookmark-file-bookmark, bmkp-set-sequence-bookmark,
+ ;; bmkp-set-tag-value, bmkp-some, bmkp-switch-bookmark-file, bmkp-tag-name
+
+;; For now at least, `highlight.el' is needed only if you use `bookmark+.el'.
+(when (featurep 'bookmark+) (require 'highlight nil t)) ;; (no error if not found):
+ ;; hlt-highlight-region
+
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
 (require 'image-file nil t) ;; (no error if not found): image-file-name-regexp
 (require 'image-dired nil t) ;; (no error if not found):
@@ -1247,6 +1264,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (provide 'dired+)
 (require 'dired+)                       ; Ensure loaded before compile this.
 
@@ -1254,11 +1272,12 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar bmkp-copied-tags)               ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'
 (defvar bookmark-default-file)          ; In `bookmark.el'
+(defvar dired-details-state)		; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)     ; In `dired-x.el'
 (defvar dired-switches-alist)
 (defvar dired-subdir-switches)
-(defvar dired-touch-program) ; Emacs 22+
-(defvar dired-use-ls-dired) ; Emacs 22+
+(defvar dired-touch-program)            ; Emacs 22+
+(defvar dired-use-ls-dired)             ; Emacs 22+
 (defvar diredp-hide-details-initially-flag) ; Here, Emacs 24.4+
 (defvar diredp-hide-details-last-state) ; Here, Emacs 24.4+
 (defvar diredp-hide-details-propagate-flag) ; Here, Emacs 24.4+
@@ -1267,6 +1286,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar filesets-data)
 (defvar grep-use-null-device)
 (defvar icicle-file-sort)               ; In `icicles-opt.el'
+(defvar icicle-ignored-directories)	; In `icicles-opt.el'
 (defvar icicle-sort-comparer)           ; In `icicles-opt.el'
 (defvar image-dired-line-up-method)     ; In `image-dired.el'
 (defvar image-dired-main-image-directory) ; In `image-dired.el'
@@ -1274,9 +1294,10 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar image-dired-thumb-height)       ; In `image-dired.el'
 (defvar image-dired-thumb-width)        ; In `image-dired.el'
 (defvar image-dired-widget-list)        ; In `image-dired.el'
-(defvar tooltip-mode)                   ; In `tooltip.el'
 (defvar minibuffer-default-add-function) ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)          ; In `mouse3.el'
+(defvar tooltip-mode)                   ; In `tooltip.el'
+(defvar vc-directory-exclusion-list)    ; In `vc'
 (defvar w32-browser-wait-time)          ; In `w32-browser.el'
 
 
@@ -1358,6 +1379,36 @@ name and DESCRIPTION describes DRIVE."
 (defcustom diredp-wrap-around-flag t
   "*Non-nil means Dired \"next\" commands wrap around to buffer beginning."
   :type 'boolean :group 'Dired-Plus)
+
+;; Emacs 20 only.
+;;;###autoload
+(unless (fboundp 'define-minor-mode)
+  (defcustom diredp-highlight-autofiles-mode t
+    "*Non-nil means highlight names of files that are autofile bookmarks.
+Autofiles that have tags are highlighted using face
+`diredp-tagged-autofile-name'.  Those with no tags are highlighted
+using face `diredp-autofile-name'.
+
+Setting this option directly does not take effect; use either
+\\[customize] or command `diredp-highlight-autofiles-mode'.
+
+NOTE: When `dired+.el' is loaded (for the first time per Emacs
+session), the highlighting is turned ON, regardless of the option
+value.  To prevent this and have the highlighting OFF by default, you
+must do one of the following:
+
+ * Put (diredp-highlight-autofiles-mode -1) in your init file, AFTER
+   it loads `dired+.el'.
+
+ * Customize the option to `nil', AND ensure that your `custom-file'
+   (or the `custom-saved-variables' part of your init file) is
+   evaluated before `dired+.el' is loaded.
+
+This option has no effect unless you use libraries `Bookmark and
+`highlight.el'."
+    :set        (lambda (symbol value) (diredp-highlight-autofiles-mode (if value 1 -1)))
+    :initialize 'custom-initialize-default
+    :type 'boolean :group 'Dired-Plus :require 'dired+))
 
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
   (defvar diredp-hide-details-last-state diredp-hide-details-initially-flag
@@ -3274,7 +3325,6 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;; Face Definitions
 
-;;; Faces used to fontify buffer when using second level of fontifying.
 (defface diredp-dir-heading
     '((((background dark)) (:foreground "Yellow" :background "#00003F3F3434")) ; ~ dark green
       (t                   (:foreground "Blue" :background "Pink")))
@@ -3424,6 +3474,20 @@ In particular, inode number, number of hard links, and file size."
   "*Face used for link privilege indicator (l) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-link-priv 'diredp-link-priv)
+
+(defface diredp-autofile-name
+    '((((background dark)) (:background "#FFFF31273127")) ; Very dark blue
+      (t                   (:background "Pale Goldenrod")))
+  "*Face used in Dired for names of files that are autofile bookmarks."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-autofile-name 'diredp-autofile-name)
+
+(defface diredp-tagged-autofile-name
+    '((((background dark)) (:background "#FFFF07AE07AE")) ; Dark magenta
+      (t                   (:background "Pale Green")))
+  "*Face used in Dired for names of files that are autofile bookmarks."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-tagged-autofile-name 'diredp-tagged-autofile-name)
 
 ;; Fix Emacs 20 recognition of fields up through file name when size is expressed using `k' etc.
 (when (and (< emacs-major-version 21)  (not (boundp 'diredp-loaded-p))
@@ -5849,6 +5913,90 @@ You need library `bookmark+.el' to use this command."
                                                                    prefix))
                                 1 'set-tag-value t))
   (diredp-previous-line 1))
+
+
+(when (and (fboundp 'bmkp-get-autofile-bookmark) ; Defined in `bookmark+-1.el'.
+           (fboundp 'hlt-highlight-region)) ; Defined in `highlight.el'.
+  (cond ((fboundp 'define-minor-mode)
+         ;; Emacs 21+.  Use `eval' so that even if the library is byte-compiled with Emacs 20,
+         ;; loading it into Emacs 21+ will define variable `diredp-highlight-autofiles-mode'.
+         (eval '(define-minor-mode diredp-highlight-autofiles-mode
+                 "Toggle automatic highlighting of autofile bookmarks.
+When you turn this on, it ensures that your bookmark file is loaded.
+
+NOTE: This mode is ON BY DEFAULT.  More precisely, when `dired+.el' is
+loaded (for the first time per Emacs session), the mode is turned ON.
+To prevent this and have the mode OFF by default, you must do one of
+the following:
+
+ * Put (diredp-highlight-autofiles-mode -1) in your init file, AFTER
+   it loads `dired+.el'.
+
+ * Customize option `diredp-highlight-autofiles-mode' to `nil', AND
+   ensure that your `custom-file' (or the `custom-saved-variables'
+   part of your init file) is evaluated before `dired+.el' is loaded.
+
+You need libraries `Bookmark and `highlight.el' for this command."
+                 :init-value t :global t :group 'Dired-Plus :require 'dired+
+                 (if (not diredp-highlight-autofiles-mode)
+                     (remove-hook 'dired-after-readin-hook #'diredp-highlight-autofiles)
+                   (add-hook 'dired-after-readin-hook #'diredp-highlight-autofiles)
+                   (bookmark-maybe-load-default-file))
+                 (when (derived-mode-p 'dired-mode) (dired-revert nil nil))
+                 (when (interactive-p)
+                   (message "Dired highlighting of autofile bookmarks is now %s"
+                            (if diredp-highlight-autofiles-mode "ON" "OFF"))))))
+        (t;; Emacs 20.
+         (defun diredp-highlight-autofiles-mode (&optional arg)
+           "Toggle automatic highlighting of autofile bookmarks.
+When you turn this on, it ensures that your bookmark file is loaded.
+
+NOTE: This mode is ON BY DEFAULT.  More precisely, when `dired+.el' is
+loaded (for the first time per Emacs session), the mode is turned ON.
+To prevent this and have the mode OFF by default, you must do one of
+the following:
+
+ * Put (diredp-highlight-autofiles-mode -1) in your init file, AFTER
+   it loads `dired+.el'.
+
+ * Customize option `diredp-highlight-autofiles-mode' to `nil', AND
+   ensure that your `custom-file' (or the `custom-saved-variables'
+   part of your init file) is evaluated before `dired+.el' is loaded.
+
+You need libraries `Bookmark and `highlight.el' for this command."
+           (interactive (list (or current-prefix-arg 'toggle)))
+           (setq diredp-highlight-autofiles-mode  (if (eq arg 'toggle)
+                                                      (not diredp-highlight-autofiles-mode)
+                                                    (> (prefix-numeric-value arg) 0)))
+           (if (not diredp-highlight-autofiles-mode)
+               (remove-hook 'dired-after-readin-hook #'diredp-highlight-autofiles)
+             (add-hook 'dired-after-readin-hook #'diredp-highlight-autofiles)
+             (bookmark-maybe-load-default-file))
+           (when (derived-mode-p 'dired-mode) (dired-revert nil nil))
+           (when (interactive-p)
+             (message "Dired highlighting of autofile bookmarks is now %s"
+                      (if diredp-highlight-autofiles-mode "ON" "OFF"))))))
+
+  ;; Turn it ON BY DEFAULT.
+  (unless (or (boundp 'diredp-loaded-p)  (get 'diredp-highlight-autofiles-mode 'saved-value))
+    (diredp-highlight-autofiles-mode 1))
+
+  (defun diredp-highlight-autofiles ()
+    "Highlight files that are autofile bookmarks.
+Highlighting uses face `diredp-autofile-name'."
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward dired-move-to-filename-regexp nil t)
+        ;; If Dired details are hidden the match data gets changed.
+        (let* ((bmk    (save-match-data
+                         (bmkp-get-autofile-bookmark (buffer-substring
+                                                      (match-end 0) (line-end-position)))))
+               (tags  (and bmk  (bmkp-get-tags bmk))))
+          (when bmk
+            (hlt-highlight-region (match-end 0) (line-end-position)
+                                  (if tags
+                                      'diredp-tagged-autofile-name
+                                    'diredp-autofile-name))))))))
 
 ;;;###autoload
 (defun diredp-do-bookmark (&optional prefix arg) ; Bound to `M-b'
