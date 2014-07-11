@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul  6 09:13:53 2014 (-0700)
+;; Last-Updated: Fri Jul 11 10:28:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7329
+;;     Update #: 7333
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3035,9 +3035,10 @@ With a prefix argument, switch the bookmark file currently used,
 *replacing* all currently existing bookmarks with the newly loaded
 bookmarks.  In this case, the value of `bmkp-current-bookmark-file'is
 backed up to `bmkp-last-bookmark-file' and then changed to FILE, so
-bookmarks will subsequently be saved to FILE.  If
-`bmkp-last-as-first-bookmark-file' is non-nil then its value is also
-changed to FILE and it is saved persistently, so that the next Emacs
+bookmarks will subsequently be saved to FILE.
+
+If `bmkp-last-as-first-bookmark-file' is non-nil and is not FILE then
+it is changed to FILE and saved persistently, so that the next Emacs
 session will start with it as the bookmark file.  (The value of
 `bookmark-default-file' is unaffected.)
 
@@ -3104,7 +3105,8 @@ bookmark files that were created using the bookmark functions."
                      bmkp-current-bookmark-file         file
                      bookmark-alist                     blist
                      bookmark-alist-modification-count  0)
-               (when bmkp-last-as-first-bookmark-file
+               (when (and bmkp-last-as-first-bookmark-file
+                          (not (bmkp-same-file-p bmkp-last-as-first-bookmark-file file)))
                  (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
               (t
                (bookmark-import-new-list blist)
