@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 17:25:15 2013 (-0800)
+;; Last-Updated: Thu Jul 10 13:59:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 692
+;;     Update #: 693
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hexrgb', `thingatpt', `thingatpt+'.
+;;   `color', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -135,7 +135,7 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
-;;  * You can search within text-property or overlay-property zpnes of
+;;  * You can search within text-property or overlay-property zones of
 ;;    the buffer or active region.  Example: search within zones
 ;;    having a `face' text property with a value of
 ;;    `font-lock-comment-face' or `font-lock-string-face'.
