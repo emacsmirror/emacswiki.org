@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sat Jul  5 22:25:13 2014 (-0700)
+;; Last-Updated: Fri Jul 11 13:43:22 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 167
+;;     Update #: 168
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -281,7 +281,7 @@ DOC-STRING is the doc string of the new command."
     `(progn
       (setq bmkp-sort-orders-alist  (bmkp-assoc-delete-all ,sort-order (copy-sequence
                                                                         bmkp-sort-orders-alist)))
-      (push (cons ,sort-order ',comparer) bmkp-sort-orders-alist)
+      (setq bmkp-sort-orders-alist  (cons (cons ,sort-order ',comparer) bmkp-sort-orders-alist))
       (defun ,command ()
         ,(concat doc-string "\nRepeating this command cycles among normal sort, reversed \
 sort, and unsorted.")
