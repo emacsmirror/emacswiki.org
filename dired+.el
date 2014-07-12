@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 11 17:17:33 2014 (-0700)
+;; Last-Updated: Sat Jul 12 06:46:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7994
+;;     Update #: 7997
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -549,6 +549,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/12 dadams
+;;     Moved diredp-highlight-autofiles before diredp-highlight-autofiles-mode, so will be
+;;     defined for first revert.
 ;; 2014/07/11 dadams
 ;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
 ;;            diredp-autofile-name, diredp-tagged-autofile-name.
@@ -5922,6 +5925,24 @@ You need library `bookmark+.el' to use this command."
 
 (when (and (fboundp 'bmkp-get-autofile-bookmark) ; Defined in `bookmark+-1.el'.
            (fboundp 'hlt-highlight-region)) ; Defined in `highlight.el'.
+
+  (defun diredp-highlight-autofiles ()
+    "Highlight files that are autofile bookmarks.
+Highlighting uses face `diredp-autofile-name'."
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward dired-move-to-filename-regexp nil t)
+        ;; If Dired details are hidden the match data gets changed.
+        (let* ((bmk    (save-match-data
+                         (bmkp-get-autofile-bookmark (buffer-substring
+                                                      (match-end 0) (line-end-position)))))
+               (tags  (and bmk  (bmkp-get-tags bmk))))
+          (when bmk
+            (hlt-highlight-region (match-end 0) (line-end-position)
+                                  (if tags
+                                      'diredp-tagged-autofile-name
+                                    'diredp-autofile-name)))))))
+
   (cond ((fboundp 'define-minor-mode)
          ;; Emacs 21+.  Use `eval' so that even if the library is byte-compiled with Emacs 20,
          ;; loading it into Emacs 21+ will define variable `diredp-highlight-autofiles-mode'.
@@ -5985,23 +6006,7 @@ You need libraries `Bookmark and `highlight.el' for this command."
   ;; Turn it ON BY DEFAULT.
   (unless (or (boundp 'diredp-loaded-p)  (get 'diredp-highlight-autofiles-mode 'saved-value))
     (diredp-highlight-autofiles-mode 1))
-
-  (defun diredp-highlight-autofiles ()
-    "Highlight files that are autofile bookmarks.
-Highlighting uses face `diredp-autofile-name'."
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward dired-move-to-filename-regexp nil t)
-        ;; If Dired details are hidden the match data gets changed.
-        (let* ((bmk    (save-match-data
-                         (bmkp-get-autofile-bookmark (buffer-substring
-                                                      (match-end 0) (line-end-position)))))
-               (tags  (and bmk  (bmkp-get-tags bmk))))
-          (when bmk
-            (hlt-highlight-region (match-end 0) (line-end-position)
-                                  (if tags
-                                      'diredp-tagged-autofile-name
-                                    'diredp-autofile-name))))))))
+  )
 
 ;;;###autoload
 (defun diredp-do-bookmark (&optional prefix arg) ; Bound to `M-b'
