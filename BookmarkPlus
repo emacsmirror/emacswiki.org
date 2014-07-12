@@ -1812,8 +1812,9 @@ See FileNameCache and the Emacs manual, node [[Manual:File Name Cache|`File Name
 
 Finally, if you use libraries '''[[Dired+]]''' and '''[[HighlightLibrary|Highlight]]''' (<tt>[[highlight.el]]</tt>) then
 autofiles are highlighted specially in [[Dired]], and the highlighting
-indicates whether the file is tagged.
+indicates whether the file is tagged. Here is a screenshot:
 
+[[image:DrewsEmacsDiredAutofiles]]
 
 
 
