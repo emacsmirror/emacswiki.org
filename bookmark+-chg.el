@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul 11 14:03:32 2014 (-0700)
+;; Last-Updated: Fri Jul 11 19:47:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15684
+;;     Update #: 15688
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1032,6 +1032,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/11 dadams
+;;     bmkp-bmenu-highlight-menu: Added item Toggle Autofile Highlighting in Dired.
 ;; 2014/07/06 dadams
 ;;     Toggle submenu: added lots, improved.
 ;; 2014/07/05 dadams
@@ -1525,6 +1527,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2014/07/11 dadams
+;;     bmkp-highlight-menu: Added item Toggle Autofile Highlighting in Dired.
 ;; 2014/07/06 dadams
 ;;     Removed: bmkp-options-menu.  Use bmkp-bmenu-toggle-menu, and rename Toggle, not Toggle Option.
 ;;     Removed individual toggle commands from menu-bar-bookmark-map (Bookmarks).
