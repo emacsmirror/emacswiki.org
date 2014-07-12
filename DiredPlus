@@ -162,12 +162,34 @@ Here are screenshots of the various '''Dired+''' menus. Using the menus is a goo
 ; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
 
 
-The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menubar menu '''[[#SingleBookmarkMenu|Immediate]]''' (aka '''Single'''). 
+The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menu-bar menu '''[[#SingleBookmarkMenu|Immediate]]''' (aka '''Single'''). 
 
 
 ; '''Region''': [[image:DiredPlusPopupRegionMenu]]
 
 The '''Region''' menu you get depends on whether and how you use library <tt>[[mouse3.el]]</tt> -- see '''[[Mouse3]]'''.  The '''Region''' menu shown here has lots of submenus.
+
+The first submenu shown here, '''Dired/name''' corresponds exactly to the major-mode, and it has submenus corresponding to all of the menu-bar menus provided by '''Dired+'''.  The other submenus shown here (from library '''[[Mouse3]]''') are as follows.
+
+;; '''Selected Files''': [[image:DiredPlusPopupRegionSelectedFilesMenu]]
+
+;; '''Remove/Replace Rectangle''' (available only in [[WDired]] mode, i.e., when Dired is writable): [[image:DiredPlusPopupRegionRemoveRectMenu]] 
+
+;; '''Copy''': [[image:DiredPlusPopupRegionCopyMenu]]
+
+;; '''Register''': [[image:DiredPlusPopupRegionRegisterMenu]]
+
+;; '''Rectangle''' (items except '''Copy to Register''' available only in [[WDired]] mode): [[image:DiredPlusPopupRegionRectangleMenu]]
+
+;; '''Change Text''' (available only in [[WDired]] mode): [[image:DiredPlusPopupRegionChangeTextMenu]]
+
+;; '''Check, Correct, Convert''' (items except the first three available only in [[WDired]] mode): [[image:DiredPlusPopupRegionCheckCorrectMenu]]
+
+;; '''Highlight''': [[image:DiredPlusPopupRegionHighlightMenu]]
+
+;; '''Print''': [[image:DiredPlusPopupRegionPrintMenu]]
+
+;; '''Misc''': [[image:DiredPlusPopupRegionMiscMenu]]
 
 
 
@@ -178,7 +200,7 @@ The '''Region''' menu you get depends on whether and how you use library <tt>[[m
 
 
 [:SubdirMenu]
-=== Subdir Menu ===
+=== Subdir (aka Dir) Menu-Bar Menu ===
 
 If you use '''MenuBarPlus''' (library <tt>[[menu-bar+.el]]</tt>) then this menu is called '''Dir'''.
 
@@ -198,7 +220,7 @@ If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own 
 
 
 [:MarkMenu]
-=== Mark Menu ===
+=== Mark Menu-Bar Menu ===
 
 ; '''Mark''': [[image:DiredPlusMarkMenu]]
 
@@ -209,14 +231,14 @@ The '''Mark''' menu has a '''Tagged''' submenu:
 
 
 [:RegexpMenu]
-=== Regexp Menu ===
+=== Regexp Menu-Bar Menu ===
 
 ; '''Regexp''': [[image:DiredPlusRegexpMenu]]
 
 
 
 [:MultipleMenu]
-=== Operate Menu ===
+=== Operate (aka Multiple) Menu-Bar Menu ===
 
 If you use '''MenuBarPlus''' then this menu is called '''Multiple'''.
 
@@ -231,7 +253,7 @@ If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
 
 [:SingleMenu]
-=== Immediate Menu ===
+=== Immediate (aka Single) Menu-Bar Menu ===
 
 If you use '''MenuBarPlus''' then this menu is called '''Single'''.
 
