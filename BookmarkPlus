@@ -1810,6 +1810,10 @@ function, directly or indirectly:
 See FileNameCache and the Emacs manual, node [[Manual:File Name Cache|`File Name Cache']].
 
 
+Finally, if you use libraries '''[[Dired+]]''' and '''[[HighlightLibrary|Highlight]]''' (<tt>[[highlight.el]]</tt>) then
+autofiles are highlighted specially in [[Dired]], and the highlighting
+indicates whether the file is tagged.
+
 
 
 
