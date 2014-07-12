@@ -233,7 +233,7 @@ then that last menu item is not present, and when the region is
 empty you get a different popup menu which pertains only to the
 file where you clicked `mouse-3'.
 
-
+You can see the popup menus for '''Dired+''' [[DiredPlus#Mouse3PopupMenus|here]].
 
 
 
