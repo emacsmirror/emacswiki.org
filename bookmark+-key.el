@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun Jul  6 10:59:29 2014 (-0700)
+;; Last-Updated: Fri Jul 11 19:42:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 698
+;;     Update #: 700
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -614,69 +614,79 @@
 
 ;; `bmkp-highlight-menu' of vanilla `Bookmarks' menu: `Highlight'
 
-(when (featurep 'bookmark+-lit)
+(when (or (featurep 'bookmark+-lit)
+          (and (fboundp 'diredp-highlight-autofiles-mode)  (featurep 'highlight)))
   (defvar bmkp-highlight-menu (make-sparse-keymap)
     "`Highlight' submenu for menu-bar `Bookmarks' menu.")
   (define-key menu-bar-bookmark-map [highlight] (cons "Highlight" bmkp-highlight-menu))
 
-  (define-key bmkp-highlight-menu [bmkp-unlight-bookmarks]
-    '(menu-item "Unhighlight All" bmkp-unlight-bookmarks
-      :help "Unhighlight all bookmarks (everywhere)"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-this-buffer]
-    '(menu-item "Unhighlight All in Buffer" bmkp-unlight-this-buffer
-      :help "Unhighlight all bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-non-autonamed-this-buffer]
-    '(menu-item "Unhighlight All Non-Autonamed in Buffer" bmkp-unlight-non-autonamed-this-buffer
-      :help "Unhighlight all non-autonamed bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-autonamed-this-buffer]
-    '(menu-item "Unhighlight All Autonamed in Buffer" bmkp-unlight-autonamed-this-buffer
-      :help "Unhighlight all autonamed bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-bookmark]
-    '(menu-item "Unhighlight One..." bmkp-unlight-bookmark
-      :help "Unhighlight a bookmark"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-this-buffer]
-    '(menu-item "Unhighlight One in Buffer..." bmkp-unlight-bookmark-this-buffer
-      :help "Unhighlight a bookmark in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-here]
-    '(menu-item "Unhighlight This One" bmkp-unlight-bookmark-here
-      :help "Unhighlight a bookmark at point or on its line"))
+  (when (featurep 'bookmark+-lit)
+    (define-key bmkp-highlight-menu [bmkp-unlight-bookmarks]
+      '(menu-item "Unhighlight All" bmkp-unlight-bookmarks
+        :help "Unhighlight all bookmarks (everywhere)"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-this-buffer]
+      '(menu-item "Unhighlight All in Buffer" bmkp-unlight-this-buffer
+        :help "Unhighlight all bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-non-autonamed-this-buffer]
+      '(menu-item "Unhighlight All Non-Autonamed in Buffer" bmkp-unlight-non-autonamed-this-buffer
+        :help "Unhighlight all non-autonamed bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-autonamed-this-buffer]
+      '(menu-item "Unhighlight All Autonamed in Buffer" bmkp-unlight-autonamed-this-buffer
+        :help "Unhighlight all autonamed bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-bookmark]
+      '(menu-item "Unhighlight One..." bmkp-unlight-bookmark
+        :help "Unhighlight a bookmark"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-this-buffer]
+      '(menu-item "Unhighlight One in Buffer..." bmkp-unlight-bookmark-this-buffer
+        :help "Unhighlight a bookmark in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-unlight-bookmark-here]
+      '(menu-item "Unhighlight This One" bmkp-unlight-bookmark-here
+        :help "Unhighlight a bookmark at point or on its line"))
 
-  (define-key bmkp-highlight-menu [separator-1] '("--")) ;------------------------------------------
-  (define-key bmkp-highlight-menu [bmkp-light-bookmarks-in-region]
-    '(menu-item "Highlight All in Region" bmkp-light-bookmarks-in-region
-      :help "Highlight all bookmarks in the region"))
-  (define-key bmkp-highlight-menu [bmkp-light-this-buffer]
-    '(menu-item "Highlight All in Buffer" bmkp-light-this-buffer
-      :help "Highlight all bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-light-non-autonamed-this-buffer]
-    '(menu-item "Highlight All Non-Autonamed in Buffer" bmkp-light-non-autonamed-this-buffer
-      :help "Highlight all non-autonamed bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-light-autonamed-this-buffer]
-    '(menu-item "Highlight All Autonamed in Buffer" bmkp-light-autonamed-this-buffer
-      :help "Highlight all autonamed bookmarks in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-light-navlist-bookmarks]
-    '(menu-item "Highlight All in Navigation List" bmkp-light-navlist-bookmarks
-      :help "Highlight all bookmarks in the navigation list"))
-  (define-key bmkp-highlight-menu [bmkp-light-bookmark-this-buffer]
-    '(menu-item "Highlight One in Buffer..." bmkp-light-bookmark-this-buffer
-      :help "Highlight a bookmark in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-light-bookmark]
-    '(menu-item "Highlight One..." bmkp-light-bookmark
-      :help "Highlight a bookmark"))
+    (define-key bmkp-highlight-menu [separator-2] '("--")) ;------------------------------------------
+    (define-key bmkp-highlight-menu [bmkp-light-bookmarks-in-region]
+      '(menu-item "Highlight All in Region" bmkp-light-bookmarks-in-region
+        :help "Highlight all bookmarks in the region"))
+    (define-key bmkp-highlight-menu [bmkp-light-this-buffer]
+      '(menu-item "Highlight All in Buffer" bmkp-light-this-buffer
+        :help "Highlight all bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-light-non-autonamed-this-buffer]
+      '(menu-item "Highlight All Non-Autonamed in Buffer" bmkp-light-non-autonamed-this-buffer
+        :help "Highlight all non-autonamed bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-light-autonamed-this-buffer]
+      '(menu-item "Highlight All Autonamed in Buffer" bmkp-light-autonamed-this-buffer
+        :help "Highlight all autonamed bookmarks in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-light-navlist-bookmarks]
+      '(menu-item "Highlight All in Navigation List" bmkp-light-navlist-bookmarks
+        :help "Highlight all bookmarks in the navigation list"))
+    (define-key bmkp-highlight-menu [bmkp-light-bookmark-this-buffer]
+      '(menu-item "Highlight One in Buffer..." bmkp-light-bookmark-this-buffer
+        :help "Highlight a bookmark in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-light-bookmark]
+      '(menu-item "Highlight One..." bmkp-light-bookmark
+        :help "Highlight a bookmark"))
 
-  (define-key bmkp-highlight-menu [separator-0] '("--")) ;------------------------------------------
-  (define-key bmkp-highlight-menu [bmkp-next-lighted-this-buffer]
-    '(menu-item "Next in Buffer" bmkp-next-lighted-this-buffer
-      :help "Cycle to the next highlighted bookmark in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-previous-lighted-this-buffer]
-    '(menu-item "Previous in Buffer" bmkp-previous-lighted-this-buffer
-      :help "Cycle to the previous highlighted bookmark in this buffer"))
-  (define-key bmkp-highlight-menu [bmkp-bookmarks-lighted-at-point]
-    '(menu-item "List Highlighted at Point" bmkp-bookmarks-lighted-at-point
-      :help "List the bookmarks at point that are highlighted"))
-  (define-key bmkp-highlight-menu [bmkp-set-lighting-for-bookmark]
-    '(menu-item "Set Highlighting for One..." bmkp-set-lighting-for-bookmark
-      :help "Set individual highlighting for a bookmark")))
+    (define-key bmkp-highlight-menu [separator-1] '("--")) ;------------------------------------------
+    (define-key bmkp-highlight-menu [bmkp-next-lighted-this-buffer]
+      '(menu-item "Next in Buffer" bmkp-next-lighted-this-buffer
+        :help "Cycle to the next highlighted bookmark in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-previous-lighted-this-buffer]
+      '(menu-item "Previous in Buffer" bmkp-previous-lighted-this-buffer
+        :help "Cycle to the previous highlighted bookmark in this buffer"))
+    (define-key bmkp-highlight-menu [bmkp-bookmarks-lighted-at-point]
+      '(menu-item "List Highlighted at Point" bmkp-bookmarks-lighted-at-point
+        :help "List the bookmarks at point that are highlighted"))
+    (define-key bmkp-highlight-menu [separator-0] '("--")) ;------------------------------------------
+    )
+
+  (define-key bmkp-highlight-menu [diredp-highlight-autofiles-mode]
+    '(menu-item "Toggle Autofile Highlighting in Dired" diredp-highlight-autofiles-mode
+      :help "Toggle whether to highlight autofile bookmarks in Dired"
+      :visible (and (fboundp 'diredp-highlight-autofiles-mode)  (featurep 'highlight))))
+  (when (featurep 'bookmark+-lit)
+    (define-key bmkp-highlight-menu [bmkp-set-lighting-for-bookmark]
+      '(menu-item "Set Highlighting for One..." bmkp-set-lighting-for-bookmark
+        :help "Set individual highlighting for a bookmark"))))
 
 
 ;; `bmkp-delete-menu' of vanilla `Bookmarks' menu: `Delete'
