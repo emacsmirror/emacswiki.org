@@ -227,7 +227,13 @@ If you use '''MenuBarPlus''' then this menu is called '''Single'''.
 
 ; '''Immediate''': [[image:DiredPlusSingleMenu]]
 
+This has submenus '''Bookmark''', '''Encryption''', and '''Image'''.
 
+;; '''Bookmark''': [[image:DiredPlusSingleBookmarkMenu]]
+
+;; '''Encryption''': [[image:DiredPlusSingleEncryptionMenu]]
+
+;; '''Image''': [[image:DiredPlusSingleImageMenu]]
 
 
 
