@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 12 08:21:47 2014 (-0700)
+;; Last-Updated: Sat Jul 12 15:18:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8006
+;;     Update #: 8055
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -554,6 +554,7 @@
 ;;     Moved diredp-highlight-autofiles before diredp-highlight-autofiles-mode, so will be
 ;;      defined for first revert.
 ;;     diredp-mouse-3-menu: Renamed items Tag, Untag to Add Tags, Remove Tags.
+;;     diredp-dired-plus-description: Updated.
 ;; 2014/07/11 dadams
 ;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
 ;;            diredp-autofile-name, diredp-tagged-autofile-name.
@@ -2395,7 +2396,8 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-immediate-bookmarks-menu [diredp-tag-this-file]
     '(menu-item "Add Tags..." diredp-tag-this-file :help "Add some tags to the file at cursor"))
   (define-key diredp-menu-bar-immediate-bookmarks-menu [diredp-bookmark-this-file]
-    '(menu-item "Bookmark..." diredp-bookmark-this-file :help "Bookmark the file at cursor")))
+    '(menu-item "Bookmark..." diredp-bookmark-this-file
+      :help "Bookmark the file at cursor (create/set autofile)")))
 
 
 ;; `Multiple' menu.
@@ -8839,17 +8841,23 @@ being bound to keys (i.e., listed as `M-x ...').
 General
 -------
 
-* \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reuse of directories
+* \\[revert-buffer]\t\t- Refresh (sync and show all)
+* \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reusing directories
 "
+
+    (and (featurep 'bookmark+)
+         "* \\[diredp-highlight-autofiles-mode]\t- Toggle autofile highlighting
+
+")
     (and (fboundp 'diredp-w32-drives)
-         "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
+         "* \\[diredp-w32-drives]\t- Go up to a list of MS Windows drives
+
 ")
 
-    "
-* \\[diredp-marked-other-window]\t\t\t\t- Open Dired on marked
+    "* \\[diredp-marked-other-window]\t\t- Open Dired on marked
 * \\[diredp-fileset]\t\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
-* \\[diredp-dired-union]\t- Create union of some Dired buffers
+* \\[diredp-dired-union]\t\t- Create union of some Dired buffers
 * \\[diredp-dired-inserted-subdirs]\t- Dired each inserted subdir
 
 Mouse
@@ -8881,7 +8889,7 @@ Mouse
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser dired-mode-map)
-         "* \\[dired-mouse-w32-browser]\t- MS Windows `Open' action
+         "* \\[dired-mouse-w32-browser]\t\t- MS Windows `Open' action
 ")
 
     (and (fboundp 'dired-mouse-w32-browser-reuse-dir-buffer) ; In `w32-browser.el'.
@@ -8893,15 +8901,15 @@ Mouse
 Marking
 -------
 
-* \\[dired-mark]\t\t- Mark this
-* \\[dired-unmark]\t\t- Unmark this
-* \\[dired-toggle-marks]\t- Toggle marked/unmarked
+* \\[dired-mark]\t\t- Mark this file/dir
+* \\[dired-unmark]\t\t- Unmark this file/dir
+* \\[dired-toggle-marks]\t\t- Toggle marked/unmarked
 * \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
 * \\[dired-unmark-all-marks]\t\t- Unmark all
 * \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
 "
 
-    (and (fboundp 'dired-mark-omitted) ; In `dired-x.el'
+    (and (fboundp 'dired-mark-omitted)  ; In `dired-x.el'
          "* \\[dired-mark-omitted]\t\t- Mark omitted
 ")
 
@@ -8933,19 +8941,18 @@ Current file/subdir (current line)
 * \\[diredp-downcase-this-file]\t\t- Rename to lowercase
 * \\[diredp-ediff]\t\t- Ediff
 "
-    (and (fboundp 'diredp-tag-this-file) ; In `bookmark+-1.el'.
-         "* \\[diredp-tag-this-file]\t\t- Add some tags to this
-* \\[diredp-untag-this-file]\t\t- Remove some tags from this
-* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this
-* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this
-* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this
-* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this
-* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this
+    (and (featurep 'bookmark+)
+         "* \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
+* \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
+* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
+* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
+* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
+* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
+* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
 ")
 
-    (and (fboundp 'diredp-bookmark-this-file) ; In `bookmark+-1.el'.
-         "* \\[diredp-bookmark-this-file]\t\t- Bookmark
-")
+    "* \\[diredp-bookmark-this-file]\t\t- Bookmark
+"
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser dired-mode-map)
@@ -8998,7 +9005,7 @@ Marked (or next prefix arg) files & subdirs here
 * \\[diredp-omit-unmarked]\t- Omit unmarked
 "
 
-    (and (fboundp 'diredp-do-tag)       ; In `bookmark+-1.el'.
+    (and (featurep 'bookmark+)
          "
 * \\[diredp-do-tag]\t\t- Add some tags to marked
 * \\[diredp-do-untag]\t\t- Remove some tags from marked
@@ -9015,13 +9022,15 @@ Marked (or next prefix arg) files & subdirs here
 * \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
 * \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
 * \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
-* \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
-")
+* \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags")
 
-    (and (fboundp 'diredp-do-bookmark)  ; In `bookmark+-1.el'.
-         "
+    "
+
 * \\[diredp-do-bookmark]\t\t- Bookmark
-* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
+"
+
+    (and (featurep 'bookmark+)
+         "* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark and create bookmark-file bookmark
 * \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark in specific bookmark file
 ")
@@ -9054,30 +9063,33 @@ Marked files here and below (in marked subdirs)
 
     "* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
 * \\[diredp-marked-recursive-other-window]\t\t- Dired
-* \\[diredp-list-marked-recursive]\t\t\t- List
+* \\[diredp-list-marked-recursive]\t\t- List
 
 * \\[diredp-do-bookmark-recursive]\t\t- Bookmark
-* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t\t- Bookmark in bookmark file
-* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t\t- Create bookmark-file bookmark
 "
+    (and (featurep 'bookmark+)
+         "* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t\t- Bookmark in bookmark file
+* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t\t- Create bookmark-file bookmark
+")
+
     (and (fboundp 'dired-multiple-w32-browser) ; In `w32-browser.el'.
          "
 * \\[diredp-multiple-w32-browser-recursive]\t- MS Windows `Open'
 ")
 
 
-    (and (fboundp 'diredp-tag-this-file) ; In `bookmark+-1.el'.
+    (and (featurep 'bookmark+)
          "
 Tagging
 -------
 
-* \\[diredp-tag-this-file]\t\t- Add some tags to this
-* \\[diredp-untag-this-file]\t\t- Remove some tags from this
-* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this
-* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this
-* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this
-* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this
-* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this
+* \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
+* \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
+* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
+* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
+* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
+* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
+* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
 * \\[diredp-do-tag]\t\t- Add some tags to marked
 * \\[diredp-do-untag]\t\t- Remove some tags from marked
 * \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
@@ -9096,17 +9108,29 @@ Tagging
 * \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 ")
 
-    (and (fboundp 'diredp-bookmark-this-file) ; In `bookmark+-1.el'.
-         "
+    "
 Bookmarking
 -----------
 
-* \\[diredp-bookmark-this-file]\t\t- Bookmark this
-* \\[diredp-do-bookmark]\t\t- Bookmark marked
+* \\[diredp-bookmark-this-file]\t\t- Bookmark this file/dir
+* \\[diredp-do-bookmark]\t\t- Bookmark marked"
+
+    (and (featurep 'bookmark+)
+         "
 * \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark marked and create bookmark-file bookmark
 * \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark marked, in specific bookmark file
 ")
+
+    "* \\[diredp-do-bookmark-recursive]\t- Bookmark marked, here and below
+"
+    (and (featurep 'bookmark+)
+         "* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t- \
+Bookmark marked, here and below, in specific file
+* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t- \
+Set bookmark-file bookmark for marked here and below
+")
+
     )))
 
 (when (> emacs-major-version 21)
