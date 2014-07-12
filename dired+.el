@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 12 06:46:55 2014 (-0700)
+;; Last-Updated: Sat Jul 12 06:56:45 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7997
+;;     Update #: 8004
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -550,8 +550,9 @@
 ;;; Change Log:
 ;;
 ;; 2014/07/12 dadams
+;;     Faces diredp(-tagged)-autofile-name: Made paler/darker (less saturated).
 ;;     Moved diredp-highlight-autofiles before diredp-highlight-autofiles-mode, so will be
-;;     defined for first revert.
+;;      defined for first revert.
 ;; 2014/07/11 dadams
 ;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
 ;;            diredp-autofile-name, diredp-tagged-autofile-name.
@@ -3484,15 +3485,15 @@ In particular, inode number, number of hard links, and file size."
 (defvar diredp-link-priv 'diredp-link-priv)
 
 (defface diredp-autofile-name
-    '((((background dark)) (:background "#FFFF31273127")) ; Very dark blue
-      (t                   (:background "Pale Goldenrod")))
+    '((((background dark)) (:background "#111313F03181")) ; Very dark blue
+      (t                   (:background "#EEECEC0FCE7E"))) ; Very pale goldenrod
   "*Face used in Dired for names of files that are autofile bookmarks."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-autofile-name 'diredp-autofile-name)
 
 (defface diredp-tagged-autofile-name
-    '((((background dark)) (:background "#FFFF07AE07AE")) ; Dark magenta
-      (t                   (:background "Pale Green")))
+    '((((background dark)) (:background "#328C0411328C")) ; Very dark magenta
+      (t                   (:background "#CD73FBEECD73"))) ; Very pale green
   "*Face used in Dired for names of files that are autofile bookmarks."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-tagged-autofile-name 'diredp-tagged-autofile-name)
