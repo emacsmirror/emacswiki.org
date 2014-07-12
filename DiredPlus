@@ -157,14 +157,24 @@ Here are screenshots of the various '''Dired+''' menus. Using the menus is a goo
 [:Mouse3PopupMenus]
 === `mouse-3' Popup Menus ===
 
-`mouse-3' pops up a menu, which can take two forms, depending on whether the [[region]] is active.  If so, the menu items act on the files and directories in the region.  If not, the menu items act on the file or directory you pointed to when you clicked `mouse-3'.
+`mouse-3' pops up a menu, which can take two forms, depending on whether the [[region]] is active.  If so, the menu is called '''Region''' and its items act on the files and directories in the region.  If not, the menu is called '''This File''' and its items act on the file or directory you pointed to when you clicked `mouse-3'.
+
+; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
+
+
+The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menubar menu '''[[#SingleBookmarkMenu|Immediate]]''' (aka '''Single'''). 
 
 
 ; '''Region''': [[image:DiredPlusPopupRegionMenu]]
 
-; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
-
 The '''Region''' menu you get depends on whether and how you use library <tt>[[mouse3.el]]</tt> -- see '''[[Mouse3]]'''.  The '''Region''' menu shown here has lots of submenus.
+
+
+
+
+
+
+
 
 
 [:SubdirMenu]
@@ -229,11 +239,19 @@ If you use '''MenuBarPlus''' then this menu is called '''Single'''.
 
 This has submenus '''Bookmark''', '''Encryption''', and '''Image'''.
 
+[:SingleBookmarkMenu]
 ;; '''Bookmark''': [[image:DiredPlusSingleBookmarkMenu]]
 
 ;; '''Encryption''': [[image:DiredPlusSingleEncryptionMenu]]
 
 ;; '''Image''': [[image:DiredPlusSingleImageMenu]]
+
+
+
+
+
+
+
 
 
 
