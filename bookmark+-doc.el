@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  5 15:42:05 2014 (-0700)
+;; Last-Updated: Fri Jul 11 17:08:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14815
+;;     Update #: 14817
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -891,6 +891,10 @@
 ;;  the files, you can use them with tags to organize the files and
 ;;  thus operate on subsets of them.
 ;;
+;;  And if you use libraries `Dired+' and `highlight.el' then
+;;  autofiles are highlighted specially in Dired, and the highlighting
+;;  indicates whether the file is tagged.
+;;
 ;;  By default, you create bookmarks without tags and add tags to them
 ;;  later.  If you prefer, you can customize option
 ;;  `bmkp-prompt-for-tags-flag' to non-`nil' so that you are prompted
@@ -1680,6 +1684,10 @@
 ;;  * `file-cache-add-file-list'
 ;;
 ;;  See the Emacs manual, node `File Name Cache'.
+;;
+;;  Finally, if you use libraries `Dired+' and `highlight.el' then
+;;  autofiles are highlighted specially in Dired, and the highlighting
+;;  indicates whether the file is tagged.
 ;;
 ;;
 ;;(@* "A Type-Aware `find-file'")
