@@ -28,7 +28,9 @@ hidden subdirectories of the selected Dired listings.
 
 * If you use '''[[Bookmark+]]''', then you can add ''[[BookmarkPlus#TaggingFiles|tags]]'' to the marked files or remove tags from them.  You can ''mark'' or ''unmark'' the files that have given sets of tags in various ways (files with at least one tag matching a [[regexp]], files with all of their tags matching a list of tags you specify, and so on).  These are persistent tags in the "[[http://en.wikipedia.org/wiki/Delicious_(website)|delicious]]" sense.  In effect, an [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] is used for each file you tag.
 
-* If you use libraries '''[[Bookmark+]]''' and '''[[HighlightLibrary|Highlight]]''' then [[BookmarkPlus#AutofileBookmarks|autofile bookmarks]] are highlighted in Dired.  That is, files that have associated bookmarks of the same name are highlighted.  And those that have tags are highlighted using a different face.  This highlighting is optional -- you can toggle it on/off using command '''`diredp-highlight-autofiles-mode''''.
+* If you use libraries '''[[Bookmark+]]''' and '''[[HighlightLibrary|Highlight]]''' then [[BookmarkPlus#AutofileBookmarks|autofile bookmarks]] are highlighted in Dired.  That is, files that have associated bookmarks of the same name are highlighted.  And those that have tags are highlighted using a different face.  This highlighting is optional -- you can toggle it on/off using command '''`diredp-highlight-autofiles-mode''''.  Here is a screenshot:
+
+:: [[image:DrewsEmacsDiredAutofiles]]
 
 * Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
 ** drag a region, then choose '''Mark''' in the popup menu
