@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Fri Jul 11 19:42:10 2014 (-0700)
+;; Last-Updated: Fri Jul 11 20:06:21 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 700
+;;     Update #: 703
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -680,9 +680,15 @@
     )
 
   (define-key bmkp-highlight-menu [diredp-highlight-autofiles-mode]
-    '(menu-item "Toggle Autofile Highlighting in Dired" diredp-highlight-autofiles-mode
-      :help "Toggle whether to highlight autofile bookmarks in Dired"
-      :visible (and (fboundp 'diredp-highlight-autofiles-mode)  (featurep 'highlight))))
+    (bmkp-menu-bar-make-toggle diredp-highlight-autofiles-mode
+                               diredp-highlight-autofiles-mode
+                               "Toggle Autofile Highlighting in Dired"
+                               "Whether to highlight autofile bookmarks in Dired us biw %s"
+                               "Toggle `diredp-highlight-autofiles-mode'"
+                               nil
+                               :visible (and (fboundp 'diredp-highlight-autofiles-mode)
+                                             (featurep 'highlight))))
+
   (when (featurep 'bookmark+-lit)
     (define-key bmkp-highlight-menu [bmkp-set-lighting-for-bookmark]
       '(menu-item "Set Highlighting for One..." bmkp-set-lighting-for-bookmark
