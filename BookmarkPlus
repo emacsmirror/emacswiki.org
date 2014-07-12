@@ -936,6 +936,8 @@ And if you use libraries '''Dired+''' and '''[[HighlightLibrary|Highlight]]''' (
 autofiles are highlighted specially in Dired, and the highlighting
 indicates whether the file is tagged.
 
+: [[image:DrewsEmacsDiredAutofiles]]
+
 By default, you create bookmarks without tags and add tags to them
 later.  If you prefer, you can customize option
 '''`bmkp-prompt-for-tags-flag'''' to non-`nil' so that you are prompted to
