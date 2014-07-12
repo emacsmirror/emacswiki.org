@@ -32,6 +32,9 @@ hidden subdirectories of the selected Dired listings.
 
 :: [[image:DrewsEmacsDiredAutofiles]]
 
+* If you use library <tt>[[help-fns+.el]]</tt> then you can use `C-h RET' (or right-click and choose menu item '''Describe''') to describe the file or directory under the cursor. The information (displayed in `*Help*') includes the file type; permissions; size in bytes times of last access, modification, and status change; number of links; UID; GID inode; and device number.
+If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the information includes its [[BookmarkPlus#TaggingFiles|tags]].
+
 * Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
 ** drag a region, then choose '''Mark''' in the popup menu
 ** click, then Shift-click, as in Windows Explorer
