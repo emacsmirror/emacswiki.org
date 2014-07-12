@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 12 06:56:45 2014 (-0700)
+;; Last-Updated: Sat Jul 12 08:21:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8004
+;;     Update #: 8006
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -553,6 +553,7 @@
 ;;     Faces diredp(-tagged)-autofile-name: Made paler/darker (less saturated).
 ;;     Moved diredp-highlight-autofiles before diredp-highlight-autofiles-mode, so will be
 ;;      defined for first revert.
+;;     diredp-mouse-3-menu: Renamed items Tag, Untag to Add Tags, Remove Tags.
 ;; 2014/07/11 dadams
 ;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
 ;;            diredp-autofile-name, diredp-tagged-autofile-name.
@@ -8226,9 +8227,9 @@ With non-nil prefix arg, mark them instead."
                              `(
                                ("Bookmark" :visible (featurep 'bookmark+)
                                 ["Bookmark..." diredp-bookmark-this-file]
-                                ["Tag..." diredp-tag-this-file
+                                ["Add Tags..." diredp-tag-this-file
                                  :visible (featurep 'bookmark+)]
-                                ["Untag..." diredp-untag-this-file
+                                ["Remove Tags..." diredp-untag-this-file
                                  :visible (featurep 'bookmark+)]
                                 ["Remove All Tags" diredp-remove-all-tags-this-file
                                  :visible (featurep 'bookmark+)]
