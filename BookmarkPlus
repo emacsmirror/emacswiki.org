@@ -927,10 +927,14 @@ organizing them (e.g. into projects), whether or not you ever use
 the bookmarks as a way to visit them.
 
 For example, if you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use
-'''`M-b'''' (`diredp-do-bookmark') in Dired to create an autofile bookmark for each of the
+'''`M-b'''' (`diredp-do-bookmark') in [[Dired]] to create an [[#AutofileBookmarks|autofile bookmark]] for each of the
 marked files in the Dired buffer.  Even if you never use those
 bookmarks for navigating to the files, you can use them with tags
 to organize the files and thus operate on subsets of them.
+
+And if you use libraries '''Dired+''' and '''[[HighlightLibrary|Highlight]]''' (<tt>[[highlight.el]]</tt>) then
+autofiles are highlighted specially in Dired, and the highlighting
+indicates whether the file is tagged.
 
 By default, you create bookmarks without tags and add tags to them
 later.  If you prefer, you can customize option
