@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 11 14:08:08 2014 (-0700)
+;; Last-Updated: Fri Jul 11 17:17:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7989
+;;     Update #: 7994
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -549,10 +549,11 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2014/07/10 dadams
+;; 2014/07/11 dadams
 ;;     Added: diredp-highlight-autofiles-mode, diredp-highlight-autofiles,
 ;;            diredp-autofile-name, diredp-tagged-autofile-name.
 ;;     Soft-require bookmark+.el.  Soft-require highlight.el if bookmark+.el is provided.
+;;     diredp-menu-bar-subdir-menu: Added item Toggle Autofile Highlighting.
 ;;     Removed unused face: diredp-display-msg.
 ;; 2014/06/29 dadams
 ;;     dired-get-marked-files, diredp-internal-do-deletions:
@@ -3103,6 +3104,10 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-subdir-menu [dired]
   '(menu-item "Dired (Filter via Wildcards)..." dired
     :help "Explore a directory (you can provide wildcards)"))
+(define-key diredp-menu-bar-subdir-menu [diredp-highlight-autofiles-mode]
+  '(menu-item "Toggle Autofile Highlighting" diredp-highlight-autofiles-mode
+    :help "Toggle whether to highlight autofile bookmarks"
+    :visible (and (featurep 'bookmark+)  (featurep 'highlight))))
 (define-key diredp-menu-bar-subdir-menu [revert]
   '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 
