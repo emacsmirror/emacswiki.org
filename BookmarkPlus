@@ -3977,6 +3977,12 @@ It has actions for the individual bookmark you point to when you pop it up.
 :: [[image:BookmarkPlusThisBookmarkMenu]]
 
 
+
+
+
+
+
+
 [:BookmarkPlusMenu]
 === Bookmark+ Menu-Bar Menu in `*Bookmark List*' ===
 
@@ -3992,36 +3998,36 @@ The '''Mark''' has submenu '''Bookmarks of Type'''.
 
 The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 
-;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuIcicles]]
+;; '''Icicles''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuIcicles]]
 
 [:JumpToMenu]
-;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
-;;; '''Icicles''': [[image:BookmarkPlusMenuBarMenuJumpToIcicles]]
-;;;; '''With Tags''' (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuIciclesWithTags]]
+;; '''Jump To''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuJump]]
+;;; '''Icicles''' submenu of '''Jump To''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuJumpToIcicles]]
+;;;; '''With Tags''' submenu of '''Icicles''' submenu of '''Jump To''' submenu of '''Bookmark+''' menu-bar menu (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuIciclesWithTags]]
 
-;;; '''With Tags''' (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuWithTags]]
+;;; '''With Tags''' submenu of '''Jump To''' submenu of '''Bookmark+''' menu-bar menu (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuWithTags]]
 
-;; '''Delete''': [[image:BookmarkPlusMenuBarMenuDelete]]
+;; '''Delete''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuDelete]]
 
 [:MarkMenu]
-;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
-;;; '''Bookmarks of Type''': [[image:BookmarkPlusMenuBarMenuMarkOfType]]
+;; '''Mark''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuMark]]
+;;; '''Bookmarks of Type''' submenu of '''Mark''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuMarkOfType]]
 
-;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
+;; '''Omit''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuOmit]]
 
 [:ShowMenu]
-;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
-;;; '''Only Bookmarks of Type''': [[image:BookmarkPlusMenuBarMenuShowOfType]]
+;; '''Show''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuShow]]
+;;; '''Only Bookmarks of Type''' submenu of '''Show''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuShowOfType]]
 
-;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
-;; '''Search''': [[image:BookmarkPlusMenuBarMenuSearch]] 
-;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
-;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
+;; '''Sort''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuSort]] 
+;; '''Search''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuSearch]] 
+;; '''Tags''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuTags]]
+;; '''Highlight''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuHighlight]]
 
 [:ToggleMenu]
-;; '''Toggle''': [[image:BookmarkPlusMenuBarMenuToggle]]
-;; '''Bookmark File''': [[image:BookmarkPlusMenuBarMenuBookmarkFile]]
-;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
+;; '''Toggle''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuToggle]]
+;; '''Bookmark File''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuBookmarkFile]]
+;; '''Define Command''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
 
 
@@ -4031,12 +4037,12 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the '''Edit''' [[menu bar]] menu.  '''Bookmark+''' modifies it by adding several '''Bookmark+''' items and submenus.  
 
 ; '''Bookmarks''': [[image:BookmarkPlusBookmarkMenuBarMenu]]
-;; '''Jump To''': Same as '''Bookmark+''' [[#JumpToMenu|submenu]] '''Jump To'''
-;; '''Tags''': [[image:BookmarkPlusBookmarksTagsMenu]]
-;; '''Toggle''': Same as '''Bookmark+''' [[#ToggleMenu|submenu]] '''Toggle'''
-;; '''New/Update''': [[image:BookmarkPlusBookmarksNewUpdateMenu]]
-;; '''Delete''': [[image:BookmarkPlusBookmarksDeleteMenu]]
-;; '''Highlight''': [[image:BookmarkPlusBookmarksHighlightMenu]]
+;; '''Jump To''' submenu of '''Bookmarks''' menu-bar menu: Same as '''Bookmark+''' [[#JumpToMenu|submenu]] '''Jump To'''
+;; '''Tags''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksTagsMenu]]
+;; '''Toggle''' submenu of '''Bookmarks''' menu-bar menu: Same as '''Bookmark+''' [[#ToggleMenu|submenu]] '''Toggle'''
+;; '''New/Update''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksNewUpdateMenu]]
+;; '''Delete''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksDeleteMenu]]
+;; '''Highlight''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksHighlightMenu]]
 
 
 
