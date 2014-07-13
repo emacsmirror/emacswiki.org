@@ -39,7 +39,7 @@ Some people also like to use a non-elisp mail client from within Emacs:
 
 The [[emacs-w3m]] web browser can be used with webmail:
 
-* [[http://www.emacswiki.org/emacs/emacs-w3m#toc26 Gmail ]] works well (may require [[ https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY  patching]] w3m)
+* [[http://www.emacswiki.org/emacs/emacs-w3m#toc26 Gmail ]] works well (may require [[https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY  patching]] w3m)
 
 And then there are some less commonly used and/or badly maintained
 packages:
