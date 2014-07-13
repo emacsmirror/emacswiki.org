@@ -1,1 +1,186 @@
-DeletedPage
+= emacs-helm =
+
+Anything.elはHelmに名前が変更されました (helmはあなたを正しい方向に舵を取るのを助けるでしょう :-) ).
+
+新プロジェクトはGitHub - https://github.com/emacs-helm/helm下にホストされています.
+すみませんが, Helmで使われるのに応じて古いanything.elプラグインをアップデートしてください.
+
+= anything.el =
+
+##anything.el##はTamasPatrovicsによって書かれた素晴らしいアプリケーションフレームワークです.
+それは全く新しいEmacs体験を提供します.
+通常のEmacsの方法では指定したアクションをしつつ候補を選択しますが, ##anything##の方法ではナローイングし候補を選択した後選択された候補のためにアクションを実行します.
+
+それは"emacs版超拡張可能なspotlight"もしくは"emacs版!QuickSilver"みたいなものです.
+##anything.el##の現在のメンテナーは[[rubikitch]]です.
+
+##M-x anything##で始まり, 与えられたパータンにマッチする全てのものは##*anything*##と名付けられた特別なバッファーに表示されます.
+
+最初に全ての候補が表示されます.
+次に与えられたクエリーによってそれらは絞りこまれます.
+候補はC-p/C-n/C-v/M-v(もしくはup/down/pgup/pgdown)で選択できます.
+RETを打つとそのタイプのためにデフォルトアクションを起動し, TABを打つと全ての可能なアクションをリストします.
+
+[[image:AnythingScreenshotAllCandidates]]
+
+[[image:AnythingScreenshotNarrowingCandidates]]
+
+What's queried はソースのリストによって与えられる, すなわち##anything-sources##バッファー, ファイル名, ブックマーク, 等々ような.
+
+これは複数のEmacsコマンドが一つのコマンドに統合されていることを意味します.
+あなたはアクションに対応するコマンドを思い出す必要がありません, ##anything##は正しいことを行います.
+##anything.el##は[[anything.el]]で手に入れられます.
+
+
+ここが追いやすいでしょう[http://metasandwich.com/2010/07/30/what-can-i-get-for-10-dolla-anything-el/ introduction explaining how Anything works]
+ここが入門になるでしょう[http://metasandwich.com/2010/08/01/anything-else/ creating new sources for Anything].
+
+= anything-config.el =
+
+##anything.el##は基本的なフレームワークといくつかの例のソースだけを含みます.
+##anything-config.el##は彼らのニーズのために##anything.el##を適用するユーザによって使われるであろう豊富な追加のソースとタイプを提供することを意図します.
+
+TassiloHorn, JasonMcBrayer, [[rubikitch]] そして ThierryVolpiatto が##anything-config.el##の保守と拡張をしています
+そして最新版を手に入れるのに最適な入手源は彼の##git##リポジトリをcloneすることです. 誰もがmobユーザーとしてそれをプッシュすることができます.
+
+    git clone git://repo.or.cz/anything-config.git
+
+もしあなたがエンハンスメントを持っているならばそれらのうちの一つをメールしてください,そして彼らがあなたの変更をそれにpullします.
+同じくパッチを送ることもできます, ##git format-patch##のマニュアルを見てください.
+
+
+もし何かクールな機能を持っているならば, AnythingSourcesページに書くか, mobリポジトリにプッシュするか, メールしてください, 私が適用します. :) -- [[rubikitch]]
+##anything-config.el##は[[anything-config.el]]からもダウンロードできます.
+
+あなたは多くのソースをAnythingSourcesページで見つけられるでしょう.
+あなたはAnythingをAnythigPluginsによって拡張できるでしょう.
+
+(何がコンフィグで, ソースで, プラグインなのか説明するのが良いでしょう. それらは何が違うのか?)
+
+: 私がそれをやります. -- [[rubikitch]]
+:: 用語集を見てください. 私の英語貧弱ですみません. -- [[rubikitch]]
+
+RubikitchAnythingConfigurationにはたくさんのグッディーズがあります, 現在のメンテナーの設定です. 遠慮無くコピペして!
+
+AndyStewartはいくつかのクールな拡張機能を追加しました: Lisp:anything-extension.el
+
+= 用語集 =
+; Source : Anythingは バッファー, recentf, ブックマーク, などの様々な情報からオブジェクトを検索します.情報源は単に`ソース'と呼ばれます. あなたは簡単にソースを定義できます.
+; Attribute : `ソース'は`属性'のリストです, それらの名前は予め定義されている; 名前, 候補, そして種類などとして.
+; Plugin : Anything `plugin' を通して拡張できます. 例えば, 自身にある検索メソッドは単一正規表現検索ですが,Lisp:anything-match-plugin.elを用いればanythingは複数正規表現検索をサポートします . ユーザ定義された`attributes'も`plugin'です.
+; Config : Lisp:anything-config.elは予め定義されている様々な`ソース'と`プラグイン'を含みます.
+
+= インストール方法 =
+
+[[Anything]]をインストールするにはいくつかの方法があります.
+
+gitリポジトリをcloneできます:
+
+    git clone git://repo.or.cz/anything-config.git
+
+そしたらこれをあなたの<tt>~/.emacs.el</tt>追加する:
+
+    (add-to-list 'load-path "/path/to/anything/")
+    (require 'anything-config)
+
+もしくは最小限の設定であなたが開始したいならばLisp:anything.elとLisp:anything-config.elだけをダウンロードし以下のあなたの<tt>~/.emacs.el</tt>に追加する:
+    (add-to-list 'load-path "/path/to/anything/")
+    (require 'anything-config)
+
+もしあなたがgitを使いたくないが,いくつかの[[Anything]]([[Anything]]メンテナーのユーザ設定に関連付けられた)パッケージと同様に多くの[[Anything]]拡張パッケージが欲しいなら
+WgetSnarfAnything wgetスクリプトを使え.
+
+もしくはLisp:auto-install.el(AutoInstallで説明したようにあなたは最初にそれ自身をインストールする必要がある)が使え, 次のように[[Anything]]パッケージをインストールする:
+
+   M-x auto-install-batch RET a n y t h i n g RET
+
+それが[[ELPA]]でインストール可能だった場合、それは素晴らしいことだ(2011/01/25現在[[ELPA]]からanythingのインストールが現にできる)
+(2011/12/06現在, Emacs 24.0.50.1にて, AnythingはELPAを使用してインストールすることができます)
+
+= 助けを得る =
+Anythingは今メーリングリストを持っています:
+
+[https://groups.google.com/group/emacs-anything?hl=en]
+
+それはgmane(gmane.emacs.anything)でも見れます
+
+= はじめに =
+
+emacsに入り##M-x anything-for-file##を走らせる. ##anything##がファイルを開くために予め設定されます.
+
+もしあなたがそれを好きになりanythingの力を感じたならば, あなた好みのためにこまごまとした他人のanything-configファイルからコピペによって##anything-sources##を設定しろ.
+あなたは'anything を打ちやすいキーへバインドすることを望むだろう.
+
+= 議論 =
+
+[new]
+これらのファイルを掃除するための何かプランはあるか?
+anything-configファイルとあなたの持っている設定ファイルの両方はとてもモノリシックで, 'anything'を修正するもしくは拡張するようなことは大変です.
+
+恐らく異なるファイルへそれらを分割し,'helper'関数をもっと作るのは役立つか? 例えば, 
+isn't the following a simpler way of creating anything functions, than having them build-in/preconfigured?:
+
+
+ (defvar anything-command-list nil)
+ (defmacro defanything (name sources)
+   (list 'add-to-list '(intern "anything-command-list") (concat "anything-" name))
+   (list 'defun (intern (concat "anything-" name)) (list)
+ 	(list 'interactive)
+ 	(list 'anything
+ 	      (list 'quote
+ 		    (map 'list
+ 			 (lambda (x) (intern (concat "anything-c-source-" x)))
+ 			 sources))
+ 	      'nil 'nil 'nil 'nil (concat "*" (concat "anything-" name) "*"))))
+
+ (defanything "open-files"
+   ("recentf" "file-cache" "files-in-current-dir" "locate"))
+
+ (defanything "emacs-variables"
+   ("emacs-variables"))
+
+ (defanything "emacs-functions"
+   ("emacs-functions"))
+
+ --CH
+
+:: ナイスアイデア! だけど、もっといいインターフェース思いついた. -- [[rubikitch]]
+::: お前もっといいインターフェース思いついたのか? --CH
+
+----
+= コンテンツ =
+
+* AnythingSources -- souces not to be included in anything-config.el yet
+* AnythingApplications -- applications using Anything framework
+* AnythingPlugins -- add some features to Anything
+* AnythingIntegrations -- integrations with other modes
+* AnythingTips -- tips to use Anything
+* AnythingProposals -- proposals for anything.el and anything-config.el
+* AnythingIssues -- bug reports
+* AnythingOldDiscussion -- discussion archive
+
+----
+
+CategoryAccessibility
+CategoryBbdb
+CategoryBufferSwitching
+CategoryCalculators
+CategoryCode
+CategoryCommands 
+CategoryCompletion
+CategoryDirectories
+CategoryDocumentation
+CategoryEditing
+CategoryExternalUtilities
+CategoryFaces
+CategoryFiles
+CategoryGnus
+CategoryHelp
+CategoryInterface
+CategoryMenus
+CategoryModes
+CategoryProgrammerUtils
+CategoryRegexp
+CategorySearchAndReplace
+CategoryShell
+CategoryWebBrowser
