@@ -4,7 +4,7 @@ As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane
 
 = NEWS =
 
-I have pushed org-odt-20140713.tar.  Exporting with JabRef should be super-fast now.  Remember to upgrade your JabRef Chicago plugin from ##package-user-dir## (i.e., from ##~/.emacs.d/elpa/org-odt-20140713/JabRef##).
+* ##org-odt-20140713.tar##:  Exporting with JabRef should be super-fast now.  Remember to upgrade your JabRef Chicago plugin from ##package-user-dir## (i.e., from ##~/.emacs.d/elpa/org-odt-20140713/JabRef##).
 
 ----
 
