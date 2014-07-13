@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 12 15:18:40 2014 (-0700)
+;; Last-Updated: Sun Jul 13 09:18:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8055
+;;     Update #: 8060
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -7074,7 +7074,9 @@ show an image preview, then do so.  Otherwise, show text help."
                                          (diredp-image-dired-create-thumb file))))
                         (propertize " " 'display (create-image img-file))))
                (error nil)))
-        "mouse-2: visit this file in another window")))
+        (if (fboundp 'describe-file)    ; Library `help-fns+.el'
+            "mouse-2: visit in another window, C-h RET: describe"
+          "mouse-2: visit this file/dir in another window"))))
 
 ;; `dired-hide-details-mode' enhancements.
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
