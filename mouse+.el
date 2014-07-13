@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 19 10:45:58 2014 (-0700)
+;; Last-Updated: Sun Jul 13 10:52:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 557
+;;     Update #: 582
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
@@ -88,7 +88,18 @@
 ;;
 ;;   (require 'mouse+)
 ;;
+;;
 ;;  Suggested bindings:
+;;
+;;   The first sexp is NECESSARY for Emacs 24 or later, if you want to
+;;   take advantage of the `mouse-drag-region' behavior defined here
+;;   wrt buffer `*Messages*' and `M-x'.
+;;
+;;   ;; Do not use `view-echo-area-messages' for `mouse-1'.   Use
+;;   ;; version of `mouse-drag-region' defined here, which does more.
+;;   (when (> emacs-major-version 23)
+;;     (define-key minibuffer-inactive-mode-map [down-mouse-1] nil)
+;;     (define-key minibuffer-inactive-mode-map [mouse-1]      nil))
 ;;
 ;;   (global-set-key [down-mouse-2]        'mouse-flash-position-or-M-x)
 ;;   (global-set-key [S-down-mouse-2]      'mouse-scan-lines-or-M-:)
@@ -98,6 +109,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/13 dadams
+;;     mouse-drag-region:
+;;      Use save-window-excursion instead of trying to restore buffer.
+;;      If *Messages* is selected then bury-buffer instead of delete-window.
+;;      Mention in Commentary: must remove Emacs 24 binding of view-echo-area-messages.
 ;; 2014/05/19 dadams
 ;;     mouse-drag-region: Handle incompatible change for Emacs 24.4+.
 ;; 2011/12/19 dadams
@@ -422,22 +438,18 @@ If the click is in the echo area, then:
   If buffer `*Messages' is not displayed, display it.
   Else run the command bound to `M-x'."
     (interactive "e")
-    (let ((w  (posn-window (event-start start-event))))
-      (if (and (window-minibuffer-p w)
-               (not (minibuffer-window-active-p w)))
+    (let ((clickwin  (posn-window (event-start start-event))))
+      (if (and (window-minibuffer-p clickwin)
+               (not (minibuffer-window-active-p clickwin)))
           (let* ((Messages-buf  (get-buffer-create "*Messages*"))
                  (Messages-win  (get-buffer-window Messages-buf 'visible)))
             (if Messages-win
-                (let ((M-x-cmd  (or (key-binding "\M-x" t) 'execute-extended-command))
-                      (bufs     (buffer-list)))
+                (let ((M-x-cmd  (or (key-binding "\M-x" t) 'execute-extended-command)))
                   (read-event)          ; Swallow the up-event.
-                  (while (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                       (buffer-name (car bufs)))
-                    (pop bufs))
-                  (when bufs (set-buffer (car bufs)))
-                  (switch-to-buffer-other-window (current-buffer))
-                  (delete-window Messages-win)
-                  (call-interactively M-x-cmd nil [(meta ?x)]))
+                  (if (eq Messages-win (selected-window))
+                      (bury-buffer)
+                    (delete-window Messages-win))
+                  (save-window-excursion (call-interactively M-x-cmd nil [(meta ?x)])))
               (save-excursion
                 (read-event)            ; Swallow the up-event.
                 (set-buffer Messages-buf)
