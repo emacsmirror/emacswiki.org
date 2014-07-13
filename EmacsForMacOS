@@ -224,6 +224,32 @@ It's also possible to build the development version of GNU Emacs with ATSUI -- A
 Use the shell mode. Make sure cursor is at the file, then type:
 ! open <RET>
 
+=== Using the GUI Emacs.app from the command line. ===
+
+To debug-init:
+
+<pre>
+open /Applications/Emacs.app --args --debug-init
+</pre>
+
+To --debug-init if you installed the Emacs.app from Macports:
+
+<pre>
+open -a /Applications/MacPorts/Emacs.app --args --debug init
+</pre>
+
+To open a file from a terminal. This can be used in combination with the sudo command.
+
+<pre>
+open -a /Applications/Emacs.app' <file-name> 
+</pre>
+
+As above but for when Emacs.app has been installed via MacPorts.
+<pre>
+
+open -a /Applications/MacPorts?Emacs.app <file-name> 
+</pre>
+
 === Use Alt/Option as Meta Key under terminal emulators ===
 
 For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
