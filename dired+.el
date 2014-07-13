@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 13 09:18:28 2014 (-0700)
+;; Last-Updated: Sun Jul 13 16:14:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8060
+;;     Update #: 8063
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -549,6 +549,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/13 dadams
+;;     diredp-mouseover-help: Wrap (goto-char pos) in save-excursion (Emacs bug #18011).
 ;; 2014/07/12 dadams
 ;;     Faces diredp(-tagged)-autofile-name: Made paler/darker (less saturated).
 ;;     Moved diredp-highlight-autofiles before diredp-highlight-autofiles-mode, so will be
@@ -7059,7 +7061,7 @@ show an image preview, then do so.  Otherwise, show text help."
              diredp-image-preview-in-tooltip
              (condition-case nil
                  (and (with-current-buffer buffer
-                        (goto-char pos)
+                        (save-excursion (goto-char pos))
                         (diredp-string-match-p
                          (image-file-name-regexp)
                          (setq file  (if (derived-mode-p 'dired-mode)
