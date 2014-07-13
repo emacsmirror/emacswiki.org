@@ -78,7 +78,7 @@ If you're in trouble:
 
 The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
 
-In addition to addressing the bots like any other person, by prefixing the message with the recipients nickname and a colon, the bots understand a variety of special syntax among the traffic.  For example BirnyTheBot considers a question mark preceding a phrase as a request to search its database and return results to the channel.  In a similar fashion fsbot parses strings surrounded by pairs of double commas.
+In addition to addressing the bots like any other person, by prefixing the message with the recipients nickname and a colon, the bots understand a variety of special syntax among the traffic.  For example, fsbot parses strings surrounded by pairs of double commas.
 
 The bots generally provide help if you ask them for it.  Better do that in private though, to keep it off the channel.
 
