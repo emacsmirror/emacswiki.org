@@ -612,9 +612,10 @@ Some w3m-browse-* functions (e.g. w3m-browse-generic) rely on finding urls via b
 
 -ghf
 
+[:EmacsW3WithGmail]
 ==Working with Gmail==
 
-To work with Gmail, w3m requires a one-line patch; see https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY
+To work with Gmail, w3m requires a one-line  [[https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY patch]].
 After this, emacs-w3m works well with Gmail in Basic HTML mode.  In particular, compared e.g. with mu4e, new mail is seen instantaneously, without needing to be fetched first by e.g. offlineimap.
 
 ----
