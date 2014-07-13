@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jul 11 20:05:00 2014 (-0700)
+;; Last-Updated: Sat Jul 12 19:20:22 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3357
+;;     Update #: 3366
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -160,8 +160,8 @@
 ;;    `bmkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-quit', `bmkp-bmenu-refresh-menu-list',
 ;;    `bmkp-bmenu-regexp-mark', `bookmark-bmenu-relocate' (Emacs 20,
-;;    21), `bmkp-bmenu-remove-all-tags', `bmkp-bmenu-remove-tags',
-;;    `bmkp-bmenu-remove-tags-from-marked',
+;;    21), `bmkp-bmenu-relocate-marked', `bmkp-bmenu-remove-all-tags',
+;;    `bmkp-bmenu-remove-tags', `bmkp-bmenu-remove-tags-from-marked',
 ;;    `bmkp-bmenu-search-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-set-bookmark-file-bookmark-from-marked',
 ;;    `bmkp-bmenu-set-tag-value',
@@ -1551,6 +1551,8 @@ Modify, Delete Bookmarks
 \(See also `Tags', next.)
 
 \\[bmkp-bmenu-edit-bookmark-name-and-location]\t- Rename or relocate bookmark
+\\[bookmark-bmenu-relocate]\t- Relocate bookmark
+\\[bmkp-bmenu-relocate-marked]\t- Relocate marked bookmarks
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
 C-u \\[bmkp-bmenu-show-or-edit-annotation]\t- Edit bookmark's annotation
 \\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal Lisp record for bookmark
@@ -4541,6 +4543,37 @@ If you use this function non-interactively, be sure to load library
         (when (and msg-p  (not errorp))
           (message "Defined and saved command `%s'" (concat "bmkp-bmenu-sort-" sort-order)))))))
 
+;;;###autoload (autoload 'bmkp-bmenu-relocate-marked "bookmark+")
+(defun bmkp-bmenu-relocate-marked (directory &optional msgp) ; Bound to `M-R' in bookmark list
+  "Relocate target files of all (visible) bookmarks that are marked `>'.
+You are prompted for the relocation target directory.
+Non-nil optional MSGP means show status message.
+Return the number of bookmarks relocated to DIRECTORY."
+  (interactive (list (funcall (if (fboundp 'read-directory-name)
+                                  #'read-directory-name
+                                #'read-file-name)
+                              "Relocate targets of marked bookmarks to directory: "
+                              default-directory default-directory)
+                     t))
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (let ((count  0)
+        file)
+    (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all)))
+      (when (and (setq file  (bookmark-get-filename bmk))
+                 (not (equal file bmkp-non-file-filename)))
+        (setq file   (file-name-nondirectory file)
+              count  (1+ count))
+        (bookmark-set-filename bmk (expand-file-name file directory))
+        (setq bookmark-alist-modification-count
+              (1+ bookmark-alist-modification-count))))
+    (when (bookmark-time-to-save-p) (bookmark-save))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (when msgp
+      (if (> count 0)
+          (message "Relocated %d bookmark%s" count (if (= 1 count) "" "s"))
+        (message "No bookmarks relocated")))
+    count))
+
 ;;;###autoload (autoload 'bmkp-bmenu-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-bmenu-edit-bookmark-name-and-location (&optional internalp) ; Bound to `r' in bookmark list
   "Edit the bookmark under the cursor: its name and location.
@@ -5302,6 +5335,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "RM"                   'bmkp-bmenu-mark-region-bookmarks)
 (define-key bookmark-bmenu-mode-map "RS"                   'bmkp-bmenu-show-only-regions)
 (define-key bookmark-bmenu-mode-map "\M-r"                 'bookmark-bmenu-relocate) ; `R' in Emacs
+(define-key bookmark-bmenu-mode-map "\M-R"                 'bmkp-bmenu-relocate-marked)
 (define-key bookmark-bmenu-mode-map "S"                    'bookmark-bmenu-save) ; `s' in Emacs
 (define-key bookmark-bmenu-mode-map "s"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
@@ -5418,7 +5452,7 @@ are marked or ALLP is non-nil."
   '(menu-item "Current Status, Mode Help" bmkp-bmenu-mode-status-help :keys "?"
     :help "Describe `*Bookmark List*' and show its current status"))
 
-(define-key bmkp-bmenu-menubar-menu [top-sep4] '("--")) ; ------------
+(define-key bmkp-bmenu-menubar-menu [top-sep7] '("--")) ; ------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-revert-bookmark-file]
   '(menu-item "Revert to Saved..." bmkp-revert-bookmark-file
     :help "Revert to bookmarks in current bookmark file, as last saved" :keys "C-u g"))
@@ -5426,7 +5460,7 @@ are marked or ALLP is non-nil."
   '(menu-item "Refresh to Current" bmkp-bmenu-refresh-menu-list
     :help "Update display to reflect current bookmark list (`C-u': revert from file)"))
 
-(define-key bmkp-bmenu-menubar-menu [top-sep3] '("--")) ; ------------
+(define-key bmkp-bmenu-menubar-menu [top-sep6] '("--")) ; ------------
 (define-key bmkp-bmenu-menubar-menu [bmkp-save-menu-list-state]
   '(menu-item "Save Display State..." bmkp-save-menu-list-state
     :help "Save the current bookmark-list display state to `bmkp-bmenu-state-file'"
@@ -5439,22 +5473,31 @@ are marked or ALLP is non-nil."
     :help "Save the current set of bookmarks to the current bookmark file"
     :enable (> bookmark-alist-modification-count 0)))
 
-(define-key bmkp-bmenu-menubar-menu [top-sep2] '("--")) ; ----------
+(define-key bmkp-bmenu-menubar-menu [top-sep5] '("--")) ; ----------
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-edit-marked]
   '(menu-item "Edit Internal Records of Marked (Lisp)..." bmkp-bmenu-edit-marked
     :help "Edit the internal records of the marked bookmarks" :keys "E"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-relocate-marked]
+  '(menu-item "Relocate Marked..." bmkp-bmenu-relocate-marked
+    :help "Relocate the marked bookmarks to a directory"))
+
+(define-key bmkp-bmenu-menubar-menu [top-sep4] '("--")) ; ----------
 (define-key bmkp-bmenu-menubar-menu [bmkp-make-function-bookmark]
   '(menu-item "New Function Bookmark..." bmkp-make-function-bookmark
     :help "Create a bookmark that will invoke FUNCTION when \"jumped\" to"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-make-sequence-from-marked]
   '(menu-item "New Sequence Bookmark from Marked..." bmkp-bmenu-make-sequence-from-marked
     :help "Create or update a sequence bookmark from the visible marked bookmarks"))
+
+(define-key bmkp-bmenu-menubar-menu [top-sep3] '("--")) ; ----------
 (define-key bmkp-bmenu-menubar-menu [bmkp-choose-navlist-from-bookmark-list]
   '(menu-item "Set Navlist from Bookmark-List Bookmark..." bmkp-choose-navlist-from-bookmark-list
     :help "Set the navigation list from a bookmark-list bookmark"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-choose-navlist-of-type]
   '(menu-item "Set Navlist to Bookmarks of Type..." bmkp-choose-navlist-of-type
     :help "Set the navigation list to the bookmarks of a certain type"))
+
+(define-key bmkp-bmenu-menubar-menu [top-sep2] '("--")) ; ----------
 (define-key bmkp-bmenu-menubar-menu [bmkp-list-defuns-in-commands-file]
   '(menu-item "List User-Defined Bookmark Commands" bmkp-list-defuns-in-commands-file
     :help "List the functions defined in `bmkp-bmenu-commands-file'"))
