@@ -1,0 +1,8 @@
+Reading the Auto-Saving section of the emacs manual I tried this method and it apparently works (I tested it just a little now):
+
+    (setq auto-save-visited-file-name 1)
+    (setq auto-save-interval 10)
+    (setq auto-save-timeout 10)
+
+-- [http://joseghast.org joseghast] 2014-07-13 09:12 UTC
+
