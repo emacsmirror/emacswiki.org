@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jun 19 18:32:00 2014 (-0700)
+;; Last-Updated: Mon Jul 14 08:15:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27008
+;;     Update #: 27009
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9522,7 +9522,8 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
   (interactive
    (save-selected-window
      ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
-     (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
+     (let ((enable-recursive-minibuffers     t)
+           (minibuffer-completion-predicate  minibuffer-completion-predicate))
        (list (funcall (if (fboundp 'read-directory-name)
                           #'read-directory-name
                         #'read-file-name)
