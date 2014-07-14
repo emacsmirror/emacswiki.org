@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jun 21 16:09:32 2014 (-0700)
+;; Last-Updated: Mon Jul 14 08:16:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10954
+;;     Update #: 10955
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/07/14 dadams
+;;     icicle-cd-for-loc-files: Bind enable-recursive-minibuffers.
 ;; 2014/06/19 dadams
 ;;     icicle-explore: Added note to doc string about binding *-incremental-completion to always.
 ;; 2014/06/06 dadams
