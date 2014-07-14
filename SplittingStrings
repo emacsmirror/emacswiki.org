@@ -35,6 +35,24 @@ Library <tt>[[subr+.el]]</tt> also defines a specialization of `split-string' fo
 See the doc string of `split-string-by-property' for more information about using 
 ##TEST##, in particular for testing membership of the actual value in a list ##VALUE## and testing membership of ##VALUE## in an actual-value list.
 
+In addition to these string-splitting functions, the following buffer-substring functions are defined in <tt>[[subr+.el]]</tt>:
+
+* `buffer-substring-of-propertied' -- Return the [[region]] parts that have a
+  given ##PROPERTY##.
+
+* `buffer-substring-of-unpropertied' -- Return the region parts that do not
+  have a given ##PROPERTY##.
+
+* `buffer-substring-of-visible' -- Return the visible region parts.
+
+* `buffer-substring-of-invisible' -- Return the invisible region parts.
+
+* `buffer-substring-of-faced' -- Return the region parts that have property
+  `face'.
+
+* `buffer-substring-of-unfaced' -- Return the region parts that do not have
+  property `face'.
+
 
 ----
 
