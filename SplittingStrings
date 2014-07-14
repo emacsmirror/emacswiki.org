@@ -12,17 +12,19 @@ However the version of `split-string' in ##subr+.el## has two main enhancements:
 
 * An additional optional argument ##FLIP##, which if non-`nil' swaps which pieces are considered separators, so that what would normally be the separator matches are the matches that are returned.  Obviously, you would not pass a typical regexp used for separation (e.g. matching whitespace or commas) in this case; you would instead use ##SEPARATORS## (a misnomer in this case) to match the substrings you ''want''.
 
-* Instead of a ##SEPARATORS## regexp, the second argument is more general.  Besides a regexp, it can be a character '''predicate''' or a doubleton '''[[plist]]''', ##(PROPERTY VALUE)##, where ##PROPERTY## is a [[text property]] property and ##VALUE## is one of its possible values.
+* Instead of a ##SEPARATORS## regexp, the second argument (now called ##HOW##) is more general.  Besides a regexp, it can be a character '''predicate''' or a doubleton '''[[plist]]''', ##(PROPERTY VALUE)##, where ##PROPERTY## is a [[text property]] property and ##VALUE## is one of its possible values.
 
-The enhanced `split-string' in ##subr+.el## has this signature, which accepts two additional arguments:
+
+
+The enhanced `split-string' in ##subr+.el## has the following signature, which accepts two additional arguments:
 
     (split-string STRING &optional HOW OMIT-NULLS TRIM FLIP TEST)
 
-If the second arg is a predicate, it must accept a character as its (first) argument.  Substrings whose characters all satisfy the predicate are thus distinguished from substrings whose characters do not.  By default, the former are used as separators, so the returned result is a list of substrings whose characters do not satisfy the predicate.  Non-`nil' arg ##FLIP## flips this, so the result is the substrings whose chars satisfy the predicate.
+If the second arg (##HOW##) is a ''predicate'' then it must accept a ''character'' as its (first) argument.  Substrings whose characters all satisfy the predicate are thus distinguished from substrings whose characters do not.  By default, the former are used as separators, so the returned result is a list of substrings whose characters do ''not'' satisfy the predicate.  Non-`nil' arg ##FLIP## flips this behavior, so the result is the substrings whose characters ''satisfy'' the predicate.
 
-If the second arg is a plist ##(PROPERTY VALUE)##, it is used to distinguish substrings whose characters have property ##PROPERTY## with value ##VALUE##.  Again, with non-`nil' arg ##FLIP## the result is the substrings whose characters do not have property ##PROPERTY## with value ##VALUE##.
+If the second arg is a ''[[plist]]'' ##(PROPERTY VALUE)##, it is used to distinguish substrings whose characters have property ##PROPERTY## with value ##VALUE##.  Again, with non-`nil' arg ##FLIP## the result is the substrings whose characters do ''not'' have property ##PROPERTY## with value ##VALUE##.
 
-Optional arg ##TEST## is used only when the second arg is a plist ##(PROPERTY VALUE)##, in which case it defines how the actual value of ##PROPERTY## must match ##VALUE##.  If ##TEST## is absent or `nil' and ##VALUE## is `nil' then ##PROPERTY## is simply tested for presence (a non-`nil' value).  If ##TEST## is absent and ##VALUE## is non-`nil' then `eq' is used for ##TEST##; that is, the actual value must be `eq' to ##VALUE##.
+Optional arg ##TEST## is used only when the second arg is a plist ##(PROPERTY VALUE)##, in which case it defines how the actual value of ##PROPERTY## must match ##VALUE##.  If ##TEST## is absent or `nil' and ##VALUE## is `nil' then ##PROPERTY## is simply tested for ''presence'' (a non-`nil' value).  If ##TEST## is absent and ##VALUE## is non-`nil' then `eq' is used for ##TEST##; that is, the actual value must be `eq' to ##VALUE##.
 
 Library <tt>[[subr+.el]]</tt> also defines a specialization of `split-string' for each of its possible ##HOW## arguments:
 
