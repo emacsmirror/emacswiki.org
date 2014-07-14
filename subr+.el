@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 31 11:31:35 2014 (-0700)
+;; Last-Updated: Mon Jul 14 09:19:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 154
+;;     Update #: 155
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -108,9 +108,10 @@
 
 ;; REPLACES ORIGINAL in `simple.el':
 ;;
-;; 1. Second arg can be a character property list or a predicate, in
-;;    addition to a regexp.
-;; 2. Addtional optional arg FLIP: to complement set of returned substrings.
+;; 1. Second arg HOW can be a character property list or a predicate, in addition to a regexp.
+;; 2. Additional optional arg FLIP: to complement set of returned substrings.
+;; 3. Additional optional arg TEST: passed to `split-string-by-property' if HOW is
+;;    (PROPERTY VALE).
 ;;
 (defun split-string (string &optional how omit-nulls trim flip test)
   "Split STRING into substrings.
