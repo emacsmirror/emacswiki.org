@@ -1,3 +1,4 @@
+[[ja:スクロールロック]]
 On all the Windows machines I've currently got access to, the Scroll Lock key causes Emacs to ignore the Caps Lock key.
 The feature seems to be undocumented everywhere I can think to look.
 
