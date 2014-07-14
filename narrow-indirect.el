@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 29 08:53:33 2014 (-0700)
+;; Last-Updated: Mon Jul 14 14:49:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 150
+;;     Update #: 157
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/14 dadams
+;;     ni-narrow-to-region-other-window: Just use buffer-substring-of-visible, not split-string-by-property.
 ;; 2014/05/29 dadams
 ;;     Added: ni-buf-name-separator.  And use  | , not  / , as the value.
 ;;     ni-narrow-to-region-other-window:
@@ -253,13 +255,9 @@ See `clone-indirect-buffer'."
   (if (and (= start end)  msgp)
       (message "Region is empty")
     (deactivate-mark)
-    (let* ((filter-buffer-substring-function  (or (and (require 'subr+ nil t) ; `split-string-by-property'
+    (let* ((filter-buffer-substring-function  (or (and (require 'subr+ nil t) ; `buffer-substring-of-visible'
                                                        (lambda (beg end _delete) ; Remove invisible text.
-                                                         (let* ((strg   (buffer-substring beg end))
-                                                                (parts  (split-string-by-property
-                                                                         strg '(invisible nil) 'OMIT-NULLS
-                                                                         split-string-default-separators))
-                                                                (strg   (apply #'concat parts)))
+                                                         (let ((strg   (buffer-substring-of-visible beg end)))
                                                            (set-text-properties 0 (length strg) () strg)
                                                            strg)))
                                                   filter-buffer-substring-function)) ; No-op
