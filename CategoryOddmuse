@@ -1,0 +1,8 @@
+[[Oddmuse]] is the wiki engine used to run EmacsWiki.
+Oddmuse modes are Emacs modes that help you read and edit Oddmuse wikis such as Emacs Wiki using Emacs itself.
+
+* OddmuseMode is maintained by XavierMaillard
+* OddmuseCurl is maintained by AlexSchroeder
+* [[Yaoddmuse]] is maintained by [[rubikitch]]
+
+See WikiModes for similar stuff, and also RuseWikiMode is based on OddmuseMode.
