@@ -271,5 +271,9 @@ At the moment every page comes with the following line before the title: "Iran, 
 [new:AlexSchroeder:2014-02-11 07:12 UTC]
 The header of this wiki usually shows national days. This includes messages such as “Iran, Victory of the Islamic Revolution in Iran.” This is not a statement on current events. It just reminds us of the vast diversity of culture on this planet. It's also a great opportunity to learn about other countries and the events that shaped them. Check out the [http://en.wikipedia.org/wiki/Iranian_Revolution Iranian Revolution] on Wikipedia, for example.
 
+
+== Captcha problems ==
+If javascript is disabled, the captcha used on EmacsWiki, is virtually impossible for normal humans to solve on the first, second, or tenth attempt.  reCaptcha might pretend to work without js, but it's too frustrating to bother.  You may as well just disable anonymous edits for non-js users (like those using emacs, say)
+
 ----
 CategoryEmacsWikiSite
