@@ -1,0 +1,9 @@
+The format used when using a string in a title. Rules vary by language. For more info see http://en.wikipedia.org/wiki/Letter_case#Headings_and_publication_titles.
+
+== Libraries ==
+
+* [[titlecase.el]] - Wrapper around the [https://github.com/ap/titlecase titlecase script]
+
+== See Also ==
+* CamelCase 
+* StudlyCaps
