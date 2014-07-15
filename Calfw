@@ -26,7 +26,7 @@ Many informations are displayed in the Emacs buffer.
 
 https://cacoo.com/diagrams/OnjKgBHat0kHs0xp-B961B.png
 
-==Intallation==
+==Installation==
 To use this program, locate this file to load-path directory, and add the following code to your ##.emacs##.
 
     (require 'calfw)
