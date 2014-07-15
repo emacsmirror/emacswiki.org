@@ -1,13 +1,11 @@
 This is a really simple mode to edit pages on Oddmuse wikis (such as EmacsWiki) using GNU Emacs.
 
-There are actually various Oddmuse editing modes out there.
+== Source ==
 
-* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] is currently maintained by XavierMaillard
+* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] project page, on Savannah
+
 * Lisp:oddmuse.el is an older, abandoned copy hosted on this wiki
-* OddmuseCurl is a fork of a very early copy that still uses `curl' currently maintained by AlexSchroeder
-* [[Yaoddmuse]] is a fork currently maintained by [[rubikitch]]
 
-See WikiModes for similar stuff, and also RuseWikiMode is based on OddmuseMode.
 
 == Features ==
 
@@ -160,3 +158,4 @@ This patch provides ImenuMode support to Oddmuse by creating entries for each he
 
 ----
 CategoryHypermedia
+CategoryOddmuse
