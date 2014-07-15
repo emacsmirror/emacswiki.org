@@ -1,4 +1,4 @@
-The format used when using a string in a title. Rules vary by language. For more info see http://en.wikipedia.org/wiki/Letter_case#Headings_and_publication_titles.
+The format used when using a string in a title. Rules vary by language. For more info see [http://en.wikipedia.org/wiki/Letter_case#Headings_and_publication_titles Wikipedia].
 
 == Libraries ==
 
@@ -7,3 +7,6 @@ The format used when using a string in a title. Rules vary by language. For more
 == See Also ==
 * CamelCase 
 * StudlyCaps
+
+----
+CategoryText
