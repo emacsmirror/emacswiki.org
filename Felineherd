@@ -9,3 +9,5 @@ There are literally thousands of packages allowing the customisation of Emacs. T
 Feline Herd aims to "herd the cats" by bringing package management under one roof and providing a graphical user interface. 
 
 Feline Herd is written in Emacs Lisp.
+
+CategoryPackaging
