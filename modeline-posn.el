@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 20 21:49:14 2014 (-0800)
+;; Last-Updated: Tue Jul 15 10:41:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 735
+;;     Update #: 742
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -149,6 +149,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/15 dadams
+;;     Advise functions prepend-to-buffer, append-to-buffer, copy-to-buffer, append-to-file.
 ;; 2014/01/18 dadams
 ;;     Added: modelinepos-region-acting-on (face and var), 
 ;;            use-region-p (Emacs 22), use-empty-active-region (Emacs 22).
@@ -433,7 +435,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; This one works for `query-replace', `query-replace-regexp', `replace-string',
 ;; and `replace-regexp'.
-;;
 (defadvice query-replace-read-args (around bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
@@ -442,7 +443,6 @@ For some commands, it may be appropriate to ignore the value of
     ad-do-it))
 
 ;; This one is for `isearch-query-replace'.
-;;
 (defadvice query-replace-read-to (around bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
@@ -452,7 +452,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; This one is for `query-replace-regexp-eval'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
-;;
 (defadvice query-replace-read-from (around bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
@@ -462,7 +461,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; This one works for `keep-lines', `flush-lines', and `how-many'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
-;;
 (defadvice keep-lines-read-args (around bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
@@ -472,7 +470,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; Advise interactive part of `map-query-replace-regexp'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
-;;
 (defadvice map-query-replace-regexp (before bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (interactive
@@ -497,22 +494,67 @@ For some commands, it may be appropriate to ignore the value of
                (region-end))))))
 
 ;; Turn on highlighting for act of (query-)replacing.
-;;
 (defadvice perform-replace (before bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (setq modelinepos-region-acting-on  (or (use-region-p)  (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
 
 ;; Turn it off after highlighting for replacement commands.  There is no hook, so use `replace-dehighlight'.
-;;
 (defadvice replace-dehighlight (after bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
   (setq modelinepos-region-acting-on  nil))
 
 
+;;; Functions from `simple.el' and `files.el' (loaded by default; `files.el' has no `provide').
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+(defadvice prepend-to-buffer (around bind-modelinepos-region-acting-on activate)
+  "\(Not used for Emacs 22.)"
+  (interactive
+   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+         (modelinepos-region-acting-on          (or (use-region-p)
+                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+     (list (read-buffer "Prepend to buffer: " (other-buffer (current-buffer) t))
+           (region-beginning) (region-end))))
+  ad-do-it)
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+(defadvice append-to-buffer (around bind-modelinepos-region-acting-on activate)
+  "\(Not used for Emacs 22.)"
+  (interactive
+   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+         (modelinepos-region-acting-on          (or (use-region-p)
+                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+     (list (read-buffer "Append to buffer: " (other-buffer (current-buffer) t))
+           (region-beginning) (region-end))))
+  ad-do-it)
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+(defadvice copy-to-buffer (around bind-modelinepos-region-acting-on activate)
+  "\(Not used for Emacs 22.)"
+  (interactive
+   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+         (modelinepos-region-acting-on          (or (use-region-p)
+                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+     (list (read-buffer "Copy to buffer: " (other-buffer (current-buffer) t))
+           (region-beginning) (region-end))))
+  ad-do-it)
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+(defadvice append-to-file (around bind-modelinepos-region-acting-on activate)
+  "\(Not used for Emacs 22.)"
+  (interactive
+   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+         (modelinepos-region-acting-on          (or (use-region-p)
+                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+     (list (region-beginning)
+           (region-end)
+           (read-file-name "Append to file: "))))
+  ad-do-it)
+
+
 ;;; Functions from `isearch.el' (loaded by default, with no `provide').
 
 ;; Library `isearch+.el' lets you restrict Isearch to the active region.
-
 
 (defadvice isearch-mode (before bind-modelinepos-region-acting-on activate)
   "\(Used only for Emacs 24.3 and later.)"
@@ -522,7 +564,6 @@ For some commands, it may be appropriate to ignore the value of
   (add-hook 'isearch-mode-end-hook  (lambda () (setq modelinepos-region-acting-on  nil))))
 
 ;; Transfer the region restriction and its mode-line highlighting from Isearch to the replacement command.
-;;
 (defadvice isearch-query-replace (around bind-modelinepos-region-acting-on activate)
   "\(Used only for Emacs 24.3 and later.)"
   (interactive
@@ -548,7 +589,6 @@ For some commands, it may be appropriate to ignore the value of
                    `(lambda () (setq modelinepos-region-acting-on  ',modelinepos-region-acting-on))))))
 
 ;; Transfer the region restriction and its mode-line highlighting from Isearch to the replacement command.
-;;
 (defadvice isearch-query-replace-regexp (around bind-modelinepos-region-acting-on activate)
   "\(Used only for Emacs 24.3 and later.)"
   (interactive
