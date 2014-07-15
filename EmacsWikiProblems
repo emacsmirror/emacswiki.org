@@ -273,7 +273,10 @@ The header of this wiki usually shows national days. This includes messages such
 
 
 == Captcha problems ==
-If javascript is disabled, the captcha used on EmacsWiki, is virtually impossible for normal humans to solve on the first, second, or tenth attempt.  reCaptcha might pretend to work without js, but it's too frustrating to bother.  You may as well just disable anonymous edits for non-js users (like those using emacs, say)
+If javascript is disabled, the captcha used on EmacsWiki, is virtually impossible for normal humans to solve on the first, second, or tenth attempt.  reCaptcha might pretend to work without js, but it's too frustrating to bother.  You may as well just disable anonymous edits for non-js users (like those using Emacs, say).
+
+[new:AlexSchroeder:2014-07-15 21:20 UTC]
+I can offer two solutions: 1. if you are using a browser that stores cookies, you can provide a "secret" URL parameter that tells Emacs Wiki that you have already answered the CAPTCHA: ##uihnscuskc=1##. 2. Switch to one of the Oddmuse modes listed on CategoryOddmuse. I recommend OddmuseCurl because that's what I use. It also serves as an example of how to use the wiki using ##curl##.
 
 ----
 CategoryEmacsWikiSite
