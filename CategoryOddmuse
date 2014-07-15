@@ -6,3 +6,8 @@ Oddmuse modes are Emacs modes that help you read and edit Oddmuse wikis such as 
 * [[Yaoddmuse]] is maintained by [[rubikitch]]
 
 See WikiModes for similar stuff, and also RuseWikiMode is based on OddmuseMode.
+
+== CAPTCHA ==
+
+If you're trying to use EmacsWiki using HTTP requests, you need to tell the wiki that you have already answered the [https://en.wikipedia.org/wiki/CAPTCHA CAPTCHA].
+You do this by using the URL parameter `uihnscuskc=1'. This will return a *cookie* which you can use---or you can simply continue to provide the "secret" URL parameter.
