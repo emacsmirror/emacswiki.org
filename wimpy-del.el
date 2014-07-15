@@ -9,9 +9,9 @@
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:57:26 2013 (-0800)
+;; Last-Updated: Tue Jul 15 08:36:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 186
 ;; URL: http://www.emacswiki.org/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -53,6 +53,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/15 dadams
+;;     kill-region-wimpy: Let mode-line-pos.el highlight region specially in mode line.
+;;                        Added optional arg MSGP.
 ;; 2010/01/04 dadams
 ;;     Removed autoload cookies from defvars.
 ;; 2005/11/08 dadams
@@ -106,7 +109,7 @@ If nil, no message is displayed.")
 ;; CMPL-LAST-INSERT-LOCATION, CMPL-ORIGINAL-STRING and COMPLETION-TO-ACCEPT
 ;; are free here.
 ;;;###autoload
-(defun kill-region-wimpy (beg end)
+(defun kill-region-wimpy (beg end &optional msgp)
   "Kill the text between BEG and END, putting it in the kill ring.
 \(Interactively, uses the region.)
 
@@ -114,11 +117,11 @@ If the previous command was a completion, just remove the completion.
 
 Else, if the region is > `wimpy-delete-size', you must confirm the kill."
   (interactive
-   (if (and (eq last-command 'complete) ; See `completion.el'.
-            (boundp 'cmpl-last-insert-location))
+   (if (and (eq last-command 'complete)  (boundp 'cmpl-last-insert-location)) ; See `completion.el'.
        (let ((mark-even-if-inactive  t)) (list (region-beginning) (region-end)))
-     (list (region-beginning) (region-end))))
-  (cond (;; Remove the most recent completion----See `completion.el'.
+     (list (region-beginning) (region-end) 'MSGP)))
+  (cond ((not msgp) (kill-region beg end))
+        (;; Remove the most recent completion----See `completion.el'.
          (and (eq last-command 'complete) (boundp 'cmpl-last-insert-location))
          (delete-region (point) cmpl-last-insert-location)
          (insert cmpl-original-string)  ; Defined in `completion.el'.
@@ -126,17 +129,17 @@ Else, if the region is > `wimpy-delete-size', you must confirm the kill."
         ;; Only kill large region if user confirms.
         ((and wimpy-delete-size
               (> (- end beg) wimpy-delete-size)
-              (progn (when (fboundp 'flash-ding) (flash-ding))
-                     (not (y-or-n-p
-                           (if (fboundp 'region-description)
-                               (region-description
-                                (- (frame-width) 6)
-                                "Really kill?:     " "    " beg end)
-                             (message "Really kill region (%d chars)? "
-                                      (- end beg)))))))
-         (when (and (interactive-p) wimpy-delete-dopey-message)
-           (message "%s" wimpy-delete-dopey-message)))
-        (t (kill-region beg end))))     ; Kill small region.
+              (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' in minibuffer.
+                    (modelinepos-region-acting-on ; `mode-line-pos.el' highlights region in mode line.
+                     (and (fboundp 'use-region-p)
+                          (or (use-region-p)  (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)))))
+                (when (fboundp 'flash-ding) (flash-ding))
+                (not (y-or-n-p (if (fboundp 'region-description)
+                                   (region-description (- (frame-width) 6) "Really kill?:     " "    " beg end)
+                                 (message "Really kill region (%d chars)? " (- end beg)))))))
+         (when (and msgp  wimpy-delete-dopey-message) (message "%s" wimpy-delete-dopey-message)))
+        (t (kill-region beg end))))
+     ; Kill small region.
 
 ;;; Identical to `clipboard-kill-region', defined in `menu-bar.el',
 ;;; except that it uses `kill-region-wimpy' instead of `kill-region'.
