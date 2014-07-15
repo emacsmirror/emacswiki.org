@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 15 10:41:43 2014 (-0700)
+;; Last-Updated: Tue Jul 15 10:56:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 742
+;;     Update #: 747
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -33,8 +33,9 @@
 ;;  2. Make `size-indication-mode' show the size of the region,
 ;;     instead of the buffer size, whenever the region is active.
 ;;
-;;  3. Make `size-indication-mode' show the current command currently
-;;     acts specially because the region is active (Emacs 23+).
+;;  3. Make `size-indication-mode' show that the current command acts
+;;     on the active region or acts specially because the region is
+;;     now active (Emacs 23+).
 ;;
 ;;  For #2: When the region is active, the mode line displays some
 ;;  information that you can customize - see option
@@ -57,12 +58,12 @@
 ;;  the active-region indication when the active region is empty.  By
 ;;  default it is t, meaning indicate an empty active region.
 ;;
-;;  For #3, certain standard Emacs commands restrict their scope to
-;;  the region when it is active.  Some of these are handled here by
+;;  For #3, certain standard Emacs commands act on the active region
+;;  or restrict their scope to it.  Some of these are handled here by
 ;;  highlighting the region indication in the mode line specially
 ;;  (using face `modelinepos-region-acting-on' instead of face
 ;;  `modelinepos-region').  The region-restricted commands defined in
-;;  standard library `replace.el' are handled this way.
+;;  standard library `replace.el' are handled this way, for example.
 ;;
 ;;  If you also use my library `isearch+.el', which I recommend, then
 ;;  (for Emacs 24.3+) Isearch commands too can optionally be
