@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 15 10:56:11 2014 (-0700)
+;; Last-Updated: Tue Jul 15 13:42:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 747
+;;     Update #: 777
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -115,22 +115,23 @@
 ;;    `modelinepos-region-acting-on' (Emacs 23+).
 ;;
 ;;  
-;;  ***** NOTE: The following commands defined in `simple.el' have
-;;              been REDEFINED HERE:
-;;
-;;    `size-indication-mode'.
-;;
-;;
 ;;  ***** NOTE: The following variables defined in `bindings.el' have
 ;;              been REDEFINED HERE:
 ;;
 ;;    `mode-line-position'.
 ;;
 ;;
+;;  ***** NOTE: The following commands defined in `files.el' have
+;;              been REDEFINED HERE:
+;;
+;;    `append-to-file'.
+;;
+;;
 ;;  ***** NOTE: The following functions defined in `isearch+.el' have
 ;;              been ADVISED HERE:
 ;;
 ;;    `isearch-mode' (Emacs 24.3+).
+;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
 ;;              been ADVISED HERE, if you use library `isearch+.el':
@@ -146,12 +147,32 @@
 ;;    `query-replace-read-from', `query-replace-read-to',
 ;;    `replace-dehighlight'.
 ;;
+;;
+;;  ***** NOTE: The following functions defined in `register.el' have
+;;              been ADVISED HERE:
+;;
+;;    `append-to-register', `copy-to-register', `prepend-to-register',
+;;    `register-read-with-preview'.
+;;
+;;
+;;  ***** NOTE: The following commands defined in `simple.el' have
+;;              been REDEFINED HERE:
+;;
+;;    `size-indication-mode'.
+;;
+;;
+;;  ***** NOTE: The following commands defined in `simple.el' have
+;;              been ADVISED HERE:
+;;
+;;     `append-to-buffer', `copy-to-buffer', `prepend-to-buffer'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2014/07/15 dadams
-;;     Advise functions prepend-to-buffer, append-to-buffer, copy-to-buffer, append-to-file.
+;;     Advise functions append-to-buffer, prepend-to-buffer, copy-to-buffer, append-to-file,
+;;       register-read-with-preview, copy-to-register, append-to-register, prepend-to-register.
 ;; 2014/01/18 dadams
 ;;     Added: modelinepos-region-acting-on (face and var), 
 ;;            use-region-p (Emacs 22), use-empty-active-region (Emacs 22).
@@ -505,7 +526,7 @@ For some commands, it may be appropriate to ignore the value of
   (setq modelinepos-region-acting-on  nil))
 
 
-;;; Functions from `simple.el' and `files.el' (loaded by default; `files.el' has no `provide').
+;;; Commands from `simple.el' and `files.el' (loaded by default; `files.el' has no `provide').
 
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice prepend-to-buffer (around bind-modelinepos-region-acting-on activate)
@@ -551,6 +572,59 @@ For some commands, it may be appropriate to ignore the value of
            (region-end)
            (read-file-name "Append to file: "))))
   ad-do-it)
+
+
+;;; Functions from `register.el'.
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+(if (fboundp 'register-read-with-preview)
+    ;;  Emacs 24.4+.  Used by all register-reading cmds, but restrict highlighting to those affecting region.
+    (defadvice register-read-with-preview (around bind-modelinepos-region-acting-on activate)
+      "\(Not used for Emacs 22.)"
+      (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' for minibuffer input.
+            (modelinepos-region-acting-on          (and (or (use-region-p)
+                                                            (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))
+                                                        (member this-command '(copy-to-register
+                                                                               append-to-register
+                                                                               prepend-to-register)))))
+        ad-do-it))
+
+  ;; Emacs 23-24.3 - no `register-read-with-preview'.
+  (defadvice copy-to-register (around bind-modelinepos-region-acting-on activate)
+    "\(Not used for Emacs 22.)"
+    (interactive
+     (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+           (modelinepos-region-acting-on          (or (use-region-p)
+                                                      (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+       (list (read-char "Copy to register: ")
+             (region-beginning)
+             (region-end)
+             current-prefix-arg)))
+    ad-do-it)
+
+  (defadvice append-to-register (around bind-modelinepos-region-acting-on activate)
+    "\(Not used for Emacs 22.)"
+    (interactive
+     (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+           (modelinepos-region-acting-on          (or (use-region-p)
+                                                      (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+       (list (read-char "Append to register: ")
+             (region-beginning)
+             (region-end)
+             current-prefix-arg)))
+    ad-do-it)
+
+  (defadvice prepend-to-register (around bind-modelinepos-region-acting-on activate)
+    "\(Not used for Emacs 22.)"
+    (interactive
+     (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+           (modelinepos-region-acting-on          (or (use-region-p)
+                                                      (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+       (list (read-char "Prepend to register: ")
+             (region-beginning)
+             (region-end)
+             current-prefix-arg)))
+    ad-do-it))
 
 
 ;;; Functions from `isearch.el' (loaded by default, with no `provide').
