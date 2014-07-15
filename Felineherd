@@ -1,0 +1,11 @@
+http://sourceforge.net/projects/felineherd
+[new]
+Feline Herd - Consolidated Package Management for Emacs
+
+Why "Feline Herd?" It is said that managing Lisp programmers is akin to herding cats. For all its power, Lisp has been criticised for giving individuals so much leverage that little social interaction ensues. Projects rarely reach common ground or a perceived standard. Emacs, for all it's power, is a testament to this.
+
+There are literally thousands of packages allowing the customisation of Emacs. These are daunting to set up and configure for the novice user. Yet a coherent configuration is instrumental to assisting the novice user with becoming productive. As of Emacs 24, package management is integrated, but yet again there are divergent package manager paradigms (EL-Get & ELPA) and a number of repositories exist for these. They are not pre-configured.
+
+Feline Herd aims to "herd the cats" by bringing package management under one roof and providing a graphical user interface. 
+
+Feline Herd is written in Emacs Lisp.
