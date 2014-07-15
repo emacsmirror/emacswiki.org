@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 15 13:42:29 2014 (-0700)
+;; Last-Updated: Tue Jul 15 15:18:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 777
+;;     Update #: 780
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -115,6 +115,12 @@
 ;;    `modelinepos-region-acting-on' (Emacs 23+).
 ;;
 ;;  
+;;  ***** NOTE: The following built-in functions have 
+;;              been ADVISED HERE:
+;;
+;;    `write-region'.
+;;
+;;
 ;;  ***** NOTE: The following variables defined in `bindings.el' have
 ;;              been REDEFINED HERE:
 ;;
@@ -172,7 +178,7 @@
 ;;
 ;; 2014/07/15 dadams
 ;;     Advise functions append-to-buffer, prepend-to-buffer, copy-to-buffer, append-to-file,
-;;       register-read-with-preview, copy-to-register, append-to-register, prepend-to-register.
+;;       register-read-with-preview, copy-to-register, append-to-register, prepend-to-register, write-region.
 ;; 2014/01/18 dadams
 ;;     Added: modelinepos-region-acting-on (face and var), 
 ;;            use-region-p (Emacs 22), use-empty-active-region (Emacs 22).
@@ -571,6 +577,26 @@ For some commands, it may be appropriate to ignore the value of
      (list (region-beginning)
            (region-end)
            (read-file-name "Append to file: "))))
+  ad-do-it)
+
+
+;; Built-in functions (from C code): 
+
+;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
+;;
+(defadvice write-region (around bind-modelinepos-region-acting-on activate)
+  "\(Not used for Emacs 22.)"
+  (interactive
+   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
+         (modelinepos-region-acting-on          (or (use-region-p)
+                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
+     (list (region-beginning)
+           (region-end)
+           (read-file-name "Write region to file: ")
+           nil
+           nil
+           nil
+           t)))
   ad-do-it)
 
 
