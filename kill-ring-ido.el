@@ -56,6 +56,7 @@
 ;; http://www.emacswiki.org/emacs/kill-ring-ido.el -- self-reference
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings -- ido main page
 ;; http://emacswiki.org/emacs/BrowseKillRing -- alternative solutions in kill ring browsing
+;; http://www.emacswiki.org/emacs/ido-preview.el -- nice synergy with this plugin
 ;;
 ;;; Code:
 
