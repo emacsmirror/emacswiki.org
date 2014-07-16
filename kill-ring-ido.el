@@ -1,4 +1,4 @@
-;;; kill-ring-ido.el --- command for kill-ring browsing with ido
+;;; kill-ring-ido.el --- command for keyring browsing with ido
 ;;
 ;; Copyright 2012 Horishnii Oleksii
 ;;
@@ -21,7 +21,7 @@
 ;; Commentary:
 ;;
 ;; This package provides `kill-ring-ido', that allows you to browse
-;; the kill-ring with ido. Obviously, need ido to work. With arg,
+;; keyring with ido. Obviously, need ido to work. With arg,
 ;; `kill-ring-ido' can browse throung secondary-selection. If previous
 ;; command was yank, it will act like `yank-pop'(default M-y).
 ;; All choise's length cut to `kill-ring-ido-shortage-length'. Number
@@ -47,12 +47,19 @@
 ;;
 ;; Please, send bug reports to my email.
 ;;
+;; Since 24.3 flet is deprecated(thanks Ming for pointing
+;; that out), so using noflet now. Download it from
+;; reference section.
+;;
 ;; References:
+;; https://github.com/nicferrier/emacs-noflet -- noflet, required
 ;; http://www.emacswiki.org/emacs/kill-ring-ido.el -- self-reference
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings -- ido main page
 ;; http://emacswiki.org/emacs/BrowseKillRing -- alternative solutions in kill ring browsing
 ;;
 ;;; Code:
+
+(require 'noflet)
 
 (defvar kill-ring-ido-shortage-length 10)
 
@@ -67,7 +74,7 @@
 
 (defadvice ido-set-matches-1(around this-is-needed-to-search-through-long-strings)
   "I need to search through long string(with is in cadr, not in car), but outside ido-set-matches, ido-name should be default."
-  (flet ((ido-name (item) (if (consp item) (cadr item) item)))
+  (noflet ((ido-name (item) (if (consp item) (cadr item) item)))
     ad-do-it))
 
 (defun kill-ring-ido(&optional arg prompt ring insert)
@@ -107,5 +114,8 @@ Use RING instead. Default prompt is \"ring\"."
           (insert answer))
         (ad-deactivate 'ido-set-matches-1))
       )))
+
+;;; uncomment for delete-selection-mode
+;; (put 'kill-ring-ido 'delete-selection 'yank)
 
 (provide 'kill-ring-ido)
