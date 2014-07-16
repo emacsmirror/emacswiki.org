@@ -38,11 +38,18 @@
 ;;     (define-key ido-completion-map (kbd "C-p") 'ido-preview-backward)
 ;;     (define-key ido-completion-map (kbd "C-n") 'ido-preview-forward)))
 ;;
+;; Since 24.3 flet is deprecated(thanks Ming for pointing
+;; that out), so using noflet now. Download it from
+;; reference section.
+;;
 ;; References:
+;; https://github.com/nicferrier/emacs-noflet -- noflet, required
 ;; http://www.emacswiki.org/emacs/ido-preview.el -- self-reference
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings -- ido main page
 ;;
 ;;; Code:
+
+(require 'noflet)
 
 (defun ido-preview-cond()
   "Function using lot of dynamic variables inside.
@@ -63,7 +70,7 @@ The general rule: (car ido-matches) - item we are watching here."
           (cadar ido-matches))
         (t (ido-name ido-matches))))
     ((and (stringp (car ido-matches)) (functionp (intern (car ido-matches))))
-      (flet ((message(&rest args))) (save-window-excursion (describe-function (intern (car ido-matches))))))
+      (noflet ((message(&rest args))) (save-window-excursion (describe-function (intern (car ido-matches))))))
     ((and (stringp (car ido-matches)) (bufferp (get-buffer (car ido-matches))))
       (save-excursion (set-buffer (get-buffer (car ido-matches))) (buffer-substring (point-min) (point-max))))
     ((stringp (car ido-matches)) (car ido-matches))
@@ -103,8 +110,7 @@ scroll the window of possible completions."
             (text-mode)
             (erase-buffer)
             (insert (ido-preview-cond))
-            (normal-mode)
-            ))))))
+            (ignore-errors (set-auto-mode))))))))
 
 (defun ido-preview-backward(arg)
   "Complete the minibuffer contents as far as possible.
@@ -145,7 +151,6 @@ scroll the window of possible completions."
             (text-mode)
             (erase-buffer)
             (insert (ido-preview-cond))
-            (normal-mode)
-            ))))))
+            (ignore-errors (set-auto-mode))))))))
 
 (provide 'ido-preview)
