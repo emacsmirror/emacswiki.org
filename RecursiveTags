@@ -52,7 +52,7 @@ Here's how to create a TagFile for an entire directory tree as posted on one of 
 
 BuildTags describes how to combine find with etags to generate tags for a tree of files. But the 5.7 version of etags doesn't have a `-' option for reading on stdin. Use xargs instead, making sure that you pass --append to etags or it will overwrite the tags file for each file it gets from find.
 
- find . -name "*.cpp" -print -or -name "*.h" -print | xargs etags
+ find . -name "*.cpp" -print -or -name "*.h" -print | xargs etags --append
 
 === auto-recursive functionality ===
 
