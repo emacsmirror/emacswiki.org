@@ -178,3 +178,5 @@ Defaults to true. Otherwise the buffer will update immediately."
   (goto-char 0)
   (setq buffer-read-only t))
 </code>
+
+Lisp:dashbuffer.el
