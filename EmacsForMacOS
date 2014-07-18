@@ -241,14 +241,21 @@ open -a /Applications/MacPorts/Emacs.app --args --debug init
 To open a file from a terminal. This can be used in combination with the sudo command.
 
 <pre>
-open -a /Applications/Emacs.app' <file-name> 
+open -a /Applications/Emacs.app <file-name> 
 </pre>
 
 As above but for when Emacs.app has been installed via MacPorts.
 <pre>
-
 open -a /Applications/MacPorts?Emacs.app <file-name> 
 </pre>
+
+=== Call Emacs from other programs ===
+
+Insert this into the .bash_profile file in your home directory:
+<pre>
+export EDITOR="/Applications/Emacs.app/Contents/MacOS/Emacs"
+</pre>
+Unlike "open -a", this command will open a new window, and won't terminate until you close the window (C-x C-c). So, the calling program will wait until you've finished editing, before it reads the file. For example, change control programs like git and svn will call emacs to edit your description of a change.
 
 === Using Emacs.app from the Dock ===
 
