@@ -1,5 +1,6 @@
 [[ja:ファイルサイズ制限]]
 [[ja:ファイルサイズ制限]]
+[[ja:ファイルサイズ制限]]
 [[es:TamañoMáximoFicheroEmacs]]
 If you compile GNU Emacs on a supported architecture with more than 32 bits, you might increase the maximum buffer size.  The reason this is needed are so-called "tag bits" which tag each pointer with the corresponding datatype.  This limits the size of buffers to the largest integer you can represent in Elisp, whose value is given by the variable most-positive-fixnum.
 
