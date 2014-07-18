@@ -250,6 +250,22 @@ As above but for when Emacs.app has been installed via MacPorts.
 open -a /Applications/MacPorts?Emacs.app <file-name> 
 </pre>
 
+=== Using Emacs.app from the Dock ===
+
+Create an app that runs a shell script that runs Emacs.app, like this: use Finder to navigate to /Applications and double-click [http://support.apple.com/kb/HT2488 Automator.app]. Select the document type "Application" and click "Choose". In the list on the left, select "Library". In the next list, find "Run Shell Script" and drag it into the workflow area on the right. In the new shell script, delete the text and replace it with:
+<pre>
+cd # Start in my home directory.
+# Use my environment:
+echo '/Applications/Emacs.app/Contents/MacOS/Emacs "$@"' | bash --login -s "$@"
+</pre>
+Select "Shell: /bin/bash" and "Pass input: as arguments". Click "File > Save..." and choose a name and location for your new app. For example, you might choose the /Applications directory and name the app "Emacs for Dock." Don't replace Emacs.app.
+
+If you like, you can change your new app's icon to match Emacs.app, like this: select Emacs.app and right-click "Get Info" or press cmd+i. In the info window, select the small icon in the top left corner and copy it (cmd+c). Next, select your new application, get its info, select the small icon and paste (cmd+v).
+
+Drag your new app into [http://support.apple.com/kb/HT2474 the Dock] as usual, and you're good to go.
+
+Your new app does two things that the Dock doesn't (on Mac OS 10.9).  The "cd" command causes emacs to start in your home directory, instead of the root directory "/".  The --login option gives emacs the same environment as an interactive [http://en.wikipedia.org/wiki/Terminal_(OS_X) Terminal]. In particular, it gives emacs your usual PATH environment variable, so you can run commands in emacs the same as commands in Terminal. An alternative to --login is -i, which sets the environment differently, as described in the [http://www.gnu.org/software/bash/manual/bashref.html#Bash-Startup-Files Bash reference manual].
+
 === Use Alt/Option as Meta Key under terminal emulators ===
 
 For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
