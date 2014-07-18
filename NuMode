@@ -1,0 +1,10 @@
+nu-mode plans to offer an ergonomic keybinding offering Emacs power to human beings. You save finger muscles, and memory muscles, too. The idea is to advertise Emacs functions.
+
+"nu" is French for "bare". It is currently hosted on github, https://github.com/pyluyten/emacs-nu.
+
+Main ideas are
+- Modern keys : rely on standard C-x, C-c, C-v, C-z, C-f, C-r, C-s, C-o to cut, copy, paste, undo, find, replace, save or open.
+- Prompts : Most of these keys work like a prefix : they will prompt for a key to determine the function : do you want to find a regexp, the end of buffer, jump to a char, go to line, or use ace-jump? That's all C-f.
+- Paddle : Alt + I / J / K / L to move up left down right. U & O are backward, forward word.
+
+90% of nu-mode is that simple! An .texi file was recently started.
