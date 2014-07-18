@@ -1,5 +1,7 @@
 run elisp to create an informational buffer in your emacs
 
+Lisp:dashbuffer.el
+
 <code>
 ;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; dashbuffer.el
@@ -179,4 +181,3 @@ Defaults to true. Otherwise the buffer will update immediately."
   (setq buffer-read-only t))
 </code>
 
-Lisp:dashbuffer.el
