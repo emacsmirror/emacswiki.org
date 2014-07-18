@@ -1,5 +1,7 @@
 run elisp to create an informational buffer in your emacs
 
+https://github.com/etherald/dashbuffer
+
 Lisp:dashbuffer.el
 
 <code>
