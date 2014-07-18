@@ -6,7 +6,7 @@
 ;; Maintainer:      Alessandro Di Marco (dmr@ethzero.com)
 ;; Created:         Oct 27, 2007
 ;; Keywords:        convenience
-;; Latest Version:  Jun 28, 2014
+;; Latest Version:  Jul 18, 2014
 
 ;; This file is not part of Emacs
 
@@ -99,14 +99,14 @@ unsure say no less than 800."
   :group 'flyguess
   :type 'number)
 
-(defcustom flyguess-min-region-size 16
+(defcustom flyguess-min-region-size 32
   "Minimum guessing region size in chars. Pushing this too high
 will slow down the guessing process. Useful range > 0; if unsure
 say no more than 128."
   :group 'flyguess
   :type 'number)
 
-(defcustom flyguess-max-region-size 128
+(defcustom flyguess-max-region-size 512
   "Maximum guessing region size in chars. Pushing this too low
 will puzzle the guessing engine. Useful range > 0; if unsure say
 no less than 64."
@@ -220,6 +220,7 @@ attempt and another."
 	  (if (> (setq cycles (1+ cycles)) flyguess-persistence)
 	      (throw 'break nil)))
 	t)))
+  ;; (random t)
   (catch 'break
     (let ((regions (make-vector size nil)))
       (dotimes (slot size regions)
@@ -247,6 +248,19 @@ attempt and another."
 	(/ (dotimes (sub size mean)
 	     (setq mean (+ (car (last (aref guesses sub))) mean))) size))))
 
+;; (defun flyguess-change-dictionary (dict)
+;;   (message "change to %s" dict)
+;;   (print ispell-local-dictionary-alist)
+;;   (print ispell-dictionary-alist)
+;;   (message "^^^")
+;;   (setq ispell-local-dictionary dict)
+;;   (setq ispell-local-dictionary-overridden t)
+;;   (ispell-internal-change-dictionary)
+;;   (setq ispell-buffer-session-localwords nil))
+
+(defun flyguess-change-dictionary (dict)
+  (ispell-change-dictionary dict))
+
 (defun flyguess-guess (dicts)
   (defun around (min weight)
     (if (equal weight nil)
@@ -254,12 +268,21 @@ attempt and another."
       (if (= weight 0)
 	  0
 	(- 1 (/ (float min) weight)))))
-  (let ((regions (flyguess-toss-regions flyguess-regions)))
+
+  (defun flyguess-find-regions (size)
+    (let ((regions (flyguess-toss-regions size)))
+      ;; (message "attempt %d" size)
+      ;; (print regions)
+      (if (and (> size 0) (not regions))
+	  (flyguess-find-regions (setq size (1- size)))
+	regions)))
+  
+  (let ((regions (flyguess-find-regions flyguess-regions)))
     (catch 'break
       (if regions
 	  (let ((fitness
 		 (mapcar (lambda (lang)
-			   (ispell-change-dictionary lang)
+			   (flyguess-change-dictionary lang)
 			   (let ((weight (flyguess-gauge
 					  (flyguess-guess-regions regions))))
 			     (list weight lang)))
@@ -283,7 +306,7 @@ attempt and another."
 (defun flyguess-guess-dictionary (buffer &optional enable prepare)
   (let ((dicts flyguess-dictionaries))
     (dolist (lang flyguess-dictionaries)
-      (condition-case nil (ispell-change-dictionary lang)
+      (condition-case nil (flyguess-change-dictionary lang)
 	(error (setq dicts (delete lang dicts)))))
 
     (defun indicate (what)
@@ -292,43 +315,47 @@ attempt and another."
 	    (setq flyguess-indicator
 		  (if what (format flyguess-indicator-format what) ""))
 	    (force-mode-line-update))))
-    
-    (if (get-buffer buffer)
-	(let ((old (current-buffer)))
-	  (indicate "G")
-	  (set-buffer buffer)
-	  (let ((new (clone-indirect-buffer "flyguess" nil t)))
-	    (set-buffer new)
-	    (if (functionp prepare)
-		(funcall prepare))
-	    ;; prevents potential buffer switches in helper
-	    (set-buffer new)
-	    ;; (message (buffer-string))
-	    (let ((guess (flyguess-guess dicts)))
-	      (if guess
-		  (if (= (cadr guess) 1)
-		      (let ((lang (car guess)))
-			(set-buffer buffer)
-			(kill-buffer new)
-			(if enable
-			    (progn
-			      (ispell-change-dictionary lang)
-			      (turn-on-flyspell)))
+
+    (if dicts
+	(if (get-buffer buffer)
+	    (let ((old (current-buffer)))
+	      (indicate "G")
+	      (set-buffer buffer)
+	      (let ((new (clone-indirect-buffer "flyguess" nil t)))
+		(set-buffer new)
+		(if (functionp prepare)
+		    (funcall prepare))
+		;; prevents potential buffer switches in helper
+		(set-buffer new)
+		;; (message (buffer-string))
+		(let ((guess (flyguess-guess dicts)))
+		  (if guess
+		      (if (= (cadr guess) 1)
+			  (let ((lang (car guess)))
+			    (set-buffer buffer)
+			    (kill-buffer new)
+			    (if enable
+				(progn
+				  (flyguess-change-dictionary lang)
+				  (turn-on-flyspell)))
+			    (set-buffer old)
+			    (indicate nil)
+			    lang)
 			(set-buffer old)
-			(indicate nil)
-			lang)
+			(kill-buffer new)
+			(indicate "?")
+			(if enable
+			    nil
+			  (message "Could not guess a suitable dictionary, try later")))
 		    (set-buffer old)
 		    (kill-buffer new)
 		    (indicate "?")
 		    (if enable
 			nil
-		      (message "Could not guess a suitable dictionary, try later")))
-		(set-buffer old)
-		(kill-buffer new)
-		(indicate "?")
-		(if enable
-		    nil
-		  (message "Not enough context to guess"))))))
+		      (message "Not enough context to guess"))))))
+	  (message "No buffer %s" buffer)
+	  t)
+      (message "No suitable dictionaries found")
       t)))
 
 (defun flyguess-buffer (&optional buffer prepare seed)
@@ -336,7 +363,7 @@ attempt and another."
 
   (if seed
       (random t))
-  
+
   (defun insinuate (&optional conceal)
     (delq 'flyguess-indicator global-mode-string)
     (unless conceal
@@ -345,13 +372,14 @@ attempt and another."
 	(setq global-mode-string '("" flyguess-indicator))) t))
 
   (defun inspector (buffer prepare)
+    ;; (message "inspector")
     (if (buffer-live-p buffer)
 	(if (flyguess-guess-dictionary buffer t prepare)
 	    (insinuate t)
 	  (setq flyguess-timer
 		(run-at-time flyguess-poll-timeout
 			     nil #'inspector buffer prepare)))))
-  
+
   (if (timerp flyguess-timer)
       (cancel-timer flyguess-timer))
   (insinuate)
