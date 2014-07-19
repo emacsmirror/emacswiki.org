@@ -25,11 +25,21 @@ You can also do it transactionally.
 
 Adding [[Marmalade]]:
 
+{{{
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+}}}
 
 Adding [[MELPA]]:
 
+{{{
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+}}}
+
+Adding [[http://orgmode.org/elpa.html|Org-mode's repository]]:
+
+{{{
+   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+}}}
 
 === Using customize ===
 
