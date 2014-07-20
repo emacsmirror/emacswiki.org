@@ -84,6 +84,7 @@ General Use:
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer]]s, the [[region]] ...
+* [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
 * [[CategoryProgramming|Programming]] -- using Emacs for programming
 * [[CategoryRegexp|Regexp]] -- defining and using [[regular expression]]s
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
