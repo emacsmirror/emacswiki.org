@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 12 19:28:54 2014 (-0700)
+;; Last-Updated: Sun Jul 20 09:37:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15693
+;;     Update #: 15696
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1032,6 +1032,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/07/20 dadams
+;;     Protect key bindings for bmkp-bmenu-highlight-menu by boundp.
 ;; 2014/07/12 dadams
 ;;     Added: bmkp-bmenu-relocate-marked.  Bound to M-R.  Added it to bmkp-bmenu-menubar-menu.
 ;; 2014/07/11 dadams
