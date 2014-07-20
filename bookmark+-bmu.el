@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jul 12 19:20:22 2014 (-0700)
+;; Last-Updated: Sun Jul 20 09:37:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3366
+;;     Update #: 3373
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5752,32 +5752,32 @@ are marked or ALLP is non-nil."
 
 
 ;;; `Highlight' submenu ----------------------------------------------
-(define-key bmkp-bmenu-highlight-menu [diredp-highlight-autofiles-mode]
-  (bmkp-menu-bar-make-toggle diredp-highlight-autofiles-mode
-                             diredp-highlight-autofiles-mode
-                             "Toggle Autofile Highlighting in Dired"
-                             "Whether to highlight autofile bookmarks in Dired us biw %s"
-                             "Toggle `diredp-highlight-autofiles-mode'"
-                             nil
-                             :visible (and (fboundp 'diredp-highlight-autofiles-mode)
-                                           (featurep 'highlight))))
-
-(when (featurep 'bookmark+-lit)
-  (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-show-only-lighted]
-    '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted
-      :help "Display (only) highlighted bookmarks"))
-  (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-set-lighting-for-marked]
-    '(menu-item "Set Highlighting for Marked" bmkp-bmenu-set-lighting-for-marked
-      :help "Set specific highlighting for the marked bookmarks"
-      :enable bmkp-bmenu-marked-bookmarks))
-  (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-unlight-marked]
-    '(menu-item "Unhighlight Marked" bmkp-bmenu-unlight-marked
-      :help "Unhighlight the marked bookmarks"
-      :enable bmkp-bmenu-marked-bookmarks))
-  (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-light-marked]
-    '(menu-item "Highlight Marked" bmkp-bmenu-light-marked
-      :help "Highlight the marked bookmarks"
-      :enable bmkp-bmenu-marked-bookmarks)))
+(when (boundp 'bmkp-bmenu-highlight-menu)
+  (define-key bmkp-bmenu-highlight-menu [diredp-highlight-autofiles-mode]
+    (bmkp-menu-bar-make-toggle diredp-highlight-autofiles-mode
+                               diredp-highlight-autofiles-mode
+                               "Toggle Autofile Highlighting in Dired"
+                               "Whether to highlight autofile bookmarks in Dired us biw %s"
+                               "Toggle `diredp-highlight-autofiles-mode'"
+                               nil
+                               :visible (and (fboundp 'diredp-highlight-autofiles-mode)
+                                             (featurep 'highlight))))
+  (when (featurep 'bookmark+-lit)
+    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-show-only-lighted]
+      '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted
+        :help "Display (only) highlighted bookmarks"))
+    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-set-lighting-for-marked]
+      '(menu-item "Set Highlighting for Marked" bmkp-bmenu-set-lighting-for-marked
+        :help "Set specific highlighting for the marked bookmarks"
+        :enable bmkp-bmenu-marked-bookmarks))
+    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-unlight-marked]
+      '(menu-item "Unhighlight Marked" bmkp-bmenu-unlight-marked
+        :help "Unhighlight the marked bookmarks"
+        :enable bmkp-bmenu-marked-bookmarks))
+    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-light-marked]
+      '(menu-item "Highlight Marked" bmkp-bmenu-light-marked
+        :help "Highlight the marked bookmarks"
+        :enable bmkp-bmenu-marked-bookmarks))))
 
 
 ;;; `Tags' submenu ---------------------------------------------------
