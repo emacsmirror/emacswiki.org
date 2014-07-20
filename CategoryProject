@@ -111,7 +111,6 @@ These libraries have little to do with project management **per se**, but are ha
 * MultiTerm
 * DiredMode -- Operate on files.
 
-** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search subsets of files
 
 
 
