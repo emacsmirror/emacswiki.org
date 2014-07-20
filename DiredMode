@@ -15,7 +15,13 @@ It's possible to assign DedicatedKeys keys, such as ##S-<f1>## (##shift+F1##), t
 
 You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features. (Or read [[Manual:Dired]] online.)
 
-= Vanilla Dired distributed with Gnu Emacs =
+
+
+
+
+
+
+== Vanilla Dired distributed with Gnu Emacs ==
 
 * [[Dired X]] -- Many extra features (library ##dired-x.el##).
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
@@ -23,8 +29,13 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
 
 
+
+
+
+
+
 [:DiredEnhancements]
-= Dired tips and additional features =
+== Dired tips and additional features ==
 
 * [[Anything]] -- After evaluating ##(anything-dired-bindings)##, some dired commands are replaced with Anything-based interface.
 * [[Bookmark+]] -- (1) In the bookmark list, `##M-d >##' opens Dired on the marked file and directory bookmarks (only). (2) In Dired, `C-j' jumps among different "views" or states of the same Dired buffer. (3) You can bookmark any Dired buffer -- its current state. Jump among Dired bookmarks using `J' in Dired (or `C-x j d' globally). (4) In Dired, `M-b' bookmarks each of the marked files and dirs.
@@ -49,6 +60,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
  '''##files 691##''' ##space used 49439 available 56233408##
+* [[GrepMode#GrepOnlyMarkedFiles|`grep' the marked files]]
 * [[Icicles - Dired Enhancements]] -- [[minibuffer]] [[regexp]] [[completion]] and completion-candidate [[Icicles - Cycling Completions|cycling]] to navigate directories and perform operations on files
 ** [[Icicles - Dired Enhancements#SearchAndReplace|Search-and-replace]] on the marked files.
 ** [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Save marked file names]] as completion candidates for later reuse.
@@ -61,7 +73,12 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
 
-= Windows specific tips and additional features =
+
+
+
+
+
+== Windows specific tips and additional features ==
 
 * DiredWThirtyTwoTweaks
 * MsShellExecute -- Open any file from dired on W32 systems
