@@ -51,3 +51,11 @@ Clone project:
 === 命令（NeoTree Buffer 有效） ===
 
 == ChangeLog ==
+
+== Todo ==
+
+* 解决关窗口仅剩 NeoTree 的问题
+* 左侧 + - 符号默认提供图标
+* / 符号高亮显示
+* 提供 m 键出菜单
+
