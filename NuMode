@@ -1,6 +1,7 @@
 nu-mode plans to offer an ergonomic keybinding offering Emacs power to human beings. You save finger muscles, and memory muscles, too. The idea is to advertise Emacs functions.
 
 "nu" is French for "bare". It is currently hosted on github, https://github.com/pyluyten/emacs-nu.
+Manual is there, too : see doc / pdf : https://github.com/pyluyten/emacs-nu/blob/master/doc/nu.pdf
 
 Main ideas are
 - Modern keys : rely on standard C-x, C-c, C-v, C-z, C-f, C-r, C-s, C-o to cut, copy, paste, undo, find, replace, save or open.
