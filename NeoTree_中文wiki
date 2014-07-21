@@ -40,7 +40,7 @@ Clone project:
 * <code>C-c C-r</code> 重命名文件或目录。
 * <code>C-c C-c</code> 改变根目录。
 
-=== 全局命令 ===
+=== 命令（全局有效） ===
 
 * <code>neotree-dir</code>
 * <code>neotree-show</code> or <code>neotree</code>
@@ -48,6 +48,6 @@ Clone project:
 * <code>neotree-toggle</code>
 * <code>neotree-find</code>
 
-=== NeoTree Buffer 命令 ===
+=== 命令（NeoTree Buffer 有效） ===
 
 == ChangeLog ==
