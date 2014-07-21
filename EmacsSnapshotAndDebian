@@ -33,6 +33,7 @@ The following packages are available through apt-get/aptitude and might need to 
 * xorg-dev
 * libgtk2.0-dev
 * libjpeg-dev
+* libncurses5-dev
 * libgif-dev
 * libtiff-dev
 * libm17n-dev
