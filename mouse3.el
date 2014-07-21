@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 15 10:02:07 2014 (-0700)
+;; Last-Updated: Mon Jul 21 13:57:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1721
+;;     Update #: 1742
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -312,6 +312,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/21 dadams
+;;     mouse3-region-popup-x-popup-panes:
+;;       Added items: String (Insert), Numbers (insert), Rectangular Region.
 ;; 2014/04/15 dadams
 ;;     mouse3-noregion-popup-misc-submenu: Update version test for Emacs 24.4 pretest - use version<.
 ;; 2014/02/26 dadams
@@ -649,8 +652,14 @@ restore it by yanking."
           (yank-rectangle)))
      ("Clear (Replace)"                         . clear-rectangle)
      ("String (Replace)"                        . string-rectangle)
+     ,@`,(and (fboundp 'string-insert-rectangle) ; Emacs 24.4+
+              '(("String (Insert)"              . string-insert-rectangle)))
+     ,@`,(and (fboundp 'rectangle-number-lines) ; Emacs 24.4+
+              '(("Numbers (Insert)"             . rectangle-number-lines)))
      ,@`,(and (fboundp 'delimit-columns-rectangle) ; Emacs 21+.
               '(("Delimit Columns"              . delimit-columns-rectangle)))
+     ,@`,(and (fboundp 'rectangle-mark-mode) ; Emacs 24.4+
+              '(("Rectangular Region"           . rectangle-mark-mode)))
      ("--")
      ("Delete to Register"
       . (lambda (register start end)
@@ -1100,8 +1109,14 @@ restore it by yanking."
         :visible (not buffer-read-only))
        (string-rectangle             menu-item "String (Replace)" string-rectangle
         :visible (not buffer-read-only))
+       (string-insert-rect           menu-item "String (Insert)" string-insert-rectangle
+        :visible (fboundp 'string-insert-rectangle)) ; Emacs 24.4+
+       (rect-number-lines            menu-item "Numbers (Insert)" rectangle-number-lines
+        :visible (fboundp 'rectangle-number-lines)) ; Emacs 24.4+
        (delimit-columns-rectangle    menu-item "Delimit Columns"  delimit-columns-rectangle
         :visible (and (fboundp 'delimit-columns-rectangle)  (not buffer-read-only))) ; Emacs 21+.
+       (rectangle-mark-mode          menu-item "Rectangular Region"  rectangle-mark-mode
+        :visible (fboundp 'rectangle-mark-mode)) ; Emacs 24.4+.
        (sep-rectangle                menu-item "--" nil :visible (not buffer-read-only))
        (delete-rectangle-to-register menu-item "Delete to Register"
         (lambda (register start end)
