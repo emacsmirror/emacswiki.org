@@ -1,0 +1,27 @@
+[[zh:NeoTree_中文wiki]]
+
+Emacs 文件树，类似 Vim 中的 [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] 。
+
+https://github.com/jaypei/emacs-neotree
+
+== 关于 ==
+
+[img]https://raw.githubusercontent.com/wiki/jaypei/emacs-neotree/imgs/neotree-1.png[/img]
+
+
+== 安装 ==
+
+Clone project:
+
+  $ cd /some/path
+  $ git clone https://github.com/jaypei/emacs-neotree.git neotree
+
+添加以下代码到 .emacs 中:
+
+  (add-to-list 'load-path "/some/path/neotree")
+  (require 'neotree)
+  (global-set-key [f8] 'neotree-toggle)
+
+打开（开关） NeoTree ：
+
+  <F8>
