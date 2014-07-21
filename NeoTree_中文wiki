@@ -53,12 +53,11 @@ Clone project:
 == ChangeLog ==
 
 ==== 0.2 （未发布） ====
-* Feature 支持 <code>neotree-find</code> 快速定位树
-* Feature 支持文件/目录改名
-* Feature 固定宽度，并支持用 <code>A</code> 最大/最小化
-* Feature 头部支持按宽度剪裁
-* Fix 解决文件定位不准确问题
-* 大量重构代码
+* Feature: 支持 <code>neotree-find</code> 快速定位树
+* Feature: 支持文件/目录改名
+* Feature: 固定宽度，并支持用 <code>A</code> 最大/最小化
+* Feature: 头部支持按宽度剪裁
+* Fix: 解决文件定位不准确问题
 
 ==== 0.1.5 （2014-06-05） ====
 
