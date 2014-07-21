@@ -53,8 +53,13 @@ I mostly always build Emacs from source (though I think the emacs-snapshot packa
 Here is how to get a git clone of Emacs these days:
 
 {{{
-git clone --origin mirror --depth 1 git://github.com/emacsmirror/emacs -b emacs-24
+git clone --depth 1 git://github.com/emacsmirror/emacs -b emacs-24
 }}}
+
+You can also clone these tags:
+
+* emacs-24.3 - stable 24.3
+* emacs-24.3.91 - approaching 24.4, quite unstable, lots of changes sadly
 
 == Elnode: an asynchronous HTTP server for Emacs ==
 // ... or node.js for Emacs //
