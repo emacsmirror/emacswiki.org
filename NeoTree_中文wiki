@@ -30,6 +30,17 @@ Clone project:
 
 === 快捷键 ===
 
+* <code>n</code> next line
+* <code>p</code> previous line
+* <code>SPC</code> or <code>RET</code> or <code>TAB</code> open file / toggle expand folder
+* <code>g</code> refresh tree
+* <code>A</code> stretch neotree window
+* <code>H</code> toggle show hidden files
+* <code>C-c C-n</code> create file or directory
+* <code>C-c C-d</code> delete file or directory
+* <code>C-c C-r</code> rename file or directory
+* <code>C-c C-c</code> change root directory
+
 
 === 全局命令 ===
 
