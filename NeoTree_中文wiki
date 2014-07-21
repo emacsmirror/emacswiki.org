@@ -30,15 +30,15 @@ Clone project:
 
 === 快捷键 （NeoTree 窗口有效） ===
 
-* <code>n</code> 下一行 ， <code>p</code> 上一行
-* <code>SPC</code> or <code>RET</code> or <code>TAB</code> 若是文件，在其他buffer打开。若是目录，可切换折叠、收起
-* <code>g</code> 刷新树
+* <code>n</code> 下一行 ， <code>p</code> 上一行。
+* <code>SPC</code> or <code>RET</code> or <code>TAB</code> 若是文件，在其他buffer打开；若是目录，可切换折叠、收起。
+* <code>g</code> 刷新树。
 * <code>A</code> 最大/最小化 NeoTree 窗口
-* <code>H</code> 切换显示隐藏文件
-* <code>C-c C-n</code> 创建文件，若以 <code>/</code> 结尾则表示创建文件夹
+* <code>H</code> 切换显示隐藏文件。
+* <code>C-c C-n</code> 创建文件，若以 <code>/</code> 结尾则表示创建文件夹。
 * <code>C-c C-d</code> 删除文件或目录。
 * <code>C-c C-r</code> 重命名文件或目录。
-* <code>C-c C-c</code> 改变根目录
+* <code>C-c C-c</code> 改变根目录。
 
 === 全局命令 ===
 
