@@ -31,7 +31,7 @@ Clone project:
 === 快捷键 ===
 
 
-=== 命令 ===
+=== 全局命令 ===
 
 * <code>neotree-dir</code>
 * <code>neotree-show</code> or <code>neotree</code>
@@ -39,5 +39,6 @@ Clone project:
 * <code>neotree-toggle</code>
 * <code>neotree-find</code>
 
+=== NeoTree Buffer 命令 ===
 
 == ChangeLog ==
