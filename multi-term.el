@@ -1,12 +1,12 @@
 ;;; multi-term.el --- Managing multiple terminal buffers in Emacs.
 
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
-;; Maintainer: ahei <ahei0802@gmail.com>
+;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, 2014 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 0.9
-;; Last-Updated: 2014-06-21 02:51:10
+;; Version: 1.0
+;; Last-Updated: 2014-07-21 22:12:39
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.4 (and prereleases)
@@ -126,6 +126,11 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/07/21
+;;      * Andy Stewart
+;;      Bind C-m with `term-send-return' instead `term-send-input' to fixed bug that
+;;      duplicate input when you C-a and C-m in terminal.
 ;;
 ;; 2014/06/21
 ;;      * Fixed bug that can't found define of `multi-term-dedicated-handle-other-window-advice'.
@@ -331,7 +336,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("C-n" . next-line)
     ("C-s" . isearch-forward)
     ("C-r" . isearch-backward)
-    ("C-m" . term-send-input)
+    ("C-m" . term-send-return)
     ("C-y" . term-paste)
     ("M-f" . term-send-forward-word)
     ("M-b" . term-send-backward-word)
@@ -528,6 +533,13 @@ Will prompt you shell name when you type `C-u' before this command."
   "Send ESC in term mode."
   (interactive)
   (term-send-raw-string "\e"))
+
+(defun term-send-return ()
+  "Use term-send-raw-string \"\C-m\" instead term-send-input.
+Because term-send-input have bug that will duplicate input when you C-a and C-m in terminal."
+  (interactive)
+  (term-send-raw-string "\C-m")
+  )
 
 (defun term-send-backward-kill-word ()
   "Backward kill word in term mode."
