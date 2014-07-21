@@ -52,6 +52,13 @@ Clone project:
 
 == ChangeLog ==
 
+===== 1.0 （未发布） =====
+* 支持文件/目录改名
+* 固定宽度，并支持用 <code>A</code> 最大/最小化
+* 头部支持按宽度剪裁
+* 重构代码
+* 支持 <code>neotree-find</code> 快速定位树
+
 == Todo ==
 
 * 解决关窗口仅剩 NeoTree 的问题
