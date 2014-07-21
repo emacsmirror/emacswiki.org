@@ -26,10 +26,17 @@ Clone project:
 
   <F8>
 
-== 快捷键 ==
+== 使用方法 ==
+
+=== 快捷键 ===
 
 
-== 命令 ==
+=== 命令 ===
+
+* <code>M-x neotree-dir RET</code>
+* <code>M-x neotree-show RET or M-x neotree RET</code>
+* <code>M-x neotree-hide RET</code>
+* <code>M-x neotree-toggle</code>
 
 
-== CHANGELOG ==
+== ChangeLog ==
