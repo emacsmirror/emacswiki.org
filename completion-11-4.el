@@ -1,1 +1,1 @@
-#REDIRECT completion-11-4-2.el
+#REDIRECT [[completion-11-4-2.el]]
