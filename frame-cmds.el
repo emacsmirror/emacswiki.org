@@ -9,9 +9,9 @@
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Apr 19 14:02:20 2014 (-0700)
+;; Last-Updated: Tue Jul 22 09:55:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2971
+;;     Update #: 2984
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -147,11 +147,14 @@
 ;;
 ;;    `font-too-small', `font-size'.
 ;;
-;;
-;;
-;;  ***** NOTE: The following EMACS PRIMITIVES have been REDEFINED HERE:
+;;  
+;;  ***** NOTE: The following EMACS PRIMITIVE has been ADVISED HERE:
 ;;
 ;;  `delete-window' - If only one window in frame, `delete-frame'.
+;;
+;;
+;;  ***** NOTE: The following EMACS PRIMITIVE has been REDEFINED HERE:
+;;
 ;;  `delete-windows-on' -
 ;;     1) Reads buffer differently.  Only buffers showing windows are candidates.
 ;;     2) Calls `delete-window', so this also deletes frames where
@@ -270,6 +273,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/21 dadams
+;;     Do not redefine delete-window - just advise it.
+;;     delete/iconify-window: Just use delete-window, not old-delete-window.
 ;; 2014/04/19 dadams
 ;;     Added: frcmds-frame-number, name-all-frames-numerically, name-frame-numerically.
 ;;     Renamed: available-screen-pixel-*       to frcmds-available-screen-pixel-*,
@@ -751,21 +757,15 @@ A negative prefix arg deiconifies all iconified frames."
   (iconify-or-deiconify-frame))
 
 
-(or (fboundp 'old-delete-window)
-    (fset 'old-delete-window (symbol-function 'delete-window)))
 
-
-;; REPLACES ORIGINAL (built-in):
+;; ADVISE ORIGINAL (built-in):
+;;
 ;; If WINDOW is the only one in its frame, `delete-frame'.
-;;;###autoload
-(defun delete-window (&optional window)
-  "Remove WINDOW from the display.  Default is `selected-window'.
-If WINDOW is the only one in its frame, then `delete-frame' too."
-  (interactive)
+(defadvice delete-window (around delete-frame-if-one-win activate)
+  "If WINDOW is the only one in its frame, then `delete-frame' too."
   (save-current-buffer
-    (setq window  (or window  (selected-window)))
-    (select-window window)
-    (if (one-window-p t) (delete-frame) (old-delete-window (selected-window)))))
+    (select-window (or (ad-get-arg 0)  (selected-window)))
+    (if (one-window-p t) (delete-frame) ad-do-it)))
 
 ;;;###autoload
 (defun delete-windows-for (&optional buffer)
@@ -777,11 +777,14 @@ With a prefix arg, prompt for a buffer and delete all windows, on any
   (if buffer (delete-windows-on buffer) (delete-window)))
 
 
+
 ;; REPLACES ORIGINAL (built-in):
+;;
 ;; 1) Use `read-buffer' in interactive spec.
 ;; 2) Do not raise an error if BUFFER is a string that does not name a buffer.
-;; 3) Call `delete-window', so if you use my `delete-window' then this also deletes
+;; 3) Call `delete-window', so if you use the advised `delete-window' here then this also deletes
 ;;    frames where window showing the BUFFER is the only window.
+;;
 ;;;###autoload
 (defun delete-windows-on (&optional buffer frame)
   "Delete windows showing BUFFER.
@@ -911,7 +914,7 @@ Interactively, FRAME-P depends on the prefix arg, as follows:
             (delete-frame))             ; Default.
         (setq one-win-p  nil)))
     ;; Do this outside `save-window-excursion'.
-    (unless one-win-p (old-delete-window window))))
+    (unless one-win-p (delete-window window))))
 
 ;;;###autoload
 (defun delete/iconify-windows-on (buffer &optional frame frame-p)
