@@ -1,3 +1,4 @@
+[[zh:字体集]]
 A fontset is a thing that describes which fonts Emacs is supposed to
 use for characters in a certain encoding.
 
