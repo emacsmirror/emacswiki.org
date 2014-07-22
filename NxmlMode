@@ -318,6 +318,43 @@ That is not an error in nXML, but in GNU Emacs proper (newcomment.el, to be exac
 
 -- Josse
 
+[new]
+Thanks for the ideas about escaping comments I hacked together a couple functions that work for me. Feedback welcomed. I was too lazy to properly integrate the functions into nXML mode. Thus the my- prefix on the functions.
+
+{{{
+(defun my-nxml-comment-region ()
+  "comment a block if in nXML mode; else call comment-region"
+  (interactive)
+  ;; KLUDGE: should bind key in buffer, but I'm lazy
+  (cond ((string-equal mode-name "nXML")
+	 (save-excursion
+	   (narrow-to-region (point) (mark))
+	   (goto-point-min)
+	   (save-excursion (replace-string "--" "\\-\\-"))
+	   (insert "<!--\n")
+	   (goto-point-max)
+	   (insert "-->\n")
+	   (widen)))
+	(t (comment-region (point) (mark)))))
+
+(defun my-nxml-uncomment-region ()
+  "uncomment a block if in nXML mode; else call uncomment-region
+assumes it was commented by my-nxml-comment-region"
+  (interactive)
+  ;; KLUDGE: should bind key in buffer, but I'm lazy
+  (cond ((string-equal mode-name "nXML")
+	 (save-excursion
+	   (search-backward "<!--\n")
+	   (delete-char 5)
+	   (let ((start (point)) end)
+	     (search-forward "-->\n")
+	     (delete-char -4)
+	     (setq end (point))
+	     (save-excursion (replace-string "\\-\\-" "--" nil start end)))))
+	(t (uncomment-region (point) (mark)))))
+
+}}}
+-- [[tbc]]
 ----
 MarkupModes
 CategoryXML
