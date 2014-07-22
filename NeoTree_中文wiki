@@ -52,48 +52,43 @@ Clone project:
 
 == ChangeLog ==
 
-==== 0.2 （未发布） ====
+0.2 （未发布）
 * Feature: 支持 <code>neotree-find</code> 快速定位树
 * Feature: 支持文件/目录改名
 * Feature: 固定宽度，并支持用 <code>A</code> 最大/最小化
 * Feature: 头部支持按宽度剪裁
 * Fix: 解决文件定位不准确问题
 
-==== 0.1.5 （2014-06-05） ====
-
+0.1.5 （2014-06-05）
 * Fix: 让 <code>*NeoTree*</code> 不出现在 buffer 选择列表中
 * Fix: Directory changed to root after toggle
 * 重构，分离关于 window 和 buffer 的代码
 
 
-==== 0.1.4 （2014-05-27） ====
-
+0.1.4 （2014-05-27）
 * Fix: issue #1 #2 
 * 增加单元测试
 * 删除 <code>neotree-util.el</code>
 
 
-==== 0.1.3 （2014-04-13） ====
-
+0.1.3 （2014-04-13）
 * Feature: 支持改变树的根目录
 * Feature: 如果增加文件时以 <code>/</code> 结尾，行为是创建目录
 * Fix: 当删除空目录时不提示递归提醒
 
 
-==== 0.1.2 （2014-04-08） ====
-
+0.1.2 （2014-04-08）
 * Feature: 增加文件操作
 * Feature: 支持鼠标操作
 
 
-==== 0.1.1 （2014-04-06） ====
-
+0.1.1 （2014-04-06）
 * 基础功能
 
 
 == Todo ==
 
-* 解决关窗口仅剩 NeoTree 的问题
+* 解决关窗口仅剩 NeoTree 窗口的问题
 * 左侧 + - 符号默认提供图标
 * / 符号高亮显示
 * 提供 m 键出菜单
