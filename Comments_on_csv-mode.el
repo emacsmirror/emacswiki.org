@@ -24,3 +24,12 @@ csv-mode.el:1134:23:Error: Invalid read syntax: ")
 
 -- epement 2014-07-08 21:03 UTC
 
+
+----
+
+Trying to load "csv-mode" from Elpa returns an error message:
+
+[code]Symbol's value as variable is void: end[/code]
+
+-- epement 2014-07-22 20:43 UTC
+
