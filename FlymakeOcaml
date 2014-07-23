@@ -21,7 +21,7 @@ There are some videos for demonstrations.
 This page describes how to use Flymake for ocaml to check the
 syntax and type by invoking ocamlc.
 
-
+Note: you might also want to check out merlin ("opam install merlin"), which does a very good job of syntax checking ocaml in emacs. See https://github.com/the-lambda-church/merlin 
 
 
 == How to install ==
