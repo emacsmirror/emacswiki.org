@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jun 21 11:02:50 2014 (-0700)
+;; Last-Updated: Wed Jul 23 09:21:49 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19531
+;;     Update #: 19532
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1378,7 +1378,7 @@ regardless of where you click."
 
 (defun icicle-self-insert (n) ;; Bound in minibuffer to stuff bound globally to `self-insert-command'.
   "`self-insert' and update `*Completions*' with regexp input matches.
-See description of `self-insert'."
+See description of `self-insert-command'."
   (interactive "p")
   (if executing-kbd-macro
       (funcall #'self-insert-command n)
