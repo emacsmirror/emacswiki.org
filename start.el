@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 11 14:11:52 2014 (-0700)
+;; Last-Updated: Wed Jul 23 08:12:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3029
+;;     Update #: 3032
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -537,7 +537,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (eval-after-load "isearch" '(require 'isearch+ nil t)) ; Extensions to `isearch.el'.
 ;; $$$$$$(require 'isearch+ nil t)    ; Extensions to `isearch.el'.
 (require 'occur-schroeder nil t)        ; Occur alternative & isearch option.
-(load-library "delsel")
+
+(load-library "delsel")                 ; Load my version, which works with `completion.el' etc.
 
 (require 'thingatpt)                    ; Basic thing-at-point.
 (when (and (require 'thingatpt+ nil t)  ; Thing-at-point extensions - load this after `thingatpt.el'.
