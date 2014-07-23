@@ -44,7 +44,7 @@ Clone project:
 
 * <code>neotree-dir</code> 显示 NeoTree ，root 为 Minibuffer 中指定的一个目录。
 * <code>neotree-show</code> or <code>neotree</code> 显示 NeoTree ，root 默认为当前目录。
-* <code>neotree-hide</code> 隐藏 NeoTree。
+* <code>neotree-hide</code> 隐藏 NeoTree 。
 * <code>neotree-toggle</code> 显示/隐藏 NeoTree 窗口。
 * <code>neotree-find</code> 显示 NeoTree ，并自动根据当前 Buffer 文件的路径定位到树中的节点。
 
