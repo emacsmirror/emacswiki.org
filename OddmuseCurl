@@ -56,6 +56,7 @@ Once you're editing a wiki page, here are some useful keybindings:
 ; `C-x C-v' : revert your changes
 ; `C-x v l' : look at /all/ past changes of the page you are editing
 ; ##‘C-x v =’## : look at the diff of what you will be posting
+; ##‘C-x v u’## : revert you changes
 
 == Why curl? ==
 
