@@ -180,7 +180,7 @@ For VhdlMode, add
 [:SimpleAlgorithm]
 == Code explanation ==
 
-For those looking to implement this functionality in other modes (or even other editors), this section explains how the [[#CImplementations|code above]] works. The method used is not specific to Emacs -- any scriptable editor with syntactic auto-indentation can be made to indent with tabs and align with spaces.
+For those looking to implement this functionality in other modes (or even other editors), this section explains how the [[#CImplementations|code above]] works. The method used is not specific to Emacs -- any reasonably scriptable editor with syntactic auto-indentation can be made to indent with tabs and align with spaces.
 
 The editor's auto-indentation depends on two variables: the ''tab size'' and the ''indentation offset''. The tab size is how many columns a tab occupies (more precisely, the distance between tab stops). The indentation offset is the standard amount of columns an indented line is shifted to the right (disregarding special cases like alignment of multi-line expressions).
 
