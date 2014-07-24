@@ -26,6 +26,32 @@ One problem I have in and out of Emacs is keeping track of what window has focus
 I try to share the same Emacs setup across machines, but there are machine-specific settings that I keep in separate files. I then load those files with this:
 
 {{{
+;;; Try to load a package, but continue if it doesn't exist.
+;;; TODO: switch to use-package
+(defvar amitp--current-module "init")
+(defmacro try-require (package &rest forms)
+  "Execute FORMS only if (require PACKAGE) succeeds."
+  (declare (indent 1))
+  (let ((var (make-symbol "now")))
+    `(when (condition-case e
+               (let ((,var (current-time)))
+                 (let ((amitp--current-module (format "%s/%s" amitp--current-module ,package)))
+                   (require ,package))
+                 (message "%s: loaded %s (%.3fs)"
+                          amitp--current-module
+                          ,package
+                          (float-time (time-subtract (current-time) ,var))))
+             (error (message "%s FAIL: package %s could not be loaded -- %s" amitp--current-module ,package e) nil))
+       ,@forms)))
+
+;;; Make sure my load path includes my startup directory and other packages
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/local")
+(add-to-list 'load-path "~/.emacs.d/packages")
+(let ((default-directory "~/.emacs.d/packages"))
+  (normal-top-level-add-subdirs-to-load-path))
+
+
 (defun get-hostname-and-parents (hostname)
   "For a given hostname, return the list with that hostname and all suffixes, as symbols"
   (let ((suffix "")
@@ -35,46 +61,36 @@ I try to share the same Emacs setup across machines, but there are machine-speci
       (setq results (cons (intern suffix) results)))
     results))
 
-(defvar my-modules
-  `(
-    ;; Loaded for all setups
-    settings
-    keybindings
+(try-require 'clean-directory)
+(try-require 'settings)
+(try-require 'keybindings)
+(try-require 'decent-colors)
 
-    ;; In addition to the modules that are always loaded, you can put
-    ;; in user-specific customization into [username].el:
-    ,(intern (user-login-name))
+;; In addition to the modules that are always loaded, you can put
+;; in user-specific customization into [username].el:
+(try-require (intern (user-login-name)))
 
-    ;; You can also put in machine-specific or domain-specific
-    ;; customization.  For example, if you have both a shell.pobox.com
-    ;; account and a graphics.stanford.edu account, you can create
-    ;; shell.pobox.com.el (or pobox.com.el) and
-    ;; graphics.stanford.edu.el (or stanford.edu.el or edu.el).
-    ,@(get-hostname-and-parents (or (getenv "HOSTNAME")
-                                    (getenv "COMPUTERNAME")
-                                    (system-name)
-                                    "local")) ; customization per computer
+;; You can also put in machine-specific or domain-specific
+;; customization.  For example, if you have both a shell.pobox.com
+;; account and a graphics.stanford.edu account, you can create
+;; shell.pobox.com.el (or pobox.com.el) and
+;; graphics.stanford.edu.el (or stanford.edu.el or edu.el).
+(loop for name in (get-hostname-and-parents
+                   (or (getenv "HOSTNAME")
+                       (getenv "COMPUTERNAME")
+                       (system-name)
+                       "local"))
+      do (try-require name))
 
-    ;; And you can put in platform-specific customization (mac=darwin)
-    ,(intern (subst-char-in-string ?/ ?-
-                                   (format "platform-%s" system-type)))
+;; And you can put in platform-specific customization (darwin, linux, w32)
+(try-require (intern (subst-char-in-string
+                       ?/ ?- (format "platform-%s" system-type))))
 
-    ;; Window system (mac=ns)
-    ,(intern (format "window-%s" (window-system)))
-    ))
-
-(loop for module in my-modules do
-  (condition-case err
-      (require module)
-    (file-error
-     (unless (equal err (list
-                         'file-error
-                         "Cannot open load file"
-                         (format "%s" module)))
-       (message "(require %s) failed: %s" module err)))))
+;; Window system (x, ns, mac, w32)
+(try-require (intern (format "window-%s" (window-system))))
 }}}
 
-For example, I have Mac-specific settings in <code>platform-darwin.el</code> and my Stanford settings in <code>stanford.el</code>.  Sometimes other people will copy my emacs setup but certain things are specific to me so I'll put them in <code>amitp.el</code> so that they're not automatically loaded by others. It's not a clean use of module names but it's simple and works reasonably well so far.
+For example, I have Mac-specific settings in <code>platform-darwin.el</code> and my Stanford settings in <code>stanford.el</code>.  Sometimes other people will copy my emacs setup but certain things are specific to me so I'll put them in <code>amitp.el</code> so that they're not automatically loaded by others. It's not a clean use of module names but it's simple and works reasonably well for me.
 
 You can see that I like using the `loop' macro.
 
