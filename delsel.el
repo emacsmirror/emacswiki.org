@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  8 08:31:42 2014 (-0700)
+;; Last-Updated: Thu Jul 24 10:09:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 366
+;;     Update #: 483
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -27,10 +27,10 @@
 ;;
 ;;    Let DEL delete the region; let character insertion replace it.
 ;;
-;;  Makes the active region be pending a deletion, meaning that text
-;;  inserted while the region is active will replace the region
-;;  contents, and that operations like `delete-backward-char' will
-;;  delete the region.
+;;  This file makes the active region be pending a deletion, meaning
+;;  that text inserted while the region is active will replace the
+;;  region contents, and that operations like `delete-backward-char'
+;;  will delete the region.
 ;;
 ;;  `C-g' is bound here to `minibuffer-keyboard-quit' in each of the
 ;;  minibuffer-local-*-map's.
@@ -43,19 +43,19 @@
 ;;  have this property do not delete the selection.  The property can
 ;;  be one of these values:
 
-;;  `yank' - For commands that do a yank. Ensures that the region
+;;  `yank' - For commands that do a yank.  Ensures that the region
 ;;           about to be deleted is not yanked.
 
-;;  `supersede' - Delete the active region and ignore the current command:
-;;           the command just deletes the region.
+;;  `supersede' - Delete the active region and ignore the current
+;;           command: the command just deletes the region.
 ;;
 ;;  `kill' - `kill-region' is used on the selection, rather than
-;;           `delete-region'.  Text selected with the mouse is
-;;           typically yankable anyway.
+;;           `delete-region'.  (Text selected with the mouse is
+;;           typically yankable anyway.)
 ;;
 ;;  anything else non-nil - Deletes the active region prior to
 ;;           executing the command, which inserts replacement
-;;           text. This is the usual case.
+;;           text.  This is the usual case.
 ;;
 ;;
 ;; The original author is Matthieu Devin <devin@lucid.com>.
@@ -90,6 +90,21 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/23 dadams
+;;     Added: delete-selection-helper.  Modify vanilla version per my
+;;            previous delete-selection-pre-hook-1 definition, (1) updating that for types
+;;            kill (handle overwrite mode), yank (yank from top of rectangle), and
+;;            a function (Emacs 24.3+), and (2) handling text-read-only error.
+;;     delete-active-region: Updated for Emacs 24.4:
+;;       Bind this-command and use kill-region with 3rd arg REGION.
+;;       Handle region-extract-function.
+;;     delete-selection-pre-hook:
+;;       Added doc string.  Modifed from vanilla delete-selection-helper doc string.
+;;     delete-selection-pre-hook-1: Use delete-selection-helper.
+;;     self-insert-command (put): Update for Emacs 24.4: self-insert-uses-region-functions.
+;;     insert-char, quoted-insert: Put t as delete-selection prop (Emacs bug #13312).
+;;     Rename delsel-unload-hook to delsel-unload-function, and create alias for Emacs 20.
+;;     delsel-unload-function: Added dolist of functions to nil, per vanilla Emacs 24.4.
 ;; 2014/06/08 dadams
 ;;     Added electric-newline-and-maybe-indent and reindent-then-newline-and-indent
 ;;     for Emacs 24.4.  See Emacs bug #17737.
@@ -166,12 +181,11 @@
 
 ;;;;;;;;;;;;;;;;;;
 
-;; Free variables here: CMPL-LAST-INSERT-LOCATION, CMPL-ORIGINAL-STRING,
-;;                      COMPLETION-TO-ACCEPT
-;; To quiet the byte compiler:
-(defvar cmpl-last-insert-location -1)
-(defvar cmpl-original-string nil)
-(defvar completion-to-accept nil)
+;; Quiet the byte compiler:
+(defvar cmpl-last-insert-location)
+(defvar cmpl-original-string)
+(defvar completion-to-accept)
+(defvar region-extract-function)
 
 ;;;;;;;;;;;;;;;;;;
 
@@ -195,12 +209,13 @@
     (eval '(define-minor-mode delete-selection-mode
             "Toggle Delete Selection mode.
 With prefix ARG, turn Delete Selection mode on if and only if ARG is
-positive.
+positive.  If called from Lisp, enable the mode if ARG is omitted or
+nil.
 
 When Delete Selection mode is enabled, Transient Mark mode is also
-enabled and typed text replaces the selection if the selection is
-active.  Otherwise, typed text is just inserted at point regardless of
-any selection."
+enabled, typed text replaces the selection if the selection is active,
+and DEL deletes the selection.  Otherwise, typed text is just inserted
+at point, as usual."
             :global t :group 'editing-basics
             (if (not delete-selection-mode)
                 (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
@@ -213,12 +228,14 @@ any selection."
   ;; Emacs 20 ---------------
   (defun delete-selection-mode (&optional arg)
     "Toggle Delete Selection mode.
-When ON, typed text replaces the selection if the selection is active,
-and DEL deletes the selection.  When OFF, typed text is inserted at
-point, as usual. Enabling Delete Selection mode also enables Transient
-Mark mode.
+With prefix ARG, turn Delete Selection mode on if and only if ARG is
+positive.  If called from Lisp, enable the mode if ARG is omitted or
+nil.
 
-Non-nil prefix ARG turns mode on if ARG is positive, else turns it off."
+When Delete Selection mode is enabled, Transient Mark mode is also
+enabled, typed text replaces the selection if the selection is active,
+and DEL deletes the selection.  Otherwise, typed text is inserted at
+point, as usual."
     (interactive "P")
     (setq delete-selection-mode  (if arg
                                      (> (prefix-numeric-value arg) 0)
@@ -251,27 +268,56 @@ either \\[customize] or function `delete-selection-mode'."
 (defun delete-active-region (&optional killp)
   (cond ((and (eq last-command 'complete) ; See `completion.el'.
               (boundp 'cmpl-last-insert-location))
-         ;; Don't delete region if a `self-insert-command'.
-         ;; Delete it only if a supersede or a kill.
+         ;; Do not delete region if a `self-insert-command'.  Delete it only if a
+         ;; supersede or a kill.
          (when (and (symbolp this-command)
                     (memq (get this-command 'delete-selection) '(supersede kill)))
            (delete-region (point) cmpl-last-insert-location) ; Free var here.
            (insert cmpl-original-string) ; Free var here.
            (setq completion-to-accept  nil))) ; Free var here.
-        (killp (kill-region (point) (mark)))
+        (killp
+         (let (this-command)
+           (if (or (> emacs-major-version 24)
+                   (and (= emacs-major-version 24)  (< emacs-minor-version 4)))
+               ;; Do not let `kill-region' change `this-command' - see Emacs bug #13312.
+               (kill-region (point) (mark) 'REGION)
+             (kill-region (point) (mark)))))
+        ((boundp 'region-extract-function) ; Emacs 24.4+
+         (funcall region-extract-function 'delete-only))
         (t (delete-region (point) (mark))))
   (deactivate-mark)
   t)
 
 (defun delete-selection-pre-hook ()
+  "Delete selection according to TYPE:
+`yank'
+    For commands that yank: Ensure that the region about to be
+    deleted is not yanked.
+
+`supersede'
+    Delete the active region and ignore the current command.
+
+`kill'
+    Use `kill-region' on the selection, rather than `delete-region'.
+    (Text selected with the mouse will typically be yankable anyway.)
+
+FUNCTION (Emacs 24.4 or later, only)
+    Invoke FUNCTION and then start over, using its return value as the
+    new TYPE.  FUNCTION should not require an argument and should
+    a value acceptable as TYPE.
+
+other non-nil value
+    Delete the active region prior to executing the command that
+    inserts replacement text."
   (if (and (eq last-command 'complete)  ; See `completion.el'.
            (boundp 'cmpl-last-insert-location))
-      (let ((mark-active  t)) (delete-selection-pre-hook-1))
+      (let ((mark-active  t))
+        (delete-selection-pre-hook-1))
     (delete-selection-pre-hook-1)))
 
 (if (< emacs-major-version 21)
     (defun delete-selection-pre-hook-1 ()
-      "Helper for `delete-selection-pre-hook."
+      "Helper for `delete-selection-pre-hook'."
       (when (and delete-selection-mode
                  (not buffer-read-only)
                  transient-mark-mode mark-active)
@@ -280,8 +326,8 @@ either \\[customize] or function `delete-selection-mode'."
           (cond ((eq type 'kill)
                  (delete-active-region t))
                 ((eq type 'yank)
-                 ;; Before a yank command.  Make sure we do not yank the same
-                 ;; region that we are going to delete.  That would make yank a no-op.
+                 ;; Before a yank command.  Make sure we do not yank the same region that
+                 ;; we are going to delete.  That would make yank a no-op.
                  (let ((tail  kill-ring))
                    (while (and tail  (string= (buffer-substring-no-properties
                                                (point) (mark))
@@ -294,37 +340,92 @@ either \\[customize] or function `delete-selection-mode'."
                  (setq this-command  'ignore))
                 (type (delete-active-region))))))
   (defun delete-selection-pre-hook-1 ()
-    "Helper for `delete-selection-pre-hook."
-    (when (and delete-selection-mode transient-mark-mode mark-active
-               (not buffer-read-only))
-      (let ((type  (and (symbolp this-command)  (get this-command 'delete-selection))))
-        (condition-case err
-            (cond ((eq type 'kill)
-                   (delete-active-region t))
-                  ((eq type 'yank)
-                   ;; Before a yank command.  Make sure we do not yank the same region
-                   ;; that we are going to delete.  That would make yank a no-op.
-                   (let ((tail  kill-ring))
-                     (while (and tail  (string= (buffer-substring-no-properties
-                                                 (point) (mark))
-                                                (car tail)))
-                       (current-kill 1)
-                       (setq tail  (cdr tail))))
-                   (delete-active-region))
-                  ((eq type 'supersede)
-                   (let ((empty-region  (= (point) (mark))))
-                     (delete-active-region)
-                     (unless empty-region (setq this-command  'ignore))))
-                  (type
-                   (delete-active-region)))
-          (file-supersession (message "%s" (cadr err)) (ding)))))))
+    "Helper for `delete-selection-pre-hook'."
+    (when (and delete-selection-mode
+               (not buffer-read-only)
+               (if (fboundp 'use-region-p)
+                   (use-region-p)
+                 (and transient-mark-mode  mark-active)))
+      (delete-selection-helper (and (symbolp this-command)
+                                    (get this-command 'delete-selection))))))
 
-(put 'self-insert-command 'delete-selection t)
+(defun delete-selection-helper (type)
+  "Helper for `delete-selection-pre-hook-1'."
+  (condition-case err
+      (cond ((eq type 'kill)
+             (delete-active-region t)
+             ;; Fix `overwrite-mode' for `kill' - see Emacs bug #13312.
+             (if (and overwrite-mode  (eq this-command 'self-insert-command))
+                 (let ((overwrite-mode  nil))
+                   (self-insert-command (prefix-numeric-value current-prefix-arg))
+                   (setq this-command 'ignore))))
+            ((eq type 'yank)
+             ;; Before a yank command, make sure we don't yank the head of the kill-ring
+             ;; that really comes from the currently active region we are going to delete.
+             ;; That would make yank a no-op.
+             (let ((tail  kill-ring))
+               (while (and tail  (string= (buffer-substring-no-properties (point) (mark))
+                                          (car tail))
+                           ;; Vanilla Emacs has this, which seems very wrong.
+                           ;; See Emacs bug #18090.
+;;;                            (fboundp 'mouse-region-match) ; @@@@@@@@@@ ????
+;;;                            (mouse-region-match) ; @@@@@@@@@@ ????
+                           )
+                 (current-kill 1)
+                 (setq tail  (cdr tail))))
+             (let ((pos  (copy-marker (region-beginning))))
+               (delete-active-region)
+               ;; If the region was, say, rectangular, make sure we yank from the top, to
+               ;; "replace".
+               (goto-char pos)))
+            ((eq type 'supersede)
+             (let ((empty-region  (= (point) (mark))))
+               (delete-active-region)
+               (unless empty-region (setq this-command  'ignore))))
+            ((and (functionp type)
+                  (or (> emacs-major-version 24)
+                      (and (= emacs-major-version 24)  (> emacs-minor-version 2))))
+             (delete-selection-helper (funcall type)))
+            (type
+             (delete-active-region)
+             (if (and overwrite-mode  (eq this-command 'self-insert-command))
+                 (let ((overwrite-mode  nil))
+                   (self-insert-command (prefix-numeric-value current-prefix-arg))
+                   (setq this-command  'ignore)))))
+
+    ;; If `ask-user-about-supersession-threat' signals an error, stop safe_run_hooks from
+    ;; clearing out `pre-command-hook'.
+    (file-supersession (message "%s" (cadr err)) (ding))
+
+    ;; This signal may come either from `delete-active-region' or `self-insert-command'
+    ;; (when `overwrite-mode' is non-nil).  To avoid clearing out `pre-command-hook' we
+    ;; handle this case by issuing a simple message.  Note, however, that we do not
+    ;; handle all related problems: When read-only text ends before the end of the
+    ;; region, the latter is not deleted but any subsequent insertion will succeed.  We
+    ;; could avoid this case by doing a (setq this-command 'ignore) here.  This would,
+    ;; however, still not handle the case where read-only text ends precisely where the
+    ;; region starts: In that case the deletion would succeed but the subsequent
+    ;; insertion would fail with a text-read-only error.  To handle that case we would
+    ;; have to investigate text properties at both ends of the region and skip the
+    ;; deletion when inserting text is forbidden there.
+    (text-read-only (message "Text is read-only") (ding))))
+
+
+(if (or (> emacs-major-version 24)
+        (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+    (put 'self-insert-command 'delete-selection
+         (lambda ()
+           (not (run-hook-with-args-until-success 'self-insert-uses-region-functions))))
+  (put 'self-insert-command 'delete-selection t))
+
 (put 'self-insert-iso 'delete-selection t)
 
 ;; These are defined in `completion.el'.
 (put 'completion-separator-self-insert-command 'delete-selection t)
 (put 'completion-separator-self-insert-autofilling 'delete-selection t)
+
+(put 'insert-char 'delete-selection t)
+(put 'quoted-insert 'delete-selection t)
 
 (put 'yank 'delete-selection 'yank)
 (put 'clipboard-yank 'delete-selection 'yank)
@@ -362,13 +463,20 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-must-match-map "\C-g" 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map "\C-g" 'minibuffer-keyboard-quit)
 
-(unless (< emacs-major-version 21)
-  (defun delsel-unload-hook ()
-    (define-key minibuffer-local-map "\C-g" 'abort-recursive-edit)
-    (define-key minibuffer-local-ns-map "\C-g" 'abort-recursive-edit)
-    (define-key minibuffer-local-completion-map "\C-g" 'abort-recursive-edit)
-    (define-key minibuffer-local-must-match-map "\C-g" 'abort-recursive-edit)
-    (define-key minibuffer-local-isearch-map "\C-g" 'abort-recursive-edit)))
+(defun delsel-unload-function ()
+  (define-key minibuffer-local-map "\C-g" 'abort-recursive-edit)
+  (define-key minibuffer-local-ns-map "\C-g" 'abort-recursive-edit)
+  (define-key minibuffer-local-completion-map "\C-g" 'abort-recursive-edit)
+  (define-key minibuffer-local-must-match-map "\C-g" 'abort-recursive-edit)
+  (define-key minibuffer-local-isearch-map "\C-g" 'abort-recursive-edit)
+  (dolist (sym  '(self-insert-command  insert-char  quoted-insert yank
+                  clipboard-yank  insert-register  newline-and-indent
+                  reindent-then-newline-and-indent  newline  open-line))
+    (put sym 'delete-selection nil)))
+
+(when (< emacs-major-version 21)
+  (defalias 'delsel-unload-hook 'delsel-unload-function))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
