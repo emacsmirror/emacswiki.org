@@ -88,8 +88,13 @@ are multiple completions.
 
 You can use any '''Icicles''' features, such
 as apropos completion and candidate cycling.  For this feature to
-take effect, you must load BBDB before you load '''Icicles'''.    Option `icicle-functions-to-redefine' includes entries
-for both `bbdb-complete-mail' and `bbdb-complete-name' by default.
+take effect, you must load BBDB before you load '''Icicles'''.   By default, option `icicle-functions-to-redefine'
+includes an entry for `bbdb-complete-mail' (not for
+`bbdb-complete-name').
+
+
+
+
 
 
 
@@ -166,7 +171,6 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryBbdb
 CategoryESS
-
 
 
 
