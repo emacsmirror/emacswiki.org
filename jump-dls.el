@@ -333,5 +333,8 @@ additional jump methods."
       t)))
 
 
+
 (provide 'jump)
+(provide 'jump-dls)
+
 ;;; jump.el ends here
