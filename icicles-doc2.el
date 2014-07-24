@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jun 21 21:33:38 2014 (-0700)
+;; Last-Updated: Thu Jul 24 08:20:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29544
+;;     Update #: 29546
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4476,8 +4476,9 @@
 ;;  there are multiple completions.  You can use any Icicles features,
 ;;  such as apropos completion and candidate cycling.  For this
 ;;  feature to take effect, you must load BBDB before you load
-;;  Icicles.  Option `icicle-functions-to-redefine' includes entries
-;;  for both `bbdb-complete-mail' and `bbdb-complete-name' by default.
+;;  Icicles.  By default, option `icicle-functions-to-redefine'
+;;  includes an entry for `bbdb-complete-mail' (not for
+;;  `bbdb-complete-name').
 ;;
 ;;(@* "Thesaurus Lookup and Completion")
 ;;  ** Thesaurus Lookup and Completion **
