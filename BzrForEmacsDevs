@@ -85,7 +85,7 @@ When you are integrating somebody else's work, you will want to be identified as
 
 This section describes how to set things up if you plan on making contributions to Emacs (whether or not you're one of the Emacs maintainers).  You can also use this way just to track the Emacs sources, even if you never contribute changes.
 
-For the general public, Emacs's public master trunk lives at ##bzr://bzr.savannah.gnu.org/emacs/trunk##.  But committers should use an ##bzr+ssh## URL instead: ##bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk##.
+For the general public, Emacs's public master trunk lives at ##bzr://bzr.savannah.gnu.org/emacs/trunk##.  But committers should use an ##bzr+ssh## URL instead: ##bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk##.  Those behind a firewall allowing only http/https can use the URL ##http://bzr.savannah.gnu.org/r/emacs/trunk##.
 
 First, initialize a shared repository in which to store all your branches:
 
@@ -100,7 +100,7 @@ Now, create a branch called ##trunk## whose main role is to be a mirror of the m
       cd emacs/
       bzr branch bzr+ssh://USERNAME@bzr.savannah.gnu.org/emacs/trunk trunk
 
-(Here USERNAME stands for your Savannah user name.  Use ##bzr://bzr.savannah.gnu.org/emacs/trunk## instead if you are not a committer and just expect read-only access.  You could also use ##bzr branch lp:emacs trunk##, which might be faster, depending on your network connection.)
+(Here USERNAME stands for your Savannah user name.  Use ##bzr://bzr.savannah.gnu.org/emacs/trunk## instead if you are not a committer and just expect read-only access.  You could also use ##bzr branch lp:emacs trunk##, which might be faster, depending on your network connection.  Use  ##http://bzr.savannah.gnu.org/r/emacs/trunk## if you are behind a firewall allowing only the http/https ports.)
 
 This first ##bzr branch## operation in a new repository may take many minutes --- people have reported as little as 5 and as many as 60 minutes.  (If your network connection is extremely slow, using the "##nosmart+##" option to the protocol makes it faster, for this one-time command.  That is, use ##nosmart+bzr://bzr.savannah.gnu.org/emacs/trunk##.)  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 
