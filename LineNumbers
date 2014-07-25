@@ -2,6 +2,10 @@ This page is about ''displaying'' line numbers in a buffer, or otherwise indicat
 
 '''See Also:''' The code on this page just ''displays'' line numbers without actually changing the buffer content. NumberLines will add the line numbers to the buffer content.
 
+== The Easy Way ==
+
+##M-x linum-mode##
+
 == The Current Line Only ==
 
 If you just want the current line number in your modeline (and it isn't there already), use [::LineNumberMode] by running the <code>M-x line-number-mode</code> command.
