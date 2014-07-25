@@ -2,6 +2,8 @@ It's convenient for people who speak in Korean or Japanese or another language t
 
 For MS Windows, use DisableImeForEmacs programs described at http://kldp.org/node/104347
 
+(If DIFE is built as a 32bit dll, it does not work with 64bit builds of emacs.)
+
 '''for [http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl EmacsW32] and [http://ftp.gnu.org/gnu/emacs/windows/ GNU Emacs 23]'''
 * [http://kldp.org/files/DIFE-DisableIMEforEmacs-r1-src.zip DIFE-DisableIMEforEmacs-r1-src.zip]
 * [http://kldp.org/files/DIFE-DisableIMEforEmacs-r1-bin.zip DIFE-DisableIMEforEmacs-r1-bin.zip]
