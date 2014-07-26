@@ -58,6 +58,7 @@ Clone project:
 * Feature: 固定宽度，并支持用 <code>A</code> 最大/最小化
 * Feature: 头部支持按宽度剪裁
 * Fix: 解决文件定位不准确问题
+* API 名重构成统一 <code>neotree-</code> 开头
 
 0.1.5 （2014-06-05）
 * Fix: 让 <code>*NeoTree*</code> 不出现在 buffer 选择列表中
