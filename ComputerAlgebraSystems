@@ -7,6 +7,7 @@ The following are Emacs interfaces to computer algebra systems.  Some of these a
 * MuPAD -- a non-free computer algebra system, the Emacs interface is MuPACS
 * [http://www-gap.dcs.st-and.ac.uk/~gap/ GAP] -- a link for the Emacs interface is at   ~/Info4/deposit.html
 * [http://library.wolfram.com/infocenter/MathSource/4567 math.el] -- for running (non-free) Mathematica under Emacs (Alternatively [http://www.watson.org/~mccann/mathematica.el mathematica.el])
+* [http://pari.math.u-bordeaux.fr pariemacs] -- PARI/GP script mode and interactive mode
 * [http://www.sagemath.org SAGE] -- Its Emacs interface is at [http://wiki.sagemath.org/Emacs]
 
 And, of course, there's Emacs's built-in computer algebra system,
