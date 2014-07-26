@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 13 16:14:14 2014 (-0700)
+;; Last-Updated: Sat Jul 26 14:29:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8063
+;;     Update #: 8085
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -549,6 +549,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/07/26 dadams
+;;     diredp-do-find-marked-files-recursive:
+;;       Only ARG >= 0 ignores marks now.  And ARG <= 0 means find but do not display.
 ;; 2014/07/13 dadams
 ;;     diredp-mouseover-help: Wrap (goto-char pos) in save-excursion (Emacs bug #18011).
 ;; 2014/07/12 dadams
@@ -4795,17 +4798,23 @@ Dired buffer and all subdirs, recursively."
                                                  'CREATE-BOOKMARK-FILE-BOOKMARK))
 
 ;;;###autoload
-(defun diredp-do-find-marked-files-recursive (&optional ignore-marks-p) ; Bound to `M-+ F'
+(defun diredp-do-find-marked-files-recursive (&optional arg) ; Bound to `M-+ F'
   "Find marked files simultaneously, including those in marked subdirs.
 Like `dired-do-find-marked-files', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way.
 
-With a prefix argument, ignore all marks - include all files in this
-Dired buffer and all subdirs, recursively."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-  (dired-simultaneous-find-file (diredp-get-files ignore-marks-p) nil))
+With (explicit) numeric prefix ARG >= 0, find the files but do not
+display them.
+
+With numeric prefix ARG <= 0, ignore all marks - include all files in
+this Dired buffer and all subdirs, recursively."
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (list current-prefix-arg)))
+  (let ((narg  (prefix-numeric-value arg)))
+    (dired-simultaneous-find-file (diredp-get-files (<= narg 0))
+                                  (and arg  (>= narg 0)  narg))))
 
 (when (fboundp 'dired-do-isearch-regexp) ; Emacs 23+
   (defun diredp-do-isearch-recursive (&optional ignore-marks-p) ; Bound to `M-+ M-s a C-s'
@@ -6859,7 +6868,7 @@ Non-interactively:
 ;;;###autoload
 (defun dired-do-find-marked-files (&optional arg) ; Bound to `F'
   "Find marked files, displaying all of them simultaneously.
-With a prefix ARG >= 0, just find files but do not select them.
+With a prefix ARG >= 0, just find the files but do not show them.
 
 If no prefix ARG, and variable `pop-up-frames' is non-nil, or
 if prefix ARG < 0, then each file is displayed in a separate frame.
