@@ -4,6 +4,9 @@ Here's some stuff I like:
 * InfoLook -- go to function documentation in info files
 * RfcView -- fonts and links for RFC documents, makes the plain text look much better
 * SavePlace -- remember previous point in each file, surprisingly handy once you get used to jumping into the middle of a file
+* WhizzyTeX -- real-time <nowiki>TeX</nowiki> previewing
+
+<nowiki>WhizzyTeX</nowiki> lets you crunch just a section of a big document for speed, or whole-document.  Its version 1.3.2 has a minor problem of <code>(goto-line error-begin)</code> which mucks about with the mark when it really shouldn't, and the default error faces have poor contrast on dark background but can be customized in the usual ways.  Its idea of real-time is often a little too quick, as it likes to update on every keystroke where it could perhaps be better to hold off for maybe 1/3 second or so of quiet.  I notice this when changing widths and similar in pgf pictures.  Backspace and new digit very quickly gets a redraw for the backspace and another for the new digit.  If the backspace puts a size or scale to zero this can be a bit disconcerting.  There's some time and "load" hold-off bits in whizzytex.el, but can't tell if such a delay is what they're meant for.
 
 Stuff by me with its own page includes: AlignLet, [[Chart]], DiffSaveBuffer, GtkLook, GutenbergCoding, HtmlCoding, InfoXref, MakeinfoInfo, ManPreview, MoMode, NobreakFade, [[Pcf2Bdf]], PerlPodCoding, PerlPodGt, PerlPodPreview, QuickYes, ShAutoconf, TexMathPreview, TtyFormat, XmlCoding, [[XTide]].  Or see the [http://user42.tuxfamily.org/index.html#emacs full list].
 
