@@ -30,3 +30,10 @@ hideshow in tcl mode hangs and never returns
 
 -- Anonymous 2014-07-26 16:20 UTC
 
+
+----
+
+@Anonymous: Then consider submitting a bug report to the library maintainer.  And you will want to provide a proper report: how to reproduce the problem starting from `emacs -Q`.
+
+-- DrewAdams 2014-07-26 17:44 UTC
+
