@@ -41,6 +41,7 @@ With a bit of EmacsLisp:
 * AuxLabel -- refer to labels and references using the number that appears in the typeset document
 * [[metapost-mode+]] -- add compilation and preview feature to old metapost-mode.el
 * [https://github.com/tomathan/autopair-latex/blob/master/autopair-latex.el autopair-latex] -- auto pairs '$'s and '\[', '\]' in latex mode
+* NobreakFade -- includes a <nowiki>TeX</nowiki> maths paragraph nobreak
 
 Other
 * GNU TeXmacs -- not quite !TeX or Emacs, but with a similar spirit
