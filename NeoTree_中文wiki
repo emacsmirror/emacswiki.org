@@ -1,3 +1,4 @@
+
 [[zh:NeoTree_中文wiki]] [[en:NeoTree]]
 
 Emacs 文件树，类似 Vim 中的 [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] 。
@@ -49,6 +50,15 @@ Clone project:
 * <code>neotree-find</code> 显示 NeoTree ，并自动根据当前 Buffer 文件的路径定位到树中的节点。
 
 === 命令（NeoTree Buffer 有效） ===
+
+* <code>neotree-enter</code> 打开文件 / 折叠目录
+* <code>neotree-refresh</code> 刷新
+* <code>neotree-stretch-toggle</code> 最大/最小化
+* <code>neotree-change-root</code> 切换根目录
+* <code>neotree-hidden-file-toggle</code> 显示/隐藏 隐藏文件
+* <code>neotree-rename-node</code> 文件/目录 改名
+* <code>neotree-delete-node</code> 删除 文件/目录
+* <code>neotree-create-node</code> 创建文件，当以 <code>/</code> 结尾时表示创建目录 
 
 == ChangeLog ==
 
