@@ -23,3 +23,10 @@ I'd like to know if there's any way to save the 'folded state' of the file betwe
 
 -- joelarbear 2013-10-01 14:01 UTC
 
+
+----
+
+hideshow in tcl mode hangs and never returns
+
+-- Anonymous 2014-07-26 16:20 UTC
+
