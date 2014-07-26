@@ -7,6 +7,7 @@ The nobreaks include
 * Danging single-letter "I" or "A" at the start or end of a sentence
 * Emacs M-x foo
 * Emacs docstring URL `' and an Info node `' workaround
+* TeX maths <code>$x ... y$</code>
 
 If you use Emacs 21 the <code>nobreak-fade-add</code> function can help manage <code>fill-nobreak-predicate</code> as a single function (it's a hook in Emacs 22 and up).
 
