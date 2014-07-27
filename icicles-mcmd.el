@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jul 23 09:21:49 2014 (-0700)
+;; Last-Updated: Sun Jul 27 09:41:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19532
+;;     Update #: 19538
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1374,15 +1374,18 @@ regardless of where you click."
 
 
 ;; Make delete-selection mode recognize self-insertion, so it replaces region text.
-(put 'icicle-self-insert 'delete-selection t)
+(if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+    (put 'icicle-self-insert 'delete-selection
+         (lambda () (not (run-hook-with-args-until-success 'self-insert-uses-region-functions))))
+  (put 'icicle-self-insert 'delete-selection t))
 
-(defun icicle-self-insert (n) ;; Bound in minibuffer to stuff bound globally to `self-insert-command'.
-  "`self-insert' and update `*Completions*' with regexp input matches.
+(defun icicle-self-insert (ch) ;; Bound in minibuffer to stuff bound globally to `self-insert-command'.
+  "Insert char CH and update `*Completions*' with regexp input matches.
 See description of `self-insert-command'."
   (interactive "p")
   (if executing-kbd-macro
-      (funcall #'self-insert-command n)
-    (icicle-call-then-update-Completions #'self-insert-command n)))
+      (funcall #'self-insert-command ch)
+    (icicle-call-then-update-Completions #'self-insert-command ch)))
 
 (defun icicle-insert-a-space ()
   "Insert a space.
