@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Jun 21 15:12:45 2014 (-0700)
+;; Last-Updated: Sun Jul 27 16:39:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6862
+;;     Update #: 6870
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -65,7 +65,8 @@
 ;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
-;;    (+)`icicle-complete-keys', (+)`icicle-complete-menu-bar',
+;;    `icicle-complete', (+)`icicle-complete-keys',
+;;    (+)`icicle-complete-menu-bar',
 ;;    `icicle-complete-thesaurus-entry', (+)`icicle-doc',
 ;;    (+)`icicle-exchange-point-and-mark',
 ;;    (+)`icicle-find-file-all-tags',
@@ -2484,6 +2485,142 @@ buffer."
                      "All candidates appended to `font-lock-keywords'")
                  "`font-lock-keywords' set to all candidates"))))
   )
+
+;; The name of this command is quite unfortunate.  It must have this name, since we use
+;; `icicle-functions-to-redefine' to switch between vanilla `complete' and this.
+;;
+(defun icicle-complete (&optional arg)
+  "Complete the name before point.
+This has an effect only when `dynamic-completion-mode' is on.  That
+mode is defined in Emacs library `completion.el'.  To use this
+command, enter Icicle mode after turning on `dynamic-completion-mode'.
+
+If option `icicle-cmpl-max-candidates-to-cycle' is non-negative
+integer M, and if there are at least M completion candidates, then use
+Icicles minibuffer completion to choose one.  The text before point is
+treated as a prefix to match, but you can of course use progressive
+completion to then match also substrings or other regexps.
+
+Icicles minibuffer completion is also used regardless of the value of
+`icicle-cmpl-max-candidates-to-cycle', if you use two or more plain
+prefix args (`C-u C-u').
+
+Otherwise, consecutive calls cycle through the possible completions,
+in place.  This is the vanilla `complete' command behavior from
+library `completion.el'.
+
+Point is normally left at the end of the inserted completion.
+
+Prefix arg behavior:
+
+ Odd number of `C-u': Leave point at start, not end, of completion.
+
+ More than one `C-u': Use Icicles minibuffer completion.
+
+ An integer N       : Use Nth next completion (previous Nth if N < 0).
+ `-'                : Same as -1: previous completion.
+
+If option `icicle-cmpl-include-cdabbrev-flag' is non-nil then Icicles
+completion includes candidates found dynamically from the currently
+available windows.  These candidates are highlighted using face
+`icicle-special-candidate' so you can easily distinguish them.
+
+This is the so-called `CDABBREV' completion method defined in
+`completion.el'.  It is similar to how `dabbrev' finds candidates but
+with these differences:
+* It is sometimes faster, since it does not use regexps.  It searches
+  backwards looking for names that start with the text before point.
+* Case-sensitivity is handled as for other `completion.el' completion.
+
+If Icicles completion is not used then this `CDABBREV' completion is
+used only when no matching completions are found in the completions
+database.  With Icicles completion you can immediately choose one of
+the `CDABBREV' candidates.
+
+During Icicles minibuffer completion you can use `S-delete' to remove
+the current completion candidate from the database of completions.
+
+See the comments at the top of `completion.el' for more info."
+  (interactive "*p")
+  (let ((buf-modified-p  (buffer-modified-p)))
+    (cond ((eq last-command this-command)
+           (delete-region cmpl-last-insert-location (point)) ; Undo last one
+           (setq cmpl-current-index  (+ cmpl-current-index (or arg  1)))) ; Get next completion
+          (t
+           (unless cmpl-initialized-p (completion-initialize)) ; Make sure everything is loaded
+           (if (and (consp current-prefix-arg)  (eq (logand (length current-prefix-arg) 1) 1)) ; `oddp'
+               (setq cmpl-leave-point-at-start  t
+                     arg                        0)
+             (setq cmpl-leave-point-at-start  nil))
+           (setq cmpl-original-string  (symbol-before-point-for-complete))
+           (unless cmpl-original-string
+             (setq this-command  'failed-complete)
+             (error "To complete, point must be after a symbol at least %d chars long"
+                    completion-prefix-min-length))
+           (setq cmpl-current-index  (if current-prefix-arg arg 0))
+           (completion-search-reset cmpl-original-string) ; Reset database
+           (delete-region cmpl-symbol-start cmpl-symbol-end))) ; Erase what we've got
+    (let* ((num-comps       0)
+           (db-comps        ())
+           (db-comps        (progn (mapatoms (lambda (sy)
+                                               (when (eq 0 (string-match cmpl-test-regexp (symbol-name sy)))
+                                                 (push (find-exact-completion (symbol-name sy)) db-comps)
+                                                 (setq num-comps  (1+ num-comps))))
+                                             cmpl-obarray)
+                                   db-comps))
+           (all-comps       db-comps)
+           (all-comps       (if (not icicle-cmpl-include-cdabbrev-flag)
+                                db-comps
+                              (unless cmpl-cdabbrev-reset-p
+                                (reset-cdabbrev cmpl-test-string cmpl-tried-list)
+                                (setq cmpl-cdabbrev-reset-p  t))
+                              (let ((next  nil))
+                                (while (and (setq next  (next-cdabbrev))
+                                            (not (assoc next db-comps))) ; Not in database
+                                  (put-text-property 0 (length next) 'face 'icicle-special-candidate next)
+                                  (push (list next) all-comps)
+                                  (setq num-comps  (1+ num-comps)))
+                                all-comps)))
+           (use-icicles-p   (or (and (consp current-prefix-arg) ; `C-u C-u...' (more than one)
+                                     (> (prefix-numeric-value current-prefix-arg) 4)
+                                     (> num-comps 1))
+                                (and icicle-cmpl-max-candidates-to-cycle
+                                     (> num-comps (max 1 icicle-cmpl-max-candidates-to-cycle)))))
+           (print-status-p  (and (>= baud-rate completion-prompt-speed-threshold)
+                                 (not (window-minibuffer-p))))
+           (insert-point    (point))
+           (entry           (if use-icicles-p
+                                (condition-case nil
+                                    (let ((icicle-show-Completions-initially-flag  t)
+                                          (icicle-delete-candidate-object          'delete-completion))
+                                      (completing-read "Completion: " all-comps nil t cmpl-original-string))
+                                  (quit nil)) ; Return nil, so deleted original prefix will be re-inserted.
+                              (completion-search-next cmpl-current-index))) ; Cycle to next.
+           string)
+      ;; If ENTRY is non-nil, it is a full completion entry or a string (if cdabbrev or if USE-ICICLES-P).
+      (cond (entry                      ; Found, so insert it.
+             (setq string  (if (stringp entry) entry (completion-string entry)) ; Use proper case
+                   string  (cmpl-merge-string-cases string cmpl-original-string))
+             (insert string)
+             (setq completion-to-accept  string)
+             (if (not cmpl-leave-point-at-start) ; Fix-up and cache point
+                 (setq cmpl-last-insert-location  insert-point) ; Point at end.
+               (setq cmpl-last-insert-location  (point))
+               (goto-char insert-point))
+             (unless use-icicles-p      ; Display the next completion
+               (cond ((and print-status-p
+                           (sit-for 0)  ; Update the display.  Print only if there is no typeahead.
+                           (setq entry  (completion-search-peek completion-cdabbrev-prompt-flag)))
+                      (setq string  (if (stringp entry) entry (completion-string entry))
+                            string  (cmpl-merge-string-cases string cmpl-original-string))
+                      (message "Next completion: `%s'" string)))))
+            (t                          ; No completion found, so re-insert original.
+             (insert cmpl-original-string)
+             (set-buffer-modified-p buf-modified-p)
+             (setq completion-to-accept  nil) ; Do not accept completions.
+             (when (and print-status-p  (sit-for 0))
+               (message "No %scompletions" (if (eq this-command last-command) "more " "")))
+             (setq this-command  'failed-complete)))))) ; Pretend that we were never here
 
 
 (defvar icicle-info-buff nil
