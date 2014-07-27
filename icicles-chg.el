@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jul 14 08:16:46 2014 (-0700)
+;; Last-Updated: Sun Jul 27 09:42:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10955
+;;     Update #: 10956
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4231,6 +4231,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/07/27 dadams
+;;     Updated delete-selection PUT for icicle-self-insert per Emacs 24.4+.
 ;; 2014/06/21 dadams
 ;;     icicle-candidate-set-retrieve-1: Mention whether added or restored in msg.
 ;; 2014/06/07 dadams
