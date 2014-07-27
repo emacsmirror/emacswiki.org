@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jul 27 14:51:54 2014 (-0700)
+;; Last-Updated: Sun Jul 27 16:17:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5988
+;;     Update #: 5992
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -78,7 +78,9 @@
 ;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion',
-;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
+;;    `icicle-C-l-uses-completion-flag',
+;;    `icicle-cmpl-include-cdabbrev-flag',
+;;    `icicle-cmpl-max-candidates-to-cycle', `icicle-color-themes',
 ;;    `icicle-comint-dynamic-complete-replacements',
 ;;    `icicle-command-abbrev-alist',
 ;;    `icicle-command-abbrev-match-all-parts-flag',
@@ -1365,6 +1367,48 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option value."
   :type 'boolean :group 'Icicles-Minibuffer-Display :group 'Icicles-Matching)
 
+(defcustom icicle-cmpl-include-cdabbrev-flag nil
+  "*Non-nil means includes `CDABBREV' candidates for `icicle-complete'.
+This applies only to Icicles minibuffer completion during command
+`icicle-complete', so it applies only when`dynamic-completion-mode' is
+on.  That mode is defined in Emacs library `completion.el'.
+
+If nil then Icicles completion for `icicle-complete' includes only
+completions from the completions database.  If nil then it includes
+also completions found dynamically from the currently available
+windows.  These candidates are highlighted using face
+`icicle-special-candidate' so you can distinguish them.
+
+This is the so-called `CDABBREV' completion method defined in
+`completion.el'.  It is similar to how `dabbrev' finds candidates but
+with these differences:
+* It is sometimes faster, since it does not use regexps.  It searches
+  backwards looking for names that start with the text before point.
+* Case-sensitivity is handled as for other `completion.el' completion.
+
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option value."
+  :type 'boolean :group 'Icicles-Matching)
+
+(defcustom icicle-cmpl-max-candidates-to-cycle 7
+  "*Max number of completions to cycle through, or nil for no maximum.
+This has an effect only when `dynamic-completion-mode' is on.  That
+mode is defined in Emacs library `completion.el'.
+
+If there are more candidate completions than this for the name prefix
+before point then use Icicles minibuffer completion.  Cycling here
+refers to `completions.el' cycling, not to Icicles candidate cycling.
+Thus:
+* A value of zero (0) means to always use Icicles completion.
+* A value of nil means to never automatically use Icicles
+  completion (you can use `C-u C-u' to get Icicles completion)."
+  :type '(choice
+          (restricted-sexp
+           :tag "Use Icicles when there are more completions than this"
+           :match-alternatives ((lambda (x) (and (integerp x)  (> x 0)))) :value ignore)
+          (const :tag "No limit - use Icicles only via `C-u C-u'" nil))
+  :group 'Icicles-Miscellaneous)
+
 ;; Replace this list by your favorite color themes. Each must be the name of a defined function.
 ;; By default, this includes all color themes defined globally (variable `color-themes').
 ;;
@@ -2514,6 +2558,7 @@ See also option `icicle-buffer-skip-functions'."
     bbdb-complete-mail                  ; For BBDB versions such as 3.02 and later
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
+    complete
 
     ;; Uncomment `dired-read-shell-command' and `read-shell-command' if you want Icicles completion for
     ;; shell commands.  See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
