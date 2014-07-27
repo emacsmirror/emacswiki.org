@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 454 $
+;; RCS Version: $Rev: 455 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -819,7 +819,8 @@ automatically:
   (set (make-local-variable 'hl-line-sticky-flag) nil)
   (hl-line-mode 1)
 
-  (define-key sr-virtual-mode-map "\C-c\C-c" 'sr-virtual-dismiss))
+  (define-key sr-virtual-mode-map "\C-c\C-c" 'sr-virtual-dismiss)
+  (define-key sr-virtual-mode-map "\C-cv"    'sr-backup-buffer))
 
 (defmacro sr-within (dir form)
   "Evaluate FORM in Sunrise context."
@@ -957,7 +958,8 @@ Helper macro for passive & synchronized navigation."
 (defun sr-backup-buffer ()
   "Create a backup copy of the current buffer.
 Used as a cache during revert operations."
-  (if (buffer-live-p sr-backup-buffer) (sr-kill-backup-buffer))
+  (interactive)
+  (sr-kill-backup-buffer)
   (let ((buf (current-buffer)))
     (setq sr-backup-buffer (generate-new-buffer "*Sunrise Backup*"))
     (with-current-buffer sr-backup-buffer
