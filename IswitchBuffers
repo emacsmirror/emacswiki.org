@@ -1,8 +1,7 @@
 = Overview =
 
 [new:DrewAdams:2014-05-04 19:56 UTC]
-'''''Note:'''''  '''[::IswitchB]''' was part of GnuEmacs, but it has been removed starting with Emacs 24.4.  The Emacs `NEWS' (`C-h N') says to use IcompleteMode instead.  Emacs Dev has completely removed %%IswitchB%% from the product, and it is not available on GNU ELPA.  You can still find it, however -- here, for example:
-http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/iswitchb.el
+'''''Note:'''''  '''[::IswitchB]''' was part of GnuEmacs, but it has been removed starting with Emacs 24.4.  The Emacs `NEWS' (`C-h N') says to use IcompleteMode instead, but for those wanting more familiar functionality, [[InteractivelyDoThings]] is a closer fit.  Emacs Devs have removed %%IswitchB%% from the product, and it is not available on GNU ELPA, but you can still find it here: http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/iswitchb.el
 [new]
 
 
