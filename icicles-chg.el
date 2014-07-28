@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jul 27 09:42:50 2014 (-0700)
+;; Last-Updated: Sun Jul 27 17:00:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10956
+;;     Update #: 10964
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1095,6 +1095,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/07/27 dadams
+;;     Added: icicle-complete: Icicles version of command complete from completion.el.
 ;; 2014/06/21 dadams
 ;;     icicle-imenu-1: Handle multiple submenus with the same name (e.g. Functions).
 ;; 2014/06/19 dadams
@@ -5939,6 +5941,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/07/27 dadams
+;;     Added icicle-ORIG-complete (original def of command complete from completion.el).
 ;; 2014/06/07 dadams
 ;;     Added: icicle-last-non-minibuffer-buffer.
 ;;     icicle-minibuffer-setup: Use icicle-last-non-minibuffer-buffer for icicle-pre-minibuffer-buffer.
@@ -7227,6 +7231,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/07/27 dadams
+;;     Added: icicle-cmpl-include-cdabbrev-flag, icicle-cmpl-max-candidates-to-cycle.
+;;     icicle-functions-to-redefine: Added complete to the list of functions.
 ;; 2014/06/21 dadams
 ;;     icicle-completion-key-bindings:
 ;;       Added bindings for bmkp-(set|retrieve(-more)-icicle-search-hits-bookmark.
