@@ -13,6 +13,7 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 [new] 
 
 ===Emacs 23 Conversion - Headers Fail===
+[new] 
 I'm going from a previous version to 23. The conversion to mbox seems fine. Except: no headers will display. Instead there is an error message that     ' Search failed: "      " '  A lot of other stuff doesn't work as well, but this is critical. Any clues please?
 
 ===Emacs for Prose===
