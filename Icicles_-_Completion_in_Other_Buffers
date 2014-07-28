@@ -10,17 +10,20 @@ In addition to input [[completion]], you can use '''Icicles''' to complete
 words and [[symbol]]s in other [[buffer]]s, besides the [[minibuffer]].
 '''Icicles''' enhances this completion in these ways:
 
-# ''Lisp symbol'' completion via `M-TAB' (`lisp-complete-symbol').  (This is also `ESC-TAB' and `C-M-i'.)
+# ''Lisp symbol'' completion via '''`M-TAB'''' (`lisp-complete-symbol').  (This is also `ESC-TAB' and `C-M-i'.)
 
 # Word completion using the ''dynamic abbreviation'' of standard
-Emacs library `<code>dabbrev.el</code>', via `##C-M-/##'.
+Emacs library '''##dabbrev.el##''', via '''`##C-M-/##''''.
 
-# Mailing information completion for [[BbdbMode|BBDB]] (Insidious Big Brother Database).
+# Word completion using the '''`dynamic-completion-mode'''' of standard
+Emacs library '''##completion.el##''', via '''`C-RET'''' or '''`M-RET''''.
 
 # Word completion using the words and phrases in a ''thesaurus'', via
-`##C-c /##' (requires library <tt>[[synonyms.el]]</tt> -- see [[Synonyms]]).
+'''`##C-c /##'''' (requires library <tt>[[synonyms.el]]</tt> -- see [[Synonyms]]).
 
-# `TAB' completion of the following in ShellMode and [[EmacsSpeaksStatistics|ESS]] modes (and other, similar interpreters):
+# Mailing-information completion for [[BbdbMode|BBDB]] (Insidious Big Brother Database).
+
+# '''`TAB'''' completion of the following in ShellMode and [[EmacsSpeaksStatistics|ESS]] modes (and other, similar interpreters):
 ## Commands
 ## Previous inputs -- commands plus their arguments
 ## File names
@@ -32,18 +35,24 @@ completion, with all of its features: [[Icicles - Cycling Completions|cycling]] 
 
 
 
+
+
+
+
+
+
 [:DynamicAbbreviation]
-=== Dynamic Abbreviation ===
+[:DynamicCompletionUsingDabbrevEL]
+=== Dynamic Completion Using `dabbrev.el' ===
 
 Library ##dabbrev.el## lets you type a few characters
 in a buffer and then prefix-complete them (in the same buffer) to a full word or symbol name.
 The completion candidates come from words or symbol names in
 buffers that you are editing.  This functionality is called
-"'''dynamic abbreviation'''", though that is not
-a very good term for it (words are ''completed'', not abbreviated,
+"dynamic abbreviation", though "'''dynamic completion'''" would be a better term for it (words are ''completed'', not abbreviated,
 dynamically).
 
-In Emacs, there are two ways to "dynamically abbreviate" text:
+Library ##dabbrev.el## provides two ways to dynamically complete text:
 
 * `M-/' (command `dabbrev-expand') completes to a candidate word.
 Repeating it replaces the completion with a different one -- that is, it ''cycles candidates'' in the text buffer (not in the
@@ -54,7 +63,7 @@ prefix of all matching completion candidates.  Repeating it displays
 buffer `*Completions*' for you to choose a candidate.  However,
 in this case, there is ''no way to cycle'' among the candidates.
 
-If there are many candidate completions, then cycling among them
+If there are many candidate completions then cycling among them
 with `M-/' can be tedious.  You can use `M-C-/' to complete to a
 common prefix, thus narrowing the set of candidates, but then you
 lose the ability to cycle among them.
@@ -72,25 +81,94 @@ as apropos completion and candidate cycling.   In addition, you can complete an 
 
 
 
-[:bbdb-complete-mail]
-[:bbdb-complete-name]
-[:BbdbCompletion]
-=== BBDB Completion ===
 
-Library ##bbdb.el## is a rolodex-like database program for GNU Emacs -- see BbdbMode.  
-You can obtain a recent version, such as 3.02 or later, from
-http://melpa.milkbox.net/, or you can pick up an older version,
-such as 2.35, from http://bbdb.sourceforge.net/.
+[:DynamicCompletionUsingCompletionEL]
+=== Dynamic Completion Using `completion.el' ===
 
-If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-mail' (for BBDB version 3.02) or `bbdb-complete-name' (for BBDB version 2.35),
-then '''Icicles''' redefines that command so that it uses '''Icicles''' completion when there
-are multiple completions.
+Standard Emacs library ##completion.el# is quite old and little known nowadays.
+It is nevertheless very useful.  In a way, it is like ##dabbrev.el##
+on steroids.  It is pretty smart, proposing first the completions
+that you have used most recently.  You can use it anywhere, to
+complete all kinds of buffer text.
 
-You can use any '''Icicles''' features, such
-as apropos completion and candidate cycling.  For this feature to
-take effect, you must load BBDB before you load '''Icicles'''.   By default, option `icicle-functions-to-redefine'
-includes an entry for `bbdb-complete-mail' (not for
-`bbdb-complete-name').
+The command for completing the text before point is '''`complete'''' (an
+unfortunately general name, as is the name of the library), which
+is bound globally to '''`C-RET'''' and '''`M-RET'''' when you are in
+'''`dynamic-completion-mode''''.
+
+Command `complete' can act similar to the `dabbrev' commands, in which
+case it is said to be using method `cdabbrev' (but this name is
+not defined in any way programmatically; it is referred to
+informally).
+
+But the `dabbrev'-like behavior of `complete' is only a fallback,
+when its normal completion method comes up empty-handed.  The
+normal method matches what you type against a persistent personal
+"database" of completions, which is constructed and updated
+automatically as you type.  (It is saved only on demand or when
+you exit Emacs.)
+
+To make good use of this library, you really should read the
+complete Commentary in the `completion.el' source code (keeping in
+mind that in a few places it is not up to date).  But the doc
+string of command `icicle-complete' (which is the version of
+`complete' used in Icicle mode) is a good place to start.
+
+To make this kind of completion available, you must turn on
+`dynamic-completion-mode'.
+
+Here is the beginning of the ##completion.el## Commentary:
+
+  This watches all the words that you type and remembers them.
+  When typing a new word, pressing "complete" (meta-return)
+  "completes" the word by inserting the most recently used word
+  that begins with the same characters.  If you press meta-return
+  repeatedly, it cycles through all the words it knows about.
+
+  If you like the completion then just continue typing, it is as
+  if you entered the text by hand.  If you want the inserted extra
+  characters to go away, type control-w or delete.  More options
+  are described below.
+
+  The guesses are made in the order of the most recently "used".
+  Typing in a word and then typing a separator character (such as
+  a space) "uses" the word.  So does moving a cursor over the
+  word.  If no words are found, it uses an extended version of the
+  `dabbrev'-style completion.
+
+  You automatically save the completions you use to a file between
+  sessions.
+
+  Completion enables programmers to enter longer, more descriptive
+  variable names while typing fewer keystrokes than they normally
+  would.
+
+Just as for the `dabbrev' commands, '''Icicles''' enhances this
+completion by letting you use '''Icicles''' minibuffer completion when
+there are multiple candidates.  This happens only if one of these
+is true:
+
+* The number of candidates is greater than the value of [[option]]
+  '''`icicle-cmpl-max-candidates-to-cycle''''.
+
+* There are at least two candidates and you explicitly request
+  '''Icicles''' completion by using two or more plain [[prefix argument|prefix args]] (`C-u C-u').
+
+What about that fallback completion method, `cdabbrev'?  Vanilla
+`complete' uses it only if no matching completions are found in
+the database.  (It is generally slower than database lookup.)
+
+'''Icicles''' lets you choose whether to match only database completions
+or also terms found in your current Emacs windows (`cdabbrev'), by
+customizing option '''`icicle-cmpl-include-cdabbrev-flag''''.  (You can
+toggle the value anytime using `M-x icicle-toggle-option'.)
+
+If the option value is non-`nil' then whenever '''Icicles''' completion
+is used the candidates include the completions found dynamically
+by searching your current windows.  If it is `nil' then only
+database completions are candidates.  The dynamically found
+candidates are highlighted in buffer `*Completions*' using [[face]]
+`icicle-special-candidate', so you can easily distinguish them.
 
 
 
@@ -127,6 +205,38 @@ All of these commands require that you load
 library <tt>[[synonyms.el]]</tt>. 
 
 See '''[[Synonyms]]''' for more information on the features of library <tt>[[synonyms.el]]</tt>.
+
+
+
+
+
+
+
+[:bbdb-complete-mail]
+[:bbdb-complete-name]
+[:BbdbCompletion]
+=== BBDB Completion ===
+
+Library ##bbdb.el## is a rolodex-like database program for GNU Emacs -- see BbdbMode.  
+You can obtain a recent version, such as 3.02 or later, from
+http://melpa.milkbox.net/, or you can pick up an older version,
+such as 2.35, from http://bbdb.sourceforge.net/.
+
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-mail' (for BBDB version 3.02) or `bbdb-complete-name' (for BBDB version 2.35),
+then '''Icicles''' redefines that command so that it uses '''Icicles''' completion when there
+are multiple completions.
+
+You can use any '''Icicles''' features, such
+as apropos completion and candidate cycling.  For this feature to
+take effect, you must load BBDB before you load '''Icicles'''.   By default, option `icicle-functions-to-redefine'
+includes an entry for `bbdb-complete-mail' (not for
+`bbdb-complete-name').
+
+
+
+
+
+
 
 
 [:ShellCommandCompletion]
@@ -171,6 +281,5 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryBbdb
 CategoryESS
-
 
 
