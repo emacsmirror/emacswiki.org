@@ -22,7 +22,7 @@ and configure ido-mode. Another good setting to enable is ido-enable-flex-matchi
 To switch between buffers, press "C-x b", then:
 
 * type some characters appearing in the buffer name, RET to visit the buffer in the front the list.
-* use C-s (next) or C-r (previous) to move through the list.
+* use C-s (next) or C-r (previous) (or LEFT and RIGHT) to move through the list.
 * [Tab] display possible completion in a buffer (or visit the buffer if there is only one possible completion).
 * use C-f to switch to find file (with ido-mode) or C-b to fall back to switch to buffer (without ido-mode).
 
