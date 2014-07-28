@@ -13,7 +13,7 @@ definitions are restored when you exit ''Icicle'' mode.  The default
 value of `icicle-functions-to-redefine' contains the following
 functions:
 
-* `bbdb-complete-mail' (from [[BBDB]] 3.02)
+* `bbdb-complete-mail' (from [[BBDB]] 3.0.2 or 3.1)
 * `bbdb-complete-name' (from [[BBDB]] 2.35)
 * `comint-completion-at-point' (or `comint-dynamic-complete', prior to Emacs 24)
 * `comint-dynamic-complete-filename'
