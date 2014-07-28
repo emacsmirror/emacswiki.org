@@ -24,7 +24,7 @@ To switch between buffers, press "C-x b", then:
 * type some characters appearing in the buffer name, RET to visit the buffer in the front the list.
 * use C-s (next) or C-r (previous) to move through the list.
 * [Tab] display possible completion in a buffer (or visit the buffer if there is only one possible completion).
-* use C-f to fall back to find file (without ido-mode) or C-b to fall back to switch to buffer (without ido-mode).
+* use C-f to switch to find file (with ido-mode) or C-b to fall back to switch to buffer (without ido-mode).
 
 To find a file, press "C-x C-f".
 
@@ -35,7 +35,7 @@ To find a file, press "C-x C-f".
 * [backspace] - go up to the parent directory.
 * // - go to the root directory.
 * ~/ - go to the home directory.
-* C-f - to go back temporarily to the normal find-file.
+* C-f - fall back to find file (without ido-mode) and C-b to switch to switch to buffer (with ido-mode)
 * C-d - enter Dired for this directory (used to be C-x C-d in older versions)
 * C-j - create a new file named with the text you entered (note: this is needed if the text you entered matches an existing file, because RET would open the existing one)
 
