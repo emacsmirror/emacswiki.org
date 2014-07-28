@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Jun  7 11:47:03 2014 (-0700)
+;; Last-Updated: Sun Jul 27 16:55:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10211
+;;     Update #: 10216
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -24,14 +24,15 @@
 ;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `image-file', `info', `info+20',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `highlight',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-fn', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image-dired', `image-file',
+;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
+;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -49,7 +50,7 @@
 ;;    `icicle-ORIG-comint-dynamic-complete',
 ;;    `icicle-ORIG-comint-dynamic-complete-filename',
 ;;    `icicle-ORIG-comint-replace-by-expanded-filename',
-;;    `icicle-ORIG-dired-read-shell-command',
+;;    `icicle-ORIG-complete', `icicle-ORIG-dired-read-shell-command',
 ;;    `icicle-ORIG-ess-complete-object-name',
 ;;    `icicle-ORIG-gud-gdb-complete-command',
 ;;    `icicle-ORIG-read-file-name', `icicle-ORIG-read-shell-command',
@@ -3785,13 +3786,20 @@ if `icicle-change-region-background-flag' is non-nil."
 ;;; `bbdb-com.el' version 3.02 and later - `bbdb-complete-mail'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
-               (when (and (fboundp 'bbdb-complete-mail)
-                          (not (fboundp 'icicle-ORIG-bbdb-complete-mail)))
+               (when (and (fboundp 'bbdb-complete-mail)  (not (fboundp 'icicle-ORIG-bbdb-complete-mail)))
                  (fset 'icicle-ORIG-bbdb-complete-mail (symbol-function 'bbdb-complete-mail)))
                (when icyp (icicle-mode 1)))))
   (if (and (featurep 'bbdb-com)  (fboundp 'bbdb-complete-mail))
       (eval-after-load "icicles-mode" form)
     (eval-after-load "bbdb-com" form)))
+
+;;; `complete.el' - `complete'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'complete)  (not (fboundp 'icicle-ORIG-complete)))
+                 (fset 'icicle-ORIG-complete (symbol-function 'complete)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'completion) (eval-after-load "icicles-mode" form) (eval-after-load "completion" form)))
 
 ;;; `dired-aux.el' - `dired-read-shell-command'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
