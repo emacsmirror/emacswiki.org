@@ -218,11 +218,12 @@ See '''[[Synonyms]]''' for more information on the features of library <tt>[[syn
 === BBDB Completion ===
 
 Library ##bbdb.el## is a rolodex-like database program for GNU Emacs -- see BbdbMode.  
-You can obtain a recent version, such as 3.02 or later, from
-http://melpa.milkbox.net/, or you can pick up an older version,
-such as 2.35, from http://bbdb.sourceforge.net/.
+You can obtain a recent version, such as 3.1 or later, from one of these locations:
 
-If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-mail' (for BBDB version 3.02) or `bbdb-complete-name' (for BBDB version 2.35),
+* http://download.savannah.gnu.org/releases/bbdb/
+* http://melpa.milkbox.net/
+
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-mail' (for BBDB version 3.0.2 or 3.1) or `bbdb-complete-name' (for BBDB version 2.35),
 then '''Icicles''' redefines that command so that it uses '''Icicles''' completion when there
 are multiple completions.
 
@@ -231,6 +232,11 @@ as apropos completion and candidate cycling.  For this feature to
 take effect, you must load BBDB before you load '''Icicles'''.   By default, option `icicle-functions-to-redefine'
 includes an entry for `bbdb-complete-mail' (not for
 `bbdb-complete-name').
+
+(If you have BBDB version 3.0.2 instead of version 3.1, then
+uncomment the version of `icicle-bbdb-complete-mail' in
+`icicles-cmd1.el' that supports BBDB version 3.0.2.)
+
 
 
 
@@ -281,4 +287,3 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryBbdb
 CategoryESS
-
