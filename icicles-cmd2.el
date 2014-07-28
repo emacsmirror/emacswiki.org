@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jul 27 16:39:17 2014 (-0700)
+;; Last-Updated: Mon Jul 28 08:45:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6870
+;;     Update #: 6887
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2522,8 +2522,9 @@ Prefix arg behavior:
 
 If option `icicle-cmpl-include-cdabbrev-flag' is non-nil then Icicles
 completion includes candidates found dynamically from the currently
-available windows.  These candidates are highlighted using face
-`icicle-special-candidate' so you can easily distinguish them.
+available windows.  These candidates are highlighted in buffer
+`*Completions*' using face `icicle-special-candidate' so you can
+easily distinguish them.
 
 This is the so-called `CDABBREV' completion method defined in
 `completion.el'.  It is similar to how `dabbrev' finds candidates but
@@ -2542,7 +2543,14 @@ the current completion candidate from the database of completions.
 
 See the comments at the top of `completion.el' for more info."
   (interactive "*p")
-  (let ((buf-modified-p  (buffer-modified-p)))
+  (let ((buf-modified-p        (buffer-modified-p))
+        (icicle-sort-comparer  nil)
+        (icicle-sort-orders-alist
+         '(("by last dynamic completion") ; Renamed from "turned OFF'.
+           ("cdabbrev candidates first" . icicle-special-candidates-first-p)
+           ("alphabetical" . icicle-case-string-less-p)
+           ("by last use as input" . icicle-latest-input-first-p)
+           ("by previous input use alphabetically" . icicle-historical-alphabetic-p))))
     (cond ((eq last-command this-command)
            (delete-region cmpl-last-insert-location (point)) ; Undo last one
            (setq cmpl-current-index  (+ cmpl-current-index (or arg  1)))) ; Get next completion
@@ -2591,7 +2599,8 @@ See the comments at the top of `completion.el' for more info."
            (insert-point    (point))
            (entry           (if use-icicles-p
                                 (condition-case nil
-                                    (let ((icicle-show-Completions-initially-flag  t)
+                                    (let ((completion-ignore-case                  t)
+                                          (icicle-show-Completions-initially-flag  t)
                                           (icicle-delete-candidate-object          'delete-completion))
                                       (completing-read "Completion: " all-comps nil t cmpl-original-string))
                                   (quit nil)) ; Return nil, so deleted original prefix will be re-inserted.
