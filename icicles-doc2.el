@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Jul 24 08:20:07 2014 (-0700)
+;; Last-Updated: Sun Jul 27 20:30:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29546
+;;     Update #: 29649
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -306,9 +306,10 @@
 ;;    (@> "Jaro-Winkler Completion")
 ;;
 ;;  (@> "Completion in Other Buffers")
-;;    (@> "Dynamic Abbreviation")
-;;    (@> "BBDB Completion")
+;;    (@> "Dynamic Completion Using `dabbrev.el'")
+;;    (@> "Dynamic Completion Using `completion.el'")
 ;;    (@> "Thesaurus Lookup and Completion")
+;;    (@> "BBDB Completion")
 ;;    (@> "Completion in Comint Modes")
 ;;
 ;;  (@> "Customization and General Tips")
@@ -4404,13 +4405,16 @@
 ;;  2. Word completion using the dynamic abbreviation of standard
 ;;     Emacs library `dabbrev.el', via `C-M-/'.
 ;;
-;;  3. Mailing information completion for BBDB (Insidious Big Brother
-;;     Database).
+;;  3. Word completion using the `dynamic-completion-mode' of standard
+;;     Emacs library `completion.el', via `C-RET' or `M-RET'.
 ;;
 ;;  4. Word completion using the words and phrases in a thesaurus, via
 ;;     `C-c /' (requires library `synonyms.el').
 ;;
-;;  5. `TAB' completion of the following in Shell mode and ESS modes
+;;  5. Mailing-information completion for BBDB (Insidious Big Brother
+;;     Database).
+;;
+;;  6. `TAB' completion of the following in Shell mode and ESS modes
 ;;     (and other, similar interpreters):
 ;;
 ;;     * Commands
@@ -4424,17 +4428,19 @@
 ;;  (`S-TAB'), progressive completion (`S-SPC'), help on individual
 ;;  candidates (`C-M-RET'), and so on.
 ;;
-;;(@* "Dynamic Abbreviation")
-;;  ** Dynamic Abbreviation **
+;;(@* "Dynamic Completion Using `dabbrev.el'")
+;;  ** Dynamic Completion Using `dabbrev.el' **
 ;;
 ;;  Library `dabbrev.el' lets you type a few characters in a buffer
 ;;  and then prefix-complete them (in the same buffer) to a full word
 ;;  or symbol name.  The completion candidates come from words or
 ;;  symbol names in buffers that you are editing.  This functionality
-;;  is called "dynamic abbreviation", though that is not a very good
-;;  term for it (words are completed, not abbreviated, dynamically).
+;;  is called "dynamic abbreviation", though "dynamic completion"
+;;  would be a better term for it (words are completed, not
+;;  abbreviated, dynamically).
 ;;
-;;  In Emacs, there are two ways to "dynamically abbreviate" text:
+;;  Library `dabbrev.el' provides two ways to dynamically complete
+;;  text:
 ;;
 ;;  a. `M-/' (command `dabbrev-expand') completes to a candidate word.
 ;;     Repeating it replaces the completion with a different one -
@@ -4447,7 +4453,7 @@
 ;;     However, in this case, there is no way to cycle among the
 ;;     candidates.
 ;;
-;;  If there are many candidate completions, then cycling among them
+;;  If there are many candidate completions then cycling among them
 ;;  with `M-/' can be tedious.  You can use `C-M-/' to complete to a
 ;;  common prefix, thus narrowing the set of candidates, but then you
 ;;  lose the ability to cycle among them.
@@ -4461,24 +4467,94 @@
 ;;  cycling.  In addition, you can complete an empty prefix, starting
 ;;  from scratch with apropos completion.
 ;;
-;;(@* "BBDB Completion")
-;;  ** BBDB Completion **
+;;(@* "Dynamic Completion Using `completion.el'")
+;;  ** Dynamic Completion Using `completion.el' **
 ;;
-;;  Library `bbdb.el' is a rolodex-like database program for GNU
-;;  Emacs.  You can obtain a recent version, such as 3.02, from
-;;  http://melpa.milkbox.net/, or you can pick up an older version,
-;;  such as 2.35, from http://bbdb.sourceforge.net/.
+;;  Standard Emacs library `completion.el' is quite old and little
+;;  known nowadays.  It is nevertheless very useful.  In a way, it is
+;;  like `dabbrev.el' on steroids.  It is pretty smart, proposing
+;;  first the completions that you have used most recently.  You can
+;;  use it anywhere, to complete all kinds of buffer text.
 ;;
-;;  If user option `icicle-functions-to-redefine' contains an entry
-;;  for `bbdb-complete-mail' (for BBDB version 3.02 or later) or
-;;  `bbdb-complete-name' (for BBDB version 2.35), then Icicles
-;;  redefines that command so that it uses Icicles completion when
-;;  there are multiple completions.  You can use any Icicles features,
-;;  such as apropos completion and candidate cycling.  For this
-;;  feature to take effect, you must load BBDB before you load
-;;  Icicles.  By default, option `icicle-functions-to-redefine'
-;;  includes an entry for `bbdb-complete-mail' (not for
-;;  `bbdb-complete-name').
+;;  The command for completing the text before point is `complete' (an
+;;  unfortunately general name, as is the name of the library), which
+;;  is bound globally to `C-RET' and `M-RET' when you are in
+;;  `dynamic-completion-mode'.
+;;
+;;  Command `complete' can act similar to the `dabbrev' commands, in
+;;  which case it is said to be using method `cdabbrev' (but this name
+;;  is not defined in any way programmatically; it is referred to
+;;  informally).
+;;
+;;  But the `dabbrev'-like behavior of `complete' is only a fallback,
+;;  when its normal completion method comes up empty-handed.  The
+;;  normal method matches what you type against a persistent personal
+;;  "database" of completions, which is constructed and updated
+;;  automatically as you type.  (It is saved only on demand or when
+;;  you exit Emacs.)
+;;
+;;  To make good use of this library, you really should read the
+;;  complete Commentary in the `completion.el' source code (keeping in
+;;  mind that in a few places it is not up to date).  But the doc
+;;  string of command `icicle-complete' (which is the version of
+;;  `complete' used in Icicle mode) is a good place to start.
+;;
+;;  To make this kind of completion available, you must turn on
+;;  `dynamic-completion-mode'.
+;;
+;;  Here is the beginning of the `completion.el' Commentary:
+;;
+;;    This watches all the words that you type and remembers them.
+;;    When typing a new word, pressing "complete" (meta-return)
+;;    "completes" the word by inserting the most recently used word
+;;    that begins with the same characters.  If you press meta-return
+;;    repeatedly, it cycles through all the words it knows about.
+;;
+;;    If you like the completion then just continue typing, it is as
+;;    if you entered the text by hand.  If you want the inserted extra
+;;    characters to go away, type control-w or delete.  More options
+;;    are described below.
+;;
+;;    The guesses are made in the order of the most recently "used".
+;;    Typing in a word and then typing a separator character (such as
+;;    a space) "uses" the word.  So does moving a cursor over the
+;;    word.  If no words are found, it uses an extended version of the
+;;    `dabbrev'-style completion.
+;;
+;;    You automatically save the completions you use to a file between
+;;    sessions.
+;;
+;;    Completion enables programmers to enter longer, more descriptive
+;;    variable names while typing fewer keystrokes than they normally
+;;    would.
+;;
+;;  Just as for the `dabbrev' commands, Icicles enhances this
+;;  completion by letting you use Icicles minibuffer completion when
+;;  there are multiple candidates.  This happens only if one of these
+;;  is true:
+;;
+;;  * The number of candidates is greater than the value of option
+;;    `icicle-cmpl-max-candidates-to-cycle'.
+;;
+;;  * There are at least two candidates and you explicitly request
+;;    Icicles completion by using two or more plain prefix args (`C-u
+;;    C-u').
+;;
+;;  What about that fallback completion method, `cdabbrev'?  Vanilla
+;;  `complete' uses it only if no matching completions are found in
+;;  the database.  (It is generally slower than database lookup.)
+;;
+;;  Icicles lets you choose whether to match only database completions
+;;  or also terms found in your current Emacs windows (`cdabbrev'), by
+;;  customizing option `icicle-cmpl-include-cdabbrev-flag'.  (You can
+;;  toggle the value anytime using `M-x icicle-toggle-option'.)
+;;
+;;  If the option value is non-`nil' then whenever Icicles completion
+;;  is used the candidates include the completions found dynamically
+;;  by searching your current windows.  If it is `nil' then only
+;;  database completions are candidates.  The dynamically found
+;;  candidates are highlighted in buffer `*Completions*' using face
+;;  `icicle-special-candidate', so you can easily distinguish them.
 ;;
 ;;(@* "Thesaurus Lookup and Completion")
 ;;  ** Thesaurus Lookup and Completion **
@@ -4511,6 +4587,25 @@
 ;;
 ;;  All of these Icicles commands require that you load library
 ;;  `synonyms.el'.
+;;
+;;(@* "BBDB Completion")
+;;  ** BBDB Completion **
+;;
+;;  Library `bbdb.el' is a rolodex-like database program for GNU
+;;  Emacs.  You can obtain a recent version, such as 3.02, from
+;;  http://melpa.milkbox.net/, or you can pick up an older version,
+;;  such as 2.35, from http://bbdb.sourceforge.net/.
+;;
+;;  If user option `icicle-functions-to-redefine' contains an entry
+;;  for `bbdb-complete-mail' (for BBDB version 3.02 or later) or
+;;  `bbdb-complete-name' (for BBDB version 2.35), then Icicles
+;;  redefines that command so that it uses Icicles completion when
+;;  there are multiple completions.  You can use any Icicles features,
+;;  such as apropos completion and candidate cycling.  For this
+;;  feature to take effect, you must load BBDB before you load
+;;  Icicles.  By default, option `icicle-functions-to-redefine'
+;;  includes an entry for `bbdb-complete-mail' (not for
+;;  `bbdb-complete-name').
 ;;
 ;;(@* "Completion in Comint Modes")
 ;;  ** Completion in Comint Modes **
@@ -6301,19 +6396,30 @@
 ;;    `custom-file' or init file (`~/.emacs') updated in this way,
 ;;    then customize `icicle-customize-save-flag' to `nil'.
 ;;
-;;  * If `icicle-buffers-ido-like-flag' is `t' then `icicle-buffer'
+;;  * If user option `icicle-buffers-ido-like-flag' is `t' then
+;;    `icicle-buffer' and similar commands act more Ido-like.
+;;    Specifically, those commands then bind these options to `t':
+;;    `icicle-show-Completions-initially-flag',
+;;    `icicle-top-level-when-sole-completion-flag', and
+;;    `icicle-default-value'.
+;;
+;;  * If option `icicle-files-ido-like-flag' is `t' then `icicle-file'
 ;;    and similar commands act more Ido-like.  Specifically, those
 ;;    commands then bind these options to `t':
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-top-level-when-sole-completion-flag', and
 ;;    `icicle-default-value'.
 ;;
-;;  * If `icicle-files-ido-like-flag' is `t' then `icicle-file' and
-;;    similar commands act more Ido-like.  Specifically, those
-;;    commands then bind these options to `t':
-;;    `icicle-show-Completions-initially-flag',
-;;    `icicle-top-level-when-sole-completion-flag', and
-;;    `icicle-default-value'.
+;;  * User options `icicle-cmpl-max-candidates-to-cycle' and
+;;    `icicle-cmpl-include-cdabbrev-flag' control the behavior of
+;;    Icicles command `icicle-complete', which replaces Emacs command
+;;    `complete' from standard Emacs library `completion.el' when you
+;;    are in Icicle mode.  The first of these options controls how
+;;    many completion matches are required for Icicles completion to
+;;    be used instead of in-place cycling replacement.  The second
+;;    controls whether Icicles completion candidates can be found
+;;    dynamically or should be limited to terms from your completions
+;;    database.
 ;;
 ;;  * The value of option `icicle-customize-save-variable-function' is
 ;;    the function Icicles uses to automatically save user option
@@ -6691,8 +6797,8 @@
 ;;  bindings.  For example, `Info-index' is by default redefined to
 ;;  `icicle-Info-index' in Icicle mode, so `i' in Info mode is
 ;;  effectively bound to `icicle-Info-index'.  Commands listed in
-;;  option `icicle-functions-to-redefine' are typically bound in
-;;  keymaps other than the global map.
+;;  option `icicle-functions-to-redefine' are typically, but not
+;;  always, bound in keymaps other than the global map.
 ;;
 ;;  There are many Icicles commands that are not bound to any keys by
 ;;  default.  You might want to bind some of them to keys in keymap
