@@ -233,7 +233,7 @@ Any redefined functions that are bound to keys keep those
 bindings.  For example, `Info-index' is by default redefined to
 `icicle-Info-index' in ''Icicle'' mode, so `i' in InfoMode is
 effectively bound to `icicle-Info-index'.  Commands listed in option
-`icicle-functions-to-redefine' are typically bound in keymaps
+`icicle-functions-to-redefine' are typically, but not always, bound in keymaps
 other than the global map.
 
 There are many '''Icicles''' commands that are not bound to any keys by default.
