@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jul 27 17:00:07 2014 (-0700)
+;; Last-Updated: Mon Jul 28 09:53:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10964
+;;     Update #: 10969
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/07/28 dadams
+;;     Added new version of icicle-bbdb-complete-mail.  Thx to Alan Schmitt for testing.
 ;; 2014/07/14 dadams
 ;;     icicle-cd-for-loc-files: Bind enable-recursive-minibuffers.
 ;; 2014/06/19 dadams
@@ -1095,6 +1097,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/07/28 dadams
+;;     icicle-complete: Added sort orders.  Bind completion-ignore-case.
 ;; 2014/07/27 dadams
 ;;     Added: icicle-complete: Icicles version of command complete from completion.el.
 ;; 2014/06/21 dadams
