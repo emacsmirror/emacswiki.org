@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul 27 20:30:13 2014 (-0700)
+;; Last-Updated: Mon Jul 28 10:03:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29649
+;;     Update #: 29659
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4592,12 +4592,14 @@
 ;;  ** BBDB Completion **
 ;;
 ;;  Library `bbdb.el' is a rolodex-like database program for GNU
-;;  Emacs.  You can obtain a recent version, such as 3.02, from
-;;  http://melpa.milkbox.net/, or you can pick up an older version,
-;;  such as 2.35, from http://bbdb.sourceforge.net/.
+;;  Emacs.  You can obtain a recent version, such as 3.1, from one of
+;;  these locations:
+;;
+;;  * http://download.savannah.gnu.org/releases/bbdb/
+;;  * http://melpa.milkbox.net/
 ;;
 ;;  If user option `icicle-functions-to-redefine' contains an entry
-;;  for `bbdb-complete-mail' (for BBDB version 3.02 or later) or
+;;  for `bbdb-complete-mail' (for BBDB version 3.0.2 or 3.1) or
 ;;  `bbdb-complete-name' (for BBDB version 2.35), then Icicles
 ;;  redefines that command so that it uses Icicles completion when
 ;;  there are multiple completions.  You can use any Icicles features,
@@ -4606,6 +4608,10 @@
 ;;  Icicles.  By default, option `icicle-functions-to-redefine'
 ;;  includes an entry for `bbdb-complete-mail' (not for
 ;;  `bbdb-complete-name').
+;;
+;;  (If you have BBDB version 3.0.2 instead of version 3.1, then
+;;  uncomment the version of `icicle-bbdb-complete-mail' in
+;;  `icicles-cmd1.el' that supports BBDB version 3.0.2.)
 ;;
 ;;(@* "Completion in Comint Modes")
 ;;  ** Completion in Comint Modes **
@@ -7702,10 +7708,10 @@
 ;;  value of `icicle-functions-to-redefine' contains the following
 ;;  functions:
 ;;
-;;    `bbdb-complete-mail' (from BBDB 3.02), `bbdb-complete-name'
-;;    (from BBDB 2.35), `comint-completion-at-point' (or
-;;    `comint-dynamic-complete', prior to Emacs 24),
-;;    `comint-dynamic-complete-filename',
+;;    `bbdb-complete-mail' (from BBDB 3.0.2 or 3.1),
+;;    `bbdb-complete-name' (from BBDB 2.35),
+;;    `comint-completion-at-point' (or `comint-dynamic-complete',
+;;    prior to Emacs 24), `comint-dynamic-complete-filename',
 ;;    `comint-replace-by-expanded-filename',
 ;;    `ess-complete-object-name' (from ESS),
 ;;    `gud-gdb-complete-command', `Info-goto-node', `Info-index',
