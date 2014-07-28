@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.05.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  7 08:50:39 2014 (-0700)
+;; Last-Updated: Sun Jul 27 16:56:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23557
+;;     Update #: 23560
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -26,12 +26,12 @@
 ;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
-;;   `image-file', `info', `info+20', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `highlight',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
+;;   `image-dired', `image-file', `info', `info+20', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
 ;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget'.
@@ -613,7 +613,8 @@
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
 ;;    `icicle-next-S-TAB-completion-method',
-;;    `icicle-ORIG-choose-completion', `icicle-ORIG-exit-minibuffer',
+;;    `icicle-ORIG-choose-completion', `icicle-ORIG-complete',
+;;    `icicle-ORIG-exit-minibuffer',
 ;;    `icicle-ORIG-minibuffer-complete-and-exit',
 ;;    `icicle-ORIG-mouse-choose-completion',
 ;;    `icicle-ORIG-next-history-element', `icicle-ORIG-sit-for',
@@ -785,7 +786,9 @@
 ;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion',
-;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
+;;    `icicle-C-l-uses-completion-flag',
+;;    `icicle-cmpl-include-cdabbrev-flag',
+;;    `icicle-cmpl-max-candidates-to-cycle', `icicle-color-themes',
 ;;    `icicle-comint-dynamic-complete-replacements',
 ;;    `icicle-command-abbrev-alist',
 ;;    `icicle-command-abbrev-match-all-parts-flag',
