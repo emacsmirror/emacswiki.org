@@ -2487,7 +2487,7 @@ normal behavior.  If you for some reason do not want your
 [:icicle-buffers-ido-like-flag]
 ==== Option icicle-buffers-ido-like-flag ====
 
-If '''`icicle-buffers-ido-like-flag'''' is `t' then `icicle-buffer' and
+If user option '''`icicle-buffers-ido-like-flag'''' is `t' then `icicle-buffer' and
 similar commands act more [[Ido]]-like.  Specifically, those
 commands then bind these options to `t':
 * `icicle-show-Completions-initially-flag'
@@ -2500,12 +2500,29 @@ commands then bind these options to `t':
 [:icicle-files-ido-like-flag]
 ==== Option icicle-files-ido-like-flag ====
 
-If '''`icicle-files-ido-like-flag'''' is `t' then `icicle-file' and
+If option '''`icicle-files-ido-like-flag'''' is `t' then `icicle-file' and
 similar commands act more [[Ido]]-like.  Specifically, those
 commands then bind these options to `t':
 * `icicle-show-Completions-initially-flag'
 * `icicle-top-level-when-sole-completion-flag'
 * `icicle-default-value'
+
+
+----
+[:icicle-cmpl-max-candidates-to-cycle]
+[:icicle-cmpl-include-cdabbrev-flag]
+==== Options icicle-cmpl-max-candidates-to-cycle and icicle-cmpl-include-cdabbrev-flag ==
+
+User options '''`icicle-cmpl-max-candidates-to-cycle'''' and
+'''`icicle-cmpl-include-cdabbrev-flag'''' control the behavior of
+'''Icicles''' command `icicle-complete', which replaces Emacs command
+`complete' from standard Emacs library ##completion.el## when you are in ''Icicle''
+mode.  The first of these options controls how many completion
+matches are required for '''Icicles''' completion to be used instead
+of in-place cycling replacement.  The second controls whether
+'''Icicles''' completion candidates can be found dynamically or should
+be limited to terms from your completions database.
+
 
 
 ----
@@ -2569,4 +2586,3 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
