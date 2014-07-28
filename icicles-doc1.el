@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jun 22 07:35:01 2014 (-0700)
+;; Last-Updated: Sun Jul 27 20:01:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28207
+;;     Update #: 28212
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -428,9 +428,10 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Jaro-Winkler Completion")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion in Other Buffers")
-;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Abbreviation")
-;;    (@file :file-name "icicles-doc2.el" :to "BBDB Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Completion Using `dabbrev.el'")
+;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Completion Using `completion.el'")
 ;;    (@file :file-name "icicles-doc2.el" :to "Thesaurus Lookup and Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "BBDB Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Completion in Comint Modes")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
