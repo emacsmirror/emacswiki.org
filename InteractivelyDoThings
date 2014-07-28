@@ -37,7 +37,7 @@ To find a file, press "C-x C-f".
 * ~/ - go to the home directory.
 * C-f - fall back to find file (without ido-mode) and C-b to switch to switch to buffer (with ido-mode)
 * C-d - enter Dired for this directory (used to be C-x C-d in older versions)
-* C-j - create a new file named with the text you entered (note: this is needed if the text you entered matches an existing file, because RET would open the existing one)
+* C-j - create a new file named with the text you entered (note: this is needed if the text you entered matches any existing files, because RET would open the first one in the list of matches)
 
 To restrict the list after a first filtering:
 * type some characters appearing in the buffer/file name(say .cpp) 
