@@ -172,6 +172,21 @@ Where the lines of a file are presorted it can be convenient to use something li
 
 This function, while inefficient (note cons in tail of while form) is quite handy for locating duplicates _before_ removing them, i.e. situations of type: `uniquify-maybe'. Extend `find-duplicate-lines' by comparing its result list with one or more of the list comparison procedures `set-difference', `union', `intersection', etc. from the CL package (require 'cl).
 
+== Indexed lines ==
+
+I had a file that looks like 
+{{{
+0001 line1 original
+0001 line1 modified
+0002 line2 
+0003 line3 original
+0003 line3 modified
+}}}
+
+Use this regexp in ##query-replace-regexp## to find the duplicated lines : 
+##\(\([0-9]\{6,7\}\).*\)<newline, insert it with C-q C-j>\(\2.*\)##
+then you can replace it with ##\1## to keep the original lines, or ##\3## to keep the modified ones
+
 ----
 
 CategoryEditing
