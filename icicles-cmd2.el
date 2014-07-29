@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Jul 28 19:54:02 2014 (-0700)
+;; Last-Updated: Tue Jul 29 11:39:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6910
+;;     Update #: 6914
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2559,6 +2559,9 @@ During Icicles minibuffer completion you can use `S-delete' to remove
 the current completion candidate from the database of completions.
 Cycle among the candidates (e.g. `down'), and use `S-delete' to delete
 as many as you want.
+
+\(You can also delete any database entry using `\\[kill-completion]'.
+And you can add a database entry using `\\[add-completion]'.)
 
 See the comments at the top of `completion.el' for more info."
   (interactive "*p")
