@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon May 19 09:45:43 2014 (-0700)
+;; Last-Updated: Tue Jul 29 14:40:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14653
+;;     Update #: 14667
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -370,7 +370,6 @@
   (defvar completion-styles)            ; In `minibuffer.el'
   (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23)
 
-(defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
 (defvar crm-local-completion-map)       ; In `crm.el'
 (defvar crm-local-must-match-map)       ; In `crm.el'
@@ -381,6 +380,10 @@
 (defvar doremi-up-keys)                 ; In `doremi.el'
 (defvar eyedrop-picked-background)      ; In `eyedrop.el' and `palette.el'
 (defvar eyedrop-picked-foreground)      ; In `eyedrop.el' and `palette.el'
+(defvar ffap-alist)                     ; In `ffap.el'
+(defvar ffap-url-regexp)                ; In `ffap.el'
+(defvar ffap-shell-prompt-regexp)       ; In `ffap.el'
+(defvar ffap-machine-p-known)           ; In `ffap.el'
 (defvar filesets-data)                  ; In `filesets.el'
 (defvar font-width-table)               ; In C code.
 (defvar font-weight-table)              ; In C code.
@@ -393,6 +396,7 @@
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
 (defvar image-dired-thumb-height)       ; In `image-dired.el'.
 (defvar image-dired-thumb-width)        ; In `image-dired.el'.
+(defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
 (defvar minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
@@ -1405,9 +1409,15 @@ and `read-file-name-function'."
               (read-file-name-predicate         (and (boundp 'read-file-name-predicate)
                                                      read-file-name-predicate))
               (ffap-available-p                 (or (require 'ffap- nil t)  (require 'ffap nil t)))
-              ;; The next four prevent slowing down `ffap-guesser'.
-              (ffap-alist nil)                  (ffap-machine-p-known 'accept)
-              (ffap-url-regexp nil)             (ffap-shell-prompt-regexp nil)
+
+              ;; These four `ffap-*' bindings would speed up `ffap-guesser' - see `ffap.el' about them.
+              ;; Do not bind them for Emacs 23+, however, so users can get multiple default values for `M-n'.
+              (emacs-23+                        (>= emacs-major-version 23))
+              (ffap-alist                       (and emacs-23+  ffap-alist))
+              (ffap-url-regexp                  (and emacs-23+  ffap-url-regexp))
+              (ffap-shell-prompt-regexp         (and emacs-23+  ffap-shell-prompt-regexp))
+              (ffap-machine-p-known             (if emacs-23+ ffap-machine-p-known 'accept))
+
               (fap
                (if (and (eq major-mode 'dired-mode)  (fboundp 'dired-get-file-for-visit))
                    (condition-case nil
