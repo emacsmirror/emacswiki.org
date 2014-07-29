@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jul 28 09:53:40 2014 (-0700)
+;; Last-Updated: Tue Jul 29 14:39:45 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10969
+;;     Update #: 10973
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2035,6 +2035,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/07/29 dadams
+;;     icicle-read-file-name: For Emacs 23+ do not bind ffap vars to nil, so get multiple M-n defaults.
+;;       This reverses the change from 2008/02/03.
 ;; 2014/05/19 dadams
 ;;     icicle-completing-read: Use only first default to prepare for icicle-handle-default-for-prompt.
 ;; 2014/05/17 dadams
