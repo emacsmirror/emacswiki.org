@@ -1,4 +1,4 @@
-Shell EXecute mode / Send to EXterna program
+Shell EXecute mode / Send to EXternal program
 
 Whenever you open certain kind of files in Emacs they will be sent to an external application.
 This works with find-file, from dired etc.
