@@ -1,0 +1,12 @@
+Clojure hacker. I go by [::dakrone] on IRC.
+
+I've written a small amount of elisp things:
+
+* [http://github.com/dakrone/es-mode es-mode], a major mode for editing and executing [http://www.elasticsearch.org Elasticsearch] scripts
+
+Most of my elisp code can be found in [http://github.com/dakrone/dakrone-dotfiles my public dotfiles repo].
+
+Blog is at http://writequit.org/blog, although not updated any more.
+
+----
+CategoryHomepage
