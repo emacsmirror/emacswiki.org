@@ -1,6 +1,8 @@
-Lisp:w32-shell-execute.el allows you to execute any of the /Explorer verbs/ available for a file or directory.
+You can use built-in Emacs function `w32-shell-execute' to execute an MS Windows system function.
 
-Another simple way:
+Library ##w32-shell-execute.el## provides command `w32-shell-execute-verb', which gives you an interface to `w32-shell-execute' that tries to make it more convenient to execute MS Windows /Explorer verbs/ that are available for the current file or directory.
+
+And here is an alternative, for use in [[Dired]]:
 
 <pre>
 (defun w32-dired-open-explorer ()
@@ -10,8 +12,7 @@ Another simple way:
     (if (file-exists-p file-name)
 	(w32-shell-execute "open" file-name nil 1))))
 
-;; I bind it to ``o'' in dired mode.
-(require 'dired)
+;; Bind it to `o' in dired mode.
 (define-key dired-mode-map "o" 'w32-dired-open-explorer)
 
 </pre>
