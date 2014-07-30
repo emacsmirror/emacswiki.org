@@ -1,10 +1,13 @@
-This page is about Emacs functions that execute Microsoft Windows shell commands.
+On Microsoft Windows, files are typically associated with applications according to their file extension. There are various ways to exploit this functionality in Emacs, to open ##*.doc## files in Word, URLs in a Web browser, and so on.
+
+== {w32,mswindows}-shell-execute ==
+
+GNU Emacs has a function ##w32-shell-execute##; XEmacs's equivalent is ##mswindows-shell-execute##. Both allow files to be opened in various ways; see the corresponding Info manual for details.
 
 [:w32-browser]
 == w32-browser, w32browser-dlgopen.el, dired+.el, bookmark+.el  ==
 
-On Microsoft Windows, files are typically associated with applications according to their file extension.  Library <tt>[[w32-browser.el]]</tt> defines command `w32-browser', which calls a Windows application, passing it a string argument such as a file name.  This lets you open ##*.doc##
-files in Word, open URLs in a Web browser, and so on.
+Library <tt>[[w32-browser.el]]</tt> defines command `w32-browser', which calls a Windows application, passing it a string argument such as a file name.
 
 ##w32-browser.el## also defines command `w32explore', which opens Windows Explorer to a file or folder; it selects the file in Explorer.
 
@@ -14,48 +17,11 @@ Library '''[[DiredPlus|Dired+]]''' uses ##w32-browser.el## and defines similar c
 
 Library '''[[BookmarkPlus|Bookmark+]]''' lets you open bookmarks using their Windows file associations. It does this by calling `w32-browser'. And library '''Dired+''' lets you create bookmarks for each of the marked files in a Dired buffer, without your needing to visit them in Emacs. Combined with the ability to tag bookmarks a la [[http://delicious.com|del.icio.us]], these features let you easily organize and open non-text files such as music and images.
 
-
-
-
-== gse-shellex-file (XEmacs) ==
-
-XEmacs provides `mswindows-shell-execute', which is similar to `w32-browser'.
-I wrote this little function, which I generally bind to `f4':
-
-<pre>
-(defun gse-shellex-file (file)
-  "My interface to shellex.  In dired, filename under point is the default."
-  (interactive
-   (list
-    (read-file-name
-     (concat
-      ;; Include default if we're in dired-mode and point is over a file.
-      "shellex file"
-      (if (and (string-equal major-mode "dired-mode") (dired-get-filename nil t))
-          (concat " [" (dired-get-filename 'no-dir t) "]"))
-      ": ")  ;; prmopt
-     nil ;; dir
-     (if (string-equal major-mode "dired-mode") (dired-get-filename nil t)) ;; default
-     t   ;; must-match
-     )))
-
-  (setq file (expand-file-name file))
-  (mswindows-shell-execute nil file))
-</pre>
-
-Comments are welcome.  -- ScottEvans
-
-
-== mswindows-shell-execute ==
-
-I suspect something like `w32-browser' was named `mswindows-shell-execute' on FSFmacs, until RMS decided to rename all symbols pertaining to windows, changing everything to "w32".  There's some speculation he didn't like the word "win" in "win32", but I think (for once regarding RMS) that unlike the linux --> gnulinux thing, this was for reasons of consistency.  There's still some political problems I have with FSFmacs, but that's a whole other story. -- ChuckAdams
-
 == dired-custom-execute-file ==
 
 EmacsMacro has file ##e-w32.el## where functionality similar to `w32-browser' is implemented like this:
 
 <pre>
-
   (defun dired-custom-execute-file (&optional arg)
     (interactive "P")
     (mapcar #'(lambda (file)
@@ -65,7 +31,6 @@ EmacsMacro has file ##e-w32.el## where functionality similar to `w32-browser' is
   (defun dired-custom-dired-mode-hook ()
     (define-key dired-mode-map "X" 'dired-custom-execute-file))
   (add-hook 'dired-mode-hook 'dired-custom-dired-mode-hook))
-
 </pre>
 
 -- HorstDuchene
