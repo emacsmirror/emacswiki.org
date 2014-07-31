@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Jul 29 14:39:45 2014 (-0700)
+;; Last-Updated: Thu Jul 31 09:09:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10973
+;;     Update #: 10977
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1097,6 +1097,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/07/31 dadams
+;;     icicle-complete-keys-action: Do not use icicle-orig-buff, icicle-orig-window) - not bound.
+;;       See change-log entry for 2014/02/24.  Must have forgotten to finish that change by doing this.
 ;; 2014/07/28 dadams
 ;;     icicle-complete: Added sort orders.  Bind completion-ignore-case.
 ;; 2014/07/27 dadams
@@ -1125,7 +1128,7 @@
 ;;     Use (featurep 'icomplete), not (boundp 'icomplete-mode), everywhere.
 ;; 2014/03/03 dadams
 ;;     icicle-search-xml-element: Try to handle attributes and <ELTNAME/> too.
-;; 2014/03/24 dadams
+;; 2014/02/24 dadams
 ;;     icicle-complete-keys, icicle-complete-menu-bar:
 ;;       Do not bind icicle-orig-buff or icicle-orig-window - they are the minibuffer buf & window.
 ;; 2014/02/07 dadams
