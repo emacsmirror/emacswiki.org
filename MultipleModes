@@ -23,7 +23,9 @@ Polymode also provides highly configurable facilities for literate programming. 
 
 = web-mode.el = 
 
-Major mode for editing web templates: HTML files embedding parts (CSS / JavaScript) and blocks (server and client side). web-mode.el is autonomous and is compatible with many template engines (PHP / Jsp / Erb / Django / Twig / Handlebars / Aspx). Actively maintained by François-Xavier Bois.
+Major mode for editing web templates: HTML files embedding parts (CSS / JavaScript) and blocks (server and client side). web-mode.el is autonomous and is compatible with many template engines : PHP, JSP, GSP (Grails), ASP / ASP.NET AJAX (Atlas), Django / Twig / Jinja(2) / ErlyDTL (Zotonic) / Selmer, ERB, FreeMarker, Velocity, Cheetah, Smarty, CTemplate / Mustache / Hapax / Handlebars / Meteor / Blaze /ember.js, Blade (laravel), Knockoutjs, Go Template (Revel), Razor/Play, Dust, Closure (soy), underscore.js, template-toolkit, Liquid (jekyll), angular.js, web2py, mako (pylons), reactjs (jsx), mojolicious.
+
+Actively maintained by François-Xavier Bois.
 
 * http://web-mode.org
 
