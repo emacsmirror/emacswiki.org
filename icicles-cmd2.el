@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jul 29 11:39:16 2014 (-0700)
+;; Last-Updated: Thu Jul 31 09:08:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6914
+;;     Update #: 6916
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8441,7 +8441,6 @@ Each is a vector."
           (put (car cand) 'icicle-special-candidate nil))))) ; Reset the property.
 
   ;; Free vars here:
-  ;; `icicle-orig-buff', `icicle-orig-window', bound in `icicle-complete-keys'.
   ;; `icicle-orig-extra-cands', `icicle-this-cmd-keys', `icicle-key-prefix',
   ;; bound in `icicle-complete-keys-1'.
   (defun icicle-complete-keys-action (candidate)
@@ -8453,8 +8452,8 @@ Each is a vector."
            (action-window  (selected-window)))
       (unwind-protect
            (progn
-             (set-buffer icicle-orig-buff)
-             (select-window icicle-orig-window)
+             ;; $$$$$$$$ (set-buffer icicle-orig-buff)       ; These are not bound.
+             ;; $$$$$$$$ (select-window icicle-orig-window)
              (if (string= ".." candidate)
                  (setq cmd-name  "..")
                (unless (and (string-match "\\(.+\\)  =  \\(.+\\)" candidate)  (match-beginning 2))
