@@ -105,3 +105,4 @@ xpdb is a fork of the standard library pdb, available here: https://code.launchp
 * More on completion: http://www.rwdev.eu/articles/emacspyeng
 * Yasnippet: http://code.google.com/p/yasnippet/ for Python, Django, django-templates snippets
 * Virtualenv: Using virtual environments within emacs: http://github.com/gabrielelanaro/emacs-starter-kit
+* Editing django templates : http://web-mode.org
