@@ -25,3 +25,10 @@ Though I don't know much about lisp or programming for that matter. Copy pasted 
 
 -- SA 2014-08-01 16:48 UTC
 
+
+----
+
+You should '''''never''''' bind `C-u'.  It is important that it remain bound to command `universal-argument'.  If not, you are inviting trouble throughout Emacs.
+
+-- DrewAdams 2014-08-01 16:52 UTC
+
