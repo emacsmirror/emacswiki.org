@@ -155,14 +155,7 @@ When query-replace is in progress:
 CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z' and visible region selection. This mimics the familiar behavior found on in Windows, Mac and Motif.
 
 == VI Keys ==
-
-<<<<<<< you
-vi keys are available with ViperMode (built-in), but [Evil] mode works better.
-||||||| ancestor
-vi keys are available with ViperMode (built-in), but EvilMode works better.
-=======
-vi keys are available with ViperMode (built-in), but Evil mode works better.
->>>>>>> other
+Vi keys are available with ViperMode (built-in), but [[Evil]] mode works better
 
 ----
 CategoryReferenceSheet
