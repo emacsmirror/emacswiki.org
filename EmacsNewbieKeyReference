@@ -1,4 +1,4 @@
-[[fr:NouvelUtilisateurEmacsRÃ©fÃ©renceSÃ©quencesDeTouches]]
+[[fr:NouvelUtilisateurEmacsRéférenceSéquencesDeTouches]]
 This is a reference for an EmacsNewbie of commonly used Emacs [[key sequence]]s. See also:
 
 * EmacsKeyNotation -- Explain the convention of Emacs key sequences found below.
@@ -54,7 +54,7 @@ See also: [[Undo]].
 
 * cancel current operation: `C-g'
 * if that doesn't happen to work (abort or exit recursive edit): ##`C-]'##,  ##`C-M-c'##
-* or âM-x top-levelâ
+* or ‘M-x top-level’
 
 See also: CancelingInEmacs.
 
@@ -155,7 +155,8 @@ When query-replace is in progress:
 CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z' and visible region selection. This mimics the familiar behavior found on in Windows, Mac and Motif.
 
 == VI Keys ==
-Vi keys are available with ViperMode (built-in), but [[Evil]] mode works better
+
+vi keys are available with ViperMode (built-in), but Evil mode works better.
 
 ----
 CategoryReferenceSheet
