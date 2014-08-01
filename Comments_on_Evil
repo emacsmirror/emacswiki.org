@@ -16,3 +16,12 @@ What am I doing wrong in Emacs/Evil with the Enter key?
 
 -- ReneFroger 2014-04-12 00:47 UTC
 
+
+----
+
+ReneFroger, This works :
+(define-key evil-normal-state-map (kbd "RET") 'scroll-up)
+Though I don't know much about lisp or programming for that matter. Copy pasted and changed from some existing lines in .emacs
+
+-- SA 2014-08-01 16:48 UTC
+
