@@ -156,7 +156,7 @@ CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z'
 
 == VI Keys ==
 
-vi keys are available with ViperMode.
+vi keys are available with ViperMode (built-in), but EvilMode works better.
 
 ----
 CategoryReferenceSheet
