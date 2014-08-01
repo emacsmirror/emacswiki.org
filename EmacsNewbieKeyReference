@@ -156,7 +156,7 @@ CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z'
 
 == VI Keys ==
 
-vi keys are available with ViperMode (built-in), but Evil mode works better.
+If you are used to the `vi' editor and you want to keep using `vi' keys instead of learning Emacs keys then consider trying ViperMode or EvilMode.
 
 ----
 CategoryReferenceSheet
