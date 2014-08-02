@@ -25,6 +25,7 @@ Emacs Interfaces to Online Utilities.
 ** GoogleContacts -- Contacts
 ** GnusGmail -- Mail
 * LookUpHTMLDoc -- Look up documentation in HTML form
+* [http://user42.tuxfamily.org/oeis-el/index.html oeis.el] -- Online Encyclopedia of Integer Sequences
 * [http://github.com/cefstat/simplenote.el simplenote.el] -- using [http://simplenoteapp.com Simplenote] from within Emacs
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] -- '''''broken link''''') -- View headlines from Slashdot.org (by SteveKemp)
 * Editing remote wikis (see WikiModes)
