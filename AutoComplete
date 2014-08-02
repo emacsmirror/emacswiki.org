@@ -40,6 +40,8 @@ Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
 
 [https://github.com/aki2o/org-ac Auto Complete for org-mode]
 
+[http://user42.tuxfamily.org/ac-tex-ref/index.html ac-tex-ref.el] -- for LaTeX <code>\ref</code> and <code>\cite</code> names
+
 Other extensions are found in [[AutoCompleteSources]].
 
 == Development Version Notes ==
