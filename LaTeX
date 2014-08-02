@@ -39,7 +39,7 @@ XSymbolMode gives some WYSIWYG capabilities when editing !LaTeX or HTML in Emacs
 
 The LaTeXSymbols package provides commands for [[XEmacs]] (and only [[XEmacs]]--it doesn't work with GnuEmacs) to open up a window with a table of !LaTeX symbols. Similar functionality (and more) is offered by XSymbolMode.
 
-[http://code.google.com/p/ac-math/ ac-math] is an AutoComplete add-on for LaTeX and Unicode symbols and LaTeX commands.
+[http://code.google.com/p/ac-math/ ac-math] is an AutoComplete add-on for LaTeX and Unicode symbols and LaTeX commands.  [http://user42.tuxfamily.org/ac-tex-ref/index.html ac-tex-ref.el] can auto-complete <code>\ref</code> and <code>\cite</code>.
 
 PreviewLaTeX replaces the LaTeX code (more exactly headers, tables, figures, graphics and math) by the final output in Emacs. You can revert from preview to code, make some changes and then regenerate preview at point.
 
