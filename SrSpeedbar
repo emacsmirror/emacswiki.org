@@ -1,5 +1,5 @@
 ==What is SrSpeedbar?==
-SrSpeedbar is mode make [[SpeedBar]] show in *Current Frame* by SebastianRose.
+SrSpeedbar is mode make [[SpeedBar]] show in *Current Frame* by SebastianRose. 
 
 ==Install==
 : Put Lisp:sr-speedbar.el in your load-path, add 
@@ -17,6 +17,8 @@ SrSpeedbar is mode make [[SpeedBar]] show in *Current Frame* by SebastianRose.
 || **sr-speedbar-refresh-turn-on** || Turn on refresh speedbar content. ||
 || **sr-speedbar-refresh-turn-off** || Turn off refresh speedbar content. ||
 || **sr-speedbar-refresh-toggle** || Toggle refresh speedbar content. ||
+
+(If it simply duplicates the current buffer the first time you open it, make sure you've closed normal SpeedBar's frame first.)
 
 ==Customize==
 
@@ -40,8 +42,6 @@ All below setup can customize by:
 
 [[image:MultiTermDedicatedShotPage]]
 
-----
-On emacs 24.4 on Mac OSX, when doing sr-speedbar-open, it actually shows the contents of the current buffer in the speedbar window. It doesn't do a summary, but it actually is a copy of the current visited buffer. Why?
 ----
 A bug/problem found: speedbar's frame doesn't react on window resize. It may become wider/narrower depending on when it was opened (small window resize to big window -> it becomes wider, big window resize to small window -> becomes narrow).
 Re-opening speedbar fixes the problem. Emacs 23.1.
