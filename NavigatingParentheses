@@ -154,8 +154,6 @@ When your last command is a movement command, and your cursor is at a parenthesi
 
 == Additional ways to match parentheses ==
 
-See NavigatingParentheses for other ways to navigate between parentheses.
-
 A popular approach is to use a single function button to bounce
 between parentheses. Here is a self-explanatory excerpt from my .emacs:
 
