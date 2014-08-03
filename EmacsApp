@@ -58,28 +58,30 @@ I found the above to be not quite right on my Mac OS 10.6 laptop.  The ##default
 
 where ##environment-support.el## is:
 
-    ;;; Provide support for the environment on Mac OS X
+{{{
+;;; Provide support for the environment on Mac OS X
 
-    (defun generate-env-plist ()
-      "Dump the current environment into the ~/.MacOSX/environment.plist file."
-      ;; The system environment is found in the global variable:
-      ;; 'initial-environment as a list of "KEY=VALUE" pairs.
-      (let ((list initial-environment)
-            pair start)
-        ;; clear out the current environment settings
-        (find-file "~/.MacOSX/environment.plist")
-        (goto-char (point-min))
-        (setq start (search-forward "<dict>\n"))
-        (search-forward "</dict>")
-        (beginning-of-line)
-        (delete-region start (point))
-        (while list
-          (setq pair (split-string (car list) "=")
-                list (cdr list))
-          (insert "  <key>" (nth 0 pair) "</key>\n")
-          (insert "  <string>" (nth 1 pair) "</string>\n"))
-        ;; Save the buffer.
-        (save-buffer)))
+(defun generate-env-plist ()
+  "Dump the current environment into the ~/.MacOSX/environment.plist file."
+  ;; The system environment is found in the global variable:
+  ;; 'initial-environment as a list of "KEY=VALUE" pairs.
+  (let ((list initial-environment)
+        pair start)
+    ;; clear out the current environment settings
+    (find-file "~/.MacOSX/environment.plist")
+    (goto-char (point-min))
+    (setq start (search-forward "<dict>\n"))
+    (search-forward "</dict>")
+    (beginning-of-line)
+    (delete-region start (point))
+    (while list
+      (setq pair (split-string (car list) "=")
+            list (cdr list))
+      (insert "  <key>" (nth 0 pair) "</key>\n")
+      (insert "  <string>" (nth 1 pair) "</string>\n"))
+    ;; Save the buffer.
+    (save-buffer)))
+}}}
 
 Note: You must create a dummy ##environment.plist## file to seed the process.
 
