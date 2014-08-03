@@ -3,17 +3,17 @@
 ;; Author: Sebastian Rose <sebastian_rose@gmx.de>
 ;; Maintainer: Sebastian Rose <sebastian_rose@gmx.de>
 ;;             Peter Lunicks <plunix@users.sourceforge.net>
-;; Copyright (C) 2008, 2009, Sebastain Rose, all rights reserved.
+;; Copyright (C) 2008, 2009, Sebastian Rose, all rights reserved.
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, Peter Lunicks, all rights reversed.
 ;; Created: 2008
-;; Version: 0.1.9
-;; Last-Updated: 2014-05-05 04:10:56
+;; Version: 0.1.10
+;; Last-Updated: 2014-08-03 11:30:00
 ;; URL: http://www.emacswiki.org/emacs/download/sr-speedbar.el
 ;; Keywords: speedbar, sr-speedbar.el
 ;; Compatibility: GNU Emacs 22 ~ GNU Emacs 24
 ;;
-;; Features that might be required by this library:
+;; Features required by this library:
 ;;
 ;;  `speedbar' `advice' `cl'
 ;;
@@ -47,7 +47,7 @@
 ;;
 ;; Now you type windows key with 's' (`s-s' in Emacs) will show the speedbar
 ;; in an extra window, same frame.  You can customize the initial width of the
-;; speedbar window further down for console/DOS and X/Win/MacOS separately.
+;; speedbar window.
 ;;
 ;; Below are commands you can use:
 ;;
@@ -74,29 +74,19 @@
 
 ;;; Customize:
 ;;
-;; `sr-speedbar-width-x'
-;;      The `sr-speedbar' window width under WINDOW system.
-;; `sr-speedbar-width-console'
-;;      The `sr-speedbar' window width under CONSOLE.
-;; `sr-speedbar-max-width'
-;;      The max window width allowed remember.
-;; `sr-speedbar-delete-windows'
-;;      Whether delete other window before showing up.
-;; `sr-speedbar-skip-other-window-p'
-;;      Whether skip `sr-speedbar' window when use
-;;      command `other-window' select window in cyclic ordering of windows.
-;; `sr-speedbar-auto-refresh'
-;;      Control status of refresh speedbar content.
-;; `sr-speedbar-right-side'
-;;      Puts the speedbar on the right side if non-nil (else left).
-;;
-;; All above setup can customize by:
 ;;      M-x customize-group RET sr-speedbar RET
-;;
 
 ;;; Change log:
 ;;
-;; * 08 June 2014:
+;; * 03 Aug 2014:
+;;   * Reuben Thomas <rrt@sc3d.org>:
+;;      * Reduce to a single width preference, and make it work properly on
+;;        startup.
+;;      * Miscellaneous tidying of documentation and comments.
+;;      * Remove version constant; should be using the package header, and it
+;;        was already way out of date.
+;;
+;; * 08 Jun 2014:
 ;;   * Gregor Zattler:
 ;;      * test if symbol `ad-advised-definition-p' is defined,
 ;;        since Christian Brassats version test failed on emacs
@@ -106,7 +96,7 @@
 ;;   * Christian Brassat:
 ;;      * `ad-advised-definition-p' is not supported since Emacs 24.4.
 ;;
-;; * 09 March 2013:
+;; * 09 Mar 2013:
 ;;   * Tharre:
 ;;      * Remove Emacs 21 compatibility code as it fails to compile on Emacs 24.
 ;;
@@ -216,7 +206,7 @@
 ;;        the removal of other windows.
 ;;
 ;; * 26 Jun 2008:
-;;   * Sebastain:
+;;   * Sebastian:
 ;;      * Added Andy Stewart's patch to refresh the speedbar's contents.
 ;;        Thanks for this one!
 ;;
@@ -229,7 +219,7 @@
 ;;      * C-x 1 in other window deletes speedbar-window, just calling
 ;;        M-x sr-speedbar-no-separate-frame again is fine now.
 ;;      * Toggle speedbar works, width is save when toggling.
-;;      * Recalc speedbar width if window-width - speedbar-width <= 0
+;;      * Recalculate speedbar width if window-width - speedbar-width <= 0
 ;;      * Speedbar window is now dedicated to speedbar-buffer.
 ;;
 
@@ -259,13 +249,8 @@
   "Same frame speedbar."
   :group 'speedbar)
 
-(defcustom sr-speedbar-width-x 24
+(defcustom sr-speedbar-default-width 40
   "Initial width of `sr-speedbar-window' under window system."
-  :type 'integer
-  :group 'sr-speedbar)
-
-(defcustom sr-speedbar-width-console 24
-  "Initial width of `sr-speedbar-window' on console."
   :type 'integer
   :group 'sr-speedbar)
 
@@ -326,14 +311,11 @@ Default is nil."
   :group 'sr-speedbar)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Constant ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defconst sr-speedbar-version "0.1.4"
-  "Current version.")
-
 (defconst sr-speedbar-buffer-name "*SPEEDBAR*"
   "The buffer name of sr-speedbar.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar sr-speedbar-width nil
+(defvar sr-speedbar-width sr-speedbar-default-width
   "Initial width of speedbar-window.")
 
 (defvar sr-speedbar-window nil
@@ -371,10 +353,10 @@ of a speedbar-window.  It will be created if necessary."
         (sr-speedbar-handle-other-window-advice sr-speedbar-skip-other-window-p)
         ;; Switch buffer
         (if (sr-speedbar-buffer-exist-p speedbar-buffer)
-            (unless (sr-speedbar-window-exist-p sr-speedbar-window) ;if `sr-speedbar' window is not exist
+            (unless (sr-speedbar-window-exist-p sr-speedbar-window)
               (sr-speedbar-get-window))
-          (if (<= (sr-speedbar-current-window-take-width) sr-speedbar-width) ;if current window width is narrower than `sr-speedbar-width'
-              (sr-speedbar-recalculate-width)) ;recalculate width of `sr-speedbar'
+          (if (<= (sr-speedbar-current-window-take-width) sr-speedbar-width)
+              (setq sr-speedbar-width sr-speedbar-default-width))
           (sr-speedbar-get-window)             ;get `sr-speedbar' window that split current window
           (setq speedbar-buffer (get-buffer-create sr-speedbar-buffer-name)
                 speedbar-frame (selected-frame)
@@ -468,15 +450,6 @@ Otherwise return nil."
              (> win-width 1)
              (<= win-width sr-speedbar-max-width))
         (setq sr-speedbar-width win-width))))
-
-(defun sr-speedbar-recalculate-width ()
-  "Calculate the speedbar width with respect of window system."
-  (if (and window-system
-           (not (string= "pc" window-system)))
-      (setq sr-speedbar-width sr-speedbar-width-x)
-    (setq sr-speedbar-width sr-speedbar-width-console)))
-
-(or sr-speedbar-width (sr-speedbar-recalculate-width)) ;initialization `sr-speedbar-width'
 
 (defun sr-speedbar-get-window ()
   "Get `sr-speedbar' window."
@@ -635,6 +608,3 @@ This advice can make `other-window' skip `sr-speedbar' window."
 (provide 'sr-speedbar)
 
 ;;; sr-speedbar.el ends here
-
-;;; LocalWords:  sr Sebastain ecb Sep speedbar's  Recalc dframe keymaps pc
-;;; LocalWords:  decicated uncomment
