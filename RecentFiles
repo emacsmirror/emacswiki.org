@@ -410,9 +410,12 @@ FILE has been displayed."
 (setq recentf-keep '(keep-default-and-visible-recentf-p))
 }}}
 
-[new] While this works and solves problems with several packages that load files and do not need to be displayed, it has one drawback, namely that files named in the recentf file at the beginning of a session will be deleted from the recentf list if they have not been displayed before the list is cleaned up.  This is probably not what you want.  The following code gets round this.
+[new] While this works and solves problems with several packages that load files and do not need to be displayed, it has one drawback, namely that files saved to the recentf list in previous sessions will be deleted from the list if they have not been displayed in the current session before the list is cleaned up.  This is probably not what you want.  The following code gets round this:
 
 {{{
+(require 'recentf)
+(recentf-mode 1)
+
 (defsubst file-was-visible-p (file)
   ;; as before
   ;; ---
@@ -422,8 +425,8 @@ FILE has been displayed."
   (defsubst keep-default-old-and-visible-recentf-p (file)
     "Decide whether to keep file in recentf-list.
 Return non-nil if recentf would, by default, keep FILE, and
-either FILE name was loaded from recentf file or FILE has been
-displayed."
+either FILE name was loaded from recentf file on disk or FILE
+has been displayed in this session."
     (if (recentf-keep-default-predicate file)
       (or (member file r-list)
       (file-was-visible-p file)))))
