@@ -410,6 +410,30 @@ FILE has been displayed."
 (setq recentf-keep '(keep-default-and-visible-recentf-p))
 }}}
 
+[new] While this works and solves problems with several packages that load files and do not need to be displayed, it has one drawback, namely that files named in the recentf file at the beginning of a session will be deleted from the recentf list if they have not been displayed before the list is cleaned up.  This is probably not what you want.  The following code gets round this.
+
+{{{
+(defsubst file-was-visible-p (file)
+  ;; as before
+  ;; ---
+)
+
+(let ((r-list recentf-list))
+  (defsubst keep-default-old-and-visible-recentf-p (file)
+    "Decide whether to keep file in recentf-list.
+Return non-nil if recentf would, by default, keep FILE, and
+either FILE name was loaded from recentf file or FILE has been
+displayed."
+    (if (recentf-keep-default-predicate file)
+      (or (member file r-list)
+      (file-was-visible-p file)))))
+
+;; And, of course, you now need:
+(setf recentf-keep '(keep-default-old-and-visible-recentf-p))		    
+}}}
+
+Note that the above code assumes lexical binding.  If you don't use this you will have to define a new global variable to hold the old recentf list.
+
 == Undo kill buffer ==
 The Opera web browser has a surprisingly useful feature called the "trash can".  After you close a tab you can "undo" the close with C-z.  As it turns out when I want a tab reopened it's usually one of the last few I closed, so I almost never end up looking in the history.  I missed this feature in Emacs, so I implemented it on top of recentf.
 
