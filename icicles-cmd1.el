@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Jul 28 09:51:10 2014 (-0700)
+;; Last-Updated: Mon Aug  4 15:28:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27027
+;;     Update #: 27035
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -587,7 +587,7 @@
   (defvar minibuffer-local-filename-syntax))
 
 (defvar apropos-do-all)                 ; In `apropos.el'
-(defvar bbdb-complete-mail-allow-cycling) ; In `bbdb-com.el'
+(defvar bbdb-complete-mail-allow-cycling) ; In `bbdb.el'
 (defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el', older BBDB versions
 (defvar bbdb-completion-list)           ; In `bbdb-come.el'
 (defvar bbdb-extract-address-components-func) ; In `bbdb-com.el'
@@ -597,7 +597,7 @@
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
-(defvar bbdb-quoted-string-syntax-table) ; In `bbdb.el'
+(defvar bbdb-quoted-string-syntax-table) ; In `bbdb-com.el'
 (defvar bbdb-version)                   ; In `bbdb.el'
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
 (defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+-1.el'
@@ -6992,8 +6992,10 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                  (bufs         (if icicle-buffer-ignore-space-prefix-flag
                                    (icicle-remove-if (lambda (buf) (icicle-string-match-p "^ " buf)) bufs)
                                  bufs))
+                 (bufpred      pred)    ; Prevent var capture in lambda: `icicle-remove-if' also uses PRED.
                  (bufs         (icicle-remove-if (lambda (buf)
                                                    (or (not (icicle-string-match-p name-pat buf))
+                                                       (and bufpred  (not (funcall bufpred buf)))
                                                        (run-hook-with-args-until-success
                                                         'icicle-buffer-skip-functions buf)))
                                                  bufs))
