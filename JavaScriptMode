@@ -1,10 +1,6 @@
-== JS mode (formerly Espresso) ==
-
 For more general information on working with JavaScript in Emacs, see the JavaScript page.
 
-For a long while there was debate and back-and-forth about JavaScript support in Emacs. There were a number of different options, in various stages of maturity and completion. As of Emacs 23.2, there is a standard major mode for editing javascript: js-mode. It is derived and updated from Espresso-mode.
-
-Espresso-mode itself is a fork of Karl Landstrom's JavaScript mode (described below), but with additional features and robustness improvements. For the legacy page, see http://www.nongnu.org/espresso. For the current js-mode, just get a current Emacs (23.2 or later). If you have a back-rev of Emacs, see EmacsDevelopmentSources for how to get js-mode.
+A mode for JavaScript editing has been built into Emacs since 23.2.
 
 js-mode includes:
 
@@ -15,17 +11,9 @@ js-mode includes:
 * Hierarchical ##imenu## support using the aforementioned class definition recognition. In addition to recognizing top-level functions, ##imenu## will recognize methods.
 * Improved fontification of regular expression literals
 
-== JavaScript mode ==
+== Other JavaScript modes ==
 
-Anything with the name "javascript-mode" or "javascript" is likely deprecated -- and decrepit. The following links are kept around for information, but if you are using JavaScript, you want js-mode or [[Js2Mode]].
-
-Usually this name refers to Karl Landstrom's implementation: http://www.karllandstrom.se/downloads/emacs/javascript.el
-
-Another obsolete implementation by Peter Kruse: http://hotzenplotz.dyndns-home.com/javascript-mode.el
-
-The one from XEmacs also works fine in GNU Emacs: http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/prog-modes/javascript-mode.el
-
-The Mewde Project contain XEmacs' javascript mode while adding Mozilla Spider Monkey Project Javascript-Shell support. It works inside Emacs, but only primitively.
+Other JavaScript modes include [[Js2Mode]], which has built-in syntax checking, linting and other goodies, and [http://github.com/thomblake/js3-mode/ js3-mode], which combines Js2Mode and Emacs's own js-mode.
 
 == Fix for Greasemonkey scripts ==
 
