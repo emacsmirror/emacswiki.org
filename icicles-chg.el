@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jul 31 09:09:44 2014 (-0700)
+;; Last-Updated: Mon Aug  4 09:47:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10977
+;;     Update #: 10980
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8138,6 +8138,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2014/08/04 dadams
+;;     icicle-read-expression-map: Typo introduced 2013/12/03: lisp-indent-line, not indent-lisp-line.
+;;                                 Use indent-sexp for Emacs 20-21 (no indent-pp-sexp).
 ;; 2014/06/06 dadams
 ;;     Added: icicle-next-window-for-display-buffer.
 ;; 2014/04/20 dadams
