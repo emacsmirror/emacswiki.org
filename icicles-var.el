@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Fri Jun  6 17:34:46 2014 (-0700)
+;; Last-Updated: Mon Aug  4 09:46:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1807
+;;     Update #: 1812
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1109,14 +1109,18 @@ Augmented by `icicle-read-char-maybe-completing' and
 
 (defvar icicle-read-expression-map nil
   "Icicle mode version of `read-expression-map'.
-Several Emacs-Lisp mode key bindings are used.")
+Several standard Emacs-Lisp mode key bindings are available.
+In addition, `TAB' completes a symbol and `C-M-i' (or `ESC TAB')
+indents the current line.")
 (unless icicle-read-expression-map
   (let ((map  (make-sparse-keymap)))
-    (define-key map (icicle-kbd "C-M-i")   'indent-lisp-line) ; `ESC TAB', `C-M-i'
+    (define-key map (icicle-kbd "C-M-i")   'lisp-indent-line) ; `ESC TAB', `C-M-i'
     (define-key map (icicle-kbd "C-i")     'lisp-complete-symbol) ; `C-i', `TAB'
-    (define-key map (icicle-kbd "ESC tab") 'indent-lisp-line) ; `ESC tab'
+    (define-key map (icicle-kbd "ESC tab") 'lisp-indent-line) ; `ESC tab'
     (define-key map (icicle-kbd "C-M-x")   'eval-defun) ; `ESC C-x', `C-M-x'
-    (define-key map (icicle-kbd "C-M-q")   'indent-pp-sexp) ; `ESC C-q', `C-M-q'
+    (define-key map (icicle-kbd "C-M-q")   (if (fboundp 'indent-pp-sexp) ; `ESC C-q', `C-M-q'
+                                               'indent-pp-sexp ; Emacs 22+
+                                             'indent-sexp))
     ;;(define-key map (icicle-kbd "DEL") 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
     (setq icicle-read-expression-map  map)))
