@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Aug  4 09:47:28 2014 (-0700)
+;; Last-Updated: Mon Aug  4 15:30:41 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10980
+;;     Update #: 10982
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/04 dadams
+;;     icicle-buffer-multi-complete: Filter with PRED.
 ;; 2014/07/28 dadams
 ;;     Added new version of icicle-bbdb-complete-mail.  Thx to Alan Schmitt for testing.
 ;; 2014/07/14 dadams
