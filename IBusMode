@@ -106,5 +106,34 @@ ibus.el provides ibus-mode minor mode, which allows users on-the-spot style inpu
 
 : Please set input style to "in application window" in ibus-chewing's configuration dialog.
 
+[new:MarcZonzon:2014-08-05 14:07 UTC]
+== Using ibus 1.5 with emacs ==
+
+The interface python-ibus is broken with ibus 1.5, and the emacs
+interface ibus.el is non longer usable.
+
+We can continue to use emacs with ibus letting the XIM do the input,
+we need to use as resource:
+
+    Emacs*useXIM: true
+
+and launch emacs with an *existing* asian locale like
+
+    LANG="ja_JP.UTF-8" emacs
+
+Also choose an input method switching key that is not bound in
+emacs. Ctrl-space is usually a bad choice better use Ctrl-Shift-space
+or what is convenient for your desktop.
+
+Note that if you launch emacs with an uninstalled locale, even if you
+have the fonts needed for the typed character you will only see the
+precompose popup, but no input.
+
+Also Emacs has *some idea* of what is asian, I needed mainly to input
+tibetan characters so I tried to launch emacs with the Dzonkha locale
+dz_BT.utf8, but it does not work, I was obliged to install japanese
+and launch emacs as above to input tibetan!
+
+
 ------
 CategoryInternationalization
