@@ -106,9 +106,10 @@ ibus.el provides ibus-mode minor mode, which allows users on-the-spot style inpu
 
 : Please set input style to "in application window" in ibus-chewing's configuration dialog.
 
-[new:MarcZonzon:2014-08-05 14:07 UTC]
+
 == Using ibus 1.5 with emacs ==
 
+[new:MarcZonzon:2014-08-05 14:07 UTC]
 The interface python-ibus is broken with ibus 1.5, and the emacs
 interface ibus.el is non longer usable.
 
