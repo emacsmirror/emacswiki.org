@@ -4,4 +4,4 @@ RunSchemeHere is a CmuScheme extension that allows you to easily run multiple in
 
 The scheme-mode-map is also extended with bindings to send expressions to the buffer-local inferior process.
 
-[https://github.com/judevc/scheme-here/blob/master/scheme-here.el Lisp:scheme-here]
+[https://github.com/kaihaosw/scheme-here/blob/master/scheme-here.el Lisp:scheme-here]
