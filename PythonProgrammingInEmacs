@@ -32,7 +32,11 @@ https://ep2013.europython.eu/conference/p/andrea-crotti resp. http://www.youtube
 [ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
 
 First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking
- {{{(require 'ipython)}}}
+
+ {{{
+(require 'ipython)
+}}}
+
 Recipes below should be tried only if this fails 
 
 Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
