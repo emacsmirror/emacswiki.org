@@ -26,3 +26,17 @@ Open (toggle) NeoTree:
 
   <F8>
 
+== Usage ==
+
+=== Shortcut (When NeoTree window is active) ===
+
+* <code>n</code> next line ， <code>p</code> previous line。
+* <code>SPC</code> or <code>RET</code> or <code>TAB</code> Open current item if it is a file. Fold/Unfold current item if it is a directory.
+* <code>g</code> Refresh
+* <code>A</code> Maximize/Minimize the NeoTree Window
+* <code>H</code> Toggle display hidden files
+* <code>C-c C-n</code> Create a file or create a directory if filename ends with a '/'
+* <code>C-c C-d</code> Delete a file or a directory.
+* <code>C-c C-r</code> Rename a file or a directory.
+* <code>C-c C-c</code> Change the root directory.
+
