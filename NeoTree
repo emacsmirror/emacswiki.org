@@ -58,3 +58,42 @@ Open (toggle) NeoTree:
 * <code>neotree-rename-node</code> Rename
 * <code>neotree-delete-node</code> Delete
 * <code>neotree-create-node</code> Create a file or a directory (if filename ends with '/')
+
+
+
+== ChangeLog ==
+
+0.2 
+* Feature: support <code>neotree-find</code> for locating a node in tree
+* Feature: support for renaming
+* Feature: Fix neotree window width and support Maximize/Minimize
+* Feature: ??
+* Fix: File Location Bug
+* Refactory: All API starts with 'neotree-' 
+
+0.1.5 (2014-06-05)
+
+* Refactory on code of window and buffer
+* Remove \*NeoTree\* from buffer selection list
+* Fix: Directory changed to root after toggle
+
+0.1.4 (2014-05-27)
+
+* Fix issue #1 #2
+* Add some unit tests
+* Remove neotree-util.el
+
+0.1.3 (2014-04-13)
+
+* Support for changing the directory of tree root
+* Adding files or directories depends on if the last character is a '/'
+* Remove 'Recursive Notification' when deleting an empty directory
+
+0.1.2 (2014-04-08)
+
+* Add File Operations
+* Support For Mouse Operations
+
+0.1.1 (2014-04-06)
+
+Basic Functionalities.
