@@ -1,5 +1,3 @@
-== Project Occur ==
-
 Emacs' failure to have a sensible project occur prompts a lot of people to write one. I've written several over the years.
 
 I'm quite happy with this latest one that I've written using Fuco and Magnar's [[http://github.com/magnars/dash|dash library]].
