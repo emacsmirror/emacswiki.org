@@ -40,3 +40,10 @@ NOT-FILES."
 }}}
 
 The functional style works very well and I wish we could include this stuff in core Emacs. Sadly Magnars thinks he already lost control of the contributors so would be unable to get copyright assignment.
+
+=== Things with multi-occur ===
+The reason multi-occur (and derivatives like this) are so useful is because you can put it into edit mode and change a lot at once. All the Emacs tool's then become more useful, you can do search and replace, record a macro, even use multiple-cursors.
+
+Here's a screenshot of my Emacs with multi-occur from a CSS file.
+
+[[image:http://nic.ferrier.me.uk/stuff/img/Screenshot%20from%202014-08-06%2023:26:04.png]]
