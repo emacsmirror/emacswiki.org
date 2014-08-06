@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Aug  4 15:30:41 2014 (-0700)
+;; Last-Updated: Wed Aug  6 10:44:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10982
+;;     Update #: 10991
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/06 dadams
+;;     icicle-other-window-or-frame: C-u C-u C-u means use all frames.
+;;     icicle-select-window: Negative prefix arg means use all frames.
+;;     icicle-choose-window-by-name: Negative prefix arg means use all frames. +/-99: do not select.
+;;     icicle-make-window-alist: ALL-P can have value visible; other non-nil now means use all frames.
 ;; 2014/08/04 dadams
 ;;     icicle-buffer-multi-complete: Filter with PRED.
 ;; 2014/07/28 dadams
