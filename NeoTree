@@ -28,7 +28,7 @@ Open (toggle) NeoTree:
 
 == Usage ==
 
-=== Shortcut (When NeoTree window is active) ===
+=== Shortcut (Only in Neotree Buffer) ===
 
 * <code>n</code> next line ， <code>p</code> previous line。
 * <code>SPC</code> or <code>RET</code> or <code>TAB</code> Open current item if it is a file. Fold/Unfold current item if it is a directory.
@@ -39,4 +39,13 @@ Open (toggle) NeoTree:
 * <code>C-c C-d</code> Delete a file or a directory.
 * <code>C-c C-r</code> Rename a file or a directory.
 * <code>C-c C-c</code> Change the root directory.
+
+=== Commands（Global） ===
+
+* <code>neotree-dir</code> show neotree window and specify a directory as its root
+* <code>neotree-show</code> or <code>neotree</code> show neotree window using current directory as its root
+* <code>neotree-hide</code> Hide NeoTree window
+* <code>neotree-toggle</code> toggle/hide NeoTree window
+* <code>neotree-find</code>  show neotree window and use the file of current buffer as its root
+
 
