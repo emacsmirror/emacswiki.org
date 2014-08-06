@@ -48,4 +48,13 @@ Open (toggle) NeoTree:
 * <code>neotree-toggle</code> toggle/hide NeoTree window
 * <code>neotree-find</code>  show neotree window and use the file of current buffer as its root
 
+=== Command（Only in NeoTree Buffer） ===
 
+* <code>neotree-enter</code> Open File / Unfold Directory
+* <code>neotree-refresh</code> Refresh
+* <code>neotree-stretch-toggle</code> Maximize / Minimize
+* <code>neotree-change-root</code> Switch Root Directory
+* <code>neotree-hidden-file-toggle</code> Toggle hidden files
+* <code>neotree-rename-node</code> Rename
+* <code>neotree-delete-node</code> Delete
+* <code>neotree-create-node</code> Create a file or a directory (if filename ends with '/')
