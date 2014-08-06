@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Aug  4 15:28:18 2014 (-0700)
+;; Last-Updated: Wed Aug  6 10:45:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27035
+;;     Update #: 27066
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -464,7 +464,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; lexical-let[*], pushnew
+(eval-when-compile (require 'cl)) ;; lexical-let[*], case, pushnew
                                   ;; plus, for Emacs < 21: dolist, push
 (eval-when-compile (when (>= emacs-major-version 21) (require 'recentf))) ;; recentf-mode
 (require 'apropos-fn+var nil t) ;; (no error if not found):
@@ -6380,6 +6380,10 @@ Use the prefix argument to choose the behavior, as follows:
   all visible frames as candidates.  (For Emacs prior to Emacs 24,
   `C-u C-u' has the same effect as `C-u'.)
 
+ With plain `C-u C-u C-u' (Emacs 24+):
+  Same as `C-u C-u', except include windows from all frames (i.e.,
+  iconified and invisible)
+
 If you use library `oneonone.el' with a standalone minibuffer frame,
 and if option `1on1-remap-other-frame-command-flag' is non-nil, then
 frame selection can include the standalone minibuffer frame.
@@ -6390,12 +6394,11 @@ not want this remapping, then customize option
 `icicle-top-level-key-bindings'."
   (interactive "P")
   (let ((numarg  (prefix-numeric-value arg)))
-    (cond ((and (consp arg)  (or (< (car arg) 16)  (< emacs-major-version 24)))
+    (cond ((and (consp arg)  (or (< numarg 16)  (< emacs-major-version 24)))
            (if (one-window-p) (icicle-select-frame) (icicle-select-window)))
           ((consp arg)
-           (let* ((win-alist  (icicle-make-window-alist 'ALL))
-                  (args       (icicle-read-choose-window-args "Window for next buffer display: "
-                                                              win-alist)))
+           (let* ((win-alist  (icicle-make-window-alist (if (< numarg 64) 'visible t)))
+                  (args       (icicle-read-choose-window-args "Window for next buffer display: " win-alist)))
              (icicle-choose-window-for-buffer-display (car args) win-alist)))
           ((zerop numarg)
            (if (one-window-p)
@@ -6474,7 +6477,10 @@ names that differ only by their [NUMBER] is arbitrary."
   ;; Free vars here: `icicle-window-alist' is bound in Bindings form.
   "Select window by its name.
 With no prefix arg, candidate windows are those of the selected frame.
-With a prefix arg, windows of all visible frames are candidates.
+With a prefix arg:
+* Non-negative means windows of all visible frames are candidates.
+* Negative means windows of all frames are candidates (i.e., including
+  iconified and invisible frames).
 
 A window name is the name of its displayed buffer, but suffixed as
 needed by [NUMBER], to make the name unique.  For example, if you have
@@ -6483,7 +6489,10 @@ two windows showing buffer *Help*, one of the windows will be called
   icicle-select-window-by-name          ; Action function
   "Select window: " icicle-window-alist nil t nil nil ; `completing-read' args
   (buffer-name (window-buffer (other-window 1))) nil
-  ((icicle-window-alist  (icicle-make-window-alist current-prefix-arg)))) ; Bindings
+  ((icicle-window-alist  (icicle-make-window-alist (and current-prefix-arg ; Bindings
+                                                        (if (< (prefix-numeric-value current-prefix-arg) 0)
+                                                            t
+                                                          'visible))))))
 
 (defun icicle-choose-window-by-name (win-name &optional window-alist noselect)
   "Choose the window named WIN-NAME.
@@ -6498,16 +6507,20 @@ Non-nil optional arg NOSELECT means do not select the window, just set
 
 Interactively:
 * No prefix arg means windows from the selected frame are candidates.
-* A prefix arg means windows from all visible frames are candidates.
-* (Emacs 24+) A negative prefix arg means do not select the window,
-  just make the next buffer-display operation use it.
+* A non-negative prefix arg means include windows from visible frames.
+* A negative prefix arg means include windows from all frames
+  (including iconified and invisible).
+* (Emacs 24+) A prefix arg of 99 or -99 means do not select the
+  window, just make the next buffer-display operation use it.
 
 For Emacs versions prior to Emacs 24, this is the same as
 `icicle-select-window-by-name'."
   (interactive
-   (let* ((nosel  (and (< (prefix-numeric-value current-prefix-arg) 0)  (> emacs-major-version 23)))
+   (let* ((parg   (prefix-numeric-value current-prefix-arg))
+          (nosel  (and (= 99 (abs parg))  (> emacs-major-version 23)))
           (args   (icicle-read-choose-window-args (and nosel  "Window for next buffer display: ")
-                                                  (icicle-make-window-alist current-prefix-arg))))
+                                                  (icicle-make-window-alist
+                                                   (and current-prefix-arg  (if (natnump parg) 'visible t))))))
      (list (car args) (cadr args) nosel)))
   (unless window-alist
     (setq window-alist  (or (and (boundp 'icicle-window-alist)  icicle-window-alist)
@@ -6605,10 +6618,13 @@ If library `crosshairs.el' is loaded, highlight the target position."
 (defun icicle-read-choose-window-args (&optional prompt alist)
   "Read a window name.
 Prompt with PROMPT, if non-nil, else with \"Window: \".
-Read using completion against ALIST, if non-nil, or
-against `icicle-make-window-alist' if nil.
+Read using completion against ALIST, if non-nil, or using
+`icicle-make-window-alist' if nil.
 Empty user input chooses the selected window.
-Return a list of the chosen name and the alist used for completing."
+Return a list of the chosen name and the alist used for completing.
+
+The list of windows returned by `icicle-make-window-alist' is governed
+by the prefix argument to the current command."
   (unless prompt (setq prompt  "Window: "))
   (let* ((alist    (or alist  (icicle-make-window-alist current-prefix-arg)))
          (default  (car (rassoc (selected-window) alist)))
@@ -6624,8 +6640,13 @@ WNAME includes a suffix [NUMBER], to make it a unique name.  The
 NUMBER order among window names that differ only by their [NUMBER] is
 arbitrary.
 
-Non-nil argument ALL-P means use windows from all visible frames.
-Otherwise, use only windows from the selected frame."
+Argument ALL-P determines which frames to use when gathering windows,
+as follows:
+
+* `visible'         - include windows from all visible frames.
+* otherwise non-nil - include windows from all frames (including
+                      those that are iconified and invisible).
+* nil               - include only windows from the selected frame."
   (lexical-let ((win-alist  ())
                 (count      2)
                 wname new-name)
@@ -6640,7 +6661,10 @@ Otherwise, use only windows from the selected frame."
                       (push (cons new-name w) win-alist))
                     (setq count  2))
                   'no-mini
-                  (if all-p 'visible 'this-frame))
+                  (case all-p
+                    (visible 'visible)
+                    ((nil)   'this-frame)
+                    (otherwise  t)))
     win-alist))
 
 (icicle-define-command icicle-delete-windows ; Command name
