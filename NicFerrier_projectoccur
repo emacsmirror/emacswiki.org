@@ -21,6 +21,7 @@ NOT-FILES."
     (-flatten)))
 
 (defun project-occur (buffer thing)
+  "Find THING with `multi-occur' in BUFFER's project."
   (interactive
    (list (current-buffer) (thing-at-point 'symbol)))
   (when thing
