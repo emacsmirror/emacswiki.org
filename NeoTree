@@ -67,7 +67,6 @@ Open (toggle) NeoTree:
 * Feature: support <code>neotree-find</code> for locating a node in tree
 * Feature: support for renaming
 * Feature: Fix neotree window width and support Maximize/Minimize
-* Feature: ??
 * Fix: File Location Bug
 * Refactory: All API starts with 'neotree-' 
 
