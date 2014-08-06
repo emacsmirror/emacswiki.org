@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Jul 29 14:40:52 2014 (-0700)
+;; Last-Updated: Wed Aug  6 10:31:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14667
+;;     Update #: 14670
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4167,14 +4167,12 @@ over all candidates."
                                              icicle-buffer-ignore-space-prefix-flag))))
              (icicle-extra-candidates
               (icicle-remove-if-not
-               (lambda (cand)
-                 (save-match-data
-                   (string-match (concat "^" (regexp-quote input)) cand))) icicle-extra-candidates))
+               (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
+               icicle-extra-candidates))
              (icicle-proxy-candidates
               (icicle-remove-if-not
-               (lambda (cand)
-                 (save-match-data
-                   (string-match (concat "^" (regexp-quote input)) cand))) icicle-proxy-candidates))
+               (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
+               icicle-proxy-candidates))
              (filtered-candidates
               (icicle-transform-candidates
                (append icicle-extra-candidates icicle-proxy-candidates
@@ -4233,14 +4231,12 @@ over all candidates."
                   (icicle-all-completions input minibuffer-completion-table pred)))
                (icicle-extra-candidates
                 (icicle-remove-if-not
-                 (lambda (cand)
-                   (save-match-data
-                     (string-match (concat "^" (regexp-quote input)) cand))) icicle-extra-candidates))
+                 (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
+                 icicle-extra-candidates))
                (icicle-proxy-candidates
                 (icicle-remove-if-not
-                 (lambda (cand)
-                   (save-match-data
-                     (string-match (concat "^" (regexp-quote input)) cand))) icicle-proxy-candidates))
+                 (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
+                 icicle-proxy-candidates))
                (filtered-candidates
                 (icicle-transform-candidates
                  (append icicle-extra-candidates icicle-proxy-candidates
@@ -6168,7 +6164,8 @@ A return value of zero means DRIVE is a mapped network drive."
       (let ((lookup  (gethash drive icicle-ms-windows-drive-hash 'no-assoc)))
         (if (eq lookup 'no-assoc)
             (puthash drive (call-process shell-file-name nil nil nil shell-command-switch
-                                         (concat "NET USE " drive)) icicle-ms-windows-drive-hash)
+                                         (concat "NET USE " drive))
+                     icicle-ms-windows-drive-hash)
           lookup))
     ;; Don't bother to hash for Emacs 20, 21, unless `cl.el' happens to be loaded.
     (call-process shell-file-name nil nil nil shell-command-switch (concat "NET USE " drive))))
