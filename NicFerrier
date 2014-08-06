@@ -88,44 +88,6 @@ I develop and maintain the EmacsLisp version of a [[Creole]] [[http://github.com
 
 We are using [[Creole]] to develop [[Elwiki]], an EmacsWiki engine in EmacsLisp run with [[Elnode]].
 
-== Emacs Daemon RC ==
-
-Here's my daemon rc script:
-
-{{{
-#!/bin/bash
-
-WHO=$(whoami)
-[ "$WHO" != "nferrier" ] && exec su -c "$0 $*" - nferrier
-
-EMACS=/home/nferrier/usr/emacs/bin/emacs
-
-SERVERNAME=elnode
-SOCKETPATH=/tmp/emacs$UID/$SERVERNAME
-
-case $1 in
-
-  start)
-        ${EMACS}client -s $SOCKETPATH -e '(print (emacs-version))'
-        if [ $? -ne 0 ] ; then $EMACS --daemon=$SERVERNAME ; fi
-        ;;
- 
-  stop)
- 	${EMACS}client -s $SOCKETPATH -e '(print (emacs-version))'
- 	if [ $? -eq 0 ] ; then ${EMACS}client -s $SOCKETPATH -e '(kill-emacs)' *scratch* ; fi
- 	;;
- 
-  status)
-        if [ ! -S $SOCKETPATH ] ; then exit 1 ; fi
- 	${EMACS}client -s $SOCKETPATH -e '(print (emacs-version))'
- 	;;
-
-esac
-
-# End
-}}}
-
-[[https://gist.github.com/1966843|Here's the GIST of the same script]].
  
 == Emacs in a screen terminal: colors ==
 
@@ -157,6 +119,12 @@ So I wrote one:
 }}}  
 
 This toggles bold on the dark ones, which I think is all the vim thing is doing.
+
+== Project occur ==
+
+Everyone needs a project occur. I have a good one for elisp inside [[Elpakit]] but I do a lot of webapp programming that isn't Elisp exclusive so I need a more general one.
+
+[[NicFerrier_projectoccur|This page]] details my latest attempt at this.
 
 == Config and Customize ==
 
