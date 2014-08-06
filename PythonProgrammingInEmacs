@@ -31,9 +31,10 @@ https://ep2013.europython.eu/conference/p/andrea-crotti resp. http://www.youtube
 
 [ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
 
-First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking
+First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking : 
 
- {{{
+{{{
+(setq ipython-command "/SOME-PATH/ipython") ; discard this line Ipython is already in your PATH
 (require 'ipython)
 }}}
 
