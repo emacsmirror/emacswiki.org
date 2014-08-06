@@ -55,8 +55,8 @@ Open (toggle) NeoTree:
 * <code>neotree-stretch-toggle</code> Maximize / Minimize
 * <code>neotree-change-root</code> Switch Root Directory
 * <code>neotree-hidden-file-toggle</code> Toggle hidden files
-* <code>neotree-rename-node</code> Rename
-* <code>neotree-delete-node</code> Delete
+* <code>neotree-rename-node</code> Rename a Node
+* <code>neotree-delete-node</code> Delete a Node
 * <code>neotree-create-node</code> Create a file or a directory (if filename ends with '/')
 
 
