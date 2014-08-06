@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Aug  6 10:45:02 2014 (-0700)
+;; Last-Updated: Wed Aug  6 13:43:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27066
+;;     Update #: 27075
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6375,14 +6375,14 @@ Use the prefix argument to choose the behavior, as follows:
   `icicle-select-window' with windows from all visible frames as
   candidates.  Otherwise, this is `icicle-select-frame'.
 
- With plain `C-u C-u' (Emacs 24+):
-  This is `icicle-choose-window-for-buffer-display', with windows from
-  all visible frames as candidates.  (For Emacs prior to Emacs 24,
-  `C-u C-u' has the same effect as `C-u'.)
-
+ With plain `C-u C-u':
+  Same as `icicle-select-window' with a negative prefix arg: Select a
+  window from any frame, including iconified and invisible frames.
+  
  With plain `C-u C-u C-u' (Emacs 24+):
-  Same as `C-u C-u', except include windows from all frames (i.e.,
-  iconified and invisible)
+  This is `icicle-choose-window-for-buffer-display', with windows from
+  all frames (i.e., iconified and invisible) frames as candidates. 
+  (For Emacs prior to Emacs 24, this has the same effect as `C-u'.)
 
 If you use library `oneonone.el' with a standalone minibuffer frame,
 and if option `1on1-remap-other-frame-command-flag' is non-nil, then
@@ -6394,17 +6394,19 @@ not want this remapping, then customize option
 `icicle-top-level-key-bindings'."
   (interactive "P")
   (let ((numarg  (prefix-numeric-value arg)))
-    (cond ((and (consp arg)  (or (< numarg 16)  (< emacs-major-version 24)))
+    (cond ((and (consp arg)  (or (< numarg 16)  (< emacs-major-version 24))) ; `C-u'
            (if (one-window-p) (icicle-select-frame) (icicle-select-window)))
-          ((consp arg)
+          ((and (consp arg)  (< numarg 64)) ; `C-u C-u'
+           (let ((current-prefix-arg  '-)) (icicle-select-window)))
+          ((consp arg)                  ; `C-u C-u C-u'
            (let* ((win-alist  (icicle-make-window-alist (if (< numarg 64) 'visible t)))
                   (args       (icicle-read-choose-window-args "Window for next buffer display: " win-alist)))
              (icicle-choose-window-for-buffer-display (car args) win-alist)))
-          ((zerop numarg)
+          ((zerop numarg)               ; `C-o'
            (if (one-window-p)
                (icicle-select-frame)
              (let ((current-prefix-arg  nil)) (icicle-select-window))))
-          (t
+          (t                            ; No prefix arg
            (if (one-window-p)
                (if (and (fboundp '1on1-other-frame)
                         1on1-minibuffer-frame
