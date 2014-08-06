@@ -1,0 +1,43 @@
+== Project Occur ==
+
+Emacs' failure to have a sensible project occur prompts a lot of people to write one. I've written several over the years.
+
+I'm quite happy with this latest one that I've written using Fuco and Magnar's [[http://github.com/magnars/dash|dash library]].
+
+{{{
+(require 'dash)
+
+(defun project-occur/dirtree-files (start-dir &rest not-files)
+  "List all the files under START-DIR.
+
+Automatically ignores .files and any filename specified in
+NOT-FILES."
+  (->> (directory-files start-dir t "^[^.].*[^~#]$")
+    (--filter (not (member (file-name-nondirectory it) not-files)))
+    (--map 
+     (if (file-directory-p it)
+         (project-occur/dirtree-files it)
+         it))
+    (-flatten)))
+
+(defun project-occur (buffer thing)
+  (interactive
+   (list (current-buffer) (thing-at-point 'symbol)))
+  (when thing
+    (with-current-buffer buffer
+      (let* ((dir
+              (file-name-directory 
+               (locate-dominating-file
+                (buffer-file-name)
+                (lambda (dirname)
+                  (and (file-directory-p dirname)
+                       (directory-files
+                        dirname nil "\\(\\.git\\|node_modules\\)$"))))))
+             (files (project-occur/dirtree-files dir "node_modules"))
+             (buffers (--map (find-file-noselect it) files)))
+        (multi-occur buffers thing)))))
+
+;;; project-occur.el ends here
+}}}
+
+The functional style works very well and I wish we could include this stuff in core Emacs. Sadly Magnars thinks he already lost control of the contributors so would be unable to get copyright assignment.
