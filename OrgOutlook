@@ -8,7 +8,7 @@ Description:
 * <b>Author </b> --  Matthew L. Fidler
 Maintainer:
 * <b>Created </b> --  Mon May 10 09:44:59 2010 (-0500)
-* <b>Version </b> --  0.11
+* <b>Version </b> --  0.12
 * <b>Last-Updated </b> --  Tue May 29 22:21:06 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  166
@@ -72,6 +72,9 @@ The visual basic script for outlook can be created by calling <tt>M-x org-outloo
 === Internal Variables ===
 == History ==
 
+7-Aug-2014    Matthew L. Fidler  
+Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+Add autoload cookie for org-outlook-enable-msg-dnd
 1-Jul-2014    Matthew L. Fidler  
 Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 Add delete msg files support
