@@ -4,14 +4,11 @@ Wikipedia user page: http://en.wikipedia.org/wiki/User:Teemu_Leisti
 
 E-mail: teemu.leisti@gmail.com
 
-I use Emacs, currently v24.2 of Gnu Emacs.
+I currently use v24.3.1 of Gnu Emacs, running on Xubuntu.
 
-Note to self: add interests, proficiency, ‘road to emacs’, and esp., contributions to emacs
+I've used Emacs for about 20 years now.  I've used those features that have proven useful to me, but have made no contributions to the code.  I've found the Projectile and Tabbar packages especially useful. *Projectile* allows you to easily manage the files of a project using Emacs commands.  This makes for enough of an IDE for Rails projects. *Tabbar* gives you a tabbed list of open files in a bar just above the editing are, and allows you to easily switch between files using keystrokes, such as C-PgDn and C-PgUp.
 
-----
-[new:DrewAdams:2012-10-15 21:24 UTC]
-Welcome to the wiki.  -- DrewAdams
-: Thanks! -- TeemuLeisti
+My <tt>[[init.el]]</tt> file, which sets up and customizes these packages and other stuff.  I'm pretty satisfied with the color scheme, a sort of a yellowish-tan-brown desert theme.  Maybe I should extract the colors into a them?
 
 ----
 CategoryHomepage
