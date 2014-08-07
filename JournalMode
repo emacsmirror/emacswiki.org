@@ -1,3 +1,4 @@
+== Overview ==
 Journal Mode is a program which helps maintaining a journal easier.
 It can be used privately and entries may be selectively published.
 
@@ -53,7 +54,7 @@ You may also be interested in muse-journal.el, part of EmacsMuse. (Muse is emacs
 Not to be confused with [[Journal]]
 
 
-----
-CategoryJournaling
-
+== Categories ==
+* CategoryJournaling
+* CategoryWriting
 
