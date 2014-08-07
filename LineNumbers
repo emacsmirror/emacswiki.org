@@ -481,5 +481,10 @@ ry
 [new]
 I find that the redraw operation to put in the line numbers makes the text "jitter" uncomfortably to the right as I page up and down the buffer.  First the text is drawn by Emacs, then the line number routine redraws it shifted right to put the line numbers it.  It would be nice to hook into the first rendering, instead of hooking in after the first rendering is already done.  But it does put the line numbers in nicely.
 
+[new]
+I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalgamation file sqlite3.c (5MB, 148784 lines).
+[tt]lineno[/tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7).
+
+--  [http://www.emacswiki.org/emacs/priyadarshan priyadarshan] 2014-08-07 13:56 UTC
 ----
 CategoryDisplay
