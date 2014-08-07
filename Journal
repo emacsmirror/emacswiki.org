@@ -1,3 +1,4 @@
+== Overview ==
 A convenient way to keep a journal at work or at home is to create a separate file for each day,
 with each filename bearing the name of that day.  Instead of having to find out what the day's date is
 and then create a file with that name, the code below allows you to do <code>M-x journal</code>
@@ -7,6 +8,7 @@ file with pretty much the same name, possibly in the same directory).  But in mo
 exists, it will be opened (in the current buffer).  If it doesn't exist, then the file will be
 created.  In short, it's the same functionality as visiting any other buffer/file in emacs.
 
+== Installation ==
 Copy and paste the code below into a file in your emacs path, giving it a name which ends in 
 <tt>.el</tt> and which is unique to emacs: <tt>~/emacs.d/journal.el</tt> works for me.
 
@@ -38,11 +40,9 @@ function, you can change the strings (text) output by changing the arguments to
 
 Enjoy.
 
-CategoryJournaling
-
-----
 
 
+== Code ==
 <pre>
 ;Since list people have asked for this a couple times, I thought 
 ;the code below belongs in a more public place.  So here it is.
@@ -174,4 +174,5 @@ e.g. Sunday, September 17, 2000."
 
 
 == Categories ==
-CategoryWriting
+* CategoryWriting
+* CategoryJournaling
