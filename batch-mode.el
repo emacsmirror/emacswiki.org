@@ -114,7 +114,7 @@
   (setq major-mode 'batch-mode)
   (setq mode-name "Avenue")
   (set (make-local-variable 'indent-line-function) 'batch-indent-line)
-  (set (make-local-variable 'comment-start) "::")
+  (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'comment-end)   "")
   ;;(set (make-local-variable 'comment-start-skip) "rem[ \t]*")
   (set (make-local-variable 'font-lock-defaults)
