@@ -462,7 +462,7 @@ I am truely surprised noone ever needed this basic feature of a code editor.
 -- V.Tron
 
 ==LineNo: Alternative line number function ==
-Last year I wrote [http://www.young-0.com/php/emacs/lineno.el lineno.el] (DEAD LINK), which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
+Last year I wrote [http://www.young-0.com/emacs/lineno.el], which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
 
 russell young
 
