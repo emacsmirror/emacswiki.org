@@ -295,14 +295,6 @@ When running emacs in a PuTTY terminal, one can print buffers using the usual co
 
 Unfortunatelly it seems that one can not run the Windows Version of GNU Emacs inside a PuTTYcyg.  "emacs -nw" is confused about the cygwin terminal and says "emacs: standard input is not a tty".
 
-== Obsolete: Patched version for 256 colors ==
-
-The following obsolete contribution is a non-open-source patched version for "a 256 color terminal emulation", however it has been supercede by the official version 0.58 which contains the proper support.
-
-: I have compiled a somewhat hacked version available here: http://www.verona.se/joakim/myview.do?page=SoftwareProjects with some benefits, follow the link to see --JoakimVerona
-
-The hacked version also had support for the shift-arrow sequence to work, which I find useful. I have however had no sucess getting this patch into the official Putty --JoakimVerona
-
 == Home and End Keys broken? ==
 
 Try this:
