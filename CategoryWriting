@@ -19,6 +19,9 @@ Clicking the title heading to search for pages about writing in natural language
 === Notes and Authoring ===
 * DeftMode -- Quickly browse, filer, and edit directories of plain text notes.
 * PersonalDiary -- Using Emacs to maintain a simple daily journal / personal diary.
+* [[Journal]] -- Using Emacs to maintain a simple daily journal. (not the same as JournalMode)
+* JournalMode -- Using Emacs to maintain a daily journal. Also required EmacsWikiMode. (not the same as [[Journal]])
+* OrgMode --Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. Particularly good at **org**anizing notes. Like in a journal.
 * [[Screenplay]] -- Write a dramatic screenplay.
 
 === Miscellaneous ===
@@ -34,10 +37,10 @@ Clicking the title heading to search for pages about writing in natural language
 * AcroBuffer -- Expands acronyms correctly for writing in plain text.
 * PopularWords -- Limit yourself to the most popular words.
 
-
+== See Also ==
 ''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
 
-See also these sections of ThisWiki:
+See also these sections of:
 
 * CategoryCompletion -- Complete the words you're typing.
 * CategoryInterface -- Publishing your work electronically or for connecting Emacs to other resources online and otherwise that are useful to writers.
