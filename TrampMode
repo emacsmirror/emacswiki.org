@@ -878,7 +878,7 @@ in your ##~/.ssh/config## file.
 
 Because tramp uses plink to login with all putty variants, and ssh to login with all openssh variants, its not possible to use psftp or sftp connection using Tramp.  There's not a way to override the tramp-login-program aspect of the alist tramp-methods.  Unfortunately, nothing's changed since 2004.[http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00046.html][http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00047.html]  Tramp can only do SFTP over SSH, and AngeFtp doesn't currently support SFTP, and with no plans to handle it, since Tramp supports SFTP over SSH.
 
-This is problematic with hosting accounts where access is only via sftp... other protocals (such as ssh) are disabled.
+This is problematic with hosting accounts where access is only via sftp... other protocols (such as ssh) are disabled.
 
 === Using tramp with archive-mode under Windows/Cygwin ===
 
