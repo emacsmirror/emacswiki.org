@@ -27,3 +27,10 @@ your patch to display last line num doesn't work.
 
 -- 匿名者 2013-07-13 00:02 UTC
 
+
+----
+
+I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalgamation file (5MB, 148784 lines). [tt]lineno[\tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7)
+
+-- priyadarshan 2014-08-07 13:56 UTC
+
