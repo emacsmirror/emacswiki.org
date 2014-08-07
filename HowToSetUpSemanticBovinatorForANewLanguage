@@ -14,7 +14,7 @@ Next, see the Info node (semantic-langdev)Top to either get an overview, or dive
 
 The first step in adding support for a new language in CEDET/Semantic is to determine which parsing technique to use.  There are three options:
 
-* Hand Written parser - Useful if there is a pre-existing tool to use (Such as with reading Emacs Lisp code in Emacs) or if there is no regular grammer to follow, such as with Texinfo, or HTML.
+* Hand Written parser - Useful if there is a pre-existing tool to use (Such as with reading Emacs Lisp code in Emacs) or if there is no regular grammar to follow, such as with Texinfo, or HTML.
 * Write a Bovine parser (.by) - Useful if the grammer is relatively simple and you would like to use a Yacc like syntax.
 * Write a Wisent parser (.wy) - Best choice for language grammars.  The Wisent parser is a port of bison to Emacs Lisp written by David Ponce, and is very fast.
 
