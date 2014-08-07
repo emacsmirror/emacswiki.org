@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Jul 31 09:08:18 2014 (-0700)
+;; Last-Updated: Wed Aug  6 16:55:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6916
+;;     Update #: 6918
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5164,7 +5164,7 @@ No such highlighting is done if any of these conditions holds:
 (defun icicle-search-replace-fixed-case-p (from)
   "Return non-nil if FROM should be replaced without transferring case.
 FROM is a string or nil.  If FROM is nil, then return nil.
-Retuns non-nil if FROM is a string and one of the following holds:
+Returns non-nil if FROM is a string and one of the following holds:
  * FROM is not all lowercase
  * `case-replace' or `case-fold-search' is nil"
   (and from  (not (and case-fold-search  case-replace  (string= from (downcase from))))))
@@ -8342,6 +8342,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
     (interactive)
     (let* ((completion-ignore-case                  t) ; Not case-sensitive, by default.
            (icicle-transform-function               'icicle-remove-duplicates)
+           (icicle-must-pass-after-match-predicate  nil) ; Remove any current one, e.g. for `M-x'.
            (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
            (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
@@ -8368,6 +8369,7 @@ information."
     (interactive)
     (let* ((completion-ignore-case                  t) ; Not case-sensitive, by default.
            (icicle-transform-function               'icicle-remove-duplicates)
+           (icicle-must-pass-after-match-predicate  nil) ; Remove any current one, e.g. for `M-x'.
            (icicle-orig-sort-orders-alist           icicle-sort-orders-alist) ; For recursive use.
            (icicle-orig-show-initially-flag         icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
