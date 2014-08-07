@@ -313,5 +313,5 @@ This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
 Discussion moved to [[Comments_on_OrgMode|Talk page]] 
 
 
-----
-CategoryOutline CategoryPersonalInformationManager CategoryCalendar CategoryNeedsAttention
+== Categories ==
+CategoryOutline CategoryPersonalInformationManager CategoryCalendar CategoryNeedsAttention CategoryWriting
