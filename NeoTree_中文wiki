@@ -1,4 +1,3 @@
-
 [[zh:NeoTree_中文wiki]] [[en:NeoTree]]
 
 Emacs 文件树，类似 Vim 中的 [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] 。
@@ -95,6 +94,15 @@ Clone project:
 
 0.1.1 （2014-04-06）
 * 基础功能
+
+
+== THANKS ==
+
+因为贡献者的参与，让 NeoTree 变得越来越好用。
+
+* jianingy <jianingy.yang@gmail.com>
+* ahmadseleem <http://ahmadseleem.com>
+* aaronmueller <mail@aaron-mueller.de>
 
 
 == Todo ==
