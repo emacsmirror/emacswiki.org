@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.11
+;; Version: 0.12
 ;; Last-Updated: Tue May 29 22:21:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 166
@@ -66,6 +66,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 7-Aug-2014    Matthew L. Fidler  
+;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+;;    Add autoload cookie for org-outlook-enable-msg-dnd
 ;; 1-Jul-2014    Matthew L. Fidler  
 ;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 ;;    Add delete msg files support
@@ -432,6 +435,8 @@ Placeholders Replacement
     (funcall capture-func nil template)))
 
 (defvar org-outlook-dnd-regexp "^file:.*\\.msg")
+
+;;;###autoload
 (defun org-outlook-enable-msg-dnd ()
   "Enable Drag and Drop support for message files."
   (interactive)
