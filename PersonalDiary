@@ -157,11 +157,18 @@ CategoryWriting
 (provide 'journal)
 }}}
 
+----
+
+== Encrypting Journal Files ==
 
 I have used the above code successfully and found it to be very easy to use and very useful.  I've had previous attempts at keeping a journal with emacs fail due to the complexity of the tools that I was using at the time.
 
-With that in mind, I personally felt that this code was missing the ability to easily integrate encryption for my journal.  Therefore, I've made a few small modifications to the code to allow the user to set an extension for the journal files.  By setting a newly defined variable -- journal-ext -- in my .emacs file to ".gpg", emacs uses gnupg to automatically handle encryption of my journal files.  Rather than listing my modifications to the above code, the following is the complete file, including my modifications.
+With that in mind, I personally felt that this code was missing the ability to easily integrate encryption for my journal.  Therefore, I've made a few small modifications to the code to allow the user to set an extension for the journal files.  By setting a newly defined variable -- journal-ext -- in my .emacs file to ".gpg", emacs uses gnupg to automatically handle encryption of my journal files.  
 
+This requires adding another line to the .emacs file:
+{{{ (setq journal-ext ".gpg") }}}
+
+The following is the full code above, without the introductory paragraphs, complete with my revisions:
 {{{
 (defgroup journal nil "Settings for the personal journal" :group
 'applications)
