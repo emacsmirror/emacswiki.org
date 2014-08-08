@@ -41,5 +41,12 @@ Alternatively, if you want to be told which commands were disabled (which are th
               (prin1 symbol)
               (princ "\n")))))))
 
+If you use a separate custom file and want Emacs to place its disable/enable forms there instead of in your init file, you can use the following advice:
+
+    (defadvice en/disable-command (around put-in-custom-file activate)
+      "Put declarations in `custom-file'."
+      (let ((user-init-file custom-file))
+        ad-do-it))
+
 ----
 CategoryCommands
