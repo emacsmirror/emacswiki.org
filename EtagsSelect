@@ -14,6 +14,14 @@ On Emacs 22.2.1, I get "Buffer is read-only error" when I press return. - bvk-ch
 [new]
 Do you have some hook or minor-mode that overrides 'return' for all modes? - ScottFrazer
 
+[new]
+I ran into the "Buffer is read-only error" also, on Emacs 24.1.1, but only when launching Emacs in the terminal (emacs-nox), not in an X-window.  The difference must be in how the terminal passes input events to emacs.  It turns out that the RETURN key was not recognized in etags-select's mode-map.  It's the same "error" you would receive by pressing a non-mapped key such as "z" in the etags-select window.  I fixed it by changing the following:
+<code>
+(define-key map (kbd "RET") 'etags-select-goto-tag)
+(define-key map (kbd "M-RET") 'etags-select-goto-tag-other-window)
+</code>
+-DanHarms
+
 To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-define `etags-select-get-tag-files' as
 
   (defun etags-select-get-tag-files ()
@@ -23,6 +31,15 @@ To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-defin
       (mapcar 'tags-expand-table-name tags-table-list)
       (tags-table-check-computed-list)
       tags-table-computed-list))
+[new]
+I was running into an error "wrong-type-argument stringp t" only the first time per session that I followed a tag.  It turned out to originate from tags-table-computed-list having an element that was t, not a proper filename.  Apparently t is used as an initial placeholder for unloaded tables (I use an externally-referenced TAGS table.)  See the documentation for tags-table-extend-computed-list for more details.  So I added the following line to etags-select-get-tag-files:
+<code>
+...
+(tags-table-check-computed-list)
+(tags-table-extend-computed-list)
+tags-table-computed-list))
+</code>
+
 [new]
 etags-select.el provide a bottom window for select
 
