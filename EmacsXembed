@@ -21,7 +21,8 @@ emacs --parent-id %w %f
 I still have some issues with it, though: the emacs frame starts tiny instead of filling the textarea (I filed an emacs bug for that: http://lists.gnu.org/archive/html/bug-gnu-emacs/2013-01/msg00623.html ).
 
 [new:supersolberg:2013-09-01 19:13 UTC]
-I've created an extensions that use XEMBED to embed emacs (and other editors) into firefox or chromium which you can find here: https://github.com/larsjsol . I hope it will be useful for some of you.
+I've created an extensions that use XEMBED to embed emacs (and other editors) into firefox or chromium which you can find here: https://github.com/larsjsol/edembed
+ . I hope it will be useful for some of you.
 
 == embedding apps in emacs windows ==
 
