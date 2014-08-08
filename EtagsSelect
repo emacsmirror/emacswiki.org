@@ -32,13 +32,14 @@ To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-defin
       (tags-table-check-computed-list)
       tags-table-computed-list))
 [new]
-I was running into an error "wrong-type-argument stringp t" only the first time per session that I followed a tag.  It turned out to originate from tags-table-computed-list having an element that was t, not a proper filename.  Apparently t is used as an initial placeholder for unloaded tables (I use an externally-referenced TAGS table.)  See the documentation for tags-table-extend-computed-list for more details.  So I added the following line to etags-select-get-tag-files:
+I was running into an error "wrong-type-argument stringp t" only the first time per session that I followed a tag.  It turned out to originate from tags-table-computed-list having an element that was t, not a proper filename.  Apparently t is used as an initial placeholder for unloaded tables (I use an externally-referenced TAGS table.)  See the documentation for tags-table-extend-computed-list for more details.  So I added the following line to the extended version of etags-select-get-tag-files above:
 <code>
 ...
 (tags-table-check-computed-list)
 (tags-table-extend-computed-list)
 tags-table-computed-list))
 </code>
+-DanHarms
 
 [new]
 etags-select.el provide a bottom window for select
