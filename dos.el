@@ -1,6 +1,6 @@
 ;;; dos.el --- Major mode for editing Dos scripts
 
-;; Copyright (C) 2003, 2008-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2008-2014 Free Software Foundation, Inc.
 
 ;; Author: Arni Magnusson <arnima@hafro.is>
 ;; Keywords: languages
@@ -177,6 +177,9 @@ Start a new script from `dos-template'. Read help pages for Dos commands with
   (set (make-local-variable 'imenu-generic-expression) '((nil "^:[^:].*" 0)))
   (set (make-local-variable 'outline-regexp) ":[^:]")
   (set-syntax-table dos-mode-syntax-table))
+
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.bat\\'" . dos-mode))
 
 (provide 'dos)
 
