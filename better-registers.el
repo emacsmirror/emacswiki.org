@@ -216,7 +216,8 @@
    a file stored in register, or run a macro saved in a register.
    If the register contains a file name, find that file. Or
    restore a saved window/frame configuration."
-  (interactive "cJump to register: \nP")
+  (interactive (list (register-read-with-preview "Jump to register: ")
+		     current-prefix-arg))
   (let ((val (get-register register)))
     (cond
      ((and (consp val) (frame-configuration-p (car val)))
