@@ -19,7 +19,7 @@ DaleSmith wrote this xsl file to convert from Sylpheed xml address format to bbd
 
 == vCard Import == [:VcardImport]
 
-A 2014 simple importer for gmail name/emails: https://github.com/redguardtoo/gmail2bbdb
+A 2014 simple importer for gmail name and emails: https://github.com/redguardtoo/gmail2bbdb
 
 === With bbdb-vcard.el: === 
 
