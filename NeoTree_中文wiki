@@ -61,7 +61,7 @@ Clone project:
 
 == ChangeLog ==
 
-0.2 （未发布）
+0.2 （2014-08-09）
 * Feature: 支持 <code>neotree-find</code> 快速定位树
 * Feature: 支持文件/目录改名
 * Feature: 固定宽度，并支持用 <code>A</code> 最大/最小化
