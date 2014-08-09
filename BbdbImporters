@@ -84,9 +84,9 @@ file, but I guess that can be easily fixed.
     	      (buffer-substring (match-beginning 3) (match-end 3)) nil nil nil) )
           (forward-line))))
 
-== Importing from CSV files into bbdb 3 ==
+== Importing from CSV files & popular programs into bbdb 3 ==
 
-Download bbdb-csv-import.el from https://gitlab.com/iankelling/bbdb-csv-import and follow the instructions at the top of the file.
+Use bbdb-csv-import from melpa or from https://gitlab.com/iankelling/bbdb-csv-import and follow the simple instructions at the top of the file. Works with gmail, thunderbird, linkedin, outlook.com, easily extensible to more. It is well supported.
 
 This project was created due to too many bugs in the bbdb 2 importer below. 
     
