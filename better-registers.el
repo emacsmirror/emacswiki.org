@@ -216,12 +216,12 @@
    a file stored in register, or run a macro saved in a register.
    If the register contains a file name, find that file. Or
    restore a saved window/frame configuration."
-  (interactive (list
-   (if  (and (>= emacs-major-version 24)
-             (>= emacs-minor-version 4))
-        (register-read-with-preview "Jump to register: ")
-             current-prefix-arg
-     "cJump to register: \nP")))
+  (interactive
+   (list (if (and (>= emacs-major-version 24)
+                  (>= emacs-minor-version 4))
+             (register-read-with-preview "Jump to register: ")
+           current-prefix-arg
+           "cJump to register: \nP")))
   (let ((val (get-register register)))
     (cond
      ((and (consp val) (frame-configuration-p (car val)))
