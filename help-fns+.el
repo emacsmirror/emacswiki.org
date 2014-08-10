@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 11 16:22:52 2014 (-0700)
+;; Last-Updated: Sun Aug 10 15:00:37 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1839
+;;     Update #: 1846
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/10 dadams
+;;     describe-command: Bind completion-annotate-function for use with Icicles.
 ;; 2014/05/11 dadams
 ;;     help-substitute-command-keys: Bug: \= was not being removed - C-h f replace-regexp showed \=\N, not \N.
 ;;       Small loop for \=: changed \\\\=$ to \\\\=.
@@ -355,6 +357,8 @@
 (defvar dir-local-variables-alist)
 (defvar dir-locals-file)
 (defvar file-local-variables-alist)
+(defvar icicle-mode)                    ; In `icicles-mode.el'
+(defvar icicle-pre-minibuffer-buffer)   ; In `icicles-var.el'
 (defvar Info-indexed-nodes)             ; In `info.el'
 (defvar help-cross-reference-manuals)   ; For Emacs < 23.2
 (defvar help-enable-auto-load)          ; For Emacs < 24.3
@@ -1544,11 +1548,22 @@ Return the description that was displayed, as a string."
 ;;;###autoload
 (defun describe-command (function)      ; Bound to `C-h c'
   "Describe an Emacs command (interactive function).
-Same as using a prefix arg with `describe-function'."
+Equivalent to using a prefix arg with `describe-function'.
+
+If you use Icicles then in Icicle mode keys bound to the commands are
+shown next to them in `*Completions*.  You can toggle this keys
+display on/off using `C-x C-a'."
   (interactive
    (let ((fn                            (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
                                             (function-called-at-point)))
          (enable-recursive-minibuffers  t)
+         (completion-annotate-function  (and (boundp 'icicle-mode)  icicle-mode
+                                             (lambda (cand)
+                                               (with-current-buffer icicle-pre-minibuffer-buffer
+                                                 (and (setq cand  (intern-soft cand))  (symbolp cand)
+                                                      (let ((key  (where-is-internal cand nil t)))
+                                                        (and key
+                                                             (format "  %s" (icicle-key-description key)))))))))
          val)
      (setq val  (completing-read
                  (format "Describe command%s: " (if (commandp fn) (format " (default %s)" fn) ""))
