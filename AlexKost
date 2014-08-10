@@ -4,17 +4,23 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 
 ===My Packages===
 
-* [https://github.com/alezost/emacs-utils emacs-utils] -- a part of my ".emacs": a lot of additional functions I use.
+* [https://github.com/alezost/emacs-utils emacs-utils] -- A part of my ".emacs": a lot of additional functions I use.
 
-* [https://github.com/alezost/alect-themes alect-themes] -- the only color themes I can bear.
+* [https://github.com/alezost/alect-themes alect-themes] -- The only color themes I can bear.
 
-* [[Debpaste]] -- client for [http://paste.debian.net/ paste.debian.net].
+* [[Debpaste]] -- Client for [http://paste.debian.net/ paste.debian.net].
 
-* [[MakeColor]] -- "pick" a color by changing a sample with r/g/b/... keys.
+* [[MakeColor]] -- "Pick" a color by changing a sample with r/g/b/... keys.
 
-* [https://github.com/alezost/aurel aurel] -- search, vote and download [https://aur.archlinux.org/ AUR packages].
+* [https://github.com/alezost/web-search.el web-search] -- Search for text on Internet
 
-* [https://github.com/alezost/ducpel ducpel] -- logic game.
+* [https://github.com/alezost/point-pos.el point-pos] -- Save and restore point positions
+
+* [https://github.com/alezost/aurel aurel] -- Search, vote and download [https://aur.archlinux.org/ AUR packages].
+
+* [https://github.com/alezost/guix.el guix.el] -- Interface for [http://www.gnu.org/software/guix/ Guix package manager].
+
+* [https://github.com/alezost/ducpel ducpel] -- Logic game.
 
 
 
