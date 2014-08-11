@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 10 18:02:48 2014 (-0700)
+;; Last-Updated: Mon Aug 11 10:25:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11131
+;;     Update #: 11132
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7318,6 +7318,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/08/11 dadams
+;;     icicle-cand-preds-for-(buffer|file): Added :group for buffers|files.
 ;; 2014/08/10 dadams
 ;;     Added: icicle-cand-preds-all, icicle-cand-preds-for-bookmark, icicle-cand-preds-for-buffer,
 ;;            icicle-cand-preds-for-color, icicle-cand-preds-for-face, icicle-cand-preds-for-file,
