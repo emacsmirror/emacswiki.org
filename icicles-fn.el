@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Aug  6 10:31:50 2014 (-0700)
+;; Last-Updated: Sun Aug 10 17:44:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14670
+;;     Update #: 14963
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,11 +17,16 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-opt', `icicles-var', `kmacro', `levenshtein',
-;;   `naked', `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
+;;   `icicles-var', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `pp', `pp+', `regexp-opt', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,28 +58,59 @@
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer',
+;;    `icicle-bookmark-autofile-p', `icicle-bookmark-autonamed-p',
+;;    `icicle-bookmark-autonamed-this-buffer-p',
+;;    `icicle-bookmark-bookmark-file-p',
+;;    `icicle-bookmark-bookmark-list-p', `icicle-bookmark-desktop-p',
+;;    `icicle-bookmark-dired-p', `icicle-bookmark-dired-this-dir-p',
+;;    `icicle-bookmark-dired-wildcards-p', `icicle-bookmark-file-p',
+;;    `icicle-bookmark-file-this-dir-p', `icicle-bookmark-flagged-p',
+;;    `icicle-bookmark-function-p', `icicle-bookmark-gnus-p',
+;;    `icicle-bookmark-icicle-search-hits-p',
+;;    `icicle-bookmark-image-p', `icicle-bookmark-info-p',
+;;    `icicle-bookmark-last-specific-buffer-p',
+;;    `icicle-bookmark-last-specific-file-p',
+;;    `icicle-bookmark-lighted-p',
+;;    `icicle-bookmark-local-directory-p',
+;;    `icicle-bookmark-local-file-p', `icicle-bookmark-man-p',
+;;    `icicle-bookmark-marked-p', `icicle-bookmark-modified-p',
+;;    `icicle-bookmark-non-file-p', `icicle-bookmark-omitted-p',
+;;    `icicle-bookmark-orphaned-file-p',
+;;    `icicle-bookmark-orphaned-local-file-p',
+;;    `icicle-bookmark-orphaned-remote-file-p',
+;;    `icicle-bookmark-region-p', `icicle-bookmark-remote-file-p',
+;;    `icicle-bookmark-sequence-p', `icicle-bookmark-snippet-p',
+;;    `icicle-bookmark-tagged-p', `icicle-bookmark-temporary-p',
+;;    `icicle-bookmark-this-buffer-p', `icicle-bookmark-this-file-p',
+;;    `icicle-bookmark-url-p', `icicle-bookmark-url-browse-p',
+;;    `icicle-bookmark-variable-list-p', `icicle-bookmark-w3m-p',
 ;;    `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
-;;    `icicle-buffer-smaller-p',
+;;    `icicle-buffer-modified-p', `icicle-buffer-smaller-p',
 ;;    `icicle-call-then-update-Completions', `icicle-candidate-set-1',
 ;;    `icicle-candidate-short-help',
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-choose-completion-string', `icicle-clear-lighter',
-;;    `icicle-clear-minibuffer', `icicle-color-name-w-bg',
-;;    `icicle-color-rgb-lessp', `icicle-command-abbrev-save',
+;;    `icicle-clear-minibuffer', `icicle-color-defined-p',
+;;    `icicle-color-gray-p', `icicle-color-name-w-bg',
+;;    `icicle-color-rgb-lessp', `icicle-color-supported-p',
+;;    `icicle-command-abbrev-save',
 ;;    `icicle-command-abbrev-used-more-p',
 ;;    `icicle-command-names-alphabetic-p',
-;;    `icicle-complete-again-update', `icicle-completing-p',
-;;    `icicle-completing-read', `icicle-completing-read-multiple',
+;;    `icicle-compilation-buffer-p', `icicle-complete-again-update',
+;;    `icicle-completing-p', `icicle-completing-read',
+;;    `icicle-completing-read-default',
+;;    `icicle-completing-read-multiple',
 ;;    `icicle-completing-read-history',
 ;;    `icicle-completion-all-completions',
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion--embedded-envvar-table',
 ;;    `icicle-completion-try-completion', `icicle-create-thumb',
 ;;    `icicle-current-TAB-method', `icicle-custom-type',
-;;    `icicle-defaults-at-point', `icicle-define-crm-completion-map',
+;;    `icicle-custom-variable-p', `icicle-defaults-at-point',
+;;    `icicle-define-crm-completion-map', `icicle-defined-thing-p',
 ;;    `icicle-delete-alist-dups', `icicle-delete-count',
 ;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
@@ -88,22 +124,34 @@
 ;;    `icicle-expanded-common-match-1', `icicle-expand-file-name-20',
 ;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates',
-;;    `icicle-extra-candidates-first-p',
+;;    `icicle-extra-candidates-first-p', `icicle-face-bold-p',
+;;    `icicle-face-differs-from-default-p',
+;;    `icicle-face-inverse-video-p', `icicle-face-italic-p',
+;;    `icicle-face-nontrivial-p', `icicle-face-underline-p',
 ;;    `icicle-face-valid-attribute-values',
+;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
+;;    `icicle-file-accessible-directory-p',
+;;    `icicle-file-compressed-p', `icicle-file-directory-p',
+;;    `icicle-file-executable-p', `icicle-file-exists-p',
+;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
 ;;    `icicle-file-name-input-p', `icicle-file-name-nondirectory',
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
-;;    `icicle-file-remote-p', `icicle-file-type-less-p',
-;;    `icicle-file-writable-p', `icicle-filesets-files-under',
+;;    `icicle-file-regular-p', `icicle-file-remote-p',
+;;    `icicle-file-symlink-p', `icicle-file-writable-p',
+;;    `icicle-filesets-files-under', `icicle-file-type-less-p',
 ;;    `icicle-files-within', `icicle-files-within-1',
 ;;    `icicle-filter-alist', `icicle-filter-wo-input',
 ;;    `icicle-find-tag-default-as-regexp',
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
-;;    `icicle-flat-list', `icicle-frames-on',
-;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
+;;    `icicle-flat-list', `icicle-frame-iconified-p',
+;;    `icicle-frame-invisible-p', `icicle-frames-on',
+;;    `icicle-frame-splittable-p', `icicle-frame-thumbnail-p',
+;;    `icicle-frame-unsplittable-p', `icicle-fuzzy-candidates',
+;;    `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
 ;;    `icicle-dired-guess-shell-command',
 ;;    `icicle-handle-default-for-prompt', `icicle-help-line-buffer',
@@ -114,19 +162,18 @@
 ;;    `icicle-highlight-input-noncompletion',
 ;;    `icicle-highlight-input-noncompletion-rest',
 ;;    `icicle-highlight-lighter', `icicle-historical-alphabetic-p',
-;;    `icicle-increment-cand-nb+signal-end',
+;;    `icicle-image-file-p', `icicle-increment-cand-nb+signal-end',
 ;;    `icicle-Info-node-is-indexed-by-topic',
 ;;    `icicle-input-from-minibuffer', `icicle-insert-candidates',
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string',
-;;    `icicle-join-nth-parts', `icicle-key-description',
-;;    `icicle-kill-a-buffer', `icicle-latest-access-first-p',
-;;    `icicle-latest-input-first-p',
+;;    `icicle-interesting-buffer-p', `icicle-join-nth-parts',
+;;    `icicle-key-description', `icicle-kill-a-buffer',
+;;    `icicle-latest-access-first-p', `icicle-latest-input-first-p',
 ;;    `icicle-latest-modification-first-p',
 ;;    `icicle-latest-use-first-p', `icicle-levenshtein-match',
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
-;;    `icicle-levenshtein-strict-match',
-;;    `icicle-lisp-vanilla-completing-read', `icicle-list-position',
+;;    `icicle-levenshtein-strict-match', `icicle-list-position',
 ;;    `icicle-looks-like-dir-name-p', `icicle-local-keys-first-p',
 ;;    `icicle-make-char-candidate', `icicle-make-face-candidate',
 ;;    `icicle-make-plain-predicate', `icicle-major-mode-name-less-p',
@@ -141,7 +188,9 @@
 ;;    `icicle-mouseover-help', `icicle-msg-maybe-in-minibuffer',
 ;;    `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
-;;    `icicle-next-candidate', `icicle-not-basic-prefix-completion-p',
+;;    `icicle-next-candidate', `icicle-next-error-buffer-p',
+;;    `icicle-nondirectory-p', `icicle-not-basic-prefix-completion-p',
+;;    `icicle-not-special-candidate-p',
 ;;    `icicle-ORIG-choose-completion-string',
 ;;    `icicle-ORIG-completing-read',
 ;;    `icicle-ORIG-completing-read-multiple',
@@ -155,11 +204,13 @@
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
-;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
-;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
-;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
-;;    `icicle-place-cursor', `icicle-place-overlay',
-;;    `icicle-position', `icicle-prefix-any-candidates-p',
+;;    `icicle-package-built-in-p', `icicle-package-disabled-p',
+;;    `icicle-package-installed-p', `icicle-part-1-cdr-lessp',
+;;    `icicle-part-1-lessp', `icicle-part-2-lessp',
+;;    `icicle-part-3-lessp', `icicle-part-4-lessp',
+;;    `icicle-part-N-lessp', `icicle-place-cursor',
+;;    `icicle-place-overlay', `icicle-position',
+;;    `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-keys-first-p',
 ;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
@@ -174,6 +225,7 @@
 ;;    `icicle-read-regexp', `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing', `icicle-repeat-command',
+;;    `icicle-recentf-include-p', `icicle-recentf-keep-p',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
 ;;    `icicle-remove-color-duplicates', `icicle-remove-dots',
 ;;    `icicle-remove-duplicates', `icicle-remove-dups-if-extras',
@@ -188,7 +240,9 @@
 ;;    `icicle-set-difference', `icicle-set-intersection',
 ;;    `icicle-set-union', `icicle-show-help-in-mode-line',
 ;;    `icicle-show-in-mode-line', `icicle-some',
-;;    `icicle-special-candidates-first-p',
+;;    `icicle-special-candidate-p',
+;;    `icicle-special-candidates-first-p', `icicle-special-display-p',
+;;    `icicle-special-variable-p',
 ;;    `icicle-start-of-candidates-in-Completions',
 ;;    `icicle-string-match-p', `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
@@ -204,7 +258,10 @@
 ;;    `icicle-unsorted-prefix-candidates', `icicle-upcase',
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
-;;    `icicle-var-val-satisfies-type-p',
+;;    `icicle-var-val-satisfies-type-p', `icicle-window-at-bottom-p',
+;;    `icicle-window-at-left-p', `icicle-window-at-right-p',
+;;    `icicle-window-at-top-p', `icicle-window-dedicated-p',
+;;    `icicle-window-deletable-p', `icicle-window-invisible-p',
 ;;    `select-frame-set-input-focus'.
 ;;
 ;;  Internal variables defined here:
@@ -223,28 +280,86 @@
 ;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
 ;;
-;;    `completing-read'              - (See doc string.)
-;;    `display-completion-list'      - (See doc string.)
 ;;    `face-valid-attribute-values'  - (See doc string.)
-;;    `read-file-name' Emacs 20, 21 only - (See doc string.)
-;;    `read-from-minibuffer'         - (See doc string.)
+;;    `read-buffer'                  - (See doc string.)
 ;;    `read-string'                  - (See doc string.)
 ;;
 ;;
-;;  ***** NOTE: The following functions defined in `simple.el' have
-;;              been REDEFINED HERE:
+;;  ***** NOTE: The following functions defined in `crm.el'
+;;              have been REDEFINED HERE:
 ;;
-;;  `choose-completion-string' -
-;;     Don't exit minibuffer after `lisp-complete-symbol' completion.
-;;  `completion-setup-function' - 1. Put faces on inserted string(s).
-;;                                2. Help on help.
-;;  `repeat-complex-command' - Use `completing-read' to read command.
+;;    `completing-read-multiple'     - Inhibit Icicles features.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `dired-aux.el' and
+;;              `dired-x.el' have been REDEFINED HERE:
+;;
+;;    `dired-read-shell-command'     - Use Icicles completion.
+;;                                   - Added optional arg HISTORY.
+;;    `dired-smart-shell-command'    - Icicles completion (Emacs<23).
+;;
+;;
+;;  ***** NOTE: The following functions defined in `faces.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `read-face-name'    -  Show face names with the faces they name.
 ;;
 ;;
 ;;  ***** NOTE: The following function defined in `filesets.el' has
 ;;              been REDEFINED HERE:
 ;;
-;;  `filesets-get-filelist' - Fix.  Bug #976 reported to Emacs devel.
+;;    `filesets-get-filelist'        - Fixed for Emacs bug #976.
+;;
+;;
+;;  ***** NOTE: The following function defined in `files-x.el' is
+;;              ADVISED HERE:
+;;
+;;    `read-file-local-variable'     - Provide predicates for `M-&'.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `minibuffer.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `completing-read'              - (See doc string.)
+;;    `display-completion-list'      - (See doc string.)
+;;    `read-file-name' Emacs 20, 21 only - (See doc string.)
+;;    `read-from-minibuffer'         - (See doc string.)
+;;
+;;
+;;  ***** NOTE: The following functions defined in `mule-cmds.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `read-char-by-name'            - Use `icicle-ucs-names'.
+;;                                     Display the char also.
+;;                                     Added optional arg NAMES.
+;;
+;;
+;;  ***** NOTE: The following function defined in `recentf.el' has
+;;              been REDEFINED HERE:
+;;
+;;    `recentf-make-menu-items'      - Add Icicles submenu.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `simple.el' have
+;;              been REDEFINED HERE:
+;;
+;;    `choose-completion-string'  - Don't exit minibuffer after
+;;                                  `lisp-complete-symbol' completion.
+;;    `completion-setup-function' - 1. Put faces on inserted strings.
+;;                                  2. Help on help.
+;;    `minibuffer-default-add-completions' - Respect Icicles filters.
+;;    `read-shell-command'        - Use Icicles completion.
+;;    `repeat-complex-command'    - Use `completing-read'.
+;;    `shell-command'             - Use Icicles completion (Emacs<23).
+;;    `shell-command-on-region'   - Use Icicles completion (Emacs<23).
+;;
+;;
+;;  ***** NOTE: The following functions defined in `subr.el' have
+;;              been REDEFINED HERE:
+;;
+;;  `read-number'                  - You can enter a numeric var name.
+;;                                   Allow completion.  Handle errors.
+;;
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
  
@@ -258,12 +373,23 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Macros")
-;;  (@> "Redefined standard functions")
-;;  (@> "Icicles functions - completion display (not cycling)")
-;;  (@> "Icicles functions - TAB completion cycling")
-;;  (@> "Icicles functions - S-TAB completion cycling")
-;;  (@> "Icicles functions - common helper functions")
-;;  (@> "Icicles functions - sort functions")
+;;  (@> "Redefined Standard Functions")
+;;  (@> "Icicles Functions - Completion Display (Not Cycling)")
+;;  (@> "Icicles Functions - TAB Completion Cycling")
+;;  (@> "Icicles Functions - S-TAB Completion Cycling")
+;;  (@> "Icicles Functions - Common Helper Functions")
+;;  (@> "Icicles Functions - Sort Functions")
+;;  (@> "Icicles Predicates for Different Candidate Types")
+;;    (@> "Bookmark-Completion Predicates")
+;;    (@> "Buffer-Completion Predicates")
+;;    (@> "Color-Completion Predicates")
+;;    (@> "Face-Completion Predicates")
+;;    (@> "File- and Directory-Completion Predicates")
+;;    (@> "Frame-Completion Predicates")
+;;    (@> "Package-Completion Predicates")
+;;    (@> "Special Candidate-Completion Predicates")
+;;    (@> "Symbol-Completion Predicates")
+;;    (@> "Window-Completion Predicates")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -463,9 +589,9 @@ rather than FUN itself, to `minibuffer-setup-hook'."
            (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
         (remove-hook 'minibuffer-setup-hook ,hook)))))
  
-;;(@* "Redefined standard functions")
+;;(@* "Redefined Standard Functions")
 
-;;; Redefined standard functions -------------------------------------
+;;; Redefined Standard Functions -------------------------------------
 
 
 ;; REPLACE ORIGINAL `choose-completion-string' in `simple.el',
@@ -919,77 +1045,51 @@ lax: a match is not required."
       (setq hist-val  (mapcar #'prin1-to-string hist-val)))
     (completing-read prompt (mapcar #'list hist-val) pred nil init-input hist def inherit-i-m)))
 
-;; Based on the Emacs 22 C code that defined `completing-read'.
-(defun icicle-lisp-vanilla-completing-read (prompt collection &optional predicate require-match
-                                            initial-input hist def inherit-input-method)
-  "Lisp version of vanilla Emacs `completing-read'."
-  (let ((pos  0)  val  histvar  histpos  position  init)
-    (setq init                             initial-input
-          minibuffer-completion-table      collection
-          minibuffer-completion-predicate  predicate
-          minibuffer-completion-confirm    (and (not (eq require-match t))  require-match)
-          position                         nil)
-    (when init
-      (when (consp init) (setq position  (cdr init)
-                               init      (car init)))
-      (unless (stringp init)
-        (error "`icicle-lisp-vanilla-completing-read', INIT not a string: %S" init))
-      (if (not position)
-          (setq pos  (1+ (length init))) ; Default is to put cursor at end of INITIAL-INPUT.
-        (unless (integerp position)
-          (error "`icicle-lisp-vanilla-completing-read', POSITION not an integer: %S" position))
-        (setq pos  (1+ position))))     ; Convert zero-based to one-based.
-    (if (symbolp hist)
-        (setq histvar  hist
-              histpos  nil)
-      (setq histvar  (car-safe hist)
-            histpos  (cdr-safe hist)))
-    (unless histvar (setq histvar  'minibuffer-history))
-    (unless histpos (setq histpos  0))
-    ;; $$$$$$
-    ;;     (setq val  (read-from-minibuffer
-    ;;                 prompt
-    ;;                 (cons init pos)          ; initial-contents
-    ;;                 (if (not require-match)  ; key map
-    ;;                     (if (or (not minibuffer-completing-file-name)
-    ;;                             (eq minibuffer-completing-file-name 'lambda)
-    ;;                             (not (boundp 'minibuffer-local-filename-completion-map)))
-    ;;                         minibuffer-local-completion-map
-    ;;                       minibuffer-local-filename-completion-map)
-    ;;                   (if (or (not minibuffer-completing-file-name)
-    ;;                           (eq minibuffer-completing-file-name 'lambda)
-    ;;                           (not (boundp 'minibuffer-local-filename-must-match-map)))
-    ;;                       minibuffer-local-must-match-map
-    ;;                     minibuffer-local-filename-must-match-map))
-    ;;                 nil histvar def inherit-input-method))
-    (setq val  (read-from-minibuffer
-                prompt
-                (cons init pos)         ; initial-contents
-                (if (not require-match) ; keymap
-                    (if (or (not minibuffer-completing-file-name)
-                            (eq minibuffer-completing-file-name 'lambda)
-                            (not (boundp 'minibuffer-local-filename-completion-map)))
-                        minibuffer-local-completion-map
-                      (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
-                          (make-composed-keymap minibuffer-local-filename-completion-map
-                                                minibuffer-local-completion-map)
-                        minibuffer-local-filename-completion-map))
+;; $$$$$$$$ Same as `completing-read-default', except: (a) Added optional arg KEYMAP and
+;;                                                     (b) works for all Emacs versions.
+(defun icicle-completing-read-default (prompt collection &optional predicate require-match
+                                       initial-input hist def inherit-input-method keymap)
+  "Default way to read from the minibuffer with completion.
+Optional arg KEYMAP, if non-nil, should be a completion keymap.
+See `completing-read' for the other arguments."
+
+  (when (consp initial-input)
+    ;; `completing-read' uses a 0-based index, but `read-from-minibuffer' uses a 1-based index.
+    (setq initial-input  (cons (car initial-input) (1+ (cdr initial-input)))))
+  (let* ((minibuffer-completion-table      collection)
+         (minibuffer-completion-predicate  predicate)
+         (minibuffer-completion-confirm    (and (not (eq require-match t))  require-match))
+         (base-map                         (if require-match
+                                               minibuffer-local-must-match-map
+                                             minibuffer-local-completion-map))
+         (map
+          (or keymap
+              (if (not require-match)   ; keymap
                   (if (or (not minibuffer-completing-file-name)
                           (eq minibuffer-completing-file-name 'lambda)
-                          (and (not (fboundp 'make-composed-keymap)) ; Emacs 24, starting July 2011.
-                               (not (boundp 'minibuffer-local-filename-must-match-map))))
-                      minibuffer-local-must-match-map
-                    (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
+                          (not (boundp 'minibuffer-local-filename-completion-map)))
+                      minibuffer-local-completion-map
+                    (if (fboundp 'make-composed-keymap) ; Emacs 24+
                         (make-composed-keymap minibuffer-local-filename-completion-map
-                                              minibuffer-local-must-match-map)
-                      minibuffer-local-filename-must-match-map)))
-                nil histvar def inherit-input-method))
+                                              minibuffer-local-completion-map)
+                      minibuffer-local-filename-completion-map))
+                (if (or (not minibuffer-completing-file-name)
+                        (eq minibuffer-completing-file-name 'lambda)
+                        (and (not (fboundp 'make-composed-keymap)) ; Emacs 24+
+                             (not (boundp 'minibuffer-local-filename-must-match-map))))
+                    minibuffer-local-must-match-map
+                  (if (fboundp 'make-composed-keymap) ; Emacs 24+
+                      (make-composed-keymap minibuffer-local-filename-completion-map
+                                            minibuffer-local-must-match-map)
+                    minibuffer-local-filename-must-match-map)))))
+         (result                          (read-from-minibuffer prompt initial-input map
+                                                                nil hist def inherit-input-method)))
     ;; Use `icicle-filtered-default-value', not DEF, because `read-from-minibuffer' filters it.
-    (when (consp icicle-filtered-default-value) ; Emacs 23 lets DEF be a list of strings - use first.
-      (setq icicle-filtered-default-value  (car icicle-filtered-default-value)))
-    (when (and (stringp val)  (string= val "")  icicle-filtered-default-value)
-      (setq val  icicle-filtered-default-value))
-    val))
+    (when (and (equal result "")  icicle-filtered-default-value)
+      (setq result  (if (consp icicle-filtered-default-value) ; Emacs 23+ lets DEF be a list - use first string.
+                        (car icicle-filtered-default-value)
+                      icicle-filtered-default-value)))
+    result))
 
 
 ;; REPLACE ORIGINAL `completing-read' (built-in function),
@@ -1008,7 +1108,7 @@ lax: a match is not required."
   (defalias 'icicle-ORIG-completing-read (symbol-function 'completing-read)))
 
 (defun icicle-completing-read (prompt collection &optional predicate require-match
-                               initial-input hist-m@%=!$+&^*z def inherit-input-method)
+                               initial-input hist-m@%=!$+&^*z def inherit-input-method keymap)
   "Read string in minibuffer, with completion and cycling of completions.
 Prefix completion via \\<minibuffer-local-completion-map>\
 `\\[icicle-prefix-word-complete]' (word) and `\\[icicle-prefix-complete]' (full).
@@ -1119,6 +1219,8 @@ its addition to PROMPT.
 If INHERIT-INPUT-METHOD is non-nil, the minibuffer inherits the
 current input method and the setting of `enable-multibyte-characters'.
 
+Optional arg KEYMAP, if non-nil, should be a completion keymap to use.
+
 Both completion candidates and DEF are filtered using these Icicles
 variables:
   `icicle-must-match-regexp'
@@ -1187,9 +1289,8 @@ Completion ignores case when `completion-ignore-case' is non-nil."
                                 (not (icicle-file-name-input-p))
                                 (not (equal def1 default-directory))))))))
     (cond ((not icicle-mode)
-           (setq result  (icicle-lisp-vanilla-completing-read
-                          prompt collection predicate require-match initial-input
-                          hist-m@%=!$+&^*z def inherit-input-method)))
+           (setq result  (icicle-completing-read-default prompt collection predicate require-match initial-input
+                                                         hist-m@%=!$+&^*z def inherit-input-method keymap)))
           (t
            (let* ((minibuffer-prompt-properties             (and (boundp 'minibuffer-prompt-properties)
                                                                  (icicle-remove-property ; Emacs 21+ only
@@ -1221,9 +1322,9 @@ Completion ignores case when `completion-ignore-case' is non-nil."
              (when (< emacs-major-version 21)
                (setq prompt  (concat (and icicle-candidate-action-fn  "+ ") prompt)))
              (setq result  (catch 'icicle-read-top
-                             (icicle-lisp-vanilla-completing-read
-                              prompt collection predicate require-match initial-input
-                              hist-m@%=!$+&^*z def inherit-input-method)))
+                             (icicle-completing-read-default prompt collection predicate require-match
+                                                             initial-input hist-m@%=!$+&^*z def
+                                                             inherit-input-method keymap)))
              (icicle-unpropertize-completion result))))
     ;; HACK.  Without this, when REQUIRE-MATCH is non-nil, `*Completions*' window
     ;; does not disappear.
@@ -1736,15 +1837,17 @@ for POSITION."
     (setq default-value
           (if (atom default-value)
               (icicle-filter-wo-input default-value)
-            (delq nil (mapcar #'icicle-filter-wo-input default-value))))) ; Emacs 23 accepts a list.
-  ;; Save new default value for caller (e.g. `icicle-lisp-vanilla-completing-read'.
+            (delq nil (mapcar #'icicle-filter-wo-input default-value)))))
+  (when (and (< emacs-major-version 23)  (consp default-value)) ; Emacs <23 does not accept a list.
+    (setq default-value  (car default-value)))
+  ;; Save new default value for caller (e.g. `icicle-completing-read-default'.
   (setq icicle-filtered-default-value  default-value)
 
   ;; If a list of strings, use the first one for prompt etc.
   (let ((def-value  (icicle-unlist default-value)))
     ;; Maybe use DEFAULT-VALUE for INITIAL-CONTENTS also.
     (when (and icicle-default-value  (not (eq icicle-default-value t))
-               def-value  (stringp initial-contents)  (string= "" initial-contents))
+               def-value             (equal "" initial-contents))
       (setq initial-contents  (if (integerp def-value) ; Character
                                   (string def-value)
                                 def-value)))
@@ -1838,6 +1941,7 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
 
 ;; REPLACE ORIGINAL `read-number' defined in `subr.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
+;;
 ;; 1. Let user enter a numeric variable name, for its value.  Allow completion.
 ;; 2. Allow for error reading input.
 ;; 3. Call `ding' if not a number, and don't redisplay for `sit-for'.
@@ -2151,7 +2255,7 @@ CHARS defaults to the value of `icicle-read-char-history'."
 ;; 3. Display the character itself, after its name, in `*Completions*'.
 ;; 4. Added optional arg NAMES.
 ;; 5. Add char read to `icicle-read-char-history'.
-;; 5. See doc string for the rest.
+;; 6. See doc string for the rest.
 ;;
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
 
@@ -2850,7 +2954,8 @@ Analog of `minibuffer-local-must-match-map' for crm.")
 
 ;; REPLACE ORIGINAL `read-shell-command' defined in `simple.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Uses Icicles completion.
+;;
+;; Use Icicles completion.
 ;;
 (defun icicle-read-shell-command (prompt &optional initial-contents hist default-value
                                   inherit-input-method)
@@ -2869,9 +2974,10 @@ For completion, pass args to `icicle-read-shell-command-completing'."
                                            default-value inherit-input-method))))
 
 
-;; REPLACE ORIGINAL `shell-command' defined in `simple.el',
+;; REPLACE ORIGINAL `dired-smart-shell-command' defined in `dired-x.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Uses Icicles completion.
+;;
+;; Use Icicles completion.
 ;;
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
@@ -2894,7 +3000,8 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'."
 
 ;; REPLACE ORIGINAL `shell-command' defined in `simple.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Uses Icicles completion.
+;;
+;; Use Icicles completion.
 ;;
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
@@ -2964,7 +3071,8 @@ specifies the value of ERROR-BUFFER."
 
 ;; REPLACE ORIGINAL `shell-command-on-region' defined in `simple.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Uses Icicles completion.
+;;
+;; Use Icicles completion.
 ;;
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
@@ -3047,10 +3155,10 @@ specifies the value of ERROR-BUFFER."
 ;; REPLACE ORIGINAL `dired-read-shell-command' defined in `dired-aux.el'
 ;; and redefined in `dired-x.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Uses Icicles completion.
-;; Uses `icicle-minibuffer-default-add-dired-shell-commands', not
+;; Use Icicles completion.
+;; Use `icicle-minibuffer-default-add-dired-shell-commands', not
 ;; `minibuffer-default-add-dired-shell-commands'.
-;; Binds `icicle-files' for use as free var elsewhere.
+;; Bind `icicle-files' for use as free var elsewhere.
 ;; Added optional arg HISTORY.
 ;;
 (defun icicle-dired-read-shell-command (prompt arg files &optional history)
@@ -3219,7 +3327,7 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
 ;; REPLACE ORIGINAL `recentf-make-menu-items' defined in `recentf.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Adds Icicles submenu to `Open Recent' menu.
+;; Add Icicles submenu to `Open Recent' menu.
 ;;
 (defun icicle-recentf-make-menu-items (&optional menu)
   "Make menu items from the recent list.
@@ -3245,10 +3353,16 @@ This is a menu filter function which ignores the MENU argument."
                     ["+ Open Recent File..." icicle-recent-file]
                     ["+ Open Recent File (Other Window)..." icicle-recent-file-other-window]
                     ["+ Remove from Recent Files List..." icicle-remove-file-from-recentf-list]))))))
- 
-;;(@* "Icicles functions - completion display (not cycling)")
 
-;;; Icicles functions - completion display (not cycling) -------------
+(when (fboundp 'read-file-local-variable) ; Emacs 23+, after `files-x.el' is loaded.
+  (defadvice read-file-local-variable (around icicle-bind-variable-completing-p activate)
+    "Provide predefined variable predicates for `M-&'."
+    (let ((icicle-variable-completing-p  t))
+      ad-do-it)))
+ 
+;;(@* "Icicles Functions - Completion Display (Not Cycling)")
+
+;;; Icicles Functions - Completion Display (Not Cycling) -------------
 
 (defun icicle-display-candidates-in-Completions (&optional reverse-p no-display-p)
   "Refresh the current set of completion candidates in `*Completions*'.
@@ -4069,9 +4183,9 @@ This must be called in the minibuffer."
 Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   (if (fboundp 'minibuffer-prompt-end) (minibuffer-prompt-end) (point-min)))
  
-;;(@* "Icicles functions - TAB completion cycling")
+;;(@* "Icicles Functions - TAB Completion Cycling")
 
-;;; Icicles functions - TAB completion cycling --------------------
+;;; Icicles Functions - TAB Completion Cycling --------------------
 
 (defun icicle-prefix-candidates (input)
   "List of prefix or fuzzy completions for the current partial INPUT.
@@ -4321,9 +4435,9 @@ same as for `substitute-in-file-name'."
                                                                      (lambda (&rest args) t))))
                  (if (stringp comp) (concat prefix comp) (mapcar (lambda (s) (concat prefix s)) comp)))))))))
  
-;;(@* "Icicles functions - S-TAB completion cycling")
+;;(@* "Icicles Functions - S-TAB Completion Cycling")
 
-;;; Icicles functions - S-TAB completion cycling -------------------
+;;; Icicles Functions - S-TAB Completion Cycling -------------------
 
 (defun icicle-apropos-candidates (input)
   "List of candidate apropos completions for the current partial INPUT.
@@ -4648,9 +4762,9 @@ If LEN is nil, treat it as the length of STRING."
       (dotimes (idx (- (length string) (1- len)))  (push (substring string idx (+ idx len))  subs))
       (nreverse subs))))
  
-;;(@* "Icicles functions - common helper functions")
+;;(@* "Icicles Functions - Common Helper Functions")
 
-;;; Icicles functions - common helper functions ----------------------
+;;; Icicles Functions - Common Helper Functions ----------------------
 
 (defun icicle-try-switch-buffer (buffer)
   "Try to switch to BUFFER, first in same window, then in other window.
@@ -5333,23 +5447,8 @@ That is, backslash is never treated as a directory separator."
 This means that completion candidates are relative file names.
 If instead you want to test whether input is a file name, absolute or
 relative, use this test:
-
  (or (icicle-file-name-input-p)  icicle-abs-file-candidates)"
   minibuffer-completing-file-name)
-
-(defun icicle-looks-like-dir-name-p (file)
-  "Return non-nil if FILE looks like a directory name.
-If FILE is not a string, return nil.  Otherwise, FILE can be an
-absolute or a relative file name.
-
-This compares FILE with the directory part of its name, or with
-`default-directory' if there is no directory part.
-
-This does not do the file-handler processing that `file-directory-p'
-does, so it is not a replacement for that function.  And unlike
-`file-directory-p', this returns non-nil for an argument like
-\"~/foo//usr/\"."
-  (and (stringp file)  (string= file (icicle-file-name-directory-w-default file))))
 
 (defun icicle-minibuf-input ()
   "Return the user minibuffer input as a string, without text-properties."
@@ -6170,41 +6269,6 @@ A return value of zero means DRIVE is a mapped network drive."
     ;; Don't bother to hash for Emacs 20, 21, unless `cl.el' happens to be loaded.
     (call-process shell-file-name nil nil nil shell-command-switch (concat "NET USE " drive))))
 
-;;; $$$$$$
-;;; (defun icicle-file-remote-p (file) ; Older definition - new one is like `bmkp-file-remote-p'.
-;;;   "Non-nil means FILE is likely to name a file on a remote system.
-;;; For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
-;;; then this includes a file on a mapped network drive.
-
-;;; Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
-;;; those functions are not defined then return nil."
-;;;   (or (and (eq system-type 'windows-nt)
-;;;            ;; $$$$  (save-match-data   ; IS THIS NEEDED?
-;;;            (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" file))
-;;;            (eq 0 (condition-case nil
-;;;                 (icicle-ms-windows-NET-USE (match-string 1 file))
-;;;               (error nil)))
-;;;            icicle-network-drive-means-remote-flag)
-;;;       (and (fboundp 'ffap-file-remote-p)  (ffap-file-remote-p file))
-;;;       (and (fboundp 'file-remote-p)  (file-remote-p file))))
-
-(defun icicle-file-remote-p (file)
-  "Non-nil means FILE is likely to name a file on a remote system.
-For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
-then this includes a file on a mapped network drive.
-
-Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
-those functions are not defined then return nil."
-  (or (and (eq system-type 'windows-nt)
-           ;; $$$$  (save-match-data   ; IS THIS NEEDED?
-           (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" file))
-           (eq 0 (condition-case nil
-                (icicle-ms-windows-NET-USE (match-string 1 file))
-              (error nil)))
-           icicle-network-drive-means-remote-flag)
-      (and (fboundp 'file-remote-p)  (file-remote-p file))
-      (and (stringp file)  (string-match "\\`/[^/]+:" file)  (match-string 0 file))))
-
 ;;; $$$$$ Should these `*-any-*' fns call `icicle-transform-candidates'?  For now, no, to save time.
 (defun icicle-any-candidates-p (input)
   "Return non-nil if there is any completion for INPUT, nil otherwise."
@@ -6400,14 +6464,6 @@ nil."
   (let ((repeat-message-function  'ignore))
     (setq last-repeatable-command  command)
     (repeat nil)))
-
-(defun icicle-file-readable-p (file)
-  "Return non-nil if FILE (a string) names a readable file."
-  (and (not (string= "" file))  (file-readable-p file)  (not (file-directory-p file))))
-
-(defun icicle-file-writable-p (file)
-  "Return non-nil if FILE (a string) names a writable file."
-  (and (not (string= "" file))  (file-writable-p file)  (not (file-directory-p file))))
 
 (defvar icicle-dirs-done ()
   "Directories already processed.")
@@ -6815,23 +6871,34 @@ the concatenated multi-completion parts, joined by
         (setq candidates  (cdr candidates))))
     res))
 
+;;; $$$$$$$$
+;;; (defun icicle-completing-p ()
+;;;   "Non-nil if reading minibuffer input with completion.
+;;; This caches the value returned in variable `icicle-completing-p'.
+;;; Use the function, not the variable, to test, if not sure to be in the
+;;; minibuffer."
+;;;   (setq icicle-completing-p             ; Cache the value.
+;;;         (and (active-minibuffer-window)
+;;;              ;; We used to include filename keymaps in MAPS, but that does not work for
+;;;              ;; Emacs > 24.3 - it uses a composed keymap that it creates on the fly.
+;;;              ;; So instead we just check `minibuffer-completing-file-name' now for Emacs 22+.
+;;;              (or (and minibuffer-completing-file-name  (> emacs-major-version 21))
+;;;                  (let* ((loc-map  (current-local-map))
+;;;                         (parent   (keymap-parent loc-map))
+;;;                         (maps     (list minibuffer-local-completion-map
+;;;                                         minibuffer-local-must-match-map)))
+;;;                    (and (or (and parent (member parent maps))  (member loc-map maps))
+;;;                         t))))))              ; Cache t, not the keymap portion.
+
 (defun icicle-completing-p ()
   "Non-nil if reading minibuffer input with completion.
 This caches the value returned in variable `icicle-completing-p'.
 Use the function, not the variable, to test, if not sure to be in the
 minibuffer."
-  (setq icicle-completing-p             ; Cache the value.
-        (and (active-minibuffer-window)
-             ;; We used to include filename keymaps in MAPS, but that does not work for
-             ;; Emacs > 24.3 - it uses a composed keymap that it creates on the fly.
-             ;; So instead we just check `minibuffer-completing-file-name' now for Emacs 22+.
-             (or (and minibuffer-completing-file-name  (> emacs-major-version 21))
-                 (let* ((loc-map  (current-local-map))
-                        (parent   (keymap-parent loc-map))
-                        (maps     (list minibuffer-local-completion-map
-                                        minibuffer-local-must-match-map)))
-                   (and (or (and parent (member parent maps))  (member loc-map maps))
-                        t))))))              ; Cache t, not the keymap portion.
+  (let ((mini-win  (active-minibuffer-window)))
+    (setq icicle-completing-p           ; Cache the value.
+          (and mini-win  (icicle-with-selected-window mini-win
+                           (local-key-binding [icicle-is-completion-map]))))))
 
 ;; This is just `substring-no-properties', defined also for Emacs < 22.
 (defun icicle-substring-no-properties (string &optional from to)
@@ -7285,9 +7352,9 @@ For Emacs 22 and prior, return a single default (a string)."
         ((icicle-thing-at-point 'symbol))
         ((function-called-at-point))))
  
-;;(@* "Icicles functions - sort functions")
+;;(@* "Icicles Functions - Sort Functions")
 
-;;; Icicles functions - sort functions -------------------------------
+;;; Icicles Functions - Sort Functions -------------------------------
 
 (defun icicle-merge-saved-order-less-p (s1 s2)
   "String S1 has a lower index than S2 in current and saved candidates list."
@@ -7813,6 +7880,1182 @@ binary data (weird chars)."
 (defun icicle-get-safe (object property)
   "If OBJECT is a symbol, `get' its PROPERTY value.  Else return nil."
   (and (symbolp object)  (get object property)))
+ 
+;;(@* "Icicles Predicates for Different Candidate Types")
+
+;;; Icicles Predicates for Different Candidate Types -----------------
+
+
+;;(@* "Bookmark-Completion Predicates")
+;;  ** Bookmark-Completion Predicates **
+
+(when (require 'bookmark+ nil t)
+  (defun icicle-bookmark-autofile-p (bookmark)
+    "Return non-nil if BOOKMARK is an autofile bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name.
+In this case, the second part is tested."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-autofile-bookmark-p bookmark))
+
+  (defun icicle-bookmark-autonamed-p (bookmark)
+    "Return non-nil if BOOKMARK is an autonamed bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-autonamed-bookmark-p bookmark))
+
+  (defun icicle-bookmark-autonamed-this-buffer-p (bookmark)
+    "Return non-nil if BOOKMARK is an autonamed bookmark for this buffer.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-autonamed-this-buffer-bookmark-p bookmark))
+
+  (defun icicle-bookmark-bookmark-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a bookmark-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-bookmark-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-bookmark-list-p (bookmark)
+    "Return non-nil if BOOKMARK is a bookmark-list bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-bookmark-list-bookmark-p bookmark))
+
+  (defun icicle-bookmark-desktop-p (bookmark)
+    "Return non-nil if BOOKMARK is a desktop bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-desktop-bookmark-p bookmark))
+
+  (defun icicle-bookmark-dired-p (bookmark)
+    "Return non-nil if BOOKMARK is a Dired bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-dired-bookmark-p bookmark))
+
+  (defun icicle-bookmark-dired-this-dir-p (bookmark)
+    "Return non-nil if BOOKMARK is a Dired bookmark for this buffer.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-dired-this-dir-bookmark-p bookmark))
+
+  (defun icicle-bookmark-dired-wildcards-p (bookmark)
+    "Return non-nil if BOOKMARK bookmarks a Dired buffer with wildcards.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-dired-wildcards-bookmark-p bookmark))
+
+  (defun icicle-bookmark-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-file-this-dir-p (bookmark)
+    "Return non-nil if BOOKMARK is a file bookmark for this directory.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-file-this-dir-bookmark-p bookmark))
+
+  (defun icicle-bookmark-flagged-p (bookmark)
+    "Return non-nil if BOOKMARK is flagged for deletion in `*Bookmark List*'.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-flagged-bookmark-p bookmark))
+
+  (defun icicle-bookmark-function-p (bookmark)
+    "Return non-nil if BOOKMARK is a function bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-function-bookmark-p bookmark))
+
+  (defun icicle-bookmark-gnus-p (bookmark)
+    "Return non-nil if BOOKMARK is a Gnus bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-gnus-bookmark-p bookmark))
+
+  (defun icicle-bookmark-icicle-search-hits-p (bookmark)
+    "Return non-nil if BOOKMARK records a list of Icicles search hits.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-icicle-search-hits-bookmark-p bookmark))
+
+  (defun icicle-bookmark-image-p (bookmark)
+    "Return non-nil if BOOKMARK is an image-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-image-bookmark-p bookmark))
+
+  (defun icicle-bookmark-info-p (bookmark)
+    "Return non-nil if BOOKMARK is an Info bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-info-bookmark-p bookmark))
+
+  (defun icicle-bookmark-last-specific-buffer-p (bookmark)
+    "Return non-nil if BOOKMARK's buffer is `bmkp-last-specific-buffer'.
+That is the buffer last used by command `bmkp-this-buffer-bmenu-list'
+to list bookmarks for a specific buffer in `*Bookmark List*'.
+
+If BOOKMARK is a cons with a string car, then the car is used as the
+effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-last-specific-buffer-p bookmark))
+
+  (defun icicle-bookmark-last-specific-file-p (bookmark)
+    "Return non-nil if BOOKMARK's file is `bmkp-last-specific-buffer'.
+That is the file last used by command `bmkp-this-file-bmenu-list' to
+list bookmarks for a specific file in `*Bookmark List*'.
+
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-last-specific-file-p bookmark))
+
+  (when (require 'bookmark+-lit nil t)
+    (defun icicle-bookmark-lighted-p (bookmark)
+      "Return non-nil if BOOKMARK is a highlighted bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+      (when (consp bookmark) (setq bookmark  (car bookmark)))
+      (when icicle-multi-completing-p
+        (let ((icicle-list-use-nth-parts  '(1)))
+          (setq bookmark  (icicle-transform-multi-completion bookmark))))
+      (bmkp-lighted-p bookmark)))
+
+  (defun icicle-bookmark-local-directory-p (bookmark)
+    "Return non-nil if BOOKMARK is a local-directory bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-local-directory-bookmark-p bookmark))
+
+  (defun icicle-bookmark-local-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a local-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-local-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-man-p (bookmark)
+    "Return non-nil if BOOKMARK is a `man'-page bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-man-bookmark-p bookmark))
+
+  (defun icicle-bookmark-marked-p (bookmark)
+    "Return non-nil if BOOKMARK is marked in `*Bookmark List*'.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-marked-bookmark-p bookmark))
+
+  (defun icicle-bookmark-modified-p (bookmark)
+    "Return non-nil if BOOKMARK is a modified (unsaved) bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-modified-bookmark-p bookmark))
+
+  (defun icicle-bookmark-non-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a non-file bookmark (e.g `*scratch*').
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-non-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-omitted-p (bookmark)
+    "Return non-nil if BOOKMARK is omitted in `*Bookmark List*'.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-omitted-bookmark-p bookmark))
+
+  (defun icicle-bookmark-orphaned-file-p (bookmark)
+    "Return non-nil if BOOKMARK is an orphaned-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-orphaned-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-orphaned-local-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a orphaned-local-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-orphaned-local-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark--p (bookmark)
+    "Return non-nil if BOOKMARK is a orphaned-remote-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-orphaned-remote-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-region-p (bookmark)
+    "Return non-nil if BOOKMARK has region information.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-region-bookmark-p bookmark))
+
+  (defun icicle-bookmark-remote-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a remote-file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-remote-file-bookmark-p bookmark))
+
+  (defun icicle-bookmark-sequence-p (bookmark)
+    "Return non-nil if BOOKMARK is a sequence (composite) bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-sequence-bookmark-p bookmark))
+
+  (defun icicle-bookmark-snippet-p (bookmark)
+    "Return non-nil if BOOKMARK is a snippet bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-snippet-bookmark-p bookmark))
+
+  (defun icicle-bookmark-tagged-p (bookmark)
+    "Return non-nil if BOOKMARK is a tagged bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-tagged-bookmark-p bookmark))
+
+  (defun icicle-bookmark-temporary-p (bookmark)
+    "Return non-nil if BOOKMARK is a temporary bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-temporary-bookmark-p bookmark))
+
+  (defun icicle-bookmark-this-buffer-p (bookmark)
+    "Return non-nil if BOOKMARK is a bookmark for this buffer.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-this-buffer-p bookmark))
+
+  (defun icicle-bookmark-this-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a bookmark for this file.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-this-file-p bookmark))
+
+  (defun icicle-bookmark-url-p (bookmark)
+    "Return non-nil if BOOKMARK is a URL bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-url-bookmark-p bookmark))
+
+  (defun icicle-bookmark-url-browse-p (bookmark)
+    "Return non-nil if BOOKMARK is a `browse-url' bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-url-browse-bookmark-p bookmark))
+
+  (defun icicle-bookmark-variable-list-p (bookmark)
+    "Return non-nil if BOOKMARK is a variable-list bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-variable-list-bookmark-p bookmark))
+
+  (defun icicle-bookmark-w3m-p (bookmark)
+    "Return non-nil if BOOKMARK is a W3M bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-w3m-bookmark-p bookmark))
+
+  )
+
+
+;;(@* "Buffer-Completion Predicates")
+;;  ** Buffer-Completion Predicates **
+
+(when (fboundp 'interesting-buffer-p)   ; In `misc-cmds.el'.
+  (defun icicle-interesting-buffer-p (buffer-or-name)
+    "Return non-nil if BUFFER-OR-NAME is or names an interesting buffer.
+This means that the buffer is live and its name does not start with a
+space.
+
+If BUFFER-OR-NAME is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates."
+    (when (consp buffer-or-name) (setq buffer-or-name  (car buffer-or-name)))
+    (when (stringp buffer-or-name) (setq buffer-or-name  (get-buffer buffer-or-name)))
+    (interesting-buffer-p buffer-or-name)))
+
+(when (fboundp 'next-error-buffer-p)    ; Emacs 22+
+  (defun icicle-next-error-buffer-p (buffer-or-name &optional avoid-current
+                                     extra-test-inclusive extra-test-exclusive)
+    "Return non-nil if BUFFER-OR-NAME is or names a `next-error' buffer.
+If BUFFER-OR-NAME is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.
+
+If AVOID-CURRENT is non-nil, treat the current buffer only as an
+absolute last resort.
+
+EXTRA-TEST-INCLUSIVE, if non-nil, is a function that is called in each
+buffer that normally would not qualify.  If it returns non-nil then
+so does `next-error-buffer-p'.
+
+EXTRA-TEST-EXCLUSIVE, if non-nil, is a function that is called in each
+buffer that normally would qualify.  If it returns nil then so does
+`next-error-buffer-p'."
+    (when (consp buffer-or-name) (setq buffer-or-name  (car buffer-or-name)))
+    (when (stringp buffer-or-name) (setq buffer-or-name  (get-buffer buffer-or-name)))
+    (next-error-buffer-p buffer-or-name avoid-current extra-test-inclusive extra-test-exclusive)))
+
+(defun icicle-compilation-buffer-p (buffer-or-name)
+  "Return non-nil if BUFFER-OR-NAME is or names a compilation buffer.
+If BUFFER-OR-NAME is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates."
+  (when (consp buffer-or-name) (setq buffer-or-name  (car buffer-or-name)))
+  (when (stringp buffer-or-name) (setq buffer-or-name  (get-buffer buffer-or-name)))
+  (compilation-buffer-p buffer-or-name))
+
+(defun icicle-special-display-p (buffer-name)
+  "Return non-nil if a buffer named BUFFER-NAME gets a special frame.
+More precisely, return t if `special-display-buffer-names' or
+`special-display-regexps' contains a string entry equaling or matching
+BUFFER-NAME, respectively.  If `special-display-buffer-names' or
+`special-display-regexps' contains a list entry whose car equals or
+matches BUFFER-NAME, the return value is the cdr of that entry.
+
+If BUFFER-NAME is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates."
+  (when (consp buffer-name) (setq buffer-name  (car buffer-name)))
+  (special-display-p buffer-name))
+
+(defun icicle-buffer-modified-p (buffer-or-name)
+  "Return non-nil if BUFFER-OR-NAME is or names a buffer that is modified.
+Same as `buffer-modified-p' except that it returns non-nil if the
+argument is a string naming a modified buffer.  If the argument is a
+cons with a string car, then the car is used as the effective
+argument.  This is so that the function can be used to filter
+completion candidates."
+  (when (consp buffer-or-name) (setq buffer-or-name  (car buffer-or-name)))
+  (when (stringp buffer-or-name) (setq buffer-or-name  (get-buffer buffer-or-name)))
+  (and buffer-or-name  (buffer-modified-p buffer-or-name)))
+
+;;(@* "Color-Completion Predicates")
+;;  ** Color-Completion Predicates **
+
+(when (fboundp 'color-defined-p)        ; Emacs 22+
+  (defun icicle-color-defined-p (color &optional frame)
+    "Return non-nil if COLOR is supported on frame FRAME.
+COLOR should be a string naming a color (e.g. \"white\"), or a
+string specifying a color's RGB components (e.g. \"#ff12ec\"), or
+the symbol `unspecified'.
+
+If COLOR is a cons with a string car, then the car is used as the
+effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is a color name and whose second part is hex RGB.
+In this case, the second part is tested.
+
+This function returns nil if COLOR is the symbol `unspecified',
+or one of the strings \"unspecified-fg\" or \"unspecified-bg\".
+
+If FRAME is omitted or nil, use the selected frame."
+    (when (consp color) (setq color  (car color)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(2)))
+        (setq color  (icicle-transform-multi-completion color))))
+    (and (not (member color '(unspecified "unspecified-bg" "unspecified-fg")))
+         (if (member (framep (or frame  (selected-frame))) '(x w32 ns))
+             (xw-color-defined-p color frame)
+           (numberp (tty-color-translate color frame))))))
+
+(when (fboundp 'color-gray-p)        ; Emacs 22+
+  (defun icicle-color-gray-p (color &optional frame)
+    "Return non-nil if COLOR is a shade of gray (or white or black).
+See `icicle-color-defined-p' for COLOR.
+FRAME specifies the frame and thus the display for interpreting COLOR.
+If FRAME is nil or omitted, use the selected frame."
+    (when (consp color) (setq color  (car color)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(2)))
+        (setq color  (icicle-transform-multi-completion color))))
+    (color-gray-p color frame)))
+
+(when (fboundp 'color-supported-p)        ; Emacs 22+
+  (defun icicle-color-supported-p (color &optional frame background-p)
+    "Return non-nil if COLOR can be displayed on FRAME.
+See `icicle-color-defined-p' for COLOR.
+BACKGROUND-P non-nil means COLOR is used as a background.
+Otherwise, this function tells whether it can be used as a foreground.
+If FRAME is nil or omitted, use the selected frame."
+    (when (consp color) (setq color  (car color)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(2)))
+        (setq color  (icicle-transform-multi-completion color))))
+    (color-supported-p color frame background-p)))
+
+;;(@* "Face-Completion Predicates")
+;;  ** Face-Completion Predicates **
+
+(defun icicle-face-bold-p (face &optional frame inherit)
+  "Return non-nil if the font of FACE is bold on FRAME.
+If FACE is a cons with a string car, then the car is used as the
+name of the face.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+as produced by `icicle-make-face-candidate'.
+
+If optional argument FRAME is given, report on FACE in that frame.
+If FRAME is t, report on the defaults for face FACE (for new frames).
+If FRAME is omitted or nil, use the selected frame.
+Optional argument INHERIT is passed to `face-attribute'.
+Use `face-attribute' for finer control."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (if (> emacs-major-version 21)
+      (face-bold-p face frame inherit)
+    (face-bold-p face frame)))
+
+(defun icicle-face-differs-from-default-p (face &optional frame)
+  "Return non-nil if FACE displays differently from the default face.
+See `icicle-face-bold-p' for FACE.
+If optional argument FRAME is given, report on FACE in that frame.
+If FRAME is t, report on the defaults for FACE (for new frames).
+If FRAME is omitted or nil, use the selected frame."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (face-differs-from-default-p face frame))
+
+(defun icicle-face-inverse-video-p (face &optional frame inherit)
+  "Return non-nil if FACE specifies a non-nil inverse-video.
+See `icicle-face-bold-p' for arguments."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (if (> emacs-major-version 21)
+      (face-inverse-video-p face frame inherit)
+    (face-inverse-video-p face frame)))
+
+(defun icicle-face-italic-p (face &optional frame inherit)
+  "Return non-nil if the font of FACE is italic on FRAME.
+See `icicle-face-bold-p' for arguments."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (if (> emacs-major-version 21)
+      (face-italic-p face frame inherit)
+    (face-italic-p face frame)))
+
+(defun icicle-face-nontrivial-p (face &optional frame)
+  "Return non-nil if FACE has some non-nil attribute.
+See `icicle-face-bold-p' for FACE.
+If optional argument FRAME is given, report on FACE in that frame.
+If FRAME is t, report on the defaults for FACE (for new frames).
+If FRAME is omitted or nil, use the selected frame."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (face-differs-from-default-p face frame))
+
+(defun icicle-face-underline-p (face &optional frame inherit)
+  "Return non-nil if the font of FACE specifies non-nil underlining.
+See `icicle-face-bold-p' for arguments."
+  (when (consp face) (setq face  (car face)))
+  (when (and icicle-multi-completing-p  (stringp face))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq face  (icicle-transform-multi-completion face))))
+  (when (stringp face) (setq face  (intern face)))
+  (if (> emacs-major-version 21)
+      (face-underline-p face frame inherit)
+    (face-underline-p face frame)))
+
+;;(@* "File- and Directory-Completion Predicates")
+;;  ** File- and Directory-Completion Predicates **
+
+(defun icicle-file-accessible-directory-p (file-or-dir)
+  "Return non-nil if FILE-OR-DIR names a directory you can open.
+For the value to be non-nil, FILE-OR-DIR must specify the name of a
+directory as a file, and the directory must let you open files in it.
+In order to use a directory as the current directory of a buffer, this
+predicate must return non-nil.  A directory-name spec may be given
+instead; then the value is non-nil if the directory so specified
+exists and really is a readable and searchable directory.
+
+FILE-OR-DIR is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+  (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
+  (file-accessible-directory-p file-or-dir))
+
+(defun icicle-file-directory-p (file-or-dir)
+  "Return t if FILE-OR-DIR names an existing directory.
+Symbolic links to directories count as directories.
+See `file-symlink-p' to distinguish symlinks.
+
+FILE-OR-DIR is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+  (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
+  (file-directory-p file-or-dir))
+
+(defun icicle-looks-like-dir-name-p (file-or-dir)
+  "Return non-nil if FILE-OR-DIR looks like a directory name.
+If FILE-OR-DIR is not a string, return nil.  Otherwise, FILE-OR-DIR
+can be an absolute or a relative file name.
+
+This compares FILE-OR-DIR with the directory part of its name, or with
+`default-directory' if there is no directory part.
+
+This does not do the file-handler processing that `file-directory-p'
+does, so it is not a replacement for that function.  And unlike
+`file-directory-p', this returns non-nil for an argument like
+\"~/foo//usr/\"."
+  (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
+  (and (stringp file-or-dir)  (string= file-or-dir (icicle-file-name-directory-w-default file-or-dir))))
+
+;; Same as `dired-nondirectory-p', except this accepts also a cons.
+(defun icicle-nondirectory-p (file-or-dir)
+  "Return non-nil if FILE-OR-DIR does not name directory.
+Symbolic links to directories count as directories.
+See `file-symlink-p' to distinguish symlinks.
+
+FILE-OR-DIR is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+  (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
+  (not (file-directory-p file-or-dir)))
+
+(defun icicle-file-compressed-p (filename)
+  "Return non-nil if FILENAME names a compressed file.
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (and (require 'jka-compr nil t)  (icicle-string-match-p (jka-compr-build-file-regexp) filename)))
+
+(when (fboundp 'ffap-file-remote-p)     ; In `ffap.el'
+  (defun icicle-ffap-file-remote-p (filename)
+    "Return non-nil if FILENAME looks like it names a remote file.
+The non-nil value is FILENAME (maybe slightly improved)."
+    (when (consp filename) (setq filename  (car filename)))
+    (ffap-file-remote-p filename))
+
+  (defun icicle-ffap-url-p (url)
+    "Return non-nil if URL looks like a URL.
+The non-nil value is URL (maybe slightly improved)."
+    (when (consp url) (setq url  (car url)))
+    (ffap-url-p url)))
+
+(when (fboundp 'recentf-include-p)
+  (defun icicle-recentf-include-p (filename)
+    "Return non-nil if FILENAME is not to be excluded by `recentf-exclude'.
+FILENAME is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+    (when (consp filename) (setq filename  (car filename)))
+    (recentf-include-p filename)))
+
+(when (fboundp 'recentf-keep-p)         ; In `recentf.el'
+  (defun icicle-recentf-keep-p (filename)
+    "Return non-nil if FILENAME is to be kept, according to `recentf-keep'.
+FILENAME is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+    (when (consp filename) (setq filename  (car filename)))
+    (recentf-keep-p filename)))
+
+(defun icicle-file-executable-p (file-or-dir)
+  "Return non-nil if FILE-OR-DIR can be executed by you.
+For a directory, this means you can access files in that directory.
+\(It is generally better to use `file-accessible-directory-p' for that
+purpose, however.)
+
+FILE-OR-DIR is normally a string, but it can also be a cons whose car
+is a string.  This is so that the function can be used to filter
+absolute file-name completion candidates."
+  (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
+  (file-executable-p file-or-dir))
+
+(defun icicle-file-exists-p (file)
+  "Return non-nil if FILE exists (whether or not you can read it).
+FILE is normally a string, but it can also be a cons whose car is a
+string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp file) (setq file  (car file)))
+  (file-exists-p file))
+
+(defun icicle-file-locked-p (file)
+  "Return a value indicating whether FILE is locked.
+The value is nil if FILE is not locked, t if it is locked by you, else
+a string saying which user has locked it.
+
+FILE is normally a string, but it can also be a cons whose car is a
+string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp file) (setq file  (car file)))
+  (file-locked-p file))
+
+(defun icicle-file-name-absolute-p (filename)
+  "Return non-nil if FILENAME specifies an absolute file or directory name.
+On Unix, this is a name starting with `/' or `~'.
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (file-name-absolute-p filename))
+
+;; NOTE: This is *not* a general substitute for `file-readable-p'.
+(defun icicle-file-readable-p (filename)
+  "Return non-nil if FILENAME names a readable file.
+Return nil if FILENAME is \"\" or it names a directory.
+
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (and (not (string= "" filename))  (file-readable-p filename)  (not (file-directory-p filename))))
+
+(defun icicle-file-regular-p (filename)
+  "Return non-nil if FILENAME names a regular file.
+This is the sort of file that holds an ordinary stream of data bytes.
+Symbolic links to regular files count as regular files.
+See `file-symlink-p' to distinguish symlinks.
+
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (file-regular-p filename))
+
+
+;; NOTE: This is *not* a general substitute for `file-remote-p'.
+(defun icicle-file-remote-p (filename)
+  "Non-nil means FILENAME is likely to name a remote file or directory.
+For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
+then this includes a file on a mapped network drive.
+
+Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
+those functions are not defined then return nil.
+
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (or (and (eq system-type 'windows-nt)
+           ;; $$$$  (save-match-data   ; IS THIS NEEDED?
+           (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" filename))
+           (eq 0 (condition-case nil
+                (icicle-ms-windows-NET-USE (match-string 1 filename))
+              (error nil)))
+           icicle-network-drive-means-remote-flag)
+      (and (fboundp 'file-remote-p)  (file-remote-p filename))
+      (and (stringp filename)  (string-match "\\`/[^/]+:" filename)  (match-string 0 filename))))
+
+(defun icicle-file-symlink-p (filename)
+  "Return non-nil if FILENAME is the name of a symbolic link.
+The value is the link target, as a string.  Otherwise it returns nil.
+This function does not check whether the link target exists.
+
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (file-symlink-p filename))
+
+;; NOTE: This is *not* a general substitute for `file-writable-p'.
+(defun icicle-file-writable-p (filename)
+  "Return non-nil if FILENAME names a writable file.
+Return nil if FILENAME is \"\" or it names a directory.
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (and (not (string= "" filename))  (file-writable-p filename)  (not (file-directory-p filename))))
+
+(defun icicle-image-file-p (filename)
+  "Return non-nil if FILENAME names an image file.
+The regexp value of `image-file-name-regexp' is used for the test.
+Returns nil if library `image-file.el' cannot be loaded, so use this
+only for Emacs 23 and later."
+  (when (consp filename) (setq filename  (car filename)))
+  (and (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+       (fboundp 'image-file-name-regexp)
+       (require 'image-file nil t)
+       (icicle-string-match-p (image-file-name-regexp) filename)))
+
+;;(@* "Frame-Completion Predicates")
+;;  ** Frame-Completion Predicates **
+
+(defun icicle-frame-splittable-p (&optional frame)
+  "Return non-nil if FRAME can be split.
+This means that frame parameter `unsplittable' is absent or nil.
+FRAME can be a frame or a cons (FNAME . FR), as for an element in
+the return value of `icicle-make-frame-alist', in which case it is
+frame FR that is tested."
+  (when (consp frame) (setq frame  (cdr frame)))
+  (not (icicle-frame-unsplittable-p frame)))
+
+(defun icicle-frame-unsplittable-p (&optional frame)
+  "Return non-nil if FRAME cannot be split.
+This means that frame parameter `unsplittable' is non-nil.
+FRAME can be a frame or a cons (FNAME . FR), as for an element in
+the return value of `icicle-make-frame-alist', in which case it is
+frame FR that is tested."
+  (when (consp frame) (setq frame  (cdr frame)))
+  (cdr (assq 'unsplittable (frame-parameters frame))))
+
+(defun icicle-frame-invisible-p (frame)
+  "Return non-nil if FRAME can is currently invisible.
+This means that FRAME is live and `frame-visible-p' returns nil.
+FRAME can be a frame or a cons (FNAME . FR), as for an element in
+the return value of `icicle-make-frame-alist', in which case it is
+frame FR that is tested."
+  (when (consp frame) (setq frame  (cdr frame)))
+  (not (frame-visible-p frame)))
+
+
+(when (fboundp 'frcmds-frame-iconified-p)
+  (defun icicle-frame-iconified-p (frame)
+    "Return non-nil if FRAME is iconified.
+This means that FRAME is live and `frame-visible-p' returns `icon'.
+FRAME can be a frame or a cons (FNAME . FR), as for an element in
+the return value of `icicle-make-frame-alist', in which case it is
+frame FR that is tested."
+    (when (consp frame) (setq frame  (cdr frame)))
+    (frcmds-frame-iconified-p frame)))
+
+(when (fboundp 'thumfr-thumbnail-frame-p) ; In `thumb-frm.el'
+  (defun icicle-frame-thumbnail-p (&optional frame)
+    "Return non-nil if FRAME is a thumbnail frame.
+This means that frame parameter `thumfr-thumbnail-frame' is non-nil.
+FRAME can be a frame or a cons (FNAME . FR), as for an element in
+the return value of `icicle-make-frame-alist', in which case it is
+frame FR that is tested."
+    (when (consp frame) (setq frame  (cdr frame)))
+    (thumfr-thumbnail-frame-p frame)))
+
+;;(@* "Package-Completion Predicates")
+;;  ** Package-Completion Predicates **
+
+(when (require 'package nil t)          ; Emacs 24+
+  (defun icicle-package-built-in-p (package &optional min-version)
+    "Same as `package-built-in-p', but PACKAGE can be a string or a cons.
+PACKAGE is normally a symbol, but it can also be a string that names a
+package or a cons whose car is such a string.  This is so that the
+function can be used to filter completion candidates."
+    (when (consp package) (setq package  (car package)))
+    (when (stringp package) (setq package  (intern package)))
+    (package-built-in-p package min-version))
+
+  (defun icicle-package-disabled-p (package &optional version)
+    "Same as `package-disabled-p', but PACKAGE can be a string or a cons.
+PACKAGE is normally a symbol, but it can also be a string that names a
+package or a cons whose car is such a string.  This is so that the
+function can be used to filter completion candidates."
+    (when (consp package) (setq package  (car package)))
+    (when (stringp package) (setq package  (intern package)))
+    (package-disabled-p package version))
+
+  (defun icicle-package-installed-p (package &optional min-version)
+    "Same as `package-installed-p', but PACKAGE can be a string or a cons.
+PACKAGE is normally a symbol, but it can also be a string that names a
+package or a cons whose car is such a string.  This is so that the
+function can be used to filter completion candidates."
+    (when (consp package) (setq package  (car package)))
+    (when (stringp package) (setq package  (intern package)))
+    (package-installed-p package min-version)))
+
+;;(@* "Special Candidate-Completion Predicates")
+;;  ** Special Candidate-Completion Predicates **
+
+(defun icicle-special-candidate-p (candidate)
+  "Return non-nil if CANDIDATE is a special candidate.
+The meaning of \"special candidate\" depends on the context.
+For example, during key completion local key bindings are special
+candidates.
+
+Special candidates are highlighted in buffer `*Completions*' using
+face `icicle-special-candidate'."
+  (when (consp candidate) (setq candidate  (car candidate)))
+  (or (and (symbolp candidate)  (get candidate 'icicle-special-candidate))
+      (and (stringp candidate)
+           (stringp icicle-special-candidate-regexp)
+           (icicle-string-match-p icicle-special-candidate-regexp candidate))
+      (and (stringp candidate)
+           (let ((fprop  (get-text-property 0 'face candidate)))
+             (if (consp fprop)
+                 (memq 'icicle-special-candidate fprop)
+               (eq 'icicle-special-candidate fprop))))))
+
+(defun icicle-not-special-candidate-p (candidate)
+  "Return non-nil if CANDIDATE is not a special candidate."
+  (not (icicle-special-candidate-p candidate)))
+
+;;(@* "Symbol-Completion Predicates")
+;;  ** Symbol-Completion Predicates **
+
+;; Do not bother with `user-variable-p'.  For Emacs > 22 it is the same as `custom-variable-p'.
+(defun icicle-custom-variable-p (variable)
+  "Return non-nil if VARIABLE is a customizable variable.
+A customizable variable is either (i) a variable whose property
+list contains a non-nil `standard-value' or `custom-autoload'
+property, or (ii) an alias for another customizable variable.
+
+If VARIABLE is a cons with a string car, then the car is used as the
+name of the face.  This is so that the function can be used to filter
+completion candidates.  The string can be a multi-completion
+whose first part is the variable name."
+  (when (consp variable) (setq variable  (car variable)))
+  (when (and icicle-multi-completing-p  (stringp variable))
+    (let ((icicle-list-use-nth-parts  '(1)))
+      (setq variable  (icicle-transform-multi-completion variable))))
+  (when (stringp variable) (setq variable  (intern variable)))
+  (custom-variable-p variable))
+
+(defun icicle-binary-option-p (symbol)
+  "Return non-nil if SYMBOL is a user option with custom-type `boolean'.
+SYMBOL is normally a symbol, but it can also be a string that names a
+symbol or a cons whose car is such a string.  This is so that the
+function can be used to filter completion candidates."
+  (when (consp symbol) (setq symbol  (car symbol)))
+  (when (stringp symbol) (setq symbol  (intern symbol)))
+  (eq (icicle-get-safe symbol 'custom-type) 'boolean))
+
+(when (fboundp 'special-variable-p)     ; Emacs 24+
+  (defun icicle-special-variable-p (variable)
+    "Return non-nil if VARIABLE's global binding is special.
+A special variable is one that is bound dynamically, even in a context
+where binding is lexical by default.
+
+If VARIABLE is a cons with a string car, then the car is used as the
+name of the face.  This is so that the function can be used to filter
+completion candidates."
+    (when (consp variable) (setq variable  (car variable)))
+    (when (stringp variable) (setq variable  (intern variable)))
+    (special-variable-p variable)))
+
+;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el', except this accepts also a cons or a string, so it
+;;; can be used as an element of `icicle-cand-preds-all', to filter completion candidates.
+(defun icicle-defined-thing-p (thing)
+  "Return non-nil if THING is defined as a thing-at-point type.
+THING is normally a symbol, but it can also be a string that names a
+symbol or a cons whose car is such a string.  This is so that the
+function can be used to filter completion candidates."
+  (when (consp thing) (setq thing  (car thing)))
+  (when (stringp thing) (setq thing  (intern thing)))
+  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+        (beginning-op  (get thing 'beginning-op))
+        (end-op        (get thing 'end-op))
+        (bounds-fn     (get thing 'bounds-of-thing-at-point))
+        (thing-fn      (get thing 'thing-at-point)))
+    (or (functionp forward-op)
+        (and (functionp beginning-op)  (functionp end-op))
+        (functionp bounds-fn)
+        (functionp thing-fn))))
+
+;;(@* "Window-Completion Predicates")
+;;  ** Window-Completion Predicates **
+
+(when (fboundp 'window-at-side-p)       ; Emacs 24+
+  (defun icicle-window-at-bottom-p (window)
+    "Return non-nil if WINDOW is at the bottom of its frame.
+WINDOW can be a window or a cons (WNAME . WIN), as for an element in
+the return value of `icicle-make-window-alist', in which case it is
+window WIN that is tested."
+    (when (consp window) (setq window  (cdr window)))
+    (window-at-side-p window 'bottom))
+
+  (defun icicle-window-at-left-p (window)
+    "Return non-nil if WINDOW is at the left side of its frame.
+WINDOW can be a window or a cons (WNAME . WIN), as for an element in
+the return value of `icicle-make-window-alist', in which case it is
+window WIN that is tested."
+    (when (consp window) (setq window  (cdr window)))
+    (window-at-side-p window 'left))
+
+  (defun icicle-window-at-right-p (window)
+    "Return non-nil if WINDOW is at the right side of its frame.
+WINDOW can be a window or a cons (WNAME . WIN), as for an element in
+the return value of `icicle-make-window-alist', in which case it is
+window WIN that is tested."
+    (when (consp window) (setq window  (cdr window)))
+    (window-at-side-p window 'right))
+
+  (defun icicle-window-at-top-p (window)
+    "Return non-nil if WINDOW is at the top of its frame.
+WINDOW can be a window or a cons (WNAME . WIN), as for an element in
+the return value of `icicle-make-window-alist', in which case it is
+window WIN that is tested."
+    (when (consp window) (setq window  (cdr window)))
+    (window-at-side-p window 'top)))
+
+(when (fboundp 'window-deletable-p)     ; Emacs 24+
+  (defun icicle-window-deletable-p (&optional window)
+    "Return non-nil if WINDOW can be safely deleted from its frame.
+Same as `window-deletable-p', but WINDOW can be a cons (WNAME . WIN).
+If it is such a cons, it is window WIN that is tested."
+    (when (consp window) (setq window  (cdr window)))
+    (window-deletable-p window)))
+
+(defun icicle-window-dedicated-p (&optional window)
+  "Same as `window-dedicated-p', but WINDOW can be a cons (WNAME . WIN).
+If it is such a cons, it is window WIN that is tested."
+  (when (consp window) (setq window  (cdr window)))
+  (window-dedicated-p window))
+
+(defun icicle-window-invisible-p (&optional window)
+  "Return non-nil if WINDOW is invisible, that is, on an invisible frame.
+WINDOW can be a window or a cons (WNAME . WIN), where WNAME is a name.
+If it is such a cons, it is window WIN that is tested."
+  (when (consp window) (setq window  (cdr window)))
+  (not (frame-visible-p (window-frame window))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
