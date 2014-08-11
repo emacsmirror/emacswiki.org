@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Jul 28 10:03:50 2014 (-0700)
+;; Last-Updated: Mon Aug 11 14:55:09 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29659
+;;     Update #: 29674
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -648,7 +648,7 @@
 ;;     match) with more semantic search criteria.  After building up a
 ;;     complex predicate by using `M-&', you can save it to a variable
 ;;     with `C-M-&' and then reuse it later with `C-='.
-;;     See also (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
+;;     See also (@file :file-name "icicles-doc1.el" :to "`M-&': Satisfying Additional Predicates").
 ;;
 ;;  5. Icicles finds all of the qualified search contexts, and
 ;;     presents them to you as completion candidates.  As always for
@@ -6444,6 +6444,32 @@
 ;;    complete against all Unicode character names.  Or you can set it
 ;;    to any function that returns a value of the same form at that
 ;;    returned by `icicle-ucs-names' (hence `ucs-names').
+;;
+;;  * The options whose names start with prefix `icicle-cand-preds-'
+;;    are lists of predefined predicates that are used to filter
+;;    completion candidates when you narrow with `M-&'.  Option
+;;    `icicle-cand-preds-all' includes all such predicates, across all
+;;    types of candidate.  The other options, named
+;;    `icicle-cand-preds-for-TYPE', are each for a particular
+;;    completion TYPE.  For example, `icicle-cand-preds-for-bookmark'
+;;    provides predicates for narrowing bookmark candidates.  Option
+;;    `icicle-cand-preds-for-misc', is an exception: its predicates
+;;    apply to all candidate types.
+;;
+;;    These are the TYPE-specific options:
+;;
+;;      `icicle-cand-preds-for-bookmark'
+;;      `icicle-cand-preds-for-buffer'
+;;      `icicle-cand-preds-for-color'
+;;      `icicle-cand-preds-for-face'
+;;      `icicle-cand-preds-for-file'
+;;      `icicle-cand-preds-for-frame'
+;;      `icicle-cand-preds-for-package'
+;;      `icicle-cand-preds-for-symbol'
+;;      `icicle-cand-preds-for-variable'
+;;      `icicle-cand-preds-for-window'
+;;
+;;    See also (@file :file-name "icicles-doc1.el" :to "`M-&': Satisfying Additional Predicates").
  
 ;;(@* "File-Name and Directory-Name Completion Tips")
 ;;
@@ -9676,7 +9702,7 @@
 ;;  apply to the full alist-entry candidates that are supplied to
 ;;  `completing-read' or `read-file-name', not just to the textual
 ;;  candidates that are displayed in buffer `*Completions*'.
-;;  See (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
+;;  See (@file :file-name "icicles-doc1.el" :to "`M-&': Satisfying Additional Predicates").
  
 ;;(@* "Specifying Match Functions for Commands")
 ;;
