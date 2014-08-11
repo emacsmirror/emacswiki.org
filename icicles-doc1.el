@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul 27 20:01:04 2014 (-0700)
+;; Last-Updated: Sun Aug 10 19:30:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28212
+;;     Update #: 28268
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2999,29 +2999,45 @@
 ;;  ** `M-&': Satisfying Additional Predicates **
 ;;
 ;;  If you use Icicles, then you will use `M-*' or `S-SPC' very often.
-;;  This section describes a seldom-used feature that can be useful in
-;;  certain contexts.  If you are new to Icicles or you are unfamiliar
-;;  with Emacs Lisp, then you might want to just skim this section or
-;;  skip it and come back to it later.
+;;  This section describes a related feature that can also be useful.
+;;
+;;  (If you are new to Icicles or you are unfamiliar with Emacs Lisp,
+;;  then you might want to just skim this section for now or skip it
+;;  and come back to it later.)
 ;;
 ;;  Just as you can use `M-*' or `S-SPC' to narrow the set of
 ;;  candidates by matching an additional regexp, so you can use `M-&'
 ;;  (bound to `icicle-narrow-candidates-with-predicate') to narrow by
 ;;  satisfying an additional predicate.  The idea is the same; the
 ;;  only difference is that, instead of typing a regexp to match, you
-;;  type a predicate to satisfy.
+;;  type a predicate for the candidates to satisfy.
 ;;
-;;  The predicate is a Boolean function of a single completion
-;;  candidate.  At the prompt, you enter its name or its
-;;  lambda-expression definition (anonymous function).  The predicate
-;;  is used the same way as the PREDICATE argument to
-;;  `completing-read' and `read-file-name'.  This means that the
-;;  candidate argument to the predicate is whatever is used in the
-;;  original call to `completing-read' or `read-file-name'; it is not
-;;  just a string such as you see in buffer `*Completions*'.  To
-;;  provide an appropriate predicate, you must be familiar with the
-;;  kind of candidate expected by the command you invoked before just
-;;  before `M-&'.
+;;  `M-&' prompts you for a predicate.  This must be a Boolean
+;;  function of a single completion candidate.  At the prompt, you
+;;  enter its name or its lambda-expression definition (anonymous
+;;  function).
+;;
+;;  Completion is available for some existing predicate names
+;;  appropriate for the current command.  For example, if you use `C-x
+;;  4 f TAB M-&' then you can complete against the file-name
+;;  predicates named in option `icicle-cand-preds-for-file'.  This
+;;  lets you quickly filter by file type: directories, executables,
+;;  compressed files, remote files, and so on.  If you use a prefix
+;;  arg with `M-&' then additional predicate completion candidates are
+;;  available (they might or might not be appropriate for the current
+;;  command).
+;;
+;;  The predicate you choose is used the same way as the PREDICATE
+;;  argument to `completing-read' and `read-file-name'.  This means
+;;  that the candidate argument to the predicate is a full completion
+;;  candidate; it is not just a string such as you see in buffer
+;;  `*Completions*'.
+;;
+;;  The type of full completion candidate expected by the predicate
+;;  is, to start with, whatever is used in the original call to
+;;  `completing-read' or `read-file-name'.  To provide an appropriate
+;;  predicate, you must be familiar with the kind of candidate
+;;  expected by the command you invoked before just before `M-&'.
 ;;
 ;;  For example:
 ;;
@@ -3035,9 +3051,74 @@
 ;;    the CONTEXT.  An appropriate predicate would accept such a
 ;;    candidate as argument.
 ;;
-;;  Although entering a lambda expression at a prompt might not seem
-;;  too convenient, you can at least retrieve previously entered
-;;  predicates (using `M-p' and so on).
+;;  The type of candidate expected by the current command might be a
+;;  symbol, a string, or a cons with a string car.  It might even be
+;;  an Icicles multi-completion, which in its full form is a cons with
+;;  a list of strings as its car.
+;;
+;;  Knowing what kind of completions the original `completing-read' or
+;;  `read-file-name' call expects is not sufficient, however.  You
+;;  might use `M-&' after otherwise narrowing the set of candidates,
+;;  and narrowing changes the full candidates to be conses whose car
+;;  is a string.  For example, command `describe-variable' reads a
+;;  variable name, using completion with Lisp symbols as its full
+;;  candidates.  But if you narrow your input matches (e.g. using
+;;  `S-SPC'), then the full candidates are no longer symbols; they are
+;;  conses with symbol names (strings) as their cars.
+;;
+;;  So if you define your own predicate for use with a command such as
+;;  `describe-variable' then it will need to work with either a symbol
+;;  or a cons that has a symbol-name (string) as its car.
+;;
+;;  If you want to adapt an existing predicate that expects a
+;;  `*Completions*' display candidate (a string) then you can use
+;;  function `icicle-display-cand-from-full-cand' in your predicate
+;;  definition.  If multi-completion is involved then you can use
+;;  function `icicle-transform-multi-completion'.
+;;
+;;  In sum: if you want to adapt an existing predicate that expects an
+;;  argument that is not a cons with a string car, then convert the
+;;  car to what you need.  See the definition of function
+;;  `icicle-custom-variable-p' for an example.
+;;
+;;  User option `icicle-cand-preds-all' defines the predefined
+;;  candidate-filtering predicates, and these are grouped in user
+;;  options named `icicle-cand-preds-for-TYPE', where TYPE is the name
+;;  of a completion type (`bookmark', `buffer', `color', `face',
+;;  `file', `package', `variable', `window',...).  You can add a named
+;;  predicate to one of these options.
+;;
+;;  For example, you can customize option
+;;  `icicle-cand-preds-for-buffer', to add a buffer-name predicate
+;;  that you can then enter using completion.  (You will also want to
+;;  add it to option `icicle-cand-preds-all'.)
+;;
+;;  One of the completion-type options is
+;;  `icicle-cand-preds-for-misc'.  This is a catch-all category of
+;;  predicates that apply generally, to pretty much all completion
+;;  types.  These predicates are included as candidates whenever you
+;;  use `M-&'.
+;;
+;;  An important predicate in this catch-all group is
+;;  `icicle-special-candidate-p' (and its opposite,
+;;  `icicle-not-special-candidate-p').  This filter keeps only
+;;  candidates that are (or are not) "special candidates".  These are
+;;  candidates that are highlighted in `*Completions*' using face
+;;  `icicle-special-candidate' (actually, other faces can also be
+;;  used, in which case the doc of the particular command explains
+;;  this).
+;;
+;;  For example, command `icicle-apropos' shows function names as
+;;  special candidates, to help you distinguish them from variable
+;;  names.  And Icicles key completion distiguishes local key bindings
+;;  by showing them as special candidates.  And during file-name
+;;  completion directory names are shown as special candidates.
+;;
+;;  Typing a lambda expression to define a predicate on the fly is
+;;  handy and flexible, but it is of course much less convenient than
+;;  choosing a predefined predicate by name.  (Remember though, that
+;;  you can retrieve previously entered predicates, using `M-p' and so
+;;  on.)
 ;;
 ;;  You can also use `C-M-&' (bound to
 ;;  `icicle-save-predicate-to-variable') at any time during completion
