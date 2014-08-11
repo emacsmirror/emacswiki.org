@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Aug  6 16:55:55 2014 (-0700)
+;; Last-Updated: Sat Aug  9 15:33:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6918
+;;     Update #: 6944
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -17,15 +17,19 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `cus-theme', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `regexp-opt', `ring', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles-cmd1', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `info', `info+20', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+',
+;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -67,8 +71,8 @@
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
 ;;    `icicle-complete', (+)`icicle-complete-keys',
 ;;    (+)`icicle-complete-menu-bar',
-;;    `icicle-complete-thesaurus-entry', (+)`icicle-doc',
-;;    (+)`icicle-exchange-point-and-mark',
+;;    `icicle-complete-thesaurus-entry', `icicle-describe-package',
+;;    (+)`icicle-doc', (+)`icicle-exchange-point-and-mark',
 ;;    (+)`icicle-find-file-all-tags',
 ;;    (+)`icicle-find-file-all-tags-other-window',
 ;;    (+)`icicle-find-file-all-tags-regexp',
@@ -190,8 +194,7 @@
 ;;    `icicle-comint-search-send-input', `icicle-compilation-hook-fn',
 ;;    `icicle-compilation-search-in-context-fn',
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
-;;    `icicle-defined-thing-p', `icicle-doc-action',
-;;    `icicle-fn-doc-minus-sig',
+;;    `icicle-doc-action', `icicle-fn-doc-minus-sig',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -382,8 +385,9 @@
   ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
   ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
-  ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
-  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp, icicle-string-match-p, icicle-unlist
+  ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-defined-thing-p,
+  ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp,
+  ;; icicle-string-match-p, icicle-unlist
 (require 'icicles-cmd1)
   ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
   ;; icicle-bookmark-propertize-candidate, icicle-buffer-list, icicle-explore, icicle-face-list,
@@ -430,6 +434,8 @@
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
 (defvar icicle-complete-keys-ignored-prefix-keys) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-complete-keys-self-insert-ranges) ; In `icicles-var.el' (Emacs 22+)
+(defvar icicle-face-completing-p)       ; Here.
+(defvar icicle-package-completing-p)    ; Here.
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar replace-count)                  ; In `replace.el'.
@@ -1747,6 +1753,7 @@ returned."
        (icicle-list-join-string            ": ")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
+       (icicle-face-completing-p           t)
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
@@ -5578,19 +5585,6 @@ list includes the names of the symbols that satisfy
     (setq types  (sort types #'string-lessp))
     (mapcar #'list types)))
 
-;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
-(defun icicle-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined as a thing-at-point type."
-  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
-        (beginning-op  (get thing 'beginning-op))
-        (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'bounds-of-thing-at-point))
-        (thing-fn      (get thing 'thing-at-point)))
-    (or (functionp forward-op)
-        (and (functionp beginning-op)  (functionp end-op))
-        (functionp bounds-fn)
-        (functionp thing-fn))))
-
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;
 (defun icicle-hide/show-comments (&optional hide/show start end)
@@ -8232,6 +8226,42 @@ This command requires library `expand-region.el'."
   ((icicle-sort-comparer nil))          ; Bindings
   (unless (require 'expand-region nil t) ; First code
     (icicle-user-error "You need library `expand-region.el' for this command")))
+
+
+;; Based on the `describe-package' definition in `help-fns+.el'.  Try to keep the two synced.
+;;
+(when (fboundp 'describe-package)       ; Emacs 24+
+  (defun icicle-describe-package (package)
+    "Display the full documentation of PACKAGE (a symbol).
+During completion for a package name, you can use `M-&' to narrow the
+candidates to packages of different kinds."
+    (interactive
+     (let* ((guess  (function-called-at-point)))
+       (require 'finder-inf nil t)
+       ;; Load the package list if necessary (but don't activate them).
+       (unless package--initialized (package-initialize t))
+       (let ((packages                     (append (mapcar 'car package-alist)
+                                                   (mapcar 'car package-archive-contents)
+                                                   (mapcar 'car package--builtins)))
+             (icicle-package-completing-p  t))
+         (unless (memq guess packages) (setq guess  nil))
+         (setq packages  (mapcar 'symbol-name packages))
+         (let ((val  (completing-read (if guess
+                                          (format "Describe package (default %s): " guess)
+                                        "Describe package: ")
+                                      packages nil t nil nil guess)))
+           (list (if (equal val "") guess (intern val)))))))
+    (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
+                 (and package (symbolp package))))
+        (when (called-interactively-p 'interactive) (message "No package specified"))
+      (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
+      (with-help-window (help-buffer)
+        (with-current-buffer standard-output
+          (describe-package-1 package)
+          (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4+
+          (when (fboundp 'Info-make-manuals-xref) ; In `help-fns+.el', for Emacs 23.2+.
+            (Info-make-manuals-xref (concat (symbol-name package) " package")
+                                    nil nil (not (called-interactively-p 'interactive)))))))))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
