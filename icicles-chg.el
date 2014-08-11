@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Aug  6 16:59:25 2014 (-0700)
+;; Last-Updated: Sun Aug 10 18:02:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10994
+;;     Update #: 11131
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Moved to icicles-fn.el (and modified): icicle-binary-option-p.
+;;     icicle-apropos-variable: Bind icicle-variable-completing-p.
+;;     icicle-bookmark(-other-window), icicle-bookmark-list: Bind icicle-bookmark-completing-p.
+;;     icicle-apropos-variable: Bind icicle-variable-completing-p.
 ;; 2014/08/06 dadams
 ;;     icicle-other-window-or-frame:
 ;;        C-u C-u is select win from any frame. C-u C-u C-u also choosed from all frames.
@@ -1105,6 +1110,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Added: icicle-describe-package.
+;;     Moved to icicles-fn.el (and modified): icicle-defined-thing-p.
+;;     icicle-choose-faces: Bind icicle-face-completing-p.
 ;; 2014/08/06 dadams
 ;;     icicle-complete-keys, icicle-complete-menu-bar:
 ;;       Bind icicle-must-pass-after-match-predicate to nil.  (M-x ESC S-TAB did not complete.)
@@ -2049,6 +2058,51 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Added:
+;;       icicle-bookmark-autofile-p, icicle-bookmark-autonamed-p,
+;;       icicle-bookmark-autonamed-this-buffer-p, icicle-bookmark-bookmark-file-p,
+;;       icicle-bookmark-bookmark-list-p, icicle-bookmark-desktop-p, icicle-bookmark-dired-p,
+;;       icicle-bookmark-dired-this-dir-p, icicle-bookmark-dired-wildcards-p, icicle-bookmark-file-p,
+;;       icicle-bookmark-file-this-dir-p, icicle-bookmark-flagged-p, icicle-bookmark-function-p,
+;;       icicle-bookmark-gnus-p, icicle-bookmark-icicle-search-hits-p, icicle-bookmark-image-p,
+;;       icicle-bookmark-info-p, icicle-bookmark-last-specific-buffer-p,
+;;       icicle-bookmark-last-specific-file-p, icicle-bookmark-lighted-p,
+;;       icicle-bookmark-local-directory-p, icicle-bookmark-local-file-p, icicle-bookmark-man-p,
+;;       icicle-bookmark-marked-p, icicle-bookmark-modified-p, icicle-bookmark-non-file-p,
+;;       icicle-bookmark-omitted-p, icicle-bookmark-orphaned-file-p,
+;;       icicle-bookmark-orphaned-local-file-p, icicle-bookmark-orphaned-remote-file-p,
+;;       icicle-bookmark-region-p, icicle-bookmark-remote-file-p, icicle-bookmark-sequence-p,
+;;       icicle-bookmark-snippet-p, icicle-bookmark-tagged-p, icicle-bookmark-temporary-p,
+;;       icicle-bookmark-this-buffer-p, icicle-bookmark-this-file-p, icicle-bookmark-url-p,
+;;       icicle-bookmark-url-browse-p, icicle-bookmark-variable-list-p, icicle-bookmark-w3m-p,
+;;       icicle-buffer-modified-p, icicle-color-defined-p, icicle-color-gray-p,
+;;       icicle-color-supported-p, icicle-compilation-buffer-p, icicle-custom-variable-p,
+;;       icicle-face-bold-p, icicle-face-differs-from-default-p, icicle-face-inverse-video-p,
+;;       icicle-face-italic-p, icicle-face-nontrivial-p, icicle-face-underline-p,
+;;       icicle-ffap-file-remote-p, icicle-ffap-url-p, icicle-file-accessible-directory-p,
+;;       icicle-file-compressed-p, icicle-file-directory-p, icicle-file-executable-p,
+;;       icicle-file-exists-p, icicle-file-locked-p, icicle-file-name-absolute-p,
+;;       icicle-file-regular-p, icicle-file-symlink-p, icicle-frame-iconified-p,
+;;       icicle-frame-invisible-p,  icicle-frame-splittable-p, icicle-frame-thumbnail-p,
+;;       icicle-frame-unsplittable-p, icicle-interesting-buffer-p, icicle-next-error-buffer-p,
+;;       icicle-nondirectory-p, icicle-not-special-candidate-p, icicle-package-built-in-p,
+;;       icicle-package-disabled-p, icicle-package-installed-p, icicle-recentf-include-p,
+;;       icicle-recentf-keep-p, icicle-special-candidate-p, icicle-special-display-p, 
+;;       icicle-special-variable-p, icicle-window-at-bottom-p, icicle-window-at-left-p,
+;;       icicle-window-at-right-p, icicle-window-at-top-p, icicle-window-dedicated-p,
+;;       icicle-window-deletable-p, icicle-window-invisible-p.
+;;     Moved here from icicles-opt.el (and modified): icicle-image-file-p.
+;;     Moved here from icicles-cmd1.el (and modified): icicle-binary-option-p.
+;;     Moved here from icicles-cmd2.el (and modified): icicle-defined-thing-p.
+;;     Renamed: icicle-lisp-vanilla-completing-read to icicle-completing-read-default.
+;;     icicle-completing-read-default: Rewrote based on completing-read-default.  Added opt arg KEYMAP.
+;;     icicle-completing-read: Added optional arg KEYMAP.
+;;     icicle-read-from-minibuffer: When Emacs < 23 and DEFAULT-VALUE is a list, set it to the car.
+;;     Advise read-file-local-variable: Bind icicle-variable-completing-p.
+;;     icicle-file-readable-p, icicle-file-remote-p, icicle-looks-like-dir-name-p:
+;;       Make it work also for a cons (completion) arg.
+;;     icicle-completing-p: Rewrote to just look for a binding of [icicle-is-completion-map].
 ;; 2014/07/29 dadams
 ;;     icicle-read-file-name: For Emacs 23+ do not bind ffap vars to nil, so get multiple M-n defaults.
 ;;       This reverses the change from 2008/02/03.
@@ -4015,6 +4069,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/08/10 dadams
+;;     icicle-(buffer|file)-bindings: Bind icicle-(buffer|file)-completing-p.
+;;     icicle-define-bookmark-command-1, icicle-define-search-bookmark-command:
+;;       Bind icicle-multi-completing-p, icicle-bookmark-completing-p.
 ;; 2014/05/17 dadams
 ;;     Added: icicle-with-help-window.
 ;; 2014/04/28 dadams
@@ -4254,6 +4312,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Added: icicle-cand-preds (var and fn).
+;;     icicle-narrow-candidates-with-predicate:
+;;       Rewrote to provide completion against predefined cand predicates (Emacs 24+).
+;;       Added prefix arg, ALLP.
 ;; 2014/07/27 dadams
 ;;     Updated delete-selection PUT for icicle-self-insert per Emacs 24.4+.
 ;; 2014/06/21 dadams
@@ -5962,6 +6025,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/08/10 dadams
+;;     describe-face (advice): Bind icicle-face-completing-p.
+;;     icicle-minibuffer-setup: Do not exclude completing during progressive completion - e.g. for M-&.
 ;; 2014/07/27 dadams
 ;;     Added icicle-ORIG-complete (original def of command complete from completion.el).
 ;; 2014/06/07 dadams
@@ -7252,6 +7318,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Added: icicle-cand-preds-all, icicle-cand-preds-for-bookmark, icicle-cand-preds-for-buffer,
+;;            icicle-cand-preds-for-color, icicle-cand-preds-for-face, icicle-cand-preds-for-file,
+;;            icicle-cand-preds-for-frame, icicle-cand-preds-for-misc, icicle-cand-preds-for-package,
+;;            icicle-cand-preds-for-symbol, icicle-cand-preds-for-variable,
+;;            icicle-cand-preds-for-window.
+;;     Moved icicle-image-file-p to icicles-fn.el.
+;;     icicle-top-level-key-bindings: Added icicle-describe-package.
 ;; 2014/07/27 dadams
 ;;     Added: icicle-cmpl-include-cdabbrev-flag, icicle-cmpl-max-candidates-to-cycle.
 ;;     icicle-functions-to-redefine: Added complete to the list of functions.
@@ -8149,6 +8223,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2014/08/10 dadams
+;;     Added: icicle-completion-map-vars.
 ;; 2014/08/04 dadams
 ;;     icicle-read-expression-map: Typo introduced 2013/12/03: lisp-indent-line, not indent-lisp-line.
 ;;                                 Use indent-sexp for Emacs 20-21 (no indent-pp-sexp).
@@ -8601,6 +8677,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2014/08/10 dadams
+;;     New version, 2014.08.09: M-& completes.
 ;; 2014/05/17 dadams
 ;;     icicle-with-help-window, icicle-with-selected-window: Added to font-lock-keywords.
 ;;     icicle-with-help-window: Specified common-lisp-indent-function.
