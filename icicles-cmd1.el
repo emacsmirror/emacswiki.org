@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Aug  6 13:43:10 2014 (-0700)
+;; Last-Updated: Sun Aug 10 16:32:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27075
+;;     Update #: 27093
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -17,14 +17,18 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `cus-theme', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
-;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `package', `pp', `pp+', `regexp-opt', `ring',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -299,7 +303,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `custom-variable-p', `icicle-apropos-opt-action',
-;;    `icicle-binary-option-p', `icicle-bookmark-act-on-prop',
+;;    `icicle-bookmark-act-on-prop',
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help',
@@ -383,46 +387,46 @@
 ;;  ***** NOTE: The following functions defined in `dabbrev.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `dabbrev-completion' - Use Icicles minibuffer completion when there
-;;                         are multiple candidates.
+;;    `dabbrev-completion' - Use Icicles minibuffer completion when
+;;                           there are multiple candidates.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `bbdb-com.el' have
 ;;              been REDEFINED HERE:
-;;              (BBDB is available here: http://bbdb.sourceforge.net/.)
+;;              (BBDB is here: http://bbdb.sourceforge.net/.)
 ;;
-;;  `icicle-bbdb-complete-mail', `bbdb-complete-name' -
-;;                         Use Icicles minibuffer completion when there
-;;                         are multiple candidates.
+;;    `icicle-bbdb-complete-mail', `bbdb-complete-name' -
+;;                           Use Icicles minibuffer completion when
+;;                           there are multiple candidates.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `lisp.el' have
 ;;              been REDEFINED in Icicles:
 ;;
-;;  `lisp-complete-symbol' - Selects `*Completions*' window even if on
-;;                           another frame.
+;;    `lisp-complete-symbol' - Select `*Completions*' window even if
+;;                             on another frame.
 ;;
 ;;
 ;;  ***** NOTE: The following function defined in `simple.el' has
 ;;              been REDEFINED HERE:
 ;;
-;;  `repeat-complex-command' - Use `completing-read' to read command.
+;;    `repeat-complex-command' - Use `completing-read'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `cus-edit.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `customize-apropos', `customize-apropos-faces',
-;;  `customize-apropos-groups', `customize-apropos-options' -
-;;     Use `completing-read' to read the regexp.
-;;  `customize-face', `customize-face-other-window' - Multi-commands.
+;;    `customize-apropos', `customize-apropos-faces',
+;;    `customize-apropos-groups',
+;;    `customize-apropos-options' - Use `completing-read'.
+;;    `customize-face', `customize-face-other-window' - Multi-commands.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `window.el' are
 ;;              ADVISED HERE:
 ;;
-;;  `display-buffer', `switch-to-buffer',
-;;  `switch-to-buffer-other-window'.
+;;    `display-buffer', `switch-to-buffer',
+;;    `switch-to-buffer-other-window'.
 ;;
 ;;
 ;;  Key bindings made by Icicles: See "Key Bindings" in
@@ -2745,6 +2749,7 @@ See `icicle-apropos' for a description of PATTERN."
                                                                        (get s 'variable-documentation))))
                      (icompletep                                (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate    (and (not icompletep)  pred))
+                     (icicle-variable-completing-p              t)
                      (icicle-candidate-alt-action-fn            (or icicle-candidate-alt-action-fn
                                                                     (icicle-alt-act-fn-for-type "variable")))
                      (icicle-all-candidates-list-alt-action-fn ; `M-|'
@@ -2822,6 +2827,7 @@ using face `icicle-special-candidate'."
                                                                   (user-variable-p s))))
                      (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
                      (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+                     (icicle-variable-completing-p            t)
                      (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                                   (icicle-alt-act-fn-for-type
                                                                    (if icicle-fancy-candidates-p
@@ -4848,10 +4854,6 @@ candidates, as follows:
    (icicle-all-candidates-list-alt-action-fn ; `M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option")))))
 
-(defun icicle-binary-option-p (symbol)
-  "Non-nil if SYMBOL is a user option that has custom-type `boolean'."
-  (eq (icicle-get-safe symbol 'custom-type) 'boolean))
-
 (icicle-define-command icicle-increment-option ; Command name
   "Increment option's value using the arrow keys (`up', `down').
 Completion candidates are limited to options that have `integer',
@@ -5414,6 +5416,7 @@ position is highlighted."               ; Doc string
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
    (icicle-multi-completing-p              icicle-show-multi-completion-flag)
+   (icicle-bookmark-completing-p           t)
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
@@ -5485,6 +5488,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
    (icicle-multi-completing-p              icicle-show-multi-completion-flag)
+   (icicle-bookmark-completing-p           t)
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
@@ -10312,6 +10316,7 @@ Non-interactively:
    (enable-recursive-minibuffers                t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                      bookmark-completion-ignore-case)
    (icicle-multi-completing-p                   icicle-show-multi-completion-flag)
+   (icicle-bookmark-completing-p                t)
    (icicle-list-use-nth-parts                   '(1))
    (icicle-candidate-properties-alist           (if (not icicle-multi-completing-p)
                                                     ()
