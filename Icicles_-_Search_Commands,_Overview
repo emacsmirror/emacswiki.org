@@ -364,7 +364,7 @@ you have a predicate `verbp' that tests whether a word is an
 English verb form, then you can use that to limit word matches
 to verbs.  In this way, you
 can combine purely syntactic searching (regexp or text-property
-match) with more semantic search criteria.  After building up a complex predicate by using `##M-&##', you can save it to a [[variable]] with `##C-M-&##' and then reuse it later with `##C-=##'.  See also [[Icicles - Progressive Completion]].
+match) with more semantic search criteria.  After building up a complex predicate by using `##M-&##', you can save it to a [[variable]] with `##C-M-&##' and then reuse it later with `##C-=##'.  See also [[Icicles - Progressive Completion#Predicates|M-&: Satisfying Additional Predicates]].  
 
 # '''Icicles''' finds all of the qualified search contexts, and presents them to you as ''completion candidates''.  As always for
 '''Icicles''' completion, the number of search hits (matching candidates), is displayed in the [[mode line]] of buffer `*Completions*' -- e.g., '''`##72 candidates##''''.
