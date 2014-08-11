@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jul 27 16:17:15 2014 (-0700)
+;; Last-Updated: Sun Aug 10 17:10:25 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 5992
+;;     Update #: 6025
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,9 +17,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `cus-theme', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy',
-;;   `fuzzy-match', `hexrgb', `kmacro', `levenshtein', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `info', `info+20',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `naked', `package', `pp', `pp+', `regexp-opt',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,6 +82,13 @@
 ;;    `icicle-buffer-skip-functions', `icicle-buffer-sort',
 ;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
 ;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
+;;    `icicle-cand-preds-all', `icicle-cand-preds-for-bookmark',
+;;    `icicle-cand-preds-for-buffer', `icicle-cand-preds-for-color',
+;;    `icicle-cand-preds-for-face', `icicle-cand-preds-for-file',
+;;    `icicle-cand-preds-for-frame', `icicle-cand-preds-for-misc',
+;;    `icicle-cand-preds-for-package', `icicle-cand-preds-for-symbol',
+;;    `icicle-cand-preds-for-variable',
+;;    `icicle-cand-preds-for-window',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion',
 ;;    `icicle-C-l-uses-completion-flag',
@@ -220,9 +233,8 @@
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-compute-shell-command-candidates',
-;;    `icicle-edmacro-parse-keys', `icicle-image-file-p',
-;;    `icicle-kbd', `icicle-remap', `icicle-thing-at-point',
-;;    `icicle-widgetp'.
+;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
+;;    `icicle-thing-at-point', `icicle-widgetp'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -1292,6 +1304,270 @@ incrementally.
 See also option `icicle-inter-candidates-min-spaces' and (starting
 with Emacs 23) option `icicle-Completions-text-scale-decrease'."
   :type 'integer :group 'Icicles-Completions-Display)
+
+(defcustom icicle-cand-preds-for-bookmark (and (require 'bookmark+ nil t)
+                                               '("icicle-bookmark-autofile-p"
+                                                 "icicle-bookmark-autonamed-p"
+                                                 "icicle-bookmark-autonamed-this-buffer-p"
+                                                 "icicle-bookmark-bookmark-file-p"
+                                                 "icicle-bookmark-bookmark-list-p"
+                                                 "icicle-bookmark-desktop-p"
+                                                 "icicle-bookmark-dired-p"
+                                                 "icicle-bookmark-dired-this-dir-p"
+                                                 "icicle-bookmark-dired-wildcards-p"
+                                                 "icicle-bookmark-file-p"
+                                                 "icicle-bookmark-file-this-dir-p"
+                                                 "icicle-bookmark-flagged-p"
+                                                 "icicle-bookmark-function-p"
+                                                 "icicle-bookmark-gnus-p"
+                                                 "icicle-bookmark-icicle-search-hits-p"
+                                                 "icicle-bookmark-image-p"
+                                                 "icicle-bookmark-info-p"
+                                                 "icicle-bookmark-last-specific-buffer-p"
+                                                 "icicle-bookmark-last-specific-file-p"
+                                                 "icicle-bookmark-lighted-p"
+                                                 "icicle-bookmark-local-directory-p"
+                                                 "icicle-bookmark-local-file-p"
+                                                 "icicle-bookmark-man-p"
+                                                 "icicle-bookmark-marked-p"
+                                                 "icicle-bookmark-modified-p"
+                                                 "icicle-bookmark-non-file-p"
+                                                 "icicle-bookmark-omitted-p"
+                                                 "icicle-bookmark-orphaned-file-p"
+                                                 "icicle-bookmark-orphaned-local-file-p"
+                                                 "icicle-bookmark-orphaned-remote-file-p"
+                                                 "icicle-bookmark-region-p"
+                                                 "icicle-bookmark-remote-file-p"
+                                                 "icicle-bookmark-sequence-p"
+                                                 "icicle-bookmark-snippet-p"
+                                                 "icicle-bookmark-tagged-p"
+                                                 "icicle-bookmark-temporary-p"
+                                                 "icicle-bookmark-this-buffer-p"
+                                                 "icicle-bookmark-this-file-p"
+                                                 "icicle-bookmark-url-p"
+                                                 "icicle-bookmark-url-browse-p"
+                                                 "icicle-bookmark-variable-list-p"
+                                                 "icicle-bookmark-w3m-p"))
+  "*Predicates for bookmark candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-buffer (append '("icicle-buffer-modified-p"
+                                                  "icicle-compilation-buffer-p"
+                                                  "icicle-special-display-p")
+                                                (and (fboundp 'icicle-interesting-buffer-p)
+                                                     '("icicle-interesting-buffer-p"))
+                                                (and (fboundp 'icicle-next-error-buffer-p)
+                                                     '("icicle-next-error-buffer-p")))
+  "*Predicates for buffer candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-color (and (fboundp 'icicle-color-defined-p)
+                                            '("icicle-color-defined-p"
+                                              "icicle-color-gray-p"
+                                              "icicle-color-supported-p"))
+  "*Predicates for color candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-face '("icicle-face-bold-p"
+                                        "icicle-face-differs-from-default-p"
+                                        "icicle-face-inverse-video-p"
+                                        "icicle-face-italic-p"
+                                        "icicle-face-nontrivial-p"
+                                        "icicle-face-underline-p")
+  "*Predicates for face-name candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-file (append '("icicle-file-accessible-directory-p"
+                                                "icicle-file-compressed-p"
+                                                "icicle-file-directory-p"
+                                                "icicle-file-executable-p"
+                                                "icicle-file-exists-p"
+                                                "icicle-file-locked-p"
+                                                "icicle-file-name-absolute-p"
+                                                "icicle-file-readable-p"
+                                                "icicle-file-regular-p"
+                                                "icicle-file-remote-p"
+                                                "icicle-file-symlink-p"
+                                                "icicle-file-writable-p"
+;; @@@@@ NOT DONE YET  "icicle-desktop-file-p" - see `bmkp-desktop-file-p'
+                                                "icicle-image-file-p"
+                                                "icicle-looks-like-dir-name-p"
+                                                "icicle-nondirectory-p")
+                                              (and (fboundp 'icicle-recentf-include-p)
+                                                   '("icicle-recentf-include-p"
+                                                     "icicle-recentf-keep-p"))
+                                              (and (fboundp 'icicle-ffap-file-remote-p)
+                                                   '("icicle-ffap-file-remote-p"
+                                                     "icicle-ffap-url-p")))
+  "*Predicates for file-name and directory-name candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-frame (append '("icicle-frame-invisible-p"
+                                                 "icicle-frame-splittable-p"
+                                                 "icicle-frame-unsplittable-p")
+                                               (and (fboundp 'frcmds-frame-iconified-p) ; `frame-cmds.el'
+                                                    '("icicle-frame-iconified-p"))
+                                               (and (fboundp 'thumfr-thumbnail-frame-p) ; `thumb-frm.el'
+                                                    '("icicle-frame-thumbnail-p")))
+  "*Predicates for frame candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-misc '("icicle-not-special-candidate-p"
+                                        "icicle-special-candidate-p")
+  "*Predicates for miscellaneous candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-package (and (require 'package nil t)
+                                              '("icicle-package-built-in-p"
+                                                "icicle-package-disabled-p"
+                                                "icicle-package-installed-p"))
+  "*Predicates for package candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-symbol '("icicle-binary-option-p"
+                                          "icicle-defined-thing-p")
+  "*Predicates for symbol-name candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-variable (append '("icicle-custom-variable-p")
+                                                  (and (fboundp 'icicle-special-variable-p)
+                                                       '("icicle-special-variable-p")))
+  "*Predicates for variable-name candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+(defcustom icicle-cand-preds-for-window (append '("icicle-window-dedicated-p")
+                                                (and (fboundp 'icicle-window-at-top-p)
+                                                     '("icicle-window-at-bottom-p"
+                                                       "icicle-window-at-left-p"
+                                                       "icicle-window-at-right-p"
+                                                       "icicle-window-at-top-p"
+                                                       "icicle-window-deletable-p"
+                                                       "icicle-window-invisible-p")))
+  "*Predicates for window candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+
+;; Must be after `icicle-cand-preds-for-*'.
+(defcustom icicle-cand-preds-all (append icicle-cand-preds-for-bookmark
+                                         icicle-cand-preds-for-buffer
+                                         icicle-cand-preds-for-color
+                                         icicle-cand-preds-for-face
+                                         icicle-cand-preds-for-file
+                                         icicle-cand-preds-for-frame
+                                         icicle-cand-preds-for-misc
+                                         icicle-cand-preds-for-package
+                                         icicle-cand-preds-for-symbol
+                                         icicle-cand-preds-for-variable
+                                         icicle-cand-preds-for-window)
+  "*List of all predicates for completion candidates.
+Useful for `icicle-narrow-candidates-with-predicate'.
+Each value is a string that can be successfully read by `read' and for
+which `read' returns a predicate (Boolean function) that accepts a
+full completion candidate as argument.  Typically, the strings are
+predicate names, but they can also be lambda forms.
+
+Depending on the command, the argument to the predicate can take any
+form acceptable as a full completion candidate (alist entry with
+string car, symbol, etc.)"
+  :type '(repeat (function :tag "Predicate To Accept Candidate")) :group 'Icicles-Matching)
 
 ;; Must be before `icicle-change-region-background-flag'.
 (defcustom icicle-mark-position-in-candidate 'input-end
@@ -2520,16 +2796,6 @@ completion candidates are replaced by the contents of the directory.
 You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-directory]'."
   :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
-
-(defun icicle-image-file-p (filename)
-  "Return non-nil if FILENAME names an image file.
-The regexp value of `image-file-name-regexp' is used for the test.
-Returns nil if library `image-file.el' cannot be loaded, so use this
-only for Emacs 23 and later."
-  (and (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-       (fboundp 'image-file-name-regexp)
-       (require 'image-file nil t)
-       (icicle-string-match-p (image-file-name-regexp) filename)))
 
 (defcustom icicle-file-skip-functions '(icicle-image-file-p)
   "*Hook run by file-visiting commands on each matching file name.
@@ -4594,6 +4860,9 @@ toggle Icicle mode off and then back on."
     ([?\C-\M-/]                    icicle-dispatch-C-M-/               t) ; `C-M-/'
     (delete-window                 icicle-delete-window                t) ; `C-x 0'
     (delete-windows-for            icicle-delete-window                t) ; `C-x 0' (`frame-cmds.el')
+
+    (describe-package              icicle-describe-package                ; `C-h P'
+     (fboundp 'describe-package))
     (dired                         icicle-dired                        t) ; `C-x d'
     (dired-other-window            icicle-dired-other-window           t) ; `C-x 4 d'
     (exchange-point-and-mark       icicle-exchange-point-and-mark      t) ; `C-x C-x'
