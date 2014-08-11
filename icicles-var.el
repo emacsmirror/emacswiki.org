@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Mon Aug  4 09:46:25 2014 (-0700)
+;; Last-Updated: Sun Aug 10 11:09:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1812
+;;     Update #: 1820
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,10 +17,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-opt', `kmacro', `levenshtein', `naked',
-;;   `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
+;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
+;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `package', `pp',
+;;   `pp+', `regexp-opt', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,7 +63,7 @@
 ;;    `icicle-complete-input-overlay', `icicle-complete-keys-alist',
 ;;    `icicle-completing-keys-p', `icicle-completing-p',
 ;;    `icicle-completing-read+insert-candidates',
-;;    `icicle-completion-candidates',
+;;    `icicle-completion-candidates', `icicle-completion-map-vars',
 ;;    `icicle-completion-prompt-overlay',
 ;;    `icicle-completion-set-history',
 ;;    `icicle-compute-narrowing-regexp-p',
@@ -208,6 +213,9 @@
 ;;; Defvars to quiet byte-compiler:
 (defvar kmacro-ring-max)                ; Defined in `kmacro.el' in Emacs 22+.
 (defvar minibuffer-confirm-exit-commands) ; Defined in `minibuffer.el' in Emacs 23+.
+(defvar minibuffer-local-filename-completion-map)
+(defvar minibuffer-local-filename-must-match-map)
+(defvar minibuffer-local-must-match-filename-map)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -424,6 +432,31 @@ Used only for Emacs 22 and later.")
 (defvar icicle-completing-p nil "Cached value of function `icicle-completing-p'.")
 
 (defvar icicle-completion-candidates nil "Current list of completion candidates.")
+
+(defvar icicle-completion-map-vars
+  (delq nil (list 'minibuffer-local-completion-map
+                  'minibuffer-local-must-match-map
+                  (and (< emacs-major-version 24)
+                       (boundp 'minibuffer-local-filename-completion-map)
+                       (not (eq minibuffer-local-completion-map
+                                (keymap-parent minibuffer-local-filename-completion-map)))
+                       'minibuffer-local-filename-completion-map)
+                  (and (< emacs-major-version 24)
+                       (boundp 'minibuffer-local-filename-must-match-map)
+                       (not (eq minibuffer-local-must-match-map
+                                (keymap-parent minibuffer-local-filename-must-match-map)))
+                       'minibuffer-local-filename-must-match-map)
+                  (and (< emacs-major-version 24)
+                       (boundp 'minibuffer-local-must-match-filename-map)
+                       (not (eq minibuffer-local-must-match-map
+                                (keymap-parent minibuffer-local-must-match-filename-map)))
+                       'minibuffer-local-must-match-filename-map)))
+  "Minibuffer completion keymap variables.")
+
+;; Might as well do this here.
+(dolist (map  icicle-completion-map-vars)
+  ;; Non-nil value, to indicate completion.
+  (define-key (symbol-value map) [icicle-is-completion-map] 'ignore))
 
 (defvar icicle-completion-prompt-overlay nil
   "Overlay used to highlight saved completion candidates.")
