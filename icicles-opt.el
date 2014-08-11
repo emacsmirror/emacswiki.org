@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Aug 10 17:10:25 2014 (-0700)
+;; Last-Updated: Mon Aug 11 10:24:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6025
+;;     Update #: 6027
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1377,7 +1377,8 @@ predicate names, but they can also be lambda forms.
 Depending on the command, the argument to the predicate can take any
 form acceptable as a full completion candidate (alist entry with
 string car, symbol, etc.)"
-  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+  :type '(repeat (function :tag "Predicate to keep candidate"))
+  :group 'Icicles-Matching :group 'Icicles-Buffers)
 
 (defcustom icicle-cand-preds-for-color (and (fboundp 'icicle-color-defined-p)
                                             '("icicle-color-defined-p"
@@ -1445,7 +1446,8 @@ predicate names, but they can also be lambda forms.
 Depending on the command, the argument to the predicate can take any
 form acceptable as a full completion candidate (alist entry with
 string car, symbol, etc.)"
-  :type '(repeat (function :tag "Predicate to keep candidate")) :group 'Icicles-Matching)
+  :type '(repeat (function :tag "Predicate to keep candidate"))
+  :group 'Icicles-Matching :group 'Icicles-Files)
 
 (defcustom icicle-cand-preds-for-frame (append '("icicle-frame-invisible-p"
                                                  "icicle-frame-splittable-p"
