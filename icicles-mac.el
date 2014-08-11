@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sat May 17 13:18:38 2014 (-0700)
+;; Last-Updated: Sun Aug 10 16:36:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1243
+;;     Update #: 1248
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -114,6 +114,8 @@
   (defvar minibuffer-prompt-properties nil))
 
 ;; Quiet the byte-compiler.
+(defvar icicle-buffer-completing-p)
+(defvar icicle-file-completing-p)
 (defvar icicle-inhibit-try-switch-buffer)
 (defvar read-file-name-completion-ignore-case)
 
@@ -302,6 +304,7 @@ created after the others."
        (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
        (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
        (icicle-require-match-flag                   icicle-buffer-require-match-flag)
+       (icicle-buffer-completing-p                  t)
        (icicle-extra-candidates                     icicle-buffer-extras)
        (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
@@ -396,6 +399,7 @@ created after the others."
        (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
        (icicle-must-pass-after-match-predicate      icicle-file-predicate)
        (icicle-require-match-flag                   icicle-file-require-match-flag)
+       (icicle-file-completing-p                    t)
        (icicle-extra-candidates                     icicle-file-extras)
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
        ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
@@ -883,6 +887,8 @@ to update the list of tags available for completion." "")) ; Doc string
      (prompt1                                ,(or prompt  (format "%s%s bookmark: "
                                                                   (capitalize (substring type 0 1))
                                                                   (substring type 1 (length type)))))
+     (icicle-multi-completing-p              icicle-show-multi-completion-flag)
+     (icicle-bookmark-completing-p           t)
      (icicle-list-use-nth-parts              '(1))
      (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                  ()
@@ -971,6 +977,8 @@ You need library `Bookmark+' for this command." type type) ; Doc string
      (enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
      (completion-ignore-case                   bookmark-completion-ignore-case)
      (prompt1                                  ,(or prompt  (format "Search %s bookmark: " type)))
+     (icicle-multi-completing-p                icicle-show-multi-completion-flag)
+     (icicle-bookmark-completing-p             t)
      (icicle-list-use-nth-parts                '(1))
      (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                    ()
