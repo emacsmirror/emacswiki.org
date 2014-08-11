@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Jul 27 16:55:32 2014 (-0700)
+;; Last-Updated: Sat Aug  9 16:32:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10216
+;;     Update #: 10229
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -29,10 +29,10 @@
 ;;   `icicles-opt', `icicles-var', `image-dired', `image-file',
 ;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `second-sel',
-;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `naked', `package', `pp', `pp+', `regexp-opt', `ring',
+;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -354,15 +354,19 @@ bindings in `*Completions*'.")
         ad-do-it)))
 
   (when (> emacs-major-version 21)
-    (defadvice describe-face (before icicle-respect-WYSIWYG activate)
-      "`read-face-name' respects `icicle-WYSIWYG-Completions-flag'.
-If non-nil, then it does not use `completing-read-multiple' (which
-cannot take advantage of WYSIWYG)."
-      (interactive (list (read-face-name "Describe face" (if (> emacs-major-version 23)
-                                                             (or (face-at-point t)  'default)
-                                                           "= `default' face")
-                                         (not icicle-WYSIWYG-Completions-flag))))))
-
+    (defadvice describe-face (before icicle-WYSIWYG-&-preds activate)
+      "Respect `icicle-WYSIWYG-Completions-flag'.  Provide preds for `M-&'.
+1. If `icicle-WYSIWYG-Completions-flag' is non-nil, then completion
+   does not use `completing-read-multiple' (which cannot take advantage
+   of WYSIWYG).
+2. During completion, `M-&' offers face predicates for narrowing."
+      (interactive
+       (let ((icicle-face-completing-p  t))
+         (list (read-face-name "Describe face" (if (> emacs-major-version 23)
+                                                   (or (face-at-point t)  'default)
+                                                 "= `default' face")
+                               (not icicle-WYSIWYG-Completions-flag)))))))
+  
   ;; Eval this so that even if the library is byte-compiled with Emacs 20,
   ;; loading it into Emacs 21+ will define variable `icicle-mode'.
   (eval '(define-minor-mode icicle-mode
@@ -2286,8 +2290,7 @@ Used on `pre-command-hook'."
     (define-key ielm-map (icicle-kbd "C-i") 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in Tcl mode.
-  (when (and (boundp 'inferior-tcl-mode-map)  (memq 'comint-dynamic-complete
-                                                    icicle-functions-to-redefine))
+  (when (and (boundp 'inferior-tcl-mode-map)  (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (define-key inferior-tcl-mode-map (icicle-kbd "C-i") 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in GUD (Debugger) mode.
@@ -2474,20 +2477,17 @@ is bound in all keymaps accessible from keymap MAP."
     (define-key 'facemenu-keymap "I" nil)) ; `M-o I'
 
   ;; Unbind keys in Shell mode.
-  (when (and (boundp 'shell-mode-map)  (memq 'icicle-comint-dynamic-complete
-                                             icicle-functions-to-redefine))
+  (when (and (boundp 'shell-mode-map)  (memq 'icicle-comint-dynamic-complete icicle-functions-to-redefine))
     (define-key shell-mode-map (icicle-kbd "C-i") (if (> emacs-major-version 23)
                                                       'completion-at-point
                                                     'comint-dynamic-complete)))
 
   ;; Unbind keys in Shell Script mode.
-  (when (and (boundp 'sh-mode-map)  (memq 'icicle-comint-dynamic-complete
-                                          icicle-functions-to-redefine))
+  (when (and (boundp 'sh-mode-map)  (memq 'icicle-comint-dynamic-complete icicle-functions-to-redefine))
     (icicle-unmap 'comint-dynamic-complete sh-mode-map 'icicle-comint-dynamic-complete))
 
   ;; Unbind keys in Ielm mode.
-  (when (and (boundp 'ielm-map)  (memq 'icicle-comint-dynamic-complete
-                                       icicle-functions-to-redefine))
+  (when (and (boundp 'ielm-map)  (memq 'icicle-comint-dynamic-complete icicle-functions-to-redefine))
     (define-key ielm-map (icicle-kbd "C-i") 'comint-dynamic-complete))
 
   ;; Unbind keys in Tcl mode.
@@ -3361,7 +3361,8 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           ;;    icicle-pre-minibuffer-buffer  (cadr (buffer-list)
           icicle-pre-minibuffer-buffer           (icicle-last-non-minibuffer-buffer)
           )
-    (when (and (icicle-completing-p)  (> emacs-major-version 20))
+    (when (and (icicle-completing-p)    ; Function initializes variable `icicle-completing-p'.
+               (> emacs-major-version 20))
       (let ((prompt-prefix  (if icicle-candidate-action-fn "+ " ". ")))
         (put-text-property 0 1 'face
                            (cond ((and icicle-candidate-action-fn  (icicle-require-match-p))
@@ -3386,8 +3387,8 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     (when (memq icicle-default-value '(preselect-start preselect-end))
       (icicle-select-minibuffer-contents))
     (when (and icicle-show-Completions-initially-flag
-               (not icicle-progressive-completing-p) ; If narrowed, then we have already completed.
-               (icicle-completing-p)    ; Function initializes variable `icicle-completing-p'.
+               ;; $$$$$$$$ (not icicle-progressive-completing-p) ; If narrowed, we have already completed.
+               icicle-completing-p      ; Var already initialized, above.
                (sit-for icicle-incremental-completion-delay)) ; Let user interrupt.
       (case icicle-default-cycling-mode
         (apropos    (icicle-apropos-complete))
