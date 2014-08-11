@@ -27,7 +27,7 @@ It is also possible to add
 to the top of the file. This is a comment read by emacs to discover
 what mode to use.
 
-=== Auto-compete mode ===
+=== Auto-complete mode ===
 SPARQL-mode now also supports auto-complete-mode. Just add
 
 {{{
