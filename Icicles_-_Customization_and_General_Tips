@@ -2558,6 +2558,53 @@ returned by `icicle-ucs-names' (hence `ucs-names').
 
 
 
+----
+[:icicle-cand-preds-all]
+[:icicle-cand-preds-for-bookmark]
+[:icicle-cand-preds-for-buffer]
+[:icicle-cand-preds-for-color]
+[:icicle-cand-preds-for-face]
+[:icicle-cand-preds-for-file]
+[:icicle-cand-preds-for-frame]
+[:icicle-cand-preds-for-misc]
+[:icicle-cand-preds-for-package]
+[:icicle-cand-preds-for-symbol]
+[:icicle-cand-preds-for-variable]
+[:icicle-cand-preds-for-window]
+==== Options icicle-cand-preds-all, icicle-cand-preds-for-TYPE ====
+
+The options whose names start with prefix '''`icicle-cand-preds-''''
+are lists of predefined predicates that are used to filter
+completion candidates when you narrow with '''`##M-&##''''.  Option
+`icicle-cand-preds-all' includes all such predicates, across all
+types of candidate.  
+
+The other options, named
+`icicle-cand-preds-for-TYPE', are each for a particular
+completion ''##TYPE##''.  For example, `icicle-cand-preds-for-bookmark'
+provides predicates for narrowing bookmark candidates.  Option
+`icicle-cand-preds-for-misc', is an exception: its predicates
+apply to all candidate types.
+
+These are the ''##TYPE##''-specific options:
+
+* `icicle-cand-preds-for-bookmark'
+* `icicle-cand-preds-for-buffer'
+* `icicle-cand-preds-for-color'
+* `icicle-cand-preds-for-face'
+* `icicle-cand-preds-for-file'
+* `icicle-cand-preds-for-frame'
+* `icicle-cand-preds-for-package'
+* `icicle-cand-preds-for-symbol'
+* `icicle-cand-preds-for-variable'
+* `icicle-cand-preds-for-window'
+
+See also [[Icicles - Progressive Completion#Predicates|`M-&': Satisfying Additional Predicates]].
+
+
+
+
+
 
 
 
