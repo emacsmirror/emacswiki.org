@@ -1,7 +1,7 @@
 == Introduction ==
 
 Rudel (German for "pack" as in "pack of wolves") is a [CollaborativeEditing collaborative editing] environment
-for GNU Emacs. Its purpose is to share buffers with other users in
+for Emacs. Its purpose is to share buffers with other users in
 order to edit the contents of those buffers collaboratively. It
 supports multiple backends to enable communication with other
 collaborative editors using different protocols (most notably
@@ -22,19 +22,97 @@ and two Rudel clients (only one of these is visible).
 
 http://rudel.sourceforge.net/images/screenshots/emacs-with-gobby.png
 
-== Download and installation ==
 
-Rudel is part of GNU ELPA, so you can install it with {{{ M-x list-packages }}}.
-Source and further info at [http://elpa.gnu.org/packages/rudel.html GNU ELPA].
 
-=== Requirements ===
 
-To use Rudel, you need Emacs-24.
 
-* *!GnuTLS (optional)*
-  Connections to Gobby servers require the gnutls-cli program.
 
-=== Installing ===
+
+
+
+
+
+== Download ==
+
+If you use GnuEmacs ''24 or later'' then Rudel is part of [http://elpa.gnu.org/packages/rudel.html GNU ELPA], so you can download and install it using `M-x list-packages'.
+
+If you use XEmacs or a version of GnuEmacs ''prior to 24'' then you can download an archive of a released version from the 
+[https://sourceforge.net/project/platformdownload.php?group_id=249139
+download area] of the [http://sourceforge.net/projects/rudel
+Sourceforge project page].
+
+Development versions are available via:
+
+* the [[Bazaar]] repository on Sourceforge:
+##bzr branch bzr://rudel.bzr.sourceforge.net/bzrroot/rudel/trunk rudel##
+
+
+* the [[SubVersion]] repository on Sourceforge:
+##svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel##
+
+* the (experimental, but hopefully properly synchronized) [[Git]]
+  [http://github.com/scymtym/rudel repository] at 
+  [http://www.github.com GitHub]:
+##git clone git://github.com/scymtym/rudel.git##
+
+
+
+
+
+
+
+
+
+
+
+
+
+== Requirements ==
+
+If you use GnuEmacs 24 or later, there are no other requirements.
+
+Rudel should work with any version of GnuEmacs starting with 22. Older versions of GNU Emacs than 22 and versions of XEmacs may or may not work - they are not actively tested.
+
+If you use an Emacs version prior to 24 then [[CEDET]] is required. CEDET contains the Emacs object system, [[EIEIO]], which is used in Rudel's object-oriented implementation. You can obtain CEDET from [http://cedet.sourceforge.net/].  You need at least CEDET version 1.0pre6.
+
+[new]
+If you are using Emacs from trunk (as of October 2009), CEDET is
+included and does not need to be installed separately. Using Rudel from
+trunk is much easier to install. On earlier versions of Emacs, CEDET can be difficult to install, so here's some help:
+
+<pre>
+(defun load-rudel ()
+  (interactive)
+  ;; Do these in a shell in ~/src:
+  ;; cvs -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet login
+  ;; cvs -z3 -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet co -P cedet
+  ;; cd cedet && make && cd ..
+  ;; svn co https://rudel.svn.sourceforge.net/svnroot/rudel/rudel/trunk rudel
+  (add-to-list 'load-path "~/src/cedet/eieio")
+  (add-to-list 'load-path "~/src/cedet/common")
+  (add-to-list 'load-path "~/src/rudel/")
+  (add-to-list 'load-path "~/src/rudel/jupiter")
+  (add-to-list 'load-path "~/src/rudel/obby")
+  (require 'rudel-mode)
+  (require 'rudel-obby)
+  (global-rudel-minor-mode))
+</pre>
+
+Autoloads and byte-compilation don't work for [[Anonymous]] due to a strange CEDET
+dependency problem, but this should get you in a working state.
+[new]
+
+
+
+
+
+
+
+
+
+
+
+== Installing ==
 
 To install Rudel, download a released version or the current
 development version from [http://sourceforge.net/projects/rudel/] and
@@ -54,12 +132,32 @@ when one of the commands `rudel-join-session', `rudel-host-session' or
 ##rudel-loaddefs.el## is distributed with older versions of Rudel, but has
 to be generated using ##rudel-compile.el## in more recent versions.
 
-=== Compiling ===
 
-In order to achieve better performance, Emacs can byte-compile the
+
+
+
+
+
+== Compiling ==
+
+In order to achieve better performance, you can byte-compile the
 Rudel code. This can be done by opening <tt>rudel-compile.el</tt> in
 Emacs and invoking M-x eval-buffer. In recent versions of Rudel, this also
 generates auto loading information (see above).
+
+
+
+
+
+== Optional ==
+
+If you want to connect to [http://gobby.0x539.de/trac/ Gobby] servers then you will also need the `gnutls-cli' program (%%GnuTLS%%).
+
+
+
+
+
+
 
 == Development ==
 
@@ -75,6 +173,13 @@ bug.
 
 For long term contributions, becoming a member of the Sourceforge
 project is more appropriate.
+
+
+
+
+
+
+
 
 == Questions and Feedback ==
 
