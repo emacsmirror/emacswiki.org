@@ -982,8 +982,9 @@ a pop-up buffer, ##‘*Pp Eval Output*’##.  With a prefix arg (‘C-u M-:’),
 
 
 
+[:OnTheFlyMinibufferBindings]
 Some additional bindings are made available in the minibuffer for
-;the duration of specific commands:
+the duration of specific commands:
 
 * During completion of names of some kinds of objects (files,
    buffers, directories, Info nodes), '''`C-x m'''' lets you complete
@@ -999,7 +1000,8 @@ Some additional bindings are made available in the minibuffer for
   various keys with the prefix `C-M-' are bound to commands that
   narrow the available candidates to bookmarks of a specific type.
   For example, `C-M-d' narrows the choices to Dired bookmarks.
-
+  (You can also narrow bookmark choices by type using `M-&'.
+See [[Icicles - Progressive Completion#Predicates|`M-&': Satisfying Additional Predicates]].)
 
 
 
@@ -1066,7 +1068,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
