@@ -1,4 +1,5 @@
 ;;; better-registers.el --- facilities for more powerful registers
+;; Version: 20140810.1244
 ;; -*- emacs-lisp -*-
 ;; Copyright (C) 2005 Sigurd Meldgaard
 
@@ -71,11 +72,13 @@
 ;; key-shortcuts and get good ideas.
 
 ;; In modes which overwrite C-j C-xj should still be bound to the same.
+(eval-when-compile (require 'cl-lib))
 
 (defvar better-registers-version "0.58"
   "The version of the package better-registers.
    Revision history:
-   from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers. 
+   from 0.58 to 0.59 Add support for both VEmacs 24.4 and older
+   from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers.
    from 0.57 to 0.57 Can now correctly save fontified strings, added convenient macro key (f1)
    from 0.55 to 0.56 No longer blocks enter in the minibuffer
    from 0.5 to 0.55 changed it to a minor mode
@@ -108,7 +111,11 @@
 (define-key better-registers-r-map "+" 'increment-register)
 (define-key better-registers-r-map "-" 'better-registers-decrement-register)
 (define-key better-registers-r-map "w" 'window-configuration-to-register)
-(define-key better-registers-r-map "f" 'frame-configuration-to-register)
+(define-key better-registers-r-map "f"  (if (and (>= emacs-major-version 24)
+                                                 (>= emacs-minor-version 4))
+                                            'frameset-to-register
+                                          'frame-configuration-to-register
+                                          ))
 (define-key better-registers-r-map "r" 'copy-rectangle-to-register)
 (define-key better-registers-r-map "i" 'better-registers-jump-to-register)
 (define-key better-registers-r-map "s" 'copy-to-register)
@@ -120,11 +127,11 @@
   'better-registers-put-buffer-filename-in-register)
 (define-key better-registers-r-map "b"
   'better-registers-put-buffer-in-register)
-;(define-key better-registers-r-map "k" 'kill-rectangle)
-;(define-key better-registers-r-map "d" 'delete-rectangle)
-;(define-key better-registers-r-map "y" 'yank-rectangle)
-;(define-key better-registers-r-map "o" 'open-rectangle)
-;(define-key better-registers-r-map "t" 'string-rectangle)
+                                        ;(define-key better-registers-r-map "k" 'kill-rectangle)
+                                        ;(define-key better-registers-r-map "d" 'delete-rectangle)
+                                        ;(define-key better-registers-r-map "y" 'yank-rectangle)
+                                        ;(define-key better-registers-r-map "o" 'open-rectangle)
+                                        ;(define-key better-registers-r-map "t" 'string-rectangle)
 
 (define-minor-mode better-registers
   "A minor mode for easier and more powerful register commands"
@@ -152,8 +159,8 @@
   (when queryp
     (setq filename (read-file-name nil better-registers-save-file)))
   (let ((fn (or filename better-registers-save-file))
-         (print-level nil) ;Let us write anything
-         (print-length nil)
+        (print-level nil) ;Let us write anything
+        (print-length nil)
         (b (generate-new-buffer "*registers*")))
     (set-buffer b)
     (dolist (i register-alist)
@@ -162,9 +169,9 @@
         (cond
          ((stringp contents)
           (insert (format "%S\n"
-                         `(set-register
-                           ,char
-                           ,contents))))
+                          `(set-register
+                            ,char
+                            ,contents))))
          ((numberp contents) ;numbers are printed non-quotes
           (insert (format "%S\n" `(set-register ,char ,contents))))
          ((markerp contents)
@@ -173,8 +180,8 @@
                    `(set-register
                      ,char
                      '(file-query
-                      ,(buffer-file-name (marker-buffer contents))
-                      ,(marker-position contents))))))
+                       ,(buffer-file-name (marker-buffer contents))
+                       ,(marker-position contents))))))
          ((bufferp (cdr contents))
           (insert (format "%s\n"
                           `(set-register ,char
@@ -196,34 +203,44 @@
   (set-register register (cons 'buffer (buffer-name (current-buffer)))))
 
 (defun better-registers-put-buffer-filename-in-register
-  (register &optional delete)
+    (register &optional delete)
   "This is better than put-buffer-in-register for file-buffers, because a closed
    file can be opened again, but does not work for no-file-buffers."
   (interactive "cPut the filename of current buffer in register: \nP")
   (set-register register (cons 'file (buffer-file-name (current-buffer)))))
 
 (defun better-registers-put-keyboard-macro-in-register
-  (register &optional delete)
+    (register &optional delete)
   "Save the contents of the last keyboard macro to the given register.
    can be played again by jump-to-register."
   (interactive "cPut last keyboard-macro in register: \nP")
   (set-register register (cons 'macro last-kbd-macro)))
 
-(defun better-registers-jump-to-register (register &optional delete)
+
+(if (and (>= emacs-major-version 24)
+         (>= emacs-minor-version 4))
+    (defun better-registers-jump-to-register (register &optional delete)
+      (interactive (list (register-read-with-preview "Jump to register: ")
+                         current-prefix-arg))
+      (better-registers-jump-to-register-action register delete))
+  (defun better-registers-jump-to-register (register &optional delete)
+    (interactive "cJump to register: \nP")
+    (better-registers-jump-to-register-action register delete)))
+
+(defun better-registers-jump-to-register-action (register &optional delete)
   "Do what is the most sane thing to do for the thing stored in
    register Either insert text (evt. a rectangle), move point to
    location stored in a register, a buffer stored in a register,
    a file stored in register, or run a macro saved in a register.
    If the register contains a file name, find that file. Or
    restore a saved window/frame configuration."
-  (interactive
-   (list (if (and (>= emacs-major-version 24)
-                  (>= emacs-minor-version 4))
-             (register-read-with-preview "Jump to register: ")
-           current-prefix-arg
-           "cJump to register: \nP")))
   (let ((val (get-register register)))
     (cond
+     ((registerv-p val)
+      (cl-assert (registerv-jump-func val) nil
+                 "Don't know how to jump to register %s"
+                 (single-key-description register))
+      (funcall (registerv-jump-func val) (registerv-data val)))
      ((and (consp val) (frame-configuration-p (car val)))
       (set-frame-configuration (car val) (not delete))
       (goto-char (cadr val)))
@@ -240,10 +257,10 @@
      ((and (consp val) (eq (car val) 'buffer))
       (switch-to-buffer (cdr val)))
      ((and (consp val) (eq (car val) 'macro))
-      ;appearently the only way to run a macro is by putting them in
-      ;last-kbd-macro (named keyboard macros can only (as far as I
-      ;know) be called interactively, but this works quite
-      ;unproblematically).
+                                        ;appearently the only way to run a macro is by putting them in
+                                        ;last-kbd-macro (named keyboard macros can only (as far as I
+                                        ;know) be called interactively, but this works quite
+                                        ;unproblematically).
       (let ((old-macro last-kbd-macro))
         (setq last-kbd-macro (cdr val))
         (call-last-kbd-macro)
@@ -259,7 +276,7 @@
           (numberp val)
           (and (markerp val)
                (marker-position val)))
-          (insert-register register))
+      (insert-register register))
      (t
       (error "Register doesn't contain a buffer, buffer position, macro, file, text, rectangle or configuration")))))
 
