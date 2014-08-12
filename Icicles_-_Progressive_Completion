@@ -311,6 +311,13 @@ of a completion type (`bookmark', `buffer', `color', `face',
 `file', `package', `variable', `window',...).  You can add a named
 predicate to one of these options.
 
+(Note: Some commands also provide minibuffer key bindings that
+also narrow the set of candidates.  For example, during
+bookmark-name completion, there are keys to narrow to different
+types of bookmark.
+See [[Icicles_-_Key_Bindings#OnTheFlyMinibufferBindings|On The Fly Minibuffer Bindings]].)
+
+
 For example, you can customize
 option '''`<tt>[[Icicles - Customization and General Tips#icicle-cand-preds-for-buffer|icicle-cand-preds-for-buffer]]</tt>'''', to add a buffer-name
 predicate that you can then enter using completion.  (You will
@@ -400,5 +407,4 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
