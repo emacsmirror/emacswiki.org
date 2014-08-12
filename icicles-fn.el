@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Aug 10 17:44:20 2014 (-0700)
+;; Last-Updated: Tue Aug 12 14:53:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14963
+;;     Update #: 14964
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7800,8 +7800,8 @@ followed by \"  =  \", followed by the corresponding command name."
 That is, S1 < S2 if S1 is a special candidate and S2 is not or S1
 `icicle-case-string-less-p' S2 and either both or neither are special
 candidates."
-  (let ((s1-special  (get (intern s1) 'icicle-special-candidate))
-        (s2-special  (get (intern s2) 'icicle-special-candidate)))
+  (let ((s1-special  (icicle-special-candidate-p s1))
+        (s2-special  (icicle-special-candidate-p s2)))
     (when (or case-fold-search
               completion-ignore-case
               ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
