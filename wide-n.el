@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 30 18:04:02 2014 (-0700)
+;; Last-Updated: Tue Aug 12 16:48:39 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 413
+;;     Update #: 427
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -85,21 +85,24 @@
 ;;    binding variable `wide-n-push-anyway-p' around the narrowing
 ;;    call.
 ;;
+;;    You can use command `wide-n-delete' to delete a restriction.
+;;
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-repeat',
+;;    `wide-n', `wide-n-delete', `wide-n-repeat',
 ;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `wide-n-highlight-lighter', `wide-n-markerize',
-;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-repeat-command',
+;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
+;;    `wide-n-renumber', `wide-n-repeat-command',
 ;;    `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `wide-n-lighter-narrow-part', `wide-n-push-anyway-p',
-;;    `wide-n-rassoc-delete-all', `wide-n-restrictions'.
+;;    `wide-n-restrictions'.
 ;;
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
@@ -116,6 +119,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/12 dadams
+;;     Added: wide-n-delete, wide-n-renumber.
+;;     wide-n: Added optional arg MSGP.
+;;     wide-n-push: Added optional arg NOMSG.
 ;; 2014/05/30 dadams
 ;;     Added: wide-n-lighter-narrow-part, wide-n-highlight-lighter, wide-n-string-match-p, wide-n-mem-regexp,
 ;;            wide-n-rassoc-delete-all.
@@ -200,7 +207,7 @@ non-nil in Lisp code to populate `wide-n-restrictions' during
 narrowing.")
 
 ;;;###autoload
-(defun wide-n (arg)
+(defun wide-n (arg &optional msgp)
   "Widen to a previous buffer restriction.
 With no prefix arg, widen to the previous restriction.
 With a plain prefix arg (`C-u'), widen completely.
@@ -212,19 +219,19 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
  the ring entries from the most recent back through the (-)Nth one.
  (It never pops off the `all' pseudo-entry that represents complete
  widening, however.)"
-  (interactive "P")
+  (interactive "P\np")
   (unless (cadr wide-n-restrictions) (error "Cannot widen; no previous narrowing"))
   (cond ((or (null (cdr wide-n-restrictions))  (consp arg))
          (widen)
          (setq wide-n-lighter-narrow-part  "")
          (wide-n-highlight-lighter)
-         (message "No longer narrowed"))
+         (when msgp (message "No longer narrowed")))
         ((= (prefix-numeric-value arg) 0)
          (setq wide-n-restrictions  (list 'all))
          (widen)
          (setq wide-n-lighter-narrow-part  "")
          (wide-n-highlight-lighter)
-         (message "No longer narrowed; no more restrictions"))
+         (when msgp (message "No longer narrowed; no more restrictions")))
         (t
          (setq arg  (prefix-numeric-value arg))
          (let ((latest  ())
@@ -252,7 +259,7 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                  (error (error "%s" (error-message-string err))))
              (widen)
              (wide-n-highlight-lighter)
-             (message "No longer narrowed"))))))
+             (when msgp (message "No longer narrowed")))))))
 
 (defun wide-n-highlight-lighter ()
   "Update minor-mode mode-line lighter to reflect narrowing/widening.
@@ -303,9 +310,10 @@ new cons."
       (setcdr (cdr restriction) mrk2)))
   restriction)
 
-(defun wide-n-push (start end)
+(defun wide-n-push (start end &optional nomsg)
   "Push the region limits to `wide-n-restrictions'.
-START and END are as for `narrrow-to-region'."
+START and END are as for `narrrow-to-region'.
+Non-nil optional arg NOMSG means do not echo the region size."
   (let ((mrk1  (make-marker))
         (mrk2  (make-marker))
         sans-id  id-cons  id)
@@ -317,7 +325,7 @@ START and END are as for `narrrow-to-region'."
           wide-n-restrictions  (wide-n-rassoc-delete-all sans-id wide-n-restrictions))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (setq wide-n-restrictions  `((,id ,mrk1 . ,mrk2) ,@wide-n-restrictions)))
-    (message "Narrowed: %d to %d" (marker-position mrk1) (marker-position mrk2))))
+    (unless nomsg (message "Narrowed: %d to %d" (marker-position mrk1) (marker-position mrk2)))))
 
 (defun wide-n-rassoc-delete-all (value alist)
   "Delete from ALIST all elements whose cdr is `equal' to VALUE.
@@ -331,6 +339,29 @@ Elements of ALIST that are not conses are ignored."
 	  (setcdr tail (cdr tail-cdr))
 	(setq tail  tail-cdr))))
   alist)
+
+(defun wide-n-delete (n &optional msgp)
+  "Delete the restriction(s) numbered N from `wide-n-restrictions'.
+This renumbers the remaining restrictions.
+Non-nil optional arg NOMSG means do not display status message."
+  (interactive
+   (let* ((IGNORE  (unless (cadr wide-n-restrictions)
+                     (error "No restrictions - you have not narrowed this buffer")))
+          (len     (1- (length wide-n-restrictions)))
+          (num     (read-number (format "Delete restriction number (1 to %d): " len))))
+     (while (or (< num 1)  (> num len))
+       (setq num  (read-number (format "Number must be between 1 and %d: " len))))
+     (list num t)))
+  (setq wide-n-restrictions  (delete 'all wide-n-restrictions)
+        wide-n-restrictions  (assq-delete-all n wide-n-restrictions))
+  (wide-n-renumber)
+  (when msgp (message "Deleted restriction number %d" n)))
+
+(defun wide-n-renumber ()
+  "Renumber the restrictions in `wide-n-restrictions' for this buffer."
+  (let ((orig  wide-n-restrictions))
+    (setq wide-n-restrictions  (list 'all))
+    (dolist (nn  orig) (wide-n-push (cadr nn) (cddr nn) 'NOMSG))))
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
