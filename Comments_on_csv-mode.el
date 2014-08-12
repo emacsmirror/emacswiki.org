@@ -33,3 +33,10 @@ Trying to load "csv-mode" from Elpa returns an error message:
 
 -- epement 2014-07-22 20:43 UTC
 
+
+----
+
+The problem I reported above is now resolved. The version of csv-mode.el that was formerly posted here was over 9 years old. After obtaining the latest version 1.2 of csv-mode.el from http://elpa.gnu.org/packages/csv-mode.html and installing that, the compile problems were resolved.
+
+-- epement 2014-08-12 19:47 UTC
+
