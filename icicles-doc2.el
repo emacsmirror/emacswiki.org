@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Aug 11 14:55:09 2014 (-0700)
+;; Last-Updated: Mon Aug 11 19:04:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29674
+;;     Update #: 29678
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7454,6 +7454,8 @@
 ;;    prefix `C-M-' are bound to commands that narrow the available
 ;;    candidates to bookmarks of a specific type.  For example,
 ;;    `C-M-d' narrows the choices to Dired bookmarks.
+;;    (You can also narrow bookmark choices by type using `M-&'.
+;;    See (@file :file-name "icicles-doc1.el" :to "`M-&': Satisfying Additional Predicates").)
 ;;
 ;;  The following bindings are made for `completion-list-mode', that
 ;;  is, for buffer `*Completions*', which shows the list of candidate
