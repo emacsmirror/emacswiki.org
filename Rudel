@@ -22,81 +22,14 @@ and two Rudel clients (only one of these is visible).
 
 http://rudel.sourceforge.net/images/screenshots/emacs-with-gobby.png
 
-== Download ==
+== Download and installation ==
 
-Archives of released versions can be downloaded from the
-[https://sourceforge.net/project/platformdownload.php?group_id=249139
-download area] of the [http://sourceforge.net/projects/rudel
-Sourceforge project page].
-
-Development versions are available via
-
-* the [[Bazaar]] repository on Sourceforge:
-  {{{
-  bzr branch bzr://rudel.bzr.sourceforge.net/bzrroot/rudel/trunk rudel
-  }}}
-
-* the [[SubVersion]] repository on Sourceforge:
-  {{{
-  svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel
-  }}}
-
-* the (experimental, but hopefully properly synchronized) [[Git]]
-  [http://github.com/scymtym/rudel repository] at 
-  [http://www.github.com GitHub]:
-  {{{
-  git clone git://github.com/scymtym/rudel.git
-  }}}
-
-
-== Installation ==
+Rudel is part of GNU ELPA, so you can install it with {{{ M-x list-packages }}}.
+Source and further info at [http://elpa.gnu.org/packages/rudel.html GNU ELPA].
 
 === Requirements ===
 
-To use Rudel, the following software is required:
-
-* *GNU Emacs 22 or above*
-   Rudel should work with recent versions of GNU Emacs starting from
-   version 22. Older versions of GNU Emacs or XEmacs may or may not work
-   but are not actively tested.
-
-* *Collection of Emacs Development Environment Tools*
-  [[CEDET]] contains the object system [[EIEIO]], which is used in
-  Rudel's object-oriented implementation. [[CEDET]] can be obtained
-  from [http://cedet.sourceforge.net/]. It is necessary to use at least
-  version 1.0pre6 of [[CEDET]] since a serious problem in the object
-  system [[EIEIO]] was fixed in that release.
-
-[new]
-If you are using Emacs from trunk (as of October 2009), CEDET is
-included and doesn't need to be installed separately. Using Rudel from
-trunk will be much easier to install.
-
-On earlier versions of Emacs, CEDET can be difficult to install, (and
-unfortunately is not in ELPA due to the maintainer's
-uncooperativeness), so here's some help:
-
-<pre>
-(defun load-rudel ()
-  (interactive)
-  ;; Do these in a shell in ~/src:
-  ;; cvs -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet login
-  ;; cvs -z3 -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet co -P cedet
-  ;; cd cedet && make && cd ..
-  ;; svn co https://rudel.svn.sourceforge.net/svnroot/rudel/rudel/trunk rudel
-  (add-to-list 'load-path "~/src/cedet/eieio")
-  (add-to-list 'load-path "~/src/cedet/common")
-  (add-to-list 'load-path "~/src/rudel/")
-  (add-to-list 'load-path "~/src/rudel/jupiter")
-  (add-to-list 'load-path "~/src/rudel/obby")
-  (require 'rudel-mode)
-  (require 'rudel-obby)
-  (global-rudel-minor-mode))
-</pre>
-
-Autoloads and byte-compilation don't work for me due to a strange cedet
-dependency problem, but this should get you in a working state.
-[new]
+To use Rudel, you need Emacs-24.
 
 * *!GnuTLS (optional)*
   Connections to Gobby servers require the gnutls-cli program.
