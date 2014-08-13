@@ -1,5 +1,6 @@
 ;;; better-registers.el --- facilities for more powerful registers
-;; Version: 20140810.1244
+;; Version: 20140812.1546
+;; X-Original-Version: 20140810.1244
 ;; -*- emacs-lisp -*-
 ;; Copyright (C) 2005 Sigurd Meldgaard
 
@@ -77,7 +78,8 @@
 (defvar better-registers-version "0.58"
   "The version of the package better-registers.
    Revision history:
-   from 0.58 to 0.59 Add support for both VEmacs 24.4 and older
+   from 0.59 to 0.60 User can choose to use C-r or not optionally
+   from 0.58 to 0.59 Add support for both Emacs 24.4 and older
    from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers.
    from 0.57 to 0.57 Can now correctly save fontified strings, added convenient macro key (f1)
    from 0.55 to 0.56 No longer blocks enter in the minibuffer
@@ -100,13 +102,24 @@
 (defvar better-registers-r-map (make-sparse-keymap)
   "Keymap for combinations with C-r first")
 
+(defcustom better-registers-use-C-r t
+  "Use C-r if enable"
+  :group 'better-registers
+  )
+
 (define-key better-registers-map [f1] 'better-registers-play-macro-if-not-playing)
 (define-key better-registers-map [S-f1] 'better-registers-toggle-macro-recording)
 (define-key better-registers-map "\C-j" 'better-registers-jump-to-register)
 (define-key better-registers-map "\C-xj" 'better-registers-jump-to-register)
-(define-key better-registers-map "\C-xr" 'isearch-backward) ;free C-r
-(define-key better-registers-map "\C-r" ;Shadow C-r global
-  better-registers-r-map)
+
+(if better-registers-use-C-r
+    (progn
+      (define-key better-registers-map "\C-xr" 'isearch-backward) ;free C-r
+      (define-key better-registers-map "\C-r" ;Shadow C-r global
+        better-registers-r-map))
+  (define-key better-registers-map "\C-xr" ;Shadow C-r global
+    better-registers-r-map))
+
 (define-key better-registers-r-map "n" 'number-to-register)
 (define-key better-registers-r-map "+" 'increment-register)
 (define-key better-registers-r-map "-" 'better-registers-decrement-register)
