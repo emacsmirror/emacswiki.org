@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 10 16:29:51 2014 (-0700)
+;; Last-Updated: Tue Aug 12 16:55:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23622
+;;     Update #: 23623
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -449,10 +449,10 @@
 ;;    `icicle-visit-marked-file-of-content-other-window',
 ;;    `icicle-visit-marked-file-of-content-recursive',
 ;;    `icicle-visit-marked-file-of-content-recursive-other-window',
-;;    `icicle-where-is', `icicle-widget-file-complete',
-;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
-;;    `icicle-zap-to-char', `toggle', `synonyms',
-;;    `toggle-icicle-~-for-home-dir',
+;;    `icicle-where-is', `icicle-wide-n',
+;;    `icicle-widget-file-complete', `icicle-yank-maybe-completing',
+;;    `icicle-yank-pop-commands', `icicle-zap-to-char', `toggle',
+;;    `synonyms', `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
@@ -1372,7 +1372,7 @@
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
 ;;    `icicle-var-val-satisfies-type-p',
-;;    `icicle-visit-marked-file-of-content-1',
+;;    `icicle-visit-marked-file-of-content-1', `icicle-wide-n-action',
 ;;    `icicle-widget-color-complete', `icicle-widgetp',
 ;;    `icicle-window-at-bottom-p', `icicle-window-at-left-p',
 ;;    `icicle-window-at-right-p', `icicle-window-at-top-p',
