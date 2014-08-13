@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug  9 15:33:10 2014 (-0700)
+;; Last-Updated: Tue Aug 12 16:57:19 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6944
+;;     Update #: 6953
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -166,7 +166,8 @@
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
 ;;    (+)`icicle-tag-a-file', (+)`icicle-tags-search',
 ;;    (+)`icicle-untag-a-file', (+)`icicle-vardoc',
-;;    (+)`icicle-where-is', (+)`synonyms', (+)`what-which-how'.
+;;    (+)`icicle-where-is', (+)`icicle-wide-n', (+)`synonyms',
+;;    (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -256,8 +257,8 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-update-f-l-keywords', `icicle-widget-color-complete',
-;;    `icicle-WYSIWYG-font'.
+;;    `icicle-update-f-l-keywords', `icicle-wide-n-action',
+;;    `icicle-widget-color-complete', `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -434,11 +435,13 @@
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
 (defvar icicle-complete-keys-ignored-prefix-keys) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-complete-keys-self-insert-ranges) ; In `icicles-var.el' (Emacs 22+)
-(defvar icicle-face-completing-p)       ; Here.
-(defvar icicle-package-completing-p)    ; Here.
+(defvar icicle-face-completing-p)       ; Here
+(defvar icicle-package-completing-p)    ; Here
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
-(defvar replace-count)                  ; In `replace.el'.
+(defvar replace-count)                  ; In `replace.el'
+(defvar wide-n-lighter-narrow-part)     ; In `wide-n.el'
+(defvar wide-n-restrictions)            ; In `wide-n.el'
 
 ;; (< emacs-major-version 21)
 (defvar tooltip-mode)                   ; In `tooltip.el'
@@ -8262,6 +8265,76 @@ candidates to packages of different kinds."
           (when (fboundp 'Info-make-manuals-xref) ; In `help-fns+.el', for Emacs 23.2+.
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
+
+(defun icicle-wide-n ()
+  "Choose a restriction and apply it.  Or choose `No restriction' to widen.
+During completion you can use these keys\\<minibuffer-local-completion-map>:
+
+`C-RET'   - Goto marker named by current completion candidate
+`C-down'  - Goto marker named by next completion candidate
+`C-up'    - Goto marker named by previous completion candidate
+`C-next'  - Goto marker named by next apropos-completion candidate
+`C-prior' - Goto marker named by previous apropos-completion candidate
+`C-end'   - Goto marker named by next prefix-completion candidate
+`C-home'  - Goto marker named by previous prefix-completion candidate
+`\\[icicle-delete-candidate-object]' - Delete restriction named by current completion candidate
+
+When candidate action and cycling are combined (e.g. `C-next'), option
+`icicle-act-before-cycle-flag' determines which occurs first.
+
+Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
+destination, or `C-g' to quit.  This is an Icicles command - see
+command `icicle-mode'."
+  (interactive)
+  (unless (featurep 'wide-n) (error "You need library `wide-n.el' for this command"))
+  (unless (cadr wide-n-restrictions) (error "No restrictions - you have not narrowed this buffer"))
+  (if (< (length wide-n-restrictions) 3) ; Only one restriction.  If narrowed widen, else apply the restriction.
+      (wide-n 1 'MSG)
+    (let ((icicle-sort-comparer  'icicle-special-candidates-first-p)
+          (icicle-delete-candidate-object
+           (lambda (cand)
+             (let ((nn  (icicle-get-alist-candidate cand)))
+               (if (eq 'all (cadr nn)) (error "Cannot delete `No restriction'")
+                 (with-current-buffer icicle-pre-minibuffer-buffer
+                   (setq wide-n-restrictions  (delete 'all wide-n-restrictions)
+                         wide-n-restrictions  (delete (cdr nn) wide-n-restrictions))
+                   (wide-n-renumber)))))))
+      (icicle-apply (let ((ns  ())
+                          beg end name)
+                      (save-restriction
+                        (widen)
+                        (dolist (nn  wide-n-restrictions)
+                          (if (eq 'all nn)
+                              (push `(,(icicle-propertize "No restriction" 'face 'icicle-special-candidate) all)
+                                    ns)
+                            (setq beg   (marker-position (cadr nn))
+                                  end   (marker-position (cddr nn))
+                                  name  (format "%d-%d, %s" beg end (buffer-substring beg end))
+                                  name  (replace-regexp-in-string "\n" " "
+                                                                  (substring name 0 (min 30 (length name))))
+                                  name  (format "%s\n" name))
+                            (push `(,name ,(car nn) ,@(cdr nn)) ns))))
+                      ns)
+                    #'icicle-wide-n-action
+                    'NOMSG))))
+
+(defun icicle-wide-n-action (cand)
+  "Action function for `icicle-wide-n': Narrow region to candidate CAND.
+If CAND has car \"No restriction\" then widen it instead."
+  (with-current-buffer icicle-pre-minibuffer-buffer
+    (if (not (eq 'all (cadr cand)))     ; "No restriction"
+        (condition-case err
+            (let ((wide-n-push-anyway-p  t))
+              (narrow-to-region (car (cddr cand)) (cdr (cddr cand)))
+              (wide-n-highlight-lighter)
+              (message wide-n-lighter-narrow-part))
+          (args-out-of-range
+           (setq wide-n-restrictions  (cdr wide-n-restrictions))
+           (error "Restriction removed because of invalid limits"))
+          (error (error "%s" (error-message-string err))))
+      (widen)
+      (wide-n-highlight-lighter)
+      (message "No longer narrowed"))))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
