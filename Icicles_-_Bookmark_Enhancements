@@ -243,7 +243,9 @@ the region is activated (provided option
 `C-u' and whether you are in TransientMarkMode.
 
 * With a ''multiple plain'' prefix arg ('''`C-u C-u''''), `C-x C-x' jumps to a region
-  bookmark that you choose using completion, and activates it.
+  bookmark that you choose using completion, and activates it.  (See also '''Icicles''' tripping command
+'''`icicle-wide-n'''', which lets you trip among your [[buffer]]
+[[narrowing]]s (restrictions).
 
 * With a ''numeric'' prefix arg, `C-x C-x' saves the region.  If the
   prefix arg is ''negative'', then you are prompted for the name to
@@ -604,6 +606,5 @@ CategoryCode
 CategorySearchAndReplace
 CategoryShell
 CategoryRegion
-
 
 
