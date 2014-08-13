@@ -1,0 +1,13 @@
+I have:
+(require 'edit-server)
+(edit-server-start)
+
+(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+
+In current stable chrome (36.0.1985.143), hit edit opens emacs.  C-x # copies html to compose window.  But then sending (to myself), it is not rendered.  It just appears as raw html text.
+
+-- ndbecker 2014-08-13 17:41 UTC
+
