@@ -95,6 +95,8 @@ Library <tt>[[narrow-indirect.el]]</tt> facilitates creating indirect buffers cl
 
 [new] What a shame that there are multiple multiple mode modes. As soon as you need mode X that requires multiple mode M1, while already using another mode which uses multiple mode M2, you're loading far more than you need to. Just because TIMTOWTDI (sorry for the perl-ism) doesn't mean you must do it more than one way.
 
+[new] It is worth mentioning the significant drawbacks of using indirect buffers to implement multi-mode editing in emacs.  
+To make switching between indirect buffers look seamless, it is critical that all of the major modes share a single font face.  Switching between modes with different faces or sizes is extremely jarring and unpleasant and causes the display to jump.   Furthermore, using the keyboard to extend a selection across a mode boundary is currently not possible in polymode.   As soon as the cursor moves into a new mode area, the indirect buffers are switched and the selection is lost.   I personally find polymode to be nearly unusable, but short of giving up on emacs entirely, it is the only realistic option for editing Rmarkdown documents.
 ----
 CategoryModes
 
