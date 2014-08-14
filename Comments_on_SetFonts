@@ -29,3 +29,10 @@ But i dont understand the difference of using the 't', or 'nil' option in an .in
 
 -- [http://librebytes.gr chomwitt] 2014-08-14 14:21 UTC
 
+
+----
+
+@ [[chomwitt]]: Yes. In your [[init file]] it should make no noticeable difference whether you use `nil' or `t' for parameter ##FRAME##.
+
+-- DrewAdams 2014-08-14 14:28 UTC
+
