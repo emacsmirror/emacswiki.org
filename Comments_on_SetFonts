@@ -13,3 +13,19 @@ To view available fonts on your system, look at <code>(font-family-list)</code>
 
 -- MichaelPaulukonis 2013-06-04 17:58 UTC
 
+
+----
+
+Regarding  the part:
+[quote]
+To change the default font for new (non special-display) frames, put either of these in your init file:
+
+    (add-to-list 'default-frame-alist '(font . FONT ))
+    (set-face-attribute 'default t :font FONT ))
+[/quote]
+I understand how when we are in the middle of an emacs session it'd help to have an option to change the
+font only of the future-new frames.
+But i dont understand the difference of using the 't', or 'nil' option in an .init file when starting a new emacs session . Doesnt it hold than in that case all frames are newones making 't' superfluous in .init file?
+
+-- [http://librebytes.gr chomwitt] 2014-08-14 14:21 UTC
+
