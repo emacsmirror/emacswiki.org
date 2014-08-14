@@ -2,9 +2,9 @@ I've been an Emacs user since 1991 or so, when Brian Fox (of bash fame) caught m
 
 I've used various versions of Emacs over the years: Emacs 18 was my first, then I used Epoch, Lucid Emacs, XEmacs.  These days, I use Emacs.
 
-I wrote a few random hacks that made their way into Emacs.  I (re-)wrote Tcl mode, and I added regular expression support to etags.
+I wrote a few random hacks that made their way into Emacs.  I (re-)wrote Tcl mode, added regular expression support to etags, added directory-local variables, and wrote package.el.
 
-I'm back to hacking on Emacs after a long hiatus.  Recently I've been working on notification area support and [http://tromey.com/elpa/ a packaging system].
+I'm back to hacking on Emacs after a long hiatus.
 
 My blog is at http://tromey.com/blog/.  There's an RSS feed for just Emacs-related things if that is all you are interested in hearing about.
 
@@ -12,23 +12,7 @@ My blog is at http://tromey.com/blog/.  There's an RSS feed for just Emacs-relat
 
 Here's my Emacs wish-list.  Parts of it are more like my personal to-do list.
 
-* ELPA
-** Package more stuff...
-*** ECB
-*** JDE
-*** DVC
-*** CEDET/Semantic
-*** BBDB + VM
-*** mew + semi + lsdb?
-*** jabber.el
-*** elpoint?
-*** RLX?  (when it is working...)
-*** auctex?
-*** EmacsSpeaksStatistics
-*** ... your package here
-** Split off package install code and try again to get it into Emacs.  Enhance it to auto-extract the list of built-in packages from the Emacs sources at build time
-
-* Emacs should let you make and manipulate notification area icons.  I wrote status.el to do this (and hooked it into calendar, ERC, and EMMS) -- but this needs a hacked zenity, and really this should be built in to Emacs.  (I wrote a big patch to implement this properly in Emacs; it was rejected.)
+* Emacs should let you make and manipulate notification area icons.  I wrote status.el to do this (and hooked it into calendar, ERC, and EMMS) -- but this needs a hacked zenity, and really this should be built in to Emacs.  I once wrote a big patch to implement this properly in Emacs; it was rejected.
 
 ** Maybe add status.el code to interface with compilation somehow.  Should only notify user if compilation buffer is not visible.
 ** Perhaps other background tasks?
@@ -44,12 +28,7 @@ Here's my Emacs wish-list.  Parts of it are more like my personal to-do list.
 
 * GNUS
 ** Setting up multiple mail accounts (especially outgoing mail) in gnus was ridiculously hard.  Should have a wizard or something.
-** gnus could use a wizard for subscribing to mailing lists.  It could auto-create a new group and perhaps even auto-reply to the confirmation email.
-** gnus uses w3m to display HTML content.  it should also modify the w3m URL click callback to use browse-url instead of w3m -- I want clicks in these buffers to use my preferred browser, not always w3m.  (I sent a patch for this but AFAICT it was rejected.)
-
-* Emacs should have a keyring.  I've got keyring.el kicking around; it adds an Emacs-specific keyring and also has some code to interface to the Gnome keyring.  However, for this to really work it requires patching all the elisp code that uses passwords.
-
-* Try out a mode-line hack to show point's position in buffer by changing the background of the correct percentage of the mode line.  See :propertize for mode-line-format.
+** gnus could use a wizard for subscribing to mailing lists.  It could auto-create a new group and perhaps even auto-reply to the confirmation email.  It could even have a way to automatically make a group.  (These days I'm moving even more to using gmane, though.)
 
 * Eclipse can display error icons in the right fringe which do not scroll -- so you can see a mini-overview of the entire file all the time.  Emacs could use a fringe like this.
 
