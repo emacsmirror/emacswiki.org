@@ -308,6 +308,21 @@ This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
   (setq ad-return-value (sacha/org-html-checkbox (ad-get-arg 0))))
 </pre>
 
+===Refile to opened orgmode buffer===
+The following codes allow refile to opened orgmode buffer files. (Currently set at level 1, to avoid too many refile targets when there are lots of orgmode files opened).
+
+<pre>
+(defun ixp/org-buffer-files ()
+  "Return list of opened orgmode buffer files"
+  (mapcar (function buffer-file-name)
+	  (org-buffer-list 'files)))
+
+(setq org-refile-targets
+      (quote ((nil :maxlevel . 3)
+	      (ixp/org-buffer-files :maxlevel . 1)
+	      (org-agenda-files :maxlevel . 3))))
+</pre>
+
 [:discussion]
 == Discussion ==
 Discussion moved to [[Comments_on_OrgMode|Talk page]] 
