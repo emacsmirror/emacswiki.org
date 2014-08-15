@@ -53,4 +53,4 @@
 || bbdb-use-pop-up |||| bbdb-pop-up-layout ||
 || bbdb/mail-auto-create-p  |||| [see] bbdb-mua-auto-update-init ||
 || bbdb/vm-force-create |||| [see] bbdb-mua-auto-update-init ||
-|| bbdb/vm-set-auto-folder-alist |||| [gone] ||
+|| bbdb/vm-set-auto-folder-alist |||| bbdb/vm-auto-folder ||
