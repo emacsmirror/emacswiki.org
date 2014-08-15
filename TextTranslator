@@ -12,9 +12,9 @@ Please use launchpad version. Launchpad version of text-translator is developmen
 
 EmacsWiki files are very old.
 
-* <s>Lisp:text-translator.el</s>
-* <s>Lisp:text-translator-vars.el</s>
-* <s>Lisp:text-translator-load.el</s>
+* Lisp:text-translator.el
+* Lisp:text-translator-vars.el
+* Lisp:text-translator-load.el
 
 or
 
