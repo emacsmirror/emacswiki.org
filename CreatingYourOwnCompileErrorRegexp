@@ -75,5 +75,14 @@ a <code>(require 'compile) </code>, just beffor the <code> (add-hook ... </code>
 * Using absolute path may be avoidable... But counting on .bashrc or .bash_profile (ex : alias...) will not help because Emacs invokes the compile command in a non-interactive, non-login shell. See : http://procrastiblog.com/2007/07/09/changing-your-path-in-emacs-compilation-mode/
 
 -- Notio
+
+<b>Question</b>
+Shouldn't there be extra parentheses around the compilation-error-regexp-alist:
+    (setq compilation-error-regexp-alist
+        '(("^jslint:\\([_[:alnum:]-/]*.js\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\):.*$"
+              1 2 3)));
+I didn't try this example, but got no matches for my own regexp unless I used double parentheses around the single-element alist.
+
+-- Lukas
 ----
 CompilationMode
