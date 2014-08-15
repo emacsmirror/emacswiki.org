@@ -15,7 +15,6 @@ For a source-code buffer the locations to index are typically definitions of fun
 
 See Manual:Imenu.
 
-
 == Imenu from a Menu ==
 
 To automatically add an Imenu menu to the [[menu bar]] for a given mode, do something like this:
@@ -70,13 +69,40 @@ option also.
 
 You can control the order of Imenu menu items by customizing [[option]] '''`imenu-sort-function''''.  For alphabetical order, use `imenu--sort-by-name' as the value.
 
+=== Sorting submenus ===
 
+The following patch lets the
+user (final user or major mode developer) control whether the submenus
+are sorted or kept on top. The guiding idea is that there is two major
+ways to offer an imenu, according to the mode:
 
+1) Some modes show a hierarchy of language objects. For example:
+python-mode will show class/method, function/nested function, etc.
+relationships; org-mode will show section/subsection/subsubsection/...
+hierarchies. In these cases keeping the submenus on top is not
+adequate since it creates an artificial split of the list.
 
+2) Some modes show top level submenus with fixed categories
+(Functions, Classes, Variables, etc). These modes will presumably want
+to keep the submenus on top and sorted in the order they were given.
 
+3) Other modes would not fit either (1) or (2). Then, there is always
+the possibility of turning off sorting and provide the menu structure
+as is.
 
+First, add a custom variable to enable submenu sorting:
 
+ > (defcustom imenu-sort-submenus nil
+ >   "Non-nil means Imenu should sort submenus also (using imenu-sort-function)."
+ >   :type 'boolean
+ >   :group 'imenu)
 
+Then, modify imenu--split-menu:
+
+ <       (when (imenu--subalist-p item)
+ ---
+ >       (when (and (not imenu-sort-submenus)
+ >                  (imenu--subalist-p item))
 
 [:IcicleImenu]
 [:ImenuBrowser]
