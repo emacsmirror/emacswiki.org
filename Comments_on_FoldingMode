@@ -2,3 +2,10 @@ How Can I fold code and unfold code by using Folding Mode ?
 
 -- [http://www.emacswiki.org/emacs/SebastianRose cobbliu] 2013-11-27 11:55 UTC
 
+
+----
+
+Hello, I love this mode!  I use it with Matlab mode.  I tried to bound (ctrl meta f) to fold a region but Matlab mode says that's bound to something else.  Is there a way to over-ride the Matlab key binding?
+
+-- leethaxor12 2014-08-15 18:49 UTC
+
