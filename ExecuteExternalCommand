@@ -98,6 +98,19 @@ There is a little library called [[Execute.el]] that redefines `##M-!##' key for
 
 Alternatively, you can use the package Dizzee at [[https://github.com/davidmiller/dizzee]].  The Dizzee package allows you to name various asynchronous subprocesses, and allows you to start, stop and reload them as needed.  Also, there is the concept of process groups, which allows you to group together like processes.  (For instance, you might have a "webdev" process group, which would start up an apache server, tomcat server, mysql, etc. etc.)
 
+== Executing external programs as their own process ==
+
+* Using ##shell-command## runs the app as a child, even when done asynchronously
+* ##start-process## also runs as a child process
+
+Both commands result in the child process being killed when emacs is shutdown. For a command to have the ability to stay alive past that point you'll need to use ##call-process## to start the program as its own distinct process.
+
+<pre>
+(call-process PROGRAM &optional INFILE BUFFER DISPLAY &rest ARGS)
+</pre>
+
+Setting ##BUFFER## to ##0## runs the program asynchronously, while ##nil## will wait for the process to exits before resuming emacs. 
+
 == Discussion ==
 
 === Parent shell ===
