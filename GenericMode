@@ -1,8 +1,6 @@
 [[es:ModoGenérico]]
 = Using Generic Modes For Obscure Languages =
 
-This doesn't appear to work with XEmacs 21.1. Does anyone know how to do this with XEmacs?
-
 The following in your ##~/.emacs## adds very basic syntax highlighting for
 all sorts of files:
 
@@ -211,6 +209,10 @@ This does not work:
 Yes it does.  Generic mode is just like any other major mode.
 Simpler perhaps, but it certainly prevents any font-lock stuff by
 other (major) modes.
+
+== XEmacs compatibility ==
+
+This doesn't appear to work with XEmacs 21.1. Does anyone know how to do this with XEmacs?
 
 = More Power? =
 
