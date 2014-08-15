@@ -32,7 +32,7 @@ If you use, say, the recentf filter `recentf-arrange-by-dir', then the '''File >
 
 === `recentf-minibuffer-dialog' ===
 
-2006-03-15, SteveBerman posted some code to ##gnu-emacs-sources@gnu.org## that takes recentf filters into account in another way. Here is Steve's commentary, followed by his code. Steve: Why don't you upload this as an Emacs-Lisp library? -- DrewAdams
+2006-03-15, SteveBerman posted some code to ##gnu-emacs-sources@gnu.org## that takes recentf filters into account in another way. Here is Steve's commentary, followed by his code. This requires enabling recursive minibuffer editing: (setq enable-recursive-minibuffers t). Steve: Why don't you upload this as an Emacs-Lisp library? -- DrewAdams
 
 : One of the features of
 ##recentf.el## that I find most useful is the possibility of filtering
