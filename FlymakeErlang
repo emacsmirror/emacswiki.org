@@ -44,7 +44,7 @@ I use rebar and have hrl files not in the ../include path. Here is a quick hack 
 main([File_Name]) ->
     Includes = case filelib:is_dir("../deps") of
                    false ->
-                       ["../include"];
+                       [{i, "../include"}];
                    true ->
                        {ok, Deps} = file:list_dir("../deps"),
                        [{i, "../include"}| [{i,Di} || D <- Deps,
