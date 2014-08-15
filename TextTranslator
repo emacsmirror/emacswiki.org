@@ -6,22 +6,19 @@ on the Internet.
 
 == Download ==
 
-* <s>[http://www.oti-orz.mydns.jp/~khiker/file/elisps/text-translator-0.6.6.1.tar.bz2 text-translator-0.6.6.1.tar.bz2]</s> not available now...
-* Lisp:text-translator.el
-* Lisp:text-translator-vars.el
-* Lisp:text-translator-load.el
-
-or Launchpad. Launchpad version of text-translator is development version.
+Please use launchpad version. Launchpad version of text-translator is development version.
 
 * https://code.launchpad.net/~khiker/+junk/text-translator
+
+EmacsWiki files are very old.
+
+* <s>Lisp:text-translator.el</s>
+* <s>Lisp:text-translator-vars.el</s>
+* <s>Lisp:text-translator-load.el</s>
 
 or
 
 M-x auto-install-batch text translator if you have AutoInstall.
-
-And Development new version is here.
-
-* http://www39101u.sakura.ne.jp/~kiyoto/emacs/text-translator/index.html
 
 == Quick use ==
 
@@ -62,38 +59,9 @@ put text-translator.el, text-translator-load.el and text-translator-vars.el to l
 
 <pre>
 (global-set-key "\C-x\M-t" 'text-translator)
-(global-set-key "\C-x\M-T" 'text-translator-translate-last-string)
 ;; translate all sites.
 ;; for example, if you specify "enja", text-translator use google.com_enja, yahoo.com_enja, ... .
 (global-set-key "\C-x\M-a" 'text-translator-all)
-</pre>
-
-=== add keys to major-mode ===
-
-<pre>
-(add-hook
- 'text-translator-mode-hook
- (lambda()
-   ;; if you do not change prefix-key, it is executed by C-c M-a
-   (define-key text-translator-mode-pkey-map "\M-a" 'text-translator-translate-recent-type)))
-</pre>
-
-=== use proxy ===
-
-<pre>
-;; ;; if you are setting environment variables HTTP_PROXY,
-;; ;; you have not to set this.
-;; (setq text-translator-proxy-server "proxy.hogehoge.com")
-;; (setq text-translator-proxy-port   8080)
-</pre>
-
-=== use popup-tip function ===
-
-<pre>
-;; The trasnlation results show the popup (text overlay).
-;; You have to require the popup.el. (http://github.com/m2ym/auto-complete)
-(require 'popup)
-(setq text-translator-display-popup t)
 </pre>
 
 === use translation type auto selection (english/japanese only) ===
@@ -106,28 +74,13 @@ put text-translator.el, text-translator-load.el and text-translator-vars.el to l
 (global-set-key "\C-xt" 'text-translator-translate-by-auto-selection)
 </pre>
 
-== Keys allocated to major-mode ==
-
-you can see key allocation by typing prefix-key C-h on the
-text-translator-mode.
-
-||\C-q||text-translator-quit||
-||\C-a||text-translator-translate-recent-type||
-||\C-l||text-translator-display-last-string||
-||\C-d||text-translator-translate-default||
-||\C-s||text-translator-toggle-leave-string||
-
 == Translation sites ==
 
 * google.com
-* yahoo.com
 * freetranslation.com
 * livedoor.com
 * fresheye.com
 * excite.co.jp
-* yahoo.co.jp
-* ocn.ne.jp
-* lou5.jp
 * traduku.net
 * tatoeba.org
 
