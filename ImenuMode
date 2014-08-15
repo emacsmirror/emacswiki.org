@@ -45,6 +45,15 @@ You can bind Imenu to any [[key sequence]]. Here is how to bind it to `S-mouse-3
      (global-set-key [(shift button3)] 'imenu) ; XEmacs
    (global-set-key [S-mouse-3] 'imenu)) ; GNU Emacs
 
+== Quickly force rescan ==
+
+You can avoid auto rescanning big buffers just making it easy to manually rescan:
+
+ (defun my-imenu-rescan ()
+   (interactive)
+   (imenu--menubar-select imenu--rescan-item))
+
+ (global-set-key "\C-cI" 'my-imenu-rescan)
 
 == Grouping and Truncating Menu Items ==
 
