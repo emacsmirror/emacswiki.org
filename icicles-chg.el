@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug 16 10:12:50 2014 (-0700)
+;; Last-Updated: Sat Aug 16 11:49:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11140
+;;     Update #: 11143
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -88,6 +88,8 @@
 ;; 2014/08/16 dadams
 ;;     icicle-customize-face(-other-window), icicle-face-list, icicle-customize-apropos-faces:
 ;;       Bind icicle-face-completing-p.
+;;     icicle-customize-apropos: string-match -> icicle-string-match-p.
+;;                               Bug fix: 1st arg to icicle-string-matchp: if, not and.
 ;; 2014/08/10 dadams
 ;;     Moved to icicles-fn.el (and modified): icicle-binary-option-p.
 ;;     icicle-apropos-variable: Bind icicle-variable-completing-p.
