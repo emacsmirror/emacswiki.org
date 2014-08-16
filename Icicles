@@ -131,7 +131,7 @@ The most important links are '''bold''' here.
 * [[Icicles - Choose All Candidates]] -- acting on ''all'' completion candidates that match the current input
 * '''[[Icicles - Candidate Sets]]''' -- ''set'' operations on candidates: save and retrieve sets, complement, union, difference, intersection
 * [[Icicles - Google Matching]] -- how to do [[http://www.google.com Google]]-style matching with '''Icicles'''
-* [[Icicles - Buffer-Name Input]] -- inputting buffer names
+* '''[[Icicles - Buffer-Name Input]]''' -- inputting buffer names (and optionally names of recent or cached files)
 * '''[[Icicles - File-Name Input]]''' -- inputting file names; locating any file in your file system
 * '''[[Icicles - Persistent Completions]]''' -- saving sets of completions ''persistently'', for reuse later
 * [[Icicles - Large Candidate Sets]] -- dealing with very large sets of candidates
