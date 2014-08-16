@@ -18,9 +18,26 @@ To enable `recentf-mode', put this in your `~/.emacs':
 [:RecentFilesWithCompletion]
 
 
+
+
+
+
+
+
+
+
 == Recentf Filters (Structured Menu) ==
 
 Recentf lets you ''structure its menus'' in various ways, using what it calls ''filters''. This section describes ways to take advantage of that menu organization at the keyboard, with completion.
+
+
+
+
+
+
+
+
+
 
 === A La Carte ===
 
@@ -29,6 +46,15 @@ You can take advantage of recentf filters (that is, structured menus) from the k
 Assuming that you have `##ESC ESC x##' (that is, `##ESC M-x##') bound to `lacarte-execute-menu-command' (which you should ;-)), just type part of a recent file name (any part, or a regexp), then hit `S-TAB' to complete to matching recent files. 
 
 If you use, say, the recentf filter `recentf-arrange-by-dir', then the '''File > Open Recent''' menu is organized by directory, and this is reflected in the completion candidates used by `lacarte-execute-menu-command'.
+
+
+
+
+
+
+
+
+
 
 === `recentf-minibuffer-dialog' ===
 
@@ -105,10 +131,41 @@ Otherwise, show the default maximum number of recent items."
 }}}
 
 
-== Icicles: `icicle-recent-file' ==
 
-`recentf-mode' of vanilla Emacs forces you to open a file using a ''menu'' interface.  [[Icicles]] command `icicle-recent-file' lets you use the usual `find-file' [[minibuffer]] interface, with [[completion]] and cycling
-among your recent files. It is also a [[multi-command]], so you can use it to open several recently used files at once.
+
+
+
+
+
+
+
+
+== Icicles Recentf Support ==
+
+'''[[Icicles]]''' lets you take advantage of library ##recentf.el## in two ways.
+
+=== Multi-Command `icicle-recent-file' ===
+
+`recentf-mode' of vanilla Emacs forces you to open a file using a ''menu'' interface.  '''Icicles''' command `icicle-recent-file' lets you use the usual `find-file' [[minibuffer]] interface, with [[completion]] and cycling
+among your recent files. 
+
+`icicle-recent-file'  is also a [[multi-command]], so you can use it to open several recently used files at once.  And the completion candidates are two-part [[multi-completion]]s: (1) the (absolute) file name and (2) the file's last modification date. You can match your minibuffer input against either or both parts.
+This means that you can easily find those notes you took sometime last week...
+
+
+=== Including Recent Files for Buffer Completion ===
+
+In ''Icicle'' mode, `C-x b' (command `icicle-buffer') can optionally include the names of recently accessed files as completion candidates (there need not currently be any buffers for the files).  The [option] for this is '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''. You can toggle the option value during buffer-name completion using `C-x R' (command `icicle-toggle-include-recent-files').  A [[prefix argument]] sets
+the option value to the numeric prefix value.
+
+The option value is a non-zero integer.  If positive then recent file names are included; if negative they are not.  The absolute value is the maximum number of recent-file candidates to include when turned on.  So for example, if the option value is 20 then the names of only the twenty most recently visited files are candidates. 
+
+
+
+
+
+
+
 
 
 == ido (iswitchb ?) Completion ==
