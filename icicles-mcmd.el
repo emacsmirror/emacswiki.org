@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Aug 10 17:06:28 2014 (-0700)
+;; Last-Updated: Sat Aug 16 10:09:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19578
+;;     Update #: 19579
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6347,6 +6347,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                  (icicle-candidate-properties-alist       ())
                                  (icicle-current-input                    icicle-current-input)
                                  (icicle-last-input                       icicle-last-input)
+                                 (icicle-must-pass-after-match-predicate  nil)
                                  (icicle-apropos-complete-match-fn        'string-match)
                                  (icicle-sort-orders-alist
                                   '(("turned OFF")
