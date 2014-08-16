@@ -374,7 +374,7 @@ variables whose values are numbers or strings, respectively.
 You can choose such a proxy candidate to use its value.  (All
 candidates are proxy candidates for these functions.)
 
-* When you use command `icicle-read-color-wysiwyg', the proxy candidates include the following:
+* When you use command `icicle-read-color-WYSIWYG', the proxy candidates include the following:
 
 ** '''`##*point foreground*##'''' -- proxy for the foreground color at the cursor position (point).
 
