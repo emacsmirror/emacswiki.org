@@ -10,5 +10,12 @@ If you are not using any of the standard window managers in Linux then you may b
 (setq browse-url-browser-function 'browse-url-generic)
 }}}
 
+Likewise in any of the non-standard window managers, if you wish to use eww (web browser newly included in 24.4) as the default, with Conkeror as the external browser (triggered with "&" in eww) then use the following:
+{{{
+(setq browse-url-browser-function 'eww-browse-url) ; use eww as default browser
+(setq browse-url-generic-program (executable-find "conkeror")
+	shr-external-browser 'browse-url-generic)
+}}}
+
 ----
 FireFox CategoryRelated
