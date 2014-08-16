@@ -56,7 +56,7 @@ is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-
 [:icicle-toggle-include-recent-files]
 [:icicle-buffer-include-recent-files-nflag]
 * '''`C-x R'''' ('''`icicle-toggle-include-recent-files'''') Toggle whether
-`icicle-buffer' includes recent file names as candidates.  That
+`icicle-buffer' includes the names of recently accessed files as candidates.  That
 is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.  A prefix arg sets the option value to the numeric prefix value.
 
 [:icicle-bookmark-non-file-other-window]
@@ -172,5 +172,4 @@ DrewsElispLibraries referenced here: Lisp:icicles.el
 CategoryCommands 
 CategoryCompletion
 CategoryBufferSwitching
-
 
