@@ -1,10 +1,10 @@
 ;;; judge-indent.el --- judge indent and tab widths
 
-;;; Copyright (C) 2011, 2012 yascentur
+;;; Copyright (C) 2011-2014 yascentur
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: indent tab
-;; Version:  1.1.2b
+;; Version:  1.1.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -581,7 +581,8 @@
       (while (and (search-forward
                    (concat "\n" string) judge-indent-search-limit t)
                   (<= (point) pos2))
-        (unless (or (char-equal (char-after) ?\ )
+        (unless (or (eobp)
+                    (char-equal (char-after) ?\ )
                     (char-equal (char-after) ?\t)
                     (char-equal (char-after) ?\n)
                     (char-equal (char-after) ?\r))
@@ -590,7 +591,8 @@
       (while (and (search-forward
                    (concat "\r" string) judge-indent-search-limit t)
                   (<= (point) pos2))
-        (unless (or (char-equal (char-after) ?\ )
+        (unless (or (eobp)
+                    (char-equal (char-after) ?\ )
                     (char-equal (char-after) ?\t)
                     (char-equal (char-after) ?\n)
                     (char-equal (char-after) ?\r))
