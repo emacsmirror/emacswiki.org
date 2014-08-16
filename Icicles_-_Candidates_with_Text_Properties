@@ -73,7 +73,8 @@ The highlighting applies only to the ''part'' of a candidate that
 matches the regexp.  This selectivity is particularly useful when
 dealing with multi-completions.   Function `icicle-read-file-name'
 provides an example: file names that match ##.+/$##, that is,
-directory names, are highlighted as special candidates. Function `icicle-read-color-wysiwyg'
+directory names, are highlighted as special candidates. Function
+`icicle-read-color-WYSIWYG'
 provides another example (using the similar, but internal, variable
 `icicle-proxy-candidate-regexp'): proxy color-name candidates such
 as `##*point foreground*##' and `##`icicle-region-background'##' are
@@ -179,14 +180,14 @@ How does this work? '''Icicles''' redefines the standard Emacs function `display
 [new]
 
 [:ColorNameCompletions]
-'''Icicles''' command '''`icicle-read-color-wysiwyg'''' presents an illustration, using the `face' property.  (It also uses properties
+'''Icicles''' command '''`icicle-read-color-WYSIWYG'''' presents an illustration, using the `face' property.  (It also uses properties
 `icicle-mode-line-help' and `help-echo', to provide RGB and HSV
 information in the mode-line and via tooltip.)
 
 
-In `icicle-read-color-wysiwyg', a multi-completion candidate is used, composed of an unpropertized string that names a color and a propertized string that names its RGB (red, green, blue) value.  The RGB string, by default, has a background of the same color -- each completion candidate is thus accompanied by its own color swatch.  
+In `icicle-read-color-WYSIWYG', a multi-completion candidate is used, composed of an unpropertized string that names a color and a propertized string that names its RGB (red, green, blue) value.  The RGB string, by default, has a background of the same color -- each completion candidate is thus accompanied by its own color swatch.  
 
-The code that does this is in function `icicle-make-color-candidate', which is used by `icicle-read-color-wysiwyg' and other Icicles commands
+The code that does this is in function `icicle-make-color-candidate', which is used by `icicle-read-color-WYSIWYG' and other Icicles commands
 that read colors.  Here is a simplified definition:
 
   (defun icicle-make-color-candidate (color-name)
@@ -206,7 +207,7 @@ You'll notice that the face property is added only when [[option]]
 this option during completion, using `C-S-pause', to change the behavior.
 (The new value takes effect for the next act of completion.)
 
-You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color-wysiwyg' defines a set of sort orders that are pertinent to the color candidates.
+You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color-WYSIWYG' defines a set of sort orders that are pertinent to the color candidates.
 
 You can use `##C-,##' to sort by color name, amount of red, blue,
 green, all RGB components (in order), RGB distance from a base
@@ -222,7 +223,7 @@ And here is a screenshot showing candidates sorted by color name:
 
 [[image:DrewsEmacsColorNameCompletions]]
 
-For this screenshot, I turned on inclusion of ''proxy'' candidates. For `icicle-read-color-wysiwyg', the proxies are placeholders for colors; they are not, themselves, color-name-and-RGB pairs. Proxies are highlighted with face '''`<tt>[[Icicles - Customization and General Tips#icicle-proxy-candidate|icicle-proxy-candidate]]</tt>'''' for easier recognition. As always, you can toggle the use of proxy candidates using
+For this screenshot, I turned on inclusion of ''proxy'' candidates. For `icicle-read-color-WYSIWYG', the proxies are placeholders for colors; they are not, themselves, color-name-and-RGB pairs. Proxies are highlighted with face '''`<tt>[[Icicles - Customization and General Tips#icicle-proxy-candidate|icicle-proxy-candidate]]</tt>'''' for easier recognition. As always, you can toggle the use of proxy candidates using
 '''`##C-M-_##'''' in the minibuffer.
 
 The proxy candidates for colors include the single-quoted names of [[user option]]s (variables) whose custom type is `color'. So, for example, option `icicle-region-background' appears as proxy color candidate `##'icicle-region-background'##'. Color proxies also include the following:
@@ -300,5 +301,4 @@ CategoryCompletion
 CategoryProgrammerUtils
 CategoryCode
 CategoryFaces
-
 
