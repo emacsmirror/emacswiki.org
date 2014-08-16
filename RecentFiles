@@ -290,15 +290,16 @@ On modern Emacs, assoc-ignore-representation is deprecated and the lisp style of
 See IswitchRecentFiles for using recent files with IswitchB.
 
 
-== Use with Anything ==
-[[Anything]] is a candidate selection framework.
+== Use with Helm(Anything) ==
 
-Start with `M-x anything-for-files', narrow the list (including recent files) by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+[[Anything]] is a candidate selection framework, now called Helm.
+
+`M-x helm-for-files' will show a list of open buffers, recent files, and other filenames. Narrow the list by typing some patterns (multiple patterns are space-delimited strings);
+select with up/down/pgup/pgdn/C-p/C-n/C-v/M-v, choose with enter.
 With TAB actions can be selected if the selected files has more than one possible action.
-With C-z content of files is displayed without quitting anything session.
+With C-z content of files is displayed without quitting the helm session.
 
-
+`M-x helm-recentf' will show only recently opened files (from recentf).
 
 == TrampMode ==
 
