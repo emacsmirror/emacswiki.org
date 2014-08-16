@@ -1,10 +1,10 @@
 ;;; dummy-h-mode.el --- switch major mode to c-/c++-/objc-mode on .h file
 
-;;; Copyright (C) 2012 yascentur
+;;; Copyright (C) 2012-2014 yascentur
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: c-mode c++-mode objc-mode
-;; Version:  1.0.1b
+;; Version:  1.0.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
