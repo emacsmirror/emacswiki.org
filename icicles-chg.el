@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug 16 13:38:14 2014 (-0700)
+;; Last-Updated: Sat Aug 16 16:32:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11145
+;;     Update #: 11146
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1117,6 +1117,7 @@
 ;;
 ;; 2014/08/16 dadams
 ;;     Renamed: icicle-read-color-wysiwyg to icicle-read-color-WYSIWYG.
+;;     icicle-read-color-WYSIWYG: Bind icicle-color-completing-p.
 ;;     icicle-imenu-1: Fixed bug introduced 2014/06/21: Set REGEXP from SUBMENU.
 ;; 2014/08/12 dadams
 ;;     Added: icicle-wide-n, icicle-wide-n-action.
