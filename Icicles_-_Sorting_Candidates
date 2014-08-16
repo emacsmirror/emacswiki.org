@@ -314,7 +314,7 @@ repetition of `##C-M-+##' gives the saved sort order more and more
 weight.  Eventually a fixed point is reached: `##C-M-+##' produces no
 further change in the order.
 
-For example, consider `icicle-read-color-wysiwyg'.  With user option
+For example, consider `icicle-read-color-WYSIWYG'.  With user option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' 
 non-`nil' (e.g. a string) it lets
 you see the effect of `##C-M-+##' in a striking, graphical way.
@@ -331,7 +331,7 @@ Sorting by color brightness shows a single value gamut, the
 brightest colors followed by dimmer and dimmer colors, down to the
 dimmest (black).
 
-Try `M-x icicle-read-color-wysiwyg', sorting (`##C-,##', possibly with
+Try `M-x icicle-read-color-WYSIWYG', sorting (`##C-,##', possibly with
 a prefix arg) first by hue.  Here is a screenshot:
 
 [[image:by-hue]]
