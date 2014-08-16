@@ -104,21 +104,21 @@ with a ''negative'' prefix argument removes the advice, restoring the
 default choice of methods for the target command.
 
 For example, this sets the available `TAB' methods for command
-`icicle-read-color-wysiwyg' to fuzzy (the default for this command) and
+`icicle-read-color-WYSIWYG' to fuzzy (the default for this command) and
 basic:
 
   M-x icicle-set-TAB-methods-for-command RET
-  Command: icicle-read-color-wysiwyg RET
+  Command: icicle-read-color-WYSIWYG RET
   TAB methods: fuzzy RET
   TAB methods: basic RET
   TAB methods: RET
 
 And this removes the special treatment for `##C-(##' during
-`icicle-read-color-wysiwyg', restoring the default `TAB' methods that are
+`icicle-read-color-WYSIWYG', restoring the default `TAB' methods that are
 defined by option `icicle-TAB-completion-methods':
 
   C-- M-x icicle-set-TAB-methods-for-command RET
-  Command: icicle-read-color-wysiwyg RET
+  Command: icicle-read-color-WYSIWYG RET
 
 
 
@@ -406,6 +406,5 @@ CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
 CategoryCode
-
 
 
