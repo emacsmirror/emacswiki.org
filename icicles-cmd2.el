@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug 16 09:27:42 2014 (-0700)
+;; Last-Updated: Sat Aug 16 13:35:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6956
+;;     Update #: 6957
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -119,7 +119,7 @@
 ;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
-;;    `icicle-read-color-wysiwyg', `icicle-save-string-to-variable',
+;;    `icicle-read-color-WYSIWYG', `icicle-save-string-to-variable',
 ;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-autofile-bookmark',
@@ -1159,14 +1159,14 @@ multi-command that provides WYSIWYG completion, color-variable proxy
 candidates, alternate candidate actions, candidate help, and multiple
 color-related candidate sort orders.
 
-In this it is like command `icicle-read-color-wysiwyg' (which see),
+In this it is like command `icicle-read-color-WYSIWYG' (which see),
 but it is less flexible and powerful than that command.
 `icicle-read-color' always returns the RGB hex string, and your input
 cannot be an arbitrary string - it must match a color candidate (or be
 empty if ALLOW-EMPTY-NAME-P is non-nil).
 
 In Lisp code that you write, and for interactive use,
-`icicle-read-color-wysiwyg' is generally a better choice than
+`icicle-read-color-WYSIWYG' is generally a better choice than
 `icicle-read-color'.
 
 Optional argument PROMPT is the prompt to use (default \"Color: \").
@@ -1184,8 +1184,8 @@ action in case of empty input.
 Interactively, or with non-nil MSGP, show chosen color in echo area."
     (interactive "i\np\ni\np")          ; Always convert to RGB interactively.
     (let* ((icicle-require-match-p  (not allow-empty-name-p))
-           (color                   (icicle-read-color-wysiwyg (if convert-to-RGB-p 2 1) prompt)))
-      ;; `icicle-read-color-wysiwyg' transforms input to get the 2nd multi-completion component.
+           (color                   (icicle-read-color-WYSIWYG (if convert-to-RGB-p 2 1) prompt)))
+      ;; `icicle-read-color-WYSIWYG' transforms input to get the 2nd multi-completion component.
       ;; But if the user did not complete but just entered a color name, then this transformation returns "".
       ;; In that case, get the color name that was input from the input history, and convert that to RGB.
       (when (and (not allow-empty-name-p)  (string= "" color))
@@ -1198,7 +1198,7 @@ Interactively, or with non-nil MSGP, show chosen color in echo area."
         (when msgp (message "Color: `%s'" (icicle-propertize colr 'face 'icicle-msg-emphasis)))
         colr)))
 
-  (defun icicle-read-color-wysiwyg (&optional arg prompt initial-input msgp)
+  (defun icicle-read-color-WYSIWYG (&optional arg prompt initial-input msgp)
     "Read a color name or hex RGB color value #RRRRGGGGBBBB.
 Return a string value.
 Interactively, optional argument ARG is the prefix arg - see below.
@@ -1628,7 +1628,7 @@ name to use."
                                      (cons 'rgb-dist
                                            (let ((enable-recursive-minibuffers  t)
                                                  (icicle-sort-comparer          nil))
-                                             (icicle-read-color-wysiwyg ; Use the color name only.
+                                             (icicle-read-color-WYSIWYG ; Use the color name only.
                                               0 "With RGB close to color: ")))))))
            (base-rgb    (hexrgb-hex-to-rgb (hexrgb-color-name-to-hex base-color)))
            (base-red    (nth 0 base-rgb))
@@ -1714,7 +1714,7 @@ name to use."
                                      (cons 'hsv-dist
                                            (let ((enable-recursive-minibuffers  t)
                                                  (icicle-sort-comparer          nil))
-                                             (icicle-read-color-wysiwyg ; Use the color name only.
+                                             (icicle-read-color-WYSIWYG ; Use the color name only.
                                               0 "With HSV close to color: ")))))))
            (base-hsv    (hexrgb-hex-to-hsv (hexrgb-color-name-to-hex base-color)))
            (base-hue    (nth 0 base-hsv))
@@ -1975,7 +1975,7 @@ is returned.
 As always in Icicles, you can toggle the use of proxy candidates using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]' in the minibuffer.
 
-See `icicle-read-color-wysiwyg' for more information."
+See `icicle-read-color-WYSIWYG' for more information."
     (let* ((prefix      (buffer-substring-no-properties
                          (widget-field-start widget) (point)))
            ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
@@ -2019,8 +2019,8 @@ See `icicle-read-color-wysiwyg' for more information."
                                                                         (widget-field-end field))))
 
                     (color
-                     (if (and (fboundp 'icicle-read-color-wysiwyg)  icicle-WYSIWYG-Completions-flag)
-                         (icicle-read-color-wysiwyg (if current-prefix-arg 99 0)
+                     (if (and (fboundp 'icicle-read-color-WYSIWYG)  icicle-WYSIWYG-Completions-flag)
+                         (icicle-read-color-WYSIWYG (if current-prefix-arg 99 0)
                                                     "Color (name or #R+G+B+): " prefix 'MSGP)
                        (completing-read "Color: " colors nil nil prefix))))
                (delete-region beg end)
@@ -8113,7 +8113,7 @@ filtering:
                            (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs 23.
                                 (confirm-nonexistent-file-or-buffer))
                            nil 'buffer-name-history nil nil))))
-      (color (icicle-read-color-wysiwyg 1)) ; Use the color name (only).
+      (color (icicle-read-color-WYSIWYG 1)) ; Use the color name (only).
       (command (let* ((pred                                    (lambda (s)
                                                                  (unless (symbolp s) (setq s  (intern s)))
                                                                  (commandp s)))
