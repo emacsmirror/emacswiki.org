@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 12 16:55:52 2014 (-0700)
+;; Last-Updated: Sat Aug 16 13:37:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23623
+;;     Update #: 23624
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -353,7 +353,7 @@
 ;;    `icicle-plist', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
 ;;    `icicle-read-buffer', `icicle-read-color',
-;;    `icicle-read-color-wysiwyg', `icicle-read-kbd-macro',
+;;    `icicle-read-color-WYSIWYG', `icicle-read-kbd-macro',
 ;;    `icicle-recent-file', `icicle-recent-file-no-search',
 ;;    `icicle-recent-file-no-search-other-window',
 ;;    `icicle-recent-file-of-content',
