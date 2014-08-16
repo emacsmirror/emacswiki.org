@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Aug 13 08:50:40 2014 (-0700)
+;; Last-Updated: Sat Aug 16 13:36:18 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28274
+;;     Update #: 28276
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4064,7 +4064,7 @@
 ;;       You can choose such a proxy candidate to use its value.  (All
 ;;       candidates are proxy candidates for these functions.)
 ;;
-;;     . When you use command `icicle-read-color-wysiwyg', the proxy
+;;     . When you use command `icicle-read-color-WYSIWYG', the proxy
 ;;       candidates include the following:
 ;;
 ;;       - `*point foreground*' - proxy for the foreground color at
@@ -4887,7 +4887,7 @@
 ;;  weight.  Eventually a fixed point is reached: `C-M-+' produces no
 ;;  further change in the order.
 ;;
-;;  For example, consider `icicle-read-color-wysiwyg'.  With user
+;;  For example, consider `icicle-read-color-WYSIWYG'.  With user
 ;;  option `icicle-WYSIWYG-Completions-flag' non-`nil' (e.g. a string)
 ;;  it lets you see the effect of `C-M-+' in a striking, graphical
 ;;  way.  However, to see the effect you will first want to use
@@ -4903,7 +4903,7 @@
 ;;  brightest colors followed by dimmer and dimmer colors, down to the
 ;;  dimmest (black).
 ;;
-;;  Try `M-x icicle-read-color-wysiwyg', sorting (`C-,', possibly with
+;;  Try `M-x icicle-read-color-WYSIWYG', sorting (`C-,', possibly with
 ;;  a prefix arg) first by hue.  Save the completion candidates
 ;;  (`C-M->').  Now sort by brightness (`C-,' again, possibly with a
 ;;  prefix arg).  Now use `C-M-+' to add/merge the two sort orders.
@@ -8099,9 +8099,10 @@
 ;;    A prefix arg sets the option value to the numeric prefix value.
 ;;
 ;;  * `C-x R' (`icicle-toggle-include-recent-files') Toggle whether
-;;    `icicle-buffer' includes recent file names as candidates.  That
-;;    is, toggle option `icicle-buffer-include-recent-files-nflag'.
-;;    A prefix arg sets the option value to the numeric prefix value.
+;;    `icicle-buffer' includes the names of recently accessed files as
+;;    candidates.  That is, toggle option
+;;    `icicle-buffer-include-recent-files-nflag'.  A prefix arg sets
+;;    the option value to the numeric prefix value.
 ;;
 ;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
 ;;    bookmarked buffer.  This is available only if you use library
