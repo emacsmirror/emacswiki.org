@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Aug 13 08:54:17 2014 (-0700)
+;; Last-Updated: Sat Aug 16 13:36:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29679
+;;     Update #: 29680
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4054,21 +4054,21 @@
 ;;  default choice of methods for the target command.
 ;;
 ;;  For example, this sets the available `TAB' methods for command
-;;  `icicle-read-color-wysiwyg' to fuzzy (the default for this
+;;  `icicle-read-color-WYSIWYG' to fuzzy (the default for this
 ;;  command) and basic:
 ;;
 ;;    M-x icicle-set-TAB-methods-for-command RET
-;;    Command: icicle-read-color-wysiwyg RET
+;;    Command: icicle-read-color-WYSIWYG RET
 ;;    TAB methods: fuzzy RET
 ;;    TAB methods: basic RET
 ;;    TAB methods: RET
 ;;      
 ;;  And this removes the special treatment for `C-(' during
-;;  `icicle-read-color-wysiwyg', restoring the default `TAB' methods
+;;  `icicle-read-color-WYSIWYG', restoring the default `TAB' methods
 ;;  that are defined by option `icicle-TAB-completion-methods':
 ;;
 ;;    C-- M-x icicle-set-TAB-methods-for-command RET
-;;    Command: icicle-read-color-wysiwyg RET
+;;    Command: icicle-read-color-WYSIWYG RET
 ;;
 ;;(@* "Partial Completion")
 ;;  ** Partial Completion **
@@ -8175,7 +8175,7 @@
 ;;  dealing with multi-completions.  Function `icicle-read-file-name'
 ;;  provides an example: file names that match ".+/$", that is,
 ;;  directory names, are highlighted as special candidates.  Function
-;;  `icicle-read-color-wysiwyg' provides another example (using the
+;;  `icicle-read-color-WYSIWYG' provides another example (using the
 ;;  similar, but internal, variable `icicle-proxy-candidate-regexp'):
 ;;  proxy color-name candidates such as `*point foreground*' and
 ;;  `'icicle-region-background'' are highlighted, but not their color
@@ -8279,12 +8279,12 @@
 ;;  `display-completion-list' so that it retains text properties.
 ;;  Emacs should do the same, but it does not (yet).
 ;;
-;;  Icicles command `icicle-read-color-wysiwyg' presents an
+;;  Icicles command `icicle-read-color-WYSIWYG' presents an
 ;;  illustration, using the `face' property.  (It also uses properties
 ;;  `icicle-mode-line-help' and `help-echo', to provide RGB and HSV
 ;;  information in the mode-line and via tooltip.)
 ;;
-;;  In `icicle-read-color-wysiwyg', a multi-completion candidate is
+;;  In `icicle-read-color-WYSIWYG', a multi-completion candidate is
 ;;  used, composed of an unpropertized string that names a color and a
 ;;  propertized string that names its RGB (red, green, blue) value.
 ;;  The RGB string, by default, has a background of the same color -
@@ -8292,7 +8292,7 @@
 ;;  swatch.
 ;;
 ;;  The code that does this is function `icicle-make-color-candidate',
-;;  which is used by `icicle-read-color-wysiwyg' and other Icicles
+;;  which is used by `icicle-read-color-WYSIWYG' and other Icicles
 ;;  commands that read colors.  Here is a simplified definition:
 ;;
 ;;   (defun icicle-make-color-candidate (color-name)
@@ -8313,7 +8313,7 @@
 ;;  completion.)
 ;;
 ;;  You can match any part of the multi-completion: color name or RGB
-;;  value.  Command `icicle-read-color-wysiwyg' defines a set of sort
+;;  value.  Command `icicle-read-color-WYSIWYG' defines a set of sort
 ;;  orders that are pertinent to the color candidates.
 ;;
 ;;  You can use `C-,' to sort by color name, amount of red, blue,
@@ -8322,7 +8322,7 @@
 ;;  HSV distance from a base color.
 ;;
 ;;  If option `icicle-add-proxy-candidates-flag' is non-`nil', then
-;;  command `icicle-read-color-wysiwyg' includes proxy completion
+;;  command `icicle-read-color-WYSIWYG' includes proxy completion
 ;;  candidates that are not color-name-and-RGB pairs.  As always, you
 ;;  can toggle the use of proxy candidates using `C-M-_' in the
 ;;  minibuffer.
