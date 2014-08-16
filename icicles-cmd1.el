@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug 16 10:13:42 2014 (-0700)
+;; Last-Updated: Sat Aug 16 11:43:26 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27097
+;;     Update #: 27110
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2510,7 +2510,16 @@ This handling of \"words\" is for compatibility with vanilla Emacs,
 and is only approximative.  It can include \"matches\" that you do not
 expect.  For better matching use Icicles progressive completion, i.e.,
 separate the words (any strings, in fact, including regexps) using
-`S-SPC', not just `SPC'."
+`S-SPC', not just `SPC'.
+
+See also the commands for individual TYPEs:
+ `icicle-customize-apropos-options'
+ `icicle-customize-apropos-faces'
+ `icicle-customize-apropos-groups'
+
+Note that unlike `icicle-customize-apropos', command
+`icicle-customize-apropos-faces' shows you WYSIWYG face candidates, if
+option `icicle-WYSIWYG-Completions-flag' is non-nil."
   (interactive
    (let* ((pref-arg                                current-prefix-arg)
           (pred                                    `(lambda (s)
@@ -2533,11 +2542,11 @@ separate the words (any strings, in fact, including regexps) using
                (string= (regexp-quote pattern) pattern)
                (not (string= "" pattern)))
       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
-    (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
+    (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+.  Updates `apropos-*'.
     (when msgp (message "Gathering apropos data for customize `%s'..." pattern))
     (mapatoms `(lambda (symbol)         ; FREE here: APROPOS-REGEXP.
-                (when (string-match ,(and (> emacs-major-version 21)  apropos-regexp pattern)
-                                    (symbol-name symbol))
+                (when (icicle-string-match-p ,(if (> emacs-major-version 21)  apropos-regexp  pattern)
+                                             (symbol-name symbol))
                   (when (and (not (memq ,type '(faces options))) ; groups or t
                              (get symbol 'custom-group))
                     (push (list symbol 'custom-group) found))
@@ -2569,22 +2578,28 @@ separate the words (any strings, in fact, including regexps) using
          (or (get variable 'standard-value)  (get variable 'custom-autoload)))))
 
 ;; Icicles replacement for `customize-apropos-faces', defined in `cus-edit.el'.
-;; 1. Uses `completing-read' to read the regexp.
+;;
+;; 1. Uses `completing-read' to read the regexp, and uses `icicle-make-face-candidate', to provide WYSIWYG.
 ;; 2. Fixes Emacs bug #11124.
 ;;
 (defun icicle-customize-apropos-faces (pattern &optional msgp)
   "Customize all loaded faces matching PATTERN.
 See `icicle-customize-apropos'."
   (interactive
-   (let* ((pred                                    (lambda (s)
-                                                     (unless (symbolp s) (setq s  (intern s)))
-                                                     (custom-facep s)))
-          (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
-          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+   (let* ((prompt                                  "Customize faces (pattern): ")
+          (face-list                               (face-list))
+          (icicle-multi-completing-p               t)
+          (icicle-list-nth-parts-join-string       ": ")
+          (icicle-list-join-string                 ": ")
+          (icicle-list-use-nth-parts               '(1))
           (icicle-face-completing-p                t))
-     (list (completing-read "Customize faces (pattern): " obarray (and icompletep  pred)
-                            nil nil 'regexp-history)
-           t)))
+     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+     (let ((input  (icicle-transform-multi-completion
+                    (completing-read prompt (mapcar #'icicle-make-face-candidate face-list)
+                                     nil nil nil 'regexp-history))))
+       (when (and (fboundp 'apropos-read-pattern)  (string= (regexp-quote input) input))
+         (setq input  (or (split-string input "[ \t]+" t)  (user-error "No word list given"))))
+       (list input  t))))
   (when msgp (message "Gathering apropos data for customizing faces..."))
   (customize-apropos pattern 'faces))
 
