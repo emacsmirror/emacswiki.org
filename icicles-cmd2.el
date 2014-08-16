@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug 16 13:35:51 2014 (-0700)
+;; Last-Updated: Sat Aug 16 16:30:13 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6957
+;;     Update #: 6959
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1276,7 +1276,8 @@ This command is intended only for use in Icicle mode (but it can be
 used with `C-u', with Icicle mode turned off)."
     (interactive "P\ni\ni\np")
     (unless (featurep 'hexrgb) (icicle-user-error "You need library `hexrgb.el' for this command"))
-    (let (color)
+    (let ((icicle-color-completing-p  t)
+          color)
       (if (consp arg)                   ; Plain `C-u': complete against color name only, and be able to
           (setq color  (hexrgb-read-color nil 'CONVERT-TO-RGB)) ; input any valid RGB string.
 
@@ -1339,17 +1340,17 @@ used with `C-u', with Icicle mode turned off)."
                        (setq color  (icicle-transform-multi-completion
                                      (concat color ": " (hexrgb-color-name-to-hex color)))))
                    (setq color  (icicle-transform-multi-completion color)))))
-                   (when (string= "" color)
-                     (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
-                       (when (or (equal "" col)  (not (stringp col)))
-                           (icicle-user-error "No such color: %S" color))
-                       ;; Cannot use `case', since that uses `eql', not `equal'.
-                       (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
-                                          ((equal '(2) icicle-list-use-nth-parts)
-                                           (hexrgb-color-name-to-hex col))
-                                          (t  (let ((icicle-list-nth-parts-join-string  ": ")
-                                                    (icicle-list-join-string            ": "))
-                                                (icicle-transform-multi-completion color)))))))))
+          (when (string= "" color)
+            (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
+              (when (or (equal "" col)  (not (stringp col)))
+                (icicle-user-error "No such color: %S" color))
+              ;; Cannot use `case', since that uses `eql', not `equal'.
+              (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
+                                 ((equal '(2) icicle-list-use-nth-parts)
+                                  (hexrgb-color-name-to-hex col))
+                                 (t  (let ((icicle-list-nth-parts-join-string  ": ")
+                                           (icicle-list-join-string            ": "))
+                                       (icicle-transform-multi-completion color)))))))))
       (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
       color))
 
