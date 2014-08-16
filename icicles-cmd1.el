@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Aug 10 16:32:31 2014 (-0700)
+;; Last-Updated: Sat Aug 16 10:13:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27093
+;;     Update #: 27097
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2345,6 +2345,7 @@ Same as `icicle-customize-face' except it uses a different window."
   (interactive
    (list (let* ((icicle-multi-completing-p             t)
                 (icicle-list-use-nth-parts             '(1))
+                (icicle-face-completing-p              t)
                 (icicle-candidate-action-fn
                  (lambda (fc)
                    (let ((proxy  (car (member fc icicle-proxy-candidates))))
@@ -2430,6 +2431,7 @@ This is an Icicles command - see command `icicle-mode'."
   (interactive
    (list (let* ((icicle-multi-completing-p             t)
                 (icicle-list-use-nth-parts             '(1))
+                (icicle-face-completing-p              t)
                 (icicle-candidate-action-fn
                  (lambda (fc)
                    (let ((proxy  (car (member fc icicle-proxy-candidates))))
@@ -2578,7 +2580,8 @@ See `icicle-customize-apropos'."
                                                      (unless (symbolp s) (setq s  (intern s)))
                                                      (custom-facep s)))
           (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
-          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
+          (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
+          (icicle-face-completing-p                t))
      (list (completing-read "Customize faces (pattern): " obarray (and icompletep  pred)
                             nil nil 'regexp-history)
            t)))
@@ -10155,7 +10158,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
   (prog1 (setq keywords  (nreverse (delete "" keywords))) ; Last code - return the list of keywords.
     (when (interactive-p) (message "Keywords (regexps): %S" keywords))))
 
-(icicle-define-command icicle-face-list ; Command name
+qy(icicle-define-command icicle-face-list ; Command name
   "Choose a list of face names.  The list of names (strings) is returned.
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc string
@@ -10174,6 +10177,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
    (icicle-list-join-string               ": ")
    (icicle-multi-completing-p             t)
    (icicle-list-use-nth-parts             '(1))
+   (icicle-face-completing-p              t)
    (icicle-use-candidates-only-once-flag  t)
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "face")))
