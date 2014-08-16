@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 12 16:54:35 2014 (-0700)
+;; Last-Updated: Sat Aug 16 10:12:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11135
+;;     Update #: 11140
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/16 dadams
+;;     icicle-customize-face(-other-window), icicle-face-list, icicle-customize-apropos-faces:
+;;       Bind icicle-face-completing-p.
 ;; 2014/08/10 dadams
 ;;     Moved to icicles-fn.el (and modified): icicle-binary-option-p.
 ;;     icicle-apropos-variable: Bind icicle-variable-completing-p.
@@ -1110,6 +1113,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/16 dadams
+;;     icicle-imenu-1: Fixed bug introduced 2014/06/21: Set REGEXP from SUBMENU.
 ;; 2014/08/12 dadams
 ;;     Added: icicle-wide-n, icicle-wide-n-action.
 ;; 2014/08/10 dadams
@@ -4316,6 +4321,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/08/16 dadams
+;;     icicle-narrow-candidates-with-predicate: Bind icicle-must-pass-after-match-predicate to nil.
 ;; 2014/08/10 dadams
 ;;     Added: icicle-cand-preds (var and fn).
 ;;     icicle-narrow-candidates-with-predicate:
