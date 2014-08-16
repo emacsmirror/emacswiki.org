@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Aug 11 10:24:42 2014 (-0700)
+;; Last-Updated: Sat Aug 16 13:37:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6027
+;;     Update #: 6028
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5524,7 +5524,7 @@ the appearance:
   candidate,  to serve as a color swatch.
 
 Some commands might override a string value with different text.  This
-is the case for `icicle-read-color-wysiwyg', for instance: the color
+is the case for `icicle-read-color-WYSIWYG', for instance: the color
 swatch text is always the color's RGB code.
 
 Note that, starting with Emacs 22, if this option is non-nil, then
