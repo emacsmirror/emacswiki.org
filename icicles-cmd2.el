@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 12 16:57:19 2014 (-0700)
+;; Last-Updated: Sat Aug 16 09:27:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6953
+;;     Update #: 6956
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -94,7 +94,7 @@
 ;;    (+)`icicle-hide-faces', (+)`icicle-hide-only-faces',
 ;;    `icicle-hide/show-comments', (+)`icicle-imenu',
 ;;    (+)`icicle-imenu-command', (+)`icicle-imenu-command-full',
-;;    (+)`icicle-imenu-face-full', (+)`icicle-imenu-face-full',
+;;    (+)`icicle-imenu-face', (+)`icicle-imenu-face-full',
 ;;    (+)`icicle-imenu-full', (+)`icicle-imenu-key-explicit-map',
 ;;    (+)`icicle-imenu-key-explicit-map-full',
 ;;    (+)`icicle-imenu-key-implicit-map',
@@ -7532,7 +7532,7 @@ The other args are as for `icicle-search'."
     (unwind-protect
          (save-match-data
            (set-syntax-table table)
-           (let* (regexp
+           (let* ((regexp   nil)
                   (others   0)
                   (menus    (mapcar (lambda (menu)
                                       (when (equal (car menu) "Other")
@@ -7563,7 +7563,8 @@ The other args are as for `icicle-search'."
                                 (caar menus)))) ; Only one submenu, so use it.
                   (icicle-transform-function
                    (and (not (interactive-p))  icicle-transform-function)))
-             (unless (stringp regexp) (icicle-user-error "No match"))
+             (unless (stringp regexp)
+               (if submenu (setq regexp  (cadr (assoc submenu menus))) (icicle-user-error "No match")))
              (icicle-search
               beg end regexp require-match where predicate
               ;; We rely on the match data having been preserved.
