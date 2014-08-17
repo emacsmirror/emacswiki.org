@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug 16 16:30:13 2014 (-0700)
+;; Last-Updated: Sun Aug 17 13:13:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6959
+;;     Update #: 6996
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -177,6 +177,7 @@
 ;;    `icicle-char-properties-in-buffers',
 ;;    `icicle-choose-anything-candidate',
 ;;    `icicle-choose-candidate-of-type',
+;;    `icicle-color-from-multi-completion-input',
 ;;    `icicle-cmd2-after-load-bookmark+',
 ;;    `icicle-cmd2-after-load-hexrgb',
 ;;    `icicle-cmd2-after-load-highlight',
@@ -1144,9 +1145,55 @@ at point, or if none then the visited file."
   (when (and (fboundp 'read-color)  (not (fboundp 'icicle-ORIG-read-color))) ; Exists with Emacs 23+.
     (fset 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
+  (defun icicle-color-from-multi-completion-input (raw-input msgp)
+    "Get color from user RAW-INPUT for color multi-completion candidates."
+    (let ((mouse-pseudo-color-p  nil)
+          color)
+      (when (string= "" raw-input) (icicle-user-error "No such color: %S" raw-input))
+      (cond ((string-match "\\`'.+': " raw-input)
+             (let ((icicle-list-nth-parts-join-string  ": ")
+                   (icicle-list-join-string            ": ")
+                   (icicle-list-use-nth-parts          '(2)))
+               (setq color  (icicle-transform-multi-completion raw-input))))
+            ((fboundp 'eyedrop-foreground-at-point)
+             (cond ((string-match "^\*mouse-2 foreground\*" raw-input)
+                    (setq color  (prog1 (eyedrop-foreground-at-mouse
+                                         (read-event
+                                          "Click `mouse-2' anywhere to choose foreground color"))
+                                   (read-event)) ; Discard mouse up event.
+                          mouse-pseudo-color-p  t))
+                   ((string-match "^\*mouse-2 background\*" raw-input)
+                    (setq color  (prog1 (eyedrop-background-at-mouse
+                                         (read-event
+                                          "Click `mouse-2' anywhere to choose background color"))
+                                   (read-event)) ; Discard mouse up event.
+                          mouse-pseudo-color-p  t)))
+             (if mouse-pseudo-color-p
+                 (let ((icicle-list-nth-parts-join-string  ": ")
+                       (icicle-list-join-string            ": ")
+                       (icicle-list-use-nth-parts
+                        (or (and arg  (if (< arg 2) '(1) '(2))) ; 1 or 2, via program or `C-1' or `C-2'.
+                            icicle-list-use-nth-parts ; Bound externally by program.
+                            '(1 2))))   ; Both parts, by default.
+                   (setq color  (icicle-transform-multi-completion
+                                 (concat color ": " (hexrgb-color-name-to-hex color)))))
+               (setq color  (icicle-transform-multi-completion raw-input)))))
+
+      ;; If the user did not complete but just entered a color name, then transformation can return "".
+      ;; In that case, get the color just read from the input history, and transform that.
+      (when (string= "" color)          ; This "" resulted from `icicle-transform-multi-completion', above.
+        (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
+          (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col) ; Cannot do more.
+                             ((equal '(2) icicle-list-use-nth-parts)  (hexrgb-color-name-to-hex col))
+                             (t  (let ((icicle-list-nth-parts-join-string  ": ")
+                                       (icicle-list-join-string            ": "))
+                                   (icicle-transform-multi-completion color)))))))
+      (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
+      color))
+
   ;; See also `hexrgb-read-color' in `hexrgb.el'.
   (defun icicle-read-color (&optional prompt convert-to-RGB-p allow-empty-name-p msgp)
-    "Read a color name or hex RGB hexadecimal color value #RRRRGGGGBBBB.
+    "Read a color name or RGB hexadecimal triplet.
 Return the name or the RGB hex string for the chosen color.
 
 By default (see option `icicle-functions-to-redefine'), this is used
@@ -1159,17 +1206,17 @@ multi-command that provides WYSIWYG completion, color-variable proxy
 candidates, alternate candidate actions, candidate help, and multiple
 color-related candidate sort orders.
 
-In this it is like command `icicle-read-color-WYSIWYG' (which see),
-but it is less flexible and powerful than that command.
-`icicle-read-color' always returns the RGB hex string, and your input
-cannot be an arbitrary string - it must match a color candidate (or be
-empty if ALLOW-EMPTY-NAME-P is non-nil).
+In this it is like command `icicle-read-color-WYSIWYG', but it is less
+powerful and generally less flexible than `icicle-read-color-WYSIWYG'.
+Another difference is that `icicle-read-color-WYSIWYG' always raises
+an error for empty input, unless you wrap it in `ignore-errors'.
+
 
 In Lisp code that you write, and for interactive use,
 `icicle-read-color-WYSIWYG' is generally a better choice than
 `icicle-read-color'.
 
-Optional argument PROMPT is the prompt to use (default \"Color: \").
+Optional argument PROMPT is a non-default prompt to use.
 
 Interactively, or if CONVERT-TO-RGB-P is non-nil, return the RGB hex
 string for the chosen color.  If nil, return the color name.
@@ -1183,26 +1230,16 @@ action in case of empty input.
 
 Interactively, or with non-nil MSGP, show chosen color in echo area."
     (interactive "i\np\ni\np")          ; Always convert to RGB interactively.
-    (let* ((icicle-require-match-p  (not allow-empty-name-p))
-           (color                   (icicle-read-color-WYSIWYG (if convert-to-RGB-p 2 1) prompt)))
-      ;; `icicle-read-color-WYSIWYG' transforms input to get the 2nd multi-completion component.
-      ;; But if the user did not complete but just entered a color name, then this transformation returns "".
-      ;; In that case, get the color name that was input from the input history, and convert that to RGB.
-      (when (and (not allow-empty-name-p)  (string= "" color))
-        (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
-          (when (or (equal "" col)  (not (stringp col))) (icicle-user-error "No such color: %S" color))
-          (setq color  (hexrgb-color-name-to-hex col))))
-      (let ((icicle-multi-completing-p  t)
-            (icicle-list-use-nth-parts  (if convert-to-RGB-p '(2) '(1)))
-            (colr                       (icicle-transform-multi-completion color)))
-        (when msgp (message "Color: `%s'" (icicle-propertize colr 'face 'icicle-msg-emphasis)))
-        colr)))
+    (let ((color  (condition-case nil (icicle-read-color-WYSIWYG (if convert-to-RGB-p 2 1) prompt) (error ""))))
+      (when (and (not allow-empty-name-p)  (string= "" color)) (icicle-user-error "No such color: %S" color))
+      (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
+      color))
 
   (defun icicle-read-color-WYSIWYG (&optional arg prompt initial-input msgp)
     "Read a color name or hex RGB color value #RRRRGGGGBBBB.
 Return a string value.
 Interactively, optional argument ARG is the prefix arg - see below.
-Optional argument PROMPT is the prompt to use (default \"Color: \").
+Optional argument PROMPT is a non-default prompt to use.
 Optional argument INITIAL-INPUT is a initial input to insert in the
 minibuffer for completion.  It is passed to `completing-read'.
 Interactively, or with non-nil MSGP, show chosen color in echo area.
@@ -1239,11 +1276,15 @@ color name or input any valid RGB hex value (without completion).
 With no prefix arg, return a string with both the color name and the
 RGB value, separated by `icicle-list-nth-parts-join-string'.
 
-With a numeric prefix arg of 0 or 1, return the color name.  With any
-other numeric prefix arg, return the RGB value.
+With a numeric prefix arg of 0 or 1, return the color name.
+With any other numeric prefix arg, return the RGB hex triplet.
 
 In the plain `C-u' case, your input is checked to ensure that it
 represents a valid color.
+
+An error is raised if you enter empty input.  (In Lisp code, if you
+want to allow a return value of \"\" then wrap the call in
+`ignore-errors'.)
 
 In all other cases:
 
@@ -1277,9 +1318,9 @@ used with `C-u', with Icicle mode turned off)."
     (interactive "P\ni\ni\np")
     (unless (featurep 'hexrgb) (icicle-user-error "You need library `hexrgb.el' for this command"))
     (let ((icicle-color-completing-p  t)
-          color)
+          raw-input)
       (if (consp arg)                   ; Plain `C-u': complete against color name only, and be able to
-          (setq color  (hexrgb-read-color nil 'CONVERT-TO-RGB)) ; input any valid RGB string.
+          (hexrgb-read-color nil 'CONVERT-TO-RGB) ; input any valid RGB string.
 
         ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
         (when arg (setq arg  (prefix-numeric-value arg))) ; Convert `-' to -1.
@@ -1288,8 +1329,6 @@ used with `C-u', with Icicle mode turned off)."
                (or (and arg  (if (< arg 2) '(1) '(2))) ; 1 or 2, either by program or via `C-1' or `C-2'.
                    icicle-list-use-nth-parts ; Bound externally by program.
                    '(1 2)))             ; Both parts, by default.
-              (mouse-pseudo-color-p  nil)
-
               icicle-candidate-help-fn           completion-ignore-case
               icicle-transform-function          icicle-sort-orders-alist
               icicle-list-nth-parts-join-string  icicle-list-join-string
@@ -1298,61 +1337,21 @@ used with `C-u', with Icicle mode turned off)."
           ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
           ;; Use `icicle-prompt' from now on, since that's what `icicle-color-completion-setup'
           ;; sets up.
-          (setq icicle-prompt  (copy-sequence (or prompt  "Color: ")))
+          (setq icicle-prompt  (copy-sequence (or prompt  "Color (name or #RGB triplet): ")))
           (icicle-color-completion-setup)
           (setq icicle-proxy-candidates
                 (append icicle-proxy-candidates
                         (mapcar         ; Convert multi-completions to strings.
                          (lambda (entry) (mapconcat #'identity (car entry) icicle-list-join-string))
                          '((("*mouse-2 foreground*")) (("*mouse-2 background*")))))
-                color  (let ((icicle-orig-window  (selected-window))
-                             (icicle-candidate-alt-action-fn
-                              (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "color")))
-                             (icicle-all-candidates-list-alt-action-fn
-                              (or icicle-all-candidates-list-alt-action-fn
-                                  (icicle-alt-act-fn-for-type "color"))))
-                         (completing-read icicle-prompt icicle-named-colors nil nil initial-input)))
-          (cond ((string-match "\\`'.+': " color)
-                 (let ((icicle-list-nth-parts-join-string  ": ")
-                       (icicle-list-join-string            ": ")
-                       (icicle-list-use-nth-parts          '(2)))
-                   (setq color  (icicle-transform-multi-completion color))))
-                ((fboundp 'eyedrop-foreground-at-point)
-                 (cond ((string-match "^\*mouse-2 foreground\*" color)
-                        (setq color  (prog1 (eyedrop-foreground-at-mouse
-                                             (read-event
-                                              "Click `mouse-2' anywhere to choose foreground color"))
-                                       (read-event)) ; Discard mouse up event.
-                              mouse-pseudo-color-p  t))
-                       ((string-match "^\*mouse-2 background\*" color)
-                        (setq color  (prog1 (eyedrop-background-at-mouse
-                                             (read-event
-                                              "Click `mouse-2' anywhere to choose background color"))
-                                       (read-event)) ; Discard mouse up event.
-                              mouse-pseudo-color-p  t)))
-                 (if mouse-pseudo-color-p
-                     (let ((icicle-list-nth-parts-join-string  ": ")
-                           (icicle-list-join-string            ": ")
-                           (icicle-list-use-nth-parts
-                            (or (and arg  (if (< arg 2) '(1) '(2))) ; 1 or 2, via program or `C-1' or `C-2'.
-                                icicle-list-use-nth-parts ; Bound externally by program.
-                                '(1 2)))) ; Both parts, by default.
-                       (setq color  (icicle-transform-multi-completion
-                                     (concat color ": " (hexrgb-color-name-to-hex color)))))
-                   (setq color  (icicle-transform-multi-completion color)))))
-          (when (string= "" color)
-            (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
-              (when (or (equal "" col)  (not (stringp col)))
-                (icicle-user-error "No such color: %S" color))
-              ;; Cannot use `case', since that uses `eql', not `equal'.
-              (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
-                                 ((equal '(2) icicle-list-use-nth-parts)
-                                  (hexrgb-color-name-to-hex col))
-                                 (t  (let ((icicle-list-nth-parts-join-string  ": ")
-                                           (icicle-list-join-string            ": "))
-                                       (icicle-transform-multi-completion color)))))))))
-      (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
-      color))
+                raw-input  (let ((icicle-orig-window  (selected-window))
+                                 (icicle-candidate-alt-action-fn
+                                  (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "color")))
+                                 (icicle-all-candidates-list-alt-action-fn
+                                  (or icicle-all-candidates-list-alt-action-fn
+                                      (icicle-alt-act-fn-for-type "color"))))
+                             (completing-read icicle-prompt icicle-named-colors nil nil initial-input)))
+          (icicle-color-from-multi-completion-input raw-input msgp)))))
 
   (icicle-define-command icicle-frame-bg ; Command name
     "Change background of current frame.
@@ -2033,31 +2032,23 @@ See `icicle-read-color-WYSIWYG' for more information."
 (defun icicle-cmd2-after-load-palette ()
   "Things to do for `icicles-cmd2.el' after loading `palette.el'."
 
-  (icicle-define-command icicle-pick-color-by-name ; Bound to `c' in color palette.
+  (defun icicle-pick-color-by-name (color) ; Bound to `c' and `M-c' in color palette.
     "Set the current color to a color you name.
 Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
 where each X is a hex digit.  The number of Xs must be a multiple of
 3, with the same number of Xs for each of red, green, and blue.
 If you enter an empty color name, then a color is picked randomly.
-The new current color is returned."     ; Doc string
-    icicle-pick-color-by-name-action    ; Action function
-    "Color (name or #R+G+B+): "         ; `completing-read' arguments
-    (hexrgb-defined-colors-alist) nil nil nil nil nil nil
-    ((completion-ignore-case  t)))      ; Bindings
+The new current color is returned."
+    (interactive
+     (let ((completion-ignore-case      t)
+           (icicle-color-completing-p   t)
+           (icicle-candidate-action-fn  'icicle-pick-color-by-name-action))
+       (list (icicle-read-color nil nil t))))
+    (icicle-pick-color-by-name-action color))
 
-  (defun icicle-pick-color-by-name-action (color)
+  (defun icicle-pick-color-by-name-action (raw-input)
     "Action function for `icicle-pick-color-by-name'."
-    (if (string= "" color)
-        (let* ((colors  (hexrgb-defined-colors))
-               (rand    (random (length colors)))) ; Random color.
-          (setq color  (elt colors rand)))
-      (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
-        (when (and hex-string  (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
-        (unless (or hex-string  (if (fboundp 'test-completion) ; Not defined in Emacs 20.
-                                    (test-completion color (hexrgb-defined-colors-alist))
-                                  (try-completion color (hexrgb-defined-colors-alist))))
-          (icicle-user-error "No such color: %S" color))
-        (setq color  (hexrgb-color-name-to-hex color)))
+    (let ((color  (icicle-color-from-multi-completion-input raw-input 'MSG)))
       (setq palette-last-color  palette-current-color)
       (save-selected-window
         (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
@@ -2067,7 +2058,8 @@ The new current color is returned."     ; Doc string
         (palette-swatch))
       palette-current-color))
 
-  (define-key palette-mode-map (icicle-kbd "c")  'icicle-pick-color-by-name)
+  (define-key palette-mode-map (icicle-kbd "c")     'icicle-pick-color-by-name)
+  (define-key palette-mode-map (icicle-kbd "\M-c")  'icicle-pick-color-by-name)
   (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
     `(menu-item "Choose Color By Name" icicle-pick-color-by-name
       :help "Set the current color to a color you name"))
