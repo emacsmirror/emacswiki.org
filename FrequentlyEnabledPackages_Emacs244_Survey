@@ -1,33 +1,10 @@
-As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel is conducting a survey]].  We want to find out vanilla GnuEmacs packages/modes that you '''''ENABLE OR DISABLE''''' by default.
+As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel conducted a survey]].  We wanted to find out vanilla GnuEmacs packages/modes that you '''''ENABLE OR DISABLE''''' by default.
 
-
-__Interesting Tidbit__
 
 Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061  Uniquify will be enabled by default]] in Emacs-24.4
-
-__How to Vote__
-
-# '''''INCREMENT NUMBER OF PEOPLE  SURVEYED'''''
-# If you use a package that is in the list, upvote it by incrementing its vote by 1.
-# If you use a package that is not in the list, please add to the table below. The first column is sorted in alphabetical order.
-# When you edit, please ''check for a conflict after saving'', and if there was one then '''''FIX CONFLICTS IMMEDIATELY'''''.
-
-__Things to Remember (Things to avoid) __
-
-# Speak for yourself (not your friends).  Always increment the upvote by one.
-# Don't downvote
-# Add new entries at appropriate place.  Tables is sorted alphabetically on Column-1.  (Only add entries for minor-modes you actually use!)
-# C-h f on that entry should work  (i.e., Use ido-mode instead of saying ido).  This avoids use of multiple names to point to the same package.
-# [color=red][b]'''''NO THIRD-PARTY PACKAGES.''''' -- -- Specify '''''only''''' packages that ship with vanilla GnuEmacs.    '''''If you don't know''''', use `emacs -Q' and then try `apropos' commands or try to `load-library' the file name or `require' the feature name.  If you cannot find it this way then do ''not'' add it to the list.  [You can consult this [[list]] of major and minor modes (but not packages/libraries/features) available in development builds of Emacs 24.]
-# Give preference to minor modes (that you enable globally)
-
-To see the results so far: [[FrequentlyEnabledPackages Emacs244 Survey Results]]. If you feel like adding an extra note to your vote, use [[Comments_on_FrequentlyEnabledPackages_Emacs244_Survey]].  
-
-
-
-
-
-
+'''Voting is now closed'''.
+See [[FrequentlyEnabledPackages Emacs244 Survey Results]].
+If you feel like commenting, use [[Comments_on_FrequentlyEnabledPackages_Emacs244_Survey]].  
 
 ----
 
