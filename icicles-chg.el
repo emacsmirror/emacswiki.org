@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug 16 16:32:08 2014 (-0700)
+;; Last-Updated: Sun Aug 17 10:45:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11146
+;;     Update #: 11147
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2069,6 +2069,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/08/17 dadams
+;;     Moved to icicles-opt.el: icicle-color-defined-p.
 ;; 2014/08/12 dadams
 ;;     icicle-special-candidates-first-p: Use icicle-special-candidate-p.
 ;; 2014/08/10 dadams
@@ -7333,6 +7335,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/08/17 dadams
+;;     Moved here from icicles-fn.el: icicle-color-defined-p.
 ;; 2014/08/11 dadams
 ;;     icicle-cand-preds-for-(buffer|file): Added :group for buffers|files.
 ;; 2014/08/10 dadams
