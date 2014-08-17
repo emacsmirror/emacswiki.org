@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 16 13:37:13 2014 (-0700)
+;; Last-Updated: Sun Aug 17 13:14:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23624
+;;     Update #: 23625
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1015,7 +1015,9 @@
 ;;    `icicle-choose-candidate-of-type',
 ;;    `icicle-choose-completion-string', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry', `icicle-clear-lighter',
-;;    `icicle-clear-minibuffer', `icicle-cmd2-after-load-bookmark+',
+;;    `icicle-clear-minibuffer',
+;;    `icicle-color-from-multi-completion-input',
+;;    `icicle-cmd2-after-load-bookmark+',
 ;;    `icicle-cmd2-after-load-hexrgb',
 ;;    `icicle-cmd2-after-load-highlight',
 ;;    `icicle-cmd2-after-load-palette',
