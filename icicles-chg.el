@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 17 10:45:56 2014 (-0700)
+;; Last-Updated: Sun Aug 17 13:23:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11147
+;;     Update #: 11160
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1115,6 +1115,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/17 dadams
+;;     Added: icicle-color-from-multi-completion-input.
+;;     icicle-read-color: Wrap call to icicle-read-color-WYSIWYG in condition-case.  Removed all of the
+;;                        rest of the code, except check for empty input.
+;;     icicle-read-color-WYSIWYG: Just call icicle-color-from-multi-completion-input, to handle input.
+;;     icicle-pick-color-by-name: Redefined as defun, not using icicle-define-command.
+;;                                Use icicle-read-color.  Bind icicle-color-completing-p.
+;;     icicle-pick-color-by-name-action: Redefined to use icicle-color-from-multi-completion-input.
+;;     Added M-c binding for palette.
 ;; 2014/08/16 dadams
 ;;     Renamed: icicle-read-color-wysiwyg to icicle-read-color-WYSIWYG.
 ;;     icicle-read-color-WYSIWYG: Bind icicle-color-completing-p.
