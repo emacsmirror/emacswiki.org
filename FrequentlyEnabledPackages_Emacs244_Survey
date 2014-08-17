@@ -1,5 +1,4 @@
-As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel conducted a survey]].  We wanted to find out vanilla GnuEmacs packages/modes that you '''''ENABLE OR DISABLE''''' by default.
-
+As part of Emacs-24.4 release,  [[http://thread.gmane.org/gmane.emacs.devel/165883 emacs-devel conducted a survey]].  We wanted to find out vanilla GnuEmacs packages/modes that users enabled or disabled by default.
 
 Based on popular demand,   [[http://permalink.gmane.org/gmane.emacs.devel/166061  Uniquify will be enabled by default]] in Emacs-24.4
 '''Voting is now closed'''.
