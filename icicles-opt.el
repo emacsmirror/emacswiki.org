@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Aug 16 13:37:03 2014 (-0700)
+;; Last-Updated: Sun Aug 17 10:44:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6028
+;;     Update #: 6030
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -231,7 +231,7 @@
 ;;  Functions defined here:
 ;;
 ;;    `icicle-bind-top-level-commands',
-;;    `icicle-buffer-sort-*...*-last',
+;;    `icicle-buffer-sort-*...*-last', `icicle-color-defined-p',
 ;;    `icicle-compute-shell-command-candidates',
 ;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
 ;;    `icicle-thing-at-point', `icicle-widgetp'.
@@ -1379,6 +1379,32 @@ form acceptable as a full completion candidate (alist entry with
 string car, symbol, etc.)"
   :type '(repeat (function :tag "Predicate to keep candidate"))
   :group 'Icicles-Matching :group 'Icicles-Buffers)
+
+(when (fboundp 'color-defined-p)        ; Emacs 22+
+  (defun icicle-color-defined-p (color &optional frame)
+    "Return non-nil if COLOR is supported on frame FRAME.
+COLOR should be a string naming a color (e.g. \"white\"), or a
+string specifying a color's RGB components (e.g. \"#ff12ec\"), or
+the symbol `unspecified'.
+
+If COLOR is a cons with a string car, then the car is used as the
+effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is a color name and whose second part is hex RGB.
+In this case, the second part is tested.
+
+This function returns nil if COLOR is the symbol `unspecified',
+or one of the strings \"unspecified-fg\" or \"unspecified-bg\".
+
+If FRAME is omitted or nil, use the selected frame."
+    (when (consp color) (setq color  (car color)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(2)))
+        (setq color  (icicle-transform-multi-completion color))))
+    (and (not (member color '(unspecified "unspecified-bg" "unspecified-fg")))
+         (if (member (framep (or frame  (selected-frame))) '(x w32 ns))
+             (xw-color-defined-p color frame)
+           (numberp (tty-color-translate color frame))))))
 
 (defcustom icicle-cand-preds-for-color (and (fboundp 'icicle-color-defined-p)
                                             '("icicle-color-defined-p"
