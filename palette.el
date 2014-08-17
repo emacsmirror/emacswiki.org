@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Dec 26 09:44:17 2013 (-0800)
+;; Last-Updated: Sun Aug 17 13:08:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 735 4
+;;     Update #: 750 4
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -273,14 +273,14 @@
 ;;    `palette-pick-color-complement',
 ;;    `palette-pick-foreground-at-mouse',
 ;;    `palette-pick-foreground-at-point', `palette-popup-menu',
-;;    `palette-quit', `palette-refresh', `palette-restore-old-color',
-;;    `palette-rgb-info', `palette-right', `palette-right+pick',
-;;    `palette-save-new-color', `palette-swap-last-color',
-;;    `palette-swatch', `palette-toggle-cursor-color',
-;;    `palette-toggle-verbose', `palette-up', `palette-up+pick',
-;;    `palette-where-is-color', `pick-background-color',
-;;    `pick-foreground-color', `rgb', `toggle-palette-cursor-color',
-;;    `toggle-palette-verbose'.
+;;    `palette-quit', `palette-read-color', `palette-refresh',
+;;    `palette-restore-old-color', `palette-rgb-info',
+;;    `palette-right', `palette-right+pick', `palette-save-new-color',
+;;    `palette-swap-last-color', `palette-swatch',
+;;    `palette-toggle-cursor-color', `palette-toggle-verbose',
+;;    `palette-up', `palette-up+pick', `palette-where-is-color',
+;;    `pick-background-color', `pick-foreground-color', `rgb',
+;;    `toggle-palette-cursor-color', `toggle-palette-verbose'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -310,6 +310,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/17 dadams
+;;     Added: palette-read-color.  Use it everywhere instead of hexrgb-read-color.
 ;; 2012/03/18 dadams
 ;;     palette-current-rgb-to-kill-ring: Added optional MSG-P arg and message.
 ;; 2012/03/17 dadams
@@ -760,6 +762,31 @@ user updates `blink-cursor-mode'.")
 (substitute-key-definition 'next-line 'palette-down palette-mode-map global-map)
 (substitute-key-definition 'previous-line 'palette-up palette-mode-map global-map)
 
+(defun palette-read-color (&optional prompt convert-to-RGB-p allow-empty-name-p msgp)
+  "Read a color name or RGB hexadecimal triplet.
+Optional argument PROMPT is a non-default prompt to use.
+
+Interactively, or if CONVERT-TO-RGB-P is non-nil, return the RGB hex
+string for the chosen color.  If nil, return the color name.
+
+Optional arg ALLOW-EMPTY-NAME-P controls what happens if you enter an
+empty color name (that is, you just hit `RET').  If non-nil, then
+`icicle-read-color' returns an empty color name, \"\".  If nil, then
+it raises an error.  Calling programs must test for \"\" if
+ALLOW-EMPTY-NAME-P is non-nil.  They can then perform an appropriate
+action in case of empty input.
+
+Interactively, or with non-nil MSGP, show chosen color in echo area.
+
+NOTE:
+ If library Icicles is loaded then this is the same as command
+ `icicle-read-color' - see its doc string for more information.
+ Otherwise, this is the same as `hexrgb-read-color' in library
+ `hexrgb.el' - see its doc for more information."
+  (interactive "i\np\ni\np")    ; Always convert to RGB interactively.
+  (funcall (if (fboundp 'icicle-read-color) 'icicle-read-color 'hexrgb-read-color)
+           prompt convert-to-RGB-p allow-empty-name-p msgp))
+
 (if (< emacs-major-version 22)
     ;; Emacs 20 and 21: Cannot have a nil parent mode, so use fundamental-mode.
     (define-derived-mode palette-mode fundamental-mode "Color Palette"
@@ -1016,7 +1043,7 @@ EVENT is a mouse event."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
+   (list (if current-prefix-arg (palette-read-color nil t) (palette-background-at-point))))
   (message "RGB hex: %s" (hexrgb-rgb-hex-to-rgb-hex color palette-hex-rgb-digits)))
 
 ;;;###autoload
@@ -1025,7 +1052,7 @@ Otherwise, uses the color at the cursor."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
+   (list (if current-prefix-arg (palette-read-color nil t) (palette-background-at-point))))
   (message "HSV: %s" (hexrgb-hex-to-hsv color)))
 
 ;;;###autoload
@@ -1034,7 +1061,7 @@ Otherwise, uses the color at the cursor."
 With prefix arg, prompts for color name.
 Otherwise, uses the color at the cursor."
   (interactive
-   (list (if current-prefix-arg (hexrgb-read-color nil t) (palette-background-at-point))))
+   (list (if current-prefix-arg (palette-read-color nil t) (palette-background-at-point))))
   (message "RGB: %s" (hexrgb-hex-to-rgb color)))
 
 ;;;###autoload
@@ -1341,7 +1368,7 @@ where each X is a hex digit.  The number of Xs must be a multiple of
 3, with the same number of Xs for each of red, green, and blue.
 If you enter an empty color name, then a color is picked randomly.
 The new current color is returned."
-  (interactive (list (hexrgb-read-color nil nil t)))
+  (interactive (list (palette-read-color nil nil t)))
   (when (string= "" color)              ; User doesn't care - why not use a random color?
     (let* ((colors  (hexrgb-defined-colors))
            (rand    (random (length colors))))
@@ -1493,7 +1520,7 @@ Return `palette-current-color'."
 This does not change the current color.
 Non-nil optional arg CURSOR-COLOR means update the cursor color, if
 option `palette-update-cursor-color-flag' is non-nil."
-  (interactive (list (hexrgb-read-color nil t)))
+  (interactive (list (palette-read-color nil t)))
   (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
   (let ((target-hue              (hexrgb-hue color))
         (target-sat              (hexrgb-saturation color))
@@ -1790,7 +1817,7 @@ This includes these areas:
 COLOR is the color used for both swatches.
 If you enter an empty color name, then a color is picked randomly.
 See `palette-mode' for more information."
-  (interactive (list (hexrgb-read-color nil nil t)))
+  (interactive (list (palette-read-color nil nil t)))
   (message "Loading palette...")
   (when (string= "" color)              ; User doesn't care - why not use a random color?
     (let* ((colors  (hexrgb-defined-colors))
@@ -1875,7 +1902,7 @@ See `palette-mode' for more information."
 If a color palette is already displayed, then just update it.
 Non-interactively, non-nil optional arg MSG-P means show an
 informative message."
-  (interactive (list (hexrgb-read-color) t))
+  (interactive (list (palette-read-color) t))
   (setq color  (or color palette-current-color))
   (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
   (let* ((width          5)
@@ -1962,7 +1989,7 @@ If a color palette is already displayed, then just update it.
 Interactively, you are prompted for the COLOR to display.
 Non-interactively, non-nil optional arg MSG-P means show an
 informative message."
-  (interactive (list nil (hexrgb-read-color) t))
+  (interactive (list nil (palette-read-color) t))
   (let* ((width          10)
          (height         50)
          (hue-sat-win    (get-buffer-window "Palette (Hue x Saturation)" 'visible))
