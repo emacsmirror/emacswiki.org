@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 17 13:32:29 2014 (-0700)
+;; Last-Updated: Sun Aug 17 12:59:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1891
+;;     Update #: 1893
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -198,6 +198,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/17 dadams
+;;     Applied renaming: icicle-read-color-wysiwyg -> icicle-read-color-WYSIWYG.
 ;; 2014/05/17 dadams
 ;;     Added: facemenu+-with-help-window.
 ;;     list-faces-display: with-output-to-temp-buffer -> facemenu+-with-help-window.
@@ -365,7 +367,7 @@
   (require 'eyedropper))
 
 ;; (require 'icicles nil t) ;; (no error if not found):
-                            ;; icicle-read-color-wysiwyg, icicle-read-string-completing
+                            ;; icicle-read-color-WYSIWYG, icicle-read-string-completing
 
 (require 'easymenu) ;; easy-menu-add-item, easy-menu-create-menu,
 (when (> emacs-major-version 21) (require 'help-mode)) ;; help-xref (button type)
@@ -1316,14 +1318,14 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 
 ;; REPLACES ORIGINAL in `facemenu.el':
 ;;
-;; Use `icicle-read-color-wysiwyg' if defined.  If not, use `hexrgb-read-color' if defined.
+;; Use `icicle-read-color-WYSIWYG' if defined.  If not, use `hexrgb-read-color' if defined.
 ;;
 (defun facemenu-read-color (&optional prompt)
   "Read a color using the minibuffer."
   (setq prompt  (or prompt  "Color: "))
   (let* ((completion-ignore-case  t)
          (col                     (cond ((and (boundp 'icicle-mode)  icicle-mode)
-                                         (icicle-read-color-wysiwyg 0 prompt))
+                                         (icicle-read-color-WYSIWYG 0 prompt))
                                         ((fboundp 'hexrgb-read-color)
                                          (hexrgb-read-color prompt nil t))
                                         (t
