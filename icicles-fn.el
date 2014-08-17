@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Aug 12 14:53:13 2014 (-0700)
+;; Last-Updated: Sun Aug 17 10:44:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14964
+;;     Update #: 14966
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -93,10 +93,9 @@
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-choose-completion-string', `icicle-clear-lighter',
-;;    `icicle-clear-minibuffer', `icicle-color-defined-p',
-;;    `icicle-color-gray-p', `icicle-color-name-w-bg',
-;;    `icicle-color-rgb-lessp', `icicle-color-supported-p',
-;;    `icicle-command-abbrev-save',
+;;    `icicle-clear-minibuffer', `icicle-color-gray-p',
+;;    `icicle-color-name-w-bg', `icicle-color-rgb-lessp',
+;;    `icicle-color-supported-p', `icicle-command-abbrev-save',
 ;;    `icicle-command-abbrev-used-more-p',
 ;;    `icicle-command-names-alphabetic-p',
 ;;    `icicle-compilation-buffer-p', `icicle-complete-again-update',
@@ -8479,32 +8478,6 @@ completion candidates."
 
 ;;(@* "Color-Completion Predicates")
 ;;  ** Color-Completion Predicates **
-
-(when (fboundp 'color-defined-p)        ; Emacs 22+
-  (defun icicle-color-defined-p (color &optional frame)
-    "Return non-nil if COLOR is supported on frame FRAME.
-COLOR should be a string naming a color (e.g. \"white\"), or a
-string specifying a color's RGB components (e.g. \"#ff12ec\"), or
-the symbol `unspecified'.
-
-If COLOR is a cons with a string car, then the car is used as the
-effective argument.  This is so that the function can be used to
-filter completion candidates.  The string can be a multi-completion
-whose first part is a color name and whose second part is hex RGB.
-In this case, the second part is tested.
-
-This function returns nil if COLOR is the symbol `unspecified',
-or one of the strings \"unspecified-fg\" or \"unspecified-bg\".
-
-If FRAME is omitted or nil, use the selected frame."
-    (when (consp color) (setq color  (car color)))
-    (when icicle-multi-completing-p
-      (let ((icicle-list-use-nth-parts  '(2)))
-        (setq color  (icicle-transform-multi-completion color))))
-    (and (not (member color '(unspecified "unspecified-bg" "unspecified-fg")))
-         (if (member (framep (or frame  (selected-frame))) '(x w32 ns))
-             (xw-color-defined-p color frame)
-           (numberp (tty-color-translate color frame))))))
 
 (when (fboundp 'color-gray-p)        ; Emacs 22+
   (defun icicle-color-gray-p (color &optional frame)
