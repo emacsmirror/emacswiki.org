@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 31 16:57:05 2013 (-0800)
+;; Last-Updated: Sun Aug 17 13:02:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3128
+;;     Update #: 3130
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/17 dadams
+;;     Applied renaming: icicle-read-color-wysiwyg -> icicle-read-color-WYSIWYG.
 ;; 2013/12/31 dadams
 ;;     undo-repeat: Use set-transient-map, if defined.
 ;; 2013/12/01 dadams
@@ -1317,8 +1319,8 @@ E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
 Use RGB distance by default.  Non-nil optional arg USE-HSV-P
 \(interactively, the prefix arg) means use HSV distance instead of RGB
 distance."
-    (interactive (list (if (fboundp 'icicle-read-color-wysiwyg)
-                           (icicle-read-color-wysiwyg 9999)
+    (interactive (list (if (fboundp 'icicle-read-color-WYSIWYG)
+                           (icicle-read-color-WYSIWYG 9999)
                          (read-color))
                        current-prefix-arg))
     (let ((list-colors-sort  (if (or use-hsv-p  current-prefix-arg)
