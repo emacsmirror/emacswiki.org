@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:06:37 2013 (-0800)
+;; Last-Updated: Sun Aug 17 13:10:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 957
+;;     Update #: 961
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -89,7 +89,8 @@
 ;;
 ;;; Change Log:
 ;;
-;;
+;; 2014/08/17 dadams
+;;     hexrgb-read-color: Bind icicle-color-completing.
 ;; 2013/01/18 dadams
 ;;     Added: hexrgb-increment-(hue|saturation|value): Moved them here and renamed from
 ;;       icicle-increment-color-*.  Changed range to 0-1 and added optional arg NB-DIGITS.
@@ -339,22 +340,23 @@ ALLOW-EMPTY-NAME-P is non-nil.  They can then perform an appropriate
 action in case of empty input.
 
 Interactively, or with non-nil MSGP, show color name in the echo area."
-  (interactive "i\np\ni\np")             ; Always convert to RGB interactively.
-  (let* ((completion-ignore-case  t)
+  (interactive "i\np\ni\np")            ; Always convert to RGB interactively.
+  (let* ((completion-ignore-case     t)
+         (icicle-color-completing-p  t)
          ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
          ;; They are defined in library `palette.el' or library `eyedropper.el'.
-         (colors                  (if (fboundp 'eyedrop-foreground-at-point)
-                                      (append (and eyedrop-picked-foreground
-                                                   '(("*copied foreground*")))
-                                              (and eyedrop-picked-background
-                                                   '(("*copied background*")))
-                                              '(("*mouse-2 foreground*")
-                                                ("*mouse-2 background*")
-                                                ("*point foreground*") ("*point background*"))
-                                              (hexrgb-defined-colors-alist))
-                                    (hexrgb-defined-colors-alist)))
-         (color                   (completing-read (or prompt "Color (name or #R+G+B+): ")
-                                                   colors))
+         (colors                     (if (fboundp 'eyedrop-foreground-at-point)
+                                         (append (and eyedrop-picked-foreground
+                                                      '(("*copied foreground*")))
+                                                 (and eyedrop-picked-background
+                                                      '(("*copied background*")))
+                                                 '(("*mouse-2 foreground*")
+                                                   ("*mouse-2 background*")
+                                                   ("*point foreground*") ("*point background*"))
+                                                 (hexrgb-defined-colors-alist))
+                                       (hexrgb-defined-colors-alist)))
+         (color                      (completing-read (or prompt "Color (name or #R+G+B+): ")
+                                                      colors))
          hex-string)
     (when (fboundp 'eyedrop-foreground-at-point)
       (cond ((string= "*copied foreground*" color) (setq color  eyedrop-picked-foreground))
