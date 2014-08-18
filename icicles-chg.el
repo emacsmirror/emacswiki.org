@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 17 13:23:16 2014 (-0700)
+;; Last-Updated: Sun Aug 17 19:40:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11160
+;;     Update #: 11162
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1124,6 +1124,7 @@
 ;;                                Use icicle-read-color.  Bind icicle-color-completing-p.
 ;;     icicle-pick-color-by-name-action: Redefined to use icicle-color-from-multi-completion-input.
 ;;     Added M-c binding for palette.
+;;     icicle-widget-color-complete: Bind icicle-color-completing.
 ;; 2014/08/16 dadams
 ;;     Renamed: icicle-read-color-wysiwyg to icicle-read-color-WYSIWYG.
 ;;     icicle-read-color-WYSIWYG: Bind icicle-color-completing-p.
@@ -2956,7 +2957,7 @@
 ;;       Handle lambdas, menu-function-# from easy-menu, and prefix keys.
 ;;     icicle-make-color-candidate: Construct short help only if user will see it.
 ;; 2009/04/10 dadams
-;;     Added: icicle-candidate-short-help, icicle-color-completion-setup (from i*-read-color).
+;;     Added: icicle-candidate-short-help, icicle-color-completion-setup (from icicle-read-color).
 ;;     Moved here from icicle-cmds.el:
 ;;      icicle-remove-color-duplicates, icicle-color-help, icicle-make-color-candidate.
 ;;     icicle-make-color-candidate: Added short help, using icicle-candidate-short-help.
