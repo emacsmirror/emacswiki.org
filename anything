@@ -119,9 +119,7 @@ emacsに入り##M-x anything-for-file##を走らせる. ##anything##がファイ
 これらのファイルを掃除するための何かプランはあるか?
 anything-configファイルとあなたの持っている設定ファイルの両方はとてもモノリシックで, 'anything'を修正するもしくは拡張するようなことは大変です.
 
-恐らく異なるファイルへそれらを分割し,'helper'関数をもっと作るのは役立つか? 例えば, 
-isn't the following a simpler way of creating anything functions, than having them build-in/preconfigured?:
-それらを内蔵/予め設定しておくよりも次のようにanything関数を作る簡単な方法だめか？
+恐らく異なるファイルへそれらを分割し,'helper'関数をもっと作るのは役立つか? 例えば, それらを内蔵/予め設定しておくよりも次のようにanything関数を作る簡単な方法だめか？
 
  (defvar anything-command-list nil)
  (defmacro defanything (name sources)
