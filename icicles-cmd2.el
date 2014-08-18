@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 17 13:13:53 2014 (-0700)
+;; Last-Updated: Sun Aug 17 19:30:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6996
+;;     Update #: 6998
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1976,20 +1976,20 @@ As always in Icicles, you can toggle the use of proxy candidates using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]' in the minibuffer.
 
 See `icicle-read-color-WYSIWYG' for more information."
-    (let* ((prefix      (buffer-substring-no-properties
-                         (widget-field-start widget) (point)))
+    (let* ((prefix          (buffer-substring-no-properties (widget-field-start widget) (point)))
            ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
            ;; They are defined in library `palette.el' or library `eyedropper.el'.
-           (colors      (if (fboundp 'hexrgb-defined-colors-alist) ; Defined in `hexrgb.el'.
-                            (if (fboundp 'eyedrop-foreground-at-point)
-                                (append (and eyedrop-picked-foreground  '(("*copied foreground*")))
-                                        (and eyedrop-picked-background  '(("*copied background*")))
-                                        '(("*mouse-2 foreground*") ("*mouse-2 background*")
-                                          ("*point foreground*") ("*point background*"))
-                                        (hexrgb-defined-colors-alist))
-                              (hexrgb-defined-colors-alist))
-                          (mapcar #'list (x-defined-colors))))
-           (completion  (try-completion prefix colors)))
+           (colors                   (if (fboundp 'hexrgb-defined-colors-alist) ; Defined in `hexrgb.el'.
+                                         (if (fboundp 'eyedrop-foreground-at-point)
+                                             (append (and eyedrop-picked-foreground  '(("*copied foreground*")))
+                                                     (and eyedrop-picked-background  '(("*copied background*")))
+                                                     '(("*mouse-2 foreground*") ("*mouse-2 background*")
+                                                       ("*point foreground*") ("*point background*"))
+                                                     (hexrgb-defined-colors-alist))
+                                           (hexrgb-defined-colors-alist))
+                                       (mapcar #'list (x-defined-colors))))
+           (icicle-color-completing  t)
+           (completion               (try-completion prefix colors)))
       (cond ((null completion)
              (widgetp-remove-Completions)
              (error "No completion for \"%s\"" prefix))
