@@ -42,21 +42,46 @@ I use rebar and have hrl files not in the ../include path. Here is a quick hack 
 -export([main/1]).
 
 main([File_Name]) ->
-    Includes = case filelib:is_dir("../deps") of
-                   false ->
-                       [{i, "../include"}];
-                   true ->
-                       {ok, Deps} = file:list_dir("../deps"),
-                       [{i, "../include"}| [{i,Di} || D <- Deps,
-                              begin
-                                  Di = "../deps/"++D++"/include",
-                                  filelib:is_dir(Di)
-                              end]]
-               end,
 
+    {ok, Cwd} = file:get_cwd(),
+
+    BaseDir =
+    case re:run(Cwd, "^(.+)(/src).?", [{capture, [1], list}]) of
+    {match, [B]} ->
+	    B ++ "/";
+    nomatch ->
+	    Cwd ++ "/"
+    end,
+
+    {ok, Deps} = file:list_dir(BaseDir ++ "deps"),
+    {ok, SrcDirs} = file:list_dir(BaseDir ++ "src"),
+
+    Includes = 
+
+	[{i, BaseDir ++ "include"}, {i, BaseDir ++ "deps"}, {i, BaseDir ++ "src"}]
+
+	++
+
+        [{i, Si} || S <- SrcDirs,
+		    begin
+                                  Si = BaseDir ++ "src/" ++ S,
+                                  filelib:is_dir(Si)
+
+		    end]
+
+	++
+
+        [{i,Di} || D <- Deps,
+                              begin
+                                  Di = BaseDir ++ "deps/"++D++"/include",
+                                  filelib:is_dir(Di)
+                              end],
+    
     compile:file(File_Name, [warn_obsolete_guard, warn_unused_import,
+			     warnings_as_errors,
                              warn_shadow_vars, warn_export_vars,
                              strong_validation, report | Includes]).
+
 </pre>
 
 
