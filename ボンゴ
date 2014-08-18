@@ -2,12 +2,12 @@
 ボンゴは美しく, 柔軟で便利なEmacs向けのバッファ志向メディアプレイヤーで, [[EMMS]] 2.0から並行して開発されています.  Gnu Emacs 21以上で走ります.
 
 ; '''コード''': http://github.com/dbrock/bongo
-; '''メーリングリスト''': <code><bongo-devel@nongnu.org></code> (http://lists.nongnu.org/mailman/listinfo/bongo-develを見よ) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (http://dir.gmane.org/gmane.emacs.bongo.develを見よ)
+; '''メーリングリスト''': <code><bongo-devel@nongnu.org></code> (http://lists.nongnu.org/mailman/listinfo/bongo-develを見よ) --- Gmane <code>gmane.emacs.bongo.devel</code> (http://dir.gmane.org/gmane.emacs.bongo.develを見よ)
 
 ボンゴに含まれている注目すべき機能
 * 分割プレイリストとライブラリバッファ(それぞれあなたはいくつものバッファーを持ってもいいでしょう --- もしあなたがプレイリストを機能的に必要としないのであれば両方共ゼロでもオッケーでしょう),
 * 各アーティストやアルバムのための折りたたみ可能なセクションを持つ階層的なバッファ,
-* ボンゴバッファーを編集をするためのEmacsに似たバインディング (edit playlists much like you would regular text),
+* ボンゴバッファーを編集をするためのEmacsに似たバインディング (通常テキストのようなプレイリスト編集),
 
 * プログレスメーターを兼ねたイケてるビジュアルシーキングインタフェース (`s'を押す),
 * ビジュアルオーディオボリュームコントロール ([[Volume]], は実際にはスタンドアローンパッケージです),
