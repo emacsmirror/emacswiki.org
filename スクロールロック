@@ -17,27 +17,7 @@ FWIW, that’s not what I see, with a recent Windows 7 laptop. For me, the key l
 
 (BTW, do you really want this page’s title to be in Japanese?) – DrewAdams
 
-[[en:ScrollLock]]
-私が現在までにアクセスした全てのウィンドウズ機では, スクロールロックキーが原因でEmacsはCapsロックキーを無視します.
-この機能は私が見た限りではどこでも述べられていないようです.
-
-この機能は`C-h c'は`C-h C'から別のコマンドにバインドされているため時々便利でしょう.
-
-So it keeps you from shooting yourself in the foot by setting caps lock on if you have a bad habit of doing that and want to break yourself of it.
-すななち　それは　保ちます　あなたを　自身を打つことから　足で　CPLKを設定することによって　もしあなたが　持っているならば　それをする悪い習慣　そして　それを　あなた自身が　壊したいならば
-一方で(これも述べられていないだけれども)
-it can be a shock to have your Caps Lock key ignored by Emacs if you don't know what caused it.
-それは　衝撃であろう　あなたのCPLKキーを持つことが　Emacsによって無視される　何が原因でそれが起こるのかがわからなくても　
-あなたのスクロールロックキーをもう一度タップするだけで　to put things "right".　
-ことを　正せる
-    (global-set-key (kbd "<Scroll_Lock>") 'scroll-lock-mode)
-
-FWIW, that’s not what I see, with a recent Windows 7 laptop. For me, the key labeled “Scroll Lock” has no effect, and ‘C-h k’ for it says that it is undefined. And (for me) ‘C-h k’ calls that key <scroll>, not <Scroll_Lock>. I wonder whether the behavior you are seeing is even going through Emacs.
-
-(BTW, do you really want this page’s title to be in Japanese?) – DrewAdams
-
 This is the Japanese Translating page.
 And This is a stub.
 Dont expect anything.
-If I say that in addition,Beware URI!
-- gonbei
+If I say that in addition,
