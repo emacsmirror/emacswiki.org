@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul 11 13:53:13 2014 (-0700)
+;; Last-Updated: Mon Aug 18 22:03:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7348
+;;     Update #: 7349
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5292,7 +5292,7 @@ If it is a record then it need not belong to `bookmark-alist'."
                         (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
                                                               (car dired-directory)
                                                             dired-directory)))))
-    (and bmk-file  (bmkp-same-file-p this-file bmk-file))))
+    (and bmk-file  this-file  (bmkp-same-file-p this-file bmk-file))))
 
 (defun bmkp-last-specific-buffer-p (bookmark)
   "Return t if BOOKMARK's `buffer-name' is `bmkp-last-specific-buffer'.
