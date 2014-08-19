@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 17 19:30:58 2014 (-0700)
+;; Last-Updated: Mon Aug 18 20:20:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6998
+;;     Update #: 6999
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1782,6 +1782,7 @@ returned."
        (icicle-list-join-string            ": ")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
+       (icicle-face-completing-p           t)
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
@@ -1807,6 +1808,7 @@ returned."
        (icicle-list-join-string            ": ")
        (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
+       (icicle-face-completing-p           t)
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
