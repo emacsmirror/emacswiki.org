@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Aug 16 13:36:18 2014 (-0700)
+;; Last-Updated: Sun Aug 17 19:14:45 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28276
+;;     Update #: 28279
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3088,10 +3088,10 @@
 ;;  `file', `package', `variable', `window',...).  You can add a named
 ;;  predicate to one of these options.
 ;;
-;;  (Note: Some commands also provide minibuffer key bindings that
-;;  also narrow the set of candidates.  For example, during
-;;  bookmark-name completion, there are keys to narrow to different
-;;  types of bookmark.
+;;  (Note: Some commands provide minibuffer key bindings that also
+;;  narrow the set of candidates.  For example, during bookmark-name
+;;  completion, there are keys to narrow to different types of
+;;  bookmark.
 ;;  See (@file :file-name "icicles-doc2.el" :to "Minibuffer Bindings").)
 ;;
 ;;  For example, you can customize option
