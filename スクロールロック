@@ -12,3 +12,7 @@ it can be a shock to have your Caps Lock key ignored by Emacs if you don't know 
 あなたのスクロールロックキーをもう一度タップするだけで　to put things "right".　
 ことを　正せる
     (global-set-key (kbd "<Scroll_Lock>") 'scroll-lock-mode)
+
+FWIW, that’s not what I see, with a recent Windows 7 laptop. For me, the key labeled “Scroll Lock” has no effect, and ‘C-h k’ for it says that it is undefined. And (for me) ‘C-h k’ calls that key <scroll>, not <Scroll_Lock>. I wonder whether the behavior you are seeing is even going through Emacs.
+
+(BTW, do you really want this page’s title to be in Japanese?) – DrewAdams
