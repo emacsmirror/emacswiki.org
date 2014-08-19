@@ -1,4 +1,4 @@
-[en:DiaryMode]
+[[en:DiaryMode]]
 This japanese translating page and this is stub. Dont write in english. --gonbei
 
 The calendar (`M-x calendar') can show you diary entries for a particular day when you press `d' (for more on calendar stuff, see CalendarMode).  You might also be interested in AppointmentMode to get reminders for events a few minutes before they happen.
