@@ -207,5 +207,15 @@ As an alternative to using xterm-title.el/xterm-frobs.el, send your own escape c
    
   (add-hook 'post-command-hook 'xterm-title-update)
 
+[new]
+By mcandre:
+
+If you already show directories in the buffer name, you may want to use a simpler format:
+
+  (setq uniquify-buffer-name-style 'post-forward
+             uniquify-min-dir-content 7))
+  
+  (setq frame-title-format '("%b"))
+
 ----
 CategoryFrames CategoryDisplay FrameModes
