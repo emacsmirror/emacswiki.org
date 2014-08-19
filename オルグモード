@@ -1,0 +1,335 @@
+[[en:Org Modo]]
+[[es:ModoOrg]]
+[[es:ModoOrg]]
+[[zh:Org-Mode (中文)]]
+This is Japanese translating page and this is stub. Dont write in english.
+
+[:overview]
+== Overview ==
+
+Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
+
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
+[:features]
+=== Features ===
+
+* Outlines: headlines, TODO items, checklists, numbered lists, searching, filtering
+* Filing: outlines, tagging, refiling, archiving, sorting, flexible enough to build a "getting things done" workflow
+* Timestamp: deadlines, clocking in/out, scheduled items, repeating items, optionally integrated with emacs calendar and diary
+* Markup: bold, italic, lists, links, images, math (via LaTeX), code highlighting
+* Links to URLs, files, gnus, rmail, vm, news, wanderlust, bbdb, irc, shell commands, bookmarks, images, attachments
+* Table: editing, spreadsheets, formulas
+* Export: HTML, LaTeX, Markdown, iCalendar, OpenDocument, Beamer slides, PDF, and more via an extensible exporting system
+* Babel: Literate programming, reproducible research
+* Agenda: Overview of scheduled and TODO items across files
+
+
+[:install]
+== Download and Install ==
+
+The development version is at:
+
+    git clone git://orgmode.org/org-mode.git
+
+There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
+
+    deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+    deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+
+[:using]
+== Texts on using org-mode ==
+
+David O'Toole has written a [http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html general tutorial] with screenshots. It has been translated into [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html Chinese], [http://web.archive.org/web/20080225214358/http://lumiere.ens.fr/~guerry/orgtutorialfr.html French], [http://users.itk.ppke.hu/~mpasztor/orgtutorial/notebook/orgtutorial-hu.html Hungarian], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode/OrgTutorial Japanese] and [http://jmjeong.com/index.php?display=Emacs/OrgMode Korean]. [http://orgmode.org/worg/ Worg] has many tutorials on specific features. Charles Cave has [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html has written] on using date and times. Bernt Hansen describes his use and customizations of Org-mode in 70(!) pages long [http://doc.norang.ca/org-mode.html document], which assumes basic familiarity with Org.
+
+One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD). Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
+
+Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets]. Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org]. SachaChua has [http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ a graphical map for learning Org]. 
+
+Somewhat dated (2007): Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage. Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
+
+[:publish]
+== Publishing ==
+
+You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode'). BhlMode should automatically recognize the asterisks as marking sections and subsections. See EmacsOutlineToHtml for other alternatives.
+
+[http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
+  is a publishing management system for creating
+  websites composed of all the files within a project (including
+  OrgMode files, images, and source code, if desired).
+
+=== new exporter/publish framework ===
+* [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
+* For instructions on how to upgrade from the previous Org-mode exporter, see the [http://orgmode.org/worg/org-8.0.html upgrade guide.]
+
+
+[:conflicts]
+== Conflicts ==
+
+If you're using WindMove, CuaMode or MTorus (with default keybindings), you might want to disable the Org Mode keybindings for Shift+arrow keys:
+
+    (setq org-replace-disputed-keys t)
+
+(This need to be done before org.el is loaded, or requires a restart of Emacs to be effective.)
+
+This will result in the following replacements:
+
+*  S-RET   -> C-S-RET
+*  S-up    -> M-p
+*  S-down  -> M-n
+*  S-left  -> M--
+*  S-right -> M-+
+
+If AllOut from Emacs 21 is loaded before org.el, you will be getting a ##Wrong type argument ((keymapp nil))## error. This was fixed in Emacs 22.
+
+If you are forced to use Emacs 21, either install a newer version of allout.el, or make sure that org.el is loaded before allout.el.  For example, use ##(require 'org)## before requiring allout.
+
+If you're using session.el (EmacsSession), you need to excempt a circular data structure from saving:
+
+    (add-to-list 'session-globals-exclude 'org-mark-ring)
+
+If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compatability while maintaining CUA support with Lisp:org-cua-dwim.el
+
+[:datasources]
+== External Data Sources ==
+
+If you publish external sources to org mode agenda files, you'll need to refresh those files after changes occur.  Try this snippet to reload those files.
+
+    (defun org-reload ()
+      (interactive)
+      (switch-to-buffer "mail.org")
+      (revert-buffer nil 1)
+      (org-agenda nil "a")
+      (delete-other-windows))
+
+[:addons]]
+== Add-ons and other files ==
+
+* Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
+
+* [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] by CarstenDominik can be used to obtain the feel of org-mode outline
+  navigation when you use OutlineMode or OutlineMinorMode in other types of files (for example, source code.)
+
+* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
+
+* [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
+* [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.
+* Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
+* inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
+* FreeMind lets you import/export between org-mode and freemind file format.
+* [[mobileorg]] ([http://mobileorg.ncogni.to/ home page]) is an iPhone and iPod Touch application for storing, searching, viewing and editing Org-mode files
+* OrgOutlook lets you integrate with Microsoft Outlook
+* OutlookFlagToOrgTask exports emails flagged in Outlook to an Org file.
+* Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
+* Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
+* Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
+* Lisp:org-search-goto-ml.el a variant of the above package which supports matches across line boundaries in the whole entry
+
+
+[:elisp]
+== Related elisp code ==
+
+=== Dragging URLs ===
+
+This function uses org-mode support for plain list to facilitate dragging URLs from a webbrowser (or other apps) to an org-mode buffer:
+
+<pre>
+(defadvice dnd-insert-text (around org-mouse-dnd-insert-text activate)
+  (if (eq major-mode 'org-mode)
+      (progn
+	(cond
+	 ;; if this is the end of the line then just insert text here
+	 ((eolp)
+	  (skip-chars-backward " \t")
+	  (kill-region (point) (point-at-eol))
+	  (unless (looking-back ":") (insert ":"))
+	  (insert " "))
+
+	 ;; if this is the beginning of the line then insert before
+	 ((and (looking-at " \\|\t")
+	       (save-excursion
+		 (skip-chars-backward " \t") (bolp)))
+	  (beginning-of-line)
+	  (looking-at "[ \t]*")
+	  (open-line 1)
+	  (indent-to (- (match-end 0) (match-beginning 0)))
+	  (insert "+ "))
+
+	 ;; if this is a middle of the line, then insert after
+	 (t
+	  (end-of-line)
+	  (newline t)
+	  (indent-relative)
+	  (insert "+ ")))
+	(insert text)
+	(beginning-of-line))
+    ad-do-it))
+</pre>
+
+=== Including all org files from a directory into the agenda ===
+
+<pre>
+(setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
+</pre>
+
+=== Turn header lines into apparent visible separators ===
+
+To make header lines more apparently visible in the buffer, set them a background color and change this part of `org-set-font-lock-defaults', so that the header line is drawn across the screen:
+
+<pre>
+	   ;; Headlines
+	   '("^\\(\\**\\)\\(\\* \\)\\(.*\xa\\)" (1 (org-get-level-face 1))
+	     (2 (org-get-level-face 2)) (3 (org-get-level-face 3)))
+</pre>
+
+The only change is the `\xa' character is added before the last closing paren. This feature has been added to org-mode; see `org-fontify-whole-heading-line'.
+
+=== Following Links ===
+
+To follow links with RET, rather than a 2 key combo:
+
+    (setq org-return-follows-link t)
+
+You can also make TAB follow links in a similar way.
+
+=== Opening pdf at specific page ===
+To open links of type [~/test.pdf::3] i.e. open file at page 3:
+<pre>
+    (delete '("\\.pdf\\'" . default) org-file-apps)
+    (add-to-list 'org-file-apps '("\\.pdf::\\([0-9]+\\)\\'" . "evince \"%s\" -p %1"))
+</pre>
+
+=== Opening pdf with alternative application ===
+To open a link with a program other than the default(e.g. modify a pdf rather than read it):
+<pre>
+(defun my-org-open-at-point()
+  (interactive)
+  (let ((org-file-apps '(("\\.pdf\\'" . "xournal %s"))))
+    (org-open-at-point)
+    ))
+</pre>
+
+=== Sort a column in an Org Table ===
+
+Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines based on a column. But sometime one need to sort just one column :
+<pre>
+
+(defun org-table-sort-column ()
+  "Sort table column at point."
+
+  (interactive)
+  (let* ((thisline (org-current-line))
+	 (thiscol (org-table-current-column))
+	 (otc org-table-overlay-coordinates)
+	 beg end bcol ecol tend tbeg column lns pos)
+    (when (equal thiscol 0)
+      (if (org-called-interactively-p 'any)
+	  (setq thiscol
+		(string-to-number
+		 (read-string "Use column N for sorting: ")))
+	(setq thiscol 1))
+      (org-table-goto-column thiscol))
+    (org-table-check-inside-data-field)
+    (if (org-region-active-p)
+	(progn
+	  (setq beg (region-beginning) end (region-end))
+	  (goto-char beg)
+	  (setq column (org-table-current-column)
+		beg (point-at-bol))
+	  (goto-char end)
+	  (setq end (point-at-bol 2)))
+      (setq column (org-table-current-column)
+	    pos (point)
+	    tbeg (org-table-begin)
+	    tend (org-table-end))
+      (if (re-search-backward org-table-hline-regexp tbeg t)
+	  (setq beg (point-at-bol 2))
+	(goto-char tbeg)
+	(setq beg (point-at-bol 1)))
+      (goto-char pos)
+      (if (re-search-forward org-table-hline-regexp tend t)
+	  (setq end (point-at-bol 1))
+	(goto-char tend)
+	(setq end (point-at-bol))))
+    (setq beg (move-marker (make-marker) beg)
+	  end (move-marker (make-marker) end))
+    (untabify beg end)
+    (goto-char beg)
+    (org-table-goto-column column)
+    (skip-chars-backward "^|")
+    (setq bcol (point))
+    (goto-char end)
+    (previous-line)
+    (org-table-goto-column column)
+    (skip-chars-forward "^|")
+    (setq ecol (point))
+    (org-table-copy-region bcol ecol nil)
+    (setq lns (mapcar (lambda (x) (cons 
+				   (org-sort-remove-invisible 
+				    (substring-no-properties x) )
+				   x))
+		      ( mapcar 'car org-table-clip)))    
+    (setq lns (org-do-sort lns "Column" ))
+
+    (setq org-table-clip (mapcar 'list (mapcar 'cdr lns)))
+    (goto-char beg)
+    (org-table-goto-column column)
+    (org-table-paste-rectangle)
+    (org-goto-line thisline)
+    (org-table-goto-column thiscol)
+    (when otc (org-table-toggle-coordinate-overlays))
+    (message "%d element sorted in column %d" (length lns) column)))
+
+</pre>
+=== Editing Wikipedia ===
+
+Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
+
+<pre>
+(add-hook 'org-mode-hook '(lambda () (setq outline-regexp "=+")))
+</pre>
+
+If you use WThreeM, add the following instead:
+<pre>
+(setq w3m-form-textarea-edit-mode 'org-mode)
+(add-hook 'w3m-form-input-textarea-mode-hook
+          '(lambda nil
+                   (setq outline-regexp "=+")))
+</pre>
+
+=== Export UTF-8 checkboxes ===
+
+This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
+
+<pre>
+(defun sacha/org-html-checkbox (checkbox)
+  "Format CHECKBOX into HTML."
+  (case checkbox (on "<span class=\"check\">&#x2611;</span>") ; checkbox (checked)
+	(off "<span class=\"checkbox\">&#x2610;</span>")
+	(trans "<code>[-]</code>")
+	(t "")))
+(defadvice org-html-checkbox (around sacha activate)
+  (setq ad-return-value (sacha/org-html-checkbox (ad-get-arg 0))))
+</pre>
+
+===Refile to opened orgmode buffer===
+The following codes allow refile to opened orgmode buffer files. (Currently set at level 1, to avoid too many refile targets when there are lots of orgmode files opened).
+
+<pre>
+(defun ixp/org-buffer-files ()
+  "Return list of opened orgmode buffer files"
+  (mapcar (function buffer-file-name)
+	  (org-buffer-list 'files)))
+
+(setq org-refile-targets
+      (quote ((nil :maxlevel . 3)
+	      (ixp/org-buffer-files :maxlevel . 1)
+	      (org-agenda-files :maxlevel . 3))))
+</pre>
+
+[:discussion]
+== Discussion ==
+Discussion moved to [[Comments_on_OrgMode|Talk page]] 
+
+
+== Categories ==
+CategoryOutline CategoryPersonalInformationManager CategoryCalendar CategoryNeedsAttention CategoryWriting
