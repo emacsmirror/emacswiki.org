@@ -41,7 +41,7 @@ Emacsはそれぞれのバッファーの中でバッファーの位置を追跡
 VMの制限は直交する可能な値へEmacs整数によって表せる.
 例えば, 
 もしそれぞれのバッファーが128MBよりも小さいならば, VMはサポートすることができる利用可能なVMとしてそのようなバッファーをたくさんEmacsは持つことができるはずです.
-もしあなたのシステムが1.28GB以上VMのを維持するならば、Emacsは10かそれ以上の128MBバッファーを持つことができるはずです.
+もしあなたのシステムが1.28GB以上のVMを維持するならば、Emacsは10かそれ以上の128MBバッファーを持つことができるはずです.
 
 == XEmacs ==
 
@@ -60,8 +60,7 @@ XEmacs 21では, XEmacsへ--with-minimal-tagbitsで設定することは可能�
 これらのファイルを編集することによって, 幸運を祈る.
 
 == それ以上の大きいファイルを見る ==
-
-See [[VLF]] for a method of viewing awkwardly large files (larger than physical, virtual, or whatever limit you choose for performance issues) a portion at a time.
+ぎこちなく一度に大きなファイルの一部(物理、仮想よりも大きいもしくはパフォーマンスの問題のためにあなたが選んだ制限ならなんでも)観る方法のためには[[VLF]]を見よ
 
 ----
 CategoryBuilding
