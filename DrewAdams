@@ -724,5 +724,15 @@ Regards, PasJa
 
 ----
 
+[new:Yo:2014-08-19 13:38 BST]
+
+Just upgraded from hl-line to crosshairs-mode. I also have whitespace-mode enabled to subtly show spaces and tabs. Crosshairs seems to be highlighting the visual spaces spuriously in white. Here's a screenshot:
+
+https://imgur.com/ngTFccx
+
+Is there something I can do to keep the visual spaces a subtle gray?
+
+----
+
 ------
 CategoryHomepage
