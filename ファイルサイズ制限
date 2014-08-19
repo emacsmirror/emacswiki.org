@@ -1,42 +1,47 @@
 [[en:EmacsFileSizeLimit]]
 [[es:TamañoMáximoFicheroEmacs]]
-If you compile GNU Emacs on a supported architecture with more than 32 bits, you might increase the maximum buffer size.  The reason this is needed are so-called "tag bits" which tag each pointer with the corresponding datatype.  This limits the size of buffers to the largest integer you can represent in Elisp, whose value is given by the variable most-positive-fixnum.
-
-For example:
+もしあなたがGNU Emacsを32ビット以上のサポートされているアーキテクチャでコンパイルしているならば, 最大バッファーサイズを増やせるでしょう.
+必要とされるその理由はいわゆる「タグビット」(タグはそれぞれのポインターに対応するデータタイプ)であり.
+これはElispの中で表すことができる最大整数までバッファーのサイズを制限し、その値はmost-positive-fixnum値によって与えられます.
+例えば:
 
     most-positive-fixnum
     => 268435455
 
-Thus, the limit is 256MB on this particular system:
+その結果, この特定のシステムではリミットは256MBです:
 
     (/ 268435456.0 1024 1024)
     => 256.0
 
-Note how we used floating point arithmetic to compute the result!
-
-Anyway, what follows is some technical background, based on the EmacsFaq and some posting on the newsgroups:
+私達は結果を計算するために、浮動小数点演算の使用方法に注意してください！
+いずれにせよ(次のはいくつかの技術的な背景である)EmacsFAQとニュースグループにあるいくつかの投稿に基づく:
 
 == GNU Emacs ==
 
-Old versions (i.e., anything before 19.29) of GNU Emacs had problems editing files larger than 8 megabytes.  As of version 19.29, the maximum buffer size is at least 2^27-1, or 134,217,727 bytes.  On a 64bit system, the limit is pushed to 2^59-1 which is almost
-a million Terabytes.
+GNU Emacsの古いバージョン(すなわち, 19.29以前のすべてでは)8メガバイトよりも大きいファイルを編集することに問題を持っています.
+バージョン19.29では, 最大バッファーサイズは少なくとも2^27-1, すなわち134,217,727 バイトです.
+64ビットシステムでは, 制限は2^59-1(約100万テラバイト)まで押し上げられます .
 
-David Gillespie explains how this problem crops up; while his numbers are true only for pre-19.29 versions of GNU Emacs, the theory remains the same with current versions.
-
-: Emacs is largely written in a dialect of Lisp; Lisp is a freely-typed language in the sense that you can put any value of any type into any variable, or return it from a function, and so on.  So each value must carry a "tag" along with it identifying what kind of thing it is, e.g., integer, pointer to a list, pointer to an editing buffer, and so on.  Emacs uses standard 32-bit integers for data objects, taking the top 8 bits for the tag and the bottom 24 bits for the value.  So integers (and pointers) are somewhat restricted compared to true C integers and pointers.
-
-And here are even more details:
+David Gillespie はどうこの問題が不意に現れるか説明する; 彼の番号がGNU Emacsのpre-19.92のみ当てはまる間,現在のバージョンとセオリーは相変わらず同じ.
+Emacsは主にLispの方言で書かれている;Lispはどんな種類のどんな値もどんな変数に置くことできる,もしくはそれを関数から戻すなどある意味自由に型付けされた言語です.
+だからそれぞれの値は例えば整数、リストへのポインタ、編集中のバッファーへのポインタなど、それがどんなものであるかを特定するタグに従って運ばなければならない.
+Emacsはデータオブジェクトのために標準で32ビット整数を使い, 最初から8ビットはタグのためにそして残り24ビットは値のために取る.
+だから整数(そしてポインタ)は本当のC言語の整数とポインタとやや限定されて比較される.
+そしてここにさらなる詳細がある:
 
  From: EliZaretskii
  Subject: Re: maximum buffer size
  Newsgroups: comp.emacs
  Date: Mon, 21 May 2001 19:32:49 +0300
 
-Emacs needs to track buffer positions in each buffer.  The variables which track buffer positions (point and its ilk) are all Lisp integers, which have only 28 bits on a 32-bit machine.  This is the core reason for the 128MB limit.
-
-By contrast, the maximum amount of virtual memory available to a process is determined by the OS and the limits it imposes on resources available for each process.
-
-The VM limitations are orthogonal to the possible values representable by an Emacs integer.  For example, if each buffer is smaller than 128MB, Emacs should be able to have as many of such buffers as the available VM is capable of supporting.  If your system can sustain more than 1.28GB of VM, Emacs should be able to have 10 or more 128-MB buffers.
+Emacsはそれぞれのバッファーの中でバッファーの位置を追跡することを必要とする.
+バッファー位置(ポイントとそのilk)を追跡する変数は全てLisp整数でそれは32ビットマシン上では28ビットしか持たない.
+これが128MB制限の主な理由である.
+一方で,プロセスで利用可能な最大仮想メモリー量はOSによって決定され,制限はリソース上利用可能なそれぞれのプロセスのためにそれが課す.
+VMの制限は直交する可能な値へEmacs整数によって表せる.
+例えば, 
+もしそれぞれのバッファーが128MBよりも小さいならば, VMはサポートすることができる利用可能なVMとしてそのようなバッファーをたくさんEmacsは持つことができるはずです.
+もしあなたのシステムが1.28GB以上VMのを維持するならば、Emacsは10かそれ以上の128MBバッファーを持つことができるはずです.
 
 == XEmacs ==
 
@@ -45,17 +50,16 @@ The VM limitations are orthogonal to the possible values representable by an Ema
  Date: 13 Oct 1999 15:57:34 +0200 
  Newsgroups: comp.emacs.xemacs 
 
-The actual limit depends on XEmacs version and has to do with the limits on Lisp integers.  Traditionally, the largest buffer size was 256M (== 2^28; three tag-bits, one bit for sign).  As of XEmacs 21, it has been possible to configure XEmacs --with-minimal-tagbits, which uses perverse tricks to get 31-bit signed integers in Lisp.  This bumps maximum buffer size to 2^30 (we still need one bit for sign) == 1G.
+実際の制限はXEmacs バージョンに依存しLisp整数で制限を課す必要がある.
+伝統的には、最も大きいバッファーサイズは 256M(== 2^28; 3 タグビット, 1ビットは　署名のため)であった.
+XEmacs 21では, XEmacsへ--with-minimal-tagbitsで設定することは可能になった, それはLispで31ビット符号付き整数を得るためにひねくれたトリックを使う.
+これは2^30=1Gへ最大バッファーサイズをぶつける(私達は1ビットをサインのためまだ必要とする).
+もしファイルが2Gよりも大きいならば, XEmacsがメモリーでアドレスすることはできなくなるだろう,たとえもしあなたが十分な物理メモリを持っていたとしても.
+もしあなたが本当に本当にこれらのとてつもなく大きいファイルをXEmacsで編集することを試したいなら,　あなたは最新版を得てそれをLP64環境でコンパイルすべきである.
+その方法であなたは2^62バイトの最大バッファーサイズを得るだろう,そして大きいファイルを自由にサポートを得るだろう.
+これらのファイルを編集することによって, 幸運を祈る.
 
-If a file is larger than 2G, XEmacs will be unable to address it in memory, even if you have enough physical RAM.
-
-If you really really want to try to edit those humongous files in
-XEmacs, you should get the latest version and compile it in LP64
-environment.  That way you'll get maximum buffer size of 2^62 bytes, and large file support for free.
-
-Good luck with editing those files, by the way.
-
-== Viewing Overly Large Files ==
+== それ以上の大きいファイルを見る ==
 
 See [[VLF]] for a method of viewing awkwardly large files (larger than physical, virtual, or whatever limit you choose for performance issues) a portion at a time.
 
