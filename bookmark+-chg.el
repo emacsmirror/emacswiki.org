@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul 20 09:37:20 2014 (-0700)
+;; Last-Updated: Mon Aug 18 22:04:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15696
+;;     Update #: 15697
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/08/18 dadams
+;;     bmkp-this-file-p: Return nil (instead of raising error) if THIS-FILE is nil.
 ;; 2014/07/11 dadams
 ;;     bookmark-load: Do not customize-save-variable if no change to bmkp-last-as-first-bookmark-file.
 ;;     bmkp-new-bookmark-default-names: Use setq, not push, for Emacs 20.
