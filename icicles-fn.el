@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Aug 17 10:44:17 2014 (-0700)
+;; Last-Updated: Tue Aug 19 15:48:27 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14966
+;;     Update #: 14987
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -68,21 +68,19 @@
 ;;    `icicle-bookmark-function-p', `icicle-bookmark-gnus-p',
 ;;    `icicle-bookmark-icicle-search-hits-p',
 ;;    `icicle-bookmark-image-p', `icicle-bookmark-info-p',
-;;    `icicle-bookmark-last-specific-buffer-p',
-;;    `icicle-bookmark-last-specific-file-p',
 ;;    `icicle-bookmark-lighted-p',
 ;;    `icicle-bookmark-local-directory-p',
 ;;    `icicle-bookmark-local-file-p', `icicle-bookmark-man-p',
 ;;    `icicle-bookmark-marked-p', `icicle-bookmark-modified-p',
-;;    `icicle-bookmark-non-file-p', `icicle-bookmark-omitted-p',
-;;    `icicle-bookmark-orphaned-file-p',
+;;    `icicle-bookmark-navlist-p', `icicle-bookmark-non-file-p',
+;;    `icicle-bookmark-omitted-p', `icicle-bookmark-orphaned-file-p',
 ;;    `icicle-bookmark-orphaned-local-file-p',
 ;;    `icicle-bookmark-orphaned-remote-file-p',
 ;;    `icicle-bookmark-region-p', `icicle-bookmark-remote-file-p',
 ;;    `icicle-bookmark-sequence-p', `icicle-bookmark-snippet-p',
 ;;    `icicle-bookmark-tagged-p', `icicle-bookmark-temporary-p',
-;;    `icicle-bookmark-this-buffer-p', `icicle-bookmark-this-file-p',
-;;    `icicle-bookmark-url-p', `icicle-bookmark-url-browse-p',
+;;    `icicle-bookmark-this-buffer-p', `icicle-bookmark-url-p',
+;;    `icicle-bookmark-url-browse-p',
 ;;    `icicle-bookmark-variable-list-p', `icicle-bookmark-w3m-p',
 ;;    `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
@@ -7924,7 +7922,8 @@ whose first part is the bookmark name."
     (when icicle-multi-completing-p
       (let ((icicle-list-use-nth-parts  '(1)))
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-autonamed-this-buffer-bookmark-p bookmark))
+    (with-current-buffer icicle-orig-buff ; FREE here: ICICLE-ORIG-BUFF.
+      (bmkp-autonamed-this-buffer-bookmark-p bookmark)))
 
   (defun icicle-bookmark-bookmark-file-p (bookmark)
     "Return non-nil if BOOKMARK is a bookmark-file bookmark.
@@ -7984,7 +7983,8 @@ whose first part is the bookmark name."
     (when icicle-multi-completing-p
       (let ((icicle-list-use-nth-parts  '(1)))
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-dired-this-dir-bookmark-p bookmark))
+    (with-current-buffer icicle-orig-buff ; FREE here: ICICLE-ORIG-BUFF.
+      (bmkp-dired-this-dir-bookmark-p bookmark)))
 
   (defun icicle-bookmark-dired-wildcards-p (bookmark)
     "Return non-nil if BOOKMARK bookmarks a Dired buffer with wildcards.
@@ -8020,7 +8020,8 @@ whose first part is the bookmark name."
     (when icicle-multi-completing-p
       (let ((icicle-list-use-nth-parts  '(1)))
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-file-this-dir-bookmark-p bookmark))
+    (with-current-buffer icicle-orig-buff ; FREE here: ICICLE-ORIG-BUFF.
+      (bmkp-file-this-dir-bookmark-p bookmark)))
 
   (defun icicle-bookmark-flagged-p (bookmark)
     "Return non-nil if BOOKMARK is flagged for deletion in `*Bookmark List*'.
@@ -8094,35 +8095,35 @@ whose first part is the bookmark name."
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
     (bmkp-info-bookmark-p bookmark))
 
-  (defun icicle-bookmark-last-specific-buffer-p (bookmark)
-    "Return non-nil if BOOKMARK's buffer is `bmkp-last-specific-buffer'.
-That is the buffer last used by command `bmkp-this-buffer-bmenu-list'
-to list bookmarks for a specific buffer in `*Bookmark List*'.
+;;;;   (defun icicle-bookmark-last-specific-buffer-p (bookmark)
+;;;;     "Return non-nil if BOOKMARK's buffer is `bmkp-last-specific-buffer'.
+;;;; That is the buffer last used by command `bmkp-this-buffer-bmenu-list'
+;;;; to list bookmarks for a specific buffer in `*Bookmark List*'.
 
-If BOOKMARK is a cons with a string car, then the car is used as the
-effective argument.  This is so that the function can be used to
-filter completion candidates.  The string can be a multi-completion
-whose first part is the bookmark name."
-    (when (consp bookmark) (setq bookmark  (car bookmark)))
-    (when icicle-multi-completing-p
-      (let ((icicle-list-use-nth-parts  '(1)))
-        (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-last-specific-buffer-p bookmark))
+;;;; If BOOKMARK is a cons with a string car, then the car is used as the
+;;;; effective argument.  This is so that the function can be used to
+;;;; filter completion candidates.  The string can be a multi-completion
+;;;; whose first part is the bookmark name."
+;;;;     (when (consp bookmark) (setq bookmark  (car bookmark)))
+;;;;     (when icicle-multi-completing-p
+;;;;       (let ((icicle-list-use-nth-parts  '(1)))
+;;;;         (setq bookmark  (icicle-transform-multi-completion bookmark))))
+;;;;     (bmkp-last-specific-buffer-p bookmark))
 
-  (defun icicle-bookmark-last-specific-file-p (bookmark)
-    "Return non-nil if BOOKMARK's file is `bmkp-last-specific-buffer'.
-That is the file last used by command `bmkp-this-file-bmenu-list' to
-list bookmarks for a specific file in `*Bookmark List*'.
+;;;;   (defun icicle-bookmark-last-specific-file-p (bookmark)
+;;;;     "Return non-nil if BOOKMARK's file is `bmkp-last-specific-file'.
+;;;; That is the file last used by command `bmkp-this-file-bmenu-list' to
+;;;; list bookmarks for a specific file in `*Bookmark List*'.
 
-If BOOKMARK is a cons with a string car, then the car is used as
-the effective argument.  This is so that the function can be used to
-filter completion candidates.  The string can be a multi-completion
-whose first part is the bookmark name."
-    (when (consp bookmark) (setq bookmark  (car bookmark)))
-    (when icicle-multi-completing-p
-      (let ((icicle-list-use-nth-parts  '(1)))
-        (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-last-specific-file-p bookmark))
+;;;; If BOOKMARK is a cons with a string car, then the car is used as
+;;;; the effective argument.  This is so that the function can be used to
+;;;; filter completion candidates.  The string can be a multi-completion
+;;;; whose first part is the bookmark name."
+;;;;     (when (consp bookmark) (setq bookmark  (car bookmark)))
+;;;;     (when icicle-multi-completing-p
+;;;;       (let ((icicle-list-use-nth-parts  '(1)))
+;;;;         (setq bookmark  (icicle-transform-multi-completion bookmark))))
+;;;;     (bmkp-last-specific-file-p bookmark))
 
   (when (require 'bookmark+-lit nil t)
     (defun icicle-bookmark-lighted-p (bookmark)
@@ -8197,6 +8198,18 @@ whose first part is the bookmark name."
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
     (bmkp-modified-bookmark-p bookmark))
 
+  (defun icicle-bookmark-navlist-p (bookmark)
+    "Return non-nil if BOOKMARK is in the bookmark navigation list.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-navlist-bookmark-p bookmark))
+
   (defun icicle-bookmark-non-file-p (bookmark)
     "Return non-nil if BOOKMARK is a non-file bookmark (e.g `*scratch*').
 If BOOKMARK is a cons with a string car, then the car is used as
@@ -8245,7 +8258,7 @@ whose first part is the bookmark name."
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
     (bmkp-orphaned-local-file-bookmark-p bookmark))
 
-  (defun icicle-bookmark--p (bookmark)
+  (defun icicle-bookmark-orphaned-remote-file-p (bookmark)
     "Return non-nil if BOOKMARK is a orphaned-remote-file bookmark.
 If BOOKMARK is a cons with a string car, then the car is used as
 the effective argument.  This is so that the function can be used to
@@ -8339,19 +8352,21 @@ whose first part is the bookmark name."
     (when icicle-multi-completing-p
       (let ((icicle-list-use-nth-parts  '(1)))
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-this-buffer-p bookmark))
+    (with-current-buffer icicle-orig-buff ; FREE here: ICICLE-ORIG-BUFF.
+      (bmkp-this-buffer-p bookmark)))
 
-  (defun icicle-bookmark-this-file-p (bookmark)
-    "Return non-nil if BOOKMARK is a bookmark for this file.
-If BOOKMARK is a cons with a string car, then the car is used as
-the effective argument.  This is so that the function can be used to
-filter completion candidates.  The string can be a multi-completion
-whose first part is the bookmark name."
-    (when (consp bookmark) (setq bookmark  (car bookmark)))
-    (when icicle-multi-completing-p
-      (let ((icicle-list-use-nth-parts  '(1)))
-        (setq bookmark  (icicle-transform-multi-completion bookmark))))
-    (bmkp-this-file-p bookmark))
+;;;   (defun icicle-bookmark-this-file-p (bookmark)
+;;;     "Return non-nil if BOOKMARK is a bookmark for this file.
+;;; If BOOKMARK is a cons with a string car, then the car is used as
+;;; the effective argument.  This is so that the function can be used to
+;;; filter completion candidates.  The string can be a multi-completion
+;;; whose first part is the bookmark name."
+;;;     (when (consp bookmark) (setq bookmark  (car bookmark)))
+;;;     (when icicle-multi-completing-p
+;;;       (let ((icicle-list-use-nth-parts  '(1)))
+;;;         (setq bookmark  (icicle-transform-multi-completion bookmark))))
+;;;     (with-current-buffer icicle-orig-buff ; FREE here: ICICLE-ORIG-BUFF.
+;;;       (bmkp-this-file-p bookmark)))
 
   (defun icicle-bookmark-url-p (bookmark)
     "Return non-nil if BOOKMARK is a URL bookmark.
