@@ -1,0 +1,45 @@
+This is a japanese translating page And this is stub. Dont write in english. - gonbei
+
+A small hack to View Large Files in Emacs. From the Commentary:
+
+ ;; After reading the Nth post on Gnu Emacs Help about Viewing Large
+ ;; Files in Emacs, it itched so much that I decided to make a try.  It
+ ;; helped quite a lot when Kevin Rodgers posted a snippet on how to
+ ;; use `insert-file-contents' to extract part of a file.  At first I
+ ;; made a try using head and tail and that worked too, but using
+ ;; internal Emacs commands is nicer.  Here is the code to extract data
+ ;; using head and tail in case someone wanna try that out in the
+ ;; future:
+ ;; ...
+
+Get the code here:
+
+http://elpa.gnu.org/packages/vlf
+
+[[image:VLFScreenShot]]
+
+In the screenshot above you can see VLF happily (albeit slowly) surfing a 3GB+ large file (a Ubuntu VMWare thing in this case) at position 500010000, in 10000 byte chunks.
+
+In improved mode called vlfi (View Large Files Improved) supporting indexing, unicode, regexp search, chunk editing is available here: https://github.com/m00natic/vlfi
+
+[new]
+vlfi is now merged to GNU ELPA's vlf
+-- Andrey Kotlarski
+
+[new]
+Strange. Does it really work? I thought the EmacsFileSizeLimit was
+imposed because `point' has to be a number in Elisp. But in your code,
+the variables `vlf-current-start-pos' and all computations made with
+it will suffer from the same limit... I thought a different representation
+of really big numbers (such as using a cons-list) was needed...
+-- AlexSchroeder
+
+[new]
+It depends on what you mean with "work".... :) It works up to the same
+limit you have mentioned above. This means that the usefulness lies mostly
+in that you do not need to load those 256 MB (on a 32 bit system) into Emacs. 
+I have to say I was a bit disappointed when I found that out. :( Oh well... -- MaDa
+
+[new]
+Update: if you use the alternate method to extract the file content, which uses head and tail,
+it seems to work, but it is much slower. I would not trust the content very much however... :) -- MaDa
