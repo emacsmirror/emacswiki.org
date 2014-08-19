@@ -311,7 +311,7 @@ of a completion type (`bookmark', `buffer', `color', `face',
 `file', `package', `variable', `window',...).  You can add a named
 predicate to one of these options.
 
-(Note: Some commands also provide minibuffer key bindings that
+(Note: Some commands provide minibuffer key bindings that
 also narrow the set of candidates.  For example, during
 bookmark-name completion, there are keys to narrow to different
 types of bookmark.
