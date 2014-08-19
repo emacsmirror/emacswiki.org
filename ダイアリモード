@@ -1,0 +1,396 @@
+[en:DiaryMode]
+This japanese translating page and this is stub. Dont write in english. --gonbei
+
+The calendar (`M-x calendar') can show you diary entries for a particular day when you press `d' (for more on calendar stuff, see CalendarMode).  You might also be interested in AppointmentMode to get reminders for events a few minutes before they happen.
+
+  
+
+The diary entries are added manually to the ~/diary file. 'M-x diary' does not create the file.
+
+
+
+== Fancy display ==
+
+Here is some code to make your calendar and diary display fancier:
+
+ (setq view-diary-entries-initially t
+       mark-diary-entries-in-calendar t
+       number-of-diary-entries 7)
+ (add-hook 'diary-display-hook 'fancy-diary-display)
+ (add-hook 'today-visible-calendar-hook 'calendar-mark-today)
+
+Here is some code to get rid of the ugly equal signs under the date:
+
+ (add-hook 'fancy-diary-display-mode-hook
+	   '(lambda ()
+              (alt-clean-equal-signs)))
+  
+ (defun alt-clean-equal-signs ()
+   "This function makes lines of = signs invisible."
+   (goto-char (point-min))
+   (let ((state buffer-read-only))
+     (when state (setq buffer-read-only nil))
+     (while (not (eobp))
+       (search-forward-regexp "^=+$" nil 'move)
+       (add-text-properties (match-beginning 0) 
+	                    (match-end 0) 
+			    '(invisible t)))
+     (when state (setq buffer-read-only t))))
+
+Note that the hook used exists only on recent version of emacs; so, you'll probably need the following:
+
+ (define-derived-mode fancy-diary-display-mode  fundamental-mode
+   "Diary"
+   "Major mode used while displaying diary entries using Fancy Display."
+   (set (make-local-variable 'font-lock-defaults)
+        '(fancy-diary-font-lock-keywords t))
+   (define-key (current-local-map) "q" 'quit-window)
+   (define-key (current-local-map) "h" 'calendar))
+ 
+ (defadvice fancy-diary-display (after set-mode activate)
+   "Set the mode of the buffer *Fancy Diary Entries* to
+ `fancy-diary-display-mode'."
+   (save-excursion
+     (set-buffer fancy-diary-buffer)
+     (fancy-diary-display-mode)))
+
+Then play with the font-lock keywords!
+
+If your version of diary doesn't have font-locking for the fancy display 
+(such as the current XEmacs diary package),
+you can use generic.el to whip up something suitable. For example:
+
+    (require 'generic)
+    (define-generic-mode 'fancy-diary-display-mode
+      nil
+      (list "Exception" "Location" "Desc")
+      '(
+        ("\\(.*\\)\n\\(=+\\)"            ;; Day title / separator lines
+         (1 'font-lock-keyword-face) (2 'font-lock-preprocessor-face))
+        ("^\\(todo [^:]*:\\)\\(.*\\)$"   ;; To do entries
+         (1 'font-lock-string-face) (2 'font-lock-reference-face))
+        ("\\(\\[.*\\]\\)"                ;; Category labels
+         1 'font-lock-constant-face)
+         ("^\\(0?\\([1-9][0-9]?:[0-9][0-9]\\)\\([ap]m\\)?\\(-0?\\([1-9][0-9]?:[0-9][0-9]\\)\\([ap]m\\)?\\)?\\)"
+         1 'font-lock-type-face))        ;; Time intervals at start of lines.
+      nil
+      (list
+        (function
+          (lambda ()
+            (turn-on-font-lock))))
+      "Mode for fancy diary display.")
+
+
+== Localization ==
+
+See CalendarLocalization.
+
+== Diary Entries ==
+
+If you call the function `(european-calendar)' it sets the variable
+`european-calendar-style' to t; your date specifications should have
+the order day, month, year. If it is nil, use month, day, year. There
+are many different ways to specify dates and date patterns, some of
+which are compatible with the '''calendar'''(1) command.  Check the
+EmacsManual node "Date Formats" for more information.
+
+<b>The following examples assume european calendar style!</b>
+
+Here's an entry for a particular day:
+
+ 6 Nov 2000 cinema
+
+Multi line entries are also allowed:
+
+ 6 Nov 2000 cinema
+               - watch movie
+               - party all night
+
+If you want the entry to show as a diary entry, but not to mark your calendar, prefix with an ampersand ("&"):
+
+ &7 Nov 2000 drink water watch TV
+
+Here's an example for an anniversary. Note that the diary entry will display my dad's age as well.
+
+ %%(diary-anniversary 14 2 1940) Dad turns %d
+
+Here's an example for an entire block of days.
+
+ %%(diary-block 14 2 2000 18 2 2000) Software Test
+
+Here's an example for every 60 days starting at 15 July 2003:
+
+ %%(diary-cyclic 60 15 7 2003) Renew medication
+
+Here's for certain days of the week. Note how the leading "&" prevents
+the entry from standing out in my calendar.
+
+ &%%(= 4 (calendar-day-of-week date)) Salsa
+
+And here are some complex list expressions. This one first determines
+wether we are on a friday (day number 5), and then it checks wether
+the date falls in a certain block.
+
+ %%(and (= 5 (calendar-day-of-week date))
+        (diary-block 20 10 2000 20 2 2001)) Luzern
+
+Here's an even fancier entry for every first working day of the month:
+Either we are talking about monday to friday (day number 1 to 5) and
+it's the first day of the month, or it is a monday and its the second
+day of the month, or it is a monday and the third day of the month.
+
+ %%(let ((d (calendar-day-of-week date)))
+     (or (and (> d 0)
+              (< d 6)
+              (diary-date 1 t t))
+         (and (= d 1)
+              (or (diary-date 2 t t)
+                  (diary-date 3 t t))))) Check reports
+
+If you want to see reminders of upcoming events, use <code>diary-remind</code>. The first argument is a diary-sexp like the ones used in the preceding examples (it took some time to find out quoting is needed...), the second arg is the number of days (or a list of numbers) before the event that the reminders should occur on. The optional third arg turns on marking of the reminders in the calendar.
+
+ %%(diary-remind '(diary-date 1 8 2004) '(1 2 3) t) really-important-event-i-have-to-prepare-days-in-advance
+
+
+If you want to insert separators, try the following:
+
+ %%(progn " ")
+
+or
+
+ %%(progn t) ----
+
+== New Diary Sexps ==
+
+You can do a lot of things with diary sexp but if you often to do very
+complex things, it might be easier to define a new sexp...
+
+
+=== Schedule ===
+
+If you want to write a schedule for school or university, you need to
+define a block (it's derived from diary-block) between two dates and a
+weekday. The following function also recognizes holidays and won't
+send you to school on those days... :)
+
+    (defun diary-schedule (m1 d1 y1 m2 d2 y2 dayname)
+      "Entry applies if date is between dates on DAYNAME.  
+    Order of the parameters is M1, D1, Y1, M2, D2, Y2 if
+    `european-calendar-style' is nil, and D1, M1, Y1, D2, M2, Y2 if
+    `european-calendar-style' is t. Entry does not apply on a history."
+      (let ((date1 (calendar-absolute-from-gregorian
+                    (if european-calendar-style
+                        (list d1 m1 y1)
+                      (list m1 d1 y1))))
+            (date2 (calendar-absolute-from-gregorian
+                    (if european-calendar-style
+                        (list d2 m2 y2)
+                      (list m2 d2 y2))))
+            (d (calendar-absolute-from-gregorian date)))
+        (if (and 
+             (<= date1 d) 
+             (<= d date2)
+             (= (calendar-day-of-week date) dayname)
+             (not (check-calendar-holidays date))
+             )
+             entry)))
+
+Then: <code>"&%%(diary-schedule 22 4 2003 1 8 2003 2) 18:00 History"</code>
+
+
+=== Countdown ===
+
+This uses <code>diary-schedule</code> (defined above) and <code>diary-remind</code> to produce a daily countdown to a deadline:
+
+ (defun diary-countdown (m1 d1 y1 n)
+   "Reminder during the previous n days to the date.
+    Order of parameters is M1, D1, Y1, N if
+    `european-calendar-style' is nil, and D1, M1, Y1, N otherwise."
+   (diary-remind '(diary-date m1 d1 y1) (let (value) (dotimes (number n value) (setq value (cons number value))))))
+
+Then: <code>"&%%(diary-countdown 22 4 2003 15) Conference deadline"</code> shows the reminder during the last 15 days before 22 4 2003.
+
+== Diary Mode Keymap ==
+
+<pre>
+m  mark diary entries
+d  view diary entries
+s  show all diary entries
+id insert diary entry
+iw insert weekly diary entry
+im insert monthly diary entry
+</pre>
+
+== Third-party Offerings ==
+
+=== MHC ===
+
+There is an alternative calendar mode called MHC which has some
+
+interesting features. It has a web site at
+http://www.quickhack.net/mhc/
+(caution: Japanese reading skills are
+probably useful).
+
+
+
+It has hooks for adding entries to the task list / calendar from
+incoming mail messages (provides hook functions for Gnus, Mew, and
+Wanderlust) and there are facilities for merging calendars with Pilots
+and other popular handheld devices. Appointments are stored in
+standard MH folders, so they can be accessed and modified by external
+utilities as well. There is also experimental LDAP calendar support.
+
+=== iCalendar import/export ===
+
+UlfJasper has written a package for handling icalendar events in Emacs diary. The announcement in news:gnu.emacs.sources read
+
+ Here's a package for importing simple icalendar events into Emacs
+ diary.
+
+ Please note that this is a pre-alpha snapshot trial demo test
+ version. It should work correctly on ordinary, i.e. non-recurring,
+ events. But it will fail on most recurring events. Anyhow, I am
+ posting it here because I think that there may be someone who could
+ find it useful.
+
+The latest version of icalendar.el also allows for exporting an Emacs diary file in icalendar format. 
+
+icalendar.el is now (2004-11-10) part of GNU Emacs.
+
+I'm hacking icalendar.el to improve it. My patches are available at http://luca.pca.it/projects/elisp/. The latest one is the following -- LucaCapello (2005-09-15)
+
+Great to ear that. I'd like to be able to include webcal URIs into my diary file.
+What I'd like to see is support for multiple calendars so then I could export them atomically or all or part of them... What me lack for is a Unified way to access Diary/Calendar/... data from Emacs. This would be great to have such a unified interface for all that sort of things plus bidirectionnal syncs with portable devices such as Palms.
+
+
+<pre>
++ 20050915-15:30 
+      add var icalendar-default-diary-file 
+      add var icalendar-use-default-diary-file 
+      add var icalendar-kill-buffer-exported 
+      mod (icalendar-export-file) 
+      mod (icalendar-export-region) 
+</pre>
+
+[new]
+Any update available such as full import/export ? webcal support ?
+
+: I've a functional import/export patch, I need to prepare the changelog and then submit to UlfJasper, so stay tuned. And, BTW, webcal support is on my todo list... -- LucaCapello (2005-09-20)
+
+Oh and I have a problem with imported data. Events imported are shown on every diary page not taking into account the date field...
+: Send me a bug report -- UlfJasper (2005-09-19)
+
+[new:BrandonWMaister:2009-09-28 22:50 UTC]
+I've created a simple-and-probably-broken script that uses a conf file to download urls to destination directories and automatically creates a "calendars.el" file (at a path you specify) that will use the icalendar-import functionality that seems to have made it into mainline sometime between 2005 and 2009. It's available at [http://svn.quodlibetor.com/wsvn/Hacks/py/ical-in-emacs/#_py_ical-in-emacs_ my svn repo]. Bugs, rants, and features welcome.
+
+=== Importing from CSV files ===
+You can import diary data from CSV (comma separated value) files
+with ''lookout.el''. This package allows for importing calendar 
+and address data from CSV files. (Note that you also need ''csv.el'' which can be found at the same place.) See also BbdbImporters.
+
+== Mail upcoming diary entries ==
+
+Pop something like the following code in a shell script, and run it from cron, to get a 7-day itinerary mailed to you each morning:
+
+    emacs --batch --eval "(setq diary-mail-days 7 european-calendar-style t
+                                diary-file \"~/.diary\" diary-mail-addr \"diary@example.com\")"
+                         -l diary-lib -f diary-mail-entries 
+
+Remember to change the email address before running this.
+
+
+In the actual (2003/04/25) CVS this code doesn't work because of a bug (wrong number of arguments).
+This patch makes it work again:
+
+    Index: lisp/calendar/diary-lib.el
+    ===================================================================
+    RCS file: /cvsroot/emacs/emacs/lisp/calendar/diary-lib.el,v
+    retrieving revision 1.62
+    diff -r1.62 diary-lib.el
+    657c657
+    <     (funcall (get mail-user-agent 'sendfunc))))
+    ---
+    >     (funcall (get mail-user-agent 'sendfunc) nil))) 
+
+According to RMS it'll be fixed in sendmail.el but until then this should do it.
+You can also add a "mail-user-agent 'gnus-user-agent" into the --eval if you have a properly
+configured gnus.
+
+== Getting diary entries printed on the shell ==
+
+The standard unix old-time program '''calendar'''(1) uses similar
+syntax as Emacs's DiaryMode, so simply running it in one's shell
+loginscript is enough to see what's scheduled for the today and
+tomorrow, as explained on calendar's man-page.  By default calendar
+uses the file <code>.calendar</code> or
+<code>.calendar/calendar</code>, so one must either use the
+<code>-f</code> switch, a filesystem link or set
+<code>diary-file</code> appropriately to use the same file.
+
+Note that localization will be a bit of a hassle, as Emacs doesn't
+support a LANG=''locale'' in the diary-file, like modern versions of
+calendar do.
+
+If the calendar syntax is too limited, but you still want to get
+upcoming diary entries printed on the shell, adapt the options in
+
+http://netzwurm.de/download/programming/diary-batch.el => 404 Not Found. Any other URL to get this one ?
+
+for your needs, put the file in your .elisp directory and call:
+
+  emacs -batch --no-site-file -l .elisp/diary-batch.el -e diary-batch 2>&1 | tail +3
+
+If you put the above line into your .profile or .bash_profile your
+upcoming diary entries will be printed whenever you login.
+
+NOTE: This is obsolete for users with init=/usr/bin/emacs in their
+kernel commandline. ;)
+
+I can't find diary-batch.el, so I made my own.  It's simple, but it gets the job done.  It's invoked in the same way as above:
+
+<pre>
+(require 'calendar)
+(defun diary-batch (&optional ndays)
+  (interactive "P")
+  (let ((diary-print-entries-hook (lambda () (princ (buffer-string))))
+	(diary-display-function 'diary-fancy-display))
+    (diary-list-entries (calendar-current-date) (or ndays diary-mail-days))
+    (diary-print-entries)))
+</pre>
+
+== Questions ==
+
+I'd like to have the diary/calendar display and recognize dates in -true- ISO format, i.e. 2006-03-01, not 2006-3-1. Any ideas on how to accomplish this?
+//Nate, using emacs 21.4
+
+* Emacs 23 appears to do this, if you put (calendar-set-date-style 'iso) in your .emacs file.
+
+
+I want anniversary entries in my diary to be marked in the M-x calendar in the
+same way that normal diary entries can be marked (with some face). Is this possible?
+//Daniel Lublin, using emacs 21.2
+
+* Anniversaries should behave just like other entries. They should get marked in the calendar buffer with `diary-face' or `diary-entry-marker'. (Unless they are hidden with & of course.) -- ulf
+
+* Try to set the correct `year' of anniversaries, because the 0th anniversary (the 0th birthday) is not marked. -- poppyer
+
+
+Is there any simply way to set different faces (marks/colors) for different sexp (anniversaries, block etc)?
+Or can I easily set the face (mark/color) for each diary item?  -- poppyer
+
+
+Is it possible to "invert" the meaning of the ampersand (Emacs 21.2)?  That is, the ampersand would ENABLE marking in the calendar instead of disabling it (as is currently)?  Thanks! --ttn
+
+* Not exactly what you want, but if you want to press "i d" and get a non-marking entry without using prefix-arg, just change make-diary-entry
+
+Thanks to BruceDurlingDotEmacs, I found the answer to my own question: Why aren't my diary entries sorted when they are displayed? -- ats
+
+* The answer: As usual, it's optional. Add the following to .emacs and enjoy a nicely-sorted diary display, even when you mix time and date formats in your diary: 
+
+    (add-hook 'list-diary-entries-hook 'sort-diary-entries t)
+
+
+----
+CategoryPersonalInformationManager
+CategoryCalendar
