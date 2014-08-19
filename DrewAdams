@@ -761,12 +761,35 @@ If you look at the screenshot you will see white dots -- this is the effect of t
 
 For some reason crosshairs-mode is changing the face of the visible white spaces (dots) to white.
 
-Here's a second screenshot, this time of the scratch buffer with the cursor at the end of a line:
-
-https://imgur.com/tqPByvs
+Here's a second screenshot, this time of the scratch buffer with the cursor at the end of a line: https://imgur.com/tqPByvs
 
 Here you can see that the visible tabs and spaces at the beginning of the lines are the correct gray, but there are white dots from the end of line up to the vertical bar of the crosshair.
 
+[new:DrewAdams:2014-08-19 16:30 UTC]
+OK, I see what you mean.  The problem comes apparently from library <tt>[[vline.el]]</tt>, which is used by <tt>[[crosshairs.el]]</tt>.  You should try contacting the maintainer of that library.
+
+A pseudo-fix, just to show what the problem is, is to add this line of code to the definition of function `vline-show' (in ##vline.el##):
+
+      (setq str (propertize str 'face 'whitespace-space))
+
+Add that just after these lines:
+
+     ((eolp)
+      (move-overlay ovr (point) (point))
+
+So you get this:
+
+     ((eolp)
+      (move-overlay ovr (point) (point))
+      (setq str (propertize str 'face 'whitespace-space))
+
+That will fix the white-dot problem.  However, obviously ##vline.el## should not have to know about `whitespace-mode', and this is not a fix for the problem.
+
+I think this is a bug in `whitespace-mode', not ##vline.el##.  Please consider reporting it to Emacs Dev: `M-x report-emacs-bug'.  Whitespace mode should play well with other libraries, such as ##vline.el##, which use overlays with whitespace.
+
+If that is not possible, then a possibly (ugly) fix/workaround is to modify the `vline-show' code to do something like what I showed, but propertize string `str' with face `whitespace-space' only when `whitespace-mode' is on etc. In any case, please contact the ##vline.el## maintainer about the problem -- he might have a good suggestion.
+
+HTH -- DrewAdams
 
 
 
