@@ -1,25 +1,17 @@
-This is a japanese translating page And this is stub. Dont write in english. - gonbei A 
 Emacsでデカいファイルを観るための小さなハック.解説から:
 
- ;; After reading the Nth post on Gnu Emacs Help about Viewing Large Files in Emacs, it itched so much that I decided to make a try.
-見た後　いくつかの投稿を　Gnu Emacs Help上の　デカいファイルを観ることについて　Emacsで、それは　ムズムズしていた　とても　それ　私が　決定した　やってみるのを
- ;; It helped quite a lot when Kevin Rodgers posted a snippet on how to use `insert-file-contents' to extract part of a file.
-それは　助けられた　たくさん　Kevin Rodgers が投稿した　スニペット　どうやって使うのか　「insert-file-contents」 ファイルの一部を展開する　で
- ;; At first I made a try using head and tail and that worked too, but using internal Emacs commands is nicer.
-最初に　私は　やってみた　headとtailをつかって　そしてそれはよく働いた、しかし内部Emacsコマンドを使ったほうが良かった
- ;; Here is the code to extract data using head and tail in case someone wanna try that out in the future:
-ここにコードがある　データを展開するための　headとtailを使って　このケースでは　誰かが　挑戦したい　それが　出る　将来
+ ;; Emacsでデカいファイルを観ることについてGnu Emacs Help上のいくつかの投稿を見た後、私がそれをやってみることを決め時はとてもムズムズしていた.
+ ;; ファイルの一部を展開するために「insert-file-contents」をどうやって使うのかに Kevin Rodgers が投稿したスニペットたくさん助けられた.
+ ;; 最初に私はheadとtailを使ってやってみたそしてそれはよく働いた、しかし内部Emacsコマンドを使ったほうが良かった.
+ ;; これから誰かがそれに挑戦したい場合にはここにheadとtailを使ってデータを展開するためのコードがある:
  ;; ...
 
 ここでコードを手に入れろ: http://elpa.gnu.org/packages/vlf
 
 [[image:VLFScreenShot]]
 
-In the screenshot above you can see VLF happily (albeit slowly) surfing a 3GB以上のデカいファイルを (a Ubuntu VMWare thing in this case) at position 500010000, in 10000 byte chunks.
-スクリーンショットで　上記の　観ることができる　VLF　喜んで　(ゆっくりとではあるが)　3GB以上のデカいファイルを　サーフィンしている　位置で　500010000, 10KBのチャンクで
-
-改善されたモードではvlfi(View Large Files Improved)と呼ばれ、インデックス化、Unicode、正規表現検索、チャンクの編集をサポートし、　ここから利用可能です: https://github.com/m00natic/vlfi
-
+上記のスクリーンショットでうまく(ゆっくりとではあるが)10KBのチャンクで500010000の位置で3GB以上のデカいファイルを(この場合VMWare上のUbuntu)サーフィンしているVLFを観ることができます.
+改善されたモードではvlfi(View Large Files Improved)と呼ばれ、インデックス化、Unicode、正規表現検索、チャンクの編集をサポートし、ここから利用可能です: https://github.com/m00natic/vlfi
 
 [new]
 vlfiは今 GNU ELPA の vlf に統合されました
@@ -27,28 +19,19 @@ vlfiは今 GNU ELPA の vlf に統合されました
 
 [new]
 おかしい. ホントに動くのか?
-I thought the EmacsFileSizeLimit was imposed because `point' has to be a number in Elisp.
-俺は考えた　EmacsFileSizeLimitが課された　なぜなら　「ポイント」は数字として存在する必要がある　Elispで
+俺は考えたElispで`point'は数字として存在する必要があるのでEmacsFileSizeLimitが課された..
 しかしお前のコードでは,　`vlf-current-start-pos'変数と全ての計算はそれで作られた同じ制限から苦しむでしょう...
-I thought a different representation of really big numbers (such as using a cons-list) was needed...
-俺は考えた　異なる　表現　本当に大きい数の　(cons-listを使ったような) が必要とされた
+俺は考えた本当に大きい数の異なる表現(cons-listを使ったような) が必要とされる...
 -- AlexSchroeder
 
 [new]
-It depends on what you mean with "work".... :)
-それは依存する　あなたが何を意味しているか　「働く」について
-It works up to the same limit you have mentioned above.
-それは　働きます　あなたが上で述べた　同じ限界まで
-This means that the usefulness lies mostly in that you do not need to load those 256 MB (on a 32 bit system) into Emacs. 
-これは　意味します　それが　実用性は　横たわる　大抵　そのなかで　あなたは　必要としない　ロードすることを　これらの256MB(32bitシステムでは)　Emacsへ
-I have to say I was a bit disappointed when I found that out. :( Oh well... -- MaDa
-私は言う必要がある　私は　少し　失望させられた　私が　それを　見つけた時　
+"働く"についてあなたが何を意味しているかに依存する.... :)
+それはあなたが上で述べた同じ限界まで働きます.
+これは意味しますそれは実用性が主にEmacsへこれらの256MB(32bitシステムでは)をあなたはロードすることを必要としないにある　. 
+私は言う必要がある私がそれを見つけた時私は少し失望させられた. :( まあいいけど... -- MaDa
 
 [new]
 更新:
-if you use the alternate method to extract the file content, which uses head and tail,
-もし　あなたが　使う　代わりの方法を　ファイルの内容を展開するために　ならば、(headとtailを使って)
-it seems to work, but it is much slower.
+もしあなたがファイルの内容を(headとtailを使って)展開するために代わりの方法を使うならば、
 それは動いているように見える、しかしそれはとても遅い。
-I would not trust the content very much however... :) -- MaDa
-私は　信じない　内容を　とても　しかしながら
+私はとても内容を信じないしかしながら... :) -- MaDa
