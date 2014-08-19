@@ -198,7 +198,7 @@ By CraigMcDaniel:
 
 As an alternative to using xterm-title.el/xterm-frobs.el, send your own escape codes to the terminal. I'm running iTerm2 so this example sets the window title to the full file name and the tab title to the shorter buffer name:
 
-  defun xterm-title-update ()
+  (defun xterm-title-update ()
     (interactive)
     (send-string-to-terminal (concat "\033]1; " (buffer-name) "\007"))
     (if buffer-file-name
