@@ -1,0 +1,54 @@
+[[en:Todo Mode]]
+This is japanese translating page and this is stub. Dont write in english. --gonbei
+
+TodoMode by OliverSeidel does integration with the Emacs CalendarMode/DiaryMode stuff.
+
+* KaiGrossjohann has a copy in his ftp directory:
+ftp://ls6-ftp.cs.uni-dortmund.de/pub/src/emacs/todo-mode.el
+
+* If this link does not work (it hasn't appeared to work in the past few weeks), you can get a circa 1997 version at:
+http://groups.google.com/groups?selm=xjazpo719ea.fsf_-_%40taurus.cus.cam.ac.uk&oe=UTF-8&output=gplain
+
+* See also your gnu emacs 21 --- it has a todo-mode.el with a july 2000 note in it: 
+ /usr/share/emacs/21.2/lisp/calendar/todo-mode.el
+
+(The latest version appears to be lost forever?)
+
+* OrganizerMode is extending user experience (but it has been marked
+as an AbandonnedMode; adopt it)
+
+== Tutorial ==
+
+This has been posted by Logan Lee on the Usenet (http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/6d55768f621067c6/cec507b4c628b776?pli=1):
+
+ (1) To enter todo major mode, M-x todo-mode.
+ (2) Let's jump to the default Todo category. Press 'j' then select 'Todo'.
+ (3) Let's insert a dummy task. Press 'i' then enter description then category that it belongs to. In this case, there is only one category (ie. Todo) so enter 'Todo' as its category.
+ (4) Let's insert another dummy task in order to demonstrate raising or lowering priority of a task or filing a task once it's done. Do this by pressing 'i' again and following the rest of step 3.
+ (5) Now, try pressing 'r' to move the task at cursor up by one line or 'l' to lower it by one line. The line position of a task represents its respective priority.
+ (6) Now, try pressing 'f' at a task to file it. Filing a task means you add it to a file called '.todo-done' located at your home directory. You will see on your screen that the filed task has disappeared from view.
+ (7) Lastly, let's try adding a new category. 'M-x todo-add-category'. First, you will be directed to the source of '.todo-do' file. Don't panic because of unknown syntax shown to your screen. Proceed to step 8 to learn  more about the syntax of .todo-do file.
+ (8) The format of .todo-do file:
+
+ ;; This specifies that "Todo" and "New Category That You Have Added" are
+ ;;+categories of todo-mode.
+ -*- mode: todo; todo-categories: ("Todo","New Category That You Have Added"); -*-
+ */* --------------------------------------------------------------------------- 
+
+ ;; Lists tasks under Todo
+ */* --- Todo
+ */* 2007-01-02 19:12 Dummy Task2        ;; These are dummy tasks from steps 3,4.
+ */* 2007-01-02 19 11 Dummy Task1        ;;+Task2 is higher priority than Task1.
+ --- End
+
+ ;; Lists tasks under New Category That You Have Added
+ */* --- New Category That You Have Added
+ ;; As you can see there are no tasks belonging to "New Category That You Have Added" ;)
+ --- End
+
+ (9) There are other commands and associated abbreviations which can be found in Todo item at menu bar.
+
+ Hopefully, this has been helpful for some people ;) 
+
+----
+CategoryTodo | CategoryModes
