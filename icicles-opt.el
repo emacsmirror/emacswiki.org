@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Aug 17 10:44:07 2014 (-0700)
+;; Last-Updated: Tue Aug 19 16:39:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6030
+;;     Update #: 6033
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1323,14 +1323,15 @@ with Emacs 23) option `icicle-Completions-text-scale-decrease'."
                                                  "icicle-bookmark-icicle-search-hits-p"
                                                  "icicle-bookmark-image-p"
                                                  "icicle-bookmark-info-p"
-                                                 "icicle-bookmark-last-specific-buffer-p"
-                                                 "icicle-bookmark-last-specific-file-p"
+                                                 ;; "icicle-bookmark-last-specific-buffer-p"
+                                                 ;; "icicle-bookmark-last-specific-file-p"
                                                  "icicle-bookmark-lighted-p"
                                                  "icicle-bookmark-local-directory-p"
                                                  "icicle-bookmark-local-file-p"
                                                  "icicle-bookmark-man-p"
                                                  "icicle-bookmark-marked-p"
                                                  "icicle-bookmark-modified-p"
+                                                 "icicle-bookmark-navlist-p"
                                                  "icicle-bookmark-non-file-p"
                                                  "icicle-bookmark-omitted-p"
                                                  "icicle-bookmark-orphaned-file-p"
@@ -1343,7 +1344,7 @@ with Emacs 23) option `icicle-Completions-text-scale-decrease'."
                                                  "icicle-bookmark-tagged-p"
                                                  "icicle-bookmark-temporary-p"
                                                  "icicle-bookmark-this-buffer-p"
-                                                 "icicle-bookmark-this-file-p"
+                                                 ;; "icicle-bookmark-this-file-p"
                                                  "icicle-bookmark-url-p"
                                                  "icicle-bookmark-url-browse-p"
                                                  "icicle-bookmark-variable-list-p"
