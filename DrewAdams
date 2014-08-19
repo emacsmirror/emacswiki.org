@@ -726,11 +726,28 @@ Regards, PasJa
 
 [new:Yo:2014-08-19 13:38 BST]
 
-Just upgraded from hl-line to crosshairs-mode. I also have whitespace-mode enabled to subtly show spaces and tabs. Crosshairs seems to be highlighting the visual spaces spuriously in white. Here's a screenshot:
+Just upgraded from hl-line to crosshairs-mode. I also have whitespace-mode enabled to subtly show spaces and tabs. Crosshairs seems to be highlighting the visual spaces spuriously in white. Here's a screenshot:  https://imgur.com/ngTFccx
 
-https://imgur.com/ngTFccx
+Is there something I can do to keep the visual spaces a subtle gray? -- [[Yo]]
 
-Is there something I can do to keep the visual spaces a subtle gray?
+[new:DrewAdams:2014-08-19 14:41 UTC]
+Sorry, I don't yet understand. I don't notice any spurious white "visual spaces" in your screenshot -- what I think I see is black crosshairs against a dark gray background.  
+
+Please point out somehow just what the bugged effect is.  And please try to give me a step-by-step recipe to repro the problem, preferably starting from `emacs -Q'.  Let me know all of your crosshairs etc. settings -- whatever is pertinent to the problem.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----
 
