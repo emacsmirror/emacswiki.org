@@ -1,45 +1,53 @@
-This is a japanese translating page And this is stub. Dont write in english. - gonbei
+Emacsでデカいファイルを観るための小さなハック.解説から:
 
-A small hack to View Large Files in Emacs. From the Commentary:
-
- ;; After reading the Nth post on Gnu Emacs Help about Viewing Large
- ;; Files in Emacs, it itched so much that I decided to make a try.  It
- ;; helped quite a lot when Kevin Rodgers posted a snippet on how to
- ;; use `insert-file-contents' to extract part of a file.  At first I
- ;; made a try using head and tail and that worked too, but using
- ;; internal Emacs commands is nicer.  Here is the code to extract data
- ;; using head and tail in case someone wanna try that out in the
- ;; future:
+ ;; After reading the Nth post on Gnu Emacs Help about Viewing Large Files in Emacs, it itched so much that I decided to make a try.
+見た後　いくつかの投稿を　Gnu Emacs Help上の　デカいファイルを観ることについて　Emacsで、それは　ムズムズしていた　とても　それ　私が　決定した　やってみるのを
+ ;; It helped quite a lot when Kevin Rodgers posted a snippet on how to use `insert-file-contents' to extract part of a file.
+それは　助けられた　たくさん　Kevin Rodgers が投稿した　スニペット　どうやって使うのか　「insert-file-contents」 ファイルの一部を展開する　で
+ ;; At first I made a try using head and tail and that worked too, but using internal Emacs commands is nicer.
+最初に　私は　やってみた　headとtailをつかって　そしてそれはよく働いた、しかし内部Emacsコマンドを使ったほうが良かった
+ ;; Here is the code to extract data using head and tail in case someone wanna try that out in the future:
+ここにコードがある　データを展開するための　headとtailを使って　このケースでは　誰かが　挑戦したい　それが　出る　将来
  ;; ...
 
-Get the code here:
-
-http://elpa.gnu.org/packages/vlf
+ここでコードを手に入れろ: http://elpa.gnu.org/packages/vlf
 
 [[image:VLFScreenShot]]
 
-In the screenshot above you can see VLF happily (albeit slowly) surfing a 3GB+ large file (a Ubuntu VMWare thing in this case) at position 500010000, in 10000 byte chunks.
+In the screenshot above you can see VLF happily (albeit slowly) surfing a 3GB以上のデカいファイルを (a Ubuntu VMWare thing in this case) at position 500010000, in 10000 byte chunks.
+スクリーンショットで　上記の　観ることができる　VLF　喜んで　(ゆっくりとではあるが)　3GB以上のデカいファイルを　サーフィンしている　位置で　500010000, 10KBのチャンクで
 
-In improved mode called vlfi (View Large Files Improved) supporting indexing, unicode, regexp search, chunk editing is available here: https://github.com/m00natic/vlfi
+改善されたモードではvlfi(View Large Files Improved)と呼ばれ、インデックス化、Unicode、正規表現検索、チャンクの編集をサポートし、　ここから利用可能です: https://github.com/m00natic/vlfi
+
 
 [new]
-vlfi is now merged to GNU ELPA's vlf
+vlfiは今 GNU ELPA の vlf に統合されました
 -- Andrey Kotlarski
 
 [new]
-Strange. Does it really work? I thought the EmacsFileSizeLimit was
-imposed because `point' has to be a number in Elisp. But in your code,
-the variables `vlf-current-start-pos' and all computations made with
-it will suffer from the same limit... I thought a different representation
-of really big numbers (such as using a cons-list) was needed...
+おかしい. ホントに動くのか?
+I thought the EmacsFileSizeLimit was imposed because `point' has to be a number in Elisp.
+俺は考えた　EmacsFileSizeLimitが課された　なぜなら　「ポイント」は数字として存在する必要がある　Elispで
+しかしお前のコードでは,　`vlf-current-start-pos'変数と全ての計算はそれで作られた同じ制限から苦しむでしょう...
+I thought a different representation of really big numbers (such as using a cons-list) was needed...
+俺は考えた　異なる　表現　本当に大きい数の　(cons-listを使ったような) が必要とされた
 -- AlexSchroeder
 
 [new]
-It depends on what you mean with "work".... :) It works up to the same
-limit you have mentioned above. This means that the usefulness lies mostly
-in that you do not need to load those 256 MB (on a 32 bit system) into Emacs. 
+It depends on what you mean with "work".... :)
+それは依存する　あなたが何を意味しているか　「働く」について
+It works up to the same limit you have mentioned above.
+それは　働きます　あなたが上で述べた　同じ限界まで
+This means that the usefulness lies mostly in that you do not need to load those 256 MB (on a 32 bit system) into Emacs. 
+これは　意味します　それが　実用性は　横たわる　大抵　そのなかで　あなたは　必要としない　ロードすることを　これらの256MB(32bitシステムでは)　Emacsへ
 I have to say I was a bit disappointed when I found that out. :( Oh well... -- MaDa
+私は言う必要がある　私は　少し　失望させられた　私が　それを　見つけた時　
 
 [new]
-Update: if you use the alternate method to extract the file content, which uses head and tail,
-it seems to work, but it is much slower. I would not trust the content very much however... :) -- MaDa
+更新:
+if you use the alternate method to extract the file content, which uses head and tail,
+もし　あなたが　使う　代わりの方法を　ファイルの内容を展開するために　ならば、(headとtailを使って)
+it seems to work, but it is much slower.
+それは動いているように見える、しかしそれはとても遅い。
+I would not trust the content very much however... :) -- MaDa
+私は　信じない　内容を　とても　しかしながら
