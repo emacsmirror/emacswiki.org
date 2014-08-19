@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Aug 16 13:36:48 2014 (-0700)
+;; Last-Updated: Tue Aug 19 16:31:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29680
+;;     Update #: 29684
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4053,19 +4053,23 @@
 ;;  with a negative prefix argument removes the advice, restoring the
 ;;  default choice of methods for the target command.
 ;;
-;;  For example, this sets the available `TAB' methods for command
-;;  `icicle-read-color-WYSIWYG' to fuzzy (the default for this
-;;  command) and basic:
+;;  For example, the following interaction sets the available `TAB'
+;;  methods for command `icicle-read-color-WYSIWYG' to fuzzy and
+;;  basic:
 ;;
 ;;    M-x icicle-set-TAB-methods-for-command RET
 ;;    Command: icicle-read-color-WYSIWYG RET
 ;;    TAB methods: fuzzy RET
 ;;    TAB methods: basic RET
 ;;    TAB methods: RET
+;;
+;;  Fuzzy will be the default method for this command, since it is
+;;  first.
 ;;      
-;;  And this removes the special treatment for `C-(' during
-;;  `icicle-read-color-WYSIWYG', restoring the default `TAB' methods
-;;  that are defined by option `icicle-TAB-completion-methods':
+;;  And the following interaction removes the special treatment for
+;;  `C-(' during `icicle-read-color-WYSIWYG', restoring the default
+;;  `TAB' methods that are defined by option
+;;  `icicle-TAB-completion-methods':
 ;;
 ;;    C-- M-x icicle-set-TAB-methods-for-command RET
 ;;    Command: icicle-read-color-WYSIWYG RET
