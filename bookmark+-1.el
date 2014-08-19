@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Aug 18 22:03:50 2014 (-0700)
+;; Last-Updated: Tue Aug 19 15:57:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7349
+;;     Update #: 7367
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -354,6 +354,7 @@
 ;;    `bmkp-desktop-save-as-last', `bmkp-dired-alist-only',
 ;;    `bmkp-dired-bookmark-p', `bmkp-dired-remember-*-marks',
 ;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
+;;    `bmkp-dired-wildcards-alist-only',
 ;;    `bmkp-dired-this-dir-bookmark-p',
 ;;    `bmkp-dired-wildcards-bookmark-p',
 ;;    `bmkp-edit-bookmark-record-mode',
@@ -422,7 +423,7 @@
 ;;    `bmkp-maybe-save-bookmarks', `bmkp-modified-bookmark-p',
 ;;    `bmkp-modified-cp', `bmkp-msg-about-sort-order',
 ;;    `bmkp-multi-sort', `bmkp-names-same-bookmark-p',
-;;    `bmkp-new-bookmark-default-names',
+;;    `bmkp-navlist-bookmark-p', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-non-autonamed-alist-only', `bmkp-non-file-alist-only',
 ;;    `bmkp-non-file-bookmark-p',
 ;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
@@ -787,22 +788,28 @@ accepts as its (first) argument a bookmark or bookmark name.
 
 These are the predefined type predicates:
 
- `bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
- `bmkp-autonamed-bookmark-p', `bmkp-autonamed-this-buffer-bookmark-p',
- `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
- `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
- `bmkp-dired-this-dir-bookmark-p', `bmkp-file-bookmark-p',
- `bmkp-file-remote-p', `bmkp-file-this-dir-bookmark-p',
- `bmkp-function-bookmark-p', `bmkp-gnus-bookmark-p',
- `bmkp-image-bookmark-p', `bmkp-info-bookmark-p',
- `bmkp-last-specific-buffer-p', `bmkp-last-specific-file-p',
- `bmkp-local-directory-bookmark-p', `bmkp-local-file-bookmark-p',
- `bmkp-man-bookmark-p', `bmkp-non-file-bookmark-p',
- `bmkp-region-bookmark-p', `bmkp-remote-file-bookmark-p',
- `bmkp-sequence-bookmark-p', `bmkp-snippet-bookmark-p',
- `bmkp-this-buffer-p', `bmkp-this-file-p', `bmkp-url-bookmark-p',
- `bmkp-url-browse-bookmark-p', `bmkp-variable-list-bookmark-p',
- `bmkp-w3m-bookmark-p'"
+`bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
+`bmkp-autonamed-bookmark-p', `bmkp-autonamed-this-buffer-bookmark-p',
+`bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
+`bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
+`bmkp-dired-this-dir-bookmark-p', `bmkp-dired-wildcards-bookmark-p',
+`bmkp-file-bookmark-p', `bmkp-file-remote-p',
+`bmkp-file-this-dir-bookmark-p', `bmkp-flagged-bookmark-p',
+`bmkp-function-bookmark-p', `bmkp-gnus-bookmark-p',
+`bmkp-icicle-search-hits-bookmark-p', `bmkp-image-bookmark-p',
+`bmkp-info-bookmark-p', `bmkp-last-specific-buffer-p',
+`bmkp-last-specific-file-p', `bmkp-local-directory-bookmark-p',
+`bmkp-local-file-bookmark-p', `bmkp-man-bookmark-p',
+`bmkp-marked-bookmark-p', `bmkp-modified-bookmark-p',
+`bmkp-navlist-bookmark-p', `bmkp-non-file-bookmark-p',
+`bmkp-omitted-bookmark-p', `bmkp-orphaned-file-bookmark-p',
+`bmkp-orphaned-local-file-bookmark-p',
+`bmkp-orphaned-remote-file-bookmark-p', `bmkp-region-bookmark-p',
+`bmkp-remote-file-bookmark-p', `bmkp-sequence-bookmark-p',
+`bmkp-snippet-bookmark-p', `bmkp-temporary-bookmark-p',
+`bmkp-this-buffer-p', `bmkp-this-file-p', `bmkp-url-bookmark-p',
+`bmkp-url-browse-bookmark-p', `bmkp-variable-list-bookmark-p',
+`bmkp-w3m-bookmark-p'"
   :type '(repeat symbol) :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-bookmark-name-length-max "bookmark+")
@@ -5158,11 +5165,17 @@ If it is a record then it need not belong to `bookmark-alist'."
   (bmkp-bookmark-name-member bookmark bmkp-bmenu-marked-bookmarks))
 
 (defun bmkp-modified-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK is a modified bookmark'.
+  "Return non-nil if BOOKMARK is a modified bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (memq bookmark bmkp-modified-bookmarks))
+
+(defun bmkp-navlist-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is in the current navigation list.
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (memq bookmark bmkp-nav-alist))
 
 (defun bmkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
@@ -5481,6 +5494,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-dired-this-dir-bookmark-p bookmark-alist))
+
+(defun bmkp-dired-wildcards-alist-only ()
+  "`bookmark-alist', with only bookmarks for a Dired buffer with wildcards.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-dired-wildcards-bookmark-p bookmark-alist))
 
 (defun bmkp-file-alist-only ()
   "`bookmark-alist', filtered to retain only file and directory bookmarks.
