@@ -735,10 +735,37 @@ Sorry, I don't yet understand. I don't notice any spurious white "visual spaces"
 
 Please point out somehow just what the bugged effect is.  And please try to give me a step-by-step recipe to repro the problem, preferably starting from `emacs -Q'.  Let me know all of your crosshairs etc. settings -- whatever is pertinent to the problem.  Thx -- DrewAdams
 
+[new:Yo:2014-08-19 15:46 BST]
 
+I have the following settings for whitespace-mode:
 
+  (require 'whitespace)
 
+  (setq whitespace-style
+	'(face
+	  tabs
+	  spaces
+	  trailing
+	  space-before-tab::tab
+	  space-before-tab::space
+	  space-after-tab::tab
+	  space-after-tab::space
+	  tab-mark
+	  space-mark))
 
+  (add-hook 'prog-mode-hook
+	    (lambda ()
+	      (whitespace-mode 1)))
+
+If you look at the screenshot you will see white dots -- this is the effect of turning crosshairs-mode on. If you look more closely, you will see gray dots on a gray background -- this is the effect without crosshairs-mode on and what it should look like.
+
+For some reason crosshairs-mode is changing the face of the visible white spaces (dots) to white.
+
+Here's a second screenshot, this time of the scratch buffer with the cursor at the end of a line:
+
+https://imgur.com/tqPByvs
+
+Here you can see that the visible tabs and spaces at the beginning of the lines are the correct gray, but there are white dots from the end of line up to the vertical bar of the crosshair.
 
 
 
