@@ -37,6 +37,21 @@ To configure a language for which-func mode, you need to configure it for ImenuM
 
 WhichFuncMode shows which function's source code you are in, ElDoc shows where you are in a parameter list to a function call.  They both are mode-configurable.
 
+== Non-standard languages (TL;DR;) ==
+WhichFuncMode can be customized for non-standard language modes (including non-imenu supporting modes) using the hook `which-func-functions', so adding an elisp function for a non-standard mode to this hook should work. 
+
+However, there is a gotcha.  Internally, when imenu isn't available, WhichFuncMode disables itself in the function `which-func-ff-hook', which is called from the hook `find-file-hook'.  An ugly workaround for this is to re-enable it by appending to `find-file-hook'.  For example, for `foo-mode' which provides the name of a context with `foo-whereami()':
+
+{{{
+(defun foo-find-file-hook ()
+  (when (eq major-mode 'foo-mode)
+    (which-function-mode t)
+    (setq which-func-mode t)
+    (add-hook 'which-func-functions 'foo-whereami t t)))
+
+;; We need this to be run AFTER which-func-ff-hook - the "t" means append
+(add-hook 'find-file-hook 'foo-find-file-hook t)
+}}}
 == Alternatives ==
 
 An alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
