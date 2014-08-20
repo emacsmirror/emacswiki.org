@@ -9,7 +9,6 @@ Here is a set of functions that I've wrote to make my programming in Emacs more 
 All these things are included in the project package and it works on my computer. I didn't test it anywhere else, in even smoothly other environment or other OS but "it is suppossed" to run well because I tried not to include any platform dependent code. If you'll encounter any problem with installing and/or running this package you can email me. I will be glad to hear that you need this tool and will try to help you at any cost (excluding my life cost). 
 
 Here you can download the package: http://neorural.jinak.cz/cgi/countdown.cgi?projects.tar.gz
-( SORRY - the file wasn't available for a while, now it IS)
 
 To install the package you are supposed to extract the file somewhere into your load-path (for example site-lisp) and then eval (load "projects.el"). The best way is to write it into your .emacs file, as you of course know.
 
