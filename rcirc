@@ -49,7 +49,7 @@ Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Her
 {{{
 (setq rcirc-server-alist
       '(("irc.freenode.net" :port 6697 :encryption tls
-	 :channels ("#rcirc" "#emacs" "#emacswiki"))
+	 :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
 
 Use [http://blog.freenode.net/2011/02/port-6697-irc-via-tlsssl/ post 6697].
