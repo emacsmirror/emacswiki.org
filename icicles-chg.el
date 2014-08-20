@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 17 19:40:46 2014 (-0700)
+;; Last-Updated: Tue Aug 19 17:02:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11162
+;;     Update #: 11203
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/19 dadams
+;;     Added: icicle-bookmark-(dired-this-dir|dired-wildcards|navlist)-narrow.
+;;     icicle-bookmark: Updated doc string for narrowing keys and to mention M-&.
+;;     icicle-bookmark-bind-narrow-commands:
+;;       Bind icicle-bookmark-*-narrow, for *:
+;;         dired-(this-dir|wildcards)|function|icicle-search-hits|lighted|marked|modified|navlist|
+;;         orphaned(-local|-remote)-file|sequence|snippet|tagged|variable-list
+;;     icicle-bookmark-*-narrow: Use named predicates now, instead of lambdas.
+;;     icicle-bookmark-url-narrow: Handle either kind of URL bookmark.
+;;     icicle-bookmarked-(buffer|file)-list: Added optional arg MSGP.
 ;; 2014/08/16 dadams
 ;;     icicle-customize-face(-other-window), icicle-face-list, icicle-customize-apropos-faces:
 ;;       Bind icicle-face-completing-p.
@@ -1115,6 +1125,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/18 dadams
+;;     icicle-choose-(in)visible-faces: Bind icicle-face-completing-p.
 ;; 2014/08/17 dadams
 ;;     Added: icicle-color-from-multi-completion-input.
 ;;     icicle-read-color: Wrap call to icicle-read-color-WYSIWYG in condition-case.  Removed all of the
@@ -2079,6 +2091,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/08/19 dadams
+;;     Added: icicle-bookmark-navlist-p.
+;;     Removed (commented out):
+;;       icicle-bookmark-last-specific-(buffer|file)-p, icicle-bookmark-this-file-p (not used yet).
+;;     icicle-bookmark(-autonamed)-this-buffer-p, icicle-bookmark-(dired|file)-this-dir-p:
+;;       Wrap body in with-current-buffer, for ORIG buf.
 ;; 2014/08/17 dadams
 ;;     Moved to icicles-opt.el: icicle-color-defined-p.
 ;; 2014/08/12 dadams
@@ -7345,6 +7363,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/08/19 dadams
+;;     icicle-cand-preds-for-bookmark: Updated list (removed 3, added 1 today).
 ;; 2014/08/17 dadams
 ;;     Moved here from icicles-fn.el: icicle-color-defined-p.
 ;; 2014/08/11 dadams
