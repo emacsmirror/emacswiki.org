@@ -216,7 +216,9 @@ If you already show directories in the buffer name, you may want to use a simple
              uniquify-min-dir-content 7))
   
   (setq frame-title-format '("%b"))
-  
+
+For ncurses / CLI title setting, xterm-title doesn't seem to work for me in Terminal.app (Mac OS X). So I just use xterm-frobs directly:
+
   (require 'xterm-frobs)
   (defun my-xterm-title-hook ()
         (xterm-set-window-title (buffer-name)))
