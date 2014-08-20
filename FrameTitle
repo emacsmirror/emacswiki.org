@@ -220,7 +220,7 @@ If you already show directories in the buffer name, you may want to use a simple
   (require 'xterm-frobs)
   (defun my-xterm-title-hook ()
         (xterm-set-window-title (buffer-name)))
-  (add-hook 'post-command-hook  'my-xterm-title-hook)))
+  (add-hook 'post-command-hook  'my-xterm-title-hook)
 
 ----
 CategoryFrames CategoryDisplay FrameModes
