@@ -49,12 +49,12 @@ The 2013 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the a
 
 At this point an Emacs branch with libguile embedded and providing part of the Elisp data types and able to provide an `eval-scheme' function to Elisp is available, but not fully replacing the Elisp interpreter yet.
 
+The 2014 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the author:
+
+* [https://www.google-melange.com/gsoc/project/details/google/gsoc2014/bpt/5803402760028160 Guile-Emacs]
 
 == Current State ==
-The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress usually pauses between GoogleSummerOfCode periods. Word has it that BT Templeton has some unpushed commits that replace the whole Elisp interpreter, just booting up Emacs very slow because the Elisp is not compiled.
-
-The 2014 GoogleSummerOfCode once again has GuileEmacs with BT Templeton: [https://www.google-melange.com/gsoc/project/details/google/gsoc2014/bpt/5803402760028160 Guile-Emacs]
-
+The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git their Guile repository]. As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully replaced with that of libguile, and most things Just Work™. Some performance regression of dynamic scoping (lexically scoped code should be fine), and broken corner cases (like crazy Elisp macros that directly output legacy Elisp bytecode) remain.
 
 == See Also ==
 GuileEmacsTodo
