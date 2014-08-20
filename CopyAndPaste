@@ -1,5 +1,7 @@
 == Alternatives to Kill & Yank ==
 
+*Quick tip:* if you're here looking to fix the fact that in Emacs shift-insert no longer pastes that text you highlighted with the mouse in your browser, the 2014 answer is to set x-select-enable-primary to true, and set mouse-drag-copy-region to true to go the other way - I can't imagine why this /excellent/ default was changed but it's very hard to find the answer in the verbiage below.
+
 If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##M-w##, ##C-y##, ##M-y##, and so on), then consider these alternatives:
 
 * PcSelectionMode -- the Windows and Motif flavour with ##C-<ins>##, ##C-<del>##, and ##S-<ins>##.
