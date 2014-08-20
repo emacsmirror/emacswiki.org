@@ -44,7 +44,7 @@ However, there is a gotcha.  Internally, when imenu isn't available, WhichFuncMo
 
 {{{
 (defun foo-find-file-hook ()
-  (when (eq major-mode 'foo-mode)
+  (when (derived-mode-p 'foo-mode)
     (which-function-mode t)
     (setq which-func-mode t)
     (add-hook 'which-func-functions 'foo-whereami t t)))
