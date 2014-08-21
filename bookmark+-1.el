@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 19 15:57:02 2014 (-0700)
+;; Last-Updated: Thu Aug 21 07:36:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7367
+;;     Update #: 7370
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1973,9 +1973,9 @@ The names are those of the bookmarks in ALIST or, if nil,
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added optional args ALIST, PRED, and HIST.
-;; 2. Define using helper function `bmkp-completing-read-1'.
-;;    which: (a) binds `icicle-delete-candidate-object' to (essentially) `bookmark-delete'.
-;;           (b) forces you to enter a non-empty name, if DEFAULT is nil or "".
+;; 2. Use helper function `bmkp-completing-read-1', which does this:
+;;    (a) binds `icicle-delete-candidate-object' to (essentially) `bookmark-delete'.
+;;    (b) forces you to enter a non-empty name, if DEFAULT is nil or "".
 ;;
 (defun bookmark-completing-read (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
@@ -3480,6 +3480,7 @@ LAXP non-nil means use lax (non-strict) completion."
          (bookmark-all-names alist)))
     (let* ((icicle-delete-candidate-object  (lambda (cand) ; For `S-delete' in Icicles.
                                               (bookmark-delete (icicle-transform-multi-completion cand))))
+           (icicle-bookmark-completing-p    t)
            (completion-ignore-case          bookmark-completion-ignore-case)
            (default                         (and (not (equal "" default))  default)) ; Treat "" like nil.
            (prompt                          (concat prompt (if default
