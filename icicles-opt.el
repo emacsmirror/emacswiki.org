@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Aug 19 16:39:07 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:28:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6033
+;;     Update #: 6035
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1306,7 +1306,8 @@ with Emacs 23) option `icicle-Completions-text-scale-decrease'."
   :type 'integer :group 'Icicles-Completions-Display)
 
 (defcustom icicle-cand-preds-for-bookmark (and (require 'bookmark+ nil t)
-                                               '("icicle-bookmark-autofile-p"
+                                               '("icicle-bookmark-annotated-p"
+                                                 "icicle-bookmark-autofile-p"
                                                  "icicle-bookmark-autonamed-p"
                                                  "icicle-bookmark-autonamed-this-buffer-p"
                                                  "icicle-bookmark-bookmark-file-p"
