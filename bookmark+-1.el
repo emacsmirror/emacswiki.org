@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 21 07:36:44 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:21:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7370
+;;     Update #: 7377
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -318,7 +318,8 @@
 ;;    `bmkext-jump-woman', `bmkp-all-exif-data',
 ;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
 ;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
-;;    `bmkp-autofile-alist-only', `bmkp-autofile-all-tags-alist-only',
+;;    `bmkp-annotated-bookmark-p', `bmkp-autofile-alist-only',
+;;    `bmkp-autofile-all-tags-alist-only',
 ;;    `bmkp-autofile-all-tags-regexp-alist-only',
 ;;    `bmkp-autofile-bookmark-p',
 ;;    `bmkp-autofile-some-tags-alist-only',
@@ -788,8 +789,9 @@ accepts as its (first) argument a bookmark or bookmark name.
 
 These are the predefined type predicates:
 
-`bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
-`bmkp-autonamed-bookmark-p', `bmkp-autonamed-this-buffer-bookmark-p',
+`bmkp-autofile-bookmark-p', `bmkp-annotated-bookmark-p',
+`bmkp-autonamed-bookmark-for-buffer-p', `bmkp-autonamed-bookmark-p',
+`bmkp-autonamed-this-buffer-bookmark-p','
 `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
 `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
 `bmkp-dired-this-dir-bookmark-p', `bmkp-dired-wildcards-bookmark-p',
@@ -5010,6 +5012,14 @@ Non-interactively:
 ;;(@* "Bookmark Predicates")
 ;;  *** Bookmark Predicates ***
 
+(defun bmkp-annotated-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK has an annotation.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (let ((annotation  (bookmark-get-annotation bookmark)))
+    (and annotation  (not (string-equal annotation "")))))
+
 (defun bmkp-autofile-bookmark-p (bookmark &optional prefix)
   "Return non-nil if BOOKMARK is an autofile bookmark.
 That means that it is `bmkp-file-bookmark-p' and also its
@@ -5397,10 +5407,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', but only for bookmarks with non-empty annotations.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk)
-                        (let ((annotation  (bookmark-get-annotation bmk)))
-                          (and annotation  (not (string-equal annotation "")))))
-                      bookmark-alist))
+  (bmkp-remove-if-not #'bmkp-annotated-bookmark-p bookmark-alist))
 
 (defun bmkp-autofile-alist-only (&optional prefix)
   "`bookmark-alist', filtered to retain only autofile bookmarks.
