@@ -2,6 +2,12 @@
 
 This a new feature that is included in emacs-23.1.
 
+Start the emacs daemon with
+
+<pre>
+emacs --daemon
+</pre>
+
 == Simple setup ==
 
 Put
@@ -21,6 +27,30 @@ setenv EDITOR emacsclient
 in your .cshrc depending on your default shell.  After that, using <code>emacsclient</code> (or <code>emacsclient -t</code>) will automatically start an emacs in daemon mode and connect to it if one is not found running, and sane programs will know to run <code>emacsclient</code> to start an editor.
 
 == Debian/Ubuntu ==
+
+Depending on your requirements, there are a couple ways to work with <code>emacs --daemon</code> and <code>emacsclient</code>.
+
+=== Basic setup ===
+
+Add <code>emacs --daemon</code> to auto-start on boot. This can be done the easy way (via "Settings > Session and Startup > Application Autostart") or by writing your own <code>.desktop</code> file and placing it in <code>~/.config/autostart</code>. 
+
+Then make the following changes to your <code>.bashrc</code> (assuming you're using <code>bash</code>):
+
+<pre>
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t"                  # $EDITOR should open in terminal
+export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-daemon as alternate
+</pre>
+
+For convenience (and because I'm used to them) I also added the following aliases:
+
+<pre>
+alias emax="emacsclient -t"                      # used to be "emacs -nw"
+alias semac="sudo emacsclient -t"                # used to be "sudo emacs -nw"
+alias emacsc="emacsclient -c -a emacs"           # new - opens the GUI with alternate non-daemon
+</pre>
+
+=== Comprehensive init script ===
 
 Here a little init script for GNU Debian/Ubuntu
 (please help to improve!)
