@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Aug 21 08:32:03 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:38:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11207
+;;     Update #: 11210
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/08/21 dadams
+;;     Added: icicle-bookmark-annotated-narrow.
+;;     icicle-bookmark-bind-narrow-commands: Bind icicle-bookmark-annotated-narrow..
 ;; 2014/08/19 dadams
 ;;     Added: icicle-bookmark-(dired-this-dir|dired-wildcards|navlist)-narrow.
 ;;     icicle-bookmark: Updated doc string for narrowing keys and to mention M-&.
