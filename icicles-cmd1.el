@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Aug 19 16:51:59 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:25:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27276
+;;     Update #: 27280
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -77,6 +77,7 @@
 ;;    (+)`icicle-bookmark-all-tags-other-window',
 ;;    (+)`icicle-bookmark-all-tags-regexp',
 ;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
+;;    `icicle-bookmark-annotated-narrow',
 ;;    (+)`icicle-bookmark-autofile',
 ;;    (+)`icicle-bookmark-autofile-all-tags',
 ;;    (+)`icicle-bookmark-autofile-all-tags-other-window',
@@ -5596,6 +5597,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
         'icicle-bookmark-autonamed-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j , #") ; `C-x j , #'
         'icicle-bookmark-autonamed-this-buffer-narrow)
+      (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j A'
+        'icicle-bookmark-annotated-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j a'
         'icicle-bookmark-autofile-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j b") ; `C-x j b'
@@ -5807,6 +5810,12 @@ Remove crosshairs highlighting and unbind filtering keys."
     (select-frame-set-input-focus (selected-frame))))
 
 ;;; These are minibuffer commands, but we define them here instead of in `icicles-mcmd.el'.
+
+(defun icicle-bookmark-annotated-narrow () ; Bound to `C-x j A' in minibuffer for completion.
+  "Narrow the bookmark candidates to bookmarks that have annotations."
+  (interactive)
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate #'icicle-bookmark-annotated-p)))
 
 (defun icicle-bookmark-autofile-narrow () ; Bound to `C-x j a' in minibuffer for completion.
   "Narrow the bookmark candidates to autofile bookmarks."
