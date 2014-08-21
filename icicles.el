@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 19 17:05:22 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:40:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23631
+;;     Update #: 23634
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -495,6 +495,7 @@
 ;;    `icicle-apropos-complete-and-narrow',
 ;;    `icicle-apropos-complete-and-widen',
 ;;    `icicle-apropos-complete-no-display',
+;;    `icicle-bookmark-annotated-narrow',
 ;;    `icicle-bookmark-autofile-narrow',
 ;;    `icicle-bookmark-autonamed-narrow',
 ;;    `icicle-bookmark-autonamed-this-buffer-narrow',
