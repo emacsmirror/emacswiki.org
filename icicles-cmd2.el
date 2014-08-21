@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Aug 21 08:01:11 2014 (-0700)
+;; Last-Updated: Thu Aug 21 10:57:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7001
+;;     Update #: 7015
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -225,6 +225,7 @@
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
 ;;    `icicle-ORIG-read-color', `icicle-ORIG-widget-color-complete',
+;;    `icicle-pick-color-by-name-1',
 ;;    `icicle-pick-color-by-name-action',
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
@@ -1146,7 +1147,8 @@ at point, or if none then the visited file."
     (fset 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
   (defun icicle-color-from-multi-completion-input (raw-input msgp)
-    "Get color from user RAW-INPUT for color multi-completion candidates."
+    "Get color from user RAW-INPUT for color multi-completion candidates.
+The arguments are the same as for `icicle-read-color-WYSIWYG'."
     (let ((mouse-pseudo-color-p  nil)
           color)
       (when (string= "" raw-input) (icicle-user-error "No such color: %S" raw-input))
@@ -1168,16 +1170,10 @@ at point, or if none then the visited file."
                                           "Click `mouse-2' anywhere to choose background color"))
                                    (read-event)) ; Discard mouse up event.
                           mouse-pseudo-color-p  t)))
-             (if mouse-pseudo-color-p
-                 (let ((icicle-list-nth-parts-join-string  ": ")
-                       (icicle-list-join-string            ": ")
-                       (icicle-list-use-nth-parts
-                        (or (and arg  (if (< arg 2) '(1) '(2))) ; 1 or 2, via program or `C-1' or `C-2'.
-                            icicle-list-use-nth-parts ; Bound externally by program.
-                            '(1 2))))   ; Both parts, by default.
-                   (setq color  (icicle-transform-multi-completion
-                                 (concat color ": " (hexrgb-color-name-to-hex color)))))
-               (setq color  (icicle-transform-multi-completion raw-input)))))
+             (setq color  (icicle-transform-multi-completion
+                           (if mouse-pseudo-color-p
+                               (concat color ": " (hexrgb-color-name-to-hex color))
+                             raw-input)))))
 
       ;; If the user did not complete but just entered a color name, then transformation can return "".
       ;; In that case, get the color just read from the input history, and transform that.
@@ -2035,30 +2031,36 @@ See `icicle-read-color-WYSIWYG' for more information."
   "Things to do for `icicles-cmd2.el' after loading `palette.el'."
 
   (defun icicle-pick-color-by-name (color) ; Bound to `c' and `M-c' in color palette.
-    "Set the current color to a color you name.
+    "Set the current palette color to a color you name.
 Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
 where each X is a hex digit.  The number of Xs must be a multiple of
 3, with the same number of Xs for each of red, green, and blue.
 If you enter an empty color name, then a color is picked randomly.
 The new current color is returned."
-    (interactive
-     (let ((completion-ignore-case      t)
-           (icicle-color-completing-p   t)
-           (icicle-candidate-action-fn  'icicle-pick-color-by-name-action))
-       (list (icicle-read-color nil nil t))))
-    (icicle-pick-color-by-name-action color))
+    (interactive (let ((completion-ignore-case      t)
+                       (icicle-color-completing-p   t)
+                       (icicle-candidate-action-fn  'icicle-pick-color-by-name-action)
+                       (icicle-list-use-nth-parts   '(1)))
+                   (list (icicle-read-color nil nil t))))
+    (icicle-pick-color-by-name-1 color))
 
   (defun icicle-pick-color-by-name-action (raw-input)
     "Action function for `icicle-pick-color-by-name'."
     (let ((color  (icicle-color-from-multi-completion-input raw-input 'MSG)))
-      (setq palette-last-color  palette-current-color)
-      (save-selected-window
-        (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
-        (palette-set-current-color color)
+      (icicle-pick-color-by-name-1 color)))
+
+  (defun icicle-pick-color-by-name-1 (color)
+    "Set the current palette color to COLOR.
+If the palette is displayed, redisplay it, moving the cursor to COLOR."
+    (setq palette-last-color  palette-current-color
+          color               (hexrgb-color-name-to-hex color))
+    (save-selected-window
+      (palette-set-current-color color)
+      (when (get-buffer-window "Palette (Hue x Saturation)" 'visible)
         (palette-where-is-color color)
         (palette-brightness-scale)
-        (palette-swatch))
-      palette-current-color))
+        (palette-swatch)))
+    palette-current-color)
 
   (define-key palette-mode-map (icicle-kbd "c")     'icicle-pick-color-by-name)
   (define-key palette-mode-map (icicle-kbd "\M-c")  'icicle-pick-color-by-name)
