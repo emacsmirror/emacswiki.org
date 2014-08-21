@@ -16,7 +16,7 @@
 == User-visible issues ==
 
 wip-bdw-gc branch:
-# Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
+# Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.) **NOTE:** This is solved in the latest state of GuileEmacs (use the "wip" branches of bpt's Guile and Emacs repos), though I couldn't get it to compile yet. -- TaylanUB
 # There seem to be memory leaks, or another reason which causes the GC to exhaust the heap, usually resulting in a segfault. Or maybe it was just Gnus having a problem with a huge e-mail, I'm not sure. -- TaylanUB
 
 ----
