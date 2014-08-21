@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Aug 19 15:48:27 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:22:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14987
+;;     Update #: 14989
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -58,7 +58,8 @@
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer',
-;;    `icicle-bookmark-autofile-p', `icicle-bookmark-autonamed-p',
+;;    `icicle-bookmark-annotated-p', `icicle-bookmark-autofile-p',
+;;    `icicle-bookmark-autonamed-p',
 ;;    `icicle-bookmark-autonamed-this-buffer-p',
 ;;    `icicle-bookmark-bookmark-file-p',
 ;;    `icicle-bookmark-bookmark-list-p', `icicle-bookmark-desktop-p',
@@ -7887,6 +7888,20 @@ binary data (weird chars)."
 ;;  ** Bookmark-Completion Predicates **
 
 (when (require 'bookmark+ nil t)
+
+  (defun icicle-bookmark-annotated-p (bookmark)
+    "Return non-nil if BOOKMARK has an annotation.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name.
+In this case, the second part is tested."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-annotated-bookmark-p bookmark))
+
   (defun icicle-bookmark-autofile-p (bookmark)
     "Return non-nil if BOOKMARK is an autofile bookmark.
 If BOOKMARK is a cons with a string car, then the car is used as
