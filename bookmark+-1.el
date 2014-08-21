@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 21 08:21:00 2014 (-0700)
+;; Last-Updated: Thu Aug 21 09:15:09 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7377
+;;     Update #: 7380
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5099,8 +5099,10 @@ If it is a record then it need not belong to `bookmark-alist'."
 This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
-  (and (bmkp-file-bookmark-p bookmark)
-       (equal (file-name-directory (bookmark-get-filename bookmark)) default-directory)))
+  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (and bookmark
+       (bmkp-file-bookmark-p bookmark)
+       (bmkp-same-file-p (file-name-directory (bookmark-get-filename bookmark)) default-directory)))
 
 (defun bmkp-flagged-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is flagged for deletion in `*Bookmark List*'.
