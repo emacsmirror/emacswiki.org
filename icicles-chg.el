@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 19 17:02:10 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:06:08 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11203
+;;     Update #: 11205
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1125,6 +1125,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/21 dadams
+;;     icicle-bookmark-tagged(-other-window): Bind icicle-bookmark-completing-p.
 ;; 2014/08/18 dadams
 ;;     icicle-choose-(in)visible-faces: Bind icicle-face-completing-p.
 ;; 2014/08/17 dadams
