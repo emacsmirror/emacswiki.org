@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 21 07:39:45 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:19:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15702
+;;     Update #: 15703
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,8 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2014/08/21 dadams
+;;     Added: bmkp-annotated-bookmark-p.
+;;     bmkp-autofile-alist-only: Use bmkp-annotated-bookmark-p..
 ;;     bmkp-completing-read-1: Bind icicle-bookmark-completing-p.
 ;; 2014/08/19 dadams
 ;;     Added: bmkp-dired-wildcards-alist-only, bmkp-navlist-bookmark-p.
