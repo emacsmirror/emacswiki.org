@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Aug 21 08:38:47 2014 (-0700)
+;; Last-Updated: Thu Aug 21 11:00:50 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11210
+;;     Update #: 11218
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1129,6 +1129,11 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2014/08/21 dadams
+;;     Added: icicle-pick-color-by-name-1 - from icicle-pick-color-by-name-action.
+;;     icicle-pick-color-by-name: Bind icicle-list-use-nth-parts.  Use icicle-pick-color-by-name-1.
+;;     icicle-pick-color-by-name-action: If palette is not shown, do not try to redisplay it.
+;;                                       Use icicle-pick-color-by-name-1.
+;;     icicle-color-from-multi-completion-input: Removed bindings of icicle-list-*.
 ;;     icicle-bookmark-tagged(-other-window): Bind icicle-bookmark-completing-p.
 ;; 2014/08/18 dadams
 ;;     icicle-choose-(in)visible-faces: Bind icicle-face-completing-p.
