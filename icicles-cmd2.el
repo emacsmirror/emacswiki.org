@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Aug 18 20:20:11 2014 (-0700)
+;; Last-Updated: Thu Aug 21 08:01:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6999
+;;     Update #: 7001
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -541,10 +541,10 @@ In other words, this command is essentially just a convenience." ; Doc string
     ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
      (completion-ignore-case                 bookmark-completion-ignore-case)
      (prompt                                 "Bookmark `C-M-j' TAGS: ")
-     (icicle-list-use-nth-parts              '(1))
      (icicle-dot-string                      (icicle-anychar-regexp))
      (icicle-candidate-properties-alist      '((2 (face bookmark-menu-heading))))
      (icicle-multi-completing-p              t)
+     (icicle-bookmark-completing-p           t)
      (icicle-list-use-nth-parts              '(1))
      (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p  t)
@@ -622,7 +622,7 @@ In other words, this command is essentially just a convenience." ; Doc string
      (icicle-dot-string                      (icicle-anychar-regexp))
      (icicle-candidate-properties-alist      '((2 (face icicle-msg-emphasis))))
      (icicle-multi-completing-p              t)
-     (icicle-list-use-nth-parts              '(1))
+     (icicle-bookmark-completing-p           t)
      (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
