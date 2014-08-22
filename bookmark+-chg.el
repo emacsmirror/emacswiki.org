@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 21 09:22:33 2014 (-0700)
+;; Last-Updated: Fri Aug 22 13:55:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15706
+;;     Update #: 15709
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/08/22 dadams
+;;     bmkp-desktop-file-p: Redefined to not visit the file: use insert-file-contents-literally.
 ;; 2014/08/21 dadams
 ;;     Added: bmkp-annotated-bookmark-p.
 ;;     bmkp-autofile-alist-only: Use bmkp-annotated-bookmark-p.
@@ -1042,6 +1044,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/08/22 dadams
+;;     bmkp-looking-at-p: Do not defalias to Emacs looking-at-p because that is a defsubst.
 ;; 2014/07/20 dadams
 ;;     Protect key bindings for bmkp-bmenu-highlight-menu by boundp.
 ;; 2014/07/12 dadams
