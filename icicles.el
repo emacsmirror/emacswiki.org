@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 21 10:59:17 2014 (-0700)
+;; Last-Updated: Fri Aug 22 10:23:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23635
+;;     Update #: 23636
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1100,9 +1100,10 @@
 ;;    `icicle-face-valid-attribute-values',
 ;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
 ;;    `icicle-file-accessible-directory-p',
-;;    `icicle-file-compressed-p', `icicle-file-directory-p',
-;;    `icicle-file-executable-p', `icicle-file-exists-p',
-;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
+;;    `icicle-file-compressed-p', `icicle-file-desktop-p',
+;;    `icicle-file-directory-p', `icicle-file-executable-p',
+;;    `icicle-file-exists-p', `icicle-file-locked-p',
+;;    `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
