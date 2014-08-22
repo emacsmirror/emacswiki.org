@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Aug 21 08:22:53 2014 (-0700)
+;; Last-Updated: Fri Aug 22 14:08:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14989
+;;     Update #: 15004
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -129,9 +129,10 @@
 ;;    `icicle-face-valid-attribute-values',
 ;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
 ;;    `icicle-file-accessible-directory-p',
-;;    `icicle-file-compressed-p', `icicle-file-directory-p',
-;;    `icicle-file-executable-p', `icicle-file-exists-p',
-;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
+;;    `icicle-file-compressed-p', `icicle-file-desktop-p',
+;;    `icicle-file-directory-p', `icicle-file-executable-p',
+;;    `icicle-file-exists-p', `icicle-file-locked-p',
+;;    `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -8638,6 +8639,23 @@ absolute file-name completion candidates."
   (when (consp file-or-dir) (setq file-or-dir  (car file-or-dir)))
   (file-accessible-directory-p file-or-dir))
 
+;; Similar to `bmkp-desktop-file-p' in `bookmark+-1.el'.
+;; This is better than using `find-file-noselect', which visits the file and leaves its buffer.
+(defun icicle-file-desktop-p (filename)
+  "Return non-nil if FILENAME names a desktop file.
+FILENAME is normally a string, but it can also be a cons whose car is
+a string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
+  (and (stringp filename)
+       (file-readable-p filename)
+       (not (file-directory-p filename))
+       (with-temp-buffer
+         (insert-file-contents-literally filename nil 0 1000)
+         (goto-char (point-min))
+         (and (zerop (forward-line 2))
+              (icicle-looking-at-p "^;; Desktop File for Emacs"))))) ; No $, because maybe eol chars (e.g. ^M).
+
 (defun icicle-file-directory-p (file-or-dir)
   "Return t if FILE-OR-DIR names an existing directory.
 Symbolic links to directories count as directories.
@@ -8681,6 +8699,7 @@ absolute file-name completion candidates."
 FILENAME is normally a string, but it can also be a cons whose car is
 a string.  This is so that the function can be used to filter absolute
 file-name completion candidates."
+  (when (consp filename) (setq filename  (car filename)))
   (and (require 'jka-compr nil t)  (icicle-string-match-p (jka-compr-build-file-regexp) filename)))
 
 (when (fboundp 'ffap-file-remote-p)     ; In `ffap.el'
