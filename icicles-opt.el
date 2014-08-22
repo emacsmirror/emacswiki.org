@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Aug 22 09:21:38 2014 (-0700)
+;; Last-Updated: Fri Aug 22 10:26:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6045
+;;     Update #: 6047
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1460,6 +1460,7 @@ command."
 
 (defcustom icicle-cand-preds-for-file (append '("icicle-file-accessible-directory-p"
                                                 "icicle-file-compressed-p"
+                                                "icicle-file-desktop-p"
                                                 "icicle-file-directory-p"
                                                 "icicle-file-executable-p"
                                                 "icicle-file-exists-p"
@@ -1470,7 +1471,6 @@ command."
                                                 "icicle-file-remote-p"
                                                 "icicle-file-symlink-p"
                                                 "icicle-file-writable-p"
-;; @@@@@ NOT DONE YET  "icicle-desktop-file-p" - see `bmkp-desktop-file-p'
                                                 "icicle-image-file-p"
                                                 "icicle-looks-like-dir-name-p"
                                                 "icicle-nondirectory-p")
