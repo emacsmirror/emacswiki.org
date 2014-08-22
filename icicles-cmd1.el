@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Aug 21 08:25:57 2014 (-0700)
+;; Last-Updated: Fri Aug 22 08:04:34 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27280
+;;     Update #: 27282
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5751,10 +5751,12 @@ You probably do not want to use this.  Use
 
 (defun icicle-bookmark-jump-1 (bookmark &optional other-window-p)
   "Helper function for `icicle-bookmark-jump(-other-window)'."
-  (unless bookmark (error "No bookmark specified"))
-  (bookmark-maybe-historicize-string bookmark)
-  ;; In case the jump renames it (as for an autonamed bookmark).
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (let ((input-bmk  bookmark))
+    (unless input-bmk (error "No bookmark specified"))
+    (bookmark-maybe-historicize-string bookmark)
+    ;; In case the jump renames it (as for an autonamed bookmark).
+    (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+    (unless bookmark (error "No such bookmark: `%s'" input-bmk)))
   (if (fboundp 'bookmark--jump-via)
       (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'switch-to-buffer))
     (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `Bookmark+'.
