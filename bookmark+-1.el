@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 22 10:21:16 2014 (-0700)
+;; Last-Updated: Fri Aug 22 14:09:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7385
+;;     Update #: 7386
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8252,6 +8252,7 @@ You might want to use this on `kill-emacs-hook'."
   (when (consp filename) (setq filename  (car filename)))
   (and (stringp filename)
        (file-readable-p filename)
+       (not (file-directory-p filename))
        (with-temp-buffer
          (insert-file-contents-literally filename nil 0 1000)
          (goto-char (point-min))
