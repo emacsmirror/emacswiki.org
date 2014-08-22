@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Aug 21 10:57:52 2014 (-0700)
+;; Last-Updated: Fri Aug 22 08:29:39 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7015
+;;     Update #: 7025
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2030,28 +2030,31 @@ See `icicle-read-color-WYSIWYG' for more information."
 (defun icicle-cmd2-after-load-palette ()
   "Things to do for `icicles-cmd2.el' after loading `palette.el'."
 
-  (defun icicle-pick-color-by-name (color) ; Bound to `c' and `M-c' in color palette.
+  (defun icicle-pick-color-by-name (color &optional msgp) ; Bound to `c' and `M-c' in color palette.
     "Set the current palette color to a color you name.
 Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
 where each X is a hex digit.  The number of Xs must be a multiple of
 3, with the same number of Xs for each of red, green, and blue.
 If you enter an empty color name, then a color is picked randomly.
-The new current color is returned."
+The new current color is returned.
+
+When called from Lisp, non-nil MSGP means echo the chosen color name."
     (interactive (let ((completion-ignore-case      t)
                        (icicle-color-completing-p   t)
                        (icicle-candidate-action-fn  'icicle-pick-color-by-name-action)
                        (icicle-list-use-nth-parts   '(1)))
-                   (list (icicle-read-color nil nil t))))
-    (icicle-pick-color-by-name-1 color))
+                   (list (icicle-read-color nil nil t) 'MSG)))
+    (icicle-pick-color-by-name-1 color msgp))
 
   (defun icicle-pick-color-by-name-action (raw-input)
     "Action function for `icicle-pick-color-by-name'."
     (let ((color  (icicle-color-from-multi-completion-input raw-input 'MSG)))
       (icicle-pick-color-by-name-1 color)))
 
-  (defun icicle-pick-color-by-name-1 (color)
+  (defun icicle-pick-color-by-name-1 (color &optional msgp)
     "Set the current palette color to COLOR.
-If the palette is displayed, redisplay it, moving the cursor to COLOR."
+If the palette is displayed, redisplay it, moving the cursor to COLOR.
+Non-nil MSGP means echo the chosen color name."
     (setq palette-last-color  palette-current-color
           color               (hexrgb-color-name-to-hex color))
     (save-selected-window
@@ -2060,7 +2063,8 @@ If the palette is displayed, redisplay it, moving the cursor to COLOR."
         (palette-where-is-color color)
         (palette-brightness-scale)
         (palette-swatch)))
-    palette-current-color)
+    (prog1 palette-current-color
+      (when msgp (message "Palette color (RGB) is now `%s'" palette-current-color))))
 
   (define-key palette-mode-map (icicle-kbd "c")     'icicle-pick-color-by-name)
   (define-key palette-mode-map (icicle-kbd "\M-c")  'icicle-pick-color-by-name)
