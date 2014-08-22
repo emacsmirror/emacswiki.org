@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 22 08:04:34 2014 (-0700)
+;; Last-Updated: Fri Aug 22 08:25:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27282
+;;     Update #: 27283
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5597,7 +5597,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
         'icicle-bookmark-autonamed-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j , #") ; `C-x j , #'
         'icicle-bookmark-autonamed-this-buffer-narrow)
-      (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j A'
+      (define-key (symbol-value map) (icicle-kbd "C-x j A") ; `C-x j A'
         'icicle-bookmark-annotated-narrow)
       (define-key (symbol-value map) (icicle-kbd "C-x j a") ; `C-x j a'
         'icicle-bookmark-autofile-narrow)
