@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jul 20 09:37:53 2014 (-0700)
+;; Last-Updated: Fri Aug 22 13:54:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3373
+;;     Update #: 3377
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -465,11 +465,11 @@ Elements of ALIST that are not conses are ignored."
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
 
-(if (fboundp 'looking-at-p)
-    (defalias 'bmkp-looking-at-p 'looking-at-p)
-  (defun bmkp-looking-at-p (regexp)
-    "Like `looking-at', but this saves and restores the match data."
-    (save-match-data (looking-at regexp))))
+;; Same as `tap-looking-at-p' in `thingatpt+.el' and `icicle-looking-at-p' in `icicles-mcmd.el'.
+;; Do not `defalias' to Emacs `looking-at-p' because that is a `defsubst'.
+(defun bmkp-looking-at-p (regexp)
+  "Like `looking-at', but this saves and restores the match data."
+  (save-match-data (looking-at regexp)))
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
