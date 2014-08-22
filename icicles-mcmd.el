@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug 16 10:09:00 2014 (-0700)
+;; Last-Updated: Fri Aug 22 09:40:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19579
+;;     Update #: 19581
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -963,13 +963,17 @@ POSITION is a buffer position."
 ;;; All except `icicle-erase-minibuffer' are bound in the minibuffer to whatever the same
 ;;; command without `icicle-' is bound to globally.
 
-(defun icicle-looking-at-p (string)
-  "Return non-nil if STRING immediately succeeds point."
-  (let ((len  (length string)))
-    (save-excursion (save-match-data (search-forward string (min (+ (point) len) (point-max)) t)))))
+
+;; Same as `bmkp-looking-at-p' in `bookmark+-bmu.el'.
+(if (fboundp 'looking-at-p)
+    (defalias 'icicle-looking-at-p 'looking-at-p)
+  (defun icicle-looking-at-p (regexp)
+    "Like `looking-at', but this saves and restores the match data."
+    (save-match-data (looking-at regexp))))
 
 (defun icicle-looking-back-at-p (string)
-  "Return non-nil if STRING immediately precedes point."
+  "Return non-nil if STRING immediately precedes point.
+Saves and restores the match data."
   (let ((len  (length string)))
     (save-excursion (save-match-data
                       (search-backward string (max (- (point) len) (icicle-minibuffer-prompt-end)) t)))))
