@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Sat Jun  7 07:29:06 2014 (-0700)
+;; Last-Updated: Fri Aug 22 13:53:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2193
+;;     Update #: 2197
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -239,6 +239,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/22 dadams
+;;     tap-looking-at-p: Do not defalias to Emacs looking-at-p because that is a defsubst.
 ;; 2014/06/07 dadams
 ;;     Added: tap-bounds-of-list-contents-at-point, tap-list-contents-at-point,
 ;;            tap-list-contents-nearest-point.
@@ -475,11 +477,11 @@ this setting temporarily."
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
 
-(if (fboundp 'looking-at-p)
-    (defalias 'tap-looking-at-p 'looking-at-p) ; Emacs 23+
-  (defun tap-looking-at-p (regexp)
-    "Like `looking-at', but this saves and restores the match data."
-    (save-match-data (looking-at regexp))))
+;; Same as `bmkp-looking-at-p' (`bookmark+-bmu.el'), `icicle-looking-at-p' (`icicles-mcmd.el').
+;; Do not `defalias' to Emacs `looking-at-p' because that is a `defsubst'.
+(defun tap-looking-at-p (regexp)
+  "Like `looking-at', but this saves and restores the match data."
+  (save-match-data (looking-at regexp)))
 
 (defun tap-looking-back-p (regexp &optional limit greedy)
   "Like `looking-back', but this does not change the match data."
