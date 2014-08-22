@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 21 09:15:09 2014 (-0700)
+;; Last-Updated: Fri Aug 22 10:21:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7380
+;;     Update #: 7385
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8235,15 +8235,28 @@ You might want to use this on `kill-emacs-hook'."
              (bmkp-same-file-p (desktop-full-file-name) bmkp-desktop-current-file))
     (bmkp-desktop-save bmkp-desktop-current-file)))
 
-(defun bmkp-desktop-file-p (file)
-  "Return non-nil if FILE is readable and appears to be a desktop file.
-FILE is a file-name string."
-  (and (stringp file)
-       (file-readable-p file)
-       (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
+;;; (defun bmkp-desktop-file-p (file)
+;;;   "Return non-nil if FILE is readable and appears to be a desktop file.
+;;; FILE is a file-name string."
+;;;   (and (stringp file)
+;;;        (file-readable-p file)
+;;;        (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
+;;;          (goto-char (point-min))
+;;;          (and (zerop (forward-line 2))
+;;;               (bmkp-looking-at-p "^;; Desktop File for Emacs$")))))
+
+;; Similar to `icicle-file-desktop-p' in `icicles-fn.el'.
+;; This is better than using `find-file-noselect', which visits the file and leaves its buffer.
+(defun bmkp-desktop-file-p (filename)
+  "Return non-nil if FILENAME names a desktop file."
+  (when (consp filename) (setq filename  (car filename)))
+  (and (stringp filename)
+       (file-readable-p filename)
+       (with-temp-buffer
+         (insert-file-contents-literally filename nil 0 1000)
          (goto-char (point-min))
          (and (zerop (forward-line 2))
-              (bmkp-looking-at-p "^;; Desktop File for Emacs$")))))
+              (bmkp-looking-at-p "^;; Desktop File for Emacs"))))) ; No $, because maybe eol chars (e.g. ^M).
 
 (defun bmkp-make-desktop-record (desktop-file)
   "Create and return a desktop bookmark record.
