@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 22 09:40:33 2014 (-0700)
+;; Last-Updated: Fri Aug 22 15:52:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19581
+;;     Update #: 19610
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -965,14 +965,15 @@ POSITION is a buffer position."
 
 
 ;; Same as `bmkp-looking-at-p' in `bookmark+-bmu.el'.
-(if (fboundp 'looking-at-p)
-    (defalias 'icicle-looking-at-p 'looking-at-p)
-  (defun icicle-looking-at-p (regexp)
-    "Like `looking-at', but this saves and restores the match data."
-    (save-match-data (looking-at regexp))))
+;; Do not `defalias' to Emacs `looking-at-p' because it is a `defsubst'.
+(defun icicle-looking-at-p (regexp)
+  "Like `looking-at', but this saves and restores the match data."
+  (save-match-data (looking-at regexp)))
 
 (defun icicle-looking-back-at-p (string)
   "Return non-nil if STRING immediately precedes point.
+STRING is matched literally - not as a regexp.  In this the function
+is different from `icicle-looking-at-p'.
 Saves and restores the match data."
   (let ((len  (length string)))
     (save-excursion (save-match-data
@@ -6109,7 +6110,8 @@ This, in effect, performs a set intersection operation on 1) the set
 of candidates in effect before the operation and 2) the set of
 candidates that match the current input.  You can repeatedly use this
 command to continue intersecting candidate sets, progressively
-narrowing the set of matches.
+narrowing the set of matches.  A recursive minibuffer is entered each
+time this command is used.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-narrow-candidates]')."
@@ -6194,8 +6196,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                                           (funcall icicle-get-alist-candidate-function
                                                                    (car cand)))
                                                         (icicle-filter-alist minibuffer-completion-table
-                                                                             icicle-completion-candidates))
-                                                     (mapcar #'list icicle-completion-candidates))
+                                                                             icicle-cands-to-narrow))
+                                                     (mapcar #'list icicle-cands-to-narrow))
                                                    nil icicle-require-match-p nil
                                                    minibuffer-history-variable)))))
              ;; Normally, `icicle-narrow-candidates' is called from the minibuffer.
@@ -6240,11 +6242,14 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 
 (put 'icicle-apropos-complete-and-narrow 'icicle-completing-command t)
 (put 'icicle-apropos-complete-and-narrow 'icicle-apropos-completing-command t)
-(defun icicle-apropos-complete-and-narrow () ; Bound to `S-SPC' in minibuffer.
-  "Apropos complete, then `icicle-narrow-candidates'.
-You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
-\\[icicle-apropos-complete-and-narrow]')."
-  (interactive)
+(defun icicle-apropos-complete-and-narrow (&optional with-predicate-p) ; Bound to `S-SPC' in minibuffer.
+  "Apropos complete, then narrow to the current set of completions.
+You can use this command only during minibuffer completion, when it is
+bound to `\\<minibuffer-local-completion-map>\\[icicle-apropos-complete-and-narrow]'.
+
+This is the same as using `S-TAB' followed by `\\[icicle-narrow-candidates]' or, with a prefix
+arg, `\\[icicle-narrow-candidates-with-predicate]'.  In the latter case you are prompted for a predicate."
+  (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
   (when (and (eq icicle-current-completion-mode 'prefix)
@@ -6262,7 +6267,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (if (eq icicle-last-completion-command 'icicle-apropos-complete-no-display)
       (icicle-apropos-complete-no-display)
     (icicle-apropos-complete))
-  (icicle-narrow-candidates))
+  (if with-predicate-p (icicle-narrow-candidates-with-predicate) (icicle-narrow-candidates)))
 
 ;; $$$$$$$$ Would it be good to use `icicle-must-pass-after-match-predicate'?
 ;;
@@ -6271,14 +6276,17 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 You can repeatedly use this command to apply additional predicates,
 progressively narrowing the set of candidates.
 
-You are prompted for the predicate, which can be a function name or a
-lambda expression.  You can use completion to choose from some
-existing predicate names.
+A recursive minibuffer is entered each time this is used.  Only the
+current candidates for which the predicate is true are retained.
 
-The set of predicates available for completion depend on the current
-type of completion (input).  For example, buffer-name predicates are
-available for buffer-name completion.  With a prefix arg, predicates
-of additional types are also available for completion.
+You are prompted for the filtering predicate, which can be a function
+name or a lambda expression.  You can use completion to choose from
+some existing predicate names.
+
+The predicates available for completion depend on the current type of
+completion (input).  For example, buffer-name predicates are available
+for buffer-name completion.  With a prefix arg, predicates of
+additional types are also available for completion.
 
 You can customize the predicates available for a given completion type
 TYPE using option `icicle-cand-preds-for-TYPE'.  You can customize the
@@ -6304,12 +6312,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 
 When called from Lisp with non-nil arg PREDICATE, use that to narrow."
   (interactive "i\nP")
-  (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+  (when (interactive-p)
+    (icicle-barf-if-outside-minibuffer)
+    (message "Gathering predicates to choose from (or enter a lambda expression)..."))
   (setq icicle-current-completion-mode  'apropos)
   (let (;; Restore match function, in case it was bound to nil, e.g., by `C-h C-o'.
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
         ;; $$$$$$$$ (icicle-progressive-completing-p   t) ; Inhibit completion by `icicle-minibuffer-setup'.
-        (last-completion-cmd               (or icicle-last-completion-command  'icicle-apropos-complete))
         (enable-recursive-minibuffers      t))
     (cond ((null icicle-completion-candidates)
            (icicle-user-error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
@@ -6321,7 +6330,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                                     (symbol-value minibuffer-history-variable)))
              ;; $$$$$$ Should this now use `icicle-current-input'
              ;;        instead of (car icicle-completion-candidates), for PCM?
-             (icicle-condition-case-no-debug i-narrow-candidates
+             (icicle-condition-case-no-debug i-narrow-candidates-with-predicate
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p)
                             insert-default-directory
@@ -6332,7 +6341,8 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                (no-catch (setq icicle-current-input  (car icicle-completion-candidates))
                          (icicle-retrieve-last-input)
                          icicle-current-input)
-               (error (message "%s" (error-message-string i-narrow-candidates))))))
+               (error (message "%s" (error-message-string i-narrow-candidates-with-predicate)))))
+           (funcall (or icicle-last-completion-command  'icicle-apropos-complete)))
           (t                            ; Read new predicate and incorporate it.
            (let* ((minibuffer-setup-hook   (cons ; Make sure new minibuffer is completion reference buf.
                                             (lambda ()
@@ -6340,7 +6350,18 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                                 (set (make-local-variable 'completion-reference-buffer)
                                                      (window-buffer (active-minibuffer-window)))))
                                             minibuffer-setup-hook))
-                  (icicle-cand-preds  (if allp icicle-cand-preds-all (icicle-cand-preds)))
+                  ;; If `icicle-display-string' was used, then get back the original candidates.
+                  ;; However, this also means that the candidates will no longer be displayed according
+                  ;; to `icicle-display-string'.  $$$$$$ FIXME?  To fix we would need to do something
+                  ;; like what is done in `icicle-display-candidates-in-Completions'.
+                  (icicle-cands-to-narrow  (mapcar (lambda (cc)
+                                                     (or (get-text-property 0 'icicle-orig-cand cc)  cc))
+                                                   icicle-completion-candidates))
+                  (icicle-narrow-regexp    (and icicle-compute-narrowing-regexp-p
+                                                ;; (regexp-opt ()) returns nil in older Emacs versions.
+                                                icicle-cands-to-narrow
+                                                (regexp-opt icicle-cands-to-narrow)))
+                  (icicle-cand-preds       (if allp icicle-cand-preds-all (icicle-cand-preds)))
                   (pred
                    (or predicate
                        (if (fboundp 'make-composed-keymap) ; Emacs 24+
@@ -6379,36 +6400,45 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                                                                    'function-name-history
                                                                  'icicle-function-name-history)
                               icicle-cand-preds)
-                           (error nil))))))
-             ;; Update `minibuffer-completion-predicate' or `read-file-name-predicate' to also use new
-             ;; predicate, PRED.  The logic here is like that for `icicle-remove-cand-from-lists'.
-             (cond (;; File name input, Emacs 22+.
-                    ;; Update `read-file-name-predicate' if prior to Emacs 23.2.
-                    ;; Else update `minibuffer-completion-predicate'.
-                    (and (icicle-file-name-input-p)  (> emacs-major-version 21))
-                    (let ((var  (if (or (> emacs-major-version 23)
-                                        (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-                                    'minibuffer-completion-predicate
-                                  'read-file-name-predicate)))
-                      (set var (if (symbol-value var)
-                                   (lexical-let ((curr-pred  (symbol-value var)))
-                                     `(lambda (file-cand)
-                                       (and (funcall ',curr-pred file-cand)  (funcall ',pred file-cand))))
-                                 pred))))
-
-                   ;; File name input, Emacs 20 or 21.  We cannot do anything for file names.
-                   ;; `TAB' or `S-TAB' will unfortunately bring it back as a candidate.
-                   ((icicle-file-name-input-p))
-
-                   ;; Non-file name input, all versions.  Update `minibuffer-completion-predicate'.
-                   (t (setq minibuffer-completion-predicate
-                            (if minibuffer-completion-predicate
-                                ;; Add PRED to the existing predicate.
-                                (lexical-let ((curr-pred  minibuffer-completion-predicate))
-                                  `(lambda (cand) (and (funcall ',curr-pred cand)  (funcall ',pred cand))))
-                              ;; Set predicate to PRED.
-                              pred)))))))
-    (funcall last-completion-cmd)))
+                           (error nil)))))
+                  (result                  (let ((icicle-must-pass-predicate  
+                                                  `(lambda (c)
+                                                     (and (member c ',icicle-cands-to-narrow)
+                                                          (funcall ',pred c))))
+                                                 (icicle-show-Completions-initially-flag  t))
+                                             (cond ((icicle-file-name-input-p)
+                                                    (read-file-name "Match also (regexp): "
+                                                                    (icicle-file-name-directory-w-default
+                                                                     icicle-current-input)
+                                                                    nil icicle-require-match-p))
+                                                   ((functionp minibuffer-completion-table)
+                                                    (completing-read "Match also (regexp): "
+                                                                     minibuffer-completion-table
+                                                                     nil icicle-require-match-p nil
+                                                                     minibuffer-history-variable))
+                                                   (t ; cons, obarray, etc.
+                                                    (completing-read
+                                                     "Match also (regexp): "
+                                                     (if icicle-whole-candidate-as-text-prop-p
+                                                         (mapcar
+                                                          (lambda (cand)
+                                                            (funcall icicle-get-alist-candidate-function
+                                                                     (car cand)))
+                                                          (icicle-filter-alist minibuffer-completion-table
+                                                                               icicle-cands-to-narrow))
+                                                       (mapcar #'list icicle-cands-to-narrow))
+                                                     nil icicle-require-match-p nil
+                                                     minibuffer-history-variable))))))
+             ;; Normally, `icicle-narrow-candidates-predicate' is called from the minibuffer.
+             ;; If not, just return the result read.
+             (if (> (minibuffer-depth) 0)
+                 (icicle-condition-case-no-debug i-narrow-candidates-with-predicate
+                     (throw 'icicle-read-top result)
+                   (no-catch (setq icicle-current-input  result)
+                             (icicle-retrieve-last-input)
+                             icicle-current-input)
+                   (error (message "%s" (error-message-string i-narrow-candidates-with-predicate))))
+               result))))))
 
 (defun icicle-cand-preds ()
   "Predicates currently available for `M-&'."
