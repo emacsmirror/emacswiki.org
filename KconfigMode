@@ -45,6 +45,6 @@
   (set (make-local-variable 'outline-regexp)
        (concat "^[\t ]*" (regexp-opt kconfig-headings)))
   (set (make-local-variable 'outline-level)
-       'kconfig-mode-level))
+       'kconfig-outline-level))
 
 (add-to-list 'auto-mode-alist '("Kconfig" . kconfig-mode))
