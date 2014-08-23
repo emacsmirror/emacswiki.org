@@ -11,7 +11,8 @@ If you rather it go to beginning-of-line first and to indentation on the next hi
    (if (bolp) (back-to-indentation) (beginning-of-line)))
 [new]
 You can bind to "Home" key using
-(global-set-key (kbd "<home>") 'back-to-indentation-or-beginning)
+
+ (global-set-key (kbd "<home>") 'back-to-indentation-or-beginning)
 [new]
 Command `beginning-or-indentation' in Lisp:misc-cmds.el does the same thing. In addition, repeated calls back up to previous line beginnings:
 
@@ -33,7 +34,7 @@ Command `beginning-or-indentation' in Lisp:misc-cmds.el does the same thing. In 
 [:end-of-code-or-line]
 To get the same same type of functionality at the end of the line, try this function.  I bind it to my <end> key just like the <home> key above.  It jumps between the actual end-of-line and the end of the code line which is different if the line has comments on the end.
 
- (defun end-of-code-or-line () 
+  (defun end-of-code-or-line () 
    "Move to EOL. If already there, to EOL sans comments.
     That is, the end of the code, ignoring any trailing comment
     or whitespace.  Note this does not handle 2 character 
@@ -127,6 +128,30 @@ There is a version of this for in ourcomments-util.el in [NxhtmlMode nXhtml] tha
 If on a wrapped part it first goes to the start of the wrapped line.
 Note: Requires the not yet released Emacs 23.
 (There is also a similar function for end of line.)
+
+[new]
+Here is a modification to Fuco's great end-of-code-or-line+ function.  This new one moves first to the end of line, and if there moves to end of code (on the same line).  To use this you will also need Fuco's point-in-comment function.
+
+ (defun end-of-line-or-code (arg)
+  "Move point to end of line. If already there, move back to end of code.
+ By 'end of code' we mean before a possible comment. Comments are recognized
+ in any mode that sets syntax-ppss properly."
+  (interactive "P")
+  (let ((eol (save-excursion
+	       (move-end-of-line arg)
+               (point))))
+    (cond ((= (point) eol)
+           (move-end-of-line arg)
+           (while (point-in-comment)
+             (backward-char))
+           (skip-chars-backward " \t"))
+          (t (move-end-of-line arg)))))
+
+Then bind with
+
+ (global-set-key [end] 'end-of-line-or-code)
+
+-dmuenz
 
 ----
 CategoryEditing
