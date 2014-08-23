@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Fri Aug 22 17:46:11 2014 (-0700)
+;; Last-Updated: Sat Aug 23 11:37:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1255
+;;     Update #: 1261
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -559,58 +559,58 @@ This is an Icicles command - see command `icicle-mode'.")
                   (select-frame-set-input-focus (selected-frame))
                   nil))))               ; Return nil for success.
 
-        (unwind-protect
-             (when (or (catch 'icicle-top-level
-                         (let (,hide-common  ,no-incr-comp  ,no-icomplete)
-                           (when (and (get this-command 'icicle-hide-common-match)
-                                      (not icicle-hide-common-match-in-Completions-flag))
-                             (setq icicle-hide-common-match-in-Completions-flag  t
-                                   ,hide-common                                  t))
-                           (when (and (get this-command 'icicle-turn-off-incremental-completion)
-                                      icicle-incremental-completion)
-                             (setq icicle-incremental-completion  nil
-                                   ,no-incr-comp                  t))
-                           (when (and (get this-command 'icicle-turn-off-icomplete-mode)
-                                      (featurep 'icomplete)  icomplete-mode)
-                             (icomplete-mode -1)
-                             (setq ,no-icomplete  t))
-                           (when (or ,hide-common  ,no-incr-comp  ,no-icomplete)
-                             (message "Turned OFF: %s%s%s%s%s"
-                                      (if ,hide-common
-                                          (concat (icicle-propertize "showing common match"
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-x .')")
-                                        "")
-                                      (if (and ,hide-common  (or ,no-incr-comp  ,no-icomplete)) ", " "")
-                                      (if ,no-incr-comp
-                                          (concat (icicle-propertize "incremental completion"
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-#')")
-                                        "")
-                                      (if (and ,no-incr-comp  ,no-icomplete) ", " "")
-                                      (if ,no-icomplete
-                                          (concat (icicle-propertize "Icomplete mode" 
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-M-#')")
-                                        ""))
-                             (sit-for 3))
-                           ,first-sexp
-                           (icicle-condition-case-no-debug act-on-choice
-                               (let ((,choice
-                                      (if icicle-buffer-name-input-p
-                                          (icicle-read-buffer ,prompt ,def ,require-match)
-                                        (completing-read ,prompt ,collection ,predicate ,require-match
-                                                         ,initial-input ,hist ,def ,inherit-input-method))))
-                                 ;; Reset after reading input, so commands can tell if input has been read.
-                                 (setq icicle-candidate-action-fn  nil)
-                                 (funcall #',function ,choice))
-                             (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
-                             (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
-                                    (error "%s" (error-message-string act-on-choice))))
-                           ,last-sexp)
-                         nil)
-                       (not (active-minibuffer-window)))) ; At top level.
-          ,last-sexp)))))
+        (icicle-condition-case-no-debug catch-top-level
+            (catch 'icicle-top-level
+              (let (,hide-common  ,no-incr-comp  ,no-icomplete)
+                (when (and (get this-command 'icicle-hide-common-match)
+                           (not icicle-hide-common-match-in-Completions-flag))
+                  (setq icicle-hide-common-match-in-Completions-flag  t
+                        ,hide-common                                  t))
+                (when (and (get this-command 'icicle-turn-off-incremental-completion)
+                           icicle-incremental-completion)
+                  (setq icicle-incremental-completion  nil
+                        ,no-incr-comp                  t))
+                (when (and (get this-command 'icicle-turn-off-icomplete-mode)
+                           (featurep 'icomplete)  icomplete-mode)
+                  (icomplete-mode -1)
+                  (setq ,no-icomplete  t))
+                (when (or ,hide-common  ,no-incr-comp  ,no-icomplete)
+                  (message "Turned OFF: %s%s%s%s%s"
+                           (if ,hide-common
+                               (concat (icicle-propertize "showing common match"
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-x .')")
+                             "")
+                           (if (and ,hide-common  (or ,no-incr-comp  ,no-icomplete)) ", " "")
+                           (if ,no-incr-comp
+                               (concat (icicle-propertize "incremental completion"
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-#')")
+                             "")
+                           (if (and ,no-incr-comp  ,no-icomplete) ", " "")
+                           (if ,no-icomplete
+                               (concat (icicle-propertize "Icomplete mode" 
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-M-#')")
+                             ""))
+                  (sit-for 3))
+                ,first-sexp
+                (icicle-condition-case-no-debug act-on-choice
+                    (let ((,choice
+                           (if icicle-buffer-name-input-p
+                               (icicle-read-buffer ,prompt ,def ,require-match)
+                             (completing-read ,prompt ,collection ,predicate ,require-match
+                                              ,initial-input ,hist ,def ,inherit-input-method))))
+                      ;; Reset after reading input, so commands can tell if input has been read.
+                      (setq icicle-candidate-action-fn  nil)
+                      (funcall #',function ,choice))
+                  (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
+                  (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
+                         (error "%s" (error-message-string act-on-choice)))))
+              ,last-sexp)
+          (quit  (icicle-try-switch-buffer icicle-orig-buff) ,last-sexp)
+          (error (icicle-try-switch-buffer icicle-orig-buff) ,last-sexp
+                 (error "%s" (error-message-string catch-top-level))))))))
 
 (defmacro icicle-define-file-command
     (command doc-string function prompt &optional
@@ -750,59 +750,59 @@ This is an Icicles command - see command `icicle-mode'.")
                   (select-frame-set-input-focus (selected-frame))
                   nil))))               ; Return nil for success.
 
-        (unwind-protect
-             (when (or (catch 'icicle-top-level
-                         (let (,hide-common  ,no-incr-comp  ,no-icomplete)
-                           (when (and (get this-command 'icicle-hide-common-match)
-                                      (not icicle-hide-common-match-in-Completions-flag))
-                             (setq icicle-hide-common-match-in-Completions-flag  t
-                                   ,hide-common                                  t))
-                           (when (and (get this-command 'icicle-turn-off-incremental-completion)
-                                      icicle-incremental-completion)
-                             (setq icicle-incremental-completion  nil
-                                   ,no-incr-comp                  t))
-                           (when (and (get this-command 'icicle-turn-off-icomplete-mode)
-                                      (featurep 'icomplete)  icomplete-mode)
-                             (icomplete-mode -1)
-                             (setq ,no-icomplete  t))
-                           (when (or ,hide-common  ,no-incr-comp  ,no-icomplete)
-                             (message "Turned OFF: %s%s%s%s%s"
-                                      (if ,hide-common
-                                          (concat (icicle-propertize "showing common match"
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-x .')")
-                                        "")
-                                      (if (and ,hide-common  (or ,no-incr-comp  ,no-icomplete)) ", " "")
-                                      (if ,no-incr-comp
-                                          (concat (icicle-propertize "incremental completion"
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-#')")
-                                        "")
-                                      (if (and ,no-incr-comp  ,no-icomplete) ", " "")
-                                      (if ,no-icomplete
-                                          (concat (icicle-propertize "Icomplete mode" 
-                                                                     'face 'icicle-msg-emphasis)
-                                                  " (`C-M-#')")
-                                        ""))
-                             (sit-for 3))
-                           ,first-sexp
-                           (icicle-condition-case-no-debug act-on-choice
-                               (let ((,choice
-                                      (if (< emacs-major-version 21) ; No predicate arg for Emacs 20.
-                                          (read-file-name ,prompt ,dir ,default-filename ,require-match
-                                                          ,initial-input)
-                                        (read-file-name ,prompt ,dir ,default-filename ,require-match
-                                                        ,initial-input ,predicate))))
-                                 ;; Reset after reading input, so commands can tell if input has been read.
-                                 (setq icicle-candidate-action-fn  nil) ; Reset after completion.
-                                 (funcall #',function ,choice))
-                             (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
-                             (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
-                                    (error "%s" (error-message-string act-on-choice))))
-                           ,last-sexp)
-                         nil)
-                       (not (active-minibuffer-window)))) ; At top level.           
-          ,last-sexp)))))
+        (icicle-condition-case-no-debug catch-top-level
+            (catch 'icicle-top-level
+              (let (,hide-common  ,no-incr-comp  ,no-icomplete)
+                (when (and (get this-command 'icicle-hide-common-match)
+                           (not icicle-hide-common-match-in-Completions-flag))
+                  (setq icicle-hide-common-match-in-Completions-flag  t
+                        ,hide-common                                  t))
+                (when (and (get this-command 'icicle-turn-off-incremental-completion)
+                           icicle-incremental-completion)
+                  (setq icicle-incremental-completion  nil
+                        ,no-incr-comp                  t))
+                (when (and (get this-command 'icicle-turn-off-icomplete-mode)
+                           (featurep 'icomplete)  icomplete-mode)
+                  (icomplete-mode -1)
+                  (setq ,no-icomplete  t))
+                (when (or ,hide-common  ,no-incr-comp  ,no-icomplete)
+                  (message "Turned OFF: %s%s%s%s%s"
+                           (if ,hide-common
+                               (concat (icicle-propertize "showing common match"
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-x .')")
+                             "")
+                           (if (and ,hide-common  (or ,no-incr-comp  ,no-icomplete)) ", " "")
+                           (if ,no-incr-comp
+                               (concat (icicle-propertize "incremental completion"
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-#')")
+                             "")
+                           (if (and ,no-incr-comp  ,no-icomplete) ", " "")
+                           (if ,no-icomplete
+                               (concat (icicle-propertize "Icomplete mode" 
+                                                          'face 'icicle-msg-emphasis)
+                                       " (`C-M-#')")
+                             ""))
+                  (sit-for 3))
+                ,first-sexp
+                (icicle-condition-case-no-debug act-on-choice
+                    (let ((,choice
+                           (if (< emacs-major-version 21) ; No predicate arg for Emacs 20.
+                               (read-file-name ,prompt ,dir ,default-filename ,require-match
+                                               ,initial-input)
+                             (read-file-name ,prompt ,dir ,default-filename ,require-match
+                                             ,initial-input ,predicate))))
+                      ;; Reset after reading input, so commands can tell if input has been read.
+                      (setq icicle-candidate-action-fn  nil) ; Reset after completion.
+                      (funcall #',function ,choice))
+                  (quit  (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp)
+                  (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
+                         (error "%s" (error-message-string act-on-choice)))))
+              ,last-sexp)
+          (quit  (icicle-try-switch-buffer icicle-orig-buff) ,last-sexp)
+          (error (icicle-try-switch-buffer icicle-orig-buff) ,last-sexp
+                 (error "%s" (error-message-string catch-top-level))))))))
 
 (defmacro icicle-define-sort-command (sort-order comparison-fn doc-string)
   "Define a command to sort completions by SORT-ORDER.
