@@ -119,36 +119,11 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
-<pre>
 
-</pre>
-----
-<pre>
 
-</pre>
 
-[new]
 
-describe-face with icicles loaded results in an error:
 
-Emacs version: GNU Emacs 24.3.1 on Linux
-
-  (add-to-list 'load-path "~/.emacs.d/elpa/icicles-20140822.1645" t)
-  (require 'icicles)
-
-M-x describe-face
-
-  Debugger entered--Lisp error: (wrong-number-of-arguments #[nil "..." [faceprop face get-char-property read-face-name default keywordp (foreground-color background-color) nil facep] 4 1844164] 1)
-    face-at-point(t)
-    (or (face-at-point t) (quote default))
-    (if (> emacs-major-version 23) (or (face-at-point t) (quote default)) "= `default' face")
-    (read-face-name "Describe face" (if (> emacs-major-version 23) (or (face-at-point t) (quote default)) "= `default' face") (not icicle-WYSIWYG-Completions-flag))
-    (list (read-face-name "Describe face" (if (> emacs-major-version 23) (or (face-at-point t) (quote default)) "= `default' face") (not icicle-WYSIWYG-Completions-flag)))
-    (let ((icicle-face-completing-p t)) (list (read-face-name "Describe face" (if (> emacs-major-version 23) (or (face-at-point t) (quote default)) "= `default' face") (not icicle-WYSIWYG-Completions-flag))))
-    call-interactively(describe-face record nil)
-    command-execute(describe-face record)
-    execute-extended-command(nil "describe-face")
-    call-interactively(execute-extended-command nil nil)
 
 
 <pre>
