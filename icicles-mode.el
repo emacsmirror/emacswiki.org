@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Aug 13 07:58:30 2014 (-0700)
+;; Last-Updated: Sat Aug 23 13:18:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 10231
+;;     Update #: 10234
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -363,7 +363,11 @@ bindings in `*Completions*'.")
       (interactive
        (let ((icicle-face-completing-p  t))
          (list (read-face-name "Describe face" (if (> emacs-major-version 23)
-                                                   (or (face-at-point t)  'default)
+                                                   (or  (if (and (= emacs-major-version 24)
+                                                                 (< emacs-minor-version 4))
+                                                            (face-at-point)
+                                                          (face-at-point t))
+                                                       'default)
                                                  "= `default' face")
                                (not icicle-WYSIWYG-Completions-flag)))))))
   
