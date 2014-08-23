@@ -11,7 +11,7 @@ Beyond the basic Python modes described above, there are a number of modes that 
 
 * [http://gabrielelanaro.github.com/emacs-for-python/ Emacs for Python], a collection of emacs extensions specifically collected for python development, with workflow guidelines.
 * [https://github.com/jorgenschaefer/elpy Elpy], an Emacs Python development environment available via package.el as a simple installation. Can use Rope or Jedi to provide completions.
-* [https://bitbucket.org/agr/ropemacs Ropemacs], a library using [[Pymacs]] to talk with the Rope refactoring library. You need to install [http://rope.sourceforge.net/ Rope], [http://pypi.python.org/pypi/ropemode Ropemode], [https://github.com/pinard/Pymacs Pymacs] and [http://rope.sourceforge.net/ropemacs.html Ropemacs] to make this work.
+* [https://github.com/python-rope/ropemacs Ropemacs], a library using [[Pymacs]] to talk with the Rope refactoring library. You need to install [http://rope.sourceforge.net/ Rope], [http://pypi.python.org/pypi/ropemode Ropemode], [https://github.com/pinard/Pymacs Pymacs] and [http://rope.sourceforge.net/ropemacs.html Ropemacs] to make this work.
 
 === Other Support Modes ===
 
