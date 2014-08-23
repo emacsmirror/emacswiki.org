@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug 23 13:20:53 2014 (-0700)
+;; Last-Updated: Sat Aug 23 14:37:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11254
+;;     Update #: 11256
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/23 dadams
+;;     icicle-search-regexp-scan: Add each context number and total number to icicle-mode-line-help.
 ;; 2014/08/22 dadams
 ;;     icicle-pick-color-by-name(-1): Added optional arg MSGP.  Show message if non-nil.
 ;; 2014/08/21 dadams
