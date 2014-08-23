@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug 22 16:03:01 2014 (-0700)
+;; Last-Updated: Fri Aug 22 17:52:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11241
+;;     Update #: 11245
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2014/08/22 dadams
+;;     icicle-file-of-content-apropos-complete-match: Update icicle-new-bufs-to-kill before searching.
 ;;     icicle-bookmark-jump-1: Better error if input BOOKMARK does not name an existing bookmark.
 ;; 2014/08/21 dadams
 ;;     Added: icicle-bookmark-annotated-narrow.
@@ -4131,6 +4132,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/08/22 dadams
+;;     icicle-define(-file)-command: Added unwind-protect, so LAST-SEXP is always evaluated.
+;;                                   (C-g in content-searching was sometimes not killing some buffers.)
 ;; 2014/08/10 dadams
 ;;     icicle-(buffer|file)-bindings: Bind icicle-(buffer|file)-completing-p.
 ;;     icicle-define-bookmark-command-1, icicle-define-search-bookmark-command:
