@@ -1,56 +1,53 @@
 [[en:CalendarMode]]
-This is japanese translating page and this is a stub. Dont write in english. --gonbei
 
-Calendar mode is was originally written by EdwardReingold.
-
-Here are hints and tips to get started.
-
-To start and display your calendar, just do the following :
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
 
 `M-x calendar'
 
-This will open a new buffer with your calendar standard view shown.
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
 
-CalendarLocalization can tell CalendarMode to speak in your prefered language.
+== キーバインディング ==
 
-CalendarMode supports CalendarPrinting to dead trees by using LaTeX.
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
 
-== Key bindings ==
 
-It probably knows more notations than you do, to list some, type `p C-h'.  The result should be
-something like this:
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
 
-    p o    calendar-print-other-dates
-    p m    calendar-print-mayan-date
-    p f    calendar-print-french-date
-    p i    calendar-print-islamic-date
-    p h    calendar-print-hebrew-date
-    p a    calendar-print-astro-day-number
-    p j    calendar-print-julian-date
-    p c    calendar-print-iso-date (includes number of the week!)
-    p p    calendar-print-persian-date
-    p e    calendar-print-ethiopic-date
-    p k    calendar-print-coptic-date
-    p C    calendar-print-chinese-date
-    p d    calendar-print-day-of-year
+カレンダーの計算と動き:
 
-Calendar arithmetic and motion:
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
 
-; `C-SPC' followed by `M-=': Count the number of days in region (between the mark and the current point).
-; ##C-x ]##: Move ahead a year.
-; ##9 M-}##: Find out what day is 9 months from the day at point.
-; ##. 177 C-b##: Find out what day was 177 days ago.
-; ##8 C-n##: Move ahead 8 weeks.
-; ##g w##: go to a given ISO week.
-== Wishlist ==
+== ウィッシュリスト ==
 
-* Sync with PalmPilot -- MarceloToledo
-* Unified interface for calendar, diary etc... -- XavierMaillard
-* Category support for calendars (multiple calendars support as well) -- XavierMaillard
-* Full support of RFC2445 (import/export as provided by icalendar.el -- XavierMaillard
-* Different colors for different types of events -- DavidArroyo
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
 
-== See also ==
+== 参照されたし ==
 
 * DiaryMode
 * PlannerMode
