@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Aug 17 19:14:45 2014 (-0700)
+;; Last-Updated: Fri Aug 22 16:26:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28279
+;;     Update #: 28298
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2921,6 +2921,10 @@
 ;;  the same thing.  You can thus use only `S-SPC', any number of
 ;;  times, to choose a candidate by narrowing down the matches.
 ;;
+;;  With a prefix argument, `S-SPC' uses predicate narrowing, that is,
+;;  `C-u S-SPC' is the same as `S-TAB' followed by `M-&' (described in
+;;  the next section) .
+;;
 ;;  I call this process of completion by successive approximation, or
 ;;  progressively narrowing the candidate set, "progressive
 ;;  completion".  If the name "incremental completion" (= icompletion)
@@ -2936,16 +2940,17 @@
 ;;  Progressive completion is a set of mini-completions that are wired
 ;;  in series, not in parallel.
 ;;
-;;  Note that when you use `M-*' or `S-SPC' in the minibuffer, it
-;;  calls `completing-read' or `read-file-name', which creates a
-;;  recursive minibuffer.  That is, the minibuffer depth is increased.
-;;  (This is not the case for `M-&', however.)  In vanilla Emacs,
-;;  there is no indicator of the current minibuffer depth, and this
-;;  can sometimes be disorienting.  Each time you use `M-*' or `S-SPC'
-;;  you push down one level of minibuffer recursion (that is,
-;;  minibuffer depth is incremented).  Each time you use, say, `C-g',
-;;  you pop up one level of minibuffer recursion (that is, minibuffer
-;;  depth is decremented).
+;;  Note that when you use candidate narrowing (`M-*', `M-&', or
+;;  `S-SPC') in the minibuffer, `completing-read' or `read-file-name'
+;;  is invoked, which creates a recursive minibuffer.  That is, the
+;;  minibuffer depth is increased.
+;;
+;;  In vanilla Emacs, there is no indicator of the current minibuffer
+;;  depth, and this can sometimes be disorienting.  Each time you
+;;  narrow the set of current candidates, you push down one level of
+;;  minibuffer recursion (that is, minibuffer depth is incremented).
+;;  Each time you use, say, `C-g', you pop up one level of minibuffer
+;;  recursion (that is, minibuffer depth is decremented).
 ;;
 ;;  If you use library `mb-depth.el', which is included with Emacs 23
 ;;  and which also works with Emacs 22, Icicle mode takes advantage of
@@ -2958,32 +2963,31 @@
 ;;  standalone minibuffer frame, and it changes the background hue
 ;;  (color) of that frame slightly with each change in minibuffer
 ;;  depth.  This is especially helpful with Icicles, where use of
-;;  `M-*' or `S-SPC' is common.
+;;  candidate narrowing (progressive completion) is common.
 ;;
 ;;  There is a slight difference in behavior between Icicles commands
-;;  and some other Emacs commands when you accept input after `M-*' or
-;;  `S-SPC'.  When possible, Icicles accepts your input and passes it
-;;  immediately to the top level, bypassing any intermediate recursive
-;;  minibuffer levels that are waiting for input.  However, Emacs
-;;  commands that are defined with literal-string `interactive' specs,
-;;  such as (interactive "fFile: "), do not use `completing-read' or
-;;  `read-file-name', so there is no way for Icicles to take this
-;;  shortcut with them.  In that case, you will simply need to hit
-;;  `RET' again to accept your input at each recursive minibuffer
-;;  level, until you get back to the top level.  Sorry for this
-;;  inconvenience!  If you are an Emacs-Lisp programmer, note that
-;;  this is one reason to use `completing-read' and `read-file-name'
-;;  when you write commands that use completion.
+;;  and some other Emacs commands when you accept input after
+;;  narrowing.  When possible, Icicles accepts your input and passes
+;;  it immediately to the top level, bypassing any intermediate
+;;  recursive minibuffer levels that are waiting for input.  However,
+;;  Emacs commands that are defined with literal-string `interactive'
+;;  specs, such as (interactive "fFile: "), do not use
+;;  `completing-read' or `read-file-name', so there is no way for
+;;  Icicles to take this shortcut with them.  In that case, you will
+;;  simply need to hit `RET' again to accept your input at each
+;;  recursive minibuffer level, until you get back to the top level.
+;;  Sorry for this inconvenience!  If you are an Emacs-Lisp
+;;  programmer, note that this is one reason to use `completing-read'
+;;  and `read-file-name' when you write commands that use completion.
 ;;
 ;;  Note: If you use progressive completion with file names in Emacs
-;;  20 or 21, `M-*' or `S-SPC' calls `completing-read', not
+;;  20 or 21 then candidate narrowing invokes `completing-read', not
 ;;  `read-file-name'.  This is because `read-file-name' does not
 ;;  accept a PREDICATE argument before Emacs 22.  The effect is that
 ;;  instead of there being a default directory for completion, the
-;;  current directory at the time you hit `M-*' or `S-SPC' is tacked
-;;  onto each file name, to become part of the completion candidates
-;;  themselves.  Yes, this is a hack.  It works, but be aware of the
-;;  behavior.
+;;  current directory at the time you narrow is tacked onto each file
+;;  name, to become part of the completion candidates themselves.
+;;  Yes, this is a hack.  It works, but be aware of the behavior.
 ;;
 ;;  Progressive completion lets you match multiple regexps, some of
 ;;  which could of course be literal substrings, with their regexp
@@ -2998,8 +3002,11 @@
 ;;(@* "`M-&': Satisfying Additional Predicates")
 ;;  ** `M-&': Satisfying Additional Predicates **
 ;;
-;;  If you use Icicles, then you will use `M-*' or `S-SPC' very often.
-;;  This section describes a related feature that can also be useful.
+;;  If you use Icicles, then you will use candidate narrowing
+;;  (progressive completion) very often.  This section describes `M-&'
+;;  (`icicle-narrow-candidates-with-predicate'), which is like `M-*'
+;;  (`icicle-narrow-candidates') except that it also restricts
+;;  candidates by using a predicate for filtering.
 ;;
 ;;  (If you are new to Icicles or you are unfamiliar with Emacs Lisp,
 ;;  then you might want to just skim this section for now or skip it
@@ -3007,25 +3014,24 @@
 ;;
 ;;  Just as you can use `M-*' or `S-SPC' to narrow the set of
 ;;  candidates by matching an additional regexp, so you can use `M-&'
-;;  (bound to `icicle-narrow-candidates-with-predicate') to narrow by
-;;  satisfying an additional predicate.  The idea is the same; the
-;;  only difference is that, instead of typing a regexp to match, you
-;;  type a predicate for the candidates to satisfy.
+;;  or `C-u S-SPC' to narrow by satisfying an additional predicate.  The
+;;  idea is the same; the only difference is that you are prompted for
+;;  a predicate for the current candidates to satisfy.
 ;;
-;;  `M-&' prompts you for a predicate.  This must be a Boolean
-;;  function of a single completion candidate.  At the prompt, you
-;;  enter its name or its lambda-expression definition (anonymous
-;;  function).
+;;  This must be a Boolean function of a single completion candidate.
+;;  At the prompt, you enter its name or its lambda-expression
+;;  definition (anonymous function).
 ;;
 ;;  Completion is available for some existing predicate names
 ;;  appropriate for the current command.  For example, if you use `C-x
 ;;  4 f TAB M-&' then you can complete against the file-name
 ;;  predicates named in option `icicle-cand-preds-for-file'.  This
 ;;  lets you quickly filter by file type: directories, executables,
-;;  compressed files, remote files, and so on.  If you use a prefix
-;;  arg with `M-&' then additional predicate completion candidates are
-;;  available (they might or might not be appropriate for the current
-;;  command).
+;;  compressed files, remote files, desktop files, and so on.
+;;
+;;  If you use a prefix arg with `M-&' then additional predicate
+;;  completion candidates are available (they might or might not be
+;;  appropriate for the current command).
 ;;
 ;;  The predicate you choose is used the same way as the PREDICATE
 ;;  argument to `completing-read' and `read-file-name'.  This means
@@ -3060,11 +3066,13 @@
 ;;  `read-file-name' call expects is not sufficient, however.  You
 ;;  might use `M-&' after otherwise narrowing the set of candidates,
 ;;  and narrowing changes the full candidates to be conses whose car
-;;  is a string.  For example, command `describe-variable' reads a
-;;  variable name, using completion with Lisp symbols as its full
-;;  candidates.  But if you narrow your input matches (e.g. using
-;;  `S-SPC'), then the full candidates are no longer symbols; they are
-;;  conses with symbol names (strings) as their cars.
+;;  is a string.
+;;
+;;  For example, command `describe-variable' reads a variable name,
+;;  using completion with Lisp symbols as its full candidates.  But if
+;;  you narrow your input matches (e.g. using `S-SPC'), then the full
+;;  candidates are no longer symbols; they are conses with symbol
+;;  names (strings) as their cars.
 ;;
 ;;  So if you define your own predicate for use with a command such as
 ;;  `describe-variable' then it will need to work with either a symbol
