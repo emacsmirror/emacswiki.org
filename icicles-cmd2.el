@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Aug 22 08:29:39 2014 (-0700)
+;; Last-Updated: Sat Aug 23 14:29:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7025
+;;     Update #: 7038
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4772,6 +4772,19 @@ If ACTION is non-nil then it is a function that accepts no arguments.
                         (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
                         (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
                 (setq last-beg  beg))
+              (let* ((total  (length temp-list))
+                     (count  total)
+                     hit-str  help)
+                (dolist (hit  temp-list)
+                  (when (consp (car hit)) (setq hit  (car hit)))
+                  (setq hit-str  (car hit)
+                        help     (or (get-text-property 0 'icicle-mode-line-help hit-str)  "")
+                        help     (format "Context %d/%d%s%s" count total
+                                         (if add-bufname-p " in " ", ")
+                                         help)
+                        count    (1- count))
+                  (put-text-property 0 1 'icicle-mode-line-help help hit-str)
+                  (setcar hit hit-str)))
               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
