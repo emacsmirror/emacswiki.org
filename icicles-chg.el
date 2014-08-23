@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug 22 17:52:06 2014 (-0700)
+;; Last-Updated: Sat Aug 23 11:40:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11245
+;;     Update #: 11253
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -244,7 +244,7 @@
 ;;     Redefine icicle-recent-file(-other-window) as *-of-content* or *-no-search*, per Emacs version.
 ;;     icicle-execute-extended-command-1: Restore SPC to self inserting, for recursive minibuffers.
 ;;     icicle-find-file-abs-of-content: Pass nil as OTHER-WINDOW-P arg to *-find-file-or-expand-dir
-;;     icicle-find-file(-abs)-of-content*, :
+;;     icicle-find-file(-abs)-of-content*:
 ;;       1. Do the cleanup also for undo code, not just last code.
 ;;       2. Just kill-buffer, instead of visiting and doing restore-buffer-modified-p first.
 ;; 2013/11/29 dadams
@@ -1209,7 +1209,7 @@
 ;;       Wrap body in condition-case, so can tolerate non-error lines as no-op in compilation buffer.
 ;; 2014/01/11 dadams
 ;;     icicle-this-command-keys-prefix:
-;;       Reverted change made 2013-12-01.  S-TAB following any prefix key should complete that key.
+;;       Reverted change made 2013/12/01.  S-TAB following any prefix key should complete that key.
 ;; 2014/01/06 dadams
 ;;     icicle-vardoc, icicle-fundoc, icicle-plist, icicle-doc:
 ;;       Bind icicle--last-toggle-transforming-msg.
@@ -4132,6 +4132,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/08/23 dadams
+;;     icicle-define(-file)-command:
+;;       Hopefully fixed pb introduced on 2013-12-01: lost ici*-*-list return from interactive specs.
+;;       Use icicle-condition-case-no-debug, not unwind-protect.  Put LAST-SEXP inside catch.
 ;; 2014/08/22 dadams
 ;;     icicle-define(-file)-command: Added unwind-protect, so LAST-SEXP is always evaluated.
 ;;                                   (C-g in content-searching was sometimes not killing some buffers.)
@@ -4142,14 +4146,14 @@
 ;; 2014/05/17 dadams
 ;;     Added: icicle-with-help-window.
 ;; 2014/04/28 dadams
-;;     icicle(-file)-define-command: Fix pb introduced 2013-12-01: If icicle-top-level not called...
+;;     icicle-define(-file)-command: Fix pb introduced 2013/12/01: If icicle-top-level not called...
 ;; 2014/04/05 dadams
 ;;     Added: icicle-menu-bar-make-toggle - same as bmkp-menu-bar-make-toggle in bookmark+-mac.el.
 ;; 2014/04/01 dadams
 ;;     icicle-define-bookmark-command-1:
 ;;       Faces icicle-annotation & icicle-msg-emphasis, not file-name-shadow & bookmark-menu-heading.
 ;; 2014/03/08 dadams
-;;     icicle(-file)-define-command:
+;;     icicle-define(-file)-command:
 ;;       Use generated let-var CHOICE for (CMD|FILE)-CHOICE.
 ;;       Handle hiding common match, incremental completion and icomplete mode per command properties.
 ;; 2013/12/01 dadams
