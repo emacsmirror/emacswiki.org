@@ -1,0 +1,203 @@
+[[en:PlannerMode]]
+This japanese translating page and this is stub. Dont write in english. --gonbei
+
+Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes,
+and anything else you want to store in a free-text richly-hyperlinked personal information manager integrated into
+Emacs. Because it's in Emacs, it can easily be tweaked to support your particular way of planning, and it
+can draw upon the data and functions you already have in Emacs.
+
+It puts all of the Emacs PIM pieces together: BbdbMode (addresses), EmacsMuse (linking of notes and publishing), etc.  
+This allows you to easily write notes, link to other notes, link to dates, link to addresses, link to -- everything. 
+
+If you're new to Planner, here's a good way to get started:
+
+* This page - Overview of Planner
+* PlannerModeQuickStart - Get started using Planner, and get it in various ways
+* PlannerModeMethods - Read about how other people use planner and find a way similar to how you plan (or want to plan) your day
+* PlannerModeFaq - Frequently-Asked Questions
+* PlannerRecipes - See good practices to use
+* PlannerModeContrib - View contributed code from the mailing list that have not made it into the distribution.
+* PlannerModeWishlist - What can make Planner a better fit for you?
+* PlannerModeMobile - Making Planner work on mobile devices like the OpenMoko Neo FreeRunner.
+
+* The current maintainer's webpage for Planner is at http://wjsullivan.net/PlannerMode.html.
+* Join our mailing list (see https://gna.org/mail/?group=planner-el)! We love getting questions, requests, comments, bug reports...
+* Want to help develop Planner?  See the PlannerDevelopment page for details!
+
+There is a good intro on how to use the PlannerMode in the planner.el file. 
+
+== Getting Planner ==
+
+The current version is at 
+
+* http://download.gna.org/planner-el/
+
+You can get the latest development snapshot at http://repo.or.cz/w/planner-el.git.
+
+See the PlannerModeQuickStart page for more specific directions on
+getting Planner.
+
+The Planner manual is available on-line in several forms at http://wjsullivan.net/static/doc/planner/.
+
+Older version is at
+
+* http://www.emacswiki.org/johnw/Emacs/planner.el
+
+If you're new to PlannerMode (or you don't mind relearning some keybindings), you can add (planner-install-extra-task-keybindings) to your .emacs to take advantage of the new task keybindings. Warning to old users of planner.el: C-c C-t becomes a prefix key; use C-c C-t C-t to create tasks.
+
+== Planner features ==
+
+Take a look at PlannerModeQuickStart for a number of features and how to use them.  
+
+PlannerMode is a way to manage notes and tasks.  It leverages on EmacsMuse to create a hyperlinked planning and note-taking environment.  Two types of pages are usually created "Daily Pages" and "Project Pages."  Daily pages keep track of the day-to-day; Project pages let you organize your notes into projects.  In the typical set up, tasks and notes can be put into both pages simultaneously, giving you the ability to look over your notes chronologically or by project.  
+
+Here are some features of planner.  Some require customization, so read the docs.
+
+* Task management: Maintain a list of tasks cross-linked between Daily pages and Project pages. 
+* Note taking: Create a note in a temporary buffer while in any other emacs buffer.  Choose a Project for the note and it will appear on the Project page and the Daily page.  
+* Diary integration: Diary entries can be displayed in the Daily pages.
+* Context aware: All the above actions can be made context aware, with hyperlinks back to the context.  Thus a note taken while visiting a gnus email message will have a link back to that message.  A task composed while visiting a buffer will
+have a link to the file in the buffer.  PlannerMode helps take the drudgery out of leaving an annotated trail of crumbs for work that you have done.  
+* EmacsMuse: All notes can have links to other notes, Project pages, Daily pages, mail messages, bbdb entries, web pages, files on your harddrive.  You can include images.  All the power and simplicity of a wiki language is there as part of your planning package.
+
+== Migrating to Org-Mode ==
+
+A small Perl program to convert Planner files into something suitable for OrgMode was once [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx available].
+
+== People who use planner.el ==
+
+* SachaChua is a former maintainer and has some stories about using planner.el. Her published planner wiki can be found at http://sachachua.com/notebook/wiki/ .
+** Blog post about how her former workflow is [http://sachachua.com/wp/2007/12/23/one-day-with-planner here]
+* BrentGoodrick is addicted to PlannerMode.
+* JodyKlymak uses planner mode for his daily log.
+* LucasBonnet is now addicted.
+* BruceDurling uses it every day.
+* TravisHartwell just started using PlannerMode with planner diary and cal-desk-calendar.  I'm using it to get more organized with work and other things.  Hopefully it will help!  Thanks Sacha!
+* SebastianFreundt just started to use it. :D
+* RaymondZeitler decided to use it for his personal diary on 2004-06-26 and is fond of it.
+* Joe Steeve uses plannermode and simply loves it (http://www.joesteeve.org/).
+* ChrisParsons was sucked into using Gnus (and now loves it) by this fine piece of software :)
+* JohnSullivan is the current maintainer and uses it at home and at work.
+* JanAlonzo uses it to plan his tasks as well as a place to write his 'blog'.
+* BillHarris is beginning to use it.
+* JonathanGonzalez is beginning to use it at http://zeus.gnufans.net/
+* ChrisWebber has begun using it, and is amazed at his sudden ability to keep track of many projects.
+* ClairChing has been using it to keep her life somewhat more organized and sane; also to remember stuff.
+* AadityaSood uses it to manage the chaos that is his life.
+* Noorul Islam is using PlannerMode these days. (http://blog.noorul.com/)
+* JosephKiniry has been using PlannerMode to keep track of his busy life since May of 2002.
+* ChrisMcMahan has been happily using planner for 2 years. Sure cure for those 'senior moments'! :)
+* SurendraSinghi is learning how to use it.
+* DmitriBrechalov uses it to plan his tasks and maintain lists of photos preparing them to publication/printing.
+* CharlesStewart uses it to keep his journal, organize tasks, and record personal metrics "the hard way"
+* DanielMartins uses PlannerAndRemind nicely integrated.
+* FrankRuell uses it to organize various tasks.
+* JesseAlama uses planner to help organize nearly everything he does.
+* RossLonstein uses planner at home and at work.
+* BastienGuerry used planner to do other things than planning then switched to OrgMode
+* MartinBaeuml uses planner to keep important stuff in a safe place and out of his head.
+* PatrickHawkins loves his planner.
+* MichaelOlson uses Planner at work to keep track of what he should be doing.
+* MichaelHerstine has just started using Planner
+* AlejandroNoli uses it to organize his tasks and ideas. Great!
+* XinShi used to  this, but later switched to OrgMode. 
+* StevenNess uses it constantly to plan his coding projects.  It's essential.
+* MathiasKegelmann uses planner at home and at work.
+* AlexScherbanov can't live without planner-mode!
+* SuSo I am translating the documentation into Spanish at http://gnu.manticore.es/manual-planner-emacs
+* [[Bernard Hurley]] I have just started using planner+remember. It is ideally suited to the way I work.
+* XueFuqiao used planner occasionally.
+
+== Bug in Planner 3.42 Registry Handling ==
+
+There is a bug in planner-registry.el in the latest version of planner mode. I'm surprised that no one has found it in the last 4 years as it makes the registry unusable. I have emailed the author, but for the time being a
+temporary fix is to put:
+
+<pre>
+(defun planner-registry-update-registry (from-file new-entries)
+  "Update the registry FROM-FILE with NEW-ENTRIES."
+  (with-temp-buffer
+    (find-file planner-registry-file)
+    (goto-char (point-min))
+    (while (re-search-forward
+	    (concat "^(\"" from-file) nil t)
+      (delete-region (planner-line-beginning-position)
+		     (planner-line-end-position)))
+    (goto-char (point-min))
+    (re-search-forward "^'(\n" nil t)
+    (dolist (elem new-entries)
+      (insert (with-output-to-string (prin1 elem)) "\n"))
+    (save-buffer)
+    (kill-buffer (current-buffer)))
+  (message (format "Planner registry updated for URLs in %s"
+		   (file-name-nondirectory
+		    (buffer-file-name)))))
+</pre>
+
+in your .emacs (or other init file) after:
+<pre>
+(require 'planner-registry)
+</pre>
+but before:
+<pre>
+
+(planner-registry-initialize)
+</pre>
+
+==Using Planner with NotMuch==
+
+The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring. The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code. The text of the Date: and From: field are also copied to the kill ring as the user will probably want these too.
+
+<pre>
+;; Code for using notmuch with planner
+(defun notmuch-show-get-planner-link ()
+  "Get a planner-formatted link to a notmuch-show email message.
+The format of the link is:
+
+   [[<subject>]], <date>, <from>.
+
+The subject field is suitably edited to remove any characters
+that would break the coding of the link. The text of the Date:
+and From: fields are also also copied to the kill ring as the
+user will most probably need them.
+"
+  ;; Make sure planner understands lisp coded links
+  (require 'planner-lisp)
+  (let ((id (concat "id:" (notmuch-show-get-message-id t)))
+	(subject (notmuch-show-get-subject))
+	(date (notmuch-show-get-date))
+	(from (notmuch-show-get-from))
+	title link-code link)
+    ;; Replace awkward characters in subject
+    (setq title (replace-regexp-in-string "\"" "'" subject))
+    (setq title (replace-regexp-in-string "\\[" "{" subject))
+    (setq title (replace-regexp-in-string "\\]" "}" subject))
+    ;; Construct the title of the show buffer
+    (setq title (concat "*"
+			(truncate-string-to-width subject 30 nil nil t)
+			"*"))
+    ;; Construct link code
+    (setq link-code
+	  (format "lisp:/(notmuch-show \"%s\" (current-buffer) nil \"%s\")"
+		  id
+		  title))
+    ;; Construct link
+    (setq link
+	  (format "[[%s][%s]], %s, %s." link-code subject date from))))
+
+(defun notmuch-show-stash-planner-link ()
+  "Planner-formatted link to notmuch-show email message to kill ring."
+  (interactive)
+  (notmuch-common-do-stash (notmuch-show-get-planner-link)))
+
+(define-key notmuch-show-stash-map "k" 'notmuch-show-stash-planner-link)
+
+</pre>
+
+I, [[Bernard Hurley]], would be interested if there is a less messy way to replace unwanted characters in the Subject: field (I have used Common Lisp and Scheme for years but am relatively new to Elisp.) I think I have covered all the  characters that could cause problems but if you find more please post them here.
+ 
+----
+CategoryModes
+CategoryPersonalInformationManager
+CategoryCalendar
+CategoryTodo
