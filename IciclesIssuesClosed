@@ -81,6 +81,47 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 
 
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+
+describe-face with icicles loaded results in an error:
+
+Emacs version: GNU Emacs 24.3.1 on Linux
+
+  (add-to-list 'load-path "~/.emacs.d/elpa/icicles-20140822.1645" t)
+  (require 'icicles)
+
+M-x describe-face
+
+  Debugger entered--Lisp error:
+  (wrong-number-of-arguments #[nil "..." 
+    [faceprop face get-char-property read-face-name default keywordp
+     (foreground-color background-color) nil facep] 4 1844164] 1)
+    face-at-point(t)
+    (or (face-at-point t) (quote default))
+    (if (> emacs-major-version 23) (or (face-at-point t) (quote default)) "= `default' face")
+    (read-face-name "Describe face"
+      (if (> emacs-major-version 23) (or (face-at-point t) (quote default))
+      "= `default' face") (not icicle-WYSIWYG-Completions-flag))
+  ...
+
+-- JohnPertwee
+
+[new:DrewAdams:2014-08-23 20:31 UTC]
+Should be OK now. Please try the latest <tt>[[icicles-mode.el]]</tt>. The arity of vanilla function `face-at-point' changed between Emacs 24.3 and 24.4.  Thanks for the report. -- DrewAdams
+
+
+
 <pre>
 
 </pre>
