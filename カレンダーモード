@@ -57,3 +57,296 @@
 ----
 PIM
 カテゴリ・カレンダー
+[[en:CalendarMode]]
+
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
+
+`M-x calendar'
+
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
+
+== キーバインディング ==
+
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
+
+
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
+
+カレンダーの計算と動き:
+
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
+
+== ウィッシュリスト ==
+
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
+
+== 参照されたし ==
+
+* ダイアリモード
+* プランナーモード
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
+* [[Calfw]]
+----
+PIM
+カテゴリ・カレンダー[[en:CalendarMode]]
+
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
+
+`M-x calendar'
+
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
+
+== キーバインディング ==
+
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
+
+
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
+
+カレンダーの計算と動き:
+
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
+
+== ウィッシュリスト ==
+
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
+
+== 参照されたし ==
+
+* ダイアリモード
+* プランナーモード
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
+* [[Calfw]]
+----
+PIM
+カテゴリ・カレンダー
+[[en:CalendarMode]]
+
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
+
+`M-x calendar'
+
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
+
+== キーバインディング ==
+
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
+
+
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
+
+カレンダーの計算と動き:
+
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
+
+== ウィッシュリスト ==
+
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
+
+== 参照されたし ==
+
+* ダイアリモード
+* プランナーモード
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
+* [[Calfw]]
+----
+PIM
+カテゴリ・カレンダー[[en:CalendarMode]]
+
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
+
+`M-x calendar'
+
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
+
+== キーバインディング ==
+
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
+
+
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
+
+カレンダーの計算と動き:
+
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
+
+== ウィッシュリスト ==
+
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
+
+== 参照されたし ==
+
+* ダイアリモード
+* プランナーモード
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
+* [[Calfw]]
+----
+PIM
+カテゴリ・カレンダー
+[[en:CalendarMode]]
+
+カレンダーモードはもともとEdwardReigoldによって書かれました.
+ここにはじめるためのヒントとチップスがある.
+開始しあなたのカレンダーを表示するためには,次のことをするだけです:
+
+`M-x calendar'
+
+これは標準ビューで表示されるあなたのカレンダーで新しいバッファーを開くでしょう.
+あなたの好む言語でカレンダーモードを話すためにカレンダーローカライゼーションは教えることができる.
+カレンダーモードはLaTeXを使うことによってツリーを死なすためにカレンダー印刷をサポートする
+
+== キーバインディング ==
+
+それは(何かをリストするために)あなたがするよりも多くの記法を恐らく知っている、`p C-h'と打て.
+その結果はこのようなものでなければならない:
+
+
+    p o    calendar-print-other-dates			他の暦の一覧を表示する
+    p m    calendar-print-mayan-date			マヤ暦を表示する
+    p f    calendar-print-french-date			フランス革命暦を表示する
+    p i    calendar-print-islamic-date			ヒジュラ(イスラム)暦を表示する
+    p h    calendar-print-hebrew-date			ユダヤ(ヘブライ)暦を表示する
+    p a    calendar-print-astro-day-number		ユリウス暦の起点日からの合算日数を表示する
+    p j    calendar-print-julian-date			ユリウス暦を表示する
+    p c    calendar-print-iso-date 			(週番号を含む!)ISO暦を表示する
+    p p    calendar-print-persian-date			イラン(ペルシャ)暦を表示する
+    p e    calendar-print-ethiopic-date			エチオピア暦
+    p k    calendar-print-coptic-date			コプト暦を表示する
+    p C    calendar-print-chinese-date			中国暦を表示します
+    p d    calendar-print-day-of-year			その年の日数を表示します
+
+カレンダーの計算と動き:
+
+; `C-SPC' に続いて `M-=': リージョン(マークと現在のポイントの間)内の日にちを数える.
+; ##C-x ]##: 翌年の同じ日へ移動.
+; ##9 M-}##: 今日から9ヶ月後の日を探しだす.
+; ##. 177 C-b##: 今日から177日前の日を探し出す.
+; ##8 C-n##: 8週間後に移動する.
+; ##g w##: 与えられたISO週へ行く.
+
+== ウィッシュリスト ==
+
+* PalmPilotとの同期 -- MarceloToledo
+* カレンダー、ダイアリなどのための統合インタフェース... -- XavierMaillard
+* カレンダーのためのカテゴリーサポート(複数カレンダーサポートならばなおよし) -- XavierMaillard
+* RFC2445のフルサポート(icalendar.elによって提供されるようにインポート/エクスポート) -- XavierMaillard
+* 異なる種類のイベントための異なる色 -- DavidArroyo
+
+== 参照されたし ==
+
+* ダイアリモード
+* プランナーモード
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
+* [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
+* [[Calfw]]
+----
+[[PIM]]
+[[カテゴリ・カレンダー|カレンダー]]
