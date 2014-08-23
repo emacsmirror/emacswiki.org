@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 22 08:25:24 2014 (-0700)
+;; Last-Updated: Fri Aug 22 18:05:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27283
+;;     Update #: 27297
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7224,6 +7224,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                  bufs))
                  (bufs         (cond ((equal "" content-pat)
                                       (dolist (buf  bufs)
+                                        ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS-TO-KILL.
                                         ;; Bound in `icicle-visit-marked-file-of-content-1'.
                                         (unless (memq (setq buf  (get-buffer buf)) icicle-existing-bufs)
                                           (add-to-list 'icicle-new-bufs-to-kill buf)))
@@ -7231,13 +7232,19 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                      (t
                                       (icicle-remove-if-not
                                        (lambda (buf)
-                                         (let ((found  (with-current-buffer buf
-                                                         (save-excursion
-                                                           (goto-char (point-min))
-                                                           (re-search-forward content-pat nil t)))))
-                                           ;; Bound in `icicle-visit-marked-file-of-content-1'.
-                                           (unless (memq (setq buf  (get-buffer buf)) icicle-existing-bufs)
-                                             (add-to-list 'icicle-new-bufs-to-kill buf))
+                                         (let* (;; Do this as soon as possible, in case of immediate `C-g'.
+                                                ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS-TO-KILL.
+                                                ;; Bound in `icicle-visit-marked-file-of-content-1'.
+                                                (IGNORE  (unless (memq (setq buf  (get-buffer buf))
+                                                                       icicle-existing-bufs)
+                                                          (add-to-list 'icicle-new-bufs-to-kill buf)))
+                                                (found   (with-current-buffer buf
+                                                           (save-excursion
+                                                             (goto-char (point-min))
+                                                             (re-search-forward content-pat nil t)))))
+;;; $$$$$$$$ I was doing this here, but advanced it to before searching, for possible `C-g'.
+;;;                                            (unless (memq (setq buf  (get-buffer buf)) icicle-existing-bufs)
+;;;                                              (add-to-list 'icicle-new-bufs-to-kill buf))
                                            (when (and found ; Don't do it just because incrementally complete.
                                                       (or (icicle-get-safe this-command
                                                                            'icicle-apropos-completing-command)
@@ -7267,16 +7274,21 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                     ;; Avoid the error raised by calling `find-file-noselect' on a directory
                                     ;; when `find-file-run-dired' is nil.
                                     (and (or find-file-run-dired  (not (file-directory-p filname)))
-                                         (let* ((buf    (find-file-noselect filname))
-                                                (found  (with-current-buffer buf
-                                                          (message "Matching buffer contents...")
-                                                          (save-excursion
-                                                            (goto-char (point-min))
-                                                            (re-search-forward content-pat nil t)))))
-                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
-                                           ;; Bound in `icicle-visit-marked-file-of-content-1'.
-                                           (unless (memq buf icicle-existing-bufs)
-                                             (add-to-list 'icicle-new-bufs-to-kill buf))
+                                         (let* ((buf     (find-file-noselect filname))
+                                                ;; Do this as soon as possible, in case of immediate `C-g'.
+                                                ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS-TO-KILL.
+                                                ;; Bound in `icicle-visit-marked-file-of-content-1'.
+                                                (IGNORE  (unless (memq (setq buf  (get-buffer buf))
+                                                                       icicle-existing-bufs)
+                                                           (add-to-list 'icicle-new-bufs-to-kill buf)))
+                                                (found   (with-current-buffer buf
+                                                           (message "Matching buffer contents...")
+                                                           (save-excursion
+                                                             (goto-char (point-min))
+                                                             (re-search-forward content-pat nil t)))))
+;;; $$$$$$$$ I was doing this here, but advanced it to before searching, for possible `C-g'.
+;;;                                            (unless (memq buf icicle-existing-bufs)
+;;;                                              (add-to-list 'icicle-new-bufs-to-kill buf))
                                            (when (and found ; Don't do it just because incrementally complete.
                                                       (or (icicle-get-safe this-command
                                                                            'icicle-apropos-completing-command)
@@ -8839,8 +8851,8 @@ toggle this hiding using `\\[icicle-dispatch-C-x.]'."
     'NOT-INTERACTIVE-P)                 ; Not a real command - just a helper function.
 
 
-    (put 'icicle-recent-file-of-content 'icicle-hide-common-match t)
-    (put 'icicle-recent-file-of-content 'icicle-Completions-window-max-height 200)
+  (put 'icicle-recent-file-of-content 'icicle-hide-common-match t)
+  (put 'icicle-recent-file-of-content 'icicle-Completions-window-max-height 200)
   (defun icicle-recent-file-of-content ()
     "Open a recently used file.
 Completion candidates here are absolute, not relative, file names.
@@ -9475,7 +9487,7 @@ that command for more information."
 ;;;                                                             (save-excursion
 ;;;                                                               (goto-char (point-min))
 ;;;                                                               (re-search-forward content-pat nil t)))))
-;;;                                              ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+;;;                                              ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS-TO-KILL
 ;;;                                              (unless (memq buf icicle-existing-bufs)
 ;;;                                                (add-to-list 'icicle-new-bufs-to-kill buf))
 ;;;                                              found))))))
@@ -9517,6 +9529,10 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                                       ;; e.g., when using progressive completion: foo.el, foo.el<2>,...
                                       (or (setq exists  (find-buffer-visiting file))
                                           (create-file-buffer file))))
+                           ;; Do this as soon as BUF is created, in case of immediate `C-g' to exit etc.
+                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS-TO-KILL
+                           (IGNORE  (unless (memq buf icicle-existing-bufs)
+                                      (add-to-list 'icicle-new-bufs-to-kill buf)))
                            (found   (with-current-buffer buf
                                       (message "Matching file contents...")
                                       (unless (or dir-p  exists) ; EXISTS prevents inserting it more than once.
@@ -9525,8 +9541,9 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                                         (insert-file-contents file 'VISIT))
                                       (save-excursion (goto-char (point-min))
                                                       (re-search-forward content-pat nil t)))))
-                      (unless (memq buf icicle-existing-bufs)
-                        (add-to-list 'icicle-new-bufs-to-kill buf))
+;;; $$$$$$$$ I was doing this here, but advanced it to before searching, for possible `C-g'.
+;;;                       (unless (memq buf icicle-existing-bufs)
+;;;                         (add-to-list 'icicle-new-bufs-to-kill buf))
                       (when (and found  ; Don't do it just because incrementally complete.
                                  (or (icicle-get-safe this-command 'icicle-apropos-completing-command)
                                      (icicle-get-safe this-command 'icicle-cycling-command)
