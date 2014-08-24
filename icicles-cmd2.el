@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug 23 14:29:16 2014 (-0700)
+;; Last-Updated: Sun Aug 24 09:02:53 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7038
+;;     Update #: 7043
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5341,10 +5341,13 @@ using `icicle-search'.  For more information, see the doc for command
   ((enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                   bookmark-completion-ignore-case)
    (prompt                                   "Search bookmark: ")
-   (icicle-search-context-regexp             (icicle-search-read-context-regexp))
+   (icicle-search-context-regexp             (icicle-search-read-context-regexp
+                                              (format "Search bookmarks %swithin contexts (regexp): "
+                                                      (if icicle-search-complement-domain-p "*NOT* " ""))))
    (bookmark-automatically-show-annotations  nil) ; Do not show annotations
    (icicle-multi-completing-p                icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts                '(1))
+   (icicle-bookmark-completing-p             t)
    (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                  ()
                                                '((2 (face icicle-annotation))
@@ -6447,7 +6450,9 @@ using `icicle-search'.  For more information, see the doc for command
 `icicle-search', but without BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
-                      (icicle-search-read-context-regexp))
+                      (icicle-search-read-context-regexp
+                       (format "Search bookmarks %swithin contexts (regexp): "
+                               (if icicle-search-complement-domain-p "*NOT* " ""))))
                  ,(not icicle-show-multi-completion-flag)))
   (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match
