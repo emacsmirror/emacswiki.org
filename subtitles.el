@@ -1,5 +1,4 @@
-;; -*- mode: emacs-lisp; coding: hebrew-iso-8bit-unix -*-
-;; subtitles.el - work on .srt (subripper) subtitle files
+;;; subtitles.el - work on .srt (subripper) subtitle files
 ;; Copyright (C) 2009 Ehud karni <address@hidden>
 
 ;; This file is NOT part of GNU Emacs, distribution conditions below.
@@ -8,7 +7,7 @@
 ;;              Ben Gurion st'   14   ןוירוג ןב 'חר
 ;;              Kfar - Sava    44 257     אבס - רפכ
 ;;              ==================================;;              
-address@hidden   972-9-7659599
+;; address@hidden   972-9-7659599
 ;;              ==================================
 ;;     RCS: $Id: subtitles.el,v 1.100 2009/05/16 14:10:45 ehud Exp $
 
