@@ -1,3 +1,7 @@
+[new:PhilHudson:2014-08-24 17:34 UTC]Most of the content on this page applies to versions of BBDB earlier than 3.x only
+
+-----
+
 *Question:* When I receive mail in gnus from someone who's not in my bbdb (and I don't try to do any autonoticing or whatnot), I still get a bbdb buffer popped up sometimes with just my own bbdb record.  Is there some way to tell bbdb to _never_ pop-up my own email?
 
     (setq bbdb-use-pop-up nil)
