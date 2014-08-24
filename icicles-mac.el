@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sat Aug 23 11:37:48 2014 (-0700)
+;; Last-Updated: Sun Aug 24 09:14:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1261
+;;     Update #: 1263
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -997,7 +997,11 @@ You need library `Bookmark+' for this command." type type) ; Doc string
                                                 (bmkp-sort-omit
                                                  (funcall ',(intern (format "bmkp-%s-alist-only" type))
                                                   ,@args))))
-     (regexp                                   (icicle-search-read-context-regexp))
+     (regexp                                   (icicle-search-read-context-regexp
+                                                ,(format
+                                                  "Search %s bookmarks %swithin contexts (regexp): "
+                                                  type
+                                                  (if icicle-search-complement-domain-p "*NOT* " ""))))
      (bookmark-automatically-show-annotations  nil) ; Do not show annotations
      (icicle-sort-orders-alist
       (append
