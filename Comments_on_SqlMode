@@ -11,7 +11,7 @@ Appreciate your help :)
 
 Emacs will use a command line client to communicate to the database. Do you have it installed and is it called `mysql'?
 
-If it is, and it works from a terminal but not within Emacs, then you need to its directory to `exec-path'.
+If it is, and it works from a terminal but not within Emacs, then you need to add its directory to `exec-path' (which ought to match the PATH environment variable, so there's definitely something unexpected going on...)
 
 -- AlexSchroeder 2014-08-24 07:08 UTC
 
