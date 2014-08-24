@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 24 09:08:05 2014 (-0700)
+;; Last-Updated: Sun Aug 24 09:17:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11260
+;;     Update #: 11263
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4137,6 +4137,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/08/24 dadams
+;;     icicle-define-search-bookmark-command: Better prompt for context regexp.
 ;; 2014/08/23 dadams
 ;;     icicle-define(-file)-command:
 ;;       Hopefully fixed pb introduced on 2013-12-01: lost ici*-*-list return from interactive specs.
