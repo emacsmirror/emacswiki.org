@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug 23 14:37:53 2014 (-0700)
+;; Last-Updated: Sun Aug 24 09:08:05 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11256
+;;     Update #: 11260
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/24 dadams
+;;     icicle-search-bookmark, icicle-search-bookmarks-together: Better prompt for context regexp.
+;;     icicle-search-bookmark: Bind icicle-bookmark-completing-p.
 ;; 2014/08/23 dadams
 ;;     icicle-search-regexp-scan: Add each context number and total number to icicle-mode-line-help.
 ;; 2014/08/22 dadams
