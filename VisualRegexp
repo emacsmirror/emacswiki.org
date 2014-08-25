@@ -15,7 +15,7 @@ While constructing the replacement in the minibuffer, you get live visual feedba
 
 Hosted under https://github.com/benma/visual-regexp-steroids.el/.
 
-This is an extension to ##visual-regexp## which lets you use an external, modern regexp engine for searching and replacing. The package comes with an interface to Python's regexp engine out of the box. 
+This is an extension to ##visual-regexp## which lets you use an external, modern regexp engine for searching and replacing. The package comes with an interface to Python's regexp engine and pcre2el-support out of the box. 
 
 Note the absence of escape characters in the search string:
 [[image:VisualRegexpSteroidsSearch]]
