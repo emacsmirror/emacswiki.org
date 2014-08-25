@@ -306,8 +306,10 @@ Ideally a keymap could send <code>meta</code> with the <code>alt</code> key, but
 
 to my customized keymap:
 
-Finally, I add 
+Finally, I added
+
      keymap="us.customized.iso"
+
 to /etc/rc.conf to permanently use the customized keymap.
 
 === NetBSD console ===
