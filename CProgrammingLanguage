@@ -12,6 +12,8 @@ For DebuggingWithEmacs use the GrandUnifiedDebugger.
 
 See also:
 
+* [http://tuhdo.github.io/c-ide.html C/C++ Development Environment for Emacs ]
+* CPlusPlusMode - Built in mode for writing C++ code.
 * CEldocMode -- display the arguments of C functions while programming
 * CmodeAddons -- display C functions arguments when code
 * Lisp:c-toggle-dot-pointer.el -- Add-on for C programming that allows toggling a variable in a function between pointer and non-pointer while simultaneously toggling between "." and "->" for pointer references in that function.
