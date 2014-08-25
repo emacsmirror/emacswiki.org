@@ -282,22 +282,28 @@ To make a Option (Alt) work as described for AquamacsEmacs above,  set ns-altern
 
 === FreeBSD console ===
 
-Option 1 - Use the <code>ESC</code> key
+*Option 1* - Use the <code>ESC</code> key
 
 That is, press then release <code>ESC</code> then hit <code>x</code> to get <code>M-x</code>.
 
-Option 2 - Use the us.emacs keymap
+*Option 2* - Use the us.emacs keymap
 
 There is a keymap for Emacs that others report works for them, but it didn't work for me.  To try it, you can run
+
     kbdcontrol -l /usr/share/syscons/keymaps/us.emacs.kbd.
+
 Put 
+
     keymap="us.emacs"
+
 in /etc/rc.conf to use it permanently.
 
-Option 3 - Use a customized keymap
+*Option 3* - Use a customized keymap
 
 Ideally a keymap could send <code>meta</code> with the <code>alt</code> key, but I couldn't figure this out.  Instead I use a customized keymap based off of us.iso.kdb.  First I changed the line with <code>lalt</code> and replaced all instances of <code>lalt</code> with <code>meta</code>.  I did the same for <code>ralt</code>.  Next, I used the <code>windows</code> key on my keyboard to send <code>alt</code>.  To find the scancodes sent for a key, you can use the misc/kbdscan port.  In my case the <code>windows</code> key sends the scancode 105, so I added
+
      105   lalt   lalt   lalt   lalt   lalt   lalt   lalt   lalt    O
+
 to my customized keymap:
 
 Finally, I add 
