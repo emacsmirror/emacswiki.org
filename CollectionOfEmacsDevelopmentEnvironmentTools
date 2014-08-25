@@ -45,6 +45,8 @@ Issues
 ----
 Links to some comments, pictures etc
 
+* [http://tuhdo.github.io/c-ide.html C/C++ Development Environment for Emacs ]
+* CPlusPlusMode - Built in mode for writing C++ code.
 * SemanticLibraryParsing has some special configuration options for parsing certain libraries.
 * A (gigantic?) gif demo showing what is supposed to be CEDET%%/%%Semantic: [http://mathrick.org/files/emacs-demo.gif The gigantic demo gif] (as of Jan 20, 2009, the file's host, mathrick.org, appears to be gone but there does seem to be a copy of the original file [http://web.archive.org/web/20070611232517/http://www.imada.sdu.dk/~makat05/emacs-demo.gif here])
 * A blog post with an image: http://vkk.blogspot.com/2005/04/emacs-code-browser.html
