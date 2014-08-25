@@ -290,7 +290,7 @@ That is, press then release <code>ESC</code> then hit <code>x</code> to get <cod
 
 There is a keymap for Emacs that others report works for them, but it didn't work for me.  To try it, you can run
 
-    kbdcontrol -l /usr/share/syscons/keymaps/us.emacs.kbd.
+    kbdcontrol -l /usr/share/syscons/keymaps/us.emacs.kbd
 
 Put 
 
