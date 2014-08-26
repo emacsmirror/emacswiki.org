@@ -139,7 +139,7 @@ Example:
 
 Emacs batch mode does not read your personal config (or any config, it's equivalent to -Q) so you don't get packages loaded. 
 
-You can do whatever you were going to do though, just {{{package-initialize}}} when you eval. Here's how I build packages using [[Elpakit]], which is itself a package:
+You can do whatever you were going to do though, just {{{package-initialize}}} when you eval. Here's how I build packages using fElpaKit, which is itself a package:
 
 {{{
 emacs -batch --eval '(progn(package-initialize)(elpakit-make-multi "~/work/elmarmalade"))'
