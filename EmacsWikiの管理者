@@ -1,14 +1,13 @@
 [[en:EmacsWikiAdministrators]]
-We fight WikiSpam day and night!  :)
 
-== Join The Team ==
+私達は昼夜WikiSpamと戦っています!  :)
 
-You're welcome to come help us out -- just ask
-one of the existing administrators for an [Self:action=password admin password].
-The only real job we have is maintaining BannedContent and BannedHosts.
+== チームに参加する ==
 
-Current administrators:
+私達を助けに来てくれてありがとう -- [Self:action=password 管理者パスワード]は存在する管理者の1人に尋ねください.
+私たちが持っている唯一の本当の仕事はBannedContentとBannedHostsを維持している.
 
+現在の管理者:
 * AlexSchroeder
 * [[bkhl]]
 * [[StefanKamphausen]]
@@ -25,27 +24,27 @@ Current administrators:
 * [irc://irc.freenode.net/jlf,isuser jlf]
 * XueFuqiao
 
-The powers of an administrator:
+管理者の力:
+# 攻撃の場合にはサイト全体をロックとアンロック.
+# ある時点から全ての変更をロールバック(結果は通常の変更ように元に戻すことができる無数の変更である).
+# サイト全体に渡る検索と置換(結果は通常の変更ように元に戻すことができる無数の変更である).
+# 禁止とロックは管理者には影響がない.
+# ホスト名, IP番号, もしくはページコンテンツ正規表現を使って禁止するために禁止されているホストと禁止されているコンテンツを保守する.
+# ページのロックとアンロック.
+# InterMapページを修正することによってURL短縮のリストを変更する.
+# NearMapページを修正することによってNearLinksを介して接続されたサイトのリストを変更する
+# いつでもメンテナンスを走らせる.
 
-# Lock and unlock the entire site in case of an attack.
-# Rollback all changes from a certain point in time (the result are a gazillion changes which can be reverted like ordinary changes).
-# Search and replace over the entire site (the result are a gazillion changes which can be reverted like ordinary changes).
-# Bans and locks have no effect on administrators.
-# Maintain BannedHosts and BannedContent to ban hostnames, IP numbers, or page content using regular expression.
-# Lock and unlock pages.
-# Change the list of URL abbreviations by modifying the InterMap page.
-# Change the list of sites connected via NearLinks by modifying the NearMap page
-# Run maintenance at any time.
+== InterMap リクエスト ===
+古いInterMap議論はInterMapDiscussionにあります.
 
-== InterMap Requests ===
-
-Old InterMap discussion is at InterMapDiscussion.
-
-== Banning Ranges ==
-
-Whois can tell you whether you should bother banning just one IP, or an entire range.  I use http://network-tools.com/ when working on a system that does not provide whois.
-
-So when you notice spammers, first look up their whois info.  Find the part showing the range and name of the company, then ban the entire range.  Document it here on this page and add a timestamp.  We will remove the bans after a few days, hoping that the spammers moved on.
+== 禁止範囲 ==
+Whoisはあなたにあなたが気にしなければならない禁止されているIP, もしくは全体の範囲を教えることができる.
+whoisを提供しないシステムが動いているとき私は http://network-tools.com/ を使っている.
+だから私はスパマーに注意するとき, 最初にそれらのwhois情報を調べる.
+会社の範囲や名称を示す部分を探せ, その後全範囲を禁止する.
+このページでここにそれを文書化しろそしてタイムスタンプを追加しろ.
+私達はスパマーが移動するのを期待して数日後に禁止を取り除くだろう.
 
 ----
 CategoryEmacsWikiSite
