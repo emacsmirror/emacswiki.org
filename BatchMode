@@ -135,6 +135,21 @@ Example:
 }}}
 
 
+== Using packages in your script ==
+
+Emacs batch mode does not read your personal config (or any config, it's equivalent to -Q) so you don't get packages loaded. 
+
+You can do whatever you were going to do though, just {{{package-initialize}}} when you eval. Here's how I build packages using [[Elpakit]], which is itself a package:
+
+{{{
+emacs -batch --eval '(progn(package-initialize)(elpakit-make-multi "~/work/elmarmalade"))'
+}}}
+
+Nothing else special is required, except the package directory (which is {{{~/.emacs.d/elpa}}}) to be in the //normal// place.
+
+It does seem that this would be a useful additional startup option, batch but with your packages and not your config.
+
+
 ==Discussion==
 
 We need a term more descriptive than "scripting" for this, since some people
