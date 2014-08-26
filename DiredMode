@@ -28,7 +28,14 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * DiredSearchAndReplace -- Search multiple files.
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
 
-/Note/: Regarding the omit mode thing notice that you could prefer a simple and very general solution which doesn't rely on any extras: to do ##C-u s## to change the ls flags and immediately refresh (that is, ##C-u s## takes care of refreshing also, so there is very little typing involved). Usually you will want to remove ##-a## to hide dotfiles. But you can do everything you're already able to do in the shell console, which is far more than what a simple toggle mode could offer (at the cost of some extra keypresses). And there is a history of previous flags available, so "toggling" is pretty fast too.
+
+
+
+
+
+
+
+
 
 [:DiredEnhancements]
 == Dired tips and additional features ==
