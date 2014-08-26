@@ -54,7 +54,7 @@ The 2014 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the a
 * [https://www.google-melange.com/gsoc/project/details/google/gsoc2014/bpt/5803402760028160 Guile-Emacs]
 
 == Current State ==
-The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git their Guile repository]. The "wip" branches of both represent the latest state of GuileEmacs and _both_ are nesscary to test it. 
+The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git their Guile repository]. The "wip" branches of both represent the latest state of GuileEmacs and _both_ are necessary to test it. (Build the wip branch of the Guile repo first, then build the wip branch of the Emacs repo with that.)
 
 As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully replaced with that of libguile, and most things Just Work™. Some performance regression of dynamic scoping (lexically scoped code should be fine), and broken corner cases (like crazy Elisp macros that directly output legacy Elisp bytecode) remain.
 
