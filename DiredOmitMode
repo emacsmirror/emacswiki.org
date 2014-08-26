@@ -1,39 +1,40 @@
 [[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
 [[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
 [[zh:DiredOmitMode_ç®å½éèæ¨¡å¼]]
-DiredOmitMode lets you hide uninteresting files, such as backup files and AutoSave files, from the DiredMode view.
 
-It is defined in the [[Dired X]] package, so you must also arrange to load that:
 
-    ;; Load Dired X when Dired is loaded.
-    (add-hook 'dired-load-hook '(lambda () (require 'dired-x)))
+This page is about Omit Mode in [[Dired]], which lets you hide uninteresting files, such as backup files and AutoSave files.
 
-    ;; Enable toggling of uninteresting files.
-    (setq dired-omit-mode t)
+It is defined in the built-in [[Dired X]] package, so need to load that:
 
-Note that versions of Emacs before 22.1 used `dired-omit-files-p'. `M-o' in Dired buffers will toggle hiding of files. Variables `dired-omit-files' (note: no `-p' at end) and `dired-omit-extensions' together define the uninteresting files.
+    (add-hook 'dired-load-hook '(lambda () (require 'dired-x))) ; Load Dired X when Dired is loaded.
+    (setq dired-omit-mode t) ; Turn on Omit mode.
 
-With most recent Emacs versions (e.g. 23.1.92.1) no hooks are needed and the following lines in your .emacs enable omit mode (in this example "dot" files are omitted):
+`M-o' in Dired buffers toggles hiding of files. Variables `dired-omit-files' and `dired-omit-extensions' together define the uninteresting files. (Versions of Emacs before 22.1 used `dired-omit-files-p').
+
+With most recent Emacs versions no hooks are needed and the following lines in your [[init file]] enable omit mode (in this example dot files are omitted):
 
     (require 'dired-x)
+    (setq-default dired-omit-files-p t) ; Buffer-local variable
+    (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
 
-    (setq-default dired-omit-files-p t) ; this is buffer-local variable
 
-    (setq dired-omit-files
-          (concat dired-omit-files "\\|^\\..+$"))
 
-----
 
-One thing that I want is for dot-files (e.g., .bashrc, .emacs, etc.) to be colored in the same dim face that the other uninteresting files are colored in.  I set (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"), which does hide my dot-files when I hit M-o, but these files aren't colored in the dim face.  It seems it only dims the files that match the extensions in dired-omit-extensions, but obviously this won't work for dot-files.  Does anyone have a work-around for this? Thanks.
+=== Coloring Dot Files?  ===
 
--- parolang
+One thing that I want is for dot-files (e.g., ##.bashrc##, ##.emacs##, etc.) to be colored in the same dim face that the other uninteresting files are colored in.  I use ##(setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$")##, which hides my dot files when I hit `M-o', but these files aren't colored in the dim face.
 
-'''See also Dired+''' (DiredPlus), for a way to color less-interesting files differently in Dired. Combined with DiredOmitMode, this can do either of the following:
+That dims only the files that match the extensions in `dired-omit-extensions', but obviously this won't work for dot files.  '''Does anyone have a work-around for this?''' Thanks. -- [[parolang]]
+
+'''See [[Dired+]]''' for a way to color less-interesting files differently in Dired. Combined with Omit mode, this can do either of the following:
 * Give you two levels of disinterest.
 * Let you ''see'' uninteresting files, but not have them stand out.
 
-----
-Dired ignores *~ files, which used by recover-session. This turns on omit mode except when running recover-session
+
+=== No Omit Mode for `recover-session'  ===
+
+Dired ignores ##*~## files, which are used by `recover-session'. The following turns on omit mode except when running `recover-session':
 
    (defun enable-dired-omit-mode () (dired-omit-mode 1))
    (add-hook 'dired-mode-hook 'enable-dired-omit-mode)
@@ -43,11 +44,11 @@ Dired ignores *~ files, which used by recover-session. This turns on omit mode e
        (remove-hook 'dired-mode-hook 'enable-dired-omit-mode)
        ad-do-it))
 
----
 
-Toggleable dotfile visibility:
 
-  # Ben Eills
+
+===  Toggle Showing Dot Files  ===
+
   (defun dired-dotfiles-toggle ()
     "Show/hide dot-files"
     (interactive)
@@ -61,8 +62,13 @@ Toggleable dotfile visibility:
 	(progn (revert-buffer) ; otherwise just revert to re-show
 	       (set (make-local-variable 'dired-dotfiles-show-p) t)))))
 
-== "Remember" omit state ==
-I prefer Dired "remember" my omit state --- that is to say, when enabling/disabling `omit-mode', the `omit-mode' will keep enabled/disabled in another Dired buffer:
+-- BenEills
+
+
+
+=== Remember Omit State ===
+
+I prefer that Dired remember my omit state: when enabling/disabling `omit-mode', the `omit-mode' remains enabled/disabled in another Dired buffer.  This code does that:
 
    (defvar v-dired-omit t
      "If dired-omit-mode enabled by default. Don't setq me.")
@@ -84,4 +90,11 @@ I prefer Dired "remember" my omit state --- that is to say, when enabling/disabl
    (define-key dired-mode-map (kbd "C-x M-o") 'dired-omit-switch)
    (add-hook 'dired-mode-hook 'dired-omit-caller)
 
---- kuanyui
+--- [[kuanyui]]
+
+
+===  Using `ls' Switches Instead of Omit Mode  ===
+
+An alternative to using Omit mode: Use `C-u s' to change the `ls' switches and immediately refresh. (`C-u s' refreshes also, so there is very little typing involved.)  Usually you will want to remove ##-a## from the switches, to hide dot files. 
+
+With this approach you can do everything you can do in the shell console, which is far more than what a simple Omit mode toggle can offer (at the cost of some extra keypresses). And there is a history of previous flags available, so toggling is pretty fast with this approach also. -- [[190-216-58-35.static.impsat.net.ar]]
