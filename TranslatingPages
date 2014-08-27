@@ -166,7 +166,7 @@ I tried to create %%[[de:SandKasten]]%% so the link at TranslationHelp would be 
 [new]
 Yeah, I think we've hit a limitation of the markup. :( -- Alex
 
----
+----
 [new]
 
 I've just created my first translated page. That is the French version for HowToNavigate. I have been a little bit lazy and I did not made the effort to translate every single link to their localized counterpart from their original (English) name. I was hoping for automatic handling for that, '''and''' it seems there is some support for that based on the user agent of the web browser, redirecting users to the correct page. Well it looks that mechanism does not work for me. What is the current state please? Must we verify and edit each links manually? I've looked at some French localized page and it seems that is the case. If it shouldn't be that way tell me please. Otherwise I have some suggestion for automation. :-) -- YvesBaumes
