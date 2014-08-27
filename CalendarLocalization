@@ -356,7 +356,7 @@ Lisp:ukrainian-holidays.el
 (setq holiday-bahai-holidays nil)
 (setq holiday-oriental-holidays nil)
 
-;; Change this according to your location in Zimbabwe
+;; Change these according to your location in Zimbabwe.
 (setq calendar-latitude -17.405608900000000000)
 (setq calendar-longitude 32.221119000000044000)
 (setq calendar-location-name "Mutoko, Mashonaland East, Zimbabwe")
