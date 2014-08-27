@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Aug 27 10:08:00 2014 (-0700)
+;; Last-Updated: Wed Aug 27 15:29:47 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2935
+;;     Update #: 2938
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -286,6 +286,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/08/27 dadams
+;;     1on1-emacs: Advise y-or-n-p.  See Emacs bug #18340.
 ;;     1on1-default-frame-alist, 1on1-special-display-frame-alist: No horizontal scroll bars.
 ;; 2014/02/11 dadams
 ;;     1on1-color-minibuffer-frame-on-(exit|setup)-increment: Change type: number, not integer.
@@ -1449,6 +1450,18 @@ show/hide: hold CTRL + click in window"))
     (1on1-setup-minibuffer-frame-coloring)
     (when 1on1-remap-other-frame-command-flag
       (substitute-key-definition 'other-frame '1on1-other-frame global-map)))
+
+  ;; Resize echo area if necessary, to show `y-or-n-p' prompt.
+  ;; Compensates for functions like `find-file-literally' that pass multi-line PROMPT args to it.
+  (when 1on1-fit-minibuffer-frame-flag
+    (defadvice y-or-n-p (around 1on1-resize-minibuffer-frame activate)
+      "Resize standalone minibuffer frame to fit `y-or-n-p' prompt."
+      (let* ((prompt  (ad-get-arg 0))
+             (nlines  (length (split-string prompt "\n"))))
+        (set-frame-height (window-frame (minibuffer-window)) (1+ nlines))
+        (1on1-set-minibuffer-frame-top/bottom)
+        ad-do-it
+        (1on1-reset-minibuffer-frame))))
 
   ;; Hooks.
   (if (and 1on1-fit-minibuffer-frame-flag (require 'fit-frame nil t))
