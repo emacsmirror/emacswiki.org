@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Aug 27 15:29:47 2014 (-0700)
+;; Last-Updated: Wed Aug 27 15:43:39 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2938
+;;     Update #: 2948
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -286,7 +286,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/08/27 dadams
-;;     1on1-emacs: Advise y-or-n-p.  See Emacs bug #18340.
+;;     y-or-n-p: Resize frame to fit PROMPT.  See Emacs bug #18340.
 ;;     1on1-default-frame-alist, 1on1-special-display-frame-alist: No horizontal scroll bars.
 ;; 2014/02/11 dadams
 ;;     1on1-color-minibuffer-frame-on-(exit|setup)-increment: Change type: number, not integer.
@@ -1712,6 +1712,7 @@ Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
   "Redefine some built-in functions so they color the minibuffer frame.
 Functions redefined: `y-or-n-p', `top-level'."
 
+
   (or (fboundp '1on1-ORIG-y-or-n-p)
       (fset '1on1-ORIG-y-or-n-p (symbol-function 'y-or-n-p)))
 
@@ -1725,8 +1726,16 @@ It should end in a space; `y-or-n-p' adds `(y or n) ' to it.
 No confirmation of answer is requested; a single character is enough.
 Also accepts SPC to mean yes, or DEL to mean no."
     (1on1-color-minibuffer-frame-on-setup)
-    (prog1 (1on1-ORIG-y-or-n-p prompt)
-      (1on1-color-minibuffer-frame-on-exit)))
+    ;; Resize echo area if necessary, to show `y-or-n-p' prompt.  Compensates for functions
+    ;; like `find-file-literally' that pass multi-line PROMPT args to it.  See Emacs bug #18340.
+    (when 1on1-fit-minibuffer-frame-flag
+      (let ((nlines  (length (split-string prompt "\n"))))
+        (set-frame-height (window-frame (minibuffer-window)) (1+ nlines))
+        (1on1-set-minibuffer-frame-top/bottom)))
+    (let ((result  (1on1-ORIG-y-or-n-p prompt)))
+      (when 1on1-fit-minibuffer-frame-flag (1on1-reset-minibuffer-frame)) ; Restore frame.
+      (1on1-color-minibuffer-frame-on-exit)
+      result))
 
 
   (or (fboundp '1on1-ORIG-top-level)
