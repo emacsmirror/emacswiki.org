@@ -45,6 +45,39 @@ The wiki interface also needs translation. Check Oddmuse:Translations. Every lan
 
 In addition to that, every language needs the *names of some important pages* that appear at the top and bottom everywhere. The most important ones are SiteMap and RecentChanges. Some sort of HowTo would be good. The TranslationHelp page is also somewhat important. :)
 
+Once we have that, we can add the new language to WikiLanguageMenu. At the same time, we can add support for the new language in the content negotiation phase. In effect this means that a new wrapper script gets installed, e.g. http://www.emacswiki.org/emacs-de. The ISO language code at the end is the important part. From then on all visitors to http://www.emacswiki.org/ who have set their preferred language to this ISO language code will end up running this script. In it, the translation files will be loaded and magic happens. :)
+
+There are also a number of strings that are unique to Emacs Wiki. They are not part of the Oddmuse translation files. That's why we need separate translations for them:
+
+{{{
+Article
+Talk
+This page does not exist, but you can %s.
+create it now
+}}}
+
+("create it now" is a separate text because it ends up inside a link)
+
+Also, the Footer Note can be translated:
+
+: This work is licensed to you under version 2 of the GNU General Public
+License. Alternatively, you may choose to receive this work under any
+other license that grants the right to use, copy, modify, and/or
+distribute the work, as long as that license imposes the restriction
+that derivative works have to grant the same rights and impose the same
+restriction. For example, you may choose to receive this work under the
+GNU Free Documentation License, the CreativeCommons ShareAlike License,
+the XEmacs manual license, or similar licenses.
+
+And the Edit Note:
+
+: Please make sure you contribute only your own work. IP numbers are made
+available via the page history. If you want to keep it a secret, you
+need to use Tor. See TextFormattingRules for how to format text. See
+StyleGuide for the suggested writing style on this wiki.
+
+(Maybe not the last sentence unless you want to write a Style Guide!)
+
 == Discussion ==
 
 [new:DrewAdams:2008-10-29 13:48 UTC]
