@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Thu Dec 26 09:52:32 2013 (-0800)
+;; Last-Updated: Wed Aug 27 09:37:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1745
+;;     Update #: 1748
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-cmds', `frame-fns', `misc-fns', `strings',
+;;   `avoid', `cl', `frame-cmds', `frame-fns', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -272,6 +272,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/27 dadams
+;;     thumfr-frame-parameters: Added scroll-bar-height.
 ;; 2013/08/09 dadams
 ;;     Added: thumfr-thumfr-parameter-p.
 ;;     *-(de)thumbify-frame: Exclude thumfr-thumfr-parameter-p.
@@ -507,7 +509,7 @@ along the right edge from top to bottom."
 
 ;;;###autoload
 (defcustom thumfr-frame-parameters
-  '((menu-bar-lines . 0) (tool-bar-lines . 0) (scroll-bar-width . 6))
+  '((menu-bar-lines . 0) (tool-bar-lines . 0) (scroll-bar-width . 6) (scroll-bar-height . 6))
   "*Frame parameters for thumbnail frames.
 Use this to show or hide things like the menu bar, tool bar, tab bar,
 and scroll bars for thumbnail frames."
