@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Feb 11 14:55:33 2014 (-0800)
+;; Last-Updated: Wed Aug 27 10:08:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2928
+;;     Update #: 2935
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -285,6 +285,8 @@
  
 ;;; Change Log:
 ;;
+;; 2014/08/27 dadams
+;;     1on1-default-frame-alist, 1on1-special-display-frame-alist: No horizontal scroll bars.
 ;; 2014/02/11 dadams
 ;;     1on1-color-minibuffer-frame-on-(exit|setup)-increment: Change type: number, not integer.
 ;; 2014/01/30 dadams
@@ -1214,6 +1216,8 @@ take effect.")
        (cons 'minibuffer (not 1on1-minibuffer-frame-flag)))
    (or (assq 'user-position default-frame-alist)
        (cons 'user-position t))
+   (or (assq 'horizontal-scroll-bars default-frame-alist)
+       (cons 'horizontal-scroll-bars nil)) ; No horizontal scroll bars by default.
    (or (assq 'vertical-scroll-bars default-frame-alist)
        (cons 'vertical-scroll-bars 'right))
    (or (assq 'icon-type default-frame-alist)
@@ -1344,6 +1348,8 @@ it to take effect.")
        (cons 'unsplittable t))
    (or (assq 'user-position special-display-frame-alist)
        (cons 'user-position t))
+   (or (assq 'horizontal-scroll-bars special-display-frame-alist)
+       (cons 'horizontal-scroll-bars nil)) ; No horizontal scroll bars by default.
    (or (assq 'vertical-scroll-bars special-display-frame-alist)
        (cons 'vertical-scroll-bars 'right)))
   "Properties to be used for One-on-One `special-display-frame-alist'.
@@ -1620,6 +1626,7 @@ If `zoom-frm.el' is used, then shrink the text according to
              (orig-font-fam  (and (window-live-p orig-win)
                                   (save-window-excursion (select-window orig-win)
                                                          (face-attribute 'default :family)))))
+        ;; $$$$$$$$?? (when (and orig-font-fam  (not (eq orig-win return-window)))
         (when orig-font-fam
           (set-face-attribute 'default (selected-frame) :family orig-font-fam))))
 
