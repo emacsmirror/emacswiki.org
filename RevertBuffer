@@ -70,28 +70,6 @@ This is a little function that is useful when editing several files that might f
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
-== Reverting with undo ==
-
-There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the buffer's undo history.  If you only want to revert the buffer to undo just your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified. Sometimes this is too onerous.  The following command will run undo iteratively in the buffer for you and as far as possible or until the last time the file was saved.
-
-{{{
-(defun undo-until-reverted ()
-  "Undo all edits until the buffer is unmodified."
-  (interactive)
-  (when (buffer-modified-p)
-    (undo))
-  (while (buffer-modified-p)
-    (undo-more 1))
-  (message "Buffer was undone until no longer modified"))
-}}}
-
-It can undo changes to a buffer, whether or not it is associated with a file.
-
-A couple of bug reports exist:
-http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18 
-and
-http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8447 
-
 == Reverting but keeping undo ==
 
 Current trunk [[http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=eae9bee8c5613935fdbe96785344bb6f71dd5553|already does this]], including the 24.4 pretests.
@@ -113,6 +91,28 @@ This fixes that.
 Install in command `revert-buffer' with
 
   (setq revert-buffer-function 'revert-buffer-keep-undo)
+
+== Reverting with undo ==
+
+Until Emacs 24.4, there is no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the buffer's undo history.  If you only want to revert the buffer to undo just your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified. Sometimes this is too onerous.  The following command will run undo iteratively in the buffer for you and as far as possible or until the last time the file was saved.
+
+{{{
+(defun undo-until-reverted ()
+  "Undo all edits until the buffer is unmodified."
+  (interactive)
+  (when (buffer-modified-p)
+    (undo))
+  (while (buffer-modified-p)
+    (undo-more 1))
+  (message "Buffer was undone until no longer modified"))
+}}}
+
+It can undo changes to a buffer, whether or not it is associated with a file.
+
+A couple of bug reports exist:
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18 
+and
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8447 
 
 ----
 CategoryFiles
