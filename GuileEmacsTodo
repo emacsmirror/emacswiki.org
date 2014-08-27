@@ -20,6 +20,7 @@ These are reported from commit 38530ba of bipt's Guile repo's "wip" branch (with
 # Start-up takes very long because .el files aren't compiled. Compiling .el files in place doesn't seem to be supported very well yet (although any Elisp that's loaded is compiled in that instant, and e.g. `lambda` and `defun` generate Guile procedures).
 # There is a big performance regression, apparently due to how Guile currently implements some aspects of Elisp (notably dynamic scoping).
 # A lot of memory is consumed. After booting 'emacs -Q' it uses 200MB of residual memory, which grows to 300-400 after loading some extensions (language modes, dired, rcirc, Help, Info, etc.) In contrast, my normal Emacs with all my fancy extensions loaded, and an uptime of 20 days, currently uses 130MB of residual memory.
+# On OS X, if I open a file buffer (existing or nonexisting file), it segfaults. Best just test on GNU/Linux for now.
 
 ----
 CategoryGuileEmacs
