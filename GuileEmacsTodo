@@ -15,9 +15,11 @@
 
 == User-visible issues ==
 
-wip-bdw-gc branch:
-# Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.) **NOTE:** This is solved in the latest state of GuileEmacs (use the "wip" branches of bpt's Guile and Emacs repos), though I couldn't get it to compile yet. -- TaylanUB
-# There seem to be memory leaks, or another reason which causes the GC to exhaust the heap, usually resulting in a segfault. Or maybe it was just Gnus having a problem with a huge e-mail, I'm not sure. -- TaylanUB
+These are reported from commit 38530ba of bipt's Guile repo's "wip" branch (with some trivial patches to make it compile), and commit 86d723c of bipt's Emacs repo's "wip" branch. This is shortly after bipt replaced the actual Elisp engine with libguile, and it's overall not ready for actual usage. Nevertheless, it compiles and starts up if you struggle a little, running most Elisp libraries, so here's a list of the most obvious problems from an alpha-tester(?) perspective:
+# Running 'emacs -nw' aborts instantly. Frameworks other than GTK might not compile at all. Use GTK Emacs.
+# Start-up takes very long because .el files aren't compiled. Compiling .el files in place doesn't seem to be supported very well yet (although any Elisp that's loaded is compiled in that instant, and e.g. `lambda` and `defun` generate Guile procedures).
+# There is a big performance regression, apparently due to how Guile currently implements some aspects of Elisp (notably dynamic scoping).
+# A lot of memory is consumed. After booting 'emacs -Q' it uses 200MB of residual memory, which grows to 300-400 after loading some extensions (language modes, dired, rcirc, Help, Info, etc.) In contrast, my normal Emacs with all my fancy extensions loaded, and an uptime of 20 days, currently uses 130MB of residual memory.
 
 ----
 CategoryGuileEmacs
