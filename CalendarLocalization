@@ -326,10 +326,10 @@ Lisp:ukrainian-holidays.el
 ))
 </pre>
 
-=== Zimbabwean ===
+=== Republic of Zimbabwe ===
 
 <pre>
-;; Zimbabwean holidays
+;; Republic of Zimbabwe's national holidays
 (setq holiday-local-holidays
       '((holiday-fixed 1 1 "New Years Day")
 	;; Easter Sunday minus two days
@@ -348,7 +348,7 @@ Lisp:ukrainian-holidays.el
 	(holiday-fixed 12 26 "Boxing Day"))
       )
 
-;; Set any of these to t if you need holidays in your calendar other than Zimbabwean holidays.
+;; Set any of these to t if you need holidays in your calendar other than public holidays of the Republic of Zimbabwe
 (setq holiday-general-holidays nil)
 (setq holiday-christian-holidays nil)
 (setq holiday-hebrew-holidays nil)
