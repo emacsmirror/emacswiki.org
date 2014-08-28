@@ -348,8 +348,6 @@ Lisp:ukrainian-holidays.el
 	(holiday-fixed 12 26 "Boxing Day"))
       )
 
-;; Set any of these to t if you need holidays in your calendar 
-;; other than the national holidays of the Republic of Zimbabwe.
 (setq holiday-general-holidays nil)
 (setq holiday-christian-holidays nil)
 (setq holiday-hebrew-holidays nil)
