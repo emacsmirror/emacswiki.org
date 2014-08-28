@@ -1,3 +1,5 @@
+For the former contents of this page which were for a large part concerned with the history of all efforts to integrate Guile and Emacs, see GuileEmacsHistory.
+
 == Overview ==
 
 Guile-based Emacs (alternatively called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces the Elisp engine with libguile ([[Guile]]), which can compile and interpret EmacsLisp alongside Scheme, with more or less seamless interoperation between the languages.
