@@ -8,7 +8,7 @@ Useful help [[key]]s and [[command]]s include these (this info is available via 
 ; `C-h t' (`help-with-tutorial'): Present the learn-by-doing EmacsTutorial
 ; `C-h k' (`describe-key'): Describe the Emacs command that a keyboard/menu/mouse sequence invokes: You enter a [[key sequence]], and Emacs tells you what it does.
 ; `C-h K' (`Info-goto-emacs-key-command-node'): Go to the Emacs manual section that describes a key sequence that you type.
-; `C-h w' (`where-is'): List the (keyboard/menu/mouse) keys that invoke an Emacs command. This is the opposite of `C-h k'.
+; `C-h w' (`where-is'): List the (keyboard/menu/mouse) keys that invoke an Emacs command. This is the inverse of `C-h k'.
 ; `C-h f' (`describe-function'): Describe an Emacs [[command]] (non-interactive function).
 ; `C-h F': 
 
