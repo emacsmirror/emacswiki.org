@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 10:44:36 2013 (-0800)
+;; Last-Updated: Thu Aug 28 14:04:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 165
+;;     Update #: 169
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -37,14 +37,6 @@
 ;;    (require 'font-lock+)
 ;;
 ;;
-;;  CAVEAT: Be aware that using this library will **slow down**
-;;          font-locking.  In particular, unfontifying a large buffer
-;;          (e.g. turning off `font-lock-mode') will take noticeably
-;;          longer.  Give it a try, and see if the slowdown annoys
-;;          you.  It doesn't annoy me, but people are different, and
-;;          your use of Emacs might be very different from mine.
-;;
-;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `put-text-property-unless-ignore'.
@@ -66,6 +58,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/28 dadams
+;;     put-text-property-unless-ignore: Use next-single-property-change.
 ;; 2007/03/25 dadams
 ;;     Created.
 ;;
@@ -97,11 +91,13 @@
 (defun put-text-property-unless-ignore (start end property value &optional object)
   "`put-text-property', but ignore text with property `font-lock-ignore'."
   (let ((here  (min start end))
-        (end1  (max start end)))
+        (end1  (max start end))
+        chg)
     (while (< here end1)
+      (setq chg  (next-single-property-change here 'font-lock-ignore object end1))
       (unless (get-text-property here 'font-lock-ignore object)
-        (put-text-property here (1+ here) property value object))
-      (setq here  (1+ here)))))
+        (put-text-property here chg property value object))
+      (setq here  chg))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
