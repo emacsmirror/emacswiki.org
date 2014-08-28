@@ -348,7 +348,8 @@ Lisp:ukrainian-holidays.el
 	(holiday-fixed 12 26 "Boxing Day"))
       )
 
-;; Set any of these to t if you need holidays in your calendar other than public holidays of the Republic of Zimbabwe
+;; Set any of these to t if you need holidays in your calendar 
+;; other than public holidays of the Republic of Zimbabwe
 (setq holiday-general-holidays nil)
 (setq holiday-christian-holidays nil)
 (setq holiday-hebrew-holidays nil)
@@ -357,6 +358,7 @@ Lisp:ukrainian-holidays.el
 (setq holiday-oriental-holidays nil)
 
 ;; Change these according to your location in Zimbabwe.
+;; This information is useful for sunrise, sunset, equinox, solstice etc.
 (setq calendar-latitude -17.405608900000000000)
 (setq calendar-longitude 32.221119000000044000)
 (setq calendar-location-name "Mutoko, Mashonaland East, Zimbabwe")
