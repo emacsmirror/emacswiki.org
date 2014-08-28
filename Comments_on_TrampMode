@@ -20,3 +20,12 @@ You need a full PuTTY suite, with the plink utility for the interface.
 
 -- [http://theothermccain.com/ ChristopherSmith] 2012-05-25 12:54 UTC
 
+
+----
+
+I have found that for remote files using a file synchronization software like lsyncd [1] that monitors for changes in a local file tree and copies them to a remote host is another good alternative for Tramp. This way one can works with a local version of remote files using any local tool and have any changes almost instantly propagated to the remote host.
+
+[1] - https://code.google.com/p/lsyncd/
+
+-- Anonymous 2014-08-28 12:43 UTC
+
