@@ -2,7 +2,7 @@ For the former contents of this page which were for a large part concerned with 
 
 == Overview ==
 
-Guile-based Emacs (alternatively called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces the Elisp engine with libguile ([[Guile]]), which can compile and interpret EmacsLisp alongside Scheme, with more or less seamless interoperation between the languages.
+Guile-based Emacs (alternatively called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces the Elisp engine with libguile ([[Guile]]), which can compile and interpret EmacsLisp alongside [[Scheme]], with more or less seamless interoperation between the languages.
 
 Elisp functions and Scheme procedures both compile to libguile procedure objects, which may appear in Elisp symbols' function-slots, may be bound to Scheme variables, and are otherwise first-class objects in both environments which can be funcalled or applied explicitly or by the language's normal syntactic way of calling functions/procedures. Similarly, other data types are unified between the languages; Elisp integers and exact Scheme integers, inexact Scheme numbers and Elisp floats, strings and cons cells and symbols from both languages, etc. Elisp-specific data types like buffers and windows are integrated with libguile too so Scheme can use them, and Elisp functions written in C ("subrs") also become libguile procedures.
 
