@@ -6,6 +6,6 @@ wretched and tormented w/ C++.  ymmv of course.
 
 Guile, a dialect of [[Scheme]], is the native language of the GNU standard extension language interpreter (http://www.gnu.org/software/guile/).
 
-The GuileEmacs project is to replace Emacs's Elisp engine with Guile's implementation of Elisp, and get Scheme support (and other languages) in parallel, because Guile supports Elisp as one of its front-end languages for its VM/IL. See GuileEmacsTodo, this project finally shows some very encouraging progress as of 2013-03.
+The GuileEmacs project is to replace Emacs's Elisp engine with Guile's implementation of Elisp, and get Scheme support (and other languages) in parallel, because Guile supports Elisp as one of its front-end languages for its VM/IL. This project finally shows some very encouraging progress as of lately (2014-08 now and the Elisp engine is essentially replaced).
 
 See GuileIde for editing Guile code in Emacs and using Emacs to interact with inferior Guile interpreter processes.
