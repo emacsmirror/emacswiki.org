@@ -355,8 +355,8 @@ Lisp:ukrainian-holidays.el
 (setq holiday-bahai-holidays nil)
 (setq holiday-oriental-holidays nil)
 
-;; Change these according to your location in Zimbabwe.
-;; This information is useful for sunrise, sunset, equinox, solstice etc.
+;; Change these to your location in Zimbabwe. This information is
+;; useful for sunrise, sunset, equinox, solstice etc.
 (setq calendar-latitude -17.405608900000000000)
 (setq calendar-longitude 32.221119000000044000)
 (setq calendar-location-name "Mutoko, Mashonaland East, Zimbabwe")
