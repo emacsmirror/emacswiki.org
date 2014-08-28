@@ -1,65 +1,45 @@
 == Overview ==
-[[zh:Guile_Emacs]]
-Guile Emacs is a variant of Emacs which is integrating the
-[[Guile]] extension language in addition to EmacsLisp so to
-provide a better programming environment for both Emacs
-users and Guile users.  Guile is in fact [[Scheme]], which some people argue is a much simpler and cleaner
-dialect of Lisp than CommonLisp.
 
-== History ==
-Some original work was by KeisukeNishida and was based on Emacs 20.7 and Guile 1.5.  The last work on this project was 2000-06-01.  The goal was to support both Guile and EmacsLisp.  You can find more information on [http://sourceforge.net/projects/gemacs/ its Sourceforge page], or in the project's [http://sourceware.org/ml/guile-emacs/ mailing list archive].
+Guile-based Emacs (alternatively called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces the Elisp engine with libguile ([[Guile]]), which can compile and interpret EmacsLisp alongside Scheme, with more or less seamless interoperation between the languages.
 
-Matthias Neubauer and Michael Sperber studied the possibility of automatically translating Emacs Lisp Code into Scheme.  See DownWithEmacsLisp.
+Elisp functions and Scheme procedures both compile to libguile procedure objects, which may appear in Elisp symbols' function-slots, may be bound to Scheme variables, and are otherwise first-class objects in both environments which can be funcalled or applied explicitly or by the language's normal syntactic way of calling functions/procedures. Similarly, other data types are unified between the languages; Elisp integers and exact Scheme integers, inexact Scheme numbers and Elisp floats, strings and cons cells and symbols from both languages, etc. Elisp-specific data types like buffers and windows are integrated with libguile too so Scheme can use them, and Elisp functions written in C ("subrs") also become libguile procedures.
 
-On 2001-11-03, NeilJerram was working on an EmacsLisp reader.  A
-posting [http://mail.gnu.org/pipermail/guile-devel/2001-November/004136.html] to guile-devel@gnu.org on showed an elisp
-reader reading 3279 lines ("wc -l") of elisp code already.  He says: "I think progress beyond this point basically means implementing
-multilingual and multibyte strings properly for Guile.  Which is a _lot_
-of work and requires IMO a very clear plan for Guile's role with
-respect to Emacs."
+This way GNU Emacs as we know it continues working with all its Elisp, but Elisp code can call any procedures from the Guile API or Scheme libraries, and with some work it becomes feasible to extend Emacs in Scheme natively, offering a direct alternative to Elisp. Many features of Guile like its FFI, composable continuations, or possibly JIT and AOT native compilation in the future become automatically available to Elisp.
 
-KenRaeburn started [http://www.mit.edu/~raeburn/guilemacs/ a project] as early as 1999 to replace Lisp with Guile in Emacs starting at the very lowest levels, i.e., object representation, allocation, GC; with evaluating Scheme code coming later.  Working with EmacsFromCVS he could isolate the implementation to some of the simpler Lisp types (those that could most easily be shared with Scheme) from the rest of the Emacs code.  Even if the project succeeded in getting Guile into Emacs, the handling of the current evaluator code was an open issue.
-
-On 2002-07-16, there was a discussion started on [[emacs-devel]] about [http://lists.gnu.org/archive/html/emacs-devel/2002-07/msg00589.html emacs and guile].
-
-By 2006-01-03, according to Ken "Some stuff does work, actually. Non-tty displays don't".  This was for reasons that "have less to do directly with Guile than with the fact that the Guile library isn't unexec-safe".  Consequently, Ken was not doing the unexec step.  Guile Emacs in a terminal window has a "shell mode, browses directories, does font-lock coloring of C source files, etc."
-
-[http://wingolog.org/archives/2009/01/07/a-brief-history-of-guile A Brief History of Guile] by Andy Wingo
-
-As of 2009-06-11, Ken has provided [http://www.mit.edu/~raeburn/guilemacs/ an updated snapshot] of the work.
-
-As brought to our attention in [[2010-04-16]] by AlexSchroeder:
-: Apparently there's more discussion regarding Guile, Emacs, and GuileEmacs on emacs-devel.
-: * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00507.html Guile in Emacs] started by Tom Lord, a very long thread
-: * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00665.html guile and emacs and elisp, oh my] by Andy Wingo
-
-On 2011-02-16, [http://lists.gnu.org/archive/html/guile-devel/2011-02/msg00173.html Guile 2.0 was released] with some Emacs Lisp support.
-
-For GoogleSummerOfCode 2011, work was done on Emacs Lisp support in Guile.  Read [http://lists.gnu.org/archive/html/guile-devel/2011-07/msg00054.html the status report on 2011-07-21] posted to the guile-devel mailing list.
-
-On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode projects that included adding libguile to Emacs and using it as the interpreter.  It was followed by some mailing list discussion.
-
-* [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00276.html GSoC projects related to Emacs] 
-* [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00291.html Re: Emacs and Guile]
-
-The 2013 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the author:
-
-* [https://lists.gnu.org/archive/html/guile-user/2013-05/msg00081.html The announcement of the GSoC project on guile-user.]
-* [https://lists.gnu.org/archive/html/emacs-devel/2013-05/msg00622.html The announcement of the GSoC project on emacs-devel.]
-
-At this point an Emacs branch with libguile embedded and providing part of the Elisp data types and able to provide an `eval-scheme' function to Elisp is available, but not fully replacing the Elisp interpreter yet.
-
-The 2014 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the author:
-
-* [https://www.google-melange.com/gsoc/project/details/google/gsoc2014/bpt/5803402760028160 Guile-Emacs]
 
 == Current State ==
+
 The latest publicly available state of GuileEmacs can be found at [http://git.hcoop.net/?p=bpt/emacs.git BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git their Guile repository]. The "wip" branches of both represent the latest state of GuileEmacs and _both_ are necessary to test it. (Build the wip branch of the Guile repo first, then build the wip branch of the Emacs repo with that.)
 
 As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully replaced with that of libguile, and most things Just Work™. Some performance regression of dynamic scoping (lexically scoped code should be fine), and broken corner cases (like crazy Elisp macros that directly output legacy Elisp bytecode) remain.
 
+
+== Nil, false, and the empty list ==
+
+Scheme uses `#false` and `()` for the false boolean and empty/end-of list, respectively. Elisp uses `nil` for both. This poses a problem in the interoperation of the languages. Guile approaches this issue by supporting a nil object that is `nil` in Elisp and `#nil` in Scheme (would not normally be generated by Scheme code but can come from Elisp calls), in addition to the usual false and null objects represented as `#false` and `()` in Scheme.
+
+In Scheme, nil is false (as per `if`) and responds to `null?` (returns true), being able to terminate lists as an alternative to `()`. It is not `eq?` to either of `#false` or `()`, but things should work fine as long as the user writes well-abstracted code that uses `if`, `not`, `null?`, etc. instead of comparing equality to a literal.
+
+In Elisp, the false object that comes from Scheme returns true when passed to `not` or `null`, but may not terminate lists. The null object *also* returns true for `not` and `null` (note that they're actually aliases in Elisp anyway) *and* may terminate lists.
+
+All that aside, `nil` and `t` are also symbols in Elisp, aside from evaluating to the nil and true libguile objects when due.
+
+Time will tell whether this internal mess with lead to problems in practice. At least checking the truthiness or nil and false is still both very cheap so compiled code isn't slowed down by the presence of the nil object in libguile.
+
+
+== Dynamic scoping ==
+
+Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to libguile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
+
+
+== Macros ==
+
+While procedures are shared between the languages, macros are more difficult. Elisp macros are also just procedures of course so they could work as unhygienic Scheme macros, and Elisp code goes through the same intermediate language as Scheme so perhaps Scheme macros will work on Elisp too, but probably neither will happen in practice, macros written in one language staying in that language. This means that macro portions of Elisp and Scheme libraries might need to be written in both languages when one wishes the library to be available in both languages. Remember that macros should be kept to the minimum possible in Lisp code though, since procedures/functions have other advantages over them. (Only write a macro when a function cannot possibly do the same thing.)
+
+
 == See Also ==
 GuileEmacsTodo
+GuileEmacsHistory
 
 ----
 CategoryGuileEmacs CategoryExtensionLanguage EmacsImplementations
