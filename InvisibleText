@@ -6,6 +6,14 @@ This code will insert "foobarbaz" but "bar" will be invisible.
    (put-text-property 3 6 'invisible t a)
    (insert a))
 
+Since GNU Emacs 24.3 (or earlier?), this can be done with the function `facemenu-set-invisible':
+
+ (let ((a "foobarbaz"))
+   (insert a)
+   (facemenu-set-invisible (- (point) 6) (- (point) 3)))
+
+This sets the `invisible' text property; it can be undone with `facemenu-remove-special'.
+
 
 See also: TextProperties.
 
