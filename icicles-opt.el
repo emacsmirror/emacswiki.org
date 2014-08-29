@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Aug 22 10:26:31 2014 (-0700)
+;; Last-Updated: Fri Aug 29 08:40:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6047
+;;     Update #: 6052
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1462,6 +1462,7 @@ command."
                                                 "icicle-file-compressed-p"
                                                 "icicle-file-desktop-p"
                                                 "icicle-file-directory-p"
+                                                "icicle-file-elc-p"
                                                 "icicle-file-executable-p"
                                                 "icicle-file-exists-p"
                                                 "icicle-file-locked-p"
@@ -2867,7 +2868,7 @@ You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-directory]'."
   :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
 
-(defcustom icicle-file-skip-functions '(icicle-image-file-p)
+(defcustom icicle-file-skip-functions '(icicle-image-file-p icicle-file-elc-p)
   "*Hook run by file-visiting commands on each matching file name.
 The value is a list of functions.  Each is applied to the file-name
 candidate (after transforming it, if it is a multi-completion), until
@@ -2881,8 +2882,8 @@ to access, such as compressed files.
 Note that the file names passed to the hook can be absolute or
 relative, depending on the command used.
 
-Also run by `icicle-buffer' on the names of files that are included
-from the set of recent files or from the Emacs file cache.
+Also run by `icicle-buffer' to exclude filenames in the set of recent
+files or the Emacs file cache from being included as candidates.
 
 This option has no effect for Emacs versions prior to Emacs 23.
 
