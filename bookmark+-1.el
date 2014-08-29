@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 22 14:09:24 2014 (-0700)
+;; Last-Updated: Thu Aug 28 19:58:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7386
+;;     Update #: 7398
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -112,6 +112,8 @@
 ;;    `bmkp-autonamed-this-buffer-jump',
 ;;    `bmkp-autonamed-this-buffer-jump-other-window',
 ;;    `bmkp-bookmark-a-file' `bmkp-bookmark-file-jump',
+;;    `bmkp-bookmark-linked-at' (Emacs 22+),
+;;    `bmkp-bookmark-linked-at-mouse' (Emacs 22+),
 ;;    `bmkp-bookmark-list-jump',
 ;;    `bmkp-bookmark-set-confirm-overwrite',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
@@ -182,7 +184,10 @@
 ;;    `bmkp-gnus-jump', `bmkp-gnus-jump-other-window',
 ;;    `bmkp-image-jump', `bmkp-image-jump-other-window',
 ;;    `bmkp-info-jump', `bmkp-info-jump-other-window',
-;;    `bmkp-jump-in-navlist', `bmkp-jump-in-navlist-other-window',
+;;    `bmkp-insert-bookmark-link' (Emacs 22+), `bmkp-jump-in-navlist',
+;;    `bmkp-jump-in-navlist-other-window',
+;;    `bmkp-jump-to-bookmark-linked-at' (Emacs 22+),
+;;    `bmkp-jump-to-bookmark-linked-at-mouse' (Emacs 22+),
 ;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
 ;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
 ;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
@@ -6329,6 +6334,7 @@ Similarly, SUFFIX-MSG is appended, after appending \".  \"."
   "Current sort order or sort function, as a string, or nil if none."
   (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))
 
+
 ;;(@* "Sorting - General Predicates")
 ;;  *** Sorting - General Predicates ***
 
@@ -7527,6 +7533,89 @@ messages."
             (error nil))
           (setq count  (1+ count)))
         (when msg-p (message "Set %d bookmarks" count))))))
+
+
+;;(@* "Bookmark Links")
+;;  *** Bookmark Links ***
+
+(when (> emacs-major-version 21)
+
+  (defun bmkp-bookmark-linked-at (&optional position msgp)
+    "Return the bookmark linked at POSITION (default: point), or nil if none."
+    (interactive "d\np")
+    (unless position (setq position  (point)))
+    (let ((bmk  (get-text-property position 'bmkp-bookmark)))
+      (prog1 bmk (when msgp (if bmk (bmkp-describe-bookmark bmk) (message "No bookmark here"))))))
+
+  (defun bmkp-bookmark-linked-at-mouse (event)
+    "Return the bookmark linked at the mouse position."
+    (interactive "e")
+    (bmkp-bookmark-linked-at (posn-point (event-end event)) 'MSG))
+
+  (defun bmkp-jump-to-bookmark-linked-at (&optional position)
+    "Jump to the bookmark linked at POSITION (default: point).
+If a bookmark is linked at POSITION then jump to it.  Else raise an error."
+    (interactive "d")
+    (let ((bmk  (bmkp-bookmark-linked-at position)))
+      (unless bmk (error "No bookmark here"))
+      (bookmark-jump-other-window bmk)))
+
+  (defun bmkp-jump-to-bookmark-linked-at-mouse (event)
+    "Jump to the bookmark linked at the mouse position."
+    (interactive "e")
+    (bmkp-jump-to-bookmark-linked-at (posn-point (event-end event))))
+
+  (defun bmkp-insert-bookmark-link (bookmark text &optional position)
+    "Put a link to BOOKMARK on the active region or at point.
+You are prompted for the bookmark name.
+If the region is active and nonempty then put the link on its text.
+
+Otherwise, you are prompted for the link text, which is inserted at
+point.  The default text for this is the BOOKMARK name.  An unlinked
+`SPC' char is inserted after the link, unless it is at the end of a
+line.
+
+Using `?' or double-clicking `mouse-1' on the link describes the
+BOOKMARK.  Using `RET' or `mouse-2' on it jumps to BOOKMARK in another
+window.
+
+BOOKMARK is a bookmark name or a bookmark record.
+
+Non-interactively, if the region is inactive or empty then TEXT is the
+link text, and it is inserted at POSITION (point if POSITION is nil)."
+    (interactive
+     (let* ((bmk  (bookmark-completing-read "Bookmark"))
+            (txt  (if (and transient-mark-mode  mark-active  (> (region-end) (region-beginning)))
+                      (buffer-substring-no-properties (region-end) (region-beginning))
+                    (read-string "Insert text: " nil nil bmk))))
+       (list bmk txt)))
+    (with-buffer-modified-unmodified
+        (let* ((regionp  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
+               (beg      (if regionp (region-beginning) (or position  (point))))
+               (end      (and regionp  (region-end)))
+               (bmk      (bookmark-get-bookmark bookmark))
+               (map      (make-sparse-keymap)))
+          (unless bmk (error "No such bookmark"))
+          ;; Use `copy-sequence'.  The bookmark name in the bookmark might change.
+          (setq bookmark  (copy-sequence (bmkp-bookmark-name-from-record bmk)))
+          (put-text-property 0 (length bookmark) 'bmkp-bookmark bmk bookmark)
+          (define-key map "?"              'bmkp-bookmark-linked-at)
+          (define-key map "\r"             'bmkp-jump-to-bookmark-linked-at)
+          (define-key map [double-mouse-1] 'bmkp-bookmark-linked-at-mouse)
+          (define-key map [mouse-2]        'bmkp-jump-to-bookmark-linked-at-mouse)
+          (define-key map [follow-link]    'mouse-face)
+          (unless regionp (insert text))
+          (add-text-properties beg (or end  (point))
+                               `(bmkp-bookmark     ,bookmark
+                                 keymap            ,map
+                                 font-lock-ignore  t ; Prevent font-lock from changing the face.
+                                 face              link
+                                 mouse-face        highlight
+                                 help-echo
+                                 "RET, mouse-2: jump to bookmark; ?, double-mouse-1: describe bookmark"))
+          (unless (or regionp  (eolp)) (insert " ")))))
+
+  )
 
 
 ;;(@* "Other Bookmark+ Functions (`bmkp-*')")
@@ -11333,6 +11422,7 @@ if non-nil, set SYNTAX-TABLE for the duration."
     (if (and (syntax-table-p syntax-table)  (fboundp 'with-syntax-table)) ; Emacs 21+.
         (with-syntax-table syntax-table (thing-at-point thing))
       (thing-at-point thing))))         ; Ignore any SYNTAX-TABLE arg for Emacs 20, for vanilla.
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
