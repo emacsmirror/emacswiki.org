@@ -437,6 +437,9 @@ example:
     (add-to-list 'load-path "~/.emacs.d/elisp/theme-changer")
 
 == More Color Themes ==
+
+High contrast zenburn theme: [https://github.com/edran/hc-zenburn-emacs hc-zenburn-emacs] -- edran
+
 I added my tweaked port of ColorThemeInkpot from VIM. -- Per Vognsen
 
 DanielBrockman links to another color-theme on his page.
