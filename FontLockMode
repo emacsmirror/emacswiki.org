@@ -1,10 +1,10 @@
 '''FontLockMode''' (or [::FontLock]) highlights ("fontifies") the syntax of programming languages and other files with specific syntaxes.  For this reason, it is also referred to as [::SyntaxHighlighting].  This visual recognition in the file makes it easier to understand a file, and provides visual cues where syntax errors exist.  Highlighting occurs as the programmer inputs their code.
 
-FontLockMode has nothing to do with configuring your favorite font for use in Emacs.  Permanently adding color and other font setting to documents in Emacs is done with EnrichedMode.
+%%FontLockMode%% has nothing to do with configuring your favorite font for use in Emacs.  Permanently adding color and other font setting to documents in Emacs is done with EnrichedMode.
 
 The syntactic fontification rules for a programming language or other file format is typically provided by the [[MajorMode]].  See ProgrammingModes.
 
-See EnablingFontLock to learn how to turn on FontLockMode.
+See EnablingFontLock to learn how to turn on ##FontLockMode##.
 
 Users can AddKeywords to define new highlighting rules.
 
@@ -13,6 +13,12 @@ To add font-lock rules to a MajorMode, see FontLockForNewModes.
 See CustomizingFaces to change the font [[Face]] settings used by font-lock.
 
 You can debug Font Lock keywords using FontLockStudio and [[Icicles]] [[multi-command]] `icicle-font-lock-keyword'.
+
+
+
+== Font-Locking Is Incompatible with Other Highlighting - Fixed ==
+
+Library <tt>[[font-lock+.el]]</tt> provides a fix for the Emacs bug that font-locking overrides all other highlighting.  You need only add [[text property]] '''`font-lock-ignore'''' to any text that you have highlighted, to effectively tell font-lock "'''''Hands off!'''''" that text.  For example, this lets you use [[face]] `link' on a link and have the link be visible as such even without the mouse being over it.
 
 ----
 CategoryFaces
