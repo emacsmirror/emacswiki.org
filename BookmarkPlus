@@ -3698,6 +3698,37 @@ Globally, you can use these keys:
 
 
 
+[:BookmarkLinks]
+== Bookmark Links ==
+
+You can use command '''`bmkp-insert-bookmark-link'''' to create links in
+any Emacs text that jump to particular bookmarks when you follow
+them (by hitting `RET' or clicking `mouse-2').  If you hit `##?##' or
+double-click `mouse-1' on such a bookmark link then the bookmark
+is described, showing the same information as `##C-x p ?##'
+(`bmkp-describe-bookmark').
+
+You are prompted for the bookmark to link.  If the [[region]] is
+[[active region|active]] and nonempty then the link is put on its text.  Otherwise,
+you are prompted for the link text, which is inserted.  The
+default link text is the bookmark name in this case.
+
+The bookmark linked can be of any type.
+
+This simple feature lets you easily create "launching pads" for
+different sets of bookmarks: buffers or files that consist of
+bookmark links and any other text you like.  This gives you yet
+another way to organize bookmarks (and so also the files,
+directories, etc. that they target).
+
+If you also use library <tt>[[font-lock+.el]]</tt> then the links appear with
+face `link', even in a [[FontLockMode|font-locked]] buffer.  (Library
+##font-lock+.el## just provides this feature of allowing
+non-font-lock highlighting in a font-locked buffer.  See
+http://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00540.html.)
+
+
+
 
 
 
