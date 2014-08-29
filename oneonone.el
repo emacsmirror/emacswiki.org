@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Aug 27 15:43:39 2014 (-0700)
+;; Last-Updated: Thu Aug 28 19:45:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2948
+;;     Update #: 2958
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -285,6 +285,9 @@
  
 ;;; Change Log:
 ;;
+;; 2014/08/28 dadams
+;;     1on1-emacs: Removed vestigial defadvice of y-or-n-p.
+;;     y-or-n-p: Fix regexp: [\n], not \n. Do not resize for Emacs 20 (it shows newlines as \n).
 ;; 2014/08/27 dadams
 ;;     y-or-n-p: Resize frame to fit PROMPT.  See Emacs bug #18340.
 ;;     1on1-default-frame-alist, 1on1-special-display-frame-alist: No horizontal scroll bars.
@@ -1451,18 +1454,6 @@ show/hide: hold CTRL + click in window"))
     (when 1on1-remap-other-frame-command-flag
       (substitute-key-definition 'other-frame '1on1-other-frame global-map)))
 
-  ;; Resize echo area if necessary, to show `y-or-n-p' prompt.
-  ;; Compensates for functions like `find-file-literally' that pass multi-line PROMPT args to it.
-  (when 1on1-fit-minibuffer-frame-flag
-    (defadvice y-or-n-p (around 1on1-resize-minibuffer-frame activate)
-      "Resize standalone minibuffer frame to fit `y-or-n-p' prompt."
-      (let* ((prompt  (ad-get-arg 0))
-             (nlines  (length (split-string prompt "\n"))))
-        (set-frame-height (window-frame (minibuffer-window)) (1+ nlines))
-        (1on1-set-minibuffer-frame-top/bottom)
-        ad-do-it
-        (1on1-reset-minibuffer-frame))))
-
   ;; Hooks.
   (if (and 1on1-fit-minibuffer-frame-flag (require 'fit-frame nil t))
       (add-hook 'post-command-hook '1on1-fit-minibuffer-frame)
@@ -1728,12 +1719,14 @@ Also accepts SPC to mean yes, or DEL to mean no."
     (1on1-color-minibuffer-frame-on-setup)
     ;; Resize echo area if necessary, to show `y-or-n-p' prompt.  Compensates for functions
     ;; like `find-file-literally' that pass multi-line PROMPT args to it.  See Emacs bug #18340.
-    (when 1on1-fit-minibuffer-frame-flag
-      (let ((nlines  (length (split-string prompt "\n"))))
+    ;; (Do not do it for Emacs 20, because it shows newlines as two ordinary chars, `\n'.)
+    (when (and 1on1-fit-minibuffer-frame-flag  (> emacs-major-version 20))
+      (let ((nlines  (length (split-string prompt "[\n]"))))
         (set-frame-height (window-frame (minibuffer-window)) (1+ nlines))
         (1on1-set-minibuffer-frame-top/bottom)))
     (let ((result  (1on1-ORIG-y-or-n-p prompt)))
-      (when 1on1-fit-minibuffer-frame-flag (1on1-reset-minibuffer-frame)) ; Restore frame.
+      (when (and 1on1-fit-minibuffer-frame-flag  (> emacs-major-version 20))
+        (1on1-reset-minibuffer-frame))  ; Restore frame.
       (1on1-color-minibuffer-frame-on-exit)
       result))
 
