@@ -36,7 +36,13 @@ Elisp defvars are dynamically scoped, as well as let-bound variables when lexica
 
 == Macros ==
 
-While procedures are shared between the languages, macros are more difficult. Elisp macros are also just procedures of course so they could work as unhygienic Scheme macros, and Elisp code goes through the same intermediate language as Scheme so perhaps Scheme macros will work on Elisp too, but probably neither will happen in practice, macros written in one language staying in that language. This means that macro portions of Elisp and Scheme libraries might need to be written in both languages when one wishes the library to be available in both languages. Remember that macros should be kept to the minimum possible in Lisp code though, since procedures/functions have other advantages over them. (Only write a macro when a function cannot possibly do the same thing.)
+While procedures are shared between the languages, macros are more difficult. Elisp macros are just procedures of course so they could work as unhygienic Scheme macros, and Elisp code goes through the same intermediate language as Scheme so perhaps Scheme macros will work on Elisp too.
+
+The former would probably not work sensibly though, since Elisp function and variable names appearing in the macro output would be inserted into Scheme code where they're undefined.
+
+The latter should, theoretically, work seamlessly. Scheme's hygienic macros don't output Scheme code (raw sexprs); they output code in an intermediate language (IL) that can make direct references to bindings in any modules, as well as represent all code concepts that libguile supports in the lower levels. Scheme and Elisp are already both translated to this IL before further compilation or interpretation, so using hygienic macros defined in Scheme on Elisp code would not have any issues; it would simply separately compile (to IL) the Scheme body of the macro template and the Elisp code snippet inputs to the macro, and merge these IL snippets which both reference the correct Scheme and Elisp variable and function bindings. Thus is the power of hygienic macros.
+
+It should also be possible to implement a hygienic macro definition form for Elisp, though `defmacro' itself can probably not be made hygienic so using all the currently existing Elisp macros from Scheme remains problematic. They will probably need to be slowly reimplemented as hygienic macros defined in Elisp or Scheme.
 
 
 == See Also ==
