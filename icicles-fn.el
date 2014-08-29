@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 22 14:08:53 2014 (-0700)
+;; Last-Updated: Fri Aug 29 08:32:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15004
+;;     Update #: 15009
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -130,9 +130,9 @@
 ;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
 ;;    `icicle-file-accessible-directory-p',
 ;;    `icicle-file-compressed-p', `icicle-file-desktop-p',
-;;    `icicle-file-directory-p', `icicle-file-executable-p',
-;;    `icicle-file-exists-p', `icicle-file-locked-p',
-;;    `icicle-file-name-absolute-p',
+;;    `icicle-file-directory-p', `icicle-file-elc-p',
+;;    `icicle-file-executable-p', `icicle-file-exists-p',
+;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -8732,6 +8732,15 @@ is a string.  This is so that the function can be used to filter
 absolute file-name completion candidates."
     (when (consp filename) (setq filename  (car filename)))
     (recentf-keep-p filename)))
+
+(defun icicle-file-elc-p (file)
+  "Return non-nil if FILE has extension `elc'.
+Usually this means that FILE is an Emacs-Lisp byte-compiled file.
+FILE is normally a string, but it can also be a cons whose car is a
+string.  This is so that the function can be used to filter absolute
+file-name completion candidates."
+  (when (consp file) (setq file  (car file)))
+  (equal "elc" (file-name-extension file)))
 
 (defun icicle-file-executable-p (file-or-dir)
   "Return non-nil if FILE-OR-DIR can be executed by you.
