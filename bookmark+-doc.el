@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul 11 17:08:10 2014 (-0700)
+;; Last-Updated: Thu Aug 28 20:08:09 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 14817
+;;     Update #: 14825
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -169,6 +169,7 @@
 ;;      (@> "Highlighting On Demand")
 ;;      (@> "Highlighting Automatically")
 ;;    (@> "Using Highlighted Bookmarks")
+;;    (@> "Bookmark Links")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -561,7 +562,7 @@
 ;;       jumping (visiting), setting, and help.  It gives you a
 ;;       bookmark browser, and lets you bookmark and tag files on the
 ;;       fly.  See (@> "Use Bookmark+ with Icicles") and
-;;       http://www.emacswiki.org/cgi-bin/wiki/Icicles.
+;;       http://www.emacswiki.org/Icicles.
  
 ;;(@* "Bookmark Basics")
 ;;  ** Bookmark Basics **
@@ -3336,6 +3337,35 @@
 ;;
 ;;  * `C-x p C-down', `C-x p C-up' - Cycle to the next and previous
 ;;                                   highlighted bookmark.
+ 
+;;(@* "Bookmark Links")
+;;  ** Bookmark Links **
+;;
+;;  You can use command `bmkp-insert-bookmark-link' to create links in
+;;  any Emacs text that jump to particular bookmarks when you follow
+;;  them (by hitting `RET' or clicking `mouse-2').  If you hit `?' or
+;;  double-click `mouse-1' on such a bookmark link then the bookmark
+;;  is described, showing the same information as `C-x p ?'
+;;  (`bmkp-describe-bookmark').
+;;
+;;  You are prompted for the bookmark to link.  If the region is
+;;  active and nonempty then the link is put on its text.  Otherwise,
+;;  you are prompted for the link text, which is inserted.  The
+;;  default link text is the bookmark name in this case.
+;;
+;;  The bookmark linked can be of any type.
+;;
+;;  This simple feature lets you easily create "launching pads" for
+;;  different sets of bookmarks: buffers or files that consist of
+;;  bookmark links and any other text you like.  This gives you yet
+;;  another way to organize bookmarks (and so also the files,
+;;  directories, etc. that they target).
+;;
+;;  If you also use library `font-lock+.el' then the links appear with
+;;  face `link', even in a font-locked buffer.  (Library
+;;  `font-lock+.el' just provides this feature of allowing
+;;  non-font-lock highlighting in a font-locked buffer.  See
+;;  http://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00540.html.)
  
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
