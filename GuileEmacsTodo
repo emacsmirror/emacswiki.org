@@ -12,6 +12,9 @@
 * Use libguile hash tables
 * remove unexec support code
 * Fix coccinelle parsing of loop macros with single-statement body
+* Fix Elisp printing of null (<code>()</code> is bad because that's nil in Elisp)
+* Maybe add Elisp reader support for false and null?
+* Make hygienic macros work in Elisp, no matter from what language they're defined
 
 == User-visible issues ==
 
