@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 28 14:04:00 2014 (-0700)
+;; Last-Updated: Sat Aug 30 11:21:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 169
+;;     Update #: 201
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -58,6 +58,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/30 dadams
+;;     Require cl.el when compile, for incf.
+;;     Load font-lock.el[c] when compile, for macro save-buffer-state.
+;;     font-lock-(prepend|append)-text-property:
+;;       Update for Emacs 24: Canonicalize old forms.
+;;     font-lock-fontify-syntactically-region: Updated for Emacs 24.
 ;; 2014/08/28 dadams
 ;;     put-text-property-unless-ignore: Use next-single-property-change.
 ;; 2007/03/25 dadams
@@ -86,6 +92,10 @@
 
 (require 'font-lock)
 
+(eval-when-compile
+  (require 'cl) ;; incf
+  (load-library "font-lock")) ;; Macro save-buffer-state
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun put-text-property-unless-ignore (start end property value &optional object)
@@ -105,7 +115,7 @@
 ;; Don't unfontify any text that has property `font-lock-ignore'.
 ;;
 (defun font-lock-default-unfontify-region (beg end)
-  "Unfontify from BEG to END, unless text with property `font-lock-ignore'."
+  "Unfontify from BEG to END, except text with property `font-lock-ignore'."
   (let ((here  (min beg end))
         (end1  (max beg end)))
     (while (< here end1)
@@ -132,6 +142,11 @@ Optional argument OBJECT is the string or buffer containing the text."
     (while (/= start end)
       (setq next  (next-single-property-change start prop object end)
             prev  (get-text-property start prop object))
+      ;; Canonicalize old forms of face property.
+      (and (memq prop '(face font-lock-face))  (listp prev)
+	   (or (keywordp (car prev))  (memq (car prev)
+                                            '(foreground-color background-color)))
+	   (setq prev  (list prev)))
       (put-text-property-unless-ignore start next prop
                                        (append val (if (listp prev) prev (list prev)))
                                        object)
@@ -152,6 +167,11 @@ Optional argument OBJECT is the string or buffer containing the text."
     (while (/= start end)
       (setq next  (next-single-property-change start prop object end)
             prev  (get-text-property start prop object))
+      ;; Canonicalize old forms of face property.
+      (and (memq prop '(face font-lock-face))  (listp prev)
+	   (or (keywordp (car prev))  (memq (car prev)
+                                            '(foreground-color background-color)))
+	   (setq prev (list prev)))
       (put-text-property-unless-ignore start next prop
                                        (append (if (listp prev) prev (list prev)) val)
                                        object)
@@ -214,16 +234,19 @@ see `font-lock-syntactic-keywords'."
 ;;
 ;; Use `put-text-property-unless-ignore' instead of `put-text-property'.
 ;;
+;; (Parameter PPSS is used by Emacs 22 and 23, but not by Emacs 24.)
+;;
 (defun font-lock-fontify-syntactically-region (start end &optional loudly ppss)
   "Put proper face on each string and comment between START and END.
 START should be at the beginning of a line."
+  (when (fboundp 'syntax-propertize)    ; Emacs 24+.
+    (syntax-propertize end)) ; Apply any needed syntax-table properties.
   (let ((comment-end-regexp  (or font-lock-comment-end-skip
                                  (regexp-quote (replace-regexp-in-string
                                                 "^ *" "" comment-end))))
-        state face beg)
+        (state               (or ppss  (syntax-ppss start))) ; Find the `start' state.
+        face beg)
     (when loudly (message "Fontifying %s... (syntactically...)" (buffer-name)))
-    (goto-char start)
-    (setq state  (or ppss  (syntax-ppss start))) ; Find the `start' state.
     (while (progn ; Find each interesting place between here and `end'.
              (when (or (nth 3 state)  (nth 4 state))
                (setq face   (funcall font-lock-syntactic-face-function state)
