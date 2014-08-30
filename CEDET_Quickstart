@@ -44,5 +44,40 @@ This is the configuration he uses:
 [new]
 I found that semantic-idle-completions-mode interferes with autocomplete and had to disable it for autocomplete to work normally. - TaylanUB
 
+[new]
+The example obove is very outdated and brought up many errors. As this is more an everyone-always-butts-in-Wiki, I want to share my own version of this code which worked for me:
+
+{{{
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+;; -----------
+(load-file "~/.emacs.d/cedet-1.1/common/cedet.el") ;; your cedet.el load path
+
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+(semantic-load-enable-excessive-code-helpers)      ; Enable prototype help and smart completion 
+;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
+
+;; Semantic
+(global-semantic-idle-scheduler-mode)
+(global-semantic-idle-completions-mode)
+(global-semantic-decoration-mode)
+(global-semantic-highlight-func-mode)
+(global-semantic-show-unmatched-syntax-mode)
+
+;; CC-mode
+(add-hook 'c-mode-common-hook '(lambda ()
+        (setq ac-sources (append '(ac-source-semantic) ac-sources))
+))
+
+;; Autocomplete
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories (expand-file-name
+             "~/.emacs.d/elpa/auto-complete-1.4.20110207/dict"))
+(setq ac-comphist-file (expand-file-name
+             "~/.emacs.d/ac-comphist.dat"))
+(ac-config-default)
+}}}
 ----
 CategoryProgrammerUtils
