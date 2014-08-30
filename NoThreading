@@ -97,6 +97,9 @@ So the legacy of existing EmacsLisp programms would not (theoretically) be a pro
 Had I been in #emacs at the time, I would have said that running multiple emacs instances is one healthy approach.  I like a Gnus, ECB, and ERC instance, myself.  RAM is cheap, so why fret about single-threadedness? --ChristopherSmith
 
 ----
+Well, for example, I am reading this page because I issued a `magit-diff` command on a branch with many changes and I needed something to do while I waited for it to be possible to use that emacs instance again.
+----
+
 Some of us fret about single-threadedness because we like to have to remember which of the three emacsen we opened a particular file in, last week. By having a single emacs, that particular dilemma is avoided. I have been told that it is difficult, but not impossible, to make a multi-threaded emacs, so I think the project should be undertaken. Perhaps we can have a threaded Emacs Virtual Machine that runs the current non-threaded Emacs as children (I don't know if that even makes sense) and each of those children would run Gnus or ERC, etc. --e1f
 
 ----
