@@ -15,9 +15,9 @@ Alternately, to use the Arduino IDE for compilation, but edit in Emacs, open the
 * Install arduino-mk from your repository/github
 * Create simple Makefile in the same directory as your .ino file.  Contents can be as simple as this (only the include is truly necessary, all other lines can be omitted for simple sketches):
 <pre>
-BOARD_TAG = uno (see make show_boards)                                                                                                 
+BOARD_TAG = uno (see make show_boards)
 ARDUINO_LIBS = <space separated list of libs, arduino.mk will try to guess>
-MONITOR_PORT = /dev/ttyUSB0 (will be automatically guessed from IDE prefs)                                                                                                     
+MONITOR_PORT = /dev/ttyUSB0 (will be automatically guessed from IDE prefs)
 include /usr/share/arduino/Arduino.mk
 </pre>
 * Call Makefile with M-x compile RET make -k upload
