@@ -17,7 +17,11 @@ As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully rep
 
 === How to build? ===
 
-The validity of this section could change at any time when the repos get updates. Currently you need the following patches on the Guile wip branch (see above) to get it to compile:
+NOTE: The validity of this section could change at any time when the repos get updates.
+
+As mentioned above, build the wip branch of the above linked Guile repo first, install it such that it will be available during the Emacs build, and then build the wip branch of the above linked Emacs repo.
+
+Currently you need the following patches on the Guile wip branch to get it to compile:
 
 {{{
 --- a/module/language/elisp/runtime.scm
@@ -53,6 +57,8 @@ These are trivial fixes for some trivial oversights as you might notice. The rep
 While building the Emacs wip branch, you might need to run "make -k" several times, and I had to export LD_LIBRARY_PATH=/path/to/libguile during the build and for launching the resulting emacs executable. In my case, /path/to/libguile is <code>~/usr/lib</code> which is where I installed the wip Guile build.
 
 You also need libgc 7.4.2 (latest version) and preferably a recent GCC. Version 4.7 from Debian stable worked for me.
+
+Of course you also need all the usual dependencies of Guile and Emacs. Their normal installation instructions will tell you (see README file and INSTALL file and all).
 
 === Dynamic scoping ===
 
