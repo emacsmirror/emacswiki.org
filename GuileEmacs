@@ -19,8 +19,7 @@ As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully rep
 
 The validity of this section could change at any time when the repos get updates. Currently you need the following patches on the Guile wip branch (see above) to get it to compile:
 
-<code>
---- a/module/language/elisp/runtime.scm
+<code>--- a/module/language/elisp/runtime.scm
 +++ b/module/language/elisp/runtime.scm
 @@ -22,6 +22,7 @@
    #:use-module (ice-9 format)
@@ -29,11 +28,11 @@ The validity of this section could change at any time when the repos get updates
 +  #:use-module (language tree-il eval)
    #:export (nil-value
              t-value
-             value-slot-module
-</code>
+             value-slot-module</code>
+
 and
-<code>
---- a/module/language/tree-il/eval.scm
+
+<code>--- a/module/language/tree-il/eval.scm
 +++ b/module/language/tree-il/eval.scm
 @@ -143,5 +143,8 @@
              (eval1 tag e)
@@ -43,8 +42,7 @@ and
 +  (eval1 x '()))
 +
  (define (compile-value x e opts)
-   (values (eval1 x '()) e e))
-</code>
+   (values (eval1 x '()) e e))</code>
 
 These are trivial fixes for some trivial oversights as you might notice. The repo is indeed in a very "work in progress" state.
 
