@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 24 09:17:32 2014 (-0700)
+;; Last-Updated: Sun Aug 31 15:00:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11263
+;;     Update #: 11269
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/08/31 dadams
+;;     icicle-search-highlight-and-maybe-replace: Removed code that reset match data to
+;;       icicle-search-regexp when icicle-search-replace-whole-candidate-flag=nil.  IOW, returned to
+;;       fix of 2013-12-10, removing unwise change of 2013-12-26 that treated nil case the same as
+;;       non-nil case.  For nil case, need keep match data for current-input match.
 ;; 2014/08/24 dadams
 ;;     icicle-search-bookmark, icicle-search-bookmarks-together: Better prompt for context regexp.
 ;;     icicle-search-bookmark: Bind icicle-bookmark-completing-p.
@@ -2111,6 +2116,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/08/29 dadams
+;;     Added: icicle-file-elc-p.
 ;; 2014/08/22 dadams
 ;;     Added: icicle-file-desktop-p.
 ;;     icicle-file-compressed-p: Handle cons argument.
@@ -7409,6 +7416,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/08/29 dadams
+;;     icicle-file-skip-functions, icicle-cand-preds-for-file: Added icicle-file-elc-p.
 ;; 2014/08/22 dadams
 ;;     icicle-cand-preds-for-file: Added icicle-file-desktop-p.
 ;; 2014/08/21 dadams
