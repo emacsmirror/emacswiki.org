@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 17 12:59:03 2014 (-0700)
+;; Last-Updated: Sat Aug 30 22:46:02 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1893
+;;     Update #: 1906
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -96,11 +96,13 @@
 ;;  to show you the color in context.  In addition, the tooltip is
 ;;  improved, showing more precise HSV values and decimal RGB.
 ;;
-;;  Standard command `facemenu-add-face' has also been enhanced here,
-;;  so that it prevents the highlighting that you add from being
-;;  erased by font lock.  To take advantage of this, you must use
-;;  Emacs version 22 or later, and you must also load library
-;;  `font-lock+.el'.
+;;  Standard commands `facemenu-set-face' (`M-o o') and
+;;  `facemenu-add-face' have also been enhanced here, so that they
+;;  prevent the highlighting that you add from being erased by font
+;;  lock.  To take advantage of this, you must use Emacs version 22 or
+;;  later, and you must also load library `font-lock+.el'.  I strongly
+;;  recommend that you do that.  Otherwise, you cannot use facemenu
+;;  commands in a font-locked buffer.
 ;;
 ;;  If you load library `highlight.el' before you load `facemenu+.el',
 ;;  then the commands in that library are also added to the Text
@@ -169,9 +171,10 @@
 ;;  ***** NOTE: The following functions defined in `facemenu.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;    `facemenu-add-face' (Emacs 22+), `facemenu-read-color',
-;;    `facemenu-set-face' (Emacs 22+), `list-colors-print' (Emacs
-;;    22+).
+;;    `facemenu-add-face' (Emacs 22+),
+;;    `facemenu-post-self-insert-function' (Emacs 24+),
+;;    `facemenu-read-color', `facemenu-set-face' (Emacs 22+),
+;;    `list-colors-print' (Emacs 22+).
 ;;
 ;;
 ;;  ***** NOTE: The following function defined in `faces.el'
@@ -198,6 +201,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/08/30 dadams
+;;     Added facemenu-post-self-insert-function (fixes Emacs 24+ via font-lock-ignore).
+;;     facemenu-add-face: Do not show message if font-lock+.el loaded (no font-lock override).
 ;; 2014/08/17 dadams
 ;;     Applied renaming: icicle-read-color-wysiwyg -> icicle-read-color-WYSIWYG.
 ;; 2014/05/17 dadams
@@ -1614,7 +1620,7 @@ Also, close the *Faces* display."
 
   ;; REPLACES ORIGINAL in `facemenu.el':
   ;;
-  ;; Also put text property `font-lock-ignore' on the highlighted text.
+  ;; Put text property `font-lock-ignore' on the highlighted text.
   ;;
   (if (> emacs-major-version 23)
       ;; Emacs 24
@@ -1671,7 +1677,7 @@ effect.  See `facemenu-remove-face-function'."
                                (car facemenu-self-insert-data)
                              (list (car facemenu-self-insert-data))))
               face))))
-        (unless (facemenu-enable-faces-p)
+        (unless (or (featurep 'font-lock+)  (facemenu-enable-faces-p))
           (message "Font-lock mode will override any faces you set in this buffer")))
 
     ;; Emacs 22, 23
@@ -1728,8 +1734,22 @@ effect.  See `facemenu-remove-face-function'."
                                                      (list self-insert-face)))
                                       face)
                   self-insert-face-command this-command))))
-      (unless (facemenu-enable-faces-p)
+      (unless (or (featurep 'font-lock+)  (facemenu-enable-faces-p))
         (message "Font-lock mode will override any faces you set in this buffer")))))
+
+
+  ;; REPLACES ORIGINAL in `facemenu.el':
+  ;;
+  ;; Put text property `font-lock-ignore' on the highlighted text.
+  ;;
+(when (fboundp 'facemenu-post-self-insert-function) ; Emacs 24+
+  (defun facemenu-post-self-insert-function ()
+    (when (and (car facemenu-self-insert-data)
+               (eq last-command (cdr facemenu-self-insert-data)))
+      (put-text-property (1- (point)) (point) 'face (car facemenu-self-insert-data))
+      (put-text-property (1- (point)) (point) 'font-lock-ignore t)
+      (setq facemenu-self-insert-data nil))
+    (remove-hook 'post-self-insert-hook 'facemenu-post-self-insert-function)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
