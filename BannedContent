@@ -1,4 +1,3 @@
-[[ja:禁止されているコンテンツ]]
 # These regular expressions are tested against all URLs in a page before saving it.
 # The format is simple: # comments to the end of the line. Empty lines are ignored.
 # Everything else is a regular expression. If the regular expression is followed by
