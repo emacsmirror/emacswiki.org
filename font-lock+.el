@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 30 23:08:54 2014 (-0700)
+;; Last-Updated: Sat Aug 30 23:10:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 207
+;;     Update #: 208
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   Symbol's value as variable is void: cl-builtin-gethash.
+;;   `font-lock', `syntax'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
