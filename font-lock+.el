@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 30 11:21:48 2014 (-0700)
+;; Last-Updated: Sat Aug 30 23:08:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 201
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `font-lock', `syntax'.
+;;   Symbol's value as variable is void: cl-builtin-gethash.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,15 +117,17 @@
 (defun font-lock-default-unfontify-region (beg end)
   "Unfontify from BEG to END, except text with property `font-lock-ignore'."
   (let ((here  (min beg end))
-        (end1  (max beg end)))
+        (end1  (max beg end))
+        chg)
     (while (< here end1)
+      (setq chg  (next-single-property-change here 'font-lock-ignore nil end1))
       (unless (get-text-property here 'font-lock-ignore)
         (remove-list-of-text-properties
-         here (1+ here) (append font-lock-extra-managed-props
-                                (if font-lock-syntactic-keywords
-                                    '(syntax-table face font-lock-multiline)
-                                  '(face font-lock-multiline)))))
-      (setq here  (1+ here)))))
+         here chg (append font-lock-extra-managed-props
+                          (if font-lock-syntactic-keywords
+                              '(syntax-table face font-lock-multiline)
+                            '(face font-lock-multiline)))))
+      (setq here  chg))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
