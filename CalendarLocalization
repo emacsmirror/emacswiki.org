@@ -348,12 +348,15 @@ Lisp:ukrainian-holidays.el
 	(holiday-fixed 12 26 "Boxing Day"))
       )
 
+;; Change any of the following from nil to 't if you want those
+;; holidays marked in your calendar, and vice versa.
 (setq holiday-general-holidays nil)
 (setq holiday-christian-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
 (setq holiday-bahai-holidays nil)
 (setq holiday-oriental-holidays nil)
+(setq holiday-solar-holidays 't)
 
 ;; Change these to your location in Zimbabwe. This information is
 ;; useful for sunrise, sunset, equinox, solstice etc.
