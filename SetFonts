@@ -223,6 +223,12 @@ Version using [[https://github.com/magnars/dash.el dash.el]] (call it the same w
     "Return the first available font."
     (--first (find-font (font-spec :name it)) fonts))
 
+Version using loop:
+
+  (require 'cl)
+  (defun font-candidate (&rest fonts)
+    (loop for font in fonts when (find-font (font-spec :name font)) return font))
+
 == True type fonts? ==
 
 [new]
