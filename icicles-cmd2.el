@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 24 09:02:53 2014 (-0700)
+;; Last-Updated: Sun Aug 31 15:04:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7043
+;;     Update #: 7048
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5046,13 +5046,8 @@ current input matches candidate") (sit-for 2))
                    (while (and (or first-p  icicle-all-candidates-action)
                                (re-search-forward (or ecm  icicle-current-input) nil 'move-to-end))
                      (setq first-p  nil)
-                      ;; Search for original regexp, to set match data so replacements such as `\N' work.
-                     (when (and icicle-search-regexp  (> emacs-major-version 21))
-                       (goto-char (point-min))
-                       (re-search-forward icicle-search-regexp nil 'move-to-end))
-                     (icicle-search-replace-match replace-string
-                                                  (icicle-search-replace-fixed-case-p
-                                                   icicle-current-input)))))))
+                     (icicle-search-replace-match replace-string (icicle-search-replace-fixed-case-p
+                                                                  icicle-current-input)))))))
         (when replacement-p
           ;; Update the alist and `minibuffer-completion-table' with the new text.
 
