@@ -54,6 +54,10 @@ While building the Emacs wip branch, you might need to run "make -k" several tim
 
 You also need libgc 7.4.2 (latest version) and preferably a recent GCC. Version 4.7 from Debian stable worked for me.
 
+=== Dynamic scoping ===
+
+Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to libguile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
+
 
 == Nil, false, and the empty list ==
 
@@ -66,11 +70,6 @@ To speak in examples: in Scheme, <code>(if #nil 0 1)</code> yields 1, <code>(and
 As an additional weirdity, the nil and true objects are symbols in Elisp, since after all they're `nil' and `t'. They are not symbols in Scheme though, despite being the same objects. (The Elisp `symbolp' function and Scheme <code>symbol?</code> procedure simply disagree here, among some others which deal with symbols.)
 
 All in all, things should simply work fine as long as the user writes well-abstracted code that uses `if', `not', <code>null?</code>, etc. instead of comparing equality to literal objects. Time will tell whether the internal mess with lead to problems in practice. (At least checking the truthiness of nil and false is still both very cheap thanks to some low-level magic in libguile, so code isn't slowed down by the presence of the extra nil object that needs to act as a false value.)
-
-
-== Dynamic scoping ==
-
-Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to libguile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
 
 
 == Macros ==
