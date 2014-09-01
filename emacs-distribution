@@ -17,8 +17,7 @@ See DotEmacsDistributions
 # URL: http://www.emacswiki.org/emacs/emacs-distribution
 
 # Dependencies:
-# Currently assumes the presence of the non-POSIX GNU getopt utility
-# which provides support for --long command line arguments.
+# Requires the non-POSIX GNU getopt utility.
 
 
 # Commentary:
