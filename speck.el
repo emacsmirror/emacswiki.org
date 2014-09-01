@@ -5,7 +5,7 @@
 ;; Time-stamp: "2014-08-30 15:30:34 york"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
-;; Version: 2013.05.19
+;; Version: 2014.08.30
 
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
