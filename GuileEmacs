@@ -64,6 +64,10 @@ Of course you also need all the usual dependencies of Guile and Emacs. Their nor
 
 Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to libguile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
 
+=== So can I script Emacs in Scheme already?! ===
+
+http://i.imgur.com/5DYQbhu.png
+
 
 == Nil, false, and the empty list ==
 
