@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2013-05-19 16:06:43 andrei"
+;; Time-stamp: "2014-08-30 15:30:34 york"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
 ;; Version: 2013.05.19
@@ -10,6 +10,7 @@
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
 ;; Andrei Chițu <andrei.chitu1@gmail.com>
+;; York Zhao <gtdplatform@gmail.com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,6 +32,19 @@
 ;; of all windows showing the current buffer.
 
 ;; Change Log:
+;; 2014/08/30 York Zhao
+;;     Add support to allow binding a lisp function to a "replace key" in
+;;     `speck-replace-keys' and/or `speck-replace-map', so that one can define a
+;;     function to do more hacking. For instance, one can define a function, and
+;;     bind it to the ESC key in `speck-replace-keys' and/or
+;;     `speck-replace-map', to decide whether to accept the speck correction, by
+;;     returning non-nil, or reject it, by returning nil. One use case is that
+;;     in Evil, a Vim emulation in Emacs, one can allow ESC to accept a speck
+;;     correction only in insert state.
+;; 2014/04/16 York Zhao
+;;     Fix whitespace, replace TABs with spaces.
+;; 2013/12/30 York Zhao
+;;     Require the `cl-lib', instead of `cl'
 ;; 2013/05/19 Andrei Chițu
 ;;     bugfix: bugfix: in `speck-windows' check that `window' is non-nil before specking it
 ;;     bugfix: keep case of dictionary names in `speck-hunspell-dictionary-alist'
@@ -43,6 +57,8 @@
 ;;;                            General options
 ;; _____________________________________________________________________________
 ;;
+(require 'cl-lib)
+
 (defgroup speck nil
   "Another interface to Aspell, Hunspell and Ispell."
   :version "23.1"
@@ -1802,33 +1818,30 @@ MAP must be a keymap, KEYS a list of (command . key) pairs."
 ;;;                            Macros
 ;; _____________________________________________________________________________
 ;;
-(eval-when-compile
-  (require 'cl)
+(defmacro with-buffer-unmodified (&rest body)
+  "Eval BODY, preserving the current buffer's modified state."
+  (declare (debug t))
+  (let ((modified (make-symbol "modified")))
+    `(let ((,modified (buffer-modified-p)))
+       (unwind-protect
+           (progn ,@body)
+         (unless ,modified
+           (restore-buffer-modified-p nil))))))
 
-  (defmacro with-buffer-unmodified (&rest body)
-    "Eval BODY, preserving the current buffer's modified state."
-    (declare (debug t))
-    (let ((modified (make-symbol "modified")))
-      `(let ((,modified (buffer-modified-p)))
-         (unwind-protect
-             (progn ,@body)
-           (unless ,modified
-             (restore-buffer-modified-p nil))))))
-
-  ;; Save match-data maybe .............
-  (defmacro with-buffer-prepared-for-specking (&rest body)
-    "Execute BODY in current buffer, overriding several variables.
+;; Save match-data maybe .............
+(defmacro with-buffer-prepared-for-specking (&rest body)
+  "Execute BODY in current buffer, overriding several variables.
 Preserves the `buffer-modified-p' state of the current buffer."
-    (declare (debug t))
-    `(with-buffer-unmodified
-      (let ((buffer-undo-list t)
-            (inhibit-read-only t)
-            (inhibit-point-motion-hooks t)
-            (inhibit-modification-hooks t)
-            (inhibit-field-text-motion t)
-            first-change-hook after-change-functions
-            deactivate-mark buffer-file-name buffer-file-truename)
-        ,@body))))
+  (declare (debug t))
+  `(with-buffer-unmodified
+    (let ((buffer-undo-list t)
+          (inhibit-read-only t)
+          (inhibit-point-motion-hooks t)
+          (inhibit-modification-hooks t)
+          (inhibit-field-text-motion t)
+          first-change-hook after-change-functions
+          deactivate-mark buffer-file-name buffer-file-truename)
+      ,@body)))
 
 ;; _____________________________________________________________________________
 ;;
@@ -3747,13 +3760,15 @@ means put this property on REPLACE."
                             (with-current-buffer standard-output
                               (help-mode))))
                          (t
-                          ;; The mode-exited stuff is not clean but
-                          ;; let's try doing this as in `query-replace'.
-                          (setq this-command 'mode-exited)
-                          (setq unread-command-events
-                                (append (listify-key-sequence key)
-                                        unread-command-events))
-                          (setq change t)))))
+                          (when (or (not (functionp def))
+                                    (funcall def))
+                            ;; The mode-exited stuff is not clean but
+                            ;; let's try doing this as in `query-replace'.
+                            (setq this-command 'mode-exited)
+                            (setq unread-command-events
+                                  (append (listify-key-sequence key)
+                                          unread-command-events))
+                            (setq change t))))))
                   (cond
                    (change
                     (speck-replace-word from to word replace overlay property))
