@@ -30,7 +30,7 @@ In this case, the comparison function `equal' will override the default comparis
 * In CommonLisp, you can supply any comparison function for ##:test## -- it need not be one of those that are mentioned above as predefined for `make-hash-table': `eq', `eql', and `equal'. This is also true for Emacs-Lisp's  `make-hash-table', but in that case you will need to use `define-hash-table-test' to define your own key-comparison function for hash tables. In the usual case, you can just use `defun' to define a comparison function.
 
 
-You can also use the cl-parsing-keywords as defined in the common lisp compatibility library in Emacs:
+You can also use the cl-parsing-keywords (cl--parsing-keywords in newer Emacsen) as defined in the common lisp compatibility library in Emacs:
 
 
  (defun foobar (&rest cl-keys)
