@@ -17,7 +17,7 @@ See DotEmacsDistributions
 # URL: http://www.emacswiki.org/emacs/emacs-distribution
 
 # Dependencies:
-# Requires the non-POSIX GNU getopt utility.
+# Requires the enhanced (non-POSIX) GNU getopt utility.
 
 
 # Commentary:
