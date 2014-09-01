@@ -2901,9 +2901,9 @@ by `speck-pause-timer'."
 	  ;; its buffer current.
 	  (when (and speck-process (not (process-get speck-process 'preempted)))
 	    (with-buffer-prepared-for-specking
-		(let (minibuffer-auto-raise message-log-max)
-		  (save-excursion
-		    (speck-window))))))))))
+             (let (minibuffer-auto-raise message-log-max)
+               (save-excursion
+                 (speck-window))))))))))
   (when speck-window-list
     ;; Pause by `speck-pause' seconds.
     (speck-respeck speck-pause)))
