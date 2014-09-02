@@ -13,7 +13,9 @@ Hue 0.0 and hue 1.0 are the same: pure red.  The hue x
 saturation palette shows this discontinuity.  Move the [[cursor]] horizontally near the right side of this palette and you will
 see the hue value jump between 0.0 and 1.0 at a certain point.
 
-You can navigate the HSV and RGB color spaces interactively. Hit '''`##?##'''' at any time to examine the color under the text cursor -- the HSV and RGB components are displayed in the echo area. Click `mouse-1' or move the text cursor to examine other colors. 
+You can navigate the HSV and RGB color spaces interactively. Hit '''`##?##'''' at any time to examine the color under the [[cursor]] -- the HSV and RGB components are displayed in the echo area. Click `mouse-1' or move the text cursor to examine other colors. 
+
+If you also use library <tt>[[misc-cmds.el]]</tt> then you can use '''`##C-?##'''' (command `palette-list-colors-nearest') in the palette to list (show) the colors that are nearest a given color.  By default, the given color is the color under the cursor.  But with a [[prefix argument]] you are prompted for the color.
 
 Use ``RET' or `mouse-2' to ''choose'' the color under the cursor, making it the "'''current color'''". The current color is displayed with a large swatch to the right of the hue x saturation palette. You can also hold the Shift key down while you move the cursor, to continually update the current color. You can hit '''`##~##'''' to set the current color to its ''complement''. (Again, `##?##' shows you the components of that complement color.) Use `C-h m' for more info. A popup menu of the palette commands is available on `mouse-3'.
 
