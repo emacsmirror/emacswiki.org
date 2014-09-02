@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Aug 31 15:00:54 2014 (-0700)
+;; Last-Updated: Tue Sep  2 06:50:21 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11269
+;;     Update #: 11270
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/09/02 dadams
+;;     icicle-search-replace-match: Temporary (?) fix for braindead Emacs 24.4 regression (bug #18388).
 ;; 2014/08/31 dadams
 ;;     icicle-search-highlight-and-maybe-replace: Removed code that reset match data to
 ;;       icicle-search-regexp when icicle-search-replace-whole-candidate-flag=nil.  IOW, returned to
