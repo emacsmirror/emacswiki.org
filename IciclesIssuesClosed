@@ -400,6 +400,43 @@ Please try the latest <tt>[[icicles-cmd1.el]]</tt>.  Thx -- DrewAdams
 I've checked icicles-cmd1.el version 25681 (chg version 9926). It works! Thx -- Ayvango
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi Brian.  During commands that read buffer-name input, `C-x v -' removes buffers that are visible (and `##C-x v +##' removes those that are invisible).
+
+However, although there has been a prefix arg possibility (namely `C-u C-u') that gives you only visible buffers as candidates (and as default values), there has not been one that gives you only invisible buffers.  I've just added that now, so you should be able to do `C-u C-u C-u C-x b' to get what you want.
+
+You can also easily create a command that does only that, so you don't have to hit `C-u C-u C-u' if you use this behavior a lot.  (Just `let'-bind `current-prefix-arg' as you like and call `icicle-buffer'.)
+
+I suppose a user option would also be possible, but I'm not sure what the best form for that would be.  One thing that might be helpful would be to let users choose which prefix arg forms give which behaviors --- today that matchup is hard-coded.
+
+I don't have any plans to add an option for something like this, but I'm always open to considering suggestions.  In the meantime, try `C-u C-u C-u', or try using `C-x v -' to filter on the fly.
+
+Another thing you can do is to simply set option `icicle-buffer-predicate' to a predicate that excludes visible buffers.  I think most users will not want to use an option such as this or the one you suggested, because it is a blanket that covers ''all'' buffer-name completion.
+
+Another possibility is to dissociate the selectivity for default values (accessible via `M-n') from that for completion candidates.  Today they both follow the prefix argument form the same way.
+
+I mention that because you asked about default values, not about completion candidates.  Dunno whether that means that you would like all buffers as candidates but only invisible ones as default values?
+
+Thx -- DrewAdams
+
+
+
+[new:DrewAdams:2013-04-19 02:23 UTC]
+I just added two user options that I think might help:
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>'''', which controls the [[prefix argument]] behavior.  So, for instance, if you want lack of a prefix arg to mean use only invisible buffers and `C-u C-u C-u' to mean use all buffers, you can easily have that behavior.  You can define any prefix-arg tests you want, with any corresponding filter behaviors you want.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>'''', which defines the key bindings to use for on-the-fly filtering (narrowing).
+
+I think this should offer you the flexibility you seek. HTH -- DrewAdams
+
 
 
 
@@ -5504,12 +5541,191 @@ BTW, you should think about making downloading icicles easier, so that it's not 
 [new:DrewAdams:2006-03-22 16:31 UTC]
 Glad to hear things are working.
 
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi! I'm trying to get my head around Icicles - Search-And-Replace.
+Is there some way to enable completion when specifiying the initial
+context-regexp, and especially when specifying the replacement?
+So far I'm getting by with M-. to insert word at point, and Pause to
+suspend the minibuffer temporarily.
+
+Also, it would be nice to have an option to make the matches for the
+initial content-regexp be visible immediately as one types the
+regexp. Similar to how it works for incremental search.
+
+Thanks, Johan Widén.
+
+[new:DrewAdams:2013-03-04 18:41 UTC]
+Hi Johan,
+
+1. Completion ''is'' available when you enter the initial regexp (i.e., the context regexp). The completion is against the entries in `regexp-history', and that history is updated to include any context regexp you enter.
+
+2. Likewise, the same kind of completion is available for defining the replacement.
+
+3. Currently there is no default value for #1 and #2.  It sounds like you would want the word (for example) at point.  I can think about doing that.  I'm out this week, but when I get some time I'll look into doing that.
+
+4. I'm afraid that it would be impractical to provide incremental highlighting feedback as you type the context regexp.  Instead, you have completion.  Sorry.  But at least you can see the contexts highlighted as soon as you hit `RET' (though that can take some time).
+
+HTH.  I'm afraid it is about all I can offer.  -- DrewAdams
+
+[new:DrewAdams:2013-03-05 15:56 UTC]
+I should also have mentioned that you can do the following, to see what your context regexp will match as you type it.  It provides a workaround for your requested incremental highlighting, while still allowing completion against past regexps.
+
+: '''##C-S-r##''' ''<type your regexp>'' '''##S-TAB##'''
+
+That enters '''Icicles''' search and populates the  minibuffer with that Isearch regexp for use as the '''Icicles''' search-context regexp.  You can complete that input against the regexp history or just hit `RET' to accept it.
+
+See:
+
+* [[Icicles - Search Commands, Overview#IsearchStringAsIciclesRegexp]]
+
+* [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]]
+
+-- DrewAdams
+
+[new:JohanWidén:2013-03-05 16:57 UTC]
+
+OK: C-S-r achieves what I want for visual feedback.
+
+I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.  -- Johan Widén
+
+[new:DrewAdams:2013-03-05 19:25 UTC]
+1. Also, for the default, you can always use `##M-.##' (repeating as needed) to insert text things at/near point into the minibuffer.  See [[Icicles - Inserting Text from Cursor]].
+
+2. I have nevertheless now provided similar defaulting for the context regexp, so you can use `M-n' instead of `##M-.##' if you prefer -- try the latest code.
+
+3. Completion for reading the replacement string is against the history `icicle-search-replacement-history', which is specific to this purpose (i.e., previously entered replacement strings).  Defaulting is the same (things at point).
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Icicles is quite overwhelming, so I tried to use individual commands first instead of enabling icy-mode. When I tried icicle-occur (with icy-mode disabled) and pressed S-tab then I got the message: backtab is undefined.  Prefix (tab) completion works.
+
+Is it normal behavior? Or icicle-occur doesn't work without enabling icy-mode? -- [[Anonymous]]
+
+[new:DrewAdams:2010-10-10 17:31 UTC]
+1. The behavior offered by '''Icicles''' is encapsulated in a minor mode.  When you turn off ''Icicle'' mode you are left with the vanilla Emacs behavior.  That's the point.
+
+Thus, most of the '''Icicles''' commands do not work unless you are in ''Icicle'' mode.  I could raise an error in case you call such a command outside ''Icicle'' mode, but I don't bother to.
+
+About the only commands that work outside ''Icicle'' mode are those that replace standard commands (see [[Icicles - Standard Functions Redefined]]), and in such cases they typically have the same name but with the prefix `icicle-', and when you are not in ''Icicle'' mode they just do what the vanilla commands of the same name do.
+
+2. '''Icicles''' can be overwhelming if you let yourself get overwhelmed easily. ;-)  There is no reason not to take your time and learn it slowly.  For the most part you can carry on as usual without noticing much difference from vanilla Emacs.  For example, if you don't use `S-TAB' from the minibuffer then you get the usual, prefix completion matching.  If you don't use the cycling keys then, well, you get the same as vanilla Emacs: no cycling. ;-)
+
+Yes, there are some things to be aware of, some differences you will notice that you can look up in the doc as you encounter them (as you did wrt `*Completions*' display).  But in general you can bite off bits of '''Icicles''' and digest them at your own speed.
+
+I know that some people can get overwhelmed, in particular by the extensive doc.  Some others don't bother to read the doc at all.  At least one user I know learned '''Icicles''' piece by piece very methodically, investigating every detail, and he studied the doc the same way.  He took his time, however, and enjoyed it.
+
+Learning '''Icicles''' should not be a pain, but it's up to you, I think.  You should be able to learn it progressively, and what you don't know at any moment should not, in general, hurt you. ;-)
+
+Do not hesitate to ask questions or mention problems you encounter, but the doc is also your friend (assuming you are comfortable with reading doc -- some people are not, and that's OK). 
+
+3. '''Icicles''' search (e.g. `icicle-occur') is quite powerful, but it might not be the first thing to start with.  It won't hurt to start with it, but if you get discouraged and it seems too complex, turn to something simpler to start with.  -- DrewAdams
+
+
+
+
+
+
 [:IciclesTarball]
 [new:DrewAdams:2013-10-11 19:52 UTC]
 There is now an automatically generated zip archive of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles
 Icicles repository]]''' on the GitHubMirror. See http://www.emacswiki.org/emacs/Icicles_-_Libraries#ZipFileDownload.
 
 -- DrewAdams
+
+
+<pre>
+
+</pre>
+
+----
+<pre>
+
+</pre>
+
+Quick question.  What is the equivalent key and feature for `M-r' (search history by regexp) in Vanilla Emacs for Icicles?
+For smooth transition from vanilla Emacs, I may hope that this or equivalent feature is available by default key bindings... -- [[golconda]]
+
+[new:DrewAdams:2013-12-30 15:23 UTC]
+See [[Icicles - History Enhancements]], including [[Icicles - History Enhancements#InsertPreviousInputs|Insert Previous Inputs]].  In particular:
+
+: In vanilla Emacs, the history lists are never shown as such; you can access previous
+inputs only one at a time, in order (with `M-p').  In vanilla
+Emacs, you can use a [[regexp]] to search the history list (via
+`M-r' and `M-s'), but the regexp matching is not dynamic, and the first
+match found is the only one you get.
+In ''Icicle'' mode, `M-r' and `M-s' are not available for matching a
+history item --- use `M-o' instead.
+
+
+
+
+
+<pre>
+
+</pre>
+
+----
+<pre>
+
+</pre>
+
+
+I've experienced some difficulties in using icicles with cua.  Huge thanks to Drew for helping me understand and work around this issue.  Specificially, when the region is active in the minibuffer, and when cua-mode is enabled, self-inserting keys are bound to cua-replace-region, and the DEL key is bound to cua-delete-region.  The region can become active when cycling through completions.  This causes rather odd behaviour where you can only delete part of the text in the minibuffer, and cannot add new text to the minibuffer after cycling.  
+A workaround is to set `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate' to the same value, so that the region doesn't become active in the minibuffer.  
+See also [[IciclesIssuesClosed#cua-mode]] for more discussion on cua-mode interactions.
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+hi
+Is it possible to create a directory using `##C-c +##' on fly in other command than `C-x C-f', for example using `C-x C-w' or in dired rename `R'?
+Regards,
+JohnDoe974
+
+
+[new:DrewAdams:2014-02-25 18:57 UTC]
+Whenever it is possible it is documented in the doc string.  It is possible for all **Icicles** commands that expect file-name input, in particular: `icicle-delete-file', `icicle-dired', `icicle-file' (and similar), `icicle-recent-file', `icicle-locate-file', `icicle-file-list', `icicle-directory-list', `icicle-bookmark-a-file', `icicle-find-file-tagged'. 
+
+There is no **Icicles** command bound to `C-x C-w' or `R' in Dired, so no for those.  You could define  **Icicles** commands for such things, however. -- DrewAdams
+
 
 
 
