@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 31 15:04:51 2014 (-0700)
+;; Last-Updated: Tue Sep  2 06:52:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7048
+;;     Update #: 7054
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5121,6 +5121,18 @@ FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
                    (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
                  compiled)
                fixedcase icicle-search-replace-literally-flag nil (match-data)))
+          ;; @@@@@@ Hopefully this is only a temporary hack, until Emacs bug #18388 is fixed.
+          (wrong-number-of-arguments
+           (condition-case icicle-search-replace-match3
+               (replace-match-maybe-edit
+                (if (consp compiled)
+                    ;; `replace-count' is free here, bound in `icicle-search'.
+                    (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                  compiled)
+                fixedcase icicle-search-replace-literally-flag nil (match-data)
+                nil)                    ; BACKWARD parameter for Emacs 24.4+ - see bug #18388
+             (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
+             (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replace-string))))
           (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
           (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replace-string))))
     (condition-case icicle-search-replace-match2 ; Emacs < 22.  Try to interpret `\'.
