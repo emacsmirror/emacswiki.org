@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Aug 17 13:08:08 2014 (-0700)
+;; Last-Updated: Tue Sep  2 13:58:23 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 750 4
+;;     Update #: 772 4
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -56,6 +56,7 @@
 ;;   - `.' shows info about the current color
 ;;   - `mouse-1' or `?' shows info about a color at pointer or cursor
 ;;   - `mouse-2' or `RET' anywhere picks a color as the current color
+;;   - `C-?' shows colors similar to the color at pointer or cursor
 ;;   - Cursor motion is along the grid of colors, with wrapping.
 ;;     Shifted cursor motion updates the current color as you move.
 ;;   - `n', `C-s' saves the current color
@@ -267,6 +268,7 @@
 ;;    `palette-increase-green', `palette-increase-hue',
 ;;    `palette-increase-red', `palette-increase-saturation',
 ;;    `palette-increase-value', `palette-left', `palette-left+pick',
+;;    `palette-list-colors-nearest',
 ;;    `palette-pick-background-at-mouse',
 ;;    `palette-pick-background-at-point', `palette-pick-color-by-hsv',
 ;;    `palette-pick-color-by-name', `palette-pick-color-by-rgb',
@@ -310,6 +312,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/02 dadams
+;;     Added: palette-list-colors-nearest.
+;;     Soft-require misc-cmds.el.
+;;     palette-mode-map: Bind palette-list-colors-nearest. to C-?.
+;;     palette-popup-map: Added palette-list-colors-nearest.
+;;     palette-mode: Mention C-? binding in doc string.
 ;; 2014/08/17 dadams
 ;;     Added: palette-read-color.  Use it everywhere instead of hexrgb-read-color.
 ;; 2012/03/18 dadams
@@ -452,6 +460,8 @@
                   ;; hexrgb-hex-to-hsv, hexrgb-hsv-to-hex, hexrgb-hue,
                   ;; hexrgb-read-color, hexrgb-red, hexrgb-rgb-hex-to-rgb-hex,
                   ;; hexrgb-rgb-to-hex, hexrgb-rgb-to-hsv, hexrgb-saturation, hexrgb-value
+
+(require 'misc-cmds nil t) ;; (no error if not found) list-colors-nearest
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -625,6 +635,8 @@ user updates `blink-cursor-mode'.")
     (define-key map [down-mouse-3] 'palette-popup-menu)
     (define-key map [mouse-3]      'ignore)
     (define-key map "?"    'palette-background-at-point)
+    (when (fboundp 'list-colors-nearest) ; Library `misc-cmds.el', Emacs 24+.
+      (define-key map [(control ?\?)] 'palette-list-colors-nearest))
     (define-key map "."    'palette-current-color)
     (define-key map "~"    'palette-pick-color-complement)
     (define-key map "B"    'palette-increase-blue) ; B, b = blue
@@ -674,8 +686,12 @@ user updates `blink-cursor-mode'.")
       '(menu-item "Current Color Info" palette-current-color
         :help "Return the current color and show info about it"))
     (define-key popup-map [bg-at-point]
-      '(menu-item "Info at Cursor" palette-background-at-point
+      '(menu-item "Color at Cursor" palette-background-at-point
         :help "Return the background color under the text cursor"))
+    (when (fboundp 'list-colors-Library) ; nearest `misc-cmds.el', Emacs 24+.
+      (define-key popup-map [list-colors-nearest]
+        '(menu-item "List Nearest Colors" palette-list-colors-nearest
+          :help "List the colors nearest the color under the text cursor")))
     (define-key popup-map [separator-1] '(menu-item "--"))
     (define-key popup-map [pick-color-by-name]
       `(menu-item "Choose Color By Name" palette-pick-color-by-name
@@ -812,6 +828,7 @@ In the color palette:
 
  - `mouse-1' or `?' anywhere shows info about a color
  - `mouse-2' or `RET' anywhere picks a color as the current color
+ - `C-?' shows colors similar to the color at pointer or cursor
  - Cursor motion is along the grid of colors, with wrapping.
    Shifted cursor motion updates the current color as you move.
  - `n', `C-s' saves the current color
@@ -927,6 +944,7 @@ In the color palette:
 
  - `mouse-1' or `?' anywhere shows info about a color
  - `mouse-2' or `RET' anywhere picks a color as the current color
+ - `C-?' shows colors similar to the color at pointer or cursor
  - Cursor motion is along the grid of colors, with wrapping.
    Shifted cursor motion updates the current color as you move.
  - `n', `C-s' saves the current color
@@ -1193,6 +1211,15 @@ NOTE: The cursor is positioned in each of the windows so that it
                       (t nil))))        ; Invalid face value.
     (when msg-p (if bg (palette-color-message bg t) (message "No background color here")))
     bg))
+
+;;;###autoload
+(defun palette-list-colors-nearest (color) ; Bound to `C-?'.
+  "List the colors that are nearest COLOR, the current palette color.
+With a prefix arg, you are prompted for COLOR."
+  (interactive
+   (list (if current-prefix-arg (palette-read-color nil t) (palette-background-at-point))))
+  (let ((pop-up-frames  t))
+    (list-colors-nearest color)))
 
 ;;;###autoload
 (defalias 'foreground-color 'palette-foreground-at-point)
