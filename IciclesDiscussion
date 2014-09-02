@@ -88,7 +88,7 @@ The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
 
 <pre>
-
+I have a question about Icicle-locate-file. How does it work? Both the function documentation and the wiki say that I can find files in subdirectories with it, but none of them say how. So I use this command with a prefix argument, provide the directory, and then I can enter something, but then I don't know what to do. Hitting tab or shift-tab doesn't do anything, and hitting enter will open an empty file with a name that is the regular expression. Am I missing something? The documentation doesn't explain what to do.
 </pre>
 ----
 <pre>
