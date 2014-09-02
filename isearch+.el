@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 15 09:58:11 2014 (-0700)
+;; Last-Updated: Tue Sep  2 06:42:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3404
+;;     Update #: 3407
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -522,6 +522,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/09/02 dadams
+;;     isearchp-replace-match: Temporary (?) fix for braindead Emacs 24.4 regression (bug #18388).
 ;; 2014/04/15 dadams
 ;;     isearch-printing-char: Update version test for Emacs 24.4 pretest - use version<.
 ;; 2014/01/10 dadams
@@ -2434,6 +2436,16 @@ Treat the replacement string as does `query-replace-regexp'."
                (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
              compiled)
            (isearchp-replace-fixed-case-p (match-string 0)) isearchp-replace-literally nil (match-data))
+        (wrong-number-of-arguments
+         (condition-case isearchp-replace-match-2
+             (replace-match-maybe-edit
+              (if (consp compiled)
+                  (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                compiled)
+              (isearchp-replace-fixed-case-p (match-string 0)) isearchp-replace-literally nil (match-data)
+              nil)                      ; BACKWARD parameter for Emacs 24.4+ - see bug #18388
+           (buffer-read-only (ding) (isearchp-user-error "Buffer is read-only"))
+           (error (isearchp-user-error "No match for `%s'" isearchp-replacement))))
         (buffer-read-only (ding) (isearchp-user-error "Buffer is read-only"))
         (error (isearchp-user-error "No match for `%s'" isearchp-replacement)))))
 
