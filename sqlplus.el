@@ -5,7 +5,7 @@
 ;; Author: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
 ;; Maintainer: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
 ;; Created: 25 Nov 2007
-;; Version 0.9.0
+;; Version 0.9.1
 ;; Keywords: sql sqlplus oracle plsql
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
@@ -2652,6 +2652,7 @@ Returns (qualified-connect-string refined-connect-string)."
         (setq cs (concat cs "/" password))))
     (list cs refined-cs)))
 
+;;;###autoload
 (defun sqlplus (connect-string &optional input-buffer-name output-buffer-flag)
   "Create SQL*Plus process connected to Oracle according to
 CONNECT-STRING, open (or create) input buffer with specified
@@ -2852,6 +2853,7 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
 	      (buffer-list))
     (sqlplus-shutdown connect-string)))
 
+;;;###autoload
 (defun sqlplus-shutdown (connect-string &optional dont-kill-input-buffer)
   "Kill input, output and process buffer for specified CONNECT-STRING."
   (let ((input-buffers (delq nil (mapcar (lambda (buffer) (with-current-buffer buffer
