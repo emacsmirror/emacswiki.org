@@ -1009,6 +1009,14 @@ You can match multiple patterns by using [[progressive completion]].  For more i
 A prefix arg gives you other options, but start without it. Also, be sure you have the latest '''Icicles''' files (there was a bug a while ago that affected the use of a plain prefix arg here).  -- DrewAdams
 
 
+[new]
+Thanks for your answer. I know how completion and apropos completion works, I have icicle-mode always on.
+I have looked a little more into it, and you are right, if I first navigate to a directory and then use `M-x icicle-locate-file', it works as expected.
+However, if I use `C-u M-x icicle-locate-file' and then enter a directory, completion works only in this directory, not its subdirectories. I have updated icicles today via the package manager.
+
+Another question came up with the working version. If, say, I have a subdirectory that has txt in its name and contains hundreds of files that do not have txt in their names, icicle-locate-file will provide all of those "non-txt" files for completion. How can I prevent that, listing only files that contain txt in their names?
+
+regards, -- Bernhard
 
 
 
