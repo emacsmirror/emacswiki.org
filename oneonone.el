@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Aug 28 19:45:59 2014 (-0700)
+;; Last-Updated: Wed Sep  3 09:52:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2958
+;;     Update #: 2961
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -285,6 +285,8 @@
  
 ;;; Change Log:
 ;;
+;; 2014/09/03 dadams
+;;     1on1-minibuffer-frame-alist: No horizontal scroll bars.
 ;; 2014/08/28 dadams
 ;;     1on1-emacs: Removed vestigial defadvice of y-or-n-p.
 ;;     y-or-n-p: Fix regexp: [\n], not \n. Do not resize for Emacs 20 (it shows newlines as \n).
@@ -898,6 +900,8 @@ for the new value to take effect."
        (cons 'minibuffer 'only))
    (or (assq 'user-position minibuffer-frame-alist)
        (cons 'user-position t))
+   (or (assq 'horizontal-scroll-bars minibuffer-frame-alist)
+       (cons 'horizontal-scroll-bars nil)) ; No horizontal scroll bars by default.
    (or (assq 'vertical-scroll-bars minibuffer-frame-alist) ;  No scroll bar.
        (cons 'vertical-scroll-bars nil))
    (or (assq 'name minibuffer-frame-alist)
