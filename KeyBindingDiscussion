@@ -11,7 +11,7 @@ which finds keys not already in use.
 
 If you are deciding which keybindings to use for a new elisp library you're creating, have a look at CommonlyUsedKeybindings -- JoeBloggs
 
-You can use describe-key or C-h k to have emacs to show how emacs would represent a particular keystroke and if that key is already bound to anything.
+You can use describe-key or C-h k to have emacs show how emacs would represent a particular keystroke and if that key is already bound to anything.
 
 == Finding the Key Map ==
 
