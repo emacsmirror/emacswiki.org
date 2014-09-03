@@ -62,7 +62,7 @@ Once you're editing a wiki page, here are some useful keybindings:
 
 This mode is in part an illustration of how to use a generic command line tool like `curl' to edit Oddmuse wikis.
 
-== Operating System ===
+== Get Curl ===
 
 OSX already comes with curl.
 
@@ -72,6 +72,8 @@ On Windows, I use curl installed via CygWin, as you can see from my eshell buffe
 ~ $ which curl
 c:/cygwin64/bin/curl.exe
 }}}
+
+More information on the [http://curl.haxx.se/ curl homepage].
 
 ----
 CategoryHypermedia
