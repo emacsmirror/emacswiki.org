@@ -979,46 +979,6 @@ After you define the contexts, you type text in the minibuffer to filter the con
 Add new entries here.
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-
-[new] 
-I have a question about `icicle-locate-file'. How does it work? Both the function documentation and the wiki say that I can find files in subdirectories with it, but none of them say how. So I use this command with a prefix argument, provide the directory, and then I can enter something, but then I don't know what to do. Hitting tab or shift-tab doesn't do anything, and hitting enter will open an empty file with a name that is the regular expression. Am I missing something? The documentation doesn't explain what to do. -- [[Bernhard]]
-
-
-[new:DrewAdams:2014-09-02 14:59 UTC]
-
-Start by using `icicle-locate-file' without a [[prefix argument]], to get the hang of it.  Without a prefix arg, all files in and under the current directory are completion candidates.
-
-So first navigate to the directory that you think contains the file(s) you are looking for, either directly or recursively (via subdirectories). Then do this: `M-x icicle-locate-file'.
-
-Then hit `TAB' or `S-TAB' to see all of the files in and under the current directory, as candidates.  Or type some text to match first, then hit `TAB' or `S-TAB' to show all files that match it as candidates.
-
-Then use the arrow keys to navigate to a file name, and hit `RET' to visit that file and end the command. Or hit `C-RET' to visit it without exiting the command; then navigate to another file and hit `C-RET', and so on, ending either by `RET' or `C-g'.
-
-`S-TAB' gives you [[apropos completion]]; `TAB' gives you [[prefix completion]].
-
-You can match multiple patterns by using [[progressive completion]].  For more information, consult the '''Icicles''' [[Icicles|doc]] (for general info about using '''Icicles''') or the [[Icicles - File-Name_Input|doc]] for using '''Icicles''' for finding files. 
-
-A prefix arg gives you other options, but start without it. Also, be sure you have the latest '''Icicles''' files (there was a bug a while ago that affected the use of a plain prefix arg here).  -- DrewAdams
-
-
-[new]
-Thanks for your answer. I know how completion and apropos completion works, I have icicle-mode always on.
-I have looked a little more into it, and you are right, if I first navigate to a directory and then use `M-x icicle-locate-file', it works as expected.
-However, if I use `C-u M-x icicle-locate-file' and then enter a directory, completion works only in this directory, not its subdirectories. I have updated icicles today via the package manager.
-
-Another question came up with the working version. If, say, I have a subdirectory that has txt in its name and contains hundreds of files that do not have txt in their names, icicle-locate-file will provide all of those "non-txt" files for completion. How can I prevent that, listing only files that contain txt in their names?
-
-regards, -- Bernhard
-
-
 
 
 
