@@ -9,12 +9,12 @@ using Emacs with (or within) Cygwin (http://www.cygwin.com/)
 * NTEmacsWithCygwin -- how to do it, and why you might want to
 * [[cygwin-mount.el]] -- lets you use cygwin-style filenames like ##//D/any/path/to/file## or ##/cygdrive/D/any/path/to/file## in exactly the same manner as the normal Windows-style filenames
 * [[windows-path.el]] -- lets you use windows-style filenames like ##c:/path/file## or ##c:\path\file## in cygwin emacs
-----
-妳可以在這�<站點髮現很多在Emacs中使�"�Cygwin tools地有�"�信息(這�<站點�Oe樣有很好地中�-�設置說明):
-: http://www.khngai.com/emacs/ 
 
-Also in French (i think fairly simple to understand for non-french speakers):
-: http://www.emacsfr.org/phpwiki/index.php?EmacsCygwin (this hyperlink points to an advertising site as of 2012-06-05)
+----
+
+A series of web pages talking about Emacs and Cygwin:
+
+: http://www.khngai.com/emacs/ 
 
 ----
 CategoryWThirtyTwo
