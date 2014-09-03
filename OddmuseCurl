@@ -66,7 +66,12 @@ This mode is in part an illustration of how to use a generic command line tool l
 
 OSX already comes with curl.
 
-On Windows, I use curl installed via CygWin.
+On Windows, I use curl installed via CygWin, as you can see from my eshell buffer:
+
+{{{
+~ $ which curl
+c:/cygwin64/bin/curl.exe
+}}}
 
 ----
 CategoryHypermedia
