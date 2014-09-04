@@ -1,10 +1,10 @@
 Adds support for a tab-style display of EmacsIRCClient buffers, similar that provided by [[emacs-w3m]].  It looks like this:
 
-http://www.dme.org/emacs/erc-tab-shot-thumb.png
+http://www.dme.org/data/emacs/erc-tab-shot-thumb.png
 
 The code is somewhat rough - any suggestions for improvements (see 'Todo' in erc-tab.el) are welcomed.  You need two things:
-* a patch for erc.el, get it at http://www.dme.org/emacs/erc.el.diff
-* the module itself, get it at http://www.dme.org/emacs/erc-tab.el
+* a patch for erc.el, get it at http://www.dme.org/data/emacs/erc.el.diff
+* the module itself, get it at http://www.dme.org/data/emacs/erc-tab.el
 
 The (easy) instructions on how to use the code are included in erc-tab.el.
 
