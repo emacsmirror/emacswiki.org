@@ -29,3 +29,37 @@ I have found that for remote files using a file synchronization software like ls
 
 -- Anonymous 2014-08-28 12:43 UTC
 
+
+----
+
+Here's a snippet that enables tramp filename completion in ssh shells.  When you ssh to a remote host in a shell, it will set comint-file-name-prefix which allows you to do filename completion and open files from your ssh shell in tramp.  I've been wanting this for a long time and finally took the time to write it:
+
+{{{
+(defun comint-ssh-file-name-prefix (output)
+  "Set up filename completion via tramp in ssh shells.
+
+Looks for shell commands like 'ssh -p port user@host' and sets
+`comint-file-name-prefix' to '/ssh:user@host#port:'
+
+Should be added to `comint-input-filter-functions' like so:
+
+  (add-hook 'comint-input-filter-functions
+            'comint-ssh-file-name-prefix)
+  "
+
+  (if (string-match ".*\\bssh\\b\\( +-p *\\(\\S-+\\)\\)? +\\(\\(\\(\\S-+\\)@\\)?\\(\\S-+\\)\\)" output)
+      (let ((port (match-string 2 output))
+	    (user-host (match-string 3 output)))
+	(setq comint-file-name-prefix 
+	      (concat "/ssh:" 
+		      user-host
+		      (if port (concat "#" port) "")
+		      ":"))
+	)))
+
+(add-hook 'comint-input-filter-functions
+	  'comint-ssh-file-name-prefix)
+}}}
+
+-- [http://noel@burton-krahn.com Noel Burton-Krahn] 2014-09-04 17:58 UTC
+
