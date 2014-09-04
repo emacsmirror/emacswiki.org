@@ -2199,7 +2199,7 @@ by jumping to a ''bookmark-file bookmark''.
 
 You use command '''`bmkp-set-bookmark-file-bookmark'''', bound to `C-x p y', to create a bookmark-file bookmark.  Jumping to such a
 bookmark just loads the bookmark file that it records.  With `C-u'
-(e.g. `C-u C-x p j project-foo'), jumping ''switches'' bookmark files.
+(e.g. `C-u C-x p j project-foo', if this fails try: `C-u C-x j y project-foo'), jumping ''switches'' bookmark files.
 Without `C-u' it ''accumulates'' the loaded bookmarks.
 
 A bookmark-file bookmark is not only an added convenience.  You
