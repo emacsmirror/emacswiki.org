@@ -1,4 +1,4 @@
-;;; ddg.el --- 
+;;; ddg.el --- DuckDuckGo API for ELisp. 
 ;; 
 ;; Filename: ddg.el
 ;; Description: DuckDuckGo API for ELisp. 
