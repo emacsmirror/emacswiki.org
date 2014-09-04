@@ -1,0 +1,8 @@
+Emacs 24.4 has this covered now?
+
+New global command M-s . (isearch-forward-symbol-at-point)
+starts a symbol (identifier) incremental search forward with the
+symbol found near point added to the search string initially.
+
+-- robnewton 2014-09-04 05:39 UTC
+
