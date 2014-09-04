@@ -603,3 +603,16 @@ OK, I've made a few changes so it works better when opened in its own frame now.
 
 [new:DrewAdams:2012-10-03 01:19 UTC]
 Thanks for those efforts. I'll have to take a look later -- busy now.  Thx -- DrewAdams
+
+----
+
+In the section : Bookmark-File Bookmarks
+
+The article says: 
+
+With ‘C-u’ (e.g. ‘C-u C-x p j project-foo’), jumping switches bookmark files. Without ‘C-u’ it accumulates the loaded bookmarks.
+
+This does not work for me - I have to type : `C-u C-x j y project-foo', to get the same functionality
+
+-- freeduck 2014-09-04 13:14 UTC
+
