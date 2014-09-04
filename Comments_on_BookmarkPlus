@@ -606,13 +606,14 @@ Thanks for those efforts. I'll have to take a look later -- busy now.  Thx -- Dr
 
 ----
 
-In the section : Bookmark-File Bookmarks
 
-The article says: 
+[new]
+The section [[http://www.emacswiki.org/BookmarkPlus#BookmarkFileBookmarks|Bookmark-File Bookmarks]] says: 
 
-With ‘C-u’ (e.g. ‘C-u C-x p j project-foo’), jumping switches bookmark files. Without ‘C-u’ it accumulates the loaded bookmarks.
+: With ‘C-u’ (e.g. ‘C-u C-x p j project-foo’), jumping switches bookmark files. Without ‘C-u’ it accumulates the loaded bookmarks.
 
-This does not work for me - I have to type : `C-u C-x j y project-foo', to get the same functionality
+This does not work for me - I have to type : `C-u C-x j y project-foo', to get the same functionality  -- [[freeduck]] 2014-09-04 13:14 UTC
 
--- freeduck 2014-09-04 13:14 UTC
 
+[new:DrewAdams:2014-09-04 16:16 UTC]
+Right you are! Thanks, I've corrected the doc. The reason `C-u C-x p j' does not do the job is that `C-x p j' is a general bookmark jumping command, and for it `C-u' has a different meaning (it temporarily flips the meaning of option `bmkp-use-region'). For the bookmark-file specific jump command, `bmkp-bookmark-file-jump' (`C-x j y'), a prefix arg means switch bookmark files. -- DrewAdams
