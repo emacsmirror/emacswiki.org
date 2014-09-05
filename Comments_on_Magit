@@ -6,3 +6,10 @@ Unfortunately there's currently no multiple selection for magit items
 
 -- YannHodique 2012-03-29 09:45 UTC
 
+
+----
+
+Many commands, iincluding the *unstaging* command, now act on the items in the region. Please try Magit's *next* branch.
+
+-- JonasBernoulli 2014-09-05 22:01 UTC
+
