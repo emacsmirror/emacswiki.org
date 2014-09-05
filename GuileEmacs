@@ -68,6 +68,8 @@ Elisp defvars are dynamically scoped, as well as let-bound variables when lexica
 
 http://i.imgur.com/5DYQbhu.png
 
+(Note: I do NOT endorse using Apple products. The above screenshot being from Mac OS X is an unfortunate coincidence.)
+
 
 == Nil, false, and the empty list ==
 
