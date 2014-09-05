@@ -33,12 +33,5 @@ Various packages exist which extend Magit.
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
 * [https://github.com/magit/org-magit org-magit] link to magit from org documents
 
-== Auto updating the status buffer ==
-
-If you are using Emacs 24.4 with `file-notify-support' you can use the minor mode `magit-filenotify' from [https://github.com/magit/magit-filenotify/blob/master/magit-filenotify.el magit-filenotify.el] which tracks changes in the source tree using `file-notify' and refreshes the magit status buffer.
-
-== Link to magit from org documents ==
-The [https://github.com/sigma/org-magit org-magit] package provides a link type to magit for OrgMode.
-
 ----
 Git CategoryVersionControl
