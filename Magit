@@ -34,4 +34,4 @@ Various packages exist which extend Magit.
 * [https://github.com/magit/org-magit org-magit] link to magit from org documents
 
 ----
-Git CategoryVersionControl
+[[Git]] CategoryVersionControl
