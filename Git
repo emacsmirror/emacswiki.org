@@ -1,117 +1,55 @@
 [http://git-scm.com/ Git is a distributed version control system] much like [[Mercurial]], [[Bazaar]]
-and DaRcs.  It was written for the linux kernel hackers but it is now used by other high-profile FreeSoftware projects.
+and DaRcs.
 
-== Standard Support ==
+== Official Front Ends ==
 
-Git is supported by ##vc-git## since 22.1, accessible via VersionControl.
+Both Emacs and Git come with Emacs front ends for Git.  These front ends support a large subset of Git's functionality.
 
-##vc-git## is reported to work well.
-There are two front end wrapper packages that can be used with ##vc-git##:
+* Emacs comes with a generic version control front end called VersionControl or [[VC]]. It supports Git and many other version control system (vcs).  This is a good choice if you use other vcs besides Git or have no desire to use advanced unique to Git.
 
-# [http://github.com/tsgates/git-emacs/tree/master git-emacs], which provides status bar icons for git status
+* Git comes with an Emacs front end for Git: ##git.el##.  For more information about this package as well as the ##git-blame.el## another library distributed with Git see the [http://git.kernel.org/cgit/git/git.git/tree/contrib/emacs/README?id=HEAD README] file accompanying these libraries.
 
-# ##git.el## and ##git-blame.el## (a frontend to the git-blame command line tool) which are distributed in the Git source distribution in the
-<tt>[http://www.kernel.org/git/?p=git/git.git;a=tree;hb=HEAD;f=contrib/emacs contrib/emacs]</tt>
-directory (already installed in Debian as part of ##git-core##, or more recently in the separate ##git-el## package). The README file supplied in ##contrib/emacs## explains how to install them. Some introductory tutorial material located at [http://parijatmishra.wordpress.com/2008/09/06/up-and-running-with-emacs-and-git/ Up and Running with Emacs and Git]
 
-The command showing the repository status `C-x v d' supports checking in multiple files/directories at a time, and it has fancy display.  It can be extended with git specific functions.
-vc-git-grep can be used as a UI for git grep.
-vc-git.el also includes support for git blame, in the vc-annotate command `C-x v g'.
+== Third-party Front Ends ==
 
-== Additional  Support ==
+These packages third-party packages are neither part of Git or Emacs.  These front ends support a large subset of Git's functionality.
 
-[[Magit]] is *the most popular interface to git*. If you are new to git and do not need support for other vcs this is likely the package you should try first.
+* [[Magit]] is the most popular front end for Git. If you are new to Git and do not need support for other vcs this is likely the package you should try first.
 
-*Egg* (*Emacs got Git*; compared to Magit, works in Windows) was forked from Magit and has developed independently since 2008
-([http://bogolisk.github.com/egg/ Homepage], [http://bogolisk.github.com/egg/egg.html Documentation], [http://bogolisk.blogspot.com/ Blog] including screenshots),
-[http://github.com/byplayer/egg stable] and [http://github.com/bogolisk/egg bleeding-edge] project pages).
-Egg has built-in blame-mode that can relocate the blamed commit back into the DAG view (log-buffer.) Normally unreachable
-commits in the reflogs can also be brought back into the DAG view, making refs recovery error-proof.
-Egg supports interactive rebase by marking directly on commits (to be picked, edited or squashed) in
-the DAG view. Egg also has extensive support for pickaxing (only showing the diffs with the search term,
-highlighting the search term, etc.) The default colours are terrible but can all be customized.
+* [https://github.com/byplayer/egg Egg] (Emacs Got Git) is a fork of Magit. It currently isn't very actively maintained.
 
-* Repository: ##git clone git://github.com/byplayer/egg.git ##
+* [http://github.com/tsgates/git-emacs git-emacs] is advertised as "yet another git mode on emacs for newbies".
 
-*git-gutter-plus* supports reverting, staging, and committing Git hunks straight from the buffer. ([https://github.com/nonsequitur/git-gutter-plus Homepage])
+* DistributedVersionControl (DVC) is a generic front end similar to VC but specialized to modern dvcs like Git. 
 
-*DVC* is a generic Emacs interface to DistributedVersionControl systems, including git.
 
-*egit* is an Emacs Git *history* interface intended to be similar to qgit or gitk ([http://github.com/jimhourihan/egit/tree/master Homepage]). Requires git.el.
+== Extensions ==
 
-* Repository: ##git clone git://github.com/jimhourihan/egit.git##
+These packages are *not* "complete" front ends but "only" to certain Git features.  Often they can be used *in addition to* the front ends mentioned above.
 
-*git-emacs* is yet another git mode on Emacs for newbies ([http://github.com/tsgates/git-emacs/tree/master Homepage], [http://files.taesoo.org/git-emacs/git-emacs.html Documentation]).
+* [https://github.com/nonsequitur/git-gutter-plus git-gutter-plus] supports reverting, staging, and committing Git hunks straight from the buffer.
 
-* Repository: ##git clone git://github.com/tsgates/git-emacs.git##
+* [http://github.com/jimhourihan/egit/tree/master egit] is an Emacs Git *history* interface intended to be similar to ##qgit## or ##gitk##.  Requires ##git.el##.
 
-*mo-git-blame* is an interactive and iterative major mode for *git blame* ([http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/ Homepage], [https://github.com/mbunkus/mo-git-blame/blob/master/README Documentation]).
+* [https://github.com/mbunkus/mo-git-blame mo-git-blame] is an interactive and iterative major mode for ##git blame##.
 
-* Repository: ##git clone git://github.com/mbunkus/mo-git-blame.git##
+* [http://floatsolutions.com/blog/2010/05/tortoisegit-interface-for-emacs tortoise-git.el] is a simple interface to *Tortoise Git* within Emacs 
 
-*tortoise-git.el* is a simple interface to *Tortoise Git* within Emacs ([http://floatsolutions.com/blog/2010/05/tortoisegit-interface-for-emacs/ Homepage], [http://github.com/openist/tortoise-git-emacs Repository]).
+* [[Gitsum]] is a mode to do *interactive partial commits* with Emacs in the style of ##darcs record##
 
-[[Gitsum]] is a mode to do *interactive partial commits* with Emacs in the style of ##darcs record##
+* GitDwim defines context-aware commands.
 
-GitDwim defines context-aware commands.
+* GitCommitMode helps with editing and manipulating commit messages.
 
-GitCommitMode helps with editing and manipulating commit messages.
-
-*git-link*  creates a URL representing the current buffer's location in its [[GitHub]]/Bitbucket/Gitorious/... repository at the current line number or active region ([https://github.com/sshaw/git-link Homepage])
+* [https://github.com/sshaw/git-link git-link] creates a URL representing the current buffer's location in its [[GitHub]], Bitbucket, Gitorious etc. repository at the current line number or active region.
 
 == Also see ==
 
 * EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
 * [http://github.com github] is a popular website to host and browse git repositories.  See GitHub.
-* [http://alexott.net/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
-* [http://files.taesoo.org/git-emacs/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
-
-== Configuration ==
-
-=== Debian ===
-
-If you are using the Debian git packages, you can add the following to
-your ##.emacs## to make all of these available (if you are not
-using the Debian packages, adjust the path to suit):
-
-'''Note''': This does not work in Emacs 23.0 - git is included.
-
-
-  (setq load-path (cons (expand-file-name "/usr/share/doc/git-core/contrib/emacs") load-path))
-  (require 'vc-git)
-  (when (featurep 'vc-git) (add-to-list 'vc-handled-backends 'git))
-  (require 'git)
-  (autoload 'git-blame-mode "git-blame"
-            "Minor mode for incremental blame for Git." t)
-
-git.el will look into your git configuration for committer name and email address.  If that fails, it uses the Emacs defaults.  If you rely on environment variables for your configuration, beware. (And consider `git-committer-name' and `git-committer-email')
-
-=== How to use Git with VC ===
-
-See [http://snarfed.org/emacs-vc-git-tweaks snarfed.org/emacs-vc-git-tweaks] for elisp that adds direct `git add` and `git reset` support.
-
-Question: I would like to do everything from within Emacs (without having to
-resort to the command-line).  I was able to create a new repository with
-`vc-create-repo', but don't know how to add all the files in the
-directory with `vc-next-action' -- something akin to (eventually
-calling the backend command) ##git add .## -- without having to add each
-file separately.  Any tips?
-
-Older answer: With vc-git.el 2007-11-29 or later, you can do
-
-* `C-x v d' to see the (empty) directory; then
-* `v t' to toggle visibility of "modified" files; then
-* `m' to mark files to add; and finally
-* `v v' to do the next action (i.e, commit)
-
-NOTE: This does not seem to work with remote repos (vc-git.el 2010-03-09).
-
-Question: How do I revert an uptodate file to a previous version? How do I manage branches?
-
-[1]: Sorry, but it is absolutely unclear what vc-git.el (coming with emacs23) provides. Neither Info nor vc-git.el give any information about what works with remote repositories and how (cloning, staging, registering, commiting, ...).
-What is stash?
-What is the master-file?
-Why does vc-dir not show the remote-url?
+* [http://alexott.net/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information some of the mentioned packages.
+* [http://files.taesoo.org/git-emacs/git-emacs.html A Guided Tour of emacs-git] by TSKim.
+* [http://snarfed.org/emacs-vc-git-tweaks snarfed.org/emacs-vc-git-tweaks This] blob post adds direct `git add` and `git reset` support.
 
 ----
-CategoryVersionControl
+Git CategoryVersionControl
