@@ -12,7 +12,7 @@ Both Emacs and Git come with Emacs front ends for Git.  These front ends support
 
 == Third-party Front Ends ==
 
-These packages third-party packages are neither part of Git or Emacs.  These front ends support a large subset of Git's functionality.
+These third-party packages are neither part of Git nor Emacs. These front ends support a large subset of Git's functionality.
 
 * [[Magit]] is the most popular front end for Git. If you are new to Git and do not need support for other vcs this is likely the package you should try first.
 
