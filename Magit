@@ -1,4 +1,4 @@
-Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame. PhilJackson took over as maintainer for quite some time, and now Magit is collectively maintained by JonasBernoulli, YannHodique, RemiVanicat and PeterWeisberg.
+Magit is front end, or "porcelain" for the [[Git]] version control system.
 
 * Homepage: http://magit.github.io
 * Manual: http://magit.github.io/documentation
@@ -8,16 +8,30 @@ Magit is an emacs mode for interacting with the [[Git]] version control system. 
 
 Getting started with Magit is really easy:
  
-* M-x magit-status to see git status, and in the status buffer:
-* s to stage files
-* c c to commit (type in your commit message then C-c C-c to save the message and commit)
-* b b to switch to a branch
+* ##M-x magit-status## to see git status, and in the status buffer:
+* ##s## to stage files
+* ##c c## to commit (type the message then ##C-c C-c## to actually commit)
+* ##b b## to switch to another branch
 
 Other handy keys:
 
-* P P to do a git push
-* F F to do a git pull
-* try to press TAB
+* ##P P## to do a git push
+* ##F F## to do a git pull
+* try to press ##TAB##
+
+== Extensions ==
+
+Various packages exist which extend Magit.
+
+* [https://github.com/magit/magit-annex magit-annex] use ##git annex## within Magit
+* [https://github.com/magit/magit-filenotify magit-filenotify] refresh status buffer when git tree changes
+* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit plugin for Gerrit Code Review
+* [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit plugin for dealing with GitHub pull requests
+* [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
+* [https://github.com/tarsius/magit-push-remote magit-push-remote] Push remote support for Magit
+* [https://github.com/magit/magit-tramp magit-tramp] Git method for Emacs Tramp
+* [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
+* [https://github.com/magit/org-magit org-magit] link to magit from org documents
 
 == Auto updating the status buffer ==
 
@@ -27,4 +41,4 @@ If you are using Emacs 24.4 with `file-notify-support' you can use the minor mod
 The [https://github.com/sigma/org-magit org-magit] package provides a link type to magit for OrgMode.
 
 ----
-CategoryVersionControl
+Git CategoryVersionControl
