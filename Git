@@ -52,4 +52,4 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 * [http://snarfed.org/emacs-vc-git-tweaks This] blob post adds direct ##git add## and ##git reset## support to VC.
 
 ----
-Git CategoryVersionControl
+[[Git]] CategoryVersionControl
