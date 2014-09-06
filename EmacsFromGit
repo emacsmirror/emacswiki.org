@@ -34,9 +34,10 @@ git clone bzr://bzr.savannah.gnu.org/emacs/trunk
 
 == Also see ==
 
-* [[Git]] -- for information about Git and various front ends and extensions.
+* [[Git]] -- for information about Git and various front ends and extensions
 * GitForEmacsDevs and GitQuickStartForEmacsDevs -- for how to work on Emacs once the switch is made
 * BzrForEmacsDevs and BzrQuickStartForEmacsDevs -- for what you are currently expected to do
+* BuildingEmacs -- for how to build Emacs once you have fetched it using Git or Bazaar
 
 ----
 [[Git]] CategoryVersionControl
