@@ -1,5 +1,5 @@
 [[zh:Emacs开发版源码]]
-The Emacs development sources are kept in a [[Bazaar]] repository. [ConcurrentVersionsSystem CVS] is not used anymore.
+The Emacs development sources are kept in a [[Bazaar]] repository. [ConcurrentVersionsSystem CVS] is not used anymore. Once Emacs 24.4 has been released [[Git]] [EmacsFromGit will be used].
 
 Some people would like to use the new features available in the next release.  Others want to help contribute to Emacs by testing the development sources and maybe even report EmacsBugs.  Others are just interested in following Emacs's development.  Some other just like "living on the edge".
 
