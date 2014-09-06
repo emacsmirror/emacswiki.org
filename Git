@@ -5,9 +5,9 @@ and DaRcs.
 
 Both Emacs and Git come with Emacs front ends for Git.  These front ends support a large subset of Git's functionality.
 
-* Emacs comes with a generic version control front end called VersionControl or [[VC]]. It supports Git and many other version control system (vcs).  This is a good choice if you use other vcs besides Git or have no desire to use advanced unique to Git.
+* Emacs comes with a generic version control front end called VersionControl or [[VC]]. It supports Git and many other version control system (vcs).  This is a good choice if you use other vcs besides Git or have no desire to use features unique to Git.
 
-* Git comes with an Emacs front end for Git: ##git.el##.  For more information about this package as well as the ##git-blame.el## another library distributed with Git see the [http://git.kernel.org/cgit/git/git.git/tree/contrib/emacs/README?id=HEAD README] file accompanying these libraries.
+* Git comes with an Emacs front end for Git: ##git.el##.  For more information about this package as well as ##git-blame.el## another library distributed with Git see the [http://git.kernel.org/cgit/git/git.git/tree/contrib/emacs/README?id=HEAD README] file accompanying these libraries.
 
 
 == Third-party Front Ends ==
