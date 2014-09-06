@@ -1,46 +1,33 @@
-[https://savannah.gnu.org/git/?group=emacs  Instruction for checking out Emacs via git].  More stuff on [http://savannah.gnu.org/maintenance/UsingGit using git]
+== Emacs is moving ==
 
-A [[Git]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available. <b>Note:</b> Only Bazaar repo is official!
+Once Emacs 24.4 has been released, the current [[Bazaar]] repository is going to be converted to a Git repository.
 
-<b>Note:</b> Seems that all Git mirrors are near one day old! Read [http://thread.gmane.org/gmane.emacs.help/79267 discussion].
+There have been many attempts to encoure a move to Git, but until [http://article.gmane.org/gmane.emacs.devel/167023/match=bzr+dying+emacs+needs+move this] attempt by Eric S. Raymond this was always rejected.  But this time the [http://article.gmane.org/gmane.emacs.devel/167032 response] was different.  By now it is clear to many people, not just us Git fanboys, that Bazaar is a sinking ship. Also Eric not only suggested that Emacs move, he also offered to do the hard work himself.
 
-<b>Note:</b> <code>clone/pull</code> operations on Bazaar repo seems have same time, network efficient as Git when used <code>bzr://</code> or <code>nosmart+bzr://</code> protocols. <code>http://</code> protocols for Bazaar and for Git both are not efficient!
+So thanks to Eric, Richard, Stefan and everyone else who made this a reality.
 
-<b>Note:</b> Git repository includes the entire history of GNU Emacs development and therefore weighs about 300MB.
+== Meanwhile... ==
 
-Official [http://savannah.gnu.org/projects/emacs Savannah Emacs page] reffer to git Emacs mirror intended for those who prefer to use git as their VCS:
+Well almost a reality, as mentioned the move won't be carried out until after Emacs 24.4 is released.  So for now you have to use the official Git /mirror/.  This repository is regularly updated from the Bazaar repository and can be used to build Emacs and also, with some limitations, for development.  Obviously you won't be able to push changes upstream and have to instead send patches by mail, but locally you can work on Emacs using Git.
+
+The current Git mirror is available from Emacs Savannah presence. See [http://savannah.gnu.org/git/?group=emacs this] page on Savannah for instructions on how to clone or browse the repository.
+
 <pre>
 git clone git://git.savannah.gnu.org/emacs.git
 </pre>
 
-or for those behind a proxy:
-<pre>
-git clone http://git.savannah.gnu.org/r/emacs.git
-</pre>
-
-There are exist another [http://article.gmane.org/gmane.emacs.devel/119614 semi-official] mirrors:
+Note that the GNU Elpa package repository is already now maintained using Git.  See the same page for the clone urls.
 
 <pre>
-git clone git://repo.or.cz/emacs.git
-</pre>
-or for those behind a proxy:
-<pre>
-git clone http://repo.or.cz/r/emacs.git
+git clone git://git.savannah.gnu.org/emacs/elpa.git
 </pre>
 
-You can also browse the repository at http://repo.or.cz/w/emacs.git.
+== Alternatives ==
 
-Mirrors of the above git repository exist on [https://github.com/mirrors/emacs github].
+A mirror of the mirror is available at http://repo.or.cz/w/emacs.git and a mirror of that mirror of the other mirror at https://github.com/emacs-mirror/emacs. Yay, to distributed version control.
 
-With git-1.8 and ##contrib/remote-helpers/git-remote-bzr## you can clone directly from a Bazaar branch
+If you always just /need/ the very latest commit from the Bazaar repository, you might want to import the Bazaar repository yourself.  You could use one of the many implementations of ##git-bzr## for that purpose.  That's how the current mirror is created.  Or you could use the new remote-helper [https://github.com/felipec/git-remote-bzr git-remote-bzr], which works like this:
+
 <pre>
 git clone bzr://bzr.savannah.gnu.org/emacs/trunk
 </pre>
-
-On Ubuntu to get git-1.8 and add support for bzr remotes add the git-core ppa and install ##git-bzr##.
-<pre>
-add-apt-repository ppa:git-core/ppa
-apt-get update
-apt-get install git-bzr
-</pre>
-
