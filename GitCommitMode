@@ -1,6 +1,6 @@
 Emacs comes with ##log-edit.el## a mode for editing commit messages for various version control systems. It is used by VersionControl.
 
-It appears that not every Git user was aware of its existence and/or wanted written another mode from scratch for some reason. So various implementations of ##git-commit[-mode].el## exist.
+It appears that not every Git user was aware of its existence or wanted written another mode from scratch for some other reason. So various implementations of ##git-commit[-mode].el## exist.
 
 * Florian Ragwitz's old implementations of ##git-commit.el## can be found [https://github.com/rafl/git-commit-mode here].
 * Sebastian Wiesner took that implementation, improved it by adding some fancy features, renamed it to ##git-commit-mode.el##, and bundled it with some other git-related libraries and called the resulting repository ##git-modes##. While these libraries life in the same repository there are available as separate packages from Melpa.
