@@ -1,7 +1,7 @@
 It would be nice if Emacs was better at rendering tables.
 
 * TableMode -- ASCII art tables with flowing text
-* OrgMode -- comes with a built-in table editing mode that can be used stan-alone
+* OrgMode -- comes with a built-in table editing mode that can be used stand-alone
 * [[ESS]] -- if you're interested in tables as in spreadsheet stuff with formulas and all that
 
 == HTML Tables ==
