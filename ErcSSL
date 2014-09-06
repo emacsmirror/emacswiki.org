@@ -86,5 +86,11 @@ When using emacs24, I am no longer seeing the openssl process running on my syst
 a built-in tls library. The certificate isn't passed in the SSL session either. -- vled
 
 Emacs24 doesn't bother validating the server certificate when using the built-in TLS support either, so the NSA could be right there in the middle and you'd never know. :( --seanl
+
+A workaround (found on stack overflow): to not use the built-in GnuTLS support by redefining gnutls-available-p
+    (defun gnutls-available-p ()
+    "Function redefined in order not to use built-in GnuTLS support"
+    nil)
+~~~~
 ----
 [[ERC]]
