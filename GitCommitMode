@@ -1,29 +1,12 @@
-== Overview ==
+Emacs comes with ##log-edit.el## a mode for editing commit messages for various version control systems. It is used by VersionControl.
 
-Git commit mode helps maintaining
-[http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-good structure] in commit messages. It also allows the use of things
-like `M-q', You might want to integrate `flyspell-mode' into the `git-commit-mode'.
+It appears that not every Git user was aware of its existence and/or wanted written another mode from scratch for some reason. So various implementations of ##git-commit[-mode].el## exist.
 
-<pre>
-    Short summary (50 chars or less)
+* Florian Ragwitz's old implementations of ##git-commit.el## can be found [https://github.com/rafl/git-commit-mode here].
+* Sebastian Wiesner took that implementation, improved it by adding some fancy features, renamed it to ##git-commit-mode.el##, and bundled it with some other git-related libraries and called the resulting repository ##git-modes##. While these libraries life in the same repository there are available as separate packages from Melpa.
+* Magit used to bundle yet another implementation ##magit-log-edit.el##.
+* Jonas Bernoulli merged Sebastians' ##git-commit-mode.el## and Magit's ##magit-log-edit.el##. The former name was kept, the library remained in the ##git-modes## repository (which was moved to [https://github.com/magit/git-modes magit/git-modes]), and Jonas became its new maintainer.
+* That library became the new official commit mode used by Magit and ##magit-log-edit.el## was removed from Magit. Some people disagree with Magit's maintainer view that ##magit-log-edit.el## is inferior to ##git-commit-mode.el## in every way; so he released the former as a separate package to get those people of his back. You should not use it.
 
-    More detailed paragraph fitted in column 72 (wraps best even if indented)
-
-    Further paragraphs come after blank lines.
-
-    - Bullet.
-    - Bullet starts typically with a hyphen or asterisk.
-</pre>
-
-== Download ==
-
-Visit Florian Ragwitz's <rafl@debian.org> Gitbub project page at
-https://github.com/rafl/git-commit-mode
-
-== Configuration example ==
-<pre>
-    (add-hook 'git-commit-mode-hook 'flyspell-mode-on)
-</pre>
 ----
-CategoryVersionControl
+[[Git]] CategoryVersionControl
