@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 26 14:29:34 2014 (-0700)
+;; Last-Updated: Sun Sep  7 10:55:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8085
+;;     Update #: 8121
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -524,6 +524,8 @@
 ;;
 ;;  `dired-do-byte-compile', `dired-do-compress', `dired-do-load' -
 ;;     Redisplay only if at most one file is being treated.
+;;  `dired-insert-subdir-newpos' - If not a descendent, put at eob.
+;;  `dired-insert-subdir-validate' - Do not require same dir tree.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
 ;;
 ;;
@@ -549,6 +551,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/07 dadams
+;;     Added: redefinitions of dired-insert-subdir-newpos, dired-insert-subdir-validate.
 ;; 2014/07/26 dadams
 ;;     diredp-do-find-marked-files-recursive:
 ;;       Only ARG >= 0 ignores marks now.  And ARG <= 0 means find but do not display.
@@ -6720,6 +6724,49 @@ Else return a singleton list of a directory name, which is as follows:
                           '("." ".." "./" "../")))
              file))
       (list (dired-current-directory))))
+
+
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Do not require that DIRNAME be in the current directory tree (no error if not).
+;; 2. Use `dolist' instead of `mapcar'.
+;;
+(defun dired-insert-subdir-validate (dirname &optional switches)
+  "Raise an error if it is invalid to insert DIRNAME with SWITCHES."
+;;; (or (dired-in-this-tree dirname (expand-file-name default-directory)) ; REMOVED
+;;;     (error  "%s: not in this directory tree" dirname))
+  (let ((real-switches  (or switches  (and (boundp 'dired-subdir-switches) ; Emacs 22+
+                                           dired-subdir-switches))))
+    (when real-switches
+      (let (case-fold-search)
+        (dolist (switchs  '("F" "b"))   ; Switches that matter for `dired-get-filename'.
+          (unless (eq (null (diredp-string-match-p switchs real-switches))
+                      (null (diredp-string-match-p switchs dired-actual-switches)))
+            (error "Can't have dirs with and without `-%s' switches together" switchs)))))))
+
+
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; If NEW-DIR is not a descendent of a directory in the buffer, put it at eob.
+;;
+(defun dired-insert-subdir-newpos (new-dir)
+  "Move to the proper position for inserting NEW-DIR, and return it.
+Respect the order within each directory tree.  But if NEW-DIR is not a
+descendent of any directory in the buffer, then put it at the end."
+  (let ((alist  dired-subdir-alist)
+        elt dir new-pos)
+    (while alist
+      (setq elt    (car alist)
+            alist  (cdr alist)
+            dir    (car elt))
+      (if (dired-tree-lessp dir new-dir)
+          (setq new-pos  (dired-get-subdir-max elt) ; Position NEW-DIR after DIR.
+                alist    ())
+        (setq new-pos  (point-max))))
+    (goto-char new-pos))
+  (unless (eobp) (forward-line -1))
+  (insert "\n")
+  (point))
 
 
 ;; This is like original `dired-hide-subdir' in `dired-aux.el', except:
