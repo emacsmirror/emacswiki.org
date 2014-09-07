@@ -300,8 +300,8 @@ calendar のman-pageで説明されているように昔の標準UNIXプログ�
 デフォルトのカレンダーでは<code>.calendar</code> もしくは <code>.calendar/calendar</code>ファイルを使う,
 なのでひとつはどちらか<code>-f</code> スイッチを使わなければならない, 同じファイルを適切に使うためにファイルシステムリンクもしくは<code>diary-file</code>をセットする.
 注意:カレンダーの最近のバージョンがするようにローカライゼーションはちょっと手こずる(ダイアリファイルでLANG=''locale''をEmacsではサポートしない).
-もしカレンダーの構文が限定されすぎている, がしかしあなたがまだシェルに印刷される今度のダイアリエントリを得たいなら, [http://netzwurm.de/download/programming/diary-batch.el]のオプションを適用させる
-[http://netzwurm.de/download/programming/diary-batch.el] => 404 Not Found.
+もしカレンダーの構文が限定されすぎている, がしかしあなたがまだシェルに印刷される今度のダイアリエントリを得たいなら, [http://netzwurm.de/download/programming/diary-batch.el|http://netzwurm.de/download/programming/diary-batch.el]のオプションを適用させる
+[http://netzwurm.de/download/programming/diary-batch.el|http://netzwurm.de/download/programming/diary-batch.el] => 404 Not Found.
 これを得るためのその他のURLは?
 あなたのニーズのために, あなたの .elisp ディレクトリにファイルを置け  そして呼べ:
 
