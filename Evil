@@ -59,6 +59,9 @@ A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is 
 
 * [https://github.com/wcsmith/evil-args evil-args]: Motions and text objects for delimited arguments in Evil.
 
+* [https://github.com/bling/evil-jumper evil-jumper]: Replaces the implementation of the jump list such that it mimics more closely with Vim's behavior
+
+
 == Bug tracker ==
 
 If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil BitBucket bug tracker] (open for all).
