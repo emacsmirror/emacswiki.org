@@ -1,0 +1,984 @@
+== Pourquoi cette page personnelle? ==
+
+Pour proposer un fichier de configuration GNU Emacs francophone, optimisé pour le [[http://www.bepo.fr|bépo]].
+Et pour un usage littéraire d’emacs, pas pour coder.
+
+Attention, certaines fonctions peuvent être datées, car je ne développe plus
+ce fichier depuis Emacs 24.2. 
+Je n’utilise plus emacs couramment actuellement (je suis passé à vim pour sa
+philosophie UNIX et parce que la syntaxe des abbréviations y est plus simple.
+Par contre, emacs reconnaît les abbréviations quand on change la casse… 
+
+=== modes utilisés ===
+
+*Evil, en association avec [[/emacs?emacs/key-chord]], pour me passer des touches Ctr Meta Shift autant que possible
+
+*abbrev, avec cette fonction qui permet de placer le curseur juste après le mot abrégé quand on tape  espace, pratique pour rajouter un pluriel, un féminin, etc.
+
+   (defun conditional-abbrev-expand ()
+   "The way to expand abbrev depends on last keystroke.
+    If it is a space, expands abbrev without inserting space.
+    This allows to add suffixes. Punctation marks expand
+    abbrev and are inserted."
+      (when (equal last-input-event ?\s) ;space as last keystroke
+            (char-left)))                  ;move char to the left
+   
+*AucTeX
+
+*sgml
+
+*org-mode
+
+*plus quelques modes mineurs comme electric-pair, show-paren etc.
+*noter que le mode mineur polonais ne fonctionne pas très bien
+
+=== mon .emacs ===
+   ;;;;;;;;;;;;;;;;;;;.emacs, Damien Thiriet;;;;;;;;;;;;;;;;;;
+   ;;;                                                     ;;;
+   ;;; optimisé pour mes claviers bépo-polonais, polergo   ;;;
+   ;;;                                                     ;;;
+   ;;;  evil, auctex, key-chord, html, org-mode.           ;;;
+   ;;;                                                     ;;;
+   ;;;       taper C-h pour l’aide emacs                   ;;;
+   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   
+   (setq inhibit-startup-screen t)   ;pas d’écran d’information au démarrage
+   
+   (set-language-environment "UTF-8")
+   
+   ;;;----------mise en forme du tampon----------------
+   
+   
+   ;;(if (eq system-type 'windows-nt)  ;pour -nw, géré par Xresources sinon
+   (menu-bar-mode -1);)  ;pas de barre de menu
+   (visual-line-mode)                     ;lignes longues visuelles
+   (setq visual-line-fringe-indicators '(Þ Þ));signalées par Þ
+   (blink-cursor-mode -1);pas de curseur clignotant
+   ;;(display-battery-mode 1) ;charge de la batterie
+   
+   (require 'saveplace)          ;le fichier s’ouvre là 
+   (setq-default save-place t)   ;où on l’avait quitté
+   
+   ;; (require 'linum)               ;numéros de ligne en marge
+   ;; (global-linum-mode 1)          ;(pour utiliser evil)
+   ;; (add-hook 'tetris-mode-hook    ;sauf pour 
+   ;;   (lambda () (linum-mode -1))) ;tetris
+   ;; (setq linum-format " %d ")     ;corrige un bug emacs 23
+   
+   ;;;----------mode texte majeur par défaut
+   (setq-default major-mode 'text-mode)
+   
+   ;;;----------correction orthographique---------------
+   (setq-default ispell-program-name "aspell")  ;aspell au lieu d’ispell
+   (setq-default ispell-local-dictionary "fr")
+   
+   ;;;--------souris---------------
+   ;;(mouse-wheel-mode -1)  ;pas de support de la molette
+   ;;(setq-default mouse-yank-at-point t);colle là où se trouve le curseur
+   
+   ;;;-------- confort de frappe---
+   
+   (show-paren-mode 1)               ;affiche la parenthèse pendante 
+   (setq visible-bell t
+       tab-width 4                   ;indentations: 4 caractères
+       completion-auto-help 'lazy    ;deux <TAB> affichent les choix
+       show-trailing-whitespace t    ;montre espaces inutiles
+       sentence-end-double-space nil);annule la délimitation par défaut des phrases avec deux espaces (convention typo US).
+   
+   (electric-pair-mode 1) ;ajoute une marque fermante sur la base de la table de syntaxe du mode majeur
+   (setq electric-pair-pairs '(         ;définit des paires valables
+   		    (?\" . ?\")      ;pour tous les modes.
+   		    (?« . ?»)        ;(astuce xahlee.blogspot.com)
+   		    (?{ . ?})
+   		    ) )
+   
+   ;; (defun quitter ()
+   ;;   "Élimine les espaces en fin de ligne puis quitte emacs"
+   ;;   nil
+   ;;   (delete-trailing-whitespace)
+   ;;   (kill-buffer))
+   
+   ;;; ---abbréviations-----------------------------------------
+   
+   (setq default-abbrev-mode t  ;active les abbréviations
+         save-abbrevs t)        ;sauve les abbréviations en quittant
+   
+   (defun conditional-abbrev-expand ()
+   "The way to expand abbrev depends on last keystroke.
+    If it is a space, expands abbrev without inserting space.
+   This allows to add suffixes. Punctation marks expand
+   abbrev and are inserted." 
+     (when (equal last-input-event ?\s) ;space as last keystroke
+         (char-left)))                  ;move char to the left
+   
+   (load "~/.emacs.d/abbréviations_globales.el") ;charge mes abbréviations globales
+   
+   ;;création de tables locales
+   (define-abbrev-table 'LaTeX-mode-abbrev-table ())   ;AucTeX
+   (define-abbrev-table 'sgml-mode-abbrev-table ())    ;sgml-html
+   (define-abbrev-table 'org-mode-abbrev-table ())     ;org-mode
+   (define-abbrev-table 'polonais-mode-abbrev-table '( ;abbrev polonaises
+   				  ("ków" "Kraków")
+   				  ))
+   (load "~/.emacs.d/skróty.el")
+   ;liste de tables associées aux modes mineurs
+   (add-to-list 'abbrev-minor-mode-table-alist 
+   		      '(polonais-mode . polonais-mode-abbrev-table)
+   				      )
+   
+   ;(setq abbrev-minor-mode-table-alist ())
+   
+   ;;; ---raccourcis-claviers -----------------------------------
+   
+   (global-set-key (kbd "<f6>") 'kill-buffer)
+   (global-set-key (kbd "<f9>") 'flyspell-mode)
+   (global-set-key (kbd "<f11>") 'server-edit)
+   (global-set-key (kbd "<f12>") 'save-buffers-kill-terminal)
+   
+   ;;key-chord
+   (require 'key-chord)     ; ce package externe associe des fonctions à
+   (key-chord-mode 1)	 ; des combinaisons rapides de touches
+   
+   ;(key-chord-define-global "ww" 'save-buffer)     ;autocomplétion à la volée
+   (key-chord-define-global "vv" 'dabbrev-expand)
+   (key-chord-define-global "vd" 'define-global-abbrev)
+   (key-chord-define-global "vl" 'define-mode-abbrev)
+   (key-chord-define-global "hh" 'fill-paragraph)  ;égalise, indente le paragraphe
+   
+   ;;-----------marques-pages---------------------------------
+   
+   (setq bookmark-save-flag 1)      ;sauvegarde automatique des marques-pages
+   
+   (defun bookmark-set-alias ()     ;raccourcis avec abbrev
+     "alias for (bookmark-set nil)"
+     nil
+     (bookmark-set nil))
+   (define-abbrev global-abbrev-table "bkm" ""
+     'bookmark-set-alias)
+   
+   (key-chord-define-global "jj" 'bookmark-jump) ;avec key-chord
+   
+   
+   ;;; ---evil (package externe): emulateur vim -------------------
+   
+   
+   ;;(setq evil-normal-state-cursor '("red" box)      ;associe une
+   ;;      evil-visual-state-cursor '("light salmon" box) 
+   ;;      evil-insert-state-cursor '("blue" box)     ;couleur de
+   ;;      evil-replace-state-cursor '("sienna" hbar) ;curseur
+   ;;      evil-emacs-state-cursor '("black" box))    ;aux états
+   (setq evil-shift-width 4   ;indentation
+         evil-cross-lines t   ;recherche de caractère multi-ligne
+         evil-move-cursor-back nil) ;le curseur reste là où il était en «insert»
+   
+     (require 'evil)
+     (evil-mode 1)
+   
+   ;;adaptation des touches à mon bépo 
+   ;;interversion ctsr/hjkl
+   (define-key evil-normal-state-map "c" nil) ;première étape:  
+   (define-key evil-normal-state-map "C" nil) ;avant de
+   (define-key evil-normal-state-map "s" nil) ;réaffecter c,t,s,r
+   (define-key evil-normal-state-map "S" nil) ;il faut leur retirer
+   (define-key evil-normal-state-map "r" nil) ;leur fonction
+   (define-key evil-normal-state-map "R" nil) ;par défaut
+   (define-key evil-normal-state-map "j" nil)
+   (define-key evil-normal-state-map "J" nil)
+   (define-key evil-normal-state-map "h" 'evil-change) ;état normal
+   (define-key evil-normal-state-map "H" 'evil-change-line)
+   (define-key evil-normal-state-map "T" 'evil-join)
+   (define-key evil-normal-state-map "l" 'evil-replace)
+   (define-key evil-normal-state-map "L" 'evil-replace-state)
+   (define-key evil-normal-state-map "k" 'evil-substitute)
+   (define-key evil-normal-state-map "K" 'evil-change-whole-line)
+   (define-key evil-window-map "c" 'evil-window-left)  ;état fenêtre
+   (define-key evil-window-map "C" 'evil-window-move-far-left)
+   (define-key evil-window-map "t" 'evil-window-down)
+   (define-key evil-window-map "T" 'evil-window-move-very-bottom)
+   (define-key evil-window-map "s" 'evil-window-up)
+   (define-key evil-window-map "S" 'evil-window-move-very-top)
+   (define-key evil-window-map "r" 'evil-window-right)
+   (define-key evil-window-map "R" 'evil-window-move-far-right)
+   (define-key evil-window-map "l" 'evil-window-rotate-downwards)
+   (define-key evil-window-map "L" 'evil-window-rotate-upwards)
+   (define-key evil-window-map "j" 'evil-window-top-left)
+   (define-key evil-window-map "k" 'delete-window)
+   (define-key evil-window-map "J" nil)
+   (define-key evil-window-map "H" nil)
+   (define-key evil-motion-state-map "c" 'evil-backward-char);motion
+   (define-key evil-motion-state-map "C" 'evil-window-top)
+   (define-key evil-motion-state-map "t" 'evil-next-visual-line)  
+   (define-key evil-motion-state-map "s" 'evil-previous-visual-line)
+   (define-key evil-motion-state-map "r" 'evil-forward-char)
+   (define-key evil-motion-state-map "R" 'evil-window-bottom)
+   (define-key evil-motion-state-map "j" 'evil-find-char-to)
+   (define-key evil-motion-state-map "J" 'evil-find-char-to-backward)
+   ;;raccourcis-maisons
+   (define-key evil-motion-state-map "’" 'evil-search-backward)
+   (define-key evil-motion-state-map "ê" 'comment-dwim)
+   (define-key evil-motion-state-map "gt" 'evil-next-line) ;plus adapté au
+   (define-key evil-motion-state-map "gs" 'evil-previous-line);mode visuel
+   (define-key evil-window-map "g" 'split-window-vertically) ;<=>i3
+   (define-key evil-window-map "G" 'split-window-vertically)
+   (define-key evil-window-map "h" 'split-window-horizontally)
+   (define-key evil-motion-state-map "b" 'evil-beginning-of-visual-line) ;b-é
+   (define-key evil-motion-state-map "é" 'evil-end-of-visual-line)     
+   (define-key evil-motion-state-map "è" 'evil-backward-word-begin) ;è-w
+   (define-key evil-motion-state-map "È" 'evil-backward-WORD-begin) 
+   (define-key evil-normal-state-map "q" nil)              ;q/x
+   (define-key evil-motion-state-map "q" 'evil-delete-char)
+   (define-key evil-motion-state-map "Q" 'evil-delete-backward-char)
+   (define-key evil-normal-state-map "x" 'evil-record-macro)
+   (define-key evil-normal-state-map (kbd "DEL") 'evil-scroll-page-up)  ;comme dans
+   (define-key evil-normal-state-map (kbd "SPC") 'evil-scroll-page-down);les pagers
+   (define-key evil-motion-state-map "gn" 'evil-next-buffer) 
+   (define-key evil-motion-state-map "gp" 'evil-prev-buffer) 
+   (define-key evil-motion-state-map "à" 'evil-window-map) ;à == C-w
+   (define-key evil-visual-state-map "f" 'mark-defun)
+   (define-key evil-visual-state-map "/" 'comment-or-uncomment-region)
+   (define-key evil-motion-state-map "g4" 'beginning-of-defun);4 est sur (
+   (define-key evil-motion-state-map "g5" 'end-of-defun)      ;5 est sur )
+   (define-key evil-normal-state-map "g8" nil)
+   (define-key evil-motion-state-map "g8" 'transpose-sexp)    ;la forme du 8…
+   (define-key evil-normal-state-map "gw" nil)                ;déplace 'evil-fill
+   (define-key evil-normal-state-map "gh" 'evil-fill)         ;en gh
+   (define-key evil-motion-state-map "gè" 'backward-sexp)
+   (define-key evil-motion-state-map "gw" 'forward-sexp) 
+   
+   ; ',,' == ESC (sans key-chord, evil-repeat-find-char-reverse ne fonctionne plus)
+   (key-chord-define evil-normal-state-map ",," 'evil-force-normal-state)
+   (key-chord-define evil-visual-state-map ",," 'evil-change-to-previous-state)
+   (key-chord-define evil-insert-state-map ",," 'evil-normal-state)
+   (key-chord-define evil-replace-state-map ",," 'evil-normal-state)
+   
+   ;;; ---untree: dépendance d’evil------------------------------
+   
+   
+   (require 'undo-tree)
+   (global-undo-tree-mode)
+   
+   ;;; ---auctex-------------------------------------------------
+   
+   (load "auctex.el" nil t t)  ;options d’auctex par défaut
+   
+   (setq
+       ;;auto-fill-mode t              ;coupe la ligne
+       ;;fill-column 60                ;à la 60e colonne
+       TeX-auto-save t               ;créé le dossier auto
+       TeX-parse-self t              ;active le parsing
+       TeX-save-query nil            ;sauve sans question
+       LaTeX-float "h!"              ;placement par défaut
+       LaTeX-default-position "h!"   ;des flottants
+       TeX-auto-untabify t           ;'s/\t/ ' à la sauvegarde
+       TeX-PDF-mode t                ;compile en pdf;
+       TeX-interactive-mode t        ;et en mode interactif
+       TeX-source-correlate-mode t   ;va-et-vien source/compilé
+       TeX-source-correlate-method 'synctex ;avec synctex
+       TeX-source-correlate-start-server t  ;et serveur
+       TeX-electric-escape t         ;\ insère une macro
+       TeX-view-program-selection '( ;programmes 
+   	(output-dvi "xdvi")       ;utilisés
+   	(output-pdf "xdg-open")   ;par TeX-view
+   	(output-html "xdg-open"))
+   )
+   ;;demande les arguments optionnels des macros i.e. entre crochets
+   ;;(setq TeX-insert-macro-default-style 'show-optional-args)
+   
+   ;;reftex dans tous modes TeX
+   (add-hook 'TeX-mode-hook 'turn-on-reftex)
+   (setq reftex-plug-into-AUCTeX t      ;redondant?
+         reftex-enable-partial-scans t) ;ne scanne que le tampon courant pour actualiser le fichier toc
+   
+   (add-hook 'TeX-mode-hook
+   	  '(lambda ()
+   	      (TeX-fold-mode 1)))  ;(dé)masque des environnements
+   
+   ;;;fonctions d’insersion de modèles
+   (add-hook 'LaTeX-mode-hook '(lambda ()
+     (load "~/.emacs.d/modèles_tex");modèles de document
+     (define-skeleton latex-skeleton-alterqcm
+       "Inserts an alterqcm environment with first question"
+       "question:"
+       "\\begin{alterqcm}"
+       "[symb=\\dingsquare]\n"
+       "\n\\AQquestion{"str"}{\n{"
+       (setq v1 (skeleton-read "choix1?"))
+       "},\n{"
+       (setq v2 (skeleton-read "choix2?"))
+       "},\n"_"}\n"
+       "\\end{alterqcm}\n")
+     (define-skeleton alterqcm-skeleton-question
+       "Inserts an alterqcm question skeleton"
+       "question:"
+       "\n\\AQquestion{"str"}{\n{"
+       (setq v1 (skeleton-read "choix1?"))
+       "},\n{"
+       (setq v2 (skeleton-read "choix2?"))
+       "},\n"_"}\n")
+     (define-skeleton latex-skeleton-block
+       "Inserts a LaTeX block environment"
+       "titre du block: "
+       "\n \\begin{block}{"str"} \n "_" \n \\end{block} \n")
+     (define-skeleton latex-skeleton-bold
+       "Inserts a LaTex bold macro"
+       nil
+       "\\textbf{"_"}")
+     (define-skeleton latex-skeleton-center
+       "Inserts a LaTeX center environment"
+       nil
+       "\n \\begin{center} \n "_" \n \\end{center} \n")
+     (define-skeleton latex-skeleton-copyright
+       "Inserts a LaTex copyright template"
+       "nom de l’auteur:"
+       "\n\\ttfamily \\footnotesize \\copyright "str"\n\\url{"
+       (setq v1 (skeleton-read "site internet?"))
+       "}\n\\normalsize \\rmfamily \n")
+     (define-skeleton latex-skeleton-emphasized
+       "Inserts a LaTex emphasized macro"
+       nil
+       "\\emph{"_"}")
+     (define-skeleton latex-skeleton-enumerate
+       "Inserts a LaTeX enumerate environment"
+       nil
+       "\n \\begin{enumerate} \n "_" \n \\end{enumerate} \n")
+     (define-skeleton latex-skeleton-footnote
+       "Inserts a LaTeX footnote"
+       nil
+       "\\footnote{"_"}")
+     (define-skeleton latex-skeleton-frame
+       "Inserts a LaTeX frame environment"
+       "frametitle: "
+       "\n \\begin{frame} \n" "\\frametitle{"str"} \n "_" \n \\end{frame} \n")
+     (define-skeleton latex-skeleton-includegraphics
+       "Inserts a LaTex includegraphics macro"
+       nil
+       "\n \\includegraphics{"_"}")
+     (define-skeleton latex-skeleton-hline
+       "Inserts a horizontal line in tabular"
+       nil
+       "\\\\ \n \\hline \n")
+     (define-skeleton latex-skeleton-itemize
+       "Inserts a LaTeX itemize environment"
+       nil
+       "\n \\begin{itemize} \n "_" \n \\end{itemize} \n")
+     (define-skeleton latex-skeleton-quote
+       "Inserts a LaTeX quote environment"
+       nil
+       "\n \\begin{quote} \n "_" \n \\end{quote} \n")
+     (define-skeleton latex-skeleton-scalebox
+       "Inserts a LaTex scalebox macro"
+       nil
+       "\n \\scalebox{"_"}")
+     (define-skeleton latex-skeleton-small-capitals
+       "Inserts a LaTex small capitals macro"
+       nil
+       "\\textsc{"_"}")
+     (define-skeleton polyglossia-english
+       "Inserts a english environment"
+       nil
+       "\n \\begin{english} \n "_" \n \\end{english} \n")
+     (define-skeleton polyglossia-french
+       "Inserts a french environment"
+       nil
+       "\n \\begin{french} \n "_" \n \\end{french} \n")
+     (define-skeleton polyglossia-german
+       "Inserts a german environment"
+       nil
+       "\n \\begin{german} \n "_" \n \\end{german} \n")
+     (define-skeleton polyglossia-polish
+       "Inserts a polish environment"
+       nil
+       "\n \\begin{polish} \n "_" \n \\end{polish} \n")
+     (define-skeleton xetex-skeleton-pdf
+       "Inserts a xetex pdf template"
+       nil
+       "\n \\XeTeXpdffile "_" \n")
+     (define-skeleton xetex-skeleton-picture
+       "Inserts a xetex picture template"
+       nil
+       "\n \\XeTeXpicfile "_" \n")
+     (define-skeleton page-skeleton
+       "Insère un squelette avec le numéro de page"
+       "numéro de page :"
+       "(p.~"str")")
+     (defun LaTeX-change-environment-alias () ;alias pour que
+       "alias for (LaTeX-environment 1)"      ;les fonctions
+       (LaTeX-environment 1))                 ;à arguments 
+     (defun LaTeX-environment-alias ()        ;puissent être
+       "alias for (LaTeX-environment nil)"    ;utilisées par 
+       (LaTeX-environment nil))	           ;define-abbrev
+     (defun LaTeX-section-2 ()
+       "alias for (LaTeX-section 2)"
+       (LaTeX-section 2))
+     (defun LaTeX-section-3 ()
+       "alias for (LaTeX-section 3)"
+       (LaTeX-section 3))
+     (defun LaTeX-section-4 ()
+       "alias for (LaTeX-section 4)"
+       (LaTeX-section 4))
+     (defun LaTeX-section-5 ()
+       "alias for (LaTeX-section 5)"
+       (LaTeX-section 5))
+     (defun TeX-normal-mode-alias ()
+       "alias for (TeX-normal-mode t)"
+       (TeX-normal-mode t))
+   ))
+   
+   ;;;abbréviations AucTeX
+   
+   (add-hook 'LaTeX-mode-hook (lambda ()
+       (setq local-abbrev-table LaTeX-mode-abbrev-table) ;sinon AucTeX utiliserait la table du mode texte
+       (load "~/.emacs.d/abbréviations_tex.el")	      ;charge les abbréviations non liées à des macros
+        (define-abbrev LaTeX-mode-abbrev-table "aqcm" ""
+       'latex-skeleton-alterqcm)
+        (define-abbrev LaTeX-mode-abbrev-table "aqq" ""
+       'alterqcm-skeleton-question)
+        (define-abbrev LaTeX-mode-abbrev-table "arten" ""
+       'xelatex-skeleton-article-en)
+        (define-abbrev LaTeX-mode-abbrev-table "artf" ""
+       'xelatex-skeleton-article-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "artfr" ""
+       'latex-skeleton-article-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "artp" ""
+       'xelatex-skeleton-article-pl)
+        (define-abbrev LaTeX-mode-abbrev-table "artpl" ""
+       'latex-skeleton-article-pl)
+        (define-abbrev LaTeX-mode-abbrev-table "boof" ""
+       'xelatex-skeleton-book-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "boofr" ""
+       'latex-skeleton-book-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "beae" ""
+       'xelatex-skeleton-beamer-en)
+        (define-abbrev LaTeX-mode-abbrev-table "beaf" ""
+       'xelatex-skeleton-beamer-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "beafr" ""
+       'latex-skeleton-beamer-fr)
+        (define-abbrev LaTeX-mode-abbrev-table "beap" ""
+       'xelatex-skeleton-beamer-pl)
+        (define-abbrev LaTeX-mode-abbrev-table "beapl" ""
+       'latex-skeleton-beamer-pl)
+        (define-abbrev LaTeX-mode-abbrev-table "bf" ""
+       'latex-skeleton-bold)
+        (define-abbrev LaTeX-mode-abbrev-table "bl" ""
+       'latex-skeleton-block)
+       (define-abbrev LaTeX-mode-abbrev-table "clo" ""
+       'LaTeX-close-environment)
+       (define-abbrev LaTeX-mode-abbrev-table "cen" ""
+       'latex-skeleton-center)
+       (define-abbrev LaTeX-mode-abbrev-table "cpr"
+         'latex-skeleton-copyright)
+       (define-abbrev LaTeX-mode-abbrev-table "cprdt"
+         "\\ttfamily \\footnotesize \\copyright Damien Thiriet \n \\normalsize \\rmfamily")
+       (define-abbrev LaTeX-mode-abbrev-table "cref" ""
+       'reftex-view-crossref)
+       (define-abbrev LaTeX-mode-abbrev-table "didx" ""
+       'reftex-display-index)
+       (define-abbrev LaTeX-mode-abbrev-table "ee" ""
+       'LaTeX-environment-alias)
+       (define-abbrev LaTeX-mode-abbrev-table "een" ""
+       'polyglossia-english)
+       (define-abbrev LaTeX-mode-abbrev-table "efr" ""
+       'polyglossia-french)
+       (define-abbrev LaTeX-mode-abbrev-table "ede" ""
+       'polyglossia-german)
+       (define-abbrev LaTeX-mode-abbrev-table "epl" ""
+       'polyglossia-polish)
+       (define-abbrev LaTeX-mode-abbrev-table "chenv" ""
+       'LaTeX-change-environment-alias)
+       (define-abbrev LaTeX-mode-abbrev-table "em" ""
+       'latex-skeleton-emphasized)
+       (define-abbrev LaTeX-mode-abbrev-table "enu" ""
+       'latex-skeleton-enumerate)
+       (define-abbrev LaTeX-mode-abbrev-table "foldb" ""
+       'TeX-fold-buffer)
+       (define-abbrev LaTeX-mode-abbrev-table "foldm" ""
+       'TeX-fold-macro)
+       (define-abbrev LaTeX-mode-abbrev-table "foldp" ""
+       'TeX-fold-paragraph)
+       (define-abbrev LaTeX-mode-abbrev-table "fra" ""
+       'latex-skeleton-frame)
+       (define-abbrev LaTeX-mode-abbrev-table "idx" ""
+       'reftex-index)
+       (define-abbrev LaTeX-mode-abbrev-table "ie" ""
+       'LaTeX-insert-item)
+       (define-abbrev LaTeX-mode-abbrev-table "iee" ""
+       'latex-skeleton-itemize)
+       (define-abbrev LaTeX-mode-abbrev-table "inc" ""
+       'latex-skeleton-includegraphics)
+       (define-abbrev LaTeX-mode-abbrev-table "hl" ""
+       'latex-skeleton-hline)
+       (define-abbrev LaTeX-mode-abbrev-table "lbl" ""
+       'reftex-label)
+       (define-abbrev LaTeX-mode-abbrev-table "letf" ""
+       'xelatex-skeleton-lettre-fr)
+       (define-abbrev LaTeX-mode-abbrev-table "letfr" ""
+       'latex-skeleton-lettre-fr)
+       (define-abbrev LaTeX-mode-abbrev-table "ovw" ""
+       'reftex-toc)
+       (define-abbrev LaTeX-mode-abbrev-table "pg" ""
+         'page-skeleton)
+       (define-abbrev LaTeX-mode-abbrev-table "ph" ""
+       'LaTeX-section-5)
+       (define-abbrev LaTeX-mode-abbrev-table "qq" ""
+       'latex-skeleton-quote)
+       (define-abbrev LaTeX-mode-abbrev-table "rchg" ""
+       'TeX-normal-mode-alias)
+       (define-abbrev LaTeX-mode-abbrev-table "rcit" ""
+       'reftex-citation)
+       (define-abbrev LaTeX-mode-abbrev-table "ref" ""
+       'reftex-reference)
+       (define-abbrev LaTeX-mode-abbrev-table "rgrep" ""
+       'reftex-grep-document)
+       (define-abbrev LaTeX-mode-abbrev-table "sc" ""
+       'latex-skeleton-small-capitals)
+       (define-abbrev LaTeX-mode-abbrev-table "sca" ""
+       'latex-skeleton-scalebox)
+       (define-abbrev LaTeX-mode-abbrev-table "sidx" ""
+       'reftex-index-selection-or-word)
+       (define-abbrev LaTeX-mode-abbrev-table "sn" ""
+       'LaTeX-section-2)
+       (define-abbrev LaTeX-mode-abbrev-table "ssn" ""
+       'LaTeX-section-3)
+       (define-abbrev LaTeX-mode-abbrev-table "sssn" ""
+       'LaTeX-section-4)
+       (define-abbrev LaTeX-mode-abbrev-table "tne" ""
+       'TeX-next-error)
+       (define-abbrev LaTeX-mode-abbrev-table "tsten" ""
+       'xelatex-test-en)
+       (define-abbrev LaTeX-mode-abbrev-table "ufoldb" ""
+       'TeX-fold-clearout-buffer)
+       (define-abbrev LaTeX-mode-abbrev-table "ufoldm" ""
+       'TeX-fold-clearout-macro)
+       (define-abbrev LaTeX-mode-abbrev-table "ufoldp" ""
+       'TeX-fold-clearout-paragraph)
+       (define-abbrev LaTeX-mode-abbrev-table "xepdf" ""
+       'xetex-skeleton-pdf)
+       (define-abbrev LaTeX-mode-abbrev-table "xepic" ""
+       'xetex-skeleton-picture)
+       ))
+   
+   
+      ;;;raccourcis-clavier key-chord auctex
+   (add-hook 'LaTeX-mode-hook
+   	      '(lambda ()
+   (key-chord-define LaTeX-mode-map "kk" 'TeX-next-error)
+   (key-chord-define LaTeX-mode-map "KK" 'TeX-clean)
+   (local-set-key (kbd "<f7>") 'latex-skeleton-footnote)
+   ;;compilation avec le préambule du document-maître:
+   (local-set-key (kbd "<f8>") 'TeX-command-master)          ;tout
+   (key-chord-define LaTeX-mode-map "uu" 'TeX-command-buffer);tampon
+   (key-chord-define LaTeX-mode-map ".." 'TeX-command-region);région
+   	      ))
+   
+   
+   ;;html-------------------------------------------------------
+   
+   
+   ;;modèles
+       (add-hook 'sgml-mode-hook
+   	      '(lambda ()
+       (load "~/.emacs.d/modèles_html")			      
+       (define-skeleton html-skeleton-aside
+         "inserts an aside element"
+         nil
+         "\n<aside>\n"_"\n</aside>\n")
+       (define-skeleton html-skeleton-cite
+         "inserts html cite"
+         nil
+         "<cite>"_"</cite>")
+       (define-skeleton html-skeleton-cite-pl
+         "inserts html cite with lang tag "
+         nil
+         "<cite lang=\"pl\">"_"</cite>")
+       (define-skeleton html-skeleton-class
+         "inserts a class element"
+         nil
+         "class=\""_"\"")
+       (define-skeleton html-skeleton-em-pl
+         "inserts an <em> tag in polish"
+         nil
+         "<em lang="pl">"str"</em>")
+       (define-skeleton html-skeleton-image
+         "inserts an image tag"
+         "nom de l’image?"
+         "\n<img src=\""str"\"\n"
+         "alt=\""
+         (setq v1 (skeleton-read "message alternatif?"))
+         "\" />\n"_"")
+       (define-skeleton html-skeleton-paragraph
+         "inserts html paragraph marks"
+         nil
+         "<p> "_" \n </p> ")
+       (define-skeleton html-skeleton-pl-attribute
+         "insère un attribut linguistique pl"
+         nil
+         "lang=\"pl\"")
+       (define-skeleton mémoire-skeleton-detail
+         "insère un élément de classe detail"
+         "id de l’encadré?"
+         "<figure id=\""str"\" class=\"detail\">"
+         ""_"</figure>")
+       (define-skeleton mémoire-skeleton-etoile
+         "insère un lien avec une bulle de description"
+         "nom du personnage?"
+         "\n<a id=\""str"\" class=\"etoile\"\n"
+         "href=\"../lexique.html#"str"\" "
+         "title=\"\n"
+         ""_"\n\">† "str"</a>")
+       (define-skeleton mémoire-skeleton-figure-image
+         "inserts an image tag within figure and figcaption tag"
+         "nom de l’image?"
+         "\n<figure><img src=\""str"\"\n"
+         "alt=\""
+         (setq v1 (skeleton-read "message alternatif?"))
+         "\" />\n<figcaption>"_""
+         "</figcaption>\n</figure>")
+       (define-skeleton mémoire-skeleton-gdformat
+         "insère un attribut gdformat"
+         nil
+         "class=\"gdformat\">")
+       (define-skeleton mémoire-skeleton-gdvertical
+         "insère un attribut gdvertical"
+         nil
+         "class=\"gdvertical\">")
+       (define-skeleton mémoire-skeleton-lexique
+         "insère un élément dans le lexique"
+         "nom de la marque?"
+         "<dt><a id=\""str"\">"_"</a></dt>\n"
+         "<dd>\n"
+         "[<a href=\" .html#"str"\"></a>]</dd> ")
+       (define-skeleton mémoire-skeleton-nom
+         "insère un élément de classe nom"
+         "id de l’auteur?"
+         "<span id=\""str"\" class=\"nom\">"
+         ""str"</span>"_"")
+   ))
+   
+   ;appel des modèles
+       (add-hook 'sgml-mode-hook
+   	      '(lambda ()
+       (setq local-abbrev-table sgml-mode-abbrev-table) 
+       (load "~/.emacs.d/abbréviations_html.el")
+       (define-abbrev sgml-mode-abbrev-table "asi" ""
+         'html-skeleton-aside)
+       (define-abbrev sgml-mode-abbrev-table "atr" ""
+         'mémoire-skeleton-nom)
+       (define-abbrev sgml-mode-abbrev-table "cla" ""
+         'html-skeleton-class)
+       (define-abbrev sgml-mode-abbrev-table "clo" ""
+         'sgml-close-tag)
+       (define-abbrev sgml-mode-abbrev-table "det" ""
+         'mémoire-skeleton-detail)
+       (define-abbrev sgml-mode-abbrev-table "ee" ""
+         'sgml-tag)
+       (define-abbrev sgml-mode-abbrev-table "empl" ""
+         'html-skeleton-em-pl)
+       (define-abbrev sgml-mode-abbrev-table "enu" ""
+         'html-ordered-list)
+       (define-abbrev sgml-mode-abbrev-table "eto" ""
+         'mémoire-skeleton-etoile)
+       (define-abbrev sgml-mode-abbrev-table "figimg" ""
+         'mémoire-skeleton-figure-image)
+       (define-abbrev sgml-mode-abbrev-table "gdf" ""
+          'mémoire-skeleton-gdformat)
+       (define-abbrev sgml-mode-abbrev-table "gdv" ""
+          'mémoire-skeleton-gdvertical)
+       (define-abbrev sgml-mode-abbrev-table "hr" ""
+         'html-href-anchor)
+       (define-abbrev sgml-mode-abbrev-table "ie" ""
+         'html-list-item)
+       (define-abbrev sgml-mode-abbrev-table "iee" ""
+         'html-unordered-list)
+       (define-abbrev sgml-mode-abbrev-table "ig" ""
+         'html-skeleton-image)
+       (define-abbrev sgml-mode-abbrev-table "lexi" ""
+         'mémoire-skeleton-lexique)
+       (define-abbrev sgml-mode-abbrev-table "mém" ""
+         'html-skeleton-mémoire)
+       (define-abbrev sgml-mode-abbrev-table "nm" ""
+         'html-name-anchor)
+       (define-abbrev sgml-mode-abbrev-table "ph" ""
+         'html-skeleton-paragraph)
+       (define-abbrev sgml-mode-abbrev-table "pl" ""
+         'html-skeleton-pl-attribute)
+       (define-abbrev sgml-mode-abbrev-table "qq" ""
+         'html-skeleton-cite)
+       (define-abbrev sgml-mode-abbrev-table "qqpl" ""
+         'html-skeleton-cite-pl)
+       (define-abbrev sgml-mode-abbrev-table "sn" ""
+         'html-headline-1)
+       (define-abbrev sgml-mode-abbrev-table "ssn" ""
+         'html-headline-2)
+       (define-abbrev sgml-mode-abbrev-table "sssn" ""
+         'html-headline-3)
+   	      ))
+   
+       (add-hook 'sgml-mode-hook
+   	      '(lambda ()
+   (key-chord-define sgml-mode-map "kk" 'sgml-delete-tag)
+   	      ))
+   
+   ;;org-mode--------------------------------------------------
+   
+   ;; (add-hook 'org-mode-hook
+   ;; 	  '(lambda()
+   ;; 	     (auto-fill-mode)       ;auto-fill coupe la ligne 
+   ;; 	     (setq fill-column 60)));à la 60e colonne
+   
+   ;modèles
+       (add-hook 'org-mode-hook
+   	      '(lambda ()
+         (define-skeleton org-skeleton-bold  
+   	"Inserts an org-mode bold template"
+   	nil
+   	"*"_"*")
+         (define-skeleton org-skeleton-center
+   	"Inserts an org center mark"
+   	nil
+   	"\n#+BEGIN_CENTER \n"
+   	" "_" \n"
+   	"#+END_CENTER \n")
+         (define-skeleton org-skeleton-export-template
+   	"Place les informations nécessaires pour une exportation en .odt"
+   	"Titre du fichier: "
+   	"#+TITLE: "str" \n"
+   	"#+AUTHOR: "_" \n"
+   	"#+OPTIONS: H:3 num:t *:t f:t \|:t toc:nil \n"
+   	"#+ODT_STYLES FILE: \n")
+         (define-skeleton org-skeleton-emphasized
+   	"Inserts an org-mode emphasized template"
+   	nil
+   	"/"_"/")
+         (define-skeleton org-skeleton-footnote
+         "Inserts an org-mode footnote template"
+         nil
+         "[fn:: "_"]")
+         (define-skeleton org-skeleton-image
+         "Inserts an org-mode image template"
+         "Titre de l’image:"
+         "#+ATTR_ODT: :height 6 :anchor \"page\" \n"
+         "#+CAPTION: "str" \n"
+         "#+LABEL: \n"
+         "[[ "_"]] \n");skeleton a du mal avec [[]]
+         (define-skeleton org-skeleton-quote
+   	"Inserts an org quote mark"
+   	nil
+   	"\n#+BEGIN_QUOTE \n"
+   	" "_" \n"
+   	"#+END_QUOTE \n")
+         (define-skeleton org-skeleton-table
+         "Inserts an org-mode table template"
+         "Titre du tableau:"
+         "\n#+ATTR_ODT: :rel-width 90 \n"
+         "#+CAPTION: "str" \n"
+         "#+TBLNAME: "
+         (setq v1 (skeleton-read "ref du tableau?"))
+         "\n#+LABEL:"v1"\n"
+         "\n\| "_" \n ")
+         (define-skeleton org-skeleton-tblfm
+         "Inserts an org-mode #+TBLFM: tag for spreadsheat formulas"
+         nil
+         "#+TBLFM: "_" ;")
+         (define-skeleton org-skeleton-verse
+   	"Inserts an org verse mark"
+   	nil
+   	"\n#+BEGIN_VERSE \n"
+   	" "_" \n"
+   	"#+END_VERSE \n")
+     ;alias pour que les fonctions à arguments puissent être
+     ;utilisées par define-abbrev
+   	      ))
+   ;appels des modèles
+       (add-hook 'org-mode-hook
+   	      '(lambda ()
+       (setq local-abbrev-table org-mode-abbrev-table) 
+        (define-abbrev org-mode-abbrev-table "2odt" ""
+          'org-skeleton-export-template)
+        (define-abbrev org-mode-abbrev-table "bd" ""
+          'org-skeleton-bold)
+        (define-abbrev org-mode-abbrev-table "cen" ""
+       'org-skeleton-center)
+        (define-abbrev org-mode-abbrev-table "col" ""
+       'org-table-insert-column)
+        (define-abbrev org-mode-abbrev-table "em" ""
+          'org-skeleton-emphasized)
+        (define-abbrev org-mode-abbrev-table "fx" ""
+       'org-skeleton-tblfm)
+        (define-abbrev org-mode-abbrev-table "hl" ""
+       'org-table-hline-and-move)
+        (define-abbrev org-mode-abbrev-table "ie" ""
+       'org-insert-heading)
+        (define-abbrev org-mode-abbrev-table "ig" ""
+       'org-skeleton-image)
+        (define-abbrev org-mode-abbrev-table "qq" ""
+       'org-skeleton-quote)
+        (define-abbrev org-mode-abbrev-table "sn" "*")
+        (define-abbrev org-mode-abbrev-table "ssn" "**")
+        (define-abbrev org-mode-abbrev-table "sssn" "***")
+        (define-abbrev org-mode-abbrev-table "tb" ""
+       'org-skeleton-table)
+        (define-abbrev org-mode-abbrev-table "ver" ""
+       'org-skeleton-verse)
+   	      ))
+   
+   ;;raccourcis-clavier org
+       (add-hook 'org-mode-hook
+   	      '(lambda ()
+   (local-set-key (kbd "<f7>") 'org-skeleton-footnote) 
+   (local-set-key (kbd "<f8>") 'org-export)
+   (key-chord-define org-mode-map "@@" 'org-table-create-or-convert-from-region)
+   (key-chord-define org-mode-map "’’" 'org-table-sort-lines)
+   ;;(key-chord-define org-mode-map "xx" 'org-table-cut-region)
+   ;;(key-chord-define org-mode-map "//" 'org-table-copy-down)
+   ;;(key-chord-define org-mode-map "uu" (org-table-edit-field 1))
+   (key-chord-define org-mode-map "yy" 'org-table-paste-rectangle)
+   (key-chord-define org-mode-map "==" 'org-table-recalculate)
+   ;;recalcule toutes les fonctions du tableau
+   (key-chord-define org-mode-map "++" 'org-table-sum)
+   (local-set-key (kbd "<f3>") 'show-all)
+   	      ))
+   
+   ;;variables
+   ;;utilise uniquement les notations @x$y pour l’édition de
+   ;;formules
+   ;;(setq org-table-use-standard-references nil)
+   
+   ;;;elisp-mode;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+   
+   
+   
+   ;;;mode-mineur polonais-mode;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   
+   (define-minor-mode polonais-mode  
+     "Adapt emacs to polish keyboard and abbrevs.
+     Interactively with no argument, this command toggles the mode.
+     A positive prefix argument enables the mode, any other prefix
+     argument disables it.  From Lisp, argument omitted or nil enables
+     the mode, `toggle' toggles the state.
+   
+     Dopasuje skróty Evil do ergonomicznej klawiatury polskiej
+     i wprowadza polską wersję abbrev."
+     ;valeur initiale
+     nil
+     ;indicateur dans la barre d’état
+     " ErgPL"
+     ;raccourcis-claviers spécifiques
+     ;nil
+   ;  (define-key evil-insert-state-local-map "e" '(quote a))
+   ;  (define-key evil-normal-state-local-map "h" nil)
+   ;  (define-key evil-normal-state-local-map "H" nil)
+   ;  (define-key evil-normal-state-local-map "k" nil)
+   ;  (define-key evil-normal-state-local-map "K" nil)
+   ;  (define-key evil-motion-state-local-map "c" nil)
+   ;  (define-key evil-motion-state-local-map "C" nil)
+   ;  (define-key evil-motion-state-local-map "t" nil)
+   ;  (define-key evil-motion-state-local-map "s" nil)
+   ;  (define-key evil-motion-state-local-map "r" nil)
+   ;  (define-key evil-motion-state-local-map "R" nil)
+   ;  (define-key evil-motion-state-local-map "n" nil)
+   ;  (define-key evil-motion-state-local-map "N" nil)
+   ;  (define-key evil-motion-state-local-map "w" nil)
+   ;  (define-key evil-motion-state-local-map "W" nil)
+   ;  (define-key evil-motion-state-local-map "j" nil)
+   ;  (define-key evil-motion-state-local-map "J" nil)
+   ;  ;normal-state-local-map
+   ;  (define-key evil-normal-state-local-map "ś" 'evil-change)
+   ;  (define-key evil-normal-state-local-map "Ś" 'evil-change-line)
+   ;  (define-key evil-normal-state-local-map "ż" 'evil-delete-char)
+   ;  (define-key evil-normal-state-local-map "Ż" 'evil-delete-backward-char)
+   ;  (define-key evil-normal-state-local-map "N" 'evil-join)
+   ;  (define-key evil-normal-state-local-map "ą" 'evil-substitute)
+   ;  (define-key evil-motion-state-local-map "ó" 'evil-window-map)
+   ;  ;motion-state-local-map
+   ;  (define-key evil-motion-state-local-map "ę" 'evil-backward-word-begin)
+   ;  (define-key evil-motion-state-local-map "!" 'evil-backward-WORD-begin)
+   ;  (define-key evil-motion-state-local-map "w" 'evil-backward-char)
+   ;  (define-key evil-motion-state-local-map "W" 'evil-window-top)
+   ;  (define-key evil-motion-state-local-map "k" 'evil-visual-char)
+   ;  (define-key evil-motion-state-local-map "K" 'evil-visual-line)
+   ;  (define-key evil-motion-state-local-map "n" 'evil-next-line)
+   ;  (define-key evil-motion-state-local-map "r" 'evil-previous-line)
+   ;  (define-key evil-motion-state-local-map "s" 'evil-forward-char)
+   ;  (define-key evil-motion-state-local-map "S" 'evil-window-bottom)
+   ;  (define-key evil-motion-state-local-map "c" 'evil-search-next)
+   ;  (define-key evil-motion-state-local-map "C" 'evil-search-previous)
+   ;  (define-key evil-motion-state-local-map "j" 'evil-forward-word-begin)
+   ;  (define-key evil-motion-state-local-map "J" 'evil-forward-WORD-begin)
+   ;  (define-key evil-motion-state-local-map "ł" 'evil-find-char-to)
+   ;  (define-key evil-motion-state-local-map "Ł" 'evil-find-char-to-backward)
+   ;  (define-key evil-motion-state-local-map "ć" 'evil-find-char-to)
+   ;  (define-key evil-motion-state-local-map "Ć" 'evil-find-char-to-backward)
+   ;; (when (polonais-mode 1)
+   ;;     (setq ispell-local-dictionnary "pl"))
+     )
+   
+   ;définit un mode mineur global polonais
+   (define-globalized-minor-mode global-polonais-mode
+     polonais-mode polonais-on)
+   ;fonction pour lancer ce mode global
+   (defun polonais-on ()
+     (unless (minibufferp)
+       (polonais-mode 1)))
+   
+   (global-set-key (kbd "<f5>") 'polonais-mode)
+   
+   ;;------------tetris-----------------------------------
+   (setq tetris-score-file "~/.emacs.d/tetris_scores")
+   ;;------------calc-mode---------------------------------
+    
+    (defmath note100 (n)             ;fonction pour attribuer 
+    (setq seuil '(80 73 66 59 50 0)) ;une note polonaise à partir
+    (setq note '(5 4.5 4 3.5 3 2))   ;d’un barème de 100 points
+    (while (< n (car seuil))
+      (pop note)
+      (pop seuil))
+    (car note))
+    ;; (defun note100(n)
+    ;;   "Attribue une note polonaise à partir d’une échelle sur 100"
+    ;;   nil
+    ;;   ;(setq n)
+    ;;   (setq seuil '(80 73 66 59 50 0))
+    ;;   (setq note '(5 4.5 4 3.5 3 2))
+    ;;   (if (integerp n)
+    ;;   (while (< n (car seuil))
+    ;;     (pop note)
+    ;;     (pop seuil))
+    ;;   (car note)))
+    
+    
+    ;; fonction pour convertir mes notes sur 100 en notes polonaises; 
+    ;; (defmath note100 (a)
+    ;;   (cond (>= a 0)
+    ;; 	(< a 50)
+    ;; 	(print 2))
+    ;;   (cond (>= a 50)
+    ;; 	(< a 59)
+    ;; 	(print 3))
+    ;;   (cond (>= a 59)
+    ;; 	(< a 66)
+    ;; 	(print 3.5))
+    ;;   (cond (>= a 66)
+    ;; 	(< a 73)
+    ;; 	(print 4))
+    ;;   (cond (>= a 73)
+    ;; 	(< a 80)
+    ;; 	(print 4.5))
+    ;;   (cond (>= a 80)
+    ;; 	(<= a 100)
+    ;; 	(print 5)))
+    ;(defmath note100 (a)
+    ;  (if (and (>= a 0) (< a 50))
+    ;      (print 2)
+    ;  (if (and (>= a 50) (< a 59))
+    ;      (print 3)
+    ;  (if (and (>= a 59) (< a 66))
+    ;      (print 3.5)
+    ;  (if (and (>= a 66) (< a 73))
+    ;      (print 4))
+    ;  (if (and (>= a 73) (< a 80))
+    ;      (print 4.5)
+    ;  (if (and (>= a 80) (<= a 100))
+    ;      (print 5))))))
+
+----
+CategoriePagePerso
