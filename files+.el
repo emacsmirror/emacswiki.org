@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:56:31 2013 (-0800)
+;; Last-Updated: Sun Sep  7 12:54:45 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 723
+;;     Update #: 728
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -69,6 +69,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/07 dadams
+;;     update-dired-files-count: Corrected wrt dired-hide-details:
+;;       Test inside loop, and use beginning of match, not (line-beginning-position 2).
 ;; 2013/11/11 dadams
 ;;     switch-to-buffer-other-(frame|window), display-buffer-other-frame:
 ;;       Do not redefine for Emacs 24+.  Removed autoload cookies.
@@ -677,10 +680,10 @@ and `..'."
            (str-num-files  (number-to-string num-files)))
       (save-excursion
         (goto-char (point-min))
-        ;; No-op if the line should be hidden.
-        (unless (eq (get-text-property (line-beginning-position 2) 'invisible)
-                    'dired-hide-details-information)
-          (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
+        (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
+          ;; No-op if the line should be hidden.
+          (unless (eq (get-text-property (match-beginning 0) 'invisible)
+                      'dired-hide-details-information)
             (let ((buffer-read-only  nil)
                   (map               (make-sparse-keymap)))
               (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
@@ -698,10 +701,11 @@ and `..'."
                   (add-text-properties
                    (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)
                    `(mouse-face highlight keymap ,map
-                     help-echo "Files shown / total files in directory \
+                                help-echo "Files shown / total files in directory \
 \[RET, mouse-2: more info]"))
-                (error nil))))
-          (set-buffer-modified-p nil))))))
+                (error nil)))))
+        (set-buffer-modified-p nil)))))
+
 
 ;;;###autoload
 (defun dired-describe-listed-directory ()
