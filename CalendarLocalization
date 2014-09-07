@@ -156,6 +156,22 @@ See [http://xwl.appspot.com/ref/cal-china-x.el cal-china-x.el].
 
 Modified version of the above using traditional Chinese characters (plus some nit picks): [http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el cal-china-x.el]
 
+=== Costa Rica ===
+<pre>
+(setq holiday-costa-rica-holidays
+      '((holiday-fixed 4 11 "Día de Juan Santamaría")
+	(holiday-easter-etc -3 "Jueves Santo")
+	(holiday-easter-etc -2 "Viernes Santo")
+	(holiday-fixed 5 1 "Día Internacional del Trabajo")
+	(holiday-float 6 0 3 "Día del Padre")
+	(holiday-fixed 7 25 "Anexión del Partido de Nicoya")
+	(holiday-fixed 8 2 "Día de Virgen de los Ángeles")
+	(holiday-fixed 8 15 "Día de la Madre")
+	(holiday-fixed 9 15 "Independencia de Costa Rica")
+	(holiday-fixed 10 12 "Día de las Culturas")))
+(setq calendar-holidays (append calendar-holidays holiday-costa-rica-holidays))
+</pre>
+
 === Korean ===
 
 There is a package, cal-korea-x that support Korean lunar calendar, and display names for months.  See [http://github.com/cinsk/cal-korea-x/ cal-korea-x].
