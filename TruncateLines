@@ -1,3 +1,4 @@
+[[es:truncateLines]]
 Turn off wrapping for a single buffer using `M-x toggle-truncate-lines'.
 
 This is a BufferLocalVariable.
