@@ -11,8 +11,7 @@ Par contre, emacs reconnaît les abbréviations quand on change la casse…
 
 === modes utilisés ===
 
-* Evil, en association avec [[http.//www.emacswiki.org/emacs/key-chord]], pour me passer des touches Ctr Meta Shift autant que possible
-
+* Evil, en association avec key-chord, pour me passer des touches Ctr Meta Shift autant que possible
 * abbrev, avec cette fonction qui permet de placer le curseur juste après le mot abrégé quand on tape  espace, pratique pour rajouter un pluriel, un féminin, etc.
 
    (defun conditional-abbrev-expand ()
@@ -24,13 +23,10 @@ Par contre, emacs reconnaît les abbréviations quand on change la casse…
             (char-left)))                  ;move char to the left
    
 * AucTeX
-
 * sgml
-
 * org-mode
-
-*plus quelques modes mineurs comme electric-pair, show-paren etc.
-*noter que le mode mineur polonais ne fonctionne pas très bien
+* plus quelques modes mineurs comme electric-pair, show-paren etc.
+* noter que le mode mineur polonais ne fonctionne pas très bien
 
 === mon .emacs ===
    ;;;;;;;;;;;;;;;;;;;.emacs, Damien Thiriet;;;;;;;;;;;;;;;;;;
