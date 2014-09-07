@@ -159,7 +159,8 @@ Modified version of the above using traditional Chinese characters (plus some ni
 === Costa Rica ===
 <pre>
 (setq holiday-local-holidays
-      '((holiday-fixed 4 11 "Día de Juan Santamaría")
+      '((holiday-fixed 1 1 "Año Nuevo")
+        (holiday-fixed 4 11 "Día de Juan Santamaría")
 	(holiday-easter-etc -3 "Jueves Santo")
 	(holiday-easter-etc -2 "Viernes Santo")
 	(holiday-fixed 5 1 "Día Internacional del Trabajo")
@@ -168,7 +169,8 @@ Modified version of the above using traditional Chinese characters (plus some ni
 	(holiday-fixed 8 2 "Día de Virgen de los Ángeles")
 	(holiday-fixed 8 15 "Día de la Madre")
 	(holiday-fixed 9 15 "Independencia de Costa Rica")
-	(holiday-fixed 10 12 "Día de las Culturas")))
+	(holiday-fixed 10 12 "Día de las Culturas")
+        (holiday-fixed 12 25 "Navidad")))
 </pre>
 
 === Korean ===
