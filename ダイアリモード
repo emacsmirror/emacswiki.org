@@ -1,17 +1,13 @@
 [[en:DiaryMode]]
-This japanese translating page and this is stub. Dont write in english. --gonbei
 
-The calendar (`M-x calendar') can show you diary entries for a particular day when you press `d' (for more on calendar stuff, see CalendarMode).  You might also be interested in AppointmentMode to get reminders for events a few minutes before they happen.
+カレンダー(`M-x calendar')はあなたが`d'を押した時特定の日のためにダイアリのエントリをあなたに示すことができる(カレンダーの詳細については、カレンダーモードを参照されたし).
+あなたは同様にイベントが起こる数分前のリマインダーを得るためにアポイントメントモード興味があるかもしれない.
 
-  
+ダイアリのエントリは ~/diary ファイルへ手動で追加される.
+'M-x diary' ファイルをは作らない.
 
-The diary entries are added manually to the ~/diary file. 'M-x diary' does not create the file.
-
-
-
-== Fancy display ==
-
-Here is some code to make your calendar and diary display fancier:
+== 凝った表示 ==
+あなたのカレンダーと日記を凝った表示をするようにするいくつかのコード:
 
  (setq view-diary-entries-initially t
        mark-diary-entries-in-calendar t
@@ -19,14 +15,14 @@ Here is some code to make your calendar and diary display fancier:
  (add-hook 'diary-display-hook 'fancy-diary-display)
  (add-hook 'today-visible-calendar-hook 'calendar-mark-today)
 
-Here is some code to get rid of the ugly equal signs under the date:
+日付の下の醜い等号を取り除くためのいくつかのコード.
 
  (add-hook 'fancy-diary-display-mode-hook
 	   '(lambda ()
               (alt-clean-equal-signs)))
   
  (defun alt-clean-equal-signs ()
-   "This function makes lines of = signs invisible."
+   "この関数は=サインの行を見えなくする."
    (goto-char (point-min))
    (let ((state buffer-read-only))
      (when state (setq buffer-read-only nil))
@@ -37,28 +33,26 @@ Here is some code to get rid of the ugly equal signs under the date:
 			    '(invisible t)))
      (when state (setq buffer-read-only t))))
 
-Note that the hook used exists only on recent version of emacs; so, you'll probably need the following:
+注意:使われたフックはEmacsの最近のバージョンにのみ存在します; そう, あなたは恐らく次が必要です:
 
  (define-derived-mode fancy-diary-display-mode  fundamental-mode
    "Diary"
-   "Major mode used while displaying diary entries using Fancy Display."
+   "凝った表示を使ってダイアリエントリを表示している間使われるメジャーモード."
    (set (make-local-variable 'font-lock-defaults)
         '(fancy-diary-font-lock-keywords t))
    (define-key (current-local-map) "q" 'quit-window)
    (define-key (current-local-map) "h" 'calendar))
  
  (defadvice fancy-diary-display (after set-mode activate)
-   "Set the mode of the buffer *Fancy Diary Entries* to
- `fancy-diary-display-mode'."
+   "*Fancy Diary Entries* バッファーのモードを `fancy-diary-display-mode' へセットする."
    (save-excursion
      (set-buffer fancy-diary-buffer)
      (fancy-diary-display-mode)))
 
 Then play with the font-lock keywords!
+もしあなたのダイアリのバージョンが(現在のXEmacsダイアリパッケージのような)凝った表示のためのフォントロックを持っていないならば, あなたは適切なものを手早く作るためにgeneric.elを使うことができる.
 
-If your version of diary doesn't have font-locking for the fancy display 
-(such as the current XEmacs diary package),
-you can use generic.el to whip up something suitable. For example:
+例えば:
 
     (require 'generic)
     (define-generic-mode 'fancy-diary-display-mode
@@ -81,63 +75,58 @@ you can use generic.el to whip up something suitable. For example:
       "Mode for fancy diary display.")
 
 
-== Localization ==
+== ローカライゼーション ==
 
-See CalendarLocalization.
+CalendarLocalizationを参照されたし.
 
-== Diary Entries ==
+== ダイアリエントリ ==
 
-If you call the function `(european-calendar)' it sets the variable
-`european-calendar-style' to t; your date specifications should have
-the order day, month, year. If it is nil, use month, day, year. There
-are many different ways to specify dates and date patterns, some of
-which are compatible with the '''calendar'''(1) command.  Check the
-EmacsManual node "Date Formats" for more information.
+もしあなたが`(european-calendar)'関数を呼ぶならば `european-calendar-style'変数をtにセットし; あなたの日付は日月年の順番になります.
+もしそれがnilならば,月日年を使います.
 
-<b>The following examples assume european calendar style!</b>
+日付と日付のパータンを指定するための多くの異なる方法があります, そのうちのいくつかは'''calendar'''(1)コマンドと互換です.
+詳しくはEmacsManualの"Date Formats"をご覧ください.
+<b>次の例はヨーロッパのカレンダー様式として仮定します!</b>
 
-Here's an entry for a particular day:
+ここには特定の日のエントリがあります:
 
  6 Nov 2000 cinema
 
-Multi line entries are also allowed:
+複数行のエントリが同じく許されます:
 
  6 Nov 2000 cinema
                - watch movie
                - party all night
 
-If you want the entry to show as a diary entry, but not to mark your calendar, prefix with an ampersand ("&"):
+もしあなたがエントリをダイアリエントリとして表示したい(しかしあなたのカレンダーをマークしたくない)のならば,アンパサンド("&")を初めにつけろ:
 
  &7 Nov 2000 drink water watch TV
 
-Here's an example for an anniversary. Note that the diary entry will display my dad's age as well.
+アニバーサリーのための例がある.
+ダイアリのエントリはおまけに私の親父の年を表示するだろうから注意しろ.
 
  %%(diary-anniversary 14 2 1940) Dad turns %d
 
-Here's an example for an entire block of days.
+ここに日のブロック全体のための例がある.
 
  %%(diary-block 14 2 2000 18 2 2000) Software Test
 
-Here's an example for every 60 days starting at 15 July 2003:
+ここに2003年6月15日から始まって60日全ての日の例がある:
 
  %%(diary-cyclic 60 15 7 2003) Renew medication
 
-Here's for certain days of the week. Note how the leading "&" prevents
-the entry from standing out in my calendar.
+ここに週の特定の日がある.どう前についている "&" が私のカレンダーでエントリを目立つことから防いでいるか注意しろ.
 
  &%%(= 4 (calendar-day-of-week date)) Salsa
 
-And here are some complex list expressions. This one first determines
-wether we are on a friday (day number 5), and then it checks wether
-the date falls in a certain block.
-
+そしてここにはいくつかの複雑な表現があります.
+これは最初に私達が金曜日(日数にして5)にいるかどうか決め, その後それは日付があるブロック内に収まるかどうかチェックする.
  %%(and (= 5 (calendar-day-of-week date))
         (diary-block 20 10 2000 20 2 2001)) Luzern
 
-Here's an even fancier entry for every first working day of the month:
-Either we are talking about monday to friday (day number 1 to 5) and
-it's the first day of the month, or it is a monday and its the second
-day of the month, or it is a monday and the third day of the month.
+ここには毎月第一営業日のために同じくより凝ったエントリがあります:
+私達が話している月曜から金曜まで(日数にして1から5まで)どちらかについてそしてそれは月の初めの日,
+かもしくはそれは月曜そしてその月の2番目の日,かもしくはそれは月曜そしてその月の3番目の日.
 
  %%(let ((d (calendar-day-of-week date)))
      (or (and (> d 0)
@@ -147,37 +136,36 @@ day of the month, or it is a monday and the third day of the month.
               (or (diary-date 2 t t)
                   (diary-date 3 t t))))) Check reports
 
-If you want to see reminders of upcoming events, use <code>diary-remind</code>. The first argument is a diary-sexp like the ones used in the preceding examples (it took some time to find out quoting is needed...), the second arg is the number of days (or a list of numbers) before the event that the reminders should occur on. The optional third arg turns on marking of the reminders in the calendar.
+もしあなたが今後のイベントのリマインダーを見たいならば, <code>diary-remind</code>を使え.
+最初の引数は先行している例で使われているひとつようなdiary-sexpです(クウォートを探し出すのに必要とされるしばらくの間は取られます...),
+2番目の引数はリマインダーが起こすべきイベント前の日数(もしくは番号のリスト)です.
+オプションの第3の引数はカレンダーにリマインダーのマーキングをオンにする.
 
  %%(diary-remind '(diary-date 1 8 2004) '(1 2 3) t) really-important-event-i-have-to-prepare-days-in-advance
 
-
-If you want to insert separators, try the following:
+もしあなたがセパレーターを挿入したいならば, 次を試せ:
 
  %%(progn " ")
 
-or
+もしくは
 
  %%(progn t) ----
 
-== New Diary Sexps ==
+== 新しいダイアリS式 ==
 
-You can do a lot of things with diary sexp but if you often to do very
-complex things, it might be easier to define a new sexp...
+あなたはダイアリS式でたくさんのことをすることができるしかしもしあなたが頻繁にとても複雑なことをするならば、新しいS式を定義することがより簡単になるでしょう...
 
+=== スケジュール ===
 
-=== Schedule ===
-
-If you want to write a schedule for school or university, you need to
-define a block (it's derived from diary-block) between two dates and a
-weekday. The following function also recognizes holidays and won't
-send you to school on those days... :)
+もしあなたが学校もしくは大学のためにスケジュールを書きたいならば, あなたは(ダイアリブロックから派生した)2つの日付と平日の間のブロックを定義することを必要とする.
+次の関数は同じく祝日を認識するそしてあなたに送りませんこれらの日に学校に... :)
 
     (defun diary-schedule (m1 d1 y1 m2 d2 y2 dayname)
-      "Entry applies if date is between dates on DAYNAME.  
-    Order of the parameters is M1, D1, Y1, M2, D2, Y2 if
-    `european-calendar-style' is nil, and D1, M1, Y1, D2, M2, Y2 if
-    `european-calendar-style' is t. Entry does not apply on a history."
+      "もし日付が日付とDAYNAMEの間ならばエントリは適用される.
+      パラメータの順序は`european-calendar-style'がnilならばM1, D1, Y1, M2, D2, Y2,
+      `european-calendar-style'がtならばD1, M1, Y1, D2, M2, Y2となります.
+      エントリはヒストリでは適用されません."
+
       (let ((date1 (calendar-absolute-from-gregorian
                     (if european-calendar-style
                         (list d1 m1 y1)
@@ -195,74 +183,66 @@ send you to school on those days... :)
              )
              entry)))
 
-Then: <code>"&%%(diary-schedule 22 4 2003 1 8 2003 2) 18:00 History"</code>
+その後: <code>"&%%(diary-schedule 22 4 2003 1 8 2003 2) 18:00 History"</code>
 
 
-=== Countdown ===
+=== カウントダウン ===
 
-This uses <code>diary-schedule</code> (defined above) and <code>diary-remind</code> to produce a daily countdown to a deadline:
+これはデッドラインまで日々のカウントダウンを生み出すために(上で定義された) <code>diary-schedule</code> と <code>diary-remind</code> を使います:
 
  (defun diary-countdown (m1 d1 y1 n)
-   "Reminder during the previous n days to the date.
-    Order of parameters is M1, D1, Y1, N if
-    `european-calendar-style' is nil, and D1, M1, Y1, N otherwise."
+   "これまでの過去n日間のリマインダー.パラメータの順はもし`european-calendar-style'がnilならば M1, D1, Y1, N, そしてその他場合は D1, M1, Y1, N となります."
    (diary-remind '(diary-date m1 d1 y1) (let (value) (dotimes (number n value) (setq value (cons number value))))))
 
-Then: <code>"&%%(diary-countdown 22 4 2003 15) Conference deadline"</code> shows the reminder during the last 15 days before 22 4 2003.
+その後: 2003年4月22日より前の過去15日間リマインダーを <code>"&%%(diary-countdown 22 4 2003 15) Conference deadline"</code> は表示します.
 
-== Diary Mode Keymap ==
+== ダイアリモードキーマップ ==
 
 <pre>
-m  mark diary entries
-d  view diary entries
-s  show all diary entries
-id insert diary entry
-iw insert weekly diary entry
-im insert monthly diary entry
+m  ダイアリのエントリをマークする
+d  ダイアリのエントリを観る
+s  全てのダイアリのエントリを表示する
+id ダイアリのエントリを挿入する
+iw 毎週のダイアリのエントリを挿入する
+im 毎月のダイアリをエントリを挿入する
 </pre>
 
-== Third-party Offerings ==
+== サードパーティ提供 ==
 
 === MHC ===
 
-There is an alternative calendar mode called MHC which has some
+いくつかの興味深い機能を持っているMHCと呼ばれる代わりのカレンダーモードがある.
+それはWebサイトを持っている http://www.quickhack.net/mhc/ (注意:日本語の読解力があると恐らく便利).
 
-interesting features. It has a web site at
-http://www.quickhack.net/mhc/
-(caution: Japanese reading skills are
-probably useful).
+受信メールメッセージからタスクリスト/カレンダーへエントリを追加するためのフックを持っている(Gnus, Mew, そして Wanderlustのためのフック関数を提供する)
+そしてパイロットと他のポピュラーなハンドヘルドデバイスのカレンダーをマージするためのファシリティがそこにはある.
+アポイントメントは標準MHフォルダへ格納される, なので,それらはアクセスされおまけに外部ユーティリティによって変更される.
+同様に外部LDAPカレンダーサポートがそこにはある.
 
+=== iCalendar インポート/エクスポート ===
 
+UlfJasperはEmacsダイアリのiCalendarイベントを操作するためパッケージを書いた.
+news:gnu.emacs.sourcesのアナウンスを読む
+　
+ EmacsダイアリへシンプルにiCalendarイベントをインポートするためのパッケージがここにある.
 
-It has hooks for adding entries to the task list / calendar from
-incoming mail messages (provides hook functions for Gnus, Mew, and
-Wanderlust) and there are facilities for merging calendars with Pilots
-and other popular handheld devices. Appointments are stored in
-standard MH folders, so they can be accessed and modified by external
-utilities as well. There is also experimental LDAP calendar support.
+ 注意してください,これはプリアルファスナップショットトライアルデモテストバージョンです.
+ それは通常は正しく働くべきです(例えば 非定期的)イベント
+ しかしそれは大抵の定期的イベントで失敗するだろう.
+ とにかく, 私が思うに便利なそれを探すことができた誰かがいるだろうから私はそれをここに投稿する.
 
-=== iCalendar import/export ===
+iCalendar.elの最新版は同じくiCalendarフォーマットでEmacsダイアリファイルのエクスポートを可能にする.
+iCalendar.el は(2004年11月10日)現在 GNU Emacsの一部です.
 
-UlfJasper has written a package for handling icalendar events in Emacs diary. The announcement in news:gnu.emacs.sources read
+私はiCalendar.elを改良するためにハッキングしている.
+私のパッチは http://luca.pca.it/projects/elisp/ で利用可能だ
+最新のは次のだ -- LucaCapello (2005年9月15日)
 
- Here's a package for importing simple icalendar events into Emacs
- diary.
-
- Please note that this is a pre-alpha snapshot trial demo test
- version. It should work correctly on ordinary, i.e. non-recurring,
- events. But it will fail on most recurring events. Anyhow, I am
- posting it here because I think that there may be someone who could
- find it useful.
-
-The latest version of icalendar.el also allows for exporting an Emacs diary file in icalendar format. 
-
-icalendar.el is now (2004-11-10) part of GNU Emacs.
-
-I'm hacking icalendar.el to improve it. My patches are available at http://luca.pca.it/projects/elisp/. The latest one is the following -- LucaCapello (2005-09-15)
-
-Great to ear that. I'd like to be able to include webcal URIs into my diary file.
-What I'd like to see is support for multiple calendars so then I could export them atomically or all or part of them... What me lack for is a Unified way to access Diary/Calendar/... data from Emacs. This would be great to have such a unified interface for all that sort of things plus bidirectionnal syncs with portable devices such as Palms.
-
+それはすごい.
+私は webcal URI を私のダイアリファイルへインクルードすることを可能にしたい.
+私が見たいものは複数カレンダーのためのサポートですそうして私はそれらを原子的にもしくは全てもしくはそれらの一部をエクスポートできた...
+私に欠けているものはEmacsから一元的にダイアリ/カレンダー/... データへアクセスする方法.
+ソートしたものにパームのようなポータブルデバイスでもっと双方向の同期を加える全てのための一元的なインターフェースようなものを持っていることはすごいことだろう
 
 <pre>
 + 20050915-15:30 
@@ -274,34 +254,32 @@ What I'd like to see is support for multiple calendars so then I could export th
 </pre>
 
 [new]
-Any update available such as full import/export ? webcal support ?
+フルインポート/エクスポートやwebcalサポートのような何か利用可能なアップデートはない? 
+:私は機能的なインポート/エクスポートパッチ持っている, 私はchangelogの準備を必要としその後UlfJasperへ送信する, なので好ご期待. そして, ところで webcalサポートは私のToDoリスト上にある... -- LucaCapello (2005-09-20)
+Oh 私はインポートされたデータについて問題を持っている. アカウントデータフィールド考慮されず全てのダイアリのページにインポートされたイベントが表示される...
 
-: I've a functional import/export patch, I need to prepare the changelog and then submit to UlfJasper, so stay tuned. And, BTW, webcal support is on my todo list... -- LucaCapello (2005-09-20)
-
-Oh and I have a problem with imported data. Events imported are shown on every diary page not taking into account the date field...
-: Send me a bug report -- UlfJasper (2005-09-19)
-
+: 私にバグを送ってください --UlfJasper (2005-09-19)
 [new:BrandonWMaister:2009-09-28 22:50 UTC]
-I've created a simple-and-probably-broken script that uses a conf file to download urls to destination directories and automatically creates a "calendars.el" file (at a path you specify) that will use the icalendar-import functionality that seems to have made it into mainline sometime between 2005 and 2009. It's available at [http://svn.quodlibetor.com/wsvn/Hacks/py/ical-in-emacs/#_py_ical-in-emacs_ my svn repo]. Bugs, rants, and features welcome.
+私はurlを目的のディレクトリへダウンロードするためにconfファイルを使うシンプルで恐らく壊れているスクリプトを作ったそして2005年と2009年の間にいつかメインラインへそれを作っているようなiCalendarインポート機能を使うだろう(あなたが指定したパスへ)"calendars.el" ファイルを自動的に作成する.
+[http://svn.quodlibetor.com/wsvn/Hacks/py/ical-in-emacs/#_py_ical-in-emacs_ my svn repo]で利用可能です.
+バグ, 暴言, 要望歓迎.
 
-=== Importing from CSV files ===
-You can import diary data from CSV (comma separated value) files
-with ''lookout.el''. This package allows for importing calendar 
-and address data from CSV files. (Note that you also need ''csv.el'' which can be found at the same place.) See also BbdbImporters.
+=== CSVファイルからのインポート ===
+あなたは''lookout.el''を使ってダイアリデータをCSV(カンマ区切り値)ファイルからインポートできる.
+このパッケージはCSVファイルからカレンダーとアドレスデータをインポートすることを可能にする.
+(注意:あなたは同じく ''csv.el'' を必要とする.それは同じ場所で見つけることができます.)BbdbImportersを参照されたし.
 
-== Mail upcoming diary entries ==
+== 来たるダイアリエントリをメールする ==
 
-Pop something like the following code in a shell script, and run it from cron, to get a 7-day itinerary mailed to you each morning:
-
+シェルスクリプトで何か次のようなコードをひょいと動かす, そしてcronからそれを実行し, あなたの毎朝にメールされる7日間の日程を得る:
     emacs --batch --eval "(setq diary-mail-days 7 european-calendar-style t
                                 diary-file \"~/.diary\" diary-mail-addr \"diary@example.com\")"
-                         -l diary-lib -f diary-mail-entries 
+                         -l diary-lib -f diary-mail-entries
 
-Remember to change the email address before running this.
+これを実行する前にメールアドレスを変えることを忘れないように.
 
-
-In the actual (2003/04/25) CVS this code doesn't work because of a bug (wrong number of arguments).
-This patch makes it work again:
+現在(2003年04月25日)のCVSのコードはバグ(間違った引数の数)のせいで動かない.
+このパッチはもう一度それが動くようにする:
 
     Index: lisp/calendar/diary-lib.el
     ===================================================================
@@ -313,41 +291,25 @@ This patch makes it work again:
     ---
     >     (funcall (get mail-user-agent 'sendfunc) nil))) 
 
-According to RMS it'll be fixed in sendmail.el but until then this should do it.
-You can also add a "mail-user-agent 'gnus-user-agent" into the --eval if you have a properly
-configured gnus.
+RMSによるとそれはsendmail.elで修正されるがしかしまだその次にこれはそれをするべきです.
+もしあなたが適切に設定されたgnusを持っているならばあなたは同じく"mail-user-agent 'gnus-user-agent" --eval へ追加できる
 
-== Getting diary entries printed on the shell ==
+== シェルに表示されたダイアリエントリを得る ==
 
-The standard unix old-time program '''calendar'''(1) uses similar
-syntax as Emacs's DiaryMode, so simply running it in one's shell
-loginscript is enough to see what's scheduled for the today and
-tomorrow, as explained on calendar's man-page.  By default calendar
-uses the file <code>.calendar</code> or
-<code>.calendar/calendar</code>, so one must either use the
-<code>-f</code> switch, a filesystem link or set
-<code>diary-file</code> appropriately to use the same file.
-
-Note that localization will be a bit of a hassle, as Emacs doesn't
-support a LANG=''locale'' in the diary-file, like modern versions of
-calendar do.
-
-If the calendar syntax is too limited, but you still want to get
-upcoming diary entries printed on the shell, adapt the options in
-
-http://netzwurm.de/download/programming/diary-batch.el => 404 Not Found. Any other URL to get this one ?
-
-for your needs, put the file in your .elisp directory and call:
+calendar のman-pageで説明されているように昔の標準UNIXプログラム '''calendar'''(1) はEmacsのダイアリモードに似た構文を使います(なので簡単にそれをそのシェルログインスクリプトで実行するのは今日と明日のスケジュールがなんであるかを見るためには十分である).
+デフォルトのカレンダーでは<code>.calendar</code> もしくは <code>.calendar/calendar</code>ファイルを使う,
+なのでひとつはどちらか<code>-f</code> スイッチを使わなければならない, 同じファイルを適切に使うためにファイルシステムリンクもしくは<code>diary-file</code>をセットする.
+注意:カレンダーの最近のバージョンがするようにローカライゼーションはちょっと手こずる(ダイアリファイルでLANG=''locale''をEmacsではサポートしない).
+もしカレンダーの構文が限定されすぎている, がしかしあなたがまだシェルに印刷される今度のダイアリエントリを得たいなら, [http://netzwurm.de/download/programming/diary-batch.el]のオプションを適用させる
+[http://netzwurm.de/download/programming/diary-batch.el] => 404 Not Found.
+これを得るためのその他のURLは?
+あなたのニーズのために, あなたの .elisp ディレクトリにファイルを置け  そして呼べ:
 
   emacs -batch --no-site-file -l .elisp/diary-batch.el -e diary-batch 2>&1 | tail +3
 
-If you put the above line into your .profile or .bash_profile your
-upcoming diary entries will be printed whenever you login.
-
-NOTE: This is obsolete for users with init=/usr/bin/emacs in their
-kernel commandline. ;)
-
-I can't find diary-batch.el, so I made my own.  It's simple, but it gets the job done.  It's invoked in the same way as above:
+もしあなたが上の行をあなたの .profile もしくは .bash_profile へ置くならば, あなたのログインするときならいつでも今度のダイアリエントリは表示されるだろう.
+注意: これはそれらのカーネルコマンドラインでinit=/usr/bin/emacsとともにユーザのために廃止された. ;)
+私はdiary-batch.elを探すことができない, なので私は私自身のを作った. それはシンプルで, しかしよくやる. それは上記と同様に呼び出される:
 
 <pre>
 (require 'calendar)
@@ -359,38 +321,33 @@ I can't find diary-batch.el, so I made my own.  It's simple, but it gets the job
     (diary-print-entries)))
 </pre>
 
-== Questions ==
+== 質問 ==
 
-I'd like to have the diary/calendar display and recognize dates in -true- ISO format, i.e. 2006-03-01, not 2006-3-1. Any ideas on how to accomplish this?
-//Nate, using emacs 21.4
+私はダイアリ/カレンダー ディスプレイを持ちたい,そして ISO -true- 形式で日付を認識させる ,例えば 2006-03-01, 2006-3-1ではなく. 
+どうやってこれを成し遂げるか何かアイディアは?
 
-* Emacs 23 appears to do this, if you put (calendar-set-date-style 'iso) in your .emacs file.
+//Nate, Emacs 21.4 を使用中
 
+* もしあなたがあなたの .emacs ファイルに (calendar-set-date-style 'iso) を置くならば, Emacs 23 はこれをやるために現れる.
 
-I want anniversary entries in my diary to be marked in the M-x calendar in the
-same way that normal diary entries can be marked (with some face). Is this possible?
-//Daniel Lublin, using emacs 21.2
+通常のダイアリエントリを(いくつかのフェースで)マークできるようにする同じ方法で私はM-x calendar でマークされるために私のダイアリにアニバーサリーエントリが欲しい.
+これは可能か?
+//Daniel Lublin, Emacs 21.2 を使用中
 
-* Anniversaries should behave just like other entries. They should get marked in the calendar buffer with `diary-face' or `diary-entry-marker'. (Unless they are hidden with & of course.) -- ulf
+* アニバーサリーは単に他のエントリのように振る舞うべき. それらは`diary-face' もしくは `diary-entry-marker'をもってカレンダーバッファーでマークされるはずです.(それらがもちろん&で隠されない限り.) -- ulf
+* 正しいアニバーサリーの`年'をセットしてみてください, なぜなら0周年アニバーサリー(0周年誕生日)はマークされないからです. --poppyer
 
-* Try to set the correct `year' of anniversaries, because the 0th anniversary (the 0th birthday) is not marked. -- poppyer
+異なるS式のために(アニバーサリー, ブロックなど)異なるフェース(マークス/カラー)をセットするための単純な方法があるか?
 
+もしくは私はそれぞれのダイアリアイテムのためにフェース(マーク/カラー)をセットするのを簡単にできるか? -- poppyer
 
-Is there any simply way to set different faces (marks/colors) for different sexp (anniversaries, block etc)?
-Or can I easily set the face (mark/color) for each diary item?  -- poppyer
-
-
-Is it possible to "invert" the meaning of the ampersand (Emacs 21.2)?  That is, the ampersand would ENABLE marking in the calendar instead of disabling it (as is currently)?  Thanks! --ttn
-
-* Not exactly what you want, but if you want to press "i d" and get a non-marking entry without using prefix-arg, just change make-diary-entry
-
-Thanks to BruceDurlingDotEmacs, I found the answer to my own question: Why aren't my diary entries sorted when they are displayed? -- ats
-
-* The answer: As usual, it's optional. Add the following to .emacs and enjoy a nicely-sorted diary display, even when you mix time and date formats in your diary: 
-
+アンパサンドの意味を"反転"させることは可能か (Emacs 21.2)?　それは, (現在のように)それの無効化の代わりにアンパサンドはカレンダーでマーキングを有効にするだろうか? ありがとう! -- ttn
+* あなたが欲しいものは正確ではない, しかしもしあなたが "i d" を押したいならば , そしてプレフィックス引数を使うことなく非マーキングエントリを得たいならば, make-diary-entryを単に変えろ
+BruceDurlingDotEmacsありがとう, 私は私の持つ質問に答えを見つけた: なぜそれらが表示された時に私のダイアリエントリはソートされる? -- ats
+* 答え: 通常は, オプションです. 次を .emacs へ追加しろ, そしてたとえあなたがあなたのダイアリで時間と日付の形式を混在させた時でも, ナイスなソートされたダイアリ表示を楽しめ:
     (add-hook 'list-diary-entries-hook 'sort-diary-entries t)
 
 
 ----
-CategoryPersonalInformationManager
-CategoryCalendar
+[[PIM]]
+[[カテゴリ・カレンダー]]
