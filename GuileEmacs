@@ -21,7 +21,7 @@ NOTE: The validity of this section could change at any time when the repos get u
 
 As mentioned above, build the wip branch of the above linked Guile repo first, install it such that it will be available during the Emacs build, and then build the wip branch of the above linked Emacs repo.
 
-Currently you need the following patches on the Guile wip branch to get it to compile:
+A short while ago the following two patches were needed to build the Guile wip branch; currently they don't seem to be necessary anymore:
 
 {{{
 --- a/module/language/elisp/runtime.scm
