@@ -92,6 +92,19 @@ If you use <code>evil-mode</code>, by default some of evil key bindings conflict
               (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
               (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
               (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+
+
+=== popwin ===
+
+If you use <code>popwin</code>, when NeoTree is open and successively a temporary buffer is opened with popwin, a new window with the NeoTree buffer is displayed side by side next to the first one (#50). This code will help you:
+
+  (when neo-persist-show
+    (add-hook 'popwin:before-popup-hook
+              (lambda () (setq neo-persist-show nil)))
+    (add-hook 'popwin:after-popup-hook
+              (lambda () (setq neo-persist-show t))))
+
+
 == ChangeLog ==
 
 0.2 
