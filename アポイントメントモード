@@ -1,7 +1,8 @@
 [[en:AppointmentMode]]
-This japanese translating page and this is stub. Dont write in english. --gonbei
 
-DiaryMode is good for keeping daily tasks (things like anniversaries and such).  With the addition of appt.el it can also be useful for time specific appointments.  Here's the setup I have:
+ダイアリモードは(アニバーサリーとかそのようなもの)日常業務を維持するためには向いています. 
+appt.elの追加でそれは同じく時間指定のアポイントメントのために便利になるだろう.
+ここに私が持っている設定があります:
 
 <pre>
 (if (not (featurep 'appt))(require 'appt))
@@ -12,41 +13,38 @@ DiaryMode is good for keeping daily tasks (things like anniversaries and such). 
       appt-announce-method 'appt-persistent-message-announce  ; XEmacs
       appt-display-duration 59)                               
 (defun diary-save-hook ()
-"Stuff to do when saving the diary files."
+"ダイアリファイルをセーブする時にするもの."
   (appt-initialize))
 (defun add-diary-save-hook ()
-  "find-file-hooks hook to add the diary-save-hook when appropriate"
+  "find-file-hooks は diary-save-hook を適切なときに追加するためにフックする"
   (if (string-match "diary" (buffer-name))
       (add-hook 'after-save-hook 'diary-save-hook)))
 (add-hook 'find-file-hooks 'add-diary-save-hook)
 </pre>
 
-The appt-initialize function is what does all the dirty work.  It
-actually scans the diary-file for appointments and adds them to the
-list of reminders.  If you add an appointment to your diary and don't
-run appt-initialize, you won't be reminded.  That's why I set the
-after-save-hook for the diary buffer to call appt-initialize.  Because
-after-save-hook is always buffer local, you have to set it after the
-buffer is created.  That's why I had to add another hook to
-find-file-hooks.
+appt-initialize 関数は全ての汚れ仕事をやります.
+それはアポイントメントのためにdiaryファイルを実際にスキャンしそれらをリマインダーのリストへ追加します.
+もしあなたが　あなたのダイアリへアポイントメントを追加し appt-initialize を走らせないならば, あなたはリマインドされないでしょう.
+そのため私がappt-initializeを呼ぶためにダイアリバッファーにafter-save-hookをセットする.
+なぜならば after-save-hook は常にバッファーローカルです, バッファーが作られた後あなたはそれをセットする必要があります.
+そのため私がfind-file-hooksへその他のフックを追加する必要があった.
 
-Check the variable docs (C-h v) on each of the variables to see what
-they do.  The docs are self-explanatory.
-
-Enjoy!  Update with suggestions and improvements.
-
+それらが何をすべきかを見るために各変数について様々な文書を調べろ(C-h v).
+文書は自明である.
+楽しめ! 提案と改善によってアップデートする.
 -- DougAlcorn 15 Aug 2002
 
 ----
 
-Here's nice way to highlight an appointment in a brighter face on the modeline so that you actually notice it's appeared!  
-(Doesn't work for me in GNU Emacs CVS unfortunately -- ColinMarquardt)
+あなたが実際に現れたそれに気が付くためにモードラインの明るいフェースでアポイントメントをハイライトするためのナイスな方法がここにある!
+(GNU Emacs CVSは残念なことに私には動かない -- ColinMarquardt)
 
 <pre>
-;; ---great bit of code from Jeff Miller to highlight appointments in red on modeline---
+;; ---Jeff Millerからモードラインに赤でアポイントメントをハイライトするためのすごいちょっとしたコード---
+
 (defface appt-face
   '((t (:foreground "red" :background "white")))
-  "Face to indicate a current appointment."
+  "現在のアポイントメントを示すフェース."
   :group 'appt)
 
 (defadvice appt-disp-window (before appt-hilite-more activate)
@@ -63,15 +61,19 @@ Here's nice way to highlight an appointment in a brighter face on the modeline s
 ;; ---------------------------------
 </pre>
 
-Here's my work in progress. This code should let the xemacs appt.el (which is more featureful) work with GNU Emacs 21.2 at least. The save hook is made buffer local this time. Note that the window announce method seems to be broken.
+私の進行中の仕事はここにある.
+このコードは(より機能的である) XEmacs appt.el に少なくとも GNU Emacs 21.2 で働かさせるべきである
+save hook はこの時バッファをローカルにさせられる. ウィンドウアナウンスメソッドは壊れているように見えるから注意してほしい.
 
 <pre>
-;; show the time in the status bar. i have customized the form so that it
-;; does not display the load average, as i find that distracting
+;; ステータスバーに時間を表示する.
+;; 私はロードアベレージを表示しないためにカスタマイズされたフォームを持っている, 私がそれを探す時気が散る
+
 (display-time)
 
-;; compatability - we don't really miss the aliases appt defines anyway.
-;; there's no need for this in xemacs or emacs 21.3+
+;; 互換性 - 私達はとにかくapptが定義するエイリアスを本当に見逃さない.
+;; XEmacsもしくはEmacs 21.3以上でこれは必要はない
+
 (when (not (fboundp 'defvaralias))
   (defun defvaralias (&rest args)))
 
@@ -82,17 +84,17 @@ Here's my work in progress. This code should let the xemacs appt.el (which is mo
         appt-announce-method 'appt-persistant-message-announce
         appt-display-duration 360)
 
-  ;; ding takes a different number of args in gnu emacs - eventually i'll
-  ;; redefine this to use my soundcard anyway
+  ;; dingはGNU Emacsで異なる引数の数を取る - 最終的に私はとにかく私のサウンドカード使うためにこれを再定義するだろう
+
   (when (not (featurep 'xemacs))
     (defun appt-beep (&rest args)))
 
   (defun diary-save-hook ()
-    "Stuff to do when saving the diary files."
+    "ダイアリファイルをセーブする時にするもの."
     (appt-activate 1))
 
   (defun add-diary-save-hook ()
-    "find-file-hooks hook to add the diary-save-hook when appropriate"
+    "find-file-hooks は diary-save-hook を適切なときに追加するためにフックする"
     (let* ((diary-file-components (split-string diary-file "/"))
            (diary-buffer-name
             (nth (1- (length diary-file-components)) diary-file-components)))
@@ -106,23 +108,29 @@ Here's my work in progress. This code should let the xemacs appt.el (which is mo
 
 -- DamienElmes
 
-Is all that stuff supposed to work with EmacsCvs ? Apparently, I have a void-function error with appt-initialize here -- zeDek
+EmacsCvsでそのものが全て動くことを想定していますか?
+どうやら, 私はここに appt-initialize で void-function エラーを持っている --zeDek
 
 ----
-That was a quick response!  I tried the clarification about appt-initialize and replaced all the (appt-initialize)'s with (appt-activate 1)'s in my .emacs, but now I get basically the same message: "Symbol's function definition is void: appt-activate".  Maybe I'm doing things in the wrong order? -- WebMayfield
+それは迅速な対応でした!
+私はappt-initializeについて解明を試した そして 私の.emacsの全ての (appt-initialize) を (appt-activate 1) で置換したが,
+しかし今私は基本的には同じメッセージを得た: "Symbol's function definition is void: appt-activate".
+もしかして私は間違った順序でことをしている? -- WebMayfield
 
 ----
-The info documentation for appointments in 21.1.3 has the following code to be added to ~/.emacs:
+~/.emacsへ追加されるための次のコードを21.1.3のアポイントメントのInfo文書は持っている:
 
      (display-time)
      (add-hook 'diary-hook 'appt-make-list)
      (diary 0)
 
-This has the unfortunate effect that appointments added by `appt-add' are deleted whenever you call `M-x diary' because one of the first things that `appt-make-list' does is set `appt-time-msg-list' to `nil'. I fixed this with the following code in my ~/.emacs file:
+これはあなたが`M-x diary'を呼ぶ時ならいつでも`appt-add'によって追加されるアポイントメントは削除されるという残念な効果を持つ
+なぜなら `appt-make-list' がする最初のうちの一つのことは`appt-time-msg-list'を`nil'にセットするからである.
+私は私の ~/.emacs ファイルで次のコードでこれを修正した:
 
     (require 'appt)
     (defun my/refresh-appt-list ()
-      "Retain currently set appointments."
+      "現在設定されているアポイントメントを保持する."
       (let ((my/appt-list (copy-sequence appt-time-msg-list)))
         (appt-make-list)
         (setq appt-time-msg-list 
@@ -131,4 +139,7 @@ This has the unfortunate effect that appointments added by `appt-add' are delete
     (add-hook 'diary-hook 'my/refresh-appt-list)
 
 -----
-CategoryCalendar DiaryMode CalendarMode
+
+[[カテゴリ・カレンダー]]
+[[ダイアリモード]]
+[[カレンダーモード]]
