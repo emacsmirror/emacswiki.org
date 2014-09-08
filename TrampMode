@@ -91,11 +91,6 @@ If Tramp hangs with Solaris at the local end, try using "scpx" as your default t
 
 If you're using SVN or DARCS (or likely other things) with VC, see below for problem descriptions.
 
-If you are using a customized prompt in your shell, tramp can hang
-because it doesn't recognize you prompt as a prompt.  You can either
-make sure your prompt ends in $, or modify tramp-shell-prompt-pattern
-(I came to this through http://comments.gmane.org/gmane.emacs.tramp/6996)
-
 === Tramp hangs #2 ===
 
 If you are a victim of the following:
@@ -159,6 +154,24 @@ Control-j: menu-complete
 }}}
 
 it can cause tramp to never finish recognizing the shell prompt.
+
+=== Tramp hangs #6: Not recognising the remote shell prompt ===
+
+If you are using a customised prompt in your shell, tramp can hang if it doesn't recognise the remote shell prompt. The obvious symptom is that tramp hangs with the message "Waiting for prompts from remote shell", but it can also hang or freeze up after this, before successfully opening the requested file.
+
+To detect the remote prompt, tramp first tries the variable shell-prompt-pattern; if that fails, it tries tramp-shell-prompt pattern. You should try modifying tramp-shell-prompt-pattern first.
+
+The default for tramp-shell-prompt-pattern in some recent tramps is:
+
+    \\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*"
+
+(Note that the ^[ is a real control-[, and the \r may be a control-m.)
+
+My system (NixOS) recently made fancy coloured prompts the default. An ANSI escape sequence immediately follows the $, which breaks the default expression. Adding <code>.*</code> to tramp-shell-prompt-pattern is an easy fix:
+
+    \\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>].* *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*"
+
+See also http://comments.gmane.org/gmane.emacs.tramp/6996.
 
 == Tips and tricks ==
 
