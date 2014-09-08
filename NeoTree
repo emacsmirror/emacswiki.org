@@ -64,7 +64,7 @@ Open (toggle) NeoTree:
 
 === find-file-in-project ===
 
-If you use the <code>find-file-in-project</code> (ffip) library, you can open <code>neotree</code> at your directory root by
+If you use the <code>find-file-in-project</code> (ffip) library, you can open NeoTree at your directory root by
 adding this code to your <code>.emacs.d</code>:
 
 
@@ -78,10 +78,20 @@ adding this code to your <code>.emacs.d</code>:
             (neotree-dir project-dir)
             (neotree-find file-name))
         (message "Could not find git project root."))))
-
+  
   (define-key map (kbd "C-c C-p") 'neotree-project-dir)
 
 
+=== Use with evil mode ===
+
+If you use <code>evil-mode</code>, by default some of evil key bindings conflict with <code>neotree-mode</code> keys. For example, you cannot use <code>q</code> to hide NeoTree. To make NeoTree key bindings in effect, you can bind those keys in <code>evil-normal-state-local-map</code> in <code>neotree-mode-hook</code>, as shown in below code:
+
+  (add-hook 'neotree-mode-hook
+            (lambda ()
+              (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+              (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 == ChangeLog ==
 
 0.2 
