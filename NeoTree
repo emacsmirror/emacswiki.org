@@ -60,6 +60,27 @@ Open (toggle) NeoTree:
 * <code>neotree-create-node</code> Create a file or a directory (if filename ends with '/')
 
 
+== Useful tips ==
+
+=== find-file-in-project ===
+
+If you use the <code>find-file-in-project</code> (ffip) library, you can open <code>neotree</code> at your directory root by
+adding this code to your <code>.emacs.d</code>:
+
+
+  (defun neotree-project-dir ()
+    "Open dirtree using the git root."
+    (interactive)
+    (let ((project-dir (ffip-project-root))
+          (file-name (buffer-file-name)))
+      (if project-dir
+          (progn
+            (neotree-dir project-dir)
+            (neotree-find file-name))
+        (message "Could not find git project root."))))
+
+  (define-key map (kbd "C-c C-p") 'neotree-project-dir)
+
 
 == ChangeLog ==
 
