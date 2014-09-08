@@ -22,7 +22,7 @@ Par contre, emacs reconnaît les abbréviations quand on change la casse…
       (when (equal last-input-event ?\s) ;space as last keystroke
             (char-left)))                  ;move char to the left
    
-* AucTeX
+* AUCTeX
 * sgml
 * org-mode
 * plus quelques modes mineurs comme electric-pair, show-paren etc.
