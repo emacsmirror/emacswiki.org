@@ -42,11 +42,11 @@ Open (toggle) NeoTree:
 
 === Commands（Global） ===
 
-* <code>neotree-dir</code> show neotree window and specify a directory as its root
-* <code>neotree-show</code> or <code>neotree</code> show neotree window using current directory as its root
+* <code>neotree-dir</code> show NeoTree window and specify a directory as its root
+* <code>neotree-show</code> or <code>neotree</code> show NeoTree window using current directory as its root
 * <code>neotree-hide</code> Hide NeoTree window
 * <code>neotree-toggle</code> toggle/hide NeoTree window
-* <code>neotree-find</code>  show neotree window and use the file of current buffer as its root
+* <code>neotree-find</code>  show NeoTree window and use the file of current buffer as its root
 
 === Command（Only in NeoTree Buffer） ===
 
@@ -69,7 +69,7 @@ adding this code to your <code>.emacs.d</code>:
 
 
   (defun neotree-project-dir ()
-    "Open dirtree using the git root."
+    "Open NeoTree using the git root."
     (interactive)
     (let ((project-dir (ffip-project-root))
           (file-name (buffer-file-name)))
@@ -97,7 +97,7 @@ If you use <code>evil-mode</code>, by default some of evil key bindings conflict
 0.2 
 * Feature: support <code>neotree-find</code> for locating a node in tree
 * Feature: support for renaming
-* Feature: Fix neotree window width and support Maximize/Minimize
+* Feature: Fix NeoTree window width and support Maximize/Minimize
 * Fix: File Location Bug
 * Refactory: All API starts with 'neotree-' 
 
