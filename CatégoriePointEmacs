@@ -42,6 +42,8 @@ Des [[InitFile]]s complets (il y en a d'autres sur les pages perso des gens, cf.
 
 * L'[[InitFile]] de DominiqueQuatravaux fonctionne avec Emacs / XEmacs, il est portable, à peu près concis (700 lignes en un seul fichier) et très facile à personnaliser (car configurable par customize et truffé de commentaires en français).
 
+* Le .emacs de DamienThiriet, pour GNU Emacs, commenté en français, avec une configuration d’Evil pour bépo et une utilisation intensive d’abbrev-mode. Larges section AUCTeX, sgml, org-mode et calc.
+
 Il y en a bien plus sur:
 * http://www.dotemacs.de/
 * http://www.dotfiles.com/
