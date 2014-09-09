@@ -88,7 +88,7 @@ While Buffer Menu comes up in motion state, other modes such as Ediff come up in
 
 === Making the most of RET and SPC ===
 
-It is common for Emacs modes like these to define key bindings for RET and SPC.  Since these are motion commands, Evil places its key bindings for these in evil-motion-state-map.  However, these commands are fairly worthless to a seasoned Vim user, since they do the same thing as j and l commands.  Thus it is useful to remove them from evil-motion-state-map so as when modes define them, RET and SPC bindings are available directly.
+It is common for Emacs modes like Buffer Menu, Ediff, and others to define key bindings for RET and SPC.  Since these are motion commands, Evil places its key bindings for these in evil-motion-state-map.  However, these commands are fairly worthless to a seasoned Vim user, since they do the same thing as j and l commands.  Thus it is useful to remove them from evil-motion-state-map so as when modes define them, RET and SPC bindings are available directly.
 
    (defun my-move-key (keymap-from keymap-to key)
      "Moves key binding from one keymap to another, deleting from the old location. "
