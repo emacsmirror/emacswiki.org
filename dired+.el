@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep  9 09:21:48 2014 (-0700)
+;; Last-Updated: Tue Sep  9 09:42:05 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8134
+;;     Update #: 8143
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -472,8 +472,9 @@
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dired.el' have
-;;              been REDEFINED HERE:
+;;              been REDEFINED or ADVISED HERE:
 ;;
+;;  `dired'                   - Doc string: non-positive prefix arg.
 ;;  `dired-do-delete'         - Display message to warn that marked,
 ;;                              not flagged, files will be deleted.
 ;;  `dired-do-flagged-delete' - Display message to warn that flagged,
@@ -498,6 +499,7 @@
 ;;                              show a menu bar for pop-up frame.
 ;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
 ;;                              (Emacs 22-24.1)
+;;  `dired-read-dir-and-switches' - Non-positive prefix arg behavior.
 ;;
 ;;; NOT YET:
 ;;; ;;  `dired-readin-insert'     - Use t as WILDCARD arg to
@@ -1633,10 +1635,8 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
   (unless (derived-mode-p 'dired-mode)
     (error "You must be in Dired or a mode derived from it to use this command")))
  
-;;; Essentially unaltered vanilla Emacs code to be reloaded, to use the new definition
-;;; of `dired-map-over-marks'.  Unless otherwise noted, these are from the Emacs 23+ libraries.
-;;; These definitions should be IDENTICAL to what's in vanilla Emacs.
-
+;;; Some of the redefinitions that follow are essentially unaltered vanilla Emacs code to be
+;;; reloaded, to use the new definition of `dired-map-over-marks' here.
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -1772,6 +1772,54 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                             arg)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Non-positive prefix arg means construct cons DIRNAME arg: Read Dired name and files/dirs.
+;;
+(defun dired-read-dir-and-switches (string)
+  "Read arguments for `dired'.
+With a non-negative prefix arg, prompt first for `ls' switches.
+With a non-positive prefix arg, read the Dired buffer name and then
+ read any number of dir or file names, to make up the Dired listing.
+
+STRING is appended to the prompt, unless prefix arg is non-positive.
+If non-empty, STRING should begin with a SPC."
+  (let ((switches    (and current-prefix-arg
+                          (>= (prefix-numeric-value current-prefix-arg) 0)
+                          (read-string "Dired listing switches: " dired-listing-switches)))
+        (formt       (format "Dired %s(directory): " string))
+        (entries     ())
+        (curr-entry  ""))
+    (when (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+      (push (completing-read "Dired buffer name: " dired-buffers) entries)
+      (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH))
+      (while (not (equal "" curr-entry))
+        (push curr-entry entries)
+        (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH)))
+      (unless (cadr entries) (push default-directory entries)))
+    (list (or (nreverse entries)  (if (and (fboundp 'next-read-file-uses-dialog-p)
+                                           (next-read-file-uses-dialog-p))
+                                      (read-directory-name formt nil default-directory nil)
+                                    (read-file-name formt nil default-directory nil)))
+          switches)))
+
+
+;; ADVISE ORIGINAL in `dired.el'.
+;;
+;; Add to doc string, to document non-positive prefix arg.
+;;
+(defadvice dired (before diredp-doc-cons-arg activate)
+  "Interactively, a prefix argument changes the behavior as follows:
+* If non-negative, you are first prompted for the `ls' switches to use.
+* If non-positive, you are prompted first for the name of the Dired
+  buffer.  Then you are prompted repeatedly for the names of the
+  directories or files to list in the buffer.  Hitting `RET' with no
+  name ends the prompting.  In other words, instead of listing a
+  single directory, the Dired buffer can list any number of
+  directories and file names, which can even belong to different
+  directory trees.")
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
