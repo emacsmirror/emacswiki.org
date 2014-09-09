@@ -27,9 +27,9 @@ Evil can be alternatively downloaded and installed with:
    
     M-x el-get-install RET evil RET
 
-== Download ==
+==Download source==
 
-Alternatively, Evil lives in a Git repository. To download Evil, do:
+Evil lives in a Git repository. To download Evil, do:
 
     git clone git://gitorious.org/evil/evil.git
 
