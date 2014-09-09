@@ -1,6 +1,9 @@
 My Emacs Anniversery is in May.  I started in 2007, so I guess I am turning into an old-timer.  I am still learning stuff, which is why I love emacs.
 
 Emacs projects are:
+* Mindwave Emacs - Make emacs react to a Mindwage EEG device.  https://github.com/jonnay/mindwave-emacs
+* Emagicians Starter Kit - There are many starter kits, but this one is mine.  https://github.com/jonnay/emagicians-starter-kit
+* Ergore - A bitlbee/ERC bot. http://github.com/jonnay/ergore
 * ToDoChiKu - A Growl/Snarl interface for emacs.  Comes with a few helpers.
 * I did some work on TwIt.  Ever sence they stopped supporting basic authentication over HTTPS I stopped working on it.  I don't use twitter enough, and don't want to write an OpenAuth library.
 * [[Tagging]] - Originally from Conrad Barski M.D., I have heavily hacked it to work with ECB
