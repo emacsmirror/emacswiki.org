@@ -14,15 +14,17 @@ Install using the Emacs package system. Start with this in your .emacs:
   (push '("melpa" . "http://melpa.milkbox.net/packages/")
         package-archives)
 
-  (require 'evil)
-  (evil-mode 1)
-
 Then:
 
   M-x list-packages
   C-s evil
 
 The latest stable version is available from the [[Marmalade]] repository, the current development version from [[MELPA]]. Use the packaging system UI to install either of these.
+
+After install, add to your .emacs:
+
+  (require 'evil)
+  (evil-mode 1)
 
 ==Install via el-get==
 
