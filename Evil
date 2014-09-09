@@ -6,11 +6,24 @@ Current stable version: **1.0.8**
 
 == Quick install ==
 
-1. [[ELPA]]: The latest stable version is available from the [[Marmalade]] repository, the current development version from [[MELPA]]. Both can be installed by 
+Install using the Emacs package system. Start with this in your .emacs:
 
-    M-x package-install RET evil RET
+  (require 'package)
+  (push '("marmalade" . "http://marmalade-repo.org/packages/")
+        package-archives )
+  (push '("melpa" . "http://melpa.milkbox.net/packages/")
+        package-archives)
 
-2. [[el-get]]: Evil can be downloaded and installed with: 
+Then:
+
+  M-x list-packages
+  C-s evil
+
+The latest stable version is available from the [[Marmalade]] repository, the current development version from [[MELPA]]. Use the packaging system UI to install either of these.
+
+==Install via el-get==
+
+Evil can be alternatively downloaded and installed with: 
    
     M-x el-get-install RET evil RET
 
