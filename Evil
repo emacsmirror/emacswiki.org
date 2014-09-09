@@ -6,7 +6,7 @@ Current stable version: **1.0.8**
 
 == Quick install ==
 
-Install using the Emacs package system. Start with this in your .emacs:
+Install using the latest version of Emacs and its builtin package system. Start with this in your .emacs:
 
   (require 'package)
   (push '("marmalade" . "http://marmalade-repo.org/packages/")
