@@ -1,6 +1,6 @@
 [[zh:NeoTree_中文wiki]] [[en:NeoTree]]
 
-Emacs 文件树，类似 Vim 中的 [http://www.vim.org/scripts/script.php?script_id=1658 NERD tree] 。
+Emacs 的文件导航树，类似 Vim 中的 [http://www.vim.org/scripts/script.php?script_id=1658 NERDTree] 。
 
 https://github.com/jaypei/emacs-neotree
 
