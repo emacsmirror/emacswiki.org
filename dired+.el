@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  7 10:55:46 2014 (-0700)
+;; Last-Updated: Tue Sep  9 09:21:48 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8121
+;;     Update #: 8134
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -551,6 +551,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/09 dadams
+;;     dired-get-filename: Hack for Emacs 20-22, to expand ~/...
 ;; 2014/09/07 dadams
 ;;     Added: redefinitions of dired-insert-subdir-newpos, dired-insert-subdir-validate.
 ;; 2014/07/26 dadams
@@ -7343,7 +7345,8 @@ Otherwise, this is a mirror image of `diredp-next-subdir'."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Test also ./ and ../, in addition to . and .., for error "Cannot operate on `.' or `..'".
+;; 1. Test also ./ and ../, in addition to . and .., for error "Cannot operate on `.' or `..'".
+;; 2. Hack for Emacs 20-22, to expand `~/...'.
 ;;
 (defun dired-get-filename (&optional localp no-error-if-not-filep)
   "In Dired, return name of file mentioned on this line.
@@ -7443,6 +7446,11 @@ Otherwise, an error occurs in these cases."
              (if (and handler  (not (get handler 'safe-magic)))
                  (concat "/:" file)
                file)))
+          ;; Ugly hack for Emacs < 23, for which `ls-lisp-insert-directory' can insert a subdir
+          ;; using `~/...'.  Expand `~/' for return value.
+          ((and (< emacs-major-version 23)  file  (file-name-absolute-p file)
+                (eq (aref file 0) ?~))
+           (expand-file-name file))
           (t
            (concat (dired-current-directory localp) file)))))
 
@@ -8285,7 +8293,6 @@ With non-nil prefix arg, mark them instead."
                      (let ((map
                             (easy-menu-create-menu
                              "This File"
-                             ;; Stuff from `Mark' menu.
                              `(
                                ("Bookmark" :visible (featurep 'bookmark+)
                                 ["Bookmark..." diredp-bookmark-this-file]
@@ -8305,6 +8312,7 @@ With non-nil prefix arg, mark them instead."
                                  :visible (featurep 'bookmark+)]
                                 )
                                ["Describe" diredp-describe-file]
+                               ;; Stuff from `Mark' menu.
                                ["Mark"  dired-mark
                                 :visible (not (eql (dired-file-marker file/dir-name)
                                                dired-marker-char))]
