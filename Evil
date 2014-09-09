@@ -14,6 +14,9 @@ Install using the Emacs package system. Start with this in your .emacs:
   (push '("melpa" . "http://melpa.milkbox.net/packages/")
         package-archives)
 
+  (require 'evil)
+  (evil-mode 1)
+
 Then:
 
   M-x list-packages
@@ -27,7 +30,7 @@ Evil can be alternatively downloaded and installed with:
    
     M-x el-get-install RET evil RET
 
-==Download source==
+==Install from source==
 
 Evil lives in a Git repository. To download Evil, do:
 
@@ -35,12 +38,9 @@ Evil lives in a Git repository. To download Evil, do:
 
 If you don't have Git, just head over to [https://gitorious.org/evil/evil/commits/master Gitorious] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
 
-== Install ==
-
 Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ##~/.emacs##:
 
-    ; Use this only when installing wiithout ELPA/el-get
-    (add-to-list 'load-path "~/.emacs.d/evil")
+    (push "~/.emacs.d/evil" 'load-path)
     (require 'evil)
     (evil-mode 1)
 
