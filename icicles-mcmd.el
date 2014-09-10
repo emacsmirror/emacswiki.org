@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 22 15:52:48 2014 (-0700)
+;; Last-Updated: Wed Sep 10 14:49:58 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19610
+;;     Update #: 19619
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -303,7 +303,8 @@
 ;;    `icicle-insert-candidate-action', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
 ;;    `icicle-keep/remove-buffer-cands-for-visible',
-;;    `icicle-looking-at-p', `icicle-looking-back-at-p',
+;;    `icicle-looking-at-p', `icicle-looking-at-literally-p',
+;;    `icicle-looking-back-at-literally-p',
 ;;    `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
@@ -970,10 +971,14 @@ POSITION is a buffer position."
   "Like `looking-at', but this saves and restores the match data."
   (save-match-data (looking-at regexp)))
 
-(defun icicle-looking-back-at-p (string)
-  "Return non-nil if STRING immediately precedes point.
-STRING is matched literally - not as a regexp.  In this the function
-is different from `icicle-looking-at-p'.
+(defun icicle-looking-at-literally-p (string)
+  "Return non-nil if STRING immediately precedes point."
+  (save-match-data (looking-at (regexp-quote string))))
+
+(defun icicle-looking-back-at-literally-p (string)
+  "Return non-nil if STRING immediately precedes point.  STRING is
+matched literally - not as a regexp.  In this the function is like
+`icicle-looking-at-literally-p', not `icicle-looking-at-p'.
 Saves and restores the match data."
   (let ((len  (length string)))
     (save-excursion (save-match-data
@@ -1022,9 +1027,9 @@ That is, handle dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-looking-back-at-p icicle-anychar-regexp)
+      (cond ((icicle-looking-back-at-literally-p icicle-anychar-regexp)
              (backward-delete-char-untabify len-dot  killflag))
-            ((icicle-looking-at-p icicle-list-join-string)
+            ((icicle-looking-back-at-literally-p icicle-list-join-string)
              (backward-delete-char-untabify len-join killflag))
             (t
              (backward-delete-char-untabify 1        killflag))))))
@@ -1044,9 +1049,12 @@ Handles Icicles dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-looking-back-at-p icicle-anychar-regexp)   (delete-char (- len-dot)  killflag))
-            ((icicle-looking-back-at-p icicle-list-join-string) (delete-char (- len-join) killflag))
-            (t                                                  (delete-char -1           killflag))))))
+      (cond ((icicle-looking-back-at-literally-p icicle-anychar-regexp)
+             (delete-char (- len-dot)  killflag))
+            ((icicle-looking-back-at-literally-p icicle-list-join-string)
+             (delete-char (- len-join) killflag))
+            (t
+             (delete-char -1           killflag))))))
 
 
 ;; Make delete-selection mode recognize it, so region is deleted.
@@ -1063,9 +1071,12 @@ Handles Icicles dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-looking-at-p icicle-anychar-regexp)   (delete-char len-dot  killflag))
-            ((icicle-looking-at-p icicle-list-join-string) (delete-char len-join killflag))
-            (t                                             (delete-char 1        killflag))))))
+      (cond ((icicle-looking-at-literally-p icicle-anychar-regexp)
+             (delete-char len-dot  killflag))
+            ((icicle-looking-at-literally-p icicle-list-join-string)
+             (delete-char len-join killflag))
+            (t
+             (delete-char 1        killflag))))))
 
 (defun icicle-backward-kill-word (arg)  ; Bound to `M-DEL' (`M-backspace') in minibuffer.
   "`backward-kill-word' and update `*Completions*' with input matches.
