@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 22 10:23:06 2014 (-0700)
+;; Last-Updated: Wed Sep 10 14:46:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23636
+;;     Update #: 23638
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1101,9 +1101,9 @@
 ;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
 ;;    `icicle-file-accessible-directory-p',
 ;;    `icicle-file-compressed-p', `icicle-file-desktop-p',
-;;    `icicle-file-directory-p', `icicle-file-executable-p',
-;;    `icicle-file-exists-p', `icicle-file-locked-p',
-;;    `icicle-file-name-absolute-p',
+;;    `icicle-file-directory-p', `icicle-file-elc-p',
+;;    `icicle-file-executable-p', `icicle-file-exists-p',
+;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -1203,8 +1203,9 @@
 ;;    `icicle-load-library', `icicle-local-keys-first-p',
 ;;    `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
-;;    `icicle-looking-back-at-p', `icicle-looks-like-dir-name-p',
-;;    `icicle-major-mode-name-less-p',
+;;    `icicle-looking-at-literally-p',
+;;    `icicle-looking-back-at-literally-p',
+;;    `icicle-looks-like-dir-name-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
 ;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
 ;;    `icicle-make-frame-alist', `icicle-make-plain-predicate',
