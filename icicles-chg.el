@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Sep  2 06:50:21 2014 (-0700)
+;; Last-Updated: Wed Sep 10 14:55:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11270
+;;     Update #: 11275
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4398,6 +4398,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/009/10 dadams
+;;     Added: icicle-looking-at-literally-p.
+;;     Renamed: icicle-looking-back-at-p to icicle-looking-back-at-literally-p.
+;;     icicle-backward-delete-char-untabify-magic, icicle-delete-backward-char-magic:
+;;       Use icicle-looking-back-at-literally-p, not icicle-looking-back-at-p.
+;;     icicle-delete-char-magic: Use icicle-looking-at-literally-p, not icicle-looking-at-p.
 ;; 2014/08/22 dadams
 ;;     icicle-narrow-candidates-with-predicate:
 ;;       Must also match current candidates (incorporate M-*).
