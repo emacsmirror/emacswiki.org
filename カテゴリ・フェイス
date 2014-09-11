@@ -1,0 +1,86 @@
+[[en:CategoryPaths]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click the title to search for all pages belonging to the [[Face]]s category. 
+
+See also CategoryFrames and CategoryDisplay for info on ''fonts'' and things related to the display.
+
+Here are some of the pages in CategoryFaces.
+
+* AngryFruitSalad -- Get more modest font-lock faces (i.e. colorization)
+* AnsiColor -- have Emacs interpret nasty escape sequences from subprocesses such as shells
+* AnSys -- make Emacs highlight your Ansys-Files
+* BufferBackgroundColor -- a temporary solution for buffer background color
+* ColorIdentifiersMode -- use colors to highlight identifiers (variables and the like) instead of keywords (if, then, else, and the like)
+* ColorPalette -- examine or modify colors in various ways, including by name, RGB, and HSV
+* ColorTheme -- a package with dozens of color themes to choose from
+* ColorThemeCollection -- a place for new color themes
+** ColorThemeAhei -- ahei's color theme
+* ColorsAndKde -- sometimes changing the colors within Emacs has no effect if you are using KDE
+* CursorOnLinuxConsole -- how to modifiy the TextCursor on the Linux console
+* CustomizingFaces -- how to customize faces
+* DefineFaceConstant -- a macro for defining faces (and associated variables) easily
+* DoReMi -- WYSIWYG commands to incrementally change face colors (foreground & background) on the fly, using the arrow keys or mouse wheel to modify color components: red, green, blue, hue, saturation, value, cyan, magenta, or yellow (''RGB'', ''HSV'', ''CMY'') -- see Lisp:doremi-frm.el
+* Echoline --  a minor mode for octave which highlights "echoing" lines that does not end with a ";" or that do not cause echo such as "plot" or "figure"
+* FaceList -- listing all the faces currently defined
+* FaceMenuPlus -- extensions to menu '''Text Properties''' and the `*Faces*' display (`list-faces-display'). Click some text that has a face, then change its colors in various ways (color palette, incrementally with the arrow keys or mouse wheel,...). Select some text, then choose a face to apply to it, by appearance (not just name). ''More...''
+* FacesForDifferentBackgrounds
+* FacesPerBuffer
+* FacesPerWindow
+* FacesPerFrame
+* FontLockMode -- Syntax highlighting.
+** AddKeywords -- how to add simple keywords to an existing mode
+** EnablingFontLock -- aka TurnOnTheColors -- global syntax hilighting
+** FontLockForNewModes
+** FontLockKeywords -- how to write complex font lock expressions
+** FontLockSpeed
+
+* HighlightTemporarily -- How to highlight and unhighlight regexps, regions, characters...
+** HighLight -- Highlight [[regexp]] matches in the [[region]] or a [[buffer]]; highlight the region; highlight by dragging the mouse as a highlighter (marker pen); `face' and `mouse-face' highlighting; use any faces to highlight.
+** [[ShowWhiteSpace#HighlightChars|Highlight Characters]] -- Highlight any sets of characters (including different kinds of whitespace).
+** HiLock -- Highlight regexp matches or phrases.
+** MarkerPens -- Highlight as if using a highlighter pen.
+** Icicles -- Highlight regexp matches: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
+** MousePlus -- Highlight the yank position momentarily while you press `mouse-2', so you hit exactly the right spot.
+** HighlightCurrentLine
+** HighlightCurrentColumn
+** HighlightSexp -- highlight the s-exp at point
+** CrosshairHighlighting -- highlight the current line and column: track the TextCursor or highlight momentarily
+** HighlightEndOfBuffer
+** HighlightSymbol – Highlight the current [[symbol]] throughout the buffer
+** HighlightParentheses – Highlight parentheses surrounding [[point]]
+** IdleHighlight highlights all occurrences in the buffer of the word under the point
+** PulseRegion - Fancy temporary pulsing of the region
+** OnScreen - Highlight the last visible screenful when scrolling
+* HowtoChangeFrameColors
+* [[Icicles - Other Search Commands#SearchingTextProperties|Icicles - Search for Properties]] -- Search for text that has certain [[overlay]] or [[text property|text properties]]; navigate among zones of text with faces.
+* ListColors -- Show colors having defined color names.
+* MakeColor -- Alternative way of "picking" a color: change the color in context.
+* PointerShape -- Change the shape of the MousePointer (X Windows only).
+* SetFonts -- Change font or font size; install fonts.
+** AntiAliasedFaces
+** ChangeFontsPermanentlyOnWindows
+** CycleFontSizes  
+** `doremi-font' in library Lisp:doremi-frm.el, to cycle fonts
+** `icicle-font' in [[Icicles]] to cycle fonts, with [[Completion]]
+** MenuFont
+** ProportionalFonts
+** [[Win32Fonts]]
+* ShowWhiteSpace -- Highlight various kinds of whitespace
+* StippleAttribute 
+* TemporaryFaces
+* TextProperties -- Properties, including `face', that you can attach to text in a [[buffer]] or a string.
+* VisibleMark -- Make the [[mark]] visible
+* XfacesSupport for Emacs 20
+* XTermColors -- Use 256 colors with xterm.
+* SwitchColorThemeMatlabLatex -- Switch between a dark theme and a bright theme simulating the visual effect of the matlab programming environment.
+
+WikiTodo: If too many pages relate to display and [[frame]]s, perhaps it would
+be more appropriate to put them into a separate category, or a
+subcategory. See FrameModes for frame configurations, functions, and commands.
+
+Preserving face information when saving:
+
+* EnrichedMode -- save files with special tags such that Emacs will regenerate the faces used in the text (used for plain text files with markup added by the user, not by FontLock!)
+* [[Htmlize]], SaveAsHtml, HtmlFontify -- save files in HTML format
+* HowtoPrimitivelySerializeAndRestoreTextProperties
