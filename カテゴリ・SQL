@@ -1,0 +1,47 @@
+[[es:CategoríaSQL]]
+[[en:CategorySql]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click on the header to list all SQL related pages.
+
+* SqlMode -- and here are the links to some related pages
+
+** SqlComplete
+** SqlEscapeCharacter
+** SqlIndent
+** SqlPlusNukeLineNo
+** SqlSendHistory
+** SqlSwitchBuffer
+** SqlTransform
+** SqlPreviousWhereClause
+** SqlBeautify
+** TsqlIndent
+** SqlCustomSession
+** SqlPlusMode
+** SqlPlus
+
+* OracleProC -- how to mix C and SQL
+* OracleOnWindows -- things to keep in mind
+* PostgreSQL -- a socket level interface for Emacs + more PostgreSQL-related things
+* MySql -- a patch to Emacs on the C level
+* [[mysql]] -- access mysql in emacs
+* Lisp:sqlparser-mysql-complete.el completing tablename columnname ,need mysql-query.el
+* Lisp:mysql-query.el executing sql for mysql
+* Lisp:sqlparser-oracle-complete.el completing tablename columnname ,need oracle-query.el
+* Lisp:oracle-query.el executing sql query using sqlplus (faster than oracle-shell-query.el)
+* Lisp:sqlparser-sqlserver-complete.el -- completing tablename or column name when editing sql for  sqlserver2005 and later
+* Lisp:sqlserver-query.el -- execute sql query using sqlcmd.exe or osql.exe * for sql server 
+* Lisp:sqlserver-table2entity-4java.el -- generate entity for java from sqlserver tables [2011-09-27 14:26] 
+* Lisp:sqlserver-table2entity-4csharp.el  -- generate entity for csharp from sqlserver tables [2011-09-27 14:26]  
+* Lisp:mysql-table2entity-4java.el -- generate entity for java from mysql tables [2012-01-16 00:16] 
+* Lisp:mysql-table2entity-4csharp.el  -- generate entity for csharp from mysql tables [2012-01-16 00:16]  
+* Lisp:oracle-table2entity-4java.el  -- generate entity for java  from oracle tables [2011-09-27 14:26] 
+* Lisp:oracle-table2entity-4csharp.el   -- generate entity for csharp from oracle tables [2011-09-27 14:26] 
+
+* MySqlHelp -- alist and completion function for MySQL's `mysql' help facility e.g. mysql> help contents
+* http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
+* PlsqlMode -- support for editing PL/SQL code
+* SqlEdMode -- alternative support for editing PL/SQL code
+* [[SQLite]] -- things for the sqlite database library
+* ModeCompileSql -- a different approach for executing SQL scripts.
+* [https://github.com/kiwanami/emacs-edbi EDBI] -- Emacs Database Interface. GUI and Database API.
