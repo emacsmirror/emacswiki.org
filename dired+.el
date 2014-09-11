@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep  9 09:42:05 2014 (-0700)
+;; Last-Updated: Thu Sep 11 07:26:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8143
+;;     Update #: 8160
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -227,6 +227,26 @@
 ;;  * `$' is a simple toggle - it does not move the cursor forward.
 ;;    `M-$' advances the cursor, in addition to toggling like `$'.
 ;;    `C-u $' does hide/show all (what `M-$' does in vanilla Dired).
+;;
+;;  Programmatically (but not interactively), vanilla Dired lets you
+;;  create a Dired listing with files and directories from arbitrary
+;;  locations, but you cannot insert (`i') such a directory, if it is
+;;  not in the same directory tree as the `default-directory' used to
+;;  create the Dired buffer.  `Dired+' has no such limitation.
+;;
+;;  `Dired+' also facilitates creating such buffers interactively:
+;;  just use a non-positive prefix arg (e.g., `C--') with `C-x d'
+;;  (`dired'), `C-x 4 d' (`dired-other-window'), or `C-x 5 d'
+;;  (`dired-other-frame').  You are then prompted for:
+;;
+;;  * the Dired buffer name (anything you like, not necessarily a
+;;    directory name) and
+;;
+;;  * the individual files or directories that you want listed.
+;;
+;;  A non-negative prefix arg still prompts you for the ls switches to
+;;  use. (So `C-0' does both: prompts for `ls' switches and for the
+;;  Dired buffer name and the files to list.)
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
@@ -553,6 +573,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/11 dadams
+;;     diredp-font-lock-keywords-1: Include period (.) for diredp(-compressed)-file-suffix. 
 ;; 2014/09/09 dadams
 ;;     dired-get-filename: Hack for Emacs 20-22, to expand ~/...
 ;; 2014/09/07 dadams
@@ -3432,7 +3454,8 @@ Don't forget to mention your Emacs and library versions."))
 (defface diredp-file-suffix
     '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
       (t                   (:foreground "DarkMagenta")))
-  "*Face used for file suffixes in Dired buffers."
+  "*Face used for file suffixes in Dired buffers.
+This means the `.' plus the file extension.  Example: `.elc'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-suffix 'diredp-file-suffix)
 
@@ -3461,7 +3484,8 @@ In particular, inode number, number of hard links, and file size."
 (defface diredp-file-name
     '((((background dark)) (:foreground "Yellow"))
       (t                   (:foreground "Blue")))
-  "*Face used for file names (without suffixes) in Dired buffers."
+  "*Face used for file names (without suffixes) in Dired buffers.
+This means the base name.  It does not include the `.'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-name 'diredp-file-name)
 
@@ -3477,7 +3501,8 @@ In particular, inode number, number of hard links, and file size."
 (defface diredp-compressed-file-suffix
     '((((background dark)) (:foreground "Blue"))
       (t                   (:foreground "Yellow")))
-  "*Face used for compressed file suffixes in Dired buffers."
+  "*Face used for compressed file suffixes in Dired buffers.
+This means the `.' plus the file extension.  Example: `.zip'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-compressed-file-suffix 'diredp-compressed-file-suffix)
 
@@ -3573,7 +3598,7 @@ In particular, inode number, number of hard links, and file size."
    '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
    '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
    '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
-   '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
+   '("[^ .]\\(\\.[^. /]+\\)$" 1 diredp-file-suffix) ; Suffix, including `.'.
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
 
    ;; 1) Date/time and 2) filename w/o suffix.
@@ -3596,7 +3621,7 @@ In particular, inode number, number of hard links, and file size."
                                        "[*]?")        ; Allow for executable flag (*).
                  "\\|\\.\\(g?z\\|Z\\)[*]?\\)\\)$") ; Compressed.
          1 diredp-ignored-file-name t)
-   '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
+   '("[^ .]\\(\\.[bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
    ;; Inode, hard-links, & file size (. and , are for the decimal point, depending on locale)
    ;; See comment for `directory-listing-before-filename-regexp' in `files.el' or `files+.el'.
