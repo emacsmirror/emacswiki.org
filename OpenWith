@@ -4,6 +4,12 @@
 
 Open files with external applications. Works from everywhere (find-file, dired, etc.).
 
+If you also use emacs for email, you may want to add this to your config:
+{{{
+(add-to-list  'mm-inhibit-file-name-handlers 'openwith-file-handler)
+}}}
+Otherwise openwith will wreak havoc with your outbound email attachment workflow.
+
 If you have problems making it work on MS Windows, have a look at [[Sunrise_Commander_Tips#ExternalApps | this tip]].
 
 RunAssoc is a similar (alternative) utility.
