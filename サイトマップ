@@ -73,7 +73,7 @@ Emacs をカスタマイズするには
 ** [[カテゴリ・表示|表示]] -- things related to the display (X-Window pointer shapes, [[Frame]]s, ...)
 ** [[カテゴリ・ウィンドウ|ウィンドウ]] -- managing several [[Window]]s within one frame
 * CategoryInternationalization -- making Emacs do the parlez-vous
-* [[カテゴリ・パス|パス]] / CategoryPaths -- Merging OS Paths and Emacs Paths.
+* [[カテゴリ・パス|パス]] -- Merging OS Paths and Emacs Paths.
 
 様々な形式のファイルを扱うための特別なモード
 * [[カテゴリ・ハイパーメディア|ハイパーメディア]] / CategoryHypermedia -- HTML, Wikis, Info
