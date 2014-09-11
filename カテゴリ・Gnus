@@ -1,0 +1,156 @@
+[[en:CategoryGnus]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click on the heading to list all Gnus related pages.  [[Gnus]] is the news and mail reader for Emacs.
+
+Suggestions:
+
+== Help ==
+
+* GnusTutorial -- for Gnus newbies
+** GnusQuestions
+* GnusChinese -- Chinese stuff
+* GnusBugsAndWorkarounds -- some known bugs and workarounds
+* EmacsNewsgroups -- help groups (some about Gnus) that you can also use inside Gnus
+* GnusAndPine -- make Gnus behave a little more like the Pine mail client
+
+== Connecting to the Net ==
+
+* GetNewsWithGnus
+* GettingMail
+** GnusDemon -- getting mail when Emacs is idle
+* GnusAuthinfo -- connect to servers with password protection
+* SendingMail -- sending the mail
+** SentMail -- archiving what you sent
+** ArchivingMail -- archiving all mail
+** MultipleSMTPAccounts -- managing multiple SMTP accounts
+* MakeMsWindowsUseGnus -- make Windows use Gnus to handle E-mail
+
+== Organizing your mail and news ==
+
+* HighlineAndGnus -- a nice use of the highline package with Gnus
+* HighVolumeNews -- tricks to aid the flooded...
+* CustomizeThreading -- how to change threading
+* SplitMail -- splitting (sorting) mail into various groups
+** FancySplitMail -- fancy mail splitting explained
+** SplitMailUsingBbdb -- advanced mail splitting using the BBDB
+** NnmailSplitHistory -- pops up a buffer to show you recent splits
+** UsingProcmailWithGnus -- use fetchmail+procmail with Gnus
+* ExpiringMail -- Automagically archive your mail
+* SpamFiltering -- getting rid of spam
+** GnusSpam -- uses the spam.el interface (gateway to others technics : bogofilter, ifile, spam-stat)
+** SpamStat -- uses statistics to filter spam (by splitting it into a spam group)
+** GnusBogofilter -- use the external bogofilter program for the same purpose
+** BlacklistSpammers -- Get rid of noise
+** GnusMailreaver -- Train mailreaver.crm (CRM114 script) from within Gnus
+* GnusHardSort -- Permanently resorting a group
+* GnusTopics -- Organize your groups into topics
+
+== Indexing and searching for special mails ==
+
+* IndexMail -- use an index/search engine to help you in finding special mails
+* NnirGrepmail -- http://www.cs.caltech.edu/~nkapur/emacs/nnir-grepmail.el
+* FindMailByMessageId -- given a message ID, how to find the message no matter what group you are in
+* GnusMairix -- how to use Mairix to index and search your mails
+* GnusSpotlight -- Searching Gnus Mail by Spotlight
+
+== Alternate Personalities ==
+
+* GnusAlias -- switch personalities from the MessageMode buffer
+* GnusPers -- switch "personalities" (from address, sig, etc.) while composing your message
+* PostingStyles -- changing your name, address, and more based on the current group (this is part of Gnus)
+* GnusSpelling -- switch to different dictionaries depending on the current group you're in
+
+== Other Settings ==
+
+* GroupParameters -- configuring the various groups themselves
+* ScoreFile -- scoring posts up and down (thus making kill files obsolete)
+* AdaptiveScoring -- setting scores according to how you read posts
+* FollowUpScoreNoMsgId -- scoring on followups to self if message id gets rewritten upstream
+
+== Gnus and Security ==
+
+* EasyPG -- GnuPG (gpg and gpgsm) interface for Emacs
+* EncryptingMail -- general page
+* GnusSMIME -- using openssl for signing/encrypting mails
+* GnusAndOutlookPGP -- workaround for inter-operating with PGP plugins for Outlook not capable of PGP/MIME
+
+== Gnus Buffers ==
+
+* SummaryBuffer -- shows you the list of messages in a group
+* GroupBuffer -- shows you a list of all your groups
+* ServerBuffer -- showing you a list of all your servers
+* ArticleBuffer -- showing the article
+* GnusWindowLayout -- window configurations
+* GnusFormatting -- eyecandy
+
+== Attachments ==
+
+* MimeTypesWithGnus -- how to deal with MIME stuff in Gnus
+* UnDoc -- transform .doc files to plain text when opening them
+* UnPdf -- transform .pdf files to plain text when opening them
+* UnXls -- transform .xls files to plain text when opening them
+* GnusAttachmentReminder -- remind of possibly forgotten attachment
+
+== Your face in a header ==
+
+* XfacesSupport -- Emacs 20 needs additional code to be able to display faces
+* GnusXFace -- adding the old black-and-white X-Face header
+* GnusFace -- adding the new colored Face header
+* BbdbFaces -- displaying faces in your BigBrotherDataBase (BBDB)
+
+== Address Books ==
+
+* BigBrotherDataBase (BBDB) -- The insidious Big Brother Database
+* ExternalAbook -- Use any Mutt compatible address book (e.g. the OS X address book)
+
+== New mail/news notification ==
+
+* GnusBiff -- signalling new email 
+* GnusNotify -- Notify you at mode-line when fetch news.
+* GnusDesktopNotify -- Desktop notifications for new news
+* GnusNotificationComparison -- A comparison of the various notification agents
+
+== Misc ==
+
+* BrowsingUrlsInGnusArticle - using your favorite browser to display a URL from the current Article
+* CitationConfigurationExamples -- example configurations of attribution lines, quoting chars and other citation related stuff
+* ConvenientSignatureChanging - how to switch signatures
+* DealingWithGroups -- deleting and renaming groups
+* ElispMailSigs - Setting up very customized signatures
+* ExecuteSigFile - How to execute your .signature script
+* GnusAdBannerWashing -- Using gnus-article-address-banner-alist to remove ad banners
+* GnusGmail -- Set up gnus for GMail
+* GnusICalAppIntegration -- Extracting iCalendar event invites from Gnus into OS X's iCal
+* GnusNiftyTricks -- Nifty Gnus tricks
+* GnusSpeed -- Is Gnus slow? Discussion and tricks to make it faster
+* GnusPropFont -- Proportional fonts in Gnus
+* GnusRss -- reading RSS feeds using Gnus
+* GnusStats -- Statistics on the articles in the summary buffer
+* GnusSwitch -- Switch gnus buffer smart.
+* GnusSync -- Sync two different Gnus installations on different machines
+* GnusWishList -- Gnus hacks we'd like to have
+* IgnoredFromAddresses -- Ignore adresses without using regexps
+* LoadingGnus -- how to add CVS Gnus to your .emacs
+* PreventingMultipleGnus -- how to prevent different emacsen from starting gnus
+* ProcmailLog -- read the procmail log file in Gnus
+* SwitchToGnus -- how to find your Gnus buffers
+* TinyGnus -- Gnus plug-in. Additional functions. UBE fight etc.
+* TodoGnus -- maintaining todo lists in Gnus
+* XNowPlayingHeader -- Add X-Now-Playing header using XMMS or from a file.
+* GnusStripes -- stripes in the summary buffer
+* MyGnus -- a Gnus community which no longer exists
+* GnusComposeMailFromOutsideOfEmacs -- compose mails in Gnus from outside of emacs
+* GnusNetworkManager -- Integration between Gnus agent and !NetworkManager
+* GnusAutoCheck -- Autocheck for new incoming news and mails for given days and/or time frames
+* GnusFormatFlowed -- Flowing the spice with Gnus
+
+== Getting Gnus ==
+
+TODO explain how to get it from git.  Preferably without creating a new page.
+
+== Merchandise ==
+
+* Check out Gnus merchandise on Cafe Press: http://www.cafeshops.com/ngen   50 % of the Proceeds benefit either the EFF or FSF!
+**This link seems to be broken.
+
