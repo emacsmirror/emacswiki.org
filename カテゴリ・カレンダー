@@ -1,0 +1,27 @@
+[[en:CategoryCalendar]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+This category is related to calendars, including todo lists, diaries, task management, workflow, planning.
+
+* CalendarMode - Standard mode used in Emacs.
+** CalendarLocalization - Howto have calendar speaking your tongue
+** CalendarWeeklyView - Want a flat weekly view ? Use this.
+** CalendarFreeDays - Highlight your free days in your calendar.
+** [[XTide]] - Show tides for the selected date in the calendar.
+** CalendarWeekNumbers - Show week numbers.
+** CalendarPrinting - Printing your calendar
+* OrgMode - tasks, schedule, notes (lends itself well to outlines and tagging)
+* PlannerMode -- tasks, schedule, notes (lends itself well to day views and publishing blogs)
+* DiaryMode
+** OutlookToDiary -- adding MS-Outlook invitations to your diary
+** EmacsPilot -- synchronizing the diary with a Palm-based device
+* EtaskMode -- project tasks, Gantt charts, LaTeX output
+* ToDo
+* AppointmentMode
+* DailyJournalMode
+* OrganizerMode
+* The MessageHarmonizedCalendaring System
+* InsertingAndUpdatingDates -- Insert and update dates and times in buffers and files.
+* [[iCalendar]] -- Support for the Internet standard in Emacs.
+* MidnightMode -- A simple way to schedule tasks for Emacs to run every day.
+* EbayTime -- A small set of utility functions to convert Ebay's ubiquitous PST/PDT time to something the rest of the world can handle.
