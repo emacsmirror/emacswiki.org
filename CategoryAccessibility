@@ -25,6 +25,8 @@ On a more cautious note, see RepeatedStrainInjury. :(
 
 * FontLockColorsAccessibility -- Suggestion to change font-lock-* faces to enhance accessibility.
 * StickyModifiers -- reducing repetitive strain injury by clicking keyboard keys in a combination like C-M-s one by one.
+* XModMap -- can be used to map modifiers to a more convenient location -- like the number row -- so you can use them without straining your wrists.  Yay!
+[new] Some more modern systems use Xkb instead, but you can convert xmodmap files.
 
 == Directing Emacs by Voice ==
 
