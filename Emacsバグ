@@ -1,0 +1,40 @@
+[[en:EmacsBug]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+To report Emacs bugs, use '''`M-x report-emacs-bug'''' in Emacs -- simple as that.  Do not hesitate to report a bug. The Emacs developers will help you determine whether there is really a bug or not. 
+
+When you report a bug, start with '''`##emacs -q --no-site-file##'''' (or just '''`##emacs -Q##'''' in recent Emacs versions), so that you do ''not'' load your [[init file]] or [[custom file]]. Then provide a ''precise recipe'' for reproducing the behavior you see, step by step. See the Emacs manual, node Bugs (Manual:Bugs) for more info. Without a complete recipe of what you did to see the bug behavior, it will be difficult for anyone to help you.
+
+Search the EmacsBugTracker to make sure your bug hasn't been reported already (or in the mailing list archive of [[bug-gnu-emacs]]).
+
+You can find bugs that were known at the time of distribution for your version of Emacs in file '''##PROBLEMS##''' in directory '''##etc##''' of your Emacs installation -- for example,  ##/usr/share/emacs/21.4/##<tt>__etc/PROBLEMS__</tt>.
+
+* If you want things to get better then send bug reports.
+* Those who are going to fix the problems are not going to look here!
+* Please do not add reports of random bugs and work-arounds to this page.
+
+
+
+
+[:emacsbugplus]
+== Library `emacsbug+.el' ==
+
+Library <tt>[[emacsbug+.el]]</tt> extends standard library ##emacsbug.el##, which defines command `report-emacs-bug'.  
+
+It provides [[user option]] `ebp-report-emacs-bug-included-fields', which you can use to specify the types of information that `report-emacs-bug' includes by default.
+
+And it provides individual commands to insert such info, if you choose not to include some of it by default.
+
+[[image:emacsbug-plus-help]]
+
+
+
+
+
+
+
+
+
+
+----
+CategoryWishList CategoryDebug CategoryHelp
