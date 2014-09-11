@@ -1,7 +1,10 @@
-You can define your own keymappings in the X Windowing System using
-xmodmap.  Usually your system should read the ~/.Xmodmap file
-automatically, so you can just put things there.  Sometimes the stuff
-also goes into your ~/.xmodmaprc file.
+You can define your own keymappings in the X Windowing System using xmodmap.  Usually your system should read the ~/.Xmodmap file automatically, so you can just put things there.  Sometimes the stuff also goes into your ~/.xmodmaprc file. 
+
+== Proviso ==
+
+Some more modern systems require Xkb instead, but you can convert your old .xmodmap files without much hassle.  Googleize "xmodmap to xkb cookbook."
+
+== Examples ==
 
 On my system (Debian), I have a ~/.xsession file that contains this:
 
@@ -18,6 +21,11 @@ We will ignore the symbolic names of keys for the beginning.  All we
 need to know is that every keyboard sends a certain '''keycode''',
 which is then interpreted by X.  X will then produce a symbolic
 representation of the key (and [[modifier key]]s) pressed.
+
+* Here's an xmodmap file that converts the number row into modifiers (much better for the wrists and pinkies!) [http://metameso.org/~joe/switched.modmap|Number row as modifier row.]
+* And the same file converted (with some necessary tweaks) to the xkb format [http://metameso.org/~joe/config/mbp.xkb|Updated for the 2010s]
+
+[new:JoeCorneli:2014-09-11 18:30 UTC] Note that these files are also set up for use with the DvorakKeyboard, which is another great ergonomic "hack".  However, you can adapt the examples for your need.
 
 == Switching two simple keys ==
 
