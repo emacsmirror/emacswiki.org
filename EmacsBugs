@@ -1,3 +1,4 @@
+[[ja:Emacsバグ]]
 To report Emacs bugs, use '''`M-x report-emacs-bug'''' in Emacs -- simple as that.  Do not hesitate to report a bug. The Emacs developers will help you determine whether there is really a bug or not. 
 
 When you report a bug, start with '''`##emacs -q --no-site-file##'''' (or just '''`##emacs -Q##'''' in recent Emacs versions), so that you do ''not'' load your [[init file]] or [[custom file]]. Then provide a ''precise recipe'' for reproducing the behavior you see, step by step. See the Emacs manual, node Bugs (Manual:Bugs) for more info. Without a complete recipe of what you did to see the bug behavior, it will be difficult for anyone to help you.
