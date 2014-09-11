@@ -1,3 +1,4 @@
+[[ja:カテゴリ・XML]]
 These are some packages used for XML processing in Emacs or XEmacs:
 
 * [[Icicles - Search Commands, Overview|Icicles Search]] has commands to search the contents of selected XML elements (e.g. those in the [[region]]):
