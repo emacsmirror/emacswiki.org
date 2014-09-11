@@ -1,0 +1,25 @@
+[[en:CategoryTodo]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+There are several todo modes out there.  Click on the header to search
+for all pages related to todo lists.
+
+* TodoMode by OliverSeidel -- has integration with the Emacs Calendar/Diary stuff
+* SideBrain -- a tool for programmers: it maintains a stack of your current tasks, and a queue or pool of pending tasks, and a set of observations
+* OutlineMode is just that -- a mode for expanding and collapsing parts of a document; might serve as a very primitive TODO list
+* OrgMode extends OutlineMode and provides very nice facilities for TODO and other sorts of lists, including integration with the calendar/diary, a table editor, and exporting the list in various formats (html, ascii text).
+* ToDoo by DanielLundin -- simple and based on outline-mode
+* ToDo by ChristianQueinnec --  perform actions based on scripts or mail
+* TodoGnus -- implemented as Gnus backends, therefore use the same interface as a newsgroup where every article is a todo item
+* BugTrack -- has an RMAIL-like interface and some RMAIL integration
+* RecordsMode -- lets you keep a diary and also provides support for todo items.
+* PlannerMode -- this is more like a PersonalInformationManager (PIM), but can serve as a complex todo mode.
+* RkTodo -- very simple todo sorter function (I use it within EmacsWikiMode files)
+* EtaskMode -- project tasks, Gantt charts, LaTeX output
+* [[Taskjuggler]] -- A project management tool
+* TodoListMode -- Provides color highlighting for a numbered todo list file.
+* [https://github.com/0x4b/org-camp/ org-camp] --  ***Appears to have been deleted*** Provides functions to import Basecamp todo items into org-mode 
+* [http://www.datenterrorist.de/index.php?itemid=1437 TODO comment buffer] -- Get a buffer with all TODO, FIXME and XXX comments and their filenames
+* TodoStack -- a stack as a todo list.  Don't laugh.  Once you get used to it, it can have its uses.
+* TodoTxtMode -- major mode for editing (an extension of) the todo.txt format.
+* DoListMode -- major mode for editing a todo list, based on org-mode but an alternative approach.
