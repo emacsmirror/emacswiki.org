@@ -1,0 +1,10 @@
+[en:CategoryPaths]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click on the header to find all pages related to "paths" -- list of directories searched for one purpose or another.
+
+* LoadPath -- the list of directories Emacs searches for lisp files (for `load-library' and `require')
+* ExecPath -- the list of directories Emacs searches for executables (for grep, ftp, and others), inherited from the operating system PATH variable. It does however not affect PATH when starting subprocesses. Use (setenv "PATH" your-desired-path) for this.
+* InfoPath -- the list of directories Emacs searches for info files (for `info', of course)
+* ManPath -- the list of directories Emacs searches for man and woman (see ManMode and WomanMode)
+* NTEmacsWithCygwin
