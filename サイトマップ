@@ -71,7 +71,7 @@ Emacs をカスタマイズするには
 * [[カテゴリ・プログラミング|プログラミング]] / CategoryProgramming -- プログラマ向けのカスタマイズ
 * [[カテゴリ・フェイス|フェイス]] / CategoryFaces -- syntax highlighting, colors, font-lock
 ** [[カテゴリ・表示|表示]] / CategoryDisplay -- things related to the display (X-Window pointer shapes, [[Frame]]s, ...)
-** [[カテゴリ・Windows|Windows]] / CategoryWindows -- managing several [[Window]]s within one frame
+** [[カテゴリ・ウィンドウ|ウィンドウ]] / CategoryWindows -- managing several [[Window]]s within one frame
 * CategoryInternationalization -- making Emacs do the parlez-vous
 * [[カテゴリ・パス|パス]] / CategoryPaths -- Merging OS Paths and Emacs Paths.
 
