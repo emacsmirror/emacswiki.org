@@ -1,0 +1,80 @@
+[[fr:CatégoriePointEmacs]]
+[[en:CategoryDotEmacs]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+
+Click the heading to list all pages related to writing your own .emacs file, see InitFile.
+
+Specific Init issues:a
+
+* AlarmBell -- if you can not stand the beeping anymore
+* AutoCompileInit -- Automatically compile your InitFile
+* AutoCodingAlist -- Determine encoding by file name.
+* AutoModeAlist -- Determine mode by file name.
+* CustomizingBoth -- writing an InitFile for multiple platforms
+* DotEmacsDistributions -- Running multiple independent configurations (or "distributions") of Emacs.
+* DotEmacsBankruptcy -- Declare bankruptcy when things get so bad you have to start over.
+* InitSplit -- split various variable customizations into their own files
+* InterpreterModeAlist-- Determine mode by interpreter listed in file's first line.
+* LoadPath -- How to install and make an Emacs mode or package available in your Emacs sessions.
+* LoadingLispFiles -- How to load Elisp stored in separate files.
+* LocateLibrary -- Examples of how to use `locate-library' to determine the existence of a package in your LoadPath
+* ManagingHookVariables -- Easy method of manipulating hook values
+* ModeHooks -- basics of using mode hooks
+* ProjectSettings -- making customizations local to a project
+* RemoteDotEmacs -- eval the InitFile you have on a web server
+* ProfileDotEmacs -- Profile the InitFile to see which commands take the most time
+
+Dedicated Init File Pages:
+
+There are also pages dedicated to some simple EmacsLisp / Emacs commands
+which allow you to do astonishing things, without requiring you to load
+other packages or write your InitFile.
+
+* EmacsNiftyTricks
+* GnusNiftyTricks
+* EmacsCrashCode
+* DotEmacsChallenge
+* DotEmacsStructuring 
+* DotEmacsRestructuring
+* PopularOptions
+
+Some complete [[InitFile]]s:
+
+* DrewAdams has posted an Emacs InitFile as <tt>[[emacs-init.el]]</tt>. It has lots of intro Emacs info for newbies, and code to comment or uncomment that loads and configures various Emacs packages. For descriptions of the packages, see DrewsElispLibraries.
+* EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs.
+* [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there. 
+* JoelHolveck has posted his 90k ##.emacs.el## on the Wiki.  It's pretty hairy (a decade of degeneration), but has some neat stuff buried in there.
+* [http://www.hollenback.net/index.php?OneTrueEditor Phil Hollenback's .emacs] is well-commented and supports both XEmacs and emacs.
+* [http://www.xsteve.at/prg/emacs/ StefanReichoer's .emacs] is HUGE and runs on Windows and Unix platforms.
+* [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms.
+* JesseWeinsteinDotEmacs has some Mac OS X initialization that might be interesting.
+* AlexSchroederConfigMac at home, AlexSchroederConfigWindows at work, AlexSchroederConfigInit also at home, but less used.
+* [https://mtpforge.melting-pot.org/projects/dotemacs Yann Hodique's config] is huge, and split into many files. Tested (and used) only with GNU Emacs (CVS version) under GNU/Linux
+* [http://ourcomments.org/Emacs/DL/elisp/dot-emacs/ Here] is a .emacs structure that helps you catch errors during startup of Emacs.
+* [http://github.com/mina86/dot-files/tree/master/dot-emacs mina86's .emacs] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions.
+* [https://github.com/dertuxmalwieder/My-Emacs-config/ dertuxmalwieder's config] is targeted at Gnus users and web developers (work in progress).
+* ChrisForno's [http://jekor.com/emacs/dot-emacs.pdf .emacs] is a literate program written in Noweb.
+* [http://code.google.com/p/dea/ DEA] DEA stands for "Dot emacs of ahei", its target is provide powerful emacs profile for emacser. 
+* [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file].
+* [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
+
+.emacs on Windows: MsWindowsDotEmacs
+
+There's lots more at:
+
+* http://www.dotemacs.de/
+* http://dotfiles.org/.emacs 
+* [https://github.com/search?type=Repositories&q=Emacs GitHub Search: Emacs]
+
+Some Complete Init packages:
+
+* EmacsMacro -- An InitFile to end all init files.
+* TinyTools -- A collection of add-on utilities.
+* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
+* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
+* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
+* [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
+* OrgDotemacs - Keep your InitFile organized in an OrgMode file, choose which bits to load, and handle errors & dependencies gracefully.
+
+See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement.
