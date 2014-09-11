@@ -85,17 +85,17 @@ Emacs をカスタマイズするには
 * [[ディレクトリ]] / CategoryDirectories -- Working with directories, otherwise known as dired.
 
 その他の機能
-* [[カテゴリ・電卓|電卓]] / CategoryCalculators -- 対話式計算機
-* [[カテゴリ・カレンダー|カレンダー]] / CategoryCalendar -- カレンダー, 日記, タスク管理
-** [[カテゴリ・TODO|TODO]] / CategoryTodo -- ToDoリストの管理
-* [[カテゴリ・チャット|チャット]] / CategoryChatClient -- PCに向かって
-* [[カテゴリ・ゲーム|ゲーム]] / CategoryGames -- Emacsで時間つぶし
+* [[カテゴリ・電卓|電卓]] -- 対話式計算機
+* [[カテゴリ・カレンダー|カレンダー]] -- カレンダー, 日記, タスク管理
+** [[カテゴリ・ToDo|ToDo]] -- ToDoリストの管理
+* [[カテゴリ・チャット|チャット]] -- PCに向かって
+* [[カテゴリ・ゲーム|ゲーム]] -- Emacsで時間つぶし
 * [[カテゴリ・インタフェース|インタフェース]] / CategoryInterface -- オンラインサービスへのインターフェース
 * [[カテゴリ・プログラマ向けユーティリティ|プログラマ向けユーティリティ]] / CategoryProgrammerUtils -- コードブラウザ等、プログラマのためのツール
 * [[カテゴリ・リモートEmacs|リモートEmacs]] / CategoryRemoteEmacs -- 遠くのホストでEmacsを動かす
 * [[カテゴリ・外部プログラム|外部プログラム]] / CategoryExternalUtilities -- 外部のプログラムを呼ぶ
-* [[カテゴリ・メール|メール]] / CategoryMail -- メールの運用関連、Gnusは[[カテゴリ・Gnus]]へ
-* [[カテゴリ・Gnus|Gnus]] / CategoryGnus -- 高機能なニュース・メールリーダ
+* [[カテゴリ・メール|メール]] -- メールの運用関連、Gnusは[[カテゴリ・Gnus]]へ
+* [[カテゴリ・Gnus|Gnus]] -- 高機能なニュース・メールリーダ
 * [[カテゴリ・BBDB（連絡帳）|BBDB（連絡帳）]] / CategoryBbdb -- 電話番号、メールアドレス等のデータベース
 * [[カテゴリ・バージョン管理|バージョン管理]] / CategoryVersionControl -- CVSやRCSへのインターフェース
 * [[カテゴリ・日記|日記]] / CategoryJournaling -- ブログへのインターフェース
