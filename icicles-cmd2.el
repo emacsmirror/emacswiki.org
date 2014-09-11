@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Sep  2 06:52:03 2014 (-0700)
+;; Last-Updated: Thu Sep 11 13:52:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7054
+;;     Update #: 7057
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -698,6 +698,7 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
 can use the following keys:
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -814,6 +815,7 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
 can use the following keys:
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
