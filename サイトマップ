@@ -77,8 +77,8 @@ Emacs をカスタマイズするには
 
 様々な形式のファイルを扱うための特別なモード
 * [[カテゴリ・ハイパーメディア|ハイパーメディア]] / CategoryHypermedia -- HTML, Wikis, Info
-* [[カテゴリ・XML]] -- XML related technologies
-* [[カテゴリ・SQL]] -- SQL and databases
+* [[カテゴリ・XML|XML]] -- XML related technologies
+* [[カテゴリ・SQL|SQL]] -- SQL and databases
 * [[カテゴリ・Tex|Tex]] / CategoryTex -- TeX and LaTeX stuff
 * [[カテゴリ・モード|モード]] / CategoryModes -- pointers, documentation, and extensions to all the other modes
 * [[カテゴリ・語彙|語彙]] / CategoryVocab -- learning new words
