@@ -1,0 +1,33 @@
+There are several calculators for Emacs out there.  Here is a selection of modes for you to use if you need some calculations.
+
+* PlainLispForMath describes how to write and evaluate simple
+  arithmetic lisp expressions.  This requires you to use lisp prefix
+  notation.  Example: (+ 1 3) ==> 4
+* The SimpleCalculator is a little pocket calculator featuring various
+  trigonometric functions, binary/octal/hexadecimal modes for input
+  &amp; display, etc.  Expressions are entered using normal infix
+  notation, parens are used as normal.  Example: (1 + 3) ==> 4
+* There is also a SimpleRpnCalculator available.
+* AdvancedDeskCalculator is a very powerful package featuring RPN,
+  arbitrary precision (floating point), complex numbers, error forms, vectors,
+  matrices, dates, times, an interface to gnuplot, and symbolic
+  calculus.  Also known as GNU Calc.
+* AbacusMode simulates a traditional Abacus for all your Math
+  requirements.
+* CalculationPad is a simple functional language that runs on Emacs
+  buffer.
+
+
+Other miscellaneous math related things:
+
+* SpreadSheet -- using Emacs as a spreadsheet calculator (like
+  Lotus/Excel)
+* ElectricFormMode -- a minor mode for light computation in a buffer, like summing up columns of numbers
+* AddNumbers helps you sum a column of numbers.
+** See also RectangleAdd.
+* LoanPaymentCalculator does what it says... calculates loan payments.
+* ComputerAlgebraSystems -- a list of external programs with Emacs
+  interfaces
+* MatrixOperations -- EmacsLisp code to help you use multi-dimensional
+  arrays and do matrix ops on them
+* AddCommasToNumbers -- format decimal numbers with properly placed commas
