@@ -1,0 +1,72 @@
+[[en:CategoryPaths]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+'''Category Programming''' is about using Emacs in programming other languages than EmacsLisp. Click the heading to find pages that link to this page.  
+
+Language-specific:
+
+* AssemblyProgramming -- Programming with the assembler.
+* CPlusPlus -- C++ specific programming.
+* CProgrammingLanguage -- C specific programming.
+* DProgrammingLanguage -- D specific programming.
+* CategoryJavaScript -- (including JScript) also see FlashActionscript.
+* [[JavaLanguage]] -- Java programming with Emacs.
+* ErlangLanguage -- Erlang specific programming
+* MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
+* MythrylLanguage -- Mythryl specific programming
+* PerlLanguage -- Perl specific programming.
+* PuppetProgramming -- Puppet specific programming.
+* PythonProgrammingInEmacs -- About python programming features
+* RubyLanguage -- Ruby specific programming.
+
+Coding style:
+
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+* CategoryIndentation
+* CommentingCode
+* DeletingTypedefs -- adapt your coding style and convert typedefs to plain structs
+
+Code navigation and information:
+
+* [[EAssist]] -- Offers rapid method/function navigation for C++, C, Java, Lisp...
+* ElDoc -- Display the argument list of current function at point in the EchoArea
+* Lisp:tooltip-help.el --- show help as tooltip
+* WhichFuncMode -- Display the name of the current function at point in the ModeLine
+* ToggleTest -- A language agnostic tool to create/navigate quickly between source (test subject) files and the corresponding test files (Category: TDD, productivity, navigation)
+* [[Tree]] -- Multi-directory find, grep, tags generation
+
+Development environments:
+
+* CollectionOfEmacsDevelopmentEnvironmentTools -- complete development environment
+* EmacsBrowse -- simpler than ObjectOrientedBrowser, but comes with Emacs
+* EmacsForDevStudioUsers-- will make your MSVC-using friend envious of your comfortable development environment
+* [[eproject]] - project workspaces for emacs
+* IdeSkel -- simple environment for svn/cvs projects, with embedded "speedbars"
+* ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
+* ProjectBufferMode -- generic mode to handle projects
+
+File management:
+
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+* [[Bookmark+]] -- Tag files and code fragments a la [[http://delicious.com|del.icio.us]], to organize into sets and facilitate/control access. Bookmark [[Dired]] states. Open Dired on predefined sets of files located anywhere.
+* ChangeLog -- Log the changes to your source files.
+* EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
+* [https://github.com/mattkeller/mk-project/ mk-project] -- Quickly switch between projects and perform operations on a per-project basis
+* ProjectSettings -- Configuration settings for an entire project (directory).
+* ProjectWizard -- simple, customizable project wizard
+* ProjmanMode -- move between different projects (directories) maintaining options and open buffers for each
+* SimpleProjectManagment -- A simple project managment
+* SpeedBar -- provides alternate views into individual source files
+* SrSpeedbar -- Display speedbar in same frame, very handy!
+* [http://github.com/myfreeweb/startproject StartProject] -- Start framework projects (Django, Rails, SproutCore, etc.)
+* VersionControl -- Manage revisions to your source files.
+
+'''See also:'''
+
+* CategoryCode for information on '''EmacsLisp''' programming.
+* CategoryDebug for debugging tools
+* CategoryShell for pages about shell scripting.
+* [[EmacsNiftyTricks#Programming]]
+* ProgrammingModes for language-specific programming modes.
+* CategoryProgrammerUtils for information on using external programming tools with Emacs.  
+* CategoryExternalUtilities for use of other, non-programming external tools.
