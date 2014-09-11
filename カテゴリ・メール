@@ -1,0 +1,55 @@
+[[en:CategoryMail]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+* GettingMail -- the most important one for beginners
+** GetMailsWithFetchmail -- a function to run fetchmail
+* WritingMail -- message composition
+* SendingMail -- if the defaults don't work
+** SmtpMail -- a mail transfer agent implementation in EmacsLisp, if you don't have a sendmail-compatible agent on your system.
+** SmtpAuth -- how to do authentication using SMTP
+* MailtoHandler -- how to configure Emacs to be system's default email application
+* CategoryMailAddons -- many mail-related tools and modes
+* CategoryMailDiscussion
+
+Many packages exist for reading mail in Emacs.  Even out of the box Emacs
+comes with several competing solutions.  These are all well tested and
+have a large user base, which certainly is a major advantage if search for
+documentation or need help.
+
+Note that several of the mail packages use incompatible mailbox storage
+formats.  While there are programs for converting between formats, it is
+best you already take your time to consider the supported formats when
+choosing your mail client. 
+
+The packages that come with Emacs are:
+
+* [[Rmail]] -- GNU Emacs default mail reader
+* [[Gnus]] -- the news and mail reader with likely the largest user base
+* [[MH-E]] -- interface to the MH mail system
+
+Some other packages that are distributed separately are also commonly
+used:
+
+* WanderLust -- very good IMAP4 and Offline support
+* [[Mew]] -- good IMAP4 support
+* [[CategoryViewMail|VM]] -- offers virtual folders and good documentation
+* NotMuch -- an email indexing/search tool with an emacs mail client
+* [[mu4e]] -- new email client based on the [http://www.djcbsoftware.nl/code/mu mu e-mail indexer]
+
+Some people also like to use a non-elisp mail client from within Emacs:
+
+* MuttInEmacs
+
+The [[emacs-w3m]] web browser can be used with webmail:
+
+* Gmail (see [[http://www.emacswiki.org/emacs/emacs-w3m#EmacsW3WithGmail instructions]])
+
+And then there are some less commonly used and/or badly maintained
+packages:
+
+* [http://cmail.sourceforge.jp/ CMail] -- is only documented in Japanese
+  and hasn't been updated in a long time
+* [[imapua]] -- an IMAP mua based on gnus' imap library
+* [[http://www1.mirai.ne.jp/~gyo/xyzzy/kamail.html KaMail]] (dead link) -- is only documented in Japanese
+* [[http://www.sfu.ca/~sabetts/mailx.el mailx.el]] (dead link) -- a front-end to mailx
+* SimpleIMAPClient -- for entertainment purposes only
