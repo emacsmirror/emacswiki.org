@@ -1,0 +1,65 @@
+[[en:CategoryChatClient]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click on the title to search for pages describing chat clients written
+for Emacs.
+
+== IRC ==
+InternetRelayChat clients
+* ZenIRC -- old but still popular
+* [[ERC]] -- the fantastic ERC, which is included with Emacs since v22
+* [[rcirc]] -- the sane alternative, which is also included with Emacs since v22
+* [[Circe]] -- the saner alternative
+* Riece http://www.nongnu.org/riece/ -- Another alternative
+* BitlBee can be used as an IRC gateway to instant messaging services (AIM, ICQ, MSN)
+
+There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
+
+* ShoesOff - IRC bouncer in Emacs
+
+== Instant Messaging ==
+* Jabber clients
+** [[Gajim]] -- Some function to be able to talk with Gajim from Emacs.
+** JabberEl -- The Jabber client which appears to be the most up-to-date.
+*** GoogleTalk -- How to connect to Google Talk using JabberEl
+** SmyrnoJabberClient -- A Jabber client which was not finished, but still has source available.
+** EmacsJab -- An old Jabber client which has apparently been abandoned completely.
+
+* EmacsMessenger -- an MSN client
+* [[TNT]] -- an AIM client
+* http://emchat.org/ - (S)XEmacs only IM client. "EMchat is an instant messaging client written entirely in elisp (emacs lisp). It currently only supports the ICQ protocol, but more protocols like Jabber are planned for the future"
+* Yahoo! clients
+** ElGyach -- Yahoo! Chat client
+** YodEl -- another Yahoo! client
+
+* [http://www.emacswiki.org/emacs/ELIM ELIM] -- an elisp instant messenger daemon that uses libpurple (and ∴ supports Jabber, MSN, Yahoo et al).
+* Garak: the reference IM client based on elim. Included in the elim tarball.
+
+== Other ==
+* EmacsTalk -- open frames on other people's display
+* [[ETalk]] -- an interface to the various flavours of the unix 'talk'
+* [[Lispy]] -- a client for <Mtp> Chat servers
+
+== (rather old) Recommendations ==
+
+I can't get any of these to work - I think ejab is a firewall issue,
+but I'm not sure how to determine that.
+
+Ok, the greatest thing I've used so far is ERC on BitlBee. That just
+makes everything else so easy :)
+: JorgenSchaefer
+
+: Eicq authors says that it only support ICQ protocol v5, which is not supported anymore by mirabilis ... crap.  BenjaminDrieu
+
+: Eicq is back!  It has basic support for the current ICQ protocol.  login|out send|recv normal messages is working.  More to come.  See http://www.eicq.org/  SteveYoungs
+
+: Eicq is now called EMchat. http://emchat.org/
+
+ERC is a great client, and it will do almost anything for you. Also, great help on using it is available on #emacs @ irc.freenode.net 
+: TerryPatcher
+
+YodEl is brilliant too! I can now chat in text from my emacs buffer from the terminal on NetBSD. The linux emulation library was dumping core. So happy day is today. :-)
+: Cherry
+
+[new:MathiasDahl:2005-03-14 15:31 UTC]
+JabberEl works brilliantly nowadays. It has quite a lot of features and Magnus adopts many of the ideas people suggest. I use it as my primary IM-client for chatting with people on Jabber-, ICQ- and MSN-networks.
