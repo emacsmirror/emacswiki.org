@@ -1,0 +1,114 @@
+[[en:CategoryKeys]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Click the heading for a list of pages related to this category.
+
+Keys, or '''[[KeySequence]]s''', in Emacs are bound to [[Command]]s. Even a simple key like `s' is bound to a command (usually command `self-insert-command').
+
+For information on setting actions to mouse buttons, the mouse wheel, or mouse movements, see CategoryMouse a subset of CategoryKeys.
+
+For information on emulating other systems and software like ViKeys or CopyAndPaste bindings, see CategoryEmulation.
+
+For information on using the menu for actions instead of keys, see CategoryMenus.
+
+== Introduction ==
+
+* EmacsKeyNotation -- How [[KeySequence]]s are represented in the Emacs doc.
+* [[Icicles - Key Completion]] -- Complete a key sequence, and obtain on-the-fly help about available key sequences
+* KeyBindingDiscussion -- How to decide upon new key bindings
+* KeyBindingNotation -- How to write a key binding
+* BufferLocalKeys -- Defining keys local to a buffer
+* PrefixKey -- Defining a new prefix key
+* KeybindingGuide
+* EmacsKeyBindingCriticisms -- Criticisms of Emacs default key bindings
+* MenuAccessFromKeyboard -- Libraries that let you access menus from the keyboard (without the mouse)
+* ModifierKeys -- Shift, Alt, Meta, Control, Super, Hyper
+* CommonlyUsedKeybindings -- Refer to this when deciding which keybindings to use for your new elisp library
+
+== Key Problems Solved ==
+
+* FootSwitches -- assign Ctrl and other keys to pedal type switches
+* UseCustomizeForKeyBindings -- EmacsLisp code to let users do all key customization in Customize.
+* ShiftedKeys -- Shifted function keys are unavailable if they have no explicit definition.
+* MetaKeyProblems -- Meta and Alt key confusion
+* SettingMetaWithXKB -- Setting the meta keys with the XKB extension
+* BackspaceKey -- How to make it right
+* KeyboardRate -- Change keyboard rate from emacs.
+* MissingKeys -- How to make undefined keys accessible
+* AltGrKey -- Emacs keys may be hidden because on Windows /AltGr/ + /Control/ + /key/ is just /AltGr/ + /key/
+* ConsoleKeys -- Emacs keys on the Linux console, even C-M-H-internet
+* ScreenKeys -- Similar to the above, for screen(1)
+* MovingTheMetaKey -- How to move your meta-key if it's not in the right position
+* MovingTheCtrlKey -- How to move your ctrl-key if it's not in the right position
+* SwapControlAltAndCapsLock -- Move all your keys around for ergonomic ease of use.
+* BindingControlReturn -- How to bind Control-Return in a local mode
+* OpeningQuote -- How to type `this' easily on keyboards where only ' is easily accessed
+* TabKey -- How to change the behaviour of the TAB key
+* ControlLock -- Like caps-lock, but for your control key
+* StickyModifiers -- How to do without [[chord]]ing
+* KeyChord -- Map pairs of simultaneously pressed keys to commands
+* [[Accelerate]] -- Change the behaviour of a command when its key is auto-repeated
+* Lisp:speedkey.el -- Create a set of keybindings easily, with a help text
+* Binding <code><return></code> to `RET' -- If your version of Emacs does not bind <code><return></code> to anything, do this:  -- AlexSchroeder
+
+             (global-set-key (kbd "<return>") (kbd "RET"))
+
+== Tools ==
+
+* XModMap -- Keys to work outside of Emacs as well; the X Windowing System uses xmodmap and xev, or xkeycaps
+* LoadKeys -- Same thing, but for the Linux console using loadkeys, dumpkeys, and showkey
+* XKeyCaps -- Graphical tool by JamieZawinski
+* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
+* [[ShowBindings|Show Bindings]] -- A mode for nice display of keybindings within emacs.
+
+
+
+[:CoolBindings]
+== Cool Bindings ==
+* SearchKeybind occur search the full list of keybinds & their commands. Very helpful for learning and remembering forgotten binds.
+* DefineKeyLazy      a macro for define-key ,without writing (eval-after-load)
+* [[next-line-2.0]] A keybinding that makes C-n and C-p work well with large buffers and long, wrapped, lines.
+* Lisp:setup-keys.el -- Various key bindings, some for custom commands. See DrewsElispLibraries for associated command libraries.
+* RepeatKeyDifferentBehaviors-- Binding multiple commands to the same key, for use sequentially
+* DoReMi -- Use the arrow keys and mouse wheel to repeat commands, run commands in sequence, increment things, or cycle through enumerations.
+* BackwardKillLine -- Same effect as `C-u' on a terminal; or `C-k' in the opposite direction.
+* KillBufferUnconditionally
+* QuickYes -- `M-y' shortcut to answer `yes-or-no-p'
+* ReplaceRecentCharacter -- To quickly correct recent typing error
+* Lisp:minibuf-electric-gnuemacs.el -- The one feature I used to miss under GNU Emacs, was the "electric" behavior for C-x C-f and other file-finding commands (under XEmacs, typing a slash or tilde first erases the default value in the MiniBuffer). Now it's available for GNU Emacs too! 
+* BackwardDeleteWord -- Binding M-backspace to delete instead of kill.
+* Lisp:singlebind.el -- Bind commands to single characters
+* ErgoMovementMode -- Ergonomic movement commands: M-jikl
+* FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
+* Lisp:smartrep.el -- Support sequential operation which omitted prefix keys.
+* Lisp:unbound.el -- Find convenient unbound key sequences
+
+: In GNU Emacs, the ignored part of the filename is visible after typing a slash or tilde, at least until completion is performed with TAB. With the CVS version of GNU Emacs, the behaviour of XEmacs can be approximated by using <code>(file-name-shadow-mode 1)</code> and customizing either <code>file-name-shadow-properties</code> or <code>file-name-shadow-tty-properties</code>. -- MattHodges
+
+== Bindings Inspired by MeatBall:HumaneInterface ==
+
+MeatBall:HumaneInterface
+
+* CapsKey -- Make Caps_Lock your Undo/Redo key, or an additional Ctrl key
+* DedicatedKeys -- Use dedicated keys (ie. FunctionKeys unless you can hack hardware)
+* DiskKey -- Save buffer, revert buffer, and find file with one key
+* JumpKey -- Open files and browse urls with one key
+* KillKey -- Kill buffers and end GnuClient connections
+* QuasimodeSearch -- Search forward using Super, backward using Hyper
+* OccurKey -- Switch to *Occur* buffer or run `occur'
+* SwitchToGnus -- A true <nowiki>MailKey</nowiki>! 
+
+There is also some /very/ creative suggestions for keyboard tweaking in the Ratpoison (a window manager for X11) Wiki that might be of interest to Emacs users as well:
+
+* http://ratpoison.antidesktop.net/wiki/Tweaks
+
+== Health Issues ==
+
+* StickyModifiers -- No more [[Chord]]ing.
+* RepeatedStrainInjury -- How to avoid it
+* [[esdf-mode]] -- a method to offload the arrow keys to the left hand
+
+== Keyboard layouts ==
+
+* DvorakKeyboard
+* ColemakKeyboard
