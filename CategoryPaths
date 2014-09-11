@@ -1,3 +1,4 @@
+[[ja:カテゴリ・パス]]
 Click on the header to find all pages related to "paths" -- list of directories searched for one purpose or another.
 
 * LoadPath -- the list of directories Emacs searches for lisp files (for `load-library' and `require')
