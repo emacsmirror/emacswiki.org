@@ -1,4 +1,4 @@
-[[en:EmacsBug]]
+[[en:EmacsBugs]]
 This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
 To report Emacs bugs, use '''`M-x report-emacs-bug'''' in Emacs -- simple as that.  Do not hesitate to report a bug. The Emacs developers will help you determine whether there is really a bug or not. 
