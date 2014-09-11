@@ -1,3 +1,4 @@
+[[ja:カテゴリ・キーバインド]]
 Click the heading for a list of pages related to this category.
 
 Keys, or '''[[KeySequence]]s''', in Emacs are bound to [[Command]]s. Even a simple key like `s' is bound to a command (usually command `self-insert-command').
