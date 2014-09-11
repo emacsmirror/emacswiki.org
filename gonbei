@@ -1,6 +1,7 @@
 [new:AlexSchroeder:2014-08-25 19:28 UTC]
 Hello! The pages BannedContent, BannedRegexps, BannedHosts, InterMap and RssExclude are special---you cannot translate them because the list of regular expressions and abbreviations will always have to be the same.
 
+[new:gonbei:2014-09-11 05:32 UTC]
 I know, I've done on purpose
 ----
 CategoryHomepage
