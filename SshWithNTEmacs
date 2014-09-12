@@ -63,4 +63,6 @@ If fakecygpty works from the shell, it should also work via tramp if you call "f
                      (assoc "sshx" tramp-methods)))
        (setq tramp-default-method "cygssh")))
 
-<code>C-x d /myserver:</code> should then throw up a well-behaved password prompt followed by a dired buffer pointing at your home directory.
+<code>C-x d /myserver:</code> should then throw up a well-behaved password prompt followed by a dired buffer pointing at your home directory.  Example syntax to connect to your server from within Emacs:
+
+<code>C-x d /cygssh:myuser@servername:/home/myuser/<code>
