@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 29 08:32:40 2014 (-0700)
+;; Last-Updated: Fri Sep 12 10:19:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15009
+;;     Update #: 15016
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3493,11 +3493,13 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                         (histvar           (and (symbolp minibuffer-history-variable)
                                                 (boundp minibuffer-history-variable)
                                                 minibuffer-history-variable))
-                        (hist              (and histvar  (if filep
-                                                             (let ((default-directory  dir))
-                                                               (mapcar #'expand-file-name
-                                                                       (symbol-value histvar)))
-                                                           (symbol-value histvar))))
+                        (hist              (and histvar
+                                                (if filep
+                                                    ;; Need (or DIR  default-directory) instead of DIR
+                                                    ;; because Emacs 20 `expand-file-name' crashes.
+                                                    (let ((default-directory  (or dir  default-directory)))
+                                                      (mapcar #'expand-file-name (symbol-value histvar)))
+                                                  (symbol-value histvar))))
                         (case-fold-search
                          ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
                          (if (and filep  (boundp 'read-file-name-completion-ignore-case))
@@ -3545,7 +3547,9 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                        (when icicle-highlight-historical-candidates-flag
                          (let ((candidate  (icicle-current-completion-in-Completions)))
                            (when (and (consp hist)  (not (member candidate icicle-hist-cands-no-highlight)))
-                             (let ((default-directory  dir))
+                             ;; Need (or DIR  default-directory) instead of DIR
+                             ;; because Emacs 20 `expand-file-name' crashes.
+                             (let ((default-directory  (or dir  default-directory)))
                                (when (member (if filep
                                                  (expand-file-name (icicle-transform-multi-completion
                                                                     candidate))
@@ -3717,41 +3721,44 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                    (icicle-current-completion-in-Completions)))))
                            (when (and (require 'image-dired nil t)
                                       (icicle-string-match-p (image-file-name-regexp) image-file))
-                             (let ((thumb-img  (append (image-dired-get-thumbnail-image image-file)
-                                                       '(:margin 2))))
-                               ;; In `tooltip-mode', show image preview on mouseover,
-                               ;; unless it is a thumbnail and `*Completions*' already shows thumbnails.
-                               (when (and (boundp 'tooltip-mode)  tooltip-mode
-                                          (or (not icicle-image-files-in-Completions)
-                                              (not (numberp icicle-image-preview-in-tooltip))))
-                                 (with-current-buffer "*Completions*"
-                                   (put-text-property
-                                    (point) (+ (point) (length (icicle-current-completion-in-Completions)))
-                                    'help-echo 'icicle-mouseover-help)))
-                               (when icicle-image-files-in-Completions
-                                 (let ((img-ov  (overlays-in (point) (min (point-max) (1+ (point))))))
-                                   (if img-ov
-                                       (delete-overlay (car img-ov))
-                                     (put-image thumb-img beg)
-                                     (setq img-ov  (loop for ov in (overlays-in
-                                                                    (point) (min (point-max) (1+ (point))))
-                                                         when (overlay-get ov 'put-image) collect ov into ovs
-                                                         finally return (car ovs)))
-                                     (overlay-put img-ov 'image-file image-file)
-                                     (overlay-put img-ov 'thumb-img thumb-img)
-                                     (overlay-put img-ov 'image-size (image-size thumb-img))))
-                                 ;; `image-only'.  Replace file name with a space.
-                                 ;;                And hide mouse-face highlighting, as it just confuses.
-                                 (when (eq 'image-only icicle-image-files-in-Completions)
+                             (let* ((thumb-img  (image-dired-get-thumbnail-image image-file))
+                                    (thumb-img  (and thumb-img
+                                                     (append (image-dired-get-thumbnail-image image-file)
+                                                             '(:margin 2)))))
+                               (when thumb-img
+                                 ;; In `tooltip-mode', show image preview on mouseover,
+                                 ;; unless it is a thumbnail and `*Completions*' already shows thumbnails.
+                                 (when (and (boundp 'tooltip-mode)  tooltip-mode
+                                            (or (not icicle-image-files-in-Completions)
+                                                (not (numberp icicle-image-preview-in-tooltip))))
                                    (with-current-buffer "*Completions*"
                                      (put-text-property
                                       (point) (+ (point) (length (icicle-current-completion-in-Completions)))
-                                      'mouse-face 'default))
-                                   (let ((name-ov  (overlays-in end end)))
-                                     (if name-ov
-                                         (delete-overlay (car name-ov))
-                                       (setq name-ov  (make-overlay beg end))
-                                       (overlay-put name-ov 'display " ")))))))))
+                                      'help-echo 'icicle-mouseover-help)))
+                                 (when icicle-image-files-in-Completions
+                                   (let ((img-ov  (overlays-in (point) (min (point-max) (1+ (point))))))
+                                     (if img-ov
+                                         (delete-overlay (car img-ov))
+                                       (put-image thumb-img beg)
+                                       (setq img-ov  (loop for ov in (overlays-in
+                                                                      (point) (min (point-max) (1+ (point))))
+                                                           when (overlay-get ov 'put-image) collect ov into ovs
+                                                           finally return (car ovs)))
+                                       (overlay-put img-ov 'image-file image-file)
+                                       (overlay-put img-ov 'thumb-img thumb-img)
+                                       (overlay-put img-ov 'image-size (image-size thumb-img))))
+                                   ;; `image-only'.  Replace file name with a space.
+                                   ;;                And hide mouse-face highlighting, as it just confuses.
+                                   (when (eq 'image-only icicle-image-files-in-Completions)
+                                     (with-current-buffer "*Completions*"
+                                       (put-text-property
+                                        (point) (+ (point) (length (icicle-current-completion-in-Completions)))
+                                        'mouse-face 'default))
+                                     (let ((name-ov  (overlays-in end end)))
+                                       (if name-ov
+                                           (delete-overlay (car name-ov))
+                                         (setq name-ov  (make-overlay beg end))
+                                         (overlay-put name-ov 'display " "))))))))))
                        (goto-char next)))
 
                    ;; Remove all newlines for images-only display.
@@ -6607,7 +6614,7 @@ Similar to `expand-file-name', except:
       (setq expanded-input  (file-name-as-directory expanded-input)))
     expanded-input))
 
-(defun icicle-expand-file-name-20 (input dir)
+(defun icicle-expand-file-name-20 (input &optional dir)
   "Emacs 20's `expand-file-name': does not collapse consecutive slashes."
   ;; Replace // with five ^Gs, then replace back again.
   (let ((escaped-input  (and input  (replace-regexp-in-string "//" (make-string 5 7) input)))
