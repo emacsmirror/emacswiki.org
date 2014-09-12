@@ -91,7 +91,7 @@ Another take on multiple shells, one shell per tramp host. If you already have a
           (new-buffer-name (format "*shell:%s%s*" user host)))
      (shell (if host new-buffer-name buffer))))
 
-==Garbage output from <code>ls</code> and <code>gcc</code>==
+==Garbage output from ls and gcc==
 
 Take a look at AnsiColor.
 
