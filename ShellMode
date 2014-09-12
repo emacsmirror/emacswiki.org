@@ -21,9 +21,9 @@ This way, bash doesn't get ^M from Emacs, but Emacs removes ^M it gets from bash
 
 For some instructions on how to setup the cygwin shell with emacs, see http://www.khngai.com/emacs/cygwin.php
 
-You need [[cygwin-mount.el]]
+Another good help is [[setup-cygwin.el]].
 
- --MarkBucciarelli
+In any case, you need [[cygwin-mount.el]], but be aware of the different versions on the web (see CygwinMountVersions).
 
 ==Invoking Multiple Shells, and Defining New Shells==
 
@@ -91,7 +91,7 @@ Another take on multiple shells, one shell per tramp host. If you already have a
           (new-buffer-name (format "*shell:%s%s*" user host)))
      (shell (if host new-buffer-name buffer))))
 
-==garbage ls output / garbage gcc output==
+==Garbage output from <code>ls</code> and <code>gcc</code>==
 
 Take a look at AnsiColor.
 
