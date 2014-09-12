@@ -33,13 +33,12 @@ which spits out the data, so we can process it in a filter?
 * '''emms-lang.el''' - [[i18n]] support
 * '''emms-remote.el''' - Popup window/frame with widgets for the
 main functions
-* '''emms-podcast.el''' - A podcast downloader & manager 
-* '''emms-sound-mixer.el''' - A generic sound device interface/controller frontend, in the key of alsamixer
-* '''emms-audio-converter.el''' - A frontend to multiple services, such as gstreamer or ffmpeg -- which provides a common interface to convert a file to another file type. Say Flac to Ogg.
-
 ** Maybe a popup window like CEDET's browser with the playlist would 
 be also interesting. For the main functions I have global keys (previous, 
 next, pause...) in four consecutive keys.
+* '''emms-podcast.el''' - A podcast downloader & manager 
+* '''emms-sound-mixer.el''' - A generic sound device interface/controller frontend, in the key of alsamixer
+* '''emms-audio-converter.el''' - A frontend to multiple services, such as gstreamer or ffmpeg -- which provides a common interface to convert a file to another file type. Say Flac to Ogg.
 
 * Some more player files (xmms, xine, a guile-gnome based gstreamer one)
 
