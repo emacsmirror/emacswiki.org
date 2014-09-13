@@ -292,12 +292,12 @@ entry points:
 
       (defun skeleton-next-position (&optional reverse)
   "Jump to next position in skeleton.
-REVERSE - Jump to previous position in skeleton"
-  (interactive "P")
-  (let* ((positions (mapcar 'marker-position *skeleton-markers*))
-	 (positions (if reverse (reverse positions) positions))
-	(comp (if reverse '> '<))
-	pos)
+    REVERSE - Jump to previous position in skeleton"
+    (interactive "P")
+    (let* ((positions (mapcar 'marker-position *skeleton-markers*))
+	    (positions (if reverse (reverse positions) positions))
+	    (comp (if reverse '> '<))
+	    pos)
     (when positions
       (if (catch 'break
 	    (while (setq pos (pop positions))
