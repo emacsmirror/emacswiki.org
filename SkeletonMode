@@ -279,32 +279,33 @@ these locations have also been saved in skeleton-positions, making it
 possible (with some handy elisp) to jump back and forth between the
 entry points:
 
-       (defvar skeleton-markers nil
+       (defvar *skeleton-markers* nil
          "Markers for locations saved in skeleton-positions")
 
        (add-hook 'skeleton-end-hook 'skeleton-make-markers)
 
        (defun skeleton-make-markers ()
-         (while skeleton-markers
-           (set-marker (pop skeleton-markers) nil))
-         (setq skeleton-markers 
+         (while *skeleton-markers*
+           (set-marker (pop *skeleton-markers*) nil))
+         (setq *skeleton-markers *
                (mapcar 'copy-marker (reverse skeleton-positions))))
 
-       (defun skeleton-next-position (&optional reverse)
-         (interactive "P")
-         (let ((positions (mapcar 'marker-position skeleton-markers))
-               (comp (if reverse '> '<))
-               pos)
-           (when positions
-             (if (catch 'break
-                   (while (setq pos (pop positions))
-                     (when (funcall comp (point) pos)
-                       (throw 'break t))))
-                 (goto-char pos)
-               (goto-char (marker-position
-                           (if reverse
-                               (car (last skeleton-markers))
-                             (car skeleton-markers))))))))
+      (defun skeleton-next-position (&optional reverse)
+  "Jump to next position in skeleton.
+REVERSE - Jump to previous position in skeleton"
+  (interactive "P")
+  (let* ((positions (mapcar 'marker-position *skeleton-markers*))
+	 (positions (if reverse (reverse positions) positions))
+	(comp (if reverse '> '<))
+	pos)
+    (when positions
+      (if (catch 'break
+	    (while (setq pos (pop positions))
+	      (when (funcall comp (point) pos)
+		(throw 'break t))))
+	  (goto-char pos)
+	(goto-char (marker-position
+		    (car *skeleton-markers*)))))))
 
 Simply bind skeleton-next-position to some convenient key and you'll
 be able to cycle through the completion points within the template. 
