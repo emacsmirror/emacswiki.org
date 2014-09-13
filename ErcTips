@@ -31,5 +31,9 @@ Note: this function doesn't work if the last letter of your nick is the same as 
 = Do not use whitespace-mode in ERC =
 
 Enabling `whitespace-mode' in an ERC buffer removes colors and other styles from all text in the buffer. This is not obvious and especially annoying for `global-whitespace-mode' users, as disabling `whitespace-mode' does not fix the lack of colors/styles.
+
+<pre>
+(setq whitespace-global-modes '(not erc-mode))
+</pre>
 ----
 [[ERC]]
