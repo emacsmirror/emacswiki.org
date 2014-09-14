@@ -1,4 +1,4 @@
-EmacsLisp is for [[EmacsNewbie]]s too. Learning Emacs Lisp will log hours into learning to use the Emacs interface.  Lisp is the language that much of Emacs is written in, and it is also the language that you can use to [[Customize|customize]] and extend Emacs for your own use.  Also, Emacs Lisp is the best supported programming language in Emacs -- save for maybe the C programming language.  Learning to use Emacs's capabilities for Emacs Lisp will likely help with other programming you wish to do in Emacs.
+EmacsLisp is for [[EmacsNewbie]]s too. Learning Emacs Lisp will log hours into learning to use the Emacs interface.  Lisp is the language that much of Emacs is written in, and it is also the language that you can use to [[Customize|customize]] and extend Emacs for your own use.  Also, Emacs Lisp is the best supported programming language in Emacs -- save for maybe the C programming language.  Learning to use Emacs' capabilities for Emacs Lisp will likely help with other programming you wish to do in Emacs.
 
 "'''''So what?'''''", you say? You are a newbie, and, besides, you just want to ''use'' Emacs -- you don't care to extend it! Right?
 
