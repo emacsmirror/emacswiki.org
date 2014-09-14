@@ -78,6 +78,12 @@
 
 ;;; Change log:
 ;;
+;; * 15 Sep 2014:
+;;   * Uwe Koloska <kolewu@koloro.de>
+;;      * define `ad-advised-definition-p' only if it's not defined
+;;        fixes an error on Emacs 24.3 where `macrop' ist still named
+;;        `ad-macro-p'
+;;
 ;; * 03 Aug 2014:
 ;;   * Reuben Thomas <rrt@sc3d.org>:
 ;;      * Reduce to a single width preference, and make it work properly on
@@ -605,14 +611,16 @@ This advice can make `other-window' skip `sr-speedbar' window."
                (eq sr-speedbar-window (selected-window)))
       (other-window count))))
 
-(defun ad-advised-definition-p (definition)
-  "Return non-nil if DEFINITION was generated from advice information."
-  (if (or (ad-lambda-p definition)
-	  (macrop definition)
-	  (ad-compiled-p definition))
-      (let ((docstring (ad-docstring definition)))
-	(and (stringp docstring)
-	     (get-text-property 0 'dynamic-docstring-function docstring)))))
+(if (not (fboundp 'ad-advised-definition-p))
+    (defun ad-advised-definition-p (definition)
+      "Return non-nil if DEFINITION was generated from advice information."
+      (if (or (ad-lambda-p definition)
+	      (macrop definition)
+	      (ad-compiled-p definition))
+	  (let ((docstring (ad-docstring definition)))
+	    (and (stringp docstring)
+		 (get-text-property 0 'dynamic-docstring-function docstring)))))
+  )
 
 (provide 'sr-speedbar)
 
