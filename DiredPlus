@@ -9,9 +9,14 @@ Here are some of the things '''Dired+''' does:
 
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
-* Provides alternative main Dired commands you can bind to `C-x d' and `C-x 4 d' (`diredp-dired-files' and `*-other-window').  They do the same thing as usual except when given a non-positive prefix arg.  In that case, you can enter any number of files or dirs, and a Dired buffer is created for just those files and dirs. (And on MS Windows, you can use wildcards in those names -- see [[#w32-browser|If You Use Emacs on MS Windows]].)
+
+* Lets you act not only on the marked files and subdirs in the current buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, recursively.  (Separate commands are available for this.)
 
 * Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
+
+* Lets you open Dired for an arbitrary set of files and (non-root) directories, anywhere.  Just use a non-positive prefix arg (e.g. `C--') with `dired': you are prompted for the Dired buffer name and for each file or dir to include. You can use glob patterns with wildcards to include all of the matching files and dirs at once.
+
+* Lets you use `i' on any directory listed, to include its own listing in the same buffer. The directory need not be in the same directory tree as the main Dired directory (Emacs enhancement request #18421).  `i' on an inserted subdir takes you back to the subdir line in the parent listing (it bounces between the two subdir locations).
 
 * Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
 
@@ -48,7 +53,7 @@ If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the informati
 ** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
 ** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
 
-* Provide options controlling the behavior of hiding/showing details (`##(##'): '''`diredp-hide-details-propagate-flag'''' and '''`diredp-hide-details-initially-flag''''.  This is for Emacs 24.4+ --- for earlier versions use DiredDetails.
+* Provides options controlling the behavior of hiding/showing details (`##(##'): '''`diredp-hide-details-propagate-flag'''' and '''`diredp-hide-details-initially-flag''''.  This is for Emacs 24.4+ --- for earlier versions use DiredDetails.
 
 * '''Dired+''' recognizes [[Sunrise Commander]], so you can use them together.
 
