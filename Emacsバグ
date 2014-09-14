@@ -1,40 +1,32 @@
 [[en:EmacsBugs]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-To report Emacs bugs, use '''`M-x report-emacs-bug'''' in Emacs -- simple as that.  Do not hesitate to report a bug. The Emacs developers will help you determine whether there is really a bug or not. 
+Emacsのバグを報告するためには, Emacsで'''`M-x report-emacs-bug''''を使う -- 簡単でしょ.
+バグの報告を恥ずかしがらないで. Emacsの開発者達はそこに本当にバグがあろうとなかろうとあなたの決断を助けます.
 
-When you report a bug, start with '''`##emacs -q --no-site-file##'''' (or just '''`##emacs -Q##'''' in recent Emacs versions), so that you do ''not'' load your [[init file]] or [[custom file]]. Then provide a ''precise recipe'' for reproducing the behavior you see, step by step. See the Emacs manual, node Bugs (Manual:Bugs) for more info. Without a complete recipe of what you did to see the bug behavior, it will be difficult for anyone to help you.
+あなたがバグを報告する時, あなたの[[init file]]もしくは[[custom file]]を読み込ま''ない''ようにするために, '''`##emacs -q --no-site-file##''''で開始してください(もしくは最近のEmacsのバージョンでは単に'''`##emacs -Q##'''').
+その後あなたが見た振る舞いを再現するために順を追って''正確なレシピ''を提供してください.
 
-Search the EmacsBugTracker to make sure your bug hasn't been reported already (or in the mailing list archive of [[bug-gnu-emacs]]).
+詳しい情報は,Emacsマニュアルのバグの章を参照されたし.
+あなたがどんなバグの挙動を見たかという完璧なレシピなしでは, あなたを助けるのは誰だって難しい.
 
-You can find bugs that were known at the time of distribution for your version of Emacs in file '''##PROBLEMS##''' in directory '''##etc##''' of your Emacs installation -- for example,  ##/usr/share/emacs/21.4/##<tt>__etc/PROBLEMS__</tt>.
+EmacsBugTracker(もしくは[[bug-gnu-emacs]]のメーリングリストのなかに)あなたのバグが既に報告されていないかを検索して.
 
-* If you want things to get better then send bug reports.
-* Those who are going to fix the problems are not going to look here!
-* Please do not add reports of random bugs and work-arounds to this page.
+あなたは配信時に知られているバグをEmacsのあなたのバージョンのインストール先の'''##etc##'''ディレクトリの中の'''##PROBLEMS##'''ファイルで探すことができる.
+-- 例えば,  ##/usr/share/emacs/21.4/##<tt>__etc/PROBLEMS__</tt>.
 
-
-
+* もしあなたがそれをより良くしたいならそれならバグを報告して.
+* 問題を修正するであろう人たちはここを見に来ないでしょう!
+* このページへランダムバグとワークアラウンドの報告を追加しないでください.
 
 [:emacsbugplus]
-== Library `emacsbug+.el' ==
 
-Library <tt>[[emacsbug+.el]]</tt> extends standard library ##emacsbug.el##, which defines command `report-emacs-bug'.  
-
-It provides [[user option]] `ebp-report-emacs-bug-included-fields', which you can use to specify the types of information that `report-emacs-bug' includes by default.
-
-And it provides individual commands to insert such info, if you choose not to include some of it by default.
-
+== ライブラリ `emacsbug+.el' ==
+ライブラリ <tt>[[emacsbug+.el]]</tt> は標準ライブラリ ##emacsbug.el## を拡張します, それは`report-emacs-bug'コマンドを定義します.
+それは既定に含まれる`report-emacs-bug'情報の種類を指定することに使うことができる[[user option]],`ebp-report-emacs-bug-included-fields'を提供します.
+そしてもしあなたがそれの既定のいくつかを含まないものを選ぶなら, infoのようなものを挿入する個別のコマンドを提供します.
 [[image:emacsbug-plus-help]]
 
-
-
-
-
-
-
-
-
-
 ----
-CategoryWishList CategoryDebug CategoryHelp
+[[カテゴリ・要望リスト]]
+[[カテゴリ・デバッグ]]
+[[カテゴリ・ヘルプ]]
