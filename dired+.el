@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 11 10:19:14 2014 (-0700)
+;; Last-Updated: Sun Sep 14 10:31:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8198
+;;     Update #: 8311
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -42,11 +42,6 @@
 ;;
 ;;  All of the new functions, variables, and faces defined here have
 ;;  the prefix `diredp-' (for Dired Plus) in their names.
-;;
-;;  Additional suggested key bindings:
-;;
-;;    (define-key ctl-x-map   "d" 'diredp-dired-files)
-;;    (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 ;;
 ;;
 ;;  Wraparound Navigation
@@ -194,66 +189,75 @@
 ;;  Inserted Subdirs, Multiple Dired Buffers, Files from Anywhere,...
 ;;  -----------------------------------------------------------------
 ;;
-;;  These two standard Dired features are worth pointing out:
+;;  These three standard Dired features are worth pointing out.  The
+;;  third in particular is little known because (a) it is limited in
+;;  vanilla Dired and (b) you cannot use it interactively.
 ;;
-;;  * You can insert multiple subdirectory listings into a single
-;;    Dired buffer using `i' on each subdir line.  Use `C-u i' to
-;;    specify `ls' switches.  Specifying switch `R' inserts the
-;;    inserted subdirectory's subdirs also, recursively.  You can also
-;;    use `i' to bounce between a subdirectory line and its
-;;    inserted-listing header line.  You can delete a subdir listing
-;;    using `C-u k' on its header line.  You can hide/show an inserted
-;;    subdir using `$'.  You can use `C-_' to undo any of these
-;;    operations.
+;;   * You can pass a glob pattern with wildcards to `dired'
+;;     interactively, as the file name.
 ;;
-;;  * You can open a Dired buffer for an arbitrary set of files, from
-;;    different directories.
+;;   * You can insert multiple subdirectory listings into a single
+;;     Dired buffer using `i' on each subdir line.  Use `C-u i' to
+;;     specify `ls' switches.  Specifying switch `R' inserts the
+;;     inserted subdirectory's subdirs also, recursively.  You can
+;;     also use `i' to bounce between a subdirectory line and its
+;;     inserted-listing header line.  You can delete a subdir listing
+;;     using `C-u k' on its header line.  You can hide/show an
+;;     inserted subdir using `$'.  You can use `C-_' to undo any of
+;;     these operations.
 ;;
-;;    First, you can pass a glob pattern with wildcards to `dired'
-;;    interactively, as the file name.
+;;   * You can open a Dired buffer for an arbitrary set of files from
+;;     different directories.  You do this by invoking `dired'
+;;     non-interactively, passing it a cons of a Dired buffer name and
+;;     the file names.  Relative file names are interpreted relative
+;;     to the value of `default-directory'.  Use absolute file names
+;;     when appropriate.
 ;;
-;;    Beyond that, you can invoke `dired' non-interactively, passing
-;;    it a cons of buffer name and file names.  Relative file names
-;;    are interpreted relative to the value of `default-directory'.
-;;    Use absolute file names if appropriate.
+;;  `Dired+' makes these features more useful.
 ;;
-;;  `i' and `$' are improved in `Dired+':
+;;  `$' is improved: It is a simple toggle - it does not move the
+;;  cursor forward.  `M-$' advances the cursor, in addition to
+;;  toggling like `$'.  `C-u $' does hide/show all (what `M-$' does in
+;;  vanilla Dired).
 ;;
-;;  * Once a subdir has been inserted, `i' bounces between the subdir
-;;    listing and the subdir line in the parent listing.  If the
-;;    parent dir is hidden, then `i' from a subdir opens the parent
-;;    listing so it can move to the subdir line there (Emacs 24+).
+;;  `i' is improved in these ways:
 ;;
-;;  * `$' is a simple toggle - it does not move the cursor forward.
-;;    `M-$' advances the cursor, in addition to toggling like `$'.
-;;    `C-u $' does hide/show all (what `M-$' does in vanilla Dired).
+;;   * Once a subdir has been inserted, `i' bounces between the subdir
+;;     listing and the subdir line in the parent listing.  If the
+;;     parent dir is hidden, then `i' from a subdir opens the parent
+;;     listing so it can move to the subdir line there (Emacs 24+).
 ;;
-;;  Programmatically (but not interactively), vanilla Dired lets you
-;;  create a Dired listing with files and directories from arbitrary
-;;  locations, but you cannot insert (`i') such a directory, if it is
-;;  not in the same directory tree as the `default-directory' used to
-;;  create the Dired buffer.  `Dired+' has no such limitation.
+;;   * Vanilla Dired lets you create a Dired listing with files and
+;;     directories from arbitrary locations, but you cannot insert
+;;     (`i') such a directory if it is not in the same directory tree
+;;     as the `default-directory' used to create the Dired buffer.
+;;     `Dired+' removes this limitation; you can insert any non-root
+;;     directories (that is, not `/', `c:/', etc.).
 ;;
-;;  `Dired+' also facilitates creating such buffers interactively:
-;;  just use a non-positive prefix arg (e.g., `C--') with `C-x d'
-;;  (`dired'), `C-x 4 d' (`dired-other-window'), or `C-x 5 d'
-;;  (`dired-other-frame').  You are then prompted for:
+;;  `Dired+' lets you create Dired buffers that contain arbitrary
+;;  files and directories interactively, not just using Lisp.  Just
+;;  use a non-positive prefix arg (e.g., `C--') when invoking `dired'.
 ;;
-;;  * the Dired buffer name (anything you like, not necessarily a
-;;    directory name) and
+;;  You are then prompted for the Dired buffer name (anything you
+;;  like, not necessarily a directory name) and the individual files
+;;  and directories that you want listed.
 ;;
-;;  * the individual files or directories that you want listed.
-;;
-;;  A non-negative prefix arg still prompts you for the ls switches to
-;;  use. (So `C-0' does both: prompts for `ls' switches and for the
-;;  Dired buffer name and the files to list.)
+;;  A non-negative prefix arg still prompts you for the `ls' switches
+;;  to use.  (So `C-0' does both: prompts for `ls' switches and for
+;;  the Dired buffer name and the files to list.)
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
-;;  and have a particular set of markings.  This can be handy for
-;;  using Dired buffers to manage projects.  In such use cases you
-;;  might have multiple Dired buffers that have quite specific
-;;  contents and that you want to keep around during a session.
+;;  and have a particular set of markings.  `Bookmark+' records Dired
+;;  buffers persistently, remembering `ls' switches, markings, subdir
+;;  insertions, and hidden subdirs.
+;;
+;;  Dired can help you manage projects.  You might have multiple Dired
+;;  buffers with quite specific contents.  You might have some
+;;  subdirectories inserted in the same Dired buffer, and you might
+;;  have separate Dired buffers for some subdirectories.  Sometimes it
+;;  is useful to have both for the same subdirectory.  And sometimes
+;;  it is useful to move from one presentation to the other.
 ;;
 ;;  This is one motivation for the `Dired+' `diredp-*-recursive'
 ;;  commands, which act on the marked files in marked subdirectories,
@@ -262,12 +266,6 @@
 ;;  let you use the same operations on the files in a set of Dired
 ;;  directories, without inserting those directories into an ancestor
 ;;  Dired buffer.
-;;
-;;  So you might have some subdirectories inserted in the same Dired
-;;  buffer, and you might have separate Dired buffers for some
-;;  subdirectories.  Sometimes it is useful to have both for the same
-;;  subdirectory.  And sometimes it is useful to move from one
-;;  presentation to the other.
 ;;
 ;;  You can use command `diredp-dired-inserted-subdirs' to open a
 ;;  separate Dired buffer for each of the subdirs that is inserted in
@@ -309,7 +307,6 @@
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
 ;;    `diredp-decrypt-this-file', `diredp-delete-this-file',
 ;;    `diredp-describe-file', `diredp-describe-mode',
-;;    `diredp-dired-files', `diredp-dired-files-other-window',
 ;;    `diredp-dired-for-files', `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
@@ -433,9 +430,7 @@
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
-;;    `diredp-directories-within',
-;;    `diredp-dired-files-interactive-spec',
-;;    `diredp-dired-plus-description',
+;;    `diredp-directories-within', `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
@@ -547,7 +542,7 @@
 ;;  `dired-do-byte-compile', `dired-do-compress', `dired-do-load' -
 ;;     Redisplay only if at most one file is being treated.
 ;;  `dired-insert-subdir-newpos' - If not a descendent, put at eob.
-;;  `dired-insert-subdir-validate' - Do not require same dir tree.
+;;  `dired-insert-subdir-validate' - Do nothing: no restrictions.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
 ;;
 ;;
@@ -573,13 +568,25 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2014/09/11 dadams
+;; 2014/09/14 dadams
 ;;     Added: diredp-kill-this-tree.
+;;     Removed: diredp-dired-files(-other-window), diredp-dired-files-interactive-spec.
+;;     dired-read-dir-and-switches:
+;;       Based on diredp-dired-files-interactive-spec implementation now, but:
+;;        Moved unwind-protect outside call to list.  completing-read, not read-string, for DIRBUF.
+;;        Do not allow inclusion of root directories.
+;;     dired-insert-subdir-validate: Make it a no-op.
+;;     dired advice (doc string): Mention wildcards, Icicles.
+;;     diredp-dired-for-files(-other-window):
+;;       Use dired-read-dir-and-switches and dired, not diredp-dired-files-interactive-spec and
+;;       diredp-dired-files.
 ;;     diredp-menu-bar-immediate-menu, diredp-mouse-3-menu:
 ;;       Added item for dired-kill-this-tree.
 ;;       Corrected visible condition: expand-file-name, so ~/ compares with its expansion.
 ;;     diredp-font-lock-keywords-1: Include period (.) for diredp(-compressed)-file-suffix.
 ;; 2014/09/09 dadams
+;;     Added: dired-read-dir-and-switches.
+;;     Advise dired, for doc string.
 ;;     dired-get-filename: Hack for Emacs 20-22, to expand ~/...
 ;; 2014/09/07 dadams
 ;;     Added: redefinitions of dired-insert-subdir-newpos, dired-insert-subdir-validate.
@@ -1806,30 +1813,111 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 ;;
 (defun dired-read-dir-and-switches (string)
   "Read arguments for `dired'.
-With a non-negative prefix arg, prompt first for `ls' switches.
+With a non-negative prefix arg, read the `ls' switches.
 With a non-positive prefix arg, read the Dired buffer name and then
- read any number of dir or file names, to make up the Dired listing.
+ read any number of directory or file names, to make up the Dired
+ listing.  You can use file-name wildcards (i.e., `*' for globbing),
+ to include the matching files and directories.  Use `C-g' when done
+ entering files and directories to list.
 
 STRING is appended to the prompt, unless prefix arg is non-positive.
-If non-empty, STRING should begin with a SPC."
-  (let ((switches    (and current-prefix-arg
-                          (>= (prefix-numeric-value current-prefix-arg) 0)
-                          (read-string "Dired listing switches: " dired-listing-switches)))
-        (formt       (format "Dired %s(directory): " string))
-        (entries     ())
-        (curr-entry  ""))
-    (when (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
-      (push (completing-read "Dired buffer name: " dired-buffers) entries)
-      (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH))
-      (while (not (equal "" curr-entry))
-        (push curr-entry entries)
-        (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH)))
-      (unless (cadr entries) (push default-directory entries)))
-    (list (or (nreverse entries)  (if (and (fboundp 'next-read-file-uses-dialog-p)
-                                           (next-read-file-uses-dialog-p))
-                                      (read-directory-name formt nil default-directory nil)
-                                    (read-file-name formt nil default-directory nil)))
-          switches)))
+If non-empty, STRING should begin with a SPC.
+
+If you use Icicles, then in Icicle mode the following keys are bound
+in the minibuffer during completion (`*' means the key requires
+library `Bookmark+'):
+
+   M-|         - Open Dired on the file names matching your input
+   S-delete    - delete candidate file or (empty) dir
+   C-c +       - Create a new directory
+   C-backspace - go up one directory level
+ * C-x C-t *   - narrow to files with all of the tags you specify
+ * C-x C-t +   - narrow to files with some of the tags you specify
+ * C-x C-t % * - narrow to files with all tags matching a regexp
+ * C-x C-t % + - narrow to files with some tags  matching a regexp
+ * C-x a +     - Add tags to the current-candidate file
+ * C-x a -     - Remove tags from the current-candidate file
+ * C-x m       - Access file bookmarks (not just autofiles)"
+  (let ((switchs               (and current-prefix-arg
+                                    (natnump (prefix-numeric-value current-prefix-arg))
+                                    (read-string "Dired listing switches: "
+                                                 dired-listing-switches)))
+        (icicle-sort-comparer  (or (and (boundp 'icicle-file-sort) ; If not reading files
+                                        icicle-file-sort) ; then dirs first.
+                                   (and (> (prefix-numeric-value current-prefix-arg) 0)
+                                        'icicle-dirs-first-p)
+                                   icicle-sort-comparer))
+        (icicle-all-candidates-list-alt-action-fn ; M-|'
+         (lambda (files)
+           (let ((enable-recursive-minibuffers  t))
+             (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+    (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
+    (unwind-protect
+         (list
+          (if (> (prefix-numeric-value current-prefix-arg) 0)
+              ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
+              ;; code knows we want directories.  Some dialog boxes can only select directories
+              ;; or files when popped up, not both.
+              (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
+                  (read-directory-name (format "Dired %s(directory): " string) nil
+                                       default-directory nil)
+                (read-file-name (format "Dired %s(directory): " string)
+                                nil default-directory nil))
+            (let (;; $$$$$$$$ (insert-default-directory  nil)
+                  (files                     ())
+                  (dirbuf                    (completing-read "Dired buffer name: " dired-buffers))
+                  file)
+              (while (condition-case nil ; Use lax completion, to allow wildcards.
+                         (setq file  (read-file-name "File or dir (C-g when done): "))
+                       (quit nil))
+                ;; Do not allow root dir (`/' or a Windows drive letter, e.g. `d:/').
+                (if (if (fboundp 'ange-ftp-root-dir-p)
+                        (ange-ftp-root-dir-p (file-name-as-directory file))
+                      ;; This is essentially `ange-ftp-root-dir-p' applied to
+                      ;; `file-name-as-directory'.  If `ange-ftp-root-dir-p' changes, update this.
+                      (or (and (eq system-type 'windows-nt)
+                               (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'"
+                                                      (file-name-as-directory file)))
+                          (string= "/" file)))
+                    (progn (message "Cannot choose root directory") (sit-for 1))
+                  (push file files)))
+              (cons dirbuf files)))
+          switchs)
+      (when (fboundp 'icicle-unbind-file-candidate-keys) (icicle-unbind-file-candidate-keys)))))
+
+
+;;; $$$$$$$$ An alternative implementation - different behavior.
+;;;
+;;; ;; REPLACE ORIGINAL in `dired.el'.
+;;; ;;
+;;; ;; Non-positive prefix arg means construct cons DIRNAME arg: Read Dired name and files/dirs.
+;;; ;;
+;;; (defun dired-read-dir-and-switches (string)
+;;;   "Read arguments for `dired'.
+;;; With a non-negative prefix arg, prompt first for `ls' switches.
+;;; With a non-positive prefix arg, read the Dired buffer name and then
+;;;  read any number of dir or file names, to make up the Dired listing.
+
+;;; STRING is appended to the prompt, unless prefix arg is non-positive.
+;;; If non-empty, STRING should begin with a SPC."
+;;;   (let ((switches    (and current-prefix-arg
+;;;                           (>= (prefix-numeric-value current-prefix-arg) 0)
+;;;                           (read-string "Dired listing switches: " dired-listing-switches)))
+;;;         (formt       (format "Dired %s(directory): " string))
+;;;         (entries     ())
+;;;         (curr-entry  ""))
+;;;     (when (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+;;;       (push (completing-read "Dired buffer name: " dired-buffers) entries)
+;;;       (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH))
+;;;       (while (not (equal "" curr-entry))
+;;;         (push curr-entry entries)
+;;;         (setq curr-entry  (read-file-name (format "Dir or file: ") nil "" 'MUST-MATCH)))
+;;;       (unless (cadr entries) (push default-directory entries)))
+;;;     (list (or (nreverse entries)  (if (and (fboundp 'next-read-file-uses-dialog-p)
+;;;                                            (next-read-file-uses-dialog-p))
+;;;                                       (read-directory-name formt nil default-directory nil)
+;;;                                     (read-file-name formt nil default-directory nil)))
+;;;           switches)))
 
 
 ;; ADVISE ORIGINAL in `dired.el'.
@@ -1838,14 +1926,34 @@ If non-empty, STRING should begin with a SPC."
 ;;
 (defadvice dired (before diredp-doc-cons-arg activate)
   "Interactively, a prefix argument changes the behavior as follows:
-* If non-negative, you are first prompted for the `ls' switches to use.
-* If non-positive, you are prompted first for the name of the Dired
-  buffer.  Then you are prompted repeatedly for the names of the
-  directories or files to list in the buffer.  Hitting `RET' with no
-  name ends the prompting.  In other words, instead of listing a
-  single directory, the Dired buffer can list any number of
-  directories and file names, which can even belong to different
-  directory trees.")
+
+* If <= 0, you are first prompted for the `ls' switches to use.
+
+* If >= 0, you are prompted first for the name of the Dired  buffer.
+  Then you are prompted repeatedly for the names of the directories
+  or files to list in the buffer.  You can use file-name wildcards
+  (i.e., `*' for globbing), to include the matching files and
+  directories.  Use `C-g' to end.
+
+  In other words, instead of listing a single directory, the Dired
+  buffer can list any number of directories and file names, which can
+  even belong to different directory trees.
+
+If you use Icicles, then in Icicle mode the following keys are bound
+in the minibuffer during completion (`*' means the key requires
+library `Bookmark+'):
+
+   M-|         - Open Dired on the file names matching your input
+   S-delete    - delete candidate file or (empty) dir
+   C-c +       - Create a new directory
+   C-backspace - go up one directory level
+ * C-x C-t *   - narrow to files with all of the tags you specify
+ * C-x C-t +   - narrow to files with some of the tags you specify
+ * C-x C-t % * - narrow to files with all tags matching a regexp
+ * C-x C-t % + - narrow to files with some tags  matching a regexp
+ * C-x a +     - Add tags to the current-candidate file
+ * C-x a -     - Remove tags from the current-candidate file
+ * C-x m       - Access file bookmarks (not just autofiles)")
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -3218,11 +3326,6 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map [mouse-3]      'ignore)
 
 
-;;; Suggested bindings.
-;;; (define-key ctl-x-map   "d" 'diredp-dired-files) ; `C-x d'
-;;; (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window) ; `C-x 4 d'
-
-
 ;;; Non-menu Dired bindings.
 
 ;; Move `dired-omit-mode' to `C-x M-o', so prefix key `M-o' is free for face/font-lock stuff.
@@ -3685,121 +3788,108 @@ This means the `.' plus the file extension.  Example: `.zip'."
  
 ;;; Function Definitions
 
-;;;###autoload
-(defun diredp-dired-files (arg &optional switches) ; Not bound
-  "Like `dired', but non-positive prefix arg prompts for files to list.
-This is like `dired' unless you use a non-positive prefix arg.
-In that case, you are prompted for names of files and directories to
-list, and then you are prompted for the name of the Dired buffer that
-lists them.  Use `C-g' when you are done entering file names to list.
+;;; $$$$$$$$
+;;; (defun diredp-dired-files (arg &optional switches) ; Not bound
+;;;   "Like `dired', but non-positive prefix arg prompts for files to list.
+;;; This is like `dired' unless you use a non-positive prefix arg.
+;;; In that case, you are prompted for names of files and directories to
+;;; list, and then you are prompted for the name of the Dired buffer that
+;;; lists them.  Use `C-g' when you are done entering file names to list.
 
-In all cases, when inputting a file or directory name you can use
-shell wildcards.
+;;; In all cases, when inputting a file or directory name you can use
+;;; shell wildcards.
 
-If you use Icicles, then in Icicle mode the following keys are bound
-in the minibuffer during completion (`*' means the key requires
-library `Bookmark+'):
+;;; If you use Icicles, then in Icicle mode the following keys are bound
+;;; in the minibuffer during completion (`*' means the key requires
+;;; library `Bookmark+'):
 
-  M-|       - Open Dired on the file names matching your input
-  C-c +     - Create a new directory
- *C-x a +   - Add tags to the current-candidate file
- *C-x a -   - Remove tags from the current-candidate file
- *C-x m     - Access file bookmarks (not just autofiles)"
-  (interactive (diredp-dired-files-interactive-spec ""))
-  (when (consp arg)
-    (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
-      (when buf (kill-buffer buf))))
-  (switch-to-buffer (dired-noselect arg switches)))
+;;;   M-|       - Open Dired on the file names matching your input
+;;;   C-c +     - Create a new directory
+;;;  *C-x a +   - Add tags to the current-candidate file
+;;;  *C-x a -   - Remove tags from the current-candidate file
+;;;  *C-x m     - Access file bookmarks (not just autofiles)"
+;;;   (interactive (diredp-dired-files-interactive-spec ""))
+;;;   (when (consp arg)
+;;;     (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
+;;;       (when buf (kill-buffer buf))))
+;;;   (switch-to-buffer (dired-noselect arg switches)))
 
-;;;###autoload
-(defun diredp-dired-files-other-window (arg &optional switches) ; Not bound
-  "Same as `diredp-dired-files' except uses another window."
-  (interactive (diredp-dired-files-interactive-spec "in other window "))
-  (when (consp arg)
-    (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
-      (when buf (kill-buffer buf))))
-  (dired-other-window arg switches))
+;;; (defun diredp-dired-files-other-window (arg &optional switches) ; Not bound
+;;;   "Same as `diredp-dired-files' except uses another window."
+;;;   (interactive (diredp-dired-files-interactive-spec "in other window "))
+;;;   (when (consp arg)
+;;;     (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
+;;;       (when buf (kill-buffer buf))))
+;;;   (dired-other-window arg switches))
 
 ;;;###autoload
 (defun diredp-dired-for-files (arg &optional switches) ; Not bound
-  "Like `dired', but prompts for the specific files to list.
+  "Same as `dired' with a non-positive prefix arg.
 You are prompted for names of files and directories to list, and then
 you are prompted for the name of the Dired buffer that lists them.
-Use `C-g' when you are done entering file names to list.
-
-In all cases, when inputting a file or directory name you can use
-shell wildcards.
-
-If you use Icicles, then in Icicle mode the following keys are bound
-in the minibuffer during completion (`*' means the key requires
-library `Bookmark+'):
-
-  M-|       - Open Dired on the file names matching your input
-  C-c +     - Create a new directory
- *C-x a +   - Add tags to the current-candidate file
- *C-x a -   - Remove tags from the current-candidate file
- *C-x m     - Access file bookmarks (not just autofiles)"
+Use `C-g' when you are done.  See `dired'."
   (interactive
    (let ((current-prefix-arg  -1))
-     (diredp-dired-files-interactive-spec "in other window ")))
-  (diredp-dired-files-other-window arg switches))
+     (dired-read-dir-and-switches "in other window ")))
+  (dired arg switches))
 
 ;;;###autoload
 (defun diredp-dired-for-files-other-window (arg &optional switches) ; Not bound
   "Same as `diredp-dired-for-files' except uses another window."
   (interactive
    (let ((current-prefix-arg  -1))
-     (diredp-dired-files-interactive-spec "in other window ")))
-  (diredp-dired-files-other-window arg switches))
+     (dired-read-dir-and-switches "in other window ")))
+  (dired-other-window arg switches))
 
-(defun diredp-dired-files-interactive-spec (str)
-  "`interactive' spec for `diredp-dired-files' commands.
-STR is a string appended to the prompt.
-With non-negative prefix arg, read switches.
-With non-positive prefix arg, read files and dirs to list and then the
- Dired buffer name.  User uses `C-g' when done reading files and dirs.
+;;; $$$$$$$$
+;;; (defun diredp-dired-files-interactive-spec (str)
+;;;   "`interactive' spec for `diredp-dired-files' commands.
+;;; STR is a string appended to the prompt.
+;;; With non-negative prefix arg, read switches.
+;;; With non-positive prefix arg, read files and dirs to list and then the
+;;;  Dired buffer name.  User uses `C-g' when done reading files and dirs.
 
-If you use Icicles, then in Icicle mode the following keys are bound
-in the minibuffer during completion (`*' means the key requires
-library `Bookmark+'):
+;;; If you use Icicles, then in Icicle mode the following keys are bound
+;;; in the minibuffer during completion (`*' means the key requires
+;;; library `Bookmark+'):
 
-  M-|       - Open Dired on the file names matching your input
-  C-c +     - Create a new directory
- *C-x a +   - Add tags to the current-candidate file
- *C-x a -   - Remove tags from the current-candidate file
- *C-x m     - Access file bookmarks (not just autofiles)"
-  (list
-   (unwind-protect
-        (let ((icicle-sort-comparer  (or (and (boundp 'icicle-file-sort) ;; If not reading files
-                                              icicle-file-sort)          ;; then dirs first.
-                                         (and (> (prefix-numeric-value current-prefix-arg) 0)
-                                              'icicle-dirs-first-p)
-                                         icicle-sort-comparer))
-              (icicle-all-candidates-list-alt-action-fn ; M-|'
-               (lambda (files)
-                 (let ((enable-recursive-minibuffers  t))
-                   (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-          (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
-          (if (> (prefix-numeric-value current-prefix-arg) 0)
-              ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
-              ;; code knows we want directories.  Some dialog boxes can only select directories
-              ;; or files when popped up, not both.
-              (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
-                  (read-directory-name (format "Dired %s(directory): " str) nil
-                                       default-directory nil)
-                (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
-            (let ((insert-default-directory  nil)
-                  (files                     ())
-                  file)
-              (while (condition-case nil ; Use lax completion, to allow wildcards.
-                         (setq file  (read-file-name "File or dir (C-g when done): "))
-                       (quit nil))
-                (push file files))
-              (cons (read-string "Dired buffer name: " nil nil default-directory) files))))
-     (when (fboundp 'icicle-unbind-file-candidate-keys)
-       (icicle-unbind-file-candidate-keys)))
-   (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))
-        (read-string "Dired listing switches: " dired-listing-switches))))
+;;;   M-|       - Open Dired on the file names matching your input
+;;;   C-c +     - Create a new directory
+;;;  *C-x a +   - Add tags to the current-candidate file
+;;;  *C-x a -   - Remove tags from the current-candidate file
+;;;  *C-x m     - Access file bookmarks (not just autofiles)"
+;;;   (list
+;;;    (unwind-protect
+;;;         (let ((icicle-sort-comparer  (or (and (boundp 'icicle-file-sort) ;; If not reading files
+;;;                                               icicle-file-sort)          ;; then dirs first.
+;;;                                          (and (> (prefix-numeric-value current-prefix-arg) 0)
+;;;                                               'icicle-dirs-first-p)
+;;;                                          icicle-sort-comparer))
+;;;               (icicle-all-candidates-list-alt-action-fn ; M-|'
+;;;                (lambda (files)
+;;;                  (let ((enable-recursive-minibuffers  t))
+;;;                    (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+;;;           (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
+;;;           (if (> (prefix-numeric-value current-prefix-arg) 0)
+;;;               ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
+;;;               ;; code knows we want directories.  Some dialog boxes can only select directories
+;;;               ;; or files when popped up, not both.
+;;;               (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
+;;;                   (read-directory-name (format "Dired %s(directory): " str) nil
+;;;                                        default-directory nil)
+;;;                 (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
+;;;             (let ((insert-default-directory  nil)
+;;;                   (files                     ())
+;;;                   file)
+;;;               (while (condition-case nil ; Use lax completion, to allow wildcards.
+;;;                          (setq file  (read-file-name "File or dir (C-g when done): "))
+;;;                        (quit nil))
+;;;                 (push file files))
+;;;               (cons (read-string "Dired buffer name: " nil nil default-directory) files))))
+;;;      (when (fboundp 'icicle-unbind-file-candidate-keys)
+;;;        (icicle-unbind-file-candidate-keys)))
+;;;    (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))
+;;;         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
 (defun diredp-dired-union (dirbufs &optional switches) ; Not bound
@@ -6821,23 +6911,31 @@ Else return a singleton list of a directory name, which is as follows:
       (list (dired-current-directory))))
 
 
-;; REPLACE ORIGINAL in `dired-aux.el'.
+;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; 1. Do not require that DIRNAME be in the current directory tree (no error if not).
-;; 2. Use `dolist' instead of `mapcar'.
+;; No-op: does nothing now.
 ;;
-(defun dired-insert-subdir-validate (dirname &optional switches)
-  "Raise an error if it is invalid to insert DIRNAME with SWITCHES."
-;;; (or (dired-in-this-tree dirname (expand-file-name default-directory)) ; REMOVED
-;;;     (error  "%s: not in this directory tree" dirname))
-  (let ((real-switches  (or switches  (and (boundp 'dired-subdir-switches) ; Emacs 22+
-                                           dired-subdir-switches))))
-    (when real-switches
-      (let (case-fold-search)
-        (dolist (switchs  '("F" "b"))   ; Switches that matter for `dired-get-filename'.
-          (unless (eq (null (diredp-string-match-p switchs real-switches))
-                      (null (diredp-string-match-p switchs dired-actual-switches)))
-            (error "Can't have dirs with and without `-%s' switches together" switchs)))))))
+(defun dired-insert-subdir-validate (dirname &optional switches))
+
+
+;;; $$$$$$$$
+;;; ;; REPLACE ORIGINAL in `dired-aux.el'.
+;;; ;;
+;;; ;; 1. Do not require that DIRNAME be in the current directory tree (no error if not).
+;;; ;; 2. Use `dolist' instead of `mapcar'.
+;;; ;;
+;;; (defun dired-insert-subdir-validate (dirname &optional switches)
+;;;   "Raise an error if it is invalid to insert DIRNAME with SWITCHES."
+;;; ;;; (or (dired-in-this-tree dirname (expand-file-name default-directory)) ; REMOVED
+;;; ;;;     (error  "%s: not in this directory tree" dirname))
+;;;   (let ((real-switches  (or switches  (and (boundp 'dired-subdir-switches) ; Emacs 22+
+;;;                                            dired-subdir-switches))))
+;;;     (when real-switches
+;;;       (let (case-fold-search)
+;;;         (dolist (switchs  '("F" "b"))   ; Switches that matter for `dired-get-filename'.
+;;;           (unless (eq (null (diredp-string-match-p switchs real-switches))
+;;;                       (null (diredp-string-match-p switchs dired-actual-switches)))
+;;;             (error "Can't have dirs with and without `-%s' switches together" switchs)))))))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
