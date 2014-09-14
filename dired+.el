@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 14 10:31:40 2014 (-0700)
+;; Last-Updated: Sun Sep 14 11:07:16 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8311
+;;     Update #: 8313
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -574,7 +574,7 @@
 ;;     dired-read-dir-and-switches:
 ;;       Based on diredp-dired-files-interactive-spec implementation now, but:
 ;;        Moved unwind-protect outside call to list.  completing-read, not read-string, for DIRBUF.
-;;        Do not allow inclusion of root directories.
+;;        Do not allow inclusion of root directories.  Protected icicle-sort-comparer with boundp.
 ;;     dired-insert-subdir-validate: Make it a no-op.
 ;;     dired advice (doc string): Mention wildcards, Icicles.
 ;;     diredp-dired-for-files(-other-window):
@@ -1846,7 +1846,7 @@ library `Bookmark+'):
                                         icicle-file-sort) ; then dirs first.
                                    (and (> (prefix-numeric-value current-prefix-arg) 0)
                                         'icicle-dirs-first-p)
-                                   icicle-sort-comparer))
+                                   (and (boundp 'icicle-sort-comparer)  icicle-sort-comparer)))
         (icicle-all-candidates-list-alt-action-fn ; M-|'
          (lambda (files)
            (let ((enable-recursive-minibuffers  t))
