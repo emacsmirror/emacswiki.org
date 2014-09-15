@@ -9,6 +9,10 @@
 
 '''Icicles''' can help with DiredMode in these ways:
 
+* Commands `dired' and `dired-other-window' are [[multi-command]]s.
+If you use library '''[[Dired+]]''' then these commands
+are particularly powerful.
+
 * You can use '''Icicles''' [[#SearchAndReplace|search-and-replace]] on the marked files in the current directory and in marked subdirectories (recursively).
 
 * You can [[#SaveFilesAsCandidates|save marked file names]] as completion candidates for reuse later.
@@ -276,19 +280,19 @@ individual candidates (shell commands or files) during completion.
 '''See Also:'''
 
 * [[Icicles - Shell-Command Enhancements]] for more information
-about shell-command completion
+about shell-command completion.
 
-* [[Icicles - Candidate Sets]] for information about creating, saving, and retrieving sets of file names
-* [[Icicles - Nutshell View#ChippingAway|Chipping Away the Non-Elephant]] for the use of `##C-~##' to remove matching candidates
-* [[Icicles - Search Commands, Overview]] for information about `icicle-search'
-* [[Icicles - Search-And-Replace]] for how to replace selected search hits
+* [[Icicles - Candidate Sets]] for information about creating, saving, and retrieving sets of file names.
+* [[Icicles - Nutshell View#ChippingAway|Chipping Away the Non-Elephant]] for the use of `##C-~##' to remove matching candidates.
+* [[Icicles - Search Commands, Overview]] for information about `icicle-search'.
+* [[Icicles - Search-And-Replace]] for how to replace selected search hits.
 
-* [[Icicles - Persistent Completions]] for more information about using persistent sets
+* [[Icicles - Persistent Completions]] for more information about using persistent sets.
 
 * [[Icicles - Support for Projects]] for more information about working
-with projects
+with projects.
 
-* DiredPlus (library <tt>[[dired+.el]]</tt>), which has related features, such as '''`##C-M-*##'''' to open Dired on just the marked files and '''`M-g'''' to `grep' just the marked files
+* DiredPlus (library <tt>[[dired+.el]]</tt>), which has related features, such as '''`##C-M-*##'''' to open Dired on just the marked files and '''`M-g'''' to `grep' just the marked files. It also has more powerful '''Icicles''' [[multi-command]] versions of `dired' and `dired-other-window'.
 
 
 
