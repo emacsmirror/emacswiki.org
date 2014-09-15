@@ -27,6 +27,8 @@ hidden subdirectories of the selected Dired listings.
 
 * Lets you open Dired on (only) the files in an Emacs [[fileset]].
 
+* Lets you use a single invocation of command `dired' to open Dired on any number of directories or sets of files (which you choose on the fly), if you use '''[[Icicles]]'''.
+
 * Lets you create bookmarks to all of the marked files and directories, ''without visiting'' them.  This means you can bookmark files that you cannot even visit in Emacs, such as sound files and image files.  If you use '''[[Bookmark+]]''', then you can also:
 ** Bookmark a ''project'': Bookmark the marked files and dirs and create a bookmark-file bookmark for them. "Jumping" to the bookmark-file bookmark opens the `##*Bookmark List*##' for those marked-file bookmarks (only).
 ** Customize file associations, to create bookmarks with appropriate handlers for additional types of files. 
