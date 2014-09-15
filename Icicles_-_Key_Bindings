@@ -221,6 +221,11 @@ Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
 to whatever the value of option '''<tt>‘[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]’</tt>''' is.  By
 default, this value is `yank'.
 
+The substitution of `##icicle-dired(-other-window)##' for
+`##dired(-other-window)##' happens by default only if you do not use
+library '''[[Dired+]]'''.  If you do use '''Dired+'''' then the commands are
+already '''Icicles''' [[multi-command]]s, and are especially powerful.
+
 Option `icicle-top-level-key-bindings' remaps not only these standard
 Emacs commands but also some commands provided by other libraries.
 For example, if you use package '''[[Bookmark+]]''', then type-specific
@@ -1068,6 +1073,5 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
