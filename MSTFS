@@ -1,5 +1,11 @@
 Team Foundation Server is a proprietary, commercial version control system from Microsoft.
 
+= vc-tfs =
+
+Integration with vc is provided by the vc-tfs package available from http://marmalade-repo.org/packages/vc-tfs
+
+= tfs.el =
+
 This elisp module provides basic integration.  It works with regular TFS, and also with codeplex.com.
 
 Here's the source:
