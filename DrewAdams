@@ -798,170 +798,24 @@ Thanks for taking the time to look into this. Very helpful.  -- [[Questioner]]
 [new:DrewAdams:2014-08-19 22:50 UTC]
 You are welcome. But please do report the problem, however minor, to the ##vline.el## maintainer and to Emacs Dev.  This seems like an Emacs bug (in ##whitespace.el##) to me. -- DrewAdams
 
-[new]
-Getting the error `let*: Symbol's value as variable is void: filter-buffer-substring-function` on package narraw-indirect.el. The following diff solves the issue: if subr+ is not found we don't need those bindings at all. Additionally, I took the liberty of factoring this in a new function `ni-clean-buffer-substring', and renamed the public functions to include the word 'indirect' (previously only `ni-narrow-to-page-indirect-other-window' included it). The diff is below:
-<pre>
-diff -u /home/amcalvo/.emacs.d/elpa/narrow-indirect-20140714.2202/narrow-indirect.el /home/amcalvo/narrow-indirect.el
---- /home/amcalvo/.emacs.d/elpa/narrow-indirect-20140714.2202/narrow-indirect.el	2014-09-14 22:11:37.099396949 +0200
-+++ /home/amcalvo/narrow-indirect.el	2014-09-14 14:07:34.659992947 +0200
-@@ -70,17 +70,17 @@
- ;;  By default, the name of an indirect narrowed buffer reflects the
- ;;  name of its base buffer and the text of the narrowed region (or
- ;;  the name of the defined object, in the case of
--;;  `ni-narrow-to-defun-other-window').  But you can control this in
--;;  several ways.  See the command doc strings and user options
-+;;  `ni-narrow-to-defun-indirect-other-window').  But you can control
-+;;  this in several ways.  See the command doc strings and user options
- ;;  `ni-buf-name-prefix', `ni-narrowed-buf-name-max', and
- ;;  `ni-buf-name-separator'.
- ;;
- ;;  If you use Emacs 24.4 or later then invisible buffer text is
- ;;  filtered out from the name of the indirect buffer.  For example,
--;;  if you invoke `ni-narrow-to-region-other-window' with an active
--;;  region in a Dired buffer that is hiding details, then the
--;;  (invisible) details will not be included in the indirect-buffer
--;;  name.
-+;;  if you invoke `ni-narrow-to-region-indirect-other-window' with
-+;;  an active ;;  region in a Dired buffer that is hiding details,
-+;;  then the (invisible) details will not be included in the
-+;;  indirect-buffer name.
- ;;
- ;;  To customize the behavior of this library, do this:
- ;;
-@@ -88,9 +88,9 @@
- ;;
- ;;  Suggested key bindings:
- ;;
--;;   (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-other-window)
--;;   (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-other-window)
--;;   (define-key ctl-x-4-map "np" 'ni-narrow-to-page-other-window)
-+;;   (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-indirect-other-window)
-+;;   (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-indirect-other-window)
-+;;   (define-key ctl-x-4-map "np" 'ni-narrow-to-page-indirect-other-window)
- ;;
- ;;
- ;;  User options defined here:
-@@ -104,9 +104,9 @@
- ;;
- ;;  Commands defined here:
- ;;
--;;    `ni-narrow-to-defun-other-window',
-+;;    `ni-narrow-to-defun-indirect-other-window',
- ;;    `ni-narrow-to-page-indirect-other-window',
--;;    `ni-narrow-to-region-other-window'.
-+;;    `ni-narrow-to-region-indirect-other-window'.
- ;;
- ;;  Acknowledgments:
- ;;
-@@ -129,6 +129,8 @@
- ;;
- ;;; Change Log:
- ;;
-+;; 2014/07/14 amc
-+;      Rename exported function to include the word *-indirect-*.
- ;; 2014/07/14 dadams
- ;;     ni-narrow-to-region-other-window: Just use buffer-substring-of-visible, not split-string-by-property.
- ;; 2014/05/29 dadams
-@@ -188,7 +190,7 @@
- 
- (defcustom ni-buf-name-separator " | "
-   "Separator string used between the buffer name and the object name.
--Used by `ni-narrow-to-region-other-window' (without a non-negative
-+Used by `ni-narrow-to-region-indirect-other-window' (without a non-negative
- prefix arg)."
-   :type 'string :group 'Narrow-Indirect)
- 
-@@ -197,7 +199,7 @@
-   :group 'Narrow-Indirect :group 'mode-line-faces :group 'basic-faces)
- 
- ;;;###autoload
--(defun ni-narrow-to-defun-other-window (&optional full-name text)
-+(defun ni-narrow-to-defun-indirect-other-window (&optional full-name text)
-   "`narrow-to-defun' in a cloned indirect buffer in the other window.
- The name of the indirect buffer depends on the use of a prefix arg:
- 
-@@ -224,11 +226,28 @@
-   (require 'which-func)
-   (let ((here  (point)))
-     (mark-defun)
--    (ni-narrow-to-region-other-window (region-beginning) (region-end) here full-name (and (not full-name)
-+    (ni-narrow-to-region-indirect-other-window (region-beginning) (region-end) here full-name (and (not full-name)
-                                                                                           (or text  (which-function))))))
- 
-+(defun ni-clean-buffer-substring (start end)
-+  "Return a suitable string for the buffer name based on the buffer content between START and END."
-+  (replace-regexp-in-string
-+   "\\(\s \\)+" "\1"
-+   (replace-regexp-in-string
-+    "\\`\s+\\|\s+\\'" ""
-+    (if (not (require 'subr+ nil t))
-+        (buffer-substring-no-properties start end)
-+      (let* ((filter-buffer-substring-function (lambda (beg end _delete) ; Remove invisible text.
-+                                                 (let ((strg (buffer-substring-of-visible beg end)))
-+                                                   (set-text-properties 0 (length strg) () strg)
-+                                                   strg)))
-+             ;; Older Emacs versions use `filter-buffer-substring-functions', not `filter-buffer-substring-function'.
-+             (filter-buffer-substring-functions (list (lambda (fun beg end del)
-+                                                        (funcall filter-buffer-substring-function beg end del)))))
-+        (filter-buffer-substring start end))))))
-+
- ;;;###autoload
--(defun ni-narrow-to-region-other-window (start end here &optional full-name text msgp)
-+(defun ni-narrow-to-region-indirect-other-window (start end here &optional full-name text msgp)
-   "`narrow-to-region' in a cloned indirect buffer in the other window.
- The indirect buffer is named the same as the current buffer, except:
- 
-@@ -252,35 +271,21 @@
- 
- See `clone-indirect-buffer'."
-   (interactive
--   (list (region-beginning) (region-end) (point) (and current-prefix-arg  (read-string "Buffer name: ")) nil 'MSGP))
-+   (list (region-beginning) (region-end) (point) (and current-prefix-arg  (read-string "Buffer name: ")) nil 'MSGP)) ;
-   (if (and (= start end)  msgp)
-       (message "Region is empty")
-     (deactivate-mark)
--    (let* ((filter-buffer-substring-function  (or (and (require 'subr+ nil t) ; `buffer-substring-of-visible'
--                                                       (lambda (beg end _delete) ; Remove invisible text.
--                                                         (let ((strg   (buffer-substring-of-visible beg end)))
--                                                           (set-text-properties 0 (length strg) () strg)
--                                                           strg)))
--                                                  filter-buffer-substring-function)) ; No-op
--           ;; Older Emacs versions use `filter-buffer-substring-functions', not `filter-buffer-substring-function'.
--           (filter-buffer-substring-functions  (if (fboundp 'split-string-by-property)
--                                                   (list (lambda (fun beg end del)
--                                                           (funcall filter-buffer-substring-function beg end del)))
--                                                 filter-buffer-substring-functions)) ; No-op
--           (buftext                            (if (fboundp 'split-string-by-property)
--                                                   (filter-buffer-substring start end)
--                                                 (buffer-substring-no-properties start end)))
--           (buf                                (or full-name
--                                                   text
--                                                   (replace-regexp-in-string "\\(\s \\)+" "\1"
--                                                                             (replace-regexp-in-string "\\`\s+\\|\s+\\'"
--                                                                                                       "" buftext))))
--           (buf                                (or full-name
--                                                   (concat ni-buf-name-prefix  (buffer-name) ni-buf-name-separator buf)))
--           (buf                                (or full-name
--                                                   (substring buf 0 (min (length buf) ni-narrowed-buf-name-max))))
--           (buf                                (clone-indirect-buffer buf nil)))
-+    (let* ((name (or full-name
-+                     text
-+                     (ni-clean-buffer-substring start end)))
-+           (name (or full-name
-+                     (concat ni-buf-name-prefix (buffer-name) ni-buf-name-separator name)))
-+           (name (or full-name
-+                     (substring name 0 (min (length name) ni-narrowed-buf-name-max))))
-+           (buf (clone-indirect-buffer name nil)))
-+      (message "naME: %s" name)
-       (with-current-buffer buf (narrow-to-region start end) (goto-char here))
-+      (with-current-buffer buf (insert name))
-       (pop-to-buffer buf)
-       (setq mode-line-buffer-identification  (list (propertize (car mode-line-buffer-identification)
-                                                                'face 'ni-mode-line-buffer-id))))))
-</pre>
 
+
+----
+
+[new]
+Getting the error 
+
+{{{
+let*: Symbol's value as variable is void: filter-buffer-substring-function
+}}}
+
+on package <tt>[[narrow-indirect.el]]</tt>. The following diff solves the issue: if <tt>[[subr+.el]]</tt> is not found we don't need those bindings at all. Additionally, I took the liberty of factoring this in a new function `ni-clean-buffer-substring', and renamed the public functions to include the word `indirect' (previously only `ni-narrow-to-page-indirect-other-window' included it). The diff is below: ...
 Thank you for your generosity,
-Adrián.
+[[Adrián]].
+
+[new:DrewAdams:2014-09-15 00:41 UTC]
+Thanks for the suggestion, Adrián.  I've implemented something similar and fixed a couple of bugs (the whitespace-collapsing code was completely wrong).  Should be OK now.  Thx -- DrewAdams
+
 
 
 ----
