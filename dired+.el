@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 14 11:07:16 2014 (-0700)
+;; Last-Updated: Mon Sep 15 13:16:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8313
+;;     Update #: 8341
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -250,7 +250,9 @@
 ;;  easy to create or re-create Dired buffers that list specific files
 ;;  and have a particular set of markings.  `Bookmark+' records Dired
 ;;  buffers persistently, remembering `ls' switches, markings, subdir
-;;  insertions, and hidden subdirs.
+;;  insertions, and hidden subdirs.  If you use `Icicles' then `dired'
+;;  is a multi-command: you can open multiple Dired buffers with one
+;;  `dired' invocation.
 ;;
 ;;  Dired can help you manage projects.  You might have multiple Dired
 ;;  buffers with quite specific contents.  You might have some
@@ -568,6 +570,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/15 dadams
+;;     dired-read-dir-and-switches: Made it (thus dired too) an Icicles multi-command.
+;;     dired (defadvice): Added doc about using it with Icicles.
 ;; 2014/09/14 dadams
 ;;     Added: diredp-kill-this-tree.
 ;;     Removed: diredp-dired-files(-other-window), diredp-dired-files-interactive-spec.
@@ -1322,36 +1327,37 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (require 'dired+)                       ; Ensure loaded before compile this.
 
 ;; Quiet the byte-compiler.
-(defvar bmkp-copied-tags)               ; In `bookmark+-1.el'
-(defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'
-(defvar bookmark-default-file)          ; In `bookmark.el'
-(defvar dired-details-state)		; In `dired-details+.el'
-(defvar dired-keep-marker-hardlink)     ; In `dired-x.el'
-(defvar dired-switches-alist)
-(defvar dired-subdir-switches)
-(defvar dired-touch-program)            ; Emacs 22+
-(defvar dired-use-ls-dired)             ; Emacs 22+
-(defvar diredp-hide-details-initially-flag) ; Here, Emacs 24.4+
-(defvar diredp-hide-details-last-state) ; Here, Emacs 24.4+
-(defvar diredp-hide-details-propagate-flag) ; Here, Emacs 24.4+
-(defvar diredp-hide-details-toggled)    ; Here, Emacs 24.4+
+(defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
+(defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
+(defvar bookmark-default-file)                    ; In `bookmark.el'
+(defvar dired-details-state)		          ; In `dired-details+.el'
+(defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
+(defvar dired-switches-alist)                     ; In `dired.el'
+(defvar dired-subdir-switches)                    ; In `dired.el'
+(defvar dired-touch-program)                      ; Emacs 22+
+(defvar dired-use-ls-dired)                       ; Emacs 22+
+(defvar diredp-hide-details-initially-flag)       ; Here, Emacs 24.4+
+(defvar diredp-hide-details-last-state)           ; Here, Emacs 24.4+
+(defvar diredp-hide-details-propagate-flag)       ; Here, Emacs 24.4+
+(defvar diredp-hide-details-toggled)              ; Here, Emacs 24.4+
 (defvar diredp-menu-bar-immediate-bookmarks-menu) ; Here, if Bookmark+ is available
-(defvar filesets-data)
-(defvar grep-use-null-device)
-(defvar icicle-file-sort)               ; In `icicles-opt.el'
-(defvar icicle-ignored-directories)	; In `icicles-opt.el'
-(defvar icicle-sort-comparer)           ; In `icicles-opt.el'
-(defvar image-dired-line-up-method)     ; In `image-dired.el'
-(defvar image-dired-main-image-directory) ; In `image-dired.el'
-(defvar image-dired-thumbnail-buffer)   ; In `image-dired.el'
-(defvar image-dired-thumb-height)       ; In `image-dired.el'
-(defvar image-dired-thumb-width)        ; In `image-dired.el'
-(defvar image-dired-widget-list)        ; In `image-dired.el'
-(defvar minibuffer-default-add-function) ; In `simple.el', Emacs 23+
-(defvar mouse3-dired-function)          ; In `mouse3.el'
-(defvar tooltip-mode)                   ; In `tooltip.el'
-(defvar vc-directory-exclusion-list)    ; In `vc'
-(defvar w32-browser-wait-time)          ; In `w32-browser.el'
+(defvar filesets-data)                            ; In `filesets.el'
+(defvar grep-use-null-device)                     ; In `grep.el'
+(defvar icicle-file-sort)                         ; In `icicles-opt.el'
+(defvar icicle-ignored-directories)	          ; In `icicles-opt.el'
+(defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
+(defvar image-dired-line-up-method)               ; In `image-dired.el'
+(defvar image-dired-main-image-directory)         ; In `image-dired.el'
+(defvar image-dired-thumbnail-buffer)             ; In `image-dired.el'
+(defvar image-dired-thumb-height)                 ; In `image-dired.el'
+(defvar image-dired-thumb-width)                  ; In `image-dired.el'
+(defvar image-dired-widget-list)                  ; In `image-dired.el'
+(defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
+(defvar mouse3-dired-function)                    ; In `mouse3.el'
+(defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
+(defvar tooltip-mode)                             ; In `tooltip.el'
+(defvar vc-directory-exclusion-list)              ; In `vc'
+(defvar w32-browser-wait-time)                    ; In `w32-browser.el'
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -1809,7 +1815,9 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Non-positive prefix arg means construct cons DIRNAME arg: Read Dired name and files/dirs.
+;; 1. Non-positive prefix arg means construct cons DIRNAME arg: Read Dired name and files/dirs.
+;;
+;; 2. If you use Icicles then this is a multi-command - see doc for `dired' defadvice.
 ;;
 (defun dired-read-dir-and-switches (string)
   "Read arguments for `dired'.
@@ -1821,36 +1829,88 @@ With a non-positive prefix arg, read the Dired buffer name and then
  entering files and directories to list.
 
 STRING is appended to the prompt, unless prefix arg is non-positive.
-If non-empty, STRING should begin with a SPC.
+If non-empty, STRING should begin with a SPC."
+  (let* ((switchs                                     (and current-prefix-arg
+                                                           (natnump (prefix-numeric-value current-prefix-arg))
+                                                           (read-string "Dired listing switches: "
+                                                                        dired-listing-switches)))
+         (icicle-candidate-action-fn
+          (lambda (cand)
+            (dired-other-window cand (and current-prefix-arg  (read-string "Dired listing switches: "
+                                                                           dired-listing-switches)))
+            (select-window (minibuffer-window))
+            (select-frame-set-input-focus (selected-frame))))
+;;; $$$$$$$$ Alternative: Could choose no-op for non-dir candidate.
+;;;          (icicle-candidate-action-fn
+;;;           (lambda (cand)
+;;;             (cond ((file-directory-p cand)
+;;;                    (dired-other-window cand (and current-prefix-arg  (read-string "Dired listing switches: "
+;;;                                                                                   dired-listing-switches)))
+;;;                    (select-window (minibuffer-window))
+;;;                    (select-frame-set-input-focus (selected-frame)))
+;;;                   (t
+;;;                    (message "Not a directory: `%s'" cand) (sit-for 2)))))
+         (icicle-all-candidates-list-alt-action-fn ; M-|'
+          (lambda (files)
+            (let ((enable-recursive-minibuffers  t))
+              (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+         (icicle-sort-comparer                        (or (and (boundp 'icicle-file-sort) ; If not reading files
+                                                               icicle-file-sort) ; then dirs first.
+                                                          (and (> (prefix-numeric-value current-prefix-arg) 0)
+                                                               'icicle-dirs-first-p)
+                                                          (and (boundp 'icicle-sort-comparer)
+                                                               icicle-sort-comparer)))
 
-If you use Icicles, then in Icicle mode the following keys are bound
-in the minibuffer during completion (`*' means the key requires
-library `Bookmark+'):
-
-   M-|         - Open Dired on the file names matching your input
-   S-delete    - delete candidate file or (empty) dir
-   C-c +       - Create a new directory
-   C-backspace - go up one directory level
- * C-x C-t *   - narrow to files with all of the tags you specify
- * C-x C-t +   - narrow to files with some of the tags you specify
- * C-x C-t % * - narrow to files with all tags matching a regexp
- * C-x C-t % + - narrow to files with some tags  matching a regexp
- * C-x a +     - Add tags to the current-candidate file
- * C-x a -     - Remove tags from the current-candidate file
- * C-x m       - Access file bookmarks (not just autofiles)"
-  (let ((switchs               (and current-prefix-arg
-                                    (natnump (prefix-numeric-value current-prefix-arg))
-                                    (read-string "Dired listing switches: "
-                                                 dired-listing-switches)))
-        (icicle-sort-comparer  (or (and (boundp 'icicle-file-sort) ; If not reading files
-                                        icicle-file-sort) ; then dirs first.
-                                   (and (> (prefix-numeric-value current-prefix-arg) 0)
-                                        'icicle-dirs-first-p)
-                                   (and (boundp 'icicle-sort-comparer)  icicle-sort-comparer)))
-        (icicle-all-candidates-list-alt-action-fn ; M-|'
-         (lambda (files)
-           (let ((enable-recursive-minibuffers  t))
-             (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
+         ;; The rest of the bindings are from `icicle-file-bindings', in `icicles-mac.el'.
+         (completion-ignore-case
+          (or (and (boundp 'read-file-name-completion-ignore-case)  read-file-name-completion-ignore-case)
+              completion-ignore-case))
+         (icicle-show-Completions-initially-flag      (and (boundp 'icicle-show-Completions-initially-flag)
+                                                           (or icicle-show-Completions-initially-flag
+                                                               icicle-files-ido-like-flag)))
+         (icicle-top-level-when-sole-completion-flag  (and (boundp 'icicle-top-level-when-sole-completion-flag)
+                                                           (or icicle-top-level-when-sole-completion-flag
+                                                               icicle-files-ido-like-flag)))
+         (icicle-default-value                        (and (boundp 'icicle-default-value)
+                                                           (if (and icicle-files-ido-like-flag
+                                                                    icicle-default-value)
+                                                               icicle-files-ido-like-flag
+                                                             ;;  Get default via `M-n', but do not insert it.
+                                                             (and (memq icicle-default-value '(t nil))
+                                                                  icicle-default-value))))
+         (icicle-must-match-regexp                    (and (boundp 'icicle-file-match-regexp)
+                                                           icicle-file-match-regexp))
+         (icicle-must-not-match-regexp                (and (boundp 'icicle-file-no-match-regexp)
+                                                           icicle-file-no-match-regexp))
+         (icicle-must-pass-after-match-predicate      (and (boundp 'icicle-file-predicate)
+                                                           icicle-file-predicate))
+         (icicle-require-match-flag                   (and (boundp 'icicle-file-require-match-flag)
+                                                           icicle-file-require-match-flag))
+         (icicle-file-completing-p                    t)
+         (icicle-extra-candidates                     (and (boundp 'icicle-file-extras)
+                                                           icicle-file-extras))
+         (icicle-transform-function                   'icicle-remove-dups-if-extras)
+         ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
+         (icicle--temp-orders                         (and (boundp 'icicle-sort-orders-alist)
+                                                           (copy-sequence icicle-sort-orders-alist)))
+         (icicle-candidate-help-fn                    (lambda (cand)
+                                                        (icicle-describe-file cand current-prefix-arg t)))
+         (icicle-candidate-alt-action-fn              (and (boundp 'icicle-candidate-alt-action-fn)
+                                                           (or icicle-candidate-alt-action-fn
+                                                               (icicle-alt-act-fn-for-type "file"))))
+         (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
+         (icicle-sort-orders-alist
+          (and (boundp 'icicle-sort-orders-alist)
+               (progn (when (and icicle-file-sort-first-time-p  icicle-file-sort)
+                        (setq icicle-sort-comparer           icicle-file-sort
+                              icicle-file-sort-first-time-p  nil))
+                      (if icicle-file-sort
+                          (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
+                            (if already-there
+                                (cons already-there (setq icicle--temp-orders  (delete already-there
+                                                                                       icicle--temp-orders)))
+                              (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
+                        icicle--temp-orders)))))
     (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
     (unwind-protect
          (list
@@ -1939,18 +1999,43 @@ library `Bookmark+'):
   buffer can list any number of directories and file names, which can
   even belong to different directory trees.
 
-If you use Icicles, then in Icicle mode the following keys are bound
-in the minibuffer during completion (`*' means the key requires
-library `Bookmark+'):
+The rest of this description applies only if you use Icicles.
 
-   M-|         - Open Dired on the file names matching your input
-   S-delete    - delete candidate file or (empty) dir
+In Icicle mode this is a multi-command: You can cycle among file-name
+completion candidates and act individually on those that name
+directories.  The action is to open Dired for the directory.  While
+cycling, these keys are active:
+
+\\<minibuffer-local-completion-map>\
+`C-mouse-2', `C-return' - Act on current completion candidate only
+`C-down', `C-wheel-down' - Move to next completion candidate and act
+`C-up', `C-wheel-up' - Move to previous completion candidate and act
+`C-next'  - Move to next apropos-completion candidate and act
+`C-prior' - Move to previous apropos-completion candidate and act
+`C-end'   - Move to next prefix-completion candidate and act
+`C-home'  - Move to previous prefix-completion candidate and act
+`\\[icicle-all-candidates-action]'     - Act on *all* candidates, successively (careful!)
+`\\[icicle-all-candidates-list-alt-action]'     - Open Dired on all candidates
+
+When candidate action and cycling are combined (e.g. `C-next'), user
+option `icicle-act-before-cycle-flag' determines which occurs first.
+
+With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
+`C-M-RET', `C-M-down', and so on) provide help about candidates.
+
+Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
+`C-g' to quit.
+
+These keys are also bound in the minibuffer during completion (`*'
+means the key requires library `Bookmark+'):
+
+   S-delete    - Delete candidate file or (empty) dir
    C-c +       - Create a new directory
-   C-backspace - go up one directory level
- * C-x C-t *   - narrow to files with all of the tags you specify
- * C-x C-t +   - narrow to files with some of the tags you specify
- * C-x C-t % * - narrow to files with all tags matching a regexp
- * C-x C-t % + - narrow to files with some tags  matching a regexp
+   C-backspace - Go up one directory level
+ * C-x C-t *   - Narrow to files with all of the tags you specify
+ * C-x C-t +   - Narrow to files with some of the tags you specify
+ * C-x C-t % * - Narrow to files with all tags matching a regexp
+ * C-x C-t % + - Narrow to files with some tags  matching a regexp
  * C-x a +     - Add tags to the current-candidate file
  * C-x a -     - Remove tags from the current-candidate file
  * C-x m       - Access file bookmarks (not just autofiles)")
