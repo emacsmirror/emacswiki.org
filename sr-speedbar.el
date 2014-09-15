@@ -320,8 +320,9 @@ Default is nil."
 If ACTIVATE is `non-nil' enable advice `sr-speedbar-other-window-advice'.
 Otherwise disable it."
   (if activate
-      t
-    t))
+      (ad-enable-advice 'other-window 'after 'sr-speedbar-other-window-advice)
+    (ad-disable-advice 'other-window 'after 'sr-speedbar-other-window-advice))
+  (ad-activate 'other-window))
 
 (defcustom sr-speedbar-skip-other-window-p nil
   "Whether skip `sr-speedbar' window with `other-window'.
