@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Aug 19 16:31:40 2014 (-0700)
+;; Last-Updated: Mon Sep 15 13:41:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29684
+;;     Update #: 29689
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2599,6 +2599,10 @@
 ;;
 ;;  Icicles can help with Dired in these ways:
 ;;
+;;  * Commands `dired' and `dired-other-window' are multi-commands.
+;;    If you use library `Dired+' (`dired+.el') then these commands
+;;    are particularly powerful.
+;
 ;;  * You can use Icicles search-and-replace on the marked files in
 ;;    the current directory and in marked subdirectories
 ;;    (recursively).
@@ -6821,6 +6825,11 @@
 ;;  Actually, by default, Icicles binds `icicle-yank-maybe-completing'
 ;;  to whatever the value of option `icicle-yank-function' is.  By
 ;;  default, this value is `yank'.
+;;
+;;  The substitution of `icicle-dired(-other-window)' for
+;;  `dired(-other-window)' happens by default only if you do not use
+;;  library `Dired+'.  If you do use `Dired+' then the commands are
+;;  already Icicles multi-commands, and are especially powerful.
 ;;
 ;;  Option `icicle-top-level-key-bindings' remaps not only these
 ;;  standard Emacs commands but also some commands provided by other
