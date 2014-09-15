@@ -12,7 +12,7 @@ Here's the source:
 
 : Lisp:tfs.el
 
-== Basic Setup ==
+=== Basic Setup ===
 <pre>
    1. Place `tfs.el' in your `load-path'.
    2. In your .emacs file:
