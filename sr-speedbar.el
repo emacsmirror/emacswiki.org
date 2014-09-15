@@ -7,7 +7,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, Peter Lunicks, all rights reversed.
 ;; Created: 2008
-;; Version: 0.1.10
+;; Version: 20140914.2339
+;; X-Original-Version: 0.1.10
 ;; Last-Updated: 2014-08-03 11:30:00
 ;; URL: http://www.emacswiki.org/emacs/download/sr-speedbar.el
 ;; Keywords: speedbar, sr-speedbar.el
@@ -79,6 +80,15 @@
 ;;; Change log:
 ;;
 ;; * 15 Sep 2014:
+;;   * Tu, Do Hoang <tuhdo1710@gmail.com>
+;;      * define `sr-speedbar-handle-other-window-advice' and `ad-advised-definition-p'
+;;      before defining `sr-speedbar-skip-other-window-p'. Othewise, `sr-speedbar'
+;;      fails to load at this stage.
+;;
+;;      * Do not used advised `pop-to-buffer' when helm window is
+;;      alive. Otherwise another horizontal buffer is created inside
+;;      Helm buffer.
+;;
 ;;   * Uwe Koloska <kolewu@koloro.de>
 ;;      * define `ad-advised-definition-p' only if it's not defined
 ;;        fixes an error on Emacs 24.3 where `macrop' ist still named
@@ -294,6 +304,24 @@ the speedbar.
 Default is nil."
   :type 'boolean
   :group 'sr-speedbar)
+
+(if (not (fboundp 'ad-advised-definition-p))
+    (defun ad-advised-definition-p (definition)
+      "Return non-nil if DEFINITION was generated from advice information."
+      (if (or (ad-lambda-p definition)
+              (macrop definition)
+              (ad-compiled-p definition))
+          (let ((docstring (ad-docstring definition)))
+            (and (stringp docstring)
+                 (get-text-property 0 'dynamic-docstring-function docstring))))))
+
+(defun sr-speedbar-handle-other-window-advice (activate)
+  "Handle advice for function `other-window'.
+If ACTIVATE is `non-nil' enable advice `sr-speedbar-other-window-advice'.
+Otherwise disable it."
+  (if activate
+      t
+    t))
 
 (defcustom sr-speedbar-skip-other-window-p nil
   "Whether skip `sr-speedbar' window with `other-window'.
@@ -552,15 +580,6 @@ Otherwise return nil."
 Otherwise return nil."
   (and buffer (buffer-live-p buffer)))
 
-(defun sr-speedbar-handle-other-window-advice (activate)
-  "Handle advice for function `other-window'.
-If ACTIVATE is `non-nil' enable advice `sr-speedbar-other-window-advice'.
-Otherwise disable it."
-  (if activate
-      (ad-enable-advice 'other-window 'after 'sr-speedbar-other-window-advice)
-    (ad-disable-advice 'other-window 'after 'sr-speedbar-other-window-advice))
-  (ad-activate 'other-window))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Advices ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defadvice delete-other-windows (around sr-speedbar-delete-other-window-advice activate)
   "This advice to make `sr-speedbar' window can't deleted by command `delete-other-windows'."
@@ -596,7 +615,8 @@ And the example function that can occur above problem is `pop-to-buffer'."
   (when (and pop-up-windows                            ;`pop-up-windows' is enable
              (sr-speedbar-window-dedicated-only-one-p) ;just have one `non-dedicated' window
              (sr-speedbar-window-exist-p sr-speedbar-window)
-             (not (sr-speedbar-window-p))) ;not in `sr-speedbar' window
+             (not (sr-speedbar-window-p)) ;not in `sr-speedbar' window
+             (not helm-alive-p))
     (split-window-vertically)
     (windmove-down)))
 
@@ -610,17 +630,6 @@ This advice can make `other-window' skip `sr-speedbar' window."
     (when (and (sr-speedbar-window-exist-p sr-speedbar-window)
                (eq sr-speedbar-window (selected-window)))
       (other-window count))))
-
-(if (not (fboundp 'ad-advised-definition-p))
-    (defun ad-advised-definition-p (definition)
-      "Return non-nil if DEFINITION was generated from advice information."
-      (if (or (ad-lambda-p definition)
-	      (macrop definition)
-	      (ad-compiled-p definition))
-	  (let ((docstring (ad-docstring definition)))
-	    (and (stringp docstring)
-		 (get-text-property 0 'dynamic-docstring-function docstring)))))
-  )
 
 (provide 'sr-speedbar)
 
