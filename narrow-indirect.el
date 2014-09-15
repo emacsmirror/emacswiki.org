@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 14 14:49:11 2014 (-0700)
+;; Last-Updated: Sun Sep 14 17:33:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 157
+;;     Update #: 193
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -69,15 +69,15 @@
 ;;  By default, the name of an indirect narrowed buffer reflects the
 ;;  name of its base buffer and the text of the narrowed region (or
 ;;  the name of the defined object, in the case of
-;;  `ni-narrow-to-defun-other-window').  But you can control this in
-;;  several ways.  See the command doc strings and user options
-;;  `ni-buf-name-prefix', `ni-narrowed-buf-name-max', and
+;;  `ni-narrow-to-defun-indirect-other-window').  But you can control
+;;  this in several ways.  See the command doc strings and user
+;;  options `ni-buf-name-prefix', `ni-narrowed-buf-name-max', and
 ;;  `ni-buf-name-separator'.
 ;;
 ;;  If you use Emacs 24.4 or later then invisible buffer text is
 ;;  filtered out from the name of the indirect buffer.  For example,
-;;  if you invoke `ni-narrow-to-region-other-window' with an active
-;;  region in a Dired buffer that is hiding details, then the
+;;  if you invoke `ni-narrow-to-region-indirect-other-window' with an
+;;  active region in a Dired buffer that is hiding details, then the
 ;;  (invisible) details will not be included in the indirect-buffer
 ;;  name.
 ;;
@@ -87,9 +87,9 @@
 ;;
 ;;  Suggested key bindings:
 ;;
-;;   (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-other-window)
-;;   (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-other-window)
-;;   (define-key ctl-x-4-map "np" 'ni-narrow-to-page-other-window)
+;;   (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-indirect-other-window)
+;;   (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-indirect-other-window)
+;;   (define-key ctl-x-4-map "np" 'ni-narrow-to-page-indirect-other-window)
 ;;
 ;;
 ;;  User options defined here:
@@ -103,9 +103,13 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `ni-narrow-to-defun-other-window',
+;;    `ni-narrow-to-defun-indirect-other-window',
 ;;    `ni-narrow-to-page-indirect-other-window',
-;;    `ni-narrow-to-region-other-window'.
+;;    `ni-narrow-to-region-indirect-other-window'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `ni-buffer-substring-collapsed-visible'.
 ;;
 ;;  Acknowledgments:
 ;;
@@ -128,12 +132,20 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/14 dadams
+;;     Added: ni-buffer-substring-collapsed-visible.  Thx to Adrian for suggestion.
+;;     Renamed: ni-narrow-to-defun-other-window  to ni-narrow-to-defun-indirect-other-window,
+;;              ni-narrow-to-region-other-window to ni-narrow-to-region-indirect-other-window.
+;;     ni-narrow-to-region-indirect-other-window: Use ni-buffer-substring-collapsed-visible.
+;;     ni-buffer-substring-collapsed-visible: Fixed regexps and replacements.
+;;     Added declare-function for which-function.
 ;; 2014/07/14 dadams
 ;;     ni-narrow-to-region-other-window: Just use buffer-substring-of-visible, not split-string-by-property.
 ;; 2014/05/29 dadams
 ;;     Added: ni-buf-name-separator.  And use  | , not  / , as the value.
 ;;     ni-narrow-to-region-other-window:
-;;      Soft-require subr+.el, for split-string-by-property.  Remove invisible text from name.  Use ni-buf-name-separator.
+;;      Soft-require subr+.el, for split-string-by-property.  Remove invisible text from name.
+;;      Use ni-buf-name-separator.
 ;; 2014/05/17 dadams
 ;;     Added autoload cookies.
 ;; 2014/05/11 dadams
@@ -187,16 +199,17 @@ buffers from the original."
 
 (defcustom ni-buf-name-separator " | "
   "Separator string used between the buffer name and the object name.
-Used by `ni-narrow-to-region-other-window' (without a non-negative
-prefix arg)."
+Used by `ni-narrow-to-region-indirect-other-window' (without a
+non-negative prefix arg)."
   :type 'string :group 'Narrow-Indirect)
 
 (defface ni-mode-line-buffer-id '((t (:box (:line-width 1 :color "green"))))
   "Like `mode-line-buffer-id', but for a narrowed indirect clone buffer."
   :group 'Narrow-Indirect :group 'mode-line-faces :group 'basic-faces)
 
+(declare-function which-function "which-func" ())
 ;;;###autoload
-(defun ni-narrow-to-defun-other-window (&optional full-name text)
+(defun ni-narrow-to-defun-indirect-other-window (&optional full-name text)
   "`narrow-to-defun' in a cloned indirect buffer in the other window.
 The name of the indirect buffer depends on the use of a prefix arg:
 
@@ -217,17 +230,20 @@ Non-interactively:
 * TEXT is used for NAME, if FULL-NAME is nil.
 
 See `clone-indirect-buffer'."
-  (interactive
-   (list (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))  (read-string "Buffer name: "))
-         (and current-prefix-arg  (< (prefix-numeric-value current-prefix-arg) 0)  (read-string "Buffer name suffix: "))))
-  (require 'which-func)
+  (interactive (list (and current-prefix-arg
+                          (natnump (prefix-numeric-value current-prefix-arg))
+                          (read-string "Buffer name: "))
+                     (and current-prefix-arg
+                          (< (prefix-numeric-value current-prefix-arg) 0)
+                          (read-string "Buffer name suffix: "))))
   (let ((here  (point)))
     (mark-defun)
-    (ni-narrow-to-region-other-window (region-beginning) (region-end) here full-name (and (not full-name)
-                                                                                          (or text  (which-function))))))
+    (ni-narrow-to-region-indirect-other-window
+     (region-beginning) (region-end) here full-name (and (not full-name)  (or text  (progn (require 'which-func)
+                                                                                           (which-function)))))))
 
 ;;;###autoload
-(defun ni-narrow-to-region-other-window (start end here &optional full-name text msgp)
+(defun ni-narrow-to-region-indirect-other-window (start end here &optional full-name text msgp)
   "`narrow-to-region' in a cloned indirect buffer in the other window.
 The indirect buffer is named the same as the current buffer, except:
 
@@ -255,34 +271,35 @@ See `clone-indirect-buffer'."
   (if (and (= start end)  msgp)
       (message "Region is empty")
     (deactivate-mark)
-    (let* ((filter-buffer-substring-function  (or (and (require 'subr+ nil t) ; `buffer-substring-of-visible'
-                                                       (lambda (beg end _delete) ; Remove invisible text.
-                                                         (let ((strg   (buffer-substring-of-visible beg end)))
-                                                           (set-text-properties 0 (length strg) () strg)
-                                                           strg)))
-                                                  filter-buffer-substring-function)) ; No-op
-           ;; Older Emacs versions use `filter-buffer-substring-functions', not `filter-buffer-substring-function'.
-           (filter-buffer-substring-functions  (if (fboundp 'split-string-by-property)
-                                                   (list (lambda (fun beg end del)
-                                                           (funcall filter-buffer-substring-function beg end del)))
-                                                 filter-buffer-substring-functions)) ; No-op
-           (buftext                            (if (fboundp 'split-string-by-property)
-                                                   (filter-buffer-substring start end)
-                                                 (buffer-substring-no-properties start end)))
-           (buf                                (or full-name
-                                                   text
-                                                   (replace-regexp-in-string "\\(\s \\)+" "\1"
-                                                                             (replace-regexp-in-string "\\`\s+\\|\s+\\'"
-                                                                                                       "" buftext))))
-           (buf                                (or full-name
-                                                   (concat ni-buf-name-prefix  (buffer-name) ni-buf-name-separator buf)))
-           (buf                                (or full-name
-                                                   (substring buf 0 (min (length buf) ni-narrowed-buf-name-max))))
-           (buf                                (clone-indirect-buffer buf nil)))
+    (let* ((buf  (or full-name  text  (ni-buffer-substring-collapsed-visible start end)))
+           (buf  (or full-name  (concat ni-buf-name-prefix (buffer-name) ni-buf-name-separator buf)))
+           (buf  (or full-name  (substring buf 0 (min (length buf) ni-narrowed-buf-name-max))))
+           (buf   (clone-indirect-buffer buf nil)))
       (with-current-buffer buf (narrow-to-region start end) (goto-char here))
       (pop-to-buffer buf)
       (setq mode-line-buffer-identification  (list (propertize (car mode-line-buffer-identification)
                                                                'face 'ni-mode-line-buffer-id))))))
+
+(defun ni-buffer-substring-collapsed-visible (start end)
+  "Return a suitable string based on buffer content between START and END.
+Whitespace is collapsed.  And if you use library `subr+.el' then
+invisible text is removed."
+  (replace-regexp-in-string "\\s-+" " "
+                            (replace-regexp-in-string
+                             "\\`\\s-+\\|\\s-+\\'" ""
+                             (if (not (require 'subr+ nil t))
+                                 (buffer-substring-no-properties start end)
+                               (let* ((filter-buffer-substring-function
+                                       (lambda (beg end _delete) ; Remove invisible text.
+                                         (let ((strg  (buffer-substring-of-visible beg end)))
+                                           (set-text-properties 0 (length strg) () strg)
+                                           strg)))
+                                      ;; Older Emacs versions use `filter-buffer-substring-functions',
+                                      ;; not `filter-buffer-substring-function'.
+                                      (filter-buffer-substring-functions
+                                       (list (lambda (fun beg end del)
+                                               (funcall filter-buffer-substring-function beg end del)))))
+                                 (filter-buffer-substring start end))))))
 
 ;;;###autoload
 (defun ni-narrow-to-page-indirect-other-window (&optional arg)
