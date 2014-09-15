@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Aug 29 08:40:24 2014 (-0700)
+;; Last-Updated: Mon Sep 15 13:34:38 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6052
+;;     Update #: 6054
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4934,8 +4934,10 @@ toggle Icicle mode off and then back on."
 
     (describe-package              icicle-describe-package                ; `C-h P'
      (fboundp 'describe-package))
-    (dired                         icicle-dired                        t) ; `C-x d'
-    (dired-other-window            icicle-dired-other-window           t) ; `C-x 4 d'
+    (dired                         icicle-dired
+     (not (featurep 'dired+)))                                            ; `C-x d'
+    (dired-other-window            icicle-dired-other-window
+     (not (featurep 'dired+)))                                            ; `C-x 4 d'
     (exchange-point-and-mark       icicle-exchange-point-and-mark      t) ; `C-x C-x'
     (execute-extended-command      icicle-execute-extended-command     t) ; `M-x'
     (find-file                     icicle-file                         t) ; `C-x C-f'
