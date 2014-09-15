@@ -91,6 +91,10 @@ file, but I guess that can be easily fixed.
 Use bbdb-csv-import from melpa or from https://gitlab.com/iankelling/bbdb-csv-import and follow the simple instructions at the top of the file. Works with gmail, thunderbird, linkedin, outlook.com, easily extensible to more. It is well supported.
 
 This project was created due to too many bugs in the bbdb 2 importer below. 
+
+or use https://github.com/redguardtoo/gmail2bbdb, it's just a simple el file WITHOUT any dependency on other packages (even BBDB is a dependency I hate), so it always works out of the box. 
+
+gmail2bbdb is a simple plugin which only export email address, it's pretty solid.
     
 == Importing from CSV files into bbdb 2 ==
 
