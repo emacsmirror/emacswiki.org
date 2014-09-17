@@ -2,3 +2,10 @@ I like the option of executing the configure script from another directory. How 
 
 -- jgomo3 2014-02-13 19:54 UTC
 
+
+----
+
+Why does it say "You must have some of the Xlib libraries available, even when you do not use X"? I'm pretty sure that's not true. You do need to configure with --without-x.
+
+-- rees4905 2014-09-17 14:12 UTC
+
