@@ -10,3 +10,13 @@ On the other hand, being undocumented, it can be a shock to have your Caps Lock 
 
 FWIW, that’s not what I see, with a recent Windows 7 laptop. For me, the key labeled “Scroll Lock” has no effect, and ‘C-h k’ for it says that it is undefined. And (for me) ‘C-h k’ calls that key <scroll>, not <Scroll_Lock>. I wonder whether the behavior you are seeing is even going through Emacs.
 – DrewAdams
+
+[gonbei]
+>>FWIW, that’s not what I see, with a recent Windows 7 laptop.
+最初からスクロールロックキーがついていないやつを買った奴が悪い。てかWin7って、それでもemacsenなの？
+>>For me, the key labeled “Scroll Lock” has no effect, and ‘C-h k’ for it says that it is undefined.
+当たり前だろ。最初から定義されていなんだから。上に書いてあるスニペットを使えよ。
+>>And (for me) ‘C-h k’ calls that key <scroll>, not <Scroll_Lock>.
+いやだからさ、馬鹿なの君は？
+>>I wonder whether the behavior you are seeing is even going through Emacs.
+君が馬鹿にしか見えないからだよ：）
