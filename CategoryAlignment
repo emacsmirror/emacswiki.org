@@ -1,4 +1,4 @@
-There is a number of facilities provided by emacs to align text, comments, assignments, or columns.
+There are facilities provided by emacs to align text, comments, assignments, or columns.
 
 * AlignCommands explains how to use the <code>align</code>, <code>align-current</code> and <code>align-regexp</code> commands provided with emacs.
 
