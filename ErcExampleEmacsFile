@@ -105,6 +105,26 @@
     (erc :server "irc.crystalia.net" :port 6667
                 :nick "davidmccabe" :full-name "David McCabe")
     (erc :server "localhost" :port 6667 :nick "davidm")))
+
+;;; Filter bots/users - requires dynamic binding.
+(defun jwp-erc-filter-bot (channel bots)
+  "Filter messages to/from bots.
+CHANNEL is the name of the channel to watch.
+BOTS are a list of bots (nicks) to filter."
+  (message "Filtering %s channel for %s bots" channel bots)
+  (let ((bot-list `()))
+    (dolist (bot bots)
+      (push (format "%s:" bot) bot-list)
+      (push (format "<%s>" bot) bot-list))
+    (message "Bot list %s" bot-list)
+    (add-hook 'erc-insert-pre-hook (function (lambda (msg)
+                                               (when (string-match (buffer-name) channel)
+                                                 (dolist (bot-indicator bot-list)
+                                                   (when (string-match bot-indicator msg)
+                                                     ;(message "Filtering bot: %s" msg)
+                                                     (setq erc-insert-this nil)))))))))
+
+(jwp-erc-filter-bot "#emacs" '("foo" "bar" "baz"))
 </pre>
 
 ----
