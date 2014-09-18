@@ -1,10 +1,8 @@
 [[en:PlannerMode]]
 This japanese translating page and this is stub. Dont write in english. --gonbei
 
-Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes,
-and anything else you want to store in a free-text richly-hyperlinked personal information manager integrated into
-Emacs. Because it's in Emacs, it can easily be tweaked to support your particular way of planning, and it
-can draw upon the data and functions you already have in Emacs.
+Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes, and anything else you want to store in a free-text richly-hyperlinked personal information manager integrated into Emacs.
+Because it's in Emacs, it can easily be tweaked to support your particular way of planning, and it can draw upon the data and functions you already have in Emacs.
 
 It puts all of the Emacs PIM pieces together: BbdbMode (addresses), EmacsMuse (linking of notes and publishing), etc.  
 This allows you to easily write notes, link to other notes, link to dates, link to addresses, link to -- everything. 
@@ -26,7 +24,7 @@ If you're new to Planner, here's a good way to get started:
 
 There is a good intro on how to use the PlannerMode in the planner.el file. 
 
-== Getting Planner ==
+== プランナーを得る ==
 
 The current version is at 
 
@@ -34,8 +32,7 @@ The current version is at
 
 You can get the latest development snapshot at http://repo.or.cz/w/planner-el.git.
 
-See the PlannerModeQuickStart page for more specific directions on
-getting Planner.
+See the PlannerModeQuickStart page for more specific directions on getting Planner.
 
 The Planner manual is available on-line in several forms at http://wjsullivan.net/static/doc/planner/.
 
@@ -45,11 +42,14 @@ Older version is at
 
 If you're new to PlannerMode (or you don't mind relearning some keybindings), you can add (planner-install-extra-task-keybindings) to your .emacs to take advantage of the new task keybindings. Warning to old users of planner.el: C-c C-t becomes a prefix key; use C-c C-t C-t to create tasks.
 
-== Planner features ==
+== プランナーの機能 ==
 
 Take a look at PlannerModeQuickStart for a number of features and how to use them.  
 
-PlannerMode is a way to manage notes and tasks.  It leverages on EmacsMuse to create a hyperlinked planning and note-taking environment.  Two types of pages are usually created "Daily Pages" and "Project Pages."  Daily pages keep track of the day-to-day; Project pages let you organize your notes into projects.  In the typical set up, tasks and notes can be put into both pages simultaneously, giving you the ability to look over your notes chronologically or by project.  
+PlannerMode is a way to manage notes and tasks.
+It leverages on EmacsMuse to create a hyperlinked planning and note-taking environment.
+Two types of pages are usually created "Daily Pages" and "Project Pages."  Daily pages keep track of the day-to-day; Project pages let you organize your notes into projects.
+In the typical set up, tasks and notes can be put into both pages simultaneously, giving you the ability to look over your notes chronologically or by project.
 
 Here are some features of planner.  Some require customization, so read the docs.
 
@@ -60,11 +60,11 @@ Here are some features of planner.  Some require customization, so read the docs
 have a link to the file in the buffer.  PlannerMode helps take the drudgery out of leaving an annotated trail of crumbs for work that you have done.  
 * EmacsMuse: All notes can have links to other notes, Project pages, Daily pages, mail messages, bbdb entries, web pages, files on your harddrive.  You can include images.  All the power and simplicity of a wiki language is there as part of your planning package.
 
-== Migrating to Org-Mode ==
+== オルグモードへの移行 ==
 
 A small Perl program to convert Planner files into something suitable for OrgMode was once [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx available].
 
-== People who use planner.el ==
+== planner.elを使う人 ==
 
 * SachaChua is a former maintainer and has some stories about using planner.el. Her published planner wiki can be found at http://sachachua.com/notebook/wiki/ .
 ** Blog post about how her former workflow is [http://sachachua.com/wp/2007/12/23/one-day-with-planner here]
@@ -108,10 +108,10 @@ A small Perl program to convert Planner files into something suitable for OrgMod
 * [[Bernard Hurley]] I have just started using planner+remember. It is ideally suited to the way I work.
 * XueFuqiao used planner occasionally.
 
-== Bug in Planner 3.42 Registry Handling ==
+== Planner 3.42 レジストリ操作のバグ ==
 
-There is a bug in planner-registry.el in the latest version of planner mode. I'm surprised that no one has found it in the last 4 years as it makes the registry unusable. I have emailed the author, but for the time being a
-temporary fix is to put:
+There is a bug in planner-registry.el in the latest version of planner mode. I'm surprised that no one has found it in the last 4 years as it makes the registry unusable.
+I have emailed the author, but for the time being a temporary fix is to put:
 
 <pre>
 (defun planner-registry-update-registry (from-file new-entries)
@@ -144,9 +144,11 @@ but before:
 (planner-registry-initialize)
 </pre>
 
-==Using Planner with NotMuch==
+==NotMuchでプランナーを使う==
 
-The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring. The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code. The text of the Date: and From: field are also copied to the kill ring as the user will probably want these too.
+The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring.
+The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code.
+The text of the Date: and From: field are also copied to the kill ring as the user will probably want these too.
 
 <pre>
 ;; Code for using notmuch with planner
@@ -156,10 +158,8 @@ The format of the link is:
 
    [[<subject>]], <date>, <from>.
 
-The subject field is suitably edited to remove any characters
-that would break the coding of the link. The text of the Date:
-and From: fields are also also copied to the kill ring as the
-user will most probably need them.
+The subject field is suitably edited to remove any characters that would break the coding of the link.
+The text of the Date: and From: fields are also also copied to the kill ring as the user will most probably need them.
 "
   ;; Make sure planner understands lisp coded links
   (require 'planner-lisp)
