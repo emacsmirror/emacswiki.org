@@ -1,3 +1,4 @@
+[[ja:アウトラインモード]]
 Outline mode is the default outline mode for Emacs.  Use <tt>M-x outline-mode</tt> to enter it.  See also OutlineMinorMode, AllOut.
 
 It distinguishes between different header levels and the plain text.  The default mechanism uses asterisks to determine header levels.  Use the NEWS file as an example (C-h n):
