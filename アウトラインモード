@@ -1,0 +1,255 @@
+[[en:Outlinemode]]
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Outline mode is the default outline mode for Emacs.  Use <tt>M-x outline-mode</tt> to enter it.  See also OutlineMinorMode, AllOut.
+
+It distinguishes between different header levels and the plain text.  The default mechanism uses asterisks to determine header levels.  Use the NEWS file as an example (C-h n):
+
+    * Very important
+    ** Less important
+    *** A detail
+    And the rest is text
+    between the headers.
+
+You can then use Headings, Show, and Hide menus to selectively show parts of the text, or the following keys:
+
+* C-c @ C-a show all
+* C-c @ C-t show only the headings
+* C-c @ C-s show subtree at cursor location
+* C-c @ C-d hide subtree at cursor location
+
+See also [[Manual:Outline Mode]].
+Screencasts for using the outline-mode is available at ScreencastSources and ScreencastRecordings.
+
+== 例 ==
+
+For example, a document may look like this:
+
+  * Heading
+  
+  This is a document that has a heading, and a body.
+  The body will consist of two paragraphs with sub-headings.
+  
+  * Body
+  
+  This is an introduction to the body. The body has two sub-headings,
+  each of which have their own paragraph.
+  
+  ** The First Paragraph
+  
+  This is the first of two paragraphs.
+  It is not terribly impressive.
+  
+  ** The Second Paragraph
+  
+  This is the second of two paragraphs.
+  It is not impressive either.
+
+You can use hide-subtree (C-c C-d) to hide the Heading, and the two paragraphs:
+
+  * Heading...
+  
+  * Body
+  
+  This is an introduction to the body. The body has two sub-headings,
+  each of which have their own paragraph.
+  
+  ** The First Paragraph...
+  
+  ** The Second Paragraph...
+
+You can use hide-body (C-c C-t) to hide all the body text, leaving only the headings (note the ellipsis indicating where body text has been hidden):
+
+  * Heading...
+  
+  * Body...
+  ** The First Paragraph...
+  ** The Second Paragraph...
+
+And you can use show-all (C-c C-a) to redisplay everything and get back to where we started.
+
+== Customizing Heading Definition ==
+
+You can also customize `outline-regexp' which indicates which lines are considered heading.  It is a regular expression to match the beginning of a heading.  The smaller the match, the higher the level of the heading.
+
+The default value matches asterisks and page breaks:
+
+ "[*\f]+"
+
+For lisp-modes, the value matches comments starting with three semicolons and opening parens on the first column.
+
+ ";;; \\|(...."
+
+For man pages, something like this might be useful:
+
+ " *[A-Z ]+"
+
+For [http://en.wikipedia.org/ Wikipedia] or [http://txt2tags.sourceforge.net/ txt2tags] style headers:
+
+ "^[=]+"
+
+JohanBockgård uses "[A-Z]\\|\\s-+[-+]" to give this result
+
+OPTIONS...
+
+     -help   This causes xterm to print  out  a  verbose  message...
+
+     -132    Normally, the VT102  DECCOLM  escape  sequence  that...
+
+== アウトラインの省略記号をカスタマイズする ==
+
+It isn't very obvious how to change the characters outline
+mode uses for ellipsis (`...' by default).
+
+Use this to customize it to your needs:
+
+ (set-display-table-slot standard-display-table 
+                         'selective-display 
+                         (string-to-vector "More..."))
+
+/Even/ less obvious is how to use a different [[Face]]:
+
+    (set-display-table-slot
+     standard-display-table
+     'selective-display
+     (let ((face-offset (* (face-id font-lock-keyword-face) (expt 2 19))))
+       (vconcat (mapcar (lambda (c) (+ face-offset c)) "More..."))))
+
+or (tested with emacs 23):
+
+    (set-display-table-slot
+     standard-display-table
+     'selective-display
+     (let ((face-offset (* (face-id 'shadow) (lsh 1 22))))
+       (vconcat (mapcar (lambda (c) (+ face-offset c)) " [...] "))))
+
+== 見出しにローマ数字を使う ==
+
+Here's how to make Emacs' outline mode use "I., A., 1., a., i." and so on as valid outline entries.  Put the following at the end of your document (or among your LocalVariables if you already have them):
+
+    Local Variables:
+    mode: outline-minor
+    outline-regexp: " *\\([A-Za-z]\\|[IVXivx0-9]+\\)\\. *"
+    End:
+
+There, now you can use normal outline notation.  If you use "outline" instead of "outline-minor" for mode, then you get font-lock as a bonus (but you lose whatever major mode you were in before).  Note that it is looking for any number of spaces, followed by either a single letter or a Roman or Arabic numeral (multiple digits allowed), followed by any number of spaces, and the length of all of that together determines the outline level.  So your outlines have to look like this:
+
+      I.  blah blah
+     II.  blah blah blah
+    III.  blah blah
+          A.  This
+          B.  That
+
+...for this to work correctly.  Interestingly enough, this didn't work for me on the very first line of the file; I had to skip one line (an extra carriage return above "I"), then it worked as planned.  Not sure why this is.
+
+== スペシャルモードのためのいくつかのフック ==
+
+ (add-hook 'change-log-mode-hook
+  (lambda ()
+    (setq outline-regexp "[[:digit:]]+")))
+ ; note that the "^" is *implicit* at the beginning of the regexp
+
+Better use (set (make-local-variable 'outline-regexp) "...") as the above changes the global value.
+
+== 循環 ==
+
+Instead of using many different commands to show and hide buffer
+parts, `outline-cycle' cycles through the most important states of an
+outline buffer.  By default, it is bound to the `TAB' key.  This saves a
+lot of typing and thinking while editing your outline.
+
+OrgMode includes cycling and many more features
+
+The outline-magic package by CarstenDominik provides the command
+`outline-cycle' which cycles the visibility / folding level of text and headings.
+
+In addition to outline cycling, this extension provides four commands
+for structure editing.  Using M-up, M-down, M-left, and M-right, you
+can easily move entries around:
+
+                               move up
+                                  ^
+                      promote  <- + ->  demote
+                                  v
+                              move down
+
+You can get it from one of the following:
+* http://www.astro.uva.nl/~dominik/Tools/outline-magic.el
+* http://www.emacswiki.org/emacs/outline-magic.el
+
+It seems that similar features are provided by AllOut.
+
+You can use outline-magic to fold python code:
+* [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
+* http://www.emacswiki.org/emacs/python-magic.el
+
+== Emacsアウトラインを他のフォーマットへ変換する ==
+
+Outline mode is helpful for organizing plain text documents and program
+source code.  It would be useful to have a converter for
+the Emacs outline format into other document and file formats.
+Here are a few projects trying to do just that.
+
+* EasyCodeOutline
+* EmacsOutlineToHtml - Converts the outline format to a web page.
+* EmacsPresentation - Converts outline to some useful format for public presentations.
+
+== a2psを使ってアウトラインファイルを印刷する ==
+
+**a2ps(1)** includes a simple stylesheet for outline-mode (at least, the Debian package 1:4.13b-4.3 has it (not for me?, does anyone know where to find this?)).  To use it for your file, do one of:
+
+* specify the language directly, e.g. <code>a2ps -o print.ps -Eoutline myfile</code>
+* find or create some **magic(5)** for the **file(1)** command to recognise outline files, then tell the a2ps map file about the output signature
+
+Note that it only understands the default '*' headings.
+
+For me, the following a2ps style sheet (outline.ssh) does highlight the headers:
+
+    # Style sheet for outline 
+
+    style outline is 
+    version is 0.1
+    requires a2ps 4.13
+    
+    sequences are
+      /^\\*/ Label_strong,
+      /^\\*\\*+/ Label
+    end sequences
+
+    end style
+ 
+
+== Vim-type アウトラインマーカー ==
+
+Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are <code>{{{</code> and <code>}}}</code> for starting and ending a fold. A number after the marker determines the outline level (e.g., <code>{{{1</code>, <code>{{{2</code>, <code>{{{3</code> and so on).
+
+The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
+
+<pre>
+(defun set-vim-foldmarker (fmr)
+  "Set Vim-type foldmarkers for the current buffer"
+  (interactive "sSet local Vim foldmarker: ")
+  (if (equal fmr "")
+      (message "Abort")
+    (setq fmr (regexp-quote fmr))
+    (set (make-local-variable 'outline-regexp)
+         (concat ".*" fmr "\\([0-9]+\\)"))
+    (set (make-local-variable 'outline-level)
+         `(lambda ()
+            (save-excursion
+              (re-search-forward
+               ,(concat fmr "\\([0-9]+\\)") nil t)
+              (string-to-number (match-string 1)))))))
+</pre>
+
+While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
+
+<pre>
+(outline-minor-mode 1)
+(set-vim-foldmarker "{{{")
+</pre>
+
+----
+CategoryModes
+CategoryOutline
+CategoryTodo
