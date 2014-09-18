@@ -49,8 +49,8 @@
 
 == 参照されたし ==
 
-* ダイアリモード
-* プランナーモード
+* [[ダイアリモード]]
+* [[プランナーモード]]
 * GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
 * [https://github.com/kiwanami/emacs-calfw Emacs-calfw] (OS XのiCalような見た目の)Emacsのためのカレンダーフレームワーク
 * [[Calfw]]
