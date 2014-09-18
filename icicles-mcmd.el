@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Sep 10 14:49:58 2014 (-0700)
+;; Last-Updated: Thu Sep 18 08:14:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 19619
+;;     Update #: 19620
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5899,8 +5899,6 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
   (let (;;$$$$$$ (buffer    (window-buffer))
         (posn-win  (posn-window (event-start event)))
-        (posn-col  (car (posn-col-row (event-start event))))
-        (posn-row  (cdr (posn-col-row (event-start event))))
         choice base-size)
     ;; (read-event)                 ; Swallow mouse up event. $$ Not needed if bound to up event.
     (with-current-buffer (window-buffer posn-win)
@@ -5992,8 +5990,6 @@ which can position mouse pointer on a standalone minibuffer frame."
   (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
   (let (;; $$$$$$ (buffer    (window-buffer))
         (posn-win  (posn-window (event-start event)))
-        (posn-col  (car (posn-col-row (event-start event))))
-        (posn-row  (cdr (posn-col-row (event-start event))))
         candidate base-size)
     ;; (read-event)                 ; Swallow mouse up event. $$ Not needed if bound to up event.
     (with-current-buffer (window-buffer posn-win)
