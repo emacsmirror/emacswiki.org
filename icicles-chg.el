@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Sep 15 13:35:34 2014 (-0700)
+;; Last-Updated: Thu Sep 18 08:18:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11280
+;;     Update #: 11283
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4404,6 +4404,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/09/18 dadams
+;;     icicle-mouse-candidate-read-fn-invoke, icicle-Completions-mouse-3-menu:
+;;       Removed unused bindings for POSN-(COLfrom|ROW) from posn-col-row.
 ;; 2014/009/10 dadams
 ;;     Added: icicle-looking-at-literally-p.
 ;;     Renamed: icicle-looking-back-at-p to icicle-looking-back-at-literally-p.
