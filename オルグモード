@@ -5,13 +5,14 @@
 This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
 [:overview]
-== Overview ==
+== 概要 ==
 
 Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
-Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage].
+[http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
 [:features]
-=== Features ===
+=== 機能 ===
 
 * Outlines: headlines, TODO items, checklists, numbered lists, searching, filtering
 * Filing: outlines, tagging, refiling, archiving, sorting, flexible enough to build a "getting things done" workflow
@@ -25,7 +26,7 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 
 
 [:install]
-== Download and Install ==
+== ダウンロードとインストール ==
 
 The development version is at:
 
@@ -41,21 +42,25 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 
 David O'Toole has written a [http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html general tutorial] with screenshots. It has been translated into [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html Chinese], [http://web.archive.org/web/20080225214358/http://lumiere.ens.fr/~guerry/orgtutorialfr.html French], [http://users.itk.ppke.hu/~mpasztor/orgtutorial/notebook/orgtutorial-hu.html Hungarian], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode/OrgTutorial Japanese] and [http://jmjeong.com/index.php?display=Emacs/OrgMode Korean]. [http://orgmode.org/worg/ Worg] has many tutorials on specific features. Charles Cave has [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html has written] on using date and times. Bernt Hansen describes his use and customizations of Org-mode in 70(!) pages long [http://doc.norang.ca/org-mode.html document], which assumes basic familiarity with Org.
 
-One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD). Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
+One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD).
+Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
 
-Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets]. Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org]. SachaChua has [http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ a graphical map for learning Org]. 
+Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets].
+Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org].
+SachaChua has [http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ a graphical map for learning Org]. 
 
-Somewhat dated (2007): Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage. Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
+Somewhat dated (2007): Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage.
+Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
 
 [:publish]
-== Publishing ==
+== 印刷 ==
 
-You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode'). BhlMode should automatically recognize the asterisks as marking sections and subsections. See EmacsOutlineToHtml for other alternatives.
+You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode').
+BhlMode should automatically recognize the asterisks as marking sections and subsections.
+See EmacsOutlineToHtml for other alternatives.
 
 [http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
-  is a publishing management system for creating
-  websites composed of all the files within a project (including
-  OrgMode files, images, and source code, if desired).
+  is a publishing management system for creating websites composed of all the files within a project (including OrgMode files, images, and source code, if desired).
 
 === new exporter/publish framework ===
 * [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
@@ -63,7 +68,7 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
 
 
 [:conflicts]
-== Conflicts ==
+== 衝突 ==
 
 If you're using WindMove, CuaMode or MTorus (with default keybindings), you might want to disable the Org Mode keybindings for Shift+arrow keys:
 
@@ -90,7 +95,7 @@ If you're using session.el (EmacsSession), you need to excempt a circular data s
 If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compatability while maintaining CUA support with Lisp:org-cua-dwim.el
 
 [:datasources]
-== External Data Sources ==
+== 外部データソース ==
 
 If you publish external sources to org mode agenda files, you'll need to refresh those files after changes occur.  Try this snippet to reload those files.
 
@@ -102,7 +107,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
       (delete-other-windows))
 
 [:addons]]
-== Add-ons and other files ==
+== アドオンと他のファイル ==
 
 * Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
 
@@ -126,9 +131,9 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 
 
 [:elisp]
-== Related elisp code ==
+== 関連するElispコード ==
 
-=== Dragging URLs ===
+=== URLのドラッキング ===
 
 This function uses org-mode support for plain list to facilitate dragging URLs from a webbrowser (or other apps) to an org-mode buffer:
 
@@ -165,7 +170,7 @@ This function uses org-mode support for plain list to facilitate dragging URLs f
     ad-do-it))
 </pre>
 
-=== Including all org files from a directory into the agenda ===
+=== ディレクトリからアジェンダへ全てのオルグファイルをインクルードする===
 
 <pre>
 (setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
@@ -183,7 +188,7 @@ To make header lines more apparently visible in the buffer, set them a backgroun
 
 The only change is the `\xa' character is added before the last closing paren. This feature has been added to org-mode; see `org-fontify-whole-heading-line'.
 
-=== Following Links ===
+=== リンクを追う ===
 
 To follow links with RET, rather than a 2 key combo:
 
@@ -198,7 +203,7 @@ To open links of type [~/test.pdf::3] i.e. open file at page 3:
     (add-to-list 'org-file-apps '("\\.pdf::\\([0-9]+\\)\\'" . "evince \"%s\" -p %1"))
 </pre>
 
-=== Opening pdf with alternative application ===
+=== PDFを代わりのアプリケーションで開く ===
 To open a link with a program other than the default(e.g. modify a pdf rather than read it):
 <pre>
 (defun my-org-open-at-point()
@@ -208,7 +213,7 @@ To open a link with a program other than the default(e.g. modify a pdf rather th
     ))
 </pre>
 
-=== Sort a column in an Org Table ===
+=== Orgテーブルのカラムをソートする ===
 
 Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines based on a column. But sometime one need to sort just one column :
 <pre>
@@ -280,7 +285,7 @@ Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines bas
     (message "%d element sorted in column %d" (length lns) column)))
 
 </pre>
-=== Editing Wikipedia ===
+=== Wikipediaを編集する ===
 
 Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
 
@@ -296,7 +301,7 @@ If you use WThreeM, add the following instead:
                    (setq outline-regexp "=+")))
 </pre>
 
-=== Export UTF-8 checkboxes ===
+=== UTF-8 チェックボックスをエクスポートする ===
 
 This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
 
@@ -311,7 +316,7 @@ This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
   (setq ad-return-value (sacha/org-html-checkbox (ad-get-arg 0))))
 </pre>
 
-===Refile to opened orgmode buffer===
+=== 開かれているオルグモードバッファを整頓する ===
 The following codes allow refile to opened orgmode buffer files. (Currently set at level 1, to avoid too many refile targets when there are lots of orgmode files opened).
 
 <pre>
@@ -327,9 +332,13 @@ The following codes allow refile to opened orgmode buffer files. (Currently set 
 </pre>
 
 [:discussion]
-== Discussion ==
+== ディスカッション ==
 Discussion moved to [[Comments_on_OrgMode|Talk page]] 
 
 
-== Categories ==
-CategoryOutline CategoryPersonalInformationManager CategoryCalendar CategoryNeedsAttention CategoryWriting
+== カテゴリ ==
+CategoryOutline
+CategoryPersonalInformationManager
+CategoryCalendar
+CategoryNeedsAttention
+CategoryWriting
