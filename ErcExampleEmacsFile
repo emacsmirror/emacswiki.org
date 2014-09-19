@@ -107,7 +107,7 @@
     (erc :server "localhost" :port 6667 :nick "davidm")))
 
 ;;; Filter bots/users - requires dynamic binding.
-(defun jwp-erc-filter-bot (channel bots)
+(defun squiddo-erc-filter-bot (channel bots)
   "Filter messages to/from bots.
 CHANNEL is the name of the channel to watch.
 BOTS are a list of bots (nicks) to filter."
@@ -124,7 +124,8 @@ BOTS are a list of bots (nicks) to filter."
                                                      ;(message "Filtering bot: %s" msg)
                                                      (setq erc-insert-this nil)))))))))
 
-(jwp-erc-filter-bot "#emacs" '("foo" "bar" "baz"))
+(squiddo-erc-filter-bot "#emacs" '("foo" "bar" "baz"))
+(squiddo-erc-filter-bot "#lisp" '("foo" "bar" "baz"))
 </pre>
 
 ----
