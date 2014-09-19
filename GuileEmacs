@@ -2,11 +2,15 @@ For the former contents of this page which were for a large part concerned with 
 
 == Overview ==
 
-Guile-based Emacs (alternatively called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces the Elisp engine with libguile ([[Guile]]), which can compile and interpret EmacsLisp alongside [[Scheme]], with more or less seamless interoperation between the languages.
+Guile-based Emacs (possibly called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces Emacs's own EmacsLisp engine with that of [[Guile]].
 
-Elisp functions and Scheme procedures both compile to libguile procedure objects, which may appear in Elisp symbols' function-slots, may be bound to Scheme variables, and are otherwise first-class objects in both environments which can be funcalled or applied explicitly or by the language's normal syntactic way of calling functions/procedures. Similarly, other data types are unified between the languages; Elisp integers and exact Scheme integers, inexact Scheme numbers and Elisp floats, strings and cons cells and symbols from both languages, etc. Elisp-specific data types like buffers and windows are integrated with libguile too so Scheme can use them, and Elisp functions written in C ("subrs") also become libguile procedures.
+The first immediate advantage is that Elisp will execute faster, because Guile uses a compiler tower with many optimization passes and ultimately compiles to Guile VM bytecode, which is more efficient than current Elisp bytecode. In the future, Guile is likely to implement some forms of native JIT as well as AOT compilation as well.
 
-This way GNU Emacs as we know it continues working with all its Elisp, and Elisp code can additionaly call any procedures from the Guile API or Scheme libraries, and with some work it becomes feasible to extend Emacs in Scheme natively, offering a direct alternative to Elisp. Many features of Guile like its FFI, composable continuations, or possibly JIT and AOT native compilation in the future become automatically available to Elisp.
+A second advantage is that it will be easier to implement some additional language features for Elisp which the Guile compiler tower and VM are capable of, like a full numeric tower (infinite-sized integers, exact rational numbers, imaginary numbers, etc.), record types (like an improved defstruct), CLOS-like OOP, an FFI, composable continuations, a module system, hygienic macros, multiple-value returns, and threads.
+
+A third advantage is all Guile APIs/libraries becoming available to Elisp code, no matter what language they're implemented in, because different languages on the Guile VM can inter-operate quite well, especially if they're both a Lisp. C-implemented functions ("subrs" in Elisp terminology), Elisp functions, Scheme procedures, etc. all compile to the same "procedure" data type, which may appear in Elisp symbols' function-slots, be bound to Scheme variables, and are otherwise first-class objects in both environments which can be funcalled or applied explicitly or by the language's normal syntactic way of calling functions. Similarly, other data types are unified between the languages; Elisp integers and exact Scheme integers, inexact Scheme numbers and Elisp floats, Elisp cons cells and Scheme pairs, symbols, etc. are the same data type across the languages. (Strings are an exception though; see below.) Therefore one can generally use a library written in another language as if it were written in the same language.
+
+Lastly, it will become possible to write Emacs extensions in Scheme instead of Elisp, where it's possible to load the Elisp function and variable namespaces as modules (say with a prefix for each so common names like `car' aren't overwritten).
 
 
 == Current State ==
@@ -33,9 +37,16 @@ Elisp defvars are dynamically scoped, as well as let-bound variables when lexica
 
 === So can I script Emacs in Scheme already?! ===
 
+For the Scheme fans who dislike Elisp:
+
 http://i.imgur.com/5DYQbhu.png
 
 (Note: I do NOT endorse using Apple products. The above screenshot being from Mac OS X is an unfortunate coincidence.)
+
+
+== Strings ==
+
+Elisp strings are encoded in an extended UTF-8 format, whereas Guile just uses libunistring. For this reason Elisp strings will for starters be a separate data type from other Guile strings (say coming from Scheme code). This poses no problems to pure Elisp code, but limits one's ability to seamlessly use Scheme libraries from Elisp, and to write Emacs extensions in Scheme, because one needs to explicitly convert back and forth between Elisp and Scheme strings.
 
 
 == Nil, false, and the empty list ==
@@ -49,6 +60,10 @@ To speak in examples: in Scheme, <code>(if #nil 0 1)</code> yields 1, <code>(and
 As an additional weirdity, the nil and true objects are symbols in Elisp, since after all they're `nil' and `t'. They are not symbols in Scheme though, despite being the same objects. (The Elisp `symbolp' function and Scheme <code>symbol?</code> procedure simply disagree here, among some others which deal with symbols.)
 
 All in all, things should simply work fine as long as the user writes well-abstracted code that uses `if', `not', <code>null?</code>, etc. instead of comparing equality to literal objects. Time will tell whether the internal mess with lead to problems in practice. (At least checking the truthiness of nil and false is still both very cheap thanks to some low-level magic in libguile, so code isn't slowed down by the presence of the extra nil object that needs to act as a false value.)
+
+A notorious algorithm that won't work without modification is one to find the common tail of two lists that share structure. This algorithm cuts two lists to the same length, then walks them in parallel and does an `eq' check on every pair of nodes. Normally this will end at least when the `nil' at the end of both lists is reached (meaning their only common tail is the empty list), but in mixed Scheme/Elisp code one has to separately check for the <code>(and (null list1-tail) (null list2-tail))</code> case at every node (actually testing one of the two is enough because they have the same length), or else one has to canonicalize the lists's terminating value in advance.
+
+<b>Long story short:</b> If you use Scheme libraries from Elisp or vice versa, you have to make sure to always use `not' and `null' instead of comparing equality to `nil' (via `eq'). And you can't assume that two lists both end in the same object as in `eq', which is otherwise guaranteed in Lisps.
 
 
 == Macros ==
