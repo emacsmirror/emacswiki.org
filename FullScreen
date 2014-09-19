@@ -240,7 +240,7 @@ to my .emacs (which is when the problems started occuring.)
 
 I've experimented with other fonts and different font sizes. This seems robust.
 
-=== X Windows ===
+=== X Window ===
 ==== Emacs Frame Properties ====
 
 The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
@@ -437,7 +437,7 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 
 
 ==See also==
-See also [[Fullscreen]] (just x-send-client-message for X Windows).
+See also [[Fullscreen]] (just x-send-client-message for X Window).
 
 
 == Q&A ==
