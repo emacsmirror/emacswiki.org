@@ -23,13 +23,13 @@ As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully rep
 
 NOTE: The validity of this section could change at any time when the repos get updates.
 
-As mentioned above, build the wip branch of the above linked Guile repo first, install it such that it will be available during the Emacs build, and then build the wip branch of the above linked Emacs repo.
+First you need to clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/guile.git this Guile repository]. (Not wip-guile or so, just `wip'.) This requires all the usual Guile dependencies; see the README file in the repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components. Compilation will take very long, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
 
-While building the Emacs wip branch, you might need to run "make -k" several times, and I had to export LD_LIBRARY_PATH=/path/to/libguile during the build and for launching the resulting emacs executable. In my case, /path/to/libguile is <code>~/usr/lib</code> which is where I installed the wip Guile build.
+To make the Guile installation available to subsequent compilation processes, you will probably need to set or augment some environment variables like PATH, PKG_CONFIG_PATH, CPATH, and LIBRARY_PATH. If you just installed it in /usr/local then this is probably not necessary.
 
-You also need libgc 7.4.2 (latest version) and preferably a recent GCC. Version 4.7 from Debian stable worked for me.
+Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.git this Emacs repository]. This requires all the usual Emacs dependencies, though you can disable some features via the ./configure script. (Non-GTK didn't work for me so let me advise against disabling that.) You need a recent GCC version for this compilation, though 4.7 from Debian stable worked for me.
 
-Of course you also need all the usual dependencies of Guile and Emacs. Their normal installation instructions will tell you (see README file and INSTALL file and all).
+While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable. /path/to/libguile is, for example, /usr/local/lib if you installed Guile in /usr/local.
 
 === Dynamic scoping ===
 
