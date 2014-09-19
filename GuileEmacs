@@ -44,12 +44,16 @@ http://i.imgur.com/5DYQbhu.png
 (Note: I do NOT endorse using Apple products. The above screenshot being from Mac OS X is an unfortunate coincidence.)
 
 
-== Strings ==
+== Long-term issues ==
+
+There seem no long-term issues for pure Elisp users, but the following challenges will face those who want to mix Elisp with Scheme:
+
+=== Strings ===
 
 Elisp strings are encoded in an extended UTF-8 format, whereas Guile just uses libunistring. For this reason Elisp strings will for starters be a separate data type from other Guile strings (say coming from Scheme code). This poses no problems to pure Elisp code, but limits one's ability to seamlessly use Scheme libraries from Elisp, and to write Emacs extensions in Scheme, because one needs to explicitly convert back and forth between Elisp and Scheme strings.
 
 
-== Nil, false, and the empty list ==
+=== Nil, false, and the empty list ===
 
 Scheme uses separate objects for the false boolean and the empty list object (null); Elisp uses nil for both. This poses problems in the interoperation of the languages. Guile approaches the issue by having all three objects: false, null, and nil. In Elisp, all three are interchangeable. In Scheme, nil can take the role of both false and null. Despite all that, none of the objects are `equalp' (Elisp) or <code>equal?</code> (Scheme) to each other (let alone `eql'/<code>eqv?</code> or `eq'/<code>eq?</code>).
 
@@ -66,7 +70,7 @@ A notorious algorithm that won't work without modification is one to find the co
 <b>Long story short:</b> If you use Scheme libraries from Elisp or vice versa, you have to make sure to always use `not' and `null' instead of comparing equality to `nil' (via `eq'). And you can't assume that two lists both end in the same object as in `eq', which is otherwise guaranteed in Lisps.
 
 
-== Macros ==
+=== Macros ===
 
 While procedures are shared between the languages, macros are more difficult. Elisp macros are just procedures of course so they could in principle work as unhygienic Scheme macros, and Elisp code goes through the same intermediate language as Scheme so perhaps hygienic Scheme macros could work on Elisp.
 
