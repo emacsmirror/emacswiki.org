@@ -31,6 +31,8 @@ Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.
 
 While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable. /path/to/libguile is, for example, /usr/local/lib if you installed Guile in /usr/local.
 
+A transcript of a successful build on Ubuntu 14.04 can be found [http://pastebin.com/Cm5J2AgU on pastebin].
+
 === Dynamic scoping ===
 
 Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to Guile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
