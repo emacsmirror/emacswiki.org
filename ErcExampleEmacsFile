@@ -106,7 +106,7 @@
                 :nick "davidmccabe" :full-name "David McCabe")
     (erc :server "localhost" :port 6667 :nick "davidm")))
 
-;;; Filter bots/users - requires dynamic binding.
+;;; Filter bots/users - requires lexical binding.
 (defun squiddo-erc-filter-bot (channel bots)
   "Filter messages to/from bots.
 CHANNEL is the name of the channel to watch.
