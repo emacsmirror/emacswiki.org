@@ -31,7 +31,7 @@ Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.
 
 While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable. /path/to/libguile is, for example, /usr/local/lib if you installed Guile in /usr/local.
 
-A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/2Uwi8zEN on pastebin].
+A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
 
 === Dynamic scoping ===
 
