@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 21 19:16:31 2014 (-0700)
+;; Last-Updated: Sun Sep 21 20:34:39 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3689
+;;     Update #: 3693
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -248,6 +248,10 @@
 ;;  But you can alternatively choose a color name instead of a face
 ;;  name.  The completion candidates are annotated in buffer
 ;;  `*Completions*' with `Face' or `Color', to help you identify them.
+;;
+;;  If you use library Icicles and option
+;;  `icicle-WYSIWYG-Completions-flag' is non-nil, then candidate faces
+;;  and colors are WYSIWYG: What You See Is What You Get.
 ;;
 ;;  If you choose a color instead of a face then an unnamed pseudo
 ;;  face is created and used.  It has the chosen color as background,
@@ -671,6 +675,7 @@
 ;;     hlt-(un)highlight-regexp-region: Corrected interactive spec.
 ;;     hlt-unhighlight-region-for-face: Added MSGP arg.
 ;;     hlt-+/--highlight-regexp-read-args: Use hlt-+/--read-regexp.
+;;     hlt-read-bg/face-name: If in Icicle mode, use WYSIWYG completion candidates.
 ;; 2014/05/27 dadams
 ;;     hlt-(un)highlight-symbol: A prefix arg means act on all visible buffers.
 ;; 2014/02/25 dadams
@@ -1178,6 +1183,10 @@ The value can also be an alist with two entries:
 A color name can also be a hex RGB triplet prefixed by `#'.
 To allow this, completion is lax.
 
+If you use Icicles and option `icicle-WYSIWYG-Completions-flag' is
+non-nil then in Icicle mode candidate faces and colors are WYSIWYG:
+What You See Is What You Get.
+
 Prompt with PROMPT.
 Optional arg DEFAULT is a face name used if the user enters nothing.
 
@@ -1191,16 +1200,36 @@ and the value of `hlt-auto-face-foreground' as `foreground-color'."
                                    (and (consp hlt-last-face)
                                         (cdr (assq 'background-color hlt-last-face))))))
   (unless (stringp default) (setq default  (format "%s" default)))
-  (let ((prompt                        (if default
-                                           (format "%s (default `%s'): " prompt default)
-                                         (format "%s: " prompt)))
-        (faces                         ())
-        (completion-annotate-function  (lambda (fc) (if (facep (intern fc)) "  Face" "  Color")))
-        (colors                        (mapcar #'list
-                                               (if window-system (x-defined-colors) (hlt-tty-colors)))))
-    (mapatoms (lambda (sy) (when (facep sy) (push (list (symbol-name sy)) faces))))
+  (let* ((icicle-multi-completing-p          t)
+         (icicle-list-nth-parts-join-string  ": ")
+         (icicle-list-join-string            ": ")
+         (icicle-list-use-nth-parts          '(1))
+         (prompt                             (if default
+                                                 (format "%s (default `%s'): " prompt default)
+                                               (format "%s: " prompt)))
+         (faces                              (if (and (boundp 'icicle-mode)  icicle-mode)
+                                                 (mapcar #'icicle-make-face-candidate (face-list))
+                                               ()))
+         (completion-annotate-function       (lambda (fc)
+                                               (when (and (boundp 'icicle-mode)  icicle-mode)
+                                                 (setq fc  (icicle-transform-multi-completion fc)))
+                                               (if (facep (intern fc)) "  Face" "  Color")))
+         (colors                             (if window-system
+                                                 (if (fboundp 'hexrgb-defined-colors)
+                                                     (hexrgb-defined-colors)
+                                                   (x-defined-colors))
+                                               (hlt-tty-colors)))
+         (colors                             (if (and (boundp 'icicle-mode)  icicle-mode)
+                                                 (mapcar #'icicle-make-color-candidate colors)
+                                               (mapcar #'list colors))))
+    (if (not (and (boundp 'icicle-mode)  icicle-mode))
+        (mapatoms (lambda (sy) (when (facep sy) (push (list (symbol-name sy)) faces))))
+      (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (let ((bg/face  (completing-read prompt (append faces colors) nil nil ; Lax, to allow #RGB
                                      nil 'face-name-history default)))
+      (when (and (boundp 'icicle-mode)  icicle-mode)
+        (setq bg/face  (icicle-transform-multi-completion bg/face)))
       (if (facep (intern bg/face))
           (intern bg/face)
         `((background-color . ,bg/face) (foreground-color . ,hlt-auto-face-foreground))))))
