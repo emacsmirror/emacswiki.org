@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 21 20:34:39 2014 (-0700)
+;; Last-Updated: Mon Sep 22 10:09:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3693
+;;     Update #: 3694
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1871,7 +1871,7 @@ overlays with that FACE."
 See `hlt-replace-highlight-face' for other arguments."
   (interactive (list (hlt-read-bg/face-name "Replace face in region highlights. OLD face: ")
                      (hlt-read-bg/face-name "NEW face: ")
-                     (hlt-+/--read-bufs 'UN)))
+                     (hlt-+/--read-bufs)))
   (hlt-replace-highlight-face old-face new-face nil nil msgp current-prefix-arg buffers))
 
 ;;;###autoload
