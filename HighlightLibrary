@@ -133,6 +133,10 @@ But you can alternatively choose a ''color'' name instead of a face
 name.  The completion candidates are annotated in buffer
 `*Completions*' with `Face' or `Color', to help you identify them.
 
+If you use library '''[[Icicles]]''' and option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' is non-nil, then candidate faces
+and colors are WYSIWYG: What You See Is What You Get.  This page shows some [[Icicles - Screenshots#icicle-read-color|some screenshots]] that give an idea of the effect (but for highlighting, candidates can be a mix of faces and colors -- these screenshots show only colors.).
+
 [:hlt-auto-face-foreground]
 If you choose a color instead of a face then an unnamed pseudo
 face is created and used.  It has the chosen color as ''background'',
