@@ -8,7 +8,7 @@
 * Debugging instructions
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
 * Find beta testers for non-GNU platforms
-* Test gdb configuration
+* Update .gdbinit
 * Use libguile hash tables
 * remove unexec support code
 * Fix coccinelle parsing of loop macros with single-statement body
