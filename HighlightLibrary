@@ -274,9 +274,7 @@ Finally, you can highlight and unhighlight multiple buffers at the
 same time.  Just as for a single buffer, there are commands for
 regexp (un)highlighting, and all of the multiple-buffer commands,
 whose names end in `-in-buffers', are sensitive to the region in
-each buffer, when active.  You are prompted for the names of the
-buffers, one at a time.  Use `C-g' when you are done entering buffer
-names.  These are the multiple-buffer commands:
+each buffer, when active.  These are the multiple-buffer commands:
 
 * '''`hlt-highlight-region-in-buffers''''
 * '''`hlt-unhighlight-region-in-buffers''''
@@ -284,6 +282,16 @@ names.  These are the multiple-buffer commands:
 * '''`hlt-unhighlight-regexp-region-in-buffers''''
 * '''`hlt-unhighlight-region-for-face-in-buffers''''
 * '''`hlt-replace-highlight-face-in-buffers''''
+
+Normally, you are prompted for the names of the buffers, one at a
+time.  Use `C-g' when you are done entering buffer names.  But a
+non-positive [[prefix argument|prefix arg]] means act on all visible or iconified
+buffers.  (A non-negative prefix arg means use property
+`mouse-face', not `face'.)
+
+
+
+
 
 
 
