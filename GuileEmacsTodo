@@ -6,6 +6,7 @@
 * QUIT at each SCM_TICK
 * Installation instructions
 * Debugging instructions
+* Bug tracker or mailing list
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
 * Find beta testers for non-GNU platforms
 * Update .gdbinit
