@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 21 19:05:51 2014 (-0700)
+;; Last-Updated: Sun Sep 21 19:16:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3685
+;;     Update #: 3689
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -364,11 +364,20 @@
 ;;  prefix argument, property `mouse-face' is used, not property
 ;;  `face'.
 ;;
+;;  Command `hlt-highlight-single-quotations' highlights single-quoted
+;;  text in the region.  For example, Emacs commands and keys between
+;;  ` and ': `foobar'.
+;;
+;;  Command `hlt-mouse-face-each-line' puts a `mouse-face' property on
+;;  each line of the region.
+;;
 ;;  Finally, you can highlight and unhighlight multiple buffers at the
 ;;  same time.  Just as for a single buffer, there are commands for
 ;;  regexp (un)highlighting, and all of the multiple-buffer commands,
 ;;  whose names end in `-in-buffers', are sensitive to the region in
-;;  each buffer, when active.  These are the commands:
+;;  each buffer, when active.  You are prompted for the names of the
+;;  buffers, one at a time.  Use `C-g' when you are done entering
+;;  buffer names.  These are the multiple-buffer commands:
 ;;
 ;;  `hlt-highlight-region-in-buffers'
 ;;  `hlt-unhighlight-region-in-buffers'
