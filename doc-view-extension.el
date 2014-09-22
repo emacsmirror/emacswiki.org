@@ -82,7 +82,9 @@ Optional argument REVERSE default is scroll up (or next page), if REVERSE is non
   "Get previous page in `doc-view-mode' buffer in other window."
   (interactive)
   (doc-view-scroll-up-or-next-page+ t))
-
+<a href="http://fifahk.com/">fifa 15 coins</a>
+<a href="http://cosyglobe.com/">Fifa 15 Coins</a>
+<a href="http://dodden.co.uk/fifa.html/">fifa 15 coins</a>
 (defadvice scroll-other-window (around doc-view-scroll-up-or-next-page activate)
   "When next buffer is `doc-view-mode', do `doc-view-scroll-up-or-next-page'."
   (other-window +1)
@@ -94,7 +96,8 @@ Optional argument REVERSE default is scroll up (or next page), if REVERSE is non
         (other-window -1))
     (other-window -1)
     ad-do-it))
-
+<a href="http://www.fingermagic.in/video.php/">fifa 15 coins</a>
+<a href="http://futcoins15.co.uk/">fifa 15 coins</a>
 (defadvice scroll-other-window-down (around doc-view-scroll-down-or-previous-page activate)
   "When next buffer is `doc-view-mode', do `doc-view-scroll-down-or-previous-page'."
   (other-window +1)
