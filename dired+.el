@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 15 13:16:44 2014 (-0700)
+;; Last-Updated: Mon Sep 22 15:14:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8341
+;;     Update #: 8343
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -570,7 +570,9 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2015/09/15 dadams
+;; 2014/09/22 dadams
+;;     diredp-mouse-3-menu: Do not place overlay unless on a file/dir name (i.e., dired-get-filename).
+;; 2014/09/15 dadams
 ;;     dired-read-dir-and-switches: Made it (thus dired too) an Icicles multi-command.
 ;;     dired (defadvice): Added doc about using it with Icicles.
 ;; 2014/09/14 dadams
@@ -8558,135 +8560,133 @@ With non-nil prefix arg, mark them instead."
             (setq bol  (line-beginning-position)
                   eol  (line-end-position))
             (unwind-protect
-                 (progn
+                 (when (setq file/dir-name  (and (not (eobp))  (dired-get-filename nil t)))
                    (if diredp-file-line-overlay ; Don't re-create if exists.
                        (move-overlay diredp-file-line-overlay bol eol (current-buffer))
                      (setq diredp-file-line-overlay  (make-overlay bol eol))
                      (overlay-put diredp-file-line-overlay 'face 'region))
-                   (setq file/dir-name  (and (not (eobp))  (dired-get-filename nil t)))
-                   (when file/dir-name
-                     (sit-for 0)
-                     (let ((map
-                            (easy-menu-create-menu
-                             "This File"
-                             `(
-                               ("Bookmark" :visible (featurep 'bookmark+)
-                                ["Bookmark..." diredp-bookmark-this-file]
-                                ["Add Tags..." diredp-tag-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Remove Tags..." diredp-untag-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Remove All Tags" diredp-remove-all-tags-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Copy Tags" diredp-copy-tags-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Paste Tags (Add)" diredp-paste-add-tags-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Paste Tags (Replace)" diredp-paste-replace-tags-this-file
-                                 :visible (featurep 'bookmark+)]
-                                ["Set Tag Value..." diredp-set-tag-value-this-file
-                                 :visible (featurep 'bookmark+)]
-                                )
-                               ["Describe" diredp-describe-file]
-                               ;; Stuff from `Mark' menu.
-                               ["Mark"  dired-mark
-                                :visible (not (eql (dired-file-marker file/dir-name)
-                                               dired-marker-char))]
-                               ["Unmark" dired-unmark
-                                :visible (dired-file-marker file/dir-name)]
-                               ["Flag for Deletion" dired-flag-file-deletion
-                                :visible (not (eql (dired-file-marker file/dir-name)
-                                               dired-del-marker))]
-                               ["Delete..." diredp-delete-this-file]
-                               "--"     ; ------------------------------------------------------
-                               ;; Stuff from `Single' / `Multiple' menus.
-                               ["Open" dired-find-file]
-                               ["Open in Other Window" dired-find-file-other-window]
-                               ["Open in Other Frame" diredp-find-file-other-frame]
-                               ["Open Associated Windows App" dired-w32-browser
-                                :visible (featurep 'w32-browser)]
-                               ["Open in Windows Explorer" dired-w32explore
-                                :visible (featurep 'w32-browser)]
-                               ["View (Read Only)" dired-view-file]
-                               ["--" 'ignore ; -------------------------------------------------
-                                :visible (or (atom (diredp-this-subdir)) ; Subdir line.
-                                          (not (equal (expand-file-name
-                                                       (dired-current-directory))
-                                                      (expand-file-name
-                                                        default-directory))))] ; Not top.
-                               ["Insert This Subdir"
-                                (lambda () (interactive)
-                                        (call-interactively #'dired-maybe-insert-subdir)
-                                        (setq movep  t))
-                                :visible (and (atom (diredp-this-subdir))
-                                          (not (assoc (file-name-as-directory
-                                                       (diredp-this-subdir))
-                                                dired-subdir-alist)))
-                                :enable (atom (diredp-this-subdir))]
-                               ["Go To Inserted Subdir"
-                                (lambda () (interactive)
-                                        (call-interactively #'dired-maybe-insert-subdir)
-                                        (setq movep  t))
-                                :visible (and (atom (diredp-this-subdir))
-                                          (assoc (file-name-as-directory (diredp-this-subdir))
-                                           dired-subdir-alist))
-                                :enable (atom (diredp-this-subdir))
-                                :keys "i"]
-                               ["Remove This Inserted Subdir" dired-kill-subdir
-                                :visible (not (equal
-                                               (expand-file-name (dired-current-directory))
-                                               (expand-file-name
-                                                default-directory)))] ; In subdir, not top.
-                               ["Remove This Inserted Subdir and Lower" diredp-kill-this-tree
-                                :visible (and (fboundp 'diredp-kill-this-tree)
-                                          (not (equal
-                                                (expand-file-name (dired-current-directory))
-                                                (expand-file-name
-                                                 default-directory))))] ; In subdir, not top.
-                               ["Dired This Inserted Subdir (Tear Off)"
-                                (lambda () (interactive) (diredp-dired-this-subdir t))
-                                :visible (not (equal (expand-file-name (dired-current-directory))
-                                                     (expand-file-name
-                                                      default-directory)))] ; In subdir, not top.
-                               "--"     ; ------------------------------------------------------
-                               ["Compare..." diredp-ediff]
-                               ["Diff..." dired-diff]
-                               ["Diff with Backup" dired-backup-diff]
+                   (sit-for 0)
+                   (let ((map
+                          (easy-menu-create-menu
+                           "This File"
+                           `(
+                             ("Bookmark" :visible (featurep 'bookmark+)
+                              ["Bookmark..." diredp-bookmark-this-file]
+                              ["Add Tags..." diredp-tag-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Remove Tags..." diredp-untag-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Remove All Tags" diredp-remove-all-tags-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Copy Tags" diredp-copy-tags-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Paste Tags (Add)" diredp-paste-add-tags-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Paste Tags (Replace)" diredp-paste-replace-tags-this-file
+                               :visible (featurep 'bookmark+)]
+                              ["Set Tag Value..." diredp-set-tag-value-this-file
+                               :visible (featurep 'bookmark+)]
+                              )
+                             ["Describe" diredp-describe-file]
+                             ;; Stuff from `Mark' menu.
+                             ["Mark"  dired-mark
+                              :visible (not (eql (dired-file-marker file/dir-name)
+                                             dired-marker-char))]
+                             ["Unmark" dired-unmark
+                              :visible (dired-file-marker file/dir-name)]
+                             ["Flag for Deletion" dired-flag-file-deletion
+                              :visible (not (eql (dired-file-marker file/dir-name)
+                                             dired-del-marker))]
+                             ["Delete..." diredp-delete-this-file]
+                             "--"       ; ------------------------------------------------------
+                             ;; Stuff from `Single' / `Multiple' menus.
+                             ["Open" dired-find-file]
+                             ["Open in Other Window" dired-find-file-other-window]
+                             ["Open in Other Frame" diredp-find-file-other-frame]
+                             ["Open Associated Windows App" dired-w32-browser
+                              :visible (featurep 'w32-browser)]
+                             ["Open in Windows Explorer" dired-w32explore
+                              :visible (featurep 'w32-browser)]
+                             ["View (Read Only)" dired-view-file]
+                             ["--" 'ignore ; -------------------------------------------------
+                              :visible (or (atom (diredp-this-subdir)) ; Subdir line.
+                                        (not (equal (expand-file-name
+                                                     (dired-current-directory))
+                                              (expand-file-name
+                                               default-directory))))] ; Not top.
+                             ["Insert This Subdir"
+                              (lambda () (interactive)
+                                      (call-interactively #'dired-maybe-insert-subdir)
+                                      (setq movep  t))
+                              :visible (and (atom (diredp-this-subdir))
+                                        (not (assoc (file-name-as-directory
+                                                     (diredp-this-subdir))
+                                              dired-subdir-alist)))
+                              :enable (atom (diredp-this-subdir))]
+                             ["Go To Inserted Subdir"
+                              (lambda () (interactive)
+                                      (call-interactively #'dired-maybe-insert-subdir)
+                                      (setq movep  t))
+                              :visible (and (atom (diredp-this-subdir))
+                                        (assoc (file-name-as-directory (diredp-this-subdir))
+                                         dired-subdir-alist))
+                              :enable (atom (diredp-this-subdir))
+                              :keys "i"]
+                             ["Remove This Inserted Subdir" dired-kill-subdir
+                              :visible (not (equal
+                                             (expand-file-name (dired-current-directory))
+                                             (expand-file-name
+                                              default-directory)))] ; In subdir, not top.
+                             ["Remove This Inserted Subdir and Lower" diredp-kill-this-tree
+                              :visible (and (fboundp 'diredp-kill-this-tree)
+                                        (not (equal
+                                              (expand-file-name (dired-current-directory))
+                                              (expand-file-name
+                                               default-directory))))] ; In subdir, not top.
+                             ["Dired This Inserted Subdir (Tear Off)"
+                              (lambda () (interactive) (diredp-dired-this-subdir t))
+                              :visible (not (equal (expand-file-name (dired-current-directory))
+                                             (expand-file-name
+                                              default-directory)))] ; In subdir, not top.
+                             "--"       ; ------------------------------------------------------
+                             ["Compare..." diredp-ediff]
+                             ["Diff..." dired-diff]
+                             ["Diff with Backup" dired-backup-diff]
 
-                               ["Bookmark..." diredp-bookmark-this-file
-                                :visible (not (featurep 'bookmark+))]
-                               "--"     ; ------------------------------------------------------
-                               ["Rename to..." diredp-rename-this-file]
-                               ["Capitalize" diredp-capitalize-this-file]
-                               ["Upcase" diredp-upcase-this-file]
-                               ["Downcase" diredp-downcase-this-file]
-                               "--"     ; ------------------------------------------------------
-                               ["Copy to..." diredp-copy-this-file]
-                               ["Symlink to (Relative)..." diredp-relsymlink-this-file
-                                :visible (fboundp 'dired-do-relsymlink)] ; In `dired-x.el'.
-                               ["Symlink to..." diredp-symlink-this-file]
-                               ["Hardlink to..." diredp-hardlink-this-file]
-                               "--"     ; ------------------------------------------------------
-                               ["Shell Command..." diredp-shell-command-this-file]
-                               ["Asynchronous Shell Command..."
-                                diredp-async-shell-command-this-file]
-                               ["Print..." diredp-print-this-file]
-                               ["Grep" diredp-grep-this-file]
-                               ["Compress/Uncompress" diredp-compress-this-file]
-                               ["Byte-Compile" diredp-byte-compile-this-file]
-                               ["Load" diredp-load-this-file]
-                               "--"     ; ------------------------------------------------------
-                               ["Change Timestamp..." diredp-touch-this-file]
-                               ["Change Mode..." diredp-chmod-this-file]
-                               ["Change Group..." diredp-chgrp-this-file
-                                :visible (fboundp 'diredp-chgrp-this-file)]
-                               ["Change Owner..." diredp-chown-this-file
-                                :visible (fboundp 'diredp-chown-this-file)]))))
-                       (when diredp-file-line-overlay
-                         (delete-overlay diredp-file-line-overlay))
-                       (setq choice  (x-popup-menu event map))
-                       (when choice
-                         (call-interactively (lookup-key map (apply 'vector choice)))))))
+                             ["Bookmark..." diredp-bookmark-this-file
+                              :visible (not (featurep 'bookmark+))]
+                             "--"       ; ------------------------------------------------------
+                             ["Rename to..." diredp-rename-this-file]
+                             ["Capitalize" diredp-capitalize-this-file]
+                             ["Upcase" diredp-upcase-this-file]
+                             ["Downcase" diredp-downcase-this-file]
+                             "--"       ; ------------------------------------------------------
+                             ["Copy to..." diredp-copy-this-file]
+                             ["Symlink to (Relative)..." diredp-relsymlink-this-file
+                              :visible (fboundp 'dired-do-relsymlink)] ; In `dired-x.el'.
+                             ["Symlink to..." diredp-symlink-this-file]
+                             ["Hardlink to..." diredp-hardlink-this-file]
+                             "--"       ; ------------------------------------------------------
+                             ["Shell Command..." diredp-shell-command-this-file]
+                             ["Asynchronous Shell Command..."
+                              diredp-async-shell-command-this-file]
+                             ["Print..." diredp-print-this-file]
+                             ["Grep" diredp-grep-this-file]
+                             ["Compress/Uncompress" diredp-compress-this-file]
+                             ["Byte-Compile" diredp-byte-compile-this-file]
+                             ["Load" diredp-load-this-file]
+                             "--"       ; ------------------------------------------------------
+                             ["Change Timestamp..." diredp-touch-this-file]
+                             ["Change Mode..." diredp-chmod-this-file]
+                             ["Change Group..." diredp-chgrp-this-file
+                              :visible (fboundp 'diredp-chgrp-this-file)]
+                             ["Change Owner..." diredp-chown-this-file
+                              :visible (fboundp 'diredp-chown-this-file)]))))
+                     (when diredp-file-line-overlay
+                       (delete-overlay diredp-file-line-overlay))
+                     (setq choice  (x-popup-menu event map))
+                     (when choice
+                       (call-interactively (lookup-key map (apply 'vector choice))))))
               (unless movep (goto-char opoint))))))
     ;; `mouse3.el' and active region.
     (unless (eq mouse3-dired-function 'mouse3-dired-use-menu)
