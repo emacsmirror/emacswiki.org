@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 22 10:09:07 2014 (-0700)
+;; Last-Updated: Mon Sep 22 11:44:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3694
+;;     Update #: 3704
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -379,9 +379,7 @@
 ;;  same time.  Just as for a single buffer, there are commands for
 ;;  regexp (un)highlighting, and all of the multiple-buffer commands,
 ;;  whose names end in `-in-buffers', are sensitive to the region in
-;;  each buffer, when active.  You are prompted for the names of the
-;;  buffers, one at a time.  Use `C-g' when you are done entering
-;;  buffer names.  These are the multiple-buffer commands:
+;;  each buffer, when active.  These are the multiple-buffer commands:
 ;;
 ;;  `hlt-highlight-region-in-buffers'
 ;;  `hlt-unhighlight-region-in-buffers'
@@ -389,6 +387,12 @@
 ;;  `hlt-unhighlight-regexp-region-in-buffers'
 ;;  `hlt-unhighlight-region-for-face-in-buffers'
 ;;  `hlt-replace-highlight-face-in-buffers'
+;;
+;;  Normally, you are prompted for the names of the buffers, one at a
+;;  time.  Use `C-g' when you are done entering buffer names.  But a
+;;  non-positive prefix arg means act on all visible or iconified
+;;  buffers.  (A non-negative prefix arg means use property
+;;  `mouse-face', not `face'.)
 ;;
 ;;(@* "Copy and Yank (Paste) Text Properties")
 ;;  ** Copy and Yank (Paste) Text Properties **
@@ -1507,9 +1511,18 @@ You can also used the individual commands:
 ;;;###autoload
 (defun hlt-highlight-region-in-buffers (buffers &optional msgp)
   "Use `hlt-highlight-region' in each buffer of list BUFFERS.
+A prefix arg >= 0 means highlight with `mouse-face', not `face'.
+A prefix arg <= 0 means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
 Non-nil optional arg MSGP means show status messages."
-  (interactive (list (hlt-+/--read-bufs)))
-  (hlt-highlight-region nil nil nil msgp current-prefix-arg buffers))
+  (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs))))
+  (hlt-highlight-region
+   nil nil nil msgp (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0)) buffers))
 
 ;;;###autoload
 (defun hlt-highlight-region (&optional start end face msgp mousep buffers)
@@ -1598,8 +1611,16 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
 ;;;###autoload
 (defun hlt-unhighlight-region-in-buffers (buffers &optional msgp)
   "Use `hlt-unhighlight-region' in each buffer of list BUFFERS.
+A prefix arg >= 0 means unhighlight `mouse-face', not `face'.
+A prefix arg <= 0 means unhighlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to unhighlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is unhighlighted.
+
 Non-nil optional arg MSGP means show status messages."
-  (interactive (list (hlt-+/--read-bufs 'UN)))
+  (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs 'UN))))
   (hlt-unhighlight-region nil nil nil msgp current-prefix-arg buffers))
 
 ;;;###autoload
@@ -1648,9 +1669,17 @@ both overlays and text properties."
 ;;;###autoload
 (defun hlt-highlight-regexp-region-in-buffers (regexp buffers &optional face msgp mousep nth)
   "Use `hlt-highlight-regexp-region' in each buffer of list BUFFERS.
+A prefix arg >= 0 means highlight with `mouse-face', not `face'.
+A prefix arg <= 0 means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
 See `hlt-highlight-regexp-region' for other arguments."
   (interactive (list (hlt-+/--read-regexp "" 'REGION)
-                     (hlt-+/--read-bufs)
+                     (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs))
                      nil
                      t
                      current-prefix-arg
@@ -1687,10 +1716,20 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
 ;;;###autoload
 (defun hlt-unhighlight-regexp-region-in-buffers (regexp buffers &optional nth msgp)
   "Use `hlt-unhighlight-regexp-region' in each buffer of list BUFFERS.
-See `hlt-highlight-regexp-region' for other arguments."
-  (interactive (list (hlt-+/--read-regexp "" 'REGION) (hlt-+/--read-bufs 'UN) nil t))
-  (hlt-unhighlight-regexp-region nil nil regexp nil msgp current-prefix-arg nth buffers))
+A prefix arg >= 0 means unhighlight `mouse-face', not `face'.
+A prefix arg <= 0 means unhighlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to unhighlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is unhighlighted.
 
+See `hlt-highlight-regexp-region' for other arguments."
+  (interactive (list (hlt-+/--read-regexp "" 'REGION)
+                     (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs 'UN))
+                     nil
+                     t))
+  (hlt-unhighlight-regexp-region nil nil regexp nil msgp current-prefix-arg nth buffers))
 ;;;###autoload
 (defun hlt-unhighlight-regexp-region (&optional start end regexp face msgp mousep nth buffers)
   "Unhighlight text matching regular expression REGEXP in region/buffer.
@@ -1803,9 +1842,17 @@ really want to highlight up to %d chars?  "
 ;;;###autoload
 (defun hlt-unhighlight-region-for-face-in-buffers (face buffers &optional msgp)
   "Use `hlt-unhighlight-region-for-face' in each buffer of list BUFFERS.
+A prefix arg >= 0 means unhighlight `mouse-face', not `face'.
+A prefix arg <= 0 means unhighlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to unhighlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is unhighlighted.
+
 See `hlt-unhighlight-region-for-face' for other arguments."
   (interactive (list (hlt-read-bg/face-name "Remove highlight overlays that use face: ")
-                     (hlt-+/--read-bufs 'UN)
+                     (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs 'UN))
                      t))
   (hlt-unhighlight-region-for-face face nil nil msgp current-prefix-arg buffers))
 
@@ -1868,10 +1915,18 @@ overlays with that FACE."
 ;;;###autoload
 (defun hlt-replace-highlight-face-in-buffers (old-face new-face buffers &optional msgp)
   "Use `hlt-replace-highlight-face' in each buffer of list BUFFERS.
+A prefix arg >= 0 means highlight with `mouse-face', not `face'.
+A prefix arg <= 0 means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
 See `hlt-replace-highlight-face' for other arguments."
   (interactive (list (hlt-read-bg/face-name "Replace face in region highlights. OLD face: ")
                      (hlt-read-bg/face-name "NEW face: ")
-                     (hlt-+/--read-bufs)))
+                     (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                       (hlt-+/--read-bufs))))
   (hlt-replace-highlight-face old-face new-face nil nil msgp current-prefix-arg buffers))
 
 ;;;###autoload
