@@ -19,6 +19,7 @@ See LineWrap for more info.
 
 See PhysicalLineMove for a minor-mode that changes line movement commands (C-n, C-p, C-a, C-e) to take into account wrapped lines; useful if you don't want to truncate lines!
 : Isn't this deprecated by M-x visual-line-mode? I don't see what else PhysicalLineMove would bring to the table.
+
 : What I like about truncate-lines versus visual-line-mode is that the former doesn't split on word boundaries and adds symbols to the fringe.
 
 If you want to set truncate-partial-width-windows just for a certain mode, you need
