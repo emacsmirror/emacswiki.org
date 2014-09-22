@@ -17,6 +17,7 @@
 * Make hygienic macros work in Elisp, no matter from what language they're defined
 * Unify Elisp and Scheme strings
 * Fix -nw (crashes due to too-early bidi initialization)
+* Reduce excessive indirection for variable storage
 
 == User-visible issues ==
 
