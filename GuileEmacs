@@ -33,6 +33,12 @@ While building Emacs, you might need to run "make -k" several times if plain "ma
 
 A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
 
+=== Updating ===
+
+The Guile and Emacs repositories should normally be updated at the same time. If the Guile repository has changed, you'll need to rebuild and reinstall it before building a new version of Guile-Emacs to ensure compatibility.
+
+The most convenient way to update is by running `git pull --rebase wip' in each repository. The repositories are rebased themselves from time to time, and the rebase option will prevent the creation of unnecessary merge commits. The rebase option is safe to use for tracking upstream development; if you make local changes, you should read the `git pull' documentation to make sure that its effect is acceptable, and consider doing development in a separate branch.
+
 === Dynamic scoping ===
 
 Elisp defvars are dynamically scoped, as well as let-bound variables when lexical scope isn't enabled for an Elisp file. These use the same machinery as parameter objects in Scheme. Currently these are not as efficient as they should be, and the presence of buffer-local variables and other weirdities of Elisp binding mechanisms cause additional headaches to Guile in implementing Elisp, which so far leads to a very big performance regression. This will hopefully be addressed shortly.
