@@ -94,10 +94,12 @@ dislike the way recent versions of newcomment fail to comment the
 blank lines. --JoeE (Originally posted on WishList)
 ** Look at the variable comment-empty-lines. --StefanReichoer
 (Answered on WishList)
-
-
  
 [new]
+* Is there a command for moving to the end of the current comment, assuming
+point is in a comment? --SueDNymme
+
+----
 '''See Also:'''
 
 * Variables <code>comment-start-skip</code> and
