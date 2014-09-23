@@ -19,6 +19,7 @@
 * Unify Elisp and Scheme strings
 * Fix -nw (crashes due to too-early bidi initialization)
 * Reduce excessive indirection for variable storage
+* Publish benchmarks
 
 == User-visible issues ==
 
