@@ -53,6 +53,9 @@ flex libgmp-dev libunistring-dev libffi-dev libgc-dev
 Here is a script to build guile and guile-emacs in your home directory:
 
 {{{
+# Make somewhere to put the source trees
+mkdir ~/source
+cd ~/source
 # Get bipt's guile
 git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/guile.git
 cd guile
