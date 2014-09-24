@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Sep 15 13:34:38 2014 (-0700)
+;; Last-Updated: Wed Sep 24 07:10:07 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6054
+;;     Update #: 6055
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2481,7 +2481,8 @@ This applies to commands `icicle-custom-theme' and
 `icicle-custom-themes' and `icicle-color-themes'.
 
 A prefix argument to `icicle-custom-theme' flips the option value for
-the current invocation of the command."))
+the current invocation of the command."
+    :type 'boolean :group 'Icicles-Miscellaneous))
 
 (defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s)" default))
   "*Function that formats the default value to include in the prompt.
