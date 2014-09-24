@@ -33,6 +33,21 @@ While building Emacs, you might need to run "make -k" several times if plain "ma
 
 A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
 
+Dependencies
+
+NicFerrier built on Ubuntu and needed everything from EmacsSnapshotAndDebian:
+
+{{{
+autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev
+}}}
+
+as well as these:
+
+{{{
+libgmp-dev libunistring-dev libffi-dev libgc-dev
+}}}
+
+
 === Updating ===
 
 The Guile and Emacs repositories should normally be updated at the same time. If the Guile repository has changed, you'll need to rebuild and reinstall it before building a new version of Guile-Emacs to ensure compatibility.
