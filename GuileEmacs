@@ -88,6 +88,22 @@ compile every single Elisp file, it doesn't have the ability to dump a
 {{{teamcs}}} like C Emacs does. It took me several hours on a fast,
 modern laptop in 2014. Also trees //will// die in the compilation.
 
+Once you've compiled and installed you can start Guile-Emacs like so:
+
+{{{
+$HOME/guile-emacs/emacs
+}}}
+
+this is a real Emacs remember, so it will try and load your personal config files unless you:
+
+{{{
+$HOME/guile-emacs/emacs -q
+}}}
+
+might be worth doing.
+
+//Another warning// it takes a while to start.
+
 
 === Updating ===
 
