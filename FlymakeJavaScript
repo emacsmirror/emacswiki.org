@@ -72,6 +72,10 @@ I had trouble getting jshint-mode working properly, so I created a simple way to
 
 -- Henrik Jegbjerg Hansen <hjh@freecode.dk>
 
+I tried Variant 2 first, and I spent several hours trying to make it work (debugging the flymake-jshint.el, jshint-mode.js and jshint.js). I tried Variant 1 and it worked at once! 
+
+-- Alejandro Russo <mylastname@chalmers.se>
+
 === Variant 2 ===
 
 You can do 
