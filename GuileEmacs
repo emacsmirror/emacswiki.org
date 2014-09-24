@@ -83,8 +83,10 @@ make install
 }}}
 
 //Warning// it takes a //long// time to compile Guile and a //long//
-time to compile Guile-Emacs. It took me several hours on a fast,
-modern laptop in 2014. Also trees will die in the compilation.
+time to compile Guile-Emacs. This is because Guile-Emacs has to
+compile every single Elisp file, it doesn't have the ability to dump a
+{{{teamcs}}} like C Emacs does. It took me several hours on a fast,
+modern laptop in 2014. Also trees //will// die in the compilation.
 
 
 === Updating ===
