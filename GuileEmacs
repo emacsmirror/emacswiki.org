@@ -82,6 +82,9 @@ make
 make install
 }}}
 
+//Warning// it takes a //long// time to compile Guile and a //long//
+time to compile Guile-Emacs. It took me several hours on a fast,
+modern laptop in 2014.
 
 
 === Updating ===
