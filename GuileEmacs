@@ -58,9 +58,25 @@ mkdir ~/source
 cd ~/source
 # Get bipt's guile
 git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/guile.git
+# Make guile somewhere
 cd guile
 ./autogen.sh
 ./configure --prefix=$HOME/guile-emacs/guile
+make
+make install
+
+# Now Emacs
+cd ~/source
+git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/emacs.git
+cd emacs
+export ACLOCAL_PATH=$HOME/guile-emacs/guile
+export PKG_CONFIG_PATH=$HOME/guile-emacs/guile/lib/pkgconfig
+export LD_RUN_PATH=$HOME/guile-emacs/guile/lib
+PATH=$PATH:$HOME/guile-emacs/guile/bin
+./autogen.sh 
+./configure --prefix=$HOME/guile-emacs/emacs
+make
+make install
 }}}
 
 
