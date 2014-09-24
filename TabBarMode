@@ -199,7 +199,6 @@ ctrl-right-arrow and ctrl-left-arrow, so we're not losing convenience.)
  (global-set-key [M-left] 'tabbar-backward-tab)
  (global-set-key [M-right] 'tabbar-forward-tab)
 
-
 === Windows-style behaviour and key bindings ===
 
 The following will provide windows style (shift-)control tab behaviour and
@@ -411,6 +410,12 @@ group buffers under the parent directory.
       (renew-tabbar-autohide-timer))))
 
  (autohide-tabbar)
+
+=== Speed up by not using images ===
+
+Tabbar can slow down Emacs considerably, especially simply moving the cursor up or down. This can be rectified by adding this to your .emacs file, which makes Tabbar use characters to represent the three images in the top-left corner:
+
+ (setq tabbar-use-images nil)
 
 == Integrating tabbar with eproject.el ==
 
