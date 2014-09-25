@@ -1,0 +1,5 @@
+Sometimes I want to edit LaTeX files without the power of AUCTeX. Vanilla <code>`latex-mode'</code> only uses english quotes. Here is a small piece of code that changes the way <code>`tex-insert-quote'</code> (bound to <code>"</code>) works. When the buffer seems to be a german LaTeX file (<code>ngerman</code> or <code>german</code> is found in the options for <code>\documentclass</code> or <code>\usepackage</code>) the function will switch to german quotes.
+
+<include gist "https://gist.github.com/1f3e06757f80b1057324">
+
+- StefanMoeding
