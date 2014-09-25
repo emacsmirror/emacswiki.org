@@ -3,6 +3,8 @@ This is about installing Emacs into an Android device. See GoogleAndroid for tip
 == Introduction: ways to run Emacs on Android devices ==
 Some of them are hypothetical.
 
+If programming is considered on the tablet/phone then a full linux in a chroot jail makes sense for accessing compilers, libraries etc. Lil' Debi can help you to install Debian (https://play.google.com/store/apps/details?id=info.guardianproject.lildebi). Afterwards you might want to consider recompiling Emacs to get the latest version or installing it from the official repositories. The git clone of Emacs compiled for me, the latest archives failed however.
+
 ===Native port (installable Android application)===
 A first version of a native port was released August 2012. Quickly installable like any other Android app, with no need to root the mobile device. Key bindings, etc., work with physical keyboards -e.g. mini bluetooth keyboard- and External Keyboard Helper Pro app, or with on-screen Hacker's Keyboard app. Init file: ##/sdcard/emacs/.emacs## (optional). See [http://play.google.com/store/apps/details?id=com.zielm.emacs Google Play: Emacs], and [http://github.com/zielmicha/emacs-android GitHub: zielmicha/emacs-android] (Emacs port [http://github.com/zielmicha/emacs-android/issues issues], etc.).
 
