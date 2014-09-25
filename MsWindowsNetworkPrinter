@@ -97,3 +97,8 @@ http://www.emacswiki.org/emacs/McMahanDotEmacs defines how to do this. However, 
    "Point to the ps printer emacs is to use. Defaults to `MY_PRINTER'")
 
  (setq printer-name MY_PRINTER)
+
+
+== Sending raw text to a postscript printer results in an error ==
+So for me the test print using the generic driver caused a failure at the printer. The printer is expecting postscript. 
+#justsaying...
