@@ -388,6 +388,23 @@ The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
 
 Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
 
+[:Android]
+== Android ==
+
+When using a Bluetooth hardware keyboard attached to a android tablet or phone you might consider changing the SHIFT key also to CTRL. To do this Android wide, you need to have root access obviously. Open a console and gain root access with:
+<pre>
+$ su
+</pre>
+
+Then remount /system and change the desired keys in /system/usr/keymapswith the editor of your choice, e.g. nano:
+
+<pre>
+# mount -o rw,remount /system
+# nano /system/usr/keylayout/Generic.kl
+</pre>
+
+Again Key 58 is the SHIFT key. Set it to CTRL_LEFT for instance. Save the file and restart your tablet/phone.
+
 [:Using space bar as both space and control]
 == Using space bar as both space and control ==
 
