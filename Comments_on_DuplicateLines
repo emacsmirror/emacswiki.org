@@ -2,3 +2,10 @@ I tried to find duplicates using find-duplicate-lines and it gives me "Symbol's 
 
 -- migmont 2014-09-25 15:53 UTC
 
+
+----
+
+Looks like the code as written has a bug. Try using `newline' in place of `new-line'.
+
+-- DrewAdams 2014-09-25 20:45 UTC
+
