@@ -1,0 +1,4 @@
+I tried to find duplicates using find-duplicate-lines and it gives me "Symbol's function definition is void: new-line". What could be the cause?
+
+-- migmont 2014-09-25 15:53 UTC
+
