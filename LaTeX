@@ -57,6 +57,8 @@ LatexEnc gets a coding system from <code>inputenc</code>, as an alternative to a
 
 TexSmartUmlauts translates LaTeX encoded non-ASCII characters to their "visible" representation while restoring their original encoding when the buffer is saved.
 
+GermanLaTeXQuotes automatically switches between german and english quotes in <code>`latex-mode'</code> depending on context.
+
 == Discussion ==
 
 [new]
@@ -191,13 +193,6 @@ In my thesis, I needed to translate tr_TR.UTF-8 characters into their LaTeX equi
  tr-utf8-to-latex tr-utf8-to-latex-string-translation-alist)
 </pre>
 -- Volkan YAZICI
-
----
-Sometimes I want to edit LaTeX files without the power of AUCTeX. Vanilla <code>`latex-mode'</code> only uses english quotes. Here is a small piece of code that changes the way <code>`tex-insert-quote'</code> (bound to <code>"</code>) works. When the buffer seems to be a german LaTeX file (<code>ngerman</code> or <code>german</code> is found in the options for <code>\documentclass</code> or <code>\usepackage</code>) the function will switch to german quotes.
-
-<include gist "https://gist.github.com/smoeding/1f3e06757f80b1057324">
-
-- StefanMoeding
 
 ----
 CategoryModes CategoryTex
