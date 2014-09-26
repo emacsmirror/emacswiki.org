@@ -20,6 +20,7 @@
 * Fix -nw (crashes due to too-early bidi initialization)
 * Reduce excessive indirection for variable storage
 * Publish benchmarks
+* Fixed nested backquotes in Guile-Elisp (though not yet used in Emacs)
 
 == User-visible issues ==
 
