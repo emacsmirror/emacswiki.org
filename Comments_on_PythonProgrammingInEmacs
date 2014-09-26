@@ -2,3 +2,10 @@ I feel like https://github.com/gabrielelanaro/emacs-for-python should get mentio
 
 -- [http://mrmagooey.me mrmagooey] 2013-05-28 23:39 UTC
 
+
+----
+
+Should also mention that Flycheck integrates flake8 and pylint.
+
+-- ybendana 2014-09-26 23:47 UTC
+
