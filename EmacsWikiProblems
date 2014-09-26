@@ -37,6 +37,10 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 
 == Markup/Generation Issues==
 
+=== Gist not shown ===
+
+I tried to include a code fragment as gist on the page GermanLaTeXQuotes, which is not displayed. Instead of the gist the code is shown. It seems that the link includes the terminating quote character which is obviously not correct. The working gist on page [[Gists]] only includes numeric characters while my links also has alphanumeric characters. Maybe a problem with the code that validates a correct gist link? -- StefanMoeding
+
 === Colon line prefix does not indent correctly ===
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
