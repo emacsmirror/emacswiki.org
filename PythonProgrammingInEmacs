@@ -38,7 +38,9 @@ First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.e
 (require 'ipython)
 }}}
 
-Recipes below should be tried only if this fails 
+Recipes below should be tried only if this fails
+
+ipython.el looks like it's deprecated. It no longer comes with the IPython distribution. --[[ybendana]]
 
 Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
 
@@ -159,6 +161,8 @@ to support virtual environments, but this is largely untested.
 * [http://bitbucket.org/jek/sandbox/src/tip/pycheckers pycheckers] runs pyflakes, pep8, pydo (configurable)
 
 : I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- [[Chris2048]]
+
+Flycheck integrates flake8 and pylint. --[[ybendana]]
 
 ==== Using flymake with pylint ====
 
