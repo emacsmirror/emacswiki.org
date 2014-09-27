@@ -204,7 +204,7 @@ I've done quite a few other packages for Emacs, most are on github but check the
 
 * [[WikiDoc]] -- a program to make wiki documentation from Elisp functions, [[http://marmalade-repo.org/packages/wikidoc|marmalade repo here]], [[http://github.com/nicferrier/elwikidoc|github here]]
 * fakir -- a library to make faking Emacs Lisp functions easier [[http://marmalade-repo.org/packages/fakir|marmalade repo here]], [[http://github.com/nicferrier/emacs-fakir|github here]]
-* Erlang extras -- I've started to get serious about erlang - it needs tooling [[https://github.com/nicferrier/emacs-erlang-extras|so I started this]]
+* ErlangLanguage extras -- I've started to get serious about erlang - it needs tooling [[https://github.com/nicferrier/emacs-erlang-extras|so I started this]]
  
 And some other stuff I haven't packaged and probably never will:
 
