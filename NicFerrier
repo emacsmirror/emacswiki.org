@@ -21,13 +21,60 @@ I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|her
 
 Check out my [[http://nic.ferrier.me.uk#emacslisp|blog]] which has lots of stuff about Emacs.
 
+== Latest problems and things ==
+
+
+
 == Things I do with Emacs that are interesting ==
 
+I live in Emacs. Like most people who do that I do a few interesting
+things. It's hard to remember to write them down here. I try to.
+
+=== Encrypt my config ===
+
+I store lots of customizations in my `custom-file' like this:
+
+    (load-file
+     (setq custom-file
+       (concat
+        (file-name-directory
+         (or
+          (buffer-file-name)
+          load-file-name))
+        "nic-custom.el.gpg")))
+
+this means that Emacs asks me the password for the file when I start
+Emacs. The password is then cached and I can use it for all sorts of
+secure stuff. As long as I have a decent screen lock I should be very
+secure.
+
+==== Ubuntu forces you to use gnupg-agent for this ====
+
+The variable `epa-file-cache-passphrase-for-symmetric-encryption' used
+to be enough for this to work. Sadly it doesn't anymore, at least on Ubuntu.
+
+You now need to use package: `gnupg-agent'. Here's my Emacs start script:
+
+{{{
+#!/bin/bash
+
+eval $(gpg-agent --daemon)
+$(dirname $0)/emacs-24-3/bin/emacs
+
+# End
+}}}
+
+When I want to start Emacs in Ubuntu I use `ALT-F2' and that script.
+
 === Use Emacs for Google Talk ===
-I started talking to people who use Google Talk so I started to use JabberEl and GoogleTalk - it's a breeze actually.
+
+I started talking to people who use Google Talk so I started to use
+JabberEl and GoogleTalk - it's a breeze actually.
 
 === Use an IRC Bouncer in EmacsLisp ===
-I wrote ShoesOff because an IRC bouncer in EmacsLisp was obvious. I use it a lot.
+
+I wrote ShoesOff because an IRC bouncer in EmacsLisp was obvious. I
+use it a lot.
 
 I run a laptop at home with ShoesOff running all the time. 
 
