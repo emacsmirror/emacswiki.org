@@ -52,7 +52,9 @@ If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the informati
 [:ImageTooltip]
 * Shows an image preview in a tooltip when you mouseover an image-file name in Dired.  User [[option]] '''`diredp-image-preview-in-tooltip'''' controls whether this happens and how (full-size image, thumbnail preview of what size).
 
-: Thumbnail: [[image:DrewEmacsDiredMouseoverThumbnail]]
+: Thumbnail 100 pixels: [[image:DrewEmacsDiredMouseoverThumbnail100]]
+
+: Thumbnail 300 pixels: [[image:DrewEmacsDiredMouseoverThumbnail]]
 
 : Full image: [[image:DrewEmacsDiredMouseoverFull]]
 
