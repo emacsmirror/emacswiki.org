@@ -51,5 +51,10 @@ You can easily sort on any column, in both directions, if you use BufferMenuPlus
 
 [This](https://gist.github.com/offby1/1163610) lets you sort by directory name.  I find this handy when working on a bunch of unrelated projects. -- EricHanchrow
 
+[new]
+Emacs 24 doesn't seem to recognize Buffer-menu-sort-column.
+
+Here is a snippet of code that advises list-buffers to get automatic sorting behavior on startup: https://gist.github.com/codeforkjeff/37a350d9af3a2c158eac
+
 ----
 CategoryBufferSwitching
