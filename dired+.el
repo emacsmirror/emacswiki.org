@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 22 15:14:55 2014 (-0700)
+;; Last-Updated: Fri Sep 26 21:49:37 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8343
+;;     Update #: 8345
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -570,6 +570,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/26 dadams
+;;     diredp-mouseover-help: dired-get-filename etc. has to be inside the save-excursion.
 ;; 2014/09/22 dadams
 ;;     diredp-mouse-3-menu: Do not place overlay unless on a file/dir name (i.e., dired-get-filename).
 ;; 2014/09/15 dadams
@@ -7397,14 +7399,14 @@ show an image preview, then do so.  Otherwise, show text help."
              diredp-image-preview-in-tooltip
              (condition-case nil
                  (and (with-current-buffer buffer
-                        (save-excursion (goto-char pos))
-                        (diredp-string-match-p
-                         (image-file-name-regexp)
-                         (setq file  (if (derived-mode-p 'dired-mode)
-                                         (dired-get-filename nil 'NO-ERROR)
-                                       ;; Make it work also for `diredp-list-files' listings.
-                                       (buffer-substring-no-properties (line-beginning-position)
-                                                                       (line-end-position))))))
+                        (save-excursion (goto-char pos)
+                                        (diredp-string-match-p
+                                         (image-file-name-regexp)
+                                         (setq file  (if (derived-mode-p 'dired-mode)
+                                                         (dired-get-filename nil 'NO-ERROR)
+                                                       ;; Make it work also for `diredp-list-files' listings.
+                                                       (buffer-substring-no-properties (line-beginning-position)
+                                                                                       (line-end-position)))))))
                       (or (not diredp-auto-focus-frame-for-thumbnail-tooltip-flag)
                           (progn (select-frame-set-input-focus (window-frame window)) t))
                       (let ((img-file  (if (eq 'full diredp-image-preview-in-tooltip)
