@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 26 21:49:37 2014 (-0700)
+;; Last-Updated: Fri Sep 26 22:43:22 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8345
+;;     Update #: 8351
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -572,6 +572,7 @@
 ;;
 ;; 2014/09/26 dadams
 ;;     diredp-mouseover-help: dired-get-filename etc. has to be inside the save-excursion.
+;;     diredp-image-dired-create-thumb: Added FILE arg.  Use numeric prefix arg as the new thumbnail size.
 ;; 2014/09/22 dadams
 ;;     diredp-mouse-3-menu: Do not place overlay unless on a file/dir name (i.e., dired-get-filename).
 ;; 2014/09/15 dadams
@@ -2184,22 +2185,24 @@ If HDR is non-nil, insert a header line with the directory name."
 ;; See `image-dired-create-thumb'.
 ;; Define this even if `image-dired.el' is not loaded.
 ;; Do NOT raise an error if not loaded, because this is used in `diredp-mouseover-help'.
-(defun diredp-image-dired-create-thumb (&optional arg)
-  "Create thumbnail image file for this file.
-With a prefix arg, replace any existing thumbnail for the file.
+(defun diredp-image-dired-create-thumb (file &optional arg)
+  "Create thumbnail image file for FILE (default: file on current line).
+With a prefix arg, replace any existing thumbnail for FILE.
+With a numeric prefix arg (not a cons), use it as the thumbnail size.
 Return the name of the thumbnail image file, or nil if none."
-  (interactive "P")
+  (interactive (list (if (derived-mode-p 'dired-mode)
+                         (dired-get-filename nil 'NO-ERROR)
+                       ;; Make it work also for `diredp-list-files' listings.
+                       (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+                     current-prefix-arg))
   (and (fboundp 'image-dired-thumb-name) ; No-op (return nil) if `image-dired.el' not loaded.
-       (let* ((curr-file   (if (derived-mode-p 'dired-mode)
-                               (dired-get-filename nil 'NO-ERROR)
-                             ;; Make it work also for `diredp-list-files' listings.
-                             (buffer-substring-no-properties (line-beginning-position)
-                                                             (line-end-position))))
-              (thumb-name  (image-dired-thumb-name curr-file)))
+       (let ((thumb-name  (image-dired-thumb-name file)))
          (when arg (clear-image-cache))
          (when (or arg  (not (file-exists-p thumb-name)))
-           (unless (zerop (image-dired-create-thumb curr-file thumb-name))
-             (error "Thumbnail image file could not be created")))
+           (let ((image-dired-thumb-width   (or (and arg  (atom arg)  arg)  image-dired-thumb-width))
+                 (image-dired-thumb-height  (or (and arg  (atom arg)  arg)  image-dired-thumb-height)))
+             (unless (zerop (image-dired-create-thumb file thumb-name))
+               (error "Thumbnail image file could not be created"))))
          (and (file-exists-p thumb-name)  thumb-name))))
 
 
