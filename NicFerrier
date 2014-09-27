@@ -21,10 +21,6 @@ I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|her
 
 Check out my [[http://nic.ferrier.me.uk#emacslisp|blog]] which has lots of stuff about Emacs.
 
-== Latest problems and things ==
-
-
-
 == Things I do with Emacs that are interesting ==
 
 I live in Emacs. Like most people who do that I do a few interesting
@@ -208,6 +204,7 @@ I've done quite a few other packages for Emacs, most are on github but check the
 
 * [[WikiDoc]] -- a program to make wiki documentation from Elisp functions, [[http://marmalade-repo.org/packages/wikidoc|marmalade repo here]], [[http://github.com/nicferrier/elwikidoc|github here]]
 * fakir -- a library to make faking Emacs Lisp functions easier [[http://marmalade-repo.org/packages/fakir|marmalade repo here]], [[http://github.com/nicferrier/emacs-fakir|github here]]
+* erlang extras -- I've started to get serious about erlang - it needs tooling [[https://github.com/nicferrier/emacs-erlang-extras|so I started this]]
  
 And some other stuff I haven't packaged and probably never will:
 
