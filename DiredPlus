@@ -49,6 +49,7 @@ If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the informati
 
 * Adds a context-sensitive popup menu on `mouse-3'. The menu differs, depending on whether or not a region is active in Dired.
 
+[:ImageTooltip]
 * Shows an image preview in a tooltip when you mouseover an image-file name in Dired.  User [[option]] '''`diredp-image-preview-in-tooltip'''' controls whether this happens and how (full-size image, thumbnail preview of what size).
 
 : Thumbnail: [[image:DrewEmacsDiredMouseoverThumbnail]]
