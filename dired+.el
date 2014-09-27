@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 26 22:43:22 2014 (-0700)
+;; Last-Updated: Sat Sep 27 13:35:29 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8351
+;;     Update #: 8371
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -311,6 +311,8 @@
 ;;    `diredp-describe-file', `diredp-describe-mode',
 ;;    `diredp-dired-for-files', `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
+;;    `diredp-dired-recent-dirs',
+;;    `diredp-dired-recent-dirs-other-window',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
 ;;    `diredp-dired-union-other-window',
 ;;    `diredp-do-async-shell-command-recursive', `diredp-do-bookmark',
@@ -432,7 +434,8 @@
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
-;;    `diredp-directories-within', `diredp-dired-plus-description',
+;;    `diredp-delete-dups', `diredp-directories-within',
+;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
@@ -570,6 +573,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/27 dadams
+;;     Added: diredp-dired-recent-dirs, diredp-dired-recent-dirs-other-window, diredp-delete-dups.
 ;; 2014/09/26 dadams
 ;;     diredp-mouseover-help: dired-get-filename etc. has to be inside the save-excursion.
 ;;     diredp-image-dired-create-thumb: Added FILE arg.  Use numeric prefix arg as the new thumbnail size.
@@ -1360,6 +1365,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
+(defvar recentf-list)                             ; In `recentf.el'
 (defvar tooltip-mode)                             ; In `tooltip.el'
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
@@ -1662,6 +1668,19 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   (defun diredp-looking-at-p (regexp)
     "Like `looking-at', but this saves and restores the match data."
     (save-match-data (looking-at regexp))))
+
+(if (fboundp 'delete-dups)
+    (defalias 'diredp-delete-dups (symbol-function 'delete-dups))
+  (defun diredp-delete-dups (list)
+    "Destructively remove `equal' duplicates from LIST.
+Store the result in LIST and return it.  LIST must be a proper list.
+Of several `equal' occurrences of an element in LIST, the first
+one is kept."
+    (let ((tail list))
+      (while tail
+        (setcdr tail (delete (car tail) (cdr tail)))
+        (setq tail (cdr tail))))
+    list))
 
 (defun diredp-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -3932,6 +3951,27 @@ Use `C-g' when you are done.  See `dired'."
    (let ((current-prefix-arg  -1))
      (dired-read-dir-and-switches "in other window ")))
   (dired-other-window arg switches))
+
+;;;###autoload
+(defun diredp-dired-recent-dirs (buffer)
+  "Open Dired in BUFFER, showing the recently used directories."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers)))
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (let ((dirs  (diredp-delete-dups
+                (mapcar (lambda (f/d) (if (file-directory-p f/d) f/d (file-name-directory f/d)))
+                        recentf-list))))
+    (dired (cons (generate-new-buffer-name buffer) dirs))))
+
+;;;###autoload
+(defun diredp-dired-recent-dirs-other-window (buffer)
+  "Same as `diredp-dired-recent-dirs', but use other window."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers)))
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (let ((dirs  (diredp-delete-dups
+                (mapcar (lambda (f/d) (if (file-directory-p f/d) f/d (file-name-directory f/d)))
+                        recentf-list))))
+    (dired-other-window (cons (generate-new-buffer-name buffer) dirs))))
+
 
 ;;; $$$$$$$$
 ;;; (defun diredp-dired-files-interactive-spec (str)
@@ -9217,6 +9257,7 @@ General
     "* \\[diredp-marked-other-window]\t\t- Open Dired on marked
 * \\[diredp-fileset]\t\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
+* \\[diredp-dired-recent-dirs]\t- Open Dired on recently used dirs
 * \\[diredp-dired-union]\t\t- Create union of some Dired buffers
 * \\[diredp-dired-inserted-subdirs]\t- Dired each inserted subdir
 
