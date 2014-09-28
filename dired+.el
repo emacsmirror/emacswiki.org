@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 28 12:00:56 2014 (-0700)
+;; Last-Updated: Sun Sep 28 15:25:43 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8432
+;;     Update #: 8448
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -579,6 +579,8 @@
 ;;     Added: diredp-recent-dirs, diredp-read-include/exclude, diredp-root-directory-p, diredp-remove-if.
 ;;     diredp-dired-recent-dirs(-other-window): Added optional ARG.  Use diredp-recent-dirs.  Pass SWITCHES.
 ;;     dired-read-dir-and-switches: Use diredp-root-directory-p.
+;;     Bound diredp-dired-recent-dirs(-other-window) to C-x R and C-x 4 R.
+;;     Added diredp-dired-recent-dirs to Dir menu.
 ;; 2014/09/27 dadams
 ;;     Added: diredp-dired-recent-dirs, diredp-dired-recent-dirs-other-window, diredp-delete-dups.
 ;; 2014/09/26 dadams
@@ -602,7 +604,7 @@
 ;;       Use dired-read-dir-and-switches and dired, not diredp-dired-files-interactive-spec and
 ;;       diredp-dired-files.
 ;;     diredp-menu-bar-immediate-menu, diredp-mouse-3-menu:
-;;       Added item for dired-kill-this-tree.
+;;       Added item for diredp-kill-this-tree.
 ;;       Corrected visible condition: expand-file-name, so ~/ compares with its expansion.
 ;;     diredp-font-lock-keywords-1: Include period (.) for diredp(-compressed)-file-suffix.
 ;; 2014/09/09 dadams
@@ -3407,6 +3409,10 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--")) ; --------------------
 
+(define-key diredp-menu-bar-subdir-menu [diredp-dired-recent-dirs]
+  '(menu-item "Dired Recent Directories..." diredp-dired-recent-dirs
+    :visible (boundp 'recentf-list) :enable  (and (boundp 'recentf-list)  (consp recentf-list))
+    :help "Open a Dired buffer for recently used directories"))
 (define-key diredp-menu-bar-subdir-menu [diredp-dired-inserted-subdirs]
   '(menu-item "Dired Each Inserted Subdir..." diredp-dired-inserted-subdirs
     :enable (cdr dired-subdir-alist)    ; First elt is current dir.  Must have at least one more.
@@ -3454,10 +3460,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode dired-omit-toggle))
   (define-key dired-mode-map "\M-o" nil))
 
-(define-key dired-mode-map "\C-x\S-d"  'diredp-dired-union)            ; `C-x D' (aka `C-x S-d')
-(define-key dired-mode-map "\C-x4\S-d" 'diredp-dired-union-other-window) ; `C-x 4 D'
-(define-key dired-mode-map "\C-x\S-f"  'diredp-fileset)                ; `C-x F' (aka `C-x S-f')
-(define-key dired-mode-map "\C-x4\S-f" 'diredp-fileset-other-window)   ; `C-x 4 F'
+(define-key dired-mode-map "\C-x\S-d"  'diredp-dired-union)                    ; `C-x D' (aka `C-x S-d')
+(define-key dired-mode-map "\C-x4\S-d" 'diredp-dired-union-other-window)       ; `C-x 4 D'
+(define-key dired-mode-map "\C-x\S-f"  'diredp-fileset)                        ; `C-x F' (aka `C-x S-f')
+(define-key dired-mode-map "\C-x4\S-f" 'diredp-fileset-other-window)           ; `C-x 4 F'
+(define-key dired-mode-map "\C-x\S-r"  'diredp-dired-recent-dirs)              ; `C-x R' (aka `C-x S-r')
+(define-key dired-mode-map "\C-x4\S-r" 'diredp-dired-recent-dirs-other-window) ; `C-x 4 R' (aka `C-x 4 S-r')
 
 ;; Navigation
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
@@ -3961,7 +3969,7 @@ Use `C-g' when you are done.  See `dired'."
   (dired-other-window arg switches))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs (buffer &optional arg)
+(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x R' (aka `C-x S-r')
   "Open Dired in BUFFER, showing recently used directories.
 You are prompted for BUFFER.
 
@@ -3983,7 +3991,7 @@ When entering directories to include or exclude, use `C-g' to end."
     (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs-other-window (buffer &optional arg)
+(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 R' (aka `C-x 4 S-r')
   "Same as `diredp-dired-recent-dirs', but use other window."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
@@ -9318,7 +9326,7 @@ General
     "* \\[diredp-marked-other-window]\t\t- Open Dired on marked
 * \\[diredp-fileset]\t\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
-* \\[diredp-dired-recent-dirs]\t- Open Dired on recently used dirs
+* \\[diredp-dired-recent-dirs]\t\t- Open Dired on recently used dirs
 * \\[diredp-dired-union]\t\t- Create union of some Dired buffers
 * \\[diredp-dired-inserted-subdirs]\t- Dired each inserted subdir
 
