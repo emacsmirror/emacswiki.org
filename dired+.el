@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 28 10:58:20 2014 (-0700)
+;; Last-Updated: Sun Sep 28 12:00:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8385
+;;     Update #: 8432
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -457,6 +457,7 @@
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
 ;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
+;;    `diredp-read-include/exclude', `diredp-recent-dirs',
 ;;    `diredp-remove-if', `diredp-remove-if-not',
 ;;    `diredp-root-directory-p', `diredp-set-tag-value',
 ;;    `diredp-string-match-p', `diredp-tag',
@@ -575,7 +576,8 @@
 ;;; Change Log:
 ;;
 ;; 2014/09/28 dadams
-;;     Added: diredp-root-directory-p, diredp-remove-if.
+;;     Added: diredp-recent-dirs, diredp-read-include/exclude, diredp-root-directory-p, diredp-remove-if.
+;;     diredp-dired-recent-dirs(-other-window): Added optional ARG.  Use diredp-recent-dirs.  Pass SWITCHES.
 ;;     dired-read-dir-and-switches: Use diredp-root-directory-p.
 ;; 2014/09/27 dadams
 ;;     Added: diredp-dired-recent-dirs, diredp-dired-recent-dirs-other-window, diredp-delete-dups.
@@ -3959,25 +3961,72 @@ Use `C-g' when you are done.  See `dired'."
   (dired-other-window arg switches))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs (buffer)
-  "Open Dired in BUFFER, showing the recently used directories."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers)))
+(defun diredp-dired-recent-dirs (buffer &optional arg)
+  "Open Dired in BUFFER, showing recently used directories.
+You are prompted for BUFFER.
+
+No prefix arg or a plain prefix arg (`C-u', `C-u C-u', etc.) means
+list all of the recently used directories.
+
+With a prefix arg:
+* If 0, `-', or plain (`C-u') then you are prompted for the `ls'
+  switches to use.
+* If not plain (`C-u') then:
+  * If >= 0 then the directories to include are read, one by one.
+  * If  < 0 then the directories to exclude are read, one by one.
+
+When entering directories to include or exclude, use `C-g' to end."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((dirs  (diredp-delete-dups
-                (mapcar (lambda (f/d) (if (file-directory-p f/d) f/d (file-name-directory f/d)))
-                        recentf-list))))
-    (dired (cons (generate-new-buffer-name buffer) dirs))))
+  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
+                        (read-string "Dired listing switches: " dired-listing-switches))))
+    (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs-other-window (buffer)
+(defun diredp-dired-recent-dirs-other-window (buffer &optional arg)
   "Same as `diredp-dired-recent-dirs', but use other window."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers)))
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((dirs  (diredp-delete-dups
-                (mapcar (lambda (f/d) (if (file-directory-p f/d) f/d (file-name-directory f/d)))
-                        recentf-list))))
-    (dired-other-window (cons (generate-new-buffer-name buffer) dirs))))
+  (let ((switches  (and (or (zerop (prefix-numeric-value arg))
+                            (consp arg)
+                            (eq '- arg))
+                        (read-string "Dired listing switches: " dired-listing-switches))))
+    (dired-other-window (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
+(defun diredp-recent-dirs (arg)
+  "Return a list of recently used directories.
+ARG is as for `diredp-dired-recent-dirs'."
+  (let ((recent-dirs  (diredp-remove-if #'diredp-root-directory-p
+                                        (diredp-delete-dups
+                                         (mapcar (lambda (f/d)
+                                                   (if (file-directory-p f/d) f/d (file-name-directory f/d)))
+                                                 recentf-list)))))
+    (if (and arg  (atom arg))
+        (diredp-read-include/exclude 'Dir recent-dirs (not (natnump (prefix-numeric-value arg))))
+      recent-dirs)))
+         
+(defun diredp-read-include/exclude (thing things &optional exclude)
+  "Read which THINGs to include (or to EXCLUDE, if non-nil) from list THINGS.
+The things are read one by one.  `C-g' stops reading.
+
+THING is a string or symbol naming the type of thing to read, e.g.,
+`File' or `Directory'.  It is used only in the prompt, which is THING
+followed by \" to exclude\" or \" to include\" and a reminder about `C-g'.
+
+A new list is returned - list THINGS is not modified."
+  (let* ((thgs                    (if exclude (copy-sequence things) ()))
+         (prompt                  (format "%s to %s (C-g when done): " thing (if exclude 'EXCLUDE 'INCLUDE)))
+         (completion-ignore-case  (or (and (boundp 'read-file-name-completion-ignore-case)
+                                           (memq thing '(Dir Directory File "Dir" "Directory" "File")) ; Hack
+                                           read-file-name-completion-ignore-case)
+                                      completion-ignore-case))
+         thing)
+    (while (condition-case nil
+               (setq thing  (completing-read prompt (mapcar #'list things) nil t))
+             (quit nil))
+      (if exclude (delete thing thgs)
+        (push thing thgs)))
+    thgs))
 
 ;;; $$$$$$$$
 ;;; (defun diredp-dired-files-interactive-spec (str)
