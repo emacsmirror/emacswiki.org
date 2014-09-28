@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 28 10:21:00 2014 (-0700)
+;; Last-Updated: Sun Sep 28 10:58:20 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8380
+;;     Update #: 8385
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -457,8 +457,9 @@
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
 ;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
-;;    `diredp-remove-if-not', `diredp-root-directory-p',
-;;    `diredp-set-tag-value', `diredp-string-match-p', `diredp-tag',
+;;    `diredp-remove-if', `diredp-remove-if-not',
+;;    `diredp-root-directory-p', `diredp-set-tag-value',
+;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
 ;;
@@ -574,7 +575,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/09/28 dadams
-;;     Added: diredp-root-directory-p.
+;;     Added: diredp-root-directory-p, diredp-remove-if.
 ;;     dired-read-dir-and-switches: Use diredp-root-directory-p.
 ;; 2014/09/27 dadams
 ;;     Added: diredp-dired-recent-dirs, diredp-dired-recent-dirs-other-window, diredp-delete-dups.
@@ -4618,6 +4619,12 @@ satisfy PREDICATE are included in the result."
           (when (file-readable-p file) (push file res))))
       (pop files))
     res))
+
+(defun diredp-remove-if (pred xs)
+  "A copy of list XS with no elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (unless (funcall pred x) (push x result)))
+    (nreverse result)))
 
 (defun diredp-remove-if-not (pred xs)
   "A copy of list XS with only elements that satisfy predicate PRED."
