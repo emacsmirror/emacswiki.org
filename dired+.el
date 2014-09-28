@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 27 13:35:29 2014 (-0700)
+;; Last-Updated: Sun Sep 28 10:15:36 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8371
+;;     Update #: 8379
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -457,8 +457,8 @@
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
 ;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
-;;    `diredp-remove-if-not', `diredp-set-tag-value',
-;;    `diredp-string-match-p', `diredp-tag',
+;;    `diredp-remove-if-not', `diredp-root-directory-p',
+;;    `diredp-set-tag-value', `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
 ;;
@@ -573,6 +573,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/09/28 dadams
+;;     Added: diredp-root-directory-p.
+;;     dired-read-dir-and-switches: Use diredp-root-directory-p.
 ;; 2014/09/27 dadams
 ;;     Added: diredp-dired-recent-dirs, diredp-dired-recent-dirs-other-window, diredp-delete-dups.
 ;; 2014/09/26 dadams
@@ -1686,6 +1689,16 @@ one is kept."
   "Return non-nil if region is active and non-empty."
   (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
 
+(defun diredp-root-directory-p (file)
+  "Return non-nil if FILE is a root directory."
+  (if (fboundp 'ange-ftp-root-dir-p)
+      (ange-ftp-root-dir-p (file-name-as-directory file))
+    ;; This is essentially `ange-ftp-root-dir-p' applied to `file-name-as-directory'.
+    ;; If `ange-ftp-root-dir-p' changes, update this code.
+    (or (and (eq system-type 'windows-nt)
+             (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'" (file-name-as-directory file)))
+        (string= "/" file))))
+
 (unless (fboundp 'derived-mode-p)       ; Emacs 20, 21.
   (defun derived-mode-p (&rest modes)
     "Non-nil if the current major mode is derived from one of MODES.
@@ -1955,14 +1968,7 @@ If non-empty, STRING should begin with a SPC."
                          (setq file  (read-file-name "File or dir (C-g when done): "))
                        (quit nil))
                 ;; Do not allow root dir (`/' or a Windows drive letter, e.g. `d:/').
-                (if (if (fboundp 'ange-ftp-root-dir-p)
-                        (ange-ftp-root-dir-p (file-name-as-directory file))
-                      ;; This is essentially `ange-ftp-root-dir-p' applied to
-                      ;; `file-name-as-directory'.  If `ange-ftp-root-dir-p' changes, update this.
-                      (or (and (eq system-type 'windows-nt)
-                               (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'"
-                                                      (file-name-as-directory file)))
-                          (string= "/" file)))
+                (if (diredp-root-directory-p file)
                     (progn (message "Cannot choose root directory") (sit-for 1))
                   (push file files)))
               (cons dirbuf files)))
