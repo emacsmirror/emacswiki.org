@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 28 10:15:36 2014 (-0700)
+;; Last-Updated: Sun Sep 28 10:21:00 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8379
+;;     Update #: 8380
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1955,11 +1955,10 @@ If non-empty, STRING should begin with a SPC."
               ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
               ;; code knows we want directories.  Some dialog boxes can only select directories
               ;; or files when popped up, not both.
-              (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
-                  (read-directory-name (format "Dired %s(directory): " string) nil
-                                       default-directory nil)
-                (read-file-name (format "Dired %s(directory): " string)
-                                nil default-directory nil))
+              (funcall (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
+                           #'read-directory-name
+                         #'read-file-name)
+                       (format "Dired %s(directory): " string) nil default-directory nil)
             (let (;; $$$$$$$$ (insert-default-directory  nil)
                   (files                     ())
                   (dirbuf                    (completing-read "Dired buffer name: " dired-buffers))
