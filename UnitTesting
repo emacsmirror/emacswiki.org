@@ -48,7 +48,7 @@ I use this my Debugger front-end https://github.com/rocky/emacs-dbgr
 
 PhilHagelberg describes a BDD framework with expectations-like syntax. [http://technomancy.us/73 Description].
 
-[http://ecukes.info/ ecukes] is a cucumber-like framework for writing tests. It allows you to write human-readable feature tests. 
+[https://github.com/ecukes/ecukes ecukes] is a cucumber-like framework for writing tests. It allows you to write human-readable feature tests. 
 
 === Others ===
 
