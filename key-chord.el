@@ -1,7 +1,7 @@
 ;;; key-chord.el --- map pairs of simultaneously pressed keys to commands
 ;;-------------------------------------------------------------------
 ;;
-;; Copyright (C) 2003,2005,2008 David Andersson
+;; Copyright (C) 2003,2005,2008,2012 David Andersson
 ;;
 ;; This file is NOT part of Emacs.
 ;;
@@ -24,22 +24,22 @@
 
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 27 April 2003
-;; Version: 0.5 (2008-09-15)
+;; Version: 0.6 (2012-10-23)
 ;; Keywords: keyboard chord input
 
 ;;; Commentary:
 
 ;; ########   Compatibility   ########################################
 ;;
-;; Works with Emacs-20.3, 20.6, 20.7, 21.2, 21.4 and 22.1.
+;; Works with Emacs-20.3, 20.6, 20.7, 21.2, 21.4, 22.1 and 23.1
 ;; Does not work with Emacs-19.31 nor XEmacs-20.4 and 21.4.
 
 ;; ########   Quick start   ########################################
 ;;
 ;; Add to your ~/.emacs
 ;;
-;;	(require 'key-chord)
-;;	(key-chord-mode 1)
+;;      (require 'key-chord)
+;;      (key-chord-mode 1)
 ;;
 ;; and some chords, for example
 ;;
@@ -164,7 +164,7 @@
 ;;
 ;; Key chord key codes are vectors beginning with the atom `key-chord'.
 ;; A two key chord, e.g. "hj", will add two entries in the key-map.
-;; E.g. [key-chord ?h ?j] and [key-chord ?h ?j].
+;; E.g. [key-chord ?h ?j] and [key-chord ?j ?h].
 ;;
 ;; When key-chord-mode is enabled input-method-function is set to
 ;; key-chord-input-method.
@@ -183,16 +183,18 @@
 
 ;; ########   History   ########################################
 ;;
-;; 0.5 (2008-09-15) l.david.andersson(at)sverige.nu
+;; 0.6 (2012-10-23) l.david.andersson(at)sverige.nu
+;;      Add key-chord-define-local, key-chord-unset-local, key-chord-unset-global
+;; 0.5 (2008-09-15) david(at)symsoft.se
 ;;      Bugfix sit-for; Improved examples; New E-mail in comment
 ;; 0.4 (2005-05-07) david(at)symsoft.se
-;; 	Slightly better macro heuristics; Added option key-chord-in-macros
+;;      Slightly better macro heuristics; Added option key-chord-in-macros
 ;; 0.3 (2005-04-14) david(at)symsoft.se
-;; 	Require advice; More examples
+;;      Require advice; More examples
 ;; 0.2 (2003-09-13) david(at)symsoft.se
-;; 	Quick and dirty fix for keyboard macros
+;;      Quick and dirty fix for keyboard macros
 ;; 0.1 (2003-04-27) david(at)symsoft.se
-;;	First release
+;;      First release
 
 ;;; Code:
 
@@ -229,8 +231,10 @@ typed quickly or slowly when recorded.)")
 With positive ARG enable the mode. With zero or negative arg disable the mode.
 A key chord is two keys that are pressed simultaneously, or one key quickly
 pressed twice.
-See functions `key-chord-define-global' or `key-chord-define'
-and variables `key-chord-two-keys-delay' and `key-chord-one-key-delay'."
+\nSee functions `key-chord-define-global', `key-chord-define-local', and
+`key-chord-define' and variables `key-chord-two-keys-delay' and
+`key-chord-one-key-delay'."
+
   (interactive "P")
   (setq key-chord-mode (if arg
 			   (> (prefix-numeric-value arg) 0)
@@ -244,17 +248,40 @@ and variables `key-chord-two-keys-delay' and `key-chord-one-key-delay'."
 
 ;;;###autoload
 (defun key-chord-define-global (keys command)
-  "Define a key-chord of two keys in KEYS starting a COMMAND.
+  "Define a key-chord of the two keys in KEYS starting a COMMAND.
 \nKEYS can be a string or a vector of two elements. Currently only elements
 that corresponds to ascii codes in the range 32 to 126 can be used.
 \nCOMMAND can be an interactive function, a string, or nil.
-If COMMAND is nil, the key-chord is removed."
+If COMMAND is nil, the key-chord is removed.
+\nNote that KEYS defined locally in the current buffer will have precedence."
   (interactive "sSet key chord globally (2 keys): \nCSet chord \"%s\" to command: ")
   (key-chord-define (current-global-map) keys command))
 
 ;;;###autoload
+(defun key-chord-define-local (keys command)
+  "Locally define a key-chord of the two keys in KEYS starting a COMMAND.
+\nKEYS can be a string or a vector of two elements. Currently only elements
+that corresponds to ascii codes in the range 32 to 126 can be used.
+\nCOMMAND can be an interactive function, a string, or nil.
+If COMMAND is nil, the key-chord is removed.
+\nThe binding goes in the current buffer's local map,
+which in most cases is shared with all other buffers in the same major mode."
+  (interactive "sSet key chord locally (2 keys): \nCSet chord \"%s\" to command: ")
+  (key-chord-define (current-local-map) keys command))
+
+(defun key-chord-unset-global (keys)
+  "Remove global key-chord of the two keys in KEYS."
+  (interactive "sUnset key chord globally (2 keys): ")
+  (key-chord-define (current-local-map) keys nil))
+
+(defun key-chord-unset-local (keys)
+  "Remove local key-chord of the two keys in KEYS."
+  (interactive "sUnset key chord locally (2 keys): ")
+  (key-chord-define (current-local-map) keys nil))
+
+;;;###autoload
 (defun key-chord-define (keymap keys command)
-  "Define in KEYMAP, a key-chord of two keys in KEYS starting a COMMAND.
+  "Define in KEYMAP, a key-chord of the two keys in KEYS starting a COMMAND.
 \nKEYS can be a string or a vector of two elements. Currently only elements
 that corresponds to ascii codes in the range 32 to 126 can be used.
 \nCOMMAND can be an interactive function, a string, or nil.
