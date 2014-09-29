@@ -1,8 +1,8 @@
 I started using Emacs in 2008, when I had to work over a terminal. It wasn't exactly love at first sight - I had problems with word wrap, line numbering, tab indentation, commenting/uncommenting regions. Just basic editor functions. I wondered, how do people use this thing?? 
 
-After a year I had gotten it to where I could use it better, but I never felt very comfortable with it - I usually preferred using SciTE for text editing where possible. 
+After a year I had gotten it to where I could use it better, but I never felt very comfortable with it - I usually preferred using !SciTE for text editing where possible. 
 
-But eventually I gathered so much text that SciTE wasn't cutting it - it was hard managing all the files in different locations, as they grew to ever larger sizes, and it was difficult moving text between them. 
+But eventually I gathered so much text that !SciTE wasn't cutting it - it was hard managing all the files in different locations, as they grew to ever larger sizes, and it was difficult moving text between them. 
 
 So after evaluating some other editors, including Sublime Text, I ended up back at Emacs - mainly because it's free and open, and programmable. And... after smoothing out the rough edges, I've gotten to like it much more. 
 
