@@ -64,6 +64,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * EmacsPoker -- simple video poker game for Emacs
 * [http://www.gwenhael.net/emstar/ Emstar] - another implementation of dstar ([http://github.com/cycojesus/emstar/tree/master github repository])
 * [[Conx]] -- like the built-in DissociatedPress
+* [https://github.com/krameshkrr/Emacs/tree/master/Turing-machine Turing machine] -- Turing machine puzzle game (Same as Alan Turing's 100th Birthday google doodle)
 
 
 == Other modes for games related things ==
