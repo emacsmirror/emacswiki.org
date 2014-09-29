@@ -1,12 +1,1 @@
-*GEDCOM* was developed by the Family History Department of The Church of Jesus Christ of Latter-day Saints (LDS Church) to provide a flexible, uniform format for exchanging computerized genealogical data. GEDCOM is an acronym for GEnealogical Data COMmunication. Its purpose is to foster the sharing of genealogical information and the development of a wide range of inter-operable software products to assist genealogists, historians, and other researchers.
-
-[https://github.com/emacsmirror/gedcom Gedcom-mode] aids in editing !LifeLines GEDCOM records.
-
-[http://lifelines.sourceforge.net/ LifeLines] is a genealogical database and report generator which uses GEDCOM records as its input. It features a scripting language and the ability easily import and export information in GEDCOM format. MIT License, 189 C files, written 1991-94. 
-
-[http://homepages.rootsweb.com/~pmcbride/gedcom/55gcint.htm GEDCOM 5.5 Reference]
-
-
-----
-MarkupModes
-CategoryModes
+#REDIRECT [[GEDCOM]]
