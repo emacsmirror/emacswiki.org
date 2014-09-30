@@ -2,6 +2,7 @@ This page is about displaying sequences of characters as fancy characters or sym
 
 Emacs 24.4 comes with a builtin ##prettify-symbols-mode##.  It can be customized by changing ##prettify-symbols-alist##.
 
+* [https://github.com/akatov/pretty-mode pretty-mode]
 * [https://github.com/drothlis/pretty-symbols pretty-symbols-mode] -- an attempt to replace most of the below with a proper package (available on [http://melpa.milkbox.net/ MELPA]) and under source control to facilitate contributions.
 * PrettyLambda -- Show ##lambda## as the Greek letter.
 * PrettyGreek -- Generalization of PrettyLambda for other Greek letters.
