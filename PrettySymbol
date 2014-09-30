@@ -13,3 +13,4 @@ Emacs 24.4 comes with a builtin ##prettify-symbols-mode##.  It can be customized
 ** I packages this up with my mappings as an ELPA package here http://www.wisdomandwonder.com/article/6399/emacs-pretty-mode-plus-elpa-package -- GrantRettke
 * PrettySymbolsForLanguages -- Language-specific display of char sequences as fancy characters or symbols.
 * UnParenMode -- Hide display of parens.
+* [https://gitorious.org/alezost-emacs/pretty-sha-path pretty-sha-path] -- Prettify Guix/Nix store paths (/gnu/store/…-foo-0.1)
