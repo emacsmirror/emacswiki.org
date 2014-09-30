@@ -32,3 +32,12 @@ Can you be more explicit? It seems very much relevant.
 
 -- AlexSchroeder 2013-12-06 09:06 UTC
 
+
+----
+
+Sorry I'm not sure how to set this (setq ispell-personal-dictionary "C:/path/to/your/.ispell")
+
+What is personal dictionary? Is this the second installed dictionary from website? Or it is my own dictionary (I do not have an dictionary, so make a blank file?)
+
+-- isavour 2014-09-30 13:54 UTC
+
