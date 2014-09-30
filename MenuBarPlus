@@ -144,13 +144,21 @@ If library <tt>[[cmds-menu.el]]</tt> is in your `load-path' then it is loaded by
 
 :::: Well, I've read The Humane Interface... :) -- MaDa
 
+----
+
 What is the procedure for activating menu-bar+ when menu-bar+ is installed via ELPA? I have installed menu-bar+ with the Emacs package manager, it shows up as "installed" after the command "M-x package-list-packages", and my ~/.emacs init file contains the command
 
   (eval-after-load "menu-bar" '(require 'menu-bar+))
 
 and it is positioned prior to other commands which alter the menu bar, e.g., "(require 'eol-conversion)". However, when starting up Emacs, I receive a "File error: Cannot open load file, menu-bar+" . Any thoughts?
 
+: Answering my own question ... The solution is to put the following 2 instructions above the "eval-after-load" directive:
 
+    (setq package-enable-at-startup nil)
+    (package-initialize)
+    ;; (require) your ELPA packages first, then configure them as normal
+
+: Maybe this could be added to the "readme" file.
   
 
 
