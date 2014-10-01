@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  3 14:10:36 2014 (-0700)
+;; Last-Updated: Wed Oct  1 08:25:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3411
+;;     Update #: 3413
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -256,8 +256,8 @@
 ;;      automatically set the region around the last search target.
 ;;    - Command `isearchp-toggle-set-region', bound to `C-SPC' during
 ;;      isearch - toggle `isearchp-set-region-flag'.
-;;    - Command `set-region-around-search-target' - manually set the
-;;      region around the last search target.
+;;    - Command `isearchp-set-region-around-search-target' - manually
+;;      set the region around the last search target.
 ;;
 ;;  * When you visit a search hit, you can perform an action on it.
 ;;    Use `C-M-RET' (command `isearchp-act-on-demand' - Emacs 22+
@@ -419,7 +419,7 @@
 ;;    editing session, where you can do anything you like (including
 ;;    search for something different).  Using `C-M-c' closes the
 ;;    recursive editing session and resumes the search (from the
-;;    current position when you hit `C-M-c').
+;;    current position where you hit `C-M-c').
 ;;
 ;;  * Highlighting of the mismatched portion of your search string in
 ;;    the minibuffer.  This is the portion that is removed if you do
