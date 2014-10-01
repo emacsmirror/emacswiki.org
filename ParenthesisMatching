@@ -1,3 +1,4 @@
+[[de:english]]
 One of Emacs' strengths is the way it matches parentheses.  Depending
 on what mode the buffer is in, different things are considered to be
 parentheses; for example, in EmacsLispMode, hitting "(" followed by
