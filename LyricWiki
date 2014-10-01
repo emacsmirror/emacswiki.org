@@ -22,18 +22,18 @@ Add it to your load list and require it:
 song in Amarok, iTunes or Rhythmbox then set the defalias in lyricwiki.el to
 whatever you want:
 
-    ;; Any of these 3 will do
-    (defalias 'lyrics 'lyrics-itunes)
-    (defalias 'lyrics 'lyrics-amarok)
-    (defalias 'lyrics 'lyrics-rhythmbox)
+  ;; Any of these 3 will do
+  (defalias 'lyricwiki/lyrics 'lyricwiki/lyrics-itunes)
+  (defalias 'lyricwiki/lyrics 'lyricwiki/lyrics-amarok)
+  (defalias 'lyricwiki/lyrics 'lyricwiki/lyrics-rhythmbox)
 
-Now just press:
+Now just:
 
-    M-x lyrics
+  M-x lyricwiki/lyrics
 
 Finally, if you want to manually enter the song details you can just call:
 
-    M-x lyrics-manual
+  M-x lyricwiki/lyrics-manual
 
 ==Acknowledgements==
 
