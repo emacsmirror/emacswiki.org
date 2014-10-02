@@ -2,10 +2,10 @@
 
 ;; Copyright (C) 2006  Christian Neukirchen <purl.org/net/chneukirchen>
 ;; Authors: Christian Neukirchen
-;; URL: http://www.emacswiki.org/emacs/pastie.el
+;; URL: http://9thelm.com/blog
 ;; Created: 2007
 ;; Version: 20091230
-;; Keywords: pastie webservices
+;; Keywords:  9thelm 
 ;;
 
 ;;; Commentary:
