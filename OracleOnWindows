@@ -57,5 +57,33 @@ So I just keep it in a separate test.sql file, and start M-x sql-oracle
 in the same directory, and run @test to run the file.  Works for me.  :)
 -- AlexSchroeder
 
+This is my fast fix for this problem that has worked without bigger 
+problems, you can't use it with scratch buffers(or tramp), that's the only 
+drawback I have found.
+
+{{{
+  (defun jiha-send-sql-buffer () 
+            "Easy fix around the problem on windows that comint does deadlock when trying 
+          send big buffers to sqlplus. this instead sends the filename + path as a script 
+          to be read and executed by sqlplus self. as long as path does not exeed ~500 it 
+          should not be a problem."
+            (interactive)
+            (let ((current-buffer (current-buffer))
+                  (dest-buffer sql-buffer))
+              (progn
+                (with-current-buffer dest-buffer
+                  (insert (concat "@" (buffer-file-name current-buffer)))
+                  (comint-send-input nil t)))))
+}}}
+
+instead of changing both menu and the keymap i use a around advice.
+{{{
+          (defadvice sql-send-buffer (around around-sql-send-buffer)
+            "With the help of a around advice we trap calls to sql-send-buffer and instead replace
+            them with call to my own function."
+            (jiha-send-sql-buffer))
+}}}
+bad form, but works. --JimHansson
+
 ----
 CategorySql
