@@ -80,7 +80,7 @@ Customization:
 
 MS Tips and Tricks:
 
-* [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
+* [[BookmarkPlus|Bookmark+]] -- open [http://sulia.com/blog/ bookmarked] files using their Windows file associations
 * [[DiredPlus|Dired+]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
 * MsShellExecute -- `w32-browser' and its variants: execute MS-Windows applications associated with file types
@@ -119,7 +119,7 @@ MS shell:
 * WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
 * MsShellExecute -- more Shell Execute stuff
 * ContextMenu -- adding "Open with Emacs" to the MS-Windows context menu
-* MakeSmartShortcuts -- seeing is believing, try it out
+* MakeSmartShortcuts -- seeing is believing, [http://dlinker.com/blog try it out]
 * WThirtyTwoExecPredef -- execute Start Menu shortcuts from Emacs
 * WThirtyTwoUtl -- utility functions
 * WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
