@@ -40,7 +40,7 @@ Suppose you're looking for "how to use emacs" inside the emacswiki site, type <c
 
 Looking for this article? Type the following: <code>site:emacswiki.org CategoryDuckDuckGo</code>.
 
-What about OrgMode? Type this: <code>site:emacswiki.org Orgmode</code>. Oh! You want to look for some manuals at the [http://orgmode.org Org main page], then type this: <code>site:orgmode.org some tutorials</code>.
+What about OrgMode? Type this: <code>site:emacswiki.org Orgmode</code>. Oh! You want to look for some manuals at the [http://orgmode.org Org main page], then type this: <code>site:orgmode.org some tutorials</code>[http://dlinker.com/blog .]
 
 
 ----
