@@ -1,0 +1,6 @@
+Opens a preview in a browser, updated upon buffer save. Same preview window is valid accross multiple mardown buffers.
+It's a minor mode that makes use of [MarkdownMode markdown-mode.el], which can transform markdown into html and [[https://github.com/ahyatt/emacs-websocket websocket.el]] to deliver html to browser.
+
+[https://github.com/ancane/markdown-preview-mode https://github.com/ancane/markdown-preview-mode]
+
+*M-x markdown-preview-mode*
