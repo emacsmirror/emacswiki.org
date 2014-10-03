@@ -37,5 +37,5 @@ unix tools:
 * [[Sorting]] -- Replacing the unix `sort' command, and beyond.
 * TarMode -- Operate on existing tar files.
 
-(Some people may find the NT EmacsFaq a good [http://defensetax.com/ resource] for non-Unix
+(Some people may find the NT EmacsFaq a good resource for non-Unix
 environments.  See OnlineResources.)
