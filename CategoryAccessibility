@@ -25,7 +25,7 @@ On a more cautious note, see RepeatedStrainInjury. :(
 
 * FontLockColorsAccessibility -- Suggestion to change font-lock-* faces to enhance accessibility.
 * StickyModifiers -- reducing repetitive strain injury by clicking keyboard keys in a combination like C-M-s one by one.
-* XModMap -- can be used to map modifiers to a more convenient location -- like the number row -- so you can use them without straining your wrists[https://www.enthuse.me/blog .]  Yay!
+* XModMap -- can be used to map modifiers to a more convenient location -- like the number row -- so you can use them without straining your wrists.  Yay!
 
 == Directing Emacs by Voice ==
 
@@ -69,4 +69,4 @@ The packages enumerated in the following sections, while not specifically claime
 === Major Packages - Multi-file ===
 
 * [[Anything]]
-* [[Icicles]] -- Browse your file system using cycling and completion instead of Dired. http://defensetax.com/
+* [[Icicles]] -- Browse your file system using cycling and completion instead of Dired. 
