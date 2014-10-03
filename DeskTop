@@ -303,4 +303,7 @@ Here's what I do to solve that problem:
 Be sure to require all of the minor modes you use, and put this at the bottom!
 
 ----
+[new]
+When saving a desktop that contains <code>~/.emacs</code> and, let's say, the file <code>main.cpp</code>, desktop restores both, but although its text is displayed correctly, <code>~/.emacs</code> is loaded in c++-mode as <code>main.cpp<2></code>. This must be a bug. Does someone know about this?
+
 CategoryDotEmacs CategoryPersistence
