@@ -9,3 +9,11 @@ Conflicts with magit prefix C-C C-c
 
 -- Anonymous 2013-08-20 09:34 UTC
 
+
+----
+
+Here is small addition to markdown-mode, which i made to send markup preview to a browser after file saved.
+https://github.com/ancane/markdown-preview-mode
+
+-- [https://github.com/ancane ancane] 2014-10-03 06:10 UTC
+
