@@ -43,7 +43,7 @@ The reverse is also possible with links and pages.  The relation between words -
 * EmacsWikiAppearance -- User features for customizing the experience at EmacsWiki.
 * [[CSS]] -- changing the look of the wiki with complete custom stylesheets.
 * [[Mozilla]] -- Using mozex and Emacs, using a quicksearch for the wiki.
-* RssFeeds -- Including RSS feeds from your [https://www.listango.com/blog blog] onto your page on this wiki.
+* RssFeeds -- Including RSS feeds from your blog onto your page on this wiki.
 
 ----
 HowTo
