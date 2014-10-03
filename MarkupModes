@@ -26,6 +26,7 @@ processor how to interpret the remaining text.
 * [[reStructuredText]] -- Extended Text Mode, for editing reStructuredText
 * TextileMode -- for editing textile markup files
 * MarkdownMode -- for editing markdown files
+** MarkdownPreviewMode -- markup preview in browser on websockets
 * AsciiDoc -- for editing AsciiDoc files
 
 Modes that take text with peculiar formatting and ''add'' markup:
