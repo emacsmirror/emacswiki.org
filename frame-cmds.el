@@ -9,9 +9,9 @@
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Tue Jul 22 09:55:42 2014 (-0700)
+;; Last-Updated: Fri Oct  3 22:42:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 2984
+;;     Update #: 2986
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -1226,9 +1226,9 @@ With a negative prefix arg, toggle horizontally.
 
 When toggling both directions, each is toggled from its last maximize
 or restore state.  This means that using this after
-`maximize-horizontal', `maximize-vertical', `toggle-max-horizontal',
-or `toggle-max-vertical' does not necessarily just reverse the effect
-of that command.
+`maximize-frame-horizontally', `maximize-frame-vertically',
+`toggle-max-frame-horizontally', or `toggle-max-frame-vertically' does
+not necessarily just reverse the effect of that command.
 
 In Lisp code:
  DIRECTION is the direction: `horizontal', `vertical', or `both'.
