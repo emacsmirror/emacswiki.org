@@ -2,7 +2,7 @@
 portrait:http://www.colin-baxter.com/graphics/bear.jpg I am a physicist based in the UK - my [[http://www.colin-baxter.com/|web-page]] gives details of my research. I am ocasionally found at the  [[IRC]] channel #emacs under the nickname of  [::m43cap].
 
 == My Relationship with Emacs ==
-I came to Emacs late in life, after using just about every rubbish editor and word-processor known to mankind. Beginning with AUCTeX and using Emacs as a writing tool, I have, over several years, gradually moved to adopting Emacs as my default application for command-line work, (AnsiTerm), file management (DiredMode), email, Internet browser (WThreeM), a universal organiser (OrgMode), etc., etc. The abandonment of most other applications has wonderfully removed desktop clutteri! :) I do not do very much programming these days, except the occasional perl (PerlDevelopEnvironment) and fortran (FortranMode).
+I came to Emacs late in life, after using just about every rubbish editor and word-processor known to mankind. Then beginning with AUCTeX and using Emacs as a writing tool, I gradually moved over several years to adopting Emacs as my default application for command-line work, (AnsiTerm), file management (DiredMode), email, Internet browser (WThreeM), a universal organiser (OrgMode), etc., etc. The abandonment of most other applications has wonderfully removed desktop clutteri! :) I do not do very much programming these days, except the occasional perl (PerlDevelopEnvironment) and fortran (FortranMode).
 
 == Contributions to EmacsWiki ==
 #  [[http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Beware of Permissions when Installing PDE]]
