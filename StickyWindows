@@ -9,6 +9,11 @@ To that end I created a set of functions which are replacements for the followin
 * C-x 9 -- Normally unbound, but could be bound to `sticky-window-keep-window-visible'
 
 These sticky-window functions simply respect the dedicated window state on the window, but give you a chance to override the operation to force it through. See the documentation on each function for its special usage.
+
+
 ----
 [new]
-Does not work with Emacs 24. Locking is possible, but unlocking not. Also, <code>sticky-window-delete-window</code> and <code>sticky-window-delete-other-windows</code> are both denied. Garbage. marcm
+Does not work with Emacs 24. Locking is possible, but unlocking not. Also, <code>sticky-window-delete-window</code> and <code>sticky-window-delete-other-windows</code> are both denied. Garbage. -- [[marcm]]
+
+[new:DrewAdams:2014-10-04 06:05 UTC]
+I wanted to advise you to send your report to the maintainer of <tt>[[sticky-windows.el]]</tt>.  But it seems there is no author or maintainer contact info listed in the file.  (And there is no GPL in it, either.)  Garbage, indeed, it seems. -- DrewAdams
