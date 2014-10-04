@@ -304,6 +304,12 @@ Be sure to require all of the minor modes you use, and put this at the bottom!
 
 ----
 [new]
-When saving a desktop that contains <code>~/.emacs</code> and, let's say, the file <code>main.cpp</code>, desktop restores both, but although its text is displayed correctly, <code>~/.emacs</code> is loaded in c++-mode as <code>main.cpp<2></code>. This must be a bug. Does someone know about this?
+When saving a desktop that contains <code>~/.emacs</code> and, let's say, the file <code>main.cpp</code>, desktop restores both, but although its text is displayed correctly, <code>~/.emacs</code> is loaded in c++-mode as <code>main.cpp<2></code>. This must be a bug. Does someone know about this? -- [[marcm]]
+
+[new:DrewAdams:2014-10-04 06:01 UTC]
+I'm not sure I understand your description, but I don't need to understand it.  This is not the place to report ##desktop.el## bugs (or enhancement requests).  The way to do that is to use `M-x report-emacs-bug'.  The Emacs developers will take a look at your report and let you know whether it is a bug, etc.  If they need more info from you they will ask for it. -- DrewAdams
+
+----
+----
 
 CategoryDotEmacs CategoryPersistence
