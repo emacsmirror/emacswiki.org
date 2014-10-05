@@ -1,6 +1,6 @@
 ;;; volatile-highlights.el --- Minor mode for visual feedback on some operations.
 
-;; Copyright (C) 2001, 2010-2013 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2001, 2010-2014 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 03 October 2001. (as utility functions in my `.emacs' file.)
@@ -10,7 +10,7 @@
 ;; URL: http://www.emacswiki.org/emacs/download/volatile-highlights.el
 ;; GitHub: http://github.com/k-talo/volatile-highlights.el
 ;; Version: 1.10
-;; Contributed by: Ryan Thompson.
+;; Contributed by: Ryan Thompson and Le Wang.
 
 ;; This file is not part of GNU Emacs.
 
@@ -31,12 +31,12 @@
 ;;
 ;; Overview
 ;; ========
-;; This library provides minor mode `volatile-highlight-mode', which
+;; This library provides minor mode `volatile-highlights-mode', which
 ;; brings visual feedback to some operations by highlighting portions
 ;; relating to the operations.
 ;;
 ;; All of highlights made by this library will be removed
-;; when any new command is executed.
+;; when any new operation is executed.
 ;;
 ;;
 ;; INSTALLING
@@ -51,7 +51,9 @@
 ;;
 ;; USING
 ;; =====
-;; To toggle volatile highlighting, type `M-x volatile-highlights-mode RET'.
+;; To toggle volatile highlighting, type `M-x volatile-highlights-mode <RET>'.
+;;
+;; While this minor mode is on, a string `VHL' will be displayed on the modeline.
 ;;
 ;; Currently, operations listed below will be highlighted While the minor mode
 ;; `volatile-highlights-mode' is on:
@@ -98,6 +100,10 @@
 
 ;;; Change Log:
 
+;; v1.11  Sun Oct  5 13:05:38 2014 JST
+;;   - Fixed an error "Symbol's function definition is void: return",
+;;     that occurs when highlight being created with `hideshow' commands.
+;;
 ;; v1.10  Thu Mar 21 22:37:27 2013 JST
 ;;   - Use inherit in face definition when detected.
 ;;   - Suppress compiler warnings regarding to emacs/xemacs private
@@ -759,9 +765,11 @@ extensions."
   (defadvice hs-show-block (around vhl/ext/hideshow/vhl/around-hook (&optional end))
     (let* ((bol (save-excursion (progn (beginning-of-line) (point))))
            (eol (save-excursion (progn (end-of-line) (point))))
-           (ov-folded (dolist (ov (overlays-in bol (1+ eol)))
-                        (when (overlay-get ov 'hs)
-                          (return ov))))
+           (ov-folded (car (delq nil 
+                                 (mapcar #'(lambda (ov)
+                                             (and (overlay-get ov 'hs)
+                                                  ov))
+                                         (overlays-in bol (1+ eol))))))
            (boov (and ov-folded (overlay-start ov-folded)))
            (eoov (and ov-folded (overlay-end ov-folded))))
     
