@@ -134,6 +134,8 @@ git clone https://github.com/linuxdeepin/deepin-emacs
 
 *** Lisp:doi-extension.el -- Some enhanced functions for [[Doi]].
 
+*** Lisp:linum-extension.el -- Some enhanced functions for [[Linum]].
+
 ** Notes:
 
 *** Lisp:org-extension.el -- Some enhanced functions for [[OrgMode]].
