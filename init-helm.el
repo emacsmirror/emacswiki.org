@@ -81,11 +81,20 @@
 
 ;;; Require
 
+(require 'ag)
 (require 'helm-files)
 (require 'helm-config)
 (require 'helm-helm-commands)
 (require 'helm-c-yasnippet)
 (require 'helm-apt)
+(require 'helm-autoload-commands)
+(require 'helm-ls-git)
+(require 'helm-descbinds)
+(require 'helm-webkit)
+(require 'helm-ring)
+(require 'helm-imenu)
+(require 'helm-man)
+(require 'helm-ag)
 (require 'apt-utils)
 
 ;;; Code:
@@ -100,15 +109,20 @@
   (let ((helm-ff-transformer-show-only-basename nil))
     (helm-other-buffer
      '(
+       helm-source-findutils
        helm-source-buffers-list
        helm-source-recentf
-       helm-source-locate
-       helm-source-files-in-current-dir
-       helm-source-moccur
        helm-source-occur
-       helm-source-helm-commands
+       helm-source-do-ag
+       helm-source-locate
+       helm-source-kill-ring
+       helm-source-imenu
+       helm-source-autoload-commands
+       helm-source-ls-git
        helm-c-source-yasnippet
+       helm-source-webkit
        helm-source-apt
+       helm-source-man-pages
        )
      "*helm search*")))
 
@@ -118,6 +132,15 @@
    ("M-s-k" . helm-previous-source)
    )
  helm-map)
+
+(setq helm-autoload-commands-list
+      '(
+        ("inf-ruby" "Run an inferior Ruby process in a buffer." "inf-ruby")
+        ("yaoddmuse-post-library-default" "Post elisp library to EmacsWiki" "yaoddmuse-extension")
+        ("yaoddmuse-edit-default" "Edit EmacsWiki page" "yaoddmuse-extension")
+        ("auto-install-from-emacswiki" "Install package from EmacsWiki.org" "auto-install")
+        )
+      )
 
 (provide 'init-helm)
 
