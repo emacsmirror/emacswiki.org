@@ -117,6 +117,9 @@ Setting ##BUFFER## to ##0## runs the program asynchronously, while ##nil## will 
 
 When running Emacs in a terminal (with ##emacs -nw##), is it possible to execute a command in the parent shell ''without'' suspending Emacs? I know that one can press `##C-z##', type a command and then resume Emacs with ##fg##, but I would like to communicate with the parent shell from "within" Emacs. -- VegardOye
 
+[new:PhilHudson:2014-10-06 09:22 UTC]
+I don't know of a way to do exactly what you ask for -- I'm not even sure what it would look like, given that in this scenario Emacs "owns" the terminal and the parent shell process is presumably blocking until Emacs either exits or (as you have indicated) suspends -- but if you use a terminal multiplexer like GnuScreen or [http://tmux.sourceforge.net/ tmux] there are various Emacs Lisp packages and utilities in this wiki's [[ElispArea]] and in the various ELPA-like [[http://www.emacswiki.org/emacs/CategoryPackaging#toc1 package repositories]] which enable Emacs to communicate with, and control, a shell -- or indeed any other process -- running in one of the (other) virtual terminals managed by screen/tmux.
+
 === Return output as a string ===
 
 Is there a built-in function that returns the output of a shell command as a string?  For instance:
