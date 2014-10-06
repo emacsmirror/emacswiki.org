@@ -302,6 +302,10 @@ git clone https://github.com/linuxdeepin/deepin-emacs
 
 ** Lisp:init-auto-save.el -- Some configuration for auto save file.
 
+** Lisp:init-visual-regexp.el -- Some configuration for [https://github.com/benma/visual-regexp.el VisualRegexp].
+
+** Lisp:init-smex.el -- Some configuration for [https://github.com/nonsequitur/smex/ smex].
+
 * Spell Check:
 
 ** Lisp:init-ispell.el -- Configuration file for [[InteractiveSpell]].
