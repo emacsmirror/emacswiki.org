@@ -134,7 +134,7 @@ git clone https://github.com/linuxdeepin/deepin-emacs
 
 *** Lisp:doi-extension.el -- Some enhanced functions for [[Doi]].
 
-*** Lisp:linum-extension.el -- Some enhanced functions for [[Linum]].
+*** Lisp:linum-extension.el -- Some enhanced functions for [http://www.emacswiki.org/emacs/LineNumbers#toc7 Linum].
 
 ** Notes:
 
