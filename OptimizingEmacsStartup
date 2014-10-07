@@ -1,5 +1,7 @@
 [new:TheAnarcat:2011-12-21 02:45 EST]
 
+Use [BenchmarkInit benchmark-init] to find out where Emacs is spending time during startup.
+
 Most of the links in this page were dead last time I checked. Here are more recent references.
 
 * http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster
