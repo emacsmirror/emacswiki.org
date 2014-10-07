@@ -1,0 +1,12 @@
+This sounds cool, but I can't find ##dired-x.el## on my XEmacs installation.  Also a google search doesn't turn it up.  The closest I came was ftp://roebling.poly.edu:/pub/packages/dired-x.tar.gz.  Unfortunately, roebling.poly.edu isn't a valid hostname any longer. -- LathI
+
+Hm, it is part of Emacs.  Maybe you can get it from an Emacs distro and see wether it works out of the box?  This might be a good thing to adapt and put into the fsf-compat package, what do you think? -- AlexSchroeder
+
+: As I understand it, the fsf-compat package is designed to handle things that xemacs offers a very thin compatibility layer for, but has no real interest in maintaining. For example, the [[overlay]] compatibility 
+is `fsf-compat', but [[XEmacs]] is committed to [[extent]]s being a superior solution. `dired-x', if it were brought
+into XEmacs, might do better as an actual maintained package.  -- BrianPalmer
+
+: I think the GnuEmacs `dired-x' will work for MS Windows -- just download the cvs version from Emacs repository and replace ##(require 'dired-aux)## with ##(require 'dired-xemacs)##.  -- SurendraSinghi
+
+-- holocronweaver 2014-10-07 19:11 UTC
+
