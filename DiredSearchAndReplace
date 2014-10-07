@@ -12,20 +12,5 @@ Note also there are options to recursively find files into a dired buffer for ma
 * `find-grep-dired' to find all files containing a grep match
 * `find-name-dired' to find all filenames matching a given shell wildcard pattern
 * `find-dired' allows you to specify freeform arguments to find
-
-----
-As far as I can see, what is below adds no further information to that above.  If you disagree, please edit.  [[Dired X]] doesn't seem to be necessary.
-
-= Dired X =
-
-Put <code>(require 'dired-x)</code> in your <code>~/.emacs</code>.
-
-To do a search and replace on all *.c files in a directory and all its subdirs, do this:
-
-  M-x find-dired RET /path/to/dir RET -name "*.c" RET
-
-Then, mark all the files you want to mark with `m' (or any of the various other marking commands such as `% m' or `% g').
-
-Use the `Q' key to query replace in marked files.
 ----
 CategorySearchAndReplace CategoryDirectories
