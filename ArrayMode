@@ -1,5 +1,27 @@
 Array mode comes with Emacs.  It is an extremely primitive (obsolete?) way of editing fixed width tables of text.
 
+it was introduced by its author [https://web.archive.org/web/20141007042108/http://computer-programming-forum.com/49-fortran/a85ecd7eec7d78e4.htm as follows]:
+
+: Array mode for Gnu Emacs
+: I work for a company called GZA.  We are consultants in the fields of 
+: geotechnical engineering and groundwater resources.  In this work, I 
+: often use finite-difference models of groundwater flow and contaminant 
+: transport.  This invariably involves creating and editing large data 
+: files for fortran programs.  In particular, these data files usually 
+: represent two-dimensional arrays of integer or floating point numbers. 
+: In order to facilitate the creation and editing of these arrays, I 
+: have written a new major mode for Gnu Emacs, which I call "Array 
+: Mode".  Array mode allows one to move through the buffer by fields, to 
+: copy fields into adjacent cells, to copy whole rows or columns, etc. 
+: In this manner, one is spared the agony of counting spaces, making 
+: sure Fortran I/O does not get confused, etc. 
+: If you are interested in Array Mode, drop me a line.  I will either 
+: send you a copy or post it to the net. 
+: Happy hacking! 
+: David Brown 
+: {harvard | ll-xn | mirror}!adelie!morgoth!dmb 
+: GZA, 320 Needham St., Newton Upper Falls, MA  02164 
+
 * GIT:array.el
 
 ----
