@@ -9,7 +9,7 @@
 Though generally less useful than [[progressive completion]], you can
 also widen, instead of narrow, the current set of [[completion]]
 candidates, by providing an alternative pattern ([[regexp]]) to match.
-By analogy, I call this '''[:regressive completion]'''.
+By analogy, I call this '''[::regressive completion]'''.
 
 The analogy is not exact. By definition, 
 your current input is always matched against all candidates in the domain of discourse.
