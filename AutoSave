@@ -24,7 +24,7 @@ Or even more dramatic:
     (setq auto-save-list-file-prefix
         emacs-tmp-dir)
 
-EDIT: I think `"%s/%s%s/"' should be replace by `"%s%s%s/"' as `temporary-file-directory' comes with`/' already (tested 24.3.93 windows and linux).
+EDIT: I think ##"%s/%s%s/"## should be replace by ##"%s%s%s/"## as `temporary-file-directory' comes with`/' already (tested 24.3.93 windows and linux).
 == Delete auto-save files == 
 
 * To delete all auto-save files in the current directory, use `<tt>#</tt>' in [[Dired]] to mark the files, then `x' to delete them.
