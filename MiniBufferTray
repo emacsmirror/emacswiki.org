@@ -22,8 +22,15 @@ You can use below code to *remove* mode-line:
 minibuffer-tray just contain  necessary information (column, row, percent, time, date)
 and stay on the bottom right corner of the emacs.
 
+Most graphics feature of minibuffer-tray is provide by PyQt5 program [https://gitcafe.com/Deepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray/minibuffer_tray.py minibuffer_tray.py], i use DBus as process communication between Emacs and PyQt5 process, emacs report status to PyQt5 program to render.
+
+==Why use PyQt5?==
+Because hacking emacs minibuffer is hard work and i will maintain monkey patch to move information from mode-line to minibuffer right corner since most emacser use mode-line all the time.
+
+PyQt5/DBus solution just need hide mode-line with customize face, not need hacking any code of Emacs.
+
 ==How to install it ?==
-Minibuffer-tray use same technique as [[WebKit]], you need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib] first.
+You need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib] first.
 
 Then download minibuffer-tray source code from : https://gitcafe.com/Deepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
 
