@@ -23,13 +23,14 @@ minibuffer-tray just contain  necessary information (column, row, percent, time,
 and stay on the bottom right corner of the emacs.
 
 ==How to install it ?==
-Minibuffer-tray use same technique as [[WebKit]], you need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC]  first
+Minibuffer-tray use same technique as [[WebKit]], you need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib] first.
 
-Then download minibuffer-tray source code from : https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
+Then download minibuffer-tray source code from : https://gitcafe.com/Deepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
 
 Last add minibuffer-tray.el.el in your load-path and add 
 {{{
 (require 'minibuffer-tray)
+(minibuffer-tray-mode 1)
 }}}
 in your ~/.emacs, that's all!
 
